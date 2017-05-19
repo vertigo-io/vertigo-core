@@ -23,61 +23,63 @@ import java.util.List;
 
 /**
  * PreparedStatement.
+ *
  * Il s'agit d'une encapsulation du preparedStatement Java
  * On peut ainsi tracer toutes les exécution de requêtes
  * On peut aussi débugger les requêtes en listant les paramètres en entrée : ce qui n'est pas possible sur preparedStatement de base.
  *
- * L'appel s'effectue selon les étapes suivantes :
- * - Création
- * - Définition des paramètres : addParameter
- * - Clôture de la définition des paramètres : init()
- * - Exécution de la requête
- * - Récupération des paramètres de sorties </li> (Pour KCallableStatement uniquement)
  *
  * @author pchretien
  */
 public interface SqlPreparedStatement extends AutoCloseable {
 	/**
-	 * Exécute une requête et délègue l'interprêtation du résultat.
-	 * Le Handler est initialisé par KprepareStatement via un appel sur la méthode init.
+	 * Executes a sql query returning a list
 	 *
-	 * @param domain Domain résultat.
-	 * @return Résultat comprenant Objet créé (dto ou dtc)
-	 * @throws SQLException Exception sql
+	 * @param sqlParameters input params
+	 * @param dataType the return dataType of the list
+	 * @param limit the return limit (null if no limit)
+	 * @return the list
+	 *
+	 * @throws SQLException
 	 */
 	<O> List<O> executeQuery(List<SqlParameter> sqlParameters, final Class<O> dataType, final Integer limit) throws SQLException;
 
 	/**
-	 * Exécute la requête.
+	 * Executes a sql query returning the number of modified rows.
 	 *
+	 * @param sqlParameters input params
+	 * @param dataType the return dataType of the list
+	 * @param limit the return limit (null if no limit)
 	 * @return either the row count for INSERT, UPDATE or DELETE statements; or 0 for SQL statements that return nothing
-	 * @throws SQLException Si erreur
+	 * @throws SQLException
 	 */
 	int executeUpdate(List<SqlParameter> sqlParameters) throws SQLException;
 
 	/**
-	 * Ajoute le traitement dans la liste des traitements batchs.
-	 * @throws SQLException Si erreur
+	 * adds a batch
+	 * @param sqlParameters input params
+	 * @throws SQLException
 	 */
 	void addBatch(List<SqlParameter> sqlParameters) throws SQLException;
 
 	/**
-	 * Execute le traitement batch.
+	 * Executes the batch .
 	 * @throws SQLException Si erreur
-	 * @return Nombre total de INSERT, UPDATE ou DELETE; 0 pour les traitements qui ne font rien.
+	 * @return the SUM of  row count for INSERT, UPDATE or DELETE statements; or 0 for SQL statements that return nothing
+	 * @throws SQLException
 	 */
 	int executeBatch() throws SQLException;
 
 	/**
-	 * Donne les clefs générées lors d'un insert.
-	 * @param columnName Nom de la colonne de la clé
-	 * @param domain Domain de la clé
-	 * @throws SQLException Exception SQL
+	 * Returns the generated keys when an insert is executed.
+	 * @param columnName the column name
+	 * @param domain the domain
+	 * @throws SQLException
 	 */
 	<O> O getGeneratedKey(final String columnName, final Class<O> dataType) throws SQLException;
 
 	/**
-	 * close without exceoption.
+	 * closes without exceoption.
 	 */
 	@Override
 	void close();
