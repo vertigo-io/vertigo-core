@@ -167,7 +167,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 * @throws SQLException Si erreur
 	 * @return PreparedStatement JDBC
 	 */
-	PreparedStatement createStatement() throws SQLException {
+	private PreparedStatement createStatement() throws SQLException {
 		final PreparedStatement preparedStatement;
 		if (generatedColumns.length > 0) {
 			preparedStatement = connection.getJdbcConnection().prepareStatement(sql, generatedColumns);

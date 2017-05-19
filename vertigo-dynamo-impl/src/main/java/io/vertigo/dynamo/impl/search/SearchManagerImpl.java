@@ -87,7 +87,6 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		this.searchServicesPlugin = searchServicesPlugin;
 		this.analyticsManager = analyticsManager;
 		localeManager.add(io.vertigo.dynamo.impl.search.SearchRessources.class.getName(), io.vertigo.dynamo.impl.search.SearchRessources.values());
-		eventBusManager.register(this);
 
 		executorService = Executors.newSingleThreadScheduledExecutor();
 	}
