@@ -68,8 +68,7 @@ public class TaskEngineProc extends AbstractTaskEngineSQL {
 	/** {@inheritDoc} */
 	@Override
 	protected int doExecute(final SqlConnection connection, final SqlPreparedStatement statement) throws SQLException {
-		setInParameters(statement);
-		return statement.executeUpdate();
+		return statement.executeUpdate(getParameters());
 	}
 
 }

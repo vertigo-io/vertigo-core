@@ -83,19 +83,18 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 	/** {@inheritDoc} */
 	@Override
 	protected int doExecute(final SqlConnection connection, final SqlPreparedStatement statement) throws SQLException {
-		setInParameters(statement);
 		final TaskAttribute outAttribute = getOutTaskAttribute();
 		final List<?> result;
 		if (outAttribute.getDomain().getDataType().isPrimitive()) {
-			result = statement.executeQuery(outAttribute.getDomain().getDataType().getJavaClass(), 1);
+			result = statement.executeQuery(getParameters(), outAttribute.getDomain().getDataType().getJavaClass(), 1);
 			Assertion.checkState(result.size() <= 1, "Limit exceeded");
 			setResult(result.isEmpty() ? null : result.get(0));
 		} else if (outAttribute.getDomain().getDataType() == DataType.DtObject) {
-			result = statement.executeQuery(ClassUtil.classForName(outAttribute.getDomain().getDtDefinition().getClassCanonicalName()), 1);
+			result = statement.executeQuery(getParameters(), ClassUtil.classForName(outAttribute.getDomain().getDtDefinition().getClassCanonicalName()), 1);
 			Assertion.checkState(result.size() <= 1, "Limit exceeded");
 			setResult(result.isEmpty() ? null : result.get(0));
 		} else if (outAttribute.getDomain().getDataType() == DataType.DtList) {
-			result = statement.executeQuery(ClassUtil.classForName(outAttribute.getDomain().getDtDefinition().getClassCanonicalName()), null);
+			result = statement.executeQuery(getParameters(), ClassUtil.classForName(outAttribute.getDomain().getDtDefinition().getClassCanonicalName()), null);
 
 			final DtList<?> dtList = result
 					.stream()

@@ -22,7 +22,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -100,15 +99,11 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	private final String[] generatedColumns;
 
 	private final AnalyticsManager analyticsManager;
+	private final StringBuilder info = new StringBuilder();
 
 	//=========================================================================
 	//-----GESTION des paramètres types & valeurs
 	//=========================================================================
-	/**
-	 * Listes des paramètres (indexé par les index définis dans les méthodes registerXXX
-	 */
-	private List<SqlParameter> parameters = Collections.emptyList();
-
 	/**
 	 * Constructor.
 	 * @param sql Requête SQL
@@ -150,10 +145,15 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	//-----1ere Etape : Enregistrement
 	//=========================================================================
 
-	private void init() throws SQLException {
+	private void init(final List<SqlParameter> parameters) throws SQLException {
 		state.assertRegisteringState();
 		//-----
 		statement = createStatement();
+		info.append(parameters
+				.stream()
+				.map(SqlParameter::toString)
+				.collect(Collectors.joining(", ", sql + '(', ")")));
+
 		//-----
 		for (int index = 0; index < parameters.size(); index++) {
 			final SqlParameter parameter = parameters.get(index);
@@ -181,28 +181,16 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	}
 
 	//=========================================================================
-	//-----2ème Etape : Setters
-	//=========================================================================
-	/** {@inheritDoc} */
-	@Override
-	public final void setValues(final List<SqlParameter> parameters) {
-		state.assertRegisteringState();
-		Assertion.checkNotNull(parameters);
-		//---
-		this.parameters = parameters;
-	}
-
-	//=========================================================================
 	//-----3ème Etape : Exécution
 	//=========================================================================
 
 	/** {@inheritDoc} */
 	@Override
-	public final <O> List<O> executeQuery(final Class<O> dataType, final Integer limit) throws SQLException {
+	public final <O> List<O> executeQuery(final List<SqlParameter> parameters, final Class<O> dataType, final Integer limit) throws SQLException {
 		state.assertRegisteringState();
 		Assertion.checkNotNull(dataType);
 		//-----
-		init();
+		init(parameters);
 		//-----
 		boolean success = false;
 		try {
@@ -233,10 +221,10 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	/** {@inheritDoc} */
 	@Override
-	public final int executeUpdate() throws SQLException {
+	public final int executeUpdate(final List<SqlParameter> parameters) throws SQLException {
 		state.assertRegisteringState();
 		//---
-		init();
+		init(parameters);
 		//---
 		boolean success = false;
 		try {
@@ -263,11 +251,11 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	/** {@inheritDoc} */
 	@Override
-	public void addBatch() throws SQLException {
+	public void addBatch(final List<SqlParameter> parameters) throws SQLException {
 		state.assertRegisteringState();
 		//---
 		if (statement == null) {
-			init();
+			init(parameters);
 		}
 		//----
 		statement.addBatch();
@@ -344,10 +332,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/** {@inheritDoc} */
 	@Override
 	public final String toString() {
-		return parameters
-				.stream()
-				.map(SqlParameter::toString)
-				.collect(Collectors.joining(", ", sql + '(', ")"));
+		return info.toString();
 	}
 
 	/** {@inheritDoc} */
