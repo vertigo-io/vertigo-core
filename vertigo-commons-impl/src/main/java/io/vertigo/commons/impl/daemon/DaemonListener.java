@@ -30,13 +30,13 @@ final class DaemonListener {
 	private boolean lastExecSucceed;
 	private long failures;
 	private DaemonStat.Status status = DaemonStat.Status.pending;
-	private final DaemonInfo daemonInfo;
+	private final DaemonDefinition daemonDefinition;
 	private final boolean verbose;
 
-	public DaemonListener(final DaemonInfo daemonInfo, final boolean verbose) {
-		Assertion.checkNotNull(daemonInfo);
+	public DaemonListener(final DaemonDefinition daemonDefinition, final boolean verbose) {
+		Assertion.checkNotNull(daemonDefinition);
 		//---
-		this.daemonInfo = daemonInfo;
+		this.daemonDefinition = daemonDefinition;
 		this.verbose = verbose;
 	}
 
@@ -45,13 +45,13 @@ final class DaemonListener {
 
 	synchronized DaemonStat getStat() {
 		//On copie les données
-		return new DaemonStatImpl(daemonInfo, successes, failures, status, lastExecSucceed);
+		return new DaemonStatImpl(daemonDefinition, successes, failures, status, lastExecSucceed);
 	}
 
 	synchronized void onStart() {
 		status = DaemonStat.Status.running;
 		if (verbose) {
-			LOG.info("Start daemon: " + daemonInfo.getName());
+			LOG.info("Start daemon: " + daemonDefinition.getName());
 		}
 	}
 
@@ -59,7 +59,7 @@ final class DaemonListener {
 		status = DaemonStat.Status.pending;
 		failures++;
 		lastExecSucceed = false;
-		LOG.error("Daemon :  an error has occured during the execution of the daemon: " + daemonInfo.getName(), e);
+		LOG.error("Daemon :  an error has occured during the execution of the daemon: " + daemonDefinition.getName(), e);
 	}
 
 	synchronized void onSuccess() {
@@ -67,7 +67,7 @@ final class DaemonListener {
 		successes++;
 		lastExecSucceed = true;
 		if (verbose) {
-			LOG.info("Execution succeeded on daemon: " + daemonInfo.getName());
+			LOG.info("Execution succeeded on daemon: " + daemonDefinition.getName());
 		}
 	}
 }

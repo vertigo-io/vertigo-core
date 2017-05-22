@@ -18,7 +18,6 @@
  */
 package io.vertigo.commons.impl.daemon;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -28,6 +27,7 @@ import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonStat;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 
@@ -38,7 +38,6 @@ import io.vertigo.lang.Assertion;
  */
 public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	private final DaemonExecutor daemonExecutor = new DaemonExecutor();
-	private final List<DaemonInfo> daemonInfos = new ArrayList<>();
 	private boolean appStarted;
 
 	/**
@@ -63,8 +62,8 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	public void registerDaemon(final String name, final Supplier<Daemon> daemonSupplier, final int periodInSeconds) {
 		Assertion.checkState(!appStarted, "daemon must be registerd before app has started.");
 		//-----
-		final DaemonInfo daemonInfo = new DaemonInfo(name, daemonSupplier, periodInSeconds);
-		daemonInfos.add(daemonInfo);
+		final DaemonDefinition daemonDefinition = new DaemonDefinition(name, daemonSupplier, periodInSeconds);
+		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(daemonDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -85,29 +84,29 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	 * Il sera lancé puis réexécuté périodiquement.
 	 * L'instance du démon est créée par injection de dépendances.
 	 *
-	 * @param daemonInfo Le démon à lancer.
+	 * @param daemonDefinition Le démon à lancer.
 	 */
-	private void startDaemon(final DaemonInfo daemonInfo) {
-		Assertion.checkNotNull(daemonInfo);
+	private void startDaemon(final DaemonDefinition daemonDefinition) {
+		Assertion.checkNotNull(daemonDefinition);
 		// -----
-		final Daemon daemon = createDaemon(daemonInfo);
-		daemonExecutor.scheduleDaemon(daemonInfo, daemon);
+		final Daemon daemon = createDaemon(daemonDefinition);
+		daemonExecutor.scheduleDaemon(daemonDefinition, daemon);
 	}
 
 	/**
-	 * @param daemonInfo
+	 * @param daemonDefinition
 	 * @return Daemon
 	 */
-	private static Daemon createDaemon(final DaemonInfo daemonInfo) {
-		return daemonInfo.getDaemonSupplier().get();
+	private static Daemon createDaemon(final DaemonDefinition daemonDefinition) {
+		return daemonDefinition.getDaemonSupplier().get();
 	}
 
 	/**
 	 * Démarre l'ensemble des démons préalablement enregistré dans le spaceDefinition.
 	 */
 	private void startAllDaemons() {
-		for (final DaemonInfo daemonInfo : daemonInfos) {
-			startDaemon(daemonInfo);
+		for (final DaemonDefinition daemonDefinition : Home.getApp().getDefinitionSpace().getAll(DaemonDefinition.class)) {
+			startDaemon(daemonDefinition);
 		}
 	}
 }

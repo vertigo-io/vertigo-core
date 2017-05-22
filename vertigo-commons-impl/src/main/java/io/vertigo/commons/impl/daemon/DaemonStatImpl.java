@@ -27,7 +27,7 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 final class DaemonStatImpl implements DaemonStat {
-	private final DaemonInfo daemonInfo;
+	private final DaemonDefinition daemonDefinition;
 	private final DaemonStat.Status status;
 	private final long sucesses;
 	private final long failures;
@@ -35,17 +35,17 @@ final class DaemonStatImpl implements DaemonStat {
 
 	/**
 	 * Constructor.
-	 * @param daemonInfo Daemon's info
+	 * @param daemonDefinition the daemon definition
 	 * @param successes Nb success
 	 * @param failures Nb failure
 	 * @param status Current status
 	 * @param lastExecSuccess if last exec was a success
 	 */
-	DaemonStatImpl(final DaemonInfo daemonInfo, final long successes, final long failures, final DaemonStat.Status status, final boolean lastExecSuccess) {
-		Assertion.checkNotNull(daemonInfo);
+	DaemonStatImpl(final DaemonDefinition daemonDefinition, final long successes, final long failures, final DaemonStat.Status status, final boolean lastExecSuccess) {
+		Assertion.checkNotNull(daemonDefinition);
 		Assertion.checkNotNull(status);
 		//-----
-		this.daemonInfo = daemonInfo;
+		this.daemonDefinition = daemonDefinition;
 		this.failures = failures;
 		sucesses = successes;
 		this.status = status;
@@ -55,13 +55,13 @@ final class DaemonStatImpl implements DaemonStat {
 	/** {@inheritDoc} */
 	@Override
 	public String getDaemonName() {
-		return daemonInfo.getName();
+		return daemonDefinition.getName();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public int getDaemonPeriodInSecond() {
-		return daemonInfo.getPeriodInSeconds();
+		return daemonDefinition.getPeriodInSeconds();
 	}
 
 	/** {@inheritDoc} */

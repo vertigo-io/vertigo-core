@@ -21,6 +21,9 @@ package io.vertigo.commons.impl.daemon;
 import java.util.function.Supplier;
 
 import io.vertigo.commons.daemon.Daemon;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionPrefix;
+import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -28,7 +31,8 @@ import io.vertigo.lang.Assertion;
  *
  * @author TINGARGIOLA
  */
-final class DaemonInfo {
+@DefinitionPrefix("DMN")
+public final class DaemonDefinition implements Definition {
 
 	/** Name of the daemon. */
 	private final String name;
@@ -43,8 +47,8 @@ final class DaemonInfo {
 	 * @param periodInSeconds daemon execution period.
 	 * @param constructorArgs Daemon params
 	 */
-	DaemonInfo(final String name, final Supplier<Daemon> daemonSupplier, final int periodInSeconds) {
-		Assertion.checkArgNotEmpty(name);
+	DaemonDefinition(final String name, final Supplier<Daemon> daemonSupplier, final int periodInSeconds) {
+		DefinitionUtil.checkName(name, DaemonDefinition.class);
 		Assertion.checkNotNull(daemonSupplier);
 		Assertion.checkArgument(periodInSeconds > 0, "period {0} must be > 0", periodInSeconds);
 		// -----
@@ -53,7 +57,8 @@ final class DaemonInfo {
 		this.periodInSeconds = periodInSeconds;
 	}
 
-	String getName() {
+	@Override
+	public String getName() {
 		return name;
 	}
 
