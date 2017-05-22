@@ -63,6 +63,11 @@ limitations under the License. -->
 			<name>Nicolas Piedeloup</name>
 			<email>nicolas dot piedeloup at kleegroup dot com</email>
 		</developer>
+		<developer>
+			<id>mlaroche</id>
+			<name>Matthieu Laroche</name>
+			<email>matthieu dot laroche at kleegroup dot com</email>
+		</developer>
 	</developers>
 
 
