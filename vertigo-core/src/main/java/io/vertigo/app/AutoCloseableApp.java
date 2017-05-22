@@ -90,34 +90,45 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 
 		try {
 			//A faire créer par Boot : stratégie de chargement des composants à partir de ...
-			final ComponentLoader componentLoader = new ComponentLoader(componentSpaceWritable, appConfig.getBootConfig().getAopPlugin());
+			final ComponentLoader componentLoader = new ComponentLoader(componentSpaceWritable,
+					appConfig.getBootConfig().getAopPlugin());
 			//contient donc à minima resourceManager et paramManager.
 
 			//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
 			componentLoader.injectComponents(Optional.empty(), "boot",
 					appConfig.getBootConfig().getComponentConfigs());
 
-			//-----1. Load all definitions
+			//-----1. Loads all components (and aspects).
+			componentLoader.injectAllComponentsAndAspects(Optional.of(componentSpaceWritable.resolve(ParamManager.class)), appConfig.getModuleConfigs());
+			//-----2. Print components
+			if (appConfig.getBootConfig().isVerbose()) {
+				Logo.printCredits(System.out);
+				appConfig.print(System.out);
+			}
+			componentSpaceWritable.closeRegistration();
+			//-----3. Load all definitions
 			final DefinitionLoader definitionLoader = new DefinitionLoader(definitionSpaceWritable, componentSpaceWritable);
 			definitionLoader.createDefinitions(appConfig.getModuleConfigs())
 					.forEach(definitionSpaceWritable::registerDefinition);
 			//Here all definitions are registered into the definitionSpace
 
-			//-----2. Load all components (and aspects).
-			componentLoader.injectAllComponentsAndAspects(Optional.of(componentSpaceWritable.resolve(ParamManager.class)), appConfig.getModuleConfigs());
-			//-----3. Print
-			if (appConfig.getBootConfig().isVerbose()) {
-				Logo.printCredits(System.out);
-				appConfig.print(System.out);
-			}
-			//-----4. post-Initialize all components
+			//-----4. componentInitializers to populate definitions
+			/*
+			 * componentInitializers are created and the init() is called on each.
+			 * Notice :
+			 * these components are not registered in the componentSpace.
+			 * that's why this kind of component can't be activeable.
+			 */
 			initializeAllComponents();
-			//-----5. Start
-			appStart();
-			//-----
-			state = State.ACTIVE;
-			//-----6. AfterStart (application is active)
+
+			//-----5. post to populate definitions
 			appPostStart();
+
+			//-----6. Starts all components
+			componentSpaceWritable.start();
+
+			//-----7. Start
+			state = State.ACTIVE;
 		} catch (final Exception e) {
 			close();
 			throw new IllegalStateException("an error occured when starting", e);
@@ -138,15 +149,9 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 		}
 	}
 
-	private void appStart() {
-		definitionSpaceWritable.start();
-		componentSpaceWritable.start();
-		Thread.currentThread().setName("MAIN");
-	}
-
 	private void appStop() {
 		componentSpaceWritable.stop();
-		definitionSpaceWritable.stop();
+		definitionSpaceWritable.clear();
 	}
 
 	/** {@inheritDoc} */
