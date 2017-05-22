@@ -2,6 +2,8 @@ package io.vertigo.dynamo.store.datastore.sql.vendor;
 
 import java.util.List;
 
+import org.junit.Ignore;
+
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -22,6 +24,7 @@ import oracle.jdbc.OracleDriver;
  * @author mlaroche
  *
  */
+@Ignore
 public final class OracleSqlStoreManagerTest extends AbstractSqlStoreManagerTest {
 
 	@Override
