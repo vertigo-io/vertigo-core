@@ -18,6 +18,9 @@
  */
 package io.vertigo.commons.cache;
 
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionPrefix;
+import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -30,7 +33,9 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class CacheConfig {
+@DefinitionPrefix("CACHE")
+public final class CacheDefinition implements Definition {
+	private final String name;
 	private final String cacheType;
 	private final boolean serializeElements;
 	private final int maxElementsInMemory;
@@ -45,14 +50,27 @@ public final class CacheConfig {
 	 * @param timeToLiveSeconds Time to live (in seconds)
 	 * @param timeToIdleSeconds Time to live when idle (in seconds)
 	 */
-	public CacheConfig(final String cacheType, final boolean serializeElements, final int maxElementsInMemory, final int timeToLiveSeconds, final int timeToIdleSeconds) {
+	public CacheDefinition(
+			final String name,
+			final String cacheType,
+			final boolean serializeElements,
+			final int maxElementsInMemory,
+			final int timeToLiveSeconds,
+			final int timeToIdleSeconds) {
+		DefinitionUtil.checkName(name, CacheDefinition.class);
 		Assertion.checkArgNotEmpty(cacheType);
 		//-----
+		this.name = name;
 		this.cacheType = cacheType;
 		this.serializeElements = serializeElements;
 		this.maxElementsInMemory = maxElementsInMemory;
 		this.timeToLiveSeconds = timeToLiveSeconds;
 		this.timeToIdleSeconds = timeToIdleSeconds;
+	}
+
+	@Override
+	public String getName() {
+		return name;
 	}
 
 	/**

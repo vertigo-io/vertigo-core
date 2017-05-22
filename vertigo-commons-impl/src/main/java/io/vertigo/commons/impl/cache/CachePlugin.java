@@ -20,7 +20,6 @@ package io.vertigo.commons.impl.cache;
 
 import java.io.Serializable;
 
-import io.vertigo.commons.cache.CacheConfig;
 import io.vertigo.lang.Plugin;
 
 /**
@@ -30,53 +29,43 @@ import io.vertigo.lang.Plugin;
  */
 public interface CachePlugin extends Plugin {
 	/**
-	 * Configuration des caches.
-	 * Il est préférable d'appeler cette méthode une seule fois par type de cache et au démarrage.
-	 * Il s'agit en effet d'une phase d'initialisation.
-	 *
-	 * @param context Contexte du cache
-	 * @param cacheConfig Config of cache
-	 */
-	void addCache(final String context, final CacheConfig cacheConfig);
-
-	/**
 	 * Ajoute Objet dans le cache.
 	 * Si le context n'existe pas, il est crée.
 	 * Si la clé existe déjà, l'objet précédent est remplacé.
 	 *
-	 * @param context Contexte de cache
+	 * @param cacheName Contexte de cache
 	 * @param key Clé de l'objet à insérer
 	 * @param value Objet à insérer
 	 */
-	void put(final String context, final Serializable key, final Object value);
+	void put(final String cacheName, final Serializable key, final Object value);
 
 	/**
 	 * Cette methode rend l'objet désigne par le contexte et le handle donnée en entrée.
 	 * Si le contexte n'existe pas, une exception IllegalArgumentException.
 	 * Si le handle n'existe pas, ou l'objet n'a pas ou plus de reference en cache, l'objet renvoyé et un null.
 	 *
-	 * @param context Contexte de cache
+	 * @param cacheName Contexte de cache
 	 * @param key Clé de l'objet à récupérer
 	 * @return Objet demandé ou null si non trouvé
 	 */
-	Object get(String context, Serializable key);
+	Object get(String cacheName, Serializable key);
 
 	/**
 	 * Suppression du cache de l'objet référencé par sa clé.
 	 *
-	 * @param context Contexte de cache
+	 * @param cacheName Contexte de cache
 	 * @param key Clé de l'objet à supprimer
 	 * @return Si objet supprimé
 	 */
-	boolean remove(String context, Serializable key);
+	boolean remove(String cacheName, Serializable key);
 
 	/**
 	 * Effacement du contenu d'un contexte.
 	 * Supprime tous les items du cache.
 	 *
-	 * @param context Contexte de cache
+	 * @param cacheName Contexte de cache
 	 */
-	void clear(String context);
+	void clear(String cacheName);
 
 	/**
 	 * Effacement du contenu de TOUS les Contextes de cache.

@@ -22,7 +22,6 @@ import java.io.Serializable;
 
 import javax.inject.Inject;
 
-import io.vertigo.commons.cache.CacheConfig;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.lang.Assertion;
 
@@ -48,13 +47,6 @@ public final class CacheManagerImpl implements CacheManager {
 	//===========================================================================
 	//==================Gestion du rendu et des interactions=====================
 	//===========================================================================
-
-	/** {@inheritDoc} */
-	@Override
-	public void addCache(final String context, final CacheConfig cacheConfig) {
-		cachePlugin.addCache(context, cacheConfig);
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public void put(final String context, final Serializable key, final Object value) {

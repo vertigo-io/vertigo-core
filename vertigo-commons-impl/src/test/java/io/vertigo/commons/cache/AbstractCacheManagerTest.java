@@ -40,8 +40,8 @@ import io.vertigo.lang.Assertion;
  */
 public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
 	private static final String KEY = "ma clé";
-	private static final String CONTEXT = CacheManagerInitializer.CONTEXT_EDITABLE;
-	private static final String CONTEXT_RO = CacheManagerInitializer.CONTEXT_READONLY;
+	private static final String CONTEXT_EDITABLE = CacheManagerInitializer.CONTEXT_EDITABLE;
+	private static final String CONTEXT_READONLY = CacheManagerInitializer.CONTEXT_READONLY;
 
 	@Inject
 	private CacheManager cacheManager;
@@ -62,8 +62,8 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
 	public void testPut1() {
 		final Serializable value = new Element();
 
-		cacheManager.put(CONTEXT, KEY, value);
-		final Object retrieve = cacheManager.get(CONTEXT, KEY);
+		cacheManager.put(CONTEXT_EDITABLE, KEY, value);
+		final Object retrieve = cacheManager.get(CONTEXT_EDITABLE, KEY);
 		//On vérifie qu'il s'agit du même objet.
 		assertEquals(value, retrieve);
 	}
@@ -75,8 +75,8 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
 	public void testRemove1() {
 		testPut1();
 		// vérification de suppression d'un element
-		assertTrue(cacheManager.remove(CONTEXT, KEY));
-		assertNull(cacheManager.get(CONTEXT, KEY));
+		assertTrue(cacheManager.remove(CONTEXT_EDITABLE, KEY));
+		assertNull(cacheManager.get(CONTEXT_EDITABLE, KEY));
 	}
 
 	/**
@@ -85,8 +85,8 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testClear() {
 		testPut1();
-		cacheManager.clear(CONTEXT);
-		assertNull(cacheManager.get(CONTEXT, KEY));
+		cacheManager.clear(CONTEXT_EDITABLE);
+		assertNull(cacheManager.get(CONTEXT_EDITABLE, KEY));
 	}
 
 	/**
@@ -96,7 +96,7 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
 	public void testClearAll() {
 		testPut1();
 		cacheManager.clearAll();
-		assertNull(cacheManager.get(CONTEXT, KEY));
+		assertNull(cacheManager.get(CONTEXT_EDITABLE, KEY));
 	}
 
 	/**
@@ -108,30 +108,30 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
 		for (int i = 0; i < nbRow; i++) {
 			final String key = "ma clé[" + i + "]";
 			final Serializable value = new Element();
-			cacheManager.put(CONTEXT, key, value);
+			cacheManager.put(CONTEXT_EDITABLE, key, value);
 		}
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
 		for (int i = 5000; i < 5500; i++) {
 			final String key = "ma clé[" + i + "]";
-			assertNotNull(cacheManager.get(CONTEXT, key), "key [" + i + "] not found");
+			assertNotNull(cacheManager.get(CONTEXT_EDITABLE, key), "key [" + i + "] not found");
 		}
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
 		for (int i = 0; i < nbRow; i++) {
 			final String key = "ma clé[" + i + "]";
-			assertNotNull(cacheManager.get(CONTEXT, key));
+			assertNotNull(cacheManager.get(CONTEXT_EDITABLE, key));
 		}
 		//	assertEquals(ManagerState.OK, cacheManager.getDescription().getMainSummaryInfo().getValueState());
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
 		for (int i = 0; i < nbRow; i++) {
 			final String key = "ma clé[" + i + "]";
-			assertNotNull(cacheManager.get(CONTEXT, key));
+			assertNotNull(cacheManager.get(CONTEXT_EDITABLE, key));
 		}
 		//	assertEquals(ManagerState.OK, cacheManager.getDescription().getMainSummaryInfo().getValueState());
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
-		cacheManager.clear(CONTEXT);
+		cacheManager.clear(CONTEXT_EDITABLE);
 	}
 
 	/**
@@ -143,30 +143,30 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
 		for (int i = 0; i < nbRow; i++) {
 			final String key = "ma clé[" + i + "]";
 			final Serializable value = new Element();
-			cacheManager.put(CONTEXT_RO, key, value);
+			cacheManager.put(CONTEXT_READONLY, key, value);
 		}
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
 		for (int i = 5000; i < 5500; i++) {
 			final String key = "ma clé[" + i + "]";
-			assertNotNull(cacheManager.get(CONTEXT_RO, key));
+			assertNotNull(cacheManager.get(CONTEXT_READONLY, key));
 		}
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
 		for (int i = 0; i < nbRow; i++) {
 			final String key = "ma clé[" + i + "]";
-			assertNotNull(cacheManager.get(CONTEXT_RO, key));
+			assertNotNull(cacheManager.get(CONTEXT_READONLY, key));
 		}
 		//	assertEquals(ManagerState.OK, cacheManager.getDescription().getMainSummaryInfo().getValueState());
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
 		for (int i = 0; i < nbRow; i++) {
 			final String key = "ma clé[" + i + "]";
-			assertNotNull(cacheManager.get(CONTEXT_RO, key));
+			assertNotNull(cacheManager.get(CONTEXT_READONLY, key));
 		}
 		//assertEquals(ManagerState.OK, cacheManager.getDescription().getMainSummaryInfo().getValueState());
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
-		cacheManager.clear(CONTEXT);
+		cacheManager.clear(CONTEXT_EDITABLE);
 	}
 
 	/**
@@ -203,7 +203,7 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
 				Thread.currentThread().interrupt(); //si interrupt on relance
 			}
 		}
-		cacheManager.clear(CONTEXT);
+		cacheManager.clear(CONTEXT_EDITABLE);
 	}
 
 	private class CacheReader implements Runnable {
@@ -221,7 +221,7 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
 		public void run() {
 			while (!Thread.interrupted() && System.currentTimeMillis() < deathTime) {
 				final String key = "ma clé[" + Math.round(Math.random() * nbRow) + "]";
-				lCacheManager.get(CONTEXT, key); //on test juste le get
+				lCacheManager.get(CONTEXT_EDITABLE, key); //on test juste le get
 				try {
 					Thread.sleep(10); //on rend juste la main
 				} catch (final InterruptedException e) {
@@ -247,7 +247,7 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
 			while (System.currentTimeMillis() < deathTime) {
 				final String key = "ma clé[" + Math.round(Math.random() * nbRow) + "]";
 				final Serializable value = new Element();
-				lCacheManager.put(CONTEXT_RO, key, value);
+				lCacheManager.put(CONTEXT_READONLY, key, value);
 				try {
 					Thread.sleep(10); //on rend juste la main
 				} catch (final InterruptedException e) {
