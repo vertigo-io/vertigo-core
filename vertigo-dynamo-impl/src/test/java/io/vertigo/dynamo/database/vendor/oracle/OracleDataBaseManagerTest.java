@@ -1,8 +1,11 @@
 package io.vertigo.dynamo.database.vendor.oracle;
 
+import org.junit.Ignore;
+
 import io.vertigo.dynamo.database.AbstractSqlDataBaseManagerTest;
 import io.vertigo.dynamo.database.connection.SqlConnection;
 
+@Ignore
 public class OracleDataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
 
 	@Override
