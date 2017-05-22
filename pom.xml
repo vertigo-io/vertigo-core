@@ -28,11 +28,11 @@
 		<module>vertigo-commons-api</module>
 		<module>vertigo-commons-impl</module>
 
-		<module>vertigo-persona-api</module>
-		<module>vertigo-persona-impl</module>
-
 		<module>vertigo-dynamo-api</module>
 		<module>vertigo-dynamo-impl</module>
+		
+		<module>vertigo-account-api</module>
+		<module>vertigo-account-impl</module>
 
 		<module>vertigo-vega-api</module>
 		<module>vertigo-vega-impl</module>

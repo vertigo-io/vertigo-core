@@ -27,7 +27,7 @@
 		
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-persona-api</artifactId>
+			<artifactId>vertigo-account-impl</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
 

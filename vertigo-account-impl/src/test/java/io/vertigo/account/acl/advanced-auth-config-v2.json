@@ -1,0 +1,66 @@
+{
+	"permissions": [{
+		"name": "ADMUSR",
+		"label": "security.permission.admin.user"
+	}, {
+		"name": "ADMPRO",
+		"label": "security.permission.admin.profil"
+	}, {
+		"name": "ADMAPP",
+		"label": "security.permission.admin.appli"
+	}],
+	"securedEntities": [{
+		"entity": "DOSSIER",
+		"securityFields" : ["UTI_ID_OWNER","TYP_ID","MONTANT" ],
+		"securityDimensions": [{
+				"name": "ETA_CD", "type": "ENUM", "values": ["CRE", "VAL", "PUB", "NOT", "REA", "ARC", "EXP"]
+			},{
+				"name": "GEO", "type": "TREE", "fields": [ "REG_ID", "DEP_ID", "COM_ID" ]
+			}
+		],
+		"operations": [{
+			"__comment": "Visibilité attribuable avec un montant maximum, et visibilité pour l'utilisateur créateur.",
+			"name": "READ",	"label" : "Lecture",
+			"rules": [
+				"MONTANT<=${montantMax}",
+				"UTI_ID_OWNER=${utiId}"
+			]
+		}, {
+			"__comment": "Visibilité globale attribuée avec une opération transverser Hors Périmètre. Sans règles = toujours ok.",
+			"name": "READ_HP", "label" : "Lecture hors périmètre",
+			"overrides": ["READ"],
+			"rules": ["true"]
+		}, {
+			"__comment": "Ecriture possible par l'utilisateur créateur avant que le marché ne soit Archivé, ou avec un montant max avant Archivé.",
+			"name": "WRITE", "label" : "Edition",
+			"grants": ["READ"],
+			"rules": [
+				"UTI_ID_OWNER=${utiId} and ETA_CD<ARC",
+				"TYP_ID=${typId} and MONTANT<=${montantMax} and ETA_CD<ARC"
+			]
+		}, {
+			"__comment": "Création attribuable par type et par montant maximum.",
+			"name": "CREATE", "label" : "Creation",
+			"grants": ["READ"],
+			"rules": [
+				"TYP_ID=${typId} and MONTANT<=${montantMax}"
+			]
+		}, {
+			"__comment": "Suppression attribuable par type de marché ou pour le créateur tant que non Publié (Attribué sans type = règle non vérifiée).",
+			"name": "DELETE", "label" : "Suppression",
+			"grants": ["READ", "WRITE"],
+			"rules": [
+				"TYP_ID=${typId}",
+				"UTI_ID_OWNER=${utiId} and ETA_CD<PUB"
+			]
+		}, {
+			"__comment": "Notification par type de marché et dans le respect de la hierachy geographique. Overrides WRITE : donne l'opération WRITE en conservant le périmètre de l'opération NOTIFY",
+			"name": "NOTIFY", "label" : "Notification",
+			"grants": ["READ"],
+			"overrides": ["WRITE"], 
+			"rules": [
+				"TYP_ID=${typId} and ETA_CD=PUB and GEO<=${geo}"
+			]
+		}]
+	}]
+}

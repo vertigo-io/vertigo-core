@@ -23,6 +23,8 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.vertigo.lang.Activeable;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.vega.impl.webservice.filter.JettyMultipartCleaner;
 import io.vertigo.vega.impl.webservice.filter.JettyMultipartConfig;
 import spark.Spark;
@@ -31,7 +33,7 @@ import spark.Spark;
  * RoutesRegisterPlugin use to register Spark-java route.
  * @author npiedeloup
  */
-public final class SparkJavaEmbeddedWebServerPlugin extends AbstractSparkJavaWebServerPlugin {
+public final class SparkJavaEmbeddedWebServerPlugin extends AbstractSparkJavaWebServerPlugin implements Activeable {
 
 	/**
 	 * @param apiPrefix globale api prefix
@@ -47,6 +49,24 @@ public final class SparkJavaEmbeddedWebServerPlugin extends AbstractSparkJavaWeb
 		final String tempDir = System.getProperty("java.io.tmpdir");
 		Spark.before(new JettyMultipartConfig(tempDir));
 		Spark.after(new JettyMultipartCleaner());
+	}
+
+	@Override
+	public void start() {
+		// nothing
+
+	}
+
+	@Override
+	public void stop() {
+		Spark.stop();
+		// we need to sleep because spark starts a new thread to stop the server
+		try {
+			Thread.sleep(100L);
+		} catch (final InterruptedException e) {
+			throw WrappedException.wrap(e);
+		}
+
 	}
 
 }

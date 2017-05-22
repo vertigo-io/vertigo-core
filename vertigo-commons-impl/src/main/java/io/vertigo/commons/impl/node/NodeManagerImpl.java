@@ -55,7 +55,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 				});
 
 		// register a daemon
-		daemonManager.registerDaemon("updateNodeStatus", () -> () -> nodeRegistryPlugin.updateStatus(toAppNode(Home.getApp())), heartBeatSeconds);
+		daemonManager.registerDaemon("DMN_UPDATE_NODE_STATUS", () -> () -> nodeRegistryPlugin.updateStatus(toAppNode(Home.getApp())), heartBeatSeconds);
 	}
 
 	@Override

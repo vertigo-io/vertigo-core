@@ -59,7 +59,7 @@ public final class FileManagerImpl implements FileManager {
 			final DaemonManager daemonManager) {
 		Assertion.checkNotNull(daemonManager);
 		//-----
-		daemonManager.registerDaemon("PurgeTempFileDaemon", () -> new PurgeTempFileDaemon(purgeDelayMinutes.orElse(60), TempFile.VERTIGO_TMP_DIR_PATH), 5 * 60);
+		daemonManager.registerDaemon("DMN_PRUGE_TEMP_FILE", () -> new PurgeTempFileDaemon(purgeDelayMinutes.orElse(60), TempFile.VERTIGO_TMP_DIR_PATH), 5 * 60);
 	}
 
 	/** {@inheritDoc} */

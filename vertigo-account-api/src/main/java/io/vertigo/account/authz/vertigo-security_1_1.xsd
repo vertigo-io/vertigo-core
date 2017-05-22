@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="authorisationConfig">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="permission" type="permission" />
+				<xs:element name="secured-entity" type="secured-entity" />
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="permission">
+		<xs:attribute name="id" type="xs:string" use="required"/>
+		
+		<xs:attribute name="label" type="xs:string" use="required"/>
+	</xs:complexType>
+	
+	<xs:complexType name="secured-entity">
+		<xs:choice minOccurs="0" maxOccurs="1">
+			<xs:element name="advanced-axes">
+				<xs:complexType>
+					<xs:sequence minOccurs="1" maxOccurs="unbounded">
+						<xs:element name="advanced-axe" type="advanced-axe" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="operations">
+				<xs:complexType>
+					<xs:sequence minOccurs="1" maxOccurs="unbounded">
+						<xs:element name="operation" type="operation" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+		
+		<xs:attribute name="entity" type="xs:string" use="required"/>
+		<xs:attribute name="security-fields" type="xs:string" use="optional"/>		
+	</xs:complexType>
+	
+	<xs:complexType name="advanced-axe">
+		<xs:attribute name="field" type="xs:string" use="required"/>		
+		<xs:attribute name="type" type="xs:string" use="required"/>	
+		<xs:attribute name="values" type="xs:string" use="optional"/>
+	</xs:complexType>
+	
+	<xs:complexType name="operation">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="filter" type="filter" />
+		</xs:sequence>			
+		<xs:attribute name="name" type="xs:string" use="required"/>		
+		<xs:attribute name="label" type="xs:string" use="required"/>
+		<xs:attribute name="grants" type="xs:string" use="optional"/>
+		<xs:attribute name="overrides" type="xs:string" use="optional"/>
+		<xs:attribute name="filter" type="xs:string" use="optional"/>
+	</xs:complexType>
+	
+	<xs:complexType name="filter">
+		<xs:attribute name="rule" type="xs:string" use="required"/>	
+	</xs:complexType>
+</xs:schema>

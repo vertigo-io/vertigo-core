@@ -48,12 +48,12 @@
 
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-persona-api</artifactId>
+			<artifactId>vertigo-account-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-persona-impl</artifactId>
+			<artifactId>vertigo-account-impl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
