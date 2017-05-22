@@ -28,6 +28,7 @@ import io.vertigo.commons.eventbus.Event;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.eventbus.EventSuscriber;
 import io.vertigo.core.component.ComponentSpace;
+import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
 import io.vertigo.util.ClassUtil;
@@ -35,12 +36,26 @@ import io.vertigo.util.ClassUtil;
 /**
  * @author pchretien, npiedeloup
  */
-public final class EventBusManagerImpl implements EventBusManager {
+public final class EventBusManagerImpl implements EventBusManager, Activeable {
 	private final List<EventBusSubscription> subscriptions = new ArrayList<>();
 	private final List<Consumer<Event>> deadEventListeners = new ArrayList<>();
 
+	/**
+	 * Constructor.
+	 */
 	public EventBusManagerImpl() {
-		Home.getApp().registerPostStartFunction(this::registerAllSubscribers);
+		super();
+	}
+
+	@Override
+	public void start() {
+		registerAllSubscribers();
+	}
+
+	@Override
+	public void stop() {
+		subscriptions.clear();
+		deadEventListeners.clear();
 	}
 
 	private void registerAllSubscribers() {
