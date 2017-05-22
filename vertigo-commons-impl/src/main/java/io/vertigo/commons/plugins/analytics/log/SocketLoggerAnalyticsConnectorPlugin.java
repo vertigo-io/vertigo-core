@@ -78,7 +78,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		this.appName = appName;
 		localHostName = retrieveHostName();
 		//---
-		daemonManager.registerDaemon("remoteLogger", () -> this::pollQueue, 1);
+		daemonManager.registerDaemon("DMN_REMOTE_LOGGER", () -> this::pollQueue, 1);
 	}
 
 	/** {@inheritDoc} */

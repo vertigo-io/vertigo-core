@@ -83,7 +83,7 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 		this.limitValue = limitValue.orElse(DEFAULT_LIMIT_VALUE);
 		this.windowSeconds = windowSeconds.orElse(DEFAULT_WINDOW_SECONDS);
 		//RateLimitingWebServiceHandlerPlugin::resetRateLimitWindow
-		daemonManager.registerDaemon("rateLimitWindowReset", () -> new RateLimitWindowResetDaemon(this), this.windowSeconds);
+		daemonManager.registerDaemon("DMN_RATE_LIMIT_WINDOW_RESET", () -> new RateLimitWindowResetDaemon(this), this.windowSeconds);
 	}
 
 	/** {@inheritDoc} */

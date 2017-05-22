@@ -28,7 +28,7 @@ public class FakeComponent implements Component {
 
 	@Inject
 	public FakeComponent(final DaemonManager daemonManager) {
-		daemonManager.registerDaemon("simple", () -> new SimpleDaemon(this), 2);
+		daemonManager.registerDaemon("DMN_SIMPLE", () -> new SimpleDaemon(this), 2);
 	}
 
 	public int getExecutionCount() {

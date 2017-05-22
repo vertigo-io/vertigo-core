@@ -156,7 +156,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 			databases.put(collectionConfig.getCollectionName(), berkeleyDatabase);
 		}
 
-		daemonManager.registerDaemon("purgeBerkeleyKVStore", () -> new RemoveTooOldElementsDaemon(MAX_REMOVED_TOO_OLD_ELEMENTS, this), REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS);
+		daemonManager.registerDaemon("DMN_PURGE_BERKELEY_KV_STORE", () -> new RemoveTooOldElementsDaemon(MAX_REMOVED_TOO_OLD_ELEMENTS, this), REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS);
 	}
 
 	private static Environment buildFsEnvironment(final File dbFile, final boolean readOnly) {
