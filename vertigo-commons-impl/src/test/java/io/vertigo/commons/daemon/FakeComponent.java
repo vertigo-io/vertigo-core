@@ -20,6 +20,9 @@ package io.vertigo.commons.daemon;
 
 import javax.inject.Inject;
 
+import io.vertigo.app.Home;
+import io.vertigo.commons.impl.daemon.DaemonDefinition;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
 
@@ -28,7 +31,8 @@ public class FakeComponent implements Component {
 
 	@Inject
 	public FakeComponent(final DaemonManager daemonManager) {
-		daemonManager.registerDaemon("DMN_SIMPLE", () -> new SimpleDaemon(this), 2);
+		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace())
+				.registerDefinition(new DaemonDefinition("DMN_SIMPLE", () -> new SimpleDaemon(this), 2));
 	}
 
 	public int getExecutionCount() {

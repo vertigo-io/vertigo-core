@@ -19,7 +19,6 @@
 package io.vertigo.commons.impl.daemon;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 import javax.inject.Inject;
 
@@ -27,7 +26,6 @@ import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonStat;
-import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 
@@ -38,17 +36,13 @@ import io.vertigo.lang.Assertion;
  */
 public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	private final DaemonExecutor daemonExecutor = new DaemonExecutor();
-	private boolean appStarted;
 
 	/**
 	 * Construct an instance of DaemonManagerImpl.
 	 */
 	@Inject
 	public DaemonManagerImpl() {
-		Home.getApp().registerPostStartFunction(() -> {
-			this.startAllDaemons();
-			appStarted = true;
-		});
+		super();
 	}
 
 	/** {@inheritDoc} */
@@ -59,17 +53,9 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public void registerDaemon(final String name, final Supplier<Daemon> daemonSupplier, final int periodInSeconds) {
-		Assertion.checkState(!appStarted, "daemon must be registerd before app has started.");
-		//-----
-		final DaemonDefinition daemonDefinition = new DaemonDefinition(name, daemonSupplier, periodInSeconds);
-		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(daemonDefinition);
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public void start() {
 		daemonExecutor.start();
+		this.startAllDaemons();
 	}
 
 	/** {@inheritDoc} */
@@ -105,8 +91,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	 * Démarre l'ensemble des démons préalablement enregistré dans le spaceDefinition.
 	 */
 	private void startAllDaemons() {
-		for (final DaemonDefinition daemonDefinition : Home.getApp().getDefinitionSpace().getAll(DaemonDefinition.class)) {
-			startDaemon(daemonDefinition);
-		}
+		Home.getApp().getDefinitionSpace().getAll(DaemonDefinition.class).stream()
+				.forEach(this::startDaemon);
 	}
 }

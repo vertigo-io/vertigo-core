@@ -42,12 +42,11 @@ public final class DaemonDefinition implements Definition {
 	/**
 	 * Constructor.
 	 *
-	 * @param name Name of the daemon
+	 * @param name the daemon Name
 	 * @param daemonSupplier the daemon supplier.
 	 * @param periodInSeconds daemon execution period.
-	 * @param constructorArgs Daemon params
 	 */
-	DaemonDefinition(final String name, final Supplier<Daemon> daemonSupplier, final int periodInSeconds) {
+	public DaemonDefinition(final String name, final Supplier<Daemon> daemonSupplier, final int periodInSeconds) {
 		DefinitionUtil.checkName(name, DaemonDefinition.class);
 		Assertion.checkNotNull(daemonSupplier);
 		Assertion.checkArgument(periodInSeconds > 0, "period {0} must be > 0", periodInSeconds);
@@ -67,7 +66,7 @@ public final class DaemonDefinition implements Definition {
 	 *
 	 * @return PeriodInSeconds.
 	 */
-	int getPeriodInSeconds() {
+	public int getPeriodInSeconds() {
 		return periodInSeconds;
 	}
 
