@@ -18,13 +18,16 @@
 			<artifactId>vertigo-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>	
-		
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-commons-impl</artifactId><!-- for ConfigPlugin and ResourceResolverPlugin -->
 			<version>${project.version}</version>
 		</dependency>
-			
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-account-impl</artifactId> <!--  depends of SecurityManagerImpl for WsWebServiceHandler -->
+			<version>${project.version}</version>	
+		</dependency>
 		<dependency> 
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-vega-api</artifactId>
@@ -85,12 +88,6 @@
 			</exclusions>
 		</dependency>
 			
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-persona-impl</artifactId> <!--  depends of SecurityManagerImpl for WsWebServiceHandler -->
-			<version>${project.version}</version>	
-		</dependency>
-		
 		<!-- For Rest Webservice testing -->
 		<dependency>
 	      <groupId>io.rest-assured</groupId>

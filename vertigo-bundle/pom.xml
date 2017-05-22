@@ -333,7 +333,7 @@
 
 								<artifactItem>
 									<groupId>io.vertigo</groupId>
-									<artifactId>vertigo-persona-api</artifactId>
+									<artifactId>vertigo-account-api</artifactId>
 									<version>${project.version}</version>
 									<type>jar</type>
 									<classifier>sources</classifier>
@@ -342,7 +342,7 @@
 								</artifactItem>
 								<artifactItem>
 									<groupId>io.vertigo</groupId>
-									<artifactId>vertigo-persona-impl</artifactId>
+									<artifactId>vertigo-account-impl</artifactId>
 									<version>${project.version}</version>
 									<type>jar</type>
 									<classifier>sources</classifier>
