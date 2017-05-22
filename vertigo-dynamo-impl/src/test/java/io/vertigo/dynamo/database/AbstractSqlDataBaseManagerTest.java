@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.database;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -218,6 +219,61 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		//----
 		final List<String> result = executeQuery(String.class, "select title from movie", null);
 		Assert.assertEquals(3, result.size());
+	}
+
+	@Test
+	public void testBatchInserts() throws Exception {
+
+		final List<Movie> bondList = new ListBuilder<Movie>()
+				.add(createMovie(1, "Doctor No"))
+				.add(createMovie(2, "From Russia with Love"))
+				.add(createMovie(3, "Goldfinger"))
+				.add(createMovie(4, "Thunderball"))
+				.add(createMovie(5, "You only live twice"))
+				.add(createMovie(6, "On her majesty's secret service"))
+				.add(createMovie(7, "Diamonds are forever"))
+				.add(createMovie(8, "Live and let die"))
+				.add(createMovie(9, "The man with the golden gun"))
+				.add(createMovie(10, "The spy who loved me"))
+				.add(createMovie(11, "Moonraker"))
+				.add(createMovie(12, "For your eyes only"))
+				.add(createMovie(13, "Octopussy"))
+				.add(createMovie(14, "A view to a kill"))
+				.add(createMovie(15, "The living daylights"))
+				.build();
+
+		final SqlConnectionProvider sqlConnectionProvider = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
+		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
+		final String sql = "insert into movie values (?, ?)";
+		final int result;
+		try {
+			try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, GenerationMode.NONE)) {
+				for (int i = 0; i < bondList.size(); i++) {
+					final Movie movie = bondList.get(i);
+					preparedStatement.addBatch(Arrays.asList(
+							new SqlParameter(Long.class, movie.getId()),
+							new SqlParameter(String.class, movie.getTitle())));
+				}
+				result = preparedStatement.executeBatch();
+			}
+			connection.commit();
+		} finally {
+			connection.release();
+		}
+		//---
+		Assert.assertEquals(bondList.size(), result);
+		final List<Integer> countMovie = executeQuery(Integer.class, "select count(*) from movie", 1);
+		Assert.assertEquals(bondList.size(), countMovie.get(0).intValue());
+
+	}
+
+	private Movie createMovie(final long id, final String title) {
+
+		final Movie movie = new Movie();
+		movie.setId(id);
+		movie.setTitle(title);
+		return movie;
+
 	}
 
 	//On teste un preparestatement mappé sur un type statique (Class famille)

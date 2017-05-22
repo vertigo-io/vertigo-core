@@ -68,6 +68,7 @@ import io.vertigo.dynamo.store.datastore.multistore.MultiStoreManagerTest;
 import io.vertigo.dynamo.store.datastore.sql.vendor.H2SqlStoreManagerTest;
 import io.vertigo.dynamo.store.datastore.sql.vendor.HSqlStoreManagerTest;
 import io.vertigo.dynamo.task.TaskManagerTest;
+import io.vertigo.dynamo.task.x.TaskEngineProcBatchTest;
 import io.vertigo.dynamo.task.x.TaskEngineSelectDynamicTest;
 import io.vertigo.dynamo.transaction.VTransactionBeforeAfterCommitTest;
 import io.vertigo.dynamo.transaction.VTransactionManagerTest;
@@ -143,6 +144,7 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		//--task
 		TaskManagerTest.class,
 		TaskEngineSelectDynamicTest.class,
+		TaskEngineProcBatchTest.class,
 		//--transaction
 		VTransactionManagerTest.class,
 		VTransactionBeforeAfterCommitTest.class,
