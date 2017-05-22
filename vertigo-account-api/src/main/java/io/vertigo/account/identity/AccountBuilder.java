@@ -28,6 +28,7 @@ public final class AccountBuilder implements Builder<Account> {
 	private final String myId;
 	private String myDisplayName;
 	private String myEmail;
+	private String myAuthToken;
 
 	/**
 	 * constructor
@@ -38,12 +39,10 @@ public final class AccountBuilder implements Builder<Account> {
 		//-----
 		myId = id;
 	}
-	
-	
 
 	/**
-	 * Adds a displayName 
-	 * @param displayName the display name 
+	 * Adds a displayName
+	 * @param displayName the display name
 	 * @return this builder
 	 */
 	public AccountBuilder withDisplayName(final String displayName) {
@@ -55,7 +54,7 @@ public final class AccountBuilder implements Builder<Account> {
 	}
 
 	/**
-	 * Adds an email 
+	 * Adds an email
 	 * @param email the email
 	 * @return this builder
 	 */
@@ -67,9 +66,22 @@ public final class AccountBuilder implements Builder<Account> {
 		return this;
 	}
 
+	/**
+	 * Adds an authToken
+	 * @param authToken the authToken
+	 * @return this builder
+	 */
+	public AccountBuilder withAuthToken(final String authToken) {
+		Assertion.checkArgument(myAuthToken == null, "authToken already set");
+		Assertion.checkArgNotEmpty(authToken);
+		//-----
+		myAuthToken = authToken;
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public Account build() {
-		return new Account(myId, myDisplayName, myEmail);
+		return new Account(myId, myDisplayName, myEmail, myAuthToken);
 	}
 }

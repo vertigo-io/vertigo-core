@@ -52,6 +52,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 	private static final String HPHOTO_BY_ACCOUNT_START_KEY = "photoByAccount:";
 	private static final String HGROUP_START_KEY = "group:";
 	private static final String HACCOUNT_START_KEY = "account:";
+	private static final String HAUTHTOKEN_INDEX_KEY = "authToken";
 
 	private static final String SGROUPS_BY_ACCOUNT_START_KEY = "groupsByAccount:";
 	private static final String SACCOUNTS_BY_GROUP_START_KEY = "accountsByGroup:";
@@ -84,6 +85,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 			try (final Transaction tx = jedis.multi()) {
 				for (final Account account : accounts) {
 					tx.hmset(HACCOUNT_START_KEY + account.getId(), account2Map(account));
+					tx.hset(HAUTHTOKEN_INDEX_KEY, account.getAuthToken(), account.getId());
 					tx.sadd(SACCOUNTS_KEY, account.getId());
 				}
 				tx.exec();
@@ -227,6 +229,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 	private static Map<String, String> account2Map(final Account account) {
 		return new MapBuilder<String, String>()
 				.put("id", account.getId())
+				.put("authToken", account.getAuthToken())
 				.put("displayName", account.getDisplayName())
 				.putNullable("email", account.getEmail())
 				.build();
@@ -234,6 +237,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 
 	private static Account map2Account(final Map<String, String> data) {
 		return Account.builder(data.get("id"))
+				.withAuthToken(data.get("authToken"))
 				.withDisplayName(data.get("displayName"))
 				.withEmail(data.get("email"))
 				.build();
@@ -281,16 +285,29 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		return Optional.of(photoCodec.map2vFile(result));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void reset() {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			try (final Transaction tx = jedis.multi()) {
 				//todo : les haccount, photos et accountsByGroup", "photoByAccount ne sont pas supprimées
-				tx.del(SACCOUNTS_KEY, SGROUPS_KEY, "accountsByGroup", "photoByAccount");
+				tx.del(SACCOUNTS_KEY, SGROUPS_KEY, "accountsByGroup", "photoByAccount", HAUTHTOKEN_INDEX_KEY);
 				tx.exec();
 			} catch (final IOException ex) {
 				throw WrappedException.wrap(ex);
 			}
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Optional<Account> getAccountByAuthToken(final String userAuthToken) {
+		try (final Jedis jedis = redisConnector.getResource()) {
+			final String accountUri = jedis.hget(HAUTHTOKEN_INDEX_KEY, userAuthToken);
+			if (accountUri != null) {
+				return Optional.of(map2Account(jedis.hgetAll(HACCOUNT_START_KEY + accountUri)));
+			}
+			return Optional.empty();
 		}
 	}
 }

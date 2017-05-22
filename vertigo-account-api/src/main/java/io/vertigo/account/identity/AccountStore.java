@@ -119,4 +119,11 @@ public interface AccountStore {
 	 */
 	void setPhoto(URI<Account> accountURI, VFile photo);
 
+	/**
+	 * Get an newly authentify user by his authToken.
+	 * @param userAuthToken user authToken
+	 * @return Logged account
+	 */
+	Optional<Account> getAccountByAuthToken(String userAuthToken);
+
 }

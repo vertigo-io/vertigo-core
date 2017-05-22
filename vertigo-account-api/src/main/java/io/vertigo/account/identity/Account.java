@@ -41,12 +41,16 @@ public final class Account implements Entity {
 	@Field(domain = "DO_X_ACCOUNT_EMAIL", label = "email")
 	private final String email;
 
-	Account(final String id, final String displayName, final String email) {
+	@Field(domain = "DO_X_ACCOUNT_AUTH_TOKEN", label = "authToken")
+	private final String authToken;
+
+	Account(final String id, final String displayName, final String email, final String authToken) {
 		Assertion.checkArgNotEmpty(id);
 		//-----
 		this.id = id;
 		this.displayName = displayName;
 		this.email = email;
+		this.authToken = authToken;
 	}
 
 	/**
@@ -83,5 +87,12 @@ public final class Account implements Entity {
 	 */
 	public String getEmail() {
 		return email;
+	}
+
+	/**
+	 * @return the authToken
+	 */
+	public String getAuthToken() {
+		return authToken;
 	}
 }

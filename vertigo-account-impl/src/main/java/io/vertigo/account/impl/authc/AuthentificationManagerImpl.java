@@ -100,7 +100,7 @@ public final class AuthentificationManagerImpl implements AuthentificationManage
 				tokenSupported = true;
 				final Optional<String> accountAuthToken = authenticatingRealmPlugin.authenticateAccount(token);
 				if (accountAuthToken.isPresent()) {
-					return identityManager.getAccountByAuthToken(accountAuthToken.get());
+					return identityManager.getStore().getAccountByAuthToken(accountAuthToken.get());
 				}
 			}
 		}

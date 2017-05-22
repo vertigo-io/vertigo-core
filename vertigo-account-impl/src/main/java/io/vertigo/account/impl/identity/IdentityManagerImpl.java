@@ -18,11 +18,8 @@
  */
 package io.vertigo.account.impl.identity;
 
-import java.util.Optional;
-
 import javax.inject.Inject;
 
-import io.vertigo.account.identity.Account;
 import io.vertigo.account.identity.AccountStore;
 import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.dynamo.file.FileManager;
@@ -65,9 +62,4 @@ public final class IdentityManagerImpl implements IdentityManager {
 		return accountStorePlugin;
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public Optional<Account> getAccountByAuthToken(final String userAuthToken) {
-		return identityRealmPlugin.getAccountByAuthToken(userAuthToken);
-	}
 }

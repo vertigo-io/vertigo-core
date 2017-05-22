@@ -77,10 +77,11 @@ public final class LdapAuthenticatingRealmPlugin implements AuthenticatingRealmP
 			final String userProtectedDn = userLoginPrefix + protectLdap(usernamePasswordToken.getPrincipal()) + userLoginSuffix;
 			ldapContext = createLdapContext(userProtectedDn, usernamePasswordToken.getPrincipal(), usernamePasswordToken.getPassword());
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Ouverture de connexion LDAP  \"" + ldapContext.toString() + "\"");
+				LOGGER.debug("Ouverture de connexion LDAP  '" + ldapContext.toString() + "'");
 			}
 			return Optional.of(token.getPrincipal());
 		} catch (final NamingException e) {
+			LOGGER.info("Can't authenticate user '" + token.getPrincipal() + "'");
 			return Optional.empty(); //can't connect user
 		} finally {
 			closeLdapContext(ldapContext);

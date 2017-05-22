@@ -43,9 +43,9 @@ public final class Identities {
 	}
 
 	public static void initData(final IdentityManager identityManager) {
-		final Account testAccount0 = Account.builder("0").withDisplayName("John doe").withEmail("john.doe@yopmail.com").build();
-		final Account testAccount1 = Account.builder("1").withDisplayName("Palmer Luckey").withEmail("palmer.luckey@yopmail.com").build();
-		final Account testAccount2 = Account.builder("2").withDisplayName("Bill Clinton").withEmail("bill.clinton@yopmail.com").build();
+		final Account testAccount0 = Account.builder("0").withAuthToken("john.doe").withDisplayName("John doe").withEmail("john.doe@yopmail.com").build();
+		final Account testAccount1 = Account.builder("1").withAuthToken("palmer.luckey").withDisplayName("Palmer Luckey").withEmail("palmer.luckey@yopmail.com").build();
+		final Account testAccount2 = Account.builder("2").withAuthToken("bill.clinton").withDisplayName("Bill Clinton").withEmail("bill.clinton@yopmail.com").build();
 		identityManager.getStore().saveAccounts(Arrays.asList(testAccount0, testAccount1, testAccount2));
 
 		final URI<Account> accountURI0 = createAccountURI(testAccount0.getId());
@@ -95,6 +95,7 @@ public final class Identities {
 
 	private static Account createAccount(final String displayName, final String email) {
 		return Account.builder(Integer.toString(SEQ_ID++))
+				.withAuthToken(email.substring(0, email.indexOf('@')))
 				.withDisplayName(displayName)
 				.withEmail(email)
 				.build();

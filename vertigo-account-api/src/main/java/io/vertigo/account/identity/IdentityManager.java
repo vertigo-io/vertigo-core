@@ -18,8 +18,6 @@
  */
 package io.vertigo.account.identity;
 
-import java.util.Optional;
-
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Manager;
 
@@ -42,10 +40,4 @@ public interface IdentityManager extends Manager {
 	 */
 	AccountStore getStore();
 
-	/**
-	 * Get an newly authentify user by his authToken.
-	 * @param userAuthToken user authToken
-	 * @return Logged account
-	 */
-	Optional<Account> getAccountByAuthToken(String userAuthToken);
 }

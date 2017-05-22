@@ -41,6 +41,7 @@ import io.vertigo.lang.Assertion;
  */
 public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 	private final Map<URI<Account>, Account> accountByURI = new HashMap<>();
+	private final Map<String, URI<Account>> accountURIByAuthToken = new HashMap<>();
 	private final Map<URI<AccountGroup>, AccountGroup> groupByURI = new HashMap<>();
 	//---
 	private final Map<URI<Account>, Set<URI<AccountGroup>>> groupByAccountURI = new HashMap<>();
@@ -89,6 +90,7 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 		final Object old = accountByURI.put(uri, account);
 		if (old == null) {
 			groupByAccountURI.put(uri, new HashSet<URI<AccountGroup>>());
+			accountURIByAuthToken.put(account.getAuthToken(), uri);
 		}
 	}
 
@@ -186,4 +188,13 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 		groupByURI.clear();
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public Optional<Account> getAccountByAuthToken(final String userAuthToken) {
+		final URI<Account> accountURI = accountURIByAuthToken.get(userAuthToken);
+		if (accountURI != null) {
+			return Optional.of(getAccount(accountURI));
+		}
+		return Optional.empty();
+	}
 }
