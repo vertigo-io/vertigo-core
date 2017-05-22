@@ -25,6 +25,6 @@ import io.vertigo.dynamo.store.datastore.AbstractStoreManagerTest;
  *
  * @author pchretien
  */
-public class AbstractSqlStoreManagerTest extends AbstractStoreManagerTest {
+public abstract class AbstractSqlStoreManagerTest extends AbstractStoreManagerTest {
 	//rien
 }

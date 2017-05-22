@@ -9,16 +9,8 @@
 	</parent>
 	
 	<artifactId>vertigo-studio</artifactId>
-	<version>0.9.5-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>vertigo-studio</name>
-
-	<scm>
-		<connection>scm:git:https://github.com/KleeGroup/vertigo-studio.git</connection>
-		<developerConnection>scm:git:https://github.com/KleeGroup/vertigo-studio.git</developerConnection>
-		<url>scm:git:https://github.com/KleeGroup/vertigo-studio.git</url>
-		<tag>vertigo-0.9.5-SNAPSHOT</tag>
-	</scm>
 
 	<dependencies>
 		<dependency>
