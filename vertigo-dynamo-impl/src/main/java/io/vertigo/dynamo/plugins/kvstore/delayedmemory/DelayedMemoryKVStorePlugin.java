@@ -32,8 +32,11 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.impl.daemon.DaemonDefinition;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
 import io.vertigo.lang.Assertion;
 
@@ -77,7 +80,8 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 		this.timeToLiveSeconds = timeToLiveSeconds;
 
 		final int purgePeriod = Math.min(1 * 60, timeToLiveSeconds);
-		daemonManager.registerDaemon("DMN_KV_DATA_STORE_CACHE", () -> new RemoveTooOldElementsDaemon(this), purgePeriod);
+		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
+				new DaemonDefinition("DMN_KV_DATA_STORE_CACHE", () -> new RemoveTooOldElementsDaemon(this), purgePeriod));
 	}
 
 	/** {@inheritDoc} */

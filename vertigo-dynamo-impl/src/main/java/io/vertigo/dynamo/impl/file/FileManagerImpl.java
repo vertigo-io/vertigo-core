@@ -30,7 +30,10 @@ import javax.activation.MimetypesFileTypeMap;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.impl.daemon.DaemonDefinition;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
@@ -59,7 +62,8 @@ public final class FileManagerImpl implements FileManager {
 			final DaemonManager daemonManager) {
 		Assertion.checkNotNull(daemonManager);
 		//-----
-		daemonManager.registerDaemon("DMN_PRUGE_TEMP_FILE", () -> new PurgeTempFileDaemon(purgeDelayMinutes.orElse(60), TempFile.VERTIGO_TMP_DIR_PATH), 5 * 60);
+		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
+				new DaemonDefinition("DMN_PRUGE_TEMP_FILE", () -> new PurgeTempFileDaemon(purgeDelayMinutes.orElse(60), TempFile.VERTIGO_TMP_DIR_PATH), 5 * 60));
 	}
 
 	/** {@inheritDoc} */
