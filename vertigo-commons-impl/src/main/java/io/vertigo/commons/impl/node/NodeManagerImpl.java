@@ -17,9 +17,11 @@ import io.vertigo.app.App;
 import io.vertigo.app.Home;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.impl.daemon.DaemonDefinition;
 import io.vertigo.commons.node.Node;
 import io.vertigo.commons.node.NodeManager;
 import io.vertigo.commons.plugins.node.registry.single.SingleNodeRegistryPlugin;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
@@ -55,7 +57,8 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 				});
 
 		// register a daemon
-		daemonManager.registerDaemon("DMN_UPDATE_NODE_STATUS", () -> () -> nodeRegistryPlugin.updateStatus(toAppNode(Home.getApp())), heartBeatSeconds);
+		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
+				new DaemonDefinition("DMN_UPDATE_NODE_STATUS", () -> () -> nodeRegistryPlugin.updateStatus(toAppNode(Home.getApp())), heartBeatSeconds));
 	}
 
 	@Override

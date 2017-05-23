@@ -34,9 +34,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.impl.analytics.AProcess;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
+import io.vertigo.commons.impl.daemon.DaemonDefinition;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -78,7 +81,8 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		this.appName = appName;
 		localHostName = retrieveHostName();
 		//---
-		daemonManager.registerDaemon("DMN_REMOTE_LOGGER", () -> this::pollQueue, 1);
+		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
+				new DaemonDefinition("DMN_REMOTE_LOGGER", () -> this::pollQueue, 1));
 	}
 
 	/** {@inheritDoc} */
