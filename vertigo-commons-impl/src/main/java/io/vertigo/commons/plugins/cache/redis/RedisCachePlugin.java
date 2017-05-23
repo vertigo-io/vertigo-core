@@ -1,17 +1,15 @@
 package io.vertigo.commons.plugins.cache.redis;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 
-import io.vertigo.commons.cache.CacheConfig;
+import io.vertigo.app.Home;
+import io.vertigo.commons.cache.CacheDefinition;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.cache.CachePlugin;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.MapBuilder;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -23,10 +21,8 @@ public class RedisCachePlugin implements CachePlugin {
 
 	private final CodecManager codecManager;
 	private final RedisConnector redisConnector;
-	private final Map<String, CacheConfig> cacheConfigsPerContext = new HashMap<>();
 
 	private static final String VERTIGO_CACHE = "vertigo:cache";
-	private static final String VERTIGO_CACHE_CONFIG = "vertigo:cacheconfig";
 	private static final String DELETE_KEYS_ON_PATTERN_SCRIPT = "local keys = redis.call('keys', '%s') for i,k in ipairs(keys) do local res = redis.call('del', k) end";
 
 	/**
@@ -47,17 +43,6 @@ public class RedisCachePlugin implements CachePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void addCache(final String context, final CacheConfig cacheConfig) {
-		Assertion.checkNotNull(cacheConfig);
-		Assertion.checkArgNotEmpty(context);
-		//----
-		cacheConfigsPerContext.put(context, cacheConfig);
-		storeConfigInRedis(context, cacheConfig);
-
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public void put(final String context, final Serializable key, final Object value) {
 		Assertion.checkNotNull(value, "CachePlugin can't cache null value. (context: {0}, key:{1})", context, key);
 		Assertion.checkState(!(value instanceof byte[]), "CachePlugin can't cache byte[] values");
@@ -72,7 +57,7 @@ public class RedisCachePlugin implements CachePlugin {
 		final String redisValue = codecManager.getBase64Codec().encode(serializedObject);
 
 		try (final Jedis jedis = redisConnector.getResource()) {
-			jedis.setex(redisKey, (getCacheConfig(context).getTimeToLiveSeconds()), redisValue);
+			jedis.setex(redisKey, getCacheDefinition(context).getTimeToLiveSeconds(), redisValue);
 		}
 	}
 
@@ -120,25 +105,8 @@ public class RedisCachePlugin implements CachePlugin {
 
 	}
 
-	private void storeConfigInRedis(final String context, final CacheConfig cacheConfig) {
-		//---
-		final Map<String, String> configMap = new MapBuilder<String, String>()
-				.put("cacheType", cacheConfig.getCacheType())
-				.put("MaxElementsInMemory", Integer.toString(cacheConfig.getMaxElementsInMemory()))
-				.put("TTI", String.valueOf(cacheConfig.getTimeToIdleSeconds()))
-				.put("TTL", String.valueOf(cacheConfig.getTimeToLiveSeconds()))
-				.put("shouldSerialize", Boolean.toString(cacheConfig.shouldSerializeElements()))
-				.build();
-
-		try (final Jedis jedis = redisConnector.getResource()) {
-			jedis.hmset(buildRedisKey(VERTIGO_CACHE_CONFIG, context), configMap);
-		}
-	}
-
-	private synchronized CacheConfig getCacheConfig(final String context) {
-		final CacheConfig cacheConfig = cacheConfigsPerContext.get(context);
-		Assertion.checkNotNull(cacheConfig, "Cache {0} are not yet registered.", context);
-		return cacheConfig;
+	private static CacheDefinition getCacheDefinition(final String cacheName) {
+		return Home.getApp().getDefinitionSpace().resolve(cacheName, CacheDefinition.class);
 	}
 
 	/*
