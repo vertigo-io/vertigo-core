@@ -18,8 +18,10 @@
  */
 package io.vertigo.dynamo.impl.store.datastore.cache;
 
-import io.vertigo.commons.cache.CacheConfig;
+import io.vertigo.app.Home;
+import io.vertigo.commons.cache.CacheDefinition;
 import io.vertigo.commons.cache.CacheManager;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
@@ -58,7 +60,8 @@ public final class CacheData {
 		final String context = getContext(dtDefinition);
 		final int maxElementsInMemory = 1000;
 		final int timeToIdleSeconds = timeToLiveSeconds / 2; //longévité d'un élément non utilisé
-		cacheManager.addCache(context, new CacheConfig("dataCache", serializeElements, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
+		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
+				new CacheDefinition(context, "dataCache", serializeElements, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
 	}
 
 	private static String getContext(final DtDefinition dtDefinition) {
