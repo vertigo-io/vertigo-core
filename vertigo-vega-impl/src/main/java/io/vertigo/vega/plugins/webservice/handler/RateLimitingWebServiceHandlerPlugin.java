@@ -26,8 +26,11 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.impl.daemon.DaemonDefinition;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
@@ -83,7 +86,8 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 		this.limitValue = limitValue.orElse(DEFAULT_LIMIT_VALUE);
 		this.windowSeconds = windowSeconds.orElse(DEFAULT_WINDOW_SECONDS);
 		//RateLimitingWebServiceHandlerPlugin::resetRateLimitWindow
-		daemonManager.registerDaemon("DMN_RATE_LIMIT_WINDOW_RESET", () -> new RateLimitWindowResetDaemon(this), this.windowSeconds);
+		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
+				new DaemonDefinition("DMN_RATE_LIMIT_WINDOW_RESET", () -> new RateLimitWindowResetDaemon(this), this.windowSeconds));
 	}
 
 	/** {@inheritDoc} */
