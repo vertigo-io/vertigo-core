@@ -401,6 +401,19 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
+	private static class EmptyStringAsNull implements JsonDeserializer<String> {
+
+		/** {@inheritDoc} */
+		@Override
+		public String deserialize(final JsonElement jsonElement, final Type type, final JsonDeserializationContext jsonDeserializationContext) {
+			final String value = jsonElement.getAsString();
+			if (value != null && value.isEmpty()) {
+				return null;
+			}
+			return value;
+		}
+	}
+
 	private Gson createGson(final SearchApiVersion searchApiVersion) {
 		try {
 			return new GsonBuilder()
@@ -408,7 +421,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					//.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 					.registerTypeHierarchyAdapter(DtObject.class, new DtObjectJsonAdapter())
 					.registerTypeAdapter(Date.class, new UTCDateAdapter())
-					//TODO  registerTypeAdapter(String.class, new EmptyStringAsNull<>())// add "" <=> null
+					.registerTypeAdapter(String.class, new EmptyStringAsNull())// add "" <=> null
 					.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())
 					.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())
 					.registerTypeAdapter(UiListModifiable.class, new UiListDeserializer<>())

@@ -505,7 +505,7 @@ public final class WebServiceManagerTest {
 	@Test
 	public void testPostContactUserException() throws ParseException {
 		final Map<String, Object> newContact = createDefaultContact(null);
-		newContact.remove("name");
+		newContact.put("name", null);
 
 		loggedAndExpect(given().body(newContact))
 				.body("globalErrors", Matchers.contains("Name is mandatory"))
@@ -570,6 +570,40 @@ public final class WebServiceManagerTest {
 				.body("birthday", Matchers.notNullValue())
 				.body("email", Matchers.notNullValue())
 				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/contact");
+	}
+
+	@Test
+	public void testPutContactEmptyField() throws ParseException {
+		final Map<String, Object> newContact = createDefaultContact(100L);
+		newContact.put("name", "");
+
+		loggedAndExpect(given().body(newContact))
+				.body("fieldErrors.name", Matchers.contains("Le champ doit être renseigné")) //autovalidation by Vega
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.put("/test/contact");
+
+		//----
+
+		final Map<String, Object> newContact2 = createDefaultContact(100L);
+		newContact2.put("name", null);
+
+		loggedAndExpect(given().body(newContact2))
+				.body("globalErrors", Matchers.contains("Name is mandatory")) //WS manual validation
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.put("/test/contact");
+
+		//----
+
+		final Map<String, Object> newContact3 = createDefaultContact(100L);
+		newContact3.remove("name");
+
+		loggedAndExpect(given().body(newContact3))
+				.body("globalErrors", Matchers.contains("Name is mandatory")) //WS manual validation
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
 				.when()
 				.put("/test/contact");
 	}
