@@ -1,5 +1,6 @@
 /**
- * vertigo - simple java starter
+ * vertigo - simple
+ java starter
  *
  * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
@@ -21,22 +22,21 @@ package io.vertigo.commons.cache;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.core.definition.DefinitionUtil;
-import io.vertigo.lang.Assertion;
 
 /**
- * The cacheConfig class defines the configuration of cache.
- *
- * These 3 params define the strategy of caching
- *  - max elements in memory
- *  - time to live
- *  - time to idle
+ * The cache definition defines the configuration of a cache.
+ * This definition
+ *  - has a name;
+ *  - and 3 params that define the strategy of caching
+ *    - max elements in memory
+ *    - time to live
+ *    - time to idle
  *
  * @author pchretien
  */
 @DefinitionPrefix("CACHE")
 public final class CacheDefinition implements Definition {
 	private final String name;
-	private final String cacheType;
 	private final boolean serializeElements;
 	private final int maxElementsInMemory;
 	private final int timeToLiveSeconds;
@@ -44,7 +44,6 @@ public final class CacheDefinition implements Definition {
 
 	/**
 	 * Constructor.
-	 * @param cacheType Type of cache.
 	 * @param serializeElements If elements are serialized
 	 * @param maxElementsInMemory Max elements stored in memory
 	 * @param timeToLiveSeconds Time to live (in seconds)
@@ -52,16 +51,13 @@ public final class CacheDefinition implements Definition {
 	 */
 	public CacheDefinition(
 			final String name,
-			final String cacheType,
 			final boolean serializeElements,
 			final int maxElementsInMemory,
 			final int timeToLiveSeconds,
 			final int timeToIdleSeconds) {
 		DefinitionUtil.checkName(name, CacheDefinition.class);
-		Assertion.checkArgNotEmpty(cacheType);
 		//-----
 		this.name = name;
-		this.cacheType = cacheType;
 		this.serializeElements = serializeElements;
 		this.maxElementsInMemory = maxElementsInMemory;
 		this.timeToLiveSeconds = timeToLiveSeconds;
@@ -71,13 +67,6 @@ public final class CacheDefinition implements Definition {
 	@Override
 	public String getName() {
 		return name;
-	}
-
-	/**
-	 * @return Type of cache
-	 */
-	public String getCacheType() {
-		return cacheType;
 	}
 
 	/**
