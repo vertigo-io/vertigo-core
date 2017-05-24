@@ -34,9 +34,12 @@ import com.sleepycat.je.DatabaseException;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.impl.daemon.DaemonDefinition;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
 import io.vertigo.dynamo.transaction.VTransactionManager;
@@ -156,7 +159,8 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 			databases.put(collectionConfig.getCollectionName(), berkeleyDatabase);
 		}
 
-		daemonManager.registerDaemon("DMN_PURGE_BERKELEY_KV_STORE", () -> new RemoveTooOldElementsDaemon(MAX_REMOVED_TOO_OLD_ELEMENTS, this), REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS);
+		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
+				new DaemonDefinition("DMN_PURGE_BERKELEY_KV_STORE", () -> new RemoveTooOldElementsDaemon(MAX_REMOVED_TOO_OLD_ELEMENTS, this), REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS));
 	}
 
 	private static Environment buildFsEnvironment(final File dbFile, final boolean readOnly) {

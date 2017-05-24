@@ -37,7 +37,10 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.impl.daemon.DaemonDefinition;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
@@ -101,7 +104,8 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		documentRoot = FileUtil.translatePath(path);
 		//-----
 		if (purgeDelayMinutes.isPresent()) {
-			daemonManager.registerDaemon("DMN_PURGE_FILE_STORE_DAEMON_" + name, () -> new PurgeTempFileDaemon(purgeDelayMinutes.get(), documentRoot), 5 * 60);
+			((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
+					new DaemonDefinition("DMN_PURGE_FILE_STORE_DAEMON_" + name, () -> new PurgeTempFileDaemon(purgeDelayMinutes.get(), documentRoot), 5 * 60));
 		}
 	}
 
