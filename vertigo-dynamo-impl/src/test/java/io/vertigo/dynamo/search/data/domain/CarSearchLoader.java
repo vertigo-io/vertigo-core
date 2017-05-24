@@ -36,12 +36,14 @@ import io.vertigo.lang.Assertion;
 
 public final class CarSearchLoader extends AbstractSearchLoader<Long, Car, Car> {
 	private static final int SEARCH_CHUNK_SIZE = 5;
-	private final SearchIndexDefinition indexDefinition;
+	private final SearchManager searchManager;
 	private CarDataBase carDataBase;
 
 	@Inject
 	public CarSearchLoader(final SearchManager searchManager) {
-		indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Car.class);
+		Assertion.checkNotNull(searchManager);
+		//---
+		this.searchManager = searchManager;
 	}
 
 	/**
@@ -58,6 +60,7 @@ public final class CarSearchLoader extends AbstractSearchLoader<Long, Car, Car> 
 	public List<SearchIndex<Car, Car>> loadData(final SearchChunk<Car> searchChunk) {
 		Assertion.checkNotNull(carDataBase, "carDataBase not bound");
 		//-----
+		final SearchIndexDefinition indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Car.class);
 		final List<SearchIndex<Car, Car>> carIndexes = new ArrayList<>();
 		final Map<Long, Car> carPerId = new HashMap<>();
 		for (final Car car : carDataBase.getAllCars()) {
@@ -73,6 +76,7 @@ public final class CarSearchLoader extends AbstractSearchLoader<Long, Car, Car> 
 	/** {@inheritDoc} */
 	@Override
 	protected List<URI<Car>> loadNextURI(final Long lastId, final DtDefinition dtDefinition) {
+		final SearchIndexDefinition indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Car.class);
 		final List<URI<Car>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
 		//call loader service
 		int i = 0;

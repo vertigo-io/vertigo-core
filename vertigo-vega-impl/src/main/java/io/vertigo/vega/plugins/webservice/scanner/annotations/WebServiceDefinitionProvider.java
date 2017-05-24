@@ -19,7 +19,7 @@ import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
  * Web service definition provider.
  * @author npiedeloup
  */
-public final class WebServiceDefinitionProvider extends SimpleDefinitionProvider {
+public final class WebServiceDefinitionProvider implements SimpleDefinitionProvider {
 
 	private final List<DefinitionResourceConfig> definitionResourceConfigs = new ArrayList<>();
 

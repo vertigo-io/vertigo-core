@@ -3,6 +3,7 @@ package io.vertigo.commons.impl.node;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,9 @@ import io.vertigo.commons.impl.daemon.DaemonDefinition;
 import io.vertigo.commons.node.Node;
 import io.vertigo.commons.node.NodeManager;
 import io.vertigo.commons.plugins.node.registry.single.SingleNodeRegistryPlugin;
-import io.vertigo.core.definition.DefinitionSpaceWritable;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
@@ -31,7 +34,7 @@ import io.vertigo.lang.VSystemException;
  * @author mlaroche
  *
  */
-public final class NodeManagerImpl implements NodeManager, Activeable {
+public final class NodeManagerImpl implements NodeManager, Activeable, SimpleDefinitionProvider {
 
 	private final NodeRegistryPlugin nodeRegistryPlugin;
 	private final Map<String, NodeInfosPlugin> nodeInfosPluginMap = new HashMap<>();
@@ -56,9 +59,12 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 					nodeInfosPluginMap.put(plugin.getProtocol(), plugin);
 				});
 
+	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		// register a daemon
-		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
-				new DaemonDefinition("DMN_UPDATE_NODE_STATUS", () -> () -> nodeRegistryPlugin.updateStatus(toAppNode(Home.getApp())), heartBeatSeconds));
+		return Collections.singletonList(new DaemonDefinition("DMN_UPDATE_NODE_STATUS", () -> () -> nodeRegistryPlugin.updateStatus(toAppNode(Home.getApp())), heartBeatSeconds));
 	}
 
 	@Override

@@ -36,10 +36,6 @@ import io.vertigo.lang.WrappedException;
 public class ContactDao implements Activeable, StoreServices {
 	private final Map<Long, Contact> contacts = new HashMap<>();
 
-	public ContactDao() throws ParseException {
-
-	}
-
 	private void appendContact(final Honorific honorific, final String name, final String firstName, final Date birthday, final Address address, final String email, final String... tels) {
 		final long conId = contacts.size() + 1;
 		final Contact contact = new Contact();

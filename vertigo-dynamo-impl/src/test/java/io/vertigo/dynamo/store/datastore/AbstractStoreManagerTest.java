@@ -87,7 +87,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	@Override
 	protected void doSetUp() throws Exception {
 		dtDefinitionFamille = DtObjectUtil.findDtDefinition(Famille.class);
-		familleDAO = new DAO<>(dtDefinitionFamille, storeManager, taskManager);
+		familleDAO = new DAO<>(Famille.class, storeManager, taskManager);
 
 		dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
 		allCarsUri = new DtListURIForCriteria<>(dtDefinitionCar, null, null);

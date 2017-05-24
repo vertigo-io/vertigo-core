@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -37,10 +38,10 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.app.Home;
-import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.impl.daemon.DaemonDefinition;
-import io.vertigo.core.definition.DefinitionSpaceWritable;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
@@ -63,7 +64,7 @@ import io.vertigo.util.DateUtil;
  *
  * @author pchretien, npiedeloup, skerdudou
  */
-public final class FsFullFileStorePlugin implements FileStorePlugin {
+public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefinitionProvider {
 	private static final String METADATA_SUFFIX = ".info";
 	private static final String METADATA_CHARSET = "utf8";
 	private static final String DEFAULT_STORE_NAME = "temp";
@@ -73,6 +74,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	private final String name;
 	private final String documentRoot;
 	private final VTransactionManager transactionManager;
+	private final Optional<Integer> purgeDelayMinutesOpt;
 
 	/**
 	 * Constructor.
@@ -80,7 +82,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	 * @param fileManager File manager
 	 * @param path Root directory
 	 * @param transactionManager Transaction manager
-	 * @param purgeDelayMinutes purge files older than this delay
+	 * @param purgeDelayMinutesOpt purge files older than this delay
 	 * @param daemonManager Daemon manager
 	 */
 	@Inject
@@ -89,8 +91,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			@Named("path") final String path,
 			final FileManager fileManager,
 			final VTransactionManager transactionManager,
-			@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutes,
-			final DaemonManager daemonManager) {
+			@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
 		Assertion.checkNotNull(name);
 		Assertion.checkArgNotEmpty(path);
 		Assertion.checkNotNull(fileManager);
@@ -102,11 +103,18 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		this.fileManager = fileManager;
 		this.transactionManager = transactionManager;
 		documentRoot = FileUtil.translatePath(path);
+		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
 		//-----
-		if (purgeDelayMinutes.isPresent()) {
-			((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
-					new DaemonDefinition("DMN_PURGE_FILE_STORE_DAEMON_" + name, () -> new PurgeTempFileDaemon(purgeDelayMinutes.get(), documentRoot), 5 * 60));
+
+	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		if (purgeDelayMinutesOpt.isPresent()) {
+			return Collections.singletonList(
+					new DaemonDefinition("DMN_PURGE_FILE_STORE_DAEMON_" + name, () -> new PurgeTempFileDaemon(purgeDelayMinutesOpt.get(), documentRoot), 5 * 60));
 		}
+		return Collections.emptyList();
 	}
 
 	/** {@inheritDoc} */

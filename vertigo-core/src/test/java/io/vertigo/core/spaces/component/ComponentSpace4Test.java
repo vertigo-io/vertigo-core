@@ -50,9 +50,9 @@ public final class ComponentSpace4Test {
 		final StartedManager startedManager;
 		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			startedManager = app.getComponentSpace().resolve(StartedManager.class);
-			assertTrue(startedManager.isStarted(), "Component StartedManager not Started");
-			assertTrue(startedManager.isPostStarted(), "Component StartedManager not PostStarted");
 			assertTrue(startedManager.isInitialized(), "Component StartedManager not Initialized");
+			assertTrue(startedManager.isStarted(), "Component StartedManager not Started");
+			assertTrue(startedManager.isAppPreActivated(), "Component StartedManager not PostStarted");
 		}
 		assertFalse(startedManager.isStarted(), "Component StartedManager not Stopped");
 	}

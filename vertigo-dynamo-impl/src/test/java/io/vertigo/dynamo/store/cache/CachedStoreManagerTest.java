@@ -24,7 +24,6 @@ import org.junit.Test;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.data.domain.famille.Famille;
 import io.vertigo.dynamo.store.datastore.AbstractStoreManagerTest;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
@@ -35,13 +34,6 @@ import io.vertigo.dynamo.transaction.VTransactionWritable;
  * @author pchretien
  */
 public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
-
-	/** {@inheritDoc} */
-	@Override
-	protected void doSetUp() throws Exception {
-		super.doSetUp();
-		storeManager.getDataStoreConfig().registerCacheable(DtObjectUtil.findDtDefinition(Famille.class), 120, true, true);
-	}
 
 	/**
 	 * On charge une liste, ajoute un element et recharge la liste pour verifier l'ajout.

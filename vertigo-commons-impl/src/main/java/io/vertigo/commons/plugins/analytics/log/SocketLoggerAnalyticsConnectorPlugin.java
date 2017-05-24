@@ -20,6 +20,8 @@ package io.vertigo.commons.plugins.analytics.log;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -34,19 +36,20 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.impl.analytics.AProcess;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.commons.impl.daemon.DaemonDefinition;
-import io.vertigo.core.definition.DefinitionSpaceWritable;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.lang.Assertion;
 
 /**
  * Processes connector which use the log4j SocketAppender.
  * @author mlaroche, pchretien, npiedeloup
  */
-public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin {
+public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin, SimpleDefinitionProvider {
 	private static final Gson GSON = new GsonBuilder().create();
 	private static final int DEFAULT_SERVER_PORT = 4560;// DefaultPort of SocketAppender
 
@@ -80,9 +83,14 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		port = portOpt.orElse(DEFAULT_SERVER_PORT);
 		this.appName = appName;
 		localHostName = retrieveHostName();
-		//---
-		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
-				new DaemonDefinition("DMN_REMOTE_LOGGER", () -> this::pollQueue, 1));
+	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return Collections.singletonList(new DaemonDefinition(
+				"DMN_REMOTE_LOGGER",
+				() -> this::pollQueue,
+				1));
 	}
 
 	/** {@inheritDoc} */

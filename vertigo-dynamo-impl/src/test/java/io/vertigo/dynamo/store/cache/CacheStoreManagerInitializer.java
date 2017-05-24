@@ -16,25 +16,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.spaces.component.data;
+package io.vertigo.dynamo.store.cache;
 
 import javax.inject.Inject;
 
 import io.vertigo.core.component.ComponentInitializer;
-import io.vertigo.lang.Assertion;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.dynamo.store.data.domain.car.Car;
+import io.vertigo.dynamo.store.data.domain.famille.Famille;
 
-public final class StartedManagerInitializer implements ComponentInitializer {
-
+/**
+ * Initialisation des listes de références.
+ *
+ * @author jmforhan
+ */
+public class CacheStoreManagerInitializer implements ComponentInitializer {
 	@Inject
-	private StartedManager startedManager;
+	private StoreManager storeManager;
 
 	/** {@inheritDoc} */
 	@Override
 	public void init() {
-		Assertion.checkState(!startedManager.isStarted(), "Component StartedManager already Started");
-		Assertion.checkState(!startedManager.isAppPreActivated(), "Component StartedManager already PostStarted");
-		Assertion.checkState(!startedManager.isInitialized(), "Component StartedManager already Initialized");
-		startedManager.init();
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
+		storeManager.getDataStoreConfig().registerCacheable(dtDefinition, 3600, true, true);
+		storeManager.getDataStoreConfig().registerCacheable(DtObjectUtil.findDtDefinition(Famille.class), 120, true, true);
 	}
-
 }

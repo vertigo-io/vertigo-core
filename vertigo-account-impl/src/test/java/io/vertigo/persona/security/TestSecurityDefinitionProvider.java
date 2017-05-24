@@ -28,7 +28,7 @@ import io.vertigo.persona.security.metamodel.Permission;
 import io.vertigo.persona.security.metamodel.Role;
 import io.vertigo.util.ListBuilder;
 
-public final class TestSecurityDefinitionProvider extends SimpleDefinitionProvider {
+public final class TestSecurityDefinitionProvider implements SimpleDefinitionProvider {
 
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {

@@ -49,6 +49,6 @@
 	</module>
 	
 	<init>
-		<initializer class="io.vertigo.dynamo.store.StoreManagerInitializer"/>
+		<initializer class="io.vertigo.dynamo.store.cache.CacheStoreManagerInitializer"/>
 	</init>
 </config>

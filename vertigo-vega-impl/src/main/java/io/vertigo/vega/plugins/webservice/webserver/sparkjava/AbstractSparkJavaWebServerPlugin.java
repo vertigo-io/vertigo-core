@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
 import io.vertigo.lang.Assertion;
@@ -45,7 +45,7 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public final void registerWebServiceRoute(final HandlerChain handlerChain, final List<WebServiceDefinition> webServiceDefinitions) {
+	public final void registerWebServiceRoute(final HandlerChain handlerChain, final Collection<WebServiceDefinition> webServiceDefinitions) {
 		Assertion.checkNotNull(handlerChain);
 		Assertion.checkNotNull(webServiceDefinitions);
 		//-----

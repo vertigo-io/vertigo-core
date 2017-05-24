@@ -24,7 +24,7 @@ public interface StartedManager extends Manager {
 
 	boolean isStarted();
 
-	boolean isPostStarted();
+	boolean isAppPreActivated();
 
 	boolean isInitialized();
 

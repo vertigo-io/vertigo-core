@@ -31,6 +31,7 @@ import io.vertigo.core.definition.DefinitionProvider;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.DefinitionSupplier;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Component;
 
 /**
  * A DefinitionLoader uses all the DefinitionProviders of all the modules to register all definitions at once at the beginning.
@@ -68,6 +69,15 @@ public final class DefinitionLoader {
 				.stream()
 				.flatMap(moduleConfig -> provide(moduleConfig.getDefinitionProviderConfigs()))
 				.map(supplier -> supplier.get(definitionSpace));
+	}
+
+	public Stream<Definition> createDefinitionsFromComponents() {
+		return componentSpace.keySet()
+				.stream()
+				.map(key -> componentSpace.resolve(key, Component.class))
+				.filter(component -> DefinitionProvider.class.isAssignableFrom(component.getClass()))
+				.flatMap(component -> ((DefinitionProvider) component).get(definitionSpace).stream())
+				.map(defitionSupplier -> defitionSupplier.get(definitionSpace));
 	}
 
 	private Stream<DefinitionSupplier> provide(final List<DefinitionProviderConfig> definitionProviderConfigs) {

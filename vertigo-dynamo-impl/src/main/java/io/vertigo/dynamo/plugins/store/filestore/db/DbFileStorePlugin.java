@@ -37,6 +37,7 @@ import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
+import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -45,7 +46,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien, npiedeloup
  */
-public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implements FileStorePlugin {
+public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implements FileStorePlugin, Activeable {
 
 	/**
 	 * Liste des champs du Dto de stockage.
@@ -57,7 +58,8 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	}
 
 	private final FileManager fileManager;
-	private final DtDefinition storeDtDefinition;
+	private final String storeDtDefinitionName;
+	private DtDefinition storeDtDefinition;
 
 	/**
 	 * Constructor.
@@ -74,8 +76,19 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		Assertion.checkArgNotEmpty(storeDtDefinitionName);
 		Assertion.checkNotNull(fileManager);
 		//-----
+		this.storeDtDefinitionName = storeDtDefinitionName;
 		this.fileManager = fileManager;
+	}
+
+	@Override
+	public void start() {
 		storeDtDefinition = Home.getApp().getDefinitionSpace().resolve(storeDtDefinitionName, DtDefinition.class);
+	}
+
+	@Override
+	public void stop() {
+		// nothing
+
 	}
 
 	/** {@inheritDoc} */

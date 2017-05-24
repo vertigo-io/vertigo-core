@@ -50,7 +50,7 @@ public interface App {
 	/**
 	 * @param postStartFunction Runnable function post start
 	 */
-	void registerPostStartFunction(final Runnable postStartFunction);
+	void registerPreActivateFunction(final Runnable postStartFunction);
 
 	/**
 	 * @return Start

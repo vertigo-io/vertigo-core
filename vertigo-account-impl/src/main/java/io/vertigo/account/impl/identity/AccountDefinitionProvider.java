@@ -32,7 +32,7 @@ import io.vertigo.util.ListBuilder;
  * Provides all the definitions used in the 'account' module.
  * @author pchretien
  */
-public final class AccountDefinitionProvider extends SimpleDefinitionProvider {
+public final class AccountDefinitionProvider implements SimpleDefinitionProvider {
 
 	/** {@inheritDoc} */
 	@Override

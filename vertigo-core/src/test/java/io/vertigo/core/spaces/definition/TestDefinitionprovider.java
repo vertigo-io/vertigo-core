@@ -31,7 +31,7 @@ import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.core.spaces.definition.DefinitionSpaceTest.SampleDefinition;
 import io.vertigo.lang.Assertion;
 
-public class TestDefinitionprovider extends SimpleDefinitionProvider {
+public class TestDefinitionprovider implements SimpleDefinitionProvider {
 
 	@Inject
 	public TestDefinitionprovider(@Named("testParam") final String testParam) {

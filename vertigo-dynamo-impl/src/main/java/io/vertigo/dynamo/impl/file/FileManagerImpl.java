@@ -23,17 +23,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.app.Home;
-import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.impl.daemon.DaemonDefinition;
-import io.vertigo.core.definition.DefinitionSpaceWritable;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
@@ -49,21 +51,25 @@ import io.vertigo.lang.WrappedException;
 *
 * @author pchretien
 */
-public final class FileManagerImpl implements FileManager {
+public final class FileManagerImpl implements FileManager, SimpleDefinitionProvider {
+
+	private final Optional<Integer> purgeDelayMinutesOpt;
 
 	/**
 	 * Constructor.
-	 * @param purgeDelayMinutes Temp file purge delay.
+	 * @param purgeDelayMinutesOpt Temp file purge delay.
 	 * @param daemonManager Daemon manager
 	 */
 	@Inject
 	public FileManagerImpl(
-			@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutes,
-			final DaemonManager daemonManager) {
-		Assertion.checkNotNull(daemonManager);
-		//-----
-		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
-				new DaemonDefinition("DMN_PRUGE_TEMP_FILE", () -> new PurgeTempFileDaemon(purgeDelayMinutes.orElse(60), TempFile.VERTIGO_TMP_DIR_PATH), 5 * 60));
+			@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
+		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
+	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return Collections.singletonList(
+				new DaemonDefinition("DMN_PRUGE_TEMP_FILE", () -> new PurgeTempFileDaemon(purgeDelayMinutesOpt.orElse(60), TempFile.VERTIGO_TMP_DIR_PATH), 5 * 60));
 	}
 
 	/** {@inheritDoc} */

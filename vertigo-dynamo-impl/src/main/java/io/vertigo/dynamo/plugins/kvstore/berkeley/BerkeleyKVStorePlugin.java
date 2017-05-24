@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.kvstore.berkeley;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,12 +35,13 @@ import com.sleepycat.je.DatabaseException;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.impl.daemon.DaemonDefinition;
-import io.vertigo.core.definition.DefinitionSpaceWritable;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
 import io.vertigo.dynamo.transaction.VTransactionManager;
@@ -52,7 +54,7 @@ import io.vertigo.util.ListBuilder;
  *
  * @author  pchretien, npiedeloup
  */
-public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
+public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, SimpleDefinitionProvider {
 	private static final boolean READONLY = false;
 	//cleaner : 1000 elements every minutes -> 500 simultaneous users (took about 100ms)
 	private static final int MAX_REMOVED_TOO_OLD_ELEMENTS = 1000;
@@ -139,6 +141,15 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 		return collectionNames;
 	}
 
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return Collections.singletonList(
+				new DaemonDefinition(
+						"DMN_PURGE_BERKELEY_KV_STORE",
+						() -> new RemoveTooOldElementsDaemon(MAX_REMOVED_TOO_OLD_ELEMENTS, this),
+						REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS));
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
@@ -158,9 +169,6 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 					collectionConfig.getTimeToLiveSeconds(), transactionManager, codecManager);
 			databases.put(collectionConfig.getCollectionName(), berkeleyDatabase);
 		}
-
-		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
-				new DaemonDefinition("DMN_PURGE_BERKELEY_KV_STORE", () -> new RemoveTooOldElementsDaemon(MAX_REMOVED_TOO_OLD_ELEMENTS, this), REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS));
 	}
 
 	private static Environment buildFsEnvironment(final File dbFile, final boolean readOnly) {

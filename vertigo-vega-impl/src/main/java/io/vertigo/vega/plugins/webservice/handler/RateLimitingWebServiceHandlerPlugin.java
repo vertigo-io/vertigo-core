@@ -18,6 +18,8 @@
  */
 package io.vertigo.vega.plugins.webservice.handler;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -26,11 +28,12 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.impl.daemon.DaemonDefinition;
-import io.vertigo.core.definition.DefinitionSpaceWritable;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
@@ -45,7 +48,7 @@ import spark.Response;
  * Rate limit handler.
  * @author npiedeloup
  */
-public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
+public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHandlerPlugin, SimpleDefinitionProvider {
 	private static final long DEFAULT_LIMIT_VALUE = 150; //the rate limit ceiling value
 	private static final int DEFAULT_WINDOW_SECONDS = 5 * 60; //the time windows use to limit calls rate
 	private static final String RATE_LIMIT_LIMIT = "X-Rate-Limit-Limit"; //the rate limit ceiling for that given request
@@ -86,8 +89,11 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 		this.limitValue = limitValue.orElse(DEFAULT_LIMIT_VALUE);
 		this.windowSeconds = windowSeconds.orElse(DEFAULT_WINDOW_SECONDS);
 		//RateLimitingWebServiceHandlerPlugin::resetRateLimitWindow
-		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
-				new DaemonDefinition("DMN_RATE_LIMIT_WINDOW_RESET", () -> new RateLimitWindowResetDaemon(this), this.windowSeconds));
+	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return Collections.singletonList(new DaemonDefinition("DMN_RATE_LIMIT_WINDOW_RESET", () -> new RateLimitWindowResetDaemon(this), windowSeconds));
 	}
 
 	/** {@inheritDoc} */

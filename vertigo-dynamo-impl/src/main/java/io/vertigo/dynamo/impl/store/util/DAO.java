@@ -53,7 +53,8 @@ import io.vertigo.lang.Assertion;
 public class DAO<E extends Entity, P> implements BrokerNN {
 
 	/** DT de l'objet dont on gére le CRUD. */
-	private final DtDefinition dtDefinition;
+	//	private final DtDefinition dtDefinition;
+	private final Class<? extends Entity> entityClass;
 	protected final DataStore dataStore;
 	private final BrokerNN brokerNN;
 	private final BrokerBatch<E, P> brokerBatch;
@@ -67,26 +68,15 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @param taskManager Manager de gestion des tâches
 	 */
 	public DAO(final Class<? extends Entity> entityClass, final StoreManager storeManager, final TaskManager taskManager) {
-		this(DtObjectUtil.findDtDefinition(entityClass), storeManager, taskManager);
-	}
-
-	/**
-	 * Contructeur.
-	 *
-	 * @param dtDefinition Définition du DtObject associé à ce DAO
-	 * @param storeManager Manager de gestion de la persistance
-	 * @param taskManager Manager de gestion des tâches
-	 */
-	public DAO(final DtDefinition dtDefinition, final StoreManager storeManager, final TaskManager taskManager) {
-		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(entityClass);
 		Assertion.checkNotNull(storeManager);
 		Assertion.checkNotNull(taskManager);
 		//-----
+		this.entityClass = entityClass;
 		dataStore = storeManager.getDataStore();
-		brokerNN = new BrokerNNImpl(taskManager);
-		this.dtDefinition = dtDefinition;
-		brokerBatch = new BrokerBatchImpl<>(taskManager);
 		this.taskManager = taskManager;
+		brokerNN = new BrokerNNImpl(taskManager);
+		brokerBatch = new BrokerBatchImpl<>(taskManager);
 	}
 
 	protected final TaskManager getTaskManager() {
@@ -237,7 +227,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return URI recherchée
 	 */
 	protected final URI<E> createDtObjectURI(final P id) {
-		return new URI<>(dtDefinition, id);
+		return new URI<>(getDtDefinition(), id);
 	}
 
 	/**
@@ -261,6 +251,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	public final DtList<E> getListByDtFieldName(final DtFieldName dtFieldName, final Serializable value, final int maxRows) {
 		final Criteria<E> criteria = Criterions.isEqualTo(dtFieldName, value);
 		// Verification de la valeur est du type du champ
+		final DtDefinition dtDefinition = getDtDefinition();
 		dtDefinition.getField(dtFieldName.name()).getDomain().getDataType().checkValue(value);
 		return dataStore.<E> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
@@ -283,7 +274,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return  the optional result
 	 */
 	public final Optional<E> findOptional(final Criteria<E> criteria) {
-		final DtList<E> list = dataStore.<E> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, 2));
+		final DtList<E> list = dataStore.<E> findAll(new DtListURIForCriteria<>(getDtDefinition(), criteria, 2));
 		Assertion.checkState(list.size() <= 1, "Too many results");
 		return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
 	}
@@ -294,7 +285,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return DtList<D> result NOT NULL
 	 */
 	public final DtList<E> findAll(final Criteria<E> criteria, final int maxRows) {
-		return dataStore.<E> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
+		return dataStore.<E> findAll(new DtListURIForCriteria<>(getDtDefinition(), criteria, maxRows));
 	}
 
 	/** {@inheritDoc} */
@@ -346,5 +337,9 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 */
 	public final void appendNN(final DtListURIForNNAssociation dtListURI, final Entity entity) {
 		brokerNN.appendNN(dtListURI, entity.getURI());
+	}
+
+	private final DtDefinition getDtDefinition() {
+		return DtObjectUtil.findDtDefinition(entityClass);
 	}
 }

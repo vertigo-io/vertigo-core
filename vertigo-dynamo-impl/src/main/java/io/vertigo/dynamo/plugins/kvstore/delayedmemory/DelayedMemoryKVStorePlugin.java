@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.kvstore.delayedmemory;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,11 +33,12 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.impl.daemon.DaemonDefinition;
-import io.vertigo.core.definition.DefinitionSpaceWritable;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
 import io.vertigo.lang.Assertion;
 
@@ -47,12 +49,12 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien, npiedeloup
  */
-public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
+public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDefinitionProvider {
 
 	private static final Logger LOGGER = Logger.getLogger(DelayedMemoryKVStorePlugin.class);
 	private final List<String> collections;
 
-	private final long timeToLiveSeconds;
+	private final int timeToLiveSeconds;
 	private final DelayQueue<DelayedMemoryKey> timeoutQueue = new DelayQueue<>();
 
 	private final Map<String, Map<String, DelayedMemoryCacheValue>> collectionsData = new HashMap<>();
@@ -78,10 +80,12 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin {
 				.collect(Collectors.toList());
 		//-----
 		this.timeToLiveSeconds = timeToLiveSeconds;
+	}
 
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		final int purgePeriod = Math.min(1 * 60, timeToLiveSeconds);
-		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
-				new DaemonDefinition("DMN_KV_DATA_STORE_CACHE", () -> new RemoveTooOldElementsDaemon(this), purgePeriod));
+		return Collections.singletonList(new DaemonDefinition("DMN_KV_DATA_STORE_CACHE", () -> new RemoveTooOldElementsDaemon(this), purgePeriod));
 	}
 
 	/** {@inheritDoc} */

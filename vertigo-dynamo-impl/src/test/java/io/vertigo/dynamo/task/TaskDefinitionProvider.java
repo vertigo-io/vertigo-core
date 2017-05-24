@@ -33,7 +33,7 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.util.ListBuilder;
 
-public final class TaskDefinitionProvider extends SimpleDefinitionProvider {
+public final class TaskDefinitionProvider implements SimpleDefinitionProvider {
 
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {

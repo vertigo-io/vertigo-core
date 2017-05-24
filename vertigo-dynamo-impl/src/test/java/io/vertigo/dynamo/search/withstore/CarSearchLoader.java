@@ -43,13 +43,14 @@ import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.dynamox.search.AbstractSqlSearchLoader;
 import io.vertigo.dynamox.task.TaskEngineSelect;
+import io.vertigo.lang.Assertion;
 
 /**
  * SearchLoader of Car keyconcept, load uses StoreManager.
  * @author npiedeloup
  */
 public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Car> {
-	private final SearchIndexDefinition indexDefinition;
+	private final SearchManager searchManager;
 	private final DefinitionSpace definitionSpace;
 
 	/**
@@ -60,13 +61,16 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 	@Inject
 	public CarSearchLoader(final TaskManager taskManager, final SearchManager searchManager, final VTransactionManager transactionManager) {
 		super(taskManager, transactionManager);
-		indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Car.class);
+		Assertion.checkNotNull(searchManager);
+		//---
+		this.searchManager = searchManager;
 		definitionSpace = Home.getApp().getDefinitionSpace();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public List<SearchIndex<Car, Car>> loadData(final SearchChunk<Car> searchChunk) {
+		final SearchIndexDefinition indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Car.class);
 		try (final VTransactionWritable tx = getTransactionManager().createCurrentTransaction()) {
 			final List<SearchIndex<Car, Car>> result = new ArrayList<>();
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);

@@ -67,7 +67,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	private final ComponentSpaceWritable componentSpaceWritable;
 
 	//à remplacer par event ??
-	private final List<Runnable> postStartFunctions = new ArrayList<>();
+	private final List<Runnable> preActivateFunctions = new ArrayList<>();
 
 	/**
 	 * Constructor.
@@ -106,9 +106,12 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 				appConfig.print(System.out);
 			}
 			componentSpaceWritable.closeRegistration();
-			//-----3. Load all definitions
+			//-----3. a Load all definitions
 			final DefinitionLoader definitionLoader = new DefinitionLoader(definitionSpaceWritable, componentSpaceWritable);
 			definitionLoader.createDefinitions(appConfig.getModuleConfigs())
+					.forEach(definitionSpaceWritable::registerDefinition);
+			//-----3. b Load all definitions provided by components
+			definitionLoader.createDefinitionsFromComponents()
 					.forEach(definitionSpaceWritable::registerDefinition);
 			//Here all definitions are registered into the definitionSpace
 
@@ -121,11 +124,11 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			 */
 			initializeAllComponents();
 
-			//-----5. post to populate definitions
-			appPostStart();
-
-			//-----6. Starts all components
+			//-----5. Starts all components
 			componentSpaceWritable.start();
+
+			//-----6. post just in case
+			appPreActivate();
 
 			//-----7. Start
 			state = State.ACTIVE;
@@ -136,15 +139,15 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	}
 
 	@Override
-	public void registerPostStartFunction(final Runnable postStartFunction) {
+	public void registerPreActivateFunction(final Runnable preActivateFunction) {
 		Assertion.checkArgument(State.STARTING.equals(state), "Applisteners can't be registered at runtime");
-		Assertion.checkNotNull(postStartFunction);
+		Assertion.checkNotNull(preActivateFunction);
 		//-----
-		postStartFunctions.add(postStartFunction);
+		preActivateFunctions.add(preActivateFunction);
 	}
 
-	private void appPostStart() {
-		for (final Runnable postStartFunction : postStartFunctions) {
+	private void appPreActivate() {
+		for (final Runnable postStartFunction : preActivateFunctions) {
 			postStartFunction.run();
 		}
 	}
