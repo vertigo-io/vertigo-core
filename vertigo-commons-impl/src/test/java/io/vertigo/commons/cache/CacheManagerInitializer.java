@@ -42,8 +42,8 @@ public final class CacheManagerInitializer implements ComponentInitializer {
 		final int timeToIdleSeconds = 10; //longévité d'un élément non utilisé
 
 		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace())
-				.registerDefinition(new CacheDefinition(CONTEXT_EDITABLE, "test", true, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
+				.registerDefinition(new CacheDefinition(CONTEXT_EDITABLE, true, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
 		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace())
-				.registerDefinition(new CacheDefinition(CONTEXT_READONLY, "test", false, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
+				.registerDefinition(new CacheDefinition(CONTEXT_READONLY, false, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
 	}
 }
