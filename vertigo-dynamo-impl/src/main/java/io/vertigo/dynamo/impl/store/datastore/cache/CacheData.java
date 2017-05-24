@@ -61,7 +61,7 @@ public final class CacheData {
 		final int maxElementsInMemory = 1000;
 		final int timeToIdleSeconds = timeToLiveSeconds / 2; //longévité d'un élément non utilisé
 		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
-				new CacheDefinition(context, "dataCache", serializeElements, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
+				new CacheDefinition(context, serializeElements, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
 	}
 
 	private static String getContext(final DtDefinition dtDefinition) {
