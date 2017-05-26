@@ -43,7 +43,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	 */
 	@Inject
 	public DaemonManagerImpl() {
-		super();
+		Home.getApp().registerPreActivateFunction(this::startAllDaemons);
 	}
 
 	/** {@inheritDoc} */
@@ -56,7 +56,6 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	@Override
 	public void start() {
 		daemonExecutor.start();
-		this.startAllDaemons();
 	}
 
 	/** {@inheritDoc} */

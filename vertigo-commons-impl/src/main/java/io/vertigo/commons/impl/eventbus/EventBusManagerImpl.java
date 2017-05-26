@@ -45,11 +45,12 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable {
 	 */
 	public EventBusManagerImpl() {
 		super();
+		Home.getApp().registerPreActivateFunction(() -> registerAllSubscribers());
 	}
 
 	@Override
 	public void start() {
-		registerAllSubscribers();
+		// nothing
 	}
 
 	@Override
