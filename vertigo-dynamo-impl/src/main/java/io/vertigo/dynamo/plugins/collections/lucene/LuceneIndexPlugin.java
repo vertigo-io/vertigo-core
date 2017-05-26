@@ -20,14 +20,21 @@ package io.vertigo.dynamo.plugins.collections.lucene;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
 
-import io.vertigo.commons.cache.CacheConfig;
+import io.vertigo.commons.cache.CacheDefinition;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.eventbus.EventBusManager;
+import io.vertigo.commons.eventbus.EventSuscriber;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -46,9 +53,11 @@ import io.vertigo.lang.WrappedException;
  *
  * @author npiedeloup
  */
-public final class LuceneIndexPlugin implements IndexPlugin {
+public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionProvider {
 
 	private final CacheManager cacheManager;
+
+	private static final String CACHE_LUCENE_INDEX = "CACHE_LUCENE_INDEX";
 
 	/**
 	 * Constructor.
@@ -66,9 +75,16 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 		//-----
 		this.cacheManager = cacheManager;
 		localeManager.add(Resources.class.getName(), Resources.values());
-		eventBusManager.subscribe(
-				StoreEvent.class,
-				event -> cacheManager.clear(getIndexCacheContext(event.getUri().getDefinition())));
+	}
+
+	@EventSuscriber
+	public void onStoreEvent(final StoreEvent event) {
+		cacheManager.remove(CACHE_LUCENE_INDEX, getIndexCacheContext(event.getUri().getDefinition()));
+	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return Collections.singletonList(new CacheDefinition(CACHE_LUCENE_INDEX, false, 1000, 30 * 60, 60 * 60));
 	}
 
 	private <D extends DtObject> RamLuceneIndex<D> indexList(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
@@ -81,16 +97,19 @@ public final class LuceneIndexPlugin implements IndexPlugin {
 			final String indexName = "INDEX_" + dtcUri.urn();
 			final String cacheContext = getIndexCacheContext(fullDtc.getDefinition());
 			//TODO non threadSafe.
-			cacheManager.addCache(cacheContext, new CacheConfig("indexCache", false, 1000, 30 * 60, 60 * 60));
-			index = RamLuceneIndex.class.cast(cacheManager.get(cacheContext, indexName));
-			if (index == null) {
-				index = createIndex(fullDtc, storeValue);
-				cacheManager.put(getIndexCacheContext(fullDtc.getDefinition()), indexName, index);
+			Map<String, RamLuceneIndex> luceneIndexMap = Map.class.cast(cacheManager.get(CACHE_LUCENE_INDEX, cacheContext));
+			if (luceneIndexMap == null) {
+				luceneIndexMap = new HashMap<>();
 			}
-		} else {
-			index = createIndex(fullDtc, storeValue);
+			if (!luceneIndexMap.containsKey(indexName)) {
+				index = createIndex(fullDtc, storeValue);
+				luceneIndexMap.put(indexName, index);
+				cacheManager.put(CACHE_LUCENE_INDEX, cacheContext, luceneIndexMap);
+				return index;
+			}
+			return luceneIndexMap.get(indexName);
 		}
-		return index;
+		return createIndex(fullDtc, storeValue);
 	}
 
 	private static String getIndexCacheContext(final DtDefinition dtDefinition) {
