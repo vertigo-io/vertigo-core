@@ -50,8 +50,9 @@ public interface FileStorePlugin extends Plugin {
 	 * Input FileInfo must have an empty URI : insert mode
 	 *
 	 * @param fileInfo File to save (creation)
+	 * @return the created FileInfo
 	 */
-	void create(FileInfo fileInfo);
+	FileInfo create(FileInfo fileInfo);
 
 	/**
 	 * Save a file.

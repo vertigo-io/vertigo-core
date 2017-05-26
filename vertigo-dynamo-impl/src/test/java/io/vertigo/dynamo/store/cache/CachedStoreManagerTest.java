@@ -49,9 +49,9 @@ public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
 			//-----
 			final Famille famille = new Famille();
 			famille.setLibelle("encore un");
-			storeManager.getDataStore().create(famille);
+			final Famille createdFamille = storeManager.getDataStore().create(famille);
 			// on attend un objet avec un ID non null ?
-			Assert.assertNotNull(famille.getFamId());
+			Assert.assertNotNull(createdFamille.getFamId());
 			transaction.commit();
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {

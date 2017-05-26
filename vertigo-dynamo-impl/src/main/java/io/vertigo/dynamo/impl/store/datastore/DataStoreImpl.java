@@ -97,14 +97,15 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void create(final Entity entity) {
+	public <E extends Entity> E create(final E entity) {
 		Assertion.checkNotNull(entity);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
-		getPhysicalStore(dtDefinition).create(dtDefinition, entity);
+		final E createdEntity = getPhysicalStore(dtDefinition).create(dtDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.CREATE, new URI(dtDefinition, DtObjectUtil.getId(entity)));
+		fireAfterCommit(StoreEvent.Type.CREATE, new URI(dtDefinition, DtObjectUtil.getId(createdEntity)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
+		return createdEntity;
 	}
 
 	/** {@inheritDoc} */

@@ -112,8 +112,9 @@ public interface DataStorePlugin extends Plugin {
 	 *
 	 * @param dtDefinition Definition
 	 * @param entity Object to create
+	 * @return the created entity
 	 */
-	void create(DtDefinition dtDefinition, Entity entity);
+	<E extends Entity> E create(DtDefinition dtDefinition, E entity);
 
 	/**
 	 * Updates an object.

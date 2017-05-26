@@ -104,9 +104,10 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * Create an object.
 	 *
 	 * @param entity Object to create
+	 * @return the created entity
 	 */
-	public final void create(final E entity) {
-		dataStore.create(entity);
+	public final E create(final E entity) {
+		return dataStore.create(entity);
 	}
 
 	/**

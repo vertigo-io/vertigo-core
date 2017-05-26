@@ -294,9 +294,10 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	@Override
-	public void create(final DtDefinition dtDefinition, final Entity entity) {
+	public <E extends Entity> E create(final DtDefinition dtDefinition, final E entity) {
 		//create
 		put(dtDefinition, entity, true);
+		return entity;
 	}
 
 	@Override

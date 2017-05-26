@@ -181,7 +181,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefin
 
 	/** {@inheritDoc} */
 	@Override
-	public void create(final FileInfo fileInfo) {
+	public FileInfo create(final FileInfo fileInfo) {
 		Assertion.checkNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
 		//-----
 		final VFile vFile = fileInfo.getVFile();
@@ -196,6 +196,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefin
 		final FileInfoURI uri = createNewFileInfoURI(fileInfo.getDefinition());
 		fileInfo.setURIStored(uri);
 		saveFile(metaData, fileInfo);
+		return fileInfo;
 	}
 
 	private static FileInfoURI createNewFileInfoURI(final FileInfoDefinition fileInfoDefinition) {

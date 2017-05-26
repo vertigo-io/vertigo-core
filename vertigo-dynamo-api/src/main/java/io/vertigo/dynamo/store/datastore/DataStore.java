@@ -74,8 +74,9 @@ public interface DataStore {
 	* No object with the same id must have been created previously.
 	*
 	* @param entity the entity to create
+	* @return the created object
 	*/
-	void create(Entity entity);
+	<E extends Entity> E create(E entity);
 
 	/**
 	* Update an object.

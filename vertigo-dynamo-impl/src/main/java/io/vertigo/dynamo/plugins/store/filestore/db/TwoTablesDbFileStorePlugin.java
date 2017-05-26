@@ -110,7 +110,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 
 	/** {@inheritDoc} */
 	@Override
-	public void create(final FileInfo fileInfo) {
+	public FileInfo create(final FileInfo fileInfo) {
 		checkReadonly();
 		checkDefinitionStoreBinding(fileInfo.getDefinition());
 		Assertion.checkArgument(fileInfo.getURI() == null, "Only file without any id can be created");
@@ -123,6 +123,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		getStoreManager().getDataStore().create(fileMetadataDto);
 		final FileInfoURI fileInfoUri = createURI(fileInfo.getDefinition(), DtObjectUtil.getId(fileMetadataDto));
 		fileInfo.setURIStored(fileInfoUri);
+		return fileInfo;
 	}
 
 	/** {@inheritDoc} */

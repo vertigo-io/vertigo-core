@@ -191,7 +191,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void create(final FileInfo fileInfo) {
+	public FileInfo create(final FileInfo fileInfo) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 		Assertion.checkNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
 		//-----
@@ -213,6 +213,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		getStoreManager().getDataStore().update(fileInfoDto);
 		//-----
 		saveFile(fileInfo, pathToSave);
+		return fileInfo;
 	}
 
 	/** {@inheritDoc} */

@@ -334,7 +334,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	//==========================================================================
 	/** {@inheritDoc} */
 	@Override
-	public void create(final DtDefinition dtDefinition, final Entity entity) {
+	public <E extends Entity> E create(final DtDefinition dtDefinition, final E entity) {
 		Assertion.checkArgument(DtObjectUtil.getId(entity) == null, "Only object without any id can be created");
 		//------
 		final boolean insert = true;
@@ -342,6 +342,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		if (!saved) {
 			throw new VSystemException("no data created");
 		}
+		return entity;
 	}
 
 	/** {@inheritDoc} */

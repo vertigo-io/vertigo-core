@@ -89,17 +89,17 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 		final VFile vFile = TestUtil.createVFile(fileManager, "../data/lautreamont.txt", AbstractStoreManagerTest.class);
 		//1.Création du fichier depuis un fichier texte du FS
 		final FileInfo fileInfo = new FileInfoTemp(vFile);
-
+		final FileInfo createdFileInfo;
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//2. Sauvegarde en Temp
-			storeManager.getFileStore().create(fileInfo);
+			createdFileInfo = storeManager.getFileStore().create(fileInfo);
 			transaction.commit(); //can't read file if not commited (TODO ?)
 		}
 
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 
 			//3.relecture du fichier
-			final FileInfo readFileInfo = storeManager.getFileStore().read(fileInfo.getURI());
+			final FileInfo readFileInfo = storeManager.getFileStore().read(createdFileInfo.getURI());
 
 			//4. comparaison du fichier créé et du fichier lu.
 

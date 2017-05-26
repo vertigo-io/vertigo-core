@@ -110,7 +110,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 
 	/** {@inheritDoc} */
 	@Override
-	public void create(final FileInfo fileInfo) {
+	public FileInfo create(final FileInfo fileInfo) {
 		checkReadonly();
 		Assertion.checkNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
 		checkDefinitionStoreBinding(fileInfo.getDefinition());
@@ -123,6 +123,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		Assertion.checkNotNull(fileInfoDtoId, "ID  du fichier doit être renseignée.");
 		final FileInfoURI uri = new FileInfoURI(fileInfo.getDefinition(), fileInfoDtoId);
 		fileInfo.setURIStored(uri);
+		return fileInfo;
 	}
 
 	/** {@inheritDoc} */

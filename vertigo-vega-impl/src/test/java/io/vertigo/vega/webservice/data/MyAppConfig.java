@@ -24,8 +24,10 @@ import java.util.Iterator;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
+import io.vertigo.commons.plugins.node.infos.http.HttpNodeInfosPlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
@@ -66,11 +68,15 @@ public final class MyAppConfig {
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
+				.withNodeConfig(NodeConfig.builder()
+						.withEndPoint("http://localhost:" + WS_PORT)
+						.build())
 				.addModule(new PersonaFeatures()
 						.withUserSession(TestUserSession.class)
 						.build())
 				.addModule(new CommonsFeatures()
 						.withCache(MemoryCachePlugin.class)
+						.withNodeInfosPlugin(HttpNodeInfosPlugin.class)
 						.build())
 				.addModule(new DynamoFeatures()
 						.withStore()

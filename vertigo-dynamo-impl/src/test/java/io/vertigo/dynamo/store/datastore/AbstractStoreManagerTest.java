@@ -268,9 +268,9 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			//-----
 			final Famille famille = new Famille();
 			famille.setLibelle("encore un");
-			storeManager.getDataStore().create(famille);
+			final Famille createdFamille = storeManager.getDataStore().create(famille);
 			// on attend un objet avec un ID non null ?
-			Assert.assertNotNull(famille.getFamId());
+			Assert.assertNotNull(createdFamille.getFamId());
 			//-----
 			dtc = storeManager.getDataStore().findAll(allFamilles);
 			Assert.assertEquals(1, dtc.size());
@@ -307,10 +307,10 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			final VFile vFile = TestUtil.createVFile(fileManager, "../data/lautreamont.txt", AbstractStoreManagerTest.class);
 			//2. Sauvegarde en BDD
 			final FileInfo fileInfo = new FileInfoStd(vFile);
-			storeManager.getFileStore().create(fileInfo);
+			final FileInfo createdFileInfo = storeManager.getFileStore().create(fileInfo);
 
 			//3.relecture du fichier
-			final FileInfo readFileInfo = storeManager.getFileStore().read(fileInfo.getURI());
+			final FileInfo readFileInfo = storeManager.getFileStore().read(createdFileInfo.getURI());
 
 			//4. comparaison du fichier créé et du fichier lu.
 
@@ -355,7 +355,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			//on crée une famille
 			final Famille famille = new Famille();
 			famille.setLibelle("Ma famille");
-			storeManager.getDataStore().create(famille);
+			final Famille createdFamille = storeManager.getDataStore().create(famille);
 
 			//on récupère la liste des voitures
 			final DtList<Car> cars = storeManager.getDataStore().findAll(allCarsUri);
@@ -367,23 +367,23 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			for (final Car car : cars) {
 				carUriList.add(new URI(dtDefinitionCar, car.getId()));
 			}
-			familleDAO.updateNN(famille.getVoituresLocationDtListURI(), carUriList);
+			familleDAO.updateNN(createdFamille.getVoituresLocationDtListURI(), carUriList);
 
 			//On garde le résultat de l'association NN
-			final DtList<Car> firstResult = famille.getVoituresLocationList();
+			final DtList<Car> firstResult = createdFamille.getVoituresLocationList();
 			Assert.assertEquals("Test tailles du nombre de voiture dans une NN", cars.size(), firstResult.size());
 
 			//On met à jour l'association en retirant le premier élément
 			carUriList.remove(0);
-			familleDAO.updateNN(famille.getVoituresLocationDtListURI(), carUriList);
+			familleDAO.updateNN(createdFamille.getVoituresLocationDtListURI(), carUriList);
 
 			//on garde le résultat en lazy : il doit avoir le meme nombre de voiture qu'au début
-			final DtList<Car> lazyResult = famille.getVoituresLocationList();
+			final DtList<Car> lazyResult = createdFamille.getVoituresLocationList();
 			Assert.assertEquals("Test tailles du nombre de voiture pour une NN", firstResult.size(), lazyResult.size());
 
 			//on recharge la famille et on recharge la liste issus de l'association NN : il doit avoir une voiture de moins qu'au début
 			final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
-			final Famille famille2 = storeManager.getDataStore().<Famille> readOne(new URI<Famille>(dtFamille, famille.getFamId()));
+			final Famille famille2 = storeManager.getDataStore().<Famille> readOne(new URI<Famille>(dtFamille, createdFamille.getFamId()));
 			final DtList<Car> secondResult = famille2.getVoituresLocationList();
 			Assert.assertEquals("Test tailles du nombre de voiture dans une NN", firstResult.size() - 1, secondResult.size());
 			transaction.commit();
@@ -402,7 +402,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 		final DtList<Car> firstResult;
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			storeManager.getDataStore().create(famille);
+			final Famille createdFamille = storeManager.getDataStore().create(famille);
 
 			//on récupère la liste des voitures
 			final DtList<Car> cars = storeManager.getDataStore().findAll(allCarsUri);
@@ -411,12 +411,12 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 			//on associe la liste de voiture à la famille en 1N
 			for (final Car car : cars) {
-				car.setFamId(famille.getFamId());
+				car.setFamId(createdFamille.getFamId());
 				storeManager.getDataStore().update(car);
 			}
 
 			//On garde le résultat de l'association 1N
-			firstResult = famille.getVoituresFamilleList();
+			firstResult = createdFamille.getVoituresFamilleList();
 
 			//On met à jour l'association en retirant le premier élément
 			final Car firstCar = cars.get(0);
@@ -677,10 +677,10 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	public void testTxCrudInsertDeleteCommit() {
 		final Car car = createNewCar();
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			storeManager.getDataStore().create(car);
+			final Car createdCar = storeManager.getDataStore().create(car);
 			//Check cars count
 			checkCrudCarsCount(1);
-			storeManager.getDataStore().delete(car.getURI());
+			storeManager.getDataStore().delete(createdCar.getURI());
 			checkCrudCarsCount(1); //car is cacheable : list was'nt flush here
 			transaction.commit();
 		}
@@ -708,10 +708,10 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	public void testTxCrudLockCommit() {
 		final Car car = createNewCar();
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			storeManager.getDataStore().create(car);
+			final Car createdCar = storeManager.getDataStore().create(car);
 			//Check cars count
 			checkCrudCarsCount(1);
-			storeManager.getDataStore().readOneForUpdate(car.getURI());
+			storeManager.getDataStore().readOneForUpdate(createdCar.getURI());
 			checkCrudCarsCount(1);
 			transaction.commit();
 		}
