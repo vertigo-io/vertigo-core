@@ -23,7 +23,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.vertigo.commons.impl.daemon.DaemonDefinition;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;

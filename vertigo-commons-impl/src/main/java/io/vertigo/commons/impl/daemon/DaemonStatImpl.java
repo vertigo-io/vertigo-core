@@ -18,6 +18,7 @@
  */
 package io.vertigo.commons.impl.daemon;
 
+import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.lang.Assertion;
 

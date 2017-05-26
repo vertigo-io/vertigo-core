@@ -32,7 +32,7 @@ import javax.activation.MimetypesFileTypeMap;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.commons.impl.daemon.DaemonDefinition;
+import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;

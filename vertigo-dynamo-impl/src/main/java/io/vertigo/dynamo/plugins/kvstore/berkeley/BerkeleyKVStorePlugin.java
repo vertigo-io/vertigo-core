@@ -37,8 +37,7 @@ import com.sleepycat.je.EnvironmentConfig;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.Daemon;
-import io.vertigo.commons.daemon.DaemonManager;
-import io.vertigo.commons.impl.daemon.DaemonDefinition;
+import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
@@ -64,7 +63,6 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 	private final List<String> collectionNames;
 
 	private final CodecManager codecManager;
-	private final DaemonManager daemonManager;
 	private final VTransactionManager transactionManager;
 	private final String dbFilePathTranslated;
 
@@ -92,8 +90,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 			@Named("collections") final String collections,
 			@Named("dbFilePath") final String dbFilePath,
 			final VTransactionManager transactionManager,
-			final CodecManager codecManager,
-			final DaemonManager daemonManager) {
+			final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(collections);
 		Assertion.checkArgNotEmpty(dbFilePath);
 		Assertion.checkNotNull(transactionManager);
@@ -108,7 +105,6 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 		dbFilePathTranslated = FileUtil.translatePath(dbFilePath);
 		this.transactionManager = transactionManager;
 		this.codecManager = codecManager;
-		this.daemonManager = daemonManager;
 	}
 
 	private static List<BerkeleyCollectionConfig> parseCollectionConfigs(final String collections) {

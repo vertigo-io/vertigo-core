@@ -16,11 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.impl.daemon;
+package io.vertigo.commons.daemon;
 
 import java.util.function.Supplier;
 
-import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.core.definition.DefinitionUtil;
@@ -70,7 +69,7 @@ public final class DaemonDefinition implements Definition {
 		return periodInSeconds;
 	}
 
-	Supplier<Daemon> getDaemonSupplier() {
+	public Supplier<Daemon> getDaemonSupplier() {
 		return daemonSupplier;
 	}
 }

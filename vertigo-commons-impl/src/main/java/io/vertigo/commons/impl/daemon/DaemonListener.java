@@ -20,6 +20,7 @@ package io.vertigo.commons.impl.daemon;
 
 import org.apache.log4j.Logger;
 
+import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.lang.Assertion;
 

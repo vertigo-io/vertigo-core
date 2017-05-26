@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.Daemon;
+import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.lang.Activeable;

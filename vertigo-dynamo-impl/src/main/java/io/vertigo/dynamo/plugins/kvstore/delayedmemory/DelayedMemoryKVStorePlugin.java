@@ -34,8 +34,8 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 
 import io.vertigo.commons.daemon.Daemon;
+import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
-import io.vertigo.commons.impl.daemon.DaemonDefinition;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
