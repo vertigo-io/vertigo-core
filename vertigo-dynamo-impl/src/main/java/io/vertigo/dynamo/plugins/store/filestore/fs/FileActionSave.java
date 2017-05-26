@@ -28,8 +28,8 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 
+import io.vertigo.commons.transaction.VTransactionAfterCompletionFunction;
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.dynamo.transaction.VTransactionAfterCompletionFunction;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;

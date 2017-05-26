@@ -28,6 +28,8 @@ import org.junit.Assert;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.dynamo.criteria.AbstractCriteriaTest;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.data.movies.Movie2;
@@ -38,8 +40,6 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.SqlUtil;
 import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.util.ListBuilder;
 
 /**

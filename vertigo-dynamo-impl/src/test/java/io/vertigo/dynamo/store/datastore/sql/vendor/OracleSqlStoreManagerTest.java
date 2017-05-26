@@ -6,8 +6,8 @@ import org.junit.Ignore;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.database.impl.sql.vendor.oracle.OracleDataBase;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.impl.database.vendor.oracle.OracleDataBase;
 import io.vertigo.dynamo.store.data.domain.car.Car;
 import io.vertigo.dynamo.store.datastore.sql.AbstractSqlStoreManagerTest;
 import io.vertigo.dynamo.store.datastore.sql.SqlDataStoreAppConfig;

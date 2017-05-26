@@ -46,6 +46,8 @@ import io.vertigo.commons.peg.CalculatorTest;
 import io.vertigo.commons.peg.ParserTest;
 import io.vertigo.commons.peg.PegRulesTest;
 import io.vertigo.commons.script.ScriptManagerTest;
+import io.vertigo.commons.transaction.VTransactionBeforeAfterCommitTest;
+import io.vertigo.commons.transaction.VTransactionManagerTest;
 
 /**
  * Test de l'implémentation standard.
@@ -84,8 +86,12 @@ import io.vertigo.commons.script.ScriptManagerTest;
 		PegRulesTest.class,
 		ParserTest.class,
 		CalculatorTest.class,
-		EventBusManagerTest.class
+		EventBusManagerTest.class,
+		//--transaction
+		VTransactionManagerTest.class,
+		VTransactionBeforeAfterCommitTest.class
 })
+
 public final class CommonsTestSuite {
 	//
 }

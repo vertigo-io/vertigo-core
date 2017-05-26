@@ -24,9 +24,9 @@ import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.dynamo.kvstore.AbstractKVStoreManagerTest;
 import io.vertigo.dynamo.kvstore.data.Flower;
-import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ListBuilder;
 

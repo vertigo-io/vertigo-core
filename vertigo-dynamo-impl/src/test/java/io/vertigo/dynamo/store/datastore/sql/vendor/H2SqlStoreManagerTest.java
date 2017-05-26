@@ -3,7 +3,7 @@ package io.vertigo.dynamo.store.datastore.sql.vendor;
 import org.h2.Driver;
 
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.dynamo.impl.database.vendor.h2.H2DataBase;
+import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.dynamo.store.datastore.sql.AbstractSqlStoreManagerTest;
 import io.vertigo.dynamo.store.datastore.sql.SqlDataStoreAppConfig;
 

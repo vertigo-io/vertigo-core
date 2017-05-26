@@ -25,7 +25,7 @@ import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionManager;
 import ${dao.indexDtClassCanonicalName};
 </#if>
 <#if !dao.taskDefinitions.empty >

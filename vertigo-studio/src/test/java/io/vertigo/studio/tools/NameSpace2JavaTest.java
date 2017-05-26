@@ -23,8 +23,8 @@ import org.junit.Test;
 import io.vertigo.app.App;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.connection.SqlConnection;
+import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.connection.SqlConnection;
 
 /**
  * Test la génération à partir des oom et ksp.

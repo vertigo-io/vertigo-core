@@ -24,11 +24,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
-import io.vertigo.dynamo.database.SqlDataBaseManager;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.reporting.ReportMetricEngine;
 import io.vertigo.studio.impl.reporting.ReportingPlugin;

@@ -28,10 +28,10 @@ import java.sql.SQLException;
 import java.util.Collections;
 
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
-import io.vertigo.dynamo.database.vendor.SqlDialect.GenerationMode;
+import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.connection.SqlConnection;
+import io.vertigo.database.sql.statement.SqlPreparedStatement;
+import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.lang.WrappedException;
 
 /**

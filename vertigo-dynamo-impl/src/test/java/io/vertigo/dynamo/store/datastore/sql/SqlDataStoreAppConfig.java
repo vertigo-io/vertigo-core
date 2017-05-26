@@ -7,8 +7,8 @@ import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
-import io.vertigo.dynamo.plugins.database.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.dynamo.plugins.store.filestore.db.DbFileStorePlugin;
@@ -30,6 +30,7 @@ public class SqlDataStoreAppConfig {
 				.addModule(new CommonsFeatures()
 						.withScript()
 						.withCache(MemoryCachePlugin.class)
+						.withTransaction()
 						.build())
 				.addModule(new DynamoFeatures()
 						.withStore()

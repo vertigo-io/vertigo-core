@@ -27,9 +27,9 @@ import java.net.URL;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
+import io.vertigo.util.TempFile;
 
 /**
  * Utilitaire pour construire des cas de tests.

@@ -39,6 +39,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.vertigo.commons.daemon.DaemonDefinition;
+import io.vertigo.commons.transaction.VTransaction;
+import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
@@ -52,8 +54,6 @@ import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.impl.file.PurgeTempFileDaemon;
 import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
-import io.vertigo.dynamo.transaction.VTransaction;
-import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.DateUtil;

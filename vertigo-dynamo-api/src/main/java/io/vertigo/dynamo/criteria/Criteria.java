@@ -21,7 +21,7 @@ package io.vertigo.dynamo.criteria;
 import java.io.Serializable;
 import java.util.function.Predicate;
 
-import io.vertigo.dynamo.database.vendor.SqlDialect;
+import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Tuples;

@@ -23,6 +23,12 @@
 			<artifactId>vertigo-commons-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-database-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 		
 </project>

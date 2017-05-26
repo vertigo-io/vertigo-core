@@ -23,7 +23,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import io.vertigo.dynamo.database.vendor.SqlDialect;
+import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.lang.Assertion;
 

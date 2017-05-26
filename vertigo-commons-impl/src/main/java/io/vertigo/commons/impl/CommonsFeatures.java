@@ -40,9 +40,12 @@ import io.vertigo.commons.impl.node.NodeManagerImpl;
 import io.vertigo.commons.impl.node.NodeRegistryPlugin;
 import io.vertigo.commons.impl.script.ExpressionEvaluatorPlugin;
 import io.vertigo.commons.impl.script.ScriptManagerImpl;
+import io.vertigo.commons.impl.transaction.VTransactionAspect;
+import io.vertigo.commons.impl.transaction.VTransactionManagerImpl;
 import io.vertigo.commons.node.NodeManager;
 import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
 import io.vertigo.commons.script.ScriptManager;
+import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.param.Param;
 
 /**
@@ -72,7 +75,7 @@ public final class CommonsFeatures extends Features {
 
 	/**
 	 * Activates script with a defined plugin.
-	
+
 	 * @param expressionEvaluatorPluginClass the type of plugin to use
 	 * @param params the params
 	 * @return these features
@@ -141,6 +144,17 @@ public final class CommonsFeatures extends Features {
 				.addPlugin(nodeInfosPluginClass, params);
 		return this;
 
+	}
+
+	/**
+	 * Adds transaction management
+	 * @return these features
+	 */
+	public CommonsFeatures withTransaction() {
+		getModuleConfigBuilder()
+				.addComponent(VTransactionManager.class, VTransactionManagerImpl.class)
+				.addAspect(VTransactionAspect.class);
+		return this;
 	}
 
 	/** {@inheritDoc} */

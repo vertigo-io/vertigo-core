@@ -26,11 +26,6 @@ import io.vertigo.dynamo.collections.CollectionsManagerTest;
 import io.vertigo.dynamo.collections.FacetManagerTest;
 import io.vertigo.dynamo.criteria.predicate.PredicateCriteriaTest;
 import io.vertigo.dynamo.criteria.sql.SqlCriteriaTest;
-import io.vertigo.dynamo.database.vendor.h2.H2SqlDialectTest;
-import io.vertigo.dynamo.database.vendor.hsql.HSqlDialectTest;
-import io.vertigo.dynamo.database.vendor.oracle.OracleDialectTest;
-import io.vertigo.dynamo.database.vendor.postgresql.PostgreSqlDialectTest;
-import io.vertigo.dynamo.database.vendor.sqlserver.SqlServerDialectTest;
 import io.vertigo.dynamo.domain.constraint.ConstraintTest;
 import io.vertigo.dynamo.domain.formatter.BooleanFormatterTest;
 import io.vertigo.dynamo.domain.formatter.DateFormatterTest;
@@ -70,8 +65,6 @@ import io.vertigo.dynamo.store.datastore.sql.vendor.HSqlStoreManagerTest;
 import io.vertigo.dynamo.task.TaskManagerTest;
 import io.vertigo.dynamo.task.x.TaskEngineProcBatchTest;
 import io.vertigo.dynamo.task.x.TaskEngineSelectDynamicTest;
-import io.vertigo.dynamo.transaction.VTransactionBeforeAfterCommitTest;
-import io.vertigo.dynamo.transaction.VTransactionManagerTest;
 import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 
 /**
@@ -84,12 +77,6 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		//--collections
 		CollectionsManagerTest.class,
 		FacetManagerTest.class,
-		//--database
-		H2SqlDialectTest.class,
-		HSqlDialectTest.class,
-		OracleDialectTest.class,
-		PostgreSqlDialectTest.class,
-		SqlServerDialectTest.class,
 		//--domain
 		ConstraintTest.class,
 		BooleanFormatterTest.class,
@@ -145,9 +132,6 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		TaskManagerTest.class,
 		TaskEngineSelectDynamicTest.class,
 		TaskEngineProcBatchTest.class,
-		//--transaction
-		VTransactionManagerTest.class,
-		VTransactionBeforeAfterCommitTest.class,
 		//x
 		DslListFilterBuilderTest.class,
 

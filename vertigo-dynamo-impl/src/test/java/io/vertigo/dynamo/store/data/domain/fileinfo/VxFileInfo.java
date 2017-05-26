@@ -29,7 +29,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  */
 @javax.persistence.Entity
 @javax.persistence.Table(name = "VX_FILE_INFO")
-@org.hibernate.annotations.TypeDefs(value = { @org.hibernate.annotations.TypeDef(name = "DO_STREAM", typeClass = io.vertigo.dynamo.plugins.database.connection.hibernate.DataStreamType.class) })
+@org.hibernate.annotations.TypeDefs(value = { @org.hibernate.annotations.TypeDef(name = "DO_STREAM", typeClass = io.vertigo.database.plugins.sql.connection.hibernate.DataStreamType.class) })
 public final class VxFileInfo implements Entity {
 
 	/** SerialVersionUID. */
@@ -40,7 +40,7 @@ public final class VxFileInfo implements Entity {
 	private String mimeType;
 	private Long length;
 	private java.util.Date lastModified;
-	private io.vertigo.dynamo.domain.metamodel.DataStream fileData;
+	private io.vertigo.lang.DataStream fileData;
 
 	/** {@inheritDoc} */
 	@javax.persistence.Transient
@@ -160,7 +160,7 @@ public final class VxFileInfo implements Entity {
 	@javax.persistence.Column(name = "FILE_DATA")
 	@org.hibernate.annotations.Type(type = "DO_STREAM")
 	@Field(domain = "DO_STREAM", label = "data")
-	public io.vertigo.dynamo.domain.metamodel.DataStream getFileData() {
+	public io.vertigo.lang.DataStream getFileData() {
 		return fileData;
 	}
 
@@ -169,7 +169,7 @@ public final class VxFileInfo implements Entity {
 	 * Définit la valeur de la propriété 'data'.
 	 * @param fileData io.vertigo.dynamo.domain.metamodel.DataStream
 	 */
-	public void setFileData(final io.vertigo.dynamo.domain.metamodel.DataStream fileData) {
+	public void setFileData(final io.vertigo.lang.DataStream fileData) {
 		this.fileData = fileData;
 	}
 

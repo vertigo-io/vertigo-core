@@ -25,7 +25,7 @@ import java.io.File;
 
 import org.apache.log4j.Logger;
 
-import io.vertigo.dynamo.transaction.VTransactionAfterCompletionFunction;
+import io.vertigo.commons.transaction.VTransactionAfterCompletionFunction;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 
