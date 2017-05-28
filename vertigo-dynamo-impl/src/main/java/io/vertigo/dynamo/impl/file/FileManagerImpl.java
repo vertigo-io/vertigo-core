@@ -58,18 +58,17 @@ public final class FileManagerImpl implements FileManager, SimpleDefinitionProvi
 	/**
 	 * Constructor.
 	 * @param purgeDelayMinutesOpt Temp file purge delay.
-	 * @param daemonManager Daemon manager
 	 */
 	@Inject
-	public FileManagerImpl(
-			@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
+	public FileManagerImpl(@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
 		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
 	}
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		return Collections.singletonList(
-				new DaemonDefinition("DMN_PRUGE_TEMP_FILE", () -> new PurgeTempFileDaemon(purgeDelayMinutesOpt.orElse(60), TempFile.VERTIGO_TMP_DIR_PATH), 5 * 60));
+				new DaemonDefinition("DMN_PRUGE_TEMP_FILE",
+						() -> new PurgeTempFileDaemon(purgeDelayMinutesOpt.orElse(60), TempFile.VERTIGO_TMP_DIR_PATH), 5 * 60));
 	}
 
 	/** {@inheritDoc} */

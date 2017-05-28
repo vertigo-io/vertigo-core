@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -83,7 +84,6 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 	 * @param dbFilePath Base Berkeley DB file system path (Could use java env param like user.home user.dir or java.io.tmpdir)
 	 * @param transactionManager Transaction manager
 	 * @param codecManager Codec manager
-	 * @param daemonManager Daemon manager
 	 */
 	@Inject
 	public BerkeleyKVStorePlugin(
@@ -96,11 +96,10 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 		Assertion.checkNotNull(transactionManager);
 		//-----
 		collectionConfigs = parseCollectionConfigs(collections);
-		final ListBuilder<String> collectionNamesBuilder = new ListBuilder<>();
-		for (final BerkeleyCollectionConfig collectionConfig : collectionConfigs) {
-			collectionNamesBuilder.add(collectionConfig.getCollectionName());
-		}
-		collectionNames = collectionNamesBuilder.unmodifiable().build();
+		collectionNames = collectionConfigs
+				.stream()
+				.map(collectionConfig -> collectionConfig.getCollectionName())
+				.collect(Collectors.toList());
 		//-----
 		dbFilePathTranslated = FileUtil.translatePath(dbFilePath);
 		this.transactionManager = transactionManager;

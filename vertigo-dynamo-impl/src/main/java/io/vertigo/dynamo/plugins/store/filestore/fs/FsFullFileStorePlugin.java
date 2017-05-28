@@ -83,7 +83,6 @@ public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefin
 	 * @param path Root directory
 	 * @param transactionManager Transaction manager
 	 * @param purgeDelayMinutesOpt purge files older than this delay
-	 * @param daemonManager Daemon manager
 	 */
 	@Inject
 	public FsFullFileStorePlugin(
@@ -97,15 +96,12 @@ public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefin
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkArgument(path.endsWith("/"), "store path must ends with / ({0})", path);
-		//Assertion.checkState(purgeDelayMinutes.isEmpty() || daemonManager != null, "DeamonManager is mandatory when using a purgeDelay");
 		//-----
 		this.name = name.orElse(DEFAULT_STORE_NAME);
 		this.fileManager = fileManager;
 		this.transactionManager = transactionManager;
 		documentRoot = FileUtil.translatePath(path);
 		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
-		//-----
-
 	}
 
 	@Override
@@ -126,7 +122,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefin
 	/** {@inheritDoc} */
 	@Override
 	public FileInfo read(final FileInfoURI uri) {
-		// récupération des metadata.
+		/* read metadata*/
 		try {
 			final String metadataUri = String.class.cast(uri.getKey()) + METADATA_SUFFIX;
 			final Path metadataPath = Paths.get(documentRoot, metadataUri);
@@ -158,7 +154,6 @@ public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefin
 	}
 
 	private void saveFile(final String metaData, final FileInfo fileInfo) {
-
 		try (final InputStream inputStream = fileInfo.getVFile().createInputStream()) {
 			getCurrentTransaction().addAfterCompletion(new FileActionSave(inputStream, obtainFullFilePath(fileInfo.getURI())));
 		} catch (final IOException e) {
@@ -182,7 +177,8 @@ public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefin
 	/** {@inheritDoc} */
 	@Override
 	public FileInfo create(final FileInfo fileInfo) {
-		Assertion.checkNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
+		Assertion.checkNotNull(fileInfo);
+		Assertion.checkArgument(fileInfo.getURI() == null, "Only file without any id can be created.");
 		//-----
 		final VFile vFile = fileInfo.getVFile();
 		final SimpleDateFormat format = new SimpleDateFormat(INFOS_DATE_PATTERN);
@@ -231,7 +227,6 @@ public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefin
 	}
 
 	private static final class FileInputStreamBuilder implements InputStreamBuilder {
-
 		private final File file;
 
 		FileInputStreamBuilder(final File file) {
@@ -249,5 +244,4 @@ public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefin
 	private VTransaction getCurrentTransaction() {
 		return transactionManager.getCurrentTransaction();
 	}
-
 }
