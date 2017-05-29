@@ -17,7 +17,6 @@ import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ListBuilder;
-import oracle.jdbc.OracleDriver;
 
 /**
  * Test of sql storage in Oracle DB.
@@ -31,7 +30,7 @@ public final class OracleSqlStoreManagerTest extends AbstractSqlStoreManagerTest
 	protected AppConfig buildAppConfig() {
 		return SqlDataStoreAppConfig.build(
 				OracleDataBase.class.getCanonicalName(),
-				OracleDriver.class.getCanonicalName(),
+				"oracle.jdbc.OracleDriver",
 				"jdbc:oracle:thin:DT_VERTIGO/DT_VERTIGO@selma.dev.klee.lan.net:1521/O11UTF8");
 	}
 

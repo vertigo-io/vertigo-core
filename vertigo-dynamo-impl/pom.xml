@@ -64,11 +64,10 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>oracle</groupId>
+			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc7</artifactId> 
 			<version>12.1.0.1</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/src/test/lib/ojdbc7.jar</systemPath>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- libs -->
@@ -98,6 +97,12 @@
 			<artifactId>hibernate-jpa-2.1-api</artifactId>
 			<version>1.0.0.Final</version>
 			<optional>true</optional> <!-- HibernateStorePlugin -->
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.2.6.Final</version>
+			<optional>true</optional> <!-- HibernateConnectionProviderPlugin -->
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>

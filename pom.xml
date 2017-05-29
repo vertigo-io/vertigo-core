@@ -65,6 +65,7 @@
               </executions>
               <configuration>
               	<format>ALL</format>
+				<skip>true</skip>
               </configuration>
             </plugin>
 		</plugins>

@@ -30,7 +30,7 @@ import io.vertigo.database.sql.vendor.SqlMapping;
  * @author pchretien
  */
 public final class HSqlDataBase implements SqlDataBase {
-	private final SqlExceptionHandler sqlExceptionHandler = new HsqlExceptionHandler();
+	private final SqlExceptionHandler sqlExceptionHandler = new HSqlExceptionHandler();
 	private final SqlMapping sqlMapping = new SqlMappingImpl();
 	//	private final SqlMapping sqlMapping = new SqlMapper(new SqlMappingImpl());
 	private final SqlDialect sqlDialect = new HSqlDialect();

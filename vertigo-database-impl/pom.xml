@@ -17,11 +17,7 @@
 			<artifactId>vertigo-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-commons-impl</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-database-api</artifactId>
@@ -46,7 +42,12 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
-			
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-commons-impl</artifactId>
+			<version>${project.version}</version>
+			<scope>tests</scope>
+		</dependency>
 	
 		<dependency>
 			<groupId>org.hsqldb</groupId>
@@ -63,11 +64,10 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>oracle</groupId>
+			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc7</artifactId> 
 			<version>12.1.0.1</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/src/test/lib/ojdbc7.jar</systemPath>
+			<scope>test</scope>
 		</dependency>
 				
 		<!-- Connections Pool -->

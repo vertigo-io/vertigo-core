@@ -28,11 +28,11 @@ import io.vertigo.database.sql.statement.SqlPreparedStatement;
  * Cette implémentation est adaptée pour HSQL.
  * @author dchallas
  */
-final class HsqlExceptionHandler extends AbstractSqlExceptionHandler {
+final class HSqlExceptionHandler extends AbstractSqlExceptionHandler {
 	/**
 	 * Constructor.
 	 */
-	HsqlExceptionHandler() {
+	HSqlExceptionHandler() {
 		super();
 	}
 
