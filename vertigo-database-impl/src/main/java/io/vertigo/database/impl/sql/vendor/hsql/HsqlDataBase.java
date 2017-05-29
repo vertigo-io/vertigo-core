@@ -19,6 +19,7 @@
 package io.vertigo.database.impl.sql.vendor.hsql;
 
 import io.vertigo.database.impl.sql.vendor.core.SqlMappingImpl;
+import io.vertigo.database.sql.mapper.SqlMapper;
 import io.vertigo.database.sql.vendor.SqlDataBase;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.database.sql.vendor.SqlExceptionHandler;
@@ -29,9 +30,9 @@ import io.vertigo.database.sql.vendor.SqlMapping;
  *
  * @author pchretien
  */
-public final class HsqlDataBase implements SqlDataBase {
+public final class HSqlDataBase implements SqlDataBase {
 	private final SqlExceptionHandler sqlExceptionHandler = new HsqlExceptionHandler();
-	private final SqlMapping sqlMapping = new SqlMappingImpl();
+	private final SqlMapping sqlMapping = new SqlMapper(new SqlMappingImpl());
 	private final SqlDialect sqlDialect = new HSqlDialect();
 
 	/** {@inheritDoc} */
