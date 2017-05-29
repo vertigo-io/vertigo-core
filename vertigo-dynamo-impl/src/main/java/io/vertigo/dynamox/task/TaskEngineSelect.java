@@ -27,6 +27,7 @@ import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
+import io.vertigo.database.sql.parser.SqlNamedParam;
 import io.vertigo.database.sql.statement.SqlParameter;
 import io.vertigo.database.sql.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -83,7 +84,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 
 	/** {@inheritDoc} */
 	@Override
-	protected int doExecute(final SqlConnection connection, final SqlPreparedStatement statement, final List<TaskEngineSQLParam> params) throws SQLException {
+	protected int doExecute(final SqlConnection connection, final SqlPreparedStatement statement, final List<SqlNamedParam> params) throws SQLException {
 		final TaskAttribute outAttribute = getOutTaskAttribute();
 		final List<SqlParameter> sqlParameters = buildParameters(params);
 		final List<?> result;

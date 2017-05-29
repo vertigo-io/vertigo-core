@@ -27,6 +27,7 @@ import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
+import io.vertigo.database.sql.parser.SqlNamedParam;
 import io.vertigo.database.sql.statement.SqlPreparedStatement;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -35,7 +36,6 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
-import io.vertigo.dynamox.task.TaskEngineSQLParam;
 
 /**
  * Permet l'appel de requête insert en utilisant generatedKeys du PreparedStatement pour récupérer
@@ -56,7 +56,7 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 
 	/** {@inheritDoc} */
 	@Override
-	public int doExecute(final SqlConnection connection, final SqlPreparedStatement statement, final List<TaskEngineSQLParam> params) throws SQLException {
+	public int doExecute(final SqlConnection connection, final SqlPreparedStatement statement, final List<SqlNamedParam> params) throws SQLException {
 		final int sqlRowcount = statement.executeUpdate(buildParameters(params));
 		setOutParameters(statement);
 		return sqlRowcount;

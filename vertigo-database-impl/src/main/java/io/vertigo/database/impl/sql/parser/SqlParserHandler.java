@@ -16,25 +16,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamox.task;
+package io.vertigo.database.impl.sql.parser;
 
 import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
+import io.vertigo.database.sql.parser.SqlNamedParam;
 
 /**
  * Cette implémentation permet de créer la requête SQL bindée ainsi que de sortir la liste des paramètres de la requête (IN, OUT, IN/OUT).
  * @author pchretien
  */
-final class SqlParserHandler implements ScriptParserHandler {
+public final class SqlParserHandler implements ScriptParserHandler {
 	/** Requête SQL fabriquée lors du parsing. */
 	private final StringBuilder sql;
 	/** Liste des paramètres. */
-	private final List<TaskEngineSQLParam> params;
+	private final List<SqlNamedParam> params;
 
-	SqlParserHandler() {
+	/**
+	 * Constructor.
+	 */
+	public SqlParserHandler() {
 		sql = new StringBuilder();
 		params = new java.util.ArrayList<>();
 	}
@@ -52,7 +56,7 @@ final class SqlParserHandler implements ScriptParserHandler {
 		// Et on teste s'il s'agit d'un attribut du service.
 		// Dans le cas des DTO on ne teste que le nom du DTO et non (pour l'instant) son paramètre
 
-		final TaskEngineSQLParam param = new TaskEngineSQLParam(expression);
+		final SqlNamedParam param = new SqlNamedParam(expression);
 		params.add(param);
 		//On binde paramètre, en le remplaçant par un "?"
 		appendSql("?");
@@ -69,14 +73,14 @@ final class SqlParserHandler implements ScriptParserHandler {
 	/**
 	 * @return Liste des paramètres.
 	 */
-	List<TaskEngineSQLParam> getParams() {
+	public List<SqlNamedParam> getParams() {
 		return Collections.unmodifiableList(params);
 	}
 
 	/**
 	 * @return Requête SQL bindée (donc Utilisable en JDBC).
 	 */
-	String getSql() {
+	public String getSql() {
 		return sql.toString();
 	}
 }

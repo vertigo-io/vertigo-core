@@ -18,6 +18,7 @@
  */
 package io.vertigo.database.impl.sql;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,14 +26,20 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.script.ScriptManager;
+import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.database.impl.sql.parser.SqlParserHandler;
 import io.vertigo.database.impl.sql.statement.SqlPreparedStatementImpl;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
+import io.vertigo.database.sql.parser.SqlNamedParam;
 import io.vertigo.database.sql.statement.SqlPreparedStatement;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Tuples;
+import io.vertigo.lang.Tuples.Tuple2;
 
 /**
 * Implémentation standard du gestionnaire des données et des accès aux données.
@@ -40,6 +47,11 @@ import io.vertigo.lang.Assertion;
 * @author pchretien
 */
 public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
+	private static final char SEPARATOR = '#';
+	/**
+	 * Liste des séparateurs utilisés dans le traitement des requêtes KSP.
+	 */
+	private static final ScriptSeparator SQL_SEPARATOR = new ScriptSeparator(SEPARATOR);
 	private final AnalyticsManager analyticsManager;
 	private final Map<String, SqlConnectionProvider> connectionProviderPluginMap;
 
@@ -95,4 +107,15 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		final boolean returnGeneratedKeys = generationMode == GenerationMode.GENERATED_KEYS;
 		return new SqlPreparedStatementImpl(analyticsManager, connection, sql, returnGeneratedKeys, generatedColumns);
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Tuple2<String, List<SqlNamedParam>> parseQuery(final String query, final ScriptManager scriptManager) {
+		Assertion.checkArgNotEmpty(query);
+		//-----
+		final SqlParserHandler scriptHandler = new SqlParserHandler();
+		scriptManager.parse(query, scriptHandler, Collections.singletonList(SQL_SEPARATOR));
+		return Tuples.of(scriptHandler.getSql(), scriptHandler.getParams());
+	}
+
 }

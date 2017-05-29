@@ -16,10 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamox.task;
+package io.vertigo.database.sql.parser;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;
 
 /**
@@ -29,7 +28,8 @@ import io.vertigo.lang.WrappedException;
  *
  * @author pchretien
  */
-public final class TaskEngineSQLParam {
+public final class SqlNamedParam {
+	private final String[] tokens;
 	private final String attributeName;
 	private final String fieldName;
 	private final Integer rowNumber;
@@ -38,51 +38,44 @@ public final class TaskEngineSQLParam {
 	 * Constructor.
 	 *
 	 * @param betweenCar String
-	 * @param in If the param is in
 	 */
-	TaskEngineSQLParam(final String betweenCar) {
-		final int indexOfFirstPoint = betweenCar.indexOf('.');
-		if (indexOfFirstPoint > -1) {
-			final int indexOfLastPoint = betweenCar.lastIndexOf('.');
-			// cas du DTO/DTC
-			// exemple : DTO_PERSONNE.NOM
-			attributeName = betweenCar.substring(0, indexOfFirstPoint);
-			fieldName = betweenCar.substring(indexOfLastPoint + 1);
-
-			if (indexOfFirstPoint != indexOfLastPoint) {
-				// cas particulier des DTC : il y a qqc entre le premier et le deuxieme point
-				// qui doit être un entier >= 0
-				// exemple : DTC_PERSONNE.12.Nom
-				final String betweenPoints = betweenCar.substring(indexOfFirstPoint + 1, indexOfLastPoint);
-				rowNumber = parseDtcRowNumber(betweenCar, betweenPoints);
-			} else {
-				rowNumber = null;
-			}
-		} else {
-			//Cas du input natif (ex: CODE)
-			attributeName = betweenCar;
-			rowNumber = null;
+	public SqlNamedParam(final String betweenCar) {
+		tokens = betweenCar.split("\\.");
+		if (tokens.length == 1) {
+			//Simple bound param : CODE
+			attributeName = tokens[0];
 			fieldName = null;
+			rowNumber = null;
+		} else if (tokens.length == 2) {
+			// a field of a bean is bound
+			// example : DTO_MOVIE.TITLE
+			attributeName = tokens[0];
+			fieldName = tokens[1];
+			rowNumber = null;
+		} else if (tokens.length == 3) {
+			// cas particulier des DTC : il y a qqc entre le premier et le deuxieme point
+			// qui doit être un entier >= 0
+			// exemple : DTC_PERSONNE.12.Nom
+			attributeName = tokens[0];
+			fieldName = tokens[2];
+			rowNumber = parseDtcRowNumber(betweenCar);
+		} else {
+			throw new IllegalStateException();
 		}
-
-		//-----
 		Assertion.checkNotNull(attributeName);
 		//Si le numéro de ligne est renseignée alors le champ doit l'être aussi
 		Assertion.when(rowNumber != null)
 				.check(() -> fieldName != null, "Invalid syntax for field in DTC. Use : MY_DTO.0.MY_FIELD");
 	}
 
-	private static int parseDtcRowNumber(final String betweenCar, final String betweenPoints) {
-		final Integer dtcRowNumber;
+	private static int parseDtcRowNumber(final String betweenPoints) {
 		try {
-			dtcRowNumber = Integer.valueOf(betweenPoints);
+			final Integer dtcRowNumber = Integer.valueOf(betweenPoints);
+			Assertion.checkState(dtcRowNumber != null && dtcRowNumber >= 0, "Paramètre incohérent : {0} doit être positif ou null.", betweenPoints);
+			return dtcRowNumber;
 		} catch (final NumberFormatException nfe) {
-			throw WrappedException.wrap(nfe, "Paramètre " + betweenCar + " incohérent : " + betweenPoints + " n'est pas un entier.");
+			throw WrappedException.wrap(nfe, betweenPoints + " n'est pas un entier.");
 		}
-		if (dtcRowNumber == null || dtcRowNumber < 0) {
-			throw new VSystemException("Paramètre {0} incohérent : {1} doit être positif ou null.", betweenCar, betweenPoints);
-		}
-		return dtcRowNumber;
 	}
 
 	/**
@@ -90,42 +83,42 @@ public final class TaskEngineSQLParam {
 	 *
 	 * @return S'il s'agit d'un paramètre primitif
 	 */
-	boolean isPrimitive() {
+	public boolean isPrimitive() {
 		return fieldName == null;
 	}
 
 	/**
 	 * @return Paramètre de type liste.(DTC)
 	 */
-	boolean isList() {
+	public boolean isList() {
 		return rowNumber != null && !isPrimitive();
 	}
 
 	/**
 	 * @return Paramètre de type Objet.(DTO)
 	 */
-	boolean isObject() {
+	public boolean isObject() {
 		return rowNumber == null && !isPrimitive();
 	}
 
 	/**
 	 * @return Nom de l'attribut de la tache (ou paramètre de tache)
 	 */
-	String getAttributeName() {
+	public String getAttributeName() {
 		return attributeName;
 	}
 
 	/**
 	 * @return Nom du champ
 	 */
-	String getFieldName() {
+	public String getFieldName() {
 		return fieldName;
 	}
 
 	/**
 	 * @return Numéro de ligne dans le cas d'un paramètre représentant un élément d'une liste
 	 */
-	int getRowNumber() {
+	public int getRowNumber() {
 		Assertion.checkNotNull(rowNumber, "il ne s'agit pas d'une liste");
 		//-----
 		return rowNumber;

@@ -22,20 +22,19 @@ import java.sql.BatchUpdateException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.script.SeparatorType;
-import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionResourceId;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
+import io.vertigo.database.sql.parser.SqlNamedParam;
 import io.vertigo.database.sql.statement.SqlParameter;
 import io.vertigo.database.sql.statement.SqlPreparedStatement;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
@@ -49,7 +48,6 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Tuples;
 import io.vertigo.lang.Tuples.Tuple2;
 
 /**
@@ -105,12 +103,6 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	//Qui utilise ça ?? // peut on revenir à une forme explicite
 	public static final String SQL_ROWCOUNT = "INT_SQL_ROWCOUNT";
 
-	private static final char SEPARATOR = '#';
-	/**
-	 * Liste des séparateurs utilisés dans le traitement des requêtes KSP.
-	 */
-	private static final ScriptSeparator SQL_SEPARATOR = new ScriptSeparator(SEPARATOR);
-
 	private final ScriptManager scriptManager;
 	private final VTransactionManager transactionManager;
 	private final StoreManager storeManager;
@@ -143,18 +135,18 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * @return Nombre de lignes affectées (Insert/ Update / Delete)
 	 * @throws SQLException Erreur sql
 	 */
-	protected abstract int doExecute(final SqlConnection connection, final SqlPreparedStatement statement, final List<TaskEngineSQLParam> params) throws SQLException;
+	protected abstract int doExecute(final SqlConnection connection, final SqlPreparedStatement statement, final List<SqlNamedParam> params) throws SQLException;
 
 	/** {@inheritDoc} */
 	@Override
 	public void execute() {
 		final SqlConnection connection = obtainConnection();
 
-		final Tuple2<String, List<TaskEngineSQLParam>> preparedQuery = prepareParams(getSqlQuery().trim(), scriptManager);
-		try (final SqlPreparedStatement statement = createStatement(preparedQuery.getVal1(), connection)) {
+		final Tuple2<String, List<SqlNamedParam>> parsedQuery = sqlDataBaseManager.parseQuery(getSqlQuery().trim(), scriptManager);
+		try (final SqlPreparedStatement statement = createStatement(parsedQuery.getVal1(), connection)) {
 			try {
 				//Execute le Statement JDBC.
-				final int sqlRowcount = doExecute(connection, statement, preparedQuery.getVal2());
+				final int sqlRowcount = doExecute(connection, statement, parsedQuery.getVal2());
 				//On positionne le nombre de lignes affectées.
 				setRowCount(sqlRowcount);
 			} catch (final BatchUpdateException sqle) { //some exception embedded the usefull one
@@ -224,20 +216,6 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	}
 
 	/**
-	 * Permet de parser la requête afin d'enregistrer les paramètres utilisés
-	 *
-	 * @return La requête bindée
-	 * @param query Requête SQL
-	 */
-	private static Tuple2<String, List<TaskEngineSQLParam>> prepareParams(final String query, final ScriptManager scriptManager) {
-		Assertion.checkArgNotEmpty(query);
-		//-----
-		final SqlParserHandler scriptHandler = new SqlParserHandler();
-		scriptManager.parse(query, scriptHandler, Collections.singletonList(SQL_SEPARATOR));
-		return Tuples.of(scriptHandler.getSql(), scriptHandler.getParams());
-	}
-
-	/**
 	 * Crée le Statement pour le select ou bloc sql.
 	 * Initialise la liste des paramètres en entrée et en sortie
 	 *
@@ -256,20 +234,20 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * @param statement de type KPreparedStatement, KCallableStatement...
 	 * @throws SQLException En cas d'erreur dans la configuration
 	 */
-	protected final List<SqlParameter> buildParameters(final List<TaskEngineSQLParam> params) throws SQLException {
+	protected final List<SqlParameter> buildParameters(final List<SqlNamedParam> params) throws SQLException {
 		final List<SqlParameter> sqlParameters = new ArrayList<>();
-		for (final TaskEngineSQLParam param : params) {
+		for (final SqlNamedParam param : params) {
 			final Integer rowNumber = param.isList() ? param.getRowNumber() : null;
 			sqlParameters.add(buildSqlParameter(param, rowNumber));
 		}
 		return sqlParameters;
 	}
 
-	protected final SqlParameter buildSqlParameter(final TaskEngineSQLParam param, final Integer rowNumber) {
+	protected final SqlParameter buildSqlParameter(final SqlNamedParam param, final Integer rowNumber) {
 		return new SqlParameter(getDataTypeParameter(param), getValueParameter(param, rowNumber));
 	}
 
-	private final Class getDataTypeParameter(final TaskEngineSQLParam param) {
+	private final Class getDataTypeParameter(final SqlNamedParam param) {
 		final Domain domain;
 		if (param.isPrimitive()) {
 			// Paramètre primitif
@@ -293,7 +271,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 		return domain.getDataType().getJavaClass();
 	}
 
-	private Object getValueParameter(final TaskEngineSQLParam param, final Integer rowNumber) {
+	private Object getValueParameter(final SqlNamedParam param, final Integer rowNumber) {
 		final Object value;
 		if (param.isPrimitive()) {
 			value = getValue(param.getAttributeName());

@@ -31,6 +31,7 @@ import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
+import io.vertigo.database.sql.parser.SqlNamedParam;
 import io.vertigo.database.sql.statement.SqlParameter;
 import io.vertigo.database.sql.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -54,13 +55,13 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 
 	/** {@inheritDoc} */
 	@Override
-	public int doExecute(final SqlConnection connection, final SqlPreparedStatement statement, final List<TaskEngineSQLParam> params) throws SQLException {
+	public int doExecute(final SqlConnection connection, final SqlPreparedStatement statement, final List<SqlNamedParam> params) throws SQLException {
 		// on alimente le batch.
 		// La taille du batch est déduite de la taille de la collection en entrée.
 		final int batchSize = getBatchSize();
 		for (int rowNumber = 0; rowNumber < batchSize; rowNumber++) {
 			final List<SqlParameter> sqlParameters = new ArrayList<>();
-			for (final TaskEngineSQLParam param : params) {
+			for (final SqlNamedParam param : params) {
 				sqlParameters.add(buildSqlParameter(param, rowNumber));
 			}
 			statement.addBatch(sqlParameters);
