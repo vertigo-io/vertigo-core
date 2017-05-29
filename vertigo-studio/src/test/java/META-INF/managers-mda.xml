@@ -24,8 +24,8 @@
 				<param name="generateDrop" value="true" />
 			</plugin>
 			
-			<plugin class="io.vertigo.studio.plugins.mda.domain.js.JSGeneratorPlugin">
-				<param name="targetSubDir" value="jsgen" />
+			<plugin class="io.vertigo.studio.plugins.mda.domain.ts.TSGeneratorPlugin">
+				<param name="targetSubDir" value="tsgen" />
 				<param name="generateDtResourcesJS" value="true" />
 				<param name="generateJsDtDefinitions" value="true" />
 			</plugin>

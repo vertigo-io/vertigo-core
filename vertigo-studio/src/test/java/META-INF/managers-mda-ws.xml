@@ -10,8 +10,8 @@
 			<param name="targetGenDir" value="target/" />
 			<param name="encoding" value="utf8" />
  
-			<plugin class="io.vertigo.studio.plugins.mda.webservice.WsJsGeneratorPlugin">
-				<param name="targetSubDir" value="jsgen" />
+ 			<plugin class="io.vertigo.studio.plugins.mda.webservice.WsTsGeneratorPlugin">
+				<param name="targetSubDir" value="tsgen" />
 			</plugin>
 		</component>
 	</module>
