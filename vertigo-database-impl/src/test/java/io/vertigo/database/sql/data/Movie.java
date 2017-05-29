@@ -18,12 +18,23 @@
  */
 package io.vertigo.database.sql.data;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 /**
  * Movie.
  */
 public final class Movie {
 	private Long id;
 	private String title;
+	@Deprecated
+	private Date releaseDate;
+
+	private LocalDate releaseLocalDate;
+
+	//	private LocalDateTime releaseLocalDateTime;
+	//
+	//	private Mail mail;
 
 	public final Long getId() {
 		return id;
@@ -40,4 +51,38 @@ public final class Movie {
 	public final void setTitle(final String title) {
 		this.title = title;
 	}
+
+	@Deprecated
+	public Date getReleaseDate() {
+		return releaseDate;
+	}
+
+	@Deprecated
+	public void setReleaseDate(final Date releaseDate) {
+		this.releaseDate = releaseDate;
+	}
+
+	public void setReleaseLocalDate(final LocalDate releaseLocalDate) {
+		this.releaseLocalDate = releaseLocalDate;
+	}
+
+	public LocalDate getReleaseLocalDate() {
+		return releaseLocalDate;
+	}
+
+	//	public LocalDateTime getreleaseLocalDateTime() {
+	//		return releaseLocalDateTime;
+	//	}
+	//
+	//	public void setreleaseLocalDateTime(final LocalDateTime releaseLocalDateTime) {
+	//		this.releaseLocalDateTime = releaseLocalDateTime;
+	//	}
+	//
+	//	public void setMail(final Mail mail) {
+	//		this.mail = mail;
+	//	}
+	//
+	//	public Mail getMail() {
+	//		return mail;
+	//	}
 }

@@ -13,7 +13,7 @@ public class OracleDataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
 		final SqlConnection connection = obtainMainConnection();
 		try {
 			//  BIGINT Datatype used on Abstract class is incompatible with Oracle so we use number
-			execCallableStatement(connection, "create table movie(id NUMBER , title varchar(255))");
+			execpreparedStatement(connection, "create table movie(id NUMBER , title varchar(255))");
 		} finally {
 			connection.release();
 		}
@@ -24,7 +24,7 @@ public class OracleDataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
 		final SqlConnection connection = obtainMainConnection();
 		try {
 			// we use a shared database so we need to drop the table
-			execCallableStatement(connection, "drop table movie");
+			execpreparedStatement(connection, "drop table movie");
 		} finally {
 			connection.release();
 		}

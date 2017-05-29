@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.LocalDate;
 import java.util.Date;
 
 import io.vertigo.database.sql.vendor.SqlMapping;
@@ -66,6 +67,9 @@ public final class SqlMappingImpl implements SqlMapping {
 		if (DataStream.class.isAssignableFrom(dataType)) {
 			return Types.BLOB;
 		}
+		if (LocalDate.class.isAssignableFrom(dataType)) {
+			return Types.DATE;
+		}
 		throw new IllegalArgumentException(TYPE_UNSUPPORTED + dataType);
 	}
 
@@ -93,6 +97,12 @@ public final class SqlMappingImpl implements SqlMapping {
 				statement.setBigDecimal(index, (BigDecimal) value);
 			} else if (String.class.isAssignableFrom(dataType)) {
 				statement.setString(index, (String) value);
+			} else if (LocalDate.class.isAssignableFrom(dataType)) {
+				final LocalDate localDate = (LocalDate) value;
+				statement.setDate(index, new java.sql.Date(
+						localDate.getYear() - 1900,
+						localDate.getMonthValue() - 1, //because sql.Date.month 0-11
+						localDate.getDayOfMonth()));
 			} else if (Date.class.isAssignableFrom(dataType)) {
 				if (value instanceof Timestamp) {
 					statement.setTimestamp(index, (Timestamp) value);
@@ -152,6 +162,9 @@ public final class SqlMappingImpl implements SqlMapping {
 		} else if (BigDecimal.class.isAssignableFrom(dataType)) {
 			//Si la valeur est null rs renvoie bien null
 			value = resultSet.getBigDecimal(col);
+		} else if (LocalDate.class.isAssignableFrom(dataType)) {
+			final java.sql.Date date = resultSet.getDate(col);
+			value = date == null ? null : date.toLocalDate();
 		} else if (Date.class.isAssignableFrom(dataType)) {
 			//Si la valeur est null rs renvoie bien null
 			final Timestamp timestamp = resultSet.getTimestamp(col);

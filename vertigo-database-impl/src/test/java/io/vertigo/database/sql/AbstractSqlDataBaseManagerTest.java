@@ -19,8 +19,13 @@
 package io.vertigo.database.sql;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -29,7 +34,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.data.Movie;
@@ -44,8 +48,10 @@ import io.vertigo.util.ListBuilder;
  * @author pchretien
  */
 public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4 {
-	private static final String TITLE_MOVIE_1 = "citizen kane";
-	private static final String TITLE_MOVIE_2 = "vertigo";
+	private static final String INSERT_INTO_MOVIE_VALUES = "insert into movie values (?, ?, ?, ?)";
+	private static final String CREATE_TABLE_MOVIE = "create table movie(id BIGINT , title varchar(255), release_Date date, release_Local_Date date);";
+	private static final String TITLE_MOVIE_1 = "citizen kane"; //1 May 1941
+	private static final String TITLE_MOVIE_2 = "vertigo"; //9 May 1958
 	private static final String TITLE_MOVIE_3 = "gone girl";
 	private static final String TITLE_MOVIE_4 = "Jurassic Park";
 	@Inject
@@ -62,7 +68,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		//A chaque test on recrée la table famille
 		final SqlConnection connection = obtainMainConnection();
 		try {
-			execCallableStatement(connection, "create table movie(id BIGINT , title varchar(255));");
+			execpreparedStatement(connection, CREATE_TABLE_MOVIE);
 		} finally {
 			connection.release();
 		}
@@ -73,7 +79,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		//A chaque fin de test on arrête la base.
 		final SqlConnection connection = obtainMainConnection();
 		try {
-			execCallableStatement(connection, "shutdown;");
+			execpreparedStatement(connection, "shutdown;");
 		} finally {
 			connection.release();
 		}
@@ -91,33 +97,35 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		}
 	}
 
-	protected void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
+	protected void execpreparedStatement(final SqlConnection connection, final String sql) throws SQLException {
 		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, GenerationMode.NONE)) {
 			preparedStatement.executeUpdate(Collections.emptyList());
 		}
 	}
 
-	private void insert(final SqlConnection connection, final long key, final String libelle) throws SQLException {
-		final String sql = "insert into movie values (?, ?)";
+	private void insert(final SqlConnection connection, final long key, final String libelle, final Date releaseDate, final LocalDate releaselocalDate) throws SQLException {
+		final String sql = INSERT_INTO_MOVIE_VALUES;
 		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, GenerationMode.NONE)) {
 			final List<SqlParameter> sqlParameters = new ListBuilder<SqlParameter>()
 					.add(new SqlParameter(Long.class, key))
 					.add(new SqlParameter(String.class, libelle))
+					.add(new SqlParameter(Date.class, releaseDate))
+					.add(new SqlParameter(LocalDate.class, releaselocalDate))
 					.build();
 			//-----
 			preparedStatement.executeUpdate(sqlParameters);
 		}
 	}
 
-	public void createDatas() throws Exception {
+	private void createDatas() throws Exception {
 		final SqlConnection connection = obtainMainConnection();
 		try {
-			execCallableStatement(connection, "insert into movie values (1, 'citizen kane')");
+			execpreparedStatement(connection, "insert into movie values (1, 'citizen kane', '1941-05-01', '1941-05-01')");
 			//-----
-			execCallableStatement(connection, "insert into movie values (2, 'vertigo')");
+			execpreparedStatement(connection, "insert into movie values (2, 'vertigo', '1958-05-09', '1958-05-09')");
 			//-----
 			//On passe par une requête bindée
-			insert(connection, 3, TITLE_MOVIE_3);
+			insert(connection, 3, TITLE_MOVIE_3, null, null);
 			connection.commit();
 		} finally {
 			connection.release();
@@ -125,11 +133,10 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 	}
 
 	@Test
-	public void testCallableStatement() throws Exception {
+	public void testPreparedStatement() throws Exception {
 		createDatas();
 	}
 
-	//On teste un preparestatement mappé sur un type statique (Class famille)
 	@Test
 	public void testSelectEntities() throws Exception {
 		createDatas();
@@ -137,12 +144,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		final List<Movie> movies = executeQuery(Movie.class, "select * from movie", null);
 
 		Assert.assertEquals(3, movies.size());
-
-		for (final Movie movie : movies) {
-			final long id = movie.getId();
-			final String title = movie.getTitle();
-			checkTitle(id, title);
-		}
+		movies.forEach(this::checkMovie);
 	}
 
 	@Test
@@ -153,15 +155,30 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		Assert.assertEquals(3, movieInfos.size());
 	}
 
-	private static void checkTitle(final long id, final String title) {
-		if (id == 1) {
-			Assert.assertEquals(TITLE_MOVIE_1, title);
-		} else if (id == 2) {
-			Assert.assertEquals(TITLE_MOVIE_2, title);
-		} else if (id == 3) {
-			Assert.assertEquals(TITLE_MOVIE_3, title);
-		} else {
-			Assert.fail();
+	private void checkMovie(final Movie movie) {
+		switch (movie.getId().intValue()) {
+			case 1:
+				Assert.assertEquals(TITLE_MOVIE_1, movie.getTitle());
+				Assert.assertEquals("01-05-1941", new SimpleDateFormat("dd-MM-YYYY").format(movie.getReleaseDate()));
+				Assert.assertEquals(1, movie.getReleaseLocalDate().getDayOfMonth());
+				Assert.assertEquals(5, movie.getReleaseLocalDate().getMonthValue());
+				Assert.assertEquals(1941, movie.getReleaseLocalDate().getYear());
+
+				break;
+			case 2:
+				Assert.assertEquals(TITLE_MOVIE_2, movie.getTitle());
+				Assert.assertEquals("09-05-1958", new SimpleDateFormat("dd-MM-YYYY").format(movie.getReleaseDate()));
+				Assert.assertEquals(9, movie.getReleaseLocalDate().getDayOfMonth());
+				Assert.assertEquals(5, movie.getReleaseLocalDate().getMonthValue());
+				Assert.assertEquals(1958, movie.getReleaseLocalDate().getYear());
+				break;
+			case 3:
+				Assert.assertEquals(TITLE_MOVIE_3, movie.getTitle());
+				Assert.assertEquals(null, movie.getReleaseDate());
+				Assert.assertEquals(null, movie.getReleaseLocalDate());
+				break;
+			default:
+				Assert.fail();
 		}
 	}
 
@@ -224,18 +241,17 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 
 	@Test
 	public void testBatchInserts() throws Exception {
-
 		final List<Movie> bondList = new ListBuilder<Movie>()
-				.add(createMovie(1, "Doctor No"))
-				.add(createMovie(2, "From Russia with Love"))
-				.add(createMovie(3, "Goldfinger"))
-				.add(createMovie(4, "Thunderball"))
-				.add(createMovie(5, "You only live twice"))
-				.add(createMovie(6, "On her majesty's secret service"))
-				.add(createMovie(7, "Diamonds are forever"))
-				.add(createMovie(8, "Live and let die"))
-				.add(createMovie(9, "The man with the golden gun"))
-				.add(createMovie(10, "The spy who loved me"))
+				.add(createMovie(1, "Doctor No", 1962, 10, 5))//5 October 1962
+				.add(createMovie(2, "From Russia with Love", 1963, 10, 10)) //10 October 1963
+				.add(createMovie(3, "Goldfinger", 1964, 9, 17)) //17 September 1964
+				.add(createMovie(4, "Thunderball", 1965, 12, 9)) //9 December 1965
+				.add(createMovie(5, "You only live twice", 1967, 6, 12)) //12 June 1967
+				.add(createMovie(6, "On her majesty's secret service", 1969, 12, 13)) //13 December 1969
+				.add(createMovie(7, "Diamonds are forever", 1971, 12, 14)) //14 December 1971
+				.add(createMovie(8, "Live and let die", 1973, 6, 27)) //27 June 1973
+				.add(createMovie(9, "The man with the golden gun", 1974, 12, 14)) //14 December 1974
+				.add(createMovie(10, "The spy who loved me", 1977, 7, 7)) //7 July 1977
 				.add(createMovie(11, "Moonraker"))
 				.add(createMovie(12, "For your eyes only"))
 				.add(createMovie(13, "Octopussy"))
@@ -244,16 +260,19 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 				.build();
 
 		final SqlConnectionProvider sqlConnectionProvider = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
-		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
-		final String sql = "insert into movie values (?, ?)";
+		final String sql = INSERT_INTO_MOVIE_VALUES;
 		final int result;
+
+		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
 		try {
 			try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, GenerationMode.NONE)) {
 				for (int i = 0; i < bondList.size(); i++) {
 					final Movie movie = bondList.get(i);
 					preparedStatement.addBatch(Arrays.asList(
 							new SqlParameter(Long.class, movie.getId()),
-							new SqlParameter(String.class, movie.getTitle())));
+							new SqlParameter(String.class, movie.getTitle()),
+							new SqlParameter(Date.class, movie.getReleaseDate()),
+							new SqlParameter(LocalDate.class, movie.getReleaseLocalDate())));
 				}
 				result = preparedStatement.executeBatch();
 			}
@@ -265,14 +284,24 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		Assert.assertEquals(bondList.size(), result);
 		final List<Integer> countMovie = executeQuery(Integer.class, "select count(*) from movie", 1);
 		Assert.assertEquals(bondList.size(), countMovie.get(0).intValue());
+	}
 
+	private Movie createMovie(final long id, final String title, final int year, final int month, final int dayOfMonth) {
+		final Calendar calendar = new GregorianCalendar();
+		calendar.set(year, month, dayOfMonth);
+		return createMovie(id, title, calendar.getTime(), LocalDate.of(year, month, dayOfMonth));
 	}
 
 	private Movie createMovie(final long id, final String title) {
+		return createMovie(id, title, null, null);
+	}
 
+	private Movie createMovie(final long id, final String title, final Date date, final LocalDate localDate) {
 		final Movie movie = new Movie();
 		movie.setId(id);
 		movie.setTitle(title);
+		movie.setReleaseDate(date);
+		movie.setReleaseLocalDate(localDate);
 		return movie;
 
 	}
@@ -287,12 +316,12 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 			//on crée des données dans 'secondary'
 			final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary").obtainConnection();
 			try {
-				execCallableStatement(connection, "insert into movie values (1, 'Star wars')");
-				execCallableStatement(connection, "insert into movie values (2, 'Will Hunting')");
-				execCallableStatement(connection, "insert into movie values (3, 'Usual Suspects')");
+				execpreparedStatement(connection, "insert into movie values (1, 'Star wars', null, null)");
+				execpreparedStatement(connection, "insert into movie values (2, 'Will Hunting', null, null)");
+				execpreparedStatement(connection, "insert into movie values (3, 'Usual Suspects', null, null)");
 				//-----
 				//On passe par une requête bindée
-				insert(connection, 4, TITLE_MOVIE_4);
+				insert(connection, 4, TITLE_MOVIE_4, null, null);
 				connection.commit();
 			} finally {
 				connection.release();
@@ -317,7 +346,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		//A chaque test on recrée la table famille
 		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary").obtainConnection();
 		try {
-			execCallableStatement(connection, "create table movie(id BIGINT , title varchar(255));");
+			execpreparedStatement(connection, CREATE_TABLE_MOVIE);
 		} finally {
 			connection.release();
 		}
@@ -327,7 +356,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		//A chaque fin de test on arrête la base.
 		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary").obtainConnection();
 		try {
-			execCallableStatement(connection, "shutdown;");
+			execpreparedStatement(connection, "shutdown;");
 		} finally {
 			connection.release();
 		}
