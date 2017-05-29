@@ -256,7 +256,7 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 		}
 	}
 
-	private static <E extends Enum> Map<E, String> parseLdapAttributeMapping(final String ldapAttributeMapping, final Class<E> enumClass) {
+	private static <E extends Enum<E>> Map<E, String> parseLdapAttributeMapping(final String ldapAttributeMapping, final Class<E> enumClass) {
 		final Map<E, String> accountAttributeMapping = new HashMap<>();
 		for (final String mapping : ldapAttributeMapping.split("\\s*,\\s*")) {
 			final String[] splitedMapping = mapping.split("\\s*:\\s*");

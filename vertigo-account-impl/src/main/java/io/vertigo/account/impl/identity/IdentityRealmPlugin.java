@@ -32,5 +32,6 @@ public interface IdentityRealmPlugin extends IdentityRealm, Plugin {
 	/**
 	 * @return all account
 	 */
+	@Override
 	Collection<Account> getAllAccounts();
 }

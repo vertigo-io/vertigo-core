@@ -5,11 +5,11 @@
 	</boot>
 
 	<module name="vertigo-persona">
-		<component api="VSecurityManager" class="io.vertigo.x.account.impl.security.VSecurityManagerImpl">
-			<param name="userSessionClassName" value="io.vertigo.x.account.data.TestUserSession" />
+		<component api="VSecurityManager" class="io.vertigo.account.impl.security.VSecurityManagerImpl">
+			<param name="userSessionClassName" value="io.vertigo.account.data.TestUserSession" />
 		</component>
-		<component api="IdentityManager" class="io.vertigo.x.account.impl.identity.IdentityManagerImpl"/>
-		<component api="AuthentificationManager" class="io.vertigo.x.account.impl.authc.AuthentificationManagerImpl"/>
+		<component api="IdentityManager" class="io.vertigo.account.impl.identity.IdentityManagerImpl"/>
+		<component api="AuthentificationManager" class="io.vertigo.account.impl.authc.AuthentificationManagerImpl"/>
 	</module>
 
 	<module name="myApp">
