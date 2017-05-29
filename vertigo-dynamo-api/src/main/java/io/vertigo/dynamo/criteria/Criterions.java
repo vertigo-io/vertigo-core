@@ -181,5 +181,10 @@ public final class Criterions {
 		String toSql(final CriteriaCtx ctx, final SqlDialect sqlDialect) {
 			return result ? "1=1" : "0=1";
 		}
+
+		@Override
+		public String toString() {
+			return result ? "true" : "false";
+		}
 	}
 }

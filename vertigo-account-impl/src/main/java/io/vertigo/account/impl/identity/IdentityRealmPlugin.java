@@ -18,9 +18,6 @@
  */
 package io.vertigo.account.impl.identity;
 
-import java.util.Collection;
-
-import io.vertigo.account.identity.Account;
 import io.vertigo.account.identity.IdentityRealm;
 import io.vertigo.core.component.Plugin;
 
@@ -28,10 +25,5 @@ import io.vertigo.core.component.Plugin;
  * @author pchretien, npiedeloup
  */
 public interface IdentityRealmPlugin extends IdentityRealm, Plugin {
-
-	/**
-	 * @return all account
-	 */
-	@Override
-	Collection<Account> getAllAccounts();
+	//thing more than IdentityRealm
 }
