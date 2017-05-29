@@ -19,6 +19,7 @@
 package io.vertigo.dynamox.task.sqlserver;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -34,6 +35,7 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
+import io.vertigo.dynamox.task.TaskEngineSQLParam;
 
 /**
  * Permet l'appel de requête insert en utilisant generatedKeys du PreparedStatement pour récupérer
@@ -54,8 +56,8 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 
 	/** {@inheritDoc} */
 	@Override
-	public int doExecute(final SqlConnection connection, final SqlPreparedStatement statement) throws SQLException {
-		final int sqlRowcount = statement.executeUpdate(getParameters());
+	public int doExecute(final SqlConnection connection, final SqlPreparedStatement statement, final List<TaskEngineSQLParam> params) throws SQLException {
+		final int sqlRowcount = statement.executeUpdate(buildParameters(params));
 		setOutParameters(statement);
 		return sqlRowcount;
 	}

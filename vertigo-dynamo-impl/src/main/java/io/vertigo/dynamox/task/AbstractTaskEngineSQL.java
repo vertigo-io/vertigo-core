@@ -49,6 +49,8 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Tuples;
+import io.vertigo.lang.Tuples.Tuple2;
 
 /**
  * Fournit des méthodes de haut niveau pour les services de type SQL.<br>
@@ -109,11 +111,6 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 */
 	private static final ScriptSeparator SQL_SEPARATOR = new ScriptSeparator(SEPARATOR);
 
-	/**
-	 * Liste des paramètres
-	 */
-	private List<TaskEngineSQLParam> params;
-
 	private final ScriptManager scriptManager;
 	private final VTransactionManager transactionManager;
 	private final StoreManager storeManager;
@@ -146,17 +143,18 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * @return Nombre de lignes affectées (Insert/ Update / Delete)
 	 * @throws SQLException Erreur sql
 	 */
-	protected abstract int doExecute(final SqlConnection connection, final SqlPreparedStatement statement) throws SQLException;
+	protected abstract int doExecute(final SqlConnection connection, final SqlPreparedStatement statement, final List<TaskEngineSQLParam> params) throws SQLException;
 
 	/** {@inheritDoc} */
 	@Override
 	public void execute() {
 		final SqlConnection connection = obtainConnection();
-		final String sql = prepareParams(getSqlQuery().trim());
-		try (final SqlPreparedStatement statement = createStatement(sql, connection)) {
+
+		final Tuple2<String, List<TaskEngineSQLParam>> preparedQuery = prepareParams(getSqlQuery().trim(), scriptManager);
+		try (final SqlPreparedStatement statement = createStatement(preparedQuery.getVal1(), connection)) {
 			try {
 				//Execute le Statement JDBC.
-				final int sqlRowcount = doExecute(connection, statement);
+				final int sqlRowcount = doExecute(connection, statement, preparedQuery.getVal2());
 				//On positionne le nombre de lignes affectées.
 				setRowCount(sqlRowcount);
 			} catch (final BatchUpdateException sqle) { //some exception embedded the usefull one
@@ -231,14 +229,12 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * @return La requête bindée
 	 * @param query Requête SQL
 	 */
-	private String prepareParams(final String query) {
-		Assertion.checkNotNull(query); //La requête ne peut pas être nulle
-		Assertion.checkState(params == null, "La query a déjà été préparée !");
+	private static Tuple2<String, List<TaskEngineSQLParam>> prepareParams(final String query, final ScriptManager scriptManager) {
+		Assertion.checkArgNotEmpty(query);
 		//-----
-		final SqlParserHandler scriptHandler = new SqlParserHandler(getTaskDefinition());
+		final SqlParserHandler scriptHandler = new SqlParserHandler();
 		scriptManager.parse(query, scriptHandler, Collections.singletonList(SQL_SEPARATOR));
-		params = scriptHandler.getParams();
-		return scriptHandler.getSql();
+		return Tuples.of(scriptHandler.getSql(), scriptHandler.getParams());
 	}
 
 	/**
@@ -260,20 +256,13 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * @param statement de type KPreparedStatement, KCallableStatement...
 	 * @throws SQLException En cas d'erreur dans la configuration
 	 */
-	protected final List<SqlParameter> getParameters() throws SQLException {
+	protected final List<SqlParameter> buildParameters(final List<TaskEngineSQLParam> params) throws SQLException {
 		final List<SqlParameter> sqlParameters = new ArrayList<>();
 		for (final TaskEngineSQLParam param : params) {
 			final Integer rowNumber = param.isList() ? param.getRowNumber() : null;
 			sqlParameters.add(buildSqlParameter(param, rowNumber));
 		}
 		return sqlParameters;
-	}
-
-	/**
-	 * @return Liste des paramètres
-	 */
-	protected final List<TaskEngineSQLParam> getParams() {
-		return Collections.unmodifiableList(params);
 	}
 
 	protected final SqlParameter buildSqlParameter(final TaskEngineSQLParam param, final Integer rowNumber) {

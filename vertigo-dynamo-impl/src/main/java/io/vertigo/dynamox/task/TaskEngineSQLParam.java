@@ -29,7 +29,7 @@ import io.vertigo.lang.WrappedException;
  *
  * @author pchretien
  */
-final class TaskEngineSQLParam {
+public final class TaskEngineSQLParam {
 	private final String attributeName;
 	private final String fieldName;
 	private final Integer rowNumber;

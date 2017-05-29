@@ -23,26 +23,18 @@ import java.util.List;
 
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.task.metamodel.TaskAttribute;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.lang.Assertion;
 
 /**
  * Cette implémentation permet de créer la requête SQL bindée ainsi que de sortir la liste des paramètres de la requête (IN, OUT, IN/OUT).
  * @author pchretien
  */
 final class SqlParserHandler implements ScriptParserHandler {
-	private final TaskDefinition taskDefinition;
 	/** Requête SQL fabriquée lors du parsing. */
 	private final StringBuilder sql;
 	/** Liste des paramètres. */
 	private final List<TaskEngineSQLParam> params;
 
-	SqlParserHandler(final TaskDefinition taskDefinition) {
-		Assertion.checkNotNull(taskDefinition);
-		//-----
-		this.taskDefinition = taskDefinition;
+	SqlParserHandler() {
 		sql = new StringBuilder();
 		params = new java.util.ArrayList<>();
 	}
@@ -61,19 +53,9 @@ final class SqlParserHandler implements ScriptParserHandler {
 		// Dans le cas des DTO on ne teste que le nom du DTO et non (pour l'instant) son paramètre
 
 		final TaskEngineSQLParam param = new TaskEngineSQLParam(expression);
-		addParam(param);
+		params.add(param);
 		//On binde paramètre, en le remplaçant par un "?"
 		appendSql("?");
-	}
-
-	/**
-	 * Vérifie qu'un nom de champ pour un attribut de type DTX existe
-	 * @param taskAttribute TaskAttribute
-	 * @param fieldName Nom du champ dont il faut vérifier l'existence
-	 */
-	private static void checkFieldName(final TaskAttribute taskAttribute, final String fieldName) {
-		final DtField dtField = taskAttribute.getDomain().getDtDefinition().getField(fieldName);
-		Assertion.checkNotNull(dtField);
 	}
 
 	/**
@@ -82,18 +64,6 @@ final class SqlParserHandler implements ScriptParserHandler {
 	 */
 	private void appendSql(final String str) {
 		sql.append(str);
-	}
-
-	private void addParam(final TaskEngineSQLParam param) {
-		//On vérifie la cohérence du Parmètre fourni
-		//On vérifie que l'attribut existe
-		final TaskAttribute taskAttribute = taskDefinition.getInAttribute(param.getAttributeName());
-		//====
-		if (param.getFieldName() != null) {
-			// On vérifie que le fieldName existe pour l'attribut précisé
-			checkFieldName(taskAttribute, param.getFieldName());
-		}
-		params.add(param);
 	}
 
 	/**

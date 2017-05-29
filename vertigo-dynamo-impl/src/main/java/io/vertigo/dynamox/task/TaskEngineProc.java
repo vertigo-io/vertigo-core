@@ -19,6 +19,7 @@
 package io.vertigo.dynamox.task;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -67,8 +68,8 @@ public class TaskEngineProc extends AbstractTaskEngineSQL {
 
 	/** {@inheritDoc} */
 	@Override
-	protected int doExecute(final SqlConnection connection, final SqlPreparedStatement statement) throws SQLException {
-		return statement.executeUpdate(getParameters());
+	protected int doExecute(final SqlConnection connection, final SqlPreparedStatement statement, final List<TaskEngineSQLParam> params) throws SQLException {
+		return statement.executeUpdate(buildParameters(params));
 	}
 
 }
