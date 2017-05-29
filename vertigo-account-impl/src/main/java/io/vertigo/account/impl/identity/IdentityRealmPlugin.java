@@ -18,19 +18,19 @@
  */
 package io.vertigo.account.impl.identity;
 
-import java.util.Optional;
+import java.util.Collection;
 
 import io.vertigo.account.identity.Account;
+import io.vertigo.account.identity.IdentityRealm;
 import io.vertigo.lang.Plugin;
 
 /**
  * @author pchretien, npiedeloup
  */
-public interface IdentityRealmPlugin extends Plugin {
+public interface IdentityRealmPlugin extends IdentityRealm, Plugin {
+
 	/**
-	 * Get an newly authentify user by his authToken.
-	 * @param userAuthToken user authToken
-	 * @return Logged account
+	 * @return all account
 	 */
-	Optional<Account> getAccountByAuthToken(String userAuthToken);
+	Collection<Account> getAllAccounts();
 }

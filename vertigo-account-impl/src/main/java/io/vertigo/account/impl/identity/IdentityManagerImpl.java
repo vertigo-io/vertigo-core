@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import io.vertigo.account.identity.AccountStore;
 import io.vertigo.account.identity.IdentityManager;
+import io.vertigo.account.identity.IdentityRealm;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
@@ -60,6 +61,12 @@ public final class IdentityManagerImpl implements IdentityManager {
 	@Override
 	public AccountStore getStore() {
 		return accountStorePlugin;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public IdentityRealm getIdentityRealm() {
+		return identityRealmPlugin;
 	}
 
 }

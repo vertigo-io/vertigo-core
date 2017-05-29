@@ -18,10 +18,15 @@
  */
 package io.vertigo.account.plugins.identity.memory;
 
+import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 
 import io.vertigo.account.identity.Account;
+import io.vertigo.account.identity.AccountGroup;
 import io.vertigo.account.impl.identity.IdentityRealmPlugin;
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.file.model.VFile;
 
 /**
  * @author npiedeloup
@@ -30,8 +35,56 @@ public final class MemoryIdentityRealmPlugin implements IdentityRealmPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<Account> getAccountByAuthToken(final String userAuthToken) {
-		return Optional.empty(); //TODO
+	public Account getAccountByAuthToken(final String userAuthToken) {
+		return null; //TODO
+	}
+
+	@Override
+	public long getAccountsCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Collection<Account> getAllAccounts() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public long getGroupsCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Collection<AccountGroup> getAllGroups() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AccountGroup getGroup(final URI<AccountGroup> groupURI) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<URI<Account>> getAccountURIs(final URI<AccountGroup> groupURI) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<VFile> getPhoto(final URI<Account> accountURI) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
