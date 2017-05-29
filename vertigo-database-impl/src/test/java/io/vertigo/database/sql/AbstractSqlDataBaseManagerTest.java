@@ -294,11 +294,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		Assert.assertEquals(bondList.size(), countMovie.get(0).intValue());
 	}
 
-	private Movie createMovie(final long id, final String title) {
-		return createMovie(id, title, null, null, null, null, null, null);
-	}
-
-	private Movie createMovie(final long id,
+	private Movie createMovie(
+			final long id,
 			final String title,
 			final Double fps,
 			final Double income,
