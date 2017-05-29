@@ -88,20 +88,22 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	}
 
 	/**
-	 * Save an object.
+	 * Saves an object and returns the saved object
 	 *
 	 * @param entity Object to save
+	 * @return the saved entity
 	 */
-	public final void save(final E entity) {
+	public final E save(final E entity) {
 		if (DtObjectUtil.getId(entity) == null) {
-			dataStore.create(entity);
-		} else {
-			dataStore.update(entity);
+			return dataStore.create(entity);
 		}
+
+		dataStore.update(entity);
+		return entity;
 	}
 
 	/**
-	 * Create an object.
+	 * Creates an object.
 	 *
 	 * @param entity Object to create
 	 * @return the created entity
