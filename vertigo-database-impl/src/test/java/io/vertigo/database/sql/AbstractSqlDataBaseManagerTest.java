@@ -18,6 +18,7 @@
  */
 package io.vertigo.database.sql;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -48,8 +49,8 @@ import io.vertigo.util.ListBuilder;
  * @author pchretien
  */
 public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4 {
-	private static final String INSERT_INTO_MOVIE_VALUES = "insert into movie values (?, ?, ?, ?)";
-	private static final String CREATE_TABLE_MOVIE = "create table movie(id BIGINT , title varchar(255), release_Date date, release_Local_Date date);";
+	private static final String INSERT_INTO_MOVIE_VALUES = "insert into movie values (?, ?, ?, ?, ?, ?, ?)";
+	private static final String CREATE_TABLE_MOVIE = "create table movie(id BIGINT , title varchar(255), fps double precision, income DECIMAL(6,3), color BOOLEAN, release_date TIMESTAMP, release_Local_Date date);";
 	private static final String TITLE_MOVIE_1 = "citizen kane"; //1 May 1941
 	private static final String TITLE_MOVIE_2 = "vertigo"; //9 May 1958
 	private static final String TITLE_MOVIE_3 = "gone girl";
@@ -109,6 +110,9 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 			final List<SqlParameter> sqlParameters = new ListBuilder<SqlParameter>()
 					.add(new SqlParameter(Long.class, key))
 					.add(new SqlParameter(String.class, libelle))
+					.add(new SqlParameter(Double.class, null))
+					.add(new SqlParameter(BigDecimal.class, null))
+					.add(new SqlParameter(Boolean.class, null))
 					.add(new SqlParameter(Date.class, releaseDate))
 					.add(new SqlParameter(LocalDate.class, releaselocalDate))
 					.build();
@@ -120,9 +124,9 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 	private void createDatas() throws Exception {
 		final SqlConnection connection = obtainMainConnection();
 		try {
-			execpreparedStatement(connection, "insert into movie values (1, 'citizen kane', '1941-05-01', '1941-05-01')");
+			execpreparedStatement(connection, "insert into movie values (1, 'citizen kane',null, null, null, '1941-05-01 00:00:00', '1941-05-01')");
 			//-----
-			execpreparedStatement(connection, "insert into movie values (2, 'vertigo', '1958-05-09', '1958-05-09')");
+			execpreparedStatement(connection, "insert into movie values (2, 'vertigo',null, null, null, '1958-05-09 00:00:00', '1958-05-09')");
 			//-----
 			//On passe par une requête bindée
 			insert(connection, 3, TITLE_MOVIE_3, null, null);
@@ -241,26 +245,27 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 
 	@Test
 	public void testBatchInserts() throws Exception {
-		final List<Movie> bondList = new ListBuilder<Movie>()
-				.add(createMovie(1, "Doctor No", 1962, 10, 5))//5 October 1962
-				.add(createMovie(2, "From Russia with Love", 1963, 10, 10)) //10 October 1963
-				.add(createMovie(3, "Goldfinger", 1964, 9, 17)) //17 September 1964
-				.add(createMovie(4, "Thunderball", 1965, 12, 9)) //9 December 1965
-				.add(createMovie(5, "You only live twice", 1967, 6, 12)) //12 June 1967
-				.add(createMovie(6, "On her majesty's secret service", 1969, 12, 13)) //13 December 1969
-				.add(createMovie(7, "Diamonds are forever", 1971, 12, 14)) //14 December 1971
-				.add(createMovie(8, "Live and let die", 1973, 6, 27)) //27 June 1973
-				.add(createMovie(9, "The man with the golden gun", 1974, 12, 14)) //14 December 1974
-				.add(createMovie(10, "The spy who loved me", 1977, 7, 7)) //7 July 1977
-				.add(createMovie(11, "Moonraker"))
-				.add(createMovie(12, "For your eyes only"))
-				.add(createMovie(13, "Octopussy"))
-				.add(createMovie(14, "A view to a kill"))
-				.add(createMovie(15, "The living daylights"))
-				.build();
-
 		final SqlConnectionProvider sqlConnectionProvider = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
 		final String sql = INSERT_INTO_MOVIE_VALUES;
+
+		final List<Movie> bondList = new ListBuilder<Movie>()
+				.add(createMovie(1, "Doctor No", 23.976, 59.600, true, 1962, 10, 5))
+				.add(createMovie(2, "From Russia with Love", 23.976, 78.900, true, 1963, 10, 10))
+				.add(createMovie(3, "Goldfinger", 23.976, 124.900, true, 1964, 9, 17))
+				.add(createMovie(4, "Thunderball", 23.976, 141.200, true, 1965, 12, 17))
+				.add(createMovie(5, "You only live twice", 23.976, 111.600, true, 1967, 6, 12))
+				.add(createMovie(6, "On her majesty's secret service", 23.976, 87.400, true, 1969, 12, 18))
+				.add(createMovie(7, "Diamonds are forever", 23.976, 116.000, true, 1971, 12, 14))
+				.add(createMovie(8, "Live and let die", 23.976, 161.800, true, 1973, 6, 27))
+				.add(createMovie(9, "The man with the golden gun", 23.976, 97.600, true, 1974, 12, 19))
+				.add(createMovie(10, "The spy who loved me", 23.976, 185.400, true, 1977, 7, 7))
+				.add(createMovie(11, "Moonraker", 23.976, 210.300, true, 1979, 6, 26))
+				.add(createMovie(12, "For your eyes only", 23.976, 195.300, true, 1981, 6, 24))
+				.add(createMovie(13, "Octopussy", 23.976, 187.500, true, 1983, 6, 6))
+				.add(createMovie(14, "A view to a kill", 23.976, 152.400, true, 1985, 5, 22))
+				.add(createMovie(15, "The living daylights", 23.976, 191.200, true, 1987, 6, 27))
+				.build();
+
 		final int result;
 
 		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
@@ -271,6 +276,9 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 					preparedStatement.addBatch(Arrays.asList(
 							new SqlParameter(Long.class, movie.getId()),
 							new SqlParameter(String.class, movie.getTitle()),
+							new SqlParameter(Double.class, movie.getFps()),
+							new SqlParameter(BigDecimal.class, movie.getIncome()),
+							new SqlParameter(Boolean.class, movie.getColor()),
 							new SqlParameter(Date.class, movie.getReleaseDate()),
 							new SqlParameter(LocalDate.class, movie.getReleaseLocalDate())));
 				}
@@ -286,22 +294,40 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		Assert.assertEquals(bondList.size(), countMovie.get(0).intValue());
 	}
 
-	private Movie createMovie(final long id, final String title, final int year, final int month, final int dayOfMonth) {
+	private Movie createMovie(final long id, final String title) {
+		return createMovie(id, title, null, null, null, null, null, null);
+	}
+
+	private Movie createMovie(final long id,
+			final String title,
+			final Double fps,
+			final Double income,
+			final Boolean color,
+			final Integer year,
+			final Integer month,
+			final Integer dayOfMonth) {
+
 		final Calendar calendar = new GregorianCalendar();
 		calendar.set(year, month, dayOfMonth);
-		return createMovie(id, title, calendar.getTime(), LocalDate.of(year, month, dayOfMonth));
+		return createMovie(id, title, fps, income, color, calendar.getTime(), LocalDate.of(year, month, dayOfMonth));
 	}
 
-	private Movie createMovie(final long id, final String title) {
-		return createMovie(id, title, null, null);
-	}
-
-	private Movie createMovie(final long id, final String title, final Date date, final LocalDate localDate) {
+	private Movie createMovie(
+			final long id,
+			final String title,
+			final Double fps,
+			final Double income,
+			final Boolean color,
+			final Date date,
+			final LocalDate localDate) {
 		final Movie movie = new Movie();
 		movie.setId(id);
 		movie.setTitle(title);
 		movie.setReleaseDate(date);
 		movie.setReleaseLocalDate(localDate);
+		movie.setFps(fps);
+		movie.setIncome(new BigDecimal(income));
+		movie.setColor(color);
 		return movie;
 
 	}
@@ -316,9 +342,9 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 			//on crée des données dans 'secondary'
 			final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary").obtainConnection();
 			try {
-				execpreparedStatement(connection, "insert into movie values (1, 'Star wars', null, null)");
-				execpreparedStatement(connection, "insert into movie values (2, 'Will Hunting', null, null)");
-				execpreparedStatement(connection, "insert into movie values (3, 'Usual Suspects', null, null)");
+				execpreparedStatement(connection, "insert into movie values (1, 'Star wars', null, null, null, null, null)");
+				execpreparedStatement(connection, "insert into movie values (2, 'Will Hunting', null, null, null, null, null)");
+				execpreparedStatement(connection, "insert into movie values (3, 'Usual Suspects', null, null, null, null, null)");
 				//-----
 				//On passe par une requête bindée
 				insert(connection, 4, TITLE_MOVIE_4, null, null);

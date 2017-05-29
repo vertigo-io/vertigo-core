@@ -18,6 +18,7 @@
  */
 package io.vertigo.database.sql.data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -29,11 +30,12 @@ public final class Movie {
 	private String title;
 	@Deprecated
 	private Date releaseDate;
-
 	private LocalDate releaseLocalDate;
+	private Double fps;
+	private BigDecimal income;
+	private Boolean color;
 
 	//	private LocalDateTime releaseLocalDateTime;
-	//
 	//	private Mail mail;
 
 	public final Long getId() {
@@ -70,6 +72,30 @@ public final class Movie {
 		return releaseLocalDate;
 	}
 
+	public Double getFps() {
+		return fps;
+	}
+
+	public void setFps(final Double fps) {
+		this.fps = fps;
+	}
+
+	public BigDecimal getIncome() {
+		return income;
+	}
+
+	public void setIncome(final BigDecimal budget) {
+		income = budget;
+	}
+
+	public Boolean getColor() {
+		return color;
+	}
+
+	public void setColor(final Boolean color) {
+		this.color = color;
+	}
+
 	//	public LocalDateTime getreleaseLocalDateTime() {
 	//		return releaseLocalDateTime;
 	//	}
@@ -85,4 +111,5 @@ public final class Movie {
 	//	public Mail getMail() {
 	//		return mail;
 	//	}
+
 }
