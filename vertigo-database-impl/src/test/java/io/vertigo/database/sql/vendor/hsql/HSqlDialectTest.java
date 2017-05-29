@@ -20,7 +20,7 @@ package io.vertigo.database.sql.vendor.hsql;
 
 import java.util.Optional;
 
-import io.vertigo.database.impl.sql.vendor.hsql.HsqlDataBase;
+import io.vertigo.database.impl.sql.vendor.hsql.HSqlDataBase;
 import io.vertigo.database.sql.AbstractSqlDialectTest;
 import io.vertigo.database.sql.vendor.SqlDialect;
 
@@ -32,7 +32,7 @@ public final class HSqlDialectTest extends AbstractSqlDialectTest {
 
 	@Override
 	public SqlDialect getDialect() {
-		return new HsqlDataBase().getSqlDialect();
+		return new HSqlDataBase().getSqlDialect();
 
 	}
 
