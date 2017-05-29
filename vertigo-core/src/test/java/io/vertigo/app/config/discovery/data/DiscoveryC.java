@@ -18,7 +18,7 @@
  */
 package io.vertigo.app.config.discovery.data;
 
-import io.vertigo.lang.Component;
+import io.vertigo.core.component.Component;
 
 /**
  * @author mlaroche

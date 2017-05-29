@@ -27,10 +27,10 @@ import io.vertigo.app.Home;
 import io.vertigo.commons.eventbus.Event;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.eventbus.EventSuscriber;
+import io.vertigo.core.component.Activeable;
+import io.vertigo.core.component.Component;
 import io.vertigo.core.component.ComponentSpace;
-import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
 import io.vertigo.util.ClassUtil;
 
 /**

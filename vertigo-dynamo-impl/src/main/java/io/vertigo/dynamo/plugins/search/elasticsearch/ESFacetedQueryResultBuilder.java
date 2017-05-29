@@ -36,6 +36,7 @@ import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation.Buck
 import org.elasticsearch.search.aggregations.metrics.tophits.TopHits;
 import org.elasticsearch.search.highlight.HighlightField;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
@@ -51,7 +52,6 @@ import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VSystemException;
 
 //vérifier

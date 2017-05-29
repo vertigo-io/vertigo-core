@@ -23,8 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 
 /**
  * Liste des erreurs d'un objet métier.

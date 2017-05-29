@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.lang.Component;
+import io.vertigo.core.component.Component;
 import io.vertigo.lang.Tuples.Tuple2;
 import io.vertigo.util.Selector.ClassConditions;
 import io.vertigo.util.Selector.FieldConditions;

@@ -18,8 +18,8 @@
  */
 package io.vertigo.database.impl.sql;
 
+import io.vertigo.core.component.Plugin;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
-import io.vertigo.lang.Plugin;
 
 /**
 * Plugin du provider de connexions.

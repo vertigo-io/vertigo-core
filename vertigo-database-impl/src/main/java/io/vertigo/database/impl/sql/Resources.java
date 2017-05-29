@@ -18,7 +18,7 @@
  */
 package io.vertigo.database.impl.sql;
 
-import io.vertigo.lang.MessageKey;
+import io.vertigo.core.locale.MessageKey;
 
 /**
  * 

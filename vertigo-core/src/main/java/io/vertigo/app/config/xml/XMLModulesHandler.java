@@ -36,12 +36,12 @@ import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.PluginConfig;
 import io.vertigo.app.config.PluginConfigBuilder;
+import io.vertigo.core.component.Component;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.definition.DefinitionProvider;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
-import io.vertigo.lang.Plugin;
 import io.vertigo.util.ClassUtil;
 
 /**

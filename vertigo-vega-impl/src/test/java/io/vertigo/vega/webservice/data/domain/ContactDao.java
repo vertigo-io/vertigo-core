@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import io.vertigo.core.component.Activeable;
 import io.vertigo.dynamo.store.StoreServices;
-import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 

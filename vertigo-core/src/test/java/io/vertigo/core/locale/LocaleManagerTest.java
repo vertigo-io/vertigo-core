@@ -34,8 +34,6 @@ import org.junit.runner.RunWith;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.core.locale.data.CityGuide;
-import io.vertigo.lang.MessageKey;
-import io.vertigo.lang.MessageText;
 
 /**
  * @author pchretien

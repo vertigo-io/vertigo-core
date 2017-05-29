@@ -27,8 +27,8 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.util.DateUtil;

@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.store.datastore;
 
+import io.vertigo.core.component.Plugin;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
@@ -26,7 +27,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.lang.Plugin;
 
 /**
  * The DataStorePlugin class defines the logical way used to read and write data in a data store.

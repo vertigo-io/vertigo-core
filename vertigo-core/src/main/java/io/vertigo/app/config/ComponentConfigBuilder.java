@@ -23,11 +23,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import io.vertigo.core.component.Component;
 import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Component;
 
 /**
  * This class allows to configure a component step by step.

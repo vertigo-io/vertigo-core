@@ -28,7 +28,7 @@ import io.vertigo.commons.transaction.VTransactionResourceId;
 import io.vertigo.commons.transaction.data.SampleDataBase;
 import io.vertigo.commons.transaction.data.SampleDataBaseConnection;
 import io.vertigo.commons.transaction.data.SampleTransactionResource;
-import io.vertigo.lang.Component;
+import io.vertigo.core.component.Component;
 
 public class SampleServices implements Component {
 	private static int count;

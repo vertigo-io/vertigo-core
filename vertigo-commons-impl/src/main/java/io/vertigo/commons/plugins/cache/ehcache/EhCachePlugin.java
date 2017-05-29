@@ -26,7 +26,7 @@ import io.vertigo.app.Home;
 import io.vertigo.commons.cache.CacheDefinition;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.cache.CachePlugin;
-import io.vertigo.lang.Activeable;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.lang.Assertion;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;

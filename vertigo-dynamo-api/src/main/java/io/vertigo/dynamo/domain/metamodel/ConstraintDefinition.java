@@ -22,8 +22,8 @@ import java.lang.reflect.Constructor;
 
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionPrefix;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 import io.vertigo.util.ClassUtil;
 
 /**

@@ -20,7 +20,7 @@ package io.vertigo.commons.daemon;
 
 import java.util.List;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.core.component.Manager;
 
 /**
  * Manages daemons.

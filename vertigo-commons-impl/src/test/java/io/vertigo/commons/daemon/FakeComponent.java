@@ -23,11 +23,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.component.Component;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
 
 public class FakeComponent implements Component, SimpleDefinitionProvider {
 	private int executions = 0;

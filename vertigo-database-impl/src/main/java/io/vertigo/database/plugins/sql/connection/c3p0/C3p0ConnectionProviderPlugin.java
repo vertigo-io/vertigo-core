@@ -27,11 +27,11 @@ import javax.inject.Named;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
+import io.vertigo.core.component.Activeable;
 import io.vertigo.database.plugins.sql.connection.AbstractSqlConnectionProviderPlugin;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.vendor.SqlDataBase;
-import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ClassUtil;

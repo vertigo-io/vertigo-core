@@ -39,8 +39,8 @@ import io.vertigo.account.authc.AuthenticationToken;
 import io.vertigo.account.impl.authc.AuthenticatingRealmPlugin;
 import io.vertigo.account.impl.authc.UsernameAuthenticationToken;
 import io.vertigo.account.impl.authc.UsernamePasswordAuthenticationToken;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 

@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.store;
 
-import io.vertigo.lang.Component;
+import io.vertigo.core.component.Component;
 
 /**
  * A simple marker used to identify all the components concerned with storage.

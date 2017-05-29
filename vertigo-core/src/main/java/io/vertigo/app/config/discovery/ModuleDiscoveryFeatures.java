@@ -19,7 +19,7 @@
 package io.vertigo.app.config.discovery;
 
 import io.vertigo.app.config.Features;
-import io.vertigo.lang.Component;
+import io.vertigo.core.component.Component;
 
 /**
  * An abstract Feature with no configuration for discovering and registering components in a package tree.

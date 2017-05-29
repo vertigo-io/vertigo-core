@@ -18,7 +18,6 @@
  */
 package io.vertigo.core.component;
 
-import io.vertigo.lang.Container;
 import io.vertigo.util.StringUtil;
 
 /**

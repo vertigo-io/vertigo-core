@@ -22,8 +22,8 @@ import javax.inject.Inject;
 
 import io.vertigo.commons.analytics.Analytics;
 import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.core.component.Component;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
 
 public class TestAnalyticsAspectServices implements Component {
 

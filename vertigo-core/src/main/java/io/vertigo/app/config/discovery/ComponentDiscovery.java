@@ -24,9 +24,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.core.component.Component;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
-import io.vertigo.lang.Plugin;
 import io.vertigo.util.Selector;
 import io.vertigo.util.Selector.ClassConditions;
 

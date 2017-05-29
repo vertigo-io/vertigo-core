@@ -22,12 +22,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import io.vertigo.core.component.Plugin;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Plugin;
 
 /**
  * Plugin de construction et d'interrogation de l'index d'une DtList.

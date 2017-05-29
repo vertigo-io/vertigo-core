@@ -20,6 +20,9 @@ package io.vertigo.lang;
 
 import java.io.Serializable;
 
+import io.vertigo.core.locale.MessageKey;
+import io.vertigo.core.locale.MessageText;
+
 /**
  * Root Class for all user exceptions.
  * User Exceptions are built with a (localized) message

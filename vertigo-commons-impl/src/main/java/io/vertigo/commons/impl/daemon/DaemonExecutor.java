@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonStat;
-import io.vertigo.lang.Activeable;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.lang.Assertion;
 
 /**

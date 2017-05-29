@@ -16,22 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.lang;
+package io.vertigo.core.component;
 
 /**
- * The Activeable class allows you to provide a behavior to a component.
- * The methods start() and stop() are called after the creation and before the destruction of the managed components. 
- *
+ * A plugin is a particular component.
+ * A plugin is not referenced in the ComponentSpace.
+ * A plugin is usefull to encapsulate a specific set of operations.
+ * A plugin is often used as a strategy pattern to make an operation interchangeable without changing the component.     
+ * 
+ * All plugins MUST BE thread safe.
+ * Plugins are singletons.
+ * 
+ * As a plugin is a component, it can own component's behaviors such as Activeable.
+ * 
  * @author pchretien
  */
-public interface Activeable {
-	/**
-	 * Called after the component has been created and filled by injection (for the components built by configuration).
-	 */
-	void start();
-
-	/**
-	 * Called before the component is stopped.
-	 */
-	void stop();
+public interface Plugin extends Component {
+	//
 }

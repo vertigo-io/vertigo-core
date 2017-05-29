@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.commons.node.Node;
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 
 /**
  * Plugin for storing and querying the node topology of an App.

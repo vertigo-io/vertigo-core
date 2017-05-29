@@ -35,6 +35,7 @@ import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.eventbus.EventSuscriber;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
@@ -50,7 +51,6 @@ import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 

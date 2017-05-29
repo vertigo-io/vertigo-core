@@ -21,7 +21,7 @@ package io.vertigo.core.spaces.component.data;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 
 public final class MathPlugin implements Plugin {
 	@Inject

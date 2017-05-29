@@ -21,10 +21,10 @@ package io.vertigo.dynamox.domain.constraint;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.metamodel.Constraint;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.Property;
-import io.vertigo.lang.MessageText;
 
 /**
  * Exemple de contrainte utilisant une expression régulière.

@@ -23,7 +23,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.lang.Activeable;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.vega.impl.webservice.filter.JettyMultipartCleaner;
 import io.vertigo.vega.impl.webservice.filter.JettyMultipartConfig;

@@ -22,7 +22,7 @@ import java.util.List;
 
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
-import io.vertigo.lang.Manager;
+import io.vertigo.core.component.Manager;
 
 /**
  * Manages scripts.

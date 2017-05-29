@@ -20,7 +20,7 @@ package io.vertigo.dynamox.domain.constraint;
 
 import java.math.BigDecimal;
 
-import io.vertigo.lang.MessageText;
+import io.vertigo.core.locale.MessageText;
 
 /**
  * Contrainte vérifiant que l'objet est : <ul>

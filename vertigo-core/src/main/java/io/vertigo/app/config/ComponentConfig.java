@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import io.vertigo.core.component.Component;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
 
 /**
  * The componentconfig class defines the configuration of a component.

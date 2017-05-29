@@ -1,6 +1,8 @@
-package io.vertigo.lang;
+package io.vertigo.core.locale;
 
 import java.io.Serializable;
+
+import io.vertigo.lang.Builder;
 
 /**
  *

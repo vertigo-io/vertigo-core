@@ -22,7 +22,7 @@ import java.util.Collection;
 
 import io.vertigo.account.identity.Account;
 import io.vertigo.account.identity.IdentityRealm;
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 
 /**
  * @author pchretien, npiedeloup

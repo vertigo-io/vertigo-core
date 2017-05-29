@@ -27,7 +27,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
-import io.vertigo.lang.MessageText;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.exception.VSecurityException;

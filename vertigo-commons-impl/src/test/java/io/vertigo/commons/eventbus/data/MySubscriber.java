@@ -20,7 +20,7 @@ package io.vertigo.commons.eventbus.data;
 
 import io.vertigo.commons.eventbus.EventSuscriber;
 import io.vertigo.commons.eventbus.data.aspects.Flip;
-import io.vertigo.lang.Component;
+import io.vertigo.core.component.Component;
 
 public class MySubscriber implements Component {
 	private int count = 0;

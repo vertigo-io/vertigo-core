@@ -22,13 +22,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import io.vertigo.core.component.Component;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.proxy.ProxyFactory;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Component;
-import io.vertigo.lang.Plugin;
 
 /**
  * The moduleConfigBuilder defines the configuration of a module.

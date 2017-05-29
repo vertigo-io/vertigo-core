@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ComponentInitializerConfig;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.core.component.ComponentSpaceWritable;
@@ -36,7 +37,6 @@ import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.core.definition.loader.DefinitionLoader;
 import io.vertigo.core.param.ParamManager;
-import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 

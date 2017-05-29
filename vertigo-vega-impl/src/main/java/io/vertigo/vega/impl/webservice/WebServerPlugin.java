@@ -20,7 +20,7 @@ package io.vertigo.vega.impl.webservice;
 
 import java.util.Collection;
 
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 

@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.component.aop.data.components;
 
-import io.vertigo.lang.Component;
+import io.vertigo.core.component.Component;
 
 /**
  * @author prahmoune

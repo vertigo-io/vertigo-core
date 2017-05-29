@@ -22,8 +22,8 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;

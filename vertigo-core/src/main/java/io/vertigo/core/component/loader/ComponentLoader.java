@@ -31,15 +31,15 @@ import io.vertigo.app.config.AspectConfig;
 import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.component.AopPlugin;
+import io.vertigo.core.component.Component;
 import io.vertigo.core.component.ComponentSpaceWritable;
+import io.vertigo.core.component.Container;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.core.component.di.reactor.DIReactor;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
-import io.vertigo.lang.Container;
-import io.vertigo.lang.Plugin;
 import io.vertigo.lang.VSystemException;
 
 /**

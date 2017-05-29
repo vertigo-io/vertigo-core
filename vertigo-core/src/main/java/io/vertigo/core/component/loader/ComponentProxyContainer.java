@@ -21,8 +21,8 @@ package io.vertigo.core.component.loader;
 import java.util.HashSet;
 import java.util.Set;
 
+import io.vertigo.core.component.Container;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Container;
 
 /**
  * Conteneur permettant de compter les clés non utilisées.

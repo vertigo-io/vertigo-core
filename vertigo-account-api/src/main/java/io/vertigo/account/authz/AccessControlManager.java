@@ -22,8 +22,8 @@ import java.util.List;
 
 import io.vertigo.account.authz.metamodel.OperationName;
 import io.vertigo.account.authz.metamodel.PermissionName;
+import io.vertigo.core.component.Manager;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.lang.Manager;
 
 /**
  * Gestion centralisee des droits d'acces.

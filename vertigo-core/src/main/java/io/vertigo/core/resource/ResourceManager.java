@@ -20,7 +20,7 @@ package io.vertigo.core.resource;
 
 import java.net.URL;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.core.component.Manager;
 
 /**
  * Selecteurs de ressources.

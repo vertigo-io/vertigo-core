@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.impl.store.filestore;
 
+import io.vertigo.core.component.Plugin;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.model.FileInfo;
-import io.vertigo.lang.Plugin;
 
 /**
  * File store plugin.

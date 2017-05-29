@@ -26,8 +26,8 @@ import java.util.StringTokenizer;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 
 /**
  * Formatteur multi-lingue.

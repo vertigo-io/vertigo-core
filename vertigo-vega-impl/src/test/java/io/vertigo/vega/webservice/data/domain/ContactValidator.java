@@ -20,8 +20,8 @@ package io.vertigo.vega.webservice.data.domain;
 
 import java.util.Date;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.lang.MessageText;
 import io.vertigo.util.DateUtil;
 import io.vertigo.vega.webservice.validation.AbstractDtObjectValidator;
 import io.vertigo.vega.webservice.validation.DtObjectErrors;

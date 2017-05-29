@@ -21,10 +21,10 @@ package io.vertigo.app.config;
 import java.util.Arrays;
 import java.util.List;
 
+import io.vertigo.core.component.Plugin;
 import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Plugin;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 

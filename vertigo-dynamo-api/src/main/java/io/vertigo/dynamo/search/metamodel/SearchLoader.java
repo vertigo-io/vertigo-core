@@ -20,10 +20,10 @@ package io.vertigo.dynamo.search.metamodel;
 
 import java.util.List;
 
+import io.vertigo.core.component.Component;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.search.model.SearchIndex;
-import io.vertigo.lang.Component;
 
 /**
  * Specific SearchIndex loader.

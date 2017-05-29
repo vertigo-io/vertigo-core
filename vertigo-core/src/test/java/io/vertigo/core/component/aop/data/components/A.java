@@ -20,9 +20,9 @@ package io.vertigo.core.component.aop.data.components;
 
 import javax.inject.Named;
 
+import io.vertigo.core.component.Activeable;
+import io.vertigo.core.component.Component;
 import io.vertigo.core.component.aop.data.MyException;
-import io.vertigo.lang.Activeable;
-import io.vertigo.lang.Component;
 
 /**
  * @author prahmoune

@@ -16,13 +16,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.lang;
+package io.vertigo.core.component;
 
 /**
- * The manager class must be consireded as a simple marker to identify all the technical components.
- * 
+ * The Activeable class allows you to provide a behavior to a component.
+ * The methods start() and stop() are called after the creation and before the destruction of the managed components. 
+ *
  * @author pchretien
  */
-public interface Manager extends Component {
-	//
+public interface Activeable {
+	/**
+	 * Called after the component has been created and filled by injection (for the components built by configuration).
+	 */
+	void start();
+
+	/**
+	 * Called before the component is stopped.
+	 */
+	void stop();
 }

@@ -21,7 +21,7 @@ package io.vertigo.core.spaces.component.data;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
-import io.vertigo.lang.Activeable;
+import io.vertigo.core.component.Activeable;
 
 public final class StartedManagerImpl implements StartedManager, Activeable {
 	private boolean componentInitialized = false;

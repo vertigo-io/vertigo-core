@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.core.component.Component;
 import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.core.component.loader.ComponentLoader;
 import io.vertigo.core.definition.Definition;
@@ -31,7 +32,6 @@ import io.vertigo.core.definition.DefinitionProvider;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.DefinitionSupplier;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
 
 /**
  * A DefinitionLoader uses all the DefinitionProviders of all the modules to register all definitions at once at the beginning.

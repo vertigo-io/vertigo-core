@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
@@ -38,7 +39,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 import io.vertigo.util.StringUtil;
 
 /**

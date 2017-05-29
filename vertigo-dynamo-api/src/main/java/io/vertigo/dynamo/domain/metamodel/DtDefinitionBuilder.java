@@ -24,11 +24,11 @@ import java.util.Optional;
 
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.core.definition.DefinitionUtil;
+import io.vertigo.core.locale.MessageKey;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.MessageKey;
-import io.vertigo.lang.MessageText;
 import io.vertigo.util.StringUtil;
 
 /**

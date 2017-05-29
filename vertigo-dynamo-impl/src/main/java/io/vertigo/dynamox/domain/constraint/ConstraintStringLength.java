@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamox.domain.constraint;
 
-import io.vertigo.lang.MessageText;
+import io.vertigo.core.locale.MessageText;
 
 /**
  * Contrainte pour gérer la longueur des chaines de caractères.

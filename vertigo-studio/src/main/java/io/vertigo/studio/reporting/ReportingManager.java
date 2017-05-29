@@ -20,7 +20,7 @@ package io.vertigo.studio.reporting;
 
 import java.util.List;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.core.component.Manager;
 
 /**
  * Manager de création de rapport d'exécution sur les taches (dao, pao).

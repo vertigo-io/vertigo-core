@@ -23,10 +23,10 @@ import java.util.List;
 
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionPrefix;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 
 /**
  * Définition de Facette.

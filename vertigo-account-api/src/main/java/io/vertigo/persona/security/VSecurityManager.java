@@ -21,7 +21,7 @@ package io.vertigo.persona.security;
 import java.util.Optional;
 import java.util.Set;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.core.component.Manager;
 import io.vertigo.persona.security.metamodel.Role;
 
 /**

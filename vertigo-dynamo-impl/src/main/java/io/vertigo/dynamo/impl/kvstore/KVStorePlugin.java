@@ -21,7 +21,7 @@ package io.vertigo.dynamo.impl.kvstore;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 
 /**
  * This plugin defines the strategy used to store a 'collection' of elements.

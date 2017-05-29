@@ -20,8 +20,8 @@ package io.vertigo.core.component.aop.data.components;
 
 import javax.inject.Named;
 
-import io.vertigo.lang.Activeable;
-import io.vertigo.lang.Component;
+import io.vertigo.core.component.Activeable;
+import io.vertigo.core.component.Component;
 
 /**
  * @author prahmoune

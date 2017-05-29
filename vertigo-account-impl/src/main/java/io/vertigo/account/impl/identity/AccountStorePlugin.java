@@ -19,7 +19,7 @@
 package io.vertigo.account.impl.identity;
 
 import io.vertigo.account.identity.AccountStore;
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 
 /**
  * @author pchretien

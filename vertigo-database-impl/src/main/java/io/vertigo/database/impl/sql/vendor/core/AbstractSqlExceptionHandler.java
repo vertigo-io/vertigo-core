@@ -22,12 +22,12 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
+import io.vertigo.core.locale.MessageKey;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.database.impl.sql.Resources;
 import io.vertigo.database.sql.statement.SqlPreparedStatement;
 import io.vertigo.database.sql.vendor.SqlExceptionHandler;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageKey;
-import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.StringUtil;

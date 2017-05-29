@@ -45,6 +45,7 @@ import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
@@ -58,7 +59,6 @@ import io.vertigo.dynamo.impl.search.SearchServicesPlugin;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 

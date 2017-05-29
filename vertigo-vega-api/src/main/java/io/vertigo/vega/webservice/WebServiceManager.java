@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.webservice;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.core.component.Manager;
 
 /**
  * WebService manager.

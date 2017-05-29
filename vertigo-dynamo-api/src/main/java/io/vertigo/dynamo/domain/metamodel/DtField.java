@@ -22,9 +22,9 @@ import java.util.Locale;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
-import io.vertigo.lang.MessageText;
 
 /**
  * This class defines the structure of a field.

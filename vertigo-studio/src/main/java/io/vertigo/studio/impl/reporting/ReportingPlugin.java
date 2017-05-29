@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.impl.reporting;
 
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.studio.reporting.Report;
 
 /**

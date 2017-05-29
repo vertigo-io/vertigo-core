@@ -20,7 +20,7 @@ package io.vertigo.vega.impl.webservice;
 
 import java.util.List;
 
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 

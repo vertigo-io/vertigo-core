@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.core.component.AopPlugin;
+import io.vertigo.core.component.Component;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleManagerImpl;
 import io.vertigo.core.param.Param;
@@ -34,8 +36,6 @@ import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.resource.ResourceManagerImpl;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Component;
-import io.vertigo.lang.Plugin;
 
 /**
  * Configuration.

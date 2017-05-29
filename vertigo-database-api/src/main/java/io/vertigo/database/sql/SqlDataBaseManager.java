@@ -18,11 +18,11 @@
  */
 package io.vertigo.database.sql;
 
+import io.vertigo.core.component.Manager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.statement.SqlPreparedStatement;
 import io.vertigo.database.sql.vendor.SqlDialect;
-import io.vertigo.lang.Manager;
 
 /**
  * Manages connections to database.

@@ -21,7 +21,7 @@ package io.vertigo.account.authc;
 import java.util.Optional;
 
 import io.vertigo.account.identity.Account;
-import io.vertigo.lang.Manager;
+import io.vertigo.core.component.Manager;
 
 /**
  * Gestion centralisée de l'authentifications.

@@ -24,9 +24,9 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.vertigo.core.component.Activeable;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleProvider;
-import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.ResourceNameFactory;
 import io.vertigo.persona.security.UserSession;

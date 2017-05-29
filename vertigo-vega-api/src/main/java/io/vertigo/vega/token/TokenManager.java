@@ -21,7 +21,7 @@ package io.vertigo.vega.token;
 import java.io.Serializable;
 import java.util.Optional;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.core.component.Manager;
 
 /**
  * Manager of Security Access Token.

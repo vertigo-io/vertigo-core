@@ -22,10 +22,10 @@ import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.node.Node;
 import io.vertigo.commons.node.NodeManager;
 import io.vertigo.commons.plugins.node.registry.single.SingleNodeRegistryPlugin;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
-import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 

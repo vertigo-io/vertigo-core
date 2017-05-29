@@ -20,7 +20,7 @@ package io.vertigo.commons.impl.cache;
 
 import java.io.Serializable;
 
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 
 /**
  * Plugin de gestion de cache.

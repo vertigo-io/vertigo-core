@@ -21,8 +21,8 @@ package io.vertigo.vega.plugins.webservice.handler.converter;
 import java.util.Map;
 import java.util.Set;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.MessageText;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
 import io.vertigo.vega.engines.webservice.json.UiListModifiable;
 import io.vertigo.vega.webservice.exception.VSecurityException;

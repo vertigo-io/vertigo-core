@@ -26,10 +26,10 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;

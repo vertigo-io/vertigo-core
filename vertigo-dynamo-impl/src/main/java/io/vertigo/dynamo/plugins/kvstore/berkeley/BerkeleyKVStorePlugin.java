@@ -40,12 +40,12 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
-import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ListBuilder;
 

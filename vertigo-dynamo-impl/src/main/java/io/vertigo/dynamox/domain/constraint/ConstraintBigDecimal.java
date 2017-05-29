@@ -21,10 +21,10 @@ package io.vertigo.dynamox.domain.constraint;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.metamodel.Constraint;
 import io.vertigo.dynamo.domain.metamodel.Property;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 import io.vertigo.lang.WrappedException;
 
 /**

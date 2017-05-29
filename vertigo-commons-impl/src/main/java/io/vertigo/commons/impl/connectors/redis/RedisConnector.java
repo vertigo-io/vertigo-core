@@ -23,9 +23,9 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.lang.Activeable;
+import io.vertigo.core.component.Activeable;
+import io.vertigo.core.component.Component;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
