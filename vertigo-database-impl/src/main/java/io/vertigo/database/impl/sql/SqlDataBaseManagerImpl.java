@@ -106,7 +106,12 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 	public Tuple2<String, List<SqlNamedParam>> parseQuery(final String query) {
 		Assertion.checkArgNotEmpty(query);
 		//-----
-		final String[] tokens = query.split(String.valueOf(SEPARATOR));
+		//we add a space before and after to avoid side effects
+		final String[] tokens = (" " + query + " ").split(String.valueOf(SEPARATOR));
+		//...#p1#..... => 3 tokens
+		//...#p1#.....#p2#... => 5 tokens
+		Assertion.checkState(tokens.length % 2 == 1, "a tag is missing on query {0}", query);
+
 		final List<SqlNamedParam> sqlNamedParams = new ArrayList<>();
 		final StringBuilder sql = new StringBuilder();
 		boolean param = false;
@@ -125,7 +130,10 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 			}
 			param = !param;
 		}
-		Assertion.checkState(param, "a tag is missing on query {0}", query);
+		//we delete the added spaces...
+		sql.delete(0, 1);
+		sql.delete(sql.length() - 1, sql.length());
+
 		return Tuples.of(sql.toString(), sqlNamedParams);
 	}
 
