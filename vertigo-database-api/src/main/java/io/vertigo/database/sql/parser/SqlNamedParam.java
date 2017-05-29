@@ -58,7 +58,7 @@ public final class SqlNamedParam {
 			// exemple : DTC_PERSONNE.12.Nom
 			attributeName = tokens[0];
 			fieldName = tokens[2];
-			rowNumber = parseDtcRowNumber(betweenCar);
+			rowNumber = parseDtcRowNumber(tokens[1]);
 		} else {
 			throw new IllegalStateException();
 		}

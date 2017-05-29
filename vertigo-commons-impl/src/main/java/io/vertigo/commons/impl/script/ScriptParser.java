@@ -82,32 +82,18 @@ final class ScriptParser {
 			}
 
 			onRequestText(scriptHandler, script, index, currentBeginCar);
-			//Si le séparateur est un char, sa longueur est de 1.
-			if (currentSeparator.isCar()) {
-				onRequestParam(scriptHandler, script, currentBeginCar + 1, endCar, currentSeparator);
-				index = endCar + 1;
-			} else {
-				//Si le séparateur est une chaine de caractères, sa longueur doit être calculée.
-				onRequestParam(scriptHandler, script, currentBeginCar + currentSeparator.getBeginSeparator().length(), endCar, currentSeparator);
-				index = endCar + currentSeparator.getEndSeparator().length();
-			}
+			//Si le séparateur est une chaine de caractères, sa longueur doit être calculée.
+			onRequestParam(scriptHandler, script, currentBeginCar + currentSeparator.getBeginSeparator().length(), endCar, currentSeparator);
+			index = endCar + currentSeparator.getEndSeparator().length();
 		}
 		onRequestText(scriptHandler, script, index, script.length());
 	}
 
 	private static void onRequestParam(final ScriptParserHandler scriptHandler, final String script, final int beginCar, final int endCar, final ScriptSeparator separator) {
 		if (endCar == beginCar) {
-			if (separator.isCar()) {
-				//Si il s'agissait de deux mêmes caractères collés,
-				//c'est que l'on voulait le caractère lui même. (Echappement du séparateur)
-				//on le remet donc dans la requete
-				scriptHandler.onText(String.valueOf(separator.getSeparator()));
-			} else {
-				throw new IllegalArgumentException("Empty parameter");
-			}
-		} else {
-			scriptHandler.onExpression(script.substring(beginCar, endCar), separator);
+			throw new IllegalArgumentException("Empty parameter");
 		}
+		scriptHandler.onExpression(script.substring(beginCar, endCar), separator);
 	}
 
 	private static void onRequestText(final ScriptParserHandler scriptHandler, final String script, final int beginCar, final int endCar) {

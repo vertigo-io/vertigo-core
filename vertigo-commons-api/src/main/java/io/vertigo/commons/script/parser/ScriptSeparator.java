@@ -34,13 +34,7 @@ import io.vertigo.lang.Assertion;
  * @author  pchretien
  */
 public final class ScriptSeparator implements Serializable {
-
 	private static final long serialVersionUID = -2124487462604625558L;
-
-	/**
-	 * Le paramètre est-il défini par un simple séparateur.
-	 */
-	private final boolean separatorIsChar;
 
 	/**
 	 * Si le paramètre est délimité par une String.
@@ -54,23 +48,6 @@ public final class ScriptSeparator implements Serializable {
 	private final String endSeparator;
 
 	/**
-	 * Si le paramètre est délimité par un char.
-	 */
-	private final char separatorCar;
-
-	/**
-	 * Constructor.
-	 * Si le séparateur de début et de fin sont identiques sous forme de char.
-	 * @param separator Séparateur de début et de fin
-	 */
-	public ScriptSeparator(final char separator) {
-		separatorIsChar = true;
-		separatorCar = separator;
-		beginSeparator = null;
-		endSeparator = null;
-	}
-
-	/**
 	 * Constructor.
 	 * Si le séparateur de début et de fin sont différents sous forme de String.
 	 *
@@ -81,38 +58,16 @@ public final class ScriptSeparator implements Serializable {
 		Assertion.checkArgNotEmpty(beginSeparator);
 		Assertion.checkArgNotEmpty(endSeparator);
 		//-----
-		separatorIsChar = false;
-		separatorCar = ' ';
 		this.beginSeparator = beginSeparator;
 		this.endSeparator = endSeparator;
 	}
 
 	public String getBeginSeparator() {
-		Assertion.checkArgument(!separatorIsChar, "type de séparateur inconsistant");
-		//-----
 		return beginSeparator;
 	}
 
 	public String getEndSeparator() {
-		Assertion.checkArgument(!separatorIsChar, "type de séparateur inconsistant");
-		//-----
 		return endSeparator;
-	}
-
-	/**
-	 * @return the separator (if this separator is defined by a simple char).
-	 */
-	public char getSeparator() {
-		Assertion.checkArgument(separatorIsChar, "type de séparateur inconsistant");
-		//-----
-		return separatorCar;
-	}
-
-	/**
-	 * @return if the separator is a simple char
-	 */
-	public boolean isCar() {
-		return separatorIsChar;
 	}
 
 	/**
@@ -123,9 +78,6 @@ public final class ScriptSeparator implements Serializable {
 	 * @return the next position of the begin separator
 	 */
 	public int indexOfBeginCaracter(final String script, final int start) {
-		if (separatorIsChar) {
-			return script.indexOf(separatorCar, start);
-		}
 		return script.indexOf(beginSeparator, start);
 
 	}
@@ -138,9 +90,6 @@ public final class ScriptSeparator implements Serializable {
 	 * @return the next position of the end separator
 	 */
 	public int indexOfEndCaracter(final String script, final int start) {
-		if (separatorIsChar) {
-			return script.indexOf(separatorCar, start);
-		}
 		return script.indexOf(endSeparator, start);
 
 	}
@@ -148,10 +97,6 @@ public final class ScriptSeparator implements Serializable {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		if (separatorIsChar) {
-			return String.valueOf(separatorCar);
-		}
 		return beginSeparator + " ; " + endSeparator;
-
 	}
 }

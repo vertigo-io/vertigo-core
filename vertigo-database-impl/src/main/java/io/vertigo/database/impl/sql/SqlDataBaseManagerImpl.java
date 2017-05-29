@@ -18,7 +18,7 @@
  */
 package io.vertigo.database.impl.sql;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,10 +26,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.script.ScriptManager;
-import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.database.impl.sql.parser.SqlParserHandler;
 import io.vertigo.database.impl.sql.statement.SqlPreparedStatementImpl;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
@@ -48,10 +45,6 @@ import io.vertigo.lang.Tuples.Tuple2;
 */
 public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 	private static final char SEPARATOR = '#';
-	/**
-	 * Liste des séparateurs utilisés dans le traitement des requêtes KSP.
-	 */
-	private static final ScriptSeparator SQL_SEPARATOR = new ScriptSeparator(SEPARATOR);
 	private final AnalyticsManager analyticsManager;
 	private final Map<String, SqlConnectionProvider> connectionProviderPluginMap;
 
@@ -110,12 +103,30 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public Tuple2<String, List<SqlNamedParam>> parseQuery(final String query, final ScriptManager scriptManager) {
+	public Tuple2<String, List<SqlNamedParam>> parseQuery(final String query) {
 		Assertion.checkArgNotEmpty(query);
 		//-----
-		final SqlParserHandler scriptHandler = new SqlParserHandler();
-		scriptManager.parse(query, scriptHandler, Collections.singletonList(SQL_SEPARATOR));
-		return Tuples.of(scriptHandler.getSql(), scriptHandler.getParams());
+		final String[] tokens = query.split(String.valueOf(SEPARATOR));
+		final List<SqlNamedParam> sqlNamedParams = new ArrayList<>();
+		final StringBuilder sql = new StringBuilder();
+		boolean param = false;
+		//request = "select....#param1#... #param2#"
+		for (final String token : tokens) {
+			if (param) {
+				if (token.isEmpty()) {
+					//the separator character has been escaped and must be replaced by a single Separator
+					sql.append(SEPARATOR);
+				} else {
+					sqlNamedParams.add(new SqlNamedParam(token));
+					sql.append("?");
+				}
+			} else {
+				sql.append(token);
+			}
+			param = !param;
+		}
+		Assertion.checkState(param, "a tag is missing on query {0}", query);
+		return Tuples.of(sql.toString(), sqlNamedParams);
 	}
 
 }

@@ -142,7 +142,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	public void execute() {
 		final SqlConnection connection = obtainConnection();
 
-		final Tuple2<String, List<SqlNamedParam>> parsedQuery = sqlDataBaseManager.parseQuery(getSqlQuery().trim(), scriptManager);
+		final Tuple2<String, List<SqlNamedParam>> parsedQuery = sqlDataBaseManager.parseQuery(getSqlQuery().trim());
 		try (final SqlPreparedStatement statement = createStatement(parsedQuery.getVal1(), connection)) {
 			try {
 				//Execute le Statement JDBC.

@@ -20,7 +20,6 @@ package io.vertigo.database.sql;
 
 import java.util.List;
 
-import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.core.component.Manager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
@@ -57,9 +56,8 @@ public interface SqlDataBaseManager extends Manager {
 
 	/**
 	 * Analyses a query and extracts all the namedParams.
-	 * @param query
-	 * @param scriptManager
-	 * @return
+	 * @param query the original bound query
+	 * @return the sql query and named params
 	 */
-	Tuple2<String, List<SqlNamedParam>> parseQuery(final String query, final ScriptManager scriptManager);
+	Tuple2<String, List<SqlNamedParam>> parseQuery(final String query);
 }

@@ -119,26 +119,6 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test
-	public void testEchappement() {
-		//Si le séparateur est un car.
-		//il suffit de double le séparateur pour l'échapper.
-		final List<ScriptSeparator> separators = Arrays.asList(new ScriptSeparator('$'));
-		final String script = "le prix du barril est de $price$ $$";
-		final MyScriptParserHandler scriptHandler = new MyScriptParserHandler();
-		scriptManager.parse(script, scriptHandler, separators);
-		assertEquals("le prix du barril est de 100 $", scriptHandler.result.toString());
-	}
-
-	@Test(expected = Exception.class)
-	public void testOubliCaractereDeFin() {
-		final List<ScriptSeparator> separators = Arrays.asList(new ScriptSeparator('$'));
-		final String script = "le prix du barril est de $price";
-		final MyScriptParserHandler scriptHandler = new MyScriptParserHandler();
-
-		scriptManager.parse(script, scriptHandler, separators);
-	}
-
-	@Test
 	public void testExpressionString() {
 		final String test = scriptManager.evaluateExpression("\"darwin\"", createParameters(), String.class);
 		assertEquals("darwin", test);
