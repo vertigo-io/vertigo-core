@@ -113,7 +113,6 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			//-----3. b Load all definitions provided by components
 			definitionLoader.createDefinitionsFromComponents()
 					.forEach(definitionSpaceWritable::registerDefinition);
-			//Here all definitions are registered into the definitionSpace
 
 			//-----4. componentInitializers to populate definitions
 			/*
@@ -124,13 +123,18 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			 */
 			initializeAllComponents();
 
+			/*
+			 * Here all definitions are registered into the definitionSpace
+			 */
+			definitionSpaceWritable.closeRegistration();
+
 			//-----5. Starts all components
 			componentSpaceWritable.start();
 
 			//-----6. post just in case
 			appPreActivate();
 
-			//-----7. Start
+			//-----7. App is active
 			state = State.ACTIVE;
 		} catch (final Exception e) {
 			close();
@@ -147,9 +151,8 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	}
 
 	private void appPreActivate() {
-		for (final Runnable postStartFunction : preActivateFunctions) {
-			postStartFunction.run();
-		}
+		preActivateFunctions
+				.forEach(postStartFunction -> postStartFunction.run());
 	}
 
 	private void appStop() {

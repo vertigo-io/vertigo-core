@@ -44,8 +44,7 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable {
 	 * Constructor.
 	 */
 	public EventBusManagerImpl() {
-		super();
-		Home.getApp().registerPreActivateFunction(() -> registerAllSubscribers());
+		Home.getApp().registerPreActivateFunction(this::registerAllSubscribers);
 	}
 
 	@Override
