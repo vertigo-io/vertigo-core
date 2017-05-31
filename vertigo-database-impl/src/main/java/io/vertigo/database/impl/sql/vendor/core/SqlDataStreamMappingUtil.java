@@ -66,7 +66,7 @@ public final class SqlDataStreamMappingUtil {
 			}
 			return null;
 		} catch (final IOException e) {
-			throw new SQLException("Erreur de lecture du flux", e);
+			throw new SQLException("reading error", e);
 		}
 	}
 

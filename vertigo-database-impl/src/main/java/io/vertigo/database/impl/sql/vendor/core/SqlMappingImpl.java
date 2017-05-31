@@ -25,15 +25,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 import io.vertigo.database.sql.vendor.SqlMapping;
 import io.vertigo.lang.DataStream;
 
 /**
- * Implémentation par défaut du mapping à la BDD.
- * Cette implmentation peut être redéfinie partiellement ou totalement.
+ * this class implements the standard mapping to a sql database
+ * this behavior may be partially or fully overridden
  *
  * @author pchretien
  */
@@ -43,11 +46,12 @@ public final class SqlMappingImpl implements SqlMapping {
 	/** {@inheritDoc} */
 	@Override
 	public int getSqlType(final Class dataType) {
-		if (Integer.class.isAssignableFrom(dataType)) {
-			return Types.INTEGER;
-		}
 		if (Boolean.class.isAssignableFrom(dataType)) {
 			return Types.BIT;
+		}
+		//---Numbers
+		if (Integer.class.isAssignableFrom(dataType)) {
+			return Types.INTEGER;
 		}
 		if (Long.class.isAssignableFrom(dataType)) {
 			return Types.BIGINT;
@@ -58,17 +62,23 @@ public final class SqlMappingImpl implements SqlMapping {
 		if (BigDecimal.class.isAssignableFrom(dataType)) {
 			return Types.DECIMAL;
 		}
+		//---String
 		if (String.class.isAssignableFrom(dataType)) {
 			return Types.VARCHAR;
-		}
-		if (Date.class.isAssignableFrom(dataType)) {
-			return Types.TIMESTAMP;
 		}
 		if (DataStream.class.isAssignableFrom(dataType)) {
 			return Types.BLOB;
 		}
+		//---Dates
+		//java.util.Date is now Deprectaed and must be repplaced by LocalDate or LocalDateTime
+		if (Date.class.isAssignableFrom(dataType)) {
+			return Types.TIMESTAMP;
+		}
 		if (LocalDate.class.isAssignableFrom(dataType)) {
 			return Types.DATE;
+		}
+		if (ZonedDateTime.class.isAssignableFrom(dataType)) {
+			return Types.TIMESTAMP;
 		}
 		throw new IllegalArgumentException(TYPE_UNSUPPORTED + dataType);
 	}
@@ -99,29 +109,26 @@ public final class SqlMappingImpl implements SqlMapping {
 				statement.setString(index, (String) value);
 			} else if (LocalDate.class.isAssignableFrom(dataType)) {
 				final LocalDate localDate = (LocalDate) value;
-				statement.setDate(index, new java.sql.Date(
-						localDate.getYear() - 1900,
-						localDate.getMonthValue() - 1, //because sql.Date.month 0-11
-						localDate.getDayOfMonth()));
+				statement.setDate(index, new java.sql.Date(localDate.toEpochDay()));
 			} else if (Date.class.isAssignableFrom(dataType)) {
-				if (value instanceof Timestamp) {
-					statement.setTimestamp(index, (Timestamp) value);
-				} else {
-					final Timestamp ts = new Timestamp(((java.util.Date) value).getTime());
-					statement.setTimestamp(index, ts);
-				}
+				final Date date = (Date) value;
+				final Timestamp ts = new Timestamp(date.getTime());
+				statement.setTimestamp(index, ts);
+			} else if (ZonedDateTime.class.isAssignableFrom(dataType)) {
+				final ZonedDateTime zonedDateTime = (ZonedDateTime) value;
+				final Timestamp ts = new Timestamp(zonedDateTime.toEpochSecond());
+				statement.setTimestamp(index, ts);
 			} else if (DataStream.class.isAssignableFrom(dataType)) {
 				try {
 					final DataStream dataStream = (DataStream) value;
 					//attention le setBinaryStream avec une longueur de fichier en long N'EST PAS implémentée dans de nombreux drivers !!
 					statement.setBinaryStream(index, dataStream.createInputStream(), (int) dataStream.getLength());
 				} catch (final IOException e) {
-					throw new SQLException("Erreur d'ecriture du flux");
+					throw new SQLException("writing error", e);
 				}
 			} else {
 				throw new IllegalArgumentException(TYPE_UNSUPPORTED + dataType);
 			}
-
 		}
 	}
 
@@ -168,17 +175,19 @@ public final class SqlMappingImpl implements SqlMapping {
 		} else if (Date.class.isAssignableFrom(dataType)) {
 			//Si la valeur est null rs renvoie bien null
 			final Timestamp timestamp = resultSet.getTimestamp(col);
-
 			//Pour avoir une date avec les heures (Sens Java !)
 			//il faut récupérer le timeStamp
 			//Puis le transformer en java.util.Date (Date+heure)
 			value = timestamp == null ? null : new java.util.Date(timestamp.getTime());
+		} else if (ZonedDateTime.class.isAssignableFrom(dataType)) {
+			//Si la valeur est null rs renvoie bien null
+			final Timestamp timestamp = resultSet.getTimestamp(col);
+			value = timestamp == null ? null : ZonedDateTime.ofInstant(Instant.ofEpochMilli(timestamp.getTime()), ZoneId.of("UTC"));
 		} else if (DataStream.class.isAssignableFrom(dataType)) {
 			value = SqlDataStreamMappingUtil.getDataStream(resultSet, col);
 		} else {
 			throw new IllegalArgumentException(TYPE_UNSUPPORTED + dataType);
 		}
-
 		return dataType.cast(value);
 	}
 }
