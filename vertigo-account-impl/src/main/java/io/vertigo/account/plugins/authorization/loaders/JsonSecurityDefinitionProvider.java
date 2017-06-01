@@ -31,7 +31,7 @@ import io.vertigo.lang.WrappedException;
  *
  * @author jgarnier
  */
-public class JsonSecurityDefinitionProvider implements DefinitionProvider {
+public final class JsonSecurityDefinitionProvider implements DefinitionProvider {
 
 	private final ResourceManager resourceManager;
 	private final List<DefinitionSupplier> definitionSuppliers;

@@ -10,7 +10,7 @@ import io.vertigo.account.authorization.metamodel.SecuredEntity;
  *
  * @author jgarnier
  */
-public class AdvancedSecurityConfiguration {
+final class AdvancedSecurityConfiguration {
 
 	private final List<Permission> permissions;
 	private final List<SecuredEntity> securedEntities;
@@ -21,7 +21,8 @@ public class AdvancedSecurityConfiguration {
 	 * @param permissions Permissions attribuables aux utilisateurs.
 	 * @param securedEntities Description des entités sécurisés.
 	 */
-	public AdvancedSecurityConfiguration(final List<Permission> permissions,
+	public AdvancedSecurityConfiguration(
+			final List<Permission> permissions,
 			final List<SecuredEntity> securedEntities) {
 		super();
 		this.permissions = permissions;

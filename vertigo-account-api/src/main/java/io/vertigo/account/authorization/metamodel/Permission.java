@@ -39,7 +39,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author prahmoune, npiedeloup
  */
-@DefinitionPrefix("PRM_")
+@DefinitionPrefix("PRM")
 public final class Permission implements Definition {
 	//soit permission globale (sans règle)
 	//soit permission une opé sur une entity

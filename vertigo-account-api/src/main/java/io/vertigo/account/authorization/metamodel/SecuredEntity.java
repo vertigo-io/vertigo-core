@@ -24,13 +24,14 @@ import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.lang.Assertion;
 
 /**
  * Une SecuredEntity est une entité sécurisé.
  *
  * @author jgarnier
  */
-@DefinitionPrefix("SEC_")
+@DefinitionPrefix("SEC")
 public final class SecuredEntity implements Definition {
 	private final String name;
 	private final DtDefinition entityDefinition;
@@ -39,14 +40,23 @@ public final class SecuredEntity implements Definition {
 	private final List<Permission> operations;
 
 	/**
-	 * Construct an instance of SecurityEntity.
+	 * Constructs an instance of SecurityEntity.
 	 *
 	 * @param entityDefinition Entity sécurisé.
 	 * @param securityFields fields simple de sécurité.
 	 * @param advancedDimensions axes avancés de sécurité.
 	 * @param operations opérations attribuées.
 	 */
-	public SecuredEntity(final DtDefinition entityDefinition, final List<DtField> securityFields, final List<SecurityDimension> advancedDimensions, final List<Permission> operations) {
+	public SecuredEntity(
+			final DtDefinition entityDefinition,
+			final List<DtField> securityFields,
+			final List<SecurityDimension> advancedDimensions,
+			final List<Permission> operations) {
+		Assertion.checkNotNull(entityDefinition);
+		Assertion.checkNotNull(securityFields);
+		Assertion.checkNotNull(advancedDimensions);
+		Assertion.checkNotNull(operations);
+		//---
 		name = "SEC_" + entityDefinition.getName();
 		this.entityDefinition = entityDefinition;
 		this.securityFields = securityFields;
@@ -61,8 +71,6 @@ public final class SecuredEntity implements Definition {
 	}
 
 	/**
-	 * Give the value of entity.
-	 *
 	 * @return the value of entity.
 	 */
 	public DtDefinition getEntity() {
@@ -70,8 +78,6 @@ public final class SecuredEntity implements Definition {
 	}
 
 	/**
-	 * Give the list of security fieldNames.
-	 *
 	 * @return the list of security fieldNames.
 	 */
 	public List<DtField> getSecurityFields() {
@@ -79,8 +85,6 @@ public final class SecuredEntity implements Definition {
 	}
 
 	/**
-	 * Give the value of axes.
-	 *
 	 * @return the value of axes.
 	 */
 	public List<SecurityDimension> getSecurityDimensions() {
@@ -88,8 +92,6 @@ public final class SecuredEntity implements Definition {
 	}
 
 	/**
-	 * Give the value of operations.
-	 *
 	 * @return the value of operations.
 	 */
 	public List<Permission> getOperations() {

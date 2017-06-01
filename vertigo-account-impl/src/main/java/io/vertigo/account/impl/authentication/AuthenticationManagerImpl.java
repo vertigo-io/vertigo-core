@@ -66,15 +66,15 @@ public final class AuthenticationManagerImpl implements AuthenticationManager {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<Account> login(final AuthenticationToken token) {
-		final Optional<Account> account = tryAuthenticateAccount(token);
-		if (account.isPresent()) {
-			final Optional<UserSession> userSession = securityManager.getCurrentUserSession();
-			if (userSession.isPresent()) {
-				userSession.get().authenticate();
-				userSession.get().putAttribute(USER_SESSION_ACCOUNT_KEY, account.get());
+		final Optional<Account> accountOpt = tryLoginAccount(token);
+		if (accountOpt.isPresent()) {
+			final Optional<UserSession> userSessionOpt = securityManager.getCurrentUserSession();
+			if (userSessionOpt.isPresent()) {
+				userSessionOpt.get().authenticate();
+				userSessionOpt.get().putAttribute(USER_SESSION_ACCOUNT_KEY, accountOpt.get());
 			}
 		}
-		return account;
+		return accountOpt;
 	}
 
 	/** {@inheritDoc} */
@@ -91,7 +91,7 @@ public final class AuthenticationManagerImpl implements AuthenticationManager {
 				.ifPresent(userSession -> userSession.logout());
 	}
 
-	private Optional<Account> tryAuthenticateAccount(final AuthenticationToken token) {
+	private Optional<Account> tryLoginAccount(final AuthenticationToken token) {
 		boolean tokenSupported = false;
 		for (final AuthenticatingRealmPlugin authenticatingRealmPlugin : authenticatingRealmPlugins) {
 			if (authenticatingRealmPlugin.supports(token)) {

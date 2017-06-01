@@ -106,7 +106,8 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 	 * @param codecManager Codec Manager
 	 */
 	@Inject
-	public LdapIdentityRealmPlugin(@Named("ldapServerHost") final String ldapServerHost,
+	public LdapIdentityRealmPlugin(
+			@Named("ldapServerHost") final String ldapServerHost,
 			@Named("ldapServerPort") final String ldapServerPort,
 			@Named("ldapAccountBaseDn") final String ldapAccountBaseDn,
 			@Named("ldapGroupBaseDn") final String ldapGroupBaseDn,

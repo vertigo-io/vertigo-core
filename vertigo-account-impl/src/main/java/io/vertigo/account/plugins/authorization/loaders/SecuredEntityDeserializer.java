@@ -35,7 +35,7 @@ import io.vertigo.util.StringUtil;
  *
  * @author npiedeloup
  */
-public class SecuredEntityDeserializer implements JsonDeserializer<SecuredEntity> {
+public final class SecuredEntityDeserializer implements JsonDeserializer<SecuredEntity> {
 
 	/** {@inheritDoc} */
 	@Override

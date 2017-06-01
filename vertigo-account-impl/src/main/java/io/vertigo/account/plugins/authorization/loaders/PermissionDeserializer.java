@@ -14,7 +14,7 @@ import io.vertigo.account.authorization.metamodel.Permission;
  *
  * @author npiedeloup
  */
-public class PermissionDeserializer implements JsonDeserializer<Permission> {
+final class PermissionDeserializer implements JsonDeserializer<Permission> {
 
 	/** {@inheritDoc} */
 	@Override
