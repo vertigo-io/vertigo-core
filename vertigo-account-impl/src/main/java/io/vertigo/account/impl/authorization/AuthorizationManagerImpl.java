@@ -1,0 +1,180 @@
+/**
+ * vertigo - simple java starter
+ *
+ * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package io.vertigo.account.impl.authorization;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
+import io.vertigo.account.authorization.AuthorizationManager;
+import io.vertigo.account.authorization.UserPermissions;
+import io.vertigo.account.authorization.metamodel.OperationName;
+import io.vertigo.account.authorization.metamodel.Permission;
+import io.vertigo.account.authorization.metamodel.PermissionName;
+import io.vertigo.account.authorization.metamodel.SecuredEntity;
+import io.vertigo.account.authorization.metamodel.rulemodel.DslMultiExpression;
+import io.vertigo.account.impl.authorization.dsl.translator.CriteriaSecurityRuleTranslator;
+import io.vertigo.account.impl.authorization.dsl.translator.SearchSecurityRuleTranslator;
+import io.vertigo.app.Home;
+import io.vertigo.core.definition.DefinitionUtil;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.model.KeyConcept;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.lang.Assertion;
+import io.vertigo.persona.security.UserSession;
+import io.vertigo.persona.security.VSecurityManager;
+
+/**
+ * Implementation standard de la gestion centralisee des droits d'acces.
+ *
+ * @author npiedeloup
+ */
+public final class AuthorizationManagerImpl implements AuthorizationManager {
+	private static final String USER_SESSION_ACL_KEY = "vertigo.account.accessControl";
+
+	private final VSecurityManager securityManager;
+
+	/**
+	 * Constructor.
+	 * @param securityManager Security manager
+	 */
+	@Inject
+	public AuthorizationManagerImpl(final VSecurityManager securityManager) {
+		Assertion.checkNotNull(securityManager);
+		//-----
+		this.securityManager = securityManager;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public UserPermissions obtainUserPermissions() {
+		return getUserPermissionsOpt().orElseThrow(() -> new IllegalArgumentException("Can't getUserPermissions, check your have create an UserSession before."));
+
+	}
+
+	private Optional<UserPermissions> getUserPermissionsOpt() {
+		final Optional<UserSession> userSessionOption = securityManager.getCurrentUserSession();
+		if (!userSessionOption.isPresent()) {
+			// Si il n'y a pas de session alors pas d'autorisation.
+			return Optional.empty();
+		}
+		UserPermissions userPermissions = userSessionOption.get().getAttribute(USER_SESSION_ACL_KEY);
+		if (userPermissions == null) {
+			userPermissions = new UserPermissions();
+			userSessionOption.get().putAttribute(USER_SESSION_ACL_KEY, userPermissions);
+		}
+		return Optional.of(userPermissions);
+
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean hasPermission(final PermissionName permissionName) {
+		Assertion.checkNotNull(permissionName);
+		final Optional<UserPermissions> userPermissions = getUserPermissionsOpt();
+		if (!userPermissions.isPresent()) {
+			// Si il n'y a pas de userPermissions alors pas d'autorisation.
+			return false;
+		}
+		return userPermissions.get().hasPermission(permissionName);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <K extends KeyConcept> boolean isAuthorized(final K keyConcept, final OperationName<K> operationName) {
+		Assertion.checkNotNull(keyConcept);
+		Assertion.checkNotNull(operationName);
+		final Optional<UserPermissions> userPermissionsOpt = getUserPermissionsOpt();
+		if (!userPermissionsOpt.isPresent()) {
+			// Si il n'y a pas de session alors pas d'autorisation.
+			return false;
+		}
+
+		final UserPermissions userPermissions = userPermissionsOpt.get();
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
+		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
+
+		return userPermissions.getEntityPermissions(dtDefinition).stream()
+				.filter(permission -> permission.getOperation().get().equals(operationName.name())
+						|| permission.getOverrides().contains(operationName.name()))
+				.flatMap(permission -> permission.getRules().stream())
+				.anyMatch(rule -> new CriteriaSecurityRuleTranslator<K>()
+						.on(securedEntity)
+						.withRule(rule)
+						.withCriteria(userPermissions.getSecurityKeys())
+						.toCriteria()
+						.toPredicate().test(keyConcept));
+	}
+
+	@Override
+	public <K extends KeyConcept> String getSearchSecurity(final K keyConcept, final OperationName<K> operationName) {
+		Assertion.checkNotNull(keyConcept);
+		Assertion.checkNotNull(operationName);
+		final Optional<UserPermissions> userPermissionsOpt = getUserPermissionsOpt();
+		if (!userPermissionsOpt.isPresent()) {
+			// Si il n'y a pas de session alors pas d'autorisation.
+			return ""; //Attention : pas de *:*
+		}
+		final UserPermissions userPermissions = userPermissionsOpt.get();
+		final SearchSecurityRuleTranslator securityRuleTranslator = new SearchSecurityRuleTranslator();
+		securityRuleTranslator.withCriteria(userPermissions.getSecurityKeys());
+
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
+		final List<Permission> permissions = userPermissions.getEntityPermissions(dtDefinition).stream()
+				.filter(permission -> permission.getOperation().get().equals(operationName.name()))
+				.collect(Collectors.toList());
+		for (final Permission permission : permissions) {
+			for (final DslMultiExpression ruleExpression : permission.getRules()) {
+				securityRuleTranslator.withRule(ruleExpression);
+			}
+		}
+		return securityRuleTranslator.toSearchQuery();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <K extends KeyConcept> List<String> getAuthorizedOperations(final K keyConcept) {
+		Assertion.checkNotNull(keyConcept);
+		final Optional<UserPermissions> userPermissions = getUserPermissionsOpt();
+		if (!userPermissions.isPresent()) {
+			// Si il n'y a pas de session alors pas d'autorisation.
+			return new ArrayList<>();
+		}
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
+		return userPermissions.get().getEntityPermissions(dtDefinition).stream()
+				.map(permission -> permission.getOperation().get())
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Finds the SecuredEntity from a type of 'dtDefinition'
+	 * @param dtDefinition the 'dtDefinition'
+	 * @return SecuredEntity
+	 */
+	public static SecuredEntity findSecuredEntity(final DtDefinition dtDefinition) {
+		Assertion.checkNotNull(dtDefinition);
+		//-----
+		final String name = DefinitionUtil.getPrefix(SecuredEntity.class) + dtDefinition.getName();
+		return Home.getApp().getDefinitionSpace().resolve(name, SecuredEntity.class);
+	}
+
+}

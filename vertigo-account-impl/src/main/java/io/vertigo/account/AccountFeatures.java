@@ -18,10 +18,10 @@
  */
 package io.vertigo.account;
 
-import io.vertigo.account.authc.AuthentificationManager;
+import io.vertigo.account.authentification.AuthentificationManager;
 import io.vertigo.account.identity.IdentityManager;
-import io.vertigo.account.impl.authc.AuthenticatingRealmPlugin;
-import io.vertigo.account.impl.authc.AuthentificationManagerImpl;
+import io.vertigo.account.impl.authentification.AuthenticatingRealmPlugin;
+import io.vertigo.account.impl.authentification.AuthentificationManagerImpl;
 import io.vertigo.account.impl.identity.AccountDefinitionProvider;
 import io.vertigo.account.impl.identity.AccountStorePlugin;
 import io.vertigo.account.impl.identity.IdentityManagerImpl;
