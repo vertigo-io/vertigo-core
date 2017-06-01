@@ -23,8 +23,8 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import io.vertigo.account.authentication.AuthenticationToken;
 import io.vertigo.account.authentication.AuthenticationManager;
+import io.vertigo.account.authentication.AuthenticationToken;
 import io.vertigo.account.identity.Account;
 import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.lang.Assertion;
@@ -37,7 +37,7 @@ import io.vertigo.persona.security.VSecurityManager;
  * @author npiedeloup
  */
 public final class AuthenticationManagerImpl implements AuthenticationManager {
-	private static final String USER_SESSION_ACCOUNT_KEY = "vertigo.account.authc";
+	private static final String USER_SESSION_ACCOUNT_KEY = "vertigo.account.authentication";
 
 	private final List<AuthenticatingRealmPlugin> authenticatingRealmPlugins;
 	private final IdentityManager identityManager;
@@ -50,7 +50,10 @@ public final class AuthenticationManagerImpl implements AuthenticationManager {
 	 * @param authenticatingRealmPlugins List of authenticatingRealmPlugins
 	 */
 	@Inject
-	public AuthenticationManagerImpl(final IdentityManager identityManager, final VSecurityManager securityManager, final List<AuthenticatingRealmPlugin> authenticatingRealmPlugins) {
+	public AuthenticationManagerImpl(
+			final IdentityManager identityManager,
+			final VSecurityManager securityManager,
+			final List<AuthenticatingRealmPlugin> authenticatingRealmPlugins) {
 		Assertion.checkNotNull(identityManager);
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(authenticatingRealmPlugins);
@@ -77,20 +80,15 @@ public final class AuthenticationManagerImpl implements AuthenticationManager {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<Account> getLoggedAccount() {
-		final Optional<UserSession> userSession = securityManager.getCurrentUserSession();
-		if (userSession.isPresent()) {
-			return Optional.ofNullable(userSession.get().getAttribute(USER_SESSION_ACCOUNT_KEY));
-		}
-		return Optional.empty();
+		return securityManager.getCurrentUserSession()
+				.map(userSession -> userSession.getAttribute(USER_SESSION_ACCOUNT_KEY));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void logout() {
-		final Optional<UserSession> userSession = securityManager.getCurrentUserSession();
-		if (userSession.isPresent()) {
-			userSession.get().logout();
-		}
+		securityManager.getCurrentUserSession()
+				.ifPresent(userSession -> userSession.logout());
 	}
 
 	private Optional<Account> tryAuthenticateAccount(final AuthenticationToken token) {
