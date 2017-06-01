@@ -83,7 +83,7 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 		if (expressionDefinition.getValue() instanceof DslUserPropertyValue) {
 			final DslUserPropertyValue userPropertyValue = (DslUserPropertyValue) expressionDefinition.getValue();
 			final List<Serializable> userValues = getUserCriteria(userPropertyValue.getUserProperty());
-			if (userValues != null && userValues.size() > 0) {
+			if (userValues.size() > 0) {
 				if (userValues.size() == 1) {
 					query
 							.append(expressionDefinition.getOperator())

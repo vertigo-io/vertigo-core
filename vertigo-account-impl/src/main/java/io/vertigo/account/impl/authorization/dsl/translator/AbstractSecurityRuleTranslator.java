@@ -20,6 +20,7 @@ package io.vertigo.account.impl.authorization.dsl.translator;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -116,6 +117,6 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	protected final List<Serializable> getUserCriteria(final String userProperty) {
 		Assertion.checkNotNull(myUserCriteria, "UserCriteria was not set");
 		//----
-		return myUserCriteria.get(userProperty);
+		return myUserCriteria.getOrDefault(userProperty, Collections.emptyList());
 	}
 }

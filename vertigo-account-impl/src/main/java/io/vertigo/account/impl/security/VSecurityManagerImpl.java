@@ -84,10 +84,9 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	}
 
 	private LocaleProvider createLocaleProvider() {
-		return () -> {
-			final Optional<UserSession> userSession = getCurrentUserSession();
-			return userSession.isPresent() ? userSession.get().getLocale() : null;
-		};
+		return () -> getCurrentUserSession()
+				.map(userSession -> userSession.getLocale())
+				.orElse(null);
 	}
 
 	/** {@inheritDoc} */

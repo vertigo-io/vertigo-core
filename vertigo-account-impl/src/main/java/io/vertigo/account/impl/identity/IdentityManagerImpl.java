@@ -41,7 +41,10 @@ public final class IdentityManagerImpl implements IdentityManager {
 	 * @param fileManager File Manager
 	 */
 	@Inject
-	public IdentityManagerImpl(final AccountStorePlugin accountStorePlugin, final IdentityRealmPlugin identityRealmPlugin, final FileManager fileManager) {
+	public IdentityManagerImpl(
+			final AccountStorePlugin accountStorePlugin,
+			final IdentityRealmPlugin identityRealmPlugin,
+			final FileManager fileManager) {
 		Assertion.checkNotNull(accountStorePlugin);
 		Assertion.checkNotNull(identityRealmPlugin);
 		Assertion.checkNotNull(fileManager);

@@ -7,7 +7,7 @@ import io.vertigo.lang.Assertion;
 /**
  * @author npiedeloup
  */
-public class UsernamePasswordAuthenticationToken implements AuthenticationToken {
+public final class UsernamePasswordAuthenticationToken implements AuthenticationToken {
 
 	private final PasswordHelper passwordHelper;
 

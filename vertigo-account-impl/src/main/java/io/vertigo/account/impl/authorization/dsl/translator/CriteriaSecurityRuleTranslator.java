@@ -24,11 +24,11 @@ import java.util.stream.Collectors;
 
 import io.vertigo.account.authorization.metamodel.SecurityDimension;
 import io.vertigo.account.authorization.metamodel.rulemodel.DslExpression;
+import io.vertigo.account.authorization.metamodel.rulemodel.DslExpression.ValueOperator;
 import io.vertigo.account.authorization.metamodel.rulemodel.DslFixedValue;
 import io.vertigo.account.authorization.metamodel.rulemodel.DslMultiExpression;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslUserPropertyValue;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslExpression.ValueOperator;
 import io.vertigo.account.authorization.metamodel.rulemodel.DslMultiExpression.BoolOperator;
+import io.vertigo.account.authorization.metamodel.rulemodel.DslUserPropertyValue;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -83,7 +83,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		if (expression.getValue() instanceof DslUserPropertyValue) {
 			final DslUserPropertyValue userPropertyValue = (DslUserPropertyValue) expression.getValue();
 			final List<Serializable> userValues = getUserCriteria(userPropertyValue.getUserProperty());
-			if (userValues != null && userValues.size() > 0) {
+			if (userValues.size() > 0) {
 
 				Criteria<E> mainCriteria = null; //comment collecter en stream ?
 				for (final Serializable userValue : userValues) {

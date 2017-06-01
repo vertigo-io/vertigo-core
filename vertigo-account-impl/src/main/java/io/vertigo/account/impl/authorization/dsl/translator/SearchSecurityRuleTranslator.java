@@ -24,8 +24,8 @@ import java.util.List;
 import io.vertigo.account.authorization.metamodel.rulemodel.DslExpression;
 import io.vertigo.account.authorization.metamodel.rulemodel.DslFixedValue;
 import io.vertigo.account.authorization.metamodel.rulemodel.DslMultiExpression;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslUserPropertyValue;
 import io.vertigo.account.authorization.metamodel.rulemodel.DslMultiExpression.BoolOperator;
+import io.vertigo.account.authorization.metamodel.rulemodel.DslUserPropertyValue;
 
 /**
  *
@@ -84,7 +84,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		if (expressionDefinition.getValue() instanceof DslUserPropertyValue) {
 			final DslUserPropertyValue userPropertyValue = (DslUserPropertyValue) expressionDefinition.getValue();
 			final List<Serializable> userValues = getUserCriteria(userPropertyValue.getUserProperty());
-			if (userValues != null && userValues.size() > 0) {
+			if (userValues.size() > 0) {
 				query.append(expressionDefinition.getFieldName())
 						.append(":(");
 				String inSep = "";
