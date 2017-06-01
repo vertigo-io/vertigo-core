@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.data.TestUserSession;
-import io.vertigo.account.plugins.authentification.ldap.LdapAuthenticatingRealmPlugin;
+import io.vertigo.account.plugins.authentication.ldap.LdapAuthenticatingRealmPlugin;
 import io.vertigo.account.plugins.identity.memory.MemoryAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.authentification;
+package io.vertigo.account.authentication;
 
 import java.util.Optional;
 
@@ -28,7 +28,7 @@ import io.vertigo.core.component.Manager;
  *
  * @author npiedeloup
  */
-public interface AuthentificationManager extends Manager {
+public interface AuthenticationManager extends Manager {
 
 	/**
 	 * Try and check to login.

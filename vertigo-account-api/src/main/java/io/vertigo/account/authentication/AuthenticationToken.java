@@ -1,4 +1,4 @@
-package io.vertigo.account.authentification;
+package io.vertigo.account.authentication;
 
 /**
  * Authentification token.

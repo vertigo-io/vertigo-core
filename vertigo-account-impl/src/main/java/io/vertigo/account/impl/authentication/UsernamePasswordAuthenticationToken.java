@@ -1,7 +1,7 @@
 
-package io.vertigo.account.impl.authentification;
+package io.vertigo.account.impl.authentication;
 
-import io.vertigo.account.authentification.AuthenticationToken;
+import io.vertigo.account.authentication.AuthenticationToken;
 import io.vertigo.lang.Assertion;
 
 /**

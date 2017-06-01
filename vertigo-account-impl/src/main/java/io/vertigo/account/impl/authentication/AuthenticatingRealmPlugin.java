@@ -16,11 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.impl.authentification;
+package io.vertigo.account.impl.authentication;
 
 import java.util.Optional;
 
-import io.vertigo.account.authentification.AuthenticationToken;
+import io.vertigo.account.authentication.AuthenticationToken;
 import io.vertigo.core.component.Plugin;
 
 /**

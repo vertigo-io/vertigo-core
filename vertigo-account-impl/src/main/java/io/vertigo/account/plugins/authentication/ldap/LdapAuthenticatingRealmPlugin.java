@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.vertigo.account.plugins.authentification.ldap;
+package io.vertigo.account.plugins.authentication.ldap;
 
 import java.util.Hashtable;
 import java.util.Optional;
@@ -31,9 +31,9 @@ import javax.naming.ldap.LdapContext;
 
 import org.apache.log4j.Logger;
 
-import io.vertigo.account.authentification.AuthenticationToken;
-import io.vertigo.account.impl.authentification.AuthenticatingRealmPlugin;
-import io.vertigo.account.impl.authentification.UsernamePasswordAuthenticationToken;
+import io.vertigo.account.authentication.AuthenticationToken;
+import io.vertigo.account.impl.authentication.AuthenticatingRealmPlugin;
+import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 

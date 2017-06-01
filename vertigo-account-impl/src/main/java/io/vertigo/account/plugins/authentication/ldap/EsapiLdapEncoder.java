@@ -1,4 +1,4 @@
-package io.vertigo.account.plugins.authentification.ldap;
+package io.vertigo.account.plugins.authentication.ldap;
 
 /**
  * Extract from org.owasp.esapi.reference.DefaultEncoder.

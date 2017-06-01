@@ -16,15 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.impl.authentification;
+package io.vertigo.account.impl.authentication;
 
 import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
 
-import io.vertigo.account.authentification.AuthenticationToken;
-import io.vertigo.account.authentification.AuthentificationManager;
+import io.vertigo.account.authentication.AuthenticationToken;
+import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.identity.Account;
 import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.lang.Assertion;
@@ -36,7 +36,7 @@ import io.vertigo.persona.security.VSecurityManager;
  *
  * @author npiedeloup
  */
-public final class AuthentificationManagerImpl implements AuthentificationManager {
+public final class AuthenticationManagerImpl implements AuthenticationManager {
 	private static final String USER_SESSION_ACCOUNT_KEY = "vertigo.account.authc";
 
 	private final List<AuthenticatingRealmPlugin> authenticatingRealmPlugins;
@@ -50,7 +50,7 @@ public final class AuthentificationManagerImpl implements AuthentificationManage
 	 * @param authenticatingRealmPlugins List of authenticatingRealmPlugins
 	 */
 	@Inject
-	public AuthentificationManagerImpl(final IdentityManager identityManager, final VSecurityManager securityManager, final List<AuthenticatingRealmPlugin> authenticatingRealmPlugins) {
+	public AuthenticationManagerImpl(final IdentityManager identityManager, final VSecurityManager securityManager, final List<AuthenticatingRealmPlugin> authenticatingRealmPlugins) {
 		Assertion.checkNotNull(identityManager);
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(authenticatingRealmPlugins);

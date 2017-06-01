@@ -1,6 +1,6 @@
-package io.vertigo.account.plugins.authentification.text;
+package io.vertigo.account.plugins.authentication.text;
 
-import io.vertigo.account.authentification.AuthenticationToken;
+import io.vertigo.account.authentication.AuthenticationToken;
 import io.vertigo.lang.Assertion;
 
 final class AuthenticationAccountInfo {

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.vertigo.account.plugins.authentification.text;
+package io.vertigo.account.plugins.authentication.text;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,10 +35,10 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.account.authentification.AuthenticationToken;
-import io.vertigo.account.impl.authentification.AuthenticatingRealmPlugin;
-import io.vertigo.account.impl.authentification.UsernameAuthenticationToken;
-import io.vertigo.account.impl.authentification.UsernamePasswordAuthenticationToken;
+import io.vertigo.account.authentication.AuthenticationToken;
+import io.vertigo.account.impl.authentication.AuthenticatingRealmPlugin;
+import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
+import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;

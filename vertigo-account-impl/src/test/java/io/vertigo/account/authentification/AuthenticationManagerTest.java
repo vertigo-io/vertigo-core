@@ -27,10 +27,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.vertigo.account.authentification.AuthenticationToken;
-import io.vertigo.account.authentification.AuthentificationManager;
+import io.vertigo.account.authentication.AuthenticationManager;
+import io.vertigo.account.authentication.AuthenticationToken;
 import io.vertigo.account.identity.Account;
-import io.vertigo.account.impl.authentification.UsernamePasswordAuthenticationToken;
+import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.persona.security.UserSession;
@@ -41,7 +41,7 @@ import io.vertigo.persona.security.VSecurityManager;
  *
  * @author npiedeloup
  */
-public final class AuthentificationManagerTest {
+public final class AuthenticationManagerTest {
 
 	private AutoCloseableApp app;
 
@@ -49,7 +49,7 @@ public final class AuthentificationManagerTest {
 	private VSecurityManager securityManager;
 
 	@Inject
-	private AuthentificationManager authentificationManager;
+	private AuthenticationManager authenticationManager;
 
 	@Before
 	public void setUp() {
@@ -69,7 +69,7 @@ public final class AuthentificationManagerTest {
 	@Test
 	public void testAuthenticateFail() {
 		final AuthenticationToken token = new UsernamePasswordAuthenticationToken("badUserName", "badPassword");
-		final Optional<Account> account = authentificationManager.authenticate(token);
+		final Optional<Account> account = authenticationManager.authenticate(token);
 		Assert.assertFalse("Shouldn't found any account with a bad login", account.isPresent());
 
 		final Optional<UserSession> userSession = securityManager.getCurrentUserSession();
@@ -84,7 +84,7 @@ public final class AuthentificationManagerTest {
 
 	private Optional<Account> authenticateSuccess() {
 		final AuthenticationToken token = new UsernamePasswordAuthenticationToken("msa-KNOCK-Search", "vRQmEPjPi9byJjx1A3TdGFj4");
-		final Optional<Account> account = authentificationManager.authenticate(token);
+		final Optional<Account> account = authenticationManager.authenticate(token);
 		Assert.assertTrue("Authent fail", account.isPresent());
 
 		final Optional<UserSession> userSession = securityManager.getCurrentUserSession();
@@ -97,7 +97,7 @@ public final class AuthentificationManagerTest {
 	public void testLoggedAccount() {
 		final Optional<Account> account = authenticateSuccess();
 
-		final Optional<Account> loggedAccount = authentificationManager.getLoggedAccount();
+		final Optional<Account> loggedAccount = authenticationManager.getLoggedAccount();
 
 		Assert.assertEquals(account.get(), loggedAccount.get());
 	}
@@ -109,7 +109,7 @@ public final class AuthentificationManagerTest {
 		Assert.assertTrue("No UserSession", userSession.isPresent());
 		Assert.assertTrue("Not authenticated", userSession.get().isAuthenticated());
 
-		authentificationManager.logout();
+		authenticationManager.logout();
 
 		Assert.assertFalse("Badly authenticated", userSession.get().isAuthenticated());
 	}

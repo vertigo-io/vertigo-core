@@ -16,13 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.vertigo.account.plugins.authentification.mock;
+package io.vertigo.account.plugins.authentication.mock;
 
 import java.util.Optional;
 
-import io.vertigo.account.authentification.AuthenticationToken;
-import io.vertigo.account.impl.authentification.AuthenticatingRealmPlugin;
-import io.vertigo.account.impl.authentification.UsernameAuthenticationToken;
+import io.vertigo.account.authentication.AuthenticationToken;
+import io.vertigo.account.impl.authentication.AuthenticatingRealmPlugin;
+import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
 
 /**
  * A mock implementation of the Realm.

@@ -18,10 +18,10 @@
  */
 package io.vertigo.account;
 
-import io.vertigo.account.authentification.AuthentificationManager;
+import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.identity.IdentityManager;
-import io.vertigo.account.impl.authentification.AuthenticatingRealmPlugin;
-import io.vertigo.account.impl.authentification.AuthentificationManagerImpl;
+import io.vertigo.account.impl.authentication.AuthenticatingRealmPlugin;
+import io.vertigo.account.impl.authentication.AuthenticationManagerImpl;
 import io.vertigo.account.impl.identity.AccountDefinitionProvider;
 import io.vertigo.account.impl.identity.AccountStorePlugin;
 import io.vertigo.account.impl.identity.IdentityManagerImpl;
@@ -95,7 +95,7 @@ public final class AccountFeatures extends Features {
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
 				.addDefinitionProvider(DefinitionProviderConfig.builder(AccountDefinitionProvider.class).build())
-				.addComponent(AuthentificationManager.class, AuthentificationManagerImpl.class)
+				.addComponent(AuthenticationManager.class, AuthenticationManagerImpl.class)
 				.addComponent(IdentityManager.class, IdentityManagerImpl.class)
 				.addPlugin(MemoryIdentityRealmPlugin.class);
 
