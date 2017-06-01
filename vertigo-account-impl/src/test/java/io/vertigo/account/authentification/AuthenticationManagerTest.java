@@ -42,7 +42,6 @@ import io.vertigo.persona.security.VSecurityManager;
  * @author npiedeloup
  */
 public final class AuthenticationManagerTest {
-
 	private AutoCloseableApp app;
 
 	@Inject
@@ -60,8 +59,8 @@ public final class AuthenticationManagerTest {
 
 	@After
 	public void tearDown() {
-		securityManager.stopCurrentUserSession();
 		if (app != null) {
+			securityManager.stopCurrentUserSession();
 			app.close();
 		}
 	}
@@ -69,7 +68,7 @@ public final class AuthenticationManagerTest {
 	@Test
 	public void testAuthenticateFail() {
 		final AuthenticationToken token = new UsernamePasswordAuthenticationToken("badUserName", "badPassword");
-		final Optional<Account> account = authenticationManager.authenticate(token);
+		final Optional<Account> account = authenticationManager.login(token);
 		Assert.assertFalse("Shouldn't found any account with a bad login", account.isPresent());
 
 		final Optional<UserSession> userSession = securityManager.getCurrentUserSession();
@@ -84,7 +83,7 @@ public final class AuthenticationManagerTest {
 
 	private Optional<Account> authenticateSuccess() {
 		final AuthenticationToken token = new UsernamePasswordAuthenticationToken("msa-KNOCK-Search", "vRQmEPjPi9byJjx1A3TdGFj4");
-		final Optional<Account> account = authenticationManager.authenticate(token);
+		final Optional<Account> account = authenticationManager.login(token);
 		Assert.assertTrue("Authent fail", account.isPresent());
 
 		final Optional<UserSession> userSession = securityManager.getCurrentUserSession();

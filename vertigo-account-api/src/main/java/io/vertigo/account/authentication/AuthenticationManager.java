@@ -24,7 +24,9 @@ import io.vertigo.account.identity.Account;
 import io.vertigo.core.component.Manager;
 
 /**
- * Gestion centralisée de l'authentifications.
+ * Authentication.
+ * 	- login
+ * 	- logout
  *
  * @author npiedeloup
  */
@@ -35,7 +37,7 @@ public interface AuthenticationManager extends Manager {
 	 * @param token Authentification token
 	 * @return Account User account (Principal)
 	 */
-	Optional<Account> authenticate(final AuthenticationToken token);
+	Optional<Account> login(final AuthenticationToken token);
 
 	/**
 	 * Reinitialise la session courante.

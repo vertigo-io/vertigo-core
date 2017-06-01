@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.vertigo.account.authorization.metamodel.Permission;
 import io.vertigo.account.authorization.metamodel.PermissionName;
@@ -64,11 +65,9 @@ public final class UserPermissions implements Serializable {
 	 * @return Set des roles.
 	 */
 	public final Set<Role> getRoles() {
-		final Set<Role> roleSet = new HashSet<>();
-		for (final DefinitionReference<Role> roleReference : roleRefs) {
-			roleSet.add(roleReference.get());
-		}
-		return Collections.unmodifiableSet(roleSet);
+		return roleRefs.stream()
+				.map(roleRef -> roleRef.get())
+				.collect(Collectors.toSet());
 	}
 
 	/**

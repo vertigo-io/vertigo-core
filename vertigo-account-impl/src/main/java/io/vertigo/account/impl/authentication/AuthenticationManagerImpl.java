@@ -65,7 +65,7 @@ public final class AuthenticationManagerImpl implements AuthenticationManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<Account> authenticate(final AuthenticationToken token) {
+	public Optional<Account> login(final AuthenticationToken token) {
 		final Optional<Account> account = tryAuthenticateAccount(token);
 		if (account.isPresent()) {
 			final Optional<UserSession> userSession = securityManager.getCurrentUserSession();
