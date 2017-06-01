@@ -59,7 +59,7 @@ final class ScriptEvaluator {
 		//-----
 		final ScriptParserHandlerImpl scriptHandler = new ScriptParserHandlerImpl(expressionEvaluatorPlugin, script, parameters);
 
-		final ScriptParser scriptParser = new ScriptParser(separatorType.getSeparators());
+		final ScriptParser scriptParser = new ScriptParser(separatorType.getSeparator());
 		scriptParser.parse(script, scriptHandler);
 		return scriptHandler.eval();
 	}

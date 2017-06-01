@@ -95,19 +95,15 @@ final class ScriptPreProcessor {
 
 	String evaluate(final String query) {
 		//On commence par vérifier si le preprocessor s'applique.
-		if (containsSeparator(query, separatorType.getSeparators())) {
+		if (containsSeparator(query, separatorType.getSeparator())) {
 			//Evaluation de la query à la mode JSP avec les paramètres passés au démarrage.
 			return scriptManager.evaluateScript(query, separatorType, createParameters(scriptManager, inTaskAttributes));
 		}
 		return query;
 	}
 
-	private static boolean containsSeparator(final String query, final List<ScriptSeparator> separators) {
-		for (final ScriptSeparator separator : separators) {
-			if (query.contains(separator.getBeginSeparator()) && query.contains(separator.getEndSeparator())) {
-				return true;
-			}
-		}
-		return false;
+	private static boolean containsSeparator(final String query, final ScriptSeparator separator) {
+		return query.contains(separator.getBeginSeparator())
+				&& query.contains(separator.getEndSeparator());
 	}
 }

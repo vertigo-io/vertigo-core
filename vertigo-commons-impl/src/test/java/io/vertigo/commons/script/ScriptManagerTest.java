@@ -21,7 +21,6 @@ package io.vertigo.commons.script;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -98,24 +97,20 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testComment() {
-		final List<ScriptSeparator> separators = Arrays.asList(comment);
-
 		final String script = "bla <!--commentaires-->bla";
 
 		final MyScriptParserHandler scriptHandler = new MyScriptParserHandler();
-		scriptManager.parse(script, scriptHandler, separators);
+		scriptManager.parse(script, scriptHandler, comment);
 		assertEquals("bla bla", scriptHandler.result.toString());
 	}
 
 	@Test(expected = Exception.class)
 	public void testParameterForgotten() {
-		final List<ScriptSeparator> separators = Arrays.asList(comment);
-
 		final String script = "bla <!---->bla";
 
 		final MyScriptParserHandler scriptHandler = new MyScriptParserHandler();
 
-		scriptManager.parse(script, scriptHandler, separators);
+		scriptManager.parse(script, scriptHandler, comment);
 	}
 
 	@Test

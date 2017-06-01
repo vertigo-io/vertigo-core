@@ -18,8 +18,6 @@
  */
 package io.vertigo.commons.impl.script;
 
-import java.util.List;
-
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.lang.Assertion;
@@ -33,9 +31,9 @@ import io.vertigo.lang.Assertion;
  */
 final class ScriptParser {
 	/**
-	 * Liste des séparateurs admis pour cet analyseur.
+	 * Séparateurs admis pour cet analyseur.
 	 */
-	private final List<ScriptSeparator> separators;
+	private final ScriptSeparator separator;
 
 	/**
 	 * Index de début du paramètre courant
@@ -53,10 +51,10 @@ final class ScriptParser {
 	 * Constructor.
 	 * @param separators Séparateurs pris en compte
 	 */
-	ScriptParser(final List<ScriptSeparator> separators) {
-		Assertion.checkNotNull(separators);
+	ScriptParser(final ScriptSeparator separator) {
+		Assertion.checkNotNull(separator);
 		//-----
-		this.separators = separators;
+		this.separator = separator;
 	}
 
 	/**
@@ -110,14 +108,11 @@ final class ScriptParser {
 	 */
 	private boolean nextPosition(final String script, final int beginCar) {
 		int minPosition = Integer.MAX_VALUE;
-		int position;
 		ScriptSeparator found = null;
-		for (final ScriptSeparator separator : separators) {
-			position = separator.indexOfBeginCaracter(script, beginCar);
-			if (position != -1 && position < minPosition) {
-				minPosition = position;
-				found = separator;
-			}
+		final int position = separator.indexOfBeginCaracter(script, beginCar);
+		if (position != -1 && position < minPosition) {
+			minPosition = position;
+			found = separator;
 		}
 		/*
 		 * If there is a separator
