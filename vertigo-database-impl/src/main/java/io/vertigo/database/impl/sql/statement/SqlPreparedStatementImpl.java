@@ -145,15 +145,11 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	//-----1ere Etape : Enregistrement
 	//=========================================================================
 
-	private void init(final List<SqlParameter> parameters) throws SQLException {
-		state.assertRegisteringState();
-		//-----
-		statement = createStatement();
+	private void setParameters(final List<SqlParameter> parameters) throws SQLException {
 		info.append(parameters
 				.stream()
 				.map(SqlParameter::toString)
 				.collect(Collectors.joining(", ", sql + '(', ")")));
-
 		//-----
 		for (int index = 0; index < parameters.size(); index++) {
 			final SqlParameter parameter = parameters.get(index);
@@ -191,7 +187,8 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		state.assertRegisteringState();
 		Assertion.checkNotNull(dataType);
 		//-----
-		init(parameters);
+		statement = createStatement();
+		setParameters(parameters);
 		//-----
 		boolean success = false;
 		try {
@@ -225,7 +222,8 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	public final int executeUpdate(final List<SqlParameter> parameters) throws SQLException {
 		state.assertRegisteringState();
 		//---
-		init(parameters);
+		statement = createStatement();
+		setParameters(parameters);
 		//---
 		boolean success = false;
 		try {
@@ -250,18 +248,6 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		}
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void addBatch(final List<SqlParameter> parameters) throws SQLException {
-		state.assertRegisteringState();
-		//---
-		if (statement == null) {
-			init(parameters);
-		}
-		//----
-		statement.addBatch();
-	}
-
 	private static class WrappedSqlException extends RuntimeException {
 		private static final long serialVersionUID = -6501399202170153122L;
 		private final SQLException sqlException;
@@ -275,13 +261,21 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		SQLException getSqlException() {
 			return sqlException;
 		}
+
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public int executeBatch() throws SQLException {
+	public int executeBatch(final List<List<SqlParameter>> batch) throws SQLException {
+		Assertion.checkNotNull(batch);
 		state.assertRegisteringState();
 		//---
+		statement = createStatement();
+		for (final List<SqlParameter> parameters : batch) {
+			setParameters(parameters);
+			statement.addBatch();
+		}
+
 		boolean success = false;
 		try {
 			final int result = traceWithReturn(this::doExecuteBatch);

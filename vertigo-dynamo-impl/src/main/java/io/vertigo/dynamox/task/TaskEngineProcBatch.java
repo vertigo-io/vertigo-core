@@ -59,14 +59,16 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 		// on alimente le batch.
 		// La taille du batch est déduite de la taille de la collection en entrée.
 		final int batchSize = getBatchSize();
+		final List<List<SqlParameter>> batch = new ArrayList<>();
 		for (int rowNumber = 0; rowNumber < batchSize; rowNumber++) {
 			final List<SqlParameter> sqlParameters = new ArrayList<>();
 			for (final SqlNamedParam param : params) {
 				sqlParameters.add(buildSqlParameter(param, rowNumber));
 			}
-			statement.addBatch(sqlParameters);
+			batch.add(sqlParameters);
 		}
-		return statement.executeBatch();
+
+		return statement.executeBatch(batch);
 	}
 
 	private int getBatchSize() {

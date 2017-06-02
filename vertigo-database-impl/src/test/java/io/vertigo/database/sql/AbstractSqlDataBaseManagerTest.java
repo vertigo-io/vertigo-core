@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -252,8 +253,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
 		try {
 			try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, GenerationMode.NONE)) {
-				for (int i = 0; i < movies.size(); i++) {
-					final Movie movie = movies.get(i);
+				final List<List<SqlParameter>> batch = new ArrayList<>();
+				for (final Movie movie : movies) {
 					final List<SqlParameter> sqlParameters = Arrays.asList(
 							SqlParameter.of(Long.class, movie.getId()),
 							SqlParameter.of(String.class, movie.getTitle()),
@@ -264,9 +265,9 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 							SqlParameter.of(LocalDate.class, movie.getReleaseLocalDate()),
 							SqlParameter.of(ZonedDateTime.class, movie.getReleaseZonedDateTime()),
 							SqlParameter.of(DataStream.class, movie.getIcon()));
-					preparedStatement.addBatch(sqlParameters);
+					batch.add(sqlParameters);
 				}
-				result = preparedStatement.executeBatch();
+				result = preparedStatement.executeBatch(batch);
 			}
 			connection.commit();
 		} finally {

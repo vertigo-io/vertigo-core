@@ -56,19 +56,12 @@ public interface SqlPreparedStatement extends AutoCloseable {
 	int executeUpdate(List<SqlParameter> sqlParameters) throws SQLException;
 
 	/**
-	 * adds a batch
-	 * @param sqlParameters input params
-	 * @throws SQLException
-	 */
-	void addBatch(List<SqlParameter> sqlParameters) throws SQLException;
-
-	/**
 	 * Executes the batch .
 	 * @throws SQLException Si erreur
 	 * @return the SUM of  row count for INSERT, UPDATE or DELETE statements; or 0 for SQL statements that return nothing
 	 * @throws SQLException
 	 */
-	int executeBatch() throws SQLException;
+	int executeBatch(List<List<SqlParameter>> parameters) throws SQLException;
 
 	/**
 	 * Returns the generated keys when an insert is executed.
