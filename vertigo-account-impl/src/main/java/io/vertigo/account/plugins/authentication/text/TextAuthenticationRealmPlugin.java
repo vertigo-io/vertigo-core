@@ -27,8 +27,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,7 +34,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.vertigo.account.authentication.AuthenticationToken;
-import io.vertigo.account.impl.authentication.AuthenticatingRealmPlugin;
+import io.vertigo.account.impl.authentication.AuthenticationRealmPlugin;
 import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.core.component.Activeable;
@@ -55,12 +53,11 @@ import io.vertigo.lang.WrappedException;
  *
  * @since 0.1
  */
-public class TextAuthenticatingRealmPlugin implements AuthenticatingRealmPlugin, Activeable {
+public class TextAuthenticationRealmPlugin implements AuthenticationRealmPlugin, Activeable {
 	private static final String FILE_PATTERN_STR = "^(\\S+)\\s+(\\S+)\\s+(\\S+)\\s*$";
 	private static final Pattern FILE_PATTERN = Pattern.compile(FILE_PATTERN_STR);
 
 	private final Map<String, AuthenticationAccountInfo> users; //username-to-SimpleAccount
-	private final ReadWriteLock userLocks;
 	private final ResourceManager resourceManager;
 	private final String filePath;
 
@@ -70,14 +67,13 @@ public class TextAuthenticatingRealmPlugin implements AuthenticatingRealmPlugin,
 	 * @param filePath File path
 	 */
 	@Inject
-	public TextAuthenticatingRealmPlugin(@Named("filePath") final String filePath, final ResourceManager resourceManager) {
+	public TextAuthenticationRealmPlugin(@Named("filePath") final String filePath, final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
 		// -----
 		this.resourceManager = resourceManager;
 		this.filePath = filePath;
 		//SimpleAccountRealms are memory-only realms
 		users = new LinkedHashMap<>();
-		userLocks = new ReentrantReadWriteLock();
 
 	}
 
@@ -91,17 +87,12 @@ public class TextAuthenticatingRealmPlugin implements AuthenticatingRealmPlugin,
 	/** {@inheritDoc} */
 	@Override
 	public Optional<String> authenticateAccount(final AuthenticationToken token) {
-		userLocks.readLock().lock();
-		try {
-			final AuthenticationAccountInfo authenticationAccountInfo = users.get(token.getPrincipal());
-			if (authenticationAccountInfo != null //Username exists
-					&& token.match(authenticationAccountInfo.getAuthenticationToken())) { //and tokens match
-				return Optional.of(authenticationAccountInfo.getAccountKey());
-			}
-			return Optional.empty();
-		} finally {
-			userLocks.readLock().unlock();
+		final AuthenticationAccountInfo authenticationAccountInfo = users.get(token.getPrincipal());
+		if (authenticationAccountInfo != null //Username exists
+				&& token.match(authenticationAccountInfo.getAuthenticationToken())) { //and tokens match
+			return Optional.of(authenticationAccountInfo.getAccountKey());
 		}
+		return Optional.empty();
 	}
 
 	/** {@inheritDoc} */

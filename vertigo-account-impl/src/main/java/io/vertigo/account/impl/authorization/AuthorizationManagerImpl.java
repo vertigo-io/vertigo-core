@@ -36,6 +36,8 @@ import io.vertigo.account.impl.authorization.dsl.translator.CriteriaSecurityRule
 import io.vertigo.account.impl.authorization.dsl.translator.SearchSecurityRuleTranslator;
 import io.vertigo.app.Home;
 import io.vertigo.core.definition.DefinitionUtil;
+import io.vertigo.dynamo.criteria.Criteria;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -123,6 +125,47 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 						.withCriteria(userPermissions.getSecurityKeys())
 						.toCriteria()
 						.toPredicate().test(keyConcept));
+	}
+
+	@Override
+	public <K extends KeyConcept> Criteria<K> getCriteriaSecurity(final K keyConcept, final OperationName<K> operation) {
+		Assertion.checkNotNull(keyConcept);
+		Assertion.checkNotNull(operation);
+		final Optional<UserPermissions> userPermissionsOpt = getUserPermissionsOpt();
+		if (!userPermissionsOpt.isPresent()) {
+			// Si il n'y a pas de session alors pas d'autorisation.
+			return Criterions.alwaysFalse();
+		}
+
+		final UserPermissions userPermissions = userPermissionsOpt.get();
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
+		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
+
+		final List<Criteria<K>> criterions = userPermissions.getEntityPermissions(dtDefinition).stream()
+				.filter(permission -> permission.getOperation().get().equals(operation.name())
+						|| permission.getOverrides().contains(operation.name()))
+				.flatMap(permission -> permission.getRules().stream())
+				.map(rule -> new CriteriaSecurityRuleTranslator<K>()
+						.on(securedEntity)
+						.withRule(rule)
+						.withCriteria(userPermissions.getSecurityKeys())
+						.toCriteria())
+				.collect(Collectors.toList());
+
+		if (criterions.isEmpty()) {
+			// Si il n'y a pas de droits alors pas d'autorisation.
+			return Criterions.alwaysFalse();
+		}
+
+		Criteria<K> securityCriteria = null;
+		for (final Criteria<K> ruleCriteria : criterions) {
+			if (securityCriteria == null) {
+				securityCriteria = ruleCriteria;
+			} else {
+				securityCriteria = securityCriteria.or(ruleCriteria);
+			}
+		}
+		return securityCriteria;
 	}
 
 	@Override

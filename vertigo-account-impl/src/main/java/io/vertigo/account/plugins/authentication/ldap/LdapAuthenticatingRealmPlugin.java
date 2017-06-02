@@ -32,12 +32,12 @@ import javax.naming.ldap.LdapContext;
 import org.apache.log4j.Logger;
 
 import io.vertigo.account.authentication.AuthenticationToken;
-import io.vertigo.account.impl.authentication.AuthenticatingRealmPlugin;
+import io.vertigo.account.impl.authentication.AuthenticationRealmPlugin;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
-public final class LdapAuthenticatingRealmPlugin implements AuthenticatingRealmPlugin {
+public final class LdapAuthenticatingRealmPlugin implements AuthenticationRealmPlugin {
 	private static final Logger LOGGER = Logger.getLogger(LdapAuthenticatingRealmPlugin.class);
 
 	private static final String DEFAULT_CONTEXT_FACTORY_CLASS_NAME = "com.sun.jndi.ldap.LdapCtxFactory";

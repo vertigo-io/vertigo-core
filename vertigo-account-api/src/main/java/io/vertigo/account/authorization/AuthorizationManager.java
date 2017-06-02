@@ -23,6 +23,7 @@ import java.util.List;
 import io.vertigo.account.authorization.metamodel.OperationName;
 import io.vertigo.account.authorization.metamodel.PermissionName;
 import io.vertigo.core.component.Manager;
+import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 
 /**
@@ -60,8 +61,17 @@ public interface AuthorizationManager extends Manager {
 	<K extends KeyConcept> boolean isAuthorized(final K keyConcept, OperationName<K> operation);
 
 	/**
-	 * Indique si l'utilisateur courant a la permission d'effectuer l'operation
-	 * donnee sur la ressource donnee.
+	 * Fournit le Criteria permettant d'appliquer les règles de sécurité.
+	 *
+	 * @param keyConcept la ressource
+	 * @param operation l'operation
+	 * @return true si l'utilisateur courant a la permission d'effectuer l'operation donnée sur la ressource donnee
+	 * @param <K> Type du keyConcept
+	 */
+	<K extends KeyConcept> Criteria<K> getCriteriaSecurity(K keyConcept, OperationName<K> operation);
+
+	/**
+	 * Fournit la chaine de recherche permettant d'appliquer les règles de sécurité.
 	 *
 	 * @param keyConcept la ressource
 	 * @param operation l'operation

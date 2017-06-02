@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +52,6 @@ import io.vertigo.account.identity.AccountGroup;
 import io.vertigo.account.impl.identity.IdentityRealmPlugin;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.StreamFile;
 import io.vertigo.lang.Assertion;
@@ -80,8 +78,6 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 	private final String ldapReaderPassword;
 
 	private final String ldapUserAuthAttribute;
-	private static final String ldapMemberOfAttribute = "memberOf";
-	private static final String ldapMemberAttribute = "member";
 	private final Map<AccountProperty, String> ldapAccountAttributeMapping; //Account properties to ldapAttribute
 	private final Map<GroupProperty, String> ldapGroupAttributeMapping; //Group properties to ldapAttribute
 
@@ -164,81 +160,6 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 		try {
 			ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
 			return searchAccount("*", -1, ldapContext);
-		} finally {
-			closeLdapContext(ldapContext);
-		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
-		LdapContext ldapContext = null;
-		try {
-			ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
-			final Attributes attributes = getAccountAttributes(accountURI.getId(), Collections.singleton(ldapMemberOfAttribute), ldapContext);
-			final Attribute memberOf = attributes.get(ldapMemberOfAttribute);
-			final Set<URI<AccountGroup>> groupURIs = new HashSet<>();
-			final NamingEnumeration<?> values = memberOf.getAll();
-			while (values.hasMore()) {
-				final String groupDn = String.class.cast(values.next());
-				groupURIs.add(DtObjectUtil.createURI(AccountGroup.class, groupDn));
-			}
-			return groupURIs;
-		} catch (final NamingException e) {
-			throw WrappedException.wrap(e);
-		} finally {
-			closeLdapContext(ldapContext);
-		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public long getGroupsCount() {
-		throw new UnsupportedOperationException("Can't count all account from LDAP : anti-spooffing protections");
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Collection<AccountGroup> getAllGroups() {
-		LdapContext ldapContext = null;
-		try {
-			ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
-			return searchGroup("*", -1, ldapContext);
-		} finally {
-			closeLdapContext(ldapContext);
-		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public AccountGroup getGroup(final URI<AccountGroup> groupURI) {
-		LdapContext ldapContext = null;
-		try {
-			ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
-			final Attributes attributes = getGroupAttributes((String) groupURI.getId(), ldapGroupAttributeMapping.values(), ldapContext);
-			return parseGroup(attributes);
-		} finally {
-			closeLdapContext(ldapContext);
-		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Set<URI<Account>> getAccountURIs(final URI<AccountGroup> groupURI) {
-		LdapContext ldapContext = null;
-		try {
-			ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
-			final Attributes attributes = getGroupAttributes((String) groupURI.getId(), Collections.singleton(ldapMemberAttribute), ldapContext);
-			final Attribute members = attributes.get(ldapMemberAttribute);
-			final Set<URI<Account>> accountURIs = new HashSet<>();
-			final NamingEnumeration<?> values = members.getAll();
-			while (values.hasMore()) {
-				final String accountDn = String.class.cast(values.next());
-				accountURIs.add(DtObjectUtil.createURI(Account.class, accountDn)); //incorrect l'id n'est pas le DN
-			}
-			return accountURIs;
-		} catch (final NamingException e) {
-			throw WrappedException.wrap(e);
 		} finally {
 			closeLdapContext(ldapContext);
 		}

@@ -39,7 +39,7 @@ import io.vertigo.persona.security.VSecurityManager;
 public final class AuthenticationManagerImpl implements AuthenticationManager {
 	private static final String USER_SESSION_ACCOUNT_KEY = "vertigo.account.authentication";
 
-	private final List<AuthenticatingRealmPlugin> authenticatingRealmPlugins;
+	private final List<AuthenticationRealmPlugin> authenticatingRealmPlugins;
 	private final IdentityManager identityManager;
 	private final VSecurityManager securityManager;
 
@@ -53,7 +53,7 @@ public final class AuthenticationManagerImpl implements AuthenticationManager {
 	public AuthenticationManagerImpl(
 			final IdentityManager identityManager,
 			final VSecurityManager securityManager,
-			final List<AuthenticatingRealmPlugin> authenticatingRealmPlugins) {
+			final List<AuthenticationRealmPlugin> authenticatingRealmPlugins) {
 		Assertion.checkNotNull(identityManager);
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(authenticatingRealmPlugins);
@@ -93,7 +93,7 @@ public final class AuthenticationManagerImpl implements AuthenticationManager {
 
 	private Optional<Account> tryLoginAccount(final AuthenticationToken token) {
 		boolean tokenSupported = false;
-		for (final AuthenticatingRealmPlugin authenticatingRealmPlugin : authenticatingRealmPlugins) {
+		for (final AuthenticationRealmPlugin authenticatingRealmPlugin : authenticatingRealmPlugins) {
 			if (authenticatingRealmPlugin.supports(token)) {
 				tokenSupported = true;
 				final Optional<String> accountAuthToken = authenticatingRealmPlugin.authenticateAccount(token);
