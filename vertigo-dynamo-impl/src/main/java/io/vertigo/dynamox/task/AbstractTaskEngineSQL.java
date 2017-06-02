@@ -244,7 +244,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	}
 
 	protected final SqlParameter buildSqlParameter(final SqlNamedParam param, final Integer rowNumber) {
-		return new SqlParameter(getDataTypeParameter(param), getValueParameter(param, rowNumber));
+		return SqlParameter.of(getDataTypeParameter(param), getValueParameter(param, rowNumber));
 	}
 
 	private final Class getDataTypeParameter(final SqlNamedParam param) {

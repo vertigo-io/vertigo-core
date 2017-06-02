@@ -135,15 +135,15 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		final String sql = INSERT_INTO_MOVIE_VALUES;
 		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, GenerationMode.NONE)) {
 			final List<SqlParameter> sqlParameters = Arrays.asList(
-					new SqlParameter(Long.class, id),
-					new SqlParameter(String.class, title),
-					new SqlParameter(Double.class, null),
-					new SqlParameter(BigDecimal.class, null),
-					new SqlParameter(Boolean.class, null),
-					new SqlParameter(Date.class, releaseDate),
-					new SqlParameter(LocalDate.class, releaseLocalDate),
-					new SqlParameter(ZonedDateTime.class, releaseZonedDateTime),
-					new SqlParameter(DataStream.class, buildIcon()));
+					SqlParameter.of(Long.class, id),
+					SqlParameter.of(String.class, title),
+					SqlParameter.of(Double.class, null),
+					SqlParameter.of(BigDecimal.class, null),
+					SqlParameter.of(Boolean.class, null),
+					SqlParameter.of(Date.class, releaseDate),
+					SqlParameter.of(LocalDate.class, releaseLocalDate),
+					SqlParameter.of(ZonedDateTime.class, releaseZonedDateTime),
+					SqlParameter.of(DataStream.class, buildIcon()));
 			//-----
 			preparedStatement.executeUpdate(sqlParameters);
 		}
@@ -339,15 +339,15 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 				for (int i = 0; i < movies.size(); i++) {
 					final Movie movie = movies.get(i);
 					final List<SqlParameter> sqlParameters = Arrays.asList(
-							new SqlParameter(Long.class, movie.getId()),
-							new SqlParameter(String.class, movie.getTitle()),
-							new SqlParameter(Double.class, movie.getFps()),
-							new SqlParameter(BigDecimal.class, movie.getIncome()),
-							new SqlParameter(Boolean.class, movie.getColor()),
-							new SqlParameter(Date.class, movie.getReleaseDate()),
-							new SqlParameter(LocalDate.class, movie.getReleaseLocalDate()),
-							new SqlParameter(ZonedDateTime.class, movie.getReleaseZonedDateTime()),
-							new SqlParameter(DataStream.class, movie.getIcon()));
+							SqlParameter.of(Long.class, movie.getId()),
+							SqlParameter.of(String.class, movie.getTitle()),
+							SqlParameter.of(Double.class, movie.getFps()),
+							SqlParameter.of(BigDecimal.class, movie.getIncome()),
+							SqlParameter.of(Boolean.class, movie.getColor()),
+							SqlParameter.of(Date.class, movie.getReleaseDate()),
+							SqlParameter.of(LocalDate.class, movie.getReleaseLocalDate()),
+							SqlParameter.of(ZonedDateTime.class, movie.getReleaseZonedDateTime()),
+							SqlParameter.of(DataStream.class, movie.getIcon()));
 					preparedStatement.addBatch(sqlParameters);
 				}
 				result = preparedStatement.executeBatch();

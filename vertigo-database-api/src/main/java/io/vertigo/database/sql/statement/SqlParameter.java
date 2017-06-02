@@ -31,11 +31,22 @@ public final class SqlParameter<O> {
 	private final O value;
 
 	/**
+	 * Static builder.
+	 * @param dataType the param type
+	 * @param value the param value
+	 * @return
+	 */
+	public static <O> SqlParameter of(final Class<O> dataType, final O value) {
+		return new SqlParameter<>(dataType, value);
+
+	}
+
+	/**
 	 * Constructor.
 	 * @param dataType the param type
 	 * @param value the param value
 	 */
-	public SqlParameter(final Class<O> dataType, final O value) {
+	private SqlParameter(final Class<O> dataType, final O value) {
 		Assertion.checkNotNull(dataType);
 		//---
 		this.dataType = dataType;
