@@ -178,6 +178,17 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		movies.forEach(this::checkMovie);
 	}
 
+	/*
+		@Test
+		public void testDavid() throws Exception {
+			createDatas();
+			final List<Movie> movies = executeQuery(Movie.class, "select * from movie", null);
+
+			final Movie myMovie = new Movie();
+
+		}
+	*/
+
 	@Test
 	public void testSelectSimpleObjects() throws Exception {
 		createDatas();
@@ -190,7 +201,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		switch (movie.getId().intValue()) {
 			case 1:
 				Assert.assertEquals(TITLE_MOVIE_1, movie.getTitle());
-				Assert.assertEquals("01-05-1941", new SimpleDateFormat("dd-MM-YYYY").format(movie.getReleaseDate()));
+				Assert.assertEquals("01-05-1941 16:30", new SimpleDateFormat("dd-MM-YYYY HH:mm").format(movie.getReleaseDate()));
 				Assert.assertEquals(1, movie.getReleaseLocalDate().getDayOfMonth());
 				Assert.assertEquals(5, movie.getReleaseLocalDate().getMonthValue());
 				Assert.assertEquals(1941, movie.getReleaseLocalDate().getYear());
@@ -199,6 +210,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 				Assert.assertEquals(1, movie.getReleaseZonedDateTime().getDayOfMonth());
 				Assert.assertEquals(5, movie.getReleaseZonedDateTime().getMonthValue());
 				Assert.assertEquals(1941, movie.getReleaseZonedDateTime().getYear());
+
 				Assert.assertEquals(16, movie.getReleaseZonedDateTime().getHour());
 				Assert.assertEquals(30, movie.getReleaseZonedDateTime().getMinute());
 				Assert.assertEquals(0, movie.getReleaseZonedDateTime().getSecond());
@@ -206,7 +218,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 				break;
 			case 2:
 				Assert.assertEquals(TITLE_MOVIE_2, movie.getTitle());
-				Assert.assertEquals("09-05-1958", new SimpleDateFormat("dd-MM-YYYY").format(movie.getReleaseDate()));
+				Assert.assertEquals("09-05-1958 16:30", new SimpleDateFormat("dd-MM-YYYY HH:mm").format(movie.getReleaseDate()));
 				Assert.assertEquals(9, movie.getReleaseLocalDate().getDayOfMonth());
 				Assert.assertEquals(5, movie.getReleaseLocalDate().getMonthValue());
 				Assert.assertEquals(1958, movie.getReleaseLocalDate().getYear());
@@ -215,6 +227,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 				Assert.assertEquals(9, movie.getReleaseZonedDateTime().getDayOfMonth());
 				Assert.assertEquals(5, movie.getReleaseZonedDateTime().getMonthValue());
 				Assert.assertEquals(1958, movie.getReleaseZonedDateTime().getYear());
+
 				Assert.assertEquals(16, movie.getReleaseZonedDateTime().getHour());
 				Assert.assertEquals(30, movie.getReleaseZonedDateTime().getMinute());
 				Assert.assertEquals(0, movie.getReleaseZonedDateTime().getSecond());
