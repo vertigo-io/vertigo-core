@@ -21,6 +21,9 @@ package io.vertigo.database.sql.statement;
 import java.sql.SQLException;
 import java.util.List;
 
+import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
+import io.vertigo.lang.Tuples;
+
 /**
  * PreparedStatement.
  *
@@ -31,7 +34,7 @@ import java.util.List;
  *
  * @author pchretien
  */
-public interface SqlPreparedStatement extends AutoCloseable {
+public interface SqlPreparedStatement {
 	/**
 	 * Executes a sql query returning a list
 	 *
@@ -55,6 +58,8 @@ public interface SqlPreparedStatement extends AutoCloseable {
 	 */
 	int executeUpdate(List<SqlParameter> sqlParameters) throws SQLException;
 
+	<O> Tuples.Tuple2<Integer, O> executeUpdate(List<SqlParameter> sqlParameters, GenerationMode generationMode, final String columnName, final Class<O> dataType) throws SQLException;
+
 	/**
 	 * Executes the batch .
 	 * @throws SQLException Si erreur
@@ -62,18 +67,4 @@ public interface SqlPreparedStatement extends AutoCloseable {
 	 * @throws SQLException
 	 */
 	int executeBatch(List<List<SqlParameter>> parameters) throws SQLException;
-
-	/**
-	 * Returns the generated keys when an insert is executed.
-	 * @param columnName the column name
-	 * @param domain the domain
-	 * @throws SQLException
-	 */
-	<O> O getGeneratedKey(final String columnName, final Class<O> dataType) throws SQLException;
-
-	/**
-	 * closes without exceoption.
-	 */
-	@Override
-	void close();
 }

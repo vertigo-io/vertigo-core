@@ -36,6 +36,7 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
+import io.vertigo.lang.Tuples;
 
 /**
  * Permet l'appel de requête insert en utilisant generatedKeys du PreparedStatement pour récupérer
@@ -57,20 +58,21 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 	/** {@inheritDoc} */
 	@Override
 	public int doExecute(final SqlConnection connection, final SqlPreparedStatement statement, final List<SqlNamedParam> params) throws SQLException {
-		final int sqlRowcount = statement.executeUpdate(buildParameters(params));
-		setOutParameters(statement);
-		return sqlRowcount;
-	}
+		final GenerationMode generationMode = connection.getDataBase().getSqlDialect().getGenerationMode();
 
-	private void setOutParameters(final SqlPreparedStatement statement) throws SQLException {
 		// gestion de generatedKey
 		final Entity entity = (Entity) getValue("DTO");
 
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final DtField idField = dtDefinition.getIdField().get();
 
-		final Object id = statement.getGeneratedKey(idField.getName(), idField.getDomain().getDataType().getJavaClass());
+		final Tuples.Tuple2<Integer, ?> result = statement
+				.executeUpdate(buildParameters(params), generationMode, idField.getName(), idField.getDomain().getDataType().getJavaClass());
+
+		final Object id = result.getVal2();
 		idField.getDataAccessor().setValue(entity, id);
+		//---
+		return /*sqlRowcount*/ result.getVal1();
 	}
 
 	/** {@inheritDoc} */

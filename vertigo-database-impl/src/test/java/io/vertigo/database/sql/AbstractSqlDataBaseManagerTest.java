@@ -42,7 +42,6 @@ import io.vertigo.database.sql.data.Movie;
 import io.vertigo.database.sql.data.MovieInfo;
 import io.vertigo.database.sql.data.Movies;
 import io.vertigo.database.sql.statement.SqlParameter;
-import io.vertigo.database.sql.statement.SqlPreparedStatement;
 import io.vertigo.lang.DataStream;
 
 /**
@@ -108,9 +107,9 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 	}
 
 	protected void execpreparedStatement(final SqlConnection connection, final String sql) throws SQLException {
-		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql)) {
-			preparedStatement.executeUpdate(Collections.emptyList());
-		}
+		dataBaseManager
+				.createPreparedStatement(connection, sql)
+				.executeUpdate(Collections.emptyList());
 	}
 
 	private void insert(
@@ -122,20 +121,19 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 			final ZonedDateTime releaseZonedDateTime) throws SQLException {
 
 		final String sql = INSERT_INTO_MOVIE_VALUES;
-		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql)) {
-			final List<SqlParameter> sqlParameters = Arrays.asList(
-					SqlParameter.of(Long.class, id),
-					SqlParameter.of(String.class, title),
-					SqlParameter.of(Double.class, null),
-					SqlParameter.of(BigDecimal.class, null),
-					SqlParameter.of(Boolean.class, null),
-					SqlParameter.of(Date.class, releaseDate),
-					SqlParameter.of(LocalDate.class, releaseLocalDate),
-					SqlParameter.of(ZonedDateTime.class, releaseZonedDateTime),
-					SqlParameter.of(DataStream.class, Movies.buildIcon()));
-			//-----
-			preparedStatement.executeUpdate(sqlParameters);
-		}
+		final List<SqlParameter> sqlParameters = Arrays.asList(
+				SqlParameter.of(Long.class, id),
+				SqlParameter.of(String.class, title),
+				SqlParameter.of(Double.class, null),
+				SqlParameter.of(BigDecimal.class, null),
+				SqlParameter.of(Boolean.class, null),
+				SqlParameter.of(Date.class, releaseDate),
+				SqlParameter.of(LocalDate.class, releaseLocalDate),
+				SqlParameter.of(ZonedDateTime.class, releaseZonedDateTime),
+				SqlParameter.of(DataStream.class, Movies.buildIcon()));
+		//-----
+		dataBaseManager.createPreparedStatement(connection, sql)
+				.executeUpdate(sqlParameters);
 	}
 
 	private void createDatas() throws Exception {
@@ -205,9 +203,9 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 			final Integer limit) throws SQLException, Exception {
 		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
 		try {
-			try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql)) {
-				return preparedStatement.executeQuery(Collections.emptyList(), dataType, limit);
-			}
+			return dataBaseManager
+					.createPreparedStatement(connection, sql)
+					.executeQuery(Collections.emptyList(), dataType, limit);
 		} finally {
 			connection.release();
 		}
@@ -247,27 +245,29 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		final String sql = INSERT_INTO_MOVIE_VALUES;
 
 		final List<Movie> movies = Movies.bondMovies();
-		final int result;
+
+		//--prepare data
+		final List<List<SqlParameter>> batch = new ArrayList<>();
+		for (final Movie movie : movies) {
+			final List<SqlParameter> sqlParameters = Arrays.asList(
+					SqlParameter.of(Long.class, movie.getId()),
+					SqlParameter.of(String.class, movie.getTitle()),
+					SqlParameter.of(Double.class, movie.getFps()),
+					SqlParameter.of(BigDecimal.class, movie.getIncome()),
+					SqlParameter.of(Boolean.class, movie.getColor()),
+					SqlParameter.of(Date.class, movie.getReleaseDate()),
+					SqlParameter.of(LocalDate.class, movie.getReleaseLocalDate()),
+					SqlParameter.of(ZonedDateTime.class, movie.getReleaseZonedDateTime()),
+					SqlParameter.of(DataStream.class, movie.getIcon()));
+			batch.add(sqlParameters);
+		}
 
 		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
+		final int result;
 		try {
-			try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql)) {
-				final List<List<SqlParameter>> batch = new ArrayList<>();
-				for (final Movie movie : movies) {
-					final List<SqlParameter> sqlParameters = Arrays.asList(
-							SqlParameter.of(Long.class, movie.getId()),
-							SqlParameter.of(String.class, movie.getTitle()),
-							SqlParameter.of(Double.class, movie.getFps()),
-							SqlParameter.of(BigDecimal.class, movie.getIncome()),
-							SqlParameter.of(Boolean.class, movie.getColor()),
-							SqlParameter.of(Date.class, movie.getReleaseDate()),
-							SqlParameter.of(LocalDate.class, movie.getReleaseLocalDate()),
-							SqlParameter.of(ZonedDateTime.class, movie.getReleaseZonedDateTime()),
-							SqlParameter.of(DataStream.class, movie.getIcon()));
-					batch.add(sqlParameters);
-				}
-				result = preparedStatement.executeBatch(batch);
-			}
+			result = dataBaseManager
+					.createPreparedStatement(connection, sql)
+					.executeBatch(batch);
 			connection.commit();
 		} finally {
 			connection.release();

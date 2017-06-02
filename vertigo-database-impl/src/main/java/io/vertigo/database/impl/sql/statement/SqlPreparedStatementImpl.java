@@ -31,9 +31,10 @@ import io.vertigo.commons.analytics.AnalyticsTracer;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlParameter;
 import io.vertigo.database.sql.statement.SqlPreparedStatement;
+import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.database.sql.vendor.SqlMapping;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
+import io.vertigo.lang.Tuples;
 
 /**
  * Implémentation Standard de KPrepareStatement.
@@ -88,9 +89,6 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/** Connexion.*/
 	private final SqlConnection connection;
 
-	/** PreparedStatement JDBC. */
-	private PreparedStatement statement;
-
 	/** Requête SQL. */
 	private final String sql;
 
@@ -129,23 +127,11 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		this.analyticsManager = analyticsManager;
 	}
 
-	/** {@inheritDoc}  */
-	@Override
-	public final void close() {
-		if (statement != null) {
-			try {
-				statement.close();
-			} catch (final SQLException e) {
-				throw WrappedException.wrap(e);
-			}
-		}
-	}
-
 	//=========================================================================
 	//-----1ere Etape : Enregistrement
 	//=========================================================================
 
-	private void setParameters(final List<SqlParameter> parameters) throws SQLException {
+	private void setParameters(final PreparedStatement statement, final List<SqlParameter> parameters) throws SQLException {
 		info.append(parameters
 				.stream()
 				.map(SqlParameter::toString)
@@ -187,12 +173,11 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		state.assertRegisteringState();
 		Assertion.checkNotNull(dataType);
 		//-----
-		statement = createStatement();
-		setParameters(parameters);
-		//-----
 		boolean success = false;
-		try {
-			final List<O> result = traceWithReturn(tracer -> doExecuteQuery(tracer, dataType, limit));
+		try (final PreparedStatement statement = createStatement()) {
+			setParameters(statement, parameters);
+			//-----
+			final List<O> result = traceWithReturn(tracer -> doExecuteQuery(statement, tracer, dataType, limit));
 			success = true;
 			return result;
 		} catch (final WrappedSqlException e) {
@@ -203,7 +188,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		}
 	}
 
-	private <O> List<O> doExecuteQuery(final AnalyticsTracer tracer, final Class<O> dataType, final Integer limit) {
+	private <O> List<O> doExecuteQuery(final PreparedStatement statement, final AnalyticsTracer tracer, final Class<O> dataType, final Integer limit) {
 		// ResultSet JDBC
 		final SqlMapping mapping = connection.getDataBase().getSqlMapping();
 		try (final ResultSet resultSet = statement.executeQuery()) {
@@ -219,16 +204,36 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	/** {@inheritDoc} */
 	@Override
+	public final <O> Tuples.Tuple2<Integer, O> executeUpdate(final List<SqlParameter> parameters, final GenerationMode generationMode, final String columnName, final Class<O> dataType) throws SQLException {
+		state.assertRegisteringState();
+		//---
+		boolean success = false;
+		try (final PreparedStatement statement = createStatement()) {
+			setParameters(statement, parameters);
+			//---
+			//execution de la Requête
+			final int result = traceWithReturn(tracer -> doExecute(statement, tracer));
+			final O generatedId = getGeneratedKey(statement, columnName, dataType);
+			success = true;
+			return Tuples.of(result, generatedId);
+		} catch (final WrappedSqlException e) {
+			throw e.getSqlException();
+		} finally {
+			state = success ? State.EXECUTED : State.ABORTED;
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public final int executeUpdate(final List<SqlParameter> parameters) throws SQLException {
 		state.assertRegisteringState();
 		//---
-		statement = createStatement();
-		setParameters(parameters);
-		//---
 		boolean success = false;
-		try {
+		try (final PreparedStatement statement = createStatement()) {
+			setParameters(statement, parameters);
+			//---
 			//execution de la Requête
-			final int result = traceWithReturn(this::doExecute);
+			final int result = traceWithReturn(tracer -> doExecute(statement, tracer));
 			success = true;
 			return result;
 		} catch (final WrappedSqlException e) {
@@ -238,7 +243,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		}
 	}
 
-	private Integer doExecute(final AnalyticsTracer tracer) {
+	private static Integer doExecute(final PreparedStatement statement, final AnalyticsTracer tracer) {
 		try {
 			final int res = statement.executeUpdate();
 			tracer.setMeasure("nbModifiedRow", res);
@@ -270,15 +275,13 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		Assertion.checkNotNull(batch);
 		state.assertRegisteringState();
 		//---
-		statement = createStatement();
-		for (final List<SqlParameter> parameters : batch) {
-			setParameters(parameters);
-			statement.addBatch();
-		}
-
 		boolean success = false;
-		try {
-			final int result = traceWithReturn(this::doExecuteBatch);
+		try (final PreparedStatement statement = createStatement()) {
+			for (final List<SqlParameter> parameters : batch) {
+				setParameters(statement, parameters);
+				statement.addBatch();
+			}
+			final int result = traceWithReturn(tracer -> doExecuteBatch(statement, tracer));
 			success = true;
 			return result;
 		} catch (final WrappedSqlException e) {
@@ -288,7 +291,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		}
 	}
 
-	private Integer doExecuteBatch(final AnalyticsTracer tracer) {
+	private static Integer doExecuteBatch(final PreparedStatement statement, final AnalyticsTracer tracer) {
 		try {
 			final int[] res = statement.executeBatch();
 			//Calcul du nombre total de lignes affectées par le batch.
@@ -330,9 +333,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		return info.toString();
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public final <O> O getGeneratedKey(final String columnName, final Class<O> dataType) throws SQLException {
+	private final <O> O getGeneratedKey(final PreparedStatement statement, final String columnName, final Class<O> dataType) throws SQLException {
 		Assertion.checkArgNotEmpty(columnName);
 		Assertion.checkNotNull(dataType);
 		Assertion.checkArgument(returnGeneratedKeys || generatedColumns.length > 0, "Statement non créé pour retourner les clés générées");

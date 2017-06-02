@@ -142,20 +142,20 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 		final SqlConnection connection = obtainConnection();
 
 		final Tuple2<String, List<SqlNamedParam>> parsedQuery = sqlDataBaseManager.parseQuery(getSqlQuery().trim());
-		try (final SqlPreparedStatement statement = createStatement(parsedQuery.getVal1(), connection)) {
-			try {
-				//Execute le Statement JDBC.
-				final int sqlRowcount = doExecute(connection, statement, parsedQuery.getVal2());
-				//On positionne le nombre de lignes affectées.
-				setRowCount(sqlRowcount);
-			} catch (final BatchUpdateException sqle) { //some exception embedded the usefull one
-				// Gère les erreurs d'exécution Batch JDBC.
-				handleSQLException(connection, sqle.getNextException(), statement);
-			} catch (final SQLException sqle) {
-				//Gère les erreurs d'exécution JDBC.
-				handleSQLException(connection, sqle, statement);
-			}
+		final SqlPreparedStatement statement = createStatement(parsedQuery.getVal1(), connection);
+		try {
+			//Execute le Statement JDBC.
+			final int sqlRowcount = doExecute(connection, statement, parsedQuery.getVal2());
+			//On positionne le nombre de lignes affectées.
+			setRowCount(sqlRowcount);
+		} catch (final BatchUpdateException sqle) { //some exception embedded the usefull one
+			// Gère les erreurs d'exécution Batch JDBC.
+			handleSQLException(connection, sqle.getNextException(), statement);
+		} catch (final SQLException sqle) {
+			//Gère les erreurs d'exécution JDBC.
+			handleSQLException(connection, sqle, statement);
 		}
+
 	}
 
 	private void setRowCount(final int sqlRowcount) {
