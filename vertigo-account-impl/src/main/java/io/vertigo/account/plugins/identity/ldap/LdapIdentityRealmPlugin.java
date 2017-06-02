@@ -48,7 +48,6 @@ import javax.naming.ldap.LdapContext;
 import org.apache.log4j.Logger;
 
 import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.AccountGroup;
 import io.vertigo.account.impl.identity.IdentityRealmPlugin;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.domain.model.URI;
@@ -73,21 +72,21 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 	private final CodecManager codecManager;
 	private final String ldapServer;
 	private final String ldapAccountBaseDn;
-	private final String ldapGroupBaseDn;
+	//	private final String ldapGroupBaseDn;
 	private final String ldapReaderLogin;
 	private final String ldapReaderPassword;
 
 	private final String ldapUserAuthAttribute;
 	private final Map<AccountProperty, String> ldapAccountAttributeMapping; //Account properties to ldapAttribute
-	private final Map<GroupProperty, String> ldapGroupAttributeMapping; //Group properties to ldapAttribute
+	//	private final Map<GroupProperty, String> ldapGroupAttributeMapping; //Group properties to ldapAttribute
 
 	private enum AccountProperty {
 		id, displayName, email, authToken, photo
 	}
-
-	private enum GroupProperty {
-		id, displayName
-	}
+	//
+	//	private enum GroupProperty {
+	//		id, displayName
+	//	}
 
 	/**
 	 * Constructor.
@@ -123,7 +122,7 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 		Assertion.checkNotNull(codecManager);
 		ldapServer = ldapServerHost + ":" + ldapServerPort;
 		this.ldapAccountBaseDn = ldapAccountBaseDn;
-		this.ldapGroupBaseDn = ldapGroupBaseDn;
+		//		this.ldapGroupBaseDn = ldapGroupBaseDn;
 		this.ldapReaderLogin = ldapReaderLogin;
 		this.ldapReaderPassword = ldapReaderPassword;
 		this.ldapUserAuthAttribute = ldapUserAuthAttribute;
@@ -131,7 +130,7 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 		Assertion.checkArgNotEmpty(ldapAccountAttributeMapping.get(AccountProperty.id), "ldapAccountAttributeMapping must declare mapping for accountProperty {0}" + AccountProperty.id);
 		Assertion.checkArgNotEmpty(ldapAccountAttributeMapping.get(AccountProperty.displayName), "ldapAccountAttributeMapping must declare mapping for accountProperty {0}" + AccountProperty.displayName);
 
-		ldapGroupAttributeMapping = parseLdapAttributeMapping("distinguishedName:id, displayName:displayName", GroupProperty.class);
+		//		ldapGroupAttributeMapping = parseLdapAttributeMapping("distinguishedName:id, displayName:displayName", GroupProperty.class);
 		this.codecManager = codecManager;
 	}
 
@@ -203,12 +202,12 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 				.collect(Collectors.toList());
 	}
 
-	private Collection<AccountGroup> searchGroup(final String searchRequest, final int top, final LdapContext ldapContext) {
-		final List<Attributes> result = searchLdapAttributes(ldapGroupBaseDn, searchRequest, top, ldapGroupAttributeMapping.values(), ldapContext);
-		return result.stream()
-				.map(this::parseGroup)
-				.collect(Collectors.toList());
-	}
+	//	private Collection<AccountGroup> searchGroup(final String searchRequest, final int top, final LdapContext ldapContext) {
+	//		final List<Attributes> result = searchLdapAttributes(ldapGroupBaseDn, searchRequest, top, ldapGroupAttributeMapping.values(), ldapContext);
+	//		return result.stream()
+	//				.map(this::parseGroup)
+	//				.collect(Collectors.toList());
+	//	}
 
 	private Attributes getAccountAttributes(final Serializable accountId, final Set<String> returningAttributes, final LdapContext ldapContext) {
 		final String ldapIdAttr = ldapAccountAttributeMapping.get(AccountProperty.id);
@@ -218,12 +217,12 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 		return result.get(0);
 	}
 
-	private Attributes getGroupAttributes(final String groupDn, final Collection<String> returningGroupAttributes, final LdapContext ldapContext) {
-		final List<Attributes> result = searchLdapAttributes(groupDn, "*", 2, returningGroupAttributes, ldapContext);
-		Assertion.checkState(!result.isEmpty(), "Can't found any group with DN : {0}", groupDn);
-		Assertion.checkState(result.size() == 1, "Too many group with same DN ({0} shoud be unique)", groupDn);
-		return result.get(0);
-	}
+	//	private Attributes getGroupAttributes(final String groupDn, final Collection<String> returningGroupAttributes, final LdapContext ldapContext) {
+	//		final List<Attributes> result = searchLdapAttributes(groupDn, "*", 2, returningGroupAttributes, ldapContext);
+	//		Assertion.checkState(!result.isEmpty(), "Can't found any group with DN : {0}", groupDn);
+	//		Assertion.checkState(result.size() == 1, "Too many group with same DN ({0} shoud be unique)", groupDn);
+	//		return result.get(0);
+	//	}
 
 	private Optional<VFile> parseOptionalVFile(final Attributes attrs) {
 		try {
@@ -299,15 +298,15 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 		}
 	}
 
-	private AccountGroup parseGroup(final Attributes attrs) {
-		try {
-			final String groupId = String.class.cast(attrs.get(ldapGroupAttributeMapping.get(GroupProperty.id)).get());
-			final String displayName = String.class.cast(attrs.get(ldapGroupAttributeMapping.get(GroupProperty.displayName)).get());
-			return new AccountGroup(groupId, displayName);
-		} catch (final NamingException e) {
-			throw WrappedException.wrap(e, "Can't parse Group from LDAP");
-		}
-	}
+	//	private AccountGroup parseGroup(final Attributes attrs) {
+	//		try {
+	//			final String groupId = String.class.cast(attrs.get(ldapGroupAttributeMapping.get(GroupProperty.id)).get());
+	//			final String displayName = String.class.cast(attrs.get(ldapGroupAttributeMapping.get(GroupProperty.displayName)).get());
+	//			return new AccountGroup(groupId, displayName);
+	//		} catch (final NamingException e) {
+	//			throw WrappedException.wrap(e, "Can't parse Group from LDAP");
+	//		}
+	//	}
 
 	private <O> O parseAttribute(final Class<O> valueClass, final AccountProperty accountProperty, final Attributes attrs) throws NamingException {
 		return valueClass.cast(attrs.get(ldapAccountAttributeMapping.get(accountProperty)).get());

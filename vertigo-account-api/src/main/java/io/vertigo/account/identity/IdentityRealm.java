@@ -36,7 +36,7 @@ public interface IdentityRealm {
 	long getAccountsCount();
 
 	/**
-	 * @return all account
+	 * @return all accounts
 	 */
 	Collection<Account> getAllAccounts();
 
