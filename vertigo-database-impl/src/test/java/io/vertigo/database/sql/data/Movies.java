@@ -21,11 +21,15 @@ import io.vertigo.lang.DataStream;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ListBuilder;
 
-public class Movies {
+public final class Movies {
 	public static final String TITLE_MOVIE_1 = "citizen kane"; //1 May 1941, ?
 	public static final String TITLE_MOVIE_2 = "vertigo"; //9 May 1958
 	public static final String TITLE_MOVIE_3 = "gone girl";
 	public static final String TITLE_MOVIE_4 = "Jurassic Park";
+
+	private Movies() {
+		//nothing
+	}
 
 	public static Movie createMovie(
 			final long id,
