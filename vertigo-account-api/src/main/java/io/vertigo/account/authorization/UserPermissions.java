@@ -117,14 +117,13 @@ public final class UserPermissions implements Serializable {
 	 * @return Set des permissions.
 	 */
 	public final Set<Permission> getEntityPermissions(final DtDefinition entityDefinition) {
-		final Set<DefinitionReference<Permission>> entityPermissionRef = permissionMapRefs.get(new DefinitionReference<>(entityDefinition));
-		final Set<Permission> permissionSet = new HashSet<>();
-		if (entityPermissionRef != null) {
-			for (final DefinitionReference<Permission> permissionReference : entityPermissionRef) {
-				permissionSet.add(permissionReference.get());
-			}
+		final Set<DefinitionReference<Permission>> entityPermissionRefs = permissionMapRefs.get(new DefinitionReference<>(entityDefinition));
+		if (entityPermissionRefs != null) {
+			return entityPermissionRefs.stream()
+					.map(entityPermissionRef -> entityPermissionRef.get())
+					.collect(Collectors.toSet());
 		}
-		return Collections.unmodifiableSet(permissionSet);
+		return Collections.emptySet();
 	}
 
 	/**

@@ -37,8 +37,9 @@ public final class IdentityManagerImpl implements IdentityManager {
 
 	/**
 	 * Constructor.
-	 * @param accountStorePlugin Account store plugin
-	 * @param fileManager File Manager
+	 * @param accountStorePlugin the account store plugin
+	 * @param identityRealmPlugin the identity realm plugin
+	 * @param fileManager the file manager
 	 */
 	@Inject
 	public IdentityManagerImpl(
@@ -51,7 +52,10 @@ public final class IdentityManagerImpl implements IdentityManager {
 		//-----
 		this.accountStorePlugin = accountStorePlugin;
 		this.identityRealmPlugin = identityRealmPlugin;
-		defaultPhoto = fileManager.createFile("defaultPhoto.png", "image/png", IdentityManagerImpl.class.getResource("defaultPhoto.png"));
+		defaultPhoto = fileManager.createFile(
+				"defaultPhoto.png",
+				"image/png",
+				IdentityManagerImpl.class.getResource("defaultPhoto.png"));
 	}
 
 	/** {@inheritDoc} */

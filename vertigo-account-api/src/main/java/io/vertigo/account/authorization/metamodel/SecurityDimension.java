@@ -28,7 +28,11 @@ public class SecurityDimension {
 	 * @param fields Ordered list of fields (multiple for TREE, empty for ENUM).
 	 * @param values Ordered list of values (empty for TREE, multiple for ENUM).
 	 */
-	public SecurityDimension(final String name, final SecurityDimensionType type, final List<DtField> fields, final List<String> values) {
+	public SecurityDimension(
+			final String name,
+			final SecurityDimensionType type,
+			final List<DtField> fields,
+			final List<String> values) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(type);
 		Assertion.checkNotNull(fields);
