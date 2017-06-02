@@ -37,7 +37,6 @@ import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.parser.SqlNamedParam;
 import io.vertigo.database.sql.statement.SqlParameter;
 import io.vertigo.database.sql.statement.SqlPreparedStatement;
-import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -224,7 +223,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * @return Statement StatementSQL
 	 */
 	protected SqlPreparedStatement createStatement(final String sql, final SqlConnection connection) {
-		return getDataBaseManager().createPreparedStatement(connection, sql, GenerationMode.NONE);
+		return getDataBaseManager().createPreparedStatement(connection, sql);
 	}
 
 	/**

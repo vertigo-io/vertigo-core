@@ -43,7 +43,6 @@ import io.vertigo.database.sql.data.MovieInfo;
 import io.vertigo.database.sql.data.Movies;
 import io.vertigo.database.sql.statement.SqlParameter;
 import io.vertigo.database.sql.statement.SqlPreparedStatement;
-import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.lang.DataStream;
 
 /**
@@ -109,7 +108,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 	}
 
 	protected void execpreparedStatement(final SqlConnection connection, final String sql) throws SQLException {
-		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, GenerationMode.NONE)) {
+		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql)) {
 			preparedStatement.executeUpdate(Collections.emptyList());
 		}
 	}
@@ -123,7 +122,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 			final ZonedDateTime releaseZonedDateTime) throws SQLException {
 
 		final String sql = INSERT_INTO_MOVIE_VALUES;
-		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, GenerationMode.NONE)) {
+		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql)) {
 			final List<SqlParameter> sqlParameters = Arrays.asList(
 					SqlParameter.of(Long.class, id),
 					SqlParameter.of(String.class, title),
@@ -206,7 +205,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 			final Integer limit) throws SQLException, Exception {
 		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
 		try {
-			try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, GenerationMode.NONE)) {
+			try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql)) {
 				return preparedStatement.executeQuery(Collections.emptyList(), dataType, limit);
 			}
 		} finally {
@@ -252,7 +251,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 
 		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
 		try {
-			try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, GenerationMode.NONE)) {
+			try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql)) {
 				final List<List<SqlParameter>> batch = new ArrayList<>();
 				for (final Movie movie : movies) {
 					final List<SqlParameter> sqlParameters = Arrays.asList(

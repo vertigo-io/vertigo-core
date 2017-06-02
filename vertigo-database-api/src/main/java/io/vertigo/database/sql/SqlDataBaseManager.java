@@ -26,6 +26,7 @@ import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.parser.SqlNamedParam;
 import io.vertigo.database.sql.statement.SqlPreparedStatement;
 import io.vertigo.database.sql.vendor.SqlDialect;
+import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.lang.Tuples.Tuple2;
 
 /**
@@ -53,6 +54,12 @@ public interface SqlDataBaseManager extends Manager {
 			final String sql,
 			final SqlDialect.GenerationMode generationMode,
 			final String... generatedColumns);
+
+	default SqlPreparedStatement createPreparedStatement(
+			final SqlConnection connection,
+			final String sql) {
+		return createPreparedStatement(connection, sql, GenerationMode.NONE);
+	}
 
 	/**
 	 * Analyses a query and extracts all the namedParams.
