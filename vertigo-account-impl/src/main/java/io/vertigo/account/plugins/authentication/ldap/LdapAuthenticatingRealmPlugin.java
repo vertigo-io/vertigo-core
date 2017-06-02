@@ -56,8 +56,10 @@ public final class LdapAuthenticatingRealmPlugin implements AuthenticationRealmP
 	 * @param ldapServerPort Ldap server port (default : 389)
 	 */
 	@Inject
-	public LdapAuthenticatingRealmPlugin(@Named("userLoginTemplate") final String userLoginTemplate,
-			@Named("ldapServerHost") final String ldapServerHost, @Named("ldapServerPort") final String ldapServerPort) {
+	public LdapAuthenticatingRealmPlugin(
+			@Named("userLoginTemplate") final String userLoginTemplate,
+			@Named("ldapServerHost") final String ldapServerHost,
+			@Named("ldapServerPort") final String ldapServerPort) {
 		parseUserLoginTemplate(userLoginTemplate);
 		ldapServer = ldapServerHost + ":" + ldapServerPort;
 	}
@@ -71,6 +73,8 @@ public final class LdapAuthenticatingRealmPlugin implements AuthenticationRealmP
 	/** {@inheritDoc} */
 	@Override
 	public Optional<String> authenticateAccount(final AuthenticationToken token) {
+		Assertion.checkNotNull(token);
+		//---
 		final UsernamePasswordAuthenticationToken usernamePasswordToken = (UsernamePasswordAuthenticationToken) token;
 		LdapContext ldapContext = null;
 		try {
@@ -84,7 +88,9 @@ public final class LdapAuthenticatingRealmPlugin implements AuthenticationRealmP
 			LOGGER.info("Can't authenticate user '" + token.getPrincipal() + "'");
 			return Optional.empty(); //can't connect user
 		} finally {
-			closeLdapContext(ldapContext);
+			if (ldapContext != null) {
+				closeLdapContext(ldapContext);
+			}
 		}
 	}
 
@@ -131,15 +137,13 @@ public final class LdapAuthenticatingRealmPlugin implements AuthenticationRealmP
 	}
 
 	private static void closeLdapContext(final LdapContext ldapContext) {
-		if (ldapContext != null) {
-			try {
-				ldapContext.close();
-				if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("Fermeture connexion Ldap  \"" + ldapContext.toString() + "\" ");
-				}
-			} catch (final NamingException e) {
-				throw WrappedException.wrap(e, "Erreur lors de la fermeture de l'objet LdapContext");
+		try {
+			ldapContext.close();
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("Fermeture connexion Ldap  \"" + ldapContext.toString() + "\" ");
 			}
+		} catch (final NamingException e) {
+			throw WrappedException.wrap(e, "Erreur lors de la fermeture de l'objet LdapContext");
 		}
 	}
 }
