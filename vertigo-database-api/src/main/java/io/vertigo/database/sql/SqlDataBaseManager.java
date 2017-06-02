@@ -51,14 +51,12 @@ public interface SqlDataBaseManager extends Manager {
 	 */
 	SqlPreparedStatement createPreparedStatement(
 			final SqlConnection connection,
-			final String sql,
 			final SqlDialect.GenerationMode generationMode,
 			final String... generatedColumns);
 
 	default SqlPreparedStatement createPreparedStatement(
-			final SqlConnection connection,
-			final String sql) {
-		return createPreparedStatement(connection, sql, GenerationMode.NONE);
+			final SqlConnection connection) {
+		return createPreparedStatement(connection, GenerationMode.NONE);
 	}
 
 	/**

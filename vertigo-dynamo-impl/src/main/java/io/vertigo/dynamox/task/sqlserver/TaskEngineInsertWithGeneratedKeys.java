@@ -36,6 +36,7 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
+import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Tuples;
 
 /**
@@ -57,7 +58,13 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 
 	/** {@inheritDoc} */
 	@Override
-	public int doExecute(final SqlConnection connection, final SqlPreparedStatement statement, final List<SqlNamedParam> params) throws SQLException {
+	public int doExecute(
+			final String sql,
+			final SqlConnection connection,
+			final SqlPreparedStatement statement,
+			final List<SqlNamedParam> params) throws SQLException {
+		Assertion.checkArgNotEmpty(sql);
+		//---
 		final GenerationMode generationMode = connection.getDataBase().getSqlDialect().getGenerationMode();
 
 		// gestion de generatedKey
@@ -67,7 +74,7 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 		final DtField idField = dtDefinition.getIdField().get();
 
 		final Tuples.Tuple2<Integer, ?> result = statement
-				.executeUpdate(buildParameters(params), generationMode, idField.getName(), idField.getDomain().getDataType().getJavaClass());
+				.executeUpdate(sql, buildParameters(params), generationMode, idField.getName(), idField.getDomain().getDataType().getJavaClass());
 
 		final Object id = result.getVal2();
 		idField.getDataAccessor().setValue(entity, id);
@@ -77,14 +84,15 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 
 	/** {@inheritDoc} */
 	@Override
-	protected final SqlPreparedStatement createStatement(final String sql, final SqlConnection connection) {
+	protected final SqlPreparedStatement createStatement(final SqlConnection connection) {
 		final GenerationMode generationMode = connection.getDataBase().getSqlDialect().getGenerationMode();
 		switch (generationMode) {
 			case GENERATED_KEYS:
-				return getDataBaseManager().createPreparedStatement(connection, sql, GenerationMode.GENERATED_KEYS);
+				return getDataBaseManager()
+						.createPreparedStatement(connection, GenerationMode.GENERATED_KEYS);
 			case GENERATED_COLUMNS:
 				final String idFieldName = getTaskDefinition().getInAttribute("DTO").getDomain().getDtDefinition().getIdField().get().getName();
-				return getDataBaseManager().createPreparedStatement(connection, sql, GenerationMode.GENERATED_COLUMNS, idFieldName);
+				return getDataBaseManager().createPreparedStatement(connection, GenerationMode.GENERATED_COLUMNS, idFieldName);
 			default:
 				throw new IllegalArgumentException("TaskEngineInsertWithGeneratedKeys is not supported with generation mode +'" + generationMode + "'");
 		}

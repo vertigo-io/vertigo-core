@@ -134,7 +134,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * @return Nombre de lignes affectées (Insert/ Update / Delete)
 	 * @throws SQLException Erreur sql
 	 */
-	protected abstract int doExecute(final SqlConnection connection, final SqlPreparedStatement statement, final List<SqlNamedParam> params) throws SQLException;
+	protected abstract int doExecute(final String sql, final SqlConnection connection, final SqlPreparedStatement statement, final List<SqlNamedParam> params) throws SQLException;
 
 	/** {@inheritDoc} */
 	@Override
@@ -142,10 +142,10 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 		final SqlConnection connection = obtainConnection();
 
 		final Tuple2<String, List<SqlNamedParam>> parsedQuery = sqlDataBaseManager.parseQuery(getSqlQuery().trim());
-		final SqlPreparedStatement statement = createStatement(parsedQuery.getVal1(), connection);
+		final SqlPreparedStatement statement = createStatement(connection);
 		try {
 			//Execute le Statement JDBC.
-			final int sqlRowcount = doExecute(connection, statement, parsedQuery.getVal2());
+			final int sqlRowcount = doExecute(parsedQuery.getVal1(), connection, statement, parsedQuery.getVal2());
 			//On positionne le nombre de lignes affectées.
 			setRowCount(sqlRowcount);
 		} catch (final BatchUpdateException sqle) { //some exception embedded the usefull one
@@ -218,12 +218,11 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * Crée le Statement pour le select ou bloc sql.
 	 * Initialise la liste des paramètres en entrée et en sortie
 	 *
-	 * @param sql Requête SQL
 	 * @param connection Connexion vers la base de données
 	 * @return Statement StatementSQL
 	 */
-	protected SqlPreparedStatement createStatement(final String sql, final SqlConnection connection) {
-		return getDataBaseManager().createPreparedStatement(connection, sql);
+	protected SqlPreparedStatement createStatement(final SqlConnection connection) {
+		return getDataBaseManager().createPreparedStatement(connection);
 	}
 
 	/**

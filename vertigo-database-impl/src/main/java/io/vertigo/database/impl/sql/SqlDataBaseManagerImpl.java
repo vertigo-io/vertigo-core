@@ -85,11 +85,9 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 	@Override
 	public SqlPreparedStatement createPreparedStatement(
 			final SqlConnection connection,
-			final String sql,
 			final GenerationMode generationMode,
 			final String... generatedColumns) {
 		Assertion.checkNotNull(connection);
-		Assertion.checkNotNull(sql);
 		Assertion.checkNotNull(generationMode);
 		Assertion.checkNotNull(generatedColumns);
 		Assertion.when(generationMode != GenerationMode.GENERATED_COLUMNS)
@@ -98,7 +96,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 				.check(() -> generatedColumns.length > 0, "generated columns are expected only when mode='GENERATED_COLUMNS'");
 		//---
 		final boolean returnGeneratedKeys = generationMode == GenerationMode.GENERATED_KEYS;
-		return new SqlPreparedStatementImpl(analyticsManager, connection, sql, returnGeneratedKeys, generatedColumns);
+		return new SqlPreparedStatementImpl(analyticsManager, connection, returnGeneratedKeys, generatedColumns);
 	}
 
 	/** {@inheritDoc} */

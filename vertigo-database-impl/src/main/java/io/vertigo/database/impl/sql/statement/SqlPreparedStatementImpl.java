@@ -52,45 +52,10 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	private static final int FETCH_SIZE = 150;
 
-	/**
-	 * Cet objet possède un état interne.
-	 * Le fonctionnement du KPreparedStatement est régi par un automate s'appuyant sur ces états.
-	 */
-	enum State {
-		/**
-		 *  Registering input/output
-		 */
-		REGISTERING,
-
-		/**
-		 * Etat Exécuté (Permet de lire les données)
-		 */
-		EXECUTED,
-
-		/**
-		 * Etat Avorté (Erreur survenue durant l'exécution de la tache, une exception est automatiquement générée)
-		 */
-		ABORTED;
-
-		void assertRegisteringState() {
-			Assertion.checkArgument(this == State.REGISTERING, "register methods and init() requires REGISTERING state.");
-		}
-
-		void assertExecutedState() {
-			Assertion.checkArgument(this == State.EXECUTED, "execution was not done successfully");
-		}
-
-	}
-
 	private static final int GENERATED_KEYS_INDEX = 1;
-
-	private State state;
 
 	/** Connexion.*/
 	private final SqlConnection connection;
-
-	/** Requête SQL. */
-	private final String sql;
 
 	/** Si on récupère les clés générées.*/
 	private final boolean returnGeneratedKeys;
@@ -99,43 +64,33 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	private final AnalyticsManager analyticsManager;
 	private final StringBuilder info = new StringBuilder();
 
-	//=========================================================================
-	//-----GESTION des paramètres types & valeurs
-	//=========================================================================
 	/**
 	 * Constructor.
-	 * @param sql Requête SQL
 	 * @param connection Connexion
 	 * @param returnGeneratedKeys true si on récupère les clés générées.
 	 */
 	public SqlPreparedStatementImpl(
 			final AnalyticsManager analyticsManager,
 			final SqlConnection connection,
-			final String sql,
 			final boolean returnGeneratedKeys,
 			final String... generatedColumns) {
 		Assertion.checkNotNull(connection);
-		Assertion.checkNotNull(sql);
 		Assertion.checkNotNull(analyticsManager);
 		//-----
 		this.connection = connection;
-		this.sql = sql;
 		this.returnGeneratedKeys = returnGeneratedKeys;
 		this.generatedColumns = generatedColumns;
-		//Initialistaion de l'état interne de l'automate
-		state = State.REGISTERING;
 		this.analyticsManager = analyticsManager;
 	}
 
-	//=========================================================================
-	//-----1ere Etape : Enregistrement
-	//=========================================================================
-
-	private void setParameters(final PreparedStatement statement, final List<SqlParameter> parameters) throws SQLException {
-		info.append(parameters
-				.stream()
-				.map(SqlParameter::toString)
-				.collect(Collectors.joining(", ", sql + '(', ")")));
+	private void setParameters(final String sql, final PreparedStatement statement, final List<SqlParameter> parameters) throws SQLException {
+		info.append(sql)
+				.append('(')
+				.append(parameters
+						.stream()
+						.map(SqlParameter::toString)
+						.collect(Collectors.joining(", ")))
+				.append(")");
 		//-----
 		for (int index = 0; index < parameters.size(); index++) {
 			final SqlParameter parameter = parameters.get(index);
@@ -151,7 +106,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 * @throws SQLException Si erreur
 	 * @return PreparedStatement JDBC
 	 */
-	private PreparedStatement createStatement() throws SQLException {
+	private PreparedStatement createStatement(final String sql) throws SQLException {
 		final PreparedStatement preparedStatement;
 		if (generatedColumns.length > 0) {
 			preparedStatement = connection.getJdbcConnection().prepareStatement(sql, generatedColumns);
@@ -163,28 +118,24 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		return preparedStatement;
 	}
 
-	//=========================================================================
-	//-----3ème Etape : Exécution
-	//=========================================================================
-
 	/** {@inheritDoc} */
 	@Override
-	public final <O> List<O> executeQuery(final List<SqlParameter> parameters, final Class<O> dataType, final Integer limit) throws SQLException {
-		state.assertRegisteringState();
+	public final <O> List<O> executeQuery(
+			final String sql,
+			final List<SqlParameter> parameters,
+			final Class<O> dataType,
+			final Integer limit) throws SQLException {
+		Assertion.checkArgNotEmpty(sql);
+		Assertion.checkNotNull(parameters);
 		Assertion.checkNotNull(dataType);
 		//-----
-		boolean success = false;
-		try (final PreparedStatement statement = createStatement()) {
-			setParameters(statement, parameters);
+		try (final PreparedStatement statement = createStatement(sql)) {
+			setParameters(sql, statement, parameters);
 			//-----
-			final List<O> result = traceWithReturn(tracer -> doExecuteQuery(statement, tracer, dataType, limit));
-			success = true;
-			return result;
+			return traceWithReturn(sql, tracer -> doExecuteQuery(statement, tracer, dataType, limit));
 		} catch (final WrappedSqlException e) {
 			//SQl Exception is unWrapped
 			throw e.getSqlException();
-		} finally {
-			state = success ? State.EXECUTED : State.ABORTED;
 		}
 	}
 
@@ -204,42 +155,44 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	/** {@inheritDoc} */
 	@Override
-	public final <O> Tuples.Tuple2<Integer, O> executeUpdate(final List<SqlParameter> parameters, final GenerationMode generationMode, final String columnName, final Class<O> dataType) throws SQLException {
-		state.assertRegisteringState();
+	public final <O> Tuples.Tuple2<Integer, O> executeUpdate(
+			final String sql,
+			final List<SqlParameter> parameters,
+			final GenerationMode generationMode,
+			final String columnName,
+			final Class<O> dataType) throws SQLException {
+		Assertion.checkArgNotEmpty(sql);
+		Assertion.checkNotNull(parameters);
+		Assertion.checkNotNull(generationMode);
+		Assertion.checkNotNull(columnName);
+		Assertion.checkNotNull(dataType);
 		//---
-		boolean success = false;
-		try (final PreparedStatement statement = createStatement()) {
-			setParameters(statement, parameters);
+		try (final PreparedStatement statement = createStatement(sql)) {
+			setParameters(sql, statement, parameters);
 			//---
 			//execution de la Requête
-			final int result = traceWithReturn(tracer -> doExecute(statement, tracer));
+			final int result = traceWithReturn(sql, tracer -> doExecute(statement, tracer));
 			final O generatedId = getGeneratedKey(statement, columnName, dataType);
-			success = true;
 			return Tuples.of(result, generatedId);
 		} catch (final WrappedSqlException e) {
 			throw e.getSqlException();
-		} finally {
-			state = success ? State.EXECUTED : State.ABORTED;
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final int executeUpdate(final List<SqlParameter> parameters) throws SQLException {
-		state.assertRegisteringState();
+	public final int executeUpdate(
+			final String sql,
+			final List<SqlParameter> parameters) throws SQLException {
+		Assertion.checkArgNotEmpty(sql);
+		Assertion.checkNotNull(parameters);
 		//---
-		boolean success = false;
-		try (final PreparedStatement statement = createStatement()) {
-			setParameters(statement, parameters);
+		try (final PreparedStatement statement = createStatement(sql)) {
+			setParameters(sql, statement, parameters);
 			//---
-			//execution de la Requête
-			final int result = traceWithReturn(tracer -> doExecute(statement, tracer));
-			success = true;
-			return result;
+			return traceWithReturn(sql, tracer -> doExecute(statement, tracer));
 		} catch (final WrappedSqlException e) {
 			throw e.getSqlException();
-		} finally {
-			state = success ? State.EXECUTED : State.ABORTED;
 		}
 	}
 
@@ -271,27 +224,24 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	/** {@inheritDoc} */
 	@Override
-	public int executeBatch(final List<List<SqlParameter>> batch) throws SQLException {
+	public int executeBatch(
+			final String sql,
+			final List<List<SqlParameter>> batch) throws SQLException {
+		Assertion.checkArgNotEmpty(sql);
 		Assertion.checkNotNull(batch);
-		state.assertRegisteringState();
 		//---
-		boolean success = false;
-		try (final PreparedStatement statement = createStatement()) {
+		try (final PreparedStatement statement = createStatement(sql)) {
 			for (final List<SqlParameter> parameters : batch) {
-				setParameters(statement, parameters);
+				setParameters(sql, statement, parameters);
 				statement.addBatch();
 			}
-			final int result = traceWithReturn(tracer -> doExecuteBatch(statement, tracer));
-			success = true;
-			return result;
+			return traceWithReturn(sql, tracer -> this.doExecuteBatch(statement, tracer));
 		} catch (final WrappedSqlException e) {
 			throw e.getSqlException();
-		} finally {
-			state = success ? State.EXECUTED : State.ABORTED;
 		}
 	}
 
-	private static Integer doExecuteBatch(final PreparedStatement statement, final AnalyticsTracer tracer) {
+	private Integer doExecuteBatch(final PreparedStatement statement, final AnalyticsTracer tracer) {
 		try {
 			final int[] res = statement.executeBatch();
 			//Calcul du nombre total de lignes affectées par le batch.
@@ -306,10 +256,10 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		}
 	}
 
-	/**
+	/*
 	 * Enregistre le début d'exécution du PrepareStatement
 	 */
-	private <O> O traceWithReturn(final Function<AnalyticsTracer, O> function) {
+	private <O> O traceWithReturn(final String sql, final Function<AnalyticsTracer, O> function) {
 		return analyticsManager.traceWithReturn(
 				"sql",
 				"/execute/" + sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACER, sql.length())),
@@ -337,7 +287,6 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		Assertion.checkArgNotEmpty(columnName);
 		Assertion.checkNotNull(dataType);
 		Assertion.checkArgument(returnGeneratedKeys || generatedColumns.length > 0, "Statement non créé pour retourner les clés générées");
-		state.assertExecutedState();
 		//-----
 		// L'utilisation des generatedKeys permet d'avoir un seul appel réseau entre le
 		// serveur d'application et la base de données pour un insert et la récupération de la

@@ -55,7 +55,7 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 
 	/** {@inheritDoc} */
 	@Override
-	public int doExecute(final SqlConnection connection, final SqlPreparedStatement statement, final List<SqlNamedParam> params) throws SQLException {
+	public int doExecute(final String sql, final SqlConnection connection, final SqlPreparedStatement statement, final List<SqlNamedParam> params) throws SQLException {
 		// on alimente le batch.
 		// La taille du batch est déduite de la taille de la collection en entrée.
 		final int batchSize = getBatchSize();
@@ -68,7 +68,7 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 			batch.add(sqlParameters);
 		}
 
-		return statement.executeBatch(batch);
+		return statement.executeBatch(sql, batch);
 	}
 
 	private int getBatchSize() {

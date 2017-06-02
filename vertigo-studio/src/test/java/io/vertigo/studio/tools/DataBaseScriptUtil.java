@@ -52,7 +52,7 @@ public final class DataBaseScriptUtil {
 					crebaseSql.append(adaptedInputLine).append('\n');
 				}
 				if (inputLine.trim().endsWith(";")) {
-					execCallableStatement(connection, sqlDataBaseManager, crebaseSql.toString());
+					execPreparedStatement(connection, sqlDataBaseManager, crebaseSql.toString());
 					crebaseSql.setLength(0);
 				}
 			}
@@ -62,10 +62,10 @@ public final class DataBaseScriptUtil {
 		}
 	}
 
-	private static void execCallableStatement(final SqlConnection connection, final SqlDataBaseManager sqlDataBaseManager, final String sql) {
+	private static void execPreparedStatement(final SqlConnection connection, final SqlDataBaseManager sqlDataBaseManager, final String sql) {
 		try {
-			sqlDataBaseManager.createPreparedStatement(connection, sql)
-					.executeUpdate(Collections.emptyList());
+			sqlDataBaseManager.createPreparedStatement(connection)
+					.executeUpdate(sql, Collections.emptyList());
 		} catch (final SQLException e) {
 			throw WrappedException.wrap(e, "Can't exec command {0}", sql);
 		}

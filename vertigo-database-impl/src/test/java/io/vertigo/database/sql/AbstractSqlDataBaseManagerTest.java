@@ -108,8 +108,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 
 	protected void execpreparedStatement(final SqlConnection connection, final String sql) throws SQLException {
 		dataBaseManager
-				.createPreparedStatement(connection, sql)
-				.executeUpdate(Collections.emptyList());
+				.createPreparedStatement(connection)
+				.executeUpdate(sql, Collections.emptyList());
 	}
 
 	private void insert(
@@ -132,8 +132,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 				SqlParameter.of(ZonedDateTime.class, releaseZonedDateTime),
 				SqlParameter.of(DataStream.class, Movies.buildIcon()));
 		//-----
-		dataBaseManager.createPreparedStatement(connection, sql)
-				.executeUpdate(sqlParameters);
+		dataBaseManager.createPreparedStatement(connection)
+				.executeUpdate(sql, sqlParameters);
 	}
 
 	private void createDatas() throws Exception {
@@ -204,8 +204,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
 		try {
 			return dataBaseManager
-					.createPreparedStatement(connection, sql)
-					.executeQuery(Collections.emptyList(), dataType, limit);
+					.createPreparedStatement(connection)
+					.executeQuery(sql, Collections.emptyList(), dataType, limit);
 		} finally {
 			connection.release();
 		}
@@ -266,8 +266,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		final int result;
 		try {
 			result = dataBaseManager
-					.createPreparedStatement(connection, sql)
-					.executeBatch(batch);
+					.createPreparedStatement(connection)
+					.executeBatch(sql, batch);
 			connection.commit();
 		} finally {
 			connection.release();
