@@ -1748,6 +1748,24 @@ public final class WebServiceManagerTest {
 				.post("/test/string");
 	}
 
+	@Test
+	public void testOptionalQueryParam() throws ParseException {
+		final Map<String, Object> newContact = createDefaultContact(null);
+		loggedAndExpect(given().body(newContact)
+				.queryParam("token", "TestedToken"))
+						.statusCode(HttpStatus.SC_OK)
+						.body(Matchers.equalTo("TestedToken"))
+						.when()
+						.post("/test/contact/secured");
+
+		loggedAndExpect(given().body(newContact))
+				.statusCode(HttpStatus.SC_OK)
+				.body(Matchers.equalTo("empty"))
+				.when()
+				.post("/test/contact/secured");
+
+	}
+
 	//=========================================================================
 
 	private static RequestSpecification given() {

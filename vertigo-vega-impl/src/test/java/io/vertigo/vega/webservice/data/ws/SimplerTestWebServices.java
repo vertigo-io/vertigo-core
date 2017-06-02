@@ -364,6 +364,11 @@ public final class SimplerTestWebServices implements WebServices {
 		return bodyString;
 	}
 
+	@POST("/contact/secured")
+	public String testOptionalQueryParam(final Contact contact, @QueryParam("token") final Optional<String> token) {
+		return token.orElse("empty");
+	}
+
 	/*@GET("/searchFacet")
 	public FacetedQueryResult<DtObject, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
