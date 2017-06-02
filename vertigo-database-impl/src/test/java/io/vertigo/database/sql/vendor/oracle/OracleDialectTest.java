@@ -60,5 +60,4 @@ public final class OracleDialectTest extends AbstractSqlDialectTest {
 	public String getExpectedAppendMaxRowsQuery() {
 		return "select * from MOVIE and rownum <= 100";
 	}
-
 }

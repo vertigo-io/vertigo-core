@@ -60,5 +60,4 @@ public final class SqlServerDialectTest extends AbstractSqlDialectTest {
 	public String getExpectedAppendMaxRowsQuery() {
 		return "select  top 100 * from MOVIE";
 	}
-
 }

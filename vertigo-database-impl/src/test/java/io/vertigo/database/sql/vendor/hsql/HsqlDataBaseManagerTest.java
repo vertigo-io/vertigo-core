@@ -2,8 +2,6 @@ package io.vertigo.database.sql.vendor.hsql;
 
 import io.vertigo.database.sql.AbstractSqlDataBaseManagerTest;
 
-public class HsqlDataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
-
+public final class HSqlDataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
 	// nothing
-
 }

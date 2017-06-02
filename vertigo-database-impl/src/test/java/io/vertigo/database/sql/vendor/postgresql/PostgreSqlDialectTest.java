@@ -60,5 +60,4 @@ public final class PostgreSqlDialectTest extends AbstractSqlDialectTest {
 	public String getExpectedAppendMaxRowsQuery() {
 		return "select * from MOVIE limit 100";
 	}
-
 }

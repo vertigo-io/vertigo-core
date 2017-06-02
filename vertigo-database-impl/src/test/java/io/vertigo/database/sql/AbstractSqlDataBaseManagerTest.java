@@ -26,7 +26,6 @@ import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -60,16 +59,6 @@ import io.vertigo.util.ListBuilder;
  */
 public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4 {
 	private static final String INSERT_INTO_MOVIE_VALUES = "insert into movie values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	private static final String CREATE_TABLE_MOVIE = "create table movie ("
-			+ "id bigint , "
-			+ "title varchar(255) , "
-			+ "fps double precision ,"
-			+ "income decimal(6,3) , "
-			+ "color boolean , "
-			+ "release_date timestamp , "
-			+ "release_local_date date , "
-			+ "release_zoned_date_time datetime , "
-			+ "icon blob );";
 	private static final String TITLE_MOVIE_1 = "citizen kane"; //1 May 1941, ?
 	private static final String TITLE_MOVIE_2 = "vertigo"; //9 May 1958
 	private static final String TITLE_MOVIE_3 = "gone girl";
@@ -83,12 +72,25 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 				.obtainConnection();
 	}
 
+	protected String createTableMovie() {
+		return "create table movie ("
+				+ "id bigint , "
+				+ "title varchar(255) , "
+				+ "fps double precision ,"
+				+ "income decimal(6,3) , "
+				+ "color boolean , "
+				+ "release_date timestamp , "
+				+ "release_local_date date , "
+				+ "release_zoned_date_time datetime , "
+				+ "icon blob );";
+	}
+
 	@Override
-	protected void doSetUp() throws Exception {
+	protected final void doSetUp() throws Exception {
 		//A chaque test on recrée la table famille
 		final SqlConnection connection = obtainMainConnection();
 		try {
-			execpreparedStatement(connection, CREATE_TABLE_MOVIE);
+			execpreparedStatement(connection, createTableMovie());
 		} finally {
 			connection.release();
 		}
@@ -103,7 +105,6 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		} finally {
 			connection.release();
 		}
-
 	}
 
 	@Test
@@ -125,23 +126,23 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 
 	private void insert(
 			final SqlConnection connection,
-			final long key,
-			final String libelle,
+			final long id,
+			final String title,
 			final Date releaseDate,
-			final LocalDate releaselocalDate,
-			final LocalDateTime releaselocalDateTime) throws SQLException {
+			final LocalDate releaseLocalDate,
+			final ZonedDateTime releaseZonedDateTime) throws SQLException {
 
 		final String sql = INSERT_INTO_MOVIE_VALUES;
 		try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, GenerationMode.NONE)) {
 			final List<SqlParameter> sqlParameters = Arrays.asList(
-					new SqlParameter(Long.class, key),
-					new SqlParameter(String.class, libelle),
+					new SqlParameter(Long.class, id),
+					new SqlParameter(String.class, title),
 					new SqlParameter(Double.class, null),
 					new SqlParameter(BigDecimal.class, null),
 					new SqlParameter(Boolean.class, null),
 					new SqlParameter(Date.class, releaseDate),
-					new SqlParameter(LocalDate.class, releaselocalDate),
-					new SqlParameter(ZonedDateTime.class, releaselocalDateTime),
+					new SqlParameter(LocalDate.class, releaseLocalDate),
+					new SqlParameter(ZonedDateTime.class, releaseZonedDateTime),
 					new SqlParameter(DataStream.class, buildIcon()));
 			//-----
 			preparedStatement.executeUpdate(sqlParameters);
@@ -151,9 +152,17 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 	private void createDatas() throws Exception {
 		final SqlConnection connection = obtainMainConnection();
 		try {
-			execpreparedStatement(connection, "insert into movie values (1, 'citizen kane',null, null, null, '1941-05-01 16:30:00', '1941-05-01', '1941-05-01 16:30:00', null)");
+			insert(connection, 1,
+					TITLE_MOVIE_1,
+					new Date(1941 - 1900, 5 - 1, 1, 16, 30),
+					LocalDate.of(1941, 5, 1),
+					ZonedDateTime.of(LocalDate.of(1941, 5, 1), LocalTime.of(16, 30), ZoneId.of("UTC")));
 			//-----
-			execpreparedStatement(connection, "insert into movie values (2, 'vertigo',null, null, null, '1958-05-09 16:30:00', '1958-05-09', '1958-05-09 16:30:00', null)");
+			insert(connection, 2,
+					TITLE_MOVIE_2,
+					new Date(1958 - 1900, 5 - 1, 9, 16, 30),
+					LocalDate.of(1958, 5, 9),
+					ZonedDateTime.of(LocalDate.of(1958, 5, 9), LocalTime.of(16, 30), ZoneId.of("UTC")));
 			//-----
 			//On passe par une requête bindée
 			insert(connection, 3, TITLE_MOVIE_3, null, null, null);
@@ -178,17 +187,6 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		movies.forEach(this::checkMovie);
 	}
 
-	/*
-		@Test
-		public void testDavid() throws Exception {
-			createDatas();
-			final List<Movie> movies = executeQuery(Movie.class, "select * from movie", null);
-
-			final Movie myMovie = new Movie();
-
-		}
-	*/
-
 	@Test
 	public void testSelectSimpleObjects() throws Exception {
 		createDatas();
@@ -201,16 +199,17 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		switch (movie.getId().intValue()) {
 			case 1:
 				Assert.assertEquals(TITLE_MOVIE_1, movie.getTitle());
+				//java.util.Date
 				Assert.assertEquals("01-05-1941 16:30", new SimpleDateFormat("dd-MM-YYYY HH:mm").format(movie.getReleaseDate()));
+				//LocalDate
 				Assert.assertEquals(1, movie.getReleaseLocalDate().getDayOfMonth());
 				Assert.assertEquals(5, movie.getReleaseLocalDate().getMonthValue());
 				Assert.assertEquals(1941, movie.getReleaseLocalDate().getYear());
-
+				//ZonedDateTime
 				Assert.assertEquals("UTC", movie.getReleaseZonedDateTime().getZone().getId());
 				Assert.assertEquals(1, movie.getReleaseZonedDateTime().getDayOfMonth());
 				Assert.assertEquals(5, movie.getReleaseZonedDateTime().getMonthValue());
 				Assert.assertEquals(1941, movie.getReleaseZonedDateTime().getYear());
-
 				Assert.assertEquals(16, movie.getReleaseZonedDateTime().getHour());
 				Assert.assertEquals(30, movie.getReleaseZonedDateTime().getMinute());
 				Assert.assertEquals(0, movie.getReleaseZonedDateTime().getSecond());
@@ -218,16 +217,17 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 				break;
 			case 2:
 				Assert.assertEquals(TITLE_MOVIE_2, movie.getTitle());
+				//java.util.Date
 				Assert.assertEquals("09-05-1958 16:30", new SimpleDateFormat("dd-MM-YYYY HH:mm").format(movie.getReleaseDate()));
+				//LocalDate
 				Assert.assertEquals(9, movie.getReleaseLocalDate().getDayOfMonth());
 				Assert.assertEquals(5, movie.getReleaseLocalDate().getMonthValue());
 				Assert.assertEquals(1958, movie.getReleaseLocalDate().getYear());
-
+				//ZonedDateTime
 				Assert.assertEquals("UTC", movie.getReleaseZonedDateTime().getZone().getId());
 				Assert.assertEquals(9, movie.getReleaseZonedDateTime().getDayOfMonth());
 				Assert.assertEquals(5, movie.getReleaseZonedDateTime().getMonthValue());
 				Assert.assertEquals(1958, movie.getReleaseZonedDateTime().getYear());
-
 				Assert.assertEquals(16, movie.getReleaseZonedDateTime().getHour());
 				Assert.assertEquals(30, movie.getReleaseZonedDateTime().getMinute());
 				Assert.assertEquals(0, movie.getReleaseZonedDateTime().getSecond());
@@ -235,8 +235,11 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 				break;
 			case 3:
 				Assert.assertEquals(TITLE_MOVIE_3, movie.getTitle());
+				//java.util.Date
 				Assert.assertEquals(null, movie.getReleaseDate());
+				//LocalDate
 				Assert.assertEquals(null, movie.getReleaseLocalDate());
+				//ZonedDateTime
 				Assert.assertEquals(null, movie.getReleaseZonedDateTime());
 				break;
 			default:
@@ -335,7 +338,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 			try (final SqlPreparedStatement preparedStatement = dataBaseManager.createPreparedStatement(connection, sql, GenerationMode.NONE)) {
 				for (int i = 0; i < movies.size(); i++) {
 					final Movie movie = movies.get(i);
-					preparedStatement.addBatch(Arrays.asList(
+					final List<SqlParameter> sqlParameters = Arrays.asList(
 							new SqlParameter(Long.class, movie.getId()),
 							new SqlParameter(String.class, movie.getTitle()),
 							new SqlParameter(Double.class, movie.getFps()),
@@ -344,7 +347,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 							new SqlParameter(Date.class, movie.getReleaseDate()),
 							new SqlParameter(LocalDate.class, movie.getReleaseLocalDate()),
 							new SqlParameter(ZonedDateTime.class, movie.getReleaseZonedDateTime()),
-							new SqlParameter(DataStream.class, movie.getIcon())));
+							new SqlParameter(DataStream.class, movie.getIcon()));
+					preparedStatement.addBatch(sqlParameters);
 				}
 				result = preparedStatement.executeBatch();
 			}
@@ -456,7 +460,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		//A chaque test on recrée la table famille
 		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary").obtainConnection();
 		try {
-			execpreparedStatement(connection, CREATE_TABLE_MOVIE);
+			execpreparedStatement(connection, createTableMovie());
 		} finally {
 			connection.release();
 		}

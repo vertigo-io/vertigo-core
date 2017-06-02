@@ -25,8 +25,9 @@ import org.junit.runners.Suite.SuiteClasses;
 import io.vertigo.database.sql.parser.SqlParserTest;
 import io.vertigo.database.sql.vendor.h2.H2DataBaseManagerTest;
 import io.vertigo.database.sql.vendor.h2.H2SqlDialectTest;
+import io.vertigo.database.sql.vendor.hsql.HSqlDataBaseManagerTest;
 import io.vertigo.database.sql.vendor.hsql.HSqlDialectTest;
-import io.vertigo.database.sql.vendor.hsql.HsqlDataBaseManagerTest;
+import io.vertigo.database.sql.vendor.oracle.OracleDataBaseManagerTest;
 import io.vertigo.database.sql.vendor.oracle.OracleDialectTest;
 import io.vertigo.database.sql.vendor.postgresql.PostgreSqlDialectTest;
 import io.vertigo.database.sql.vendor.sqlserver.SqlServerDialectTest;
@@ -44,9 +45,11 @@ import io.vertigo.database.sql.vendor.sqlserver.SqlServerDialectTest;
 		OracleDialectTest.class,
 		PostgreSqlDialectTest.class,
 		SqlServerDialectTest.class,
+		//--
 		H2DataBaseManagerTest.class,
-		HsqlDataBaseManagerTest.class,
-		//OracleDataBaseManagerTest.class
+		HSqlDataBaseManagerTest.class,
+		OracleDataBaseManagerTest.class,
+		//--
 		SqlParserTest.class
 })
 

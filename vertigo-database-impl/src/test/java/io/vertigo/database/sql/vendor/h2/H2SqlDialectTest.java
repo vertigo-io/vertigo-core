@@ -60,5 +60,4 @@ public final class H2SqlDialectTest extends AbstractSqlDialectTest {
 	public String getExpectedAppendMaxRowsQuery() {
 		return "select * from MOVIE limit 100";
 	}
-
 }
