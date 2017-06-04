@@ -153,15 +153,14 @@ final class SqlUtil {
 	}
 
 	private static boolean isPrimitive(final Class dataType) {
-		final Class[] primiviteTypes = new Class[] {
+		return Stream.of(
 				Integer.class,
 				Double.class,
 				Boolean.class,
 				String.class,
 				Date.class,
 				BigDecimal.class,
-				Long.class };
-		return Stream.of(primiviteTypes)
+				Long.class)
 				.anyMatch(primitiveClazz -> primitiveClazz.isAssignableFrom(dataType));
 	}
 

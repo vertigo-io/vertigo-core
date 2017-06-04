@@ -18,7 +18,6 @@
  */
 package io.vertigo.database.plugins.sql.connection.hibernate;
 
-import java.sql.Connection;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -72,7 +71,7 @@ public final class HibernateConnectionProviderPlugin extends AbstractSqlConnecti
 	private SqlConnection obtainWrappedConnection(final EntityManager em) {
 		//preconisation StackOverFlow to get current jpa connection
 		final Session session = em.unwrap(Session.class);
-		return session.doReturningWork((final Connection connection) -> new SqlConnection(connection, getDataBase(), false));
+		return session.doReturningWork(connection -> new SqlConnection(connection, getDataBase(), false));
 
 	}
 
