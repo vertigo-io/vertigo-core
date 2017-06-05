@@ -20,8 +20,6 @@ package io.vertigo.database.sql.vendor;
 
 import java.sql.SQLException;
 
-import io.vertigo.database.sql.statement.SqlPreparedStatement;
-
 /**
  * Handler des exceptions SQL qui peuvent survenir lors de l'exécution d'une requête.
  * @author npiedeloup
@@ -34,5 +32,5 @@ public interface SqlExceptionHandler {
 	 * @param sqle Exception survenue
 	 * @param statement Statement SQL (i.e. requête SQL)
 	 */
-	void handleSQLException(SQLException sqle, SqlPreparedStatement statement);
+	void handleSQLException(SQLException sqle, String statement);
 }

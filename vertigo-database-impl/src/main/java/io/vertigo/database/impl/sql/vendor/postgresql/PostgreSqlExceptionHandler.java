@@ -22,7 +22,6 @@ import java.sql.SQLException;
 import java.util.Locale;
 
 import io.vertigo.database.impl.sql.vendor.core.AbstractSqlExceptionHandler;
-import io.vertigo.database.sql.statement.SqlPreparedStatement;
 import io.vertigo.lang.WrappedException;
 
 /**
@@ -45,7 +44,7 @@ final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
 	 * @param statement Requête en erreur.
 	 */
 	@Override
-	public void handleSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
+	public void handleSQLException(final SQLException sqle, final String statement) {
 		final String errCode = sqle.getSQLState();
 		//some database return null at getSQLState (@see http://stackoverflow.com/questions/26383624/postgres-exceptions-and-java)
 		final String code = errCode != null ? errCode.substring(0, 2) : null;
@@ -69,7 +68,7 @@ final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
 
 	/** {@inheritDoc} */
 	@Override
-	protected void handleOtherSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
+	protected void handleOtherSQLException(final SQLException sqle, final String statement) {
 		final String errCode = sqle.getSQLState();
 		throw WrappedException.wrap(sqle, "[Erreur SQL](" + errCode + ") : " + statement);
 	}

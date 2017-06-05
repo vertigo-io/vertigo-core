@@ -21,7 +21,6 @@ package io.vertigo.database.impl.sql.vendor.oracle;
 import java.sql.SQLException;
 
 import io.vertigo.database.impl.sql.vendor.core.AbstractSqlExceptionHandler;
-import io.vertigo.database.sql.statement.SqlPreparedStatement;
 
 /**
  * Handler des exceptions SQL qui peuvent survenir dans une tache.
@@ -39,7 +38,7 @@ final class OracleExceptionHandler extends AbstractSqlExceptionHandler {
 
 	/** {@inheritDoc} */
 	@Override
-	public void handleSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
+	public void handleSQLException(final SQLException sqle, final String statement) {
 		final int errCode = sqle.getErrorCode();
 		if (errCode >= 20_000 && errCode < 30_000) {
 			// Erreur utilisateur

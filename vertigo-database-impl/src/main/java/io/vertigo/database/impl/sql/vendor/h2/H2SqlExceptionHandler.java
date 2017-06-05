@@ -22,7 +22,6 @@ import java.sql.SQLException;
 import java.util.Locale;
 
 import io.vertigo.database.impl.sql.vendor.core.AbstractSqlExceptionHandler;
-import io.vertigo.database.sql.statement.SqlPreparedStatement;
 import io.vertigo.lang.WrappedException;
 
 /**
@@ -60,7 +59,7 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 	 * @param statement Requête en erreur.
 	 */
 	@Override
-	public void handleSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
+	public void handleSQLException(final SQLException sqle, final String statement) {
 		final int errCode = sqle.getErrorCode();
 		switch (errCode) {
 			case VALUE_TOO_LONG_2:
@@ -87,7 +86,7 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 
 	/** {@inheritDoc} */
 	@Override
-	protected void handleOtherSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
+	protected void handleOtherSQLException(final SQLException sqle, final String statement) {
 		final int errCode = sqle.getErrorCode();
 		throw WrappedException.wrap(sqle, "[Erreur SQL](" + errCode + ") : " + sqle.getMessage() + '\n' + statement);
 	}

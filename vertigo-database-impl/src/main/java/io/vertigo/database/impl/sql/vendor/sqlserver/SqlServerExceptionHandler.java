@@ -21,7 +21,6 @@ package io.vertigo.database.impl.sql.vendor.sqlserver;
 import java.sql.SQLException;
 
 import io.vertigo.database.impl.sql.vendor.core.AbstractSqlExceptionHandler;
-import io.vertigo.database.sql.statement.SqlPreparedStatement;
 
 /**
  * Handler des exceptions SQL qui peuvent survenir dans une tache.
@@ -62,7 +61,7 @@ final class SqlServerExceptionHandler extends AbstractSqlExceptionHandler {
 
 	/** {@inheritDoc} */
 	@Override
-	public void handleSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
+	public void handleSQLException(final SQLException sqle, final String statement) {
 
 		final int errorCode = sqle.getErrorCode();
 

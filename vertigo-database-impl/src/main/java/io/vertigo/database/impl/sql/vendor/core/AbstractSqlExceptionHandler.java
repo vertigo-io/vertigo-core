@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
 import io.vertigo.core.locale.MessageKey;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.database.impl.sql.Resources;
-import io.vertigo.database.sql.statement.SqlPreparedStatement;
 import io.vertigo.database.sql.vendor.SqlExceptionHandler;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VUserException;
@@ -131,9 +130,9 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	 * @param sqle OtherSQLException
 	 * @param statement SqlPreparedStatement
 	 */
-	protected void handleOtherSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
+	protected void handleOtherSQLException(final SQLException sqle, final String statement) {
 		final int errCode = sqle.getErrorCode();
-		throw WrappedException.wrap(sqle, StringUtil.format("[SQL error] {0} : {1}", errCode, statement != null ? statement.toString() : null));
+		throw WrappedException.wrap(sqle, StringUtil.format("[SQL error] {0} : {1}", errCode, statement));
 	}
 
 	private static final class SQLConstraintMessageKey implements MessageKey {

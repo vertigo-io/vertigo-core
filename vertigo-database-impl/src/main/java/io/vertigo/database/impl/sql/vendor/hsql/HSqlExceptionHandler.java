@@ -21,7 +21,6 @@ package io.vertigo.database.impl.sql.vendor.hsql;
 import java.sql.SQLException;
 
 import io.vertigo.database.impl.sql.vendor.core.AbstractSqlExceptionHandler;
-import io.vertigo.database.sql.statement.SqlPreparedStatement;
 
 /**
  * Handler des exceptions SQL qui peuvent survenir dans une tache.
@@ -38,7 +37,7 @@ final class HSqlExceptionHandler extends AbstractSqlExceptionHandler {
 
 	/** {@inheritDoc} */
 	@Override
-	public void handleSQLException(final SQLException sqle, final SqlPreparedStatement statement) {
+	public void handleSQLException(final SQLException sqle, final String statement) {
 		// Message d'erreur par défaut
 		handleOtherSQLException(sqle, statement);
 		// voir les codes dans org.hsqldb.Trace
