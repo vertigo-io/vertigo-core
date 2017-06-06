@@ -53,7 +53,7 @@ final class OracleExceptionHandler extends AbstractSqlExceptionHandler {
 			// Violation de contrainte d'unicité
 			handleUniqueConstraintSQLException(sqle);
 		} else {
-			// Message d'erreur par défaut
+			// default message
 			handleOtherSQLException(sqle, statementInfos);
 		}
 	}
