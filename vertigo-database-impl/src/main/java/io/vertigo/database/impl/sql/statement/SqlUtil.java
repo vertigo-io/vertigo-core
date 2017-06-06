@@ -116,7 +116,9 @@ final class SqlUtil {
 	 * @param resultSetMetaData Metadonnées obtenues après exécution de la requête SQL.
 	 * @return Tableau de codes de champ.
 	 */
-	private static MyField[] findFields(final Class dataType, final ResultSetMetaData resultSetMetaData) throws SQLException {
+	private static MyField[] findFields(
+			final Class dataType,
+			final ResultSetMetaData resultSetMetaData) throws SQLException {
 		final MyField[] fields = new MyField[resultSetMetaData.getColumnCount()];
 		String columnLabel;
 		for (int i = 0; i < fields.length; i++) {

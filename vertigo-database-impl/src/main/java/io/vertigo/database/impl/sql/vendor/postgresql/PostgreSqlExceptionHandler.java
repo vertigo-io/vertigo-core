@@ -83,7 +83,11 @@ final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
 		return constraintName;
 	}
 
-	private static String extractConstraintName(final String msg, final String constraintName, final char constraintNameStart, final char constraintNameEnd) {
+	private static String extractConstraintName(
+			final String msg,
+			final String constraintName,
+			final char constraintNameStart,
+			final char constraintNameEnd) {
 		final int i1 = msg.indexOf(constraintNameStart, msg.indexOf(constraintName));
 		final int i2 = msg.indexOf(constraintNameEnd, i1 + 1);
 		if (i1 > -1 && i2 > -1 && i2 > i1) {

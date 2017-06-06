@@ -134,7 +134,11 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * @return Nombre de lignes affectées (Insert/ Update / Delete)
 	 * @throws SQLException Erreur sql
 	 */
-	protected abstract int doExecute(final String sql, final SqlConnection connection, final SqlPreparedStatement statement, final List<SqlNamedParam> params) throws SQLException;
+	protected abstract int doExecute(
+			final String sql,
+			final SqlConnection connection,
+			final SqlPreparedStatement statement,
+			final List<SqlNamedParam> params) throws SQLException;
 
 	/** {@inheritDoc} */
 	@Override
@@ -342,6 +346,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * @param statement Statement
 	 */
 	private static void handleSQLException(final SqlConnection connection, final SQLException sqle, final SqlPreparedStatement statement) {
-		connection.getDataBase().getSqlExceptionHandler().handleSQLException(sqle, statement);
+		connection.getDataBase().getSqlExceptionHandler()
+				.handleSQLException(sqle, statement.toString());
 	}
 }

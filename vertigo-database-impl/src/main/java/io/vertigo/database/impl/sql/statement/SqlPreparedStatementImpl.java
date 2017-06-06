@@ -83,7 +83,10 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		this.analyticsManager = analyticsManager;
 	}
 
-	private void setParameters(final String sql, final PreparedStatement statement, final List<SqlParameter> parameters) throws SQLException {
+	private void setParameters(
+			final String sql,
+			final PreparedStatement statement,
+			final List<SqlParameter> parameters) throws SQLException {
 		info.append(sql)
 				.append('(')
 				.append(parameters
@@ -139,7 +142,11 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		}
 	}
 
-	private <O> List<O> doExecuteQuery(final PreparedStatement statement, final AnalyticsTracer tracer, final Class<O> dataType, final Integer limit) {
+	private <O> List<O> doExecuteQuery(
+			final PreparedStatement statement,
+			final AnalyticsTracer tracer,
+			final Class<O> dataType,
+			final Integer limit) {
 		// ResultSet JDBC
 		final SqlMapping mapping = connection.getDataBase().getSqlMapping();
 		try (final ResultSet resultSet = statement.executeQuery()) {
@@ -283,7 +290,10 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		return info.toString();
 	}
 
-	private final <O> O getGeneratedKey(final PreparedStatement statement, final String columnName, final Class<O> dataType) throws SQLException {
+	private final <O> O getGeneratedKey(
+			final PreparedStatement statement,
+			final String columnName,
+			final Class<O> dataType) throws SQLException {
 		Assertion.checkArgNotEmpty(columnName);
 		Assertion.checkNotNull(dataType);
 		Assertion.checkArgument(returnGeneratedKeys || generatedColumns.length > 0, "Statement non créé pour retourner les clés générées");
