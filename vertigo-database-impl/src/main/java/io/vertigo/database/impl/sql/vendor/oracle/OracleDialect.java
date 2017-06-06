@@ -27,7 +27,11 @@ import io.vertigo.lang.Assertion;
 final class OracleDialect implements SqlDialect {
 	/** {@inheritDoc} */
 	@Override
-	public String createInsertQuery(final String idFieldName, final List<String> dataFieldsName, final String sequencePrefix, final String tableName) {
+	public String createInsertQuery(
+			final String idFieldName,
+			final List<String> dataFieldsName,
+			final String sequencePrefix,
+			final String tableName) {
 		Assertion.checkArgNotEmpty(idFieldName);
 		Assertion.checkNotNull(dataFieldsName);
 		Assertion.checkArgNotEmpty(sequencePrefix);

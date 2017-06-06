@@ -45,7 +45,11 @@ public interface SqlPreparedStatement {
 	 *
 	 * @throws SQLException
 	 */
-	<O> List<O> executeQuery(final String sql, List<SqlParameter> sqlParameters, final Class<O> dataType, final Integer limit) throws SQLException;
+	<O> List<O> executeQuery(
+			final String sql,
+			List<SqlParameter> sqlParameters,
+			final Class<O> dataType,
+			final Integer limit) throws SQLException;
 
 	/**
 	 * Executes a sql query returning the number of modified rows.
@@ -56,9 +60,16 @@ public interface SqlPreparedStatement {
 	 * @return either the row count for INSERT, UPDATE or DELETE statements; or 0 for SQL statements that return nothing
 	 * @throws SQLException
 	 */
-	int executeUpdate(final String sql, List<SqlParameter> sqlParameters) throws SQLException;
+	int executeUpdate(
+			final String sql,
+			List<SqlParameter> sqlParameters) throws SQLException;
 
-	<O> Tuples.Tuple2<Integer, O> executeUpdate(final String sql, List<SqlParameter> sqlParameters, GenerationMode generationMode, final String columnName, final Class<O> dataType) throws SQLException;
+	<O> Tuples.Tuple2<Integer, O> executeUpdate(
+			final String sql,
+			List<SqlParameter> sqlParameters,
+			GenerationMode generationMode,
+			final String columnName,
+			final Class<O> dataType) throws SQLException;
 
 	/**
 	 * Executes the batch .
@@ -66,5 +77,7 @@ public interface SqlPreparedStatement {
 	 * @return the SUM of  row count for INSERT, UPDATE or DELETE statements; or 0 for SQL statements that return nothing
 	 * @throws SQLException
 	 */
-	int executeBatch(final String sql, List<List<SqlParameter>> parameters) throws SQLException;
+	int executeBatch(
+			final String sql,
+			List<List<SqlParameter>> parameters) throws SQLException;
 }

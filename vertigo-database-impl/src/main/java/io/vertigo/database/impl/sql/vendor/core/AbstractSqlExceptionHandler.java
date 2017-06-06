@@ -128,7 +128,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 
 	/**
 	 * @param sqle OtherSQLException
-	 * @param statementInfo the statement
+	 * @param statementInfos the statement
 	 */
 	protected void handleOtherSQLException(final SQLException sqle, final String statementInfos) {
 		final int errCode = sqle.getErrorCode();

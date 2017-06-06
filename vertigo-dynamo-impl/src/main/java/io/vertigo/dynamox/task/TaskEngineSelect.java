@@ -84,7 +84,11 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 
 	/** {@inheritDoc} */
 	@Override
-	protected int doExecute(final String sql, final SqlConnection connection, final SqlPreparedStatement statement, final List<SqlNamedParam> params) throws SQLException {
+	protected int doExecute(
+			final String sql,
+			final SqlConnection connection,
+			final SqlPreparedStatement statement,
+			final List<SqlNamedParam> params) throws SQLException {
 		final TaskAttribute outAttribute = getOutTaskAttribute();
 		final List<SqlParameter> sqlParameters = buildParameters(params);
 		final List<?> result;

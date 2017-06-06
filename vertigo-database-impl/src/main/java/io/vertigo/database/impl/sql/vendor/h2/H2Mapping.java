@@ -44,7 +44,11 @@ final class H2Mapping implements SqlMapping {
 
 	/** {@inheritDoc} */
 	@Override
-	public <O> void setValueOnStatement(final java.sql.PreparedStatement statement, final int index, final Class<O> dataType, final O value) throws SQLException {
+	public <O> void setValueOnStatement(
+			final java.sql.PreparedStatement statement,
+			final int index,
+			final Class<O> dataType,
+			final O value) throws SQLException {
 		if (Boolean.class.isAssignableFrom(dataType)) {
 			if (value == null) {
 				statement.setNull(index, Types.BOOLEAN);
