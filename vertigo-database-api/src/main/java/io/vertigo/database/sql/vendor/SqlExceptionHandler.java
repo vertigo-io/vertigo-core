@@ -21,16 +21,19 @@ package io.vertigo.database.sql.vendor;
 import java.sql.SQLException;
 
 /**
- * Handler des exceptions SQL qui peuvent survenir lors de l'exécution d'une requête.
+ * This class handles sql exceptions to create userException
+ * or to wrap the original checked exception into an unchecked exception.
+ *
  * @author npiedeloup
  */
 public interface SqlExceptionHandler {
 
 	/**
-	 * Gestion des erreurs SQL => Transformation en erreurs KSystemException et KUserException
-	 * selon la plage de l'erreur.
-	 * @param sqle Exception survenue
+	 * Handles and Transforms SQL exception into simple runtime Exception.
+	 * Basic execption are managed according their code. ( or range)
+	 * @param sqle the original sql exception
 	 * @param statementInfos sql statement and params
+	 * @return the transformed execption as a runtime execption
 	 */
 	RuntimeException handleSQLException(SQLException sqle, String statementInfos);
 }
