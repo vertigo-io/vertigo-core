@@ -395,7 +395,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			throw pse;
 		}
 		final SQLException sqle = (SQLException) t;
-		sqlDataBase.getSqlExceptionHandler().handleSQLException(sqle, null);
+		throw sqlDataBase.getSqlExceptionHandler().handleSQLException(sqle, null);
 	}
 
 	private static String createLoadAllLikeQuery(final String tableName, final String sqlCriteriaRrequest /*, final Integer maxRows*/) {

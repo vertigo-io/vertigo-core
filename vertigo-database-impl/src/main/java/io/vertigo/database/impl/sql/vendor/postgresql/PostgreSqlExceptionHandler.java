@@ -22,7 +22,6 @@ import java.sql.SQLException;
 import java.util.Locale;
 
 import io.vertigo.database.impl.sql.vendor.core.AbstractSqlExceptionHandler;
-import io.vertigo.lang.WrappedException;
 
 /**
  * Handler des exceptions SQL qui peuvent survenir dans une tache.
@@ -39,33 +38,26 @@ final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
 	}
 
 	@Override
-	public void handleSQLException(final SQLException sqle, final String statementInfos) {
+	public RuntimeException handleSQLException(final SQLException sqle, final String statementInfos) {
 		final String errCode = sqle.getSQLState();
 		//some database return null at getSQLState (@see http://stackoverflow.com/questions/26383624/postgres-exceptions-and-java)
 		final String code = errCode != null ? errCode.substring(0, 2) : null;
 		if ("22001".equals(errCode) || "22003".equals(errCode)) {
 			// Valeur trop grande pour ce champs
-			handleTooLargeValueSqlException(sqle);
+			return handleTooLargeValueSqlException(sqle);
 		} else if ("23503".equals(errCode)) {
 			// Violation de contrainte d'intégrité référentielle
-			handleForeignConstraintSQLException(sqle);
+			return handleForeignConstraintSQLException(sqle);
 		} else if ("23505".equals(errCode)) {
 			// Violation de contrainte d'unicité
-			handleUniqueConstraintSQLException(sqle);
+			return handleUniqueConstraintSQLException(sqle);
 		} else if ("01".equals(code) || "02".equals(code) || "08".equals(code) || "22".equals(code) || "23".equals(code)) {
 			// Erreur utilisateur
-			handleUserSQLException(sqle);
+			return handleUserSQLException(sqle);
 		} else {
 			// Message d'erreur par défaut
-			handleOtherSQLException(sqle, statementInfos);
+			return handleOtherSQLException(sqle, statementInfos);
 		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	protected void handleOtherSQLException(final SQLException sqle, final String statement) {
-		final String errCode = sqle.getSQLState();
-		throw WrappedException.wrap(sqle, "[Erreur SQL](" + errCode + ") : " + statement);
 	}
 
 	/** {@inheritDoc} */

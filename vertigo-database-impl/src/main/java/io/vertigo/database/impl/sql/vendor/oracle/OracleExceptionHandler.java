@@ -38,23 +38,26 @@ final class OracleExceptionHandler extends AbstractSqlExceptionHandler {
 
 	/** {@inheritDoc} */
 	@Override
-	public void handleSQLException(final SQLException sqle, final String statementInfos) {
+	public RuntimeException handleSQLException(final SQLException sqle, final String statementInfos) {
 		final int errCode = sqle.getErrorCode();
 		if (errCode >= 20_000 && errCode < 30_000) {
 			// Erreur utilisateur
-			handleUserSQLException(sqle);
-		} else if (errCode == 1438 || errCode == 12_899) {
-			// Valeur trop grande pour ce champs
-			handleTooLargeValueSqlException(sqle);
-		} else if (errCode == 2292) {
-			// Violation de contrainte d'intégrité référentielle
-			handleForeignConstraintSQLException(sqle);
-		} else if (errCode == 1) {
-			// Violation de contrainte d'unicité
-			handleUniqueConstraintSQLException(sqle);
-		} else {
-			// default message
-			handleOtherSQLException(sqle, statementInfos);
+			return handleUserSQLException(sqle);
+		}
+		switch (errCode) {
+			case 1438:
+			case 12_899:
+				// Valeur trop grande pour ce champs
+				return handleTooLargeValueSqlException(sqle);
+			case 2292:
+				// Violation de contrainte d'intégrité référentielle
+				return handleForeignConstraintSQLException(sqle);
+			case 1:
+				// Violation de contrainte d'unicité
+				return handleUniqueConstraintSQLException(sqle);
+			default:
+				// default message
+				return handleOtherSQLException(sqle, statementInfos);
 		}
 	}
 

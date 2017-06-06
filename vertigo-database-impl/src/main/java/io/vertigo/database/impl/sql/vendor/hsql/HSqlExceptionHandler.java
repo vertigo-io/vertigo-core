@@ -37,9 +37,9 @@ final class HSqlExceptionHandler extends AbstractSqlExceptionHandler {
 
 	/** {@inheritDoc} */
 	@Override
-	public void handleSQLException(final SQLException sqle, final String statementInfos) {
+	public RuntimeException handleSQLException(final SQLException sqle, final String statementInfos) {
 		// default message
-		handleOtherSQLException(sqle, statementInfos);
+		return handleOtherSQLException(sqle, statementInfos);
 		// sea  sql codes  at org.hsqldb.Trace
 	}
 

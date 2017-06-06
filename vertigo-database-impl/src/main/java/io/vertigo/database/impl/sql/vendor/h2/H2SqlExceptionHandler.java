@@ -22,7 +22,6 @@ import java.sql.SQLException;
 import java.util.Locale;
 
 import io.vertigo.database.impl.sql.vendor.core.AbstractSqlExceptionHandler;
-import io.vertigo.lang.WrappedException;
 
 /**
  * Handler des exceptions SQL qui peuvent survenir dans une tache.
@@ -54,36 +53,25 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 
 	/** {@inheritDoc} */
 	@Override
-	public void handleSQLException(final SQLException sqle, final String statementInfos) {
+	public RuntimeException handleSQLException(final SQLException sqle, final String statementInfos) {
 		final int errCode = sqle.getErrorCode();
 		switch (errCode) {
 			case VALUE_TOO_LONG_2:
 			case VALUE_TOO_LARGE_FOR_PRECISION_1:
 				// Valeur trop grande pour ce champs
-				handleTooLargeValueSqlException(sqle);
-				break;
+				return handleTooLargeValueSqlException(sqle);
 			case REFERENTIAL_INTEGRITY_VIOLATED_PARENT_MISSING_1:
 			case REFERENTIAL_INTEGRITY_VIOLATED_CHILD_EXISTS_1:
 				// Violation de contrainte d'intégrité référentielle
-				handleForeignConstraintSQLException(sqle);
-				break;
+				return handleForeignConstraintSQLException(sqle);
 			case DUPLICATE_KEY_1:
 			case UNIQUE_INDEX_1:
 				// Violation de contrainte d'unicité
-				handleUniqueConstraintSQLException(sqle);
-				break;
+				return handleUniqueConstraintSQLException(sqle);
 			default:
 				// Message d'erreur par défaut
-				handleOtherSQLException(sqle, statementInfos);
-				break;
+				return handleOtherSQLException(sqle, statementInfos);
 		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	protected void handleOtherSQLException(final SQLException sqle, final String statementInfos) {
-		final int errCode = sqle.getErrorCode();
-		throw WrappedException.wrap(sqle, "[Error SQL](" + errCode + ") : " + sqle.getMessage() + '\n' + statementInfos);
 	}
 
 	/** {@inheritDoc} */

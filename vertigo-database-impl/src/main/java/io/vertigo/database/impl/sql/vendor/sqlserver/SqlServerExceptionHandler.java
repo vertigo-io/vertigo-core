@@ -61,26 +61,28 @@ final class SqlServerExceptionHandler extends AbstractSqlExceptionHandler {
 
 	/** {@inheritDoc} */
 	@Override
-	public void handleSQLException(final SQLException sqle, final String statementInfos) {
-
+	public RuntimeException handleSQLException(final SQLException sqle, final String statementInfos) {
 		final int errorCode = sqle.getErrorCode();
 
 		if (errorCode >= 20_000 && errorCode < 30_000) {
 			// Erreur utilisateur
-			handleUserSQLException(sqle);
-		} else if (errorCode == 8152) {
-			// Valeur trop grande pour ce champs (#8152)
-			handleTooLargeValueSqlException(sqle);
-		} else if (errorCode == 547) {
-			// Violation de contrainte d'intégrité référentielle (#547)
-			handleForeignConstraintSQLException(sqle);
-		} else if (errorCode == 2601 || errorCode == 2627) {
-			// Violation de contrainte d'unicité (#2627)
-			// Violation de contrainte d'unicité sur index (#2601) (attention message différent)
-			handleUniqueConstraintSQLException(sqle);
-		} else {
-			// Message d'erreur par défaut
-			handleOtherSQLException(sqle, statementInfos);
+			return handleUserSQLException(sqle);
+		}
+		switch (errorCode) {
+			case 8152:
+				// Valeur trop grande pour ce champs (#8152)
+				return handleTooLargeValueSqlException(sqle);
+			case 547:
+				// Violation de contrainte d'intégrité référentielle (#547)
+				return handleForeignConstraintSQLException(sqle);
+			case 2601:
+			case 2627:
+				// Violation de contrainte d'unicité (#2627)
+				// Violation de contrainte d'unicité sur index (#2601) (attention message différent)
+				return handleUniqueConstraintSQLException(sqle);
+			default:
+				// Message d'erreur par défaut
+				return handleOtherSQLException(sqle, statementInfos);
 		}
 	}
 

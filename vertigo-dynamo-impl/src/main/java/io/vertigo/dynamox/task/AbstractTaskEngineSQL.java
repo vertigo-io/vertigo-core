@@ -154,10 +154,10 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 			setRowCount(sqlRowcount);
 		} catch (final BatchUpdateException sqle) { //some exception embedded the usefull one
 			// Gère les erreurs d'exécution Batch JDBC.
-			handleSQLException(connection, sqle.getNextException(), statement.toString());
+			throw handleSQLException(connection, sqle.getNextException(), statement.toString());
 		} catch (final SQLException sqle) {
 			//Gère les erreurs d'exécution JDBC.
-			handleSQLException(connection, sqle, statement.toString());
+			throw handleSQLException(connection, sqle, statement.toString());
 		}
 
 	}
@@ -345,8 +345,8 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * @param sqle Exception SQL
 	 * @param statement Statement
 	 */
-	private static void handleSQLException(final SqlConnection connection, final SQLException sqle, final String statementInfos) {
-		connection.getDataBase().getSqlExceptionHandler()
+	private static RuntimeException handleSQLException(final SqlConnection connection, final SQLException sqle, final String statementInfos) {
+		return connection.getDataBase().getSqlExceptionHandler()
 				.handleSQLException(sqle, statementInfos);
 	}
 }

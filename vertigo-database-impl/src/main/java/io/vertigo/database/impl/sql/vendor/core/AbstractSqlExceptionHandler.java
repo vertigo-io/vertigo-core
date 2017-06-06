@@ -61,17 +61,17 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	/**
 	 * @param sqle Exception base de données
 	 */
-	protected void handleTooLargeValueSqlException(final SQLException sqle) {
+	protected final VUserException handleTooLargeValueSqlException(final SQLException sqle) {
 		final MessageKey key = Resources.DYNAMO_SQL_CONSTRAINT_TOO_BIG_VALUE;
 		LOGGER.warn(MessageText.of(key).getDisplay(), sqle);
 		//On se contente de logger l'exception cause mais on ne la lie pas à l'erreur utilisateur.
-		throw new VUserException(key);
+		return new VUserException(key);
 	}
 
 	/**
 	 * @param sqle SQLException launch by SQL (often PLSQL application specific exception with &lt;text&gt; tag)
 	 */
-	protected void handleUserSQLException(final SQLException sqle) {
+	protected final VUserException handleUserSQLException(final SQLException sqle) {
 		String msg = sqle.getMessage();
 		final int i1 = msg.indexOf("<text>");
 		final int i2 = msg.indexOf("</text>", i1);
@@ -80,7 +80,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 			msg = msg.substring(i1 + ERROR_CODE_LENGTH, i2);
 		}
 		//On se contente de logger l'exception cause mais on ne la lie pas à l'erreur utilisateur.
-		throw new VUserException(msg);
+		return new VUserException(msg);
 	}
 
 	/**
@@ -89,7 +89,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	 * @param sqle Exception SQL
 	 * @param defaultMsg Message par defaut
 	 */
-	protected final void handleConstraintSQLException(final SQLException sqle, final MessageKey defaultMsg) {
+	protected final VUserException handleConstraintSQLException(final SQLException sqle, final MessageKey defaultMsg) {
 		final String msg = sqle.getMessage();
 		// recherche le nom de la contrainte d'intégrité
 		final String constraintName = extractConstraintName(msg);
@@ -109,30 +109,30 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 				.build();
 		final VUserException constraintException = new VUserException(userContraintMessageText);
 		constraintException.initCause(sqle);
-		throw constraintException;
+		return constraintException;
 	}
 
 	/**
 	 * @param sqle ForeignConstraintSQLException
 	 */
-	protected void handleForeignConstraintSQLException(final SQLException sqle) {
-		handleConstraintSQLException(sqle, Resources.DYNAMO_SQL_CONSTRAINT_IMPOSSIBLE_TO_DELETE);
+	protected final VUserException handleForeignConstraintSQLException(final SQLException sqle) {
+		return handleConstraintSQLException(sqle, Resources.DYNAMO_SQL_CONSTRAINT_IMPOSSIBLE_TO_DELETE);
 	}
 
 	/**
 	 * @param sqle UniqueConstraintSQLException
 	 */
-	protected void handleUniqueConstraintSQLException(final SQLException sqle) {
-		handleConstraintSQLException(sqle, Resources.DYNAMO_SQL_CONSTRAINT_ALREADY_REGISTRED);
+	protected final VUserException handleUniqueConstraintSQLException(final SQLException sqle) {
+		return handleConstraintSQLException(sqle, Resources.DYNAMO_SQL_CONSTRAINT_ALREADY_REGISTRED);
 	}
 
 	/**
 	 * @param sqle OtherSQLException
 	 * @param statementInfos the statement
 	 */
-	protected void handleOtherSQLException(final SQLException sqle, final String statementInfos) {
+	protected final RuntimeException handleOtherSQLException(final SQLException sqle, final String statementInfos) {
 		final int errCode = sqle.getErrorCode();
-		throw WrappedException.wrap(sqle, StringUtil.format("[SQL error] {0} : {1}", errCode, statementInfos));
+		return WrappedException.wrap(sqle, StringUtil.format("[SQL error] {0} : {1}", errCode, statementInfos));
 	}
 
 	private static final class SQLConstraintMessageKey implements MessageKey {

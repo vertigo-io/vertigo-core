@@ -32,5 +32,5 @@ public interface SqlExceptionHandler {
 	 * @param sqle Exception survenue
 	 * @param statementInfos sql statement and params
 	 */
-	void handleSQLException(SQLException sqle, String statementInfos);
+	RuntimeException handleSQLException(SQLException sqle, String statementInfos);
 }
