@@ -68,7 +68,10 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 			final SqlPreparedStatement statement,
 			final List<SqlNamedParam> params) throws SQLException {
 		Assertion.checkArgNotEmpty(sql);
-		//---
+		Assertion.checkNotNull(connection);
+		Assertion.checkNotNull(statement);
+		Assertion.checkNotNull(params);
+		//--
 		final GenerationMode generationMode = connection.getDataBase().getSqlDialect().getGenerationMode();
 
 		// gestion de generatedKey

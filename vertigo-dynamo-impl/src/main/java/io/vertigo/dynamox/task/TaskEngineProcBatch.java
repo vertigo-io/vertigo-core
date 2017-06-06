@@ -49,7 +49,11 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 	 * @param scriptManager Manager de traitment de scripts
 	 */
 	@Inject
-	public TaskEngineProcBatch(final ScriptManager scriptManager, final VTransactionManager transactionManager, final StoreManager storeManager, final SqlDataBaseManager sqlDataBaseManager) {
+	public TaskEngineProcBatch(
+			final ScriptManager scriptManager,
+			final VTransactionManager transactionManager,
+			final StoreManager storeManager,
+			final SqlDataBaseManager sqlDataBaseManager) {
 		super(scriptManager, transactionManager, storeManager, sqlDataBaseManager);
 	}
 
@@ -60,6 +64,11 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 			final SqlConnection connection,
 			final SqlPreparedStatement statement,
 			final List<SqlNamedParam> params) throws SQLException {
+		Assertion.checkArgNotEmpty(sql);
+		Assertion.checkNotNull(connection);
+		Assertion.checkNotNull(statement);
+		Assertion.checkNotNull(params);
+		//---
 		// on alimente le batch.
 		// La taille du batch est déduite de la taille de la collection en entrée.
 		final int batchSize = getBatchSize();
