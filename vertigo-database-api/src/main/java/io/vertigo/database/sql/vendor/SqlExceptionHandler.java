@@ -30,7 +30,7 @@ public interface SqlExceptionHandler {
 	 * Gestion des erreurs SQL => Transformation en erreurs KSystemException et KUserException
 	 * selon la plage de l'erreur.
 	 * @param sqle Exception survenue
-	 * @param statement Statement SQL (i.e. requête SQL)
+	 * @param statementInfo sql statement and params
 	 */
-	void handleSQLException(SQLException sqle, String statement);
+	void handleSQLException(SQLException sqle, String statementInfos);
 }

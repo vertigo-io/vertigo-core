@@ -38,13 +38,8 @@ final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
 		super();
 	}
 
-	/**
-	 * Gestionnaire des erreurs de la base de données pour PostgreSql.
-	 * @param sqle Exception Sql
-	 * @param statement Requête en erreur.
-	 */
 	@Override
-	public void handleSQLException(final SQLException sqle, final String statement) {
+	public void handleSQLException(final SQLException sqle, final String statementInfos) {
 		final String errCode = sqle.getSQLState();
 		//some database return null at getSQLState (@see http://stackoverflow.com/questions/26383624/postgres-exceptions-and-java)
 		final String code = errCode != null ? errCode.substring(0, 2) : null;
@@ -62,7 +57,7 @@ final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
 			handleUserSQLException(sqle);
 		} else {
 			// Message d'erreur par défaut
-			handleOtherSQLException(sqle, statement);
+			handleOtherSQLException(sqle, statementInfos);
 		}
 	}
 

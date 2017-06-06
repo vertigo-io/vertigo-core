@@ -38,7 +38,7 @@ final class OracleExceptionHandler extends AbstractSqlExceptionHandler {
 
 	/** {@inheritDoc} */
 	@Override
-	public void handleSQLException(final SQLException sqle, final String statement) {
+	public void handleSQLException(final SQLException sqle, final String statementInfos) {
 		final int errCode = sqle.getErrorCode();
 		if (errCode >= 20_000 && errCode < 30_000) {
 			// Erreur utilisateur
@@ -54,7 +54,7 @@ final class OracleExceptionHandler extends AbstractSqlExceptionHandler {
 			handleUniqueConstraintSQLException(sqle);
 		} else {
 			// Message d'erreur par défaut
-			handleOtherSQLException(sqle, statement);
+			handleOtherSQLException(sqle, statementInfos);
 		}
 	}
 

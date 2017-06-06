@@ -52,14 +52,9 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 		super();
 	}
 
-	/**
-	 * Gestionnaire des erreurs de la base de données pour PostgreSql.
-	 *
-	 * @param sqle Exception Sql
-	 * @param statement Requête en erreur.
-	 */
+	/** {@inheritDoc} */
 	@Override
-	public void handleSQLException(final SQLException sqle, final String statement) {
+	public void handleSQLException(final SQLException sqle, final String statementInfos) {
 		final int errCode = sqle.getErrorCode();
 		switch (errCode) {
 			case VALUE_TOO_LONG_2:
@@ -79,7 +74,7 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 				break;
 			default:
 				// Message d'erreur par défaut
-				handleOtherSQLException(sqle, statement);
+				handleOtherSQLException(sqle, statementInfos);
 				break;
 		}
 	}

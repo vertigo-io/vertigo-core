@@ -61,7 +61,7 @@ final class SqlServerExceptionHandler extends AbstractSqlExceptionHandler {
 
 	/** {@inheritDoc} */
 	@Override
-	public void handleSQLException(final SQLException sqle, final String statement) {
+	public void handleSQLException(final SQLException sqle, final String statementInfo) {
 
 		final int errorCode = sqle.getErrorCode();
 
@@ -80,7 +80,7 @@ final class SqlServerExceptionHandler extends AbstractSqlExceptionHandler {
 			handleUniqueConstraintSQLException(sqle);
 		} else {
 			// Message d'erreur par défaut
-			handleOtherSQLException(sqle, statement);
+			handleOtherSQLException(sqle, statementInfo);
 		}
 	}
 
