@@ -19,6 +19,7 @@
 package io.vertigo.database.impl.sql.vendor.sqlserver;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import io.vertigo.database.impl.sql.vendor.core.AbstractSqlExceptionHandler;
 
@@ -43,12 +44,23 @@ final class SqlServerExceptionHandler extends AbstractSqlExceptionHandler {
 			this.endQuote = endQuote;
 		}
 
-		public String getStartQuote() {
+		private String getStartQuote() {
 			return startQuote;
 		}
 
-		public String getEndQuote() {
+		private String getEndQuote() {
 			return endQuote;
+		}
+
+		String extractConstraintName(final String errorMessage) {
+			final int indexFin = errorMessage.indexOf(getEndQuote());
+			if (indexFin != -1) {
+				final int indexDebut = errorMessage.lastIndexOf(getStartQuote(), indexFin - 1);
+				if (indexDebut != -1) {
+					return errorMessage.substring(indexDebut + getStartQuote().length(), indexFin);
+				}
+			}
+			return null;
 		}
 	}
 
@@ -88,25 +100,12 @@ final class SqlServerExceptionHandler extends AbstractSqlExceptionHandler {
 
 	/** {@inheritDoc} */
 	@Override
-	protected String extractConstraintName(final String messageErreur) {
-		String constraintName = null;
-		for (final SQLServerVersion parsingMode : SQLServerVersion.values()) {
-			constraintName = extractConstraintName(parsingMode, messageErreur);
-			if (constraintName != null) {
-				return constraintName;
-			}
-		}
-		return constraintName;
+	protected String extractConstraintName(final String errorMessage) {
+		return Arrays.stream(SQLServerVersion.values())
+				.map(sqlServerVersion -> sqlServerVersion.extractConstraintName(errorMessage))
+				.filter(constraintName -> constraintName != null)
+				.findFirst()
+				.orElse(null);
 	}
 
-	private static String extractConstraintName(final SQLServerVersion version, final String messageErreur) {
-		final int indexFin = messageErreur.indexOf(version.getEndQuote());
-		if (indexFin != -1) {
-			final int indexDebut = messageErreur.lastIndexOf(version.getStartQuote(), indexFin - 1);
-			if (indexDebut != -1) {
-				return messageErreur.substring(indexDebut + version.getStartQuote().length(), indexFin);
-			}
-		}
-		return null;
-	}
 }

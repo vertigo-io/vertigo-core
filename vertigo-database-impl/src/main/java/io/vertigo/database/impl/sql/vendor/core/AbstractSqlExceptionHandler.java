@@ -41,7 +41,6 @@ import io.vertigo.util.StringUtil;
  * @author npiedeloup, evernat
  */
 public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler {
-
 	private static final int ERROR_CODE_LENGTH = 6;
 	private static final Logger LOGGER = Logger.getLogger(AbstractSqlExceptionHandler.class);
 

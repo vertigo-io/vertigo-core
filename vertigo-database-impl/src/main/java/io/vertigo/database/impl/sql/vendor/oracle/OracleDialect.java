@@ -37,7 +37,6 @@ final class OracleDialect implements SqlDialect {
 		Assertion.checkArgNotEmpty(sequencePrefix);
 		Assertion.checkArgNotEmpty(tableName);
 		//---
-		// ---
 		return new StringBuilder()
 				.append("insert into ").append(tableName).append(" (")
 				.append(idFieldName).append(", ")

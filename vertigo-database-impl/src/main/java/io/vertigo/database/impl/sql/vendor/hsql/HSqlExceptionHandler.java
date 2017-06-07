@@ -45,7 +45,6 @@ final class HSqlExceptionHandler extends AbstractSqlExceptionHandler {
 
 	@Override
 	protected String extractConstraintName(final String msg) {
-		// TODO Auto-generated method stub
 		// voir les codes dans org.hsqldb.Trace
 		return msg;
 	}
