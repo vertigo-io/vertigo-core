@@ -50,9 +50,18 @@ import io.vertigo.lang.DataStream;
  */
 public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4 {
 	private static final String INSERT_INTO_MOVIE_VALUES = "insert into movie values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
+	private static final String CREATE_TABLE_MOVIE = "create table movie ("
+			+ "id bigint , "
+			+ "title varchar(255) , "
+			+ "fps double precision ,"
+			+ "income decimal(6,3) , "
+			+ "color boolean , "
+			+ "release_date timestamp , "
+			+ "release_local_date date , "
+			+ "release_zoned_date_time datetime , "
+			+ "icon blob );";
 	@Inject
-	private SqlDataBaseManager dataBaseManager;
+	protected SqlDataBaseManager dataBaseManager;
 
 	protected SqlConnection obtainMainConnection() {
 		return dataBaseManager
@@ -60,25 +69,12 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 				.obtainConnection();
 	}
 
-	protected String createTableMovie() {
-		return "create table movie ("
-				+ "id bigint , "
-				+ "title varchar(255) , "
-				+ "fps double precision ,"
-				+ "income decimal(6,3) , "
-				+ "color boolean , "
-				+ "release_date timestamp , "
-				+ "release_local_date date , "
-				+ "release_zoned_date_time datetime , "
-				+ "icon blob );";
-	}
-
 	@Override
-	protected final void doSetUp() throws Exception {
+	protected void doSetUp() throws Exception {
 		//A chaque test on recrée la table famille
 		final SqlConnection connection = obtainMainConnection();
 		try {
-			execpreparedStatement(connection, createTableMovie());
+			execpreparedStatement(connection, CREATE_TABLE_MOVIE);
 		} finally {
 			connection.release();
 		}
@@ -192,8 +188,9 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		Assert.assertEquals("citizen kane", movie.getTitle());
 	}
 
-	private <O> List<O> executeQuery(final Class<O> dataType, final String sql, final Integer limit) throws SQLException, Exception {
-		return executeQuery(dataType, sql, dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), limit);
+	protected final <O> List<O> executeQuery(final Class<O> dataType, final String sql, final Integer limit) throws SQLException, Exception {
+		final SqlConnectionProvider sqlConnectionProvider = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
+		return executeQuery(dataType, sql, sqlConnectionProvider, limit);
 	}
 
 	private <O> List<O> executeQuery(
@@ -286,7 +283,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		setupSecondary();
 		try {
 			//on crée des données dans 'secondary'
-			final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary").obtainConnection();
+			final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary")
+					.obtainConnection();
 			try {
 				execpreparedStatement(connection, "insert into movie values (1, 'Star wars', null, null, null, null, null, null, null)");
 				execpreparedStatement(connection, "insert into movie values (2, 'Will Hunting', null, null, null, null, null, null, null)");
@@ -316,9 +314,10 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 
 	private void setupSecondary() throws Exception {
 		//A chaque test on recrée la table famille
-		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary").obtainConnection();
+		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary")
+				.obtainConnection();
 		try {
-			execpreparedStatement(connection, createTableMovie());
+			execpreparedStatement(connection, CREATE_TABLE_MOVIE);
 		} finally {
 			connection.release();
 		}
@@ -326,7 +325,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 
 	private void shutdownSecondaryDown() throws Exception {
 		//A chaque fin de test on arrête la base.
-		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary").obtainConnection();
+		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary")
+				.obtainConnection();
 		try {
 			execpreparedStatement(connection, "shutdown;");
 		} finally {

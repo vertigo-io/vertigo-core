@@ -13,6 +13,7 @@
 				<param name="jdbcDriver" value="oracle.jdbc.OracleDriver" />
 				<param name="jdbcUrl" value="jdbc:oracle:thin:DT_VERTIGO/DT_VERTIGO@selma.dev.klee.lan.net:1521/O11UTF8" />
 			</plugin>
+			
 			<plugin class="io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin">
 				<param name="name" value="secondary" />
 				<param name="dataBaseClass" value="io.vertigo.database.impl.sql.vendor.h2.H2DataBase" />
