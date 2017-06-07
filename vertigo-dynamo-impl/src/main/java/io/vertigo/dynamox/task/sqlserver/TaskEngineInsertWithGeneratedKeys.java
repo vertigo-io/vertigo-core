@@ -81,27 +81,11 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 		final DtField idField = dtDefinition.getIdField().get();
 
 		final Tuples.Tuple2<Integer, ?> result = statement
-				.executeUpdate(sql, buildParameters(params), generationMode, idField.getName(), idField.getDomain().getDataType().getJavaClass());
+				.executeUpdateWithGeneratedKey(sql, buildParameters(params), generationMode == GenerationMode.GENERATED_KEYS, idField.getName(), idField.getDomain().getDataType().getJavaClass());
 
 		final Object id = result.getVal2();
 		idField.getDataAccessor().setValue(entity, id);
 		//---
 		return /*sqlRowcount*/ result.getVal1();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	protected final SqlPreparedStatement createStatement(final SqlConnection connection) {
-		final GenerationMode generationMode = connection.getDataBase().getSqlDialect().getGenerationMode();
-		switch (generationMode) {
-			case GENERATED_KEYS:
-				return getDataBaseManager()
-						.createPreparedStatement(connection, GenerationMode.GENERATED_KEYS);
-			case GENERATED_COLUMNS:
-				final String idFieldName = getTaskDefinition().getInAttribute("DTO").getDomain().getDtDefinition().getIdField().get().getName();
-				return getDataBaseManager().createPreparedStatement(connection, GenerationMode.GENERATED_COLUMNS, idFieldName);
-			default:
-				throw new IllegalArgumentException("TaskEngineInsertWithGeneratedKeys is not supported with generation mode +'" + generationMode + "'");
-		}
 	}
 }

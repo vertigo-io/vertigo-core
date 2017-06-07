@@ -33,7 +33,6 @@ import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.parser.SqlNamedParam;
 import io.vertigo.database.sql.statement.SqlPreparedStatement;
-import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Tuples;
 import io.vertigo.lang.Tuples.Tuple2;
@@ -83,20 +82,9 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public SqlPreparedStatement createPreparedStatement(
-			final SqlConnection connection,
-			final GenerationMode generationMode,
-			final String... generatedColumns) {
+	public SqlPreparedStatement createPreparedStatement(final SqlConnection connection) {
 		Assertion.checkNotNull(connection);
-		Assertion.checkNotNull(generationMode);
-		Assertion.checkNotNull(generatedColumns);
-		Assertion.when(generationMode != GenerationMode.GENERATED_COLUMNS)
-				.check(() -> generatedColumns.length == 0, "generated columns are expected only when mode='GENERATED_COLUMNS'");
-		Assertion.when(generationMode == GenerationMode.GENERATED_COLUMNS)
-				.check(() -> generatedColumns.length > 0, "generated columns are expected only when mode='GENERATED_COLUMNS'");
-		//---
-		final boolean returnGeneratedKeys = generationMode == GenerationMode.GENERATED_KEYS;
-		return new SqlPreparedStatementImpl(analyticsManager, connection, returnGeneratedKeys, generatedColumns);
+		return new SqlPreparedStatementImpl(analyticsManager, connection);
 	}
 
 	/** {@inheritDoc} */

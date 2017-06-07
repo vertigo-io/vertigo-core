@@ -25,8 +25,6 @@ import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.parser.SqlNamedParam;
 import io.vertigo.database.sql.statement.SqlPreparedStatement;
-import io.vertigo.database.sql.vendor.SqlDialect;
-import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.lang.Tuples.Tuple2;
 
 /**
@@ -43,21 +41,7 @@ public interface SqlDataBaseManager extends Manager {
 	 */
 	SqlConnectionProvider getConnectionProvider(String name);
 
-	/**
-	 * @param connection Connection
-	 * @param sql Requête SQL
-	 * @param generatedKeys Si on récupère les clés générées par la base de données.
-	 * @return Statement
-	 */
-	SqlPreparedStatement createPreparedStatement(
-			final SqlConnection connection,
-			final SqlDialect.GenerationMode generationMode,
-			final String... generatedColumns);
-
-	default SqlPreparedStatement createPreparedStatement(
-			final SqlConnection connection) {
-		return createPreparedStatement(connection, GenerationMode.NONE);
-	}
+	SqlPreparedStatement createPreparedStatement(final SqlConnection connection);
 
 	/**
 	 * Analyses a query and extracts all the namedParams.

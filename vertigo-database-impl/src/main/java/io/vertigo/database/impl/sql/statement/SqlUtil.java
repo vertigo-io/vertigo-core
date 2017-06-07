@@ -128,7 +128,7 @@ final class SqlUtil {
 			try {
 				final Method getter = dataType.getDeclaredMethod("get" + StringUtil.first2UpperCase(expectedFieldName));
 				fields[i] = new MyField(expectedFieldName, getter.getReturnType());
-			} catch (final Exception e) {
+			} catch (final NoSuchMethodException e) {
 				throw WrappedException.wrap(e);
 			}
 		}
