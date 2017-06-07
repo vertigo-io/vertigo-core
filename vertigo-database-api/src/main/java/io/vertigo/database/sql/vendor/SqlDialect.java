@@ -86,7 +86,7 @@ public interface SqlDialect {
 	}
 
 	/**
-	 * @return how keys are generated
+	 * @return how keys are generated (NONE if this option is not available)
 	 */
 	GenerationMode getGenerationMode();
 }

@@ -21,6 +21,7 @@ package io.vertigo.database.sql.statement;
 import java.sql.SQLException;
 import java.util.List;
 
+import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.lang.Tuples;
 
 /**
@@ -66,7 +67,7 @@ public interface SqlPreparedStatement {
 	<O> Tuples.Tuple2<Integer, O> executeUpdateWithGeneratedKey(
 			final String sql,
 			final List<SqlParameter> parameters,
-			final boolean returnGeneratedKeys,
+			final GenerationMode generationMode,
 			final String columnName,
 			final Class<O> dataType) throws SQLException;
 
