@@ -47,7 +47,7 @@ final class OracleExceptionHandler extends AbstractSqlExceptionHandler {
 		switch (errCode) {
 			case 1438:
 			case 12_899:
-				// Valeur trop grande pour ce champs
+				// value too large for this column
 				return handleTooLargeValueSqlException(sqle);
 			case 2292:
 				// Violation de contrainte d'intégrité référentielle

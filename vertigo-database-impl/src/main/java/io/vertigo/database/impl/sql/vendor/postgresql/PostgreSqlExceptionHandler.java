@@ -43,7 +43,7 @@ final class PostgreSqlExceptionHandler extends AbstractSqlExceptionHandler {
 		//some database return null at getSQLState (@see http://stackoverflow.com/questions/26383624/postgres-exceptions-and-java)
 		final String code = errCode != null ? errCode.substring(0, 2) : null;
 		if ("22001".equals(errCode) || "22003".equals(errCode)) {
-			// Valeur trop grande pour ce champs
+			//the value is too large for this column
 			return handleTooLargeValueSqlException(sqle);
 		} else if ("23503".equals(errCode)) {
 			// Violation de contrainte d'intégrité référentielle

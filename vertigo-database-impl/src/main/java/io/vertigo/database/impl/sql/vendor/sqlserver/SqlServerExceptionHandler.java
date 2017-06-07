@@ -70,7 +70,7 @@ final class SqlServerExceptionHandler extends AbstractSqlExceptionHandler {
 		}
 		switch (errorCode) {
 			case 8152:
-				// Valeur trop grande pour ce champs (#8152)
+				//the value is too large for this column
 				return handleTooLargeValueSqlException(sqle);
 			case 547:
 				// Violation de contrainte d'intégrité référentielle (#547)

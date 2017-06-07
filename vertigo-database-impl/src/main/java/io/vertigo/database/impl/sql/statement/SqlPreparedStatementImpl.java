@@ -57,9 +57,6 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/** Connexion.*/
 	private final SqlConnection connection;
 
-	//	/** Si on récupère les clés générées.*/
-	//	private final boolean returnGeneratedKeys;
-	//	private final String[] generatedColumns;
 	//
 	private final AnalyticsManager analyticsManager;
 	private final StringBuilder info = new StringBuilder();
@@ -70,16 +67,11 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	 */
 	public SqlPreparedStatementImpl(
 			final AnalyticsManager analyticsManager,
-			final SqlConnection connection
-	//			final boolean returnGeneratedKeys,
-	//			final String... generatedColumns
-	) {
+			final SqlConnection connection) {
 		Assertion.checkNotNull(connection);
 		Assertion.checkNotNull(analyticsManager);
 		//-----
 		this.connection = connection;
-		//		this.returnGeneratedKeys = returnGeneratedKeys;
-		//		this.generatedColumns = generatedColumns;
 		this.analyticsManager = analyticsManager;
 	}
 
@@ -278,19 +270,10 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 			final Class<O> dataType) throws SQLException {
 		Assertion.checkArgNotEmpty(columnName);
 		Assertion.checkNotNull(dataType);
-		//	Assertion.checkArgument(returnGeneratedKeys || generatedColumns.length > 0, "Statement non créé pour retourner les clés générées");
 		//-----
 		// L'utilisation des generatedKeys permet d'avoir un seul appel réseau entre le
 		// serveur d'application et la base de données pour un insert et la récupération de la
 		// valeur de la clé primaire en respectant les standards jdbc et sql ansi.
-
-		// Cela est actuellement utilisé en ms sql server.
-		// Cela pourrait à terme être utilisé en Oracle à partir de 10g R2, à condition d'indiquer
-		// le nom de la colonne clé primaire lors de la création du PreparedStatement jdbc
-		// (et en supprimant la syntaxe propriétaire oracle dans le StoreSQL :
-		// begin insert ... returning ... into ... end;)
-		// cf http://download-east.oracle.com/docs/cd/B19306_01/java.102/b14355/jdbcvers.htm#CHDEGDHJ
-		//code SQLException : http://publib.boulder.ibm.com/infocenter/iseries/v5r3/index.jsp?topic=%2Frzala%2Frzalaco.htm
 		try (final ResultSet rs = statement.getGeneratedKeys()) {
 			final boolean next = rs.next();
 			if (!next) {
@@ -339,7 +322,8 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 			default:
 				throw new IllegalStateException();
 		}
-		preparedStatement.setFetchSize(FETCH_SIZE); //empiriquement 150 est une bonne valeur (Oracle initialise à 10 ce qui est insuffisant)
+		//by experience 150 is a right value (Oracle is set by default at 10 : that's not sufficient)
+		preparedStatement.setFetchSize(FETCH_SIZE);
 		return preparedStatement;
 	}
 }

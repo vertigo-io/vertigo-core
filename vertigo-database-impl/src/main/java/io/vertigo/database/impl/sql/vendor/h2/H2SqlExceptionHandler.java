@@ -58,7 +58,7 @@ final class H2SqlExceptionHandler extends AbstractSqlExceptionHandler {
 		switch (errCode) {
 			case VALUE_TOO_LONG_2:
 			case VALUE_TOO_LARGE_FOR_PRECISION_1:
-				// Valeur trop grande pour ce champs
+				//the value is too large for this column
 				return handleTooLargeValueSqlException(sqle);
 			case REFERENTIAL_INTEGRITY_VIOLATED_PARENT_MISSING_1:
 			case REFERENTIAL_INTEGRITY_VIOLATED_CHILD_EXISTS_1:
