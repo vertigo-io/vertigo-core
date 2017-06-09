@@ -25,7 +25,7 @@ import io.vertigo.core.locale.MessageKey;
  *
  * @author  npiedeloup
  */
-public enum SearchRessources implements MessageKey {
+public enum SearchResource implements MessageKey {
 	/**
 	 * Search syntax error.\nDon't use ( ) [ ] or check you closed them. OR and AND are supported but must be between two keywords.
 	 */

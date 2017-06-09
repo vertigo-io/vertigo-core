@@ -41,7 +41,7 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.impl.search.SearchRessources;
+import io.vertigo.dynamo.impl.search.SearchResource;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
@@ -167,7 +167,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 				}
 			}
 		} catch (final SearchPhaseExecutionException e) {
-			final VUserException vue = new VUserException(SearchRessources.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR);
+			final VUserException vue = new VUserException(SearchResource.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR);
 			vue.initCause(e);
 			throw vue;
 		}
@@ -209,7 +209,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			return new ESFacetedQueryResultBuilder(esDocumentCodec, indexDefinition, queryResponse, searchQuery)
 					.build();
 		} catch (final SearchPhaseExecutionException e) {
-			final VUserException vue = new VUserException(SearchRessources.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR);
+			final VUserException vue = new VUserException(SearchResource.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR);
 			vue.initCause(e);
 			throw vue;
 		}
