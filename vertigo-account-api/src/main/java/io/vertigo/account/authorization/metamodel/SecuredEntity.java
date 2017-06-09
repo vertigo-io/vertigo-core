@@ -29,7 +29,7 @@ import io.vertigo.lang.Assertion;
 /**
  * Une SecuredEntity est une entité sécurisé.
  *
- * @author jgarnier
+ * @author jgarnier, npiedeloup
  */
 @DefinitionPrefix("SEC")
 public final class SecuredEntity implements Definition {

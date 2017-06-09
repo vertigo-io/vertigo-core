@@ -11,7 +11,7 @@ import io.vertigo.lang.Assertion;
 /**
  * Dimension de sécurité.
  *
- * @author jgarnier
+ * @author jgarnier, npiedeloup
  */
 public class SecurityDimension {
 

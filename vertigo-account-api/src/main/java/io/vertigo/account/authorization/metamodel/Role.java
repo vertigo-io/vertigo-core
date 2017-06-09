@@ -28,7 +28,7 @@ import io.vertigo.lang.Assertion;
  * Un rôle est la réunion d'un ensemble de permissions.
  * Un utilisateur peut avoir  plusieurs rôles.
  *
- * @author prahmoune
+ * @author prahmoune, npiedeloup
  */
 @DefinitionPrefix("R_")
 public final class Role implements Definition {
