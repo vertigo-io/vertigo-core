@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.domain.formatter;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -43,6 +44,13 @@ public class DateFormatterTest extends AbstractTestCaseJU4 {
 		final Date date = new GregorianCalendar(2003, Calendar.SEPTEMBER, 15).getTime();
 		Assert.assertEquals("2003-09-15", formatterDate.valueToString(date, DataType.Date));
 		Assert.assertEquals(date, formatterDate.stringToValue("2003-09-15", DataType.Date));
+	}
+
+	@Test
+	public void testLocalDateFormatter() throws FormatterException {
+		final LocalDate localDate = LocalDate.of(2000, 12, 25);
+		Assert.assertEquals("2000-12-25", formatterDate.valueToString(localDate, DataType.LocalDate));
+		Assert.assertEquals(localDate, formatterDate.stringToValue("2000-12-25", DataType.LocalDate));
 	}
 
 	@Test(expected = FormatterException.class)
