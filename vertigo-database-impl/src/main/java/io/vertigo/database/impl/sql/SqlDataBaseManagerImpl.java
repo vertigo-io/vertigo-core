@@ -83,7 +83,6 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 	/** {@inheritDoc} */
 	@Override
 	public SqlPreparedStatement createPreparedStatement(final SqlConnection connection) {
-		Assertion.checkNotNull(connection);
 		return new SqlPreparedStatementImpl(analyticsManager, connection);
 	}
 

@@ -59,7 +59,11 @@ public final class OracleDataBaseManagerTest extends AbstractSqlDataBaseManagerT
 	@Test
 	public void testInsert() throws Exception {
 		final String insertWithgeneratedKey = obtainMainConnection().getDataBase().getSqlDialect()
-				.createInsertQuery("ID", Arrays.asList("TITLE"), "seq_", "movie");
+				.createInsertQuery(
+						"ID",
+						Arrays.asList("TITLE"),
+						"seq_",
+						"movie");
 
 		final GenerationMode generationMode = obtainMainConnection().getDataBase().getSqlDialect().getGenerationMode();
 		//We check that Oracle is in the right expected mode
