@@ -94,7 +94,7 @@ public final class Record implements KeyConcept {
 		this.typId = typId;
 	}
 
-	@Field(domain = "DO_LIBELLE", required = true, label = "Titre")
+	@Field(domain = "DO_LABEL", required = true, label = "Titre")
 	public final String getTitre() {
 		return titre;
 	}

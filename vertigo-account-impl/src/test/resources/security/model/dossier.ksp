@@ -10,7 +10,7 @@ create DtDefinition DT_DOSSIER {
   	field COM_ID 				{domain: DO_ID label: "Commune" notNull:"false" }
   
   	field TYP_ID 				{domain: DO_ID label: "Type du dossier" 	notNull:"true"}
-	field TITRE 				{domain: DO_LIBELLE label: "Titre du dossier" 	notNull:"true"}
+	field TITRE 				{domain: DO_LABEL label: "Titre du dossier" 	notNull:"true"}
 	field MONTANT 				{domain: DO_MONTANT label: "Montant du dossier" 	notNull:"true"}
 	field UTI_ID_OWNER 			{domain: DO_ID label: "Utilisateur créateur" notNull:"true" }
   

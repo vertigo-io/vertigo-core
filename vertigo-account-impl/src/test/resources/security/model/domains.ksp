@@ -42,7 +42,7 @@ create Domain DO_CODE {
 	storeType : "VARCHAR(10)"
 }
 
-create Domain DO_LIBELLE {
+create Domain DO_LABEL  {
 	dataType : String
 	formatter : FMT_DEFAULT
 	constraint : [CK_MAX_LENGTH_100]
