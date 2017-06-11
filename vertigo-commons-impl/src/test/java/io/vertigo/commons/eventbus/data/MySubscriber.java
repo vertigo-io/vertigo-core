@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.eventbus.data;
 
-import io.vertigo.commons.eventbus.EventSuscriber;
+import io.vertigo.commons.eventbus.EventSubscriber;
 import io.vertigo.commons.eventbus.data.aspects.Flip;
 import io.vertigo.core.component.Component;
 
@@ -27,17 +27,17 @@ public class MySubscriber implements Component {
 	private int redCount = 0;
 	private int blueCount = 0;
 
-	@EventSuscriber
+	@EventSubscriber
 	public void onAllColor(final ColorEvent colorEvent) {
 		count++;
 	}
 
-	@EventSuscriber
+	@EventSubscriber
 	public void onRedColor(final RedColorEvent colorEvent) {
 		redCount++;
 	}
 
-	@EventSuscriber
+	@EventSubscriber
 	@Flip
 	public void onBlueColor(final BlueColorEvent colorEvent) {
 		blueCount++;
@@ -54,5 +54,4 @@ public class MySubscriber implements Component {
 	public int getBlueCount() {
 		return blueCount;
 	}
-
 }

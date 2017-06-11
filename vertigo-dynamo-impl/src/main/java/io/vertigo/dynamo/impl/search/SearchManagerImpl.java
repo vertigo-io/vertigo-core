@@ -34,7 +34,7 @@ import javax.inject.Inject;
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.eventbus.EventBusManager;
-import io.vertigo.commons.eventbus.EventSuscriber;
+import io.vertigo.commons.eventbus.EventSubscriber;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -248,7 +248,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	 * Receive Store event.
 	 * @param storeEvent Store event
 	 */
-	@EventSuscriber
+	@EventSubscriber
 	public void onEvent(final StoreEvent storeEvent) {
 		final URI uri = storeEvent.getUri();
 		//On ne traite l'event que si il porte sur un KeyConcept

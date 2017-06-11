@@ -26,7 +26,7 @@ import java.util.function.Consumer;
 import io.vertigo.app.Home;
 import io.vertigo.commons.eventbus.Event;
 import io.vertigo.commons.eventbus.EventBusManager;
-import io.vertigo.commons.eventbus.EventSuscriber;
+import io.vertigo.commons.eventbus.EventSubscriber;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.component.Component;
 import io.vertigo.core.component.ComponentSpace;
@@ -86,20 +86,20 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable {
 	 * Registers all methods annotated with @Suscriber on the object
 	 * @param suscriberInstance
 	 */
-	private void registerSubscribers(final Component suscriberInstance) {
-		Assertion.checkNotNull(suscriberInstance);
+	private void registerSubscribers(final Component subscriberInstance) {
+		Assertion.checkNotNull(subscriberInstance);
 		//-----
 		//1. search all methods
-		for (final Method method : ClassUtil.getAllMethods(suscriberInstance.getClass(), EventSuscriber.class)) {
-			Assertion.checkArgument(void.class.equals(method.getReturnType()), "suscriber's methods  of class {0} must be void instead of {1}", suscriberInstance.getClass(), method.getReturnType());
-			Assertion.checkArgument(method.getName().startsWith("on"), "suscriber's methods of class {0} must start with on", suscriberInstance.getClass());
-			Assertion.checkArgument(method.getParameterTypes().length == 1, "suscriber's methods of class {0} must be void onXXX(Event e)", suscriberInstance.getClass());
-			Assertion.checkArgument(Event.class.isAssignableFrom(method.getParameterTypes()[0]), "suscriber's methods of class {0} must be 'void onXXX(E extends Event)'", suscriberInstance.getClass());
+		for (final Method method : ClassUtil.getAllMethods(subscriberInstance.getClass(), EventSubscriber.class)) {
+			Assertion.checkArgument(void.class.equals(method.getReturnType()), "suscriber's methods  of class {0} must be void instead of {1}", subscriberInstance.getClass(), method.getReturnType());
+			Assertion.checkArgument(method.getName().startsWith("on"), "suscriber's methods of class {0} must start with on", subscriberInstance.getClass());
+			Assertion.checkArgument(method.getParameterTypes().length == 1, "suscriber's methods of class {0} must be void onXXX(Event e)", subscriberInstance.getClass());
+			Assertion.checkArgument(Event.class.isAssignableFrom(method.getParameterTypes()[0]), "suscriber's methods of class {0} must be 'void onXXX(E extends Event)'", subscriberInstance.getClass());
 			//-----
 			//2. For each method register a listener
 			final Class<? extends Event> eventType = (Class<? extends Event>) method.getParameterTypes()[0];
 			subscribe(eventType,
-					event -> ClassUtil.invoke(suscriberInstance, method, event));
+					event -> ClassUtil.invoke(subscriberInstance, method, event));
 		}
 	}
 

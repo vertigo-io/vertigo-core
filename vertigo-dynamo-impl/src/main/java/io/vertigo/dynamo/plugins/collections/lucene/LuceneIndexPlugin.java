@@ -31,7 +31,7 @@ import javax.inject.Inject;
 import io.vertigo.commons.cache.CacheDefinition;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.eventbus.EventBusManager;
-import io.vertigo.commons.eventbus.EventSuscriber;
+import io.vertigo.commons.eventbus.EventSubscriber;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
@@ -77,7 +77,7 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 		localeManager.add(Resources.class.getName(), Resources.values());
 	}
 
-	@EventSuscriber
+	@EventSubscriber
 	public void onStoreEvent(final StoreEvent event) {
 		cacheManager.remove(CACHE_LUCENE_INDEX, getIndexCacheContext(event.getUri().getDefinition()));
 	}
