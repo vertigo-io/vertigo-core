@@ -66,7 +66,7 @@ public final class AuthenticationManagerTest {
 	}
 
 	@Test
-	public void testAuthenticateFail() {
+	public void testLoginFail() {
 		final AuthenticationToken token = new UsernamePasswordAuthenticationToken("badUserName", "badPassword");
 		final Optional<Account> account = authenticationManager.login(token);
 		Assert.assertFalse("Shouldn't found any account with a bad login", account.isPresent());
@@ -77,11 +77,11 @@ public final class AuthenticationManagerTest {
 	}
 
 	@Test
-	public void testAuthenticateSuccess() {
-		authenticateSuccess();
+	public void testLoginSuccess() {
+		loginSuccess();
 	}
 
-	private Optional<Account> authenticateSuccess() {
+	private Optional<Account> loginSuccess() {
 		final AuthenticationToken token = new UsernamePasswordAuthenticationToken("msa-KNOCK-Search", "vRQmEPjPi9byJjx1A3TdGFj4");
 		final Optional<Account> account = authenticationManager.login(token);
 		Assert.assertTrue("Authent fail", account.isPresent());
@@ -94,11 +94,10 @@ public final class AuthenticationManagerTest {
 
 	@Test
 	public void testLoggedAccount() {
-		final Optional<Account> account = authenticateSuccess();
+		final Optional<Account> accountOpt = loginSuccess();
+		final Optional<Account> loggedAccountOpt = authenticationManager.getLoggedAccount();
 
-		final Optional<Account> loggedAccount = authenticationManager.getLoggedAccount();
-
-		Assert.assertEquals(account.get(), loggedAccount.get());
+		Assert.assertEquals(accountOpt, loggedAccountOpt);
 	}
 
 	@Test
