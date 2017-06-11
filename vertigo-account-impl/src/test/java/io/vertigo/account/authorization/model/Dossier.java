@@ -26,7 +26,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 /**
  * Dossier.
  */
-public final class Dossier implements KeyConcept {
+public final class Record implements KeyConcept {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
@@ -37,15 +37,15 @@ public final class Dossier implements KeyConcept {
 	private Long comId;
 
 	private Long typId;
-	private String titre;
-	private Double montant;
+	private String title;
+	private Double amount;
 	private Long utiIdOwner;
 
 	private String etaCd;
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<Dossier> getURI() {
+	public URI<Record> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
 
