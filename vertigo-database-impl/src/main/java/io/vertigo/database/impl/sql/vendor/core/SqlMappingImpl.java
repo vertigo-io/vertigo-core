@@ -27,6 +27,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
@@ -118,14 +119,17 @@ public final class SqlMappingImpl implements SqlMapping {
 				statement.setString(index, (String) value);
 			} else if (LocalDate.class.isAssignableFrom(dataType)) {
 				final LocalDate localDate = (LocalDate) value;
-				statement.setDate(index, new java.sql.Date(localDate.toEpochDay()));
+				statement.setDate(index, java.sql.Date.valueOf(localDate));
 			} else if (Date.class.isAssignableFrom(dataType)) {
 				final Date date = (Date) value;
 				final Timestamp ts = new Timestamp(date.getTime());
 				statement.setTimestamp(index, ts);
 			} else if (ZonedDateTime.class.isAssignableFrom(dataType)) {
 				final ZonedDateTime zonedDateTime = (ZonedDateTime) value;
-				final Timestamp ts = new Timestamp(zonedDateTime.toEpochSecond());
+				final Instant instant = zonedDateTime.toInstant();
+				final LocalDateTime dt = LocalDateTime.ofInstant(instant, ZoneId.of("UTC"));
+				//final Timestamp ts = new Timestamp(zonedDateTime.toInstant().getEpochSecond() * 1000L);
+				final Timestamp ts = Timestamp.valueOf(dt);
 				statement.setTimestamp(index, ts);
 			} else if (DataStream.class.isAssignableFrom(dataType)) {
 				try {
