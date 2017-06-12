@@ -23,6 +23,8 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -161,6 +163,8 @@ final class SqlUtil {
 				Boolean.class,
 				String.class,
 				Date.class,
+				ZonedDateTime.class,
+				LocalDate.class,
 				BigDecimal.class,
 				Long.class)
 				.anyMatch(primitiveClazz -> primitiveClazz.isAssignableFrom(dataType));
