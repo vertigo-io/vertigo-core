@@ -20,7 +20,7 @@ package io.vertigo.account.authorization;
 
 import io.vertigo.account.authorization.metamodel.OperationName;
 import io.vertigo.account.authorization.metamodel.PermissionName;
-import io.vertigo.account.authorization.model.Dossier;
+import io.vertigo.account.authorization.model.Record;
 
 public final class SecurityNames {
 
@@ -36,7 +36,7 @@ public final class SecurityNames {
 	/**
 	 * Enumération des Permissions globales.
 	 */
-	public enum DossierPermissions implements PermissionName {
+	public enum RecordPermissions implements PermissionName {
 		PRM_DOSSIER_READ,
 		PRM_DOSSIER_READ_HP,
 		PRM_DOSSIER_WRITE,
@@ -48,7 +48,7 @@ public final class SecurityNames {
 	/**
 	 * Enumération des opérations de Dossier.
 	 */
-	public enum DossierOperations implements OperationName<Dossier> {
+	public enum RecordOperations implements OperationName<Record> {
 		READ,
 		READ_HP,
 		WRITE,

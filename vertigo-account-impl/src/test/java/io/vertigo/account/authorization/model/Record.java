@@ -94,22 +94,22 @@ public final class Record implements KeyConcept {
 		this.typId = typId;
 	}
 
-	@Field(domain = "DO_LABEL", required = true, label = "Titre")
-	public final String getTitre() {
-		return titre;
+	@Field(domain = "DO_LABEL", required = true, label = "Title")
+	public final String getTitle() {
+		return title;
 	}
 
-	public final void setTitre(final String titre) {
-		this.titre = titre;
+	public final void setTitle(final String title) {
+		this.title = title;
 	}
 
-	@Field(domain = "DO_MONTANT", required = true, label = "Montant")
-	public final Double getMontant() {
-		return montant;
+	@Field(domain = "DO_MONTANT", required = true, label = "Amount")
+	public final Double getAmount() {
+		return amount;
 	}
 
-	public final void setMontant(final Double montant) {
-		this.montant = montant;
+	public final void setAmount(final Double amount) {
+		this.amount = amount;
 	}
 
 	@Field(domain = "DO_ID", required = true, label = "Créateur")

@@ -27,14 +27,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.account.authorization.AuthorizationManager;
-import io.vertigo.account.authorization.SecurityNames.DossierOperations;
-import io.vertigo.account.authorization.SecurityNames.DossierPermissions;
 import io.vertigo.account.authorization.SecurityNames.Permissions;
+import io.vertigo.account.authorization.SecurityNames.RecordOperations;
+import io.vertigo.account.authorization.SecurityNames.RecordPermissions;
 import io.vertigo.account.authorization.metamodel.Permission;
 import io.vertigo.account.authorization.metamodel.PermissionName;
 import io.vertigo.account.authorization.metamodel.Role;
-import io.vertigo.account.authorization.model.Dossier;
+import io.vertigo.account.authorization.model.Record;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.persona.security.UserSession;
@@ -148,35 +147,35 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testAuthorizedOnEntity() {
 
-		final Dossier dossier = createDossier();
+		final Record record = createRecord();
 
-		final Dossier dossierTooExpensive = createDossier();
-		dossierTooExpensive.setMontant(10000d);
+		final Record recordTooExpensive = createRecord();
+		recordTooExpensive.setAmount(10000d);
 
-		final Dossier dossierOtherUser = createDossier();
-		dossierOtherUser.setUtiIdOwner(2000L);
+		final Record recordOtherUser = createRecord();
+		recordOtherUser.setUtiIdOwner(2000L);
 
-		final Dossier dossierOtherUserAndTooExpensive = createDossier();
-		dossierOtherUserAndTooExpensive.setUtiIdOwner(2000L);
-		dossierOtherUserAndTooExpensive.setMontant(10000d);
+		final Record recordOtherUserAndTooExpensive = createRecord();
+		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
+		recordOtherUserAndTooExpensive.setAmount(10000d);
 
-		final Permission dossierRead = getPermission(DossierPermissions.PRM_DOSSIER_READ);
+		final Permission recordRead = getPermission(RecordPermissions.PRM_DOSSIER_READ);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
 			accessControlManager.obtainUserPermissions().withSecurityKeys("utiId", DEFAULT_UTI_ID)
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
-					.addPermission(dossierRead);
+					.addPermission(recordRead);
 
-			final boolean canReadDossier = accessControlManager.hasPermission(DossierPermissions.PRM_DOSSIER_READ);
-			Assert.assertTrue(canReadDossier);
+			final boolean canReadRecord = accessControlManager.hasPermission(RecordPermissions.PRM_DOSSIER_READ);
+			Assert.assertTrue(canReadRecord);
 
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
-			Assert.assertTrue(accessControlManager.isAuthorized(dossier, DossierOperations.READ));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierTooExpensive, DossierOperations.READ));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierOtherUser, DossierOperations.READ));
-			Assert.assertFalse(accessControlManager.isAuthorized(dossierOtherUserAndTooExpensive, DossierOperations.READ));
+			Assert.assertTrue(accessControlManager.isAuthorized(record, RecordOperations.READ));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordTooExpensive, RecordOperations.READ));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordOtherUser, RecordOperations.READ));
+			Assert.assertFalse(accessControlManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.READ));
 
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -185,22 +184,22 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testAuthorizedOnEntityGrant() {
-		final Dossier dossier = createDossier();
+		final Record record = createRecord();
 
-		final Dossier dossierTooExpensive = createDossier();
-		dossierTooExpensive.setMontant(10000d);
+		final Record recordTooExpensive = createRecord();
+		recordTooExpensive.setAmount(10000d);
 
-		final Dossier dossierOtherUser = createDossier();
-		dossierOtherUser.setUtiIdOwner(2000L);
+		final Record recordOtherUser = createRecord();
+		recordOtherUser.setUtiIdOwner(2000L);
 
-		final Dossier dossierOtherUserAndTooExpensive = createDossier();
-		dossierOtherUserAndTooExpensive.setUtiIdOwner(2000L);
-		dossierOtherUserAndTooExpensive.setMontant(10000d);
+		final Record recordOtherUserAndTooExpensive = createRecord();
+		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
+		recordOtherUserAndTooExpensive.setAmount(10000d);
 
-		final Dossier dossierArchivedNotWriteable = createDossier();
-		dossierArchivedNotWriteable.setEtaCd("ARC");
+		final Record recordArchivedNotWriteable = createRecord();
+		recordArchivedNotWriteable.setEtaCd("ARC");
 
-		final Permission dossierCreate = getPermission(DossierPermissions.PRM_DOSSIER_CREATE);
+		final Permission recordCreate = getPermission(RecordPermissions.PRM_DOSSIER_CREATE);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -208,24 +207,24 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 					.withSecurityKeys("utiId", DEFAULT_UTI_ID)
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
-					.addPermission(dossierCreate);
+					.addPermission(recordCreate);
 
-			final boolean canCreateDossier = accessControlManager.hasPermission(DossierPermissions.PRM_DOSSIER_CREATE);
-			Assert.assertTrue(canCreateDossier);
+			final boolean canCreateRecord = accessControlManager.hasPermission(RecordPermissions.PRM_DOSSIER_CREATE);
+			Assert.assertTrue(canCreateRecord);
 
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
-			Assert.assertTrue(accessControlManager.isAuthorized(dossier, DossierOperations.READ));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierTooExpensive, DossierOperations.READ));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierOtherUser, DossierOperations.READ));
-			Assert.assertFalse(accessControlManager.isAuthorized(dossierOtherUserAndTooExpensive, DossierOperations.READ));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierArchivedNotWriteable, DossierOperations.READ));
+			Assert.assertTrue(accessControlManager.isAuthorized(record, RecordOperations.READ));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordTooExpensive, RecordOperations.READ));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordOtherUser, RecordOperations.READ));
+			Assert.assertFalse(accessControlManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.READ));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordArchivedNotWriteable, RecordOperations.READ));
 
 			//create -> TYP_ID=${typId} and MONTANT<=${montantMax}
-			Assert.assertTrue(accessControlManager.isAuthorized(dossier, DossierOperations.CREATE));
-			Assert.assertFalse(accessControlManager.isAuthorized(dossierTooExpensive, DossierOperations.CREATE));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierOtherUser, DossierOperations.CREATE));
-			Assert.assertFalse(accessControlManager.isAuthorized(dossierOtherUserAndTooExpensive, DossierOperations.CREATE));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierArchivedNotWriteable, DossierOperations.CREATE));
+			Assert.assertTrue(accessControlManager.isAuthorized(record, RecordOperations.CREATE));
+			Assert.assertFalse(accessControlManager.isAuthorized(recordTooExpensive, RecordOperations.CREATE));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordOtherUser, RecordOperations.CREATE));
+			Assert.assertFalse(accessControlManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.CREATE));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordArchivedNotWriteable, RecordOperations.CREATE));
 
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -234,19 +233,19 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testAuthorizedOnEntityOverride() {
-		final Dossier dossier = createDossier();
+		final Record record = createRecord();
 
-		final Dossier dossierTooExpensive = createDossier();
-		dossierTooExpensive.setMontant(10000d);
+		final Record recordTooExpensive = createRecord();
+		recordTooExpensive.setAmount(10000d);
 
-		final Dossier dossierOtherUser = createDossier();
-		dossierOtherUser.setUtiIdOwner(2000L);
+		final Record recordOtherUser = createRecord();
+		recordOtherUser.setUtiIdOwner(2000L);
 
-		final Dossier dossierOtherUserAndTooExpensive = createDossier();
-		dossierOtherUserAndTooExpensive.setUtiIdOwner(2000L);
-		dossierOtherUserAndTooExpensive.setMontant(10000d);
+		final Record recordOtherUserAndTooExpensive = createRecord();
+		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
+		recordOtherUserAndTooExpensive.setAmount(10000d);
 
-		final Permission dossierRead = getPermission(DossierPermissions.PRM_DOSSIER_READ_HP);
+		final Permission recordRead = getPermission(RecordPermissions.PRM_DOSSIER_READ_HP);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -254,16 +253,16 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 					.withSecurityKeys("utiId", DEFAULT_UTI_ID)
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
-					.addPermission(dossierRead);
+					.addPermission(recordRead);
 
-			final boolean canReadDossier = accessControlManager.hasPermission(DossierPermissions.PRM_DOSSIER_READ_HP);
-			Assert.assertTrue(canReadDossier);
+			final boolean canReadRecord = accessControlManager.hasPermission(RecordPermissions.PRM_DOSSIER_READ_HP);
+			Assert.assertTrue(canReadRecord);
 
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
-			Assert.assertTrue(accessControlManager.isAuthorized(dossier, DossierOperations.READ));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierTooExpensive, DossierOperations.READ));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierOtherUser, DossierOperations.READ));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierOtherUserAndTooExpensive, DossierOperations.READ));
+			Assert.assertTrue(accessControlManager.isAuthorized(record, RecordOperations.READ));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordTooExpensive, RecordOperations.READ));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordOtherUser, RecordOperations.READ));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.READ));
 
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -272,22 +271,22 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testAuthorizedOnEntityEnumAxes() {
-		final Dossier dossier = createDossier();
+		final Record record = createRecord();
 
-		final Dossier dossierTooExpensive = createDossier();
-		dossierTooExpensive.setMontant(10000d);
+		final Record recordTooExpensive = createRecord();
+		recordTooExpensive.setAmount(10000d);
 
-		final Dossier dossierOtherUser = createDossier();
-		dossierOtherUser.setUtiIdOwner(2000L);
+		final Record recordOtherUser = createRecord();
+		recordOtherUser.setUtiIdOwner(2000L);
 
-		final Dossier dossierOtherUserAndTooExpensive = createDossier();
-		dossierOtherUserAndTooExpensive.setUtiIdOwner(2000L);
-		dossierOtherUserAndTooExpensive.setMontant(10000d);
+		final Record recordOtherUserAndTooExpensive = createRecord();
+		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
+		recordOtherUserAndTooExpensive.setAmount(10000d);
 
-		final Dossier dossierArchivedNotWriteable = createDossier();
-		dossierArchivedNotWriteable.setEtaCd("ARC");
+		final Record recordArchivedNotWriteable = createRecord();
+		recordArchivedNotWriteable.setEtaCd("ARC");
 
-		final Permission dossierWrite = getPermission(DossierPermissions.PRM_DOSSIER_WRITE);
+		final Permission recordWrite = getPermission(RecordPermissions.PRM_DOSSIER_WRITE);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -295,24 +294,24 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 					.withSecurityKeys("utiId", DEFAULT_UTI_ID)
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
-					.addPermission(dossierWrite);
+					.addPermission(recordWrite);
 
-			final boolean canReadDossier = accessControlManager.hasPermission(DossierPermissions.PRM_DOSSIER_WRITE);
-			Assert.assertTrue(canReadDossier);
+			final boolean canReadRecord = accessControlManager.hasPermission(RecordPermissions.PRM_DOSSIER_WRITE);
+			Assert.assertTrue(canReadRecord);
 
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
-			Assert.assertTrue(accessControlManager.isAuthorized(dossier, DossierOperations.READ));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierTooExpensive, DossierOperations.READ));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierOtherUser, DossierOperations.READ));
-			Assert.assertFalse(accessControlManager.isAuthorized(dossierOtherUserAndTooExpensive, DossierOperations.READ));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierArchivedNotWriteable, DossierOperations.READ));
+			Assert.assertTrue(accessControlManager.isAuthorized(record, RecordOperations.READ));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordTooExpensive, RecordOperations.READ));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordOtherUser, RecordOperations.READ));
+			Assert.assertFalse(accessControlManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.READ));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordArchivedNotWriteable, RecordOperations.READ));
 
 			//write -> (UTI_ID_OWNER=${utiId} and ETA_CD<ARC) or (TYP_ID=${typId} and MONTANT<=${montantMax} and ETA_CD<ARC)
-			Assert.assertTrue(accessControlManager.isAuthorized(dossier, DossierOperations.WRITE));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierTooExpensive, DossierOperations.WRITE));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierOtherUser, DossierOperations.WRITE));
-			Assert.assertFalse(accessControlManager.isAuthorized(dossierOtherUserAndTooExpensive, DossierOperations.WRITE));
-			Assert.assertFalse(accessControlManager.isAuthorized(dossierArchivedNotWriteable, DossierOperations.WRITE));
+			Assert.assertTrue(accessControlManager.isAuthorized(record, RecordOperations.WRITE));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordTooExpensive, RecordOperations.WRITE));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordOtherUser, RecordOperations.WRITE));
+			Assert.assertFalse(accessControlManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.WRITE));
+			Assert.assertFalse(accessControlManager.isAuthorized(recordArchivedNotWriteable, RecordOperations.WRITE));
 
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -321,50 +320,50 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testAuthorizedOnEntityTreeAxes() {
-		final Dossier dossier = createDossier();
-		dossier.setEtaCd("PUB");
+		final Record record = createRecord();
+		record.setEtaCd("PUB");
 
-		final Dossier dossierOtherType = createDossier();
-		dossierOtherType.setEtaCd("PUB");
-		dossierOtherType.setTypId(11L);
+		final Record recordOtherType = createRecord();
+		recordOtherType.setEtaCd("PUB");
+		recordOtherType.setTypId(11L);
 
-		final Dossier dossierOtherEtat = createDossier();
-		dossierOtherEtat.setEtaCd("CRE");
+		final Record recordOtherEtat = createRecord();
+		recordOtherEtat.setEtaCd("CRE");
 
-		final Dossier dossierOtherUser = createDossier();
-		dossierOtherUser.setEtaCd("PUB");
-		dossierOtherUser.setUtiIdOwner(2000L);
+		final Record recordOtherUser = createRecord();
+		recordOtherUser.setEtaCd("PUB");
+		recordOtherUser.setUtiIdOwner(2000L);
 
-		final Dossier dossierOtherUserAndTooExpensive = createDossier();
-		dossierOtherUserAndTooExpensive.setEtaCd("PUB");
-		dossierOtherUserAndTooExpensive.setUtiIdOwner(2000L);
-		dossierOtherUserAndTooExpensive.setMontant(10000d);
+		final Record recordOtherUserAndTooExpensive = createRecord();
+		recordOtherUserAndTooExpensive.setEtaCd("PUB");
+		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
+		recordOtherUserAndTooExpensive.setAmount(10000d);
 
-		final Dossier dossierOtherCommune = createDossier();
-		dossierOtherCommune.setEtaCd("PUB");
-		dossierOtherCommune.setComId(3L);
+		final Record recordOtherCommune = createRecord();
+		recordOtherCommune.setEtaCd("PUB");
+		recordOtherCommune.setComId(3L);
 
-		final Dossier dossierDepartement = createDossier();
-		dossierDepartement.setEtaCd("PUB");
-		dossierDepartement.setComId(null);
+		final Record recordDepartement = createRecord();
+		recordDepartement.setEtaCd("PUB");
+		recordDepartement.setComId(null);
 
-		final Dossier dossierOtherDepartement = createDossier();
-		dossierOtherDepartement.setEtaCd("PUB");
-		dossierOtherDepartement.setDepId(10L);
-		dossierOtherDepartement.setComId(null);
+		final Record recordOtherDepartement = createRecord();
+		recordOtherDepartement.setEtaCd("PUB");
+		recordOtherDepartement.setDepId(10L);
+		recordOtherDepartement.setComId(null);
 
-		final Dossier dossierRegion = createDossier();
-		dossierRegion.setEtaCd("PUB");
-		dossierRegion.setDepId(null);
-		dossierRegion.setComId(null);
+		final Record recordRegion = createRecord();
+		recordRegion.setEtaCd("PUB");
+		recordRegion.setDepId(null);
+		recordRegion.setComId(null);
 
-		final Dossier dossierNational = createDossier();
-		dossierNational.setEtaCd("PUB");
-		dossierNational.setRegId(null);
-		dossierNational.setDepId(null);
-		dossierNational.setComId(null);
+		final Record recordNational = createRecord();
+		recordNational.setEtaCd("PUB");
+		recordNational.setRegId(null);
+		recordNational.setDepId(null);
+		recordNational.setComId(null);
 
-		final Permission dossierNotify = getPermission(DossierPermissions.PRM_DOSSIER_NOTIFY);
+		final Permission recordNotify = getPermission(RecordPermissions.PRM_DOSSIER_NOTIFY);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -373,39 +372,39 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
 					.withSecurityKeys("geo", new Long[] { DEFAULT_REG_ID, DEFAULT_DEP_ID, null }) //droit sur tout un département
-					.addPermission(dossierNotify);
+					.addPermission(recordNotify);
 
-			Assert.assertTrue(accessControlManager.hasPermission(DossierPermissions.PRM_DOSSIER_NOTIFY));
+			Assert.assertTrue(accessControlManager.hasPermission(RecordPermissions.PRM_DOSSIER_NOTIFY));
 
 			//grant read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
-			Assert.assertTrue(accessControlManager.isAuthorized(dossier, DossierOperations.READ));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierOtherUser, DossierOperations.READ));
-			Assert.assertFalse(accessControlManager.isAuthorized(dossierOtherUserAndTooExpensive, DossierOperations.READ));
+			Assert.assertTrue(accessControlManager.isAuthorized(record, RecordOperations.READ));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordOtherUser, RecordOperations.READ));
+			Assert.assertFalse(accessControlManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.READ));
 
 			//notify -> TYP_ID=${typId} and ETA_CD=PUB and GEO<=${geo}
-			Assert.assertTrue(accessControlManager.isAuthorized(dossier, DossierOperations.NOTIFY));
-			Assert.assertFalse(accessControlManager.isAuthorized(dossierOtherType, DossierOperations.NOTIFY));
-			Assert.assertFalse(accessControlManager.isAuthorized(dossierOtherEtat, DossierOperations.NOTIFY));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierOtherUser, DossierOperations.NOTIFY));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierOtherUserAndTooExpensive, DossierOperations.NOTIFY));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierOtherCommune, DossierOperations.NOTIFY));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierDepartement, DossierOperations.NOTIFY));
-			Assert.assertFalse(accessControlManager.isAuthorized(dossierOtherDepartement, DossierOperations.NOTIFY));
-			Assert.assertFalse(accessControlManager.isAuthorized(dossierRegion, DossierOperations.NOTIFY));
-			Assert.assertFalse(accessControlManager.isAuthorized(dossierNational, DossierOperations.NOTIFY));
+			Assert.assertTrue(accessControlManager.isAuthorized(record, RecordOperations.NOTIFY));
+			Assert.assertFalse(accessControlManager.isAuthorized(recordOtherType, RecordOperations.NOTIFY));
+			Assert.assertFalse(accessControlManager.isAuthorized(recordOtherEtat, RecordOperations.NOTIFY));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordOtherUser, RecordOperations.NOTIFY));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.NOTIFY));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordOtherCommune, RecordOperations.NOTIFY));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordDepartement, RecordOperations.NOTIFY));
+			Assert.assertFalse(accessControlManager.isAuthorized(recordOtherDepartement, RecordOperations.NOTIFY));
+			Assert.assertFalse(accessControlManager.isAuthorized(recordRegion, RecordOperations.NOTIFY));
+			Assert.assertFalse(accessControlManager.isAuthorized(recordNational, RecordOperations.NOTIFY));
 
 			//override write -> TYP_ID=${typId} and ETA_CD=PUB and GEO<=${geo}
 			//default write don't apply : (UTI_ID_OWNER=${utiId} and ETA_CD<ARC) or (TYP_ID=${typId} and MONTANT<=${montantMax} and ETA_CD<ARC)
-			Assert.assertTrue(accessControlManager.isAuthorized(dossier, DossierOperations.WRITE));
-			Assert.assertFalse(accessControlManager.isAuthorized(dossierOtherType, DossierOperations.WRITE));
-			Assert.assertFalse(accessControlManager.isAuthorized(dossierOtherEtat, DossierOperations.WRITE));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierOtherUser, DossierOperations.WRITE));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierOtherUserAndTooExpensive, DossierOperations.WRITE));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierOtherCommune, DossierOperations.WRITE));
-			Assert.assertTrue(accessControlManager.isAuthorized(dossierDepartement, DossierOperations.WRITE));
-			Assert.assertFalse(accessControlManager.isAuthorized(dossierOtherDepartement, DossierOperations.WRITE));
-			Assert.assertFalse(accessControlManager.isAuthorized(dossierRegion, DossierOperations.WRITE));
-			Assert.assertFalse(accessControlManager.isAuthorized(dossierNational, DossierOperations.WRITE));
+			Assert.assertTrue(accessControlManager.isAuthorized(record, RecordOperations.WRITE));
+			Assert.assertFalse(accessControlManager.isAuthorized(recordOtherType, RecordOperations.WRITE));
+			Assert.assertFalse(accessControlManager.isAuthorized(recordOtherEtat, RecordOperations.WRITE));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordOtherUser, RecordOperations.WRITE));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.WRITE));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordOtherCommune, RecordOperations.WRITE));
+			Assert.assertTrue(accessControlManager.isAuthorized(recordDepartement, RecordOperations.WRITE));
+			Assert.assertFalse(accessControlManager.isAuthorized(recordOtherDepartement, RecordOperations.WRITE));
+			Assert.assertFalse(accessControlManager.isAuthorized(recordRegion, RecordOperations.WRITE));
+			Assert.assertFalse(accessControlManager.isAuthorized(recordNational, RecordOperations.WRITE));
 
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -417,18 +416,18 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		//TODO
 	}
 
-	private Dossier createDossier() {
-		final Dossier dossier = new Dossier();
-		dossier.setDosId(++currentDosId);
-		dossier.setRegId(DEFAULT_REG_ID);
-		dossier.setDepId(DEFAULT_DEP_ID);
-		dossier.setComId(DEFAULT_COM_ID);
-		dossier.setTypId(DEFAULT_TYPE_ID);
-		dossier.setTitre("Dossier de test #" + currentDosId);
-		dossier.setMontant(DEFAULT_MONTANT_MAX);
-		dossier.setUtiIdOwner(DEFAULT_UTI_ID);
-		dossier.setEtaCd("CRE");
-		return dossier;
+	private Record createRecord() {
+		final Record record = new Record();
+		record.setDosId(++currentDosId);
+		record.setRegId(DEFAULT_REG_ID);
+		record.setDepId(DEFAULT_DEP_ID);
+		record.setComId(DEFAULT_COM_ID);
+		record.setTypId(DEFAULT_TYPE_ID);
+		record.setTitle("Record de test #" + currentDosId);
+		record.setAmount(DEFAULT_MONTANT_MAX);
+		record.setUtiIdOwner(DEFAULT_UTI_ID);
+		record.setEtaCd("CRE");
+		return record;
 	}
 
 	private Permission getPermission(final PermissionName permissionName) {
