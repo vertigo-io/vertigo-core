@@ -18,9 +18,6 @@ public final class OracleDataBaseManagerTest extends AbstractSqlDataBaseManagerT
 			+ ")";
 	private static final String CREATE_SEQUENCE_MOVIE = "CREATE SEQUENCE seq_movie";
 
-	private static final String DROP_TABLE_MOVIE = "DROP TABLE movie";
-	private static final String DROP_SEQUENCE_MOVIE = "DROP SEQUENCE seq_movie";
-
 	@Override
 	protected final void doSetUp() throws Exception {
 		//A chaque test on recrée la table famille
@@ -28,18 +25,6 @@ public final class OracleDataBaseManagerTest extends AbstractSqlDataBaseManagerT
 		try {
 			execpreparedStatement(connection, CREATE_TABLE_MOVIE);
 			execpreparedStatement(connection, CREATE_SEQUENCE_MOVIE);
-		} finally {
-			connection.release();
-		}
-	}
-
-	@Override
-	protected void doTearDown() throws Exception {
-		final SqlConnection connection = obtainMainConnection();
-		try {
-			// we use a shared database so we need to drop the table
-			execpreparedStatement(connection, DROP_SEQUENCE_MOVIE);
-			execpreparedStatement(connection, DROP_TABLE_MOVIE);
 		} finally {
 			connection.release();
 		}
