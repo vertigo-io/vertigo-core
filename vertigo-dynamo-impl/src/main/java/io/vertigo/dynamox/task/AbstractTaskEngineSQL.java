@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalInt;
 
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.script.SeparatorType;
@@ -134,7 +135,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * @return Nombre de lignes affectées (Insert/ Update / Delete)
 	 * @throws SQLException Erreur sql
 	 */
-	protected abstract int doExecute(
+	protected abstract OptionalInt doExecute(
 			final String sql,
 			final SqlConnection connection,
 			final SqlPreparedStatement statement,
@@ -149,9 +150,9 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 		final SqlPreparedStatement statement = createStatement(connection);
 		try {
 			//Execute le Statement JDBC.
-			final int sqlRowcount = doExecute(parsedQuery.getVal1(), connection, statement, parsedQuery.getVal2());
+			final OptionalInt sqlRowcountOpt = doExecute(parsedQuery.getVal1(), connection, statement, parsedQuery.getVal2());
 			//On positionne le nombre de lignes affectées.
-			setRowCount(sqlRowcount);
+			sqlRowcountOpt.ifPresent(rowCount -> setRowCount(rowCount));
 		} catch (final BatchUpdateException sqle) { //some exception embedded the usefull one
 			// Gère les erreurs d'exécution Batch JDBC.
 			throw handleSQLException(connection, sqle.getNextException(), statement.toString());
