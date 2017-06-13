@@ -54,17 +54,6 @@ public abstract class AbstractSqlDialectTest {
 	}
 
 	@Test
-	public void testCreatePrimaryKeyQuery() {
-		final Optional<String> primaryKeyQuery = getDialect().createPrimaryKeyQuery("MOVIE", "SEQ_");
-		if (primaryKeyQuery.isPresent()) {
-			Assert.assertTrue(getExpectedCreatePrimaryKeyQuery().isPresent());
-			Assert.assertEquals(getExpectedCreatePrimaryKeyQuery().get(), primaryKeyQuery.get());
-		} else {
-			Assert.assertFalse(getExpectedCreatePrimaryKeyQuery().isPresent());
-		}
-	}
-
-	@Test
 	public void testAppendMaxRows() {
 		final StringBuilder stringBuilder = new StringBuilder("select * from MOVIE");
 		getDialect().appendMaxRows(stringBuilder, 100);
