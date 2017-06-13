@@ -103,11 +103,11 @@ public final class FileManagerImpl implements FileManager, SimpleDefinitionProvi
 
 	/** {@inheritDoc} */
 	@Override
-	public VFile createFile(final String fileName, final String typeMime, final URL ressourceUrl) {
+	public VFile createFile(final String fileName, final String typeMime, final URL resourceUrl) {
 		final long length;
 		final long lastModified;
 		try {
-			final URLConnection connection = ressourceUrl.openConnection();
+			final URLConnection connection = resourceUrl.openConnection();
 			try {
 				length = connection.getContentLength();
 				lastModified = connection.getLastModified();
@@ -118,7 +118,7 @@ public final class FileManagerImpl implements FileManager, SimpleDefinitionProvi
 			throw WrappedException.wrap(e, "Can't get file meta from url");
 		}
 		Assertion.checkArgument(length >= 0, "Can't get file meta from url");
-		final InputStreamBuilder inputStreamBuilder = ressourceUrl::openStream;
+		final InputStreamBuilder inputStreamBuilder = resourceUrl::openStream;
 		return createFile(fileName, typeMime, new Date(lastModified), length, inputStreamBuilder);
 	}
 
