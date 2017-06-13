@@ -105,7 +105,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		Assertion.checkNotNull(parameters);
 		Assertion.checkNotNull(dataType);
 		//-----
-		try (final PreparedStatement statement = createStatement(sql, GenerationMode.NONE, new String[] {})) {
+		try (final PreparedStatement statement = createStatement(sql)) {
 			setParameters(sql, statement, parameters);
 			//-----
 			return traceWithReturn(sql, tracer -> doExecuteQuery(statement, tracer, dataType, limit));
@@ -144,7 +144,6 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		Assertion.checkArgNotEmpty(sql);
 		Assertion.checkNotNull(parameters);
 		Assertion.checkNotNull(generationMode);
-		Assertion.checkArgument(generationMode != GenerationMode.NONE, "this method requires a generation mode");
 		Assertion.checkNotNull(columnName);
 		Assertion.checkNotNull(dataType);
 		//---
@@ -168,7 +167,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		Assertion.checkArgNotEmpty(sql);
 		Assertion.checkNotNull(parameters);
 		//---
-		try (final PreparedStatement statement = createStatement(sql, GenerationMode.NONE, new String[] {})) {
+		try (final PreparedStatement statement = createStatement(sql)) {
 			setParameters(sql, statement, parameters);
 			//---
 			return traceWithReturn(sql, tracer -> doExecute(statement, tracer));
@@ -211,7 +210,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		Assertion.checkArgNotEmpty(sql);
 		Assertion.checkNotNull(batch);
 		//---
-		try (final PreparedStatement statement = createStatement(sql, GenerationMode.NONE, new String[] {})) {
+		try (final PreparedStatement statement = createStatement(sql)) {
 			for (final List<SqlParameter> parameters : batch) {
 				setParameters(sql, statement, parameters);
 				statement.addBatch();
@@ -307,10 +306,6 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 			final String[] generatedColumns) throws SQLException {
 		final PreparedStatement preparedStatement;
 		switch (generationMode) {
-			case NONE:
-				preparedStatement = connection.getJdbcConnection()
-						.prepareStatement(sql, Statement.NO_GENERATED_KEYS);
-				break;
 			case GENERATED_KEYS:
 				preparedStatement = connection.getJdbcConnection()
 						.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -322,6 +317,14 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 			default:
 				throw new IllegalStateException();
 		}
+		//by experience 150 is a right value (Oracle is set by default at 10 : that's not sufficient)
+		preparedStatement.setFetchSize(FETCH_SIZE);
+		return preparedStatement;
+	}
+
+	private PreparedStatement createStatement(final String sql) throws SQLException {
+		final PreparedStatement preparedStatement = connection.getJdbcConnection()
+				.prepareStatement(sql, Statement.NO_GENERATED_KEYS);
 		//by experience 150 is a right value (Oracle is set by default at 10 : that's not sufficient)
 		preparedStatement.setFetchSize(FETCH_SIZE);
 		return preparedStatement;
