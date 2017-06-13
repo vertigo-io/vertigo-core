@@ -8,7 +8,7 @@
 		<component api="VSecurityManager" class="io.vertigo.account.impl.security.VSecurityManagerImpl">
 			<param name="userSessionClassName" value="io.vertigo.account.data.TestUserSession" />
 		</component>
-		<component api="AccessControlManager" class="io.vertigo.account.impl.authorization.AuthorizationManagerImpl"/>
+		<component api="AuthorizationManager" class="io.vertigo.account.impl.authorization.AuthorizationManagerImpl"/>
 	</module>
 
 	<module name="myApp">
