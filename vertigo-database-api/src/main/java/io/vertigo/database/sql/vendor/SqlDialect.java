@@ -27,6 +27,11 @@ import java.util.List;
  *
  */
 public interface SqlDialect {
+	/**
+	 * how keys are generated
+	 * @author pchretien
+	 *
+	 */
 	public enum GenerationMode {
 		GENERATED_KEYS, // H2, SQLServer, PostgreSQL...
 		GENERATED_COLUMNS, //Oracle...
@@ -74,7 +79,7 @@ public interface SqlDialect {
 	}
 
 	/**
-	 * @return how keys are generated (NONE if this option is not available)
+	 * @return how keys are generated
 	 */
 	GenerationMode getGenerationMode();
 }
