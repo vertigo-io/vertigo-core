@@ -53,6 +53,7 @@ import io.vertigo.lang.DataStream;
 public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4 {
 	private static final String DROP_TABLE_MOVIE = "DROP TABLE movie";
 	private static final String DROP_SEQUENCE_MOVIE = "DROP SEQUENCE seq_movie";
+
 	private static final String INSERT_INTO_MOVIE_VALUES = "insert into movie values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final String CREATE_TABLE_MOVIE = "create table movie ("
 			+ "id bigint , "
@@ -74,15 +75,20 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 	}
 
 	@Override
-	protected void doSetUp() throws Exception {
+	protected final void doSetUp() throws Exception {
 		//A chaque test on recrée la table famille
 		final SqlConnection connection = obtainMainConnection();
 		try {
-			execpreparedStatement(connection, CREATE_TABLE_MOVIE);
+			execpreparedStatement(connection, createTableMovie());
+			execpreparedStatement(connection, createSequenceMovie());
 		} finally {
 			connection.release();
 		}
 	}
+
+	protected abstract String createTableMovie();
+
+	protected abstract String createSequenceMovie();
 
 	@Override
 	protected void doTearDown() throws Exception {
