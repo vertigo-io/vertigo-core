@@ -12,7 +12,6 @@ import io.vertigo.database.sql.statement.SqlParameter;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 
 public final class H2DataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
-	private static final String INSERT_INTO_MOVIE_VALUES = "insert into movie values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final String CREATE_TABLE_MOVIE = "CREATE TABLE movie ( "
 			+ "id 						NUMBER(6), "
 			+ "title 					VARCHAR2(255), "
@@ -45,7 +44,6 @@ public final class H2DataBaseManagerTest extends AbstractSqlDataBaseManagerTest 
 	protected void doTearDown() throws Exception {
 		final SqlConnection connection = obtainMainConnection();
 		try {
-
 			// we use a shared database so we need to drop the table
 			try {
 				execpreparedStatement(connection, DROP_SEQUENCE_MOVIE);
@@ -89,5 +87,4 @@ public final class H2DataBaseManagerTest extends AbstractSqlDataBaseManagerTest 
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(1, result.get(0).intValue());
 	}
-
 }
