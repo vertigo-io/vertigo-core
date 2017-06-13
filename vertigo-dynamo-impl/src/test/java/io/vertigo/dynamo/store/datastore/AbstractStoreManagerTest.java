@@ -212,7 +212,6 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_INSERT_CAR")
 				.withEngine(TaskEngineProc.class)
 				.withRequest("insert into CAR (ID, FAM_ID,MAKE, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MOTOR_TYPE) values "
-						//syntaxe HsqlDb pour sequence.nextval
 						+ "(NEXT VALUE FOR SEQ_CAR, #DTO_CAR.FAM_ID#, #DTO_CAR.MAKE#, #DTO_CAR.MODEL#, #DTO_CAR.DESCRIPTION#, #DTO_CAR.YEAR#, #DTO_CAR.KILO#, #DTO_CAR.PRICE#, #DTO_CAR.MOTOR_TYPE#)")
 				.addInRequired("DTO_CAR", doCar)
 				.build();
