@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.OptionalInt;
 
 import javax.inject.Inject;
 
@@ -260,7 +261,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		}
 
 		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
-		final int result;
+		final OptionalInt result;
 		try {
 			result = dataBaseManager
 					.createPreparedStatement(connection)
@@ -270,7 +271,9 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 			connection.release();
 		}
 		//---
-		Assert.assertEquals(movies.size(), result);
+		if (result.isPresent()) {
+			Assert.assertEquals(movies.size(), result.getAsInt());
+		}
 		final List<Integer> countMovie = executeQuery(Integer.class, "select count(*) from movie", 1);
 		Assert.assertEquals(movies.size(), countMovie.get(0).intValue());
 	}

@@ -20,6 +20,7 @@ package io.vertigo.dynamox.task;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.OptionalInt;
 
 import javax.inject.Inject;
 
@@ -84,7 +85,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 
 	/** {@inheritDoc} */
 	@Override
-	protected int doExecute(
+	protected OptionalInt doExecute(
 			final String sql,
 			final SqlConnection connection,
 			final SqlPreparedStatement statement,
@@ -112,7 +113,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 		} else {
 			throw new IllegalArgumentException("Task out attribute type " + outAttribute.getDomain().getDataType() + "is not allowed");
 		}
-		return result.size();
+		return OptionalInt.of(result.size());
 	}
 
 }
