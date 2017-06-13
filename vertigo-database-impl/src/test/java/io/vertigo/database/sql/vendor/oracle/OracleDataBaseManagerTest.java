@@ -45,11 +45,7 @@ public final class OracleDataBaseManagerTest extends AbstractSqlDataBaseManagerT
 		final SqlConnection connection = obtainMainConnection();
 		try {
 			// we use a shared database so we need to drop the table
-			try {
-				execpreparedStatement(connection, DROP_SEQUENCE_MOVIE);
-			} catch (final Exception e) {
-				//e.printStackTrace(System.out);
-			}
+			execpreparedStatement(connection, DROP_SEQUENCE_MOVIE);
 			execpreparedStatement(connection, DROP_TABLE_MOVIE);
 		} finally {
 			connection.release();
