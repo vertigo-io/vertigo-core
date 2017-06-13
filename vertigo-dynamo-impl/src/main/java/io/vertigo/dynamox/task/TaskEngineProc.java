@@ -20,6 +20,7 @@ package io.vertigo.dynamox.task;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.OptionalInt;
 
 import javax.inject.Inject;
 
@@ -73,12 +74,12 @@ public class TaskEngineProc extends AbstractTaskEngineSQL {
 
 	/** {@inheritDoc} */
 	@Override
-	protected int doExecute(
+	protected OptionalInt doExecute(
 			final String sql,
 			final SqlConnection connection,
 			final SqlPreparedStatement statement,
 			final List<SqlNamedParam> params) throws SQLException {
-		return statement.executeUpdate(sql, buildParameters(params));
+		return OptionalInt.of(statement.executeUpdate(sql, buildParameters(params)));
 	}
 
 }

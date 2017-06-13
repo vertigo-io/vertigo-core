@@ -24,6 +24,7 @@ package io.vertigo.dynamox.task;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalInt;
 
 import javax.inject.Inject;
 
@@ -59,7 +60,7 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 
 	/** {@inheritDoc} */
 	@Override
-	public int doExecute(
+	public OptionalInt doExecute(
 			final String sql,
 			final SqlConnection connection,
 			final SqlPreparedStatement statement,

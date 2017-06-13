@@ -23,6 +23,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -176,7 +177,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		}
 	}
 
-	private static Integer doExecute(final PreparedStatement statement, final AnalyticsTracer tracer) {
+	private static int doExecute(final PreparedStatement statement, final AnalyticsTracer tracer) {
 		try {
 			final int res = statement.executeUpdate();
 			tracer.setMeasure("nbModifiedRow", res);
@@ -204,7 +205,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	/** {@inheritDoc} */
 	@Override
-	public int executeBatch(
+	public OptionalInt executeBatch(
 			final String sql,
 			final List<List<SqlParameter>> batch) throws SQLException {
 		Assertion.checkArgNotEmpty(sql);
@@ -221,16 +222,20 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		}
 	}
 
-	private Integer doExecuteBatch(final PreparedStatement statement, final AnalyticsTracer tracer) {
+	private OptionalInt doExecuteBatch(final PreparedStatement statement, final AnalyticsTracer tracer) {
 		try {
 			final int[] res = statement.executeBatch();
 			//Calcul du nombre total de lignes affectées par le batch.
 			int count = 0;
 			for (final int rowCount : res) {
 				count += rowCount;
+				if (rowCount == Statement.SUCCESS_NO_INFO) {
+					//if there is only one NO _INFO then we consider that we have no info.
+					return OptionalInt.empty();
+				}
 			}
-			tracer.setMeasure("nbModifiedRow", res.length);
-			return count;
+			tracer.setMeasure("nbModifiedRow", count);
+			return OptionalInt.of(count);
 		} catch (final SQLException e) {
 			throw new WrappedSqlException(e);
 		}

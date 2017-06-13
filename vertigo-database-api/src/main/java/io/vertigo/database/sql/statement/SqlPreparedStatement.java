@@ -20,6 +20,7 @@ package io.vertigo.database.sql.statement;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.OptionalInt;
 
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.lang.Tuples;
@@ -75,9 +76,10 @@ public interface SqlPreparedStatement {
 	 * Executes the batch .
 	 * @throws SQLException Si erreur
 	 * @return the SUM of  row count for INSERT, UPDATE or DELETE statements; or 0 for SQL statements that return nothing
+	 * if no info available an empty Optional is returned
 	 * @throws SQLException
 	 */
-	int executeBatch(
+	OptionalInt executeBatch(
 			final String sql,
 			List<List<SqlParameter>> parameters) throws SQLException;
 }

@@ -20,6 +20,7 @@ package io.vertigo.dynamox.task.sqlserver;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.OptionalInt;
 
 import javax.inject.Inject;
 
@@ -62,7 +63,7 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 
 	/** {@inheritDoc} */
 	@Override
-	public int doExecute(
+	public OptionalInt doExecute(
 			final String sql,
 			final SqlConnection connection,
 			final SqlPreparedStatement statement,
@@ -86,6 +87,6 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 		final Object id = result.getVal2();
 		idField.getDataAccessor().setValue(entity, id);
 		//---
-		return /*sqlRowcount*/ result.getVal1();
+		return /*sqlRowcount*/ OptionalInt.of(result.getVal1());
 	}
 }
