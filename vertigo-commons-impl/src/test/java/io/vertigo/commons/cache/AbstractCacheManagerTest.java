@@ -43,8 +43,18 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
 	private static final String CONTEXT_EDITABLE = CacheManagerInitializer.CONTEXT_EDITABLE;
 	private static final String CONTEXT_READONLY = CacheManagerInitializer.CONTEXT_READONLY;
 
+	private final int maxNbRow;
+
 	@Inject
 	private CacheManager cacheManager;
+
+	public AbstractCacheManagerTest() {
+		maxNbRow = 10000;
+	}
+
+	public AbstractCacheManagerTest(final int maxNbRow) {
+		this.maxNbRow = maxNbRow;
+	}
 
 	/**
 	 *
@@ -100,11 +110,11 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test sur 10 000 elements.
+	 * Test sur maxNbRows elements.
 	 */
 	@Test
-	public void testPut10k() {
-		final int nbRow = 10000;
+	public void testPutMass() {
+		final int nbRow = maxNbRow;
 		for (int i = 0; i < nbRow; i++) {
 			final String key = "ma clé[" + i + "]";
 			final Serializable value = new Element();
@@ -112,7 +122,7 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
 		}
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
-		for (int i = 5000; i < 5500; i++) {
+		for (int i = maxNbRow / 2; i < (maxNbRow * 0.55d); i++) {
 			final String key = "ma clé[" + i + "]";
 			assertNotNull(cacheManager.get(CONTEXT_EDITABLE, key), "key [" + i + "] not found");
 		}
@@ -135,11 +145,11 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
-	 * Test sur 10 000 elements.
+	 * Test sur maxNbRow elements.
 	 */
 	@Test
-	public void testPut10kUnmodifiable() {
-		final int nbRow = 10000;
+	public void testPutMassUnmodifiable() {
+		final int nbRow = maxNbRow;
 		for (int i = 0; i < nbRow; i++) {
 			final String key = "ma clé[" + i + "]";
 			final Serializable value = new Element();
@@ -147,7 +157,7 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
 		}
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
-		for (int i = 5000; i < 5500; i++) {
+		for (int i = maxNbRow / 2; i < maxNbRow * 0.55d; i++) {
 			final String key = "ma clé[" + i + "]";
 			assertNotNull(cacheManager.get(CONTEXT_READONLY, key));
 		}
@@ -177,7 +187,7 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
 		final Set<Thread> threadSet = new HashSet<>();
 		final long baseTime = System.currentTimeMillis();
 		final long deathTime = baseTime + 5 * 1000;
-		final int nbRow = 1000;
+		final int nbRow = maxNbRow / 10;
 		final int nbReader = 100;
 		final int nbWriter = 10;
 
