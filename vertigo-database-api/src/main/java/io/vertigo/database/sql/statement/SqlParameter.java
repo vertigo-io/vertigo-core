@@ -34,7 +34,7 @@ public final class SqlParameter<O> {
 	 * Static builder.
 	 * @param dataType the param type
 	 * @param value the param value
-	 * @return
+	 * @return SqlParameter of this value
 	 */
 	public static <O> SqlParameter of(final Class<O> dataType, final O value) {
 		return new SqlParameter<>(dataType, value);
