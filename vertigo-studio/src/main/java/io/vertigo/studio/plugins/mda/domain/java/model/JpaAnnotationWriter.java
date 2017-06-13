@@ -109,7 +109,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 		//Générations des annotations JPA / hibernate
 		if (field.getType().isId()) {
 			lines.add("@javax.persistence.Id");
-			//TODO la gestion des sequences est propre à Oracle, HSQL, PostgreSql : autres bdd, autres stratégies
+			//TODO la gestion des sequences est propre à Oracle, H2, PostgreSql : autres bdd, autres stratégies
 			if (field.isPersistent()) {
 				final String sequence = getSequenceName(field);
 				//allocationSize=1 pour Hibernate 5

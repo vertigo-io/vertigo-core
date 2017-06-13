@@ -19,7 +19,6 @@
 package io.vertigo.database.sql.vendor;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The database dialect.
@@ -38,16 +37,6 @@ public interface SqlDialect {
 	 */
 	default String getConcatOperator() {
 		return " || ";
-	}
-
-	/**
-	 * Prépare la PK si il n'y a pas de système de sequence.
-	 * @param tableName concerned table
-	 * @param sequencePrefix the sequence prefix to use
-	 * @return the query for selecting the pk
-	 */
-	default Optional<String> createPrimaryKeyQuery(final String tableName, final String sequencePrefix) {
-		return Optional.empty();
 	}
 
 	/**

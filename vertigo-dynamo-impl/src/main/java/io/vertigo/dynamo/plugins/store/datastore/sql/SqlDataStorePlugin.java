@@ -72,7 +72,6 @@ import io.vertigo.lang.VSystemException;
 public final class SqlDataStorePlugin implements DataStorePlugin {
 	private static final int MAX_TASK_SPECIFIC_NAME_LENGTH = 40;
 	private static final Criteria EMPTY_CRITERIA = Criterions.alwaysTrue();
-	private static final String SEQUENCE_FIELD = "SEQUENCE";
 
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
@@ -379,24 +378,6 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.toString();
 	}
 
-	private long buildNextSequence(final String sequenceName, final String query) {
-		final String taskName = TASK.TK_SELECT.name() + '_' + sequenceName;
-		final Domain resultDomain = Domain.builder("DO_HSQL", DataType.Long).build();
-
-		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
-				.withEngine(TaskEngineSelect.class)
-				.withDataSpace(getDataSpace())
-				.withRequest(query)
-				.withOutRequired(SEQUENCE_FIELD, resultDomain)
-				.build();
-
-		final Task task = Task.builder(taskDefinition).build();
-
-		return taskManager
-				.execute(task)
-				.getResult();
-	}
-
 	/**
 	 * @param insert Si opération de type insert
 	 * @return Classe du moteur de tache à utiliser
@@ -416,16 +397,6 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	private boolean put(final Entity entity, final boolean insert) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final String tableName = getTableName(dtDefinition);
-		if (insert) {
-			//Pour les SGBDs ne possédant pas de système de séquence il est nécessaire de calculer la clé en amont.
-			final Optional<String> optQuery = sqlDialect.createPrimaryKeyQuery(tableName, sequencePrefix);
-			if (optQuery.isPresent()) {
-				final long sequence = buildNextSequence(sequencePrefix + tableName, optQuery.get());
-				final DtField idField = dtDefinition.getIdField().orElseThrow(() -> new IllegalStateException("no ID found"));
-				idField.getDataAccessor().setValue(entity, sequence);
-			}
-		}
-
 		final String taskName = (insert ? TASK.TK_INSERT : TASK.TK_UPDATE) + "_" + tableName;
 
 		final String request = insert ? sqlDialect.createInsertQuery(dtDefinition.getIdField().get().getName(), getDataFields(dtDefinition), sequencePrefix, tableName) : createUpdateQuery(dtDefinition);
