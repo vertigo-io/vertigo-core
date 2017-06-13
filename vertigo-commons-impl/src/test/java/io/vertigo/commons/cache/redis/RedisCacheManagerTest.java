@@ -10,4 +10,11 @@ import io.vertigo.commons.cache.AbstractCacheManagerTest;
  */
 public class RedisCacheManagerTest extends AbstractCacheManagerTest {
 	// Unit tests use abstract class methods
+
+	/**
+	 * Max nbRows to 500.
+	 */
+	public RedisCacheManagerTest() {
+		super(500);
+	}
 }
