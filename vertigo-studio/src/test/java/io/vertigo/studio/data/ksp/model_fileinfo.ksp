@@ -1,7 +1,7 @@
 package io.vertigo.studio.domain.fileinfo
 
 create DtDefinition DT_VX_FILE_INFO {
-	 key FIL_ID {domain:DO_IDENTIFIANT	 label:"Identifiant" 			notNull: "true"}
+	 key FIL_ID {domain:DO_ID	 label:"Identifiant" 			notNull: "true"}
 	 field FILE_NAME {domain:DO_STRING	 label:"Nom"	 				notNull: "true"}
 	 field MIME_TYPE {domain:DO_STRING	 label:"Type mime" 				notNull: "true"}
 	 field LENGTH {domain:DO_LONG 		 label:"Taille"					notNull:"true"}

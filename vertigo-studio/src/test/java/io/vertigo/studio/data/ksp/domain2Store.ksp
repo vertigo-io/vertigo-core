@@ -28,7 +28,7 @@ alter Domain DO_BOOLEAN {
 	storeType : "NUMERIC"
 }
 
-alter Domain DO_IDENTIFIANT {
+alter Domain DO_ID {
 	storeType : "NUMERIC"
 }
 
