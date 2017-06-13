@@ -159,7 +159,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
 		recordOtherUserAndTooExpensive.setAmount(10000d);
 
-		final Permission recordRead = getPermission(RecordPermissions.PRM_DOSSIER_READ);
+		final Permission recordRead = getPermission(RecordPermissions.PRM_RECORD$READ);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -168,7 +168,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
 					.addPermission(recordRead);
 
-			final boolean canReadRecord = accessControlManager.hasPermission(RecordPermissions.PRM_DOSSIER_READ);
+			final boolean canReadRecord = accessControlManager.hasPermission(RecordPermissions.PRM_RECORD$READ);
 			Assert.assertTrue(canReadRecord);
 
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
@@ -199,7 +199,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final Record recordArchivedNotWriteable = createRecord();
 		recordArchivedNotWriteable.setEtaCd("ARC");
 
-		final Permission recordCreate = getPermission(RecordPermissions.PRM_DOSSIER_CREATE);
+		final Permission recordCreate = getPermission(RecordPermissions.PRM_RECORD$CREATE);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -209,7 +209,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
 					.addPermission(recordCreate);
 
-			final boolean canCreateRecord = accessControlManager.hasPermission(RecordPermissions.PRM_DOSSIER_CREATE);
+			final boolean canCreateRecord = accessControlManager.hasPermission(RecordPermissions.PRM_RECORD$CREATE);
 			Assert.assertTrue(canCreateRecord);
 
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
@@ -245,7 +245,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
 		recordOtherUserAndTooExpensive.setAmount(10000d);
 
-		final Permission recordRead = getPermission(RecordPermissions.PRM_DOSSIER_READ_HP);
+		final Permission recordRead = getPermission(RecordPermissions.PRM_RECORD$READ_HP);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -255,7 +255,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
 					.addPermission(recordRead);
 
-			final boolean canReadRecord = accessControlManager.hasPermission(RecordPermissions.PRM_DOSSIER_READ_HP);
+			final boolean canReadRecord = accessControlManager.hasPermission(RecordPermissions.PRM_RECORD$READ_HP);
 			Assert.assertTrue(canReadRecord);
 
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
@@ -286,7 +286,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final Record recordArchivedNotWriteable = createRecord();
 		recordArchivedNotWriteable.setEtaCd("ARC");
 
-		final Permission recordWrite = getPermission(RecordPermissions.PRM_DOSSIER_WRITE);
+		final Permission recordWrite = getPermission(RecordPermissions.PRM_RECORD$WRITE);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -296,7 +296,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
 					.addPermission(recordWrite);
 
-			final boolean canReadRecord = accessControlManager.hasPermission(RecordPermissions.PRM_DOSSIER_WRITE);
+			final boolean canReadRecord = accessControlManager.hasPermission(RecordPermissions.PRM_RECORD$WRITE);
 			Assert.assertTrue(canReadRecord);
 
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
@@ -363,7 +363,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		recordNational.setDepId(null);
 		recordNational.setComId(null);
 
-		final Permission recordNotify = getPermission(RecordPermissions.PRM_DOSSIER_NOTIFY);
+		final Permission recordNotify = getPermission(RecordPermissions.PRM_RECORD$NOTIFY);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -374,7 +374,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 					.withSecurityKeys("geo", new Long[] { DEFAULT_REG_ID, DEFAULT_DEP_ID, null }) //droit sur tout un département
 					.addPermission(recordNotify);
 
-			Assert.assertTrue(accessControlManager.hasPermission(RecordPermissions.PRM_DOSSIER_NOTIFY));
+			Assert.assertTrue(accessControlManager.hasPermission(RecordPermissions.PRM_RECORD$NOTIFY));
 
 			//grant read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
 			Assert.assertTrue(accessControlManager.isAuthorized(record, RecordOperations.READ));

@@ -37,12 +37,12 @@ public final class SecurityNames {
 	 * Enumération des Permissions globales.
 	 */
 	public enum RecordPermissions implements PermissionName {
-		PRM_DOSSIER_READ,
-		PRM_DOSSIER_READ_HP,
-		PRM_DOSSIER_WRITE,
-		PRM_DOSSIER_CREATE,
-		PRM_DOSSIER_DELETE,
-		PRM_DOSSIER_NOTIFY
+		PRM_RECORD$READ,
+		PRM_RECORD$READ_HP,
+		PRM_RECORD$DELETE,
+		PRM_RECORD$NOTIFY,
+		PRM_RECORD$CREATE,
+		PRM_RECORD$WRITE;
 	}
 
 	/**
