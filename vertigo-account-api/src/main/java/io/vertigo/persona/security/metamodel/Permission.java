@@ -34,10 +34,11 @@ public final class Permission implements Definition {
 	private final String filter;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
-	 * @param name Nom de la permission
+	 * @param name Permission name
 	 * @param operation Operation
+	 * @param filter Filter used to check permission
 	 */
 	public Permission(final String name, final String operation, final String filter) {
 		Assertion.checkArgNotEmpty(name);
@@ -64,7 +65,7 @@ public final class Permission implements Definition {
 	}
 
 	/**
-	 * @return Nom de la permission
+	 * @return Permission name
 	 */
 	@Override
 	public String getName() {

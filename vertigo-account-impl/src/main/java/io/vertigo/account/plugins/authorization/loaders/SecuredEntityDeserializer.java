@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -66,6 +67,8 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 	private static Permission deserializeOperations(final DtDefinition entityDefinition, final JsonObject operation, final JsonDeserializationContext context, final Map<String, Permission> permissionPerOperations) {
 		final String code = operation.get("name").getAsString();
 		final String label = operation.get("label").getAsString();
+		final Optional<String> comment = Optional.<JsonElement> ofNullable(operation.get("__comment"))
+				.map(JsonElement::getAsString);
 
 		Set<String> overrides = context.deserialize(operation.get("overrides"), createParameterizedType(Set.class, String.class));
 		if (overrides == null) {
@@ -90,7 +93,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		} else {
 			rules = Collections.emptyList(); //if empty -> always true
 		}
-		return new Permission(code, label, overrides, grants, entityDefinition, rules);
+		return new Permission(code, label, overrides, grants, entityDefinition, rules, comment);
 	}
 
 	private static Permission resolvePermission(final String operationName, final Map<String, Permission> permissionPerOperations, final DtDefinition entityDefinition) {

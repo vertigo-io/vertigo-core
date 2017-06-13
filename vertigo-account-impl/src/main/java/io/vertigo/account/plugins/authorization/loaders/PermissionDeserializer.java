@@ -1,6 +1,7 @@
 package io.vertigo.account.plugins.authorization.loaders;
 
 import java.lang.reflect.Type;
+import java.util.Optional;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -22,6 +23,8 @@ final class PermissionDeserializer implements JsonDeserializer<Permission> {
 		final JsonObject jsonPermission = json.getAsJsonObject();
 		final String code = jsonPermission.get("name").getAsString();
 		final String label = jsonPermission.get("label").getAsString();
-		return new Permission(code, label);
+		final Optional<String> comment = Optional.<JsonElement> ofNullable(jsonPermission.get("__comment"))
+				.map(JsonElement::getAsString);
+		return new Permission(code, label, comment);
 	}
 }

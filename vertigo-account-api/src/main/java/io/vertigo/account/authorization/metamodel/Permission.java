@@ -39,10 +39,11 @@ import io.vertigo.lang.Assertion;
  *
  * @author prahmoune, npiedeloup
  */
-@DefinitionPrefix("PRM")
+@DefinitionPrefix("PRM_")
 public final class Permission implements Definition {
 	//soit permission globale (sans règle)
-	//soit permission une opé sur une entity
+	//soit permission = une opération sur une entity
+	private final Optional<String> comment;
 	private final String name;
 	private final String label;
 
@@ -58,10 +59,12 @@ public final class Permission implements Definition {
 	 *
 	 * @param code Code de la permission
 	 * @param label Label
+	 * @param comment Comment
 	 */
-	public Permission(final String code, final String label) {
+	public Permission(final String code, final String label, final Optional<String> comment) {
 		Assertion.checkArgNotEmpty(code);
 		Assertion.checkArgNotEmpty(label);
+		Assertion.checkNotNull(comment);
 		//-----
 		name = "PRM_" + code;
 		this.label = label;
@@ -71,6 +74,7 @@ public final class Permission implements Definition {
 		entityOpt = Optional.empty();
 		operationOpt = Optional.empty();
 		rules = Arrays.asList();
+		this.comment = comment;
 	}
 
 	/**
@@ -82,22 +86,25 @@ public final class Permission implements Definition {
 	 * @param overrides Liste des opérations overridé par cette opération
 	 * @param grants Liste des opérations données par cette opération
 	 * @param rules Règles d'évaluation
+	 * @param comment Comment
 	 */
-	public Permission(final String operation, final String label, final Set<String> overrides, final Set<Permission> grants, final DtDefinition entityDefinition, final List<DslMultiExpression> rules) {
+	public Permission(final String operation, final String label, final Set<String> overrides, final Set<Permission> grants, final DtDefinition entityDefinition, final List<DslMultiExpression> rules, final Optional<String> comment) {
 		Assertion.checkArgNotEmpty(operation);
 		Assertion.checkArgNotEmpty(label);
 		Assertion.checkNotNull(overrides);
 		Assertion.checkNotNull(grants);
 		Assertion.checkNotNull(entityDefinition);
 		Assertion.checkNotNull(rules);
+		Assertion.checkNotNull(comment);
 		//-----
-		name = "PRM_" + entityDefinition.getLocalName() + Definition.SEPARATOR + operation;
+		name = "PRM_" + entityDefinition.getLocalName() + '$' + operation;
 		this.label = label;
 		this.overrides = new HashSet<>(overrides);
 		this.grants = new HashSet<>(grants);
 		entityOpt = Optional.of(entityDefinition);
 		operationOpt = Optional.of(operation);
 		this.rules = new ArrayList<>(rules);
+		this.comment = comment;
 	}
 
 	/** {@inheritDoc} */
@@ -111,6 +118,13 @@ public final class Permission implements Definition {
 	 */
 	public String getLabel() {
 		return label;
+	}
+
+	/**
+	 * @return Comment de la permission
+	 */
+	public Optional<String> getComment() {
+		return comment;
 	}
 
 	/**

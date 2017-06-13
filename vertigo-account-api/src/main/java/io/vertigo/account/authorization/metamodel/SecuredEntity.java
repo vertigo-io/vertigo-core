@@ -31,7 +31,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author jgarnier, npiedeloup
  */
-@DefinitionPrefix("SEC")
+@DefinitionPrefix("SEC_")
 public final class SecuredEntity implements Definition {
 	private final String name;
 	private final DtDefinition entityDefinition;
