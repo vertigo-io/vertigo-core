@@ -44,6 +44,14 @@ public class NameSpace2JavaTest {
 	 * Lancement du test.
 	 */
 	@Test
+	public void testGenerateAuthorization() {
+		NameSpace2Java.main(new String[] { "data/testAuthorization.properties" });
+	}
+
+	/**
+	 * Lancement du test.
+	 */
+	@Test
 	public void testGenerateFile() {
 		NameSpace2Java.main(new String[] { "data/testFile.properties" });
 	}
