@@ -43,6 +43,7 @@ import io.vertigo.database.sql.data.Movie;
 import io.vertigo.database.sql.data.MovieInfo;
 import io.vertigo.database.sql.data.Movies;
 import io.vertigo.database.sql.statement.SqlParameter;
+import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.lang.DataStream;
 
 /**
@@ -335,5 +336,45 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		} finally {
 			connection.release();
 		}
+	}
+
+	protected abstract GenerationMode getExpectedGenerationMode();
+
+	@Test
+	public final void testInsert() throws Exception {
+		final String insertWithgeneratedKey = obtainMainConnection().getDataBase().getSqlDialect()
+				.createInsertQuery(
+						"ID",
+						Arrays.asList("TITLE"),
+						"seq_",
+						"movie");
+
+		final GenerationMode generationMode = obtainMainConnection().getDataBase().getSqlDialect().getGenerationMode();
+		//We check that we have the right expected mode
+		Assert.assertEquals(getExpectedGenerationMode(), generationMode);
+		//---
+		final SqlConnection connection = obtainMainConnection();
+		long generatedKey;
+		try {
+			final String sql = dataBaseManager.parseQuery(insertWithgeneratedKey).getVal1();
+			generatedKey = dataBaseManager.createPreparedStatement(connection)
+					.executeUpdateWithGeneratedKey(
+							sql,
+							Arrays.asList(SqlParameter.of(String.class, "frankenstein")),
+							generationMode,
+							"ID",
+							Long.class)
+					.getVal2();
+			connection.commit();
+		} finally {
+			connection.release();
+		}
+		final List<Integer> result = executeQuery(Integer.class, "select count(*) from movie", null);
+		Assert.assertEquals(1, result.size());
+		Assert.assertEquals(1, result.get(0).intValue());
+
+		final List<Integer> keys = executeQuery(Integer.class, "select id from movie", null);
+		Assert.assertEquals(1, keys.size());
+		Assert.assertEquals(generatedKey, keys.get(0).intValue());
 	}
 }

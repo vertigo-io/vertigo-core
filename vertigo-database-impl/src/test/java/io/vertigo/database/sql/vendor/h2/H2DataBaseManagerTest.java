@@ -1,14 +1,7 @@
 package io.vertigo.database.sql.vendor.h2;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Test;
-
 import io.vertigo.database.sql.AbstractSqlDataBaseManagerTest;
 import io.vertigo.database.sql.connection.SqlConnection;
-import io.vertigo.database.sql.statement.SqlParameter;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 
 public final class H2DataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
@@ -56,35 +49,8 @@ public final class H2DataBaseManagerTest extends AbstractSqlDataBaseManagerTest 
 		}
 	}
 
-	@Test
-	public void testInsert() throws Exception {
-		final String insertWithgeneratedKey = obtainMainConnection().getDataBase().getSqlDialect()
-				.createInsertQuery(
-						"ID",
-						Arrays.asList("TITLE"),
-						"seq_",
-						"movie");
-
-		final GenerationMode generationMode = obtainMainConnection().getDataBase().getSqlDialect().getGenerationMode();
-		//We check that H2 is in the right expected mode
-		Assert.assertEquals(GenerationMode.GENERATED_KEYS, generationMode);
-		//---
-		final SqlConnection connection = obtainMainConnection();
-		try {
-			final String sql = dataBaseManager.parseQuery(insertWithgeneratedKey).getVal1();
-
-			dataBaseManager.createPreparedStatement(connection).executeUpdateWithGeneratedKey(
-					sql,
-					Arrays.asList(SqlParameter.of(String.class, "frankenstein")),
-					GenerationMode.GENERATED_KEYS,
-					"ID",
-					Long.class);
-			connection.commit();
-		} finally {
-			connection.release();
-		}
-		final List<Integer> result = executeQuery(Integer.class, "select count(*) from movie", null);
-		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(1, result.get(0).intValue());
+	@Override
+	protected GenerationMode getExpectedGenerationMode() {
+		return GenerationMode.GENERATED_KEYS;
 	}
 }
