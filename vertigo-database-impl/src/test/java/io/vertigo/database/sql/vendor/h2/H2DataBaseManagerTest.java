@@ -8,7 +8,7 @@ public final class H2DataBaseManagerTest extends AbstractSqlDataBaseManagerTest 
 	protected String createTableMovie() {
 		return "CREATE TABLE movie ( "
 				+ "id 						NUMBER(6), "
-				+ "title 					VARCHAR2(255), "
+				+ "title 					VARCHAR(255), "
 				+ "fps 						NUMBER(6,3), "
 				+ "income 					NUMBER(6,3), "
 				+ "color 					BOOLEAN, "
@@ -28,4 +28,5 @@ public final class H2DataBaseManagerTest extends AbstractSqlDataBaseManagerTest 
 	protected GenerationMode getExpectedGenerationMode() {
 		return GenerationMode.GENERATED_KEYS;
 	}
+
 }
