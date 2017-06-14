@@ -76,11 +76,13 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 
 	@Override
 	protected final void doSetUp() throws Exception {
-		//A chaque test on recrée la table famille
 		final SqlConnection connection = obtainMainConnection();
 		try {
 			execpreparedStatement(connection, createTableMovie());
 			execpreparedStatement(connection, createSequenceMovie());
+			if (commitRequiredOnSchemaModification()) {
+				connection.commit();
+			}
 		} finally {
 			connection.release();
 		}
@@ -90,13 +92,18 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 
 	protected abstract String createSequenceMovie();
 
+	protected abstract boolean commitRequiredOnSchemaModification();
+
 	@Override
-	protected void doTearDown() throws Exception {
+	protected final void doTearDown() throws Exception {
 		final SqlConnection connection = obtainMainConnection();
 		try {
 			// we use a shared database so we need to drop the table
 			execpreparedStatement(connection, DROP_SEQUENCE_MOVIE);
 			execpreparedStatement(connection, DROP_TABLE_MOVIE);
+			if (commitRequiredOnSchemaModification()) {
+				connection.commit();
+			}
 		} finally {
 			connection.release();
 		}
@@ -292,37 +299,33 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 	@Test
 	public void testTwoDataSource() throws Exception {
 		createDatas();
-
 		setupSecondary();
-		try {
-			//on crée des données dans 'secondary'
-			final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary")
-					.obtainConnection();
-			try {
-				execpreparedStatement(connection, "insert into movie values (1, 'Star wars', null, null, null, null, null, null, null)");
-				execpreparedStatement(connection, "insert into movie values (2, 'Will Hunting', null, null, null, null, null, null, null)");
-				execpreparedStatement(connection, "insert into movie values (3, 'Usual Suspects', null, null, null, null, null, null, null)");
-				//-----
-				//On passe par une requête bindée
-				insert(connection, 4, Movies.TITLE_MOVIE_4, null, null, null);
-				connection.commit();
-			} finally {
-				connection.release();
-			}
-			//----
-			final List<Integer> result2 = executeQuery(Integer.class, "select count(*) from movie", dataBaseManager.getConnectionProvider("secondary"), 1);
-			Assert.assertEquals(1, result2.size());
-			Assert.assertEquals(4, result2.get(0).intValue());
-			final List<Movie> resultMovie1 = executeQuery(Movie.class, "select * from movie where id=1", dataBaseManager.getConnectionProvider("secondary"), 1);
-			Assert.assertEquals(1, resultMovie1.size());
-			Assert.assertEquals("Star wars", resultMovie1.get(0).getTitle());
 
-			final List<Integer> result1 = executeQuery(Integer.class, "select count(*) from movie", dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), 1);
-			Assert.assertEquals(1, result1.size());
-			Assert.assertEquals(3, result1.get(0).intValue());
+		//on crée des données dans 'secondary'
+		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary")
+				.obtainConnection();
+		try {
+			execpreparedStatement(connection, "insert into movie values (1, 'Star wars', null, null, null, null, null, null, null)");
+			execpreparedStatement(connection, "insert into movie values (2, 'Will Hunting', null, null, null, null, null, null, null)");
+			execpreparedStatement(connection, "insert into movie values (3, 'Usual Suspects', null, null, null, null, null, null, null)");
+			//-----
+			//On passe par une requête bindée
+			insert(connection, 4, Movies.TITLE_MOVIE_4, null, null, null);
+			connection.commit();
 		} finally {
-			shutdownSecondaryDown();
+			connection.release();
 		}
+		//----
+		final List<Integer> result2 = executeQuery(Integer.class, "select count(*) from movie", dataBaseManager.getConnectionProvider("secondary"), 1);
+		Assert.assertEquals(1, result2.size());
+		Assert.assertEquals(4, result2.get(0).intValue());
+		final List<Movie> resultMovie1 = executeQuery(Movie.class, "select * from movie where id=1", dataBaseManager.getConnectionProvider("secondary"), 1);
+		Assert.assertEquals(1, resultMovie1.size());
+		Assert.assertEquals("Star wars", resultMovie1.get(0).getTitle());
+
+		final List<Integer> result1 = executeQuery(Integer.class, "select count(*) from movie", dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), 1);
+		Assert.assertEquals(1, result1.size());
+		Assert.assertEquals(3, result1.get(0).intValue());
 	}
 
 	private void setupSecondary() throws Exception {
@@ -331,17 +334,6 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 				.obtainConnection();
 		try {
 			execpreparedStatement(connection, CREATE_TABLE_MOVIE);
-		} finally {
-			connection.release();
-		}
-	}
-
-	private void shutdownSecondaryDown() throws Exception {
-		//A chaque fin de test on arrête la base.
-		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary")
-				.obtainConnection();
-		try {
-			execpreparedStatement(connection, "shutdown;");
 		} finally {
 			connection.release();
 		}
