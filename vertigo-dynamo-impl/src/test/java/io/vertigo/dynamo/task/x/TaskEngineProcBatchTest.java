@@ -70,14 +70,6 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU4 {
 		taskManager.execute(task);
 	}
 
-	@Override
-	protected void doTearDown() throws Exception {
-		//A chaque fin de test on arrète la base.
-		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			execStatement("shutdown;");
-		}
-	}
-
 	/**
 	 * Tests batch insertion with a task
 	 */

@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.criteria.sql;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,20 +61,6 @@ public final class SqlCriteriaTest extends AbstractCriteriaTest {
 	protected void doSetUp() throws Exception {
 		dtDefinitionMovie = DtObjectUtil.findDtDefinition(Movie2.class);
 		initMainStore();
-	}
-
-	@Override
-	protected void doTearDown() throws Exception {
-		shutDown("TK_SHUT_DOWN", Optional.empty());
-	}
-
-	protected void shutDown(final String taskName, final Optional<String> optDataSpace) {
-		SqlUtil.execRequests(
-				transactionManager,
-				taskManager,
-				Collections.singletonList("shutdown;"),
-				taskName,
-				optDataSpace);
 	}
 
 	private void initMainStore() {

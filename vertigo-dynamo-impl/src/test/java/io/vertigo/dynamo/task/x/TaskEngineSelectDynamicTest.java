@@ -85,14 +85,6 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	@Override
-	protected void doTearDown() throws Exception {
-		//A chaque fin de test on arrète la base.
-		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			execStatement("shutdown;");
-		}
-	}
-
 	/**
 	 * Test de double exécution d'une tache.
 	 */

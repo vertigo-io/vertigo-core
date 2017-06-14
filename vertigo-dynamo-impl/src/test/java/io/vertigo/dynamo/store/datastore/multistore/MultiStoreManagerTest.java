@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.store.datastore.multistore;
 
 import java.io.OutputStream;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,12 +61,6 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 	@Override
 	protected void doTearDown() throws Exception {
 		super.doTearDown();
-		SqlUtil.execRequests(
-				transactionManager,
-				taskManager,
-				Collections.singletonList("shutdown;"),
-				"TK_SHUT_DOWN_OTHER",
-				Optional.of("otherStore"));
 	}
 
 	@Override
