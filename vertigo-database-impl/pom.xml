@@ -62,6 +62,13 @@
 			<version>12.1.0.1</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+		    <groupId>postgresql</groupId>
+		    <artifactId>postgresql</artifactId>
+		    <version>9.3-1102.jdbc41</version>
+		    <scope>test</scope>
+		</dependency>
 				
 		<!-- Connections Pool -->
 		<dependency>

@@ -1,22 +1,23 @@
-package io.vertigo.database.sql.vendor.h2;
+package io.vertigo.database.sql.vendor.postgresql;
 
 import io.vertigo.database.sql.AbstractSqlDataBaseManagerTest;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 
-public final class H2DataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
+public final class PostgreSqlDataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
 	@Override
 	protected String createTableMovie() {
-		return "CREATE TABLE movie ( "
-				+ "id 						NUMBER(6), "
+		final String myString = "CREATE TABLE movie ( "
+				+ "id 						NUMERIC(6), "
 				+ "title 					VARCHAR(255), "
-				+ "fps 						NUMBER(6,3), "
-				+ "income 					NUMBER(6,3), "
+				+ "fps 						NUMERIC(6,3), "
+				+ "income 					NUMERIC(6,3), "
 				+ "color 					BOOLEAN, "
 				+ "release_date 			TIMESTAMP, "
 				+ "release_local_date 		DATE, "
 				+ "release_zoned_date_time 	TIMESTAMP, "
-				+ "icon 					BLOB"
+				+ "icon 					BYTEA"
 				+ ")";
+		return myString;
 	}
 
 	@Override
@@ -31,7 +32,7 @@ public final class H2DataBaseManagerTest extends AbstractSqlDataBaseManagerTest 
 
 	@Override
 	protected boolean commitRequiredOnSchemaModification() {
-		return false;
+		return true;
 	}
 
 }

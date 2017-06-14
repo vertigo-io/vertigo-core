@@ -28,4 +28,9 @@ public final class OracleDataBaseManagerTest extends AbstractSqlDataBaseManagerT
 	protected GenerationMode getExpectedGenerationMode() {
 		return GenerationMode.GENERATED_COLUMNS;
 	}
+
+	@Override
+	protected boolean commitRequiredOnSchemaModification() {
+		return false;
+	}
 }

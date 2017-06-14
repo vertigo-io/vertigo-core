@@ -27,6 +27,7 @@ import io.vertigo.database.sql.vendor.h2.H2DataBaseManagerTest;
 import io.vertigo.database.sql.vendor.h2.H2SqlDialectTest;
 import io.vertigo.database.sql.vendor.oracle.OracleDataBaseManagerTest;
 import io.vertigo.database.sql.vendor.oracle.OracleDialectTest;
+import io.vertigo.database.sql.vendor.postgresql.PostgreSqlDataBaseManagerTest;
 import io.vertigo.database.sql.vendor.postgresql.PostgreSqlDialectTest;
 import io.vertigo.database.sql.vendor.sqlserver.SqlServerDialectTest;
 
@@ -45,6 +46,7 @@ import io.vertigo.database.sql.vendor.sqlserver.SqlServerDialectTest;
 		//--
 		H2DataBaseManagerTest.class,
 		OracleDataBaseManagerTest.class,
+		PostgreSqlDataBaseManagerTest.class,
 		//--
 		SqlParserTest.class
 })
