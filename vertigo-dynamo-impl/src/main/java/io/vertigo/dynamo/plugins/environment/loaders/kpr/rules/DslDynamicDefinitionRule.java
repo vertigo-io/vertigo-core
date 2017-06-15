@@ -20,15 +20,14 @@ package io.vertigo.dynamo.plugins.environment.loaders.kpr.rules;
 
 import static io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslSyntaxRules.SPACES;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRules;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
-import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
 import io.vertigo.lang.Assertion;
@@ -50,11 +49,11 @@ public final class DslDynamicDefinitionRule extends AbstractRule<DslDefinition, 
 		Assertion.checkArgNotEmpty(operation);
 		Assertion.checkNotNull(grammar);
 		//-----
-		final List<PegRule<?>> rules = new ArrayList<>();//"Definition")
-		for (final DslEntity entity : grammar.getEntities()) {
-			final DslInnerDefinitionRule definitionRule = new DslInnerDefinitionRule(entity.getName(), entity);
-			rules.add(createRule(operation, definitionRule));
-		}
+		final List<PegRule<?>> rules = grammar.getEntities()
+				.stream()
+				.map(entity -> new DslInnerDefinitionRule(entity.getName(), entity))
+				.map(innerDefinitionRule -> createRule(operation, innerDefinitionRule))
+				.collect(Collectors.toList());
 		return PegRules.choice(rules);
 	}
 
