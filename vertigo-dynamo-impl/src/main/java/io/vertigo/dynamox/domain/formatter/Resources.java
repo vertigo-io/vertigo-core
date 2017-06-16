@@ -42,11 +42,6 @@ public enum Resources implements MessageKey {
 	DYNAMOX_BOOLEAN_NOT_FORMATTED,
 
 	/**
-	 * La date ne doit pas contenir de lettre.
-	 */
-	DYNAMOX_DATE_NOT_FORMATTED_LETTER,
-
-	/**
 	 * Ce champ doit contenir une date valide.
 	 */
 	DYNAMOX_DATE_NOT_FORMATTED

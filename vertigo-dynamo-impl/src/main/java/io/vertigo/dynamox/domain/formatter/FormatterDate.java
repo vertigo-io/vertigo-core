@@ -20,11 +20,12 @@ package io.vertigo.dynamox.domain.formatter;
 
 import java.text.ParsePosition;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.locale.LocaleManager;
@@ -56,16 +57,6 @@ import io.vertigo.util.StringUtil;
  * @author pchretien
  */
 public final class FormatterDate implements Formatter {
-	/**
-	 * Année minimum tolérée pour les dates.
-	 */
-	public static final int MIN_YEAR = 1850;
-
-	/**
-	 * Année maximum tolérée pour les dates.
-	 */
-	public static final int MAX_YEAR = 2150;
-
 	/**
 	 * Format(s) étendu(s) de la date en saisie.
 	 * Cette variable n'est créée qu'au besoin.
@@ -121,67 +112,60 @@ public final class FormatterDate implements Formatter {
 	public Object stringToValue(final String strValue, final DataType dataType) throws FormatterException {
 		Assertion.checkArgument(dataType.isAboutDate(), "Formatter ne s'applique qu'aux dates");
 		//-----
-		final String sValue = StringUtil.isEmpty(strValue) ? null : strValue.trim();
-		if (sValue == null) {
+		if (StringUtil.isEmpty(strValue)) {
 			return null;
 		}
-		chechFormat(sValue);
+		final String sValue = strValue.trim();
 		switch (dataType) {
 			case Date:
-				return stringToDate(sValue);
+				return applyStringToObject(sValue, FormatterDate::doStringToDate);
 			case LocalDate:
-				return stringToLocalDate(sValue);
+				return applyStringToObject(sValue, FormatterDate::doStringToLocalDate);
 			case ZonedDateTime:
-				return stringToZonedDateTime(sValue);
+				return applyStringToObject(sValue, FormatterDate::doStringToZonedDateTime);
 			default:
 				throw new IllegalStateException();
 		}
 	}
 
-	private Object stringToZonedDateTime(final String sValue) {
-		throw new UnsupportedOperationException();
-	}
-
-	private Object stringToLocalDate(final String sValue) {
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * Convertit une String en Date
-	 * on utilise un format de présentation et un de saisie
-	 * Si néanmoins la date est entre 0 et 9 alors on estime que la date est en 200x.
-	 *
-	 * @param dateString String
-	 * @return Date
-	 * @throws FormatterException Erreur de parsing
+	/*
+	 *  Cycles through patterns to try and parse given String into a Date | LocalDate | ZonedDateTime
 	 */
-	private Date stringToDate(final String dateString) throws FormatterException {
-		Date dateValue = null;
+	private <T> T applyStringToObject(String dateString, BiFunction<String, String, T> fun) throws FormatterException {
 		//StringToDate renvoit null si elle n'a pas réussi à convertir la date
+		T dateValue = null;
 		for (int i = 0; i < patterns.size() && dateValue == null; i++) {
-			dateValue = doStringToDate(dateString, patterns.get(i));
+			try {
+				dateValue = fun.apply(dateString, patterns.get(i));
+			} catch (final Exception e) {
+				dateValue = null;
+			}
 		}
-		//Si dateValue est null c'est que toutes les convertions ont échouées.
+		//A null dateValue means all conversions have failed
 		if (dateValue == null) {
 			throw new FormatterException(Resources.DYNAMOX_DATE_NOT_FORMATTED);
 		}
 		return dateValue;
 	}
 
-	private static void chechFormat(final String dateString) throws FormatterException {
-		for (final char c : dateString.toCharArray()) {
-			if (Character.isLetter(c)) {
-				//Le parser de date java est trop permissif, on réduit les caractères.
-				throw new FormatterException(Resources.DYNAMOX_DATE_NOT_FORMATTED_LETTER);
-			}
-		}
+	/*
+	 * Converts a String to a LocalDate according to a given pattern
+	 */
+	private static LocalDate doStringToLocalDate(final String dateString, final String pattern) {
+		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern);
+		return LocalDate.parse(dateString, dateTimeFormatter);
 	}
 
 	/*
-	 * Convertit une String en Date suivant un format de saisie
-	 * Si la date est entre 0 et 9 alors on estime que la date est en 200x
-	 *
-	 * Cette méthode retourne null si la chaine n'a pas pu être convertie en date
+	 * Converts a String to a ZonedlDateTime according to a given pattern
+	 */
+	private static ZonedDateTime doStringToZonedDateTime(final String dateString, final String pattern) {
+		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern).withZone(ZoneId.of("UTC"));
+		return ZonedDateTime.parse(dateString, dateTimeFormatter);
+	}
+
+	/*
+	 * Converts a String to a java.util.Date according to a given pattern
 	 */
 	private static Date doStringToDate(final String dateString, final String pattern) {
 		Date dateValue;
@@ -190,29 +174,12 @@ public final class FormatterDate implements Formatter {
 		final java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat(pattern, getLocaleManager().getCurrentLocale());
 		formatter.setLenient(false);
 
-		try {
-			final ParsePosition parsePosition = new ParsePosition(0);
-			dateValue = formatter.parse(dateString, parsePosition);
+		final ParsePosition parsePosition = new ParsePosition(0);
+		dateValue = formatter.parse(dateString, parsePosition);
 
-			final Calendar calendar = Calendar.getInstance();
-			calendar.setTime(dateValue);
-			int year = calendar.get(Calendar.YEAR);
-			// Rq : l'année 0 n'existe pas en java.
-			if (year >= 0 && year <= 9) {
-				year += 2000;
-				calendar.set(Calendar.YEAR, year);
-				dateValue = calendar.getTime();
-			}
-			//si le parsing n'a pas consommé toute la chaine, on refuse la converssion
-			if (parsePosition.getIndex() != dateString.length()) {
-				dateValue = null;
-			}
-			if (year < MIN_YEAR || year > MAX_YEAR) {
-				dateValue = null;
-			}
-		} catch (final Exception e) {
-			//Le parsing a échoué on retourne null
-			dateValue = null;
+		//si le parsing n'a pas consommé toute la chaine, on refuse la conversion
+		if (parsePosition.getIndex() != dateString.length()) {
+			throw new IllegalStateException("Error parsing " + dateString + " with pattern :" + pattern + "at position " + parsePosition.getIndex());
 		}
 		return dateValue;
 	}
