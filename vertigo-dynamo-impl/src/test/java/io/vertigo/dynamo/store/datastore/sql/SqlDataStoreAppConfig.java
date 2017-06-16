@@ -30,7 +30,6 @@ public class SqlDataStoreAppConfig {
 				.addModule(new CommonsFeatures()
 						.withScript()
 						.withCache(MemoryCachePlugin.class)
-						.withTransaction()
 						.build())
 				.addModule(new DynamoFeatures()
 						.withStore()

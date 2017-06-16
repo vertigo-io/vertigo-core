@@ -76,7 +76,6 @@ public final class MyAppConfig {
 						.build())
 				.addModule(new CommonsFeatures()
 						.withCache(MemoryCachePlugin.class)
-						.withTransaction()
 						.withNodeInfosPlugin(HttpNodeInfosPlugin.class)
 						.build())
 				.addModule(new DynamoFeatures()

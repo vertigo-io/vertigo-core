@@ -146,17 +146,6 @@ public final class CommonsFeatures extends Features {
 
 	}
 
-	/**
-	 * Adds transaction management
-	 * @return these features
-	 */
-	public CommonsFeatures withTransaction() {
-		getModuleConfigBuilder()
-				.addComponent(VTransactionManager.class, VTransactionManagerImpl.class)
-				.addAspect(VTransactionAspect.class);
-		return this;
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
@@ -165,6 +154,8 @@ public final class CommonsFeatures extends Features {
 				.addComponent(CodecManager.class, CodecManagerImpl.class)
 				.addComponent(DaemonManager.class, DaemonManagerImpl.class)
 				.addComponent(EventBusManager.class, EventBusManagerImpl.class)
-				.addComponent(NodeManager.class, NodeManagerImpl.class);
+				.addComponent(NodeManager.class, NodeManagerImpl.class)
+				.addComponent(VTransactionManager.class, VTransactionManagerImpl.class)
+				.addAspect(VTransactionAspect.class);
 	}
 }

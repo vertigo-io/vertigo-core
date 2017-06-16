@@ -40,7 +40,6 @@ public final class SqlTestConfigurator {
 				.endBoot()
 				.addModule(new CommonsFeatures()
 						.withCache(MemoryCachePlugin.class)
-						.withTransaction()
 						.build())
 				.addModule(new DynamoFeatures()
 						.withStore()
