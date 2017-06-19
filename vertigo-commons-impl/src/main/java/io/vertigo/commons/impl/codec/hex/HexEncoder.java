@@ -42,12 +42,5 @@ public final class HexEncoder implements Encoder<byte[], String> {
 			chars[i * 2 + 1] = HEX_ARRAY[v & 0x0F];
 		}
 		return new String(chars);
-
-		// same result as:
-		// final StringBuilder output = new StringBuilder(data.length * 2);
-		// for (final byte element : data) {
-		//	output.append(Integer.toHexString((element >> 4) & 0xf)).append(Integer.toHexString(element & 0xf));
-		// }
-		// return output.toString();
 	}
 }
