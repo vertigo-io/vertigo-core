@@ -28,6 +28,8 @@ import io.vertigo.lang.Assertion;
  * @author  pchretien
  */
 public final class StringUtil {
+	private static final Pattern ACCENTS_PATTERN = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+
 	/**
 	 * Constructor
 	 */
@@ -273,5 +275,19 @@ public final class StringUtil {
 		replace(newMsg, "\\{", "'{'");
 		replace(newMsg, "\\}", "'}'");
 		return MessageFormat.format(newMsg.toString(), params);
+	}
+
+	/**
+	 * Removes diacritics (~= accents) from a string. The case will not be altered.
+	 *
+	 * @param input String to be stripped
+	 * @return input text with diacritics removed
+	 */
+	public static String stripAccents(final String input) {
+		if (input == null) {
+			return null;
+		}
+		final String decomposed = Normalizer.normalize(input, Normalizer.Form.NFD);
+		return ACCENTS_PATTERN.matcher(decomposed).replaceAll("");
 	}
 }
