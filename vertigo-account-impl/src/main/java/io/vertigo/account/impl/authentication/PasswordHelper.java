@@ -19,11 +19,16 @@
 package io.vertigo.account.impl.authentication;
 
 import java.nio.charset.Charset;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 
 import io.vertigo.commons.impl.codec.base64.Base64Codec;
+import io.vertigo.lang.WrappedException;
 
 /**
  * Classe utilitaire offrant un ensemble de services concernant les Password.
@@ -32,8 +37,11 @@ import io.vertigo.commons.impl.codec.base64.Base64Codec;
  */
 public final class PasswordHelper {
 
+	private static final int PBKDF2_ITERATIONS = 4096;
+	private static final int PBKDF2_KEY_LENGTH = 256; // bits
+
 	private final Charset defaultCharsetUTF8;
-	private final MessageDigest sha256Digest;
+	private final SecretKeyFactory secretKeyFactory;
 	private final Base64Codec base64Codec;
 	private final SecureRandom rnd;
 
@@ -42,7 +50,7 @@ public final class PasswordHelper {
 	 */
 	public PasswordHelper() {
 		try {
-			sha256Digest = MessageDigest.getInstance("SHA-256");
+			secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
 		} catch (final NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		}
@@ -80,7 +88,7 @@ public final class PasswordHelper {
 	}
 
 	private String encodePassword(final String salt, final String password) {
-		return salt + encodeBase64(sha256(salt + password));
+		return salt + encodeBase64(toPBKDF2(password, salt));
 	}
 
 	/**
@@ -93,12 +101,18 @@ public final class PasswordHelper {
 	}
 
 	/**
-	 * Calcule le hash SHA-256 d'une chaine de caractere.
+	 * Calcule le hash PBKDF2 d'une chaine de caractere.
 	 * @param string Chaine de caractere.
 	 * @return Tableau d'octets.
 	 */
-	private byte[] sha256(final String string) {
-		return sha256Digest.digest(string.getBytes(defaultCharsetUTF8));
+	//see : https://adambard.com/blog/3-wrong-ways-to-store-a-password/
+	private byte[] toPBKDF2(final String password, final String salt) {
+		final KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt.getBytes(defaultCharsetUTF8), PBKDF2_ITERATIONS, PBKDF2_KEY_LENGTH);
+		try {
+			return secretKeyFactory.generateSecret(keySpec).getEncoded();
+		} catch (final InvalidKeySpecException e) {
+			throw WrappedException.wrap(e);
+		}
 	}
 
 }
