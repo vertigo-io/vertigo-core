@@ -78,6 +78,8 @@ public final class DomainUtil {
 			case Boolean:
 			case DataStream:
 			case Date:
+			case LocalDate:
+			case ZonedDateTime:
 			case Double:
 			case Integer:
 			case Long:
