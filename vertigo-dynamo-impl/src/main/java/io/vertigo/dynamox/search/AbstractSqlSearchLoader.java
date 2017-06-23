@@ -129,7 +129,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 		final String sqlQueryFilter = getSqlQueryFilter();
 		Assertion.checkNotNull(sqlQueryFilter, "getSqlQueryFilter can't be null");
 		if (!sqlQueryFilter.isEmpty()) {
-			request.append("and (").append(sqlQueryFilter).append(')');
+			request.append(" and (").append(sqlQueryFilter).append(')');
 		}
 		request.append(" order by ").append(pkFieldName).append(" ASC");
 		appendMaxRows(request, SEARCH_CHUNK_SIZE);
