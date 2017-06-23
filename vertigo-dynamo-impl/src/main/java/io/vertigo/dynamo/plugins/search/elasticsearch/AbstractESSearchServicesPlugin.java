@@ -74,30 +74,35 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	private Client esClient;
 	private final DtListState defaultListState;
 	private final int defaultMaxRows;
-	private final String indexName;
+	private final String indexNameOrPrefix;
+	private final boolean indexNameIsPrefix;
 	private final Set<String> types = new HashSet<>();
 	private final URL configFile;
 	private boolean indexSettingsValid;
 
 	/**
 	 * Constructor.
-	 * @param indexName Nom de l'index ES
+	 * @param indexNameOrPrefix ES index name
+	 * @param indexNameIsPrefix indexName use as prefix
 	 * @param defaultMaxRows Nombre de lignes
 	 * @param codecManager Manager de codec
 	 * @param configFileOpt Fichier de configuration des indexs
 	 * @param resourceManager Manager des resources
 	 */
-	protected AbstractESSearchServicesPlugin(final String indexName, final int defaultMaxRows, final Optional<String> configFileOpt,
+	protected AbstractESSearchServicesPlugin(final String indexNameOrPrefix, final boolean indexNameIsPrefix, final int defaultMaxRows, final Optional<String> configFileOpt,
 			final CodecManager codecManager, final ResourceManager resourceManager) {
-		Assertion.checkArgNotEmpty(indexName);
+		Assertion.checkArgNotEmpty(indexNameOrPrefix);
 		Assertion.checkNotNull(codecManager);
+		Assertion.when(indexNameIsPrefix).check(() -> indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix);
+		Assertion.when(!indexNameIsPrefix).check(() -> !indexNameOrPrefix.endsWith("_"), "When envIndex isn't declared as prefix, it can't ends with _ (current : {0})", indexNameOrPrefix);
 		//-----
 		this.defaultMaxRows = defaultMaxRows;
 		defaultListState = new DtListState(defaultMaxRows, 0, null, null);
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
 		//------
-		this.indexName = indexName.toLowerCase(Locale.ENGLISH).trim();
-		this.configFile = configFileOpt
+		this.indexNameOrPrefix = indexNameOrPrefix.toLowerCase(Locale.ENGLISH).trim();
+		this.indexNameIsPrefix = indexNameIsPrefix;
+		configFile = configFileOpt
 				.map(resourceManager::resolve)
 				.orElse(null);
 	}
@@ -110,44 +115,53 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		indexSettingsValid = true;
 		//must wait yellow status to be sure prepareExists works fine (instead of returning false on a already exist index)
 		waitForYellowStatus();
-		try {
-			if (!esClient.admin().indices().prepareExists(indexName).get().isExists()) {
-				if (configFile == null) {
-					esClient.admin().indices().prepareCreate(indexName).get();
-				} else {
-					try (InputStream is = configFile.openStream()) {
-						final Settings settings = Settings.settingsBuilder().loadFromStream(configFile.getFile(), is).build();
-						esClient.admin().indices().prepareCreate(indexName).setSettings(settings).get();
-					}
-				}
-			} else if (configFile != null) {
-				// If we use local config file, we check config against ES server
-				try (InputStream is = configFile.openStream()) {
-					final Settings settings = Settings.settingsBuilder().loadFromStream(configFile.getFile(), is).build();
-					indexSettingsValid = indexSettingsValid && !isIndexSettingsDirty(settings);
-				}
-			}
-		} catch (final ElasticsearchException | IOException e) {
-			throw WrappedException.wrap(e, "Error on index " + indexName);
-		}
 		//Init typeMapping IndexDefinition <-> Conf ElasticSearch
 		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
+			final String myIndexName = obtainIndexName(indexDefinition);
+			createIndex(myIndexName);
 			updateTypeMapping(indexDefinition);
-			logMappings();
+			logMappings(myIndexName);
 			types.add(indexDefinition.getName().toLowerCase(Locale.ENGLISH));
 		}
 
 		waitForYellowStatus();
 	}
 
-	private boolean isIndexSettingsDirty(final Settings settings) {
+	private String obtainIndexName(final SearchIndexDefinition indexDefinition) {
+		return indexNameIsPrefix ? (indexNameOrPrefix + indexDefinition.getName()) : indexNameOrPrefix;
+	}
+
+	private void createIndex(final String myIndexName) {
+		try {
+			if (!esClient.admin().indices().prepareExists(myIndexName).get().isExists()) {
+				if (configFile == null) {
+					esClient.admin().indices().prepareCreate(myIndexName).get();
+				} else {
+					try (InputStream is = configFile.openStream()) {
+						final Settings settings = Settings.settingsBuilder().loadFromStream(configFile.getFile(), is).build();
+						esClient.admin().indices().prepareCreate(myIndexName).setSettings(settings).get();
+					}
+				}
+			} else if (configFile != null) {
+				// If we use local config file, we check config against ES server
+				try (InputStream is = configFile.openStream()) {
+					final Settings settings = Settings.settingsBuilder().loadFromStream(configFile.getFile(), is).build();
+					indexSettingsValid = indexSettingsValid && !isIndexSettingsDirty(myIndexName, settings);
+				}
+			}
+		} catch (final ElasticsearchException | IOException e) {
+			throw WrappedException.wrap(e, "Error on index " + myIndexName);
+		}
+	}
+
+	private boolean isIndexSettingsDirty(final String myIndexName, final Settings settings) {
 		final Settings currentSettings = esClient.admin()
 				.indices()
 				.prepareGetIndex()
-				.addIndices(indexName)
+				.addIndices(myIndexName)
 				.get()
 				.getSettings()
-				.get(indexName);
+				.get(myIndexName);
 		boolean indexSettingsDirty = false;
 		final Map<String, String> settingsMap = settings.getAsMap();
 		for (final Entry<String, String> entry : settingsMap.entrySet()) {
@@ -159,16 +173,16 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final String expectedValue = entry.getValue();
 			if (!currentValue.equals(expectedValue)) {
 				indexSettingsDirty = true;
-				LOGGER.warn("[" + indexName + "] " + entry.getKey() + ":  current=" + currentValue + ", expected=" + expectedValue);
+				LOGGER.warn("[" + myIndexName + "] " + entry.getKey() + ":  current=" + currentValue + ", expected=" + expectedValue);
 				break;
 			}
 		}
 		return indexSettingsDirty;
 	}
 
-	private void logMappings() {
+	private void logMappings(final String myIndexName) {
 		final IndicesAdminClient indicesAdmin = esClient.admin().indices();
-		final ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexMappings = indicesAdmin.prepareGetMappings(indexName).get().getMappings();
+		final ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexMappings = indicesAdmin.prepareGetMappings(myIndexName).get().getMappings();
 		for (final ObjectObjectCursor<String, ImmutableOpenMap<String, MappingMetaData>> indexMapping : indexMappings) {
 			LOGGER.info("Index " + indexMapping.key + " CurrentMapping:");
 			for (final ObjectObjectCursor<String, MappingMetaData> dtoMapping : indexMapping.value) {
@@ -221,7 +235,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.checkNotNull(indexDefinition);
 		//-----
 		createElasticStatement(indexDefinition).remove(uri);
-		markToOptimize();
+		markToOptimize(obtainIndexName(indexDefinition));
 	}
 
 	/** {@inheritDoc} */
@@ -249,7 +263,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.checkNotNull(listFilter);
 		//-----
 		createElasticStatement(indexDefinition).remove(listFilter);
-		markToOptimize();
+		markToOptimize(obtainIndexName(indexDefinition));
 	}
 
 	private <S extends KeyConcept, I extends DtObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
@@ -258,7 +272,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkArgument(types.contains(indexDefinition.getName().toLowerCase(Locale.ENGLISH)), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
 		//-----
-		return new ESStatement<>(elasticDocumentCodec, indexName, indexDefinition.getName().toLowerCase(Locale.ENGLISH), esClient);
+		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), indexDefinition.getName().toLowerCase(Locale.ENGLISH), esClient);
 	}
 
 	/**
@@ -292,7 +306,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 			final PutMappingResponse putMappingResponse = esClient.admin()
 					.indices()
-					.preparePutMapping(indexName)
+					.preparePutMapping(obtainIndexName(indexDefinition))
 					.setType(indexDefinition.getName().toLowerCase(Locale.ENGLISH))
 					.setSource(typeMapping)
 					.get();
@@ -322,10 +336,10 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		}
 	}
 
-	private void markToOptimize() {
+	private void markToOptimize(final String myIndexName) {
 		esClient.admin()
 				.indices()
-				.prepareForceMerge(indexName)
+				.prepareForceMerge(myIndexName)
 				.setFlush(true)
 				.setMaxNumSegments(OPTIMIZE_MAX_NUM_SEGMENT)//32 files : empirique
 				.execute()

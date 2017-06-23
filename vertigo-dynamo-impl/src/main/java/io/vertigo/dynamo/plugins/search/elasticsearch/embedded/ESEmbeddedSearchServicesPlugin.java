@@ -53,6 +53,7 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 	 * Constructor.
 	 * @param elasticSearchHome URL du serveur SOLR
 	 * @param envIndex Nom de l'index de l'environment
+	 * @param envIndexIsPrefix Si Nom de l'index de l'environment est un prefix
 	 * @param rowsPerQuery Nombre d'élément retourné par query
 	 * @param codecManager Manager des codecs
 	 * @param resourceManager Manager d'accès aux ressources
@@ -62,11 +63,12 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 	public ESEmbeddedSearchServicesPlugin(
 			@Named("home") final String elasticSearchHome,
 			@Named("envIndex") final String envIndex,
+			@Named("envIndexIsPrefix") final Optional<Boolean> envIndexIsPrefix,
 			@Named("rowsPerQuery") final int rowsPerQuery,
 			@Named("config.file") final Optional<String> configFile,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
-		super(envIndex, rowsPerQuery, configFile, codecManager, resourceManager);
+		super(envIndex, envIndexIsPrefix.orElse(false), rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(elasticSearchHome);
 		//-----
 		elasticSearchHomeURL = resourceManager.resolve(elasticSearchHome);
