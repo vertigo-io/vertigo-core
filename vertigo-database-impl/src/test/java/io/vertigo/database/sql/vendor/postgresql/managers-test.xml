@@ -11,7 +11,7 @@
 			<plugin class="io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin">
 				<param name="dataBaseClass" value="io.vertigo.database.impl.sql.vendor.postgresql.PostgreSqlDataBase" />
 				<param name="jdbcDriver" value="org.postgresql.Driver" />
-				<param name="jdbcUrl" value="jdbc:postgresql://DSZNITEN2-PORT:5432/testdatabase?user=postgres&amp;password=snoopy" />
+				<param name="jdbcUrl" value="jdbc:postgresql://docker-vertigo.part.klee.lan.net:5432/postgres?user=postgres&amp;password=postgres" />
 			</plugin>
 			<plugin class="io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin">
 				<param name="name" value="secondary" />
