@@ -70,7 +70,7 @@ public final class MyAppConfig {
 					.withAccountStorePlugin(MemoryAccountStorePlugin.class)
 					.withAuthentificationRealm(LdapAuthenticatingRealmPlugin.class,
 							Param.of("userLoginTemplate", "{0}@KLEE.LAN.NET"),
-							Param.of("ldapServerHost", "172.20.100.10"),
+							Param.of("ldapServerHost", "docker-vertigo.part.klee.lan.net"),
 							Param.of("ldapServerPort", "3268"))
 					.build());
 		// @formatter:on
