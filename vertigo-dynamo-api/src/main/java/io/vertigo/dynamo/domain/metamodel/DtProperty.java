@@ -58,6 +58,11 @@ public final class DtProperty {
 	public static final Property<Double> MAX_VALUE = new Property<>("maxValue", Double.class);
 
 	/**
+	 * Propriété standard : Unité de la valeur, valeur String.
+	 */
+	public static final Property<String> UNIT = new Property<>("unit", String.class);
+
+	/**
 	 * Propriété standard : Type de l'index. (SOLR par exemple)
 	 */
 	public static final Property<String> INDEX_TYPE = new Property<>("indexType", String.class);
