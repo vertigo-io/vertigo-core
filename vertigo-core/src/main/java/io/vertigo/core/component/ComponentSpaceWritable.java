@@ -49,6 +49,10 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	 * Components (sorted by creation)
 	 */
 	private final Map<String, Component> components = new LinkedHashMap<>();
+	/**
+	 * Started components are sublist of components.values(). They are added after the start call of a component.
+	 */
+	private final List<Component> startedComponents = new ArrayList<>();
 	private final AtomicBoolean locked = new AtomicBoolean(false);
 
 	/** {@inheritDoc} */
@@ -121,6 +125,7 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	private void startComponents() {
 		for (final Component component : components.values()) {
 			startComponent(component);
+			startedComponents.add(component);
 		}
 	}
 
@@ -128,7 +133,7 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 		/* Fermeture de tous les gestionnaires.*/
 		//On fait les fermetures dans l'ordre inverse des enregistrements.
 		//On se limite aux composants qui ont été démarrés.
-		final List<Component> reversedComponents = new ArrayList<>(components.values());
+		final List<Component> reversedComponents = new ArrayList<>(startedComponents);
 		java.util.Collections.reverse(reversedComponents);
 
 		for (final Component component : reversedComponents) {
