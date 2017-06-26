@@ -45,6 +45,15 @@ import io.vertigo.lang.WrappedException;
  * @author pchretien
  */
 final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
+	/**
+	 * Comparateur par défaut ascendant.
+	 */
+	private static final Comparator<Object> DEFAULT_COMPARATOR_ASC = createDefaultComparator(false);
+
+	/**
+	 * Comparateur par défaut descendant.
+	 */
+	private static final Comparator<Object> DEFAULT_COMPARATOR_DESC = createDefaultComparator(true);
 
 	//On ne veut pas d'un comparateur sérializable !!!
 	/**
@@ -77,7 +86,11 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 			this.comparator = createMasterDataComparator(sortDesc, storeManager, mdlUri);
 		} else {
 			//Cas par défaut
-			this.comparator = createDefaultComparator(sortDesc);
+			if (sortDesc) {
+				this.comparator = DEFAULT_COMPARATOR_DESC;
+			} else {
+				this.comparator = DEFAULT_COMPARATOR_ASC;
+			}
 		}
 	}
 
