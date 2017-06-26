@@ -42,8 +42,6 @@ public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnecti
 	protected AbstractSqlConnectionProviderPlugin(final String name, final SqlDataBase dataBase) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(dataBase);
-		Assertion.checkNotNull(dataBase.getSqlMapping());
-		Assertion.checkNotNull(dataBase.getSqlExceptionHandler());
 		//-----
 		this.name = name;
 		this.dataBase = dataBase;
