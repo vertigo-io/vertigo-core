@@ -97,7 +97,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	/** {@inheritDoc} */
 	@Override
-	public final <O> List<O> executeQuery(
+	public <O> List<O> executeQuery(
 			final String sql,
 			final List<SqlParameter> parameters,
 			final Class<O> dataType,
@@ -136,7 +136,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	/** {@inheritDoc} */
 	@Override
-	public final <O> Tuples.Tuple2<Integer, O> executeUpdateWithGeneratedKey(
+	public <O> Tuples.Tuple2<Integer, O> executeUpdateWithGeneratedKey(
 			final String sql,
 			final List<SqlParameter> parameters,
 			final GenerationMode generationMode,
@@ -162,7 +162,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	/** {@inheritDoc} */
 	@Override
-	public final int executeUpdate(
+	public int executeUpdate(
 			final String sql,
 			final List<SqlParameter> parameters) throws SQLException {
 		Assertion.checkArgNotEmpty(sql);
@@ -264,11 +264,11 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	/** {@inheritDoc} */
 	@Override
-	public final String toString() {
+	public String toString() {
 		return info.toString();
 	}
 
-	private final <O> O getGeneratedKey(
+	private <O> O getGeneratedKey(
 			final PreparedStatement statement,
 			final String columnName,
 			final Class<O> dataType) throws SQLException {
