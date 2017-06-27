@@ -52,7 +52,7 @@ public final class UserPermissions implements Serializable {
 	 * @param role Role e ajouter.
 	 * @return this UserPermissions
 	 */
-	public final UserPermissions addRole(final Role role) {
+	public UserPermissions addRole(final Role role) {
 		Assertion.checkNotNull(role);
 		//-----
 		roleRefs.add(new DefinitionReference<>(role));
@@ -64,7 +64,7 @@ public final class UserPermissions implements Serializable {
 	 *
 	 * @return Set des roles.
 	 */
-	public final Set<Role> getRoles() {
+	public Set<Role> getRoles() {
 		return roleRefs.stream()
 				.map(roleRef -> roleRef.get())
 				.collect(Collectors.toSet());
@@ -74,7 +74,7 @@ public final class UserPermissions implements Serializable {
 	 * @param role Role
 	 * @return Vrai si le role est present
 	 */
-	public final boolean hasRole(final Role role) {
+	public boolean hasRole(final Role role) {
 		Assertion.checkNotNull(role);
 		//-----
 		return roleRefs.contains(new DefinitionReference<>(role));
@@ -84,7 +84,7 @@ public final class UserPermissions implements Serializable {
 	 * Retrait de tous les roles possedes par l'utilisateur.
 	 * Attention, cela signifie qu'il n'a plus aucun droit.
 	 */
-	public final void clearRoles() {
+	public void clearRoles() {
 		roleRefs.clear();
 	}
 
@@ -95,7 +95,7 @@ public final class UserPermissions implements Serializable {
 	 * @param permission Permission à ajouter.
 	 * @return This UserPermissions
 	 */
-	public final UserPermissions addPermission(final Permission permission) {
+	public UserPermissions addPermission(final Permission permission) {
 		Assertion.checkNotNull(permission);
 		//-----
 		permissionRefs.put(permission.getName(), new DefinitionReference<>(permission));
@@ -116,7 +116,7 @@ public final class UserPermissions implements Serializable {
 	 * @param entityDefinition Entity definition
 	 * @return Set des permissions.
 	 */
-	public final Set<Permission> getEntityPermissions(final DtDefinition entityDefinition) {
+	public Set<Permission> getEntityPermissions(final DtDefinition entityDefinition) {
 		final Set<DefinitionReference<Permission>> entityPermissionRefs = permissionMapRefs.get(new DefinitionReference<>(entityDefinition));
 		if (entityPermissionRefs != null) {
 			return entityPermissionRefs.stream()
@@ -130,7 +130,7 @@ public final class UserPermissions implements Serializable {
 	 * @param permissionName Permission
 	 * @return Vrai si la permission est presente
 	 */
-	public final boolean hasPermission(final PermissionName permissionName) {
+	public boolean hasPermission(final PermissionName permissionName) {
 		Assertion.checkNotNull(permissionName);
 		//-----
 		return permissionRefs.containsKey(permissionName.name());
@@ -140,7 +140,7 @@ public final class UserPermissions implements Serializable {
 	 * Retrait de toutes les permissions possedes par l'utilisateur.
 	 * Attention, cela signifie qu'il n'a plus aucun droit.
 	 */
-	public final void clearPermissions() {
+	public void clearPermissions() {
 		permissionRefs.clear();
 		permissionMapRefs.clear();
 	}
