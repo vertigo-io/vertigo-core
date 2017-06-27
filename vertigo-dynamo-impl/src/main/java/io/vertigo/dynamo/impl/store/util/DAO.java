@@ -342,7 +342,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 		brokerNN.appendNN(dtListURI, entity.getURI());
 	}
 
-	private final DtDefinition getDtDefinition() {
+	private DtDefinition getDtDefinition() {
 		return DtObjectUtil.findDtDefinition(entityClass);
 	}
 }

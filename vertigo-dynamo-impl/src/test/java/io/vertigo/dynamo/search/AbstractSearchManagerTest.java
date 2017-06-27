@@ -75,10 +75,10 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 	/** Manager de recherche. */
 	@Inject
-	protected SearchManager searchManager;
+	private SearchManager searchManager;
 
 	/** IndexDefinition. */
-	protected SearchIndexDefinition carIndexDefinition;
+	private SearchIndexDefinition carIndexDefinition;
 	private FacetedQueryDefinition carFacetQueryDefinition;
 	private FacetDefinition makeFacetDefinition;
 	private FacetDefinition yearFacetDefinition;
@@ -113,7 +113,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	private static void recursiveDelete(final File file) throws IOException {
+	private static void recursiveDelete(final File file) {
 
 		if (file.isDirectory()) {
 			//list all the directory contents
@@ -1005,7 +1005,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		waitIndexation();
 	}
 
-	protected void remove(final String query) {
+	private void remove(final String query) {
 		doRemove(query);
 		waitIndexation();
 	}
