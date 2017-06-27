@@ -336,10 +336,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		Assertion.checkArgument(DtObjectUtil.getId(entity) == null, "Only object without any id can be created");
 		//------
 		final boolean insert = true;
-		final boolean saved = put(entity, insert);
-		if (!saved) {
-			throw new VSystemException("no data created");
-		}
+		put(entity, insert);
 		return entity;
 	}
 
@@ -349,10 +346,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(DtObjectUtil.getId(entity), "Need an id to update an object ");
 		//-----
 		final boolean insert = false;
-		final boolean saved = put(entity, insert);
-		if (!saved) {
-			throw new VSystemException("no data updated");
-		}
+		put(entity, insert);
 	}
 
 	/**
@@ -392,9 +386,8 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	/**
 	 * @param entity Objet à persiter
 	 * @param insert Si opération de type insert (update sinon)
-	 * @return Si "1 ligne sauvée", sinon "Aucune ligne sauvée"
 	 */
-	private boolean put(final Entity entity, final boolean insert) {
+	private void put(final Entity entity, final boolean insert) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = (insert ? TASK.TK_INSERT : TASK.TK_UPDATE) + "_" + tableName;
@@ -416,11 +409,12 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		final int sqlRowCount = taskManager
 				.execute(task)
 				.getResult();
-
 		if (sqlRowCount > 1) {
 			throw new VSystemException(insert ? "more than one row has been inserted" : "more than one row has been updated");
 		}
-		return sqlRowCount != 0; // true si "1 ligne sauvée", false si "Aucune ligne sauvée"
+		if (sqlRowCount == 0) {
+			throw new VSystemException("no data " + (insert ? "created" : "updated"));
+		}
 	}
 
 	private static List<String> getDataFields(final DtDefinition dtDefinition) {
