@@ -45,12 +45,11 @@ import io.vertigo.lang.DataStream;
  */
 public final class SqlMappingImpl implements SqlMapping {
 	private static final String TYPE_UNSUPPORTED = "Type unsupported : ";
-	private static final Calendar CALENDAR_UTC = initCalendarUTC();
 
-	private static Calendar initCalendarUTC() {
-		final Calendar cal = Calendar.getInstance();
-		cal.setTimeZone(TimeZone.getTimeZone("UTC"));
-		return cal;
+	private static Calendar createCalendarUTC() {
+		final Calendar calendar = Calendar.getInstance();
+		calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+		return calendar;
 	}
 
 	/** {@inheritDoc} */
@@ -186,7 +185,7 @@ public final class SqlMappingImpl implements SqlMapping {
 			final Timestamp timestamp = resultSet.getTimestamp(col);
 			value = timestamp == null ? null : new java.util.Date(timestamp.getTime());
 		} else if (ZonedDateTime.class.isAssignableFrom(dataType)) {
-			final Timestamp timestamp = resultSet.getTimestamp(col, CALENDAR_UTC);
+			final Timestamp timestamp = resultSet.getTimestamp(col, createCalendarUTC());
 			value = timestamp == null ? null : ZonedDateTime.ofInstant(Instant.ofEpochMilli(timestamp.getTime()), ZoneId.of("UTC"));
 		} else if (DataStream.class.isAssignableFrom(dataType)) {
 			value = SqlDataStreamMappingUtil.getDataStream(resultSet, col);
