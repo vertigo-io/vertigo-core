@@ -21,7 +21,7 @@ package io.vertigo.database.impl.sql;
 import io.vertigo.core.locale.MessageKey;
 
 /**
- * 
+ *
  * @author jmforhan
  */
 public enum Resources implements MessageKey {

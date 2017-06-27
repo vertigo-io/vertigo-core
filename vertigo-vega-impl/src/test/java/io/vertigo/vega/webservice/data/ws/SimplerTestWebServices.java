@@ -373,7 +373,7 @@ public final class SimplerTestWebServices implements WebServices {
 	public FacetedQueryResult<DtObject, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
-	
+
 		//offset + range ?
 		//code 200
 		return result;

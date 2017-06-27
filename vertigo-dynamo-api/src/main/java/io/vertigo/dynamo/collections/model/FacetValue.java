@@ -48,7 +48,7 @@ public final class FacetValue implements Serializable {
 	/**
 	 * Contructor.
 	 * @param code the code of the facet
-	 * @param listFilter the list filter 
+	 * @param listFilter the list filter
 	 * @param label the label of the facet
 	 */
 	public FacetValue(final String code, final ListFilter listFilter, final MessageText label) {
@@ -62,7 +62,7 @@ public final class FacetValue implements Serializable {
 	}
 
 	/**
-	 * @return the code of the facet 
+	 * @return the code of the facet
 	 */
 	public String getCode() {
 		return code;
@@ -71,11 +71,11 @@ public final class FacetValue implements Serializable {
 	/**
 	 * Returns the label of the facet.
 	 * This label must be human readable.
-	 * 
-	 * examples : 
-	 * - 'small files' can be preferred to an expression. 
-	 * 
-	 * @return the label of the facet 
+	 *
+	 * examples :
+	 * - 'small files' can be preferred to an expression.
+	 *
+	 * @return the label of the facet
 	 */
 	public MessageText getLabel() {
 		return label;

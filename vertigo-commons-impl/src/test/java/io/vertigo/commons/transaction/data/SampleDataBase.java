@@ -19,7 +19,7 @@
 package io.vertigo.commons.transaction.data;
 
 /**
- * 
+ *
  * @author dchallas
  *
  */

@@ -23,7 +23,7 @@ import javax.servlet.ServletContextListener;
 
 /**
  * Classe d'initialisation.
- * 
+ *
  * @author pforhan
  */
 public class AppServletContextListener implements ServletContextListener {

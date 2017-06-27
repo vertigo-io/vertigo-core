@@ -25,7 +25,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @author pchretien 
+ * @author pchretien
  */
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)

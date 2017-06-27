@@ -20,7 +20,7 @@ package io.vertigo.core.component;
 
 /**
  * Composant.
- * Tout composant doit être ThreadSafe. 
+ * Tout composant doit être ThreadSafe.
  * Un module possède un paramétrage et un état interne,
  * ce qui lui permet d'offrir des services.
  *
@@ -38,7 +38,7 @@ package io.vertigo.core.component;
  *
  * Lors du démarrage du composant. (méthode Start)
  *  - Vérification de la configuration avec les méthodes register.
- * Lors de l'arrét du composant 
+ * Lors de l'arrét du composant
  *  - Libération des ressources consommées par le composant lors du undeploy.
  * 		Exemples : connexions, thread, flux
  * @author pchretien

@@ -22,12 +22,12 @@ import java.util.List;
 
 /**
  * Résultat d'une ligne d'analyse.
- * 
+ *
  * @author tchassagnette
  */
 public interface ReportLine {
 	/**
-	 * @return Intitulé de l'analyse effectuée. (ex : Nom de l'objet) 
+	 * @return Intitulé de l'analyse effectuée. (ex : Nom de l'objet)
 	 */
 	String getTitle();
 
@@ -42,7 +42,7 @@ public interface ReportLine {
 	String getHtmlDescription();
 
 	/**
-	 * @return Métriques associées. 
+	 * @return Métriques associées.
 	 */
 	List<ReportMetric> getMetrics();
 }

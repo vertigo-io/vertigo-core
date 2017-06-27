@@ -23,12 +23,12 @@ import java.io.InputStream;
 
 /**
  * Type primitif de Flux.
- * 
+ *
  * @author  pchretien
  */
 public interface DataStream {
 	/**
-	 * @return Flux 
+	 * @return Flux
 	 * @throws IOException Erreur d'entrée/sortie
 	 */
 	InputStream createInputStream() throws IOException;

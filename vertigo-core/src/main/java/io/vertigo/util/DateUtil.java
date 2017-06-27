@@ -128,7 +128,7 @@ public final class DateUtil {
 	 * now-12M
 	 * now-2y
 	 * "06/12/2003", "dd/MM/yyyy"
-	 * 
+	 *
 	 * @param dateExpression Expression
 	 * @param datePattern Pattern used to define a date (dd/MM/YYYY)
 	 *

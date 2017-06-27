@@ -22,11 +22,11 @@ import io.vertigo.core.component.Manager;
 
 /**
  * Gestionnaire de transactions.
- * Une transaction contient un ensemble de ressources de type 
- *  - BDD, 
- *  - fichiers, 
- *  - JMS... 
- *  
+ * Une transaction contient un ensemble de ressources de type
+ *  - BDD,
+ *  - fichiers,
+ *  - JMS...
+ *
  * Le Manager permet :
  * - Soit d'obtenir la transaction courante (la créant au besoin),
  * - Soit de créer une transaction autonome (au sein de la transaction courante).

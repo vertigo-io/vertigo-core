@@ -22,22 +22,22 @@ import java.lang.reflect.Method;
 
 /**
  * This class allows you to define the behavior of an aspect on a specific method.
- * 
+ *
  * You can add some code before running the method, or after.
  * You can catch some exceptions and log them...
  * You can ever change the result of a method.
- *  
+ *
  * @author pchretien
  */
 public interface AspectMethodInvocation {
 	/**
-	 * @return method concerned by the advice 
+	 * @return method concerned by the advice
 	 */
 	Method getMethod();
 
 	/**
-	 * 
-	 * @param args Args 
+	 *
+	 * @param args Args
 	 * @return the result of the method.
 	 */
 	Object proceed(Object[] args);

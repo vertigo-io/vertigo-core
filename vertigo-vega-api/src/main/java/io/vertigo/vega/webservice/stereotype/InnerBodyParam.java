@@ -26,15 +26,15 @@ import java.lang.annotation.Target;
 
 /**
  * Bind the value of a field of an json object passed in http body, to the annotated parameter.
- * Exemple : 
+ * Exemple :
  * {
  *  myFirst : 120,
  *  mySecond : { comment:"It's a trap !" }
  * }
- * 
+ *
  * Can be map to :
  * void myService(@InnerBodyParam("myFirst") long myFirstValue, @InnerBodyParam("mySecond") Comment comment)
- * 
+ *
  * @author npiedeloup
  */
 @Target({ ElementType.PARAMETER })
