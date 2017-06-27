@@ -101,7 +101,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU4 {
 	}
 
 	private DtList<SuperHero> getSuperHeroes() {
-		return DtList.<SuperHero> of(
+		return DtList.of(
 				createSuperHero(1, "superman"),
 				createSuperHero(2, "batman"),
 				createSuperHero(3, "catwoman"),

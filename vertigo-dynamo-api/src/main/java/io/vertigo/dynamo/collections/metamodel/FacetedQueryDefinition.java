@@ -126,7 +126,7 @@ public final class FacetedQueryDefinition implements Definition {
 	 * @return Liste des facettes portées par l'index.
 	 */
 	public Collection<FacetDefinition> getFacetDefinitions() {
-		return Collections.<FacetDefinition> unmodifiableCollection(facetDefinitions.values());
+		return Collections.unmodifiableCollection(facetDefinitions.values());
 	}
 
 	/**

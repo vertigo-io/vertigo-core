@@ -106,7 +106,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 
 			final DtList<?> dtList = result
 					.stream()
-					.map(obj -> DtObject.class.cast(obj))
+					.map(DtObject.class::cast)
 					.collect(VCollectors.toDtList(outAttribute.getDomain().getDtDefinition()));
 			setResult(dtList);
 

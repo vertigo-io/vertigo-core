@@ -117,7 +117,7 @@ public final class Domain implements Definition {
 	private static List<DefinitionReference<ConstraintDefinition>> buildConstraintDefinitionRefs(final List<ConstraintDefinition> constraintDefinitions) {
 		return constraintDefinitions
 				.stream()
-				.map(constraintDefinition -> new DefinitionReference<>(constraintDefinition))
+				.map(DefinitionReference::new)
 				.collect(Collectors.toList());
 	}
 

@@ -98,7 +98,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable, S
 		collectionConfigs = parseCollectionConfigs(collections);
 		collectionNames = collectionConfigs
 				.stream()
-				.map(collectionConfig -> collectionConfig.getCollectionName())
+				.map(BerkeleyCollectionConfig::getCollectionName)
 				.collect(Collectors.toList());
 		//-----
 		dbFilePathTranslated = FileUtil.translatePath(dbFilePath);

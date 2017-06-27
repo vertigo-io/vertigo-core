@@ -76,7 +76,7 @@ public final class DataStoreImpl implements DataStore {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
-		final E entity = getPhysicalStore(dtDefinition).<E> readNullableForUpdate(dtDefinition, uri);
+		final E entity = getPhysicalStore(dtDefinition).readNullableForUpdate(dtDefinition, uri);
 		//-----
 		Assertion.checkNotNull(entity, "no entity found for : '{0}'", uri);
 		//-----
@@ -136,7 +136,7 @@ public final class DataStoreImpl implements DataStore {
 	public <E extends Entity> E readOne(final URI<E> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final E entity = cacheDataStore.<E> readNullable(uri);
+		final E entity = cacheDataStore.readNullable(uri);
 		//-----
 		Assertion.checkNotNull(entity, "no entity found for : '{0}'", uri);
 		return entity;

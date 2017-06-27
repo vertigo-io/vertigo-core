@@ -124,7 +124,7 @@ public final class SearchDynamicRegistry implements DynamicRegistry {
 					getFacetOrder(xdefinition, FacetOrder.count));
 		} else {
 			final List<FacetValue> facetValues = rangeDefinitions.stream()
-					.map(rangeDefinition -> createFacetValue(rangeDefinition))
+					.map(SearchDynamicRegistry::createFacetValue)
 					.collect(Collectors.toList());
 			facetDefinition = FacetDefinition.createFacetDefinitionByRange(
 					definitionName,

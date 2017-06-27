@@ -254,7 +254,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		//On ne traite l'event que si il porte sur un KeyConcept
 		if (uri.getDefinition().getStereotype() == DtStereotype.KeyConcept
 				&& hasIndexDefinitionByKeyConcept(uri.getDefinition())) {
-			final List<URI<? extends KeyConcept>> list = Collections.<URI<? extends KeyConcept>> singletonList(uri);
+			final List<URI<? extends KeyConcept>> list = Collections.singletonList(uri);
 			markAsDirty(list);
 		}
 	}

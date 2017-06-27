@@ -123,7 +123,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		final List<ListFilter> listFilters = facetedQuery.getListFilters();
 		Predicate<D> predicate = list -> true;
 		for (final ListFilter listFilter : listFilters) {
-			predicate = predicate.and(this.<D> filter(listFilter));
+			predicate = predicate.and(this.filter(listFilter));
 		}
 		return predicate;
 	}

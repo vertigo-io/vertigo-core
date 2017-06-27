@@ -93,7 +93,7 @@ public final class FacetDefinition implements Definition {
 		Assertion.when(rangeFacet)
 				.check(() -> !facetValues.isEmpty(), "Les FacetDefinition de type 'range' doivent fournir la liste des segments non vides (FacetValues)");
 		Assertion.when(!rangeFacet)
-				.check(() -> facetValues.isEmpty(), "Les FacetDefinition de type 'term' doivent fournir une liste des segments vide");
+				.check(facetValues::isEmpty, "Les FacetDefinition de type 'term' doivent fournir une liste des segments vide");
 		Assertion.checkNotNull(order);
 		//-----
 		this.name = name;
@@ -142,7 +142,7 @@ public final class FacetDefinition implements Definition {
 			final DtField dtField,
 			final MessageText label,
 			final FacetOrder order) {
-		return new FacetDefinition(name, dtField, label, Collections.<FacetValue> emptyList(), false, order);
+		return new FacetDefinition(name, dtField, label, Collections.emptyList(), false, order);
 	}
 
 	/**
