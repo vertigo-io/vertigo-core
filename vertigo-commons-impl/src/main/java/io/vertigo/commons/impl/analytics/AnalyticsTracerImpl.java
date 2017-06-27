@@ -34,7 +34,7 @@ import io.vertigo.lang.Assertion;
  * @author npiedeloup
  */
 final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
-	private final static Logger LOGGER = Logger.getLogger(AnalyticsManager.class);
+	private static final Logger LOGGER = Logger.getLogger(AnalyticsManager.class);
 
 	private Boolean succeeded; //default no info
 	private Throwable causeException; //default no info
