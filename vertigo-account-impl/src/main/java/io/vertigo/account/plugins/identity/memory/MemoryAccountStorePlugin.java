@@ -147,7 +147,7 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 		Assertion.checkNotNull(accountURI);
 		//-----
 		final Set<URI<AccountGroup>> groupURIs = groupByAccountURI.get(accountURI);
-		Assertion.checkNotNull(accountURI, "account {0} must be create before this operation", accountURI);
+		Assertion.checkNotNull(groupURIs, "account {0} must be create before this operation", accountURI);
 		return Collections.unmodifiableSet(groupURIs);
 	}
 

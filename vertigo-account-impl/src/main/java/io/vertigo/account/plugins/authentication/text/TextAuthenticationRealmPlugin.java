@@ -54,6 +54,7 @@ import io.vertigo.lang.WrappedException;
  * @since 0.1
  */
 public class TextAuthenticationRealmPlugin implements AuthenticationRealmPlugin, Activeable {
+	//	accountKey  |  login  |  password
 	private static final String FILE_PATTERN_STR = "^(\\S+)\\s+(\\S+)\\s+(\\S+)\\s*$";
 	private static final Pattern FILE_PATTERN = Pattern.compile(FILE_PATTERN_STR);
 
