@@ -18,6 +18,8 @@
  */
 package io.vertigo.account.impl.identity;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 
 import io.vertigo.account.identity.AccountStore;
@@ -32,7 +34,7 @@ import io.vertigo.lang.Assertion;
  */
 public final class IdentityManagerImpl implements IdentityManager {
 	private final AccountStore accountStorePlugin;
-	private final IdentityRealmPlugin identityRealmPlugin;
+	private final Optional<IdentityRealm> identityRealmPlugin;
 	private final VFile defaultPhoto;
 
 	/**
@@ -44,14 +46,14 @@ public final class IdentityManagerImpl implements IdentityManager {
 	@Inject
 	public IdentityManagerImpl(
 			final AccountStorePlugin accountStorePlugin,
-			final IdentityRealmPlugin identityRealmPlugin,
+			final Optional<IdentityRealmPlugin> identityRealmPlugin,
 			final FileManager fileManager) {
 		Assertion.checkNotNull(accountStorePlugin);
 		Assertion.checkNotNull(identityRealmPlugin);
 		Assertion.checkNotNull(fileManager);
 		//-----
 		this.accountStorePlugin = accountStorePlugin;
-		this.identityRealmPlugin = identityRealmPlugin;
+		this.identityRealmPlugin = Optional.ofNullable(identityRealmPlugin.orElse(null));//necessaire car Optional<IdentityRealmPlugin> n'est pas Optional<identityRealm> :)
 		defaultPhoto = fileManager.createFile(
 				"defaultPhoto.png",
 				"image/png",
@@ -72,7 +74,7 @@ public final class IdentityManagerImpl implements IdentityManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public IdentityRealm getIdentityRealm() {
+	public Optional<IdentityRealm> getIdentityRealm() {
 		return identityRealmPlugin;
 	}
 

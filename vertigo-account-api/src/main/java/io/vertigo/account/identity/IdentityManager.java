@@ -18,6 +18,8 @@
  */
 package io.vertigo.account.identity;
 
+import java.util.Optional;
+
 import io.vertigo.core.component.Manager;
 import io.vertigo.dynamo.file.model.VFile;
 
@@ -43,6 +45,6 @@ public interface IdentityManager extends Manager {
 	/**
 	 * @return the realm of identities
 	 */
-	IdentityRealm getIdentityRealm();
+	Optional<IdentityRealm> getIdentityRealm();
 
 }
