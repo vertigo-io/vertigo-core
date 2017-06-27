@@ -125,9 +125,8 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Account getAccountByAuthToken(final String userAuthToken) {
-		LdapContext ldapContext = null;
+		final LdapContext ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
 		try {
-			ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
 			return getAccountByAuthToken(userAuthToken, ldapContext);
 		} finally {
 			closeLdapContext(ldapContext);
@@ -143,9 +142,8 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Collection<Account> getAllAccounts() {
-		LdapContext ldapContext = null;
+		final LdapContext ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
 		try {
-			ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
 			return searchAccount("*", -1, ldapContext);
 		} finally {
 			closeLdapContext(ldapContext);
@@ -155,9 +153,8 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<VFile> getPhoto(final URI<Account> accountURI) {
-		LdapContext ldapContext = null;
+		final LdapContext ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
 		try {
-			ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
 			final String photoAttributeName = ldapAccountAttributeMapping.get(AccountProperty.photo);
 			return parseOptionalVFile(getAccountAttributes(accountURI.getId(), Collections.singleton(photoAttributeName), ldapContext));
 		} finally {
@@ -244,15 +241,13 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 	}
 
 	private static void closeLdapContext(final LdapContext ldapContext) {
-		if (ldapContext != null) {
-			try {
-				ldapContext.close();
-				if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("Fermeture connexion Ldap  \"" + ldapContext.toString() + "\" ");
-				}
-			} catch (final NamingException e) {
-				throw WrappedException.wrap(e, "Erreur lors de la fermeture de l'objet LdapContext");
+		try {
+			ldapContext.close();
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("Fermeture connexion Ldap  \"" + ldapContext.toString() + "\" ");
 			}
+		} catch (final NamingException e) {
+			throw WrappedException.wrap(e, "Erreur lors de la fermeture de l'objet LdapContext");
 		}
 	}
 
