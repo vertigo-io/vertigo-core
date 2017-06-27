@@ -82,6 +82,6 @@ public final class AccountBuilder implements Builder<Account> {
 	/** {@inheritDoc} */
 	@Override
 	public Account build() {
-		return new Account(myId, myDisplayName, myEmail, myAuthToken);
+		return new Account(myId, myDisplayName, myEmail, myAuthToken != null ? myAuthToken : myEmail);
 	}
 }
