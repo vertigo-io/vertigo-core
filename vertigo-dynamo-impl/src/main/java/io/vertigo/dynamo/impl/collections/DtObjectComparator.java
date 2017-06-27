@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.impl.collections;
 
-import java.io.Serializable;
 import java.text.Collator;
 import java.util.Comparator;
 import java.util.Locale;
@@ -77,7 +76,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 			this.comparator = createMasterDataComparator(sortDesc, storeManager, mdlUri);
 		} else {
 			//Cas par défaut
-			this.comparator = createDefaultComparator(sortDesc);
+			this.comparator = (v1, v2) -> compareValues(v1, v2, sortDesc);
 		}
 	}
 
@@ -123,15 +122,6 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 	}
 
 	/**
-	 * Création d'un comparateur à partir de l'état de tri précisé.
-	 * Il s'agit du comparateur par défaut.
-	 * @return Comparator
-	 */
-	private static Comparator<Object> createDefaultComparator(final boolean sortDesc) {
-		return new DefaultComparator(sortDesc);
-	}
-
-	/**
 	 * Fournit le comparateur à utiliser pour trier une colonne référenéant une MasterDataList.
 	 * @return Comparator à utiliser pour trier la colonne.
 	 */
@@ -143,21 +133,6 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		//		final Store store = getPhysicalStore(masterDataDefinition.getDtDefinition());
 		final DtField mdFieldSort = dtcURIForMasterData.getDtDefinition().getSortField().get();
 		return new MasterDataComparator(dtcURIForMasterData, sortDesc, dataStore, mdFieldSort);
-	}
-
-	private static final class DefaultComparator implements Comparator<Object>, Serializable {
-		private static final long serialVersionUID = -1281179009146979671L;
-		private final boolean sortDesc;
-
-		DefaultComparator(final boolean sortDesc) {
-			this.sortDesc = sortDesc;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public int compare(final Object v1, final Object v2) {
-			return compareValues(v1, v2, sortDesc);
-		}
 	}
 
 	private static final class MasterDataComparator implements Comparator<Object> {
