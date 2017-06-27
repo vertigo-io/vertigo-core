@@ -68,23 +68,23 @@ public final class ExplainPlanMetricEngine implements ReportMetricEngine<TaskDef
 	public ReportMetric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//-----
-		final SqlConnection sqlConnection = sqlDataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
 		try {
-			if (TaskEngineSelect.class.isAssignableFrom(taskDefinition.getTaskEngineClass())) {
-				final int currentSequence = sequence++;
-				final String explainPlan = getExplainPlanElement(taskDefinition, currentSequence, sqlConnection);
-				return createMetric(explainPlan, Status.EXECUTED, null);
-			}
-
-			return createMetric(null, Status.REJECTETD, null);
-		} catch (final Exception e) {
-			return createMetric(null, Status.ERROR, e);
-		} finally {
+			final SqlConnection sqlConnection = sqlDataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
 			try {
+				if (TaskEngineSelect.class.isAssignableFrom(taskDefinition.getTaskEngineClass())) {
+					final int currentSequence = sequence++;
+					final String explainPlan = getExplainPlanElement(taskDefinition, currentSequence, sqlConnection);
+					return createMetric(explainPlan, Status.EXECUTED, null);
+				}
+
+				return createMetric(null, Status.REJECTETD, null);
+			} catch (final Exception e) {
+				return createMetric(null, Status.ERROR, e);
+			} finally {
 				sqlConnection.release();
-			} catch (final SQLException e) {
-				throw WrappedException.wrap(e);
 			}
+		} catch (final SQLException e) {
+			throw WrappedException.wrap(e);
 		}
 	}
 
