@@ -1,21 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- vertigo - simple java starter
-
-Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
-KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.vertigo</groupId>
@@ -31,7 +16,7 @@ limitations under the License. -->
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<vertigo.version>0.9.5-SNAPSHOT</vertigo.version>
-		
+
 		<!-- For global junit test coverage -->
 		<jacoco.destFile>${project.basedir}/../target/jacoco-it.exec</jacoco.destFile>
 		<sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.reportPaths>
@@ -44,7 +29,7 @@ limitations under the License. -->
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	
+
 	<scm>
 		<connection>scm:git:https://github.com/KleeGroup/vertigo.git</connection>
 		<developerConnection>scm:git:https://github.com/KleeGroup/vertigo.git</developerConnection>
@@ -119,20 +104,20 @@ limitations under the License. -->
 				<artifactId>maven-compiler-plugin</artifactId>
 			</plugin>
 			<plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-surefire-plugin</artifactId>
-			    <version>2.18.1</version>
-			    <configuration>
-			        <testFailureIgnore>true</testFailureIgnore>
-			        <junitArtifactName>junit:junit</junitArtifactName>
-			        <encoding>${project.build.sourceEncoding}</encoding>
-			        <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
-			        <outputEncoding>${project.build.sourceEncoding}</outputEncoding>
-<!-- 			        <argLine>-Dfile.encoding=${project.build.sourceEncoding} ${argLine}</argLine>
- -->			    </configuration>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.18.1</version>
+				<configuration>
+					<testFailureIgnore>true</testFailureIgnore>
+					<junitArtifactName>junit:junit</junitArtifactName>
+					<encoding>${project.build.sourceEncoding}</encoding>
+					<inputEncoding>${project.build.sourceEncoding}</inputEncoding>
+					<outputEncoding>${project.build.sourceEncoding}</outputEncoding>
+					<!-- <argLine>-Dfile.encoding=${project.build.sourceEncoding} ${argLine}</argLine> -->
+				</configuration>
 			</plugin>
 			<plugin>
-				<!-- We need a test jar too  -->
+				<!-- We need a test jar too -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.4</version>
@@ -154,12 +139,12 @@ limitations under the License. -->
 				<version>2.5</version>
 				<configuration>
 					<header>license.txt</header>
-                    <includes>
-                        <include>**/*.java</include>
-                    </includes>
+					<includes>
+						<include>**/*.java</include>
+					</includes>
 				</configuration>
-				<!-- executions> <execution> <phase>package</phase> <goals> <goal>license</goal> 
-					</goals> </execution> </executions -->
+				<!-- executions> <execution> <phase>package</phase> <goals> <goal>license</goal> </goals> </execution> 
+					</executions -->
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -174,12 +159,12 @@ limitations under the License. -->
 				</dependencies>
 			</plugin>
 			<plugin>
-      				<groupId>org.apache.maven.plugins</groupId>
-      				<artifactId>maven-javadoc-plugin</artifactId>
-      				<configuration>
-        				<additionalparam>-Xdoclint:none</additionalparam>
-      				</configuration>
-    			</plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
+			</plugin>
 			<plugin>
 				<artifactId>maven-deploy-plugin</artifactId>
 				<version>2.8.2</version>
@@ -239,48 +224,45 @@ limitations under the License. -->
 						</executions>
 					</plugin>
 				</plugins>
-			 </build>
+			</build>
 		</profile>
 	</profiles>
 
 	<distributionManagement>
-	  <repository>
-		<id>ossrh</id>
-		<name>OSSRH Releases</name>
-		<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-	  </repository>
-	  <!-- snapshotRepository>
-	     <id>ossrh</id>
-	     <name>OSSRH Snapshot</name>
-	     <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-	  </snapshotRepository -->
-	  <snapshotRepository>
-	     <id>klee-nexus</id>
-	     <name>KleeGoup nexus Snapshots</name>
-	     <url>http://kleegroup-nexus:8080/nexus/content/repositories/snapshots/</url>
-	  </snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<name>OSSRH Releases</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+		<!-- snapshotRepository> <id>ossrh</id> <name>OSSRH Snapshot</name> <url>https://oss.sonatype.org/content/repositories/snapshots/</url> 
+			</snapshotRepository -->
+		<snapshotRepository>
+			<id>klee-nexus</id>
+			<name>KleeGoup nexus Snapshots</name>
+			<url>http://kleegroup-nexus:8080/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
 	</distributionManagement>
 
 	<dependencies>
 		<dependency>
-		    <groupId>org.junit.jupiter</groupId>
-		    <artifactId>junit-jupiter-engine</artifactId>
-		    <version>5.0.0-M2</version>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>5.0.0-M2</version>
 			<scope>test</scope>
-		</dependency>		
+		</dependency>
 		<dependency>
-		 	<groupId>org.junit.jupiter</groupId>
-		    <artifactId>junit-jupiter-api</artifactId>
-		    <version>5.0.0-M2</version>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.0.0-M2</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.junit.platform/junit-platform-runner -->
 		<dependency>
-		    <groupId>org.junit.platform</groupId>
-		    <artifactId>junit-platform-runner</artifactId>
-		    <version>1.0.0-M2</version>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-runner</artifactId>
+			<version>1.0.0-M2</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 	</dependencies>
 </project>

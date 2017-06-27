@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.vertigo</groupId>
@@ -32,8 +33,8 @@
 			<artifactId>vertigo-dynamo-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
-		<!--  tests -->
+
+		<!-- tests -->
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-core</artifactId>
@@ -41,24 +42,24 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-commons-impl</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>1.4.193</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc7</artifactId> 
+			<artifactId>ojdbc7</artifactId>
 			<version>12.1.0.1</version>
 			<scope>test</scope>
 		</dependency>
@@ -86,7 +87,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId><!-- no official version, but Hibernate publish this jar which contains only the API -->
+			<groupId>org.hibernate.javax.persistence</groupId><!-- no official version, but Hibernate publish 
+				this jar which contains only the API -->
 			<artifactId>hibernate-jpa-2.1-api</artifactId>
 			<version>1.0.0.Final</version>
 			<optional>true</optional> <!-- HibernateStorePlugin -->
@@ -103,7 +105,7 @@
 			<version>5.2.6.Final</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- Search -->
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
@@ -111,7 +113,7 @@
 			<version>2.4.4</version>
 			<optional>true</optional><!-- EsTransportSearchServicesPlugin -->
 		</dependency>
-		
+
 		<!-- Connections Pool -->
 		<dependency>
 			<groupId>com.mchange</groupId>
@@ -120,55 +122,39 @@
 			<optional>true</optional><!-- C3p0DataSourceProviderPlugin -->
 		</dependency>
 
-	<!-- Dépendances à des librairies spécifiques au module -->
-		
-		
+		<!-- Dépendances à des librairies spécifiques au module -->
 
-		<!-- <dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-compress</artifactId>
-			<version>1.5</version> solr-core 4.6.0 depends on 1.4.1. Tika depends on 1.5 : we unified versions
-			<optional>true</optional>EmbeddedSolrSearchServicesPlugin
-		</dependency> -->
 
-		<!-- <dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>solr-core 4.10.0 depends on 1.6.1. Ehcache 2.8.3 depends on 1.6.6 : we unified versions
-			<version>1.6.6</version>
-		</dependency> -->
 
-		<!--<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.1.0</version>
-			<scope>provided</scope>
-			<optional>true</optional><!- EmbeddedSolrSearchServicesPlugin ->
-		</dependency>-->
-		
-		<!--FileManager-->
+		<!-- <dependency> <groupId>org.apache.commons</groupId> <artifactId>commons-compress</artifactId> <version>1.5</version> 
+			solr-core 4.6.0 depends on 1.4.1. Tika depends on 1.5 : we unified versions <optional>true</optional>EmbeddedSolrSearchServicesPlugin 
+			</dependency> -->
+
+		<!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-api</artifactId>solr-core 4.10.0 depends 
+			on 1.6.1. Ehcache 2.8.3 depends on 1.6.6 : we unified versions <version>1.6.6</version> </dependency> -->
+
+		<!--<dependency> <groupId>javax.servlet</groupId> <artifactId>javax.servlet-api</artifactId> <version>3.1.0</version> 
+			<scope>provided</scope> <optional>true</optional><!- EmbeddedSolrSearchServicesPlugin -> </dependency> -->
+
+		<!--FileManager -->
 		<dependency>
 			<groupId>javax.activation</groupId>
 			<artifactId>activation</artifactId>
 			<version>1.1.1</version>
 		</dependency>
-		<!-- /FileManager-->
-		
-		 <!-- dependency>
-			Waiting update from ODSExporter from 0.7 to 0.8.7 
-			<groupId>org.odftoolkit</groupId>
-			<artifactId>odfdom-java</artifactId>
-			<version>0.8.7</version>
-			<optional>true</optional>
-		</dependency-->
-		<!--/exporter-->
+		<!-- /FileManager -->
+
+		<!-- dependency> Waiting update from ODSExporter from 0.7 to 0.8.7 <groupId>org.odftoolkit</groupId> 
+			<artifactId>odfdom-java</artifactId> <version>0.8.7</version> <optional>true</optional> </dependency -->
+		<!--/exporter -->
 	</dependencies>
-	
+
 	<!-- repo pour com.sleepycat.je:5.0.84 -->
 	<repositories>
-	    <repository>
-	      <id>boundless</id>
-	      <name>boundless</name>
-	      <url>http://repo.boundlessgeo.com/main</url>
-	    </repository>
-	  </repositories>
+		<repository>
+			<id>boundless</id>
+			<name>boundless</name>
+			<url>http://repo.boundlessgeo.com/main</url>
+		</repository>
+	</repositories>
 </project>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -7,7 +8,7 @@
 		<artifactId>vertigo-parent</artifactId>
 		<version>0.9.5-SNAPSHOT</version>
 	</parent>
-	
+
 	<artifactId>vertigo-studio</artifactId>
 	<packaging>jar</packaging>
 	<name>vertigo-studio</name>
@@ -23,8 +24,8 @@
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-dynamo-impl</artifactId> <!-- For reporting ExplainPlan and Performance -->
 			<version>${vertigo.version}</version>
-		</dependency> 
-		
+		</dependency>
+
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-account-impl</artifactId>
@@ -45,64 +46,60 @@
 			<version>${vertigo.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-vega-api</artifactId> <!-- Impl for ClassPathWebServiceLoaderPlugin -->
 			<version>${vertigo.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-vega-impl</artifactId> <!-- Impl for ClassPathWebServiceLoaderPlugin -->
 			<version>${vertigo.version}</version>
-			<scope>test</scope> 
+			<scope>test</scope>
 		</dependency>
-		
+
 		<!-- Dépendances à des librairies spécifiques au module -->
 		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
 			<version>2.3.23</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.sparkjava</groupId>
 			<artifactId>spark-core</artifactId>
 			<version>2.5.5</version>
 		</dependency>
-		    
+
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>1.4.193</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.mchange</groupId>
 			<artifactId>c3p0</artifactId>
 			<version>0.9.5.2</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
 			<version>0.9.10</version>
-			<scope>test</scope> <!-- For ClassPathWebServiceLoaderPlugin -->	
+			<scope>test</scope> <!-- For ClassPathWebServiceLoaderPlugin -->
 		</dependency>
-		
-<!-- 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.1.0</version>
-			<scope>test</scope>
-		</dependency> -->
+
+		<!-- <dependency> <groupId>javax.servlet</groupId> <artifactId>javax.servlet-api</artifactId> <version>3.1.0</version> 
+			<scope>test</scope> </dependency> -->
 		<!-- http://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
 		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-simple</artifactId>
-		    <version>1.7.21</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.21</version>
 		</dependency>
 	</dependencies>
 </project>
