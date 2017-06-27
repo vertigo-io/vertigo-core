@@ -76,6 +76,12 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		Assertion.checkNotNull(list);
 		Assertion.checkArgNotEmpty(fieldName);
 		//-----
+		if (list.size() <= 1) {
+			// no need to sort, but clone anyway
+			final DtList<D> result = new DtList<>(list.getDefinition());
+			result.addAll(list);
+			return result;
+		}
 		final Comparator<D> comparator = new DtObjectComparator<>(getStoreManager(), list.getDefinition().getField(fieldName), desc);
 		return list.stream()
 				.sorted(comparator)
