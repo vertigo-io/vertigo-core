@@ -79,7 +79,11 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 	private final Map<AccountProperty, String> ldapAccountAttributeMapping; //Account properties to ldapAttribute
 
 	private enum AccountProperty {
-		id, displayName, email, authToken, photo
+		id,
+		displayName,
+		email,
+		authToken,
+		photo
 	}
 
 	/**
@@ -244,10 +248,10 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 		try {
 			ldapContext.close();
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Fermeture connexion Ldap  \"" + ldapContext.toString() + "\" ");
+				LOGGER.debug("LDAP connection successfully \"" + ldapContext.toString() + "\" ");
 			}
 		} catch (final NamingException e) {
-			throw WrappedException.wrap(e, "Erreur lors de la fermeture de l'objet LdapContext");
+			throw WrappedException.wrap(e, "Error when closing LdapContext");
 		}
 	}
 
