@@ -55,30 +55,4 @@ limitations under the License. -->
 		<tag>vertigo-0.9.5-SNAPSHOT</tag>
 	</scm>
 	
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip> <!-- No need to deploy the reactor -->
-				</configuration>
-			</plugin>
-			<plugin>
-              <groupId>org.owasp</groupId>
-              <artifactId>dependency-check-maven</artifactId>
-              <version>1.4.5</version>
-              <executions>
-                  <execution>
-                      <goals>
-                          <goal>check</goal>
-                      </goals>
-                  </execution>
-              </executions>
-              <configuration>
-              	<format>ALL</format>
-              </configuration>
-            </plugin>
-		</plugins>
-	</build>
-
 </project>
