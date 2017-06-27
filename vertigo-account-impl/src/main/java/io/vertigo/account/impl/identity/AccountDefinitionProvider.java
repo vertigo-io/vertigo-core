@@ -34,6 +34,10 @@ import io.vertigo.util.ListBuilder;
  */
 public final class AccountDefinitionProvider implements SimpleDefinitionProvider {
 
+	private static final String EMAIL = "EMAIL";
+	private static final String ID = "ID";
+	private static final String DISPLAY_NAME = "DISPLAY_NAME";
+
 	/** {@inheritDoc} */
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
@@ -42,18 +46,18 @@ public final class AccountDefinitionProvider implements SimpleDefinitionProvider
 		final Domain domainAccountEmail = Domain.builder("DO_X_ACCOUNT_EMAIL", DataType.String).build();
 
 		final DtDefinition accountDtDefinition = DtDefinition.builder("DT_ACCOUNT")
-				.addIdField("ID", "id", domainAccountId)
-				.addDataField("DISPLAY_NAME", "displayName", domainAccountName, false, true)
-				.addDataField("EMAIL", "email", domainAccountEmail, false, true)
-				.withSortField("DISPLAY_NAME")
-				.withDisplayField("DISPLAY_NAME")
+				.addIdField(ID, "id", domainAccountId)
+				.addDataField(DISPLAY_NAME, "displayName", domainAccountName, false, true)
+				.addDataField(EMAIL, "email", domainAccountEmail, false, true)
+				.withSortField(DISPLAY_NAME)
+				.withDisplayField(DISPLAY_NAME)
 				.build();
 
 		final DtDefinition accountGroupDtDefinition = DtDefinition.builder("DT_ACCOUNT_GROUP")
-				.addIdField("ID", "id", domainAccountId)
-				.addDataField("DISPLAY_NAME", "displayName", domainAccountName, false, true)
-				.withSortField("DISPLAY_NAME")
-				.withDisplayField("DISPLAY_NAME")
+				.addIdField(ID, "id", domainAccountId)
+				.addDataField(DISPLAY_NAME, "displayName", domainAccountName, false, true)
+				.withSortField(DISPLAY_NAME)
+				.withDisplayField(DISPLAY_NAME)
 				.build();
 
 		return new ListBuilder<Definition>()
