@@ -409,8 +409,9 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		final int sqlRowCount = taskManager
 				.execute(task)
 				.getResult();
+
 		if (sqlRowCount > 1) {
-			throw new VSystemException(insert ? "more than one row has been inserted" : "more than one row has been updated");
+			throw new VSystemException("more than one row has been " + (insert ? "created" : "updated"));
 		}
 		if (sqlRowCount == 0) {
 			throw new VSystemException("no data " + (insert ? "created" : "updated"));
