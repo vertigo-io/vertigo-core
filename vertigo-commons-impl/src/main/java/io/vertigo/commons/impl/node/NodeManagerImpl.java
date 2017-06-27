@@ -108,7 +108,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable, SimpleDef
 		return getTopology()
 				.stream()
 				// we wait two heartbeat to decide that a node is dead
-				.filter(node -> node.getLastTouch().plus(2 * heartBeatSeconds, ChronoUnit.SECONDS).isBefore(Instant.now()))
+				.filter(node -> node.getLastTouch().plus(2L * heartBeatSeconds, ChronoUnit.SECONDS).isBefore(Instant.now()))
 				.collect(Collectors.toList());
 	}
 
