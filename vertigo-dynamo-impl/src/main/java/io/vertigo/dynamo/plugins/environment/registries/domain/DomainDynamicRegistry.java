@@ -283,7 +283,8 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 	 *
 	 * @param fields List
 	 */
-	private static void populateDataDtField(final DefinitionSpace definitionSpace,
+	private static void populateDataDtField(
+			final DefinitionSpace definitionSpace,
 			final DtDefinitionBuilder dtDefinitionBuilder,
 			final List<DslDefinition> fields) {
 

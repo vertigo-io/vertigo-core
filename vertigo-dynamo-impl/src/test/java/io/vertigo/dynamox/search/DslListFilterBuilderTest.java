@@ -447,9 +447,13 @@ public final class DslListFilterBuilderTest {
 		private final Integer int1;
 		private final Integer int2;
 
-		TestBean(final String str1, final String str2,
-				final Date date1, final Date date2,
-				final Integer int1, final Integer int2) {
+		TestBean(
+				final String str1,
+				final String str2,
+				final Date date1,
+				final Date date2,
+				final Integer int1,
+				final Integer int2) {
 			this.str1 = str1;
 			this.str2 = str2;
 			this.date1 = date1;

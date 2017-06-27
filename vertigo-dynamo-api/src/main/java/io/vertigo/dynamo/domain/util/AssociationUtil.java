@@ -99,8 +99,10 @@ public final class AssociationUtil {
 	 * @return Si A primary node
 	 */
 	public static boolean isAPrimaryNode(
-			final boolean isAMultiple, final boolean isANotNull,
-			final boolean isBMultiple, final boolean isBNotNull) {
+			final boolean isAMultiple,
+			final boolean isANotNull,
+			final boolean isBMultiple,
+			final boolean isBNotNull) {
 		if (isAMultiple && isBMultiple) {
 			//relation n-n
 			throw new IllegalAccessError();

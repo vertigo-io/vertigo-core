@@ -74,7 +74,9 @@ public final class Domain implements Definition {
 	 * @param constraintDefinitions the list of constraints
 	 * @param properties List of property-value tuples
 	 */
-	Domain(final String name, final DataType dataType,
+	Domain(
+			final String name,
+			final DataType dataType,
 			final FormatterDefinition formatterDefinition,
 			final List<ConstraintDefinition> constraintDefinitions,
 			final Properties properties) {

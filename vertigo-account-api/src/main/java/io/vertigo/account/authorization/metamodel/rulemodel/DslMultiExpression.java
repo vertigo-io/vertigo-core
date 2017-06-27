@@ -85,7 +85,8 @@ public final class DslMultiExpression {
 	 * @param expressions List of simple expression
 	 * @param multiExpressions List of multi-expression
 	 */
-	public DslMultiExpression(final boolean block,
+	public DslMultiExpression(
+			final boolean block,
 			final BoolOperator boolOperator,
 			final List<DslExpression> expressions,
 			final List<DslMultiExpression> multiExpressions) {

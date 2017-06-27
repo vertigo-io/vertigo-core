@@ -164,7 +164,11 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 				.orElseThrow(() -> new VSystemException("No facet {0} found in result", facetName));
 	}
 
-	private void populateCluster(final Bucket bucket, final FacetValue facetValue, final Map<FacetValue, DtList<I>> resultCluster, final Map<String, I> dtcIndex,
+	private void populateCluster(
+			final Bucket bucket,
+			final FacetValue facetValue,
+			final Map<FacetValue, DtList<I>> resultCluster,
+			final Map<String, I> dtcIndex,
 			final Map<I, Map<DtField, String>> resultHighlights) {
 		final SearchHits facetSearchHits = ((TopHits) bucket.getAggregations().get(TOPHITS_SUBAGGREAGTION_NAME)).getHits();
 		final DtList<I> facetDtc = new DtList<>(indexDefinition.getIndexDtDefinition());

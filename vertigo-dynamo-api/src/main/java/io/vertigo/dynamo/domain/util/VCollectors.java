@@ -69,8 +69,12 @@ public final class VCollectors {
 		 * @param finisher
 		 * @param characteristics
 		 */
-		CollectorImpl(final Supplier<A> supplier, final BiConsumer<A, T> accumulator, final BinaryOperator<A> combiner,
-				final Function<A, R> finisher, final Set<Characteristics> characteristics) {
+		CollectorImpl(
+				final Supplier<A> supplier,
+				final BiConsumer<A, T> accumulator,
+				final BinaryOperator<A> combiner,
+				final Function<A, R> finisher,
+				final Set<Characteristics> characteristics) {
 			this.supplier = supplier;
 			this.accumulator = accumulator;
 			this.combiner = combiner;
@@ -86,7 +90,10 @@ public final class VCollectors {
 		 * @param combiner
 		 * @param characteristics
 		 */
-		CollectorImpl(final Supplier<A> supplier, final BiConsumer<A, T> accumulator, final BinaryOperator<A> combiner,
+		CollectorImpl(
+				final Supplier<A> supplier,
+				final BiConsumer<A, T> accumulator,
+				final BinaryOperator<A> combiner,
 				final Set<Characteristics> characteristics) {
 			this(supplier, accumulator, combiner, id(), characteristics);
 		}

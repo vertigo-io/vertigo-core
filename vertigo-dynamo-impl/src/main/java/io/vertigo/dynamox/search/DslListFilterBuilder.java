@@ -298,7 +298,11 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		return value;
 	}
 
-	private void appendTermQueryWithValue(final Object value, final StringBuilder query, final DslTermQuery dslQuery, final DslExpression expressionDefinition,
+	private void appendTermQueryWithValue(
+			final Object value,
+			final StringBuilder query,
+			final DslTermQuery dslQuery,
+			final DslExpression expressionDefinition,
 			final StringBuilder outExpressionQuery) {
 		final boolean useBlock;
 		final StringBuilder queryPart = new StringBuilder();
@@ -359,7 +363,11 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		return false; //never use block
 	}
 
-	private boolean appendUserStringCriteria(final StringBuilder query, final DslTermQuery dslTermDefinition, final DslExpression expressionDefinition, final String userString,
+	private boolean appendUserStringCriteria(
+			final StringBuilder query,
+			final DslTermQuery dslTermDefinition,
+			final DslExpression expressionDefinition,
+			final String userString,
 			final StringBuilder outExpressionQuery) {
 		final List<DslUserCriteria> userCriteriaList = DslParserUtil.parseUserCriteria(userString);
 
@@ -411,7 +419,10 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 				.append(userCriteria.getOverridedPostModifier().isEmpty() ? dslTermDefinition.getPostTerm() : userCriteria.getOverridedPostModifier());
 	}
 
-	private static List<DslExpression> flattenMultiToMonoFieldExpressionDefinition(final DslTermQuery dslTermDefinition, final DslUserCriteria userCriteria, final String criteriaValue,
+	private static List<DslExpression> flattenMultiToMonoFieldExpressionDefinition(
+			final DslTermQuery dslTermDefinition,
+			final DslUserCriteria userCriteria,
+			final String criteriaValue,
 			final DslMultiField dslMultiField) {
 		final List<DslExpression> monoFieldExpressionDefinitions = new ArrayList<>();
 		for (final DslField dslField : dslMultiField.getFields()) {

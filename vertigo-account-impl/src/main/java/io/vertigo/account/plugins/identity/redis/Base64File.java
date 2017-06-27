@@ -50,7 +50,8 @@ final class Base64File implements VFile {
 	 * @param lastModified file lastModified date
 	 * @param base64Content encodage en base64.
 	 */
-	public Base64File(final CodecManager codecManager,
+	public Base64File(
+			final CodecManager codecManager,
 			final String fileName,
 			final String mimeType,
 			final Long length,

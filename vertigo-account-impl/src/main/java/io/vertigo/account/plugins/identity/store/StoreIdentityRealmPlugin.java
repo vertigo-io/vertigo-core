@@ -67,7 +67,8 @@ public final class StoreIdentityRealmPlugin implements IdentityRealmPlugin, Acti
 	 * @param storeManager Store Manager
 	 */
 	@Inject
-	public StoreIdentityRealmPlugin(@Named("userIdentityEntity") final String userIdentityEntity,
+	public StoreIdentityRealmPlugin(
+			@Named("userIdentityEntity") final String userIdentityEntity,
 			@Named("userAuthField") final String userAuthField,
 			@Named("userAccountFieldsMapping") final String userAccountFieldsMappingStr,
 			final StoreManager storeManager) {

@@ -73,7 +73,8 @@ public final class SearchIndexDefinition implements Definition {
 	 * @param indexCopyToFieldsMap CopyField map : (map fromField : [toField, toField, ...])
 	 * @param searchLoaderId Loader de chargement des éléments indéxés et résultat
 	 */
-	public SearchIndexDefinition(final String name,
+	public SearchIndexDefinition(
+			final String name,
 			final DtDefinition keyConceptDtDefinition,
 			final DtDefinition indexDtDefinition,
 			final Map<DtField, List<DtField>> indexCopyToFieldsMap,

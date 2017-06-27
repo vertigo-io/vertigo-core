@@ -42,8 +42,10 @@ public final class DslMultiExpression {
 	 * @param multiExpressions List of multi-expression
 	 * @param postBody String after body
 	 */
-	public DslMultiExpression(final String preBody,
-			final boolean block, final List<DslExpression> expressions,
+	public DslMultiExpression(
+			final String preBody,
+			final boolean block,
+			final List<DslExpression> expressions,
 			final List<DslMultiExpression> multiExpressions,
 			final String postBody) {
 		Assertion.checkNotNull(preBody);

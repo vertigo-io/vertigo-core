@@ -43,7 +43,8 @@ public final class ModuleConfig {
 	private final List<AspectConfig> aspects;
 	private final List<ProxyFactoryConfig> proxyFactoryConfigs;
 
-	ModuleConfig(final String name,
+	ModuleConfig(
+			final String name,
 			final List<DefinitionProviderConfig> definitionProviderConfigs,
 			final List<ComponentConfig> componentConfigs,
 			final List<PluginConfig> pluginConfigs,

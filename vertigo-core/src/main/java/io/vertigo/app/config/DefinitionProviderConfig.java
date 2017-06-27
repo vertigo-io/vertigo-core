@@ -36,7 +36,9 @@ public final class DefinitionProviderConfig {
 	private final Map<String, String> params;
 	private final List<DefinitionResourceConfig> definitionResources;
 
-	DefinitionProviderConfig(final Class<? extends DefinitionProvider> definitionProviderClass, final List<Param> params,
+	DefinitionProviderConfig(
+			final Class<? extends DefinitionProvider> definitionProviderClass,
+			final List<Param> params,
 			final List<DefinitionResourceConfig> definitionResourceConfigs) {
 		Assertion.checkNotNull(definitionProviderClass);
 		Assertion.checkNotNull(params);

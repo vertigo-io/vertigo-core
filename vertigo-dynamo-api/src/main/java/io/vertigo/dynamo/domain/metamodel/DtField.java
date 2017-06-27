@@ -113,7 +113,8 @@ public final class DtField {
 	 * @param computedExpression Expression du computed (noNull si type=Computed)
 	 * @param dynamic if the field is dynamic
 	 */
-	DtField(final String id,
+	DtField(
+			final String id,
 			final String fieldName,
 			final FieldType type,
 			final Domain domain,

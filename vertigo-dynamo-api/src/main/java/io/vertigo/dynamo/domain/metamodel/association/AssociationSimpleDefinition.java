@@ -44,7 +44,8 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 	 * @param associationNodeB the B node for this assocation
 	 */
 	public AssociationSimpleDefinition(
-			final String name, final String fkFieldName,
+			final String name,
+			final String fkFieldName,
 			final AssociationNode associationNodeA,
 			final AssociationNode associationNodeB) {
 		super(name, associationNodeA, associationNodeB);

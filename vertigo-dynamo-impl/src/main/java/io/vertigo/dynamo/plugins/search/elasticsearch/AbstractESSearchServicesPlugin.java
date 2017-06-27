@@ -89,8 +89,13 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	 * @param configFileOpt Fichier de configuration des indexs
 	 * @param resourceManager Manager des resources
 	 */
-	protected AbstractESSearchServicesPlugin(final String indexNameOrPrefix, final boolean indexNameIsPrefix, final int defaultMaxRows, final Optional<String> configFileOpt,
-			final CodecManager codecManager, final ResourceManager resourceManager) {
+	protected AbstractESSearchServicesPlugin(
+			final String indexNameOrPrefix,
+			final boolean indexNameIsPrefix,
+			final int defaultMaxRows,
+			final Optional<String> configFileOpt,
+			final CodecManager codecManager,
+			final ResourceManager resourceManager) {
 		Assertion.checkArgNotEmpty(indexNameOrPrefix);
 		Assertion.checkNotNull(codecManager);
 		Assertion.when(indexNameIsPrefix).check(() -> indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix);

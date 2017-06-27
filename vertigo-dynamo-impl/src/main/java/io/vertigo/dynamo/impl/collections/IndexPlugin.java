@@ -45,6 +45,11 @@ public interface IndexPlugin extends Plugin {
 	 * @param dtc Liste d'origine à filtrer
 	 * @return Liste résultat
 	 */
-	<D extends DtObject> DtList<D> getCollection(final String keywords, final Collection<DtField> searchedFields, final List<ListFilter> listFilters, final DtListState listState,
-			final Optional<DtField> boostedFieldOpt, final DtList<D> dtc);
+	<D extends DtObject> DtList<D> getCollection(
+			final String keywords,
+			final Collection<DtField> searchedFields,
+			final List<ListFilter> listFilters,
+			final DtListState listState,
+			final Optional<DtField> boostedFieldOpt,
+			final DtList<D> dtc);
 }

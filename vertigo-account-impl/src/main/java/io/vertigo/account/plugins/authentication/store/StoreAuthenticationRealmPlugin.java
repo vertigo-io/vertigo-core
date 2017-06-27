@@ -60,7 +60,8 @@ public class StoreAuthenticationRealmPlugin implements AuthenticationRealmPlugin
 	 * @param userTokenIdField TokenId fieldName
 	 */
 	@Inject
-	public StoreAuthenticationRealmPlugin(@Named("userCredentialEntity") final String userCredentialEntity,
+	public StoreAuthenticationRealmPlugin(
+			@Named("userCredentialEntity") final String userCredentialEntity,
 			@Named("userLoginField") final String userLoginField,
 			@Named("userPasswordField") final String userPasswordField,
 			@Named("userTokenIdField") final String userTokenIdField,
