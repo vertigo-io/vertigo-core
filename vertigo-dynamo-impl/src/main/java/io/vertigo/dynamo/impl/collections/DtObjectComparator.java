@@ -57,6 +57,11 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 	private final DtField sortField;
 
 	/**
+	 * Collator instancié quand les valeurs sont des Strings
+	 */
+	private Collator collator;
+
+	/**
 	 * Constructor.
 	 * @param storeManager Manager de persistence
 	 * @param sortField the sort field
@@ -91,6 +96,14 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		return comparator.compare(dataAccessor.getValue(dto1), dataAccessor.getValue(dto2));
 	}
 
+	private Collator getCollator() {
+		if (collator == null) {
+			collator = Collator.getInstance(Locale.FRENCH);
+			collator.setStrength(Collator.PRIMARY);
+		}
+		return collator;
+	}
+
 	/**
 	 * Compare values.
 	 * @param sortDesc sort order
@@ -109,10 +122,10 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		} else if (fieldValue2 == null) {
 			result = -1;
 		} else if (fieldValue1 instanceof String) { //Objet1 et Objet2 sont désormais non null.
-			// pour ignorer les accents
-			final Collator compareOperator = Collator.getInstance(Locale.FRENCH);
-			compareOperator.setStrength(Collator.PRIMARY);
-			result = compareOperator.compare((String) fieldValue1, (String) fieldValue2);
+			// Collator pour ignorer les accents.
+			// N.B. si c'était nécessaire, collator est thread safe (RuleBasedCollator#compare(...) est synchronized)
+			// mais ce n'est pas nécessaire actuellement
+			result = getCollator().compare((String) fieldValue1, (String) fieldValue2);
 		} else if (fieldValue1 instanceof Comparable<?>) {
 			result = ((Comparable) fieldValue1).compareTo(fieldValue2);
 		} else {
