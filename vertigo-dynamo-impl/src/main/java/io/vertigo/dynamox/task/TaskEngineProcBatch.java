@@ -45,9 +45,13 @@ import io.vertigo.lang.Assertion;
  * @author jmforhan
  */
 public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
+
 	/**
 	 * Constructeur.
-	 * @param scriptManager Manager de traitment de scripts
+	 * @param scriptManager scriptManager
+	 * @param transactionManager transactionManager
+	 * @param storeManager storeManager
+	 * @param sqlDataBaseManager sqlDataBaseManager
 	 */
 	@Inject
 	public TaskEngineProcBatch(

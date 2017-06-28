@@ -5,7 +5,7 @@ import java.io.Serializable;
 import io.vertigo.lang.Builder;
 
 /**
- *
+ * Builder to create a complex MessageText.
  * @author pchretien
  */
 public final class MessageTextBuilder implements Builder<MessageText> {
@@ -18,21 +18,37 @@ public final class MessageTextBuilder implements Builder<MessageText> {
 		super();
 	}
 
+	/**
+	 * Message text with a key
+	 * @param key the key to use
+	 * @return this builder
+	 */
 	public MessageTextBuilder withKey(final MessageKey key) {
-		this.myKey = key;
+		myKey = key;
 		return this;
 	}
 
+	/**
+	 * Message text with a defaultMessage
+	 * @param defaultMsg the defaultMessage
+	 * @return this builder
+	 */
 	public MessageTextBuilder withDefaultMsg(final String defaultMsg) {
-		this.myDefaultMsg = defaultMsg;
+		myDefaultMsg = defaultMsg;
 		return this;
 	}
 
+	/**
+	 * Message text with params
+	 * @param params the params
+	 * @return this builder
+	 */
 	public MessageTextBuilder withParams(final Serializable... params) {
-		this.myParams = params;
+		myParams = params;
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public MessageText build() {
 		return new MessageText(myDefaultMsg, myKey, myParams);

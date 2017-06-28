@@ -30,6 +30,7 @@ import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 public interface GeneratorPlugin extends Plugin {
 	/**
 	 * Génération d'un fichier à partir d'une source et de paramètres.
+	 * @param fileGeneratorConfig general configuration of the generator
 	 * @param mdaResultBuilder Builder
 	 */
 	void generate(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder);

@@ -57,14 +57,19 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		final Map<String, Permission> permissionPerOperations = new HashMap<>();// on garde la map des operations pour resoudre les grants
 		for (final JsonElement operation : jsonSecuredEntity.get("operations").getAsJsonArray()) { //TODO if null ?
 			final Permission permission = deserializeOperations(entityDefinition, operation.getAsJsonObject(), context, permissionPerOperations);
-			Assertion.checkArgument(!permissionPerOperations.containsKey(permission.getOperation().get()), "Operation {0} already declared on {1}", permission.getOperation().get(), entityDefinition.getName());
+			Assertion.checkArgument(!permissionPerOperations.containsKey(permission.getOperation().get()),
+					"Operation {0} already declared on {1}", permission.getOperation().get(), entityDefinition.getName());
 			permissionPerOperations.put(permission.getOperation().get(), permission);
 		}
 
 		return new SecuredEntity(entityDefinition, securityFields, advancedDimensions, new ArrayList<>(permissionPerOperations.values()));
 	}
 
-	private static Permission deserializeOperations(final DtDefinition entityDefinition, final JsonObject operation, final JsonDeserializationContext context, final Map<String, Permission> permissionPerOperations) {
+	private static Permission deserializeOperations(
+			final DtDefinition entityDefinition,
+			final JsonObject operation,
+			final JsonDeserializationContext context,
+			final Map<String, Permission> permissionPerOperations) {
 		final String code = operation.get("name").getAsString();
 		final String label = operation.get("label").getAsString();
 		final Optional<String> comment = Optional.<JsonElement> ofNullable(operation.get("__comment"))
@@ -97,7 +102,8 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 	}
 
 	private static Permission resolvePermission(final String operationName, final Map<String, Permission> permissionPerOperations, final DtDefinition entityDefinition) {
-		Assertion.checkArgument(permissionPerOperations.containsKey(operationName), "Operation {0} not declared on {1} (may check declaration order)", operationName, entityDefinition.getName());
+		Assertion.checkArgument(permissionPerOperations.containsKey(operationName),
+				"Operation {0} not declared on {1} (may check declaration order)", operationName, entityDefinition.getName());
 		//-----
 		return permissionPerOperations.get(operationName);
 	}
@@ -116,7 +122,10 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		}
 	}
 
-	private static SecurityDimension deserializeSecurityDimensions(final DtDefinition entityDefinition, final JsonObject advancedDimension, final JsonDeserializationContext context) {
+	private static SecurityDimension deserializeSecurityDimensions(
+			final DtDefinition entityDefinition,
+			final JsonObject advancedDimension,
+			final JsonDeserializationContext context) {
 		final String name = advancedDimension.get("name").getAsString();
 		final SecurityDimensionType type = SecurityDimensionType.valueOf(advancedDimension.get("type").getAsString());
 		final List<String> fieldNames = deserializeList(advancedDimension.get("fields"), String.class, context);
@@ -136,7 +145,10 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		return entityDefinition.getField(fieldName);
 	}
 
-	private static <T> List<T> deserializeList(final JsonElement jsonElement, final Class<T> elementClass, final JsonDeserializationContext context) {
+	private static <T> List<T> deserializeList(
+			final JsonElement jsonElement,
+			final Class<T> elementClass,
+			final JsonDeserializationContext context) {
 		if (jsonElement == null) {
 			return Collections.emptyList();
 		}

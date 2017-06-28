@@ -88,7 +88,14 @@ public final class Permission implements Definition {
 	 * @param rules Règles d'évaluation
 	 * @param comment Comment
 	 */
-	public Permission(final String operation, final String label, final Set<String> overrides, final Set<Permission> grants, final DtDefinition entityDefinition, final List<DslMultiExpression> rules, final Optional<String> comment) {
+	public Permission(
+			final String operation,
+			final String label,
+			final Set<String> overrides,
+			final Set<Permission> grants,
+			final DtDefinition entityDefinition,
+			final List<DslMultiExpression> rules,
+			final Optional<String> comment) {
 		Assertion.checkArgNotEmpty(operation);
 		Assertion.checkArgNotEmpty(label);
 		Assertion.checkNotNull(overrides);

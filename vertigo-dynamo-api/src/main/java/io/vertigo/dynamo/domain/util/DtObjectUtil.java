@@ -53,6 +53,7 @@ public final class DtObjectUtil {
 	/**
 	 * Creates a new instance of 'DtObject' from a 'DtDefinition'.
 	 *
+	 * @param dtDefinition the definition to use for creation
 	 * @return the new instance
 	 */
 	public static DtObject createDtObject(final DtDefinition dtDefinition) {
@@ -62,6 +63,12 @@ public final class DtObjectUtil {
 		return ClassUtil.newInstance(dtDefinition.getClassCanonicalName(), DtObject.class);
 	}
 
+	/**
+	 * Creates a new entity from a 'DtDefinition'.
+	 *
+	 * @param dtDefinition the definition to use for creation
+	 * @return the new instance
+	 */
 	public static Entity createEntity(final DtDefinition dtDefinition) {
 		return Entity.class.cast(createDtObject(dtDefinition));
 	}

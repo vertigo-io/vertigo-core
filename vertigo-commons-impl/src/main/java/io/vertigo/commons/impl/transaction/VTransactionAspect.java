@@ -35,6 +35,10 @@ import io.vertigo.lang.Assertion;
 public final class VTransactionAspect implements Aspect {
 	private final VTransactionManager transactionManager;
 
+	/**
+	 * Constructor
+	 * @param transactionManager the transactionManager
+	 */
 	@Inject
 	public VTransactionAspect(final VTransactionManager transactionManager) {
 		Assertion.checkNotNull(transactionManager);

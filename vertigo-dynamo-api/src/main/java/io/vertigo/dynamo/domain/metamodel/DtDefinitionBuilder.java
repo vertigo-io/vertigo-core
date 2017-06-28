@@ -287,11 +287,21 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		return this;
 	}
 
+	/**
+	 * Specifies which field to be used for sorting
+	 * @param sortFieldName fieldName to use
+	 * @return this builder
+	 */
 	public DtDefinitionBuilder withSortField(final String sortFieldName) {
 		mySortFieldName = sortFieldName;
 		return this;
 	}
 
+	/**
+	 * Specifies which field to be used for display
+	 * @param displayFieldName fieldName to use
+	 * @return this builder
+	 */
 	public DtDefinitionBuilder withDisplayField(final String displayFieldName) {
 		myDisplayFieldName = displayFieldName;
 		return this;

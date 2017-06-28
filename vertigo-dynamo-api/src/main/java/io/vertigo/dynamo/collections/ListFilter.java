@@ -32,6 +32,12 @@ public final class ListFilter implements Serializable {
 
 	private final String filterValue;
 
+	private ListFilter(final String filterValue) {
+		Assertion.checkNotNull(filterValue);
+		//---
+		this.filterValue = filterValue;
+	}
+
 	/**
 	 * Constructeur d'un filtre à partir d'une syntaxe.
 	 * Syntaxe acceptée :
@@ -44,12 +50,6 @@ public final class ListFilter implements Serializable {
 	 *
 	 * @param filterValue Valeur du filtre
 	 */
-	private ListFilter(final String filterValue) {
-		Assertion.checkNotNull(filterValue);
-		//---
-		this.filterValue = filterValue;
-	}
-
 	public static ListFilter of(final String filterValue) {
 		return new ListFilter(filterValue);
 	}

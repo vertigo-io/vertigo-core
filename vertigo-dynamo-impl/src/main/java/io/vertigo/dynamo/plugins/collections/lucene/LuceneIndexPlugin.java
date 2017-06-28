@@ -82,6 +82,7 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 		cacheManager.remove(CACHE_LUCENE_INDEX, getIndexCacheContext(event.getUri().getDefinition()));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		return Collections.singletonList(new CacheDefinition(CACHE_LUCENE_INDEX, false, 1000, 30 * 60, 60 * 60));

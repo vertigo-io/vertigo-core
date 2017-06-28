@@ -31,8 +31,10 @@ import io.vertigo.core.component.Plugin;
 public interface AuthenticationRealmPlugin extends Plugin {
 
 	/**
-	 * Convenience implementation that returns getAuthenticationTokenClass().isAssignableFrom( token.getClass() );. Can be overridden by subclasses for more complex token checking.
-	 * Most configurations will only need to set a different class via setAuthenticationTokenClass(java.lang.Class<? extends org.apache.shiro.authc.AuthenticationToken>), as opposed to overriding this method.
+	 * Convenience implementation that returns getAuthenticationTokenClass().isAssignableFrom( token.getClass() );.
+	 * Can be overridden by subclasses for more complex token checking.
+	 * Most configurations will only need to set a different class via
+	 * setAuthenticationTokenClass(java.lang.Class<? extends org.apache.shiro.authc.AuthenticationToken>), as opposed to overriding this method.
 	 *
 	 * @param token the token being submitted for authentication.
 	 * @return true if this authentication realm can process the submitted token instance of the class, false otherwise.

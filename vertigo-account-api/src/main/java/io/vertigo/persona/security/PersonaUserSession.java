@@ -56,6 +56,7 @@ public abstract class PersonaUserSession extends UserSession {
 	 * Le role doit avoir ete prealablement enregistre.
 	 *
 	 * @param role Role e ajouter.
+	 * @return the user session (for fluent)
 	 */
 	public final PersonaUserSession addRole(final Role role) {
 		Assertion.checkNotNull(role);

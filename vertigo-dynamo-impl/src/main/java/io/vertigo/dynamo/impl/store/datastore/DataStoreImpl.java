@@ -47,13 +47,19 @@ public final class DataStoreImpl implements DataStore {
 	private final VTransactionManager transactionManager;
 
 	/**
-	 * Constructor.
-	 * @param storeManager Store manager
-	 * @param transactionManager Transaction manager
-	 * @param eventBusManager Event bus manager
-	 * @param dataStoreConfig config of the dataStore
+	 * Constructor
+	 * @param collectionsManager collectionsManager
+	 * @param storeManager storeManager
+	 * @param transactionManager transactionManager
+	 * @param eventBusManager eventBusManager
+	 * @param dataStoreConfig dataStoreConfig
 	 */
-	public DataStoreImpl(final CollectionsManager collectionsManager, final StoreManager storeManager, final VTransactionManager transactionManager, final EventBusManager eventBusManager, final DataStoreConfigImpl dataStoreConfig) {
+	public DataStoreImpl(
+			final CollectionsManager collectionsManager,
+			final StoreManager storeManager,
+			final VTransactionManager transactionManager,
+			final EventBusManager eventBusManager,
+			final DataStoreConfigImpl dataStoreConfig) {
 		Assertion.checkNotNull(collectionsManager);
 		Assertion.checkNotNull(storeManager);
 		Assertion.checkNotNull(transactionManager);

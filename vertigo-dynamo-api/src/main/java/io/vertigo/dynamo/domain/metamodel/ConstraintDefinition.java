@@ -47,7 +47,11 @@ public final class ConstraintDefinition implements Constraint, Definition {
 	private final Constraint constraint;
 
 	/**
-	 * Constructor.
+	 * Constructor
+	 * @param name the name of the constraint
+	 * @param constraintClassName the class for checking the constraint
+	 * @param msg the message in case of error
+	 * @param args the args to configure the constraint checker
 	 */
 	public ConstraintDefinition(final String name, final String constraintClassName, final String msg, final String args) {
 		Assertion.checkArgNotEmpty(constraintClassName);
@@ -85,16 +89,19 @@ public final class ConstraintDefinition implements Constraint, Definition {
 		return msg != null ? msg : constraint.getErrorMessage();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Property getProperty() {
 		return constraint.getProperty();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object getPropertyValue() {
 		return constraint.getPropertyValue();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean checkConstraint(final Object value) {
 		return constraint.checkConstraint(value);

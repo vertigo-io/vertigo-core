@@ -38,6 +38,10 @@ public final class RedisNodeRegistryPlugin implements NodeRegistryPlugin {
 	private final RedisConnector redisConnector;
 	private final Gson gson;
 
+	/**
+	 * Constructor
+	 * @param redisConnector the redisConnector
+	 */
 	@Inject
 	public RedisNodeRegistryPlugin(final RedisConnector redisConnector) {
 		Assertion.checkNotNull(redisConnector);

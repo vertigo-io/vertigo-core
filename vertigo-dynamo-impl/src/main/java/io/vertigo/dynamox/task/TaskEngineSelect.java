@@ -65,6 +65,10 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 
 	/**
 	 * Constructor.
+	 * @param scriptManager scriptManager
+	 * @param transactionManager transactionManager
+	 * @param storeManager storeManager
+	 * @param sqlDataBaseManager sqlDataBaseManager
 	 */
 	@Inject
 	public TaskEngineSelect(

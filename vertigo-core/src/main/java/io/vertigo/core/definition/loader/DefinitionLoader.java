@@ -71,6 +71,10 @@ public final class DefinitionLoader {
 				.map(supplier -> supplier.get(definitionSpace));
 	}
 
+	/**
+	 * Inject all the definitions provided by components.
+	 * @return a stream of definitions
+	 */
 	public Stream<Definition> createDefinitionsFromComponents() {
 		return componentSpace.keySet()
 				.stream()

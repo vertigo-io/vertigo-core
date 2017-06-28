@@ -29,6 +29,7 @@ import io.vertigo.lang.Builder;
 /**
  * Processor that can be composed of filters or sorters and be applied on a list. *
  * @author npiedeloup
+ * @param <D> the type of dtObject in the modified list
  */
 public interface IndexDtListFunctionBuilder<D extends DtObject> extends Builder<UnaryOperator<DtList<D>>> {
 
