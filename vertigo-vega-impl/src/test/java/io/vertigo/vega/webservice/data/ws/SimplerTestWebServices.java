@@ -364,7 +364,7 @@ public final class SimplerTestWebServices implements WebServices {
 
 	@GET("/localDate")
 	public LocalDate getLocalDate() {
-		return LocalDate.of(2017, 06, 27);
+		return LocalDate.of(2017, 6, 27);
 	}
 
 	@PUT("/localDate")
