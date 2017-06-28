@@ -250,7 +250,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 		return SqlParameter.of(getDataTypeParameter(param), getValueParameter(param, rowNumber));
 	}
 
-	private final Class getDataTypeParameter(final SqlNamedParam param) {
+	private Class getDataTypeParameter(final SqlNamedParam param) {
 		final Domain domain;
 		if (param.isPrimitive()) {
 			// Paramètre primitif
