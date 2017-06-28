@@ -380,6 +380,11 @@ public final class SimplerTestWebServices implements WebServices {
 		return ZonedDateTime.of(2016, 05, 26, 23, 30, 20, 0, ZoneId.of("CET"));
 	}
 
+	@GET("/zonedDateTimeUTC")
+	public ZonedDateTime getZonedDateTimeUTC() {
+		return ZonedDateTime.of(2016, 07, 28, 00, 00, 00, 0, ZoneId.of("CET"));
+	}
+
 	@PUT("/zonedDateTime")
 	public UiContext putZonedDateTime(@QueryParam("date") final ZonedDateTime zonedDateTime) {
 		final UiContext result = new UiContext();
@@ -402,7 +407,6 @@ public final class SimplerTestWebServices implements WebServices {
 	public FacetedQueryResult<DtObject, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
-
 		//offset + range ?
 		//code 200
 		return result;

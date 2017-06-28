@@ -1774,10 +1774,27 @@ public final class WebServiceManagerTest {
 				.when()
 				.get("/test/zonedDateTime");
 
-		final String inputZonedDateTime = "2016-01-18T17:21:42.026Z";
+		final String inputZonedDateTime = "2016-01-18T17:21:42Z";
 		loggedAndExpect(given())
 				.body("input", Matchers.equalTo(inputZonedDateTime))
-				.body("inputAsString", Matchers.equalTo("2016-01-18T17:21:42.026Z[UTC]"))
+				.body("inputAsString", Matchers.equalTo("2016-01-18T17:21:42Z[UTC]"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/zonedDateTime?date=" + inputZonedDateTime);
+	}
+
+	@Test
+	public void testZonedDateTimeUTC() {
+		loggedAndExpect(given())
+				.body(Matchers.equalTo("\"2016-07-27T22:00:00Z\""))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/zonedDateTimeUTC");
+
+		final String inputZonedDateTime = "2016-04-25T00:00:00Z";
+		loggedAndExpect(given())
+				.body("input", Matchers.equalTo(inputZonedDateTime))
+				.body("inputAsString", Matchers.equalTo("2016-04-25T00:00Z[UTC]"))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
 				.put("/test/zonedDateTime?date=" + inputZonedDateTime);
