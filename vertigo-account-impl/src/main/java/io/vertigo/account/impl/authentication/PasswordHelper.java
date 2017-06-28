@@ -65,7 +65,7 @@ public final class PasswordHelper {
 	 * @return salted and encoded password
 	 */
 	public String createPassword(final String userPassword) {
-		return encodePassword(generateNewSalt(), userPassword);
+		return encodePassword(generateNewSalt(), PBKDF2_ITERATIONS, userPassword);
 	}
 
 	/**
@@ -75,7 +75,7 @@ public final class PasswordHelper {
 	 * @return if userPassword is correct.
 	 */
 	public boolean checkPassword(final String encodedPassword, final String userSubmittedPassword) {
-		return encodedPassword.equals(encodePassword(extractSalt(encodedPassword), userSubmittedPassword));
+		return encodedPassword.equals(encodePassword(extractSalt(encodedPassword), extractNbIteration(encodedPassword), userSubmittedPassword));
 	}
 
 	private String generateNewSalt() {
@@ -84,11 +84,15 @@ public final class PasswordHelper {
 	}
 
 	private static String extractSalt(final String password) {
-		return password.substring(0, 8); //must be  ceil(saltSizeInBytes / 3) * 4
+		return password.substring(0, 8); //must be  ceil(saltSizeInBytes / 3) * 4 = 6*4/3
 	}
 
-	private String encodePassword(final String salt, final String password) {
-		return salt + encodeBase64(toPBKDF2(password, salt));
+	private int extractNbIteration(final String password) {
+		return decodeBase64Int(password.substring(8, 12)); //must be  ceil(nbIterationSizeInBytes / 3) * 4 = 3*4/3
+	}
+
+	private String encodePassword(final String salt, final int nbIteration, final String password) {
+		return salt + encodeBase64(toPBKDF2(password, salt, nbIteration));
 	}
 
 	/**
@@ -100,14 +104,25 @@ public final class PasswordHelper {
 		return base64Codec.encode(data);
 	}
 
+	private int decodeBase64Int(final String encoded) {
+		final byte[] b = base64Codec.decode(encoded);
+		final int MASK = 0xFF;
+		int result = 0;
+		result = b[0] & MASK;
+		result = result + ((b[1] & MASK) << 8);
+		result = result + ((b[2] & MASK) << 16);
+		result = result + ((b[3] & MASK) << 24);
+		return result;
+	}
+
 	/**
 	 * Calcule le hash PBKDF2 d'une chaine de caractere.
 	 * @param string Chaine de caractere.
 	 * @return Tableau d'octets.
 	 */
 	//see : https://adambard.com/blog/3-wrong-ways-to-store-a-password/
-	private byte[] toPBKDF2(final String password, final String salt) {
-		final KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt.getBytes(defaultCharsetUTF8), PBKDF2_ITERATIONS, PBKDF2_KEY_LENGTH);
+	private byte[] toPBKDF2(final String password, final String salt, final int nbIterations) {
+		final KeySpec keySpec = new PBEKeySpec(password.toCharArray(), salt.getBytes(defaultCharsetUTF8), nbIterations, PBKDF2_KEY_LENGTH);
 		try {
 			return secretKeyFactory.generateSecret(keySpec).getEncoded();
 		} catch (final InvalidKeySpecException e) {
