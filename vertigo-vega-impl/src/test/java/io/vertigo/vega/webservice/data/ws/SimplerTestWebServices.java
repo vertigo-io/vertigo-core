@@ -364,7 +364,7 @@ public final class SimplerTestWebServices implements WebServices {
 
 	@GET("/localDate")
 	public LocalDate getLocalDate() {
-		return LocalDate.of(2017, 06, 27);
+		return LocalDate.of(2017, 6, 27);
 	}
 
 	@PUT("/localDate")
@@ -377,12 +377,12 @@ public final class SimplerTestWebServices implements WebServices {
 
 	@GET("/zonedDateTime")
 	public ZonedDateTime getZonedDateTime() {
-		return ZonedDateTime.of(2016, 05, 26, 23, 30, 20, 0, ZoneId.of("CET"));
+		return ZonedDateTime.of(2016, 5, 26, 23, 30, 20, 0, ZoneId.of("CET"));
 	}
 
 	@GET("/zonedDateTimeUTC")
 	public ZonedDateTime getZonedDateTimeUTC() {
-		return ZonedDateTime.of(2016, 07, 28, 00, 00, 00, 0, ZoneId.of("CET"));
+		return ZonedDateTime.of(2016, 7, 28, 0, 0, 0, 0, ZoneId.of("CET"));
 	}
 
 	@PUT("/zonedDateTime")
