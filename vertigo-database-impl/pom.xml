@@ -25,15 +25,12 @@
 			<version>${project.version}</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>5.2.6.Final</version>
+			<version>5.2.10.Final</version>
 			<optional>true</optional> <!-- HibernateConnectionProviderPlugin -->
 		</dependency>
-
-
 
 		<!-- tests -->
 		<dependency>
@@ -43,6 +40,7 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-commons-impl</artifactId>
@@ -53,7 +51,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.4.193</version>
+			<version>1.4.196</version>
 			<scope>test</scope>
 		</dependency>
 
