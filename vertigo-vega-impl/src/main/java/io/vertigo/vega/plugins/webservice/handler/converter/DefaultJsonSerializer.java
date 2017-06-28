@@ -224,9 +224,9 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 			return toJson(value, getListMetas((DtList) value), webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
 		} else if (value instanceof List) {
 			writeListMetaToHeader((List) value, response);
-			return toJson(value, Collections.<String, Serializable> emptyMap(), webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
+			return toJson(value, Collections.emptyMap(), webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
 		} else if (value instanceof DtObject) {
-			return toJson(value, Collections.<String, Serializable> emptyMap(), webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
+			return toJson(value, Collections.emptyMap(), webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
 		} else if (value instanceof UiContext) {
 			//TODO build json in jsonWriterEngine
 			final StringBuilder sb = new StringBuilder().append("{");

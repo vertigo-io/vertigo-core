@@ -39,7 +39,7 @@ import io.vertigo.vega.webservice.stereotype.GET;
 import io.vertigo.vega.webservice.stereotype.PathParam;
 
 public final class ComponentCmdWebServices implements WebServices {
-	private final JsonEngine jsonEngine = new GoogleJsonEngine(Optional.<String> empty());
+	private final JsonEngine jsonEngine = new GoogleJsonEngine(Optional.empty());
 
 	@AnonymousAccessAllowed
 	@GET("/vertigo/components")

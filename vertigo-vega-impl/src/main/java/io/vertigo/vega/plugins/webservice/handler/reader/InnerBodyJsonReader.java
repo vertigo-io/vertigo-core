@@ -65,7 +65,7 @@ public final class InnerBodyJsonReader implements JsonReader<UiContext> {
 	public UiContext extractData(final Request request, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
 		Assertion.checkArgument(getSupportedInput()[0].equals(webServiceParam.getParamType()), "This JsonReader can't read the asked request ParamType {0}. Only {1} is supported", webServiceParam.getParamType(), Arrays.toString(getSupportedInput()));
 		//-----
-		UiContext uiContext = (UiContext) routeContext.getRequest().attribute("InnerBodyValues");
+		UiContext uiContext = routeContext.getRequest().attribute("InnerBodyValues");
 		if (uiContext == null) {
 			uiContext = readInnerBodyValue(request.body(), routeContext.getWebServiceDefinition().getWebServiceParams());
 			routeContext.getRequest().attribute("InnerBodyValues", uiContext);

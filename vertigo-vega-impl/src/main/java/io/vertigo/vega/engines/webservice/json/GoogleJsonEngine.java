@@ -222,7 +222,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					final Type typeOfDest = new KnownParameterizedType(UiListModifiable.class, dtoClass);
 					value = gson.fromJson(jsonSubElement, typeOfDest);
 				} else {
-					value = (Serializable) gson.fromJson(jsonSubElement, paramType);
+					value = gson.fromJson(jsonSubElement, paramType);
 				}
 				result.put(key, value);
 			}

@@ -64,7 +64,7 @@ public final class DtListJsonConverter implements JsonConverter {
 		final String objectPath;
 		final UiListModifiable<DtObject> uiList;
 		if (input instanceof String) {
-			uiList = jsonReaderEngine.<DtObject> uiListFromJson((String) input, paramGenericType);
+			uiList = jsonReaderEngine.uiListFromJson((String) input, paramGenericType);
 			objectPath = "";
 		} else if (input instanceof UiContext) {
 			uiList = (UiListModifiable<DtObject>) ((UiContext) input).get(webServiceParam.getName());

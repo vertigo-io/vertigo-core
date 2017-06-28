@@ -87,7 +87,7 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 		final Optional<String> listServerToken = (Optional<String>) routeContext.getParamValue(serverTokenWebServiceParams);
 		Optional<DtList<?>> fullListOption = Optional.empty();
 		if (listServerToken.isPresent()) {
-			fullListOption = tokenManager.<DtList<?>> get(listServerToken.get());
+			fullListOption = tokenManager.get(listServerToken.get());
 			response.header(LIST_SERVER_TOKEN, listServerToken.get());
 		}
 		final DtList<?> fullList;
@@ -146,7 +146,7 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
 		final DtList<D> sortedList;
 		if (dtListState.getSortFieldName().isPresent()) {
-			sortedList = collectionsManager.<D> sort(unFilteredList, StringUtil.camelToConstCase(dtListState.getSortFieldName().get()), dtListState.isSortDesc().get());
+			sortedList = collectionsManager.sort(unFilteredList, StringUtil.camelToConstCase(dtListState.getSortFieldName().get()), dtListState.isSortDesc().get());
 		} else {
 			sortedList = unFilteredList;
 		}

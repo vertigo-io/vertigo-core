@@ -46,7 +46,7 @@ public final class ValidationUserException extends VUserException {
 	 * Constructor.
 	 */
 	public ValidationUserException() {
-		this(Collections.<UiError> emptyList());
+		this(Collections.emptyList());
 	}
 
 	/**
