@@ -169,6 +169,7 @@ public final class AssociationUtil {
 
 	/**
 	 * Noeud de l'association correspondant à un rôle donné.
+	 * @param associationDefinition the definition where to look for the node
 	 * @param roleNameSource Nom du Role du noeud source
 	 * @return AssociationNode
 	 * TODO : voir si passer en arg une URI de collection et/ou d'objet ?
@@ -187,6 +188,7 @@ public final class AssociationUtil {
 
 	/**
 	 * Noeud de l'association correspondant à la dtDéfinition passé en paramètre.
+	 * @param associationDefinition the definition where to look for the node
 	 * @param roleNameSource Nom du Role du noeud cible
 	 * @return AssociationNode
 	 */

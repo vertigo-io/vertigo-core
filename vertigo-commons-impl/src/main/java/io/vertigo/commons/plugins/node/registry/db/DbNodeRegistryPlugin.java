@@ -39,6 +39,11 @@ public final class DbNodeRegistryPlugin implements NodeRegistryPlugin {
 	private final ComboPooledDataSource pooledDataSource = new ComboPooledDataSource();
 	private final Gson gson;
 
+	/**
+	 * Constructor
+	 * @param driverClassName the driver to use with the db
+	 * @param jdbcUrl the jdbc url connection
+	 */
 	@Inject
 	public DbNodeRegistryPlugin(
 			@Named("driverClassName") final String driverClassName,

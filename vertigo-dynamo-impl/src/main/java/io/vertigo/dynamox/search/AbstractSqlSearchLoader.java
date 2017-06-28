@@ -62,9 +62,12 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	/**
 	 * Constructor.
 	 * @param taskManager Task manager
+	 * @param transactionManager transactionManager
 	 */
 	@Inject
-	public AbstractSqlSearchLoader(final TaskManager taskManager, final VTransactionManager transactionManager) {
+	public AbstractSqlSearchLoader(
+			final TaskManager taskManager,
+			final VTransactionManager transactionManager) {
 		Assertion.checkNotNull(taskManager);
 		Assertion.checkNotNull(transactionManager);
 		// -----

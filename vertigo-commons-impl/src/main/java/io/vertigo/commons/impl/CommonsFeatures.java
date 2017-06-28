@@ -75,7 +75,7 @@ public final class CommonsFeatures extends Features {
 
 	/**
 	 * Activates script with a defined plugin.
-
+	
 	 * @param expressionEvaluatorPluginClass the type of plugin to use
 	 * @param params the params
 	 * @return these features
@@ -126,6 +126,8 @@ public final class CommonsFeatures extends Features {
 
 	/**
 	 * Adds a NodeRegistryPlugin
+	 * @param nodeRegistryPluginClass the plugin to use
+	 * @param params the params
 	 * @return these features
 	 */
 	public CommonsFeatures withNodeRegistryPlugin(final Class<? extends NodeRegistryPlugin> nodeRegistryPluginClass, final Param... params) {
@@ -136,7 +138,9 @@ public final class CommonsFeatures extends Features {
 	}
 
 	/**
-	 * Adds a NodeRegistryPlugin
+	 * Adds a NodeInfosPlugin
+	 * @param nodeInfosPluginClass the plugin to use
+	 * @param params the params
 	 * @return these features
 	 */
 	public CommonsFeatures withNodeInfosPlugin(final Class<? extends NodeInfosPlugin> nodeInfosPluginClass, final Param... params) {

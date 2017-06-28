@@ -44,6 +44,7 @@ public final class CacheDefinition implements Definition {
 
 	/**
 	 * Constructor.
+	 * @param name the name of the cache
 	 * @param serializeElements If elements are serialized
 	 * @param maxElementsInMemory Max elements stored in memory
 	 * @param timeToLiveSeconds Time to live (in seconds)
@@ -64,6 +65,7 @@ public final class CacheDefinition implements Definition {
 		this.timeToIdleSeconds = timeToIdleSeconds;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getName() {
 		return name;

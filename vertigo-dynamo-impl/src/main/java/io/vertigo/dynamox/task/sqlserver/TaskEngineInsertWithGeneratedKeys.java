@@ -50,7 +50,10 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 
 	/**
 	 * Constructor.
-	 * @param scriptManager Manager de traitment de scripts
+	 * @param scriptManager scriptManager
+	 * @param transactionManager transactionManager
+	 * @param storeManager storeManager
+	 * @param sqlDataBaseManager sqlDataBaseManager
 	 */
 	@Inject
 	public TaskEngineInsertWithGeneratedKeys(

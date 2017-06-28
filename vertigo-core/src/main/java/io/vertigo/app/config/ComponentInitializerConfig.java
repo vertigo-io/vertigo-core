@@ -21,6 +21,11 @@ package io.vertigo.app.config;
 import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.lang.Assertion;
 
+/**
+ * Configuration of an initializer.
+ * @author pchretien
+ *
+ */
 public final class ComponentInitializerConfig {
 	private final Class<? extends ComponentInitializer> componentInitializerClass;
 

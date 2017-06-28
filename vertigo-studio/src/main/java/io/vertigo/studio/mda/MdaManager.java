@@ -33,6 +33,7 @@ public interface MdaManager extends Manager {
 
 	/**
 	 * Clean the gen directory
+	 * @return the result
 	 */
 	MdaResult clean();
 }

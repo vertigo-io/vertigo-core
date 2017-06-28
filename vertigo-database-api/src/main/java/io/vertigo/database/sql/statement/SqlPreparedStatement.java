@@ -38,7 +38,7 @@ import io.vertigo.lang.Tuples;
 public interface SqlPreparedStatement {
 	/**
 	 * Executes a sql query returning a list
-	 *
+	 * @param sql sql query
 	 * @param sqlParameters input params
 	 * @param dataType the return dataType of the list
 	 * @param limit the return limit (null if no limit)
@@ -54,10 +54,8 @@ public interface SqlPreparedStatement {
 
 	/**
 	 * Executes a sql query returning the number of modified rows.
-	 *
+	 * @param sql sql query
 	 * @param sqlParameters input params
-	 * @param dataType the return dataType of the list
-	 * @param limit the return limit (null if no limit)
 	 * @return either the row count for INSERT, UPDATE or DELETE statements; or 0 for SQL statements that return nothing
 	 * @throws SQLException
 	 */
@@ -65,6 +63,16 @@ public interface SqlPreparedStatement {
 			final String sql,
 			List<SqlParameter> sqlParameters) throws SQLException;
 
+	/**
+	 * Executes a sql query returning the number of modified rows.
+	 * @param sql sql query
+	 * @param parameters  input params
+	 * @param generationMode the generation methode
+	 * @param columnName the column name (of the generated key)
+	 * @param dataType the dataType of the generated key
+	 * @return a tuple with the row count for INSERT, UPDATE or DELETE statements; or 0 for SQL statements that return nothing and the generated key
+	 * @throws SQLException
+	 */
 	<O> Tuples.Tuple2<Integer, O> executeUpdateWithGeneratedKey(
 			final String sql,
 			final List<SqlParameter> parameters,
@@ -74,10 +82,11 @@ public interface SqlPreparedStatement {
 
 	/**
 	 * Executes the batch .
-	 * @throws SQLException Si erreur
+	 * @param sql sql query
+	 * @param parameters  input params
 	 * @return the SUM of  row count for INSERT, UPDATE or DELETE statements; or 0 for SQL statements that return nothing
 	 * if no info available an empty Optional is returned
-	 * @throws SQLException
+	 * @throws SQLException Si erreur
 	 */
 	OptionalInt executeBatch(
 			final String sql,

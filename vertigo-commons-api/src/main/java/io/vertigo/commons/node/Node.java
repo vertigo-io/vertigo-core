@@ -6,6 +6,18 @@ import java.util.Optional;
 
 import io.vertigo.lang.Assertion;
 
+/**
+ * A Node in a vertigo app.
+ * A node has :
+ * 		- an id
+ * 		- a status
+ * 		- the timestamp of the last touch
+ * 		- the timestamp of the startup of the app
+ * 		- the skills of the node
+ * 		- an optional endPoint to reach the node
+ * @author mlaroche
+ *
+ */
 public final class Node {
 
 	private final String id;
@@ -43,22 +55,42 @@ public final class Node {
 		this.skills = skills;
 	}
 
+	/**
+	 * The id of the node
+	 * @return the id
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * The name of the app
+	 * @return the app name
+	 */
 	public String getAppName() {
 		return appName;
 	}
 
+	/**
+	 * The start date of the node
+	 * @return epochMillis
+	 */
 	public long getStartDate() {
 		return startDate.toEpochMilli();
 	}
 
+	/**
+	 * The optional endPoint of the node
+	 * @return the endPoint
+	 */
 	public Optional<String> getEndPoint() {
 		return endPointOpt;
 	}
 
+	/**
+	 * The protocol of the endpoint (if specified)
+	 * @return the protocol
+	 */
 	public String getProtocol() {
 		Assertion.checkState(endPointOpt.isPresent(), "Cannot get a protocol if no Endpoint is defined");
 		// ---
@@ -66,14 +98,26 @@ public final class Node {
 		return endPoint.substring(0, endPoint.indexOf(':'));
 	}
 
+	/**
+	 * The skills of the node (for example editing)
+	 * @return the skills of the node
+	 */
 	public List<String> getSkills() {
 		return skills;
 	}
 
+	/**
+	 * The last status of the node
+	 * @return the status of the node
+	 */
 	public String getLastStatus() {
 		return lastStatus;
 	}
 
+	/**
+	 * The timestamp of the last touch of the node
+	 * @return the timestamp of the last touch of the node
+	 */
 	public Instant getLastTouch() {
 		return lastTouch;
 	}

@@ -32,6 +32,7 @@ public final class VAccessor<E extends Entity> implements Serializable {
 	/**
 	 * Constructor.
 	 * @param clazz the entity class
+	 * @param role the role of the association (case of multiple associations with the same entity)
 	 */
 	public VAccessor(final Class<E> clazz, final String role) {
 		this(DtObjectUtil.findDtDefinition(clazz), role);
@@ -40,6 +41,7 @@ public final class VAccessor<E extends Entity> implements Serializable {
 	/**
 	 * Constructor.
 	 * @param targetDtDefinition the entity definition
+	 * @param role the role of the association (case of multiple associations with the same entity)
 	 */
 	public VAccessor(final DtDefinition targetDtDefinition, final String role) {
 		Assertion.checkNotNull(targetDtDefinition);

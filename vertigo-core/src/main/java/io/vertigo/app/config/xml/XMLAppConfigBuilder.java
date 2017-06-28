@@ -74,6 +74,7 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AppConfig build() {
 		return appConfigBuilder.build();

@@ -96,6 +96,11 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 		return this;
 	}
 
+	/**
+	 * Specifies the id to be used (otherwise an id will be chosen by convention) see build method.
+	 * @param id the id to use
+	 * @return this builder
+	 */
 	public ComponentConfigBuilder withId(final String id) {
 		Assertion.checkArgNotEmpty(id);
 		//---

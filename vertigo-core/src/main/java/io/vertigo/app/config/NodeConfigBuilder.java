@@ -25,7 +25,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 
 /**
- * The NodeConfigBuilder builder allows you to create an NodeConfig using a fluent, simple style .
+ * The NodeConfigBuilder builder allows you to create an NodeConfig using a fluent, simple style.
  *
  * @author mlaroche
  */
@@ -34,6 +34,11 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	private String myNodeId;
 	private String myEndPoint;
 
+	/**
+	 * Associate a common name that define the application as a whole. (ex: Facebook, Pharos...) (myApp by default)
+	 * @param appName the app name
+	 * @return this builder
+	 */
 	public NodeConfigBuilder withAppName(final String appName) {
 		Assertion.checkState(myAppName == null, "appName '{0}' is not allowed. appName is already defined as '{1}'", appName, myAppName);
 		Assertion.checkArgNotEmpty(appName);
@@ -43,6 +48,11 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 
 	}
 
+	/**
+	 * Associate an id to the current node (random UUID by default)
+	 * @param nodeId the node id
+	 * @return this builder
+	 */
 	public NodeConfigBuilder withNodeId(final String nodeId) {
 		Assertion.checkState(myNodeId == null, "nodeId '{0}' is not allowed. nodeId is already defined as '{1}'", nodeId, myNodeId);
 		Assertion.checkArgNotEmpty(nodeId);
@@ -52,6 +62,11 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 
 	}
 
+	/**
+	 * Associate an optional endPoint to reach the current node.
+	 * @param endPoint the endPoint to reach the node (protocol:port//host)
+	 * @return this builder
+	 */
 	public NodeConfigBuilder withEndPoint(final String endPoint) {
 		Assertion.checkState(myEndPoint == null, "endPoint '{0}' is not allowed. endPoint is already defined as '{1}'", endPoint, myEndPoint);
 		Assertion.checkArgNotEmpty(endPoint);

@@ -42,6 +42,11 @@ public interface ProxyFactory {
 		return doCreateProxy(intf);
 	}
 
+	/**
+	 * creates a proxy from an interface.
+	 * @param intf the interface to proxified
+	 * @return the proxy
+	 */
 	<C> C doCreateProxy(Class<C> intf);
 
 	/**

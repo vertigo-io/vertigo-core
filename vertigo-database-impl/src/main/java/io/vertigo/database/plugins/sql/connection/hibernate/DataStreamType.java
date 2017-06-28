@@ -89,7 +89,8 @@ public final class DataStreamType implements UserType {
 			//Cf io.vertigo.dynamo.impl.database.vendor.core.SQLMappingImpl
 			try {
 				final DataStream dataStream = (DataStream) value;
-				statement.setBinaryStream(index, dataStream.createInputStream(), (int) dataStream.getLength()); //attention le setBinaryStream avec une longueur de fichier en long N'EST PAS implémentée dans de nombreux drivers !!
+				//attention le setBinaryStream avec une longueur de fichier en long N'EST PAS implémentée dans de nombreux drivers !!
+				statement.setBinaryStream(index, dataStream.createInputStream(), (int) dataStream.getLength());
 			} catch (final IOException e) {
 				throw new SQLException("Erreur d'ecriture du flux", e);
 			}

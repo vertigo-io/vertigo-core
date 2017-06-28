@@ -32,6 +32,10 @@ import io.vertigo.lang.Assertion;
 public final class ConstraintNumberMaximum implements Constraint<Number, Number> {
 	private final double maxValue;
 
+	/**
+	 * Constructor.
+	 * @param args the maximum length
+	 */
 	public ConstraintNumberMaximum(final String args) {
 		Assertion.checkArgument(args != null && args.length() > 0, "Vous devez préciser la valeur maximum comme argument de ConstraintNumberMaximum");
 		//-----

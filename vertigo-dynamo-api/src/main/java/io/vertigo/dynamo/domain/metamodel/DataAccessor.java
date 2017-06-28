@@ -46,6 +46,7 @@ public final class DataAccessor {
 	 *  - au type enregistré pour le champ
 	 *  - les contraintes ne sont pas vérifiées.
 	 *
+	 * @param dto the object in which data will be set
 	 * @param value Object
 	 */
 	public void setValue(final DtObject dto, final Object value) {
@@ -63,6 +64,7 @@ public final class DataAccessor {
 	 *  Attention : en mode BEAN cette méthode lance une erreur
 	 * si il existe une seule erreur sur le champ concerné !!
 	 *
+	 * @param dto the object in which data will be retrieved
 	 * @return valeur non typée
 	 */
 	public Object getValue(final DtObject dto) {

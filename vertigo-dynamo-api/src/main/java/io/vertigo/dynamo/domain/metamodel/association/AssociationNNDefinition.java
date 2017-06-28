@@ -31,6 +31,7 @@ public final class AssociationNNDefinition extends AssociationDefinition {
 
 	/**
 	 * Constructeur d'une association n-n.
+	 * @param name the name of the definition
 	 * @param tableName Nom de la table
 	 * @param associationNodeA Noeud A
 	 * @param associationNodeB Noeud B

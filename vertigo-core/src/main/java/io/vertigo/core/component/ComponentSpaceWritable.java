@@ -141,6 +141,10 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 		}
 	}
 
+	/**
+	 * Close registration of components.
+	 * After calling this method no more components are added to the componentSpace.
+	 */
 	public void closeRegistration() {
 		//registration is now closed.
 		locked.set(true);

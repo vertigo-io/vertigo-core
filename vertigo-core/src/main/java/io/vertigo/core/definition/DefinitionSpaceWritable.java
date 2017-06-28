@@ -91,10 +91,17 @@ public final class DefinitionSpaceWritable implements DefinitionSpace {
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * Clear all known definitions
+	 */
 	public void clear() {
 		definitions.clear();
 	}
 
+	/**
+	 * Close registration of definitions.
+	 * After calling this no more definitions can be loaded.
+	 */
 	public void closeRegistration() {
 		//registration is now closed.
 		locked.set(true);

@@ -32,6 +32,10 @@ import io.vertigo.lang.Assertion;
 public final class ConstraintNumberMinimum implements Constraint<Number, Number> {
 	private final double minValue;
 
+	/**
+	 * Constructor.
+	 * @param args the minimum value
+	 */
 	public ConstraintNumberMinimum(final String args) {
 		Assertion.checkArgument(args != null && args.length() > 0, "Vous devez préciser la valeur minimum comme argument de ConstraintNumberMinimum");
 		//-----

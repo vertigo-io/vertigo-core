@@ -55,8 +55,12 @@ public final class StoreManagerImpl implements StoreManager {
 
 	/**
 	 * Constructor.
-	 * @param cacheManager Manager de gestion du cache
-	 * @param collectionsManager Manager de gestion des collections
+	 * @param cacheManager cacheManager
+	 * @param transactionManager transactionManager
+	 * @param collectionsManager collectionsManager
+	 * @param fileStorePlugins fileStorePlugins
+	 * @param dataStorePlugins dataStorePlugins
+	 * @param eventBusManager eventBusManager
 	 */
 	@Inject
 	public StoreManagerImpl(
