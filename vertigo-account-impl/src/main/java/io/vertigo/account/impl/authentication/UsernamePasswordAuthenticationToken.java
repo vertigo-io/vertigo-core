@@ -53,7 +53,7 @@ public final class UsernamePasswordAuthenticationToken implements Authentication
 	@Override
 	public boolean match(final AuthenticationToken trustedAuthenticationToken) {
 		if (trustedAuthenticationToken instanceof UsernamePasswordAuthenticationToken) {
-			return ((UsernamePasswordAuthenticationToken) trustedAuthenticationToken).getPrincipal().equals(username)
+			return trustedAuthenticationToken.getPrincipal().equals(username)
 					&& passwordHelper.checkPassword(((UsernamePasswordAuthenticationToken) trustedAuthenticationToken).getPassword(), password);
 		}
 		return false;

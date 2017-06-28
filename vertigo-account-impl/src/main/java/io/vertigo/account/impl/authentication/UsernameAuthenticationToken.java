@@ -33,7 +33,7 @@ public final class UsernameAuthenticationToken implements AuthenticationToken {
 	@Override
 	public boolean match(final AuthenticationToken trustedAuthenticationToken) {
 		if (trustedAuthenticationToken instanceof UsernameAuthenticationToken) {
-			return ((UsernameAuthenticationToken) trustedAuthenticationToken).getPrincipal().equals(username);
+			return trustedAuthenticationToken.getPrincipal().equals(username);
 		}
 		return false;
 	}

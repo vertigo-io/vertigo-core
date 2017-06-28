@@ -23,7 +23,7 @@ final class PermissionDeserializer implements JsonDeserializer<Permission> {
 		final JsonObject jsonPermission = json.getAsJsonObject();
 		final String code = jsonPermission.get("name").getAsString();
 		final String label = jsonPermission.get("label").getAsString();
-		final Optional<String> comment = Optional.<JsonElement> ofNullable(jsonPermission.get("__comment"))
+		final Optional<String> comment = Optional.ofNullable(jsonPermission.get("__comment"))
 				.map(JsonElement::getAsString);
 		return new Permission(code, label, comment);
 	}

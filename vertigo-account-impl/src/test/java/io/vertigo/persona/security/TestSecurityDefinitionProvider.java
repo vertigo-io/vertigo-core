@@ -42,6 +42,6 @@ public final class TestSecurityDefinitionProvider implements SimpleDefinitionPro
 
 	private static Role createRole(final String name) {
 		final String description = name;
-		return new Role(name, description, Collections.<Permission> emptyList());
+		return new Role(name, description, Collections.emptyList());
 	}
 }

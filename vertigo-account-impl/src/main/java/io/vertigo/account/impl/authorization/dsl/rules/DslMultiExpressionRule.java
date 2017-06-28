@@ -128,7 +128,7 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 		//On récupère le produit de la règle many
 		BoolOperator operator = null;
 		for (final List<Object> item : many) {
-			if (operator != null && operator != (BoolOperator) item.get(1)) {
+			if (operator != null && operator != item.get(1)) {
 				throw new IllegalArgumentException("Can't use different operator in same block, attempt to find " + operator);
 			}
 			operator = (BoolOperator) item.get(1);

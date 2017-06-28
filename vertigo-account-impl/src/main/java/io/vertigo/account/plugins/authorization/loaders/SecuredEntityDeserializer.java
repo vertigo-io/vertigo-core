@@ -72,7 +72,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 			final Map<String, Permission> permissionPerOperations) {
 		final String code = operation.get("name").getAsString();
 		final String label = operation.get("label").getAsString();
-		final Optional<String> comment = Optional.<JsonElement> ofNullable(operation.get("__comment"))
+		final Optional<String> comment = Optional.ofNullable(operation.get("__comment"))
 				.map(JsonElement::getAsString);
 
 		Set<String> overrides = context.deserialize(operation.get("overrides"), createParameterizedType(Set.class, String.class));
@@ -108,7 +108,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		return permissionPerOperations.get(operationName);
 	}
 
-	private final static DslMultiExpression parseRule(final String securityRule) {
+	private static DslMultiExpression parseRule(final String securityRule) {
 		Assertion.checkNotNull(securityRule);
 		//-----
 		try {
