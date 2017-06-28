@@ -46,7 +46,8 @@ public final class Identities {
 		final Account testAccount0 = Account.builder("0").withAuthToken("john.doe").withDisplayName("John doe").withEmail("john.doe@yopmail.com").build();
 		final Account testAccount1 = Account.builder("1").withAuthToken("palmer.luckey").withDisplayName("Palmer Luckey").withEmail("palmer.luckey@yopmail.com").build();
 		final Account testAccount2 = Account.builder("2").withAuthToken("bill.clinton").withDisplayName("Bill Clinton").withEmail("bill.clinton@yopmail.com").build();
-		identityManager.getStore().saveAccounts(Arrays.asList(testAccount0, testAccount1, testAccount2));
+		final Account testAccount3 = Account.builder("3").withAuthToken("admin").withDisplayName("Phil Mormon").withEmail("phil.mormon@yopmail.com").build();
+		identityManager.getStore().saveAccounts(Arrays.asList(testAccount0, testAccount1, testAccount2, testAccount3));
 
 		final URI<Account> accountURI0 = createAccountURI(testAccount0.getId());
 		final URI<Account> accountURI1 = createAccountURI(testAccount1.getId());

@@ -131,7 +131,7 @@ public final class IdentityManagerTest {
 	@Test
 	public void testAccounts() {
 		Assert.assertEquals("Palmer Luckey", identityManager.getStore().getAccount(accountURI1).getDisplayName());
-		Assert.assertEquals(10 + 3, identityManager.getStore().getAccountsCount());
+		Assert.assertEquals(10 + 4, identityManager.getStore().getAccountsCount());
 	}
 
 	@Test

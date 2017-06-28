@@ -69,9 +69,9 @@ public final class MyAppConfig {
 			.addModule(new AccountFeatures()
 					.withAccountStorePlugin(MemoryAccountStorePlugin.class)
 					.withAuthentificationRealm(LdapAuthenticatingRealmPlugin.class,
-							Param.of("userLoginTemplate", "{0}@KLEE.LAN.NET"),
+							Param.of("userLoginTemplate", "cn={0},dc=vertigo,dc=io"),
 							Param.of("ldapServerHost", "docker-vertigo.part.klee.lan.net"),
-							Param.of("ldapServerPort", "3268"))
+							Param.of("ldapServerPort", "389"))
 					.build());
 		// @formatter:on
 	}

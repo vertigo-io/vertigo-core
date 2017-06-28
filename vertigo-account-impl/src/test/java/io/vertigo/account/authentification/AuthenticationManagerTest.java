@@ -25,12 +25,13 @@ import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.authentication.AuthenticationToken;
+import io.vertigo.account.data.Identities;
 import io.vertigo.account.identity.Account;
+import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.DIInjector;
@@ -42,7 +43,6 @@ import io.vertigo.persona.security.VSecurityManager;
  *
  * @author npiedeloup
  */
-@Ignore
 public final class AuthenticationManagerTest {
 	private AutoCloseableApp app;
 
@@ -52,11 +52,15 @@ public final class AuthenticationManagerTest {
 	@Inject
 	private AuthenticationManager authenticationManager;
 
+	@Inject
+	private IdentityManager identityManager;
+
 	@Before
 	public void setUp() {
 		app = new AutoCloseableApp(MyAppConfig.config(false));
 		DIInjector.injectMembers(this, app.getComponentSpace());
 		securityManager.startCurrentUserSession(securityManager.createUserSession());
+		Identities.initData(identityManager);
 	}
 
 	@After
@@ -84,7 +88,7 @@ public final class AuthenticationManagerTest {
 	}
 
 	private Optional<Account> loginSuccess() {
-		final AuthenticationToken token = new UsernamePasswordAuthenticationToken("testAuthent", "testAuthentPassword");
+		final AuthenticationToken token = new UsernamePasswordAuthenticationToken("admin", "v3rt1g0");
 		final Optional<Account> account = authenticationManager.login(token);
 		Assert.assertTrue("Authent fail", account.isPresent());
 
@@ -104,6 +108,7 @@ public final class AuthenticationManagerTest {
 
 	@Test
 	public void testLogout() {
+		loginSuccess();
 		//		final Optional<Account> account = authenticateSuccess();
 		final Optional<UserSession> userSession = securityManager.getCurrentUserSession();
 		Assert.assertTrue("No UserSession", userSession.isPresent());
