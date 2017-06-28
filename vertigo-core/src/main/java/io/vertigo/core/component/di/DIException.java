@@ -19,8 +19,8 @@
 package io.vertigo.core.component.di;
 
 /**
- * Thrown if an exception occures during a method concerning dependency injection. 
- * 
+ * Thrown if an exception occures during a method concerning dependency injection.
+ *
  * @author pchretien
  */
 public final class DIException extends RuntimeException {
@@ -36,7 +36,7 @@ public final class DIException extends RuntimeException {
 
 	/**
 	 * Constructor.
-	 * @param msg message 
+	 * @param msg message
 	 * @param t cause exception
 	 */
 	public DIException(final String msg, final Throwable t) {

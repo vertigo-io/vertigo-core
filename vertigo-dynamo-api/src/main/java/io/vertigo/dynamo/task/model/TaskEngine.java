@@ -67,7 +67,7 @@ public abstract class TaskEngine {
 	* @return Valeur
 	*/
 	protected final <J> J getValue(final String attributeName) {
-		return input.<J> getValue(attributeName);
+		return input.getValue(attributeName);
 	}
 
 	/**

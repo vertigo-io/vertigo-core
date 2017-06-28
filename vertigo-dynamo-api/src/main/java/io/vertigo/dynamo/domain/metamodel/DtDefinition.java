@@ -114,7 +114,7 @@ public final class DtDefinition implements Definition {
 				.check(() -> DtStereotype.Fragment == stereotype, "Error on {0} with sterotype {1}, If an object is a fragment then it must have this stereotype", name, stereotype);
 		//Persistent => ID
 		Assertion.when(stereotype.isPersistent())
-				.check(() -> idFieldOpt.isPresent(), "Error on {0}, If an object is persistent then it must have an ID", name);
+				.check(idFieldOpt::isPresent, "Error on {0}, If an object is persistent then it must have an ID", name);
 		Assertion.when(!stereotype.isPersistent())
 				.check(() -> !idFieldOpt.isPresent(), "Error on {0}, If an object is not persistent then it must have no ID", name);
 	}
@@ -145,7 +145,7 @@ public final class DtDefinition implements Definition {
 	}
 
 	public Optional<DtDefinition> getFragment() {
-		return fragmentOpt.map(dtDefinitionDefinitionReference -> dtDefinitionDefinitionReference.get());
+		return fragmentOpt.map(DefinitionReference::get);
 	}
 
 	/**

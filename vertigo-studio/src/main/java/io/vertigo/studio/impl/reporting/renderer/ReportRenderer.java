@@ -22,7 +22,7 @@ import io.vertigo.studio.reporting.Report;
 
 /**
  * Interface de rendu d'un rapport d'analyse relatif à une collection d'objets.
- * 
+ *
  * @author pchretien
  */
 public interface ReportRenderer {

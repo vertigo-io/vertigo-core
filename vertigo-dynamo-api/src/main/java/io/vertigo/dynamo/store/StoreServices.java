@@ -22,7 +22,7 @@ import io.vertigo.core.component.Component;
 
 /**
  * A simple marker used to identify all the components concerned with storage.
- * 
+ *
  * @author pchretien
  */
 public interface StoreServices extends Component {

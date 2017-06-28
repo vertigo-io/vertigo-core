@@ -92,7 +92,7 @@ public final class EAXmiHandler extends DefaultHandler {
 		}
 	}
 
-	private void parseXmiObject(final Attributes attributes, String typeElement) {
+	private void parseXmiObject(final Attributes attributes, final String typeElement) {
 		LOG.debug("On est dans l'objet ");
 		final String id = attributes.getValue(ATTR_ID);
 		final String leNom = attributes.getValue(ATTR_NAME);

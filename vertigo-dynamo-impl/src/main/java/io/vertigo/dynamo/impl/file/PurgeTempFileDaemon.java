@@ -51,7 +51,7 @@ public final class PurgeTempFileDaemon implements Daemon {
 			if (subFiles.isDirectory() && subFiles.canRead()) { //canRead pour les pbs de droits
 				deleteOldFiles(subFiles, maxTime);
 			} else if (subFiles.lastModified() < maxTime) {
-				boolean succeeded = subFiles.delete();
+				final boolean succeeded = subFiles.delete();
 				if (!succeeded) {
 					subFiles.deleteOnExit();
 				}

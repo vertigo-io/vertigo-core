@@ -75,9 +75,7 @@ public final class CarDataBase {
 
 	public final DtList<Car> getAllCars() {
 		final DtList<Car> dtList = new DtList<>(Car.class);
-		for (final Car car : cars) {
-			dtList.add(car);
-		}
+        dtList.addAll(cars);
 		return dtList;
 	}
 

@@ -46,7 +46,7 @@ public final class URI<E extends Entity> implements Serializable {
 	/**
 	 * Expression réguliére vérifiée par les URN.
 	 */
-	public static final Pattern REGEX_URN = Pattern.compile("[a-zA-Z0-9_:@$-]{5,80}");
+	private static final Pattern REGEX_URN = Pattern.compile("[a-zA-Z0-9_:@$-]{5,80}");
 
 	private final DefinitionReference<DtDefinition> definitionRef;
 	private final Serializable id;

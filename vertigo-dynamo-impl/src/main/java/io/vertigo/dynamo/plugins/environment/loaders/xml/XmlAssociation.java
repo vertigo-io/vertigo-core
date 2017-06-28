@@ -171,7 +171,7 @@ public final class XmlAssociation {
 
 	/**
 	 * @return Code de l'entité A participant à l'association
-	
+
 	 */
 	public String getCodeA() {
 		return codeA;

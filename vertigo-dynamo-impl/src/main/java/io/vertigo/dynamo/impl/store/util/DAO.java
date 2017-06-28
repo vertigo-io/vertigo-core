@@ -83,7 +83,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 		return taskManager;
 	}
 
-	public BrokerBatch<E, P> getBatch() {
+	public final BrokerBatch<E, P> getBatch() {
 		return brokerBatch;
 	}
 
@@ -178,7 +178,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return D Object recherché
 	 */
 	public final E get(final URI<E> uri) {
-		return dataStore.<E> readOne(uri);
+		return dataStore.readOne(uri);
 	}
 
 	/**
@@ -189,7 +189,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return F Fragment recherché
 	 */
 	public final <F extends Fragment<E>> F getFragment(final URI<E> uri, final Class<F> fragmentClass) {
-		final E dto = dataStore.<E> readOne(uri);
+		final E dto = dataStore.readOne(uri);
 		final DtDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragmentClass);
 		final F fragment = fragmentClass.cast(DtObjectUtil.createDtObject(fragmentDefinition));
 		for (final DtField dtField : fragmentDefinition.getFields()) {
@@ -256,7 +256,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 		// Verification de la valeur est du type du champ
 		final DtDefinition dtDefinition = getDtDefinition();
 		dtDefinition.getField(dtFieldName.name()).getDomain().getDataType().checkValue(value);
-		return dataStore.<E> findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
+		return dataStore.findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
 
 	/**
@@ -277,7 +277,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return  the optional result
 	 */
 	public final Optional<E> findOptional(final Criteria<E> criteria) {
-		final DtList<E> list = dataStore.<E> findAll(new DtListURIForCriteria<>(getDtDefinition(), criteria, 2));
+		final DtList<E> list = dataStore.findAll(new DtListURIForCriteria<>(getDtDefinition(), criteria, 2));
 		Assertion.checkState(list.size() <= 1, "Too many results");
 		return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
 	}
@@ -288,7 +288,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return DtList<D> result NOT NULL
 	 */
 	public final DtList<E> findAll(final Criteria<E> criteria, final int maxRows) {
-		return dataStore.<E> findAll(new DtListURIForCriteria<>(getDtDefinition(), criteria, maxRows));
+		return dataStore.findAll(new DtListURIForCriteria<>(getDtDefinition(), criteria, maxRows));
 	}
 
 	/** {@inheritDoc} */
@@ -342,7 +342,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 		brokerNN.appendNN(dtListURI, entity.getURI());
 	}
 
-	private final DtDefinition getDtDefinition() {
+	private DtDefinition getDtDefinition() {
 		return DtObjectUtil.findDtDefinition(entityClass);
 	}
 }

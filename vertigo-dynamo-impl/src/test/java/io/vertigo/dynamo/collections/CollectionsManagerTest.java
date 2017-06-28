@@ -454,7 +454,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	private void testTermFilter(final String filterString, final int countEspected) {
 		final DtList<Item> result = createItemsForRangeTest()
 				.stream()
-				.filter(collectionsManager.<Item> filter(ListFilter.of(filterString)))
+				.filter(collectionsManager.filter(ListFilter.of(filterString)))
 				.collect(VCollectors.toDtList(Item.class));
 
 		Assert.assertEquals(countEspected, result.size());

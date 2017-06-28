@@ -110,7 +110,7 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 				.stream()
 				.filter(facet -> facetName.equals(facet.getDefinition().getName()))
 				.findFirst()
-				.orElseThrow(() -> new NullPointerException());
+				.orElseThrow(NullPointerException::new);
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testFacetListByRange() {
 		final DtList<SmartCar> cars = carDataBase.getAllCars();
-		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, Collections.<ListFilter> emptyList());
+		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, Collections.emptyList());
 		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery);
 		testFacetResultByRange(result);
 	}
@@ -131,7 +131,7 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testFilterFacetListByRange() {
 		final DtList<SmartCar> cars = carDataBase.getAllCars();
-		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, Collections.<ListFilter> emptyList());
+		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, Collections.emptyList());
 		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery);
 		//on applique une facette
 		final FacetedQuery query = addFacetQuery("FCT_YEAR_CAR", "avant", result);
@@ -163,7 +163,7 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testFacetListByTerm() {
 		final DtList<SmartCar> cars = carDataBase.getAllCars();
-		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, Collections.<ListFilter> emptyList());
+		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, Collections.emptyList());
 		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery);
 		testFacetResultByTerm(result);
 	}
@@ -175,7 +175,7 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testFilterFacetListByTerm() {
 		final DtList<SmartCar> cars = carDataBase.getAllCars();
-		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, Collections.<ListFilter> emptyList());
+		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, Collections.emptyList());
 		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery);
 		//on applique une facette
 		final FacetedQuery query = addFacetQuery("FCT_MAKER_CAR", "peugeot", result);

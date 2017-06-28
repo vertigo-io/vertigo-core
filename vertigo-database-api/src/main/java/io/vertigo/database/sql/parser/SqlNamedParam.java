@@ -29,7 +29,6 @@ import io.vertigo.lang.WrappedException;
  * @author pchretien
  */
 public final class SqlNamedParam {
-	private final String[] tokens;
 	private final String attributeName;
 	private final String fieldName;
 	private final Integer rowNumber;
@@ -40,7 +39,7 @@ public final class SqlNamedParam {
 	 * @param betweenCar String
 	 */
 	public SqlNamedParam(final String betweenCar) {
-		tokens = betweenCar.split("\\.");
+		String[] tokens = betweenCar.split("\\.");
 		if (tokens.length == 1) {
 			//Simple bound param : CODE
 			attributeName = tokens[0];

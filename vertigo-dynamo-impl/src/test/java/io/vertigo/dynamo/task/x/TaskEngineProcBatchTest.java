@@ -101,7 +101,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU4 {
 	}
 
 	private DtList<SuperHero> getSuperHeroes() {
-		return DtList.<SuperHero> of(
+		return DtList.of(
 				createSuperHero(1, "superman"),
 				createSuperHero(2, "batman"),
 				createSuperHero(3, "catwoman"),
@@ -112,7 +112,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU4 {
 				createSuperHero(8, "spiderman"));
 	}
 
-	private SuperHero createSuperHero(long id, String name) {
+	private SuperHero createSuperHero(final long id, final String name) {
 		final SuperHero superHero = new SuperHero();
 		superHero.setId(id);
 		superHero.setName(name);

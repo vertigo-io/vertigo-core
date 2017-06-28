@@ -36,9 +36,6 @@ import org.junit.runners.Parameterized.Parameters;
 
 import io.vertigo.account.MyAppConfig;
 import io.vertigo.account.data.Identities;
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.AccountGroup;
-import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.di.injector.DIInjector;

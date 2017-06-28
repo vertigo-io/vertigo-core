@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 
 /**
  * This annotation is required to exclude some properties of json (un)marshalling.
- * Json Exclusion 
+ * Json Exclusion
  * @author pchretien
  */
 @Target({ ElementType.FIELD, ElementType.TYPE })

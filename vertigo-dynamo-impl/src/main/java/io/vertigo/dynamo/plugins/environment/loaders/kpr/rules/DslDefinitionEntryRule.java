@@ -50,7 +50,7 @@ public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntr
 		Assertion.checkNotNull(fieldNames);
 		//-----
 		final List<PegRule<?>> fieldNamesRules = fieldNames.stream()
-				.map(fieldName -> PegRules.term(fieldName))
+				.map(PegRules::term)
 				.collect(Collectors.toList());
 		//-----
 		return PegRules.sequence(//"DefinitionKey"

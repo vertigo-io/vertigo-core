@@ -26,12 +26,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.commons.transaction.VTransaction;
-import io.vertigo.commons.transaction.VTransactionAfterCompletionFunction;
-import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.commons.transaction.VTransactionResource;
-import io.vertigo.commons.transaction.VTransactionResourceId;
-import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.commons.transaction.data.SampleDataBase;
 import io.vertigo.commons.transaction.data.SampleDataBaseConnection;
 import io.vertigo.commons.transaction.data.SampleTransactionResource;

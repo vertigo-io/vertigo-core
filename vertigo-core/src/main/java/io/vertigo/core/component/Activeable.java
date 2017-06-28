@@ -20,7 +20,7 @@ package io.vertigo.core.component;
 
 /**
  * The Activeable class allows you to provide a behavior to a component.
- * The methods start() and stop() are called after the creation and before the destruction of the managed components. 
+ * The methods start() and stop() are called after the creation and before the destruction of the managed components.
  *
  * @author pchretien
  */

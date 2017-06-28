@@ -152,7 +152,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 			//Execute le Statement JDBC.
 			final OptionalInt sqlRowcountOpt = doExecute(parsedQuery.getVal1(), connection, statement, parsedQuery.getVal2());
 			//On positionne le nombre de lignes affectées.
-			sqlRowcountOpt.ifPresent(rowCount -> setRowCount(rowCount));
+			sqlRowcountOpt.ifPresent(this::setRowCount);
 		} catch (final BatchUpdateException sqle) { //some exception embedded the usefull one
 			// Gère les erreurs d'exécution Batch JDBC.
 			throw handleSQLException(connection, sqle.getNextException(), statement.toString());

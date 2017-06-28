@@ -21,7 +21,7 @@ package io.vertigo.dynamo.task;
 import io.vertigo.dynamo.task.model.TaskEngine;
 
 /**
- * 
+ *
  * @author dchallas
  */
 public final class TaskEngineMock extends TaskEngine {

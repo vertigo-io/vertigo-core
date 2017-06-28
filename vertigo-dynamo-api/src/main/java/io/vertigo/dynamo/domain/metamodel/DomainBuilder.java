@@ -94,7 +94,7 @@ public final class DomainBuilder implements Builder<Domain> {
 				myName,
 				myDataType,
 				myformatterDefinition,
-				myConstraintDefinitions == null ? Collections.<ConstraintDefinition> emptyList() : myConstraintDefinitions,
+				myConstraintDefinitions == null ? Collections.emptyList() : myConstraintDefinitions,
 				myProperties == null ? Properties.builder().build() : myProperties);
 	}
 

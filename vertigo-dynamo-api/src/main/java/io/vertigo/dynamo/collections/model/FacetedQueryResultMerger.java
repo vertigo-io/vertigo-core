@@ -52,7 +52,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> {
 	private final Map<String, FacetValue> facetValuePerFilter = new HashMap<>();
 	private final Map<FacetValue, List<FacetedQueryResult<?, S>>> otherResults = new LinkedHashMap<>();
 
-	private Optional<String> facetDefinitionNameOpt = Optional.<String> empty();
+	private Optional<String> facetDefinitionNameOpt = Optional.empty();
 	private FacetedQueryResult<?, S> firstResult;
 
 	/**

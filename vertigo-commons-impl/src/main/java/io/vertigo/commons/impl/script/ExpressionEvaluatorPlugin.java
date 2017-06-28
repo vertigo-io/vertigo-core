@@ -25,7 +25,7 @@ import io.vertigo.core.component.Plugin;
 
 /**
  * Evaluation d'une expression.
- * 
+ *
  * @author  pchretien
  */
 public interface ExpressionEvaluatorPlugin extends Plugin {

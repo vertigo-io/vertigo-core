@@ -131,7 +131,7 @@ public final class FormatterDate implements Formatter {
 	/*
 	 *  Cycles through patterns to try and parse given String into a Date | LocalDate | ZonedDateTime
 	 */
-	private <T> T applyStringToObject(String dateString, BiFunction<String, String, T> fun) throws FormatterException {
+	private <T> T applyStringToObject(final String dateString, final BiFunction<String, String, T> fun) throws FormatterException {
 		//StringToDate renvoit null si elle n'a pas réussi à convertir la date
 		T dateValue = null;
 		for (int i = 0; i < patterns.size() && dateValue == null; i++) {

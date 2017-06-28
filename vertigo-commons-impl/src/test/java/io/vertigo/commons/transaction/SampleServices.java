@@ -22,9 +22,6 @@ import javax.inject.Inject;
 
 import org.junit.Assert;
 
-import io.vertigo.commons.transaction.Transactional;
-import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.commons.transaction.VTransactionResourceId;
 import io.vertigo.commons.transaction.data.SampleDataBase;
 import io.vertigo.commons.transaction.data.SampleDataBaseConnection;
 import io.vertigo.commons.transaction.data.SampleTransactionResource;

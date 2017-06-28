@@ -21,7 +21,7 @@ package io.vertigo.core.component.di.data;
 import javax.inject.Inject;
 
 /**
- * This class has an object annotated with @Inject 
+ * This class has an object annotated with @Inject
  * which is already defined. This must throw an exception
  */
 public final class B2 {

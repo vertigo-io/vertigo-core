@@ -23,7 +23,7 @@ import io.vertigo.studio.reporting.Report;
 
 /**
  * Plugin permettant de créer un rapport particulier.
- *  
+ *
  * @author pchretien
  */
 public interface ReportingPlugin extends Plugin {

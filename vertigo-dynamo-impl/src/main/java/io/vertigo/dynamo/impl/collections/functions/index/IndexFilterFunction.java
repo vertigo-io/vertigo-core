@@ -117,6 +117,6 @@ public final class IndexFilterFunction<D extends DtObject> implements UnaryOpera
 		Assertion.checkNotNull(dtc);
 		//-----
 		final DtListState dtListState = new DtListState(top, skip, sortFieldName, sortDesc);
-		return indexPlugin.getCollection(keywords, searchedFields, listFilters, dtListState, Optional.<DtField> empty(), dtc);
+		return indexPlugin.getCollection(keywords, searchedFields, listFilters, dtListState, Optional.empty(), dtc);
 	}
 }
