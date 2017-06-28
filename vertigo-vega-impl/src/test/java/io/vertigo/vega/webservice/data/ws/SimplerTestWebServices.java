@@ -18,6 +18,9 @@
  */
 package io.vertigo.vega.webservice.data.ws;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -359,6 +362,32 @@ public final class SimplerTestWebServices implements WebServices {
 		return result;
 	}
 
+	@GET("/localDate")
+	public LocalDate getLocalDate() {
+		return LocalDate.of(2017, 06, 27);
+	}
+
+	@PUT("/localDate")
+	public UiContext putLocalDate(@QueryParam("date") final LocalDate localDate) {
+		final UiContext result = new UiContext();
+		result.put("input", localDate);
+		result.put("inputAsString", localDate.toString());
+		return result;
+	}
+
+	@GET("/zonedDateTime")
+	public ZonedDateTime getZonedDateTime() {
+		return ZonedDateTime.of(2016, 05, 26, 23, 30, 20, 0, ZoneId.of("CET"));
+	}
+
+	@PUT("/zonedDateTime")
+	public UiContext putZonedDateTime(@QueryParam("date") final ZonedDateTime zonedDateTime) {
+		final UiContext result = new UiContext();
+		result.put("input", zonedDateTime);
+		result.put("inputAsString", zonedDateTime.toString());
+		return result;
+	}
+
 	@POST("/string")
 	public String testString(final String bodyString) {
 		return bodyString;
@@ -373,7 +402,7 @@ public final class SimplerTestWebServices implements WebServices {
 	public FacetedQueryResult<DtObject, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
-	
+
 		//offset + range ?
 		//code 200
 		return result;

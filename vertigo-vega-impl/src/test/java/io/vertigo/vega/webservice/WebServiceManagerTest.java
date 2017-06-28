@@ -1750,6 +1750,40 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
+	public void testLocalDate() {
+		loggedAndExpect(given())
+				.body(Matchers.equalTo("\"2017-06-27\""))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/localDate");
+
+		final String inputLocalDate = "2016-01-18";
+		loggedAndExpect(given())
+				.body("input", Matchers.equalTo(inputLocalDate))
+				.body("inputAsString", Matchers.equalTo("2016-01-18"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/localDate?date=" + inputLocalDate);
+	}
+
+	@Test
+	public void testZonedDateTime() {
+		loggedAndExpect(given())
+				.body(Matchers.equalTo("\"2016-05-26T21:30:20Z\""))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/zonedDateTime");
+
+		final String inputZonedDateTime = "2016-01-18T17:21:42.026Z";
+		loggedAndExpect(given())
+				.body("input", Matchers.equalTo(inputZonedDateTime))
+				.body("inputAsString", Matchers.equalTo("2016-01-18T17:21:42.026Z[UTC]"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/zonedDateTime?date=" + inputZonedDateTime);
+	}
+
+	@Test
 	public void testString() {
 		loggedAndExpect(given().body(UTF8_TEST_STRING))
 				.statusCode(HttpStatus.SC_OK).log().all()

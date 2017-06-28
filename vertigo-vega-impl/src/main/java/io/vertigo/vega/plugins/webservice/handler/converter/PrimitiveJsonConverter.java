@@ -18,6 +18,8 @@
  */
 package io.vertigo.vega.plugins.webservice.handler.converter;
 
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -25,7 +27,6 @@ import javax.inject.Inject;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
-import io.vertigo.vega.engines.webservice.json.UTCDateUtil;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
@@ -54,7 +55,9 @@ public final class PrimitiveJsonConverter implements JsonConverter {
 				|| Long.class.isAssignableFrom(paramClass)
 				|| Float.class.isAssignableFrom(paramClass)
 				|| Double.class.isAssignableFrom(paramClass)
-				|| Date.class.isAssignableFrom(paramClass);
+				|| Date.class.isAssignableFrom(paramClass)
+				|| LocalDate.class.isAssignableFrom(paramClass)
+				|| ZonedDateTime.class.isAssignableFrom(paramClass);
 	}
 
 	/** {@inheritDoc} */
@@ -65,7 +68,8 @@ public final class PrimitiveJsonConverter implements JsonConverter {
 		final Class<?> paramClass = webServiceParam.getType();
 		final Object value;
 		if (input instanceof String) {
-			value = readPrimitiveValue((String) input, paramClass);
+			final String inputString = (String) input;
+			value = readPrimitiveValue(inputString/*"\"" + inputString + "\""*/, paramClass);
 		} else if (input instanceof UiContext) {
 			value = ((UiContext) input).get(webServiceParam.getName());
 		} else {
@@ -82,9 +86,9 @@ public final class PrimitiveJsonConverter implements JsonConverter {
 	}
 
 	private <D> D readPrimitiveValue(final String json, final Class<D> paramClass) {
-		if (json == null) {
-			return null;
-		} else if (paramClass.isPrimitive()) {
+		Assertion.checkNotNull(json); //never null (because after instanceof)
+		//-----
+		if (paramClass.isPrimitive()) {
 			return jsonReaderEngine.fromJson(json, paramClass);
 		} else if (String.class.isAssignableFrom(paramClass)) {
 			return paramClass.cast(json);
@@ -96,11 +100,21 @@ public final class PrimitiveJsonConverter implements JsonConverter {
 			return paramClass.cast(Float.valueOf(json));
 		} else if (Double.class.isAssignableFrom(paramClass)) {
 			return paramClass.cast(Double.valueOf(json));
-		} else if (Date.class.isAssignableFrom(paramClass)) {
-			return paramClass.cast(UTCDateUtil.parse(json));
+		} else if (Date.class.isAssignableFrom(paramClass)
+				|| LocalDate.class.isAssignableFrom(paramClass)
+				|| ZonedDateTime.class.isAssignableFrom(paramClass)) {
+			return jsonReaderEngine.fromJson(escapeJsonValue(json), paramClass); //Pour utiliser Gson sur des valeurs seules, il faut entourer de "", sinon elles sont splitées sur le :
 		} else {
 			throw new IllegalArgumentException("Unsupported type " + paramClass.getSimpleName());
 		}
+	}
+
+	private static String escapeJsonValue(final String json) {
+		if (json.startsWith("\"")) {
+			Assertion.checkState(json.endsWith("\""), "Json value badly escaped by \"\" ({0})", json);
+			return json;
+		}
+		return "\"" + json + "\"";
 	}
 
 }

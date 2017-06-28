@@ -22,6 +22,10 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -401,6 +405,36 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
+	private static class LocalDateAdapter implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
+
+		/** {@inheritDoc} */
+		@Override
+		public JsonElement serialize(final LocalDate date, final Type typeOfSrc, final JsonSerializationContext context) {
+			return new JsonPrimitive(date.format(DateTimeFormatter.ISO_LOCAL_DATE)); // "yyyy-mm-dd"
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public LocalDate deserialize(final JsonElement jsonElement, final Type type, final JsonDeserializationContext jsonDeserializationContext) {
+			return LocalDate.parse(jsonElement.getAsString(), DateTimeFormatter.ISO_LOCAL_DATE);
+		}
+	}
+
+	private static class ZonedDateTimeAdapter implements JsonSerializer<ZonedDateTime>, JsonDeserializer<ZonedDateTime> {
+
+		/** {@inheritDoc} */
+		@Override
+		public JsonElement serialize(final ZonedDateTime date, final Type typeOfSrc, final JsonSerializationContext context) {
+			return new JsonPrimitive(date.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.of("UTC")))); // "yyyy-mm-ddTHH:MI:SSZ"
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public ZonedDateTime deserialize(final JsonElement jsonElement, final Type type, final JsonDeserializationContext jsonDeserializationContext) {
+			return ZonedDateTime.parse(jsonElement.getAsString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.of("UTC")));
+		}
+	}
+
 	private static class EmptyStringAsNull implements JsonDeserializer<String> {
 
 		/** {@inheritDoc} */
@@ -421,6 +455,8 @@ public final class GoogleJsonEngine implements JsonEngine {
 					//.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 					.registerTypeHierarchyAdapter(DtObject.class, new DtObjectJsonAdapter())
 					.registerTypeAdapter(Date.class, new UTCDateAdapter())
+					.registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+					.registerTypeAdapter(ZonedDateTime.class, new ZonedDateTimeAdapter())
 					.registerTypeAdapter(String.class, new EmptyStringAsNull())// add "" <=> null
 					.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())
 					.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())
