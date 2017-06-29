@@ -75,7 +75,7 @@ public final class CommonsFeatures extends Features {
 
 	/**
 	 * Activates script with a defined plugin.
-	
+
 	 * @param expressionEvaluatorPluginClass the type of plugin to use
 	 * @param params the params
 	 * @return these features

@@ -21,7 +21,6 @@ package io.vertigo.account.authorization;
 import java.util.Collections;
 import java.util.List;
 
-import io.vertigo.account.authorization.metamodel.Permission;
 import io.vertigo.account.authorization.metamodel.Role;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;

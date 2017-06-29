@@ -24,7 +24,6 @@ import java.util.List;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
-import io.vertigo.persona.security.metamodel.Permission;
 import io.vertigo.persona.security.metamodel.Role;
 import io.vertigo.util.ListBuilder;
 

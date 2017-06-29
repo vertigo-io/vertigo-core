@@ -39,7 +39,7 @@ public final class SqlNamedParam {
 	 * @param betweenCar String
 	 */
 	public SqlNamedParam(final String betweenCar) {
-		String[] tokens = betweenCar.split("\\.");
+		final String[] tokens = betweenCar.split("\\.");
 		if (tokens.length == 1) {
 			//Simple bound param : CODE
 			attributeName = tokens[0];
