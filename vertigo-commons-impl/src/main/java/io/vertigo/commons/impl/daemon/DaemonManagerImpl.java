@@ -19,6 +19,7 @@
 package io.vertigo.commons.impl.daemon;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -26,16 +27,22 @@ import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.component.Component;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ClassUtil;
 
 /**
  * Manager of all the daemons.
  *
  * @author TINGARGIOLA
  */
-public final class DaemonManagerImpl implements DaemonManager, Activeable {
+public final class DaemonManagerImpl implements DaemonManager, Activeable, SimpleDefinitionProvider {
 	private final DaemonExecutor daemonExecutor = new DaemonExecutor();
 
 	/**
@@ -44,6 +51,32 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	@Inject
 	public DaemonManagerImpl() {
 		Home.getApp().registerPreActivateFunction(this::startAllDaemons);
+	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return Home.getApp().getComponentSpace().keySet()
+				.stream()
+				.map(id -> Home.getApp().getComponentSpace().resolve(id, Component.class))
+				.flatMap(component -> createDaemonDefinitions(component).stream())
+				.collect(Collectors.toList());
+	}
+
+	private List<DaemonDefinition> createDaemonDefinitions(final Component component) {
+		return ClassUtil.getAllMethods(component.getClass(), DaemonScheduled.class)
+				.stream()
+				.map(
+						method -> {
+							Assertion.checkState(method.getParameterTypes().length == 0, "Method {0} on component {1} cannot have any parameter to be used as a daemon", method.getName(), component.getClass().getName());
+							//---
+							final DaemonScheduled daemonSchedule = method.getAnnotation(DaemonScheduled.class);
+							final DaemonDefinition daemonDefinition = new DaemonDefinition(
+									daemonSchedule.name(),
+									() -> () -> ClassUtil.invoke(component, method), daemonSchedule.periodInSeconds());
+							return daemonDefinition;
+						})
+				.collect(Collectors.toList());
+
 	}
 
 	/** {@inheritDoc} */
@@ -94,4 +127,5 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 		Home.getApp().getDefinitionSpace().getAll(DaemonDefinition.class).stream()
 				.forEach(this::startDaemon);
 	}
+
 }

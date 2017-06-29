@@ -44,17 +44,10 @@ public final class EventBusManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private MySubscriber mySubscriber;
 	private int deadEvents = 0;
-	private int red = 0;
 
 	@Override
 	protected void doSetUp() {
-		eventBusManager.subscribe(RedColorEvent.class, this::onEvent);
-		//-----
 		eventBusManager.registerDead(event -> deadEvents++);
-	}
-
-	private void onEvent(final RedColorEvent event) {
-		red++;
 	}
 
 	@Test
@@ -62,8 +55,6 @@ public final class EventBusManagerTest extends AbstractTestCaseJU4 {
 		assertEquals(0, mySubscriber.getBlueCount());
 		assertEquals(0, mySubscriber.getRedCount());
 		assertEquals(0, mySubscriber.getCount());
-
-		assertEquals(0, red);
 
 		eventBusManager.post(new BlueColorEvent());
 		eventBusManager.post(new WhiteColorEvent());
@@ -73,8 +64,6 @@ public final class EventBusManagerTest extends AbstractTestCaseJU4 {
 		assertEquals(1, mySubscriber.getBlueCount());
 		assertEquals(2, mySubscriber.getRedCount());
 		assertEquals(4, mySubscriber.getCount());
-
-		assertEquals(2, red);
 
 		assertEquals(0, deadEvents);
 	}

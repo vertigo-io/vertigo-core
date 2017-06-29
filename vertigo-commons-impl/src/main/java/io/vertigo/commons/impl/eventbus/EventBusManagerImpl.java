@@ -18,26 +18,30 @@
  */
 package io.vertigo.commons.impl.eventbus;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.eventbus.Event;
 import io.vertigo.commons.eventbus.EventBusManager;
-import io.vertigo.commons.eventbus.EventSubscriber;
+import io.vertigo.commons.eventbus.EventBusSubscriptionDefinition;
+import io.vertigo.commons.eventbus.EventBusSubscribed;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.component.Component;
-import io.vertigo.core.component.ComponentSpace;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
+import io.vertigo.util.StringUtil;
 
 /**
  * @author pchretien, npiedeloup
  */
-public final class EventBusManagerImpl implements EventBusManager, Activeable {
-	private final List<EventBusSubscription> subscriptions = new ArrayList<>();
+public final class EventBusManagerImpl implements EventBusManager, Activeable, SimpleDefinitionProvider {
+	private final List<EventBusSubscriptionDefinition> subscriptions = new ArrayList<>();
 	private final List<Consumer<Event>> deadEventListeners = new ArrayList<>();
 
 	/**
@@ -45,6 +49,39 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable {
 	 */
 	public EventBusManagerImpl() {
 		Home.getApp().registerPreActivateFunction(this::registerAllSubscribers);
+	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return Home.getApp().getComponentSpace().keySet()
+				.stream()
+				.flatMap(id -> createEventSubscriptions(id, Home.getApp().getComponentSpace().resolve(id, Component.class)).stream())
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Registers all methods annotated with @Suscriber on the object
+	 * @param suscriberInstance
+	 */
+	private static List<EventBusSubscriptionDefinition> createEventSubscriptions(final String componentId, final Component subscriberInstance) {
+		Assertion.checkNotNull(subscriberInstance);
+		//-----
+		//1. search all methods
+		return ClassUtil.getAllMethods(subscriberInstance.getClass(), EventBusSubscribed.class)
+				.stream()
+				.map(method -> {
+					Assertion.checkArgument(void.class.equals(method.getReturnType()), "subscriber's methods  of class {0} must be void instead of {1}", subscriberInstance.getClass(), method.getReturnType());
+					Assertion.checkArgument(method.getName().startsWith("on"), "subscriber's methods of class {0} must start with on", subscriberInstance.getClass());
+					Assertion.checkArgument(method.getParameterTypes().length == 1, "subscriber's methods of class {0} must be void onXXX(Event e)", subscriberInstance.getClass());
+					Assertion.checkArgument(Event.class.isAssignableFrom(method.getParameterTypes()[0]), "subscriber's methods of class {0} must be 'void onXXX(E extends Event)'", subscriberInstance.getClass());
+					//-----
+					//2. For each method register a listener
+					final Class<? extends Event> eventType = (Class<? extends Event>) method.getParameterTypes()[0];
+					final String subscriptionName = "EVT_" + StringUtil.camelToConstCase(componentId) + "$" + StringUtil.camelToConstCase(eventType.getSimpleName());
+					return new EventBusSubscriptionDefinition<>(subscriptionName, eventType, event -> ClassUtil.invoke(subscriberInstance, method, event));
+				})
+				.collect(Collectors.toList());
+
 	}
 
 	@Override
@@ -59,10 +96,8 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable {
 	}
 
 	private void registerAllSubscribers() {
-		final ComponentSpace componentSpace = Home.getApp().getComponentSpace();
-		for (final String componentId : componentSpace.keySet()) {
-			registerSubscribers(componentSpace.resolve(componentId, Component.class));
-		}
+		subscriptions.addAll(Home.getApp().getDefinitionSpace().getAll(EventBusSubscriptionDefinition.class));
+
 	}
 
 	/** {@inheritDoc} */
@@ -80,36 +115,6 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable {
 			deadEventListeners
 					.forEach(deadEventlistener -> deadEventlistener.accept(event));
 		}
-	}
-
-	/**
-	 * Registers all methods annotated with @Suscriber on the object
-	 * @param suscriberInstance
-	 */
-	private void registerSubscribers(final Component subscriberInstance) {
-		Assertion.checkNotNull(subscriberInstance);
-		//-----
-		//1. search all methods
-		for (final Method method : ClassUtil.getAllMethods(subscriberInstance.getClass(), EventSubscriber.class)) {
-			Assertion.checkArgument(void.class.equals(method.getReturnType()), "suscriber's methods  of class {0} must be void instead of {1}", subscriberInstance.getClass(), method.getReturnType());
-			Assertion.checkArgument(method.getName().startsWith("on"), "suscriber's methods of class {0} must start with on", subscriberInstance.getClass());
-			Assertion.checkArgument(method.getParameterTypes().length == 1, "suscriber's methods of class {0} must be void onXXX(Event e)", subscriberInstance.getClass());
-			Assertion.checkArgument(Event.class.isAssignableFrom(method.getParameterTypes()[0]), "suscriber's methods of class {0} must be 'void onXXX(E extends Event)'", subscriberInstance.getClass());
-			//-----
-			//2. For each method register a listener
-			final Class<? extends Event> eventType = (Class<? extends Event>) method.getParameterTypes()[0];
-			subscribe(eventType,
-					event -> ClassUtil.invoke(subscriberInstance, method, event));
-		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <E extends Event> void subscribe(final Class<E> eventType, final Consumer<E> eventConsumer) {
-		Assertion.checkNotNull(eventType);
-		Assertion.checkNotNull(eventConsumer);
-		//-----
-		subscriptions.add(new EventBusSubscription<>(eventType, eventConsumer));
 	}
 
 	/** {@inheritDoc} */

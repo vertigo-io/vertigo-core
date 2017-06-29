@@ -18,7 +18,10 @@
  */
 package io.vertigo.dynamo.impl.store.datastore.cache;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.eventbus.EventBusManager;
+import io.vertigo.commons.eventbus.EventBusSubscriptionDefinition;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
@@ -64,9 +67,14 @@ public final class CacheDataStore {
 		this.storeManager = storeManager;
 		cacheDataStoreConfig = dataStoreConfig.getCacheStoreConfig();
 		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
-		eventBusManager.subscribe(
+
+		//TODO : A revoir plus tard
+		final EventBusSubscriptionDefinition<StoreEvent> eventBusSubscription = new EventBusSubscriptionDefinition<>(
+				"EVT_CLEAR_CACHE",
 				StoreEvent.class,
 				event -> clearCache(event.getUri().getDefinition()));
+		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace())
+				.registerDefinition(eventBusSubscription);
 	}
 
 	private DataStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {

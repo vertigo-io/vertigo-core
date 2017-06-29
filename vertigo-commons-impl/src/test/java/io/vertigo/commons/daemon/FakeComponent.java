@@ -18,53 +18,21 @@
  */
 package io.vertigo.commons.daemon;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.inject.Inject;
-
 import io.vertigo.core.component.Component;
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.SimpleDefinitionProvider;
-import io.vertigo.lang.Assertion;
 
-public class FakeComponent implements Component, SimpleDefinitionProvider {
+public class FakeComponent implements Component {
 	private int executions = 0;
-
-	@Inject
-	public FakeComponent() {
-	}
-
-	@Override
-	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return Collections.singletonList(new DaemonDefinition("DMN_SIMPLE", () -> new SimpleDaemon(this), 2));
-	}
 
 	public int getExecutionCount() {
 		return executions;
 	}
 
-	private void execute() {
+	@DaemonScheduled(name = "DMN_SIMPLE", periodInSeconds = 2)
+	public void execute() {
 		executions++;
 		if (executions == 1) {
 			throw new IllegalStateException();
 		}
 	}
 
-	public static final class SimpleDaemon implements Daemon {
-		private final FakeComponent fakeComponent;
-
-		SimpleDaemon(final FakeComponent fakeComponent) {
-			Assertion.checkNotNull(fakeComponent);
-			//---
-			this.fakeComponent = fakeComponent;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public void run() {
-			fakeComponent.execute();
-		}
-	}
 }

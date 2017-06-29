@@ -16,32 +16,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.impl.eventbus;
+package io.vertigo.commons.daemon;
 
-import java.util.function.Consumer;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import io.vertigo.commons.eventbus.Event;
-import io.vertigo.lang.Assertion;
+/**
+ * Annotation for scheduling daemons.
+ * @author mlaroche
+ *
+ */
+@Target({ ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface DaemonScheduled {
+	/**
+	 * The daemon execution period in seconds
+	 * @return daemon execution period
+	 */
+	int periodInSeconds();
 
-final class EventBusSubscription<E extends Event> {
-	private final Class<E> eventType;
-	private final Consumer<E> eventListener;
+	/**
+	 * The name of the daemon being scheduled.
+	 * @return name of daemon
+	 */
+	String name();
 
-	EventBusSubscription(final Class<E> eventType, final Consumer<E> eventListener) {
-		Assertion.checkNotNull(eventType);
-		Assertion.checkNotNull(eventListener);
-		//-----
-		this.eventType = eventType;
-		this.eventListener = eventListener;
-	}
-
-	boolean match(final Event event) {
-		Assertion.checkNotNull(event);
-		//-----
-		return eventType.isInstance(event);
-	}
-
-	Consumer<E> getListener() {
-		return eventListener;
-	}
 }
