@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.environment.dsl.entity;
 
+import java.util.Locale;
+
 import io.vertigo.lang.Assertion;
 
 /**
@@ -79,7 +81,7 @@ public enum DslPropertyType implements DslEntityFieldType {
 			case String:
 				return sValue;
 			case Boolean:
-				switch (sValue.toLowerCase()) {
+				switch (sValue.toLowerCase(Locale.ROOT)) {
 					/* only true and false are accepted*/
 					case "true":
 						return true;

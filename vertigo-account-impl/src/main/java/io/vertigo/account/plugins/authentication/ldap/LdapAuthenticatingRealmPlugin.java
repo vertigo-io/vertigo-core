@@ -37,6 +37,10 @@ import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToke
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
+/**
+ * LDAP impl of AuthentificationRealm.
+ * @author npiedeloup
+ */
 public final class LdapAuthenticatingRealmPlugin implements AuthenticationRealmPlugin {
 	private static final Logger LOGGER = Logger.getLogger(LdapAuthenticatingRealmPlugin.class);
 
@@ -79,13 +83,17 @@ public final class LdapAuthenticatingRealmPlugin implements AuthenticationRealmP
 		LdapContext ldapContext = null;
 		try {
 			final String userProtectedDn = userLoginPrefix + protectLdap(usernamePasswordToken.getPrincipal()) + userLoginSuffix;
-			ldapContext = createLdapContext(userProtectedDn, usernamePasswordToken.getPrincipal(), usernamePasswordToken.getPassword());
+			ldapContext = createLdapContext(userProtectedDn, usernamePasswordToken.getPassword());
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Ouverture de connexion LDAP  '" + ldapContext.toString() + "'");
 			}
 			return Optional.of(token.getPrincipal());
 		} catch (final NamingException e) {
-			LOGGER.info("Can't authenticate user '" + token.getPrincipal() + "'");
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.info("Can't authenticate user '" + token.getPrincipal() + "'", e);
+			} else {
+				LOGGER.info("Can't authenticate user '" + token.getPrincipal() + "'");
+			}
 			return Optional.empty(); //can't connect user
 		} finally {
 			if (ldapContext != null) {
@@ -111,7 +119,7 @@ public final class LdapAuthenticatingRealmPlugin implements AuthenticationRealmP
 		userLoginSuffix = suffix;
 	}
 
-	private LdapContext createLdapContext(final String userProtectedPrincipal, final String principal, final String credentials) throws NamingException {
+	private LdapContext createLdapContext(final String userProtectedPrincipal, final String credentials) throws NamingException {
 		final Hashtable<String, String> env = new Hashtable<>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, DEFAULT_CONTEXT_FACTORY_CLASS_NAME);
 		env.put(Context.REFERRAL, DEFAULT_REFERRAL);

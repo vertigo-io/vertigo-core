@@ -66,8 +66,9 @@ final class FileRendererUtil {
 				final String simpleFileName = fileName.substring(0, extensionIndex);
 				final String simplefileExtension = fileName.substring(extensionIndex);
 				final File newNameFile = new File(rootPath + simpleFileName + dateSuffix + simplefileExtension);
-				newNameFile.delete(); //on s'assure que le nom est dispo
-				file.renameTo(newNameFile);
+				Assertion.checkState(newNameFile.delete(), "Can't delete file {0}", newNameFile.getName()); //on s'assure que le nom est dispo
+				Assertion.checkState(file.renameTo(newNameFile), "Can't rename file {0} to {1}", file.getName(), newNameFile.getName());
+
 			}
 			//On crée un fichier si il n'en existe pas déjà un
 			//Atomically creates a new, empty file named by this abstract pathname if and only if a file with this name does not yet exis
