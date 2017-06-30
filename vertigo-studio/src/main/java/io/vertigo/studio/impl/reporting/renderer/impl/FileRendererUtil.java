@@ -66,7 +66,9 @@ final class FileRendererUtil {
 				final String simpleFileName = fileName.substring(0, extensionIndex);
 				final String simplefileExtension = fileName.substring(extensionIndex);
 				final File newNameFile = new File(rootPath + simpleFileName + dateSuffix + simplefileExtension);
-				Assertion.checkState(newNameFile.delete(), "Can't delete file {0}", newNameFile.getName()); //on s'assure que le nom est dispo
+				Assertion
+						.when(newNameFile.exists())
+						.check(() -> newNameFile.delete(), "Can't delete file {0}", newNameFile.getName()); //on s'assure que le nom est dispo
 				Assertion.checkState(file.renameTo(newNameFile), "Can't rename file {0} to {1}", file.getName(), newNameFile.getName());
 
 			}
