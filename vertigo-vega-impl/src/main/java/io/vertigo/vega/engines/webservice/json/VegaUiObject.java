@@ -211,8 +211,8 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		}
 		//we update inputBuffer with older datas
 		if (serverSideDto != null) { //If serverSideObject was kept, we merge input with server object
-			mergeInput();
 			compactModifiedSet();
+			mergeInput();
 		}
 		final D objectToValidate = serverSideDto != null ? serverSideDto : inputDto;
 		//we remove older errors
