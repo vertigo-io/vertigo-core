@@ -103,8 +103,6 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		final DtListURIForMasterData uri = defaultMdlMap2.get(dtDefinition);
-		//		final MasterDataDefinition masterDataDefinition = masterDataDefinitionMap.get(dtDefinition);
-		//		return getDomainManager().getDomainFactory().createDtListURI(masterDataDefinition, null);//pas de code : on prend celle par défaut
 		return uri;
 	}
 

@@ -115,7 +115,8 @@ final class VFileUtil {
 
 	private static VFile readQueryFile(final Request request, final WebServiceParam webServiceParam) {
 		try {
-			Assertion.checkArgument(request.contentType().contains("multipart/form-data"), "File {0} not found. Request contentType isn't \"multipart/form-data\"", webServiceParam.getName());
+			Assertion.checkArgument(
+					request.contentType().contains("multipart/form-data"), "File {0} not found. Request contentType isn't \"multipart/form-data\"", webServiceParam.getName());
 			Assertion.checkArgument(!request.raw().getParts().isEmpty(),
 					"File {0} not found. Request is multipart but there is no Parts. : Check you have defined MultipartConfig (example for Tomcat set allowCasualMultipartParsing=\"true\" on context tag in your context definition, for Jetty use JettyMultipartConfig)",
 					webServiceParam.getName());

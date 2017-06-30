@@ -59,8 +59,6 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 
 	private final Map<String, Map<String, DelayedMemoryCacheValue>> collectionsData = new HashMap<>();
 
-	//private final Map<String, DelayedMemoryCacheValue> cacheDatas = new ConcurrentHashMap<>();
-
 	/**
 	 * Constructor.
 	 * @param collections List of collections managed by this plugin (comma separated)

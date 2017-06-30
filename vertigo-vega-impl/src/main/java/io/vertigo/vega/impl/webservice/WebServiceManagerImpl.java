@@ -30,7 +30,6 @@ import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ListBuilder;
@@ -166,14 +165,4 @@ public final class WebServiceManagerImpl implements WebServiceManager, SimpleDef
 				.build();
 	}
 
-	/**
-	 * Register WebServiceDefinitions to DefinitionSpace.
-	 * @param definitionSpace DefinitionSpace
-	 * @param webServiceDefinitions WebServiceDefinitions
-	 */
-	void registerWebServiceDefinitions(final DefinitionSpaceWritable definitionSpace, final List<WebServiceDefinition> webServiceDefinitions) {
-		// We register WebService Definition in this order
-
-		webServerPlugin.registerWebServiceRoute(handlerChain, webServiceDefinitions);
-	}
 }

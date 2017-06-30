@@ -53,7 +53,6 @@ import io.vertigo.lang.Assertion;
 public class DAO<E extends Entity, P> implements BrokerNN {
 
 	/** DT de l'objet dont on gére le CRUD. */
-	//	private final DtDefinition dtDefinition;
 	private final Class<? extends Entity> entityClass;
 	protected final DataStore dataStore;
 	private final BrokerNN brokerNN;

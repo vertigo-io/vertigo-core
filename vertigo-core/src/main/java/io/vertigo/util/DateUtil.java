@@ -113,7 +113,9 @@ public final class DateUtil {
 	private static void checkIsDate(final Date dateToCheck) {
 		final Calendar calendar = Calendar.getInstance();
 		calendar.setTime(dateToCheck);
-		Assertion.checkArgument(calendar.get(Calendar.HOUR_OF_DAY) == 0 && calendar.get(Calendar.MINUTE) == 0 && calendar.get(Calendar.SECOND) == 0 && calendar.get(Calendar.MILLISECOND) == 0, "Cet objet n'est pas une Date mais une DateTime ({0}).", dateToCheck);
+		Assertion.checkArgument(
+				calendar.get(Calendar.HOUR_OF_DAY) == 0 && calendar.get(Calendar.MINUTE) == 0 && calendar.get(Calendar.SECOND) == 0 && calendar.get(Calendar.MILLISECOND) == 0,
+				"Cet objet n'est pas une Date mais une DateTime ({0}).", dateToCheck);
 	}
 
 	/**

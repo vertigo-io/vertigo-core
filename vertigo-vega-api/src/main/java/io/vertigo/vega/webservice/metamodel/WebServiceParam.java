@@ -95,8 +95,28 @@ public final class WebServiceParam {
 	 * @param consumeServerSideToken if access token is consume (one time token)
 	 * @param dtObjectValidatorClasses List of validator classes (order is keep)
 	 */
-	WebServiceParam(final WebServiceParamType paramType, final String name, final Type type, final boolean optional, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
-		this(":" + paramType.name() + ":" + name, paramType, name, type, optional, includedFields, excludedFields, needServerSideToken, consumeServerSideToken, dtObjectValidatorClasses);
+	WebServiceParam(
+			final WebServiceParamType paramType,
+			final String name,
+			final Type type,
+			final boolean optional,
+			final Set<String> includedFields,
+			final Set<String> excludedFields,
+			final boolean needServerSideToken,
+			final boolean consumeServerSideToken,
+			final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
+
+		this(":" + paramType.name() + ":" + name,
+				paramType,
+				name,
+				type,
+				optional,
+				includedFields,
+				excludedFields,
+				needServerSideToken,
+				consumeServerSideToken,
+				dtObjectValidatorClasses);
+
 		Assertion.when(paramType == WebServiceParamType.Implicit)
 				.check(() -> isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name);
 		Assertion.checkNotNull(name);
@@ -115,7 +135,17 @@ public final class WebServiceParam {
 		return new WebServiceParamBuilder(paramType);
 	}
 
-	private WebServiceParam(final String fullName, final WebServiceParamType paramType, final String name, final Type type, final boolean optional, final Set<String> includedFields, final Set<String> excludedFields, final boolean needServerSideToken, final boolean consumeServerSideToken, final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
+	private WebServiceParam(
+			final String fullName,
+			final WebServiceParamType paramType,
+			final String name,
+			final Type type,
+			final boolean optional,
+			final Set<String> includedFields,
+			final Set<String> excludedFields,
+			final boolean needServerSideToken,
+			final boolean consumeServerSideToken,
+			final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
 		Assertion.checkNotNull(paramType);
 		Assertion.checkNotNull(type);
 		Assertion.checkNotNull(includedFields);

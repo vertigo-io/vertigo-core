@@ -135,16 +135,22 @@ public class FormatterNumberLocalized extends FormatterNumber {
 	}
 
 	private static void assertArgs(final boolean test) {
-		Assertion.checkArgument(test, "Les arguments pour la construction de FormatterNumber sont invalides: format d'affichage{|séparateur de décimal}{|séparateur de millier}");
+		Assertion.checkArgument(
+				test,
+				"Les arguments pour la construction de FormatterNumber sont invalides: format d'affichage{|séparateur de décimal}{|séparateur de millier}");
 	}
 
 	private void checkConflict(final Locale currentLocale, final DecimalFormatSymbols decimalFormatSymbols) {
 		if (decimalSep != null) {
 			for (final char decimalChar : decimalSep.getDisplay().toCharArray()) {
-				Assertion.checkArgument(decimalChar != decimalFormatSymbols.getGroupingSeparator(), "A decimal separator ({0}) is in conflict with a grouping separator {1}", decimalChar, currentLocale.getDisplayName());
+				Assertion.checkArgument(
+						decimalChar != decimalFormatSymbols.getGroupingSeparator(),
+						"A decimal separator ({0}) is in conflict with a grouping separator {1}", decimalChar, currentLocale.getDisplayName());
 				if (groupSep != null) {
 					final String groupSepValue = groupSep.getDisplay();
-					Assertion.checkArgument(groupSepValue.indexOf(decimalChar) == -1, "A decimal separator ({0}) is in conflict with a grouping separator {1}", decimalChar, currentLocale.getDisplayName());
+					Assertion.checkArgument(
+							groupSepValue.indexOf(decimalChar) == -1,
+							"A decimal separator ({0}) is in conflict with a grouping separator {1}", decimalChar, currentLocale.getDisplayName());
 				}
 			}
 		}

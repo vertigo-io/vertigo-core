@@ -64,7 +64,7 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	public MapBuilder<K, V> putAll(final Map<K, V> map) {
 		Assertion.checkNotNull(map);
 		//-----
-		map.forEach((k, v) -> this.put(k, v));
+		map.forEach(map::put);
 		return this;
 	}
 

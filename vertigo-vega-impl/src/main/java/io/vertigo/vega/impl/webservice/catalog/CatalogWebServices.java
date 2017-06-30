@@ -46,7 +46,7 @@ public final class CatalogWebServices implements WebServices {
 		return publishCatalog(webServiceDefinitions);
 	}
 
-	private List<String> publishCatalog(final Collection<WebServiceDefinition> webServiceDefinitions) {
+	private static List<String> publishCatalog(final Collection<WebServiceDefinition> webServiceDefinitions) {
 		final List<String> result = new ArrayList<>();
 
 		final StringBuilder sb = new StringBuilder();

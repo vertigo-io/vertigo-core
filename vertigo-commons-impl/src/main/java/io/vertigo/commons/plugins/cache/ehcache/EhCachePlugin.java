@@ -152,7 +152,7 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 		return ehCache;
 	}
 
-	private CacheDefinition getCacheDefinition(final String cacheName) {
+	private static CacheDefinition getCacheDefinition(final String cacheName) {
 		return Home.getApp().getDefinitionSpace().resolve(cacheName, CacheDefinition.class);
 	}
 }

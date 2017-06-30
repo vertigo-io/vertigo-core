@@ -130,7 +130,6 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		Assertion.checkNotNull(dtcURIForMasterData);
 		//-----
 		final DataStore dataStore = storeManager.getDataStore();
-		//		final Store store = getPhysicalStore(masterDataDefinition.getDtDefinition());
 		final DtField mdFieldSort = dtcURIForMasterData.getDtDefinition().getSortField().get();
 		return new MasterDataComparator(dtcURIForMasterData, sortDesc, dataStore, mdFieldSort);
 	}

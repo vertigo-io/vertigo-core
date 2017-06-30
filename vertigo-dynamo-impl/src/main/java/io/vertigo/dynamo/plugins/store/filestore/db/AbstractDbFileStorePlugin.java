@@ -83,7 +83,9 @@ abstract class AbstractDbFileStorePlugin {
 	 * @param fileInfoDefinition Definition du FileInfo
 	 */
 	protected void checkDefinitionStoreBinding(final FileInfoDefinition fileInfoDefinition) {
-		Assertion.checkArgument(name.equals(fileInfoDefinition.getStoreName()), "This store {0} isn't the good one for this definition {1}, expect {2}.", name, fileInfoDefinition.getName(), fileInfoDefinition.getStoreName());
+		Assertion.checkArgument(
+				name.equals(fileInfoDefinition.getStoreName()),
+				"This store {0} isn't the good one for this definition {1}, expect {2}.", name, fileInfoDefinition.getName(), fileInfoDefinition.getStoreName());
 	}
 
 	/**

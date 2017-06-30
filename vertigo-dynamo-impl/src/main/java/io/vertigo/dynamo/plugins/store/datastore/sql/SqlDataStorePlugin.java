@@ -376,7 +376,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	 * @param insert Si opération de type insert
 	 * @return Classe du moteur de tache à utiliser
 	 */
-	private Class<? extends TaskEngine> getTaskEngineClass(final boolean insert) {
+	private static Class<? extends TaskEngine> getTaskEngineClass(final boolean insert) {
 		if (insert) {
 			return TaskEngineInsertWithGeneratedKeys.class;
 		}

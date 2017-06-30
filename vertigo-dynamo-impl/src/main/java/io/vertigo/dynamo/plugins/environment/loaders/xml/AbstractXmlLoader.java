@@ -203,8 +203,10 @@ public abstract class AbstractXmlLoader implements Loader {
 			throw new IllegalArgumentException("Pour l'association '" + association.getCode() + "' clé multiple non géré sur '" + foreignDefinition.getName() + "'");
 		}
 		if (dtDefinitionA.getName().equals(dtDefinitionB.getName()) && association.getCodeName() == null) {
-			throw new IllegalArgumentException("Pour l'association '" + association.getCode() + "' le nom de la clé est obligatoire (AutoJointure) '" + foreignDefinition.getName()
-					+ "'. Ce nom est déduit du code l'association, le code doit être composé ainsi : {Trigramme Table1}_{Trigramme Table2}_{Code association}. Par exemple : DOS_UTI_EMMETEUR, DOS_UTI_DESTINATAIRE, DOS_DOS_PARENT, ...");
+			throw new IllegalArgumentException("Pour l'association '" + association.getCode() + "' le nom de la clé est obligatoire (AutoJointure) '"
+					+ foreignDefinition.getName()
+					+ "'. Ce nom est déduit du code l'association, le code doit être composé ainsi : {Trigramme Table1}_{Trigramme Table2}_{Code association}."
+					+ " Par exemple : DOS_UTI_EMMETEUR, DOS_UTI_DESTINATAIRE, DOS_DOS_PARENT, ...");
 		}
 
 		//On récupère le nom de LA clé primaire .

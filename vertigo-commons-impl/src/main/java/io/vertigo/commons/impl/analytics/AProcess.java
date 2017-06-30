@@ -101,7 +101,6 @@ public final class AProcess {
 
 		//---
 		checkRegex(category, PROCESS_CATEGORY_REGEX, "process type");
-		//	ckeckRegex(type, CATEGORY_REGEX, "category");
 		measures.keySet()
 				.forEach(measureName -> checkRegex(measureName, MEASURE_REGEX, "measure name"));
 		tags.keySet()

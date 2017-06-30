@@ -59,7 +59,7 @@ public final class ReportingManagerImpl implements ReportingManager {
 	public List<Report> analyze() {
 		return reportingPlugins
 				.stream()
-				.map(reportingPlugin -> reportingPlugin.analyze())
+				.map(ReportingPlugin::analyze)
 				.collect(Collectors.toList());
 	}
 

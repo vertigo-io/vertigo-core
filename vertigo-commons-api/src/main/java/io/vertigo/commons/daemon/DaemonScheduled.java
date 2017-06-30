@@ -31,16 +31,17 @@ import java.lang.annotation.Target;
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DaemonScheduled {
-	/**
-	 * The daemon execution period in seconds
-	 * @return daemon execution period
-	 */
-	int periodInSeconds();
 
 	/**
 	 * The name of the daemon being scheduled.
 	 * @return name of daemon
 	 */
 	String name();
+
+	/**
+	 * The daemon execution period in seconds
+	 * @return daemon execution period
+	 */
+	int periodInSeconds();
 
 }

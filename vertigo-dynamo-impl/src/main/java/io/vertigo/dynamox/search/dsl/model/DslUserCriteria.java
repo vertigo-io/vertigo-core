@@ -41,7 +41,13 @@ public final class DslUserCriteria {
 	 * @param overridedPostModifier Optional overrided word post modifier
 	 * @param postMissingPart Optional post missing part
 	 */
-	public DslUserCriteria(final String preMissingPart, final String overridedFieldName, final String overridedPreModifier, final String criteriaWord, final String overridedPostModifier, final String postMissingPart) {
+	public DslUserCriteria(
+			final String preMissingPart,
+			final String overridedFieldName,
+			final String overridedPreModifier,
+			final String criteriaWord,
+			final String overridedPostModifier,
+			final String postMissingPart) {
 		Assertion.checkNotNull(preMissingPart);
 		Assertion.checkNotNull(overridedFieldName);
 		Assertion.checkNotNull(overridedPreModifier);

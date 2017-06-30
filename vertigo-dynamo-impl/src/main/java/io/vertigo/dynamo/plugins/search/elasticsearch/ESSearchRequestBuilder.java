@@ -217,7 +217,10 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	}
 
 	private static QueryBuilder appendBoostMostRecent(final SearchQuery searchQuery, final QueryBuilder queryBuilder) {
-		return QueryBuilders.functionScoreQuery(queryBuilder, new ExponentialDecayFunctionBuilder(searchQuery.getBoostedDocumentDateField(), null, searchQuery.getNumDaysOfBoostRefDocument() + "d").setDecay(searchQuery.getMostRecentBoost() - 1D));
+		return QueryBuilders.functionScoreQuery(
+				queryBuilder,
+				new ExponentialDecayFunctionBuilder(searchQuery.getBoostedDocumentDateField(), null, searchQuery.getNumDaysOfBoostRefDocument() + "d")
+						.setDecay(searchQuery.getMostRecentBoost() - 1D));
 	}
 
 	private static void appendFacetDefinition(

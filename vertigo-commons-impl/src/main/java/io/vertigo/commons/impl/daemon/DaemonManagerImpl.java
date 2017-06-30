@@ -62,7 +62,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 				.collect(Collectors.toList());
 	}
 
-	private List<DaemonDefinition> createDaemonDefinitions(final Component component) {
+	private static List<DaemonDefinition> createDaemonDefinitions(final Component component) {
 		return ClassUtil.getAllMethods(component.getClass(), DaemonScheduled.class)
 				.stream()
 				.map(
