@@ -27,7 +27,6 @@ import io.vertigo.account.impl.identity.AccountStorePlugin;
 import io.vertigo.account.impl.identity.IdentityManagerImpl;
 import io.vertigo.account.plugins.identity.redis.RedisAccountStorePlugin;
 import io.vertigo.account.security.UserSession2;
-import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.persona.impl.security.VSecurityManagerImpl;
@@ -93,7 +92,7 @@ public final class AccountFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.addDefinitionProvider(DefinitionProviderConfig.builder(AccountDefinitionProvider.class).build())
+				.addDefinitionProvider(AccountDefinitionProvider.class)
 				.addComponent(AuthenticationManager.class, AuthenticationManagerImpl.class)
 				.addComponent(IdentityManager.class, IdentityManagerImpl.class);
 

@@ -42,10 +42,11 @@ public class SqlDataStoreAppConfig {
 						.addFileStorePlugin(DbFileStorePlugin.class,
 								Param.of("storeDtName", "DT_VX_FILE_INFO"))
 						.build())
-				.addModule(ModuleConfig.builder("definition").addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
-						.addDefinitionResource("kpr", "io/vertigo/dynamo/store/data/executionWfileinfo.kpr")
-						.addDefinitionResource("classes", "io.vertigo.dynamo.store.data.DtDefinitions")
-						.build())
+				.addModule(ModuleConfig.builder("definition")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/store/data/executionWfileinfo.kpr")
+								.addDefinitionResource("classes", "io.vertigo.dynamo.store.data.DtDefinitions")
+								.build())
 						.build())
 				.addInitializer(StoreManagerInitializer.class)
 				.build();

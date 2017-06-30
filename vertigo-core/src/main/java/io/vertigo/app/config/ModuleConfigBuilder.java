@@ -26,6 +26,7 @@ import io.vertigo.core.component.Component;
 import io.vertigo.core.component.Plugin;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.proxy.ProxyFactory;
+import io.vertigo.core.definition.DefinitionProvider;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -89,6 +90,23 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(definitionProviderConfig);
 		//-----
 		myDefinitionProviderConfigs.add(definitionProviderConfig);
+		return this;
+	}
+
+	/**
+	 * Adds a simple provider of definitions.
+	 * @param definitionProviderClass the class of the provider
+	 * @param params the list of params
+	 * @return this builder
+	 */
+	public ModuleConfigBuilder addDefinitionProvider(final Class<? extends DefinitionProvider> definitionProviderClass, final Param... params) {
+		Assertion.checkNotNull(definitionProviderClass);
+		Assertion.checkNotNull(params);
+		//-----
+		myDefinitionProviderConfigs.add(
+				DefinitionProviderConfig.builder(definitionProviderClass)
+						.addAllParams(params)
+						.build());
 		return this;
 	}
 
