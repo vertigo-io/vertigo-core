@@ -28,7 +28,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -38,12 +37,9 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.commons.daemon.DaemonDefinition;
+import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
@@ -51,7 +47,6 @@ import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.dynamo.impl.file.PurgeTempFileDaemon;
 import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.lang.Assertion;
@@ -64,7 +59,7 @@ import io.vertigo.util.DateUtil;
  *
  * @author pchretien, npiedeloup, skerdudou
  */
-public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefinitionProvider {
+public final class FsFullFileStorePlugin implements FileStorePlugin {
 	private static final String METADATA_SUFFIX = ".info";
 	private static final String METADATA_CHARSET = "utf8";
 	private static final String DEFAULT_STORE_NAME = "temp";
@@ -104,13 +99,13 @@ public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefin
 		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
 	}
 
-	@Override
-	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+	@DaemonScheduled(name = "DMN_PURGE_FILE_STORE_DAEMON_", periodInSeconds = 5 * 60)
+	public void deleteOldFiles() {
 		if (purgeDelayMinutesOpt.isPresent()) {
-			return Collections.singletonList(
-					new DaemonDefinition("DMN_PURGE_FILE_STORE_DAEMON_" + name, () -> new PurgeTempFileDaemon(purgeDelayMinutesOpt.get(), documentRoot), 5 * 60));
+			final File documentRootFile = new File(documentRoot);
+			final long maxTime = System.currentTimeMillis() - purgeDelayMinutesOpt.get() * 60L * 1000L;
+			doDeleteOldFiles(documentRootFile, maxTime);
 		}
-		return Collections.emptyList();
 	}
 
 	/** {@inheritDoc} */
@@ -243,5 +238,18 @@ public final class FsFullFileStorePlugin implements FileStorePlugin, SimpleDefin
 	/** récupère la transaction courante. */
 	private VTransaction getCurrentTransaction() {
 		return transactionManager.getCurrentTransaction();
+	}
+
+	private static void doDeleteOldFiles(final File documentRootFile, final long maxTime) {
+		for (final File subFiles : documentRootFile.listFiles()) {
+			if (subFiles.isDirectory() && subFiles.canRead()) { //canRead pour les pbs de droits
+				doDeleteOldFiles(subFiles, maxTime);
+			} else if (subFiles.lastModified() < maxTime) {
+				final boolean succeeded = subFiles.delete();
+				if (!succeeded) {
+					subFiles.deleteOnExit();
+				}
+			}
+		}
 	}
 }

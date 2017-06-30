@@ -23,19 +23,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.commons.daemon.DaemonDefinition;
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.SimpleDefinitionProvider;
+import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
@@ -51,7 +46,7 @@ import io.vertigo.util.TempFile;
 *
 * @author pchretien
 */
-public final class FileManagerImpl implements FileManager, SimpleDefinitionProvider {
+public final class FileManagerImpl implements FileManager {
 
 	private final Optional<Integer> purgeDelayMinutesOpt;
 
@@ -62,13 +57,6 @@ public final class FileManagerImpl implements FileManager, SimpleDefinitionProvi
 	@Inject
 	public FileManagerImpl(@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
 		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
-	}
-
-	@Override
-	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return Collections.singletonList(
-				new DaemonDefinition("DMN_PRUGE_TEMP_FILE",
-						() -> new PurgeTempFileDaemon(purgeDelayMinutesOpt.orElse(60), TempFile.VERTIGO_TMP_DIR_PATH), 5 * 60));
 	}
 
 	/** {@inheritDoc} */
@@ -157,5 +145,25 @@ public final class FileManagerImpl implements FileManager, SimpleDefinitionProvi
 			inputFile = createTempFile(vFile);
 		}
 		return inputFile;
+	}
+
+	@DaemonScheduled(name = "DMN_PRUGE_TEMP_FILE", periodInSeconds = 5 * 60)
+	public void deleteOldFiles() {
+		final File documentRootFile = new File(TempFile.VERTIGO_TMP_DIR_PATH);
+		final long maxTime = System.currentTimeMillis() - purgeDelayMinutesOpt.orElse(60) * 60L * 1000L;
+		doDeleteOldFiles(documentRootFile, maxTime);
+	}
+
+	private static void doDeleteOldFiles(final File documentRootFile, final long maxTime) {
+		for (final File subFiles : documentRootFile.listFiles()) {
+			if (subFiles.isDirectory() && subFiles.canRead()) { //canRead pour les pbs de droits
+				doDeleteOldFiles(subFiles, maxTime);
+			} else if (subFiles.lastModified() < maxTime) {
+				final boolean succeeded = subFiles.delete();
+				if (!succeeded) {
+					subFiles.deleteOnExit();
+				}
+			}
+		}
 	}
 }

@@ -3,7 +3,6 @@ package io.vertigo.commons.impl.node;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,20 +11,16 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.App;
 import io.vertigo.app.Home;
 import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.node.Node;
 import io.vertigo.commons.node.NodeManager;
 import io.vertigo.commons.plugins.node.registry.single.SingleNodeRegistryPlugin;
 import io.vertigo.core.component.Activeable;
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 
@@ -34,23 +29,21 @@ import io.vertigo.lang.VSystemException;
  * @author mlaroche
  *
  */
-public final class NodeManagerImpl implements NodeManager, Activeable, SimpleDefinitionProvider {
+public final class NodeManagerImpl implements NodeManager, Activeable {
+
+	private static final int HEART_BEAT_SECONDS = 5;
 
 	private final NodeRegistryPlugin nodeRegistryPlugin;
 	private final Map<String, NodeInfosPlugin> nodeInfosPluginMap = new HashMap<>();
-	private final int heartBeatSeconds;
 
 	@Inject
 	public NodeManagerImpl(
-			@Named("heartBeatSeconds") final Optional<Integer> heartBeatSecondsOpt,
 			final DaemonManager daemonManager,
 			final Optional<NodeRegistryPlugin> nodeRegistryPluginOpt,
 			final List<NodeInfosPlugin> nodeInfosPlugins) {
-		Assertion.checkNotNull(heartBeatSecondsOpt);
 		Assertion.checkNotNull(daemonManager);
 		Assertion.checkNotNull(nodeRegistryPluginOpt);
 		// ---
-		heartBeatSeconds = heartBeatSecondsOpt.orElse(5);
 		nodeRegistryPlugin = nodeRegistryPluginOpt.orElse(new SingleNodeRegistryPlugin());
 		nodeInfosPlugins
 				.forEach(plugin -> {
@@ -61,10 +54,9 @@ public final class NodeManagerImpl implements NodeManager, Activeable, SimpleDef
 
 	}
 
-	@Override
-	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		// register a daemon
-		return Collections.singletonList(new DaemonDefinition("DMN_UPDATE_NODE_STATUS", () -> () -> nodeRegistryPlugin.updateStatus(toAppNode(Home.getApp())), heartBeatSeconds));
+	@DaemonScheduled(name = "DMN_UPDATE_NODE_STATUS", periodInSeconds = HEART_BEAT_SECONDS)
+	public void updateNodeStatus() {
+		nodeRegistryPlugin.updateStatus(toAppNode(Home.getApp()));
 	}
 
 	@Override
@@ -108,7 +100,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable, SimpleDef
 		return getTopology()
 				.stream()
 				// we wait two heartbeat to decide that a node is dead
-				.filter(node -> node.getLastTouch().plus(2L * heartBeatSeconds, ChronoUnit.SECONDS).isBefore(Instant.now()))
+				.filter(node -> node.getLastTouch().plus(2L * HEART_BEAT_SECONDS, ChronoUnit.SECONDS).isBefore(Instant.now()))
 				.collect(Collectors.toList());
 	}
 
