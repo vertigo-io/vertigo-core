@@ -37,6 +37,7 @@ import io.vertigo.lang.WrappedException;
  */
 public final class PasswordHelper {
 
+	private final static int MASK = 0xFF;
 	private static final int PBKDF2_ITERATIONS = 4096;
 	private static final int PBKDF2_KEY_LENGTH = 256; // bits
 
@@ -52,7 +53,7 @@ public final class PasswordHelper {
 		try {
 			secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
 		} catch (final NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
+			throw WrappedException.wrap(e);
 		}
 		defaultCharsetUTF8 = Charset.forName("UTF-8");
 		base64Codec = new Base64Codec();
@@ -106,7 +107,6 @@ public final class PasswordHelper {
 
 	private int decodeBase64Int(final String encoded) {
 		final byte[] b = base64Codec.decode(encoded);
-		final int MASK = 0xFF;
 		int result = 0;
 		result = b[0] & MASK;
 		result = result + ((b[1] & MASK) << 8);

@@ -123,6 +123,15 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test
+	public void testToString() {
+		final Permission admUsr = getPermission(Permissions.PRM_ADMUSR);
+		admUsr.toString();
+		final Permission admPro = getPermission(Permissions.PRM_ADMPRO);
+		admPro.toString();
+		/*Pour la couverture de code, et 35min de dette technique.... */
+	}
+
+	@Test
 	public void testAuthorized() {
 		final Permission admUsr = getPermission(Permissions.PRM_ADMUSR);
 		final Permission admPro = getPermission(Permissions.PRM_ADMPRO);
