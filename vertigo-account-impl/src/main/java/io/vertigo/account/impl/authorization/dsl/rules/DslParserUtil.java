@@ -37,7 +37,7 @@ public final class DslParserUtil {
 	 * @throws PegNoMatchFoundException If pattern doesn't match grammar
 	 */
 	public static DslMultiExpression parseMultiExpression(final String buildQuery) throws PegNoMatchFoundException {
-		if (buildQuery.trim().equals("true")) {
+		if ("true".equals(buildQuery.trim())) {
 			return new DslMultiExpression(true);
 		}
 		return new DslMultiExpressionRule()

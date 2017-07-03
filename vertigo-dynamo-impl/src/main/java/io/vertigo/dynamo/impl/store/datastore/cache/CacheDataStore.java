@@ -53,11 +53,16 @@ public final class CacheDataStore {
 
 	/**
 	 * Constructor.
+	 * @param collectionsManager collectionsManager
 	 * @param storeManager Store manager
 	 * @param eventBusManager Event bus manager
 	 * @param dataStoreConfig Data store configuration
 	 */
-	public CacheDataStore(final CollectionsManager collectionsManager, final StoreManager storeManager, final EventBusManager eventBusManager, final DataStoreConfigImpl dataStoreConfig) {
+	public CacheDataStore(
+			final CollectionsManager collectionsManager,
+			final StoreManager storeManager,
+			final EventBusManager eventBusManager,
+			final DataStoreConfigImpl dataStoreConfig) {
 		Assertion.checkNotNull(collectionsManager);
 		Assertion.checkNotNull(storeManager);
 		Assertion.checkNotNull(eventBusManager);

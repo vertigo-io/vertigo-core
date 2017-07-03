@@ -29,6 +29,7 @@ import io.vertigo.studio.reporting.ReportMetric;
 public interface ReportMetricEngine<I> {
 	/**
 	 * Moteur permettant de calculer une métrique.
+	 * @param item item to benchmark
 	 * @return Métrique obtenue.
 	 */
 	ReportMetric execute(final I item);

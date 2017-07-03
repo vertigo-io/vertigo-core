@@ -38,6 +38,10 @@ import io.vertigo.lang.Builder;
 public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 	private final AppConfigBuilder appConfigBuilder = AppConfig.builder();
 
+	/**
+	 * Begin the boot config of the app.
+	 * @return the bootConfig builder
+	 */
 	public BootConfigBuilder beginBoot() {
 		return appConfigBuilder.beginBoot();
 	}

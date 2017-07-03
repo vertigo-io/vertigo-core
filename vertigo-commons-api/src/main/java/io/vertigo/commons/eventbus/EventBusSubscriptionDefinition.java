@@ -40,6 +40,12 @@ public final class EventBusSubscriptionDefinition<E extends Event> implements De
 	private final Class<E> eventType;
 	private final Consumer<E> eventListener;
 
+	/**
+	 * Constructor
+	 * @param name the name (must be unique)
+	 * @param eventType the type of event subscribed
+	 * @param eventListener the consumer of the event (what will be done with it)
+	 */
 	public EventBusSubscriptionDefinition(final String name, final Class<E> eventType, final Consumer<E> eventListener) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(eventType);
@@ -50,16 +56,26 @@ public final class EventBusSubscriptionDefinition<E extends Event> implements De
 		this.eventListener = eventListener;
 	}
 
+	/**
+	 * Return if an event matches the event type of the actual subscription
+	 * @param event the type of event to test
+	 * @return true if it matches
+	 */
 	public boolean match(final Event event) {
 		Assertion.checkNotNull(event);
 		//-----
 		return eventType.isInstance(event);
 	}
 
+	/**
+	 * Return the consumer of the event
+	 * @return the consumer
+	 */
 	public Consumer<E> getListener() {
 		return eventListener;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String getName() {
 		return name;
