@@ -25,11 +25,11 @@ import io.vertigo.account.impl.authentication.AuthenticationRealmPlugin;
 import io.vertigo.account.impl.identity.AccountDefinitionProvider;
 import io.vertigo.account.impl.identity.AccountStorePlugin;
 import io.vertigo.account.impl.identity.IdentityManagerImpl;
+import io.vertigo.account.impl.security.VSecurityManagerImpl;
 import io.vertigo.account.plugins.identity.redis.RedisAccountStorePlugin;
 import io.vertigo.account.security.UserSession2;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
-import io.vertigo.persona.impl.security.VSecurityManagerImpl;
 import io.vertigo.persona.security.VSecurityManager;
 
 /**
