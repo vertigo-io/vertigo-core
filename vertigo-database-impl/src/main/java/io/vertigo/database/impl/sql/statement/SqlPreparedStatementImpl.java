@@ -64,6 +64,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	/**
 	 * Constructor.
+	 * @param analyticsManager analyticsManager
 	 * @param connection Connexion
 	 */
 	public SqlPreparedStatementImpl(
@@ -216,7 +217,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 				setParameters(sql, statement, parameters);
 				statement.addBatch();
 			}
-			return traceWithReturn(sql, tracer -> this.doExecuteBatch(statement, tracer));
+			return traceWithReturn(sql, tracer -> doExecuteBatch(statement, tracer));
 		} catch (final WrappedSqlException e) {
 			throw e.getSqlException();
 		}

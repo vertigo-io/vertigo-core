@@ -39,6 +39,11 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	private final List<DslMultiExpression> myMultiExpressions = new ArrayList<>();
 	private Map<String, List<Serializable>> myUserCriteria;
 
+	/**
+	 * Specifies the protected entity we are working on
+	 * @param securedEntity the entity
+	 * @return this builder
+	 */
 	public S on(final SecuredEntity securedEntity) {
 		Assertion.checkNotNull(securedEntity);
 		//-----

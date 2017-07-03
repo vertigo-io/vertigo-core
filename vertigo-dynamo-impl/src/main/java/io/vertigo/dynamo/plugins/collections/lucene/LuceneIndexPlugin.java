@@ -77,6 +77,10 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 		localeManager.add(Resources.class.getName(), Resources.values());
 	}
 
+	/**
+	 * Subscription to store events
+	 * @param event the incomming event
+	 */
 	@EventBusSubscribed
 	public void onStoreEvent(final StoreEvent event) {
 		cacheManager.remove(CACHE_LUCENE_INDEX, getIndexCacheContext(event.getUri().getDefinition()));

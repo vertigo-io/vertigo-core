@@ -35,6 +35,7 @@ public final class ReportRendererImpl implements ReportRenderer {
 
 	/**
 	 * Constructeur.
+	 * @param rootPath root path for storing reports
 	 */
 	public ReportRendererImpl(final String rootPath) {
 		Assertion.checkArgNotEmpty(rootPath);

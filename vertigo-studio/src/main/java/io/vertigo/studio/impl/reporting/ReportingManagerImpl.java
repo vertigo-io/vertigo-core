@@ -41,6 +41,7 @@ public final class ReportingManagerImpl implements ReportingManager {
 
 	/**
 	 * @param rootPath Racine de stockage des raports
+	 * @param reportingPlugins reportingPlugins
 	 */
 	@Inject
 	public ReportingManagerImpl(

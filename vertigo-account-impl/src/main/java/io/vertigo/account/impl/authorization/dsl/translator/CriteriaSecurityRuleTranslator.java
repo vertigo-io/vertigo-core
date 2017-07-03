@@ -37,8 +37,9 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.lang.Assertion;
 
 /**
+ * Translate a security rule into a criteria to be used in SQL queries and as a Java predicate.
  *
- *
+ * @param <E> The type of entity we are protecting
  * @author npiedeloup
  */
 public final class CriteriaSecurityRuleTranslator<E extends Entity> extends AbstractSecurityRuleTranslator<CriteriaSecurityRuleTranslator<E>> {

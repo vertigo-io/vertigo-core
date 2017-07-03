@@ -43,6 +43,7 @@ public final class MessageText implements Serializable {
 
 	/**
 	 * static Builder of a messageText.
+	 * @return the builder
 	 */
 	public static MessageTextBuilder builder() {
 		return new MessageTextBuilder();
@@ -51,6 +52,7 @@ public final class MessageText implements Serializable {
 	/**
 	 * static Builder of a messageText by its key.
 	 * @param key Clé de la ressource
+	 * @return the messageText
 	 */
 	public static MessageText of(final MessageKey key) {
 		Assertion.checkNotNull(key, "the message key is required");
@@ -61,6 +63,7 @@ public final class MessageText implements Serializable {
 	/**
 	 * static Builder of a messageText by its default message.
 	 * @param defaultMsg Message par défaut (non formatté) de la ressource
+	 * @return the messageText
 	 */
 	public static MessageText of(final String defaultMsg) {
 		Assertion.checkArgNotEmpty(defaultMsg, "the default message is required");

@@ -52,6 +52,11 @@ public final class Studio {
 
 	private final AutoCloseableApp app;
 
+	/**
+	 * Creates a new studio for an existing app
+	 * @param app the app we are working on
+	 * @param port the port to access the studio interface
+	 */
 	public Studio(final AutoCloseableApp app, final int port) {
 		configuration = new Configuration();
 		configuration.setTemplateLoader(new ClassTemplateLoader(Studio.class, "/"));
@@ -61,6 +66,11 @@ public final class Studio {
 		this.app = app;
 	}
 
+	/**
+	 * Creates a new app with the given arguments and the associated studio
+	 * @param args args for starting the app
+	 * @param port the port to access the studio interface
+	 */
 	public Studio(final String[] args, final int port) {
 		configuration = new Configuration();
 		configuration.setTemplateLoader(new ClassTemplateLoader(Studio.class, "/"));
@@ -72,6 +82,10 @@ public final class Studio {
 
 	}
 
+	/**
+	 * Launches the clean goal on the mda manager
+	 * @return a result
+	 */
 	public MdaResult clean() {
 		return app.getComponentSpace().resolve(MdaManager.class).clean();
 	}
@@ -93,6 +107,9 @@ public final class Studio {
 		return app.getDefinitionSpace().resolve(name, Definition.class);
 	}
 
+	/**
+	 * Start method of the server
+	 */
 	public void start() {
 		Spark.exception(Exception.class, (e, request, response) -> {
 			response.status(500);

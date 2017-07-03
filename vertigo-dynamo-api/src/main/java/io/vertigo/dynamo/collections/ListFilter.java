@@ -49,6 +49,7 @@ public final class ListFilter implements Serializable {
 	 * - Les accolades sont ouvrantes ou fermantes pour indiquer si la valeur est comprise ou non
 	 *
 	 * @param filterValue Valeur du filtre
+	 * @return the listFilter corresponding to the given pattern
 	 */
 	public static ListFilter of(final String filterValue) {
 		return new ListFilter(filterValue);

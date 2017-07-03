@@ -41,6 +41,11 @@ public interface SqlDataBaseManager extends Manager {
 	 */
 	SqlConnectionProvider getConnectionProvider(String name);
 
+	/**
+	 * Create a prepared statement linked to the given connection
+	 * @param connection a connection to an SQL database
+	 * @return the statement
+	 */
 	SqlPreparedStatement createPreparedStatement(final SqlConnection connection);
 
 	/**

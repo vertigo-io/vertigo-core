@@ -147,6 +147,9 @@ public final class FileManagerImpl implements FileManager {
 		return inputFile;
 	}
 
+	/**
+	 * Daemon for deleting old files.
+	 */
 	@DaemonScheduled(name = "DMN_PRUGE_TEMP_FILE", periodInSeconds = 5 * 60)
 	public void deleteOldFiles() {
 		final File documentRootFile = new File(TempFile.VERTIGO_TMP_DIR_PATH);

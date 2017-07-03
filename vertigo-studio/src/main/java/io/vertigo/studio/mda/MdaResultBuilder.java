@@ -50,12 +50,16 @@ public final class MdaResultBuilder implements Builder<MdaResult> {
 		super();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public MdaResult build() {
 		final long duration = System.currentTimeMillis() - start;
 		return new MdaResult(createdFiles, updatedFiles, errorFiles, identicalFiles, deletedFiles, duration);
 	}
 
+	/**
+	 * Increments the number of deleted files
+	 */
 	public void incFileDeleted() {
 		deletedFiles++;
 	}
@@ -69,12 +73,20 @@ public final class MdaResultBuilder implements Builder<MdaResult> {
 		LOGGER.trace("file created : " + file.getAbsolutePath());
 	}
 
+	/**
+	 * Increments the number of files in error and logs the error
+	 * @param file Java file of the error
+	 */
 	public void addErrorFile(final File file) {
 		errorFiles++;
 		//Ajout d'un fichier en erreur.
 		LOGGER.trace("file error : " + file.getAbsolutePath());
 	}
 
+	/**
+	 * Increments the number of files updated and logs the error
+	 * @param file Java file of the error
+	 */
 	public void addUpdatedFile(final File file) {
 		updatedFiles++;
 		LOGGER.trace("file updated : " + file.getAbsolutePath());

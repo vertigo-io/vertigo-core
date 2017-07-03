@@ -24,6 +24,11 @@ import java.util.Set;
 
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 
+/**
+ * Context of a criteria (Handles values of parameters for filtering)
+ * @author pchretien
+ *
+ */
 public final class CriteriaCtx {
 	private int i;
 	private final Map<String, Object> attributeValues = new HashMap<>();
@@ -37,14 +42,28 @@ public final class CriteriaCtx {
 		return attributeName;
 	}
 
+	/**
+	 * Return all attributes' names in this context
+	 * @return the set of all attributes' name
+	 */
 	public Set<String> getAttributeNames() {
 		return attributeValues.keySet();
 	}
 
+	/**
+	 * Return the dtFieldName linked to an attribute name
+	 * @param attributeName the name of the attribute
+	 * @return the corresponding DtFieldName
+	 */
 	public DtFieldName getDtFieldName(final String attributeName) {
 		return attributeNames.get(attributeName);
 	}
 
+	/**
+	 * Return the value of an attribute in the context
+	 * @param attributeName the name of the attribute
+	 * @return the corresponding value
+	 */
 	public Object getAttributeValue(final String attributeName) {
 		return attributeValues.get(attributeName);
 	}

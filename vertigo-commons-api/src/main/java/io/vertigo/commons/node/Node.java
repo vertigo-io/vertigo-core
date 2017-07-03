@@ -31,6 +31,16 @@ public final class Node {
 
 	private final Optional<String> endPointOpt;
 
+	/**
+	 * Constructor.
+	 * @param id id of the node (must be unique in an entire app)
+	 * @param appName name of the app the node is in
+	 * @param lastStatus last status of the node (OK, KO, etc)
+	 * @param lastTouch the time of the last info about this node
+	 * @param startDate the start date of the node
+	 * @param endPointOpt an optional endpoint to reach this node
+	 * @param skills the list of capabilities of the node
+	 */
 	public Node(
 			final String id,
 			final String appName,
