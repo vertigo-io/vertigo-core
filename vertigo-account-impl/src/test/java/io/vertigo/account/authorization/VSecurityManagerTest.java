@@ -97,6 +97,9 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 			securityManager.startCurrentUserSession(userSession);
 			Assert.assertTrue(securityManager.getCurrentUserSession().isPresent());
 			//
+			accessControlManager.obtainUserPermissions().clearSecurityKeys();
+			accessControlManager.obtainUserPermissions().clearPermissions();
+			accessControlManager.obtainUserPermissions().clearRoles();
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}
