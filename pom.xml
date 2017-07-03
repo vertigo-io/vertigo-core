@@ -18,8 +18,8 @@
 	</parent>
 
 	<artifactId>vertigo</artifactId>
-	<name>vertigo</name>
 	<packaging>pom</packaging>
+	<name>vertigo</name>
 	
 	<modules>
 		<module>vertigo-parent</module>
