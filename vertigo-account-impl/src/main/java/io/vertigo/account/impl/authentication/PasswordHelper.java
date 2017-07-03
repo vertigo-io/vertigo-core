@@ -38,6 +38,7 @@ import io.vertigo.lang.WrappedException;
  */
 public final class PasswordHelper {
 
+	private static final int MAX_POWER_ITERATION = 256;
 	private static final int PBKDF2_POWER_ITERATIONS = 12; //4096 iterations
 	private static final int PBKDF2_KEY_LENGTH = 256; // bits
 	private static final int SALT_LENGTH = 8; //must be  ceil(saltSizeInBytes / 3) * 4 = 6*4/3
@@ -108,7 +109,7 @@ public final class PasswordHelper {
 	}
 
 	private static String encodeInt(final int value) {
-		Assertion.checkArgument(value < 256, "Can't support 2^{0} iterations (max 255)", value);
+		Assertion.checkArgument(value < MAX_POWER_ITERATION, "Can't support 2^{0} iterations (max 255)", value);
 		//-----
 		return String.format("%02x", value);
 	}
