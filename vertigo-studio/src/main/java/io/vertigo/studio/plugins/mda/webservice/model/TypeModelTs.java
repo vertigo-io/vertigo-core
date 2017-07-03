@@ -6,6 +6,10 @@ import java.util.List;
 
 import io.vertigo.studio.plugins.mda.webservice.JsFileNameUtil;
 
+/**
+ * FreeMarker Model of Java Type
+ * @author npiedeloup
+ */
 public class TypeModelTs {
 
 	private boolean isObject = false;
@@ -13,6 +17,10 @@ public class TypeModelTs {
 	private String jsGenericType;
 	private String jsImportPath = null;
 
+	/**
+	 * Constructor.
+	 * @param type Java Type
+	 */
 	public TypeModelTs(final Type type) {
 		String typeValue;
 		if (type instanceof ParameterizedType) {
@@ -54,6 +62,9 @@ public class TypeModelTs {
 		}
 	}
 
+	/**
+	 * @return Ts Import declaration
+	 */
 	public String getImportDeclaration() {
 		if (getImportPath() != null) {
 			return "import { " + getJsGenericType() + " } from \"" + getImportPath() + getJsClassName() + "\"";
@@ -61,30 +72,51 @@ public class TypeModelTs {
 		return null;
 	}
 
+	/**
+	 * @return Js generic type
+	 */
 	public String getJsGenericType() {
 		return jsGenericType;
 	}
 
+	/**
+	 * @return Js className
+	 */
 	public String getJsClassName() {
 		return JsFileNameUtil.convertCamelCaseToJsCase(getJsGenericType());
 	}
 
+	/**
+	 * @return Js import path
+	 */
 	public String getImportPath() {
 		return jsImportPath;
 	}
 
+	/**
+	 * @return js Type
+	 */
 	public String getJsType() {
 		return jsGenericType + (isList ? "[]" : "");
 	}
 
+	/**
+	 * @return is object
+	 */
 	public boolean isObject() {
 		return isObject;
 	}
 
+	/**
+	 * @return is list
+	 */
 	public boolean isList() {
 		return isList;
 	}
 
+	/**
+	 * @return is void
+	 */
 	public boolean isVoid() {
 		return "void".equals(jsGenericType);
 	}

@@ -81,6 +81,10 @@ public final class FileInfoDefinition implements Definition {
 	//=========================================================================
 	//===========================STATIC========================================
 	//=========================================================================
+	/**
+	 * @param fileInfoClass fileInfo Class
+	 * @return FileInfoDefinition from class
+	 */
 	public static FileInfoDefinition findFileInfoDefinition(final Class<? extends FileInfo> fileInfoClass) {
 		Assertion.checkNotNull(fileInfoClass);
 		//-----

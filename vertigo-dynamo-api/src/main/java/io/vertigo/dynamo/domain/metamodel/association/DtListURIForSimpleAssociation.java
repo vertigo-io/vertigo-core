@@ -21,22 +21,32 @@ package io.vertigo.dynamo.domain.metamodel.association;
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.model.URI;
 
+/**
+ * URI for simple 1N relation list.
+ * @author npiedeloup
+ */
 public final class DtListURIForSimpleAssociation extends DtListURIForAssociation<AssociationSimpleDefinition> {
 	private static final long serialVersionUID = -6235569695625996356L;
 	private final DefinitionReference<AssociationSimpleDefinition> associationSimpleDefinitionRef;
 
+	/**
+	 * @param associationDefinition Association definition
+	 * @param source URI source
+	 * @param roleName role of this association
+	 */
 	public DtListURIForSimpleAssociation(final AssociationSimpleDefinition associationDefinition, final URI source, final String roleName) {
 		super(associationDefinition, source, roleName);
 		associationSimpleDefinitionRef = new DefinitionReference<>(associationDefinition);
 	}
 
 	/**
-	 * @return Définition de l'association.
+	 * @return Association definition.
 	 */
 	public AssociationSimpleDefinition getAssociationDefinition() {
 		return associationSimpleDefinitionRef.get();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public String buildUrn() {
 		return getAssociationDefinition().getName() + D2A_SEPARATOR + getRoleName() + D2A_SEPARATOR + getSource().urn();

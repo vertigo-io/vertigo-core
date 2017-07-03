@@ -45,6 +45,9 @@ import io.vertigo.lang.Assertion;
 public final class DtList<D extends DtObject> extends AbstractList<D> implements Serializable {
 	private static final int TO_STRING_MAX_ELEMENTS = 50;
 	private static final long serialVersionUID = -8059200549636099190L;
+	/**
+	 * total count
+	 */
 	public static final String TOTAL_COUNT_META = "totalCount";
 
 	private final DtListURI uri;
@@ -72,8 +75,10 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 
 	/**
 	 * Constructor.
+	 * @param dtList DtList to clone
+	 * @param uri DtList uri
 	 */
-	public DtList(final DtList dtList, final DtListURI uri) {
+	public DtList(final DtList<D> dtList, final DtListURI uri) {
 		Assertion.checkNotNull(uri);
 		//---
 		this.dtDefinitionRef = dtList.dtDefinitionRef; //The same DtDefinition
@@ -95,7 +100,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	 * @param dto the mandatory dto to add  which defines the type.
 	 * @param dtos Dtos to add.
 	 * @return the created DtList.
-	 *
+	 * @param <D> Type of this list
 	 */
 	@SafeVarargs
 	public static <D extends DtObject> DtList<D> of(final D dto, final D... dtos) {
@@ -246,12 +251,14 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 		metaDatas.put(metaDataName, value);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object o) {
 		/* A list equals only the same list */
 		return o == this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public int hashCode() {
 		/* A list equals only the same list, so hashCode is simpler */

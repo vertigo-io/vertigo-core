@@ -22,10 +22,18 @@ import java.util.List;
 
 import io.vertigo.lang.Assertion;
 
+/**
+ * Model of Definition from KSP.
+ * @author npiedeloup
+ */
 public final class DslDefinitionBody {
 	private final List<DslDefinitionEntry> definitionEntries;
 	private final List<DslPropertyEntry> propertyEntries;
 
+	/**
+	 * @param definitionEntries
+	 * @param propertyEntries
+	 */
 	public DslDefinitionBody(final List<DslDefinitionEntry> definitionEntries, final List<DslPropertyEntry> propertyEntries) {
 		Assertion.checkNotNull(definitionEntries);
 		Assertion.checkNotNull(propertyEntries);
@@ -34,10 +42,16 @@ public final class DslDefinitionBody {
 		this.propertyEntries = propertyEntries;
 	}
 
+	/**
+	 * @return List of properties
+	 */
 	public List<DslPropertyEntry> getPropertyEntries() {
 		return propertyEntries;
 	}
 
+	/**
+	 * @return List of Definition
+	 */
 	public List<DslDefinitionEntry> getDefinitionEntries() {
 		return definitionEntries;
 	}

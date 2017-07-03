@@ -129,6 +129,10 @@ public final class FileInfoURI implements Serializable {
 	//=============================STATIC======================================
 	//=========================================================================
 
+	/**
+	 * @param urn File info URN
+	 * @return FileInfoURI for this URN
+	 */
 	public static FileInfoURI fromURN(final String urn) {
 		Assertion.checkNotNull(urn);
 		//-----

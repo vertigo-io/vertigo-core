@@ -41,6 +41,9 @@ import io.vertigo.util.DateUtil;
 public final class DtListPatternFilterUtil {
 	private static final String DATE_PATTERN = "dd/MM/yy";
 
+	/**
+	 * Pattern types : Range or Term.
+	 */
 	public enum FilterPattern {
 		/** range. */
 		Range("([A-Z_0-9]+):([\\[\\{\\]])(.*) TO (.*)([\\]\\}\\[])"), //[] : include, ][ or {} : exclude
@@ -90,6 +93,9 @@ public final class DtListPatternFilterUtil {
 	 * index 0 : filtre d'origine.
 	 * index 1 : nom du champs (par convention)
 	 * ensuite dépend du pattern
+	 * @param filterString Filter string to parse
+	 * @param parsingPattern Pattern use to parse
+	 * @return Resulting String array (Optional)
 	 **/
 	public static Optional<String[]> parseFilter(final String filterString, final Pattern parsingPattern) {
 		Assertion.checkNotNull(filterString);

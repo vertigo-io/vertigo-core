@@ -127,6 +127,11 @@ public final class URI<E extends Entity> implements Serializable {
 	//=============================STATIC======================================
 	//=========================================================================
 
+	/**
+	 * Parse URI from URN.
+	 * @param urn URN to parse
+	 * @return URI to result
+	 */
 	public static URI<?> fromURN(final String urn) {
 		Assertion.checkNotNull(urn);
 		//-----

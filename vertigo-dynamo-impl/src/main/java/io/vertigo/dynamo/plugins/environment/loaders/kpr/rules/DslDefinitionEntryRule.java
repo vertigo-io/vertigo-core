@@ -34,13 +34,14 @@ import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitio
 import io.vertigo.lang.Assertion;
 
 /**
- * règle de déclaration d'une champ référenéant une listes de clés.
+ * Règle de déclaration d'une champ référenéant une listes de clés.
  * @author pchretien
  */
 public final class DslDefinitionEntryRule extends AbstractRule<DslDefinitionEntry, List<Object>> {
 
 	/**
 	 * Constructor.
+	 * @param fieldNames List of field names
 	 */
 	public DslDefinitionEntryRule(final List<String> fieldNames) {
 		super(createMainRule(fieldNames));
