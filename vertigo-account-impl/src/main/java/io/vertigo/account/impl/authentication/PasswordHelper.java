@@ -28,6 +28,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
 import io.vertigo.commons.impl.codec.base64.Base64Codec;
+import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
 /**
@@ -37,9 +38,10 @@ import io.vertigo.lang.WrappedException;
  */
 public final class PasswordHelper {
 
-	private final static int MASK = 0xFF;
-	private static final int PBKDF2_ITERATIONS = 4096;
+	private static final int PBKDF2_POWER_ITERATIONS = 12; //4096 iterations
 	private static final int PBKDF2_KEY_LENGTH = 256; // bits
+	private static final int SALT_LENGTH = 8; //must be  ceil(saltSizeInBytes / 3) * 4 = 6*4/3
+	private static final int POWER_ITERATION_LENGTH = 2;
 
 	private final Charset defaultCharsetUTF8;
 	private final SecretKeyFactory secretKeyFactory;
@@ -66,7 +68,7 @@ public final class PasswordHelper {
 	 * @return salted and encoded password
 	 */
 	public String createPassword(final String userPassword) {
-		return encodePassword(generateNewSalt(), PBKDF2_ITERATIONS, userPassword);
+		return encodePassword(generateNewSalt(), PBKDF2_POWER_ITERATIONS, userPassword);
 	}
 
 	/**
@@ -85,15 +87,15 @@ public final class PasswordHelper {
 	}
 
 	private static String extractSalt(final String password) {
-		return password.substring(0, 8); //must be  ceil(saltSizeInBytes / 3) * 4 = 6*4/3
+		return password.substring(0, SALT_LENGTH);
 	}
 
-	private int extractNbIteration(final String password) {
-		return decodeBase64Int(password.substring(8, 12)); //must be  ceil(nbIterationSizeInBytes / 3) * 4 = 3*4/3
+	private static int extractNbIteration(final String password) {
+		return decodeInt(password.substring(SALT_LENGTH, SALT_LENGTH + POWER_ITERATION_LENGTH));
 	}
 
-	private String encodePassword(final String salt, final int nbIteration, final String password) {
-		return salt + encodeBase64(toPBKDF2(password, salt, nbIteration));
+	private String encodePassword(final String salt, final int powerIteration, final String password) {
+		return salt + encodeInt(powerIteration) + encodeBase64(toPBKDF2(password, salt, (int) Math.pow(2, powerIteration)));
 	}
 
 	/**
@@ -105,14 +107,14 @@ public final class PasswordHelper {
 		return base64Codec.encode(data);
 	}
 
-	private int decodeBase64Int(final String encoded) {
-		final byte[] b = base64Codec.decode(encoded);
-		int result = 0;
-		result = b[0] & MASK;
-		result = result + ((b[1] & MASK) << 8);
-		result = result + ((b[2] & MASK) << 16);
-		result = result + ((b[3] & MASK) << 24);
-		return result;
+	private static String encodeInt(final int value) {
+		Assertion.checkArgument(value < 256, "Can't support 2^{0} iterations (max 255)", value);
+		//-----
+		return String.format("%02x", value);
+	}
+
+	private static int decodeInt(final String encoded) {
+		return Integer.parseInt(encoded, 16);
 	}
 
 	/**
