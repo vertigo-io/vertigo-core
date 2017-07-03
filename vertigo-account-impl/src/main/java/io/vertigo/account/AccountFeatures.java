@@ -27,9 +27,9 @@ import io.vertigo.account.impl.identity.AccountStorePlugin;
 import io.vertigo.account.impl.identity.IdentityManagerImpl;
 import io.vertigo.account.impl.security.VSecurityManagerImpl;
 import io.vertigo.account.plugins.identity.redis.RedisAccountStorePlugin;
-import io.vertigo.account.security.UserSession2;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
+import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 
 /**
@@ -50,7 +50,7 @@ public final class AccountFeatures extends Features {
 	 * @param userSessionClass the user session class
 	 * @return these features
 	 */
-	public AccountFeatures withUserSession2(final Class<? extends UserSession2> userSessionClass) {
+	public AccountFeatures withUserSession(final Class<? extends UserSession> userSessionClass) {
 		getModuleConfigBuilder()
 				.addComponent(VSecurityManager.class, VSecurityManagerImpl.class,
 						Param.of("userSessionClassName", userSessionClass.getName()));
