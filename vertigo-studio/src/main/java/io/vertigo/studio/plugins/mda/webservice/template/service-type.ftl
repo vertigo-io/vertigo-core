@@ -5,9 +5,9 @@
 /* tslint:disable */
 
 <#list serviceList as service>
-import * as ${service.jsConstName}Service from "./${service.jsFileName}";
+import * as ${service.jsConstName?uncap_first}Service from "./${service.jsFileName}";
 </#list>  
 
 <#list serviceList as service>
-export type ${service.jsConstName?cap_first}Service = typeof ${service.jsConstName}Service;
+export type ${service.jsConstName}Service = typeof ${service.jsConstName?uncap_first}Service;
 </#list>  

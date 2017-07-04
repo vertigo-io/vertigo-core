@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
@@ -39,7 +40,7 @@ public final class JSDtDefinitionModel {
 	/**
 	 * Constructeur.
 	 *
-	 * @param dtDefinition DtDefinition de l'objet à générer
+	 * @param dtDefinition DtDefinition de l'objet Ã  gÃ©nÃ©rer
 	 */
 	public JSDtDefinitionModel(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
@@ -53,14 +54,14 @@ public final class JSDtDefinitionModel {
 	}
 
 	/**
-	 * @return DT définition
+	 * @return DT dÃ©finition
 	 */
 	public DtDefinition getDtDefinition() {
 		return dtDefinition;
 	}
 
 	/**
-	 * @return Simple Nom (i.e. sans le package) de la classe d'implémentation du DtObject
+	 * @return Simple Nom (i.e. sans le package) de la classe d'implÃ©mentation du DtObject
 	 */
 	public String getClassSimpleName() {
 		return dtDefinition.getClassSimpleName();
@@ -91,7 +92,19 @@ public final class JSDtDefinitionModel {
 	}
 
 	/**
-	 * @return Nom du fichier de la classe normalisé (AAA_BBB_CCC => aaa-bbb-ccc).
+	 * @return true si au moins un champ est de type DtObject.
+	 */
+	public Boolean isContainsObjectField() {
+		for (final DtField dtField : dtDefinition.getFields()) {
+			if (dtField.getDomain().getDataType() != DataType.DtList && !dtField.getDomain().getDataType().isPrimitive()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @return Nom du fichier de la classe normalisÃ© (AAA_BBB_CCC => aaa-bbb-ccc).
 	 */
 	public String getJsClassFileName() {
 		return dtDefinition.getLocalName().toLowerCase(Locale.ENGLISH).replaceAll("_", "-");
