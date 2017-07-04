@@ -88,10 +88,6 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private List<DslMultiExpression> myBuildQuery;
 	private C myCriteria;
 
-	DslListFilterBuilder() {
-		super();
-	}
-
 	/**
 	 * Fix query pattern.
 	 * @param buildQuery Pattern (not null, could be empty)
