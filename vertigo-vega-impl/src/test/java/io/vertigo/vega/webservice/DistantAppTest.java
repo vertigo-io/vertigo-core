@@ -68,4 +68,14 @@ public final class DistantAppTest {
 		Assert.assertTrue(nodeManager.getConfig().containsKey(currentNodeId));
 	}
 
+	@Test
+	public void testDistantAppHealth() {
+
+		final String currentNodeId = nodeManager.getCurrentNode().getId();
+		final Optional<Node> appNode = nodeManager.find(currentNodeId);
+		Assert.assertTrue(appNode.isPresent());
+
+		Assert.assertTrue(nodeManager.getStatus().containsKey(currentNodeId));
+	}
+
 }

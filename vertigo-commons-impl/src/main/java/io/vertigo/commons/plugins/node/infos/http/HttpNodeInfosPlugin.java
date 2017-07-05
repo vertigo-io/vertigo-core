@@ -3,11 +3,16 @@ package io.vertigo.commons.plugins.node.infos.http;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import io.vertigo.commons.health.HealthControlPoint;
 import io.vertigo.commons.impl.node.NodeInfosPlugin;
@@ -22,14 +27,17 @@ import io.vertigo.lang.WrappedException;
  */
 public final class HttpNodeInfosPlugin implements NodeInfosPlugin {
 
+	private static final Gson GSON = new Gson();
+
 	@Override
 	public String getConfig(final Node app) {
-		return callRestWS(app.getEndPoint().get() + "/vertigo/components", String.class);
+		return callRestWS(app.getEndPoint().get() + "/vertigo/components", JsonObject.class).toString();
 	}
 
 	@Override
 	public List<HealthControlPoint> getStatus(final Node app) {
-		return Collections.emptyList();
+		return callRestWS(app.getEndPoint().get() + "/vertigo/healthcheck", new TypeToken<List<HealthControlPoint>>() {
+			/**/}.getType());
 	}
 
 	@Override
@@ -42,7 +50,7 @@ public final class HttpNodeInfosPlugin implements NodeInfosPlugin {
 		return "http";
 	}
 
-	private <R> R callRestWS(final String wsUrl, final Class<? extends R> returnClass) {
+	private <R> R callRestWS(final String wsUrl, final Type returnType) {
 		Assertion.checkArgNotEmpty(wsUrl);
 		// ---
 		try {
@@ -59,9 +67,7 @@ public final class HttpNodeInfosPlugin implements NodeInfosPlugin {
 					result.write(buffer, 0, length);
 				}
 			}
-
-			//return jsonEngine.fromJson(result.toString("UTF-8"), returnClass);
-			return (R) result.toString("UTF-8");
+			return GSON.fromJson(result.toString("UTF-8"), returnType);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}

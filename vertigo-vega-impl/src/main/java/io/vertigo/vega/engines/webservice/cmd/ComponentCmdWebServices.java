@@ -19,7 +19,10 @@
 package io.vertigo.vega.engines.webservice.cmd;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+
+import javax.inject.Inject;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -27,6 +30,8 @@ import com.google.gson.JsonParser;
 
 import io.vertigo.app.Home;
 import io.vertigo.app.config.AppConfig;
+import io.vertigo.commons.health.HealthControlPoint;
+import io.vertigo.commons.health.HealthManager;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.lang.Assertion;
@@ -37,9 +42,24 @@ import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.GET;
 import io.vertigo.vega.webservice.stereotype.PathParam;
+import io.vertigo.vega.webservice.stereotype.SessionLess;
 
 public final class ComponentCmdWebServices implements WebServices {
 	private final JsonEngine jsonEngine = new GoogleJsonEngine(Optional.empty());
+
+	@Inject
+	private HealthManager healthManager;
+
+	/**
+	 * Healthcheck WebService.
+	 * @return constant string "OK" that can be used to monitor the technical health.
+	 */
+	@SessionLess
+	@AnonymousAccessAllowed
+	@GET("/vertigo/healthcheck")
+	public List<HealthControlPoint> healthcheck() {
+		return healthManager.getControlPoints();
+	}
 
 	@AnonymousAccessAllowed
 	@GET("/vertigo/components")
@@ -124,4 +144,5 @@ public final class ComponentCmdWebServices implements WebServices {
 	public Definition getDefinition(@PathParam("definitionName") final String definitionName) {
 		return Home.getApp().getDefinitionSpace().resolve(definitionName, Definition.class);
 	}
+
 }

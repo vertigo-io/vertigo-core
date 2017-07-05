@@ -28,6 +28,7 @@ import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.eventbus.EventBusManager;
+import io.vertigo.commons.health.HealthManager;
 import io.vertigo.commons.impl.analytics.AnalyticsManagerImpl;
 import io.vertigo.commons.impl.cache.CacheManagerImpl;
 import io.vertigo.commons.impl.cache.CachePlugin;
@@ -35,6 +36,7 @@ import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.commons.impl.daemon.DaemonManagerImpl;
 import io.vertigo.commons.impl.eventbus.EventBusManagerImpl;
+import io.vertigo.commons.impl.health.HealthManagerImpl;
 import io.vertigo.commons.impl.node.NodeInfosPlugin;
 import io.vertigo.commons.impl.node.NodeManagerImpl;
 import io.vertigo.commons.impl.node.NodeRegistryPlugin;
@@ -75,7 +77,7 @@ public final class CommonsFeatures extends Features {
 
 	/**
 	 * Activates script with a defined plugin.
-
+	
 	 * @param expressionEvaluatorPluginClass the type of plugin to use
 	 * @param params the params
 	 * @return these features
@@ -98,6 +100,17 @@ public final class CommonsFeatures extends Features {
 		getModuleConfigBuilder()
 				.addComponent(CacheManager.class, CacheManagerImpl.class)
 				.addPlugin(cachePluginClass, params);
+		return this;
+	}
+
+	/**
+	 * Activates healthManager.
+	 *
+	 * @return these features
+	 */
+	public CommonsFeatures withHealthManager() {
+		getModuleConfigBuilder()
+				.addComponent(HealthManager.class, HealthManagerImpl.class);
 		return this;
 	}
 
