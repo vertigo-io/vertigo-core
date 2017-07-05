@@ -14,7 +14,7 @@ __Vertigo__ is splitted into modules.
 * __component__ : everything about components (fast, simple and lightweight Dependency Injection, simple AOP, proxies)
 * __locale__ : manage internationalization of your app (MessageTexts)
 * __param__ : a simple way for your business and technical configuration (external and internal)
-* __defintions__ : a way to store and access all definitions of your app
+* __definitions__ : a way to store and access all definitions of your app
 * __resource__ : a simple access to resource (builtin : lookup into classpath, webapp, filesystem with relative or absolute path)
 * __lang__ : a set of usefull elements such as assertion
  
