@@ -12,7 +12,6 @@ __Vertigo__ is splitted into modules.
 ## vertigo-core
 ### Build and configure your own modules 
 
-* a fast, simple and lightweight Dependency Injection
 * __app__ : everything to configure your app
 * __component__ : everything about components (fast, simple and lightweight Dependency Injection, simple AOP, proxies)
 * __locale__ : manage internationalization of your app (MessageTexts)
