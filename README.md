@@ -1,4 +1,5 @@
 # Vertigo
+=================
 
 A Simple Java Starter  kit for **real projects**.
 
