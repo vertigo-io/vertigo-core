@@ -5,8 +5,6 @@ A Simple Java Starter  kit for **real projects**.
 
 Its main purpose is to publish simple and homogeneous APIs over more complex libraries.
 
-
-#Modules
 __Vertigo__ is splitted into modules.
 
 ## vertigo-core
