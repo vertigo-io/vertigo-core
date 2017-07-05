@@ -9,90 +9,76 @@ Its main purpose is to publish simple and homogeneous APIs over more complex lib
 __Vertigo__ is splitted into modules.
 
 ## vertigo-core
-Build and configure your own modules with 
+### Build and configure your own modules 
 
-* a set of usefull elements such as assertion, option
 * a fast, simple and lightweight Dependency Injection
+* __app__ : everything to configure your app
+* __component__ : everything about components (fast, simple and lightweight Dependency Injection, simple AOP, proxies)
+* __locale__ : manage internationalization of your app (MessageTexts)
+* __param__ : a simple way for your business and technical configuration (external and internal)
+* __defintions__ : a way to store and access all definitions of your app
+* __resource__ : a simple access to resource (builtin : lookup into classpath, webapp, filesystem with relative or absolute path)
+* __lang__ : a set of usefull elements such as assertion
  
 
-##vertigo-commons
-A set of common tools 
+## vertigo-commons
+### A set of common tools 
 
 * __analytics__ : track your process calls, time & errors
 * __cache__ : keep your objects in memory to improve performance
 * __codec__ : transform object into another. (main builtin : HTML, SHA1, Base64, Compress, Serialize) 
+* __daemon__ : manage all your application's daemons (registering, stats) 
+* __eventbus__ : a simple event bus for handling events in your app  
+* __node__ : a simple node management for cluster applications (topology, health, config)
 * __config__ : read configs for your application (overridable, externalizable, aggregate multiple configs)
-* __parser__ : a simple parser for your [DSL](http://en.wikipedia.org/wiki/Domain-specific_language)
-* __resource__ : a simple access to resource (builtin : lookup into classpath, webapp, filesystem with relative or absolute path)
+* __peg__ : a simple parser for your [DSL](http://en.wikipedia.org/wiki/Domain-specific_language)
 * __script__ : execute String like script (because sometimes you need to merge code and data)
+* __transaction__ : simple transaction managment 
 
+## vertigo-database
+### A simple data access to your databases
 
-##vertigo-dynamo
-A simple data access to your sql/nosql database, including search patterns.
+* __sql__ : with builtin handlers : Oracle, MSSql, Postgresql, Hsql, H2, Hibernate
+
+## vertigo-dynamo
+### A simple way to define your application's model and provides useful api over it like storage, search, etc...
   
 * __collections__ : collections tools (builtin : fulltext indexation, facetting, filtering)   
-* __database__ : databases handlers (builtin : Oracle, MSSql, Postgresql, Hsql, H2, Hibernate)
+* __criteria__ : a unique api to to build filters (predicates, sql)
 * __domain__ : top-2-bottom POJO to simplify layers communications from Database to GUI/WS
 * __environment__ : initialize your components from differents sources (builtin : powerdesigner, DSL, Java annotations)
-* __export__ : export collections and object to usefull files formats (builtin : CSV, PDF, RTF, XLS)
 * __file__ : manage file's creation
-* __kvdatastore__ : key/value datastore
-* __node__ : node of worker for distributed operations
-* __persistence__ : simple persistence layer access (builtin : route by object type, CRUD operations, NN operations, SearchServer integration)
+* __kvstore__ : key/value datastore
+* __store__ : simple persistence layer access (builtin : route by object type, CRUD operations, NN operations)
 * __search__ : simple search api
 * __task__ : manage your tasks
-* __transaction__ : simple transaction managment 
-* __work__ : process, shedule or distribute your task
 
 
-##vertigo-persona 
-A simple managment of users, not only technical.
+## vertigo-account
+### A simple managment of users, not only technical.
 
-* __security__ : userSession and security tools to check resources access (by user roles and/or datas properties)   
-
-
-##vertigo-quarto 
-Publishing managment.
-
-* __converter__ : as it says : convert your documents from one format to another
-* __publisher__ : lightweight publisher tool. Produce documents from a user's defined template and application's data. Templates are really easy to modify because they are just ODT or DOCX with tags.
+* __authentication__ : provide a set of connectors to easily manages your end users authentication in your app
+* __authorization__ : userSession and security tools to check resources access (by user roles and/or datas properties)   
+* __identity__ : a way to store and identify your users accounts
 
 
-##vertigo-vega
-Push your apps to others.
+## vertigo-vega
+### Push your apps to others.
 
 * __rest__ : Add a rest access to your application. Mainly oriented for production-ready Single-Page-Application. And production's security ready.
 
-##vertigo-struts2
-Bridge to use vertigo for Struts2 applications.
 
+## vertigo-studio
+### A set of tools to help you through developpement
+* __mda__ : Model Driven Architecture with Tools to generate sources, sql, js, ts, multilingual properties...
+* __reporting__ : a set of tools to build indicators about your app
+* __ui__ : more to come
 
-##vertigo-tempo
-Manage, execute and supervize background operations and communications.
-
-* __jobs__ : Schedule jobs to execute in background, at fixed rate or one time.
-* __mail__ : Send mails with simple api. Activate true email only in production, not while testing or coding.
-
-
-##vertigo-ccc
-Command & Control Center
-
-Have a total control of your cluster by a json api
-
- * Config : list and stats about your modules 
- * System : check health of your system   
-  
-
-##vertigo-studio
-Model Driven  Architecture
-
-Tools to generate sources, sql, multilingual properties...
-
-##vertigo-bundle
+## vertigo-bundle
 A bundle of all these modules
 
 
-##vertigo-parent
+## vertigo-parent
 just the parent pom
 
 -----
