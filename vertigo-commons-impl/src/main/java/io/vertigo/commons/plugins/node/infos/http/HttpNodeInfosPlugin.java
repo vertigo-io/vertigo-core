@@ -6,8 +6,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
+import io.vertigo.commons.health.HealthControlPoint;
 import io.vertigo.commons.impl.node.NodeInfosPlugin;
 import io.vertigo.commons.node.Node;
 import io.vertigo.lang.Assertion;
@@ -26,8 +28,8 @@ public final class HttpNodeInfosPlugin implements NodeInfosPlugin {
 	}
 
 	@Override
-	public String getStatus(final Node app) {
-		return "";
+	public List<HealthControlPoint> getStatus(final Node app) {
+		return Collections.emptyList();
 	}
 
 	@Override
