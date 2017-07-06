@@ -14,9 +14,9 @@ import io.vertigo.core.component.Component;
  */
 public interface HealthManager extends Component {
 	/**
-	 * @return the list of control points
+	 * @return the list of health checks
 	 */
-	List<HealthControlPoint> getControlPoints();
+	List<HealthCheck> getHealthChecks();
 
 	/**
 	 * Generates an aggregated status from a list of control points.
@@ -24,5 +24,5 @@ public interface HealthManager extends Component {
 	 * @param controlPoints the list of control points.
 	 * @return the global health status
 	 */
-	HealthStatus aggregate(List<HealthControlPoint> controlPoints);
+	HealthStatus aggregate(List<HealthCheck> controlPoints);
 }

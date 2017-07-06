@@ -15,7 +15,7 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.health.data.FailedComponentChecker;
-import io.vertigo.commons.health.data.RedisChecker;
+import io.vertigo.commons.health.data.RedisHealthChecker;
 import io.vertigo.commons.health.data.SuccessComponentChecker;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.lang.Assertion;
@@ -37,11 +37,10 @@ public class HealthManagerTest extends AbstractTestCaseJU4 {
 				.beginBoot()
 				.endBoot()
 				.addModule(new CommonsFeatures()
-						.withHealthManager()
 						.withRedisConnector(redisHost, redisPort, redisDatabase, Optional.empty())
 						.build())
 				.addModule(ModuleConfig.builder("checkers")
-						.addComponent(RedisChecker.class)
+						.addComponent(RedisHealthChecker.class)
 						.addComponent(FailedComponentChecker.class)
 						.addComponent(SuccessComponentChecker.class)
 						.build())
@@ -50,44 +49,44 @@ public class HealthManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	void testRedisChecker() {
-		final List<HealthControlPoint> redisControlPoints = findControlPointsByName("redisChecker.ping");
+		final List<HealthCheck> redisHealthChecks = findHealthChecksByName("redisHealthChecker.ping");
 		//---
-		Assert.assertEquals(1, redisControlPoints.size());
-		Assert.assertEquals(HealthStatus.GREEN, redisControlPoints.get(0).getStatus());
+		Assert.assertEquals(1, redisHealthChecks.size());
+		Assert.assertEquals(HealthStatus.GREEN, redisHealthChecks.get(0).getMeasure().getStatus());
 
 	}
 
 	@Test
 	void testFailComponent() {
-		final List<HealthControlPoint> failedControlPoints = findControlPointsByName(FailedComponentChecker.class.getSimpleName());
+		final List<HealthCheck> failedHealthChecks = findHealthChecksByName("failure");
 		//---
-		Assert.assertEquals(1, failedControlPoints.size());
-		Assert.assertEquals(HealthStatus.RED, failedControlPoints.get(0).getStatus());
-		Assert.assertTrue(failedControlPoints.get(0).getCause() instanceof VSystemException);
+		Assert.assertEquals(1, failedHealthChecks.size());
+		Assert.assertEquals(HealthStatus.RED, failedHealthChecks.get(0).getMeasure().getStatus());
+		Assert.assertTrue(failedHealthChecks.get(0).getMeasure().getCause() instanceof VSystemException);
 	}
 
 	@Test
 	void testSuccessComponent() {
-		final List<HealthControlPoint> successControlPoints = findControlPointsByName(SuccessComponentChecker.class.getSimpleName());
+		final List<HealthCheck> successHealthChecks = findHealthChecksByName("success");
 		//---
-		Assert.assertEquals(1, successControlPoints.size());
-		Assert.assertEquals(HealthStatus.GREEN, successControlPoints.get(0).getStatus());
+		Assert.assertEquals(1, successHealthChecks.size());
+		Assert.assertEquals(HealthStatus.GREEN, successHealthChecks.get(0).getMeasure().getStatus());
 	}
 
 	@Test
 	void testAggregate() {
-		final List<HealthControlPoint> successControlPoints = findControlPointsByName(SuccessComponentChecker.class.getSimpleName());
-		final List<HealthControlPoint> failedControlPoints = findControlPointsByName(FailedComponentChecker.class.getSimpleName());
+		final List<HealthCheck> successHealthChecks = findHealthChecksByName("success");
+		final List<HealthCheck> failedHealthChecks = findHealthChecksByName("failure");
 		//---
-		Assert.assertEquals(HealthStatus.GREEN, healthManager.aggregate(successControlPoints));
-		Assert.assertEquals(HealthStatus.RED, healthManager.aggregate(failedControlPoints));
+		Assert.assertEquals(HealthStatus.GREEN, healthManager.aggregate(successHealthChecks));
+		Assert.assertEquals(HealthStatus.RED, healthManager.aggregate(failedHealthChecks));
 
 	}
 
-	private List<HealthControlPoint> findControlPointsByName(final String name) {
+	private List<HealthCheck> findHealthChecksByName(final String name) {
 		Assertion.checkArgNotEmpty(name);
 		//---
-		return healthManager.getControlPoints()
+		return healthManager.getHealthChecks()
 				.stream()
 				.filter(controlPoint -> name.equals(controlPoint.getName()))
 				.collect(Collectors.toList());

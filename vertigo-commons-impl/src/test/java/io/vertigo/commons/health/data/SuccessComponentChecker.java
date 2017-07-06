@@ -1,21 +1,17 @@
 package io.vertigo.commons.health.data;
 
-import java.util.Collections;
-import java.util.List;
-
-import io.vertigo.commons.health.HealthComponentStatusSupplier;
-import io.vertigo.commons.health.HealthControlPoint;
+import io.vertigo.commons.health.HealthChecked;
+import io.vertigo.commons.health.HealthMeasure;
 import io.vertigo.core.component.Component;
 
-public class SuccessComponentChecker implements Component, HealthComponentStatusSupplier {
+public class SuccessComponentChecker implements Component {
 
-	@Override
-	public List<HealthControlPoint> getControlPoints() {
-		return Collections.singletonList(
-				HealthControlPoint
-						.of(this.getClass().getSimpleName())
-						.withGreenStatus()
-						.build());
+	@HealthChecked(name = "success")
+	public HealthMeasure checkSuccess() {
+		return HealthMeasure
+				.builder()
+				.withGreenStatus()
+				.build();
 	}
 
 }

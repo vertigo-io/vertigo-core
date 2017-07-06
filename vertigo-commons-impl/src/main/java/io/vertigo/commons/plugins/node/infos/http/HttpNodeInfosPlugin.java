@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
-import io.vertigo.commons.health.HealthControlPoint;
+import io.vertigo.commons.health.HealthMeasure;
 import io.vertigo.commons.impl.node.NodeInfosPlugin;
 import io.vertigo.commons.node.Node;
 import io.vertigo.lang.Assertion;
@@ -35,8 +35,8 @@ public final class HttpNodeInfosPlugin implements NodeInfosPlugin {
 	}
 
 	@Override
-	public List<HealthControlPoint> getStatus(final Node app) {
-		return callRestWS(app.getEndPoint().get() + "/vertigo/healthcheck", new TypeToken<List<HealthControlPoint>>() {
+	public List<HealthMeasure> getStatus(final Node app) {
+		return callRestWS(app.getEndPoint().get() + "/vertigo/healthcheck", new TypeToken<List<HealthMeasure>>() {
 			/**/}.getType());
 	}
 

@@ -8,27 +8,20 @@ import io.vertigo.lang.Builder;
  * @author pchretien
  *
  */
-public final class HealthControlPointBuilder implements Builder<HealthControlPoint> {
-	private final String name;
+public final class HealthMeasureBuilder implements Builder<HealthMeasure> {
 	private HealthStatus myStatus;
 	private String myMessage; //may be null
 	private Exception myCause; //may be null
 
-	/**
-	 * Constructor.
-	 *
-	 * @param name the control point name
-	 */
-	HealthControlPointBuilder(final String name) {
-		Assertion.checkNotNull(name);
-		//-----
-		this.name = name;
+	HealthMeasureBuilder() {
+		//package : use the builder instead
+		super();
 	}
 
 	/**
 	 * @return this builder
 	 */
-	public HealthControlPointBuilder withGreenStatus() {
+	public HealthMeasureBuilder withGreenStatus() {
 		Assertion.checkState(myStatus == null, "status already set");
 		//---
 		myStatus = HealthStatus.GREEN;
@@ -41,7 +34,7 @@ public final class HealthControlPointBuilder implements Builder<HealthControlPoi
 	 * @param cause the exception throwed during status test
 	 * @return this builder
 	 */
-	public HealthControlPointBuilder withYellowStatus(final String message, final Exception cause) {
+	public HealthMeasureBuilder withYellowStatus(final String message, final Exception cause) {
 		Assertion.checkState(myStatus == null, "status already set");
 		//---
 		myStatus = HealthStatus.YELLOW;
@@ -55,7 +48,7 @@ public final class HealthControlPointBuilder implements Builder<HealthControlPoi
 	 * @param cause the exception throwed during status test
 	 * @return this builder
 	*/
-	public HealthControlPointBuilder withRedStatus(final String message, final Exception cause) {
+	public HealthMeasureBuilder withRedStatus(final String message, final Exception cause) {
 		Assertion.checkState(myStatus == null, "status already set");
 		//---
 		myStatus = HealthStatus.RED;
@@ -65,7 +58,7 @@ public final class HealthControlPointBuilder implements Builder<HealthControlPoi
 	}
 
 	@Override
-	public HealthControlPoint build() {
-		return new HealthControlPoint(name, myStatus, myMessage, myCause);
+	public HealthMeasure build() {
+		return new HealthMeasure(myStatus, myMessage, myCause);
 	}
 }

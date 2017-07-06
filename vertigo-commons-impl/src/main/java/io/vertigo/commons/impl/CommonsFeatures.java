@@ -77,7 +77,7 @@ public final class CommonsFeatures extends Features {
 
 	/**
 	 * Activates script with a defined plugin.
-	
+
 	 * @param expressionEvaluatorPluginClass the type of plugin to use
 	 * @param params the params
 	 * @return these features
@@ -100,17 +100,6 @@ public final class CommonsFeatures extends Features {
 		getModuleConfigBuilder()
 				.addComponent(CacheManager.class, CacheManagerImpl.class)
 				.addPlugin(cachePluginClass, params);
-		return this;
-	}
-
-	/**
-	 * Activates healthManager.
-	 *
-	 * @return these features
-	 */
-	public CommonsFeatures withHealthManager() {
-		getModuleConfigBuilder()
-				.addComponent(HealthManager.class, HealthManagerImpl.class);
 		return this;
 	}
 
@@ -167,6 +156,7 @@ public final class CommonsFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
+				.addComponent(HealthManager.class, HealthManagerImpl.class)
 				.addComponent(AnalyticsManager.class, AnalyticsManagerImpl.class)
 				.addComponent(CodecManager.class, CodecManagerImpl.class)
 				.addComponent(DaemonManager.class, DaemonManagerImpl.class)

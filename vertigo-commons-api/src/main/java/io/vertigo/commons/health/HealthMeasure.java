@@ -13,8 +13,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author jmforhan
  */
-public final class HealthControlPoint {
-	private final String name;
+public final class HealthMeasure {
 	private final HealthStatus status;
 	private final String message; //may be null
 	private final Exception cause; //may be null
@@ -24,40 +23,29 @@ public final class HealthControlPoint {
 	 * @param name the control point name
 	 * @return the builder
 	 */
-	public static HealthControlPointBuilder of(final String name) {
-		return new HealthControlPointBuilder(name);
+	public static HealthMeasureBuilder builder() {
+		return new HealthMeasureBuilder();
 	}
 
 	/**
 	 * Constructor.
 	 *
-	 * @param name the control point name
 	 * @param status the status returned by the test
 	 * @param message a message that explains the status (should be required whenever the status is not GREEN)
 	 * @param cause the exception throwed during status checking (Should be empty with a GREEN status)
 	 */
-	HealthControlPoint(
-			final String name,
+	HealthMeasure(
 			final HealthStatus status,
 			final String message,
 			final Exception cause) {
-		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(status);
 		//-----
-		this.name = name;
 		this.status = status;
 		/*
 		 * message and cause can ne null or non null.
 		 */
 		this.message = message;
 		this.cause = cause;
-	}
-
-	/**
-	 * @return the control point name
-	 */
-	public String getName() {
-		return name;
 	}
 
 	/**

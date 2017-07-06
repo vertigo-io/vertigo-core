@@ -30,7 +30,7 @@ import com.google.gson.JsonParser;
 
 import io.vertigo.app.Home;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.commons.health.HealthControlPoint;
+import io.vertigo.commons.health.HealthCheck;
 import io.vertigo.commons.health.HealthManager;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
@@ -57,8 +57,8 @@ public final class ComponentCmdWebServices implements WebServices {
 	@SessionLess
 	@AnonymousAccessAllowed
 	@GET("/vertigo/healthcheck")
-	public List<HealthControlPoint> healthcheck() {
-		return healthManager.getControlPoints();
+	public List<HealthCheck> healthcheck() {
+		return healthManager.getHealthChecks();
 	}
 
 	@AnonymousAccessAllowed
