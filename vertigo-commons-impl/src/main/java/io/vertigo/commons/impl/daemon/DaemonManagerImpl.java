@@ -70,10 +70,9 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 							Assertion.checkState(method.getParameterTypes().length == 0, "Method {0} on component {1} cannot have any parameter to be used as a daemon", method.getName(), component.getClass().getName());
 							//---
 							final DaemonScheduled daemonSchedule = method.getAnnotation(DaemonScheduled.class);
-							final DaemonDefinition daemonDefinition = new DaemonDefinition(
+							return new DaemonDefinition(
 									daemonSchedule.name(),
 									() -> () -> ClassUtil.invoke(component, method), daemonSchedule.periodInSeconds());
-							return daemonDefinition;
 						})
 				.collect(Collectors.toList());
 

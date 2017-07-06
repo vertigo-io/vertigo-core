@@ -41,6 +41,8 @@ public final class UserPermissions implements Serializable {
 	 * Pour compatibilité d'api.
 	 */
 	private final Set<DefinitionReference<Role>> roleRefs = new HashSet<>();
+	
+	private final Map<String, List<Serializable>> mySecurityKeys = new HashMap<>();
 
 	//===========================================================================
 	//=======================GESTION DES ROLES===================================
@@ -145,7 +147,7 @@ public final class UserPermissions implements Serializable {
 		permissionMapRefs.clear();
 	}
 
-	private final Map<String, List<Serializable>> mySecurityKeys = new HashMap<>();
+	
 
 	/**
 	 * Gestion de la sécurité.

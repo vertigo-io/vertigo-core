@@ -124,7 +124,8 @@ final class SqlUtil {
 		final MyField[] fields = new MyField[resultSetMetaData.getColumnCount()];
 		String columnLabel;
 		for (int i = 0; i < fields.length; i++) {
-			columnLabel = resultSetMetaData.getColumnLabel(i + 1); //getColumnLabel permet de récupérer le nom adapté lors du select (avec un select truc as machin from xxx)
+			//getColumnLabel permet de récupérer le nom adapté lors du select (avec un select truc as machin from xxx)
+			columnLabel = resultSetMetaData.getColumnLabel(i + 1);
 			// toUpperCase nécessaire pour postgreSQL et SQLServer
 			final String expectedFieldName = StringUtil.constToLowerCamelCase(columnLabel.toUpperCase(Locale.ENGLISH));
 			try {

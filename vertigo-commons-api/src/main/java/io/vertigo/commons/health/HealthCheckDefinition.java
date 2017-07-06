@@ -25,7 +25,7 @@ public final class HealthCheckDefinition implements Definition {
 
 	/**
 	 * Constructor
-	 * @param name the definitionName of the definition(must be unique)
+	 * @param definitionName the definitionName of the definition(must be unique)
 	 * @param healthCheckName the name of the control point(must be unique)
 	 * @param checker the name of the component that is responsible of retrieving the measure
 	 * @param checkMethod the supplier of the healthMeasure
@@ -41,7 +41,7 @@ public final class HealthCheckDefinition implements Definition {
 		Assertion.checkNotNull(checkMethod);
 		//-----
 		this.definitionName = definitionName;
-		this.controlPointName = healthCheckName;
+		controlPointName = healthCheckName;
 		this.checker = checker;
 		this.checkMethod = checkMethod;
 	}
