@@ -7,10 +7,9 @@ import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.lang.Assertion;
 
 /**
- * This definition defines a control point to check health of the app.
- * A control point is  :
+ * This definition defines a health check
  * 			- a definition name
- * 			- a control point name
+ * 			- a health check name
  * 			- a checker
  * 			- a way to test that provides a HealthMeasure
  * @author mlaroche, pchretien
@@ -19,16 +18,16 @@ import io.vertigo.lang.Assertion;
 public final class HealthCheckDefinition implements Definition {
 
 	private final String definitionName;
-	private final String controlPointName;
+	private final String healthCheckName;
 	private final String checker;
 	private final Supplier<HealthMeasure> checkMethod;
 
 	/**
 	 * Constructor
-	 * @param definitionName the definitionName of the definition(must be unique)
-	 * @param healthCheckName the name of the control point(must be unique)
-	 * @param checker the name of the component that is responsible of retrieving the measure
-	 * @param checkMethod the supplier of the healthMeasure
+	 * @param definitionName the definition name (must be unique)
+	 * @param healthCheckName the name of the health check (must be unique)
+	 * @param checker the name of the component that is responsible of providing the measure
+	 * @param checkMethod the check method that provides a health measure
 	 */
 	public HealthCheckDefinition(
 			final String definitionName,
@@ -41,14 +40,13 @@ public final class HealthCheckDefinition implements Definition {
 		Assertion.checkNotNull(checkMethod);
 		//-----
 		this.definitionName = definitionName;
-		controlPointName = healthCheckName;
+		this.healthCheckName = healthCheckName;
 		this.checker = checker;
 		this.checkMethod = checkMethod;
 	}
 
 	/**
-	 * Return the name of the checker
-	 * @return the checker
+	 * @return the name of the health checker
 	 */
 	public String getChecker() {
 		return checker;
@@ -62,15 +60,14 @@ public final class HealthCheckDefinition implements Definition {
 	}
 
 	/**
-	 * @return the control point name;
+	 * @return the health check name;
 	 */
 	public String getHealthCheckName() {
-		return controlPointName;
+		return healthCheckName;
 	}
 
 	@Override
 	public String getName() {
 		return definitionName;
 	}
-
 }

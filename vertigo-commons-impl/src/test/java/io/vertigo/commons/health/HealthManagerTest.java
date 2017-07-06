@@ -88,8 +88,7 @@ public class HealthManagerTest extends AbstractTestCaseJU4 {
 		//---
 		return healthManager.getHealthChecks()
 				.stream()
-				.filter(controlPoint -> name.equals(controlPoint.getName()))
+				.filter(healthCheck -> name.equals(healthCheck.getName()))
 				.collect(Collectors.toList());
 	}
-
 }

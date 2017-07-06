@@ -23,14 +23,14 @@ public class RedisHealthChecker implements Component {
 
 	@HealthChecked(name = "redisHealthChecker.ping")
 	public HealthMeasure checkRedisPing() {
-		final HealthMeasureBuilder healthControlPointBuilder = HealthMeasure.builder();
+		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
 		try (Jedis jedis = redisConnector.getResource()) {
 			jedis.ping();
-			healthControlPointBuilder.withGreenStatus();
+			healthMeasureBuilder.withGreenStatus();
 		} catch (final Exception e) {
-			healthControlPointBuilder.withRedStatus(e.getMessage(), e);
+			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
 		}
-		return healthControlPointBuilder.build();
+		return healthMeasureBuilder.build();
 
 	}
 

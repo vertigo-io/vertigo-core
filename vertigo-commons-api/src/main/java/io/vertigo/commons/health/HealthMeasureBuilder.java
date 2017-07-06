@@ -4,7 +4,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 
 /**
- * This builder must be used to build a control point.
+ * This builder must be used to build a health measure.
  * @author pchretien
  *
  */

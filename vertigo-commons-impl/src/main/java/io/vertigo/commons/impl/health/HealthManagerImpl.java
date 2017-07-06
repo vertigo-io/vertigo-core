@@ -33,7 +33,7 @@ public final class HealthManagerImpl implements HealthManager, SimpleDefinitionP
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		return Home.getApp().getComponentSpace().keySet()
 				.stream()
-				.flatMap(id -> createHealthControlPoints(id, Home.getApp().getComponentSpace().resolve(id, Component.class)).stream())
+				.flatMap(id -> createHealthCheckDefinitions(id, Home.getApp().getComponentSpace().resolve(id, Component.class)).stream())
 				.collect(Collectors.toList());
 	}
 
@@ -41,21 +41,21 @@ public final class HealthManagerImpl implements HealthManager, SimpleDefinitionP
 	 * Registers all methods annotated with @Suscriber on the object
 	 * @param suscriberInstance
 	 */
-	private static List<HealthCheckDefinition> createHealthControlPoints(final String componentId, final Component controlInstance) {
-		Assertion.checkNotNull(controlInstance);
+	private static List<HealthCheckDefinition> createHealthCheckDefinitions(final String componentId, final Component component) {
+		Assertion.checkNotNull(component);
 		//-----
 		//1. search all methods
-		return ClassUtil.getAllMethods(controlInstance.getClass(), HealthChecked.class)
+		return ClassUtil.getAllMethods(component.getClass(), HealthChecked.class)
 				.stream()
 				.map(method -> {
-					final HealthChecked healthControlled = method.getAnnotation(HealthChecked.class);
-					Assertion.checkArgument(HealthMeasure.class.equals(method.getReturnType()), "health control methods of class {0} must return a HealthMeasure instead of {1}", controlInstance.getClass(), method.getReturnType());
-					Assertion.checkArgument(method.getName().startsWith("check"), "health control methods of class {0} must start with check", controlInstance.getClass());
-					Assertion.checkArgument(method.getParameterTypes().length == 0, "health control methods of class {0} must not have any parameter", controlInstance.getClass());
+					final HealthChecked healthChecked = method.getAnnotation(HealthChecked.class);
+					Assertion.checkArgument(HealthMeasure.class.equals(method.getReturnType()), "health check methods of class {0} must return a HealthMeasure instead of {1}", component.getClass(), method.getReturnType());
+					Assertion.checkArgument(method.getName().startsWith("check"), "health check methods of class {0} must start with check", component.getClass());
+					Assertion.checkArgument(method.getParameterTypes().length == 0, "health check methods of class {0} must not have any parameter", component.getClass());
 					//-----
 					//2. For each method register a listener
-					final String controlPointName = "HCHK_" + StringUtil.camelToConstCase(componentId) + "$" + StringUtil.camelToConstCase(method.getName());
-					return new HealthCheckDefinition(controlPointName, healthControlled.name(), componentId, () -> (HealthMeasure) ClassUtil.invoke(controlInstance, method));
+					final String healthCheckDefinitionName = "HCHK_" + StringUtil.camelToConstCase(componentId) + "$" + StringUtil.camelToConstCase(method.getName());
+					return new HealthCheckDefinition(healthCheckDefinitionName, healthChecked.name(), componentId, () -> (HealthMeasure) ClassUtil.invoke(component, method));
 				})
 				.collect(Collectors.toList());
 
@@ -64,15 +64,15 @@ public final class HealthManagerImpl implements HealthManager, SimpleDefinitionP
 	/** {@inheritDoc} */
 	@Override
 	public List<HealthCheck> getHealthChecks() {
-		final List<HealthCheck> controlPoints = new ArrayList<>();
+		final List<HealthCheck> healthChecks = new ArrayList<>();
 		try {
-			for (final HealthCheckDefinition healthControlPointDefinition : Home.getApp().getDefinitionSpace().getAll(HealthCheckDefinition.class)) {
-				final HealthMeasure healthMeasure = healthControlPointDefinition.getCheckMethod().get();
-				final HealthCheck healthControlPoint = new HealthCheck(
-						healthControlPointDefinition.getHealthCheckName(),
-						healthControlPointDefinition.getChecker(),
+			for (final HealthCheckDefinition healthCheckDefinition : Home.getApp().getDefinitionSpace().getAll(HealthCheckDefinition.class)) {
+				final HealthMeasure healthMeasure = healthCheckDefinition.getCheckMethod().get();
+				final HealthCheck healthCheck = new HealthCheck(
+						healthCheckDefinition.getHealthCheckName(),
+						healthCheckDefinition.getChecker(),
 						healthMeasure);
-				controlPoints.add(healthControlPoint);
+				healthChecks.add(healthCheck);
 			}
 		} catch (
 
@@ -80,20 +80,20 @@ public final class HealthManagerImpl implements HealthManager, SimpleDefinitionP
 			final HealthMeasure healthMeasure = HealthMeasure.builder()
 					.withRedStatus("Impossible to get status", e)
 					.build();
-			controlPoints.add(new HealthCheck(this.getClass().getSimpleName(), this.getClass().getSimpleName(), healthMeasure));
+			healthChecks.add(new HealthCheck(this.getClass().getSimpleName(), this.getClass().getSimpleName(), healthMeasure));
 		}
-		return controlPoints;
+		return healthChecks;
 	}
 
 	@Override
-	public HealthStatus aggregate(final List<HealthCheck> controlPoints) {
-		Assertion.checkNotNull(controlPoints);
+	public HealthStatus aggregate(final List<HealthCheck> healthChecks) {
+		Assertion.checkNotNull(healthChecks);
 		//---
 		int nbGreen = 0;
 		int nbYellow = 0;
 		int nbRed = 0;
-		for (final HealthCheck controlPoint : controlPoints) {
-			switch (controlPoint.getMeasure().getStatus()) {
+		for (final HealthCheck healthCheck : healthChecks) {
+			switch (healthCheck.getMeasure().getStatus()) {
 				case GREEN:
 					nbGreen++;
 					break;

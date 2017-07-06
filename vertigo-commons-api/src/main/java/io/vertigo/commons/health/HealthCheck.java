@@ -8,7 +8,7 @@ import io.vertigo.lang.Assertion;
 /**
  * Health check.
  *  example :
- *  dataStorePlugin.ping : Ping to a Database produces a specific control point with the actual measure of it
+ *  dataStorePlugin.ping : Ping to a Database produces a specific health check with the actual measure of it
  *  {plugin/component}.{test} :
  *
  * @author mlaroche
@@ -21,7 +21,7 @@ public final class HealthCheck {
 	/**
 	 * Constructor.
 	 *
-	 * @param name the control point name
+	 * @param name the health check name
 	 * @param checker who  created the measure
 	 * @param healthMeasure the measure
 	 */
@@ -39,7 +39,7 @@ public final class HealthCheck {
 	}
 
 	/**
-	 * @return the control point name
+	 * @return the health check name
 	 */
 	public String getName() {
 		return name;

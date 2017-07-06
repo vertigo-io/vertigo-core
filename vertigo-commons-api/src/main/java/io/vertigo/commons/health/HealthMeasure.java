@@ -6,10 +6,9 @@ package io.vertigo.commons.health;
 import io.vertigo.lang.Assertion;
 
 /**
- * Control point.
+ *  Measure.
  *  example :
- *  dataStorePlugin.ping : Ping to a Database produces a specific control point
- *  {plugin/component}.{test} :
+ * Ping to a Database produces a specific Measure
  *
  * @author jmforhan
  */
@@ -20,7 +19,6 @@ public final class HealthMeasure {
 
 	/**
 	 * Creates the builder.
-	 * @param name the control point name
 	 * @return the builder
 	 */
 	public static HealthMeasureBuilder builder() {

@@ -19,10 +19,10 @@ public interface HealthManager extends Component {
 	List<HealthCheck> getHealthChecks();
 
 	/**
-	 * Generates an aggregated status from a list of control points.
+	 * Generates an aggregated status from a list of health checks.
 	 *
-	 * @param controlPoints the list of control points.
+	 * @param healthChecks the list of halth checks.
 	 * @return the global health status
 	 */
-	HealthStatus aggregate(List<HealthCheck> controlPoints);
+	HealthStatus aggregate(List<HealthCheck> healthChecks);
 }
