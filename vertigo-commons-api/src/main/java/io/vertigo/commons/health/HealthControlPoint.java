@@ -56,7 +56,7 @@ public final class HealthControlPoint {
 	/**
 	 * @return the control point name
 	 */
-	public String getComponentName() {
+	public String getName() {
 		return name;
 	}
 
