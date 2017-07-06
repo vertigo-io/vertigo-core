@@ -251,6 +251,16 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+	        <id>KleeRepo</id>
+	        <distributionManagement>
+	           <repository>
+				<id>klee-nexus</id>
+				<name>KleeGoup nexus Releases Candidate</name>
+				<url>http://kleegroup-nexus:8080/nexus/content/repositories/releases/</url>
+			</repository>
+	        </distributionManagement>
+	    </profile>
 	</profiles>
 
 	<distributionManagement>
