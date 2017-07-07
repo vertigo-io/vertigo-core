@@ -2,8 +2,7 @@
 	"replace": {
 		"vertigo-x-account":"vertigo-account",
 		"vertigo-x-connectors":"vertigo-connectors",
-		"vertigo-x-notification":"vertigo-notification",
-		"vertigo-x-comment":"vertigo-comment",
+		"vertigo-x-notification":"vertigo-social",
 		"vertigo-orchestra-impl":"vertigo-orchestra",
 		"vertigo-personna-impl":"vertigo-account",
 		"vertigo-quarto-impl":"vertigo-quarto",
@@ -77,6 +76,7 @@
 		"<dependency>\\s*<groupId>io.vertigo</groupId>\\s*<artifactId>vertigo-persona-[^<]+</artifactId>\\s*<version>[^<]*</version>\\s*</dependency>":"",
 		"<dependency>\\s*<groupId>io.vertigo</groupId>\\s*<artifactId>vertigo-quarto-[api]+</artifactId>\\s*<version>[^<]*</version>\\s*</dependency>":"",
 		"<dependency>\\s*<groupId>io.vertigo</groupId>\\s*<artifactId>vertigo-orchestra-api</artifactId>\\s*<version>[^<]*</version>\\s*</dependency>":"",
+		"<dependency>\\s*<groupId>io.vertigo</groupId>\\s*<artifactId>vertigo-x-comment</artifactId>\\s*<version>[^<]*</version>\\s*</dependency>":"",
 		"<dependency>\\s*<groupId>org.elasticsearch</groupId>\\s*<artifactId>elasticsearch</artifactId>\\s*<version>1\\.[^<]*</version>\\s*</dependency>":"<dependency>\n\t\t\t<groupId>org.elasticsearch</groupId>\n\t\t\t<artifactId>elasticsearch</artifactId>\n\t\t\t<version>2\\.4\\.4</version>\n\t\t</dependency>",
 		"([a-zA-Z0-9_]+)\\.create\\(dtDefinition, entity\\);":"return \\1\\.create\\(dtDefinition, entity\\);",
 		"<component\\s*api=\"JobManager\"\\s*class=\"io.vertigo.tempo.impl.job.JobManagerImpl\"\\s*>(.*?)</component>":"",
