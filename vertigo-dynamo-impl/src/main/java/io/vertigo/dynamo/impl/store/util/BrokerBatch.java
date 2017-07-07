@@ -41,7 +41,7 @@ public interface BrokerBatch<E extends Entity, P> {
 	 * Récupère la liste des objets correspondant à des ids. On n'assure pas l'ordre de la liste par rapport à l'ordre des
 	 * identifiants en entré. On peut avoir également une liste plus petites s'il y a des doublons dans la liste en entrée ou que
 	 * des identifiants ne correspondant à rien en base.
-	 *
+	 * @param dtDefinition la dtDefinition
 	 * @param idList liste des identifiants
 	 * @return Liste des objets correspondants.
 	 */
@@ -51,7 +51,7 @@ public interface BrokerBatch<E extends Entity, P> {
 	 * Récupère la liste des objets correspondant à des ids et retourne sous forme de map entre la clé primaire et l'objet
 	 * correspondant. Cette méthode est se base sur getList(). Il est possible qu'un id passé en entrée ne se retrouve pas comme
 	 * clé de la map s'il n'y a aucun object associé à cet identifiant en base.
-	 *
+	 * @param dtDefinition la dtDefinition
 	 * @param idList liste des identifiants
 	 * @return map entre index et l'objet associé.
 	 */
@@ -59,7 +59,7 @@ public interface BrokerBatch<E extends Entity, P> {
 
 	/**
 	 * Récupère la liste des objets associé à une collection de clé étrangère.
-	 *
+	 * @param dtDefinition la dtDefinition
 	 * @param fieldName champ de sélection des objets à récupérer
 	 * @param value collection des valeurs à utiliser pour sélectionner les objets
 	 * @param <O> type de la valeur de sélection
@@ -71,6 +71,7 @@ public interface BrokerBatch<E extends Entity, P> {
 	 * Récupère la liste des objets associé à une collection de clé étrangère et la retourne sous forme de Map dont la clé est
 	 * l'objet de sélection.
 	 *
+	 * @param dtDefinition la dtDefinition
 	 * @param fieldName champ de sélection des objets à récupérer
 	 * @param value collection des valeurs à utiliser pour sélectionner les objets
 	 * @param <O> type de la valeur de sélection

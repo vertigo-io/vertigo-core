@@ -26,13 +26,13 @@ import java.lang.annotation.Target;
 
 /**
  * Bind the value of a query parameter (url or post data) to the annotated parameter.
- * Exemple : 
+ * Exemple :
  * http://localhost:8080/test/contact?conId=12
- * 
+ *
  * Can be map to :
  * @GET("/test/contact")
  * void myService(@QueryParam("conId") long contactId)
- * 
+ *
  * @author npiedeloup
  */
 @Target({ ElementType.PARAMETER })

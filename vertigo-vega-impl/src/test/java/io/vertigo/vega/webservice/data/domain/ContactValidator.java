@@ -20,8 +20,8 @@ package io.vertigo.vega.webservice.data.domain;
 
 import java.util.Date;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.lang.MessageText;
 import io.vertigo.util.DateUtil;
 import io.vertigo.vega.webservice.validation.AbstractDtObjectValidator;
 import io.vertigo.vega.webservice.validation.DtObjectErrors;
@@ -39,7 +39,7 @@ public class ContactValidator extends AbstractDtObjectValidator<Contact> {
 		if ("birthday".equals(camelCaseFieldName) && !dtObjectErrors.hasError(camelCaseFieldName)) {
 			final Date birthday = dtObject.getBirthday();
 			if (DateUtil.daysBetween(birthday, DateUtil.newDate()) < (16 * 365)) { //if less than 16
-				dtObjectErrors.addError(camelCaseFieldName, new MessageText("You can't add contact younger than 16", null));
+				dtObjectErrors.addError(camelCaseFieldName, MessageText.of("You can't add contact younger than 16"));
 			}
 		}
 	}

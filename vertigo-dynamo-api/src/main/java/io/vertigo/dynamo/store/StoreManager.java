@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.store;
 
+import io.vertigo.core.component.Manager;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
 import io.vertigo.dynamo.store.filestore.FileStore;
-import io.vertigo.lang.Manager;
 
 /**
 * Gestionnaire des données et des accès aux données.

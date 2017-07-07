@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamox.domain.constraint;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.metamodel.Constraint;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.Property;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 
 /**
  * Contrainte sur la valeur minimale d'un nombre.
@@ -32,6 +32,10 @@ import io.vertigo.lang.MessageText;
 public final class ConstraintNumberMinimum implements Constraint<Number, Number> {
 	private final double minValue;
 
+	/**
+	 * Constructor.
+	 * @param args the minimum value
+	 */
 	public ConstraintNumberMinimum(final String args) {
 		Assertion.checkArgument(args != null && args.length() > 0, "Vous devez préciser la valeur minimum comme argument de ConstraintNumberMinimum");
 		//-----
@@ -50,7 +54,10 @@ public final class ConstraintNumberMinimum implements Constraint<Number, Number>
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return new MessageText(Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM, minValue);
+		return MessageText.builder()
+				.withKey(Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM)
+				.withParams(minValue)
+				.build();
 	}
 
 	/** {@inheritDoc} */

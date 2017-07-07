@@ -94,12 +94,8 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 		for (final Class<? extends JsonConverter> jsonConverterClass : JSON_CONVERTER_CLASSES) {
 			final JsonConverter jsonConverter = DIInjector.newInstance(jsonConverterClass, componentSpace);
 			for (final Class inputType : jsonConverter.getSupportedInputs()) {
-				List<JsonConverter> jsonConverterBySourceType = jsonConverters.get(inputType);
-				if (jsonConverterBySourceType == null) {
-					jsonConverterBySourceType = new ArrayList<>();
-					jsonConverters.put(inputType, jsonConverterBySourceType);
-				}
-				jsonConverterBySourceType.add(jsonConverter);
+				jsonConverters.computeIfAbsent(inputType, k -> new ArrayList<>())
+						.add(jsonConverter);
 			}
 		}
 
@@ -159,8 +155,19 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 				}
 			}
 			//-----
-			Assertion.checkNotNull(jsonReaderToApply, "Can't parse param {0} of service {1} {2} no compatible JsonReader found for {3}", webServiceParam.getFullName(), routeContext.getWebServiceDefinition().getVerb(), routeContext.getWebServiceDefinition().getPath(), webServiceParam.getParamType());
-			Assertion.checkNotNull(jsonConverterToApply, "Can't parse param {0} of service {1} {2} no compatible JsonConverter found for {3} {4}", webServiceParam.getFullName(), routeContext.getWebServiceDefinition().getVerb(), routeContext.getWebServiceDefinition().getPath(), webServiceParam.getParamType(), webServiceParam.getType());
+			Assertion.checkNotNull(jsonReaderToApply,
+					"Can't parse param {0} of service {1} {2} no compatible JsonReader found for {3}",
+					webServiceParam.getFullName(),
+					routeContext.getWebServiceDefinition().getVerb(),
+					routeContext.getWebServiceDefinition().getPath(),
+					webServiceParam.getParamType());
+			Assertion.checkNotNull(jsonConverterToApply,
+					"Can't parse param {0} of service {1} {2} no compatible JsonConverter found for {3} {4}",
+					webServiceParam.getFullName(),
+					routeContext.getWebServiceDefinition().getVerb(),
+					routeContext.getWebServiceDefinition().getPath(),
+					webServiceParam.getParamType(),
+					webServiceParam.getType());
 			//-----
 			final Object converterSource = jsonReaderToApply.extractData(request, webServiceParam, routeContext);
 			if (converterSource != null) { //On ne convertit pas les null

@@ -48,7 +48,7 @@ public final class PegWordRule implements PegRule<String> {
 	private final Mode mode;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param emptyAccepted Si les mots vides sont acceptés
 	 * @param checkedChars Liste des caractères vérifiés
 	 * @param mode Indique le comportement du parseur : si les caractères vérifiés sont les seuls acceptés, sinon les seuls rejetés, et si l'echappement est autorisé

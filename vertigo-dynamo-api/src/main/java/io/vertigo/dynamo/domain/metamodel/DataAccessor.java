@@ -25,10 +25,7 @@ import io.vertigo.util.StringUtil;
 
 /**
  * Permet d'accéder aux données d'un objet par son champ.
- * - Soit l'accès est dynamique
- * 	alors l'objet doit implémenter l'interface Dynamic
- * - Soit l'accès est statique
- *  alors l'objet doit posséder les méthodes (setter et getter) en concordance avec le nom du champ.
+ * L'objet doit posséder les méthodes (setter et getter) en concordance avec le nom du champ.
  *
  * @author  pchretien
  */
@@ -49,18 +46,14 @@ public final class DataAccessor {
 	 *  - au type enregistré pour le champ
 	 *  - les contraintes ne sont pas vérifiées.
 	 *
+	 * @param dto the object in which data will be set
 	 * @param value Object
 	 */
 	public void setValue(final DtObject dto, final Object value) {
 		//On vérifie le type java de l'objet.
 		dtField.getDomain().getDataType().checkValue(value);
 		//-----
-		if (dtField.isDynamic()) {
-			((Dynamic) dto).setValue(dtField, value);
-		} else {
-			//Dans le cas d'un champ statique
-			BeanUtil.setValue(dto, ccFieldName, value);
-		}
+		BeanUtil.setValue(dto, ccFieldName, value);
 	}
 
 	/**
@@ -71,12 +64,10 @@ public final class DataAccessor {
 	 *  Attention : en mode BEAN cette méthode lance une erreur
 	 * si il existe une seule erreur sur le champ concerné !!
 	 *
+	 * @param dto the object in which data will be retrieved
 	 * @return valeur non typée
 	 */
 	public Object getValue(final DtObject dto) {
-		if (dtField.isDynamic()) {
-			return ((Dynamic) dto).getValue(dtField);
-		}
 		//Dans le cas d'un champ statique
 		return BeanUtil.getValue(dto, ccFieldName);
 	}

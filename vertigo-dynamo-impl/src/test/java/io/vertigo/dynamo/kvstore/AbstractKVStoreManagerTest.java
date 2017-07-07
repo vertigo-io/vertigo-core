@@ -26,9 +26,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.dynamo.kvstore.data.Flower;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionWritable;
 
 /**
  * @author pchretien
@@ -86,7 +86,7 @@ public abstract class AbstractKVStoreManagerTest extends AbstractTestCaseJU4 {
 	public void testFind() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Optional<Flower> foundFlower = kvStoreManager.find("flowers", "1", Flower.class);
-			Assert.assertFalse(foundFlower.isPresent());
+			Assert.assertEquals(Optional.empty(), foundFlower);
 			final Flower tulip = buildFlower("tulip", 100);
 
 			kvStoreManager.put("flowers", "1", tulip);

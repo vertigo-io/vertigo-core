@@ -35,10 +35,9 @@ import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.app.config.DefinitionProviderConfigBuilder;
+import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.LogConfig;
-import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.core.definition.DefinitionReference;
@@ -51,13 +50,13 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 
 	@Override
 	protected AppConfig buildAppConfig() {
-		return new AppConfigBuilder()
+		return AppConfig.builder()
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
-				.addModule(new ModuleConfigBuilder("test")
-						.addDefinitionProvider(new DefinitionProviderConfigBuilder(TestDefinitionprovider.class)
-								.addParam(Param.create("testParam", "testParamValue"))
+				.addModule(ModuleConfig.builder("test")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(TestDefinitionprovider.class)
+								.addParam(Param.of("testParam", "testParamValue"))
 								.addDefinitionResource("type1", "resource1")
 								.build())
 						.build())

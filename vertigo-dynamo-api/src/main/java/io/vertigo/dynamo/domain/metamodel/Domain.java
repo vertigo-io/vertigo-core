@@ -74,7 +74,9 @@ public final class Domain implements Definition {
 	 * @param constraintDefinitions the list of constraints
 	 * @param properties List of property-value tuples
 	 */
-	Domain(final String name, final DataType dataType,
+	Domain(
+			final String name,
+			final DataType dataType,
 			final FormatterDefinition formatterDefinition,
 			final List<ConstraintDefinition> constraintDefinitions,
 			final Properties properties) {
@@ -92,25 +94,35 @@ public final class Domain implements Definition {
 		//---Properties
 		this.properties = buildProperties(constraintDefinitions, properties);
 
-		//---FK
+		//---
+		Assertion.when(!getDataType().isPrimitive()).check(() -> this.properties.getValue(DtProperty.TYPE) != null, "a dtDefinition is required on {0}", name);
+		Assertion.when(getDataType().isPrimitive()).check(() -> this.properties.getValue(DtProperty.TYPE) == null, "dtDefinition must be empty on {0}", name);
 		if (this.properties.getValue(DtProperty.TYPE) != null) {
-			Assertion.checkArgument(!getDataType().isPrimitive(), "The type can only be used for DtObject or DtList");
-			//-----
 			dtDefinitionName = this.properties.getValue(DtProperty.TYPE);
 		} else {
 			dtDefinitionName = null;
 		}
 	}
 
+	/**
+	 * Static method factory for DomainBuilder
+	 * @param name the name of the domain
+	 * @param dataType the dataType lof the domain
+	 * @return DomainBuilder
+	 */
+	public static DomainBuilder builder(final String name, final DataType dataType) {
+		return new DomainBuilder(name, dataType);
+	}
+
 	private static List<DefinitionReference<ConstraintDefinition>> buildConstraintDefinitionRefs(final List<ConstraintDefinition> constraintDefinitions) {
 		return constraintDefinitions
 				.stream()
-				.map(constraintDefinition -> new DefinitionReference<>(constraintDefinition))
+				.map(DefinitionReference::new)
 				.collect(Collectors.toList());
 	}
 
 	private static Properties buildProperties(final List<ConstraintDefinition> constraintDefinitions, final Properties inputProperties) {
-		final PropertiesBuilder propertiesBuilder = new PropertiesBuilder();
+		final PropertiesBuilder propertiesBuilder = Properties.builder();
 		for (final Property property : inputProperties.getProperties()) {
 			propertiesBuilder.addValue(property, inputProperties.getValue(property));
 		}
@@ -171,13 +183,6 @@ public final class Domain implements Definition {
 	//==========================================================================
 	//for these domains : DtList or DtObject
 	//==========================================================================
-	/**
-	 * @return if there is a DtDefinition for this domain.
-	 */
-	public boolean hasDtDefinition() {
-		return dtDefinitionName != null;
-	}
-
 	/**
 	 * @return the dtDefinition for the domains DtList or DtObject.
 	 */

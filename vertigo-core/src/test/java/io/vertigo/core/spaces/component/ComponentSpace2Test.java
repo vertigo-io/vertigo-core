@@ -29,8 +29,7 @@ import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.spaces.component.data.BioManager;
 import io.vertigo.core.spaces.component.data.BioManagerImpl;
@@ -57,13 +56,13 @@ public final class ComponentSpace2Test extends AbstractTestCaseJU4 {
 
 	@Override
 	protected AppConfig buildAppConfig() {
-		return new AppConfigBuilder()
-				.addModule(new ModuleConfigBuilder("bio")
+		return AppConfig.builder()
+				.addModule(ModuleConfig.builder("bio")
 						.addComponent(BioManager.class, BioManagerImpl.class)
 						.addComponent(MathManager.class, MathManagerImpl.class,
-								Param.create("start", "100"))
+								Param.of("start", "100"))
 						.addPlugin(MathPlugin.class,
-								Param.create("factor", "20"))
+								Param.of("factor", "20"))
 						.build())
 				.build();
 	}

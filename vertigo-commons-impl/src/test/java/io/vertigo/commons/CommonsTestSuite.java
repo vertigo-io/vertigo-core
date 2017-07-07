@@ -23,7 +23,9 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import io.vertigo.commons.analytics.AnalyticsManagerTest;
-import io.vertigo.commons.cache.CacheManagerTest;
+import io.vertigo.commons.cache.ehcache.EhCacheManagerTest;
+import io.vertigo.commons.cache.memory.MemoryCacheManagerTest;
+import io.vertigo.commons.cache.redis.RedisCacheManagerTest;
 import io.vertigo.commons.codec.base64.Base64CodecTest;
 import io.vertigo.commons.codec.compressedSerialization.CompressedSerializationCodecTest;
 import io.vertigo.commons.codec.compression.CompressionCodecTest;
@@ -37,10 +39,15 @@ import io.vertigo.commons.codec.html.HtmlCodecTest;
 import io.vertigo.commons.codec.serialization.SerializationCodecTest;
 import io.vertigo.commons.daemon.DaemonManagerTest;
 import io.vertigo.commons.eventbus.EventBusManagerTest;
+import io.vertigo.commons.node.DbNodeRegistryPluginTest;
+import io.vertigo.commons.node.RedisNodeRegistryPluginTest;
+import io.vertigo.commons.node.SingleNodeRegistryPluginTest;
 import io.vertigo.commons.peg.CalculatorTest;
 import io.vertigo.commons.peg.ParserTest;
 import io.vertigo.commons.peg.PegRulesTest;
 import io.vertigo.commons.script.ScriptManagerTest;
+import io.vertigo.commons.transaction.VTransactionBeforeAfterCommitTest;
+import io.vertigo.commons.transaction.VTransactionManagerTest;
 
 /**
  * Test de l'implémentation standard.
@@ -52,7 +59,9 @@ import io.vertigo.commons.script.ScriptManagerTest;
 		//--analytics
 		AnalyticsManagerTest.class,
 		//--cache
-		CacheManagerTest.class,
+		EhCacheManagerTest.class,
+		MemoryCacheManagerTest.class,
+		RedisCacheManagerTest.class,
 		//--codec
 		Base64CodecTest.class,
 		CompressedSerializationCodecTest.class,
@@ -67,14 +76,22 @@ import io.vertigo.commons.script.ScriptManagerTest;
 		SerializationCodecTest.class,
 		//--daemon
 		DaemonManagerTest.class,
+		//--node
+		SingleNodeRegistryPluginTest.class,
+		RedisNodeRegistryPluginTest.class,
+		DbNodeRegistryPluginTest.class,
 		//--script
 		ScriptManagerTest.class,
 		//--parser
 		PegRulesTest.class,
 		ParserTest.class,
 		CalculatorTest.class,
-		EventBusManagerTest.class
+		EventBusManagerTest.class,
+		//--transaction
+		VTransactionManagerTest.class,
+		VTransactionBeforeAfterCommitTest.class
 })
+
 public final class CommonsTestSuite {
 	//
 }

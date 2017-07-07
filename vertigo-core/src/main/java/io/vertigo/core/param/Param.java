@@ -32,7 +32,7 @@ public final class Param {
 	private static final String FALSE = "false";
 
 	/** Regexp paramName. */
-	private static final Pattern REGEX_PARAM_NAME = Pattern.compile("([a-zA-Z]+)([\\._-][a-zA-Z0-9]+){0,200}");
+	private static final Pattern REGEX_PARAM_NAME = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*)([\\._-][a-zA-Z][a-zA-Z0-9]*){0,200}");
 	private final String name;
 	private final String value;
 
@@ -58,7 +58,7 @@ public final class Param {
 	 * @param value the value of the param
 	 * @return new param
 	 */
-	public static Param create(final String name, final String value) {
+	public static Param of(final String name, final String value) {
 		return new Param(name, value);
 	}
 

@@ -36,17 +36,10 @@ public final class WebServiceHandler {
 
 	public static void main(final String[] args) {
 		final AutoCloseableApp app = new AutoCloseableApp(MyAppConfig.config());
-
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				try {
-					System.out.println("Try to close " + app);
-					app.close();
-				} catch (final Exception e) {
-					System.err.println("Can't close " + app + " : " + e.toString());
-					e.printStackTrace(System.err);
-				}
+				app.close();
 			}
 		});
 	}

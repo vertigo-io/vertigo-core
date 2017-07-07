@@ -20,7 +20,7 @@ package io.vertigo.core.param;
 
 import java.util.Optional;
 
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 
 /**
  * Interface d'un plugin de gestion de configuration applicative.

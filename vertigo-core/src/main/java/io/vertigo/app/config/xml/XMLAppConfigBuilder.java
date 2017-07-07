@@ -36,8 +36,12 @@ import io.vertigo.lang.Builder;
  * @author npiedeloup, pchretien
  */
 public final class XMLAppConfigBuilder implements Builder<AppConfig> {
-	private final AppConfigBuilder appConfigBuilder = new AppConfigBuilder();
+	private final AppConfigBuilder appConfigBuilder = AppConfig.builder();
 
+	/**
+	 * Begin the boot config of the app.
+	 * @return the bootConfig builder
+	 */
 	public BootConfigBuilder beginBoot() {
 		return appConfigBuilder.beginBoot();
 	}
@@ -74,6 +78,7 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AppConfig build() {
 		return appConfigBuilder.build();

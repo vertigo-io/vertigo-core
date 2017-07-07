@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamox.domain.constraint;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 
 /**
  * Contrainte vérifiant que l'objet est : <ul>
@@ -66,13 +66,17 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 		if (value == null) {
 			return true;
 		}
-		final long i = value.longValue();
+		final long i = value;
 		return i > minValue && i < maxValue;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return new MessageText(Resources.DYNAMO_CONSTRAINT_LONGLENGTH_EXCEEDED, minValue, maxValue);
+		return MessageText
+				.builder()
+				.withKey(Resources.DYNAMO_CONSTRAINT_LONGLENGTH_EXCEEDED)
+				.withParams(minValue, maxValue)
+				.build();
 	}
 }

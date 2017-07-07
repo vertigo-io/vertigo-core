@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.store.datastore;
 
+import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.store.criteria.Criteria;
 
 /**
  * Defines the way to acces and store all the data.
@@ -74,8 +74,9 @@ public interface DataStore {
 	* No object with the same id must have been created previously.
 	*
 	* @param entity the entity to create
+	* @return the created object
 	*/
-	void create(Entity entity);
+	<E extends Entity> E create(E entity);
 
 	/**
 	* Update an object.
@@ -92,7 +93,7 @@ public interface DataStore {
 	void delete(URI<? extends Entity> uri);
 
 	/**
-	 * Returns a li	st identified by criteria
+	 * Returns a list identified by criteria
 	 * @param dtDefinition the list definition
 	 * @param criteria criteria
 	 * @return list

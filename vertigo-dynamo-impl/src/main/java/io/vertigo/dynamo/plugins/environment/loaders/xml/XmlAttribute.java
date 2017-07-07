@@ -32,7 +32,7 @@ public final class XmlAttribute {
 	private final String domain;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	public XmlAttribute(final String code, final String label, final boolean persistent, final boolean notNull, final String domain) {
 		Assertion.checkArgNotEmpty(code);

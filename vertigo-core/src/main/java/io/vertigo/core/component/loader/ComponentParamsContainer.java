@@ -24,10 +24,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import io.vertigo.core.component.Container;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Container;
 
 /**
  * This container contains params initialized with String.
@@ -36,15 +36,15 @@ import io.vertigo.lang.Container;
  * @author pchretien
  */
 final class ComponentParamsContainer implements Container {
-	private final Optional<ParamManager> paramManagerOption;
+	private final Optional<ParamManager> paramManagerOpt;
 	private final Map<String, String> params;
 	private final Set<String> unusedKeys;
 
-	ComponentParamsContainer(final Optional<ParamManager> paramManagerOption, final Map<String, String> params) {
-		Assertion.checkNotNull(paramManagerOption);
+	ComponentParamsContainer(final Optional<ParamManager> paramManagerOpt, final Map<String, String> params) {
+		Assertion.checkNotNull(paramManagerOpt);
 		Assertion.checkNotNull(params);
 		//-----
-		this.paramManagerOption = paramManagerOption;
+		this.paramManagerOpt = paramManagerOpt;
 		this.params = params;
 		unusedKeys = new HashSet<>(params.keySet());
 	}
@@ -84,10 +84,10 @@ final class ComponentParamsContainer implements Container {
 		final String paramValue = params.get(paramName);
 		if (paramValue != null && paramValue.startsWith("${") && paramValue.endsWith("}")) {
 			final String property = paramValue.substring("${".length(), paramValue.length() - "}".length());
-			return paramManagerOption.orElseThrow(() -> new IllegalArgumentException("config is not allowed here"))
+			return paramManagerOpt.orElseThrow(() -> new IllegalArgumentException("config is not allowed here"))
 					.getParam(property);
 		}
-		return Param.create(paramName, paramValue);
+		return Param.of(paramName, paramValue);
 	}
 
 	/*

@@ -46,17 +46,9 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 
 	/**
 	 * Constructor.
-	 * @param query Query
-	 */
-	public SearchQueryBuilder(final String query) {
-		this(new ListFilter(query));
-	}
-
-	/**
-	 * Constructor.
 	 * @param listFilter ListFilter
 	 */
-	public SearchQueryBuilder(final ListFilter listFilter) {
+	SearchQueryBuilder(final ListFilter listFilter) {
 		Assertion.checkNotNull(listFilter);
 		//-----
 		myListFilter = listFilter;
@@ -138,6 +130,13 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	/** {@inheritDoc} */
 	@Override
 	public SearchQuery build() {
-		return new SearchQuery(Optional.ofNullable(myFacetedQuery), myListFilter, Optional.ofNullable(mySecurityListFilter), myClusteringFacetDefinition, myBoostedDocumentDateField, myNumDaysOfBoostRefDocument, myMostRecentBoost);
+		return new SearchQuery(
+				Optional.ofNullable(myFacetedQuery),
+				myListFilter,
+				Optional.ofNullable(mySecurityListFilter),
+				myClusteringFacetDefinition,
+				myBoostedDocumentDateField,
+				myNumDaysOfBoostRefDocument,
+				myMostRecentBoost);
 	}
 }

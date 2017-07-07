@@ -27,8 +27,7 @@ import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -44,20 +43,20 @@ public final class AppConfigTest {
 	public void HomeTest() {
 		final String locales = "fr_FR";
 
-		final AppConfig appConfig = new AppConfigBuilder()
+		final AppConfig appConfig = AppConfig.builder()
 				.beginBoot()
 				.withLocales(locales)
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.addPlugin(XmlParamPlugin.class,
-						Param.create("url", "io/vertigo/app/config/xml2/basic-app-config.xml"))
+						Param.of("url", "io/vertigo/app/config/xml2/basic-app-config.xml"))
 				.endBoot()
 
-				.addModule(new ModuleConfigBuilder("bio")
+				.addModule(ModuleConfig.builder("bio")
 						.addComponent(BioManager.class, BioManagerImpl.class)
 						.addComponent(MathManager.class, MathManagerImpl.class,
-								Param.create("start", "${math.test.start}"))
+								Param.of("start", "${math.test.start}"))
 						.addPlugin(MathPlugin.class,
-								Param.create("factor", "20"))
+								Param.of("factor", "20"))
 						.build())
 				.build();
 

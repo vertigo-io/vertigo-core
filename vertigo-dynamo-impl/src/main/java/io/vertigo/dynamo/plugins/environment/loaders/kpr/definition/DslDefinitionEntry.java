@@ -39,7 +39,7 @@ public final class DslDefinitionEntry {
 	private final List<String> definitionNames;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
 	 * @param definitionNames Liste des clés de définition
 	 * @param fieldName Nom du champ
@@ -54,7 +54,7 @@ public final class DslDefinitionEntry {
 	}
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
 	 * @param fieldName Nom du champ
 	 * @param definition Définition

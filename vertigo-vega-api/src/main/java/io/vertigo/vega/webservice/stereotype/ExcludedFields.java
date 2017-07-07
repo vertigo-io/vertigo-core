@@ -25,7 +25,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Exclude fields from this annotated object. 
+ * Exclude fields from this annotated object.
  * Can be use for input or output datas.
  * @author npiedeloup
  */

@@ -35,7 +35,9 @@ public final class StringJsonSerializer implements JsonSerializer {
 	public String toJson(final Object result, final Response response, final WebServiceDefinition webServiceDefinition) {
 		final String resultString = (String) result;
 		final int length = resultString.length();
-		Assertion.checkArgument(!(resultString.charAt(0) == '{' && resultString.charAt(length - 1) == '}') && !(resultString.charAt(0) == '[' && resultString.charAt(length - 1) == ']'), "Can't return pre-build json : {0}", resultString);
+		Assertion.checkArgument(
+				!(resultString.charAt(0) == '{' && resultString.charAt(length - 1) == '}') && !(resultString.charAt(0) == '[' && resultString.charAt(length - 1) == ']'),
+				"Can't return pre-build json : {0}", resultString);
 		response.type("text/plain;charset=UTF-8");
 		return (String) result;
 	}

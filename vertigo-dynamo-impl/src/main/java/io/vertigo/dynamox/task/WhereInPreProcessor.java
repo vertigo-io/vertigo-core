@@ -125,7 +125,14 @@ final class WhereInPreProcessor {
 		return buildQuery.toString();
 	}
 
-	private static void appendValuesToSqlQuery(final StringBuilder buildQuery, final String fkFieldName, final String pkFieldName, final String inputParamName, final boolean isNotIn, final DtList<?> listObject, final boolean moreThanOneWhereIn) {
+	private static void appendValuesToSqlQuery(
+			final StringBuilder buildQuery,
+			final String fkFieldName,
+			final String pkFieldName,
+			final String inputParamName,
+			final boolean isNotIn,
+			final DtList<?> listObject,
+			final boolean moreThanOneWhereIn) {
 		buildQuery.append(fkFieldName);
 		buildQuery.append(isNotIn ? " NOT IN (" : " IN (");
 		//-----

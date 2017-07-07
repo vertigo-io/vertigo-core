@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.param;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.core.component.Manager;
 
 /**
  * Interface du gestionnaire de la configuration applicative.

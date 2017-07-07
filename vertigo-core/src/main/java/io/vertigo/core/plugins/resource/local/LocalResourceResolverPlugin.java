@@ -41,7 +41,7 @@ public final class LocalResourceResolverPlugin implements ResourceResolverPlugin
 		final File file = new File(resource);
 		if (file.exists() && file.canRead()) {
 			try {
-				return Optional.ofNullable(file.toURI().toURL());
+				return Optional.of(file.toURI().toURL());
 			} catch (final MalformedURLException e) {
 				return Optional.empty();
 			}

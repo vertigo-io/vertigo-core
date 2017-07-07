@@ -24,8 +24,7 @@ import javax.inject.Inject;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
 
 /**
@@ -42,8 +41,8 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends
 
 	@Override
 	protected AppConfig buildAppConfig() {
-		return new AppConfigBuilder()
-				.addModule(new ModuleConfigBuilder("commons")
+		return AppConfig.builder()
+				.addModule(ModuleConfig.builder("commons")
 						.addComponent(CodecManager.class, CodecManagerImpl.class)
 						.build())
 				.build();
@@ -59,15 +58,13 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends
 
 	/**
 	 * test l'encodage et le décodage avec les chaines null.
-	 * @throws Exception si problème
 	 */
-	public abstract void testNull() throws Exception;
+	public abstract void testNull();
 
 	/**
 	 * test l'encodage de chaines non null.
-	 * @throws Exception si problème
 	 */
-	public abstract void testEncode() throws Exception;
+	public abstract void testEncode();
 
 	protected final void checkEncode(final S value, final T expectedEncodedValue) {
 		final T encodedValue = codec.encode(value);

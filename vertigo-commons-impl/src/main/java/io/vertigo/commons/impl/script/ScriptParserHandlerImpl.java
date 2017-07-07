@@ -52,7 +52,7 @@ final class ScriptParserHandlerImpl implements ScriptParserHandler {
 	private final List<ExpressionParameter> parameters;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param parameters Map des paramètres
 	 */
 	ScriptParserHandlerImpl(final ExpressionEvaluatorPlugin expressionEvaluatorPlugin, final String originalScript, final List<ExpressionParameter> parameters) {

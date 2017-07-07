@@ -19,11 +19,12 @@
 package io.vertigo.core.definition;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
 
@@ -32,27 +33,29 @@ import io.vertigo.lang.JsonExclude;
  *
  * @author pchretien
  */
-public final class DefinitionSpaceWritable implements Activeable, DefinitionSpace {
+public final class DefinitionSpaceWritable implements DefinitionSpace {
 	@JsonExclude
-	private final Map<String, Definition> allObjects = new LinkedHashMap<>();
+	private final Map<String, Definition> definitions = new LinkedHashMap<>();
+	private final AtomicBoolean locked = new AtomicBoolean(false);
 
 	/**
 	 * Enregistrement d'un nouvel object.
 	 * @param definition Objet à enregistrer
 	 */
 	public void registerDefinition(final Definition definition) {
+		Assertion.checkState(!locked.get(), "Registration is now closed. A definition can be registerd only during the boot phase");
 		Assertion.checkNotNull(definition, "A definition can't be null.");
 		final String name = definition.getName();
 		DefinitionUtil.checkName(name, definition.getClass());
-		Assertion.checkArgument(!allObjects.containsKey(name), "this definition '{0}' is already registered", name);
+		Assertion.checkArgument(!definitions.containsKey(name), "this definition '{0}' is already registered", name);
 		//-----
-		allObjects.put(name, definition);
+		definitions.put(name, definition);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final String name) {
-		return allObjects.containsKey(name);
+		return definitions.containsKey(name);
 	}
 
 	/** {@inheritDoc} */
@@ -61,15 +64,15 @@ public final class DefinitionSpaceWritable implements Activeable, DefinitionSpac
 		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(clazz);
 		//-----
-		final Definition definition = allObjects.get(name);
-		Assertion.checkNotNull(definition, "Definition '{0}' of type '{1}' not found in ({2})", name, clazz.getSimpleName(), allObjects.keySet());
+		final Definition definition = definitions.get(name);
+		Assertion.checkNotNull(definition, "Definition '{0}' of type '{1}' not found in ({2})", name, clazz.getSimpleName(), definitions.keySet());
 		return clazz.cast(definition);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Collection<Class<? extends Definition>> getAllTypes() {
-		return allObjects.values()
+		return definitions.values()
 				.stream()
 				.map(Definition::getClass)
 				.collect(Collectors.toSet());
@@ -80,23 +83,27 @@ public final class DefinitionSpaceWritable implements Activeable, DefinitionSpac
 	public <C extends Definition> Collection<C> getAll(final Class<C> clazz) {
 		Assertion.checkNotNull(clazz); // Le type des objets recherchés ne peut pas être null
 		//-----
-		return allObjects.values()
+		return definitions.values()
 				.stream()
 				.filter(definition -> clazz.isAssignableFrom(definition.getClass()))
 				.map(clazz::cast)
-				.sorted((c1, c2) -> c1.getName().compareTo(c2.getName()))
+				.sorted(Comparator.comparing(Definition::getName))
 				.collect(Collectors.toList());
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void start() {
-		//nop
+	/**
+	 * Clear all known definitions
+	 */
+	public void clear() {
+		definitions.clear();
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void stop() {
-		allObjects.clear();
+	/**
+	 * Close registration of definitions.
+	 * After calling this no more definitions can be loaded.
+	 */
+	public void closeRegistration() {
+		//registration is now closed.
+		locked.set(true);
 	}
 }

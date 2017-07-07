@@ -76,13 +76,14 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	private SearchQuery mySearchQuery;
 	private DtListState myListState;
 	private int myDefaultMaxRows = 10;
+	private boolean useHighlight = false;
 
 	/**
 	 * @param indexName Index name (env name)
 	 * @param typeName type name (dtIndex type)
 	 * @param esClient ElasticSearch client
 	 */
-	public ESSearchRequestBuilder(final String indexName, final String typeName, final Client esClient) {
+	ESSearchRequestBuilder(final String indexName, final String typeName, final Client esClient) {
 		Assertion.checkArgNotEmpty(indexName);
 		Assertion.checkArgNotEmpty(typeName);
 		Assertion.checkNotNull(esClient);
@@ -129,18 +130,27 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		return this;
 	}
 
+	/**
+	 * @return this builder
+	 */
+	public ESSearchRequestBuilder withHighlight() {
+		useHighlight = true;
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public SearchRequestBuilder build() {
 		Assertion.checkNotNull(myIndexDefinition, "You must set IndexDefinition");
 		Assertion.checkNotNull(mySearchQuery, "You must set SearchQuery");
 		Assertion.checkNotNull(myListState, "You must set ListState");
-		Assertion.when(mySearchQuery.isClusteringFacet() && myListState.getMaxRows().isPresent()) //si il y a un cluster on vérifie le maxRows
+		Assertion
+				.when(mySearchQuery.isClusteringFacet() && myListState.getMaxRows().isPresent()) //si il y a un cluster on vérifie le maxRows
 				.check(() -> myListState.getMaxRows().get() < TOPHITS_SUBAGGREGATION_MAXSIZE,
 						"ListState.top = {0} invalid. Can't show more than {1} elements when grouping", myListState.getMaxRows().orElse(null), TOPHITS_SUBAGGREGATION_MAXSIZE);
 		//-----
 		appendListState();
-		appendSearchQuery(mySearchQuery, searchRequestBuilder);
+		appendSearchQuery(mySearchQuery, searchRequestBuilder, useHighlight);
 		appendFacetDefinition(mySearchQuery, searchRequestBuilder, myIndexDefinition, myListState);
 		return searchRequestBuilder;
 	}
@@ -168,7 +178,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		return sortBuilder;
 	}
 
-	private static void appendSearchQuery(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder) {
+	private static void appendSearchQuery(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder, final boolean useHighlight) {
 		final BoolQueryBuilder mainBoolQueryBuilder = QueryBuilders.boolQuery();
 
 		//on ajoute les critères de la recherche AVEC impact sur le score
@@ -197,17 +207,27 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			requestQueryBuilder = mainBoolQueryBuilder;
 		}
 		searchRequestBuilder
-				.setQuery(requestQueryBuilder)
-				//.setHighlighterFilter(true) //We don't highlight the security filter
-				.setHighlighterNumOfFragments(HIGHLIGHTER_NUM_OF_FRAGMENTS)
-				.addHighlightedField("*");
+				.setQuery(requestQueryBuilder);
+		if (useHighlight) {
+			//.setHighlighterFilter(true) //We don't highlight the security filter
+			searchRequestBuilder
+					.setHighlighterNumOfFragments(HIGHLIGHTER_NUM_OF_FRAGMENTS)
+					.addHighlightedField("*");
+		}
 	}
 
 	private static QueryBuilder appendBoostMostRecent(final SearchQuery searchQuery, final QueryBuilder queryBuilder) {
-		return QueryBuilders.functionScoreQuery(queryBuilder, new ExponentialDecayFunctionBuilder(searchQuery.getBoostedDocumentDateField(), null, searchQuery.getNumDaysOfBoostRefDocument() + "d").setDecay(searchQuery.getMostRecentBoost() - 1D));
+		return QueryBuilders.functionScoreQuery(
+				queryBuilder,
+				new ExponentialDecayFunctionBuilder(searchQuery.getBoostedDocumentDateField(), null, searchQuery.getNumDaysOfBoostRefDocument() + "d")
+						.setDecay(searchQuery.getMostRecentBoost() - 1D));
 	}
 
-	private static void appendFacetDefinition(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder, final SearchIndexDefinition myIndexDefinition, final DtListState myListState) {
+	private static void appendFacetDefinition(
+			final SearchQuery searchQuery,
+			final SearchRequestBuilder searchRequestBuilder,
+			final SearchIndexDefinition myIndexDefinition,
+			final DtListState myListState) {
 		Assertion.checkNotNull(searchRequestBuilder);
 		//-----
 		//On ajoute le cluster, si présent

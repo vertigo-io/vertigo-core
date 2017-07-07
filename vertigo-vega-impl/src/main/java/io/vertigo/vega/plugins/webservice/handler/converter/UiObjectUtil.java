@@ -21,8 +21,8 @@ package io.vertigo.vega.plugins.webservice.handler.converter;
 import java.util.Map;
 import java.util.Set;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.MessageText;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
 import io.vertigo.vega.engines.webservice.json.UiListModifiable;
 import io.vertigo.vega.webservice.exception.VSecurityException;
@@ -73,14 +73,14 @@ final class UiObjectUtil {
 	private static void checkUnauthorizedFieldModifications(final UiObject<DtObject> uiObject, final WebServiceParam webServiceParam) {
 		for (final String excludedField : webServiceParam.getExcludedFields()) {
 			if (uiObject.isModified(excludedField)) {
-				throw new VSecurityException(new MessageText(FORBIDDEN_OPERATION_FIELD_MODIFICATION, null, excludedField));
+				throw new VSecurityException(MessageText.builder().withDefaultMsg(FORBIDDEN_OPERATION_FIELD_MODIFICATION).withParams(excludedField).build());
 			}
 		}
 		final Set<String> includedFields = webServiceParam.getIncludedFields();
 		if (!includedFields.isEmpty()) {
 			for (final String modifiedField : uiObject.getModifiedFields()) {
 				if (!includedFields.contains(modifiedField)) {
-					throw new VSecurityException(new MessageText(FORBIDDEN_OPERATION_FIELD_MODIFICATION, null, modifiedField));
+					throw new VSecurityException(MessageText.builder().withDefaultMsg(FORBIDDEN_OPERATION_FIELD_MODIFICATION).withParams(modifiedField).build());
 				}
 			}
 		}

@@ -25,6 +25,8 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -38,20 +40,17 @@ import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskBuilder;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.dynamox.search.AbstractSqlSearchLoader;
 import io.vertigo.dynamox.task.TaskEngineSelect;
+import io.vertigo.lang.Assertion;
 
 /**
  * SearchLoader of Car keyconcept, load uses StoreManager.
  * @author npiedeloup
  */
 public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Car> {
-	private final SearchIndexDefinition indexDefinition;
+	private final SearchManager searchManager;
 	private final DefinitionSpace definitionSpace;
 
 	/**
@@ -62,13 +61,16 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 	@Inject
 	public CarSearchLoader(final TaskManager taskManager, final SearchManager searchManager, final VTransactionManager transactionManager) {
 		super(taskManager, transactionManager);
-		indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Car.class);
+		Assertion.checkNotNull(searchManager);
+		//---
+		this.searchManager = searchManager;
 		definitionSpace = Home.getApp().getDefinitionSpace();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public List<SearchIndex<Car, Car>> loadData(final SearchChunk<Car> searchChunk) {
+		final SearchIndexDefinition indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Car.class);
 		try (final VTransactionWritable tx = getTransactionManager().createCurrentTransaction()) {
 			final List<SearchIndex<Car, Car>> result = new ArrayList<>();
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
@@ -83,7 +85,7 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 	private DtList<Car> loadCarList(final SearchChunk<Car> searchChunk) {
 		final TaskDefinition taskLoadCars = getTaskLoadCarList(searchChunk);
 
-		final Task task = new TaskBuilder(taskLoadCars)
+		final Task task = Task.builder(taskLoadCars)
 				.build();
 
 		return getTaskManager()
@@ -98,7 +100,7 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 				.map(uri -> uri.getId().toString())
 				.collect(Collectors.joining(", ", "select * from CAR where ID in (", ")"));
 
-		return new TaskDefinitionBuilder("TK_LOAD_ALL_CARS")
+		return TaskDefinition.builder("TK_LOAD_ALL_CARS")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(sql)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())

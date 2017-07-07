@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.impl.analytics;
 
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 
 /**
  * Connecteur des process.

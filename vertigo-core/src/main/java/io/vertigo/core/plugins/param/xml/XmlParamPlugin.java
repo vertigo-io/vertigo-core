@@ -49,7 +49,7 @@ public final class XmlParamPlugin implements ParamPlugin {
 	private final Map<String, Param> params;
 
 	/**
-	 * Constructeur
+	 * Constructor.
 	 * @param resourceManager Selector
 	 * @param url Url du fichier XML de configuration
 	 */
@@ -67,7 +67,7 @@ public final class XmlParamPlugin implements ParamPlugin {
 	public Optional<Param> getParam(final String paramName) {
 		Assertion.checkArgNotEmpty(paramName);
 		//-----
-		return Optional.<Param> ofNullable(params.get(paramName));
+		return Optional.ofNullable(params.get(paramName));
 	}
 
 	/**

@@ -35,7 +35,7 @@ final class ScriptEvaluator {
 	private final ExpressionEvaluatorPlugin expressionEvaluatorPlugin;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param separatorType SeparatorType.CLASSIC ou SeparatorType.XML ou SeparatorType.XML_CODE
 	 */
 	ScriptEvaluator(final ExpressionEvaluatorPlugin expressionEvaluatorPlugin, final SeparatorType separatorType, final List<ExpressionParameter> parameters) {
@@ -59,7 +59,7 @@ final class ScriptEvaluator {
 		//-----
 		final ScriptParserHandlerImpl scriptHandler = new ScriptParserHandlerImpl(expressionEvaluatorPlugin, script, parameters);
 
-		final ScriptParser scriptParser = new ScriptParser(separatorType.getSeparators());
+		final ScriptParser scriptParser = new ScriptParser(separatorType.getSeparator());
 		scriptParser.parse(script, scriptHandler);
 		return scriptHandler.eval();
 	}

@@ -24,7 +24,6 @@ import java.util.List;
 
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
-import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityBuilder;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.util.ListBuilder;
@@ -64,21 +63,21 @@ final class SearchGrammar implements DslGrammar {
 	    dtIndex : DT_TEST,
 	    indexCopyTo FIELD_TO_1 : { from: "FIELD_FROM_1,FIELD_FROM_2" }, //use field formatters
 	    indexCopyTo FIELD_TO_2 : { from: "FIELD_FROM_3" }, //use field formatters
-	
+
 	    searchLoader : com.project.domain.search.dao.SearchLoaderPeople
 	}
-	
+
 	create FacetDefinition FCT_MOVIE_GENRE {
 		dtDefinition : DT_TEST, fieldName : "GENRE", label : "Par genre"
 	}
-	
+
 	create FacetDefinition FCT_MOVIE_ANNEE {
 		dtDefinition : DT_TEST, fieldName : "YEAR", label : "Par année",
 	 	range R1 { filter : "YEAR:[* TO 2000]", label : "avant 2000"}, //TODO : fieldName in filter too ?
 	 	range R2 { filter : "YEAR:[2000 TO 2005]", label : "2000-2005"},
 	 	range R3 { filter : "YEAR:[2005 TO *]", label : "après 2005"}
 	}
-	
+
 	create FacetedQueryDefinition QRY_MOVIE {
 		facet FCT_MOVIE_GENRE,
 		facet FCT_MOVIE_ANNEE,
@@ -87,11 +86,11 @@ final class SearchGrammar implements DslGrammar {
 
 	static {
 		/** Index copy fields. */
-		final DslEntity indexCopyEntity = new DslEntityBuilder("indexCopyTo")
+		final DslEntity indexCopyEntity = DslEntity.builder("indexCopyTo")
 				.addRequiredField(INDEX_COPY_FROM_PROPERTY, String)
 				.build();
 
-		INDEX_DEFINITION_ENTITY = new DslEntityBuilder("IndexDefinition")
+		INDEX_DEFINITION_ENTITY = DslEntity.builder("IndexDefinition")
 				.addRequiredField("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY.getLink())
 				.addRequiredField("dtIndex", DomainGrammar.DT_DEFINITION_ENTITY.getLink())
 				.addManyFields(INDEX_COPY_TO_PROPERTY, indexCopyEntity)
@@ -99,12 +98,12 @@ final class SearchGrammar implements DslGrammar {
 				.build();
 
 		/** Facet range. */
-		final DslEntity facetRangeEntity = new DslEntityBuilder("range")
+		final DslEntity facetRangeEntity = DslEntity.builder("range")
 				.addRequiredField(RANGE_FILTER_PROPERTY, String)
 				.addRequiredField(KspProperty.LABEL, String)
 				.build();
 
-		FACET_DEFINITION_ENTITY = new DslEntityBuilder("FacetDefinition")
+		FACET_DEFINITION_ENTITY = DslEntity.builder("FacetDefinition")
 				.addRequiredField("dtDefinition", DomainGrammar.DT_DEFINITION_ENTITY.getLink())
 				.addRequiredField(FIELD_NAME, String)
 				.addRequiredField(KspProperty.LABEL, String)
@@ -112,7 +111,7 @@ final class SearchGrammar implements DslGrammar {
 				.addManyFields("range", facetRangeEntity)
 				.build();
 
-		FACETED_QUERY_DEFINITION_ENTITY = new DslEntityBuilder("FacetedQueryDefinition")
+		FACETED_QUERY_DEFINITION_ENTITY = DslEntity.builder("FacetedQueryDefinition")
 				.addRequiredField("keyConcept", DomainGrammar.DT_DEFINITION_ENTITY.getLink())
 				.addRequiredField("domainCriteria", DomainGrammar.DOMAIN_ENTITY.getLink())
 				.addRequiredField(LIST_FILTER_BUILDER_CLASS, String)

@@ -20,11 +20,11 @@ package io.vertigo.vega.webservice.data.domain;
 
 import java.util.Set;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.lang.MessageText;
 import io.vertigo.vega.webservice.validation.AbstractDtObjectValidator;
 import io.vertigo.vega.webservice.validation.DtObjectErrors;
 
@@ -49,7 +49,7 @@ public final class MandatoryPkValidator<E extends Entity> extends AbstractDtObje
 		final String camelCaseFieldName = getCamelCaseFieldName(idField);
 		if (!dtObjectErrors.hasError(camelCaseFieldName)) {
 			if (DtObjectUtil.getId(entity) == null) {
-				dtObjectErrors.addError(camelCaseFieldName, new MessageText("Id is mandatory", null));
+				dtObjectErrors.addError(camelCaseFieldName, MessageText.of("Id is mandatory"));
 			}
 		}
 	}

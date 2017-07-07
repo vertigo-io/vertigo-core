@@ -89,7 +89,7 @@ public final class AspectTest extends AbstractTestCaseJU4 {
 	}
 
 	@Override
-	protected void doAfterTearDown() throws Exception {
+	protected void doAfterTearDown() {
 		if (a != null) {
 			assertTrue(a.isInitialized());
 			assertTrue(a.isFinalized());

@@ -11,3 +11,4 @@ vertigo-bundle/src
 *.iml
 *.idea
 createSymLink.bat
+.metadata/*

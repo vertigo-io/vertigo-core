@@ -81,7 +81,8 @@ final class DslSolver {
 		return sortedList;
 	}
 
-	private static boolean isSolved(final DefinitionSpace definitionSpace,
+	private static boolean isSolved(
+			final DefinitionSpace definitionSpace,
 			final DslDefinitionRepository definitionRepository,
 			final List<DslDefinition> orderedList,
 			final DslDefinition dslDefinition,

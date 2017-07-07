@@ -47,7 +47,7 @@ public final class FileInfoDefinition implements Definition {
 	private final String storeName;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param name Nom de la définition
 	 * @param storeName Nom du store de ces fichiers
 	 */
@@ -81,6 +81,10 @@ public final class FileInfoDefinition implements Definition {
 	//=========================================================================
 	//===========================STATIC========================================
 	//=========================================================================
+	/**
+	 * @param fileInfoClass fileInfo Class
+	 * @return FileInfoDefinition from class
+	 */
 	public static FileInfoDefinition findFileInfoDefinition(final Class<? extends FileInfo> fileInfoClass) {
 		Assertion.checkNotNull(fileInfoClass);
 		//-----

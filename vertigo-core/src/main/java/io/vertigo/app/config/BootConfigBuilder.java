@@ -24,7 +24,8 @@ import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.core.component.AopPlugin;
-import io.vertigo.core.component.di.DIAnnotationUtil;
+import io.vertigo.core.component.Component;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleManagerImpl;
 import io.vertigo.core.param.Param;
@@ -35,8 +36,6 @@ import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.resource.ResourceManagerImpl;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Component;
-import io.vertigo.lang.Plugin;
 
 /**
  * Configuration.
@@ -44,9 +43,9 @@ import io.vertigo.lang.Plugin;
  * @author npiedeloup, pchretien
  */
 public final class BootConfigBuilder implements Builder<BootConfig> {
-	private Optional<LogConfig> myLogConfigOption = Optional.empty(); //par défaut
+	private Optional<LogConfig> myLogConfigOpt = Optional.empty(); //par défaut
 	private final AppConfigBuilder appConfigBuilder;
-	private boolean mySilence; //false by default
+	private boolean myVerbose;
 	private AopPlugin myAopPlugin = new CGLIBAopPlugin(); //By default
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
 	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
@@ -71,7 +70,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 		addComponent(
 				LocaleManager.class,
 				LocaleManagerImpl.class,
-				Param.create("locales", locales));
+				Param.of("locales", locales));
 		return this;
 	}
 
@@ -83,16 +82,16 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	public BootConfigBuilder withLogConfig(final LogConfig logConfig) {
 		Assertion.checkNotNull(logConfig);
 		//-----
-		myLogConfigOption = Optional.of(logConfig);
+		myLogConfigOpt = Optional.of(logConfig);
 		return this;
 	}
 
 	/**
-	 * Permet de définir un démarrage silencieux. (Sans retour console)
+	 * Enables verbosity during startup
 	 * @return this builder
 	 */
-	public BootConfigBuilder silently() {
-		mySilence = true;
+	public BootConfigBuilder verbose() {
+		myVerbose = true;
 		return this;
 	}
 
@@ -115,32 +114,18 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	}
 
 	/**
-	* Adds a component defined by an implementation.
-	 * @param implClass impl of the component
-	 * @param params the list of params
-	 */
-	public void addComponent(final Class<? extends Component> implClass, final Param... params) {
-		Assertion.checkNotNull(implClass);
-		Assertion.checkNotNull(params);
-		//---
-		final String id = DIAnnotationUtil.buildId(implClass);
-		myComponentConfigs.add(new ComponentConfig(id, Optional.empty(), implClass, Arrays.asList(params)));
-	}
-
-	/**
 	* Adds a component defined by an api and an implementation.
 	 * @param apiClass api of the component
 	 * @param implClass impl of the component
 	 * @param params the list of params
 	 * @return this builder
 	 */
-	public BootConfigBuilder addComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass, final Param... params) {
-		Assertion.checkNotNull(apiClass);
-		Assertion.checkNotNull(implClass);
-		Assertion.checkNotNull(params);
-		//---
-		final String id = DIAnnotationUtil.buildId(apiClass);
-		myComponentConfigs.add(new ComponentConfig(id, Optional.of(apiClass), implClass, Arrays.asList(params)));
+	private BootConfigBuilder addComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass, final Param... params) {
+		final ComponentConfig componentConfig = ComponentConfig.builder(implClass)
+				.withApi(apiClass)
+				.addParams(params)
+				.build();
+		myComponentConfigs.add(componentConfig);
 		return this;
 	}
 
@@ -175,10 +160,10 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 				.addComponent(ParamManager.class, ParamManagerImpl.class);
 
 		return new BootConfig(
-				myLogConfigOption,
+				myLogConfigOpt,
 				myComponentConfigs,
 				myPluginConfigs,
 				myAopPlugin,
-				mySilence);
+				myVerbose);
 	}
 }

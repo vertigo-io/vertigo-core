@@ -28,16 +28,19 @@ import io.vertigo.lang.Assertion;
  * @author  pchretirn
  */
 public final class HexEncoder implements Encoder<byte[], String> {
+	private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
 
 	/** {@inheritDoc} */
 	@Override
 	public String encode(final byte[] data) {
 		Assertion.checkNotNull(data);
 		//-----
-		final StringBuilder output = new StringBuilder(data.length * 2);
-		for (final byte element : data) {
-			output.append(Integer.toHexString((element >> 4) & 0xf)).append(Integer.toHexString(element & 0xf));
+		final char[] chars = new char[data.length * 2];
+		for (int i = 0; i < data.length; i++) {
+			final int v = data[i] & 0xFF;
+			chars[i * 2] = HEX_ARRAY[v >>> 4];
+			chars[i * 2 + 1] = HEX_ARRAY[v & 0x0F];
 		}
-		return output.toString();
+		return new String(chars);
 	}
 }

@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.collections;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 import javax.inject.Inject;
@@ -31,11 +31,15 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.dynamo.collections.data.DtDefinitions;
 import io.vertigo.dynamo.collections.data.domain.Item;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.util.VCollectors;
 
 /**
  * @author pchretien
@@ -55,27 +59,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		dtDefinitionItem = DtObjectUtil.findDtDefinition(Item.class);
 	}
 
-	/**
-	 * Description.
-	 */
-	@Test
-	public void testDescription() {
-		testDescription(collectionsManager);
-	}
-
-	/**
-	 * @see DtListProcessor#sort
-	 */
-	@Test
-	public void testCreateSortState() {
-		final DtListProcessor sortStateAsc = collectionsManager.createDtListProcessor()
-				.sort("Label", false);
-		Assert.assertNotNull(sortStateAsc);
-	}
-
-	/**
-	 * @see DtListProcessor#sort
-	 */
 	@Test
 	public void testHeavySort() {
 		// final DtList<Item> sortDtc;
@@ -86,16 +69,13 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 			mocka.setLabel(String.valueOf(i % 100));
 			dtc.add(mocka);
 		}
-		final DtListProcessor sortState = collectionsManager.createDtListProcessor()
-				.sort("LABEL", false);
-		final DtList<Item> sortedDtc = sortState.apply(dtc);
+
+		final DtList<Item> sortedDtc = collectionsManager.sort(dtc, "LABEL", false);
+
 		nop(sortedDtc);
 
 	}
 
-	/**
-	 * @see DtListProcessor#sort
-	 */
 	@Test
 	public void testSort() {
 		DtList<Item> sortDtc;
@@ -106,10 +86,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== Ascendant
 		// =================================== nullLast
 		// ================================================ ignoreCase
-		sortDtc = collectionsManager
-				.<Item> createDtListProcessor()
-				.sort("LABEL", false)
-				.apply(dtc);
+		sortDtc = collectionsManager.sort(dtc, "LABEL", false);
 
 		assertEquals(indexDtc, extractLabels(dtc));
 		assertEquals(new String[] { aaa_ba, Ba_aa, bb_aa, null }, extractLabels(sortDtc));
@@ -117,16 +94,11 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== Descendant
 		// =================================== not nullLast
 		// ================================================ ignoreCase
-		sortDtc = collectionsManager.<Item> createDtListProcessor()
-				.sort("LABEL", true)
-				.apply(dtc);
+		sortDtc = collectionsManager.sort(dtc, "LABEL", true);
 		assertEquals(indexDtc, extractLabels(dtc));
 		assertEquals(new String[] { null, bb_aa, Ba_aa, aaa_ba }, extractLabels(sortDtc));
 	}
 
-	/**
-	 * @see DtListProcessor#sort
-	 */
 	@Test
 	public void testNumericSort() {
 		DtList<Item> sortDtc;
@@ -137,10 +109,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== Ascendant
 		// =================================== nullLast
 		// ================================================ ignoreCase
-		sortDtc = collectionsManager
-				.<Item> createDtListProcessor()
-				.sort("ID", false)
-				.apply(dtc);
+		sortDtc = collectionsManager.sort(dtc, "ID", false);
 
 		assertEquals(indexDtc, extractLabels(dtc));
 		assertEquals(new String[] { Ba_aa, null, aaa_ba, bb_aa }, extractLabels(sortDtc));
@@ -148,62 +117,32 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== Descendant
 		// =================================== not nullLast
 		// ================================================ ignoreCase
-		sortDtc = collectionsManager.<Item> createDtListProcessor()
-				.sort("ID", true)
-				.apply(dtc);
+		sortDtc = collectionsManager.sort(dtc, "ID", true);
 		assertEquals(indexDtc, extractLabels(dtc));
 		assertEquals(new String[] { bb_aa, aaa_ba, null, Ba_aa }, extractLabels(sortDtc));
 	}
 
-	/**
-	 * @see DtListProcessor#filterByValue
-	 */
-	@Test
-	public void testCreateValueFilter() {
-		final DtListProcessor filter = collectionsManager.<Item> createDtListProcessor()
-				.filterByValue("Label", "a");
-		Assert.assertNotNull(filter);
-	}
-
-	/**
-	 * @see DtListProcessor#filterByValue
-	 */
-	@Test
-	public void testCreateTwoValuesFilter() {
-		final DtList<Item> items = createItems();
-		final DtList<Item> filteredItems = collectionsManager.<Item> createDtListProcessor()
-				.filterByValue("LABEL", Ba_aa)
-				.filterByValue("LABEL", "b")
-				.apply(items);
-		Assert.assertNotNull(filteredItems);
-	}
-
-	/**
-	 * @see DtListProcessor#filterByValue
-	 */
 	@Test
 	public void testFilter() {
-		final DtList<Item> result = collectionsManager.<Item> createDtListProcessor()
-				.filterByValue("LABEL", aaa_ba)
-				.apply(createItems());
+		final DtList<Item> result = createItems()
+				.stream()
+				.filter(Criterions.isEqualTo(DtDefinitions.Fields.LABEL, aaa_ba).toPredicate())
+				.collect(VCollectors.toDtList(Item.class));
 		Assert.assertEquals(1, result.size());
 	}
 
-	/**
-	 * @see DtListProcessor#filterByValue
-	 */
 	@Test
 	public void testFilterTwoValues() {
-		final DtList<Item> result = collectionsManager.<Item> createDtListProcessor()
-				.filterByValue("LABEL", "aaa")
-				.filterByValue("ID", 13L)
-				.apply(createItemsForRangeTest());
+		final Predicate<Item> filterA = Criterions.isEqualTo(DtDefinitions.Fields.LABEL, "aaa").toPredicate();
+		final Predicate<Item> filterB = Criterions.isEqualTo(DtDefinitions.Fields.ID, 13L).toPredicate();
+
+		final DtList<Item> result = createItemsForRangeTest()
+				.stream()
+				.filter(filterA.and(filterB))
+				.collect(VCollectors.toDtList(Item.class));
 		Assert.assertEquals(1, result.size());
 	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testFilterFullText() {
 		final DtList<Item> result = collectionsManager.<Item> createIndexDtListFunctionBuilder()
@@ -214,9 +153,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 
 	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testFilterFullTextTokenizer() {
 		final DtList<Item> dtc = createItems();
@@ -246,9 +182,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 				.apply(dtc);
 	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testFilterFullTextElision() {
 		final DtList<Item> dtc = createItems();
@@ -267,9 +200,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertTrue("La recherche ne supporte pas l'elision", filter(dtc, "ouest", 1000, searchedDtFields).size() == 1);
 	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testFilterFullTextMultiKeyword() {
 		final DtList<Item> dtc = createItems();
@@ -294,7 +224,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	/**
 	 * Vérifie le comportement quand la recherche en commence par addresse trop de term du dictionnaire.
 	 * Par défaut Lucene envoi une erreur TooMany...., le collectionsManager limite aux premiers terms.
-	 * @see DtListProcessor#filter
 	 */
 	@Test
 	public void testFilterFullTextBigList() {
@@ -313,9 +242,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(2000, result.size(), 0);
 	}
 
-	/**
-	 * @see DtListProcessor#sort
-	 */
 	@Test
 	public void testSortWithIndex() {
 		DtList<Item> sortDtc;
@@ -341,9 +267,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		assertEquals(new String[] { null, bb_aa, Ba_aa, aaa_ba }, extractLabels(sortDtc));
 	}
 
-	/**
-	 * @see DtListProcessor#sort
-	 */
 	@Test
 	public void testNumericSortWithIndex() {
 		DtList<Item> sortDtc;
@@ -373,15 +296,10 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		assertEquals(new String[] { bb_aa, aaa_ba, null, Ba_aa }, extractLabels(sortDtc));
 	}
 
-	/**
-	 * @see DtListProcessor#filterSubList
-	 */
 	@Test
 	public void testSubListWithIndex() {
 		// on test une implémentation de référence ArrayList
-		final List<String> list = new ArrayList<>();
-		list.add("a");
-		list.add("b");
+		final List<String> list = Arrays.asList("a", "b");
 		Assert.assertEquals(0, list.subList(0, 0).size());
 		Assert.assertEquals(2, list.subList(0, 2).size()); // >0, 1
 		Assert.assertEquals(1, list.subList(1, 2).size()); // >1
@@ -400,15 +318,10 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 				.apply(dtc);
 	}
 
-	/**
-	 * @see DtListProcessor#filterSubList
-	 */
 	@Test
 	public void testSubList() {
 		// on test une implémentation de référence ArrayList
-		final List<String> list = new ArrayList<>();
-		list.add("a");
-		list.add("b");
+		final List<String> list = Arrays.asList("a", "b");
 		Assert.assertEquals(0, list.subList(0, 0).size());
 		Assert.assertEquals(2, list.subList(0, 2).size()); // >0, 1
 		Assert.assertEquals(1, list.subList(1, 2).size()); // >1
@@ -421,29 +334,11 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private DtList<Item> subList(final DtList<Item> dtc, final int start, final int end) {
-		return collectionsManager.<Item> createDtListProcessor()
-				.filterSubList(start, end)
-				.apply(dtc);
-	}
-
-	/**
-	 * @see DtListProcessor#filterSubList
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testSubListFail1() {
-		// On teste les dépassements.
-		subList(createItems(), 5, 5);
-		// "[Assertion.precondition] IndexOutOfBoundException....
-	}
-
-	/**
-	 * @see DtListProcessor#filterSubList
-	 */
-	@Test(expected = IllegalArgumentException.class)
-	public void testSubListFail2() {
-		// On teste les dépassements.
-		subList(createItems(), 1, 20);
-		// "[Assertion.precondition] IndexOutOfBoundException....
+		return dtc
+				.stream()
+				.skip(start)
+				.limit(end - start)
+				.collect(VCollectors.toDtList(dtc.getDefinition()));
 	}
 
 	/**
@@ -456,34 +351,34 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		final DtList<Item> dtc = createItems();
 		final String[] indexDtc = extractLabels(dtc);
 
-		final DtListProcessor filter = collectionsManager.createDtListProcessor()
-				.filterByValue("LABEL", aaa_ba);
-		final DtListProcessor sortState = collectionsManager.createDtListProcessor()
-				.sort("LABEL", false);
+		final Predicate<Item> predicate = Criterions.isEqualTo(DtDefinitions.Fields.LABEL, aaa_ba).toPredicate();
+		final Function<DtList<Item>, DtList<Item>> sort = (list) -> collectionsManager.sort(list, "LABEL", false);
 
 		final int sizeDtc = dtc.size();
 
 		DtList<Item> sortDtc, filterDtc, subList;
 		// ======================== sort/filter
-		sortDtc = sortState.apply(dtc);
+		sortDtc = sort.apply(dtc);
 		assertEquals(new String[] { aaa_ba, Ba_aa, bb_aa, null }, extractLabels(sortDtc));
-		filterDtc = filter.apply(sortDtc);
+		filterDtc = sortDtc.stream()
+				.filter(predicate)
+				.collect(VCollectors.toDtList(Item.class));
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// ======================== sort/sublist
-		sortDtc = sortState.apply(dtc);
+		sortDtc = sort.apply(dtc);
 		assertEquals(new String[] { aaa_ba, Ba_aa, bb_aa, null }, extractLabels(sortDtc));
 		subList = subList(sortDtc, 0, sizeDtc - 1);
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// ======================== filter/sort
-		filterDtc = filter.apply(dtc);
+		filterDtc = dtc.stream().filter(predicate).collect(VCollectors.toDtList(Item.class));
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
-		sortDtc = sortState.apply(filterDtc);
+		sortDtc = sort.apply(filterDtc);
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// ======================== filter/sublist
-		filterDtc = filter.apply(dtc);
+		filterDtc = dtc.stream().filter(predicate).collect(VCollectors.toDtList(Item.class));
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 		subList = subList(filterDtc, 0, filterDtc.size() - 1);
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
@@ -491,13 +386,13 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== sublist/sort
 		subList = subList(dtc, 0, sizeDtc - 1);
 		assertEquals(new String[] { Ba_aa, null, aaa_ba }, extractLabels(subList));
-		sortDtc = sortState.apply(subList);
+		sortDtc = sort.apply(subList);
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// ======================== sublist/filter
 		subList = subList(dtc, 0, sizeDtc - 1);
 		assertEquals(new String[] { Ba_aa, null, aaa_ba }, extractLabels(subList));
-		filterDtc = filter.apply(subList);
+		filterDtc = subList.stream().filter(predicate).collect(VCollectors.toDtList(Item.class));
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// === dtc non modifié
@@ -505,28 +400,19 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 
 	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testCreateFilterForValue() {
-		final DtListProcessor filter = collectionsManager.createDtListProcessor()
-				.filter(new ListFilter("LABEL" + ":\"aaa\""));
-		Assert.assertNotNull(filter);
+		final Predicate predicate = collectionsManager
+				.filter(ListFilter.of("LABEL" + ":\"aaa\""));
+		Assert.assertNotNull(predicate);
 	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testTermFilterString() {
 		testTermFilter("LABEL:\"aaa\"", 2);
 		testTermFilter("LABEL:\"aaab\"", 1);
 	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testTermFilterLong() {
 		testTermFilter("ID:\"1\"", 1);
@@ -534,60 +420,17 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		testTermFilter("ID:\"2\"", 0);
 	}
 
-	/**
-	 * @see DtListProcessor#filterByRange
-	 */
-	@Test
-	public void testCreateFilterByRange() {
-		final DtListProcessor filter = collectionsManager.createDtListProcessor()
-				.filterByRange("Label", Optional.ofNullable("a"), Optional.ofNullable("b"));
-		Assert.assertNotNull(filter);
-	}
-
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testCreateFilter() {
-		final DtListProcessor filter = collectionsManager.createDtListProcessor()
-				.filter(new ListFilter("LABEL" + ":[a TO b]"));
-		Assert.assertNotNull(filter);
+		final Predicate<DtObject> predicate = collectionsManager.filter(ListFilter.of("LABEL" + ":[a TO b]"));
+		Assert.assertNotNull(predicate);
 	}
 
-	/**
-	 * @see DtListProcessor#add
-	 */
-	@Test
-	public void testAddDtListFunction() {
-		final DtList<Item> Items = collectionsManager.<Item> createDtListProcessor()
-				.add(new UnaryOperator<DtList<Item>>() {
-
-					/** {@inheritDoc} */
-					@Override
-					public DtList<Item> apply(final DtList<Item> input) {
-						final DtList<Item> result = new DtList<>(Item.class);
-						for (final Item family : input) {
-							if (family.getId() != null && family.getId() == 3L) {
-								result.add(family);
-							}
-						}
-						return result;
-					}
-				}).apply(createItemsForRangeTest());
-		Assert.assertEquals(1L, Items.size());
-	}
-
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testRangeFilter() {
 		testRangeFilter("LABEL" + ":[a TO b]", 5);
 	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testRangeFilterLong() {
 		testRangeFilter("ID:[1 TO 10]", 3);
@@ -598,9 +441,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		testRangeFilter("ID:[* TO *[", 10);
 	}
 
-	/**
-	 * @see DtListProcessor#filter
-	 */
 	@Test
 	public void testRangeFilterString() {
 		testRangeFilter("LABEL:[a TO b]", 5);
@@ -612,17 +452,19 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private void testTermFilter(final String filterString, final int countEspected) {
-		final DtList<Item> result = collectionsManager.<Item> createDtListProcessor()
-				.filter(new ListFilter(filterString))
-				.apply(createItemsForRangeTest());
+		final DtList<Item> result = createItemsForRangeTest()
+				.stream()
+				.filter(collectionsManager.filter(ListFilter.of(filterString)))
+				.collect(VCollectors.toDtList(Item.class));
+
 		Assert.assertEquals(countEspected, result.size());
 	}
 
 	private void testRangeFilter(final String filterString, final int countEspected) {
-		final DtListProcessor<Item> filter = collectionsManager.<Item> createDtListProcessor()
-				.filter(new ListFilter(filterString));
-		Assert.assertNotNull(filter);
-		final DtList<Item> result = filter.apply(createItemsForRangeTest());
+		final Predicate<Item> predicate = collectionsManager
+				.filter(ListFilter.of(filterString));
+		Assert.assertNotNull(predicate);
+		final DtList<Item> result = createItemsForRangeTest().stream().filter(predicate).collect(VCollectors.toDtList(Item.class));
 		Assert.assertEquals(countEspected, result.size());
 	}
 

@@ -23,7 +23,6 @@ import java.util.List;
 
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
-import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityBuilder;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType;
 
@@ -36,7 +35,7 @@ final class FileGrammar implements DslGrammar {
 	public static final DslEntity FILE_INFO_DEFINITION_ENTITY;
 
 	static {
-		FILE_INFO_DEFINITION_ENTITY = new DslEntityBuilder("FileInfo")
+		FILE_INFO_DEFINITION_ENTITY = DslEntity.builder("FileInfo")
 				.addRequiredField(KspProperty.DATA_SPACE, DslPropertyType.String)
 				.build();
 	}

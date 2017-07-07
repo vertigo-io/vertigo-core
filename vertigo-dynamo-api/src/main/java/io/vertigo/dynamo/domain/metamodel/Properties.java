@@ -45,6 +45,14 @@ public final class Properties {
 	}
 
 	/**
+	 * Static method factory for PropertiesBuilder
+	 * @return PropertiesBuilder
+	 */
+	public static PropertiesBuilder builder() {
+		return new PropertiesBuilder();
+	}
+
+	/**
 	 * Set des propriétés gérées.
 	 * @return Collection
 	 */

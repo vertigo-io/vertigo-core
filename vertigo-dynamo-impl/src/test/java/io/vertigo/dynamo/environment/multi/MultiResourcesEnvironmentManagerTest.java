@@ -24,9 +24,9 @@ import org.junit.Test;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.app.config.DefinitionProviderConfigBuilder;
+import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.LogConfig;
-import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -48,8 +48,8 @@ public final class MultiResourcesEnvironmentManagerTest {
 	@Test
 	public void testFirst() {
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
-				.addModule(new ModuleConfigBuilder("myApp")
-						.addDefinitionProvider(new DefinitionProviderConfigBuilder(DynamoDefinitionProvider.class)
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
 								.build())
 						.build())
@@ -64,8 +64,8 @@ public final class MultiResourcesEnvironmentManagerTest {
 	@Test
 	public void testMergedResources() {
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
-				.addModule(new ModuleConfigBuilder("myApp")
-						.addDefinitionProvider(new DefinitionProviderConfigBuilder(DynamoDefinitionProvider.class)
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
 								.addDefinitionResource("classes", DtDefinitions.class.getCanonicalName()).build())
 						.build())
@@ -82,8 +82,8 @@ public final class MultiResourcesEnvironmentManagerTest {
 	@Test
 	public void testSplittedModules() {
 		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
-				.addModule(new ModuleConfigBuilder("myApp")
-						.addDefinitionProvider(new DefinitionProviderConfigBuilder(DynamoDefinitionProvider.class)
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
 								.addDefinitionResource("classes", DtDefinitions.class.getCanonicalName())
 								.build())
@@ -101,7 +101,7 @@ public final class MultiResourcesEnvironmentManagerTest {
 	private static AppConfigBuilder prepareDefaultAppConfigBuilder() {
 		// @formatter:off
 		return
-			new AppConfigBuilder()
+			AppConfig.builder()
 			.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.withLocales("fr")

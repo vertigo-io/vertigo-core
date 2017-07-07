@@ -41,7 +41,7 @@ public final class Car implements KeyConcept {
 		PRICE,
 		CONSOMMATION,
 		MOTOR_TYPE,
-		FAM_ID;
+		FAM_ID
 	}
 
 	/** SerialVersionUID. */

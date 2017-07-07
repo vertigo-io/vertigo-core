@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.environment.dsl.entity;
 
+import java.util.Locale;
+
 import io.vertigo.lang.Assertion;
 
 /**
@@ -39,7 +41,7 @@ public enum DslPropertyType implements DslEntityFieldType {
 	private final Class<?> javaClass;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
 	 * @param javaClass Classe java encapsulée
 	 */
@@ -79,9 +81,17 @@ public enum DslPropertyType implements DslEntityFieldType {
 			case String:
 				return sValue;
 			case Boolean:
-				return java.lang.Boolean.valueOf(sValue);
+				switch (sValue.toLowerCase(Locale.ROOT)) {
+					/* only true and false are accepted*/
+					case "true":
+						return true;
+					case "false":
+						return false;
+					default:
+						throw new IllegalArgumentException("unable to cast boolean property from '" + sValue + "', only. 'true' or 'false' are accepted");
+				}
 			default:
-				throw new IllegalArgumentException("cast de la propriété '" + javaClass + "' non implémenté");
+				throw new IllegalArgumentException("unsupported type of property : '" + javaClass + "'");
 		}
 	}
 

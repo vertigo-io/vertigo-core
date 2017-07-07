@@ -29,8 +29,8 @@ import io.vertigo.app.config.LogConfig;
 import io.vertigo.lang.Assertion;
 
 /**
- * The Boot class is reponsible for the boot phase. 
- * 
+ * The Boot class is reponsible for the boot phase.
+ *
  * @author pchretien
  */
 final class Boot {
@@ -66,8 +66,6 @@ final class Boot {
 	}
 
 	void init() {
-		if (bootConfig.getLogConfig().isPresent()) {
-			initLog(bootConfig.getLogConfig().get());
-		}
+		bootConfig.getLogConfig().ifPresent(Boot::initLog);
 	}
 }

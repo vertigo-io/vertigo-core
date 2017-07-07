@@ -23,8 +23,8 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.token.TokenManager;
 import io.vertigo.vega.webservice.exception.SessionException;
@@ -41,7 +41,7 @@ public final class AccessTokenWebServiceHandlerPlugin implements WebServiceHandl
 	private static final Serializable TOKEN_DATA = new UniqueToken();
 	/** Access Token header name. */
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
-	private static final MessageText INVALID_ACCESS_TOKEN_MSG = new MessageText("Invalid access token", null); //Todo make a resource.properties
+	private static final MessageText INVALID_ACCESS_TOKEN_MSG = MessageText.of("Invalid access token"); //Todo make a resource.properties
 	private final TokenManager tokenManager;
 
 	/**

@@ -21,17 +21,15 @@ package io.vertigo.app.config;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
+import io.vertigo.core.component.Component;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.core.component.aop.Aspect;
-import io.vertigo.core.component.di.DIAnnotationUtil;
+import io.vertigo.core.component.proxy.ProxyFactory;
+import io.vertigo.core.definition.DefinitionProvider;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Component;
-import io.vertigo.lang.Plugin;
-import io.vertigo.lang.VSystemException;
 
 /**
  * The moduleConfigBuilder defines the configuration of a module.
@@ -49,15 +47,14 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
 	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
+	private final List<ProxyFactoryConfig> myProxyConfigs = new ArrayList<>();
 	private final List<DefinitionProviderConfig> myDefinitionProviderConfigs = new ArrayList<>();
-
-	private boolean myHasApi = true; //par défaut on a une api.
 
 	/**
 	 * Constructor.
 	 * @param name Name of the module
 	 */
-	public ModuleConfigBuilder(final String name) {
+	ModuleConfigBuilder(final String name) {
 		Assertion.checkArgument(!"boot".equalsIgnoreCase(name), "boot is a reserved name");
 		Assertion.checkArgNotEmpty(name);
 		//-----
@@ -75,11 +72,12 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	 * Marks this module as having no api.
+	 * Adds a proxy factory.
+	 * @param proxyFactoryClass Class of the proxy factoy
 	 * @return this builder
 	 */
-	public ModuleConfigBuilder withNoAPI() {
-		myHasApi = false;
+	public ModuleConfigBuilder addProxyFactory(final Class<? extends ProxyFactory> proxyFactoryClass) {
+		myProxyConfigs.add(new ProxyFactoryConfig(proxyFactoryClass));
 		return this;
 	}
 
@@ -96,6 +94,23 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
+	 * Adds a simple provider of definitions.
+	 * @param definitionProviderClass the class of the provider
+	 * @param params the list of params
+	 * @return this builder
+	 */
+	public ModuleConfigBuilder addDefinitionProvider(final Class<? extends DefinitionProvider> definitionProviderClass, final Param... params) {
+		Assertion.checkNotNull(definitionProviderClass);
+		Assertion.checkNotNull(params);
+		//-----
+		myDefinitionProviderConfigs.add(
+				DefinitionProviderConfig.builder(definitionProviderClass)
+						.addAllParams(params)
+						.build());
+		return this;
+	}
+
+	/**
 	* Adds a component defined by an implementation.
 	 * @param implClass impl of the component
 	 * @param params the list of params
@@ -105,8 +120,10 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
-		final String id = DIAnnotationUtil.buildId(implClass);
-		return addComponent(new ComponentConfig(id, Optional.empty(), implClass, Arrays.asList(params)));
+		final ComponentConfig componentConfig = ComponentConfig.builder(implClass)
+				.addParams(params)
+				.build();
+		return addComponent(componentConfig);
 	}
 
 	/**
@@ -121,8 +138,11 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
-		final String id = DIAnnotationUtil.buildId(apiClass);
-		return addComponent(new ComponentConfig(id, Optional.of(apiClass), implClass, Arrays.asList(params)));
+		final ComponentConfig componentConfig = ComponentConfig.builder(implClass)
+				.withApi(apiClass)
+				.addParams(params)
+				.build();
+		return addComponent(componentConfig);
 	}
 
 	/**
@@ -159,31 +179,16 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		return this.addPlugin(new PluginConfig(pluginImplClass, Arrays.asList(params)));
 	}
 
-	private void checkApi() {
-		final List<ComponentConfig> noApiComponentConfigs = myComponentConfigs
-				.stream()
-				//we don't care plugins
-				//which components don't have api ?
-				.filter(componentConfig -> !componentConfig.getApiClass().isPresent())
-				.collect(Collectors.toList());
-
-		if (!noApiComponentConfigs.isEmpty()) {
-			throw new VSystemException("api rule : all components of module '{0}' must have an api. Components '{1}' don't respect this rule.", myName, noApiComponentConfigs);
-		}
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public ModuleConfig build() {
-		if (myHasApi) {
-			checkApi();
-		}
 		return new ModuleConfig(
 				myName,
 				myDefinitionProviderConfigs,
 				myComponentConfigs,
 				myPluginConfigs,
-				myAspectConfigs);
+				myAspectConfigs,
+				myProxyConfigs);
 	}
 
 }

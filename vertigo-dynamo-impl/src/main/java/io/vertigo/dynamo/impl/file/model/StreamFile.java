@@ -25,7 +25,7 @@ import java.util.Date;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 
 /**
- *
+ * VFile implementation from a provided InputStreamBuilder.
  * @author npiedeloup
  */
 public final class StreamFile extends AbstractVFile {
@@ -33,6 +33,14 @@ public final class StreamFile extends AbstractVFile {
 
 	private final InputStreamBuilder inputStreamBuilder;
 
+	/**
+	 * Constructor.
+	 * @param fileName File name
+	 * @param mimeType Mime type
+	 * @param lastModified Last modified date
+	 * @param length file size
+	 * @param inputStreamBuilder Data stream builder
+	 */
 	public StreamFile(final String fileName, final String mimeType, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
 		super(fileName, mimeType, lastModified, length);
 		this.inputStreamBuilder = inputStreamBuilder;

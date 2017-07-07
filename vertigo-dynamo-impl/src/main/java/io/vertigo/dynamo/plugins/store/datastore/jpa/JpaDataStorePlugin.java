@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.store.datastore.jpa;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -34,8 +35,15 @@ import org.hibernate.exception.ConstraintViolationException;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracer;
-import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.vendor.SqlDataBase;
+import io.vertigo.commons.transaction.VTransaction;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.database.plugins.sql.connection.hibernate.JpaDataBase;
+import io.vertigo.database.plugins.sql.connection.hibernate.JpaResource;
+import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.vendor.SqlDataBase;
+import io.vertigo.dynamo.criteria.Criteria;
+import io.vertigo.dynamo.criteria.CriteriaCtx;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
@@ -48,14 +56,7 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
-import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaDataBase;
-import io.vertigo.dynamo.plugins.database.connection.hibernate.JpaResource;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.criteria.Criteria;
-import io.vertigo.dynamo.store.criteria.CriteriaCtx;
-import io.vertigo.dynamo.store.criteria.Criterions;
-import io.vertigo.dynamo.transaction.VTransaction;
-import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Tuples;
 import io.vertigo.lang.VSystemException;
@@ -178,7 +179,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final URI<E> uri) {
-		final E entity = this.<E> loadWithoutClear(uri);
+		final E entity = this.loadWithoutClear(uri);
 		//On détache le DTO du contexte jpa
 		//De cette façon on interdit à jpa d'utiliser son cache
 		getEntityManager().clear();
@@ -235,9 +236,9 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(dtcUri);
 		//-----
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
-		final Comparable value = (Comparable) dtcUri.getSource().getId();
+		final Serializable value = dtcUri.getSource().getId();
 
-		return findByCriteria(dtDefinition, Criterions.isEqualTo(() -> fkField.getName(), value), null);
+		return findByCriteria(dtDefinition, Criterions.isEqualTo(fkField::getName, value), null);
 	}
 
 	/** {@inheritDoc} */
@@ -293,9 +294,10 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 	}
 
 	@Override
-	public void create(final DtDefinition dtDefinition, final Entity entity) {
+	public <E extends Entity> E create(final DtDefinition dtDefinition, final E entity) {
 		//create
 		put(dtDefinition, entity, true);
+		return entity;
 	}
 
 	@Override
@@ -393,14 +395,14 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 			throw pse;
 		}
 		final SQLException sqle = (SQLException) t;
-		sqlDataBase.getSqlExceptionHandler().handleSQLException(sqle, null);
+		throw sqlDataBase.getSqlExceptionHandler().handleSQLException(sqle, null);
 	}
 
 	private static String createLoadAllLikeQuery(final String tableName, final String sqlCriteriaRrequest /*, final Integer maxRows*/) {
-		final StringBuilder request = new StringBuilder("select t ")
+		return new StringBuilder("select t ")
 				.append(" from ").append(tableName).append(" t")
-				.append(" where ").append(sqlCriteriaRrequest.replaceAll("#([A-Z_0-9]+)#", ":$1"));
-		return request.toString();
+				.append(" where ").append(sqlCriteriaRrequest.replaceAll("#([A-Z_0-9]+)#", ":$1"))
+				.toString();
 	}
 
 	private static String getListTaskName(final String tableName) {

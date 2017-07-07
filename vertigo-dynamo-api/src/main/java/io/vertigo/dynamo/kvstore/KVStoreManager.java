@@ -21,7 +21,7 @@ package io.vertigo.dynamo.kvstore;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.core.component.Manager;
 
 /**
 * Key Value Store.

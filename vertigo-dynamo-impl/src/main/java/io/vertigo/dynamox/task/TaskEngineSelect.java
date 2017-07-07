@@ -19,18 +19,27 @@
 package io.vertigo.dynamox.task;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.OptionalInt;
 
 import javax.inject.Inject;
 
 import io.vertigo.commons.script.ScriptManager;
-import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
-import io.vertigo.dynamo.database.statement.SqlQueryResult;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.connection.SqlConnection;
+import io.vertigo.database.sql.parser.SqlNamedParam;
+import io.vertigo.database.sql.statement.SqlParameter;
+import io.vertigo.database.sql.statement.SqlPreparedStatement;
+import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
-import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
+import io.vertigo.util.ClassUtil;
 
 /**
  * Permet de réaliser des requêtes sur un base de données.<br>
@@ -52,13 +61,21 @@ import io.vertigo.lang.VSystemException;
  *
  * @author  FCONSTANTIN
  */
-public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement> {
+public class TaskEngineSelect extends AbstractTaskEngineSQL {
 
 	/**
 	 * Constructor.
+	 * @param scriptManager scriptManager
+	 * @param transactionManager transactionManager
+	 * @param storeManager storeManager
+	 * @param sqlDataBaseManager sqlDataBaseManager
 	 */
 	@Inject
-	public TaskEngineSelect(final ScriptManager scriptManager, final VTransactionManager transactionManager, final StoreManager storeManager, final SqlDataBaseManager sqlDataBaseManager) {
+	public TaskEngineSelect(
+			final ScriptManager scriptManager,
+			final VTransactionManager transactionManager,
+			final StoreManager storeManager,
+			final SqlDataBaseManager sqlDataBaseManager) {
 		super(scriptManager, transactionManager, storeManager, sqlDataBaseManager);
 	}
 
@@ -66,27 +83,41 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL<SqlPreparedStatement
 	 * Récupération de l'attribut OUT. Il doit être unique.
 	 */
 	private TaskAttribute getOutTaskAttribute() {
-		if (getTaskDefinition().getOutAttributeOption().isPresent()) {
-			return getTaskDefinition().getOutAttributeOption().get();
-		}
-		throw new VSystemException("TaskEngineSelect must have at least on DtObject or one DtList!");
-
+		return getTaskDefinition().getOutAttributeOption()
+				.orElseThrow(() -> new VSystemException("TaskEngineSelect must have at least one DtObject or one DtList!"));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	protected int doExecute(final SqlConnection connection, final SqlPreparedStatement statement) throws SQLException {
-		setInParameters(statement);
+	protected OptionalInt doExecute(
+			final String sql,
+			final SqlConnection connection,
+			final SqlPreparedStatement statement,
+			final List<SqlNamedParam> params) throws SQLException {
 		final TaskAttribute outAttribute = getOutTaskAttribute();
+		final List<SqlParameter> sqlParameters = buildParameters(params);
+		final List<?> result;
+		if (outAttribute.getDomain().getDataType().isPrimitive()) {
+			result = statement.executeQuery(sql, sqlParameters, outAttribute.getDomain().getDataType().getJavaClass(), 1);
+			Assertion.checkState(result.size() <= 1, "Limit exceeded");
+			setResult(result.isEmpty() ? null : result.get(0));
+		} else if (outAttribute.getDomain().getDataType() == DataType.DtObject) {
+			result = statement.executeQuery(sql, sqlParameters, ClassUtil.classForName(outAttribute.getDomain().getDtDefinition().getClassCanonicalName()), 1);
+			Assertion.checkState(result.size() <= 1, "Limit exceeded");
+			setResult(result.isEmpty() ? null : result.get(0));
+		} else if (outAttribute.getDomain().getDataType() == DataType.DtList) {
+			result = statement.executeQuery(sql, sqlParameters, ClassUtil.classForName(outAttribute.getDomain().getDtDefinition().getClassCanonicalName()), null);
 
-		final SqlQueryResult result = statement.executeQuery(outAttribute.getDomain());
-		setResult(result.getValue());
-		return result.getSQLRowCount();
+			final DtList<?> dtList = result
+					.stream()
+					.map(DtObject.class::cast)
+					.collect(VCollectors.toDtList(outAttribute.getDomain().getDtDefinition()));
+			setResult(dtList);
+
+		} else {
+			throw new IllegalArgumentException("Task out attribute type " + outAttribute.getDomain().getDataType() + "is not allowed");
+		}
+		return OptionalInt.of(result.size());
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected final SqlPreparedStatement createStatement(final String sql, final SqlConnection connection) {
-		return getDataBaseManager().createPreparedStatement(connection, sql, false);
-	}
 }

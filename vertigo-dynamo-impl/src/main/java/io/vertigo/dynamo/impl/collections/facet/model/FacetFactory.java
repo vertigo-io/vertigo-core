@@ -24,10 +24,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
@@ -37,8 +37,8 @@ import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -96,9 +96,9 @@ public final class FacetFactory {
 
 	private <D extends DtObject> DtList<D> apply(final ListFilter listFilter, final DtList<D> fullDtList) {
 		//on délégue à CollectionsManager les méthodes de requête de filtrage.
-		return collectionManager.<D> createDtListProcessor()
-				.filter(listFilter)
-				.apply(fullDtList);
+		return fullDtList.stream()
+				.filter(collectionManager.filter(listFilter))
+				.collect(VCollectors.toDtList(fullDtList.getDefinition()));
 	}
 
 	private Facet createFacet(final FacetDefinition facetDefinition, final DtList<?> dtList) {
@@ -114,9 +114,7 @@ public final class FacetFactory {
 		final Map<FacetValue, DtList<D>> clusterValues = createRangeCluster(facetDefinition, dtList);
 		//map résultat avec le count par FacetFilter
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
-		for (final Entry<FacetValue, DtList<D>> entry : clusterValues.entrySet()) {
-			facetValues.put(entry.getKey(), Long.valueOf(entry.getValue().size()));
-		}
+		clusterValues.forEach((k, v) -> facetValues.put(k, Long.valueOf(v.size())));
 		return new Facet(facetDefinition, facetValues);
 	}
 
@@ -136,9 +134,7 @@ public final class FacetFactory {
 		final Map<FacetValue, DtList<D>> clusterValues = createTermCluster(facetDefinition, dtList);
 		//map résultat avec le count par FacetFilter
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
-		for (final Entry<FacetValue, DtList<D>> entry : clusterValues.entrySet()) {
-			facetValues.put(entry.getKey(), Long.valueOf(entry.getValue().size()));
-		}
+		clusterValues.forEach((k, v) -> facetValues.put(k, Long.valueOf(v.size())));
 		return new Facet(facetDefinition, facetValues);
 	}
 
@@ -157,16 +153,16 @@ public final class FacetFactory {
 			facetValue = facetFilterIndex.get(value);
 			if (facetValue == null) {
 				final String valueAsString = dtField.getDomain().getFormatter().valueToString(value, dtField.getDomain().getDataType());
-				final String stringLabel;
+				final String label;
 				if (StringUtil.isEmpty(valueAsString)) {
-					stringLabel = "<==no label==>";
+					label = "<==no label==>";
 				} else {
-					stringLabel = valueAsString;
+					label = valueAsString;
 				}
-				final MessageText label = new MessageText(stringLabel, null);
+				final MessageText labelMsg = MessageText.of(label);
 				//on garde la syntaxe Solr pour l'instant
-				final ListFilter listFilter = new ListFilter(dtField.getName() + ":\"" + valueAsString + "\"");
-				facetValue = new FacetValue(stringLabel, listFilter, label);
+				final ListFilter listFilter = ListFilter.of(dtField.getName() + ":\"" + valueAsString + "\"");
+				facetValue = new FacetValue(label, listFilter, labelMsg);
 				facetFilterIndex.put(value, facetValue);
 				clusterValues.put(facetValue, new DtList<D>(dtList.getDefinition()));
 			}

@@ -22,8 +22,8 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
@@ -64,7 +64,7 @@ public final class SecurityWebServiceHandlerPlugin implements WebServiceHandlerP
 		// 2. Check user is authentified
 		final Optional<UserSession> userSessionOption = securityManager.getCurrentUserSession();
 		if (!userSessionOption.isPresent() || !userSessionOption.get().isAuthenticated()) {
-			throw new VSecurityException(new MessageText("User unauthentified", null));
+			throw new VSecurityException(MessageText.of("User unauthentified"));
 		}
 		return chain.handle(request, response, routeContext);
 	}

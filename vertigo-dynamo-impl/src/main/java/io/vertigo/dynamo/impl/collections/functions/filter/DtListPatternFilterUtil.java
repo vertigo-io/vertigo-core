@@ -25,6 +25,8 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.vertigo.dynamo.criteria.CriterionLimit;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -39,6 +41,9 @@ import io.vertigo.util.DateUtil;
 public final class DtListPatternFilterUtil {
 	private static final String DATE_PATTERN = "dd/MM/yy";
 
+	/**
+	 * Pattern types : Range or Term.
+	 */
 	public enum FilterPattern {
 		/** range. */
 		Range("([A-Z_0-9]+):([\\[\\{\\]])(.*) TO (.*)([\\]\\}\\[])"), //[] : include, ][ or {} : exclude
@@ -88,6 +93,9 @@ public final class DtListPatternFilterUtil {
 	 * index 0 : filtre d'origine.
 	 * index 1 : nom du champs (par convention)
 	 * ensuite dépend du pattern
+	 * @param filterString Filter string to parse
+	 * @param parsingPattern Pattern use to parse
+	 * @return Resulting String array (Optional)
 	 **/
 	public static Optional<String[]> parseFilter(final String filterString, final Pattern parsingPattern) {
 		Assertion.checkNotNull(filterString);
@@ -107,29 +115,41 @@ public final class DtListPatternFilterUtil {
 	}
 
 	private static <D extends DtObject> Predicate<D> createDtListTermFilter(final String[] parsedFilter, final String fieldName, final DataType dataType) {
-		final Optional<Comparable> filterValue = convertToComparable(parsedFilter[2], dataType, false);
-		return new DtListValueFilter<>(fieldName, (Serializable) filterValue.orElse(null));
+		final Serializable filterValue = convertToValue(parsedFilter[2], dataType, false);
+		final Predicate predicate;
+		if (filterValue != null) {
+			predicate = Criterions.isEqualTo(() -> fieldName, filterValue).toPredicate();
+		} else {
+			predicate = Criterions.isNotNull(() -> fieldName).toPredicate();
+		}
+		return predicate;
 	}
 
-	private static <D extends DtObject> Predicate<D> createDtListRangeFilter(final String[] parsedFilter, final String fieldName, final DataType dataType) {
-		final boolean isMinInclude = "[".equals(parsedFilter[2]);
-		final Optional<Comparable> minValue = convertToComparable(parsedFilter[3], dataType, true);
-		final Optional<Comparable> maxValue = convertToComparable(parsedFilter[4], dataType, true);
-		final boolean isMaxInclude = "]".equals(parsedFilter[5]);
-		return new DtListRangeFilter<>(fieldName, minValue, maxValue, isMinInclude, isMaxInclude);
+	private static <D extends DtObject> Predicate<D> createDtListRangeFilter(
+			final String[] parsedFilter,
+			final String fieldName,
+			final DataType dataType) {
+		final boolean minIncluded = "[".equals(parsedFilter[2]);
+		final Serializable minValue = convertToValue(parsedFilter[3], dataType, true);
+		final Serializable maxValue = convertToValue(parsedFilter[4], dataType, true);
+		final boolean maxIncluded = "]".equals(parsedFilter[5]);
+
+		final CriterionLimit min = minIncluded ? CriterionLimit.ofIncluded(minValue) : CriterionLimit.ofExcluded(minValue);
+		final CriterionLimit max = maxIncluded ? CriterionLimit.ofIncluded(maxValue) : CriterionLimit.ofExcluded(maxValue);
+		final Predicate predicate = Criterions.isBetween(() -> fieldName, min, max).toPredicate();
+		return predicate;
 	}
 
-	private static Optional<Comparable> convertToComparable(final String valueToConvert, final DataType dataType, final boolean acceptJoker) {
+	private static Serializable convertToValue(final String valueToConvert, final DataType dataType, final boolean acceptJoker) {
 		final String stringValue = valueToConvert.trim();
 		if (acceptJoker && "*".equals(stringValue) || "".equals(stringValue)) {
-			return Optional.empty();//pas de test
+			return null;//pas de test
 		}
 		//--
-		final Comparable result = valueOf(dataType, stringValue);
-		return Optional.of(result);
+		return valueOf(dataType, stringValue);
 	}
 
-	private static Comparable valueOf(final DataType dataType, final String stringValue) {
+	private static Serializable valueOf(final DataType dataType, final String stringValue) {
 		switch (dataType) {
 			case Integer:
 				return Integer.valueOf(stringValue);

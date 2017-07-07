@@ -20,7 +20,7 @@ package io.vertigo.dynamox.domain.constraint;
 
 import java.math.BigDecimal;
 
-import io.vertigo.lang.MessageText;
+import io.vertigo.core.locale.MessageText;
 
 /**
  * Contrainte vérifiant que l'objet est : <ul>
@@ -66,6 +66,10 @@ public final class ConstraintBigDecimalLength extends AbstractConstraintLength<B
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return new MessageText(Resources.DYNAMO_CONSTRAINT_DECIMALLENGTH_EXCEEDED, minValue, maxValue);
+		return MessageText
+				.builder()
+				.withKey(Resources.DYNAMO_CONSTRAINT_DECIMALLENGTH_EXCEEDED)
+				.withParams(minValue, maxValue)
+				.build();
 	}
 }

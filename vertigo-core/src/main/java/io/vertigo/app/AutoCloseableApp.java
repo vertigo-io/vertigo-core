@@ -18,6 +18,7 @@
  */
 package io.vertigo.app;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +27,7 @@ import org.apache.log4j.Logger;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ComponentInitializerConfig;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.core.component.ComponentSpaceWritable;
@@ -35,7 +37,6 @@ import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.core.definition.loader.DefinitionLoader;
 import io.vertigo.core.param.ParamManager;
-import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
@@ -57,8 +58,8 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 
 	private static final Logger LOGGER = Logger.getLogger(AutoCloseableApp.class);
 
-	//Start Date in milliseconds : used to have 'uptime'
-	private final long start;
+	//Start : used to have 'uptime'
+	private final Instant start;
 	private final AppConfig appConfig;
 	private State state;
 
@@ -66,7 +67,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	private final ComponentSpaceWritable componentSpaceWritable;
 
 	//à remplacer par event ??
-	private final List<Runnable> postStartFunctions = new ArrayList<>();
+	private final List<Runnable> preActivateFunctions = new ArrayList<>();
 
 	/**
 	 * Constructor.
@@ -75,7 +76,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	public AutoCloseableApp(final AppConfig appConfig) {
 		Assertion.checkNotNull(appConfig);
 		//-----
-		start = System.currentTimeMillis();
+		start = Instant.now();
 		this.appConfig = appConfig;
 		Home.setApp(this);
 		state = State.STARTING;
@@ -89,34 +90,52 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 
 		try {
 			//A faire créer par Boot : stratégie de chargement des composants à partir de ...
-			final ComponentLoader componentLoader = new ComponentLoader(componentSpaceWritable, appConfig.getBootConfig().getAopPlugin());
+			final ComponentLoader componentLoader = new ComponentLoader(componentSpaceWritable,
+					appConfig.getBootConfig().getAopPlugin());
 			//contient donc à minima resourceManager et paramManager.
 
 			//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
-			componentLoader.injectComponents(Optional.<ParamManager> empty(), "boot",
+			componentLoader.injectComponents(Optional.empty(), "boot",
 					appConfig.getBootConfig().getComponentConfigs());
 
-			//-----1. Load all definitions
-			final DefinitionLoader definitionLoader = new DefinitionLoader(definitionSpaceWritable, componentSpaceWritable);
-			definitionLoader.createDefinitions(appConfig.getModuleConfigs())
-					.forEach(definitionSpaceWritable::registerDefinition);
-			//Here all definitions are registered into the definitionSpace
-
-			//-----2. Load all components (and aspects).
+			//-----1. Loads all components (and aspects).
 			componentLoader.injectAllComponentsAndAspects(Optional.of(componentSpaceWritable.resolve(ParamManager.class)), appConfig.getModuleConfigs());
-			//-----3. Print
-			if (!appConfig.getBootConfig().isSilence()) {
+			//-----2. Print components
+			if (appConfig.getBootConfig().isVerbose()) {
 				Logo.printCredits(System.out);
 				appConfig.print(System.out);
 			}
-			//-----4. post-Initialize all components
+			componentSpaceWritable.closeRegistration();
+			//-----3. a Load all definitions
+			final DefinitionLoader definitionLoader = new DefinitionLoader(definitionSpaceWritable, componentSpaceWritable);
+			definitionLoader.createDefinitions(appConfig.getModuleConfigs())
+					.forEach(definitionSpaceWritable::registerDefinition);
+			//-----3. b Load all definitions provided by components
+			definitionLoader.createDefinitionsFromComponents()
+					.forEach(definitionSpaceWritable::registerDefinition);
+
+			//-----4. componentInitializers to populate definitions
+			/*
+			 * componentInitializers are created and the init() is called on each.
+			 * Notice :
+			 * these components are not registered in the componentSpace.
+			 * that's why this kind of component can't be activeable.
+			 */
 			initializeAllComponents();
-			//-----5. Start
-			appStart();
-			//-----
+
+			/*
+			 * Here all definitions are registered into the definitionSpace
+			 */
+			definitionSpaceWritable.closeRegistration();
+
+			//-----5. Starts all components
+			componentSpaceWritable.start();
+
+			//-----6. post just in case
+			appPreActivate();
+
+			//-----7. App is active
 			state = State.ACTIVE;
-			//-----6. AfterStart (application is active)
-			appPostStart();
 		} catch (final Exception e) {
 			close();
 			throw new IllegalStateException("an error occured when starting", e);
@@ -124,28 +143,21 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	}
 
 	@Override
-	public void registerPostStartFunction(final Runnable postStartFunction) {
+	public void registerPreActivateFunction(final Runnable preActivateFunction) {
 		Assertion.checkArgument(State.STARTING.equals(state), "Applisteners can't be registered at runtime");
-		Assertion.checkNotNull(postStartFunction);
+		Assertion.checkNotNull(preActivateFunction);
 		//-----
-		postStartFunctions.add(postStartFunction);
+		preActivateFunctions.add(preActivateFunction);
 	}
 
-	private void appPostStart() {
-		for (final Runnable postStartFunction : postStartFunctions) {
-			postStartFunction.run();
-		}
-	}
-
-	private void appStart() {
-		definitionSpaceWritable.start();
-		componentSpaceWritable.start();
-		Thread.currentThread().setName("MAIN");
+	private void appPreActivate() {
+		preActivateFunctions
+				.forEach(postStartFunction -> postStartFunction.run());
 	}
 
 	private void appStop() {
 		componentSpaceWritable.stop();
-		definitionSpaceWritable.stop();
+		definitionSpaceWritable.clear();
 	}
 
 	/** {@inheritDoc} */
@@ -168,7 +180,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	}
 
 	@Override
-	public long getStartDate() {
+	public Instant getStart() {
 		return start;
 	}
 
@@ -197,4 +209,5 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			componentInitializer.init();
 		}
 	}
+
 }

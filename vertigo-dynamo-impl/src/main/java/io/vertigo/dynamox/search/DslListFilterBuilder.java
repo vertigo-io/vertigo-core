@@ -30,6 +30,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -128,7 +129,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	@Override
 	public ListFilter build() {
 		final String query = buildQueryString();
-		return new ListFilter(query);
+		return ListFilter.of(query);
 	}
 
 	private String buildQueryString() {
@@ -260,7 +261,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 					firstNotEmpty(dslField.getPostBody(), dslMultiField.getPostBody()));
 			final DslExpression monoFieldExpressionDefinition = new DslExpression(
 					concat(expressionSep, expressionDefinition.getPreBody()),
-					Optional.of(monoFieldDefinition), Optional.<DslMultiField> empty(),
+					Optional.of(monoFieldDefinition), Optional.empty(),
 					dslQuery,
 					expressionDefinition.getPostBody());
 			appendTermQuery(expressionQuery, (DslTermQuery) dslQuery, monoFieldExpressionDefinition, query);
@@ -293,7 +294,11 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		return value;
 	}
 
-	private void appendTermQueryWithValue(final Object value, final StringBuilder query, final DslTermQuery dslQuery, final DslExpression expressionDefinition,
+	private void appendTermQueryWithValue(
+			final Object value,
+			final StringBuilder query,
+			final DslTermQuery dslQuery,
+			final DslExpression expressionDefinition,
 			final StringBuilder outExpressionQuery) {
 		final boolean useBlock;
 		final StringBuilder queryPart = new StringBuilder();
@@ -354,7 +359,11 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		return false; //never use block
 	}
 
-	private boolean appendUserStringCriteria(final StringBuilder query, final DslTermQuery dslTermDefinition, final DslExpression expressionDefinition, final String userString,
+	private boolean appendUserStringCriteria(
+			final StringBuilder query,
+			final DslTermQuery dslTermDefinition,
+			final DslExpression expressionDefinition,
+			final String userString,
 			final StringBuilder outExpressionQuery) {
 		final List<DslUserCriteria> userCriteriaList = DslParserUtil.parseUserCriteria(userString);
 
@@ -381,7 +390,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 				final List<DslExpression> monoFieldExpressionDefinitions = flattenMultiToMonoFieldExpressionDefinition(dslTermDefinition, userCriteria, criteriaValue, dslMultiField);
 				final DslMultiExpression monoFieldMultiExpressionDefinition = new DslMultiExpression(
 						firstNotEmpty(userCriteria.getOverridedPreModifier(), dslTermDefinition.getPreTerm()), true,
-						monoFieldExpressionDefinitions, Collections.<DslMultiExpression> emptyList(),
+						monoFieldExpressionDefinitions, Collections.emptyList(),
 						"");
 
 				appendMultiExpression(query, monoFieldMultiExpressionDefinition);
@@ -406,7 +415,10 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 				.append(userCriteria.getOverridedPostModifier().isEmpty() ? dslTermDefinition.getPostTerm() : userCriteria.getOverridedPostModifier());
 	}
 
-	private static List<DslExpression> flattenMultiToMonoFieldExpressionDefinition(final DslTermQuery dslTermDefinition, final DslUserCriteria userCriteria, final String criteriaValue,
+	private static List<DslExpression> flattenMultiToMonoFieldExpressionDefinition(
+			final DslTermQuery dslTermDefinition,
+			final DslUserCriteria userCriteria,
+			final String criteriaValue,
 			final DslMultiField dslMultiField) {
 		final List<DslExpression> monoFieldExpressionDefinitions = new ArrayList<>();
 		for (final DslField dslField : dslMultiField.getFields()) {
@@ -416,7 +428,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 					"");
 			final DslExpression monoFieldExpressionDefinition = new DslExpression(
 					monoFieldExpressionDefinitions.isEmpty() ? "" : " ",
-					Optional.of(monoFieldDefinition), Optional.<DslMultiField> empty(),
+					Optional.of(monoFieldDefinition), Optional.empty(),
 					new DslFixedQuery(concat(criteriaValue, firstNotEmpty(userCriteria.getOverridedPostModifier(), dslTermDefinition.getPostTerm()))),
 					firstNotEmpty(dslField.getPostBody(), dslMultiField.getPostBody()));
 			monoFieldExpressionDefinitions.add(monoFieldExpressionDefinition);
@@ -425,12 +437,9 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	}
 
 	private static String firstNotEmpty(final String... elements) {
-		for (final String element : elements) {
-			if (!element.isEmpty()) {
-				return element;
-			}
-		}
-		return "";
+		return Arrays.stream(elements)
+				.filter(element -> !element.isEmpty())
+				.findFirst().orElse("");
 	}
 
 	/**
@@ -438,12 +447,9 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	 * @param elements Nullable elements
 	 * @return Concat string
 	 */
-	static String concat(final String... elements) {
-		final StringBuilder sb = new StringBuilder();
-		for (final String element : elements) {
-			sb.append(element);
-		}
-		return sb.toString();
+	private static String concat(final String... elements) {
+		return Arrays.stream(elements)
+				.collect(Collectors.joining());
 	}
 
 	/**

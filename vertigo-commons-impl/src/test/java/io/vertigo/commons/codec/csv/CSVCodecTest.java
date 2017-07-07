@@ -40,7 +40,7 @@ public final class CSVCodecTest extends AbstractEncoderTest<Encoder<String, Stri
 	/** {@inheritDoc} */
 	@Override
 	@Test
-	public void testNull() throws Exception {
+	public void testNull() {
 		assertEquals("", codec.encode(null));
 		// assertNull(csvCodec.decode(null));
 	}
@@ -48,7 +48,7 @@ public final class CSVCodecTest extends AbstractEncoderTest<Encoder<String, Stri
 	/** {@inheritDoc} */
 	@Override
 	@Test
-	public void testEncode() throws Exception {
+	public void testEncode() {
 		checkEncode("", "");
 		checkEncode("1", "1");
 		checkEncode("2,2", "2,2");

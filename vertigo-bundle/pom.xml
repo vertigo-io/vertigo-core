@@ -1,4 +1,4 @@
-﻿<?xml version="1.0"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -48,12 +48,12 @@
 
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-persona-api</artifactId>
+			<artifactId>vertigo-account-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-persona-impl</artifactId>
+			<artifactId>vertigo-account-impl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -333,7 +333,7 @@
 
 								<artifactItem>
 									<groupId>io.vertigo</groupId>
-									<artifactId>vertigo-persona-api</artifactId>
+									<artifactId>vertigo-account-api</artifactId>
 									<version>${project.version}</version>
 									<type>jar</type>
 									<classifier>sources</classifier>
@@ -342,7 +342,7 @@
 								</artifactItem>
 								<artifactItem>
 									<groupId>io.vertigo</groupId>
-									<artifactId>vertigo-persona-impl</artifactId>
+									<artifactId>vertigo-account-impl</artifactId>
 									<version>${project.version}</version>
 									<type>jar</type>
 									<classifier>sources</classifier>

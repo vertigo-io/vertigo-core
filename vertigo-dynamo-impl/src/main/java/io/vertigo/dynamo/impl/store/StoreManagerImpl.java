@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.eventbus.EventBusManager;
+import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreConfigImpl;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreImpl;
@@ -37,7 +38,6 @@ import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
 import io.vertigo.dynamo.store.filestore.FileStore;
-import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -54,9 +54,13 @@ public final class StoreManagerImpl implements StoreManager {
 	private final FileStore fileStore;
 
 	/**
-	 * Constructeur.
-	 * @param cacheManager Manager de gestion du cache
-	 * @param collectionsManager Manager de gestion des collections
+	 * Constructor.
+	 * @param cacheManager cacheManager
+	 * @param transactionManager transactionManager
+	 * @param collectionsManager collectionsManager
+	 * @param fileStorePlugins fileStorePlugins
+	 * @param dataStorePlugins dataStorePlugins
+	 * @param eventBusManager eventBusManager
 	 */
 	@Inject
 	public StoreManagerImpl(
@@ -72,11 +76,11 @@ public final class StoreManagerImpl implements StoreManager {
 		Assertion.checkNotNull(fileStorePlugins);
 		Assertion.checkNotNull(eventBusManager);
 		//-----
-		masterDataConfig = new MasterDataConfigImpl(collectionsManager);
+		masterDataConfig = new MasterDataConfigImpl();
 		//---
 		//On enregistre le plugin principal du broker
 		dataStoreConfig = new DataStoreConfigImpl(dataStorePlugins, cacheManager);
-		dataStore = new DataStoreImpl(this, transactionManager, eventBusManager, dataStoreConfig);
+		dataStore = new DataStoreImpl(collectionsManager, this, transactionManager, eventBusManager, dataStoreConfig);
 		//-----
 		final FileStoreConfig fileStoreConfig = new FileStoreConfig(fileStorePlugins);
 		fileStore = new FileStoreImpl(fileStoreConfig);

@@ -18,9 +18,7 @@
  */
 package io.vertigo.vega.webservice.data.user;
 
-import java.util.Collections;
 import java.util.Locale;
-import java.util.Map;
 
 import io.vertigo.persona.security.UserSession;
 
@@ -32,12 +30,4 @@ public final class TestUserSession extends UserSession {
 		return Locale.FRENCH;
 	}
 
-	/**
-	 * Gestion de la sécurité.
-	 * @return Liste des clés de sécurité et leur valeur.
-	 */
-	@Override
-	public Map<String, String> getSecurityKeys() {
-		return Collections.singletonMap("famId", "12");
-	}
 }

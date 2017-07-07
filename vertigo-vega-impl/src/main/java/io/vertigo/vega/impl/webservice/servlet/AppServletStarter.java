@@ -73,7 +73,7 @@ final class AppServletStarter {
 			Assertion.checkArgument(bootConf.containsKey("boot.applicationConfiguration"), "Param \"boot.applicationConfiguration\" is mandatory, check your .properties or web.xml.");
 
 			final XMLAppConfigBuilder appConfigBuilder = new XMLAppConfigBuilder();
-			appConfigBuilder.beginBoot().silently();
+			appConfigBuilder.beginBoot();
 
 			//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
 			if (bootConf.containsKey(LOG4J_CONFIGURATION_PARAM_NAME)) {
@@ -119,7 +119,7 @@ final class AppServletStarter {
 		 */
 		for (final Enumeration<String> enumeration = servletContext.getInitParameterNames(); enumeration.hasMoreElements();) {
 			name = enumeration.nextElement();
-			webParams.put(name, Param.create(name, servletContext.getInitParameter(name)));
+			webParams.put(name, Param.of(name, servletContext.getInitParameter(name)));
 		}
 		return webParams;
 	}

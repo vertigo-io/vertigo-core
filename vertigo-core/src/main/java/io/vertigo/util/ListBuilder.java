@@ -60,8 +60,7 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 	public ListBuilder<X> addAll(final Collection<? extends X> values) {
 		Assertion.checkNotNull(values);
 		//-----
-		values.stream()
-				.forEach(this::add);
+		values.forEach(this::add);
 		return this;
 	}
 
@@ -90,7 +89,7 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 	@Override
 	public List<X> build() {
 		if (myComparator != null) {
-			Collections.sort(list, myComparator);
+			list.sort(myComparator);
 		}
 		return unmodifiable ? Collections.unmodifiableList(list) : list;
 	}

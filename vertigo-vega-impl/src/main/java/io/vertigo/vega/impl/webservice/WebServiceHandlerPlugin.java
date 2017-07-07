@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.impl.webservice;
 
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.exception.SessionException;

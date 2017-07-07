@@ -65,7 +65,7 @@ public final class DslDefinitionBuilder implements Builder<DslDefinition> {
 	 * @param name the name of the dslDefinition
 	 * @param entity Entité
 	 */
-	public DslDefinitionBuilder(final String name, final DslEntity entity) {
+	DslDefinitionBuilder(final String name, final DslEntity entity) {
 		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(entity);
 		//-----

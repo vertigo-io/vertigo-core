@@ -67,7 +67,11 @@ public final class CacheDataStoreConfig {
 	 * @param isReloadedByList On reload, elements should be load by full list or only missing ones
 	 * @param serializeElements Elements should be serialized to guarantee there aren't modified
 	 */
-	public void registerCacheable(final DtDefinition dtDefinition, final long timeToLiveInSeconds, final boolean isReloadedByList, final boolean serializeElements) {
+	public void registerCacheable(
+			final DtDefinition dtDefinition,
+			final int timeToLiveInSeconds,
+			final boolean isReloadedByList,
+			final boolean serializeElements) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		cacheableDtDefinitionMap.put(dtDefinition, isReloadedByList);

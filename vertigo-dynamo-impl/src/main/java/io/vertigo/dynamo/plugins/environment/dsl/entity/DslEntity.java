@@ -72,6 +72,15 @@ public final class DslEntity implements DslEntityFieldType {
 	}
 
 	/**
+	 * Static method factory for TaskBuilder
+	 * @param name the name of the entity
+	 * @return TaskBuilder
+	 */
+	public static DslEntityBuilder builder(final String name) {
+		return new DslEntityBuilder(name);
+	}
+
+	/**
 	 * @return Nom de l'entité (Type de la définition).
 	 */
 	public String getName() {
@@ -85,7 +94,7 @@ public final class DslEntity implements DslEntityFieldType {
 		return fields.values()
 				.stream()
 				.filter(field -> field.getType().isProperty())
-				.map(field -> field.getName())
+				.map(DslEntityField::getName)
 				.collect(Collectors.toSet());
 	}
 

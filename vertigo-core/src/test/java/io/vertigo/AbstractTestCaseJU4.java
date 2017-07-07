@@ -18,9 +18,6 @@
  */
 package io.vertigo;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.util.List;
 import java.util.Properties;
 
 import org.junit.After;
@@ -32,10 +29,7 @@ import io.vertigo.app.App;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.xml.XMLAppConfigBuilder;
-import io.vertigo.core.component.Describable;
-import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.core.component.di.injector.DIInjector;
-import io.vertigo.lang.Component;
 
 /**
  * Classe parente de tous les TNR associés à vertigo.
@@ -86,7 +80,7 @@ public abstract class AbstractTestCaseJU4 {
 	 *
 	 * @param o object
 	 */
-	protected static final void nop(final Object o) {
+	protected static void nop(final Object o) {
 		// rien
 	}
 
@@ -113,7 +107,7 @@ public abstract class AbstractTestCaseJU4 {
 	 *
 	 * @throws Exception Erreur
 	 */
-	protected void doAfterTearDown() throws Exception {
+	protected void doAfterTearDown() {
 		// pour implé spécifique
 	}
 
@@ -127,19 +121,6 @@ public abstract class AbstractTestCaseJU4 {
 	}
 
 	/**
-	* Utilitaire.
-	* @param manager Manager
-	*/
-	protected static final void testDescription(final Component manager) {
-		if (manager instanceof Describable) {
-			final List<ComponentInfo> componentInfos = Describable.class.cast(manager).getInfos();
-			for (final ComponentInfo componentInfo : componentInfos) {
-				assertNotNull(componentInfo);
-			}
-		}
-	}
-
-	/**
 	 * Configuration des tests.
 	 * @return App config
 	 */
@@ -147,7 +128,7 @@ public abstract class AbstractTestCaseJU4 {
 		//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
 		return new XMLAppConfigBuilder()
 				.withModules(getClass(), new Properties(), getManagersXmlFileName())
-				.beginBoot().silently().endBoot().build();
+				.build();
 	}
 
 }

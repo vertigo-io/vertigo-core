@@ -36,9 +36,9 @@ import com.sleepycat.je.OperationStatus;
 import com.sleepycat.je.Transaction;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.dynamo.transaction.VTransaction;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionResourceId;
+import io.vertigo.commons.transaction.VTransaction;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionResourceId;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;

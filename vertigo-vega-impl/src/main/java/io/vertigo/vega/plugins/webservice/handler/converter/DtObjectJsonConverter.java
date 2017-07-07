@@ -64,7 +64,7 @@ public final class DtObjectJsonConverter implements JsonConverter {
 		final String objectPath;
 		final UiObject<DtObject> uiObject;
 		if (input instanceof String) {
-			uiObject = jsonReaderEngine.<DtObject> uiObjectFromJson((String) input, paramGenericType);
+			uiObject = jsonReaderEngine.uiObjectFromJson((String) input, paramGenericType);
 			objectPath = "";
 		} else if (input instanceof UiContext) { //cas des innerBodyParam
 			uiObject = (UiObject<DtObject>) ((UiContext) input).get(webServiceParam.getName());

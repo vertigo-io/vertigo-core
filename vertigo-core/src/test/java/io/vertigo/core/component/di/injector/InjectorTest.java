@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
+import io.vertigo.core.component.Container;
 import io.vertigo.core.component.di.DIException;
 import io.vertigo.core.component.di.data.A;
 import io.vertigo.core.component.di.data.B;
@@ -42,7 +43,6 @@ import io.vertigo.core.component.di.data.P;
 import io.vertigo.core.component.di.data.P2;
 import io.vertigo.core.component.di.data.P3;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Container;
 
 /**
  * Voir sur reactor pour l'arbre des dépendances des objets A==>F.
@@ -103,7 +103,7 @@ public final class InjectorTest {
 
 			@Override
 			public Set<String> keySet() {
-				return Collections.EMPTY_SET;
+				return Collections.emptySet();
 			}
 		});
 		nop(a);
@@ -127,7 +127,7 @@ public final class InjectorTest {
 
 						@Override
 						public Set<String> keySet() {
-							return Collections.EMPTY_SET;
+							return Collections.emptySet();
 						}
 					});
 					nop(b);

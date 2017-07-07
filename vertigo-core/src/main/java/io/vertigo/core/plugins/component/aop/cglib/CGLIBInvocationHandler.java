@@ -57,7 +57,7 @@ final class CGLIBInvocationHandler implements net.sf.cglib.proxy.InvocationHandl
 		return new MyMethodInvocation(instance, method, joinPoints.get(method)).proceed(args);
 	}
 
-	private static class MyMethodInvocation implements AspectMethodInvocation {
+	private static final class MyMethodInvocation implements AspectMethodInvocation {
 		private final List<Aspect> aspects;
 		private final Object instance;
 		private final Method method;

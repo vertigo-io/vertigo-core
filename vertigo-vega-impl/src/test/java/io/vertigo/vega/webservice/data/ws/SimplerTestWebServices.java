@@ -18,7 +18,11 @@
  */
 package io.vertigo.vega.webservice.data.ws;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -26,8 +30,8 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.util.DateUtil;
@@ -115,7 +119,7 @@ public final class SimplerTestWebServices implements WebServices {
 	@GET("/docTest/{passPhrase}")
 	public List<Contact> docTest(@PathParam("passPhrase") final String passPhrase) {
 		if (!"RtFM".equals(passPhrase)) {
-			throw new VSecurityException(new MessageText("Bad passPhrase, check the doc in /catalog", null));
+			throw new VSecurityException(MessageText.of("Bad passPhrase, check the doc in /catalog"));
 		}
 		return contactDao.getList();
 	}
@@ -137,7 +141,7 @@ public final class SimplerTestWebServices implements WebServices {
 		final Contact contact = contactDao.get(conId);
 		if (contact == null) {
 			//404 ?
-			throw new VUserException(new MessageText("Contact #" + conId + " unknown", null));
+			throw new VUserException("Contact #" + conId + " unknown");
 		}
 		//200
 		return contact;
@@ -162,7 +166,7 @@ public final class SimplerTestWebServices implements WebServices {
 	public Contact createContact( //create POST method -> 201 instead of 200 by convention
 			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
-			throw new VUserException(new MessageText("Name is mandatory", null));
+			throw new VUserException("Name is mandatory");
 		}
 		contactDao.post(contact);
 		//code 201 + location header : GET route
@@ -175,7 +179,7 @@ public final class SimplerTestWebServices implements WebServices {
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
-			throw new VUserException(new MessageText("Name is mandatory", null));
+			throw new VUserException("Name is mandatory");
 		}
 
 		contactDao.put(contact);
@@ -185,11 +189,12 @@ public final class SimplerTestWebServices implements WebServices {
 
 	//PUT is indempotent : ID mandatory
 	@PUT("/contact/{conId}")
-	public Contact testUpdateByPath(@PathParam("conId") final long conId,
+	public Contact testUpdateByPath(
+			@PathParam("conId") final long conId,
 			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
-			throw new VUserException(new MessageText("Name is mandatory", null));
+			throw new VUserException("Name is mandatory");
 		}
 		contact.setConId(conId);
 		contactDao.put(contact);
@@ -201,11 +206,11 @@ public final class SimplerTestWebServices implements WebServices {
 	public void delete(@PathParam("conId") final long conId) {
 		if (!contactDao.containsKey(conId)) {
 			//404
-			throw new VUserException(new MessageText("Contact #" + conId + " unknown", null));
+			throw new VUserException("Contact #" + conId + " unknown");
 		}
 		if (conId < 5) {
 			//401
-			throw new VSecurityException(new MessageText("You don't have enought rights", null));
+			throw new VSecurityException(MessageText.of("You don't have enought rights"));
 		}
 		//200
 		contactDao.remove(conId);
@@ -214,24 +219,17 @@ public final class SimplerTestWebServices implements WebServices {
 	@Doc("Test ws multipart body with objects. Send a body with an object of to field : contactFrom, contactTo. Each one should be an json of Contact.")
 	@POST("/innerbody")
 	public List<Contact> testInnerBodyObject(@InnerBodyParam("contactFrom") final Contact contactFrom, @InnerBodyParam("contactTo") final Contact contactTo) {
-		final List<Contact> result = new ArrayList<>(2);
-		result.add(contactFrom);
-		result.add(contactTo);
 		//offset + range ?
 		//code 200
-		return result;
+		return Arrays.asList(contactFrom, contactTo);
 	}
 
 	@Doc("Test ws multipart body with optional objects. Send a body with an object of to field : contactFrom, Optional<contactTo>. Each one should be an json of Contact.")
 	@POST("/innerbodyOptional")
-	public List<Contact> testInnerBodyOptionalObject(@InnerBodyParam("contactFrom") final Contact contactFrom, @InnerBodyParam("contactTo") final Optional<Contact> contactTo) {
+	public List<Contact> testInnerBodyOptionalObject(@InnerBodyParam("contactFrom") final Contact contactFrom, @InnerBodyParam("contactTo") final Optional<Contact> contactToOpt) {
 		final List<Contact> result = new ArrayList<>(2);
 		result.add(contactFrom);
-		if (contactTo.isPresent()) {
-			result.add(contactTo.get());
-		}
-		//offset + range ?
-		//code 200
+		contactToOpt.ifPresent(contactTo -> result.add(contactTo));
 		return result;
 	}
 
@@ -239,12 +237,11 @@ public final class SimplerTestWebServices implements WebServices {
 	@ExcludedFields({ "address", "tels" })
 	@POST("/innerLong")
 	public List<Contact> testInnerBodyLong(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo) {
-		final List<Contact> result = new ArrayList<>();
-		result.add(contactDao.get(contactIdFrom));
-		result.add(contactDao.get(contactIdTo));
 		//offset + range ?
 		//code 200
-		return result;
+		return Arrays.asList(
+				contactDao.get(contactIdFrom),
+				contactDao.get(contactIdTo));
 	}
 
 	@Doc("Test ws multipart body with primitives. Send a body with an object of to field : contactId1, contactId2. Each one should be an json of long.")
@@ -252,12 +249,11 @@ public final class SimplerTestWebServices implements WebServices {
 	@ExcludedFields({ "address", "tels" })
 	@POST("/innerLongToDtList")
 	public DtList<Contact> testInnerBodyLongToDtList(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo) {
-		final DtList<Contact> result = new DtList<>(Contact.class);
-		result.add(contactDao.get(contactIdFrom));
-		result.add(contactDao.get(contactIdTo));
+		return DtList.of(
+				contactDao.get(contactIdFrom),
+				contactDao.get(contactIdTo));
 		//offset + range ?
 		//code 200
-		return result;
 	}
 
 	@POST("/uiMessage")
@@ -278,7 +274,7 @@ public final class SimplerTestWebServices implements WebServices {
 		//offset + range ?
 		//code 200
 		if (contactFrom != null) {
-			throw new ValidationUserException(new MessageText("Process validation error", null), contactFrom, "firstName");
+			throw new ValidationUserException(MessageText.of("Process validation error"), contactFrom, "firstName");
 		}
 		return Collections.emptyList();
 	}
@@ -293,7 +289,7 @@ public final class SimplerTestWebServices implements WebServices {
 		for (final Contact contact : myList) {
 			if (contact.getName() == null || contact.getName().isEmpty()) {
 				//400
-				throw new VUserException(new MessageText("Name is mandatory", null));
+				throw new VUserException("Name is mandatory");
 			}
 		}
 		return "OK : received " + myList.size() + " contacts";
@@ -336,12 +332,13 @@ public final class SimplerTestWebServices implements WebServices {
 
 	//PUT is indempotent : ID obligatoire
 	@PUT("/contactAliasName/{conId}")
-	public Contact testUpdateByPath(@PathParam("conId") final long conId,
+	public Contact testUpdateByPath(
+			@PathParam("conId") final long conId,
 			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact,
 			@InnerBodyParam("itsatoolongaliasforfieldcontactname") final String aliasName) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
-			throw new VUserException(new MessageText("Name is mandatory", null));
+			throw new VUserException("Name is mandatory");
 		}
 		contact.setConId(conId);
 		contact.setName(aliasName);
@@ -365,16 +362,51 @@ public final class SimplerTestWebServices implements WebServices {
 		return result;
 	}
 
+	@GET("/localDate")
+	public LocalDate getLocalDate() {
+		return LocalDate.of(2017, 6, 27);
+	}
+
+	@PUT("/localDate")
+	public UiContext putLocalDate(@QueryParam("date") final LocalDate localDate) {
+		final UiContext result = new UiContext();
+		result.put("input", localDate);
+		result.put("inputAsString", localDate.toString());
+		return result;
+	}
+
+	@GET("/zonedDateTime")
+	public ZonedDateTime getZonedDateTime() {
+		return ZonedDateTime.of(2016, 5, 26, 23, 30, 20, 0, ZoneId.of("CET"));
+	}
+
+	@GET("/zonedDateTimeUTC")
+	public ZonedDateTime getZonedDateTimeUTC() {
+		return ZonedDateTime.of(2016, 7, 28, 0, 0, 0, 0, ZoneId.of("CET"));
+	}
+
+	@PUT("/zonedDateTime")
+	public UiContext putZonedDateTime(@QueryParam("date") final ZonedDateTime zonedDateTime) {
+		final UiContext result = new UiContext();
+		result.put("input", zonedDateTime);
+		result.put("inputAsString", zonedDateTime.toString());
+		return result;
+	}
+
 	@POST("/string")
 	public String testString(final String bodyString) {
 		return bodyString;
+	}
+
+	@POST("/contact/secured")
+	public String testOptionalQueryParam(final Contact contact, @QueryParam("token") final Optional<String> token) {
+		return token.orElse("empty");
 	}
 
 	/*@GET("/searchFacet")
 	public FacetedQueryResult<DtObject, ContactCriteria> testSearchServiceFaceted(final ContactCriteria contact) {
 		final DtListFunction<Contact> filterFunction = createDtListFunction(contact, Contact.class);
 		final DtList<Contact> result = filterFunction.apply((DtList<Contact>) contacts.values());
-	
 		//offset + range ?
 		//code 200
 		return result;

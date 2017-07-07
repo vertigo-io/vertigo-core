@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.search;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -62,7 +61,6 @@ import io.vertigo.dynamo.search.data.domain.CarSearchLoader;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 import io.vertigo.lang.VUserException;
 
 /**
@@ -76,10 +74,10 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 	/** Manager de recherche. */
 	@Inject
-	protected SearchManager searchManager;
+	private SearchManager searchManager;
 
 	/** IndexDefinition. */
-	protected SearchIndexDefinition carIndexDefinition;
+	private SearchIndexDefinition carIndexDefinition;
 	private FacetedQueryDefinition carFacetQueryDefinition;
 	private FacetDefinition makeFacetDefinition;
 	private FacetDefinition yearFacetDefinition;
@@ -114,7 +112,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	private static void recursiveDelete(final File file) throws IOException {
+	private static void recursiveDelete(final File file) {
 
 		if (file.isDirectory()) {
 			//list all the directory contents
@@ -137,7 +135,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	 * @param indexDefinition Definition de l'index
 	 */
 	private void clean(final SearchIndexDefinition indexDefinition) {
-		final ListFilter removeQuery = new ListFilter("*:*");
+		final ListFilter removeQuery = ListFilter.of("*:*");
 		searchManager.removeAll(indexDefinition, removeQuery);
 	}
 
@@ -416,7 +414,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testPaginatedQuery() {
 		index(false);
-		final SearchQuery searchQuery = new SearchQueryBuilder("*:*").build();
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*")).build();
 		final DtList<Car> dtListFull = doQuery(searchQuery, null).getDtList();
 		final DtList<Car> dtList1 = doQuery(searchQuery, new DtListState(4, 0, null, null)).getDtList();
 		final DtList<Car> dtList2 = doQuery(searchQuery, new DtListState(4, 4, null, null)).getDtList();
@@ -638,7 +636,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testFacetListByRange() {
 		index(true);
-		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetStrategy(carFacetQueryDefinition, EMPTY_LIST_FILTERS)
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(carIndexDefinition, searchQuery, null);
@@ -652,13 +650,13 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testFilterFacetListByRange() {
 		index(true);
-		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetStrategy(carFacetQueryDefinition, EMPTY_LIST_FILTERS)
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(carIndexDefinition, searchQuery, null);
 
 		//on applique une facette
-		final SearchQuery searchQuery2 = new SearchQueryBuilder("*:*")
+		final SearchQuery searchQuery2 = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetStrategy(createFacetQuery("FCT_YEAR_CAR", "avant", result))
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> resultFiltered = searchManager.loadList(carIndexDefinition, searchQuery2, null);
@@ -699,7 +697,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testFacetListByTerm() {
 		index(true);
-		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetStrategy(carFacetQueryDefinition, EMPTY_LIST_FILTERS)
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(carIndexDefinition, searchQuery, null);
@@ -713,13 +711,13 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testFilterFacetListByTerm() {
 		index(true);
-		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetStrategy(carFacetQueryDefinition, EMPTY_LIST_FILTERS)
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(carIndexDefinition, searchQuery, null);
 		Assert.assertEquals(carDataBase.getCarsByMaker("peugeot").size(), getFacetValueCount("FCT_MAKE_CAR", "peugeot", result));
 		//on applique une facette
-		final SearchQuery searchQuery2 = new SearchQueryBuilder("*:*")
+		final SearchQuery searchQuery2 = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetStrategy(createFacetQuery("FCT_MAKE_CAR", "peugeot", result))
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> resultFiltered = searchManager.loadList(carIndexDefinition, searchQuery2, null);
@@ -737,14 +735,14 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		final long peugeotContainsCuirCount = containsDescription(peugeotCars, "cuir");
 		//final long peugeotContainsSiegCount = carDataBase.containsDescription("cuir");
 
-		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetStrategy(carFacetQueryDefinition, EMPTY_LIST_FILTERS)
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(carIndexDefinition, searchQuery, null);
 		//logResult(result);
 		//on applique une facette
 		Assert.assertEquals(peugeotCars.size(), getFacetValueCount("FCT_MAKE_CAR", "peugeot", result));
-		final SearchQuery searchQuery2 = new SearchQueryBuilder("*:*")
+		final SearchQuery searchQuery2 = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetStrategy(createFacetQuery("FCT_MAKE_CAR", "peugeot", result))
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> result1 = searchManager.loadList(carIndexDefinition, searchQuery2, null);
@@ -752,7 +750,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		logResult(result1);
 		//on applique une autre facette
 		Assert.assertEquals(peugeotContainsCuirCount, getFacetValueCount("FCT_DESCRIPTION_CAR", "cuir", result1));
-		final SearchQuery searchQuery3 = new SearchQueryBuilder("*:*")
+		final SearchQuery searchQuery3 = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetStrategy(createFacetQuery("FCT_DESCRIPTION_CAR", "cuir", result1))
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> result2 = searchManager.loadList(carIndexDefinition, searchQuery3, null);
@@ -771,7 +769,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		final List<Car> peugeotCars = carDataBase.getCarsByMaker("peugeot");
 		final long peugeot2000To2005Count = before(peugeotCars, 2005) - before(peugeotCars, 2000);
 
-		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetStrategy(carFacetQueryDefinition, EMPTY_LIST_FILTERS)
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(carIndexDefinition, searchQuery, null);
@@ -779,7 +777,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		//on applique une facette
 		Assert.assertEquals(car2000To2005Count, getFacetValueCount("FCT_YEAR_CAR", "2000-2005", result));
 
-		final SearchQuery searchQuery2 = new SearchQueryBuilder("*:*")
+		final SearchQuery searchQuery2 = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetStrategy(createFacetQuery("FCT_YEAR_CAR", "2000-2005", result))
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> result2 = searchManager.loadList(carIndexDefinition, searchQuery2, null);
@@ -789,7 +787,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		//on applique une autre facette
 		Assert.assertEquals(peugeot2000To2005Count, getFacetValueCount("FCT_MAKE_CAR", "peugeot", result2));
 
-		final SearchQuery searchQuery3 = new SearchQueryBuilder("*:*")
+		final SearchQuery searchQuery3 = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetStrategy(createFacetQuery("FCT_MAKE_CAR", "peugeot", result2))
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> result1 = searchManager.loadList(carIndexDefinition, searchQuery3, null);
@@ -803,7 +801,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testClusterByFacetTerm() {
 		index(true);
-		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetClustering(makeFacetDefinition)
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(carIndexDefinition, searchQuery, null);
@@ -811,12 +809,9 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		//On vérifie qu'il existe une valeur pour chaque marques et que le nombre d'occurrences est correct
 		final Map<String, List<Car>> databaseCluster = new HashMap<>();
 		for (final Car car : carDataBase.getAllCars()) {
-			List<Car> carsByMake = databaseCluster.get(car.getMake().toLowerCase(Locale.FRENCH));
-			if (carsByMake == null) {
-				carsByMake = new ArrayList<>();
-				databaseCluster.put(car.getMake().toLowerCase(Locale.FRENCH), carsByMake);
-			}
-			carsByMake.add(car);
+			databaseCluster.computeIfAbsent(car.getMake().toLowerCase(Locale.FRENCH),
+					k -> new ArrayList<>())
+					.add(car);
 		}
 		int previousCount = Integer.MAX_VALUE;
 		Assert.assertEquals(databaseCluster.size(), result.getClusters().size());
@@ -853,16 +848,16 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testClusterByFacetRange() {
 		index(true);
-		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetClustering(yearFacetDefinition) // "avant 2000", "2000-2005", "après 2005"
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(carIndexDefinition, searchQuery, null);
 
 		//On vérifie qu'il existe une valeur pour chaque marques et que le nombre d'occurrences est correct
 		final Map<String, List<Car>> databaseCluster = new HashMap<>();
-		databaseCluster.put(YearCluster.before2000.getLabel(), new ArrayList<Car>());
-		databaseCluster.put(YearCluster.between2000and2005.getLabel(), new ArrayList<Car>());
-		databaseCluster.put(YearCluster.after2005.getLabel(), new ArrayList<Car>());
+		databaseCluster.put(YearCluster.before2000.getLabel(), new ArrayList<>());
+		databaseCluster.put(YearCluster.between2000and2005.getLabel(), new ArrayList<>());
+		databaseCluster.put(YearCluster.after2005.getLabel(), new ArrayList<>());
 		for (final Car car : carDataBase.getAllCars()) {
 			if (car.getYear() < 2000) {
 				databaseCluster.get(YearCluster.before2000.getLabel()).add(car);
@@ -896,7 +891,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testSortedClusterByFacetTerm() {
 		index(true);
-		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetClustering(makeFacetDefinition)
 				.build();
 
@@ -906,14 +901,9 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		//On vérifie qu'il existe une valeur pour chaque marques et que la première est bien la plus ancienne
 		final Map<String, Set<Car>> databaseCluster = new HashMap<>();
 		for (final Car car : carDataBase.getAllCars()) {
-			Set<Car> carsByMake = databaseCluster.get(car.getMake().toLowerCase(Locale.FRENCH));
-			if (carsByMake == null) {
-				carsByMake = new TreeSet<>((e1, e2) -> {
-					return e2.getYear().compareTo(e1.getYear());
-				});
-				databaseCluster.put(car.getMake().toLowerCase(Locale.FRENCH), carsByMake);
-			}
-			carsByMake.add(car);
+			databaseCluster.computeIfAbsent(car.getMake().toLowerCase(Locale.FRENCH),
+					k -> new TreeSet<>((e1, e2) -> e2.getYear().compareTo(e1.getYear())))
+					.add(car);
 		}
 		Assert.assertEquals(databaseCluster.size(), result.getClusters().size());
 		for (final Entry<FacetValue, DtList<Car>> entry : result.getClusters().entrySet()) {
@@ -933,16 +923,16 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testClusterByFacetRangeVerySmallMaxRows() {
 		index(true);
-		final SearchQuery searchQuery = new SearchQueryBuilder("*:*")
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetClustering(yearFacetDefinition) // "avant 2000", "2000-2005", "après 2005"
 				.build();
 		final FacetedQueryResult<Car, SearchQuery> result = searchManager.loadList(carIndexDefinition, searchQuery, new DtListState(1, 0, null, null));
 
 		//On vérifie qu'il existe une valeur pour chaque marques et que le nombre d'occurrences est correct
 		final Map<String, List<Car>> databaseCluster = new HashMap<>();
-		databaseCluster.put(YearCluster.before2000.getLabel(), new ArrayList<Car>());
-		databaseCluster.put(YearCluster.between2000and2005.getLabel(), new ArrayList<Car>());
-		databaseCluster.put(YearCluster.after2005.getLabel(), new ArrayList<Car>());
+		databaseCluster.put(YearCluster.before2000.getLabel(), new ArrayList<>());
+		databaseCluster.put(YearCluster.between2000and2005.getLabel(), new ArrayList<>());
+		databaseCluster.put(YearCluster.after2005.getLabel(), new ArrayList<>());
 		for (final Car car : carDataBase.getAllCars()) {
 			if (car.getYear() < 2000) {
 				databaseCluster.get(YearCluster.before2000.getLabel()).add(car);
@@ -1014,7 +1004,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		waitIndexation();
 	}
 
-	protected void remove(final String query) {
+	private void remove(final String query) {
 		doRemove(query);
 		waitIndexation();
 	}
@@ -1044,13 +1034,13 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private void doRemove(final String query) {
-		final ListFilter removeQuery = new ListFilter(query);
+		final ListFilter removeQuery = ListFilter.of(query);
 		searchManager.removeAll(carIndexDefinition, removeQuery);
 	}
 
 	private long query(final String query) {
 		//recherche
-		final SearchQuery searchQuery = new SearchQueryBuilder(query)
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of(query))
 				.build();
 
 		return doQuery(searchQuery, null).getCount();
@@ -1058,8 +1048,8 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 	private long query(final String query, final String securityFilter) {
 		//recherche
-		final SearchQuery searchQuery = new SearchQueryBuilder(query)
-				.withSecurityFilter(new ListFilter(securityFilter))
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of(query))
+				.withSecurityFilter(ListFilter.of(securityFilter))
 				.build();
 
 		return doQuery(searchQuery, null).getCount();
@@ -1067,7 +1057,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 	private Car doQueryAndGetFirst(final String query, final String sortField, final boolean sortDesc) {
 		//recherche
-		final SearchQuery searchQuery = new SearchQueryBuilder(query)
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of(query))
 				.build();
 		final DtListState listState = new DtListState(null, 0, carIndexDefinition.getIndexDtDefinition().getField(sortField).getName(), sortDesc);
 		final DtList<Car> dtList = doQuery(searchQuery, listState).getDtList();
@@ -1080,7 +1070,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private FacetedQueryResult<Car, SearchQuery> doFacetQuery(final String query) {
-		final SearchQuery searchQuery = new SearchQueryBuilder(query)
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of(query))
 				.withFacetStrategy(carFacetQueryDefinition, EMPTY_LIST_FILTERS)
 				.build();
 		return searchManager.loadList(carIndexDefinition, searchQuery, null);

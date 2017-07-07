@@ -67,7 +67,7 @@ final class IndexDtListFunctionBuilderImpl<D extends DtObject> implements IndexD
 		Assertion.checkNotNull(value);
 		//-----
 		final String escapedValue = value.replace("\"", "\\\"");
-		final ListFilter listFilter = new ListFilter(fieldName + ":\"" + escapedValue + "\"");
+		final ListFilter listFilter = ListFilter.of(fieldName + ":\"" + escapedValue + "\"");
 		indexFilterFunction.filter(listFilter);
 		return this;
 	}

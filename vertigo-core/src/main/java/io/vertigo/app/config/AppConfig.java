@@ -36,18 +36,30 @@ public final class AppConfig {
 	private final BootConfig bootConfig;
 	private final List<ModuleConfig> modules;
 	private final List<ComponentInitializerConfig> initializers;
+	private final NodeConfig nodeConfig;
 
 	AppConfig(
 			final BootConfig bootConfig,
 			final List<ModuleConfig> moduleConfigs,
-			final List<ComponentInitializerConfig> componentInitializerConfigs) {
+			final List<ComponentInitializerConfig> componentInitializerConfigs,
+			final NodeConfig nodeConfig) {
 		Assertion.checkNotNull(bootConfig);
 		Assertion.checkNotNull(moduleConfigs);
 		Assertion.checkNotNull(componentInitializerConfigs);
+		Assertion.checkNotNull(nodeConfig);
 		//---
 		this.bootConfig = bootConfig;
 		modules = Collections.unmodifiableList(new ArrayList<>(moduleConfigs));
 		initializers = Collections.unmodifiableList(new ArrayList<>(componentInitializerConfigs));
+		this.nodeConfig = nodeConfig;
+	}
+
+	/**
+	 * Static method factory for AppConfigBuilder
+	 * @return AppConfigBuilder
+	 */
+	public static AppConfigBuilder builder() {
+		return new AppConfigBuilder();
 	}
 
 	/**
@@ -71,6 +83,14 @@ public final class AppConfig {
 	 */
 	public List<ComponentInitializerConfig> getComponentInitializerConfigs() {
 		return initializers;
+	}
+
+	/**
+	 *
+	 * @return the config of the node
+	 */
+	public NodeConfig getNodeConfig() {
+		return nodeConfig;
 	}
 
 	//=========================================================================
@@ -128,4 +148,5 @@ public final class AppConfig {
 		final String result = (value != null ? value : "") + "                                                                  ";
 		return result.substring(0, size);
 	}
+
 }

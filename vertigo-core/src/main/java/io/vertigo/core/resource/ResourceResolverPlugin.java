@@ -21,7 +21,7 @@ package io.vertigo.core.resource;
 import java.net.URL;
 import java.util.Optional;
 
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 
 /**
  * Résout une ressource en fournissant son URL.

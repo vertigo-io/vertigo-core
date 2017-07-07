@@ -60,18 +60,13 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 	/** {@inheritDoc} */
 	@Override
 	public void trace(final String category, final String name, final Consumer<AnalyticsTracer> consumer) {
-		if (!enabled) {
-			consumer.accept(AnalyticsTracerDummy.DUMMY_TRACER);
-		} else {
-			// When collect feature is enabled
-			try (AnalyticsTracerImpl tracer = createTracer(category, name)) {
-				try {
-					consumer.accept(tracer);
-					tracer.markAsSucceeded();
-				} catch (final Exception e) {
-					tracer.markAsFailed(e);
-					throw e;
-				}
+		try (AnalyticsTracerImpl tracer = createTracer(category, name)) {
+			try {
+				consumer.accept(tracer);
+				tracer.markAsSucceeded();
+			} catch (final Exception e) {
+				tracer.markAsFailed(e);
+				throw e;
 			}
 		}
 	}
@@ -79,10 +74,6 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 	/** {@inheritDoc} */
 	@Override
 	public <O> O traceWithReturn(final String category, final String name, final Function<AnalyticsTracer, O> function) {
-		if (!enabled) {
-			return function.apply(AnalyticsTracerDummy.DUMMY_TRACER);
-		}
-		// When collect feature is enabled
 		try (AnalyticsTracerImpl tracer = createTracer(category, name)) {
 			try {
 				final O result = function.apply(tracer);
@@ -93,7 +84,6 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 				throw e;
 			}
 		}
-
 	}
 
 	/** {@inheritDoc} */
@@ -103,11 +93,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 			return Optional.empty();
 		}
 		// When collect feature is enabled
-		final Optional<AnalyticsTracerImpl> analyticstracerOpt = doGetCurrentTracer();
-		if (analyticstracerOpt.isPresent()) {
-			return Optional.of(analyticstracerOpt.get());
-		}
-		return Optional.empty();
+		return doGetCurrentTracer().map(a -> a); // convert impl to api
 	}
 
 	private static Optional<AnalyticsTracerImpl> doGetCurrentTracer() {
@@ -125,9 +111,9 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 
 	private AnalyticsTracerImpl createTracer(final String category, final String name) {
 		final Optional<AnalyticsTracerImpl> parent = doGetCurrentTracer();
-		final AnalyticsTracerImpl analyticstracer = new AnalyticsTracerImpl(parent, category, name, this::onClose);
-		push(analyticstracer);
-		return analyticstracer;
+		final AnalyticsTracerImpl analyticsTracer = new AnalyticsTracerImpl(parent, category, name, this::onClose);
+		push(analyticsTracer);
+		return analyticsTracer;
 	}
 
 	private void onClose(final AProcess process) {

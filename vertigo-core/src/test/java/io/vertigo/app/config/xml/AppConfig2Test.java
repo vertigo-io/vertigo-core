@@ -54,6 +54,16 @@ public final class AppConfig2Test {
 
 	}
 
+	@Test
+	public void nodeTest() {
+
+		final AppConfig appConfig = new XMLAppConfigBuilder()
+				.withModules(getClass(), new Properties(), "bio-node.xml")
+				.build();
+
+		testBioManager(appConfig);
+	}
+
 	private void testBioManager(final AppConfig appConfig) {
 		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			assertEquals(app, app);

@@ -41,23 +41,37 @@ public final class ModuleConfig {
 	private final List<ComponentConfig> components;
 	private final List<PluginConfig> plugins;
 	private final List<AspectConfig> aspects;
+	private final List<ProxyFactoryConfig> proxyFactoryConfigs;
 
-	ModuleConfig(final String name,
+	ModuleConfig(
+			final String name,
 			final List<DefinitionProviderConfig> definitionProviderConfigs,
 			final List<ComponentConfig> componentConfigs,
 			final List<PluginConfig> pluginConfigs,
-			final List<AspectConfig> aspectConfigs) {
+			final List<AspectConfig> aspectConfigs,
+			final List<ProxyFactoryConfig> proxyFactoryConfigs) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(definitionProviderConfigs);
 		Assertion.checkNotNull(componentConfigs);
 		Assertion.checkNotNull(pluginConfigs);
 		Assertion.checkNotNull(aspectConfigs);
+		Assertion.checkNotNull(proxyFactoryConfigs);
 		//-----
 		this.name = name;
 		definitionProviders = Collections.unmodifiableList(new ArrayList<>(definitionProviderConfigs));
 		components = Collections.unmodifiableList(new ArrayList<>(componentConfigs));
 		plugins = Collections.unmodifiableList(new ArrayList<>(pluginConfigs));
 		aspects = aspectConfigs;
+		this.proxyFactoryConfigs = proxyFactoryConfigs;
+	}
+
+	/**
+	 * Static method factory for ModuleConfigBuilder
+	 * @param name Name of the module
+	 * @return ModuleConfigBuilder
+	 */
+	public static ModuleConfigBuilder builder(final String name) {
+		return new ModuleConfigBuilder(name);
 	}
 
 	public List<DefinitionProviderConfig> getDefinitionProviderConfigs() {
@@ -79,6 +93,13 @@ public final class ModuleConfig {
 	 */
 	public List<AspectConfig> getAspectConfigs() {
 		return aspects;
+	}
+
+	/**
+	 * @return the list of the ProxyFactory-configs
+	 */
+	public List<ProxyFactoryConfig> getProxyFactoryConfigs() {
+		return proxyFactoryConfigs;
 	}
 
 	/**

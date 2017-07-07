@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.vertigo.app.Home;
-import io.vertigo.dynamo.domain.metamodel.DataStream;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.Entity;
@@ -38,6 +38,7 @@ import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.DataStream;
 
 /**
  * Permet de gérer les accès atomiques à n'importe quel type de stockage SQL/
@@ -45,7 +46,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien, npiedeloup
  */
-public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implements FileStorePlugin {
+public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implements FileStorePlugin, Activeable {
 
 	/**
 	 * Liste des champs du Dto de stockage.
@@ -57,10 +58,11 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	}
 
 	private final FileManager fileManager;
-	private final DtDefinition storeDtDefinition;
+	private final String storeDtDefinitionName;
+	private DtDefinition storeDtDefinition;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param name Store name
 	 * @param storeDtDefinitionName Nom du dt de stockage
 	 * @param fileManager Manager de gestion des fichiers
@@ -74,8 +76,19 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		Assertion.checkArgNotEmpty(storeDtDefinitionName);
 		Assertion.checkNotNull(fileManager);
 		//-----
+		this.storeDtDefinitionName = storeDtDefinitionName;
 		this.fileManager = fileManager;
+	}
+
+	@Override
+	public void start() {
 		storeDtDefinition = Home.getApp().getDefinitionSpace().resolve(storeDtDefinitionName, DtDefinition.class);
+	}
+
+	@Override
+	public void stop() {
+		// nothing
+
 	}
 
 	/** {@inheritDoc} */
@@ -97,7 +110,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 
 	/** {@inheritDoc} */
 	@Override
-	public void create(final FileInfo fileInfo) {
+	public FileInfo create(final FileInfo fileInfo) {
 		checkReadonly();
 		Assertion.checkNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
 		checkDefinitionStoreBinding(fileInfo.getDefinition());
@@ -110,6 +123,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		Assertion.checkNotNull(fileInfoDtoId, "ID  du fichier doit être renseignée.");
 		final FileInfoURI uri = new FileInfoURI(fileInfo.getDefinition(), fileInfoDtoId);
 		fileInfo.setURIStored(uri);
+		return fileInfo;
 	}
 
 	/** {@inheritDoc} */

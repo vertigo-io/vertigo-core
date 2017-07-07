@@ -18,6 +18,7 @@
  */
 package io.vertigo.lang;
 
+import java.util.Objects;
 import java.util.function.BooleanSupplier;
 
 import io.vertigo.util.StringUtil;
@@ -52,9 +53,7 @@ public final class Assertion {
 	 * @param o Object object  that must be not null
 	 */
 	public static void checkNotNull(final Object o) {
-		if (o == null) {
-			throw new NullPointerException();
-		}
+		Objects.requireNonNull(o);
 	}
 
 	/**
@@ -67,9 +66,7 @@ public final class Assertion {
 	 */
 	public static void checkNotNull(final Object o, final String msg, final Object... params) {
 		//Attention si o est un Boolean : il peut s'agir du resultat d'un test (boolean) qui a été autoboxé en Boolean
-		if (o == null) {
-			throw new NullPointerException(StringUtil.format(msg, params));
-		}
+		Objects.requireNonNull(o, () -> StringUtil.format(msg, params));
 	}
 
 	/**

@@ -92,13 +92,8 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<Object>> {
 		} else {
 			escapeMode = EscapeMode.none;
 		}
-		final Optional<List<Object>> defaultRule = (Optional<List<Object>>) term.get(6);
-		final Optional<String> defaultValue;
-		if (defaultRule.isPresent()) {
-			defaultValue = Optional.ofNullable((String) defaultRule.get().get(1));
-		} else {
-			defaultValue = Optional.empty();
-		}
+		final Optional<List<Object>> defaultRuleOpt = (Optional<List<Object>>) term.get(6);
+		final Optional<String> defaultValue = defaultRuleOpt.map(defaultRule -> (String) defaultRule.get(1));
 
 		final String postQuery = (String) parsing.get(3);
 		//final String postSpaces = (String) parsing.get(4);

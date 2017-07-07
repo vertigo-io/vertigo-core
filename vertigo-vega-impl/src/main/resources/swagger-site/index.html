@@ -71,7 +71,14 @@
         jsonEditor: false,
         defaultModelRendering: 'schema',
         showRequestHeaders: false,
-        showOperationIds: false
+        showOperationIds: false,
+        // sort apis by tag (className)
+        apisSorter:  function (e, t) {
+            if (_.isArray(e.tags) && e.tags.length > 0 && _.isArray(t.tags) && t.tags.length > 0){
+              return e.tags[0].localeCompare(t.tags[0]);
+            }
+            return e.name.localeCompare(t.name); 
+        } 
       });
 
       window.swaggerUi.load();

@@ -28,8 +28,8 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.engines.webservice.json.UiContext;
-import io.vertigo.vega.engines.webservice.json.UiListModifiable;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
+import io.vertigo.vega.engines.webservice.json.UiListModifiable;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 
@@ -57,14 +57,18 @@ public final class DtListJsonConverter implements JsonConverter {
 	@Override
 	public void populateWebServiceCallContext(final Object input, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
 		final Class<?> paramClass = webServiceParam.getType();
-		Assertion.checkArgument(DtList.class.isAssignableFrom(paramClass), "This JsonConverter can't read the asked type {0}. Only {1} is supported", paramClass.getSimpleName(), DtList.class.getSimpleName());
-		Assertion.checkArgument(getSupportedInputs()[0].isInstance(input) || getSupportedInputs()[1].isInstance(input), "This JsonConverter doesn't support this input type {0}. Only {1} is supported", input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
+		Assertion.checkArgument(
+				DtList.class.isAssignableFrom(paramClass),
+				"This JsonConverter can't read the asked type {0}. Only {1} is supported", paramClass.getSimpleName(), DtList.class.getSimpleName());
+		Assertion.checkArgument(
+				getSupportedInputs()[0].isInstance(input) || getSupportedInputs()[1].isInstance(input),
+				"This JsonConverter doesn't support this input type {0}. Only {1} is supported", input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
 		//-----
 		final Type paramGenericType = webServiceParam.getGenericType();
 		final String objectPath;
 		final UiListModifiable<DtObject> uiList;
 		if (input instanceof String) {
-			uiList = jsonReaderEngine.<DtObject> uiListFromJson((String) input, paramGenericType);
+			uiList = jsonReaderEngine.uiListFromJson((String) input, paramGenericType);
 			objectPath = "";
 		} else if (input instanceof UiContext) {
 			uiList = (UiListModifiable<DtObject>) ((UiContext) input).get(webServiceParam.getName());

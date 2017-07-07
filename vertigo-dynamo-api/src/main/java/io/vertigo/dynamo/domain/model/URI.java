@@ -46,7 +46,7 @@ public final class URI<E extends Entity> implements Serializable {
 	/**
 	 * Expression réguliére vérifiée par les URN.
 	 */
-	public static final Pattern REGEX_URN = Pattern.compile("[a-zA-Z0-9_:@$-]{5,80}");
+	private static final Pattern REGEX_URN = Pattern.compile("[a-zA-Z0-9_:@$-]{5,80}");
 
 	private final DefinitionReference<DtDefinition> definitionRef;
 	private final Serializable id;
@@ -55,7 +55,7 @@ public final class URI<E extends Entity> implements Serializable {
 	private final String urn;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param definition Definition de la ressource
 	 * @param id Clé de la ressource
 	 */
@@ -127,6 +127,11 @@ public final class URI<E extends Entity> implements Serializable {
 	//=============================STATIC======================================
 	//=========================================================================
 
+	/**
+	 * Parse URI from URN.
+	 * @param urn URN to parse
+	 * @return URI to result
+	 */
 	public static URI<?> fromURN(final String urn) {
 		Assertion.checkNotNull(urn);
 		//-----
@@ -151,9 +156,8 @@ public final class URI<E extends Entity> implements Serializable {
 	 * @return Chaine représentant la clé
 	 */
 	private static String idToString(final Serializable key) {
-		if (key == null) {
-			return null;
-		}
+		Assertion.checkNotNull(key);
+		//---
 		if (key instanceof String) {
 			return StringUtil.isEmpty((String) key) ? null : "s-" + ((String) key).trim();
 		} else if (key instanceof Integer) {
@@ -161,7 +165,7 @@ public final class URI<E extends Entity> implements Serializable {
 		} else if (key instanceof Long) {
 			return "l-" + key;
 		}
-		throw new IllegalArgumentException(key.toString() + " n'est pas géré par URI");
+		throw new IllegalArgumentException(key.toString() + " not supported by URI");
 	}
 
 	/**
@@ -170,9 +174,8 @@ public final class URI<E extends Entity> implements Serializable {
 	 * @return Clé lue é partir de la chaine
 	 */
 	private static Serializable stringToId(final String strValue) {
-		if (StringUtil.isEmpty(strValue)) {
-			return null;
-		}
+		Assertion.checkArgNotEmpty(strValue);
+		//---
 		if (strValue.startsWith("s-")) {
 			return strValue.substring(2);
 		} else if (strValue.startsWith("i-")) {
@@ -180,6 +183,6 @@ public final class URI<E extends Entity> implements Serializable {
 		} else if (strValue.startsWith("l-")) {
 			return Long.valueOf(strValue.substring(2));
 		}
-		throw new IllegalArgumentException(strValue + " n'est pas géré par par URI.");
+		throw new IllegalArgumentException(strValue + " not supported by URI");
 	}
 }

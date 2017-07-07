@@ -72,11 +72,6 @@ public final class KspProperty {
 	public static final String DISPLAY_FIELD = "DISPLAY_FIELD";
 
 	/**
-	 * Le DT est-il représentée par un bean ou de maniére générique(dynamique)
-	 */
-	public static final String DYNAMIC = "DYNAMIC";
-
-	/**
 	 * Le Stereotype appliqué au DT : Data (defaut), MasterData ou KeyConcept
 	 */
 	public static final String STEREOTYPE = "STEREOTYPE";
@@ -183,18 +178,6 @@ public final class KspProperty {
 	 * Proriété Regex de type String.
 	 */
 	public static final String REGEX = "REGEX";
-
-	//	/**
-	//	 * Propriété de contrainte : valeur minimum, Double.
-	//	 * Dans le cas d'une date, cette propriété contient le timestamp de la date min.
-	//	 */
-	//	private static final EntityProperty MIN_VALUE = new EntityProperty("MIN_VALUE", EntityPropertyType.Double);
-	//
-	//	/**
-	//	 * Propriété de contrainte : valeur maximum, Double.
-	//	 * Dans le cas d'une date, cette propriété contient le timestamp de la date max.
-	//	 */
-	//	private static final EntityProperty MAX_VALUE = new EntityProperty("MAX_VALUE", EntityPropertyType.Double);
 
 	//==============================
 	//-----Style

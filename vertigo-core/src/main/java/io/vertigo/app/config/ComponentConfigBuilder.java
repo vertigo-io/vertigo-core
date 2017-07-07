@@ -19,14 +19,15 @@
 package io.vertigo.app.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import io.vertigo.core.component.Component;
 import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Component;
 
 /**
  * This class allows to configure a component step by step.
@@ -34,22 +35,53 @@ import io.vertigo.lang.Component;
  * @author npiedeloup, pchretien
  */
 public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
-	//Par convention l'id du composant manager est le simpleName de la classe de l'api ou de l'impl.
-	private final Optional<Class<? extends Component>> optionalApiClass;
+	private String myId;
+	private Class<? extends Component> myApiClass;
 	private final Class<? extends Component> implClass;
 	private final List<Param> myParams = new ArrayList<>();
 
 	/**
 	 * Constructor of a component config
-	 * @param optionalApiClass and optional apiClass for the component
 	 * @param implClass the impl class of the component
 	 */
-	public ComponentConfigBuilder(final Optional<Class<? extends Component>> optionalApiClass, final Class<? extends Component> implClass) {
-		Assertion.checkNotNull(optionalApiClass);
+	ComponentConfigBuilder(final Class<? extends Component> implClass) {
 		Assertion.checkNotNull(implClass);
 		//-----
-		this.optionalApiClass = optionalApiClass;
 		this.implClass = implClass;
+	}
+
+	/**
+	 * @param apiClass the apiClass for the component
+	 * @return this builder
+	 */
+	public ComponentConfigBuilder withApi(final Class<? extends Component> apiClass) {
+		Assertion.checkNotNull(apiClass);
+		//-----
+		myApiClass = apiClass;
+		return this;
+	}
+
+	/**
+	 * Adds a list of params to this component config.
+	 * @param params the list of params
+	 * @return this builder
+	 */
+	public ComponentConfigBuilder addParams(final List<Param> params) {
+		Assertion.checkNotNull(params);
+		//-----
+		myParams.addAll(params);
+		return this;
+	}
+
+	/**
+	 * Adds a list of params to this component config.
+	 * @param params the list of params
+	 * @return this builder
+	 */
+	public ComponentConfigBuilder addParams(final Param[] params) {
+		Assertion.checkNotNull(params);
+		//-----
+		return addParams(Arrays.asList(params));
 	}
 
 	/**
@@ -64,10 +96,27 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 		return this;
 	}
 
+	/**
+	 * Specifies the id to be used (otherwise an id will be chosen by convention) see build method.
+	 * @param id the id to use
+	 * @return this builder
+	 */
+	public ComponentConfigBuilder withId(final String id) {
+		Assertion.checkArgNotEmpty(id);
+		//---
+		myId = id;
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public ComponentConfig build() {
-		final String id = optionalApiClass.isPresent() ? DIAnnotationUtil.buildId(optionalApiClass.get()) : DIAnnotationUtil.buildId(implClass);
-		return new ComponentConfig(id, optionalApiClass, implClass, myParams);
+		final Optional<Class<? extends Component>> apiClassOpt = Optional.ofNullable(myApiClass);
+		if (myId == null) {
+			//Par convention l'id du composant manager est le simpleName de la classe de l'api ou de l'impl.
+			myId = DIAnnotationUtil.buildId(apiClassOpt.orElse(implClass));
+		}
+		return new ComponentConfig(myId, apiClassOpt, implClass, myParams);
 	}
+
 }

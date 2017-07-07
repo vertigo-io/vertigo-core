@@ -46,7 +46,7 @@ public final class Facet implements Serializable {
 	private final Map<FacetValue, Long> facetValues;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param facetDefinition Definition de la facette
 	 * @param facetValues Liste des valeurs de facette (ordonnée)
 	 */

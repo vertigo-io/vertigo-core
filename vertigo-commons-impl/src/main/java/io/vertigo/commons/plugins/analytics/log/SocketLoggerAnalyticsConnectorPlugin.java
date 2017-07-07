@@ -35,6 +35,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.impl.analytics.AProcess;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.lang.Assertion;
@@ -58,6 +59,8 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	/**
 	 * Constructor.
+	 * @param daemonManager the daemonManager
+	 * @param appName the app name
 	 * @param hostNameOpt hostName of the remote server
 	 * @param portOpt port of the remote server
 	 */
@@ -75,8 +78,6 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		port = portOpt.orElse(DEFAULT_SERVER_PORT);
 		this.appName = appName;
 		localHostName = retrieveHostName();
-		//---
-		daemonManager.registerDaemon("remoteLogger", () -> this::pollQueue, 1);
 	}
 
 	/** {@inheritDoc} */
@@ -91,7 +92,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		try {
 			return InetAddress.getLocalHost().getHostName();
 		} catch (final UnknownHostException e) {
-			Logger.getRootLogger().info(e);
+			Logger.getRootLogger().info("Cannot retrieve hostname", e);
 			return "UnknownHost";
 		}
 	}
@@ -111,7 +112,11 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		return logger;
 	}
 
-	private void pollQueue() {
+	/**
+	 * Daemon to unstack processes to end them
+	 */
+	@DaemonScheduled(name = "DMN_REMOTE_LOGGER", periodInSeconds = 1)
+	public void pollQueue() {
 		while (!processQueue.isEmpty()) {
 			final AProcess head = processQueue.poll();
 			if (head != null) {

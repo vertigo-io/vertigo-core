@@ -25,7 +25,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Include fields from this annotated object (not included fields are rejected). 
+ * Include fields from this annotated object (not included fields are rejected).
  * Can be use for input or output datas.
  * @author npiedeloup
  */

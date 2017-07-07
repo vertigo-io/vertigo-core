@@ -24,8 +24,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import io.vertigo.dynamo.collections.CollectionsManagerTest;
 import io.vertigo.dynamo.collections.FacetManagerTest;
-import io.vertigo.dynamo.database.DataBaseManagerTest;
-import io.vertigo.dynamo.domain.DomainManagerTest;
+import io.vertigo.dynamo.criteria.predicate.PredicateCriteriaTest;
+import io.vertigo.dynamo.criteria.sql.SqlCriteriaTest;
 import io.vertigo.dynamo.domain.constraint.ConstraintTest;
 import io.vertigo.dynamo.domain.formatter.BooleanFormatterTest;
 import io.vertigo.dynamo.domain.formatter.DateFormatterTest;
@@ -58,15 +58,13 @@ import io.vertigo.dynamo.search.multiindex.SearchManagerMultiIndexTest;
 import io.vertigo.dynamo.search.standard.SearchManagerTest;
 import io.vertigo.dynamo.search.withstore.SearchManagerStoreTest;
 import io.vertigo.dynamo.store.cache.CachedStoreManagerTest;
-import io.vertigo.dynamo.store.datastore.criteria.predicate.PredicateCriteriaTest;
-import io.vertigo.dynamo.store.datastore.criteria.sql.SqlCriteriaTest;
-import io.vertigo.dynamo.store.datastore.direct.StoreManagerTest;
 import io.vertigo.dynamo.store.datastore.jpa.JpaStoreManagerTest;
 import io.vertigo.dynamo.store.datastore.multistore.MultiStoreManagerTest;
+import io.vertigo.dynamo.store.datastore.sql.vendor.H2SqlStoreManagerTest;
+import io.vertigo.dynamo.store.datastore.sql.vendor.OracleSqlStoreManagerTest;
 import io.vertigo.dynamo.task.TaskManagerTest;
+import io.vertigo.dynamo.task.x.TaskEngineProcBatchTest;
 import io.vertigo.dynamo.task.x.TaskEngineSelectDynamicTest;
-import io.vertigo.dynamo.transaction.VTransactionBeforeAfterCommitTest;
-import io.vertigo.dynamo.transaction.VTransactionManagerTest;
 import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 
 /**
@@ -79,15 +77,12 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		//--collections
 		CollectionsManagerTest.class,
 		FacetManagerTest.class,
-		//--database
-		DataBaseManagerTest.class,
 		//--domain
 		ConstraintTest.class,
 		BooleanFormatterTest.class,
 		DateFormatterTest.class,
 		NumberFormatterTest.class,
 		StringFormatterTest.class,
-		DomainManagerTest.class,
 		//--Environment
 		//----EAXMI
 		EAXmiEnvironmentManagerTest.class,
@@ -123,22 +118,26 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		SearchManagerTest.class,
 		SearchManagerStoreTest.class,
 		//--store
+		//----------cache
 		CachedStoreManagerTest.class,
-		StoreManagerTest.class,
-		JpaStoreManagerTest.class,
+		//----------sql
+		H2SqlStoreManagerTest.class,
+		OracleSqlStoreManagerTest.class,
+		//----------multistore
 		MultiStoreManagerTest.class,
+		//----------jpa
+		JpaStoreManagerTest.class,
 		//--task
 		TaskManagerTest.class,
 		TaskEngineSelectDynamicTest.class,
-		//--transaction
-		VTransactionManagerTest.class,
-		VTransactionBeforeAfterCommitTest.class,
+		TaskEngineProcBatchTest.class,
 		//x
 		DslListFilterBuilderTest.class,
 
 		//Criteria
 		SqlCriteriaTest.class,
 		PredicateCriteriaTest.class,
+		//---
 		EnvironmentManagerTest.class
 
 })

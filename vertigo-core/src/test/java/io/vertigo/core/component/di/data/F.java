@@ -40,9 +40,9 @@ public final class F {
 
 	@Inject
 	public F(
-			@Named("param1") String param1,
-			@Named("param3") Optional<String> param3,
-			@Named("param4") Optional<String> param4) {
+			@Named("param1") final String param1,
+			@Named("param3") final Optional<String> param3,
+			@Named("param4") final Optional<String> param4) {
 		Assertion.checkNotNull(param1);
 		Assertion.checkNotNull(param3);
 		Assertion.checkNotNull(param4);

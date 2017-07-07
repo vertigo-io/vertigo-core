@@ -28,11 +28,11 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.component.Container;
 import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.core.component.di.DIDependency;
 import io.vertigo.core.component.di.DIException;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Container;
 import io.vertigo.util.ClassUtil;
 
 /**

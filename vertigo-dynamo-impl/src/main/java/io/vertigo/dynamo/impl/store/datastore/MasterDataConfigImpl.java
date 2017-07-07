@@ -21,9 +21,9 @@ package io.vertigo.dynamo.impl.store.datastore;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
-import io.vertigo.dynamo.collections.CollectionsManager;
-import io.vertigo.dynamo.collections.DtListProcessor;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
@@ -34,28 +34,14 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class MasterDataConfigImpl implements MasterDataConfig {
-
-	/**
-	 * Fonction de DtList acceptant tout (pour rester not null).
-	 */
-	private final DtListProcessor identityFunction;
-
-	/** CollectionsManager.*/
-	private final CollectionsManager collectionsManager;
-
-	private final Map<DtListURIForMasterData, DtListProcessor> mdlUriFilterMap = new HashMap<>();
+	private final Map<DtListURIForMasterData, Predicate> mdlUriFilterMap = new HashMap<>();
 	private final Map<DtDefinition, DtListURIForMasterData> defaultMdlMap2 = new HashMap<>();
 
 	/**
-	 * Constructeur.
-	 * @param collectionsManager Manager des collections
+	 * Constructor.
 	 */
-	public MasterDataConfigImpl(final CollectionsManager collectionsManager) {
-		Assertion.checkNotNull(collectionsManager);
-		//-----
-		this.collectionsManager = collectionsManager;
-		//identity function do nothing
-		identityFunction = collectionsManager.createDtListProcessor();
+	public MasterDataConfigImpl() {
+		super();
 	}
 
 	/** {@inheritDoc} */
@@ -64,9 +50,7 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(fieldName);
 		//-----
-		final DtListProcessor dtListFilter = collectionsManager.createDtListProcessor()
-				.filterByValue(fieldName, value);
-		register(uri, dtListFilter);
+		register(uri, Criterions.isEqualTo(() -> fieldName, value).toPredicate());
 	}
 
 	/** {@inheritDoc} */
@@ -76,10 +60,10 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 		Assertion.checkNotNull(fieldName1);
 		Assertion.checkNotNull(fieldName2);
 		//-----
-		final DtListProcessor dtListFilter = collectionsManager.createDtListProcessor()
-				.filterByValue(fieldName1, value1)
-				.filterByValue(fieldName2, value2);
-		register(uri, dtListFilter);
+		final Predicate filter1 = Criterions.isEqualTo(() -> fieldName1, value1).toPredicate();
+		final Predicate filter2 = Criterions.isEqualTo(() -> fieldName2, value2).toPredicate();
+		final Predicate predicate = filter1.and(filter2);
+		register(uri, predicate);
 	}
 
 	/** {@inheritDoc} */
@@ -87,10 +71,10 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 	public void register(final DtListURIForMasterData uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		register(uri, identityFunction);
+		register(uri, o -> true);
 	}
 
-	private void register(final DtListURIForMasterData uri, final DtListProcessor dtListFilter) {
+	private void register(final DtListURIForMasterData uri, final Predicate dtListFilter) {
 		Assertion.checkNotNull(uri);
 		Assertion.checkArgument(!mdlUriFilterMap.containsKey(uri), "Il existe deja une liste de référence enregistrée {0}.", uri);
 		//Criteria peut être null
@@ -119,17 +103,15 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		final DtListURIForMasterData uri = defaultMdlMap2.get(dtDefinition);
-		//		final MasterDataDefinition masterDataDefinition = masterDataDefinitionMap.get(dtDefinition);
-		//		return getDomainManager().getDomainFactory().createDtListURI(masterDataDefinition, null);//pas de code : on prend celle par défaut
 		return uri;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public DtListProcessor getFilter(final DtListURIForMasterData uri) {
+	public Predicate getFilter(final DtListURIForMasterData uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final DtListProcessor function = mdlUriFilterMap.get(uri);
-		return function != null ? function : identityFunction;
+		final Predicate predicate = mdlUriFilterMap.get(uri);
+		return predicate != null ? predicate : x -> true;
 	}
 }

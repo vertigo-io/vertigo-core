@@ -1,10 +1,127 @@
 Version history
 ===============
 
-Running 0.9.5-SNAPSHOT
+Running 1.1.0-SNAPSHOT
 ----------------------
 
 more to come :)
+
+Release 1.0.0 - 2017/07/07
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-094-to-100)
+
+__In Bold__ : Potential compatibility problems 
+
+* [all] Code cleaning, refactoring and documenting 
+*	[all] Added Dependency-check maven plugin
+*	[vertigo] Builder Refactoring (General use is now : ObjectToBuild.builder() )
+* [core] refactoring
+* [core] silent => verbose (silently mode by default)
+* [core] Params.of
+*	[core] Introduced Proxy (+refactoring componentConfigBuilder)
+* [core] Better exception if a looking for class don't extends the class
+* [core] removed withApi(boolean) on moduleConfigBuilder
+*	[core] replaced long by Instant (start date of app)
+*	[core] refactoring MessageText (+ deprecated old api for migration ease)
+*	[core] rem describable
+* [core] first impl of a NodeManager (still a work in progress)
+* [core] refactored LifeCycle
+*	[core] components are now definition providers
+*	[core] move classes from lang to components and locale
+*	[core] definitionProvider +simple in features
+* [account] introduced new module to handle security (authentication, authorization...)  
+* [account] introduced a multi dimensions protection of entities (first impl ie still a work in progress)
+*	[account] Added grants and overrides on advanced security
+*	[account] Added support to security enum dimension
+*	[account] Added support of tree security dimensions
+*	[account] Splited UserSession to simpler UserSession and PersonaUserSession
+*	[account] Added Store Realms Authentification and Identity
+*	[account] Used salted-PBKDF2 hash algo for password instead of salted-SHA256
+* [commons] replaced Listener by Consumer (Java8 style) (EventBus)
+*	[commons] Added RedisCachePlugin
+*	[commons] refactored eventbusManager
+*	[commons] introduced CacheDefinition, EventBusSubscriptionDefinition, DaemonDefinition
+*	[commons] introduced @EventSubscribed to register to a event on a component
+*	[commons] introduced @DaemonScheduled to register a daemon on a component
+*	[commons] Added VTransactionManager as default feature
+* [commons] Refactored AnalyticsTracer : ever logs, no stack
+* [commons] eventbus and daemon are now registered with annotations
+* [database] introduced new module for handling databases (especially sql)
+*	[database] refac Sql (use java type instead of DataType)
+* [database] added tests for all databases (Oracle, Postgre, H2, SQLServer) 
+* [database] added tests for batchs
+* [database] insertions in Oracle databases now uses generated keys (no more callableStatements)
+* [database] Hsql-> HSql
+*	[database] added Java 8 LocalDate
+* [database] added test on sql / blob --- java / dataStream
+*	[database] sql -> functional style
+*	[database] refac generatedKeys
+*	[database] Declared ZonedDateTime and LocalDate as primitive types
+* [dynamo] removed dynamic behaviour on DtDefinition
+*	[dynamo] Made search highlight optional and desactivated by default
+*	[dynamo] Show fluent sorting with generics
+*	[dynamo] Added markAsDirty one uri for common usage case
+* [dynamo] added convenient method .of to build DtList (DtList.of(dt1,dt2,...)
+*	[dynamo] added a filter method on VCollectors
+*	[dynamo] only true and false for a boolean property
+* [dynamo] replaced with by add in FacetedQueryResultBuilder
+*	[dynamo] introduced VAccessor concept
+* [dynamo] refac CollectionsManager (replaced by java8 equivalents)
+*	[dynamo] used Criterions instead Of CollectionsManager
+* [dynamo] Renamed FacetedQueryResultBuilder to FacetedQueryResultMerger
+* [dynamo] Added sort order support to range facet definition
+* [dyanmo] moved criteria from dynamo/store to dynamo/criteria
+* [dynamo] _Removed elasticSearch1_7 plugin_
+*	[dynamo] removed DtListRangeFilter
+*	[dynamo] replaced filterByRange by Criterion.isBetween
+*	[dynamo] replaced Collections.filterValue by Criterions.isEqualTo
+*	[dynamo] replaced CollectionsManager by Criterions
+*	[dynamo] remove SqlCallableStatement and out parameters in sql
+*	[dynamo] created object are returned (FileStore, DataStore)
+*	[dynamo] lucene index plugins are stored in a map in a fix cache context
+*	[dynamo] move database in new module, move transaction in commons
+*	[dynamo] added Java 8 LocalDate
+* [dynamo] moved parser fom dynamo to database (bound statement)
+*	[dynamo] Oracle Unit Tests
+* [dynamo] Removed HSQL from tests / used H2 instead
+*	[dynamo] Added LocalDate and ZonedDateTime support ot FormatterDate
+* [dynamo] Use lambda for comparator
+*	[vega] Fixed #88
+*	[vega] Added WebServiceDefinitionProvider using ClassSelector
+*	[vega] Deprectaed UiListState by DtListState
+* [vega] fix for #89
+* [vega] added simple healthcheck webservice
+* [vega] Fixed #92
+*	[vega] Fixed facets term count and streamed it
+* [vega] Added json empty property deserialized as null (and add tests)
+*	[vega] Added json converter for LocalDate and ZonedDateTime
+*	[vega] Added some ZonedDateTime tests
+*	[vega] fix validator with server state
+* [studio] move in vertigo repo
+*	[studio] refactored freemarker
+*	[studio] refactored all models (models, source objects and templates are completely independants)
+*	[studio] Fixed JPA annotations for Hibernate and its "special" sequences
+*	[studio] Added TS generator
+* [persona] deprecated module (use accoount for new projects)
+*	[tempo] _remove module_ (use vertigo-mail and vertigo-orchestra extensions)
+
+*	[all] Updated dependencies versions  …
+ org.codehaus.janino janino 2.7.8 -> 3.0.7
+ net.sf.ehcache ehcache 2.10.3 -> 2.10.4
+ org.slf4j slf4j-api 1.7.22 -> 1.7.25
+ org.slf4j slf4j-simple 1.7.21 -> 1.7.25
+ com.google.code.gson gson 2.8.0 -> 2.8.1
+ com.h2database h2 1.4.193 -> 1.4.196
+ cglib cglib-nodep 3.2.4 -> 3.2.5
+ org.reflections reflections 0.9.10 -> 0.9.11
+ org.hibernate hibernate-core 5.2.6.Final -> 5.2.10.Final
+ org.hibernate hibernate-entitymanager 5.2.6.Final -> 5.2.10.Final
+ org.junit 5.0.0-M2 -> 5.0.0-M4
+ com.sparkjava spark-core 2.5.5 -> 2.6.0
+ io.rest-assured rest-assured 3.0.1 -> 3.0.3
+* [all] added an ant target to replace old quarto's ksp by a DefinitionProvider
+
+
 
 Release 0.9.4a - 2017/03/15
 ----------------------

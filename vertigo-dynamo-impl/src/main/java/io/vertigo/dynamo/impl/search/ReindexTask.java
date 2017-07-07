@@ -138,6 +138,6 @@ final class ReindexTask implements Runnable {
 				.stream()
 				.map(uri -> String.valueOf(uri.getId()))
 				.collect(Collectors.joining(" OR ", indexIdFieldName + ":(", ")"));
-		return new ListFilter(filterValue);
+		return ListFilter.of(filterValue);
 	}
 }

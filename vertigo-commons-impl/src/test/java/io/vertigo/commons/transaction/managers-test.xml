@@ -1,0 +1,12 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<config>
+	<module name="vertigo-commons">
+		<component api="VTransactionManager" class="io.vertigo.commons.impl.transaction.VTransactionManagerImpl" />
+		<aspect class="io.vertigo.commons.impl.transaction.VTransactionAspect" />
+	</module>
+	
+	<module name="myApp">
+		<component class="io.vertigo.commons.transaction.SampleServices" />
+	</module>
+	
+</config>

@@ -21,7 +21,6 @@ package io.vertigo.dynamo.domain.metamodel.association;
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.JsonExclude;
 
 /**
  * Noeud d'une association.
@@ -29,10 +28,6 @@ import io.vertigo.lang.JsonExclude;
  * @author  jcassignol, pchretien
  */
 public final class AssociationNode {
-	@JsonExclude
-	//On exclue pour éviter une boucle
-	private AssociationDefinition associationDefinition;
-
 	private final DefinitionReference<DtDefinition> dtDefinitionRef;
 	private final boolean navigable;
 	private final String role;
@@ -49,7 +44,13 @@ public final class AssociationNode {
 	 * @param isMultiple Si la cardinalité max est multiple (au plus)
 	 * @param isNotNull Si la cardinalité min est non null (au moins)
 	 */
-	public AssociationNode(final DtDefinition dtDefinition, final boolean isNavigable, final String role, final String label, final boolean isMultiple, final boolean isNotNull) {
+	public AssociationNode(
+			final DtDefinition dtDefinition,
+			final boolean isNavigable,
+			final String role,
+			final String label,
+			final boolean isMultiple,
+			final boolean isNotNull) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(label);
 		Assertion.checkNotNull(role);
@@ -61,23 +62,6 @@ public final class AssociationNode {
 		navigable = isNavigable;
 		notNull = isNotNull;
 		multiple = isMultiple;
-	}
-
-	//Mis à jour lors de la création de l'association.
-	void setAssociationDefinition(final AssociationDefinition associationDefinition) {
-		Assertion.checkNotNull(associationDefinition);
-		Assertion.checkState(this.associationDefinition == null, "variable deja affectee");
-		//-----
-		this.associationDefinition = associationDefinition;
-	}
-
-	/**
-	 * @return Définition de l'association possédant ce noeud
-	 */
-	public AssociationDefinition getAssociationDefinition() {
-		Assertion.checkNotNull(associationDefinition);
-		//-----
-		return associationDefinition;
 	}
 
 	/**

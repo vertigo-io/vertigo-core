@@ -26,13 +26,13 @@ import java.lang.annotation.Target;
 
 /**
  * Bind the value of a path sub-element to the annotated parameter.
- * Exemple : 
+ * Exemple :
  * http://localhost:8080/test/contact/12
- * 
+ *
  * Can be map to :
  * @GET("/test/contact/{contactId}")
  * void myService(@PathParam("contactId") long contactId)
- * 
+ *
  * @author npiedeloup
  */
 @Target({ ElementType.PARAMETER })

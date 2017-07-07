@@ -31,6 +31,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.vertigo.app.Home;
+import io.vertigo.commons.transaction.VTransaction;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -47,8 +50,6 @@ import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.transaction.VTransaction;
-import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
@@ -58,7 +59,7 @@ import io.vertigo.lang.WrappedException;
  *
  * @author pchretien, npiedeloup, skerdudou
  */
-public final class FsFileStorePlugin implements FileStorePlugin {
+public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	private static final String STORE_READ_ONLY = "Le store est en readOnly";
 
 	/**
@@ -87,11 +88,12 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	private final FileManager fileManager;
 	private final String name;
 	private final String documentRoot;
-	private final DtDefinition storeDtDefinition;
+	private DtDefinition storeDtDefinition;
+	private final String storeDtDefinitionName;
 	private final VTransactionManager transactionManager;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param name Store name
 	 * @param storeDtDefinitionName Nom du dt de stockage
 	 * @param fileManager Manager de gestion des fichiers
@@ -117,7 +119,20 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		this.transactionManager = transactionManager;
 		this.fileManager = fileManager;
 		documentRoot = FileUtil.translatePath(path);
+		this.storeDtDefinitionName = storeDtDefinitionName;
+	}
+
+	@Override
+	public void start() {
 		storeDtDefinition = Home.getApp().getDefinitionSpace().resolve(storeDtDefinitionName, DtDefinition.class);
+	}
+
+	/* (non-Javadoc)
+	 * @see io.vertigo.core.component.Activeable#stop()
+	 */
+	@Override
+	public void stop() {
+		//NOP
 	}
 
 	/** {@inheritDoc} */
@@ -191,7 +206,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void create(final FileInfo fileInfo) {
+	public FileInfo create(final FileInfo fileInfo) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 		Assertion.checkNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
 		//-----
@@ -213,6 +228,7 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 		getStoreManager().getDataStore().update(fileInfoDto);
 		//-----
 		saveFile(fileInfo, pathToSave);
+		return fileInfo;
 	}
 
 	/** {@inheritDoc} */
@@ -336,4 +352,5 @@ public final class FsFileStorePlugin implements FileStorePlugin {
 	public String getDocumentRoot() {
 		return documentRoot;
 	}
+
 }

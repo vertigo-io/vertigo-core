@@ -18,9 +18,6 @@
  */
 package io.vertigo.commons.script;
 
-import java.util.Collections;
-import java.util.List;
-
 import io.vertigo.commons.script.parser.ScriptSeparator;
 
 /**
@@ -53,16 +50,16 @@ public enum SeparatorType {
 	 * Fin d'une balise d'évaluation classique.
 	 */
 	public static final String END_SEPARATOR_CLASSIC = "%>";
-	private final List<ScriptSeparator> separators;
+	private final ScriptSeparator separator;
 
 	SeparatorType(final String startExpression, final String endExpression) {
-		separators = Collections.singletonList(new ScriptSeparator(startExpression, endExpression));
+		separator = new ScriptSeparator(startExpression, endExpression);
 	}
 
 	/**
 	 * @return Liste des ScriptSeparator pour ce SeparatorType.
 	 */
-	public List<ScriptSeparator> getSeparators() {
-		return separators;
+	public ScriptSeparator getSeparator() {
+		return separator;
 	}
 }

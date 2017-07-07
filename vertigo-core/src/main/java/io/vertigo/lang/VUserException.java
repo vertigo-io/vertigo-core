@@ -18,12 +18,17 @@
  */
 package io.vertigo.lang;
 
+import java.io.Serializable;
+
+import io.vertigo.core.locale.MessageKey;
+import io.vertigo.core.locale.MessageText;
+
 /**
  * Root Class for all user exceptions.
- * User Exceptions are built with a (localized) message 
- * 
+ * User Exceptions are built with a (localized) message
+ *
  * A cause can be added by setting 'initCause' method
- * 
+ *
  * @author fconstantin, pchretien
  */
 public class VUserException extends RuntimeException {
@@ -39,6 +44,24 @@ public class VUserException extends RuntimeException {
 		super(messageText.getDisplay());
 		// On rerentre sur l'API des Exception en passant le message.
 		this.messageText = messageText;
+	}
+
+	/**
+	 * Constructor.
+	 * @param defaultMsg the default msg (required)
+	 * @param params  list of params (optional)
+	 */
+	public VUserException(final String defaultMsg, final Serializable... params) {
+		this((MessageText.builder().withDefaultMsg(defaultMsg).withParams(params).build()));
+	}
+
+	/**
+	 * Constructor.
+	 * @param key  the msg key (required)
+	 * @param params  list of params (optional)
+	 */
+	public VUserException(final MessageKey key, final Serializable... params) {
+		this((MessageText.builder().withKey(key).withParams(params).build()));
 	}
 
 	/**

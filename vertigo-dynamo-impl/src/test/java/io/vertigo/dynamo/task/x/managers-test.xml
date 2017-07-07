@@ -14,24 +14,25 @@
 		<component api="CacheManager" class="io.vertigo.commons.impl.cache.CacheManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin" />
 		</component>
+		<component api="VTransactionManager" class="io.vertigo.commons.impl.transaction.VTransactionManagerImpl" />
 	</module>
 
-	<module name="vertigo-dynamo">
+	<module name="vertigo-database">
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
-		<component api="SqlDataBaseManager" class="io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl">
-			<plugin class="io.vertigo.dynamo.plugins.database.connection.c3p0.C3p0ConnectionProviderPlugin">
-				<param name="dataBaseClass" value="io.vertigo.dynamo.impl.database.vendor.hsql.HsqlDataBase" />
-				<param name="jdbcDriver" value="org.hsqldb.jdbcDriver" />
-				<param name="jdbcUrl" value="jdbc:hsqldb:mem:database" />
+		<component api="SqlDataBaseManager" class="io.vertigo.database.impl.sql.SqlDataBaseManagerImpl">
+			<plugin class="io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin">
+				<param name="dataBaseClass" value="io.vertigo.database.impl.sql.vendor.h2.H2DataBase" />
+				<param name="jdbcDriver" value="org.h2.Driver" />
+				<param name="jdbcUrl" value="jdbc:h2:mem:database" />
 			</plugin>
 		</component>
+	</module>
+	<module name="vertigo-dynamo">
 		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" />
-
 		<component api="EventBusManager" class="io.vertigo.commons.impl.eventbus.EventBusManagerImpl" />
 		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl" >
 			<plugin class="io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin"/>
 		</component>
-		<component api="VTransactionManager" class="io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl" />
 		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
 	</module>
 

@@ -52,7 +52,7 @@ public abstract class AbstractCryptoCodecTest extends AbstractCodecTest<byte[], 
 	/** {@inheritDoc} */
 	@Override
 	@Test
-	public void testDecode() throws Exception {
+	public void testDecode() {
 		final byte[] encryptedValue = codec.encode(TEXT.getBytes());
 		for (int i = 0; i < 30000; i++) {
 			assertEquals(TEXT, new String(codec.decode(encryptedValue)));
@@ -62,7 +62,7 @@ public abstract class AbstractCryptoCodecTest extends AbstractCodecTest<byte[], 
 	/** {@inheritDoc} */
 	@Override
 	@Test(expected = RuntimeException.class)
-	public void testFailDecode() throws Exception {
+	public void testFailDecode() {
 		// object ne correspondant pas à une classe;
 		final byte[] s = "qdfsdf".getBytes();
 		codec.decode(s);

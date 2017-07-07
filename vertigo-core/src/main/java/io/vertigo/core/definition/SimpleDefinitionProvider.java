@@ -26,20 +26,26 @@ import java.util.stream.Collectors;
  * @author pchretien
  *
  */
-public abstract class SimpleDefinitionProvider implements DefinitionProvider {
+public interface SimpleDefinitionProvider extends DefinitionProvider {
 
 	/**
 	 * Return a list of definitions with a set of already known definitions
+	 * @param definitionSpace the actual definitionSpace
 	 * @return the list of new definition to register
 	 */
 	@Override
-	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
+	default List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
 		return provideDefinitions(definitionSpace)
 				.stream()
 				.map(definition -> (DefinitionSupplier) (dS) -> definition)
 				.collect(Collectors.toList());
 	}
 
-	protected abstract List<Definition> provideDefinitions(DefinitionSpace definitionSpace);
+	/**
+	 * Provide definitions to be registered in the definitionSpace
+	 * @param definitionSpace the actual definitionSpace
+	 * @return the list of new definition to register
+	 */
+	List<? extends Definition> provideDefinitions(DefinitionSpace definitionSpace);
 
 }

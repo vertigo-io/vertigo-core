@@ -18,8 +18,8 @@
 	</parent>
 
 	<artifactId>vertigo</artifactId>
-	<name>vertigo</name>
 	<packaging>pom</packaging>
+	<name>vertigo</name>
 	
 	<modules>
 		<module>vertigo-parent</module>
@@ -27,26 +27,27 @@
 
 		<module>vertigo-commons-api</module>
 		<module>vertigo-commons-impl</module>
-
-		<module>vertigo-persona-api</module>
-		<module>vertigo-persona-impl</module>
+		
+		<module>vertigo-database-api</module>
+		<module>vertigo-database-impl</module>
 
 		<module>vertigo-dynamo-api</module>
 		<module>vertigo-dynamo-impl</module>
-		<module>vertigo-dynamo-plugin-elasticsearch_1_7</module> 
+		
+		<module>vertigo-account-api</module>
+		<module>vertigo-account-impl</module>
 
 		<module>vertigo-vega-api</module>
 		<module>vertigo-vega-impl</module>
 
-		<module>vertigo-tempo-api</module>
-		<module>vertigo-tempo-impl</module>
+		<module>vertigo-studio</module>
 	</modules>
 
 	<scm>
 		<connection>scm:git:https://github.com/KleeGroup/vertigo.git</connection>
 		<developerConnection>scm:git:https://github.com/KleeGroup/vertigo.git</developerConnection>
 		<url>scm:git:https://github.com/KleeGroup/vertigo.git</url>
-		<tag>vertigo-0.9.4-SNAPSHOT</tag>
+		<tag>vertigo-0.9.5-SNAPSHOT</tag>
 	</scm>
-
+	
 </project>

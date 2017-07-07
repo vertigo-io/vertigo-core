@@ -37,7 +37,7 @@ public final class TaskBuilder implements Builder<Task> {
 	 *
 	 * @param taskDefinition the definition of the task
 	 */
-	public TaskBuilder(final TaskDefinition taskDefinition) {
+	TaskBuilder(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//-----
 		this.taskDefinition = taskDefinition;
@@ -48,6 +48,7 @@ public final class TaskBuilder implements Builder<Task> {
 	 *
 	 * @param attributeName the name of the attribute
 	 * @param value the values
+	 * @return this builder
 	 */
 	public TaskBuilder addValue(final String attributeName, final Object value) {
 		final TaskAttribute taskAttribute = taskDefinition.getInAttribute(attributeName);

@@ -46,7 +46,7 @@ public final class Aspect2Test {
 		//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
 		return new XMLAppConfigBuilder()
 				.withModules(getClass(), new Properties(), getManagersXmlFileName())
-				.beginBoot().silently().endBoot().build();
+				.build();
 	}
 
 	private static String[] getManagersXmlFileName() {

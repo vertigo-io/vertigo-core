@@ -1,0 +1,50 @@
+package io.vertigo.studio.domain.famille
+
+create DtDefinition DT_FAMILLE {
+		key FAM_ID 	{ domain:DO_ID, 	label:"identifiant de la famille",  notNull : "true" }
+		field LIBELLE {domain:DO_STRING, 		label:"Libelle",  					notNull : "false"}
+}
+
+alter DtDefinition DT_FAMILLE {
+    computed DESCRIPTION {domain : DO_LIBELLE_LONG, label:"Libelle"
+        expression:"final StringBuilder builder = new StringBuilder();
+        builder.append(getLibelle());
+        builder.append('[');
+        builder.append(getFamId());
+        builder.append(']');
+        return builder.toString();"
+    }
+}
+
+create Association A_FAM_CAR_FAMILLE {
+	dtDefinitionA : DT_FAMILLE
+	dtDefinitionB : DT_CAR
+
+	fkFieldName : "FAM_ID"
+
+	navigabilityA : "false"
+	navigabilityB : "true"
+
+	multiplicityA : "1..1"
+	multiplicityB : "0..*"
+	
+	roleA : "Famille"
+	labelA : "Famille"
+	roleB : "VoituresFamille"
+	labelB : "Voitures de la famille"
+}
+
+create AssociationNN ANN_FAM_CAR_LOCATION {
+	tableName : "FAM_CAR_LOCATION"
+
+	dtDefinitionA : DT_FAMILLE
+	dtDefinitionB : DT_CAR
+
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	roleA : "Famille"
+	labelA : "Famille"
+	roleB : "VoituresLocation"
+	labelB : "Voitures de location"
+}

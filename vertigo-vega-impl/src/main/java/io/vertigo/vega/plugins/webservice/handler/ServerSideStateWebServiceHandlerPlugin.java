@@ -26,10 +26,10 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.engines.webservice.json.UiListDelta;
@@ -52,7 +52,7 @@ import spark.Response;
  * @author npiedeloup
  */
 public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
-	private static final MessageText SERVER_SIDE_MANDATORY = new MessageText("ServerSideToken mandatory", null);
+	private static final MessageText SERVER_SIDE_MANDATORY = MessageText.of("ServerSideToken mandatory");
 	private final TokenManager tokenManager;
 
 	/**
@@ -112,17 +112,18 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 		if (accessToken == null) {
 			throw new VSecurityException(SERVER_SIDE_MANDATORY); //same message for no ServerSideToken or bad ServerSideToken
 		}
-		final Optional<Serializable> serverSideObject;
+		final Optional<Serializable> serverSideObjectOpt;
 		if (consumeServerSideToken) {
 			//if exception : token is consume. It's for security reason : no replay on bad request (brute force password)
-			serverSideObject = tokenManager.getAndRemove(accessToken);
+			serverSideObjectOpt = tokenManager.getAndRemove(accessToken);
 		} else {
-			serverSideObject = tokenManager.get(accessToken);
+			serverSideObjectOpt = tokenManager.get(accessToken);
 		}
-		if (!serverSideObject.isPresent()) {
-			throw new VSecurityException(SERVER_SIDE_MANDATORY); //same message for no ServerSideToken or bad ServerSideToken
-		}
-		uiObject.setServerSideObject((DtObject) serverSideObject.get());
+		final Serializable serverSideObject = serverSideObjectOpt
+				//same message for no ServerSideToken or bad ServerSideToken
+				.orElseThrow(() -> new VSecurityException(SERVER_SIDE_MANDATORY));
+
+		uiObject.setServerSideObject((DtObject) serverSideObject);
 	}
 
 	private void readServerSideUiList(final Collection<UiObject<DtObject>> uiList, final boolean consumeServerSideToken) {

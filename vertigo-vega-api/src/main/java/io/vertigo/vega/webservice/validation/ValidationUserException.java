@@ -22,12 +22,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.util.StringUtil;
 
@@ -38,7 +38,7 @@ import io.vertigo.util.StringUtil;
 public final class ValidationUserException extends VUserException {
 	private static final long serialVersionUID = 7214302356640340103L;
 
-	private static final MessageText VALIDATE_ERROR_MESSAGE_TEXT = new MessageText("Il y a des erreurs, vous devez corriger votre saisie :", null);
+	private static final MessageText VALIDATE_ERROR_MESSAGE_TEXT = MessageText.of("Il y a des erreurs, vous devez corriger votre saisie :");
 
 	private final List<UiError> uiErrors = new ArrayList<>();
 
@@ -46,7 +46,7 @@ public final class ValidationUserException extends VUserException {
 	 * Constructor.
 	 */
 	public ValidationUserException() {
-		this(Collections.<UiError> emptyList());
+		this(Collections.emptyList());
 	}
 
 	/**

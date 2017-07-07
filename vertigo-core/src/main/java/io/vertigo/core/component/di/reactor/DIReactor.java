@@ -56,7 +56,7 @@ public final class DIReactor {
 	 * @return this reactor
 	 */
 	public DIReactor addComponent(final String id, final Class<?> implClass) {
-		return addComponent(id, implClass, Collections.<String> emptySet());
+		return addComponent(id, implClass, Collections.emptySet());
 	}
 
 	/**

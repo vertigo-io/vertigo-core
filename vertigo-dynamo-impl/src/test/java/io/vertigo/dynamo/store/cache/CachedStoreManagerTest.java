@@ -21,13 +21,12 @@ package io.vertigo.dynamo.store.cache;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.data.domain.famille.Famille;
 import io.vertigo.dynamo.store.datastore.AbstractStoreManagerTest;
-import io.vertigo.dynamo.transaction.VTransactionWritable;
 
 /**
  * Test de l'implémentation avec cache.
@@ -35,13 +34,6 @@ import io.vertigo.dynamo.transaction.VTransactionWritable;
  * @author pchretien
  */
 public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
-
-	/** {@inheritDoc} */
-	@Override
-	protected void doSetUp() throws Exception {
-		super.doSetUp();
-		storeManager.getDataStoreConfig().registerCacheable(DtObjectUtil.findDtDefinition(Famille.class), 120, true, true);
-	}
 
 	/**
 	 * On charge une liste, ajoute un element et recharge la liste pour verifier l'ajout.
@@ -57,9 +49,9 @@ public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
 			//-----
 			final Famille famille = new Famille();
 			famille.setLibelle("encore un");
-			storeManager.getDataStore().create(famille);
+			final Famille createdFamille = storeManager.getDataStore().create(famille);
 			// on attend un objet avec un ID non null ?
-			Assert.assertNotNull(famille.getFamId());
+			Assert.assertNotNull(createdFamille.getFamId());
 			transaction.commit();
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {

@@ -18,7 +18,13 @@
  */
 package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 
+import java.io.IOException;
+
+import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 import spark.servlet.SparkApplication;
 import spark.servlet.SparkFilter;
@@ -43,4 +49,24 @@ public final class VegaSparkFilter extends SparkFilter {
 	protected SparkApplication[] getApplications(final FilterConfig filterConfig) {
 		return EMPTY_CONF;
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
+			throws IOException, ServletException {
+
+		//Spark override getRequestURI and getPathInfo from request and send it to next Filters and servlets
+		//We change the filterChain to revert these modifications when calling filter chain
+		final FilterChain wrappedFilterChain = new FilterChain() {
+
+			/** {@inheritDoc} */
+			@Override
+			public void doFilter(final ServletRequest chainRequest, final ServletResponse chainResponse)
+					throws IOException, ServletException {
+				chain.doFilter(request, chainResponse);
+			}
+		};
+		super.doFilter(request, response, wrappedFilterChain);
+	}
+
 }

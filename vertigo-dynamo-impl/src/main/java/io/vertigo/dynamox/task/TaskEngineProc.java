@@ -19,15 +19,18 @@
 package io.vertigo.dynamox.task;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.OptionalInt;
 
 import javax.inject.Inject;
 
 import io.vertigo.commons.script.ScriptManager;
-import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.statement.SqlCallableStatement;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.connection.SqlConnection;
+import io.vertigo.database.sql.parser.SqlNamedParam;
+import io.vertigo.database.sql.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.transaction.VTransactionManager;
 
 /**
  * Permet l'appel de requête de manipulation de données (insert, update, delete)
@@ -51,7 +54,7 @@ import io.vertigo.dynamo.transaction.VTransactionManager;
  *
  * @author  FCONSTANTIN
  */
-public class TaskEngineProc extends AbstractTaskEngineSQL<SqlCallableStatement> {
+public class TaskEngineProc extends AbstractTaskEngineSQL {
 
 	/**
 	 * Constructeur.
@@ -61,22 +64,22 @@ public class TaskEngineProc extends AbstractTaskEngineSQL<SqlCallableStatement> 
 	 * @param sqlDataBaseManager Sql dataBase manager
 	 */
 	@Inject
-	public TaskEngineProc(final ScriptManager scriptManager, final VTransactionManager transactionManager, final StoreManager storeManager, final SqlDataBaseManager sqlDataBaseManager) {
+	public TaskEngineProc(
+			final ScriptManager scriptManager,
+			final VTransactionManager transactionManager,
+			final StoreManager storeManager,
+			final SqlDataBaseManager sqlDataBaseManager) {
 		super(scriptManager, transactionManager, storeManager, sqlDataBaseManager);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	protected int doExecute(final SqlConnection connection, final SqlCallableStatement statement) throws SQLException {
-		setInParameters(statement);
-		final int sqlRowcount = statement.executeUpdate();
-		setOutParameters(statement);
-		return sqlRowcount;
+	protected OptionalInt doExecute(
+			final String sql,
+			final SqlConnection connection,
+			final SqlPreparedStatement statement,
+			final List<SqlNamedParam> params) throws SQLException {
+		return OptionalInt.of(statement.executeUpdate(sql, buildParameters(params)));
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected final SqlCallableStatement createStatement(final String procName, final SqlConnection connection) {
-		return getDataBaseManager().createCallableStatement(connection, procName);
-	}
 }

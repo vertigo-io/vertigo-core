@@ -21,10 +21,10 @@ package io.vertigo.dynamox.domain.constraint;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.metamodel.Constraint;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.Property;
-import io.vertigo.lang.MessageText;
 
 /**
  * Exemple de contrainte utilisant une expression régulière.
@@ -55,8 +55,11 @@ public final class ConstraintRegex implements Constraint<String, String> {
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return new MessageText(Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern());
-		//return "Pas cohérent avec la regex : " + pattern.pattern();
+		return MessageText
+				.builder()
+				.withKey(Resources.DYNAMO_CONSTRAINT_REGEXP)
+				.withParams(pattern.pattern())
+				.build();
 	}
 
 	/** {@inheritDoc} */

@@ -18,6 +18,10 @@
  */
 package io.vertigo.dynamo.domain.formatter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -37,6 +41,7 @@ import io.vertigo.dynamox.domain.formatter.FormatterDate;
  */
 public class DateFormatterTest extends AbstractTestCaseJU4 {
 	private final FormatterDate formatterDate = new FormatterDate("yyyy-MM-dd");
+	private final FormatterDate formatterDateZDT = new FormatterDate("yyyy-MM-dd' 'HH:mm:ss");
 
 	@Test
 	public void testFormatter() throws FormatterException {
@@ -45,9 +50,36 @@ public class DateFormatterTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(date, formatterDate.stringToValue("2003-09-15", DataType.Date));
 	}
 
+	@Test
+	public void testLocalDateFormatter() throws FormatterException {
+		final LocalDate localDate = LocalDate.of(2000, 12, 25);
+		Assert.assertEquals("2000-12-25", formatterDate.valueToString(localDate, DataType.LocalDate));
+		Assert.assertEquals(localDate, formatterDate.stringToValue("2000-12-25", DataType.LocalDate));
+	}
+
+	@Test
+	public void testZonedDateTimeFormatter() throws FormatterException {
+		final ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDateTime.of(2009, 2, 23, 16, 30), ZoneId.of("UTC"));
+		Assert.assertEquals("2009-02-23 16:30:00", formatterDateZDT.valueToString(zonedDateTime, DataType.ZonedDateTime));
+		Assert.assertEquals(zonedDateTime, formatterDateZDT.stringToValue("2009-02-23 16:30:00", DataType.ZonedDateTime));
+	}
+
 	@Test(expected = FormatterException.class)
-	public void testFormatter1() throws FormatterException {
+	public void testFormatterErrorDate() throws FormatterException {
 		final Date date = new GregorianCalendar(2003, Calendar.SEPTEMBER, 15).getTime();
 		Assert.assertEquals(date, formatterDate.stringToValue("2003/09/15", DataType.Date));
 	}
+
+	@Test(expected = FormatterException.class)
+	public void testFormatterErrorLocalDate() throws FormatterException {
+		final LocalDate localDate = LocalDate.of(2000, 12, 25);
+		Assert.assertEquals(localDate, formatterDate.stringToValue("2003/09/15", DataType.LocalDate));
+	}
+
+	@Test(expected = FormatterException.class)
+	public void testFormatterErrorZonedDateTime() throws FormatterException {
+		final ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDateTime.of(2009, 2, 23, 16, 30), ZoneId.of("UTC"));
+		Assert.assertEquals(zonedDateTime, formatterDate.stringToValue("2003/09/15 16:30:00", DataType.ZonedDateTime));
+	}
+
 }

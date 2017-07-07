@@ -3,4 +3,12 @@
 	<module name="vertigo-commons">
 		<component api="EventBusManager" class="io.vertigo.commons.impl.eventbus.EventBusManagerImpl" />
 	</module>
+	
+	<module name="aspects" >
+		<aspect class="io.vertigo.commons.eventbus.data.aspects.FlipAspect" />
+	</module>
+
+	<module name="myApp">
+		<component class="io.vertigo.commons.eventbus.data.MySubscriber" />
+	</module>
 </config>

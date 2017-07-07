@@ -21,10 +21,10 @@ package io.vertigo.dynamox.domain.constraint;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.metamodel.Constraint;
 import io.vertigo.dynamo.domain.metamodel.Property;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 import io.vertigo.lang.WrappedException;
 
 /**
@@ -72,16 +72,20 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 		final BigDecimal noZero = value.stripTrailingZeros();
 		final int scale = noZero.scale();
 		final int precision = noZero.precision();
-		if (scale > maxScale || precision > maxPrecision || (precision - scale) > (maxPrecision - maxScale)) {
-			return false;
-		}
-		return true;
+		return !(scale > maxScale || precision > maxPrecision || (precision - scale) > (maxPrecision - maxScale));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return new MessageText(Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED, new BigDecimal(new BigInteger("1"), 0 - maxPrecision - maxScale), maxScale, maxPrecision - maxScale);
+		return MessageText
+				.builder()
+				.withKey(Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED)
+				.withParams(
+						new BigDecimal(new BigInteger("1"), 0 - maxPrecision - maxScale),
+						maxScale,
+						maxPrecision - maxScale)
+				.build();
 	}
 
 	/** {@inheritDoc} */

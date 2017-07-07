@@ -18,7 +18,9 @@
  */
 package io.vertigo.commons.eventbus;
 
-import io.vertigo.lang.Manager;
+import java.util.function.Consumer;
+
+import io.vertigo.core.component.Manager;
 
 /**
  * Inter-components events manager.
@@ -51,23 +53,8 @@ public interface EventBusManager extends Manager {
 	void post(Event event);
 
 	/**
-	 * Registers a new listener for this type of Event.
-	 * Registration must be executed during the init phase.
-	 *
-	 * @param eventType Type of event
-	 * @param eventListener EventListener
+	 * Registers a dead event consumer.
+	 * @param eventConsumer the consumer
 	 */
-	<E extends Event> void register(Class<E> eventType, EventListener<E> eventListener);
-
-	/**
-	 * Registers all methods annotated with @Suscriber on the object
-	 * @param suscriberInstance
-	 */
-	void register(final Object suscriberInstance);
-
-	/**
-	 * Registers a dead event listener.
-	 * @param eventListener EventListener
-	 */
-	void registerDead(final EventListener<Event> eventListener);
+	void registerDead(final Consumer<Event> eventConsumer);
 }

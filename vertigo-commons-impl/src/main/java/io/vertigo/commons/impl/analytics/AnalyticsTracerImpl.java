@@ -18,14 +18,11 @@
  */
 package io.vertigo.commons.impl.analytics;
 
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 import org.apache.log4j.Logger;
 
-import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracer;
 import io.vertigo.lang.Assertion;
 
@@ -34,19 +31,21 @@ import io.vertigo.lang.Assertion;
  * @author npiedeloup
  */
 final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
-	private final static Logger LOGGER = Logger.getLogger(AnalyticsManager.class);
+	private final Logger logger;
 
+	private final int processDeep;
+	private final Optional<AnalyticsTracerImpl> parentOpt;
 	private Boolean succeeded; //default no info
 	private Throwable causeException; //default no info
-	private final Deque<AProcessBuilder> stack;
 	private final Consumer<AProcess> consumer;
+	private final AProcessBuilder processBuilder;
 
 	/**
 	 * Constructor.
+	 * @param parentOpt Optional Parent of this tracer
 	 * @param category the category where the process is stored
-	 * @param name the name that identified the perocess
-	 * @param createSubProcess if subProcess is created
-	 * @param analyticsAgent Analytics agent to report execution
+	 * @param name the name that identified the process
+	 * @param consumer Consumer of this process after closing
 	 */
 	AnalyticsTracerImpl(
 			final Optional<AnalyticsTracerImpl> parentOpt,
@@ -57,35 +56,41 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(consumer);
 		//---
-		final AProcessBuilder processBuilder = new AProcessBuilder(category, name);
+		logger = Logger.getLogger(category);
+		this.parentOpt = parentOpt;
 		this.consumer = consumer;
+
+		processBuilder = AProcess.builder(category, name);
 		if (parentOpt.isPresent()) {
-			stack = parentOpt.get().stack;
-			Assertion.checkState(stack.size() < 100, "the stack contains more than 100 process. All processes must be closed.\nStack:" + stack);
+			processDeep = parentOpt.get().processDeep;
+			Assertion.checkState(processDeep < 100, "More than 100 process deep. All processes must be closed.");
 		} else {
-			stack = new LinkedList<>();
+			processDeep = 0;
 		}
-		stack.push(processBuilder);
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("Start " + name);
+		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public AnalyticsTracer incMeasure(final String name, final double value) {
-		stack.peek().incMeasure(name, value);
+		processBuilder.incMeasure(name, value);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public AnalyticsTracer setMeasure(final String name, final double value) {
-		stack.peek().setMeasure(name, value);
+		processBuilder.setMeasure(name, value);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public AnalyticsTracer addTag(final String name, final String value) {
-		stack.peek().addTag(name, value);
+		processBuilder.addTag(name, value);
 		return this;
 	}
 
@@ -98,23 +103,24 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 		if (causeException != null) {
 			addTag("exception", causeException.getClass().getName());
 		}
-		final AProcess process = stack.pop().build();
-		if (stack.isEmpty()) {
+		final AProcess process = processBuilder.build();
+		if (!parentOpt.isPresent()) {
 			//when the current process is the root process, it's finished and must be sent to the connector
 			consumer.accept(process);
 		} else {
-			//when the current process is a subProcess, it's finished and must be added to the stack
-			stack.peek().addSubProcess(process);
+			//when the current process is a subProcess, it's finished and must be added to the parent
+			parentOpt.get().processBuilder.addSubProcess(process);
 		}
-		logProcess(process, succeeded);
+		logProcess(process);
 	}
 
-	private static void logProcess(final AProcess process, final boolean succeeded) {
-		if (LOGGER.isInfoEnabled()) {
+	private void logProcess(final AProcess process) {
+		if (logger.isInfoEnabled()) {
 			final StringBuilder sb = new StringBuilder()
 					.append("Finish ")
-					.append(process.getCategory())
-					.append(succeeded ? " successfully" : " with error").append(" in ( ")
+					.append(process.getName())
+					.append(succeeded ? " successfully" : " with error")
+					.append(" in ( ")
 					.append(process.getDurationMillis())
 					.append(" ms)");
 			if (!process.getMeasures().isEmpty()) {
@@ -123,7 +129,7 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 			if (!process.getTags().isEmpty()) {
 				sb.append(" metaData:").append(process.getTags());
 			}
-			LOGGER.info(sb.toString());
+			logger.info(sb.toString());
 		}
 	}
 

@@ -18,53 +18,70 @@
  */
 package io.vertigo.commons.impl.daemon;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.Daemon;
+import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.daemon.DaemonStat;
-import io.vertigo.lang.Activeable;
+import io.vertigo.core.component.Activeable;
+import io.vertigo.core.component.Component;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ClassUtil;
 
 /**
  * Manager of all the daemons.
  *
  * @author TINGARGIOLA
  */
-public final class DaemonManagerImpl implements DaemonManager, Activeable {
+public final class DaemonManagerImpl implements DaemonManager, Activeable, SimpleDefinitionProvider {
 	private final DaemonExecutor daemonExecutor = new DaemonExecutor();
-	private final List<DaemonInfo> daemonInfos = new ArrayList<>();
-	private boolean appStarted;
 
 	/**
 	 * Construct an instance of DaemonManagerImpl.
 	 */
 	@Inject
 	public DaemonManagerImpl() {
-		Home.getApp().registerPostStartFunction(() -> {
-			DaemonManagerImpl.this.startAllDaemons();
-			appStarted = true;
-		});
+		Home.getApp().registerPreActivateFunction(this::startAllDaemons);
+	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return Home.getApp().getComponentSpace().keySet()
+				.stream()
+				.map(id -> Home.getApp().getComponentSpace().resolve(id, Component.class))
+				.flatMap(component -> createDaemonDefinitions(component).stream())
+				.collect(Collectors.toList());
+	}
+
+	private static List<DaemonDefinition> createDaemonDefinitions(final Component component) {
+		return ClassUtil.getAllMethods(component.getClass(), DaemonScheduled.class)
+				.stream()
+				.map(
+						method -> {
+							Assertion.checkState(method.getParameterTypes().length == 0, "Method {0} on component {1} cannot have any parameter to be used as a daemon", method.getName(), component.getClass().getName());
+							//---
+							final DaemonScheduled daemonSchedule = method.getAnnotation(DaemonScheduled.class);
+							return new DaemonDefinition(
+									daemonSchedule.name(),
+									() -> () -> ClassUtil.invoke(component, method), daemonSchedule.periodInSeconds());
+						})
+				.collect(Collectors.toList());
+
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public List<DaemonStat> getStats() {
 		return daemonExecutor.getStats();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void registerDaemon(final String name, final Supplier<Daemon> daemonSupplier, final int periodInSeconds) {
-		Assertion.checkState(!appStarted, "daemon must be registerd before app has started.");
-		//-----
-		final DaemonInfo daemonInfo = new DaemonInfo(name, daemonSupplier, periodInSeconds);
-		daemonInfos.add(daemonInfo);
 	}
 
 	/** {@inheritDoc} */
@@ -85,29 +102,29 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable {
 	 * Il sera lancé puis réexécuté périodiquement.
 	 * L'instance du démon est créée par injection de dépendances.
 	 *
-	 * @param daemonInfo Le démon à lancer.
+	 * @param daemonDefinition Le démon à lancer.
 	 */
-	private void startDaemon(final DaemonInfo daemonInfo) {
-		Assertion.checkNotNull(daemonInfo);
+	private void startDaemon(final DaemonDefinition daemonDefinition) {
+		Assertion.checkNotNull(daemonDefinition);
 		// -----
-		final Daemon daemon = createDaemon(daemonInfo);
-		daemonExecutor.scheduleDaemon(daemonInfo, daemon);
+		final Daemon daemon = createDaemon(daemonDefinition);
+		daemonExecutor.scheduleDaemon(daemonDefinition, daemon);
 	}
 
 	/**
-	 * @param daemonInfo
+	 * @param daemonDefinition
 	 * @return Daemon
 	 */
-	private static Daemon createDaemon(final DaemonInfo daemonInfo) {
-		return daemonInfo.getDaemonSupplier().get();
+	private static Daemon createDaemon(final DaemonDefinition daemonDefinition) {
+		return daemonDefinition.getDaemonSupplier().get();
 	}
 
 	/**
 	 * Démarre l'ensemble des démons préalablement enregistré dans le spaceDefinition.
 	 */
-	void startAllDaemons() {
-		for (final DaemonInfo daemonInfo : daemonInfos) {
-			startDaemon(daemonInfo);
-		}
+	private void startAllDaemons() {
+		Home.getApp().getDefinitionSpace().getAll(DaemonDefinition.class).stream()
+				.forEach(this::startDaemon);
 	}
+
 }

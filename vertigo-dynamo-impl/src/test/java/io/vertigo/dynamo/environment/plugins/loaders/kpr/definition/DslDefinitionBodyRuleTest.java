@@ -34,12 +34,10 @@ public class DslDefinitionBodyRuleTest {
 	private final DslDefinitionRepository dslDefinitionRepository = DslDynamicRegistryMock.createDynamicDefinitionRepository();
 
 	private static DslEntity find(final List<DslEntity> entities, final String entityName) {
-		for (final DslEntity entity : entities) {
-			if (entity.getName().equals(entityName)) {
-				return entity;
-			}
-		}
-		throw new VSystemException("not found {0}", entityName);
+		return entities.stream()
+				.filter(entity -> entity.getName().equals(entityName))
+				.findFirst()
+				.orElseThrow(() -> new VSystemException("not found {0}", entityName));
 	}
 
 	@Test
@@ -83,7 +81,7 @@ public class DslDefinitionBodyRuleTest {
 					.parse(testValue, 0);
 			Assert.fail();
 		} catch (final PegNoMatchFoundException e) {
-			System.out.println(e.getFullMessage());
+			//System.out.println(e.getFullMessage());
 			Assert.assertEquals(testValue.indexOf("maxLengh") + "maxLengh".length() - 1, e.getIndex());
 		}
 	}

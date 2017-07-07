@@ -122,7 +122,7 @@ public final class StringUtil {
 	private static String constToCamelCase(final String str, final boolean first2UpperCase) {
 		Assertion.checkNotNull(str);
 		Assertion.checkArgument(str.length() > 0, "Chaine à modifier invalide (ne doit pas être vide)");
-		Assertion.checkArgument(str.indexOf("__") == -1, "Chaine à modifier invalide : {0} (__ interdit)", str);
+		Assertion.checkArgument(!str.contains("__"), "Chaine à modifier invalide : {0} (__ interdit)", str);
 		//-----
 		final StringBuilder result = new StringBuilder();
 		boolean upper = first2UpperCase;
@@ -133,7 +133,7 @@ public final class StringUtil {
 			c = str.charAt(i);
 			if (c == '_') {
 				if (digit != null
-						&& digit.booleanValue()
+						&& digit
 						&& Character.isDigit(str.charAt(i + 1))) {
 					result.append('_');
 				}

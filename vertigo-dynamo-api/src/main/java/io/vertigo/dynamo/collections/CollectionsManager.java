@@ -18,11 +18,13 @@
  */
 package io.vertigo.dynamo.collections;
 
+import java.util.function.Predicate;
+
+import io.vertigo.core.component.Manager;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Manager;
 
 /**
  * Some tools on collections/lists to allow
@@ -33,11 +35,21 @@ import io.vertigo.lang.Manager;
  */
 public interface CollectionsManager extends Manager {
 	/**
-	 * Filter or sort a list via a listProcessor, can be composed of filters or sorters.
-	 * @param <D> Type de l'objet de la liste
-	 * @return DtListProcessor
+	 * Constructeur de la function de filtrage à partir d'un filtre de liste.
+	 *
+	 * @param listFilter Filtre de liste
+	 * @return Function de filtrage
 	 */
-	<D extends DtObject> DtListProcessor<D> createDtListProcessor();
+	<D extends DtObject> Predicate<D> filter(final ListFilter listFilter);
+
+	/**
+	 * Sorts a list from a column.
+	 * @param list the list to sort
+	 * @param fieldName the field name
+	 * @param desc if the sotr is desc
+	 * @return the sorted list
+	 */
+	<D extends DtObject> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc);
 
 	/**
 	 * Filter or sort a list via a listProcessor powered by an index engine, can be composed of filters or sorters.

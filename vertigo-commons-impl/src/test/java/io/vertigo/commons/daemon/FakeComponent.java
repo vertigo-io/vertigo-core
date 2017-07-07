@@ -18,43 +18,21 @@
  */
 package io.vertigo.commons.daemon;
 
-import javax.inject.Inject;
-
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
+import io.vertigo.core.component.Component;
 
 public class FakeComponent implements Component {
 	private int executions = 0;
-
-	@Inject
-	public FakeComponent(final DaemonManager daemonManager) {
-		daemonManager.registerDaemon("simple", () -> new SimpleDaemon(this), 2);
-	}
 
 	public int getExecutionCount() {
 		return executions;
 	}
 
-	void execute() {
+	@DaemonScheduled(name = "DMN_SIMPLE", periodInSeconds = 2)
+	public void execute() {
 		executions++;
 		if (executions == 1) {
 			throw new IllegalStateException();
 		}
 	}
 
-	public static final class SimpleDaemon implements Daemon {
-		private final FakeComponent fakeComponent;
-
-		SimpleDaemon(final FakeComponent fakeComponent) {
-			Assertion.checkNotNull(fakeComponent);
-			//---
-			this.fakeComponent = fakeComponent;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public void run() {
-			fakeComponent.execute();
-		}
-	}
 }

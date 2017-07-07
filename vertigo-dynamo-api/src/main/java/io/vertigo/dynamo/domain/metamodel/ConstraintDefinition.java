@@ -22,8 +22,8 @@ import java.lang.reflect.Constructor;
 
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionPrefix;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 import io.vertigo.util.ClassUtil;
 
 /**
@@ -47,14 +47,18 @@ public final class ConstraintDefinition implements Constraint, Definition {
 	private final Constraint constraint;
 
 	/**
-	 * Constructeur.
+	 * Constructor
+	 * @param name the name of the constraint
+	 * @param constraintClassName the class for checking the constraint
+	 * @param msg the message in case of error
+	 * @param args the args to configure the constraint checker
 	 */
 	public ConstraintDefinition(final String name, final String constraintClassName, final String msg, final String args) {
 		Assertion.checkArgNotEmpty(constraintClassName);
 		Assertion.checkArgNotEmpty(name);
 		//-----
 		this.name = name;
-		this.msg = msg == null ? null : new MessageText(msg, null);
+		this.msg = msg == null ? null : MessageText.of(msg);
 		//-----
 		constraint = createConstraint(constraintClassName, args);
 	}
@@ -85,16 +89,19 @@ public final class ConstraintDefinition implements Constraint, Definition {
 		return msg != null ? msg : constraint.getErrorMessage();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Property getProperty() {
 		return constraint.getProperty();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Object getPropertyValue() {
 		return constraint.getPropertyValue();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean checkConstraint(final Object value) {
 		return constraint.checkConstraint(value);

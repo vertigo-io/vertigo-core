@@ -18,8 +18,6 @@
  */
 package io.vertigo.commons.impl.script;
 
-import java.util.List;
-
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.lang.Assertion;
@@ -33,9 +31,9 @@ import io.vertigo.lang.Assertion;
  */
 final class ScriptParser {
 	/**
-	 * Liste des séparateurs admis pour cet analyseur.
+	 * Séparateurs admis pour cet analyseur.
 	 */
-	private final List<ScriptSeparator> separators;
+	private final ScriptSeparator separator;
 
 	/**
 	 * Index de début du paramètre courant
@@ -50,13 +48,13 @@ final class ScriptParser {
 	private ScriptSeparator currentSeparator;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param separators Séparateurs pris en compte
 	 */
-	ScriptParser(final List<ScriptSeparator> separators) {
-		Assertion.checkNotNull(separators);
+	ScriptParser(final ScriptSeparator separator) {
+		Assertion.checkNotNull(separator);
 		//-----
-		this.separators = separators;
+		this.separator = separator;
 	}
 
 	/**
@@ -82,32 +80,18 @@ final class ScriptParser {
 			}
 
 			onRequestText(scriptHandler, script, index, currentBeginCar);
-			//Si le séparateur est un char, sa longueur est de 1.
-			if (currentSeparator.isCar()) {
-				onRequestParam(scriptHandler, script, currentBeginCar + 1, endCar, currentSeparator);
-				index = endCar + 1;
-			} else {
-				//Si le séparateur est une chaine de caractères, sa longueur doit être calculée.
-				onRequestParam(scriptHandler, script, currentBeginCar + currentSeparator.getBeginSeparator().length(), endCar, currentSeparator);
-				index = endCar + currentSeparator.getEndSeparator().length();
-			}
+			//Si le séparateur est une chaine de caractères, sa longueur doit être calculée.
+			onRequestParam(scriptHandler, script, currentBeginCar + currentSeparator.getBeginSeparator().length(), endCar, currentSeparator);
+			index = endCar + currentSeparator.getEndSeparator().length();
 		}
 		onRequestText(scriptHandler, script, index, script.length());
 	}
 
 	private static void onRequestParam(final ScriptParserHandler scriptHandler, final String script, final int beginCar, final int endCar, final ScriptSeparator separator) {
 		if (endCar == beginCar) {
-			if (separator.isCar()) {
-				//Si il s'agissait de deux mêmes caractères collés,
-				//c'est que l'on voulait le caractère lui même. (Echappement du séparateur)
-				//on le remet donc dans la requete
-				scriptHandler.onText(String.valueOf(separator.getSeparator()));
-			} else {
-				throw new IllegalArgumentException("Empty parameter");
-			}
-		} else {
-			scriptHandler.onExpression(script.substring(beginCar, endCar), separator);
+			throw new IllegalArgumentException("Empty parameter");
 		}
+		scriptHandler.onExpression(script.substring(beginCar, endCar), separator);
 	}
 
 	private static void onRequestText(final ScriptParserHandler scriptHandler, final String script, final int beginCar, final int endCar) {
@@ -124,17 +108,14 @@ final class ScriptParser {
 	 */
 	private boolean nextPosition(final String script, final int beginCar) {
 		int minPosition = Integer.MAX_VALUE;
-		int position;
 		ScriptSeparator found = null;
-		for (final ScriptSeparator separator : separators) {
-			position = separator.indexOfBeginCaracter(script, beginCar);
-			if (position != -1 && position < minPosition) {
-				minPosition = position;
-				found = separator;
-			}
+		final int position = separator.indexOfBeginCaracter(script, beginCar);
+		if (position != -1 && position < minPosition) {
+			minPosition = position;
+			found = separator;
 		}
 		/*
-		 * If there is a separator 
+		 * If there is a separator
 		 * then we return its position
 		 */
 		if (found == null) {

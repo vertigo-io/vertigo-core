@@ -42,8 +42,10 @@ public final class DslExpression {
 	 * @param query QueryDefinition
 	 * @param postBody String after body
 	 */
-	public DslExpression(final String preBody,
-			final Optional<DslField> field, final Optional<DslMultiField> multiField,
+	public DslExpression(
+			final String preBody,
+			final Optional<DslField> field,
+			final Optional<DslMultiField> multiField,
 			final DslQuery query,
 			final String postBody) {
 		Assertion.checkNotNull(preBody);

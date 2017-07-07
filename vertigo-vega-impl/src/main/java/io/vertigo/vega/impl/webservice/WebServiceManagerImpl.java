@@ -25,9 +25,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.ComponentSpace;
-import io.vertigo.core.definition.DefinitionSpaceWritable;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.vega.plugins.webservice.handler.AccessTokenWebServiceHandlerPlugin;
@@ -55,7 +58,7 @@ import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
  *
  * @author npiedeloup
  */
-public final class WebServiceManagerImpl implements WebServiceManager {
+public final class WebServiceManagerImpl implements WebServiceManager, SimpleDefinitionProvider, Activeable {
 
 	private static final String STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG = "Standard configuration (order is important) :\n"
 			+ "- " + ExceptionWebServiceHandlerPlugin.class.getSimpleName() + "\n"
@@ -100,11 +103,24 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 		this.webServiceScannerPlugin = webServiceScannerPlugin;
 		this.webServerPlugin = webServerPlugin;
 		handlerChain = new HandlerChain(sortedWebServiceHandlerPlugins);
+
+	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return scanComponents(Home.getApp().getComponentSpace());
+	}
+
+	@Override
+	public void start() {
 		//we do nothing with webServerPlugin
-		Home.getApp().registerPostStartFunction(() -> {
-			final List<WebServiceDefinition> webServiceDefinitions = WebServiceManagerImpl.this.scanComponents(Home.getApp().getComponentSpace());
-			WebServiceManagerImpl.this.registerWebServiceDefinitions((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace(), webServiceDefinitions);
-		});
+		webServerPlugin.registerWebServiceRoute(handlerChain, Home.getApp().getDefinitionSpace().getAll(WebServiceDefinition.class));
+	}
+
+	@Override
+	public void stop() {
+		// nothing
+
 	}
 
 	private static List<WebServiceHandlerPlugin> sortWebServiceHandlerPlugins(final List<WebServiceHandlerPlugin> restHandlerPlugins) {
@@ -149,15 +165,4 @@ public final class WebServiceManagerImpl implements WebServiceManager {
 				.build();
 	}
 
-	/**
-	 * Register WebServiceDefinitions to DefinitionSpace.
-	 * @param definitionSpace DefinitionSpace
-	 * @param webServiceDefinitions WebServiceDefinitions
-	 */
-	void registerWebServiceDefinitions(final DefinitionSpaceWritable definitionSpace, final List<WebServiceDefinition> webServiceDefinitions) {
-		// We register WebService Definition in this order
-		webServiceDefinitions
-				.forEach(definitionSpace::registerDefinition);
-		webServerPlugin.registerWebServiceRoute(handlerChain, webServiceDefinitions);
-	}
 }

@@ -28,6 +28,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
@@ -68,8 +69,12 @@ public final class VCollectors {
 		 * @param finisher
 		 * @param characteristics
 		 */
-		CollectorImpl(final Supplier<A> supplier, final BiConsumer<A, T> accumulator, final BinaryOperator<A> combiner,
-				final Function<A, R> finisher, final Set<Characteristics> characteristics) {
+		CollectorImpl(
+				final Supplier<A> supplier,
+				final BiConsumer<A, T> accumulator,
+				final BinaryOperator<A> combiner,
+				final Function<A, R> finisher,
+				final Set<Characteristics> characteristics) {
 			this.supplier = supplier;
 			this.accumulator = accumulator;
 			this.combiner = combiner;
@@ -85,7 +90,10 @@ public final class VCollectors {
 		 * @param combiner
 		 * @param characteristics
 		 */
-		CollectorImpl(final Supplier<A> supplier, final BiConsumer<A, T> accumulator, final BinaryOperator<A> combiner,
+		CollectorImpl(
+				final Supplier<A> supplier,
+				final BiConsumer<A, T> accumulator,
+				final BinaryOperator<A> combiner,
 				final Set<Characteristics> characteristics) {
 			this(supplier, accumulator, combiner, id(), characteristics);
 		}
@@ -122,17 +130,26 @@ public final class VCollectors {
 	}
 
 	/**
-	 *
+	 * @param dtDefinition
+	 * @return A collector for DtList
+	 */
+	public static <T extends DtObject> Collector<T, ?, DtList<T>> toDtList(final DtDefinition dtDefinition) {
+		Assertion.checkNotNull(dtDefinition);
+		//---
+		final Supplier<DtList<T>> dtSupplier = () -> new DtList<>(dtDefinition);
+		return new CollectorImpl<>(dtSupplier, List::add, (left, right) -> {
+			left.addAll(right);
+			return left;
+		}, CH_ID);
+	}
+
+	/**
 	 * @param dtClass
 	 * @return A collector for DtList
 	 */
 	public static <T extends DtObject> Collector<T, ?, DtList<T>> toDtList(final Class<T> dtClass) {
 		Assertion.checkNotNull(dtClass);
 		//---
-		final Supplier<DtList<T>> dtSupplier = () -> new DtList<>(dtClass);
-		return new CollectorImpl<>(dtSupplier, List::add, (left, right) -> {
-			left.addAll(right);
-			return left;
-		}, CH_ID);
+		return toDtList(DtObjectUtil.findDtDefinition(dtClass));
 	}
 }

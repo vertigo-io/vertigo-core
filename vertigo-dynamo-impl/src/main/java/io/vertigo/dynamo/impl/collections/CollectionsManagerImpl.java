@@ -19,14 +19,16 @@
 package io.vertigo.dynamo.impl.collections;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.inject.Inject;
 
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.CollectionsManager;
-import io.vertigo.dynamo.collections.DtListProcessor;
 import io.vertigo.dynamo.collections.IndexDtListFunctionBuilder;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
@@ -37,7 +39,10 @@ import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.impl.collections.facet.model.FacetFactory;
+import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilter;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -46,22 +51,35 @@ import io.vertigo.lang.Assertion;
  * @author  pchretien
  */
 public final class CollectionsManagerImpl implements CollectionsManager {
-	private final Optional<IndexPlugin> indexPlugin;
+	private final Optional<IndexPlugin> indexPluginOpt;
 
 	private final FacetFactory facetFactory;
-	private final DtListProcessor listProcessor;
 
 	/**
-	 * Constructeur.
-	 * @param indexPlugin Plugin optionnel d'index
+	 * Constructor.
+	 * @param indexPluginOpt Plugin optionnel d'index
 	 */
 	@Inject
-	public CollectionsManagerImpl(final Optional<IndexPlugin> indexPlugin) {
-		Assertion.checkNotNull(indexPlugin);
+	public CollectionsManagerImpl(final Optional<IndexPlugin> indexPluginOpt) {
+		Assertion.checkNotNull(indexPluginOpt);
 		//-----
-		this.indexPlugin = indexPlugin;
+		this.indexPluginOpt = indexPluginOpt;
 		facetFactory = new FacetFactory(this);
-		listProcessor = new DtListProcessorImpl();
+	}
+
+	private static StoreManager getStoreManager() {
+		return Home.getApp().getComponentSpace().resolve(StoreManager.class);
+	}
+
+	@Override
+	public <D extends DtObject> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc) {
+		Assertion.checkNotNull(list);
+		Assertion.checkArgNotEmpty(fieldName);
+		//-----
+		final Comparator<D> comparator = new DtObjectComparator<>(getStoreManager(), list.getDefinition().getField(fieldName), desc);
+		return list.stream()
+				.sorted(comparator)
+				.collect(VCollectors.toDtList(list.getDefinition()));
 	}
 
 	/** {@inheritDoc} */
@@ -71,7 +89,10 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		Assertion.checkNotNull(facetedQuery);
 		//-----
 		//1- on applique les filtres
-		final DtList<R> filteredDtList = filter(dtList, facetedQuery);
+		final DtList<R> filteredDtList = dtList.stream()
+				.filter(filter(facetedQuery))
+				.collect(VCollectors.toDtList(dtList.getDefinition()));
+
 		//2- on facette
 		final List<Facet> facets = facetFactory.createFacets(facetedQuery.getDefinition(), filteredDtList);
 
@@ -84,32 +105,39 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		final Map<R, Map<DtField, String>> highlights = Collections.emptyMap();
 
 		//3- on construit le résultat
-		return new FacetedQueryResult<>(Optional.of(facetedQuery), filteredDtList.size(), filteredDtList, facets, clusterFacetDefinition, resultCluster, highlights, dtList);
+		return new FacetedQueryResult<>(
+				Optional.of(facetedQuery),
+				filteredDtList.size(),
+				filteredDtList,
+				facets,
+				clusterFacetDefinition,
+				resultCluster,
+				highlights,
+				dtList);
 	}
 
 	//=========================================================================
 	//=======================Filtrage==========================================
 	//=========================================================================
-	private <D extends DtObject> DtList<D> filter(final DtList<D> dtList, final FacetedQuery facetedQuery) {
+	private <D extends DtObject> Predicate<D> filter(final FacetedQuery facetedQuery) {
 		final List<ListFilter> listFilters = facetedQuery.getListFilters();
-		DtListProcessor dtListProcessor = createDtListProcessor();
+		Predicate<D> predicate = list -> true;
 		for (final ListFilter listFilter : listFilters) {
-			dtListProcessor = dtListProcessor.filter(listFilter);
+			predicate = predicate.and(this.filter(listFilter));
 		}
-		return dtListProcessor.apply(dtList);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public DtListProcessor createDtListProcessor() {
-		return listProcessor;
+		return predicate;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <D extends DtObject> IndexDtListFunctionBuilder<D> createIndexDtListFunctionBuilder() {
-		Assertion.checkState(indexPlugin.isPresent(), "An IndexPlugin is required to use this function");
+		Assertion.checkState(indexPluginOpt.isPresent(), "An IndexPlugin is required to use this function");
 		//-----
-		return new IndexDtListFunctionBuilderImpl<>(indexPlugin.get());
+		return new IndexDtListFunctionBuilderImpl<>(indexPluginOpt.get());
+	}
+
+	@Override
+	public <D extends DtObject> Predicate<D> filter(final ListFilter listFilter) {
+		return new DtListPatternFilter<>(listFilter.getFilterValue());
 	}
 }

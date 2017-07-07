@@ -50,14 +50,15 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 	private Node node;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
 	 * @param serversNamesStr URL du serveur ElasticSearch avec le port de communication de cluster (9300 en général)
 	 * @param envIndex Nom de l'index de l'environment
+	 * @param envIndexIsPrefix Si Nom de l'index de l'environment est un prefix
 	 * @param rowsPerQuery Liste des indexes
 	 * @param clusterName : nom du cluster à rejoindre
 	 * @param configFile fichier de configuration des index
-	 * @param nodeName : nom du node
+	 * @param nodeNameOpt : nom du node
 	 * @param codecManager Manager des codecs
 	 * @param resourceManager Manager d'accès aux ressources
 	 */
@@ -65,13 +66,14 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 	public ESNodeSearchServicesPlugin(
 			@Named("servers.names") final String serversNamesStr,
 			@Named("envIndex") final String envIndex,
+			@Named("envIndexIsPrefix") final Optional<Boolean> envIndexIsPrefix,
 			@Named("rowsPerQuery") final int rowsPerQuery,
 			@Named("cluster.name") final String clusterName,
 			@Named("config.file") final Optional<String> configFile,
-			@Named("node.name") final Optional<String> nodeName,
+			@Named("node.name") final Optional<String> nodeNameOpt,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
-		super(envIndex, rowsPerQuery, configFile, codecManager, resourceManager);
+		super(envIndex, envIndexIsPrefix.orElse(false), rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(serversNamesStr,
 				"Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
 		Assertion.checkArgument(!serversNamesStr.contains(";"),
@@ -81,8 +83,7 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 		// ---------------------------------------------------------------------
 		serversNames = serversNamesStr.split(",");
 		this.clusterName = clusterName;
-		this.nodeName = nodeName.isPresent() ? nodeName.get() : ("es-client-node-" + System.currentTimeMillis());
-
+		nodeName = nodeNameOpt.orElseGet(() -> "es-client-node-" + System.currentTimeMillis());
 	}
 
 	/** {@inheritDoc} */

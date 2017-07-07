@@ -37,7 +37,9 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.daemon.DaemonScheduled;
+import io.vertigo.commons.transaction.VTransaction;
+import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
@@ -45,11 +47,8 @@ import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.dynamo.impl.file.PurgeTempFileDaemon;
 import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
-import io.vertigo.dynamo.transaction.VTransaction;
-import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.DateUtil;
@@ -70,15 +69,15 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	private final String name;
 	private final String documentRoot;
 	private final VTransactionManager transactionManager;
+	private final Optional<Integer> purgeDelayMinutesOpt;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param name Store name
 	 * @param fileManager File manager
 	 * @param path Root directory
 	 * @param transactionManager Transaction manager
-	 * @param purgeDelayMinutes purge files older than this delay
-	 * @param daemonManager Daemon manager
+	 * @param purgeDelayMinutesOpt purge files older than this delay
 	 */
 	@Inject
 	public FsFullFileStorePlugin(
@@ -86,22 +85,29 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			@Named("path") final String path,
 			final FileManager fileManager,
 			final VTransactionManager transactionManager,
-			@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutes,
-			final DaemonManager daemonManager) {
+			@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
 		Assertion.checkNotNull(name);
 		Assertion.checkArgNotEmpty(path);
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkArgument(path.endsWith("/"), "store path must ends with / ({0})", path);
-		//Assertion.checkState(purgeDelayMinutes.isEmpty() || daemonManager != null, "DeamonManager is mandatory when using a purgeDelay");
 		//-----
 		this.name = name.orElse(DEFAULT_STORE_NAME);
 		this.fileManager = fileManager;
 		this.transactionManager = transactionManager;
 		documentRoot = FileUtil.translatePath(path);
-		//-----
-		if (purgeDelayMinutes.isPresent()) {
-			daemonManager.registerDaemon("PurgeFileStoreDaemon-" + name, () -> new PurgeTempFileDaemon(purgeDelayMinutes.get(), documentRoot), 5 * 60);
+		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
+	}
+
+	/**
+	 * Daemon to purge old files
+	 */
+	@DaemonScheduled(name = "DMN_PURGE_FILE_STORE_DAEMON_", periodInSeconds = 5 * 60)
+	public void deleteOldFiles() {
+		if (purgeDelayMinutesOpt.isPresent()) {
+			final File documentRootFile = new File(documentRoot);
+			final long maxTime = System.currentTimeMillis() - purgeDelayMinutesOpt.get() * 60L * 1000L;
+			doDeleteOldFiles(documentRootFile, maxTime);
 		}
 	}
 
@@ -114,7 +120,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public FileInfo read(final FileInfoURI uri) {
-		// récupération des metadata.
+		/* read metadata*/
 		try {
 			final String metadataUri = String.class.cast(uri.getKey()) + METADATA_SUFFIX;
 			final Path metadataPath = Paths.get(documentRoot, metadataUri);
@@ -146,7 +152,6 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	}
 
 	private void saveFile(final String metaData, final FileInfo fileInfo) {
-
 		try (final InputStream inputStream = fileInfo.getVFile().createInputStream()) {
 			getCurrentTransaction().addAfterCompletion(new FileActionSave(inputStream, obtainFullFilePath(fileInfo.getURI())));
 		} catch (final IOException e) {
@@ -169,8 +174,9 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void create(final FileInfo fileInfo) {
-		Assertion.checkNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
+	public FileInfo create(final FileInfo fileInfo) {
+		Assertion.checkNotNull(fileInfo);
+		Assertion.checkArgument(fileInfo.getURI() == null, "Only file without any id can be created.");
 		//-----
 		final VFile vFile = fileInfo.getVFile();
 		final SimpleDateFormat format = new SimpleDateFormat(INFOS_DATE_PATTERN);
@@ -184,6 +190,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		final FileInfoURI uri = createNewFileInfoURI(fileInfo.getDefinition());
 		fileInfo.setURIStored(uri);
 		saveFile(metaData, fileInfo);
+		return fileInfo;
 	}
 
 	private static FileInfoURI createNewFileInfoURI(final FileInfoDefinition fileInfoDefinition) {
@@ -218,7 +225,6 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	}
 
 	private static final class FileInputStreamBuilder implements InputStreamBuilder {
-
 		private final File file;
 
 		FileInputStreamBuilder(final File file) {
@@ -237,4 +243,16 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		return transactionManager.getCurrentTransaction();
 	}
 
+	private static void doDeleteOldFiles(final File documentRootFile, final long maxTime) {
+		for (final File subFiles : documentRootFile.listFiles()) {
+			if (subFiles.isDirectory() && subFiles.canRead()) { //canRead pour les pbs de droits
+				doDeleteOldFiles(subFiles, maxTime);
+			} else if (subFiles.lastModified() < maxTime) {
+				final boolean succeeded = subFiles.delete();
+				if (!succeeded) {
+					subFiles.deleteOnExit();
+				}
+			}
+		}
+	}
 }

@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamox.domain.constraint;
 
-import io.vertigo.lang.MessageText;
+import io.vertigo.core.locale.MessageText;
 
 /**
  * Contrainte pour gérer la longueur des chaines de caractères.
@@ -47,7 +47,9 @@ public final class ConstraintStringLength extends AbstractConstraintLength<Strin
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return new MessageText(Resources.DYNAMO_CONSTRAINT_STRINGLENGTH_EXCEEDED, Integer.toString(getMaxLength()));
-		//return "la taille doit être inférieure à " + maxLength + " caractères.";
+		return MessageText.builder()
+				.withKey(Resources.DYNAMO_CONSTRAINT_STRINGLENGTH_EXCEEDED)
+				.withParams(Integer.toString(getMaxLength()))
+				.build();
 	}
 }

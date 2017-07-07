@@ -22,16 +22,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.validation.UiMessageStack.Level;
 
@@ -81,12 +80,7 @@ public final class UiErrorBuilder {
 	 * @param dtObject Objet
 	 */
 	void clearErrors(final DtObject dtObject) {
-		for (final Iterator<UiError> it = uiObjectErrors.iterator(); it.hasNext();) {
-			final UiError uiError = it.next();
-			if (uiError.getDtObject().equals(dtObject)) {
-				it.remove();
-			}
-		}
+		uiObjectErrors.removeIf(uiError -> uiError.getDtObject().equals(dtObject));
 		obtainUiErrorIndex(dtObject).clear();
 	}
 
@@ -98,12 +92,7 @@ public final class UiErrorBuilder {
 	void clearErrors(final DtObject dtObject, final DtField dtField) {
 		Assertion.checkNotNull(dtField);
 		//-----
-		for (final Iterator<UiError> it = uiObjectErrors.iterator(); it.hasNext();) {
-			final UiError uiError = it.next();
-			if (uiError.getDtObject().equals(dtObject) && uiError.getDtField().equals(dtField)) {
-				it.remove();
-			}
-		}
+		uiObjectErrors.removeIf(uiError -> uiError.getDtObject().equals(dtObject) && uiError.getDtField().equals(dtField));
 		obtainUiErrorIndex(dtObject).remove(dtField);
 	}
 
@@ -188,8 +177,8 @@ public final class UiErrorBuilder {
 	 */
 	public void checkFieldNotNull(final DtObject dto, final String fieldName, final MessageText messageText) {
 		final DtField dtField = getDtField(dto, fieldName);
-		final String value = (String) getValue(dto, dtField);
-		if (value == null || value.isEmpty()) {
+		final Object value = getValue(dto, dtField);
+		if (value == null || value.toString().isEmpty()) {
 			addError(dto, dtField, messageText);
 		}
 	}

@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
-import io.vertigo.lang.MessageText;
+import io.vertigo.core.locale.MessageText;
 
 /**
  * Exception lancée en cas d'échec de vérification des contraintes.
@@ -30,7 +30,7 @@ public final class ConstraintException extends Exception {
 	private final MessageText messageText;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param messageText MessageText de l'erreur.
 	 */
 	public ConstraintException(final MessageText messageText) {

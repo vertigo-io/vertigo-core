@@ -34,6 +34,13 @@ public final class PropertiesBuilder implements Builder<Properties> {
 	private final Map<Property<?>, Object> properties = new HashMap<>();
 
 	/**
+	 * Constructeur.
+	 */
+	PropertiesBuilder() {
+		super();
+	}
+
+	/**
 	 * Ajout d'une propriété typée.
 	 * @param <T> Property type
 	 * @param property propriété

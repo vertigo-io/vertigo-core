@@ -21,6 +21,7 @@ package io.vertigo.dynamo.search.withstore;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
+import java.util.Collections;
 
 import javax.inject.Inject;
 
@@ -28,12 +29,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.statement.SqlCallableStatement;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.URI;
@@ -43,10 +45,7 @@ import io.vertigo.dynamo.search.data.domain.Car;
 import io.vertigo.dynamo.search.data.domain.CarDataBase;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionWritable;
 
 /**
  * Test de l'implémentation standard couplé au store.
@@ -109,10 +108,8 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	}
 
 	private void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
-		try (final SqlCallableStatement callableStatement = dataBaseManager.createCallableStatement(connection, sql)) {
-			callableStatement.init();
-			callableStatement.executeUpdate();
-		}
+		dataBaseManager.createPreparedStatement(connection)
+				.executeUpdate(sql, Collections.emptyList());
 	}
 
 	/**
@@ -221,7 +218,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 
 	private long query(final String query) {
 		//recherche
-		final SearchQuery searchQuery = new SearchQueryBuilder(query)
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of(query))
 				.build();
 
 		return doQuery(searchQuery, null).getCount();
@@ -242,7 +239,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	}
 
 	private void doRemove(final String query) {
-		final ListFilter removeQuery = new ListFilter(query);
+		final ListFilter removeQuery = ListFilter.of(query);
 		searchManager.removeAll(carIndexDefinition, removeQuery);
 	}
 

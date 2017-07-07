@@ -109,13 +109,12 @@ public final class VegaFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 
-		final PluginConfigBuilder corsAllowerPluginConfigBuilder = new PluginConfigBuilder(CorsAllowerWebServiceHandlerPlugin.class);
+		final PluginConfigBuilder corsAllowerPluginConfigBuilder = PluginConfig.builder(CorsAllowerWebServiceHandlerPlugin.class);
 		if (myOriginCORSFilter != null) {
-			corsAllowerPluginConfigBuilder.addParam(Param.create("originCORSFilter", myOriginCORSFilter));
+			corsAllowerPluginConfigBuilder.addParam(Param.of("originCORSFilter", myOriginCORSFilter));
 		}
 
 		getModuleConfigBuilder()
-				.withNoAPI()
 				.addComponent(WebServiceManager.class, WebServiceManagerImpl.class)
 				.addPlugin(AnnotationsWebServiceScannerPlugin.class)
 				.addComponent(SwaggerWebServices.class)
@@ -129,7 +128,7 @@ public final class VegaFeatures extends Features {
 		if (mySearchApiVersion != null) {
 			getModuleConfigBuilder()
 					.addComponent(JsonEngine.class, GoogleJsonEngine.class,
-							Param.create("searchApiVersion", mySearchApiVersion));
+							Param.of("searchApiVersion", mySearchApiVersion));
 		} else {
 			getModuleConfigBuilder()
 					.addComponent(JsonEngine.class, GoogleJsonEngine.class);
@@ -147,7 +146,7 @@ public final class VegaFeatures extends Features {
 					.addPlugin(AccessTokenWebServiceHandlerPlugin.class)
 					.addPlugin(PaginatorAndSortWebServiceHandlerPlugin.class)
 					.addComponent(TokenManager.class, TokenManagerImpl.class,
-							Param.create("collection", myTokens));
+							Param.of("collection", myTokens));
 		}
 		if (miscEnabled) {
 			getModuleConfigBuilder()
@@ -155,9 +154,9 @@ public final class VegaFeatures extends Features {
 		}
 		if (myPort != null) {
 			final ListBuilder<Param> params = new ListBuilder()
-					.add(Param.create("port", Integer.toString(myPort)));
+					.add(Param.of("port", Integer.toString(myPort)));
 			if (myApiPrefix != null) {
-				params.add(Param.create("apiPrefix", myApiPrefix));
+				params.add(Param.of("apiPrefix", myApiPrefix));
 			}
 			getModuleConfigBuilder().addPlugin(new PluginConfig(SparkJavaEmbeddedWebServerPlugin.class, params.build()));
 

@@ -25,7 +25,7 @@ import io.vertigo.lang.Assertion;
 
 /**
  * This class defines a simple association : 1-1 or 1-n.
- * A simple association 
+ * A simple association
  *
  * @author  jcassignol, pchretien
  */
@@ -37,14 +37,15 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 
 	/**
 	 * Constructor.
-	
+
 	 * @param name the name of the association
 	 * @param fkFieldName the fieldname that represents the foreign key
 	 * @param associationNodeA the A node for this assocation
 	 * @param associationNodeB the B node for this assocation
 	 */
 	public AssociationSimpleDefinition(
-			final String name, final String fkFieldName,
+			final String name,
+			final String fkFieldName,
 			final AssociationNode associationNodeA,
 			final AssociationNode associationNodeB) {
 		super(name, associationNodeA, associationNodeB);
@@ -69,7 +70,7 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 	}
 
 	/**
-	 * @return the key node 
+	 * @return the key node
 	 */
 	public AssociationNode getPrimaryAssociationNode() {
 		return primaryAssociationNode;
@@ -83,7 +84,7 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 	}
 
 	/**
-	 * @return the field that supports the link 
+	 * @return the field that supports the link
 	 */
 	public DtField getFKField() {
 		return foreignAssociationNode.getDtDefinition().getField(fkFieldName);

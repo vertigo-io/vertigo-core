@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,12 +36,11 @@ import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.daemon.Daemon;
-import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.daemon.DaemonScheduled;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ListBuilder;
 
@@ -52,6 +52,7 @@ import io.vertigo.util.ListBuilder;
 public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	private static final boolean READONLY = false;
 	//cleaner : 1000 elements every minutes -> 500 simultaneous users (took about 100ms)
+	private static final Logger LOGGER = Logger.getLogger(BerkeleyKVStorePlugin.class);
 	private static final int MAX_REMOVED_TOO_OLD_ELEMENTS = 1000;
 	private static final int REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS = 60;
 
@@ -59,7 +60,6 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	private final List<String> collectionNames;
 
 	private final CodecManager codecManager;
-	private final DaemonManager daemonManager;
 	private final VTransactionManager transactionManager;
 	private final String dbFilePathTranslated;
 
@@ -80,30 +80,26 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	 * @param dbFilePath Base Berkeley DB file system path (Could use java env param like user.home user.dir or java.io.tmpdir)
 	 * @param transactionManager Transaction manager
 	 * @param codecManager Codec manager
-	 * @param daemonManager Daemon manager
 	 */
 	@Inject
 	public BerkeleyKVStorePlugin(
 			@Named("collections") final String collections,
 			@Named("dbFilePath") final String dbFilePath,
 			final VTransactionManager transactionManager,
-			final CodecManager codecManager,
-			final DaemonManager daemonManager) {
+			final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(collections);
 		Assertion.checkArgNotEmpty(dbFilePath);
 		Assertion.checkNotNull(transactionManager);
 		//-----
 		collectionConfigs = parseCollectionConfigs(collections);
-		final ListBuilder<String> collectionNamesBuilder = new ListBuilder<>();
-		for (final BerkeleyCollectionConfig collectionConfig : collectionConfigs) {
-			collectionNamesBuilder.add(collectionConfig.getCollectionName());
-		}
-		collectionNames = collectionNamesBuilder.unmodifiable().build();
+		collectionNames = collectionConfigs
+				.stream()
+				.map(BerkeleyCollectionConfig::getCollectionName)
+				.collect(Collectors.toList());
 		//-----
 		dbFilePathTranslated = FileUtil.translatePath(dbFilePath);
 		this.transactionManager = transactionManager;
 		this.codecManager = codecManager;
-		this.daemonManager = daemonManager;
 	}
 
 	private static List<BerkeleyCollectionConfig> parseCollectionConfigs(final String collections) {
@@ -155,8 +151,6 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 					collectionConfig.getTimeToLiveSeconds(), transactionManager, codecManager);
 			databases.put(collectionConfig.getCollectionName(), berkeleyDatabase);
 		}
-
-		daemonManager.registerDaemon("purgeBerkeleyKVStore", () -> new RemoveTooOldElementsDaemon(MAX_REMOVED_TOO_OLD_ELEMENTS, this), REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS);
 	}
 
 	private static Environment buildFsEnvironment(final File dbFile, final boolean readOnly) {
@@ -197,6 +191,22 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 			if (ramEnvironment != null) {
 				ramEnvironment.close();
 			}
+		}
+	}
+
+	/**
+	 * Remove too old elements.
+	 */
+	@DaemonScheduled(name = "DMN_PURGE_BERKELEY_KV_STORE", periodInSeconds = REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS)
+	public void removeTooOldElements() {
+		Assertion.checkArgument(MAX_REMOVED_TOO_OLD_ELEMENTS > 0 && MAX_REMOVED_TOO_OLD_ELEMENTS < 100000, "maxRemovedTooOldElements must stay between 1 and 100000");
+		//---
+		try {
+			for (final String collection : collectionNames) {
+				getDatabase(collection).removeTooOldElements(MAX_REMOVED_TOO_OLD_ELEMENTS);
+			}
+		} catch (final DatabaseException dbe) {
+			LOGGER.error("Error closing BerkeleyContextCachePlugin: " + dbe, dbe);
 		}
 	}
 
@@ -242,47 +252,4 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 		return getDatabase(collection).count();
 	}
 
-	/**
-	 * Remove too old elements.
-	 * @param maxRemovedTooOldElements max elements too removed
-	 */
-	void removeTooOldElements(final int maxRemovedTooOldElements) {
-		for (final String collection : collectionNames) {
-			getDatabase(collection).removeTooOldElements(maxRemovedTooOldElements);
-		}
-	}
-
-	/**
-	 * Daemon to remove too old elements.
-	 * @author npiedeloup
-	 */
-	//must be public to be used by DaemonManager
-	public static final class RemoveTooOldElementsDaemon implements Daemon {
-		private static final Logger LOGGER = Logger.getLogger(BerkeleyKVStorePlugin.class);
-
-		private final BerkeleyKVStorePlugin berkeleyKVDataStorePlugin;
-		private final int maxRemovedTooOldElements;
-
-		/**
-		 * @param berkeleyKVDataStorePlugin This plugin
-		 * @param maxRemovedTooOldElements max elements too removed
-		*/
-		public RemoveTooOldElementsDaemon(final int maxRemovedTooOldElements, final BerkeleyKVStorePlugin berkeleyKVDataStorePlugin) {
-			Assertion.checkNotNull(berkeleyKVDataStorePlugin);
-			Assertion.checkArgument(maxRemovedTooOldElements > 0 && maxRemovedTooOldElements < 100000, "maxRemovedTooOldElements must stay between 1 and 100000");
-			//------
-			this.maxRemovedTooOldElements = maxRemovedTooOldElements;
-			this.berkeleyKVDataStorePlugin = berkeleyKVDataStorePlugin;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public void run() {
-			try {
-				berkeleyKVDataStorePlugin.removeTooOldElements(maxRemovedTooOldElements);
-			} catch (final DatabaseException dbe) {
-				LOGGER.error("Error closing BerkeleyContextCachePlugin: " + dbe, dbe);
-			}
-		}
-	}
 }

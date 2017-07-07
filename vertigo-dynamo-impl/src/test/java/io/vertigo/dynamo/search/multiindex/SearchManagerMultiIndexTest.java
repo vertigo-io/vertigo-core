@@ -34,7 +34,6 @@ import io.vertigo.dynamo.search.data.domain.CarDataBase;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 
 /**
  * @author  npiedeloup
@@ -93,7 +92,7 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		final SearchIndexDefinition carIndexDefinition = definitionSpace.resolve(IDX_CAR, SearchIndexDefinition.class);
 		final SearchIndexDefinition carDynIndexDefinition = definitionSpace.resolve(IDX_DYNA_CAR, SearchIndexDefinition.class);
-		final ListFilter removeQuery = new ListFilter("*:*");
+		final ListFilter removeQuery = ListFilter.of("*:*");
 		searchManager.removeAll(carIndexDefinition, removeQuery);
 		searchManager.removeAll(carDynIndexDefinition, removeQuery);
 		waitIndexation();
@@ -107,7 +106,7 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 
 	private long query(final String query, final SearchIndexDefinition indexDefinition) {
 		//recherche
-		final SearchQuery searchQuery = new SearchQueryBuilder(query)
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of(query))
 				.build();
 		final FacetedQueryResult<DtObject, SearchQuery> result = searchManager.loadList(indexDefinition, searchQuery, null);
 		return result.getCount();

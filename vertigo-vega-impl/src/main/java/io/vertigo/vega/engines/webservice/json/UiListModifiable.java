@@ -42,9 +42,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractUiListMo
 
 	@Override
 	public void checkFormat(final UiMessageStack uiMessageStack) {
-		stream()
-				.forEach((uiObject) -> uiObject.checkFormat(uiMessageStack));
-
+		forEach((uiObject) -> uiObject.checkFormat(uiMessageStack));
 	}
 
 	/**
@@ -69,7 +67,7 @@ public final class UiListModifiable<D extends DtObject> extends AbstractUiListMo
 	@Override
 	public boolean equals(final Object o) {
 		/* A list equals only the same list */
-		return (o == this);
+		return o == this;
 	}
 
 	@Override

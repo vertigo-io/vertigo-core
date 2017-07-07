@@ -19,9 +19,9 @@
 package io.vertigo.dynamo.plugins.search.elasticsearch;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
@@ -54,7 +54,7 @@ final class ESDocumentCodec {
 	private final CodecManager codecManager;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param codecManager Manager des codecs
 	 */
 	ESDocumentCodec(final CodecManager codecManager) {
@@ -97,7 +97,7 @@ final class ESDocumentCodec {
 		if (searchHit.field(FULL_RESULT) == null) {
 			resultDtObjectdtObject = decode((String) searchHit.getSource().get(FULL_RESULT));
 		} else {
-			resultDtObjectdtObject = decode((String) searchHit.field(FULL_RESULT).getValue());
+			resultDtObjectdtObject = decode(searchHit.field(FULL_RESULT).getValue());
 		}
 		//-----
 		return SearchIndex.createIndex(indexDefinition, uri, resultDtObjectdtObject);
@@ -157,13 +157,9 @@ final class ESDocumentCodec {
 	}
 
 	private static List<DtField> getNotStoredFields(final DtDefinition dtDefinition) {
-		final List<DtField> notStoredFields = new ArrayList<>();
-		for (final DtField dtField : dtDefinition.getFields()) {
-			if (!isIndexStoredDomain(dtField.getDomain())) {
-				notStoredFields.add(dtField);
-			}
-		}
-		return notStoredFields;
+		return dtDefinition.getFields().stream()
+				.filter(dtField -> !isIndexStoredDomain(dtField.getDomain()))
+				.collect(Collectors.toList());
 	}
 
 	private static <I extends DtObject> I cloneDto(final DtDefinition dtDefinition, final I dto, final List<DtField> excludedFields) {

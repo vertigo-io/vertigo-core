@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.plugins.store.datastore.sql;
 
+import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -27,11 +29,13 @@ import javax.inject.Named;
 import io.vertigo.app.Home;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionUtil;
-import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.vendor.SqlDialect;
+import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.vendor.SqlDialect;
+import io.vertigo.dynamo.criteria.Criteria;
+import io.vertigo.dynamo.criteria.CriteriaCtx;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
@@ -46,9 +50,6 @@ import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.criteria.Criteria;
-import io.vertigo.dynamo.store.criteria.CriteriaCtx;
-import io.vertigo.dynamo.store.criteria.Criterions;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
@@ -71,7 +72,6 @@ import io.vertigo.lang.VSystemException;
 public final class SqlDataStorePlugin implements DataStorePlugin {
 	private static final int MAX_TASK_SPECIFIC_NAME_LENGTH = 40;
 	private static final Criteria EMPTY_CRITERIA = Criterions.alwaysTrue();
-	private static final String SEQUENCE_FIELD = "SEQUENCE";
 
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
@@ -131,7 +131,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		sequencePrefix = optSequencePrefix.orElse("SEQ_");
 		this.taskManager = taskManager;
 		sqlDialect = sqlDataBaseManager.getConnectionProvider(connectionName).getDataBase().getSqlDialect();
-		integerDomain = new DomainBuilder("DO_INTEGER_SQL", DataType.Integer).build();
+		integerDomain = Domain.builder("DO_INTEGER_SQL", DataType.Integer).build();
 	}
 
 	/**
@@ -187,7 +187,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
 				.toString();
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
@@ -195,7 +195,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withOutOptional("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.getDefinition().getName() + "_DTO", Domain.class))
 				.build();
 
-		final Task task = new TaskBuilder(taskDefinition)
+		final Task task = Task.builder(taskDefinition)
 				.addValue(idFieldName, uri.getId())
 				.build();
 
@@ -235,7 +235,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.append(" where j.").append(fkFieldName).append(" = #").append(fkFieldName).append('#')
 				.toString();
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
@@ -245,7 +245,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 		final URI uri = dtcUri.getSource();
 
-		final Task task = new TaskBuilder(taskDefinition)
+		final Task task = Task.builder(taskDefinition)
 				.addValue(fkFieldName, uri.getId())
 				.build();
 
@@ -259,11 +259,11 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation dtcUri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(dtcUri);
-		//-----
+		//---
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
-		final Comparable value = (Comparable) dtcUri.getSource().getId();
+		final Serializable value = dtcUri.getSource().getId();
 
-		return findByCriteria(dtDefinition, Criterions.isEqualTo(() -> fkField.getName(), value), null);
+		return findByCriteria(dtDefinition, Criterions.isEqualTo(fkField::getName, value), null);
 	}
 
 	/** {@inheritDoc} */
@@ -271,10 +271,10 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<E> uri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(uri);
-		//-----
+		//---
 		final Criteria<E> criteria = uri.getCriteria();
 		final Integer maxRows = uri.getMaxRows();
-		//-----
+		//---
 		final Criteria<E> filterCriteria = criteria == null ? EMPTY_CRITERIA : criteria;
 		return findByCriteria(dtDefinition, filterCriteria, maxRows);
 	}
@@ -284,29 +284,29 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(criteria);
-		//-----
+		//---
 		final String tableName = getTableName(dtDefinition);
 		final String requestedFields = getRequestedFields(dtDefinition);
 		final String taskName = getListTaskName(tableName);
 		final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(sqlDialect);
 		final String where = tuple.getVal1();
 		final String request = createLoadAllLikeQuery(tableName, requestedFields, where, maxRows);
-		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskName)
+		final TaskDefinitionBuilder taskDefinitionBuilder = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request);
 
 		final CriteriaCtx ctx = tuple.getVal2();
-		//IN, obligatoire
+		//IN, Optional
 		for (final String attributeName : ctx.getAttributeNames()) {
-			taskDefinitionBuilder.addInRequired(attributeName, dtDefinition.getField(ctx.getDtFieldName(attributeName)).getDomain());
+			taskDefinitionBuilder.addInOptional(attributeName, dtDefinition.getField(ctx.getDtFieldName(attributeName)).getDomain());
 		}
 		//OUT, obligatoire
 		final TaskDefinition taskDefinition = taskDefinitionBuilder
 				.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class))
 				.build();
 
-		final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition);
+		final TaskBuilder taskBuilder = Task.builder(taskDefinition);
 		for (final String attributeName : ctx.getAttributeNames()) {
 			taskBuilder.addValue(attributeName, ctx.getAttributeValue(attributeName));
 		}
@@ -332,14 +332,12 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	//==========================================================================
 	/** {@inheritDoc} */
 	@Override
-	public void create(final DtDefinition dtDefinition, final Entity entity) {
+	public <E extends Entity> E create(final DtDefinition dtDefinition, final E entity) {
 		Assertion.checkArgument(DtObjectUtil.getId(entity) == null, "Only object without any id can be created");
 		//------
 		final boolean insert = true;
-		final boolean saved = put(entity, insert);
-		if (!saved) {
-			throw new VSystemException("no data created");
-		}
+		put(entity, insert);
+		return entity;
 	}
 
 	/** {@inheritDoc} */
@@ -348,10 +346,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(DtObjectUtil.getId(entity), "Need an id to update an object ");
 		//-----
 		final boolean insert = false;
-		final boolean saved = put(entity, insert);
-		if (!saved) {
-			throw new VSystemException("no data updated");
-		}
+		put(entity, insert);
 	}
 
 	/**
@@ -369,7 +364,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 				.append(dtDefinition.getFields()
 						.stream()
-						.filter(dtField -> dtField.isPersistent() && dtField.getType() != DtField.FieldType.ID)
+						.filter(dtField -> dtField.isPersistent() && !dtField.getType().isId())
 						.map(dtField -> dtField.getName() + " =#DTO." + dtField.getName() + '#')
 						.collect(Collectors.joining(", ")))
 				.append(" where ")
@@ -377,30 +372,12 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.toString();
 	}
 
-	private long buildNextSequence(final String sequenceName, final String query) {
-		final String taskName = TASK.TK_SELECT.name() + '_' + sequenceName;
-		final Domain resultDomain = new DomainBuilder("DO_HSQL", DataType.Long).build();
-
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
-				.withEngine(TaskEngineSelect.class)
-				.withDataSpace(getDataSpace())
-				.withRequest(query)
-				.withOutRequired(SEQUENCE_FIELD, resultDomain)
-				.build();
-
-		final Task task = new TaskBuilder(taskDefinition).build();
-
-		return taskManager
-				.execute(task)
-				.getResult();
-	}
-
 	/**
 	 * @param insert Si opération de type insert
 	 * @return Classe du moteur de tache à utiliser
 	 */
-	private Class<? extends TaskEngine> getTaskEngineClass(final boolean insert) {
-		if (insert && sqlDialect.generatedKeys()) {
+	private static Class<? extends TaskEngine> getTaskEngineClass(final boolean insert) {
+		if (insert) {
 			return TaskEngineInsertWithGeneratedKeys.class;
 		}
 		return TaskEngineProc.class;
@@ -409,26 +386,15 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	/**
 	 * @param entity Objet à persiter
 	 * @param insert Si opération de type insert (update sinon)
-	 * @return Si "1 ligne sauvée", sinon "Aucune ligne sauvée"
 	 */
-	private boolean put(final Entity entity, final boolean insert) {
+	private void put(final Entity entity, final boolean insert) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final String tableName = getTableName(dtDefinition);
-		if (insert) {
-			//Pour les SGBDs ne possédant pas de système de séquence il est nécessaire de calculer la clé en amont.
-			final Optional<String> optQuery = sqlDialect.createPrimaryKeyQuery(tableName, sequencePrefix);
-			if (optQuery.isPresent()) {
-				final long sequence = buildNextSequence(sequencePrefix + tableName, optQuery.get());
-				final DtField idField = dtDefinition.getIdField().orElseThrow(() -> new IllegalStateException("no ID found"));
-				idField.getDataAccessor().setValue(entity, sequence);
-			}
-		}
-
 		final String taskName = (insert ? TASK.TK_INSERT : TASK.TK_UPDATE) + "_" + tableName;
 
-		final String request = insert ? sqlDialect.createInsertQuery(dtDefinition, sequencePrefix, tableName) : createUpdateQuery(dtDefinition);
+		final String request = insert ? sqlDialect.createInsertQuery(dtDefinition.getIdField().get().getName(), getDataFields(dtDefinition), sequencePrefix, tableName) : createUpdateQuery(dtDefinition);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(getTaskEngineClass(insert))
 				.withDataSpace(dataSpace)
 				.withRequest(request)
@@ -436,7 +402,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withOutRequired(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain)
 				.build();
 
-		final Task task = new TaskBuilder(taskDefinition)
+		final Task task = Task.builder(taskDefinition)
 				.addValue("DTO", entity)
 				.build();
 
@@ -445,9 +411,20 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.getResult();
 
 		if (sqlRowCount > 1) {
-			throw new VSystemException(insert ? "more than one row has been inserted" : "more than one row has been updated");
+			throw new VSystemException("more than one row has been " + (insert ? "created" : "updated"));
 		}
-		return sqlRowCount != 0; // true si "1 ligne sauvée", false si "Aucune ligne sauvée"
+		if (sqlRowCount == 0) {
+			throw new VSystemException("no data " + (insert ? "created" : "updated"));
+		}
+	}
+
+	private static List<String> getDataFields(final DtDefinition dtDefinition) {
+		return dtDefinition.getFields()
+				.stream()
+				.filter(dtField -> !dtField.getType().isId())
+				.filter(DtField::isPersistent)
+				.map(DtField::getName)
+				.collect(Collectors.toList());
 	}
 
 	/** {@inheritDoc} */
@@ -467,7 +444,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
 				.toString();
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineProc.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
@@ -475,7 +452,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withOutRequired(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain)
 				.build();
 
-		final Task task = new TaskBuilder(taskDefinition)
+		final Task task = Task.builder(taskDefinition)
 				.addValue(idFieldName, uri.getId())
 				.build();
 
@@ -498,18 +475,18 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		//-----
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_COUNT + "_" + tableName;
-		final Domain countDomain = new DomainBuilder("DO_COUNT", DataType.Long).build();
+		final Domain countDomain = Domain.builder("DO_COUNT", DataType.Long).build();
 
 		final String request = "select count(*) from " + tableName;
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.withOutRequired("count", countDomain)
 				.build();
 
-		final Task task = new TaskBuilder(taskDefinition)
+		final Task task = Task.builder(taskDefinition)
 				.build();
 
 		final Long count = taskManager
@@ -530,7 +507,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		final String idFieldName = idField.getName();
 		final String request = sqlDialect.createSelectForUpdateQuery(tableName, requestedFields, idFieldName);
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
@@ -538,7 +515,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withOutOptional("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.getDefinition().getName() + "_DTO", Domain.class))
 				.build();
 
-		final Task task = new TaskBuilder(taskDefinition)
+		final Task task = Task.builder(taskDefinition)
 				.addValue(idFieldName, uri.getId())
 				.build();
 

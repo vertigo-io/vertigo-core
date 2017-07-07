@@ -21,21 +21,19 @@ package io.vertigo.core.spaces.component.data;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
-import io.vertigo.lang.Activeable;
+import io.vertigo.core.component.Activeable;
 
 public final class StartedManagerImpl implements StartedManager, Activeable {
 	private boolean componentInitialized = false;
 	private boolean componentStarted = false;
-	private boolean componentPostStarted = false;
+	private boolean appPreActivated = false;
 
 	/**
 	 * Construct an instance of DaemonManagerImpl.
 	 */
 	@Inject
 	public StartedManagerImpl() {
-		Home.getApp().registerPostStartFunction(() -> {
-			componentPostStarted = true;
-		});
+		Home.getApp().registerPreActivateFunction(() -> appPreActivated = true);
 	}
 
 	@Override
@@ -59,8 +57,8 @@ public final class StartedManagerImpl implements StartedManager, Activeable {
 	}
 
 	@Override
-	public boolean isPostStarted() {
-		return componentPostStarted;
+	public boolean isAppPreActivated() {
+		return appPreActivated;
 	}
 
 	@Override

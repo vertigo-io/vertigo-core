@@ -19,9 +19,10 @@
 package io.vertigo.vega.webservice.data.ws;
 
 import java.io.File;
+import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -29,25 +30,24 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.dynamo.criteria.CriterionLimit;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.impl.collections.functions.filter.DtListChainFilter;
-import io.vertigo.dynamo.impl.collections.functions.filter.DtListRangeFilter;
-import io.vertigo.dynamo.impl.collections.functions.filter.DtListValueFilter;
-import io.vertigo.dynamo.impl.collections.functions.filter.FilterFunction;
-import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.util.DateUtil;
 import io.vertigo.util.StringUtil;
@@ -60,7 +60,6 @@ import io.vertigo.vega.webservice.data.domain.ContactValidator;
 import io.vertigo.vega.webservice.data.domain.EmptyPkValidator;
 import io.vertigo.vega.webservice.data.domain.MandatoryPkValidator;
 import io.vertigo.vega.webservice.model.ExtendedObject;
-import io.vertigo.vega.webservice.model.UiListState;
 import io.vertigo.vega.webservice.stereotype.AccessTokenConsume;
 import io.vertigo.vega.webservice.stereotype.AccessTokenMandatory;
 import io.vertigo.vega.webservice.stereotype.AccessTokenPublish;
@@ -134,7 +133,7 @@ public final class AdvancedTestWebServices implements WebServices {
 		final Contact contact = contactDao.get(conId);
 		if (contact == null) {
 			//404 ?
-			throw new VUserException(new MessageText("Contact #" + conId + " unknown", null));
+			throw new VUserException("Contact #" + conId + " unknown");
 		}
 		//200
 		return contact;
@@ -147,7 +146,7 @@ public final class AdvancedTestWebServices implements WebServices {
 		final Contact contact = contactDao.get(conId);
 		if (contact == null) {
 			//404 ?
-			throw new VUserException(new MessageText("Contact #" + conId + " unknown", null));
+			throw new VUserException("Contact #" + conId + " unknown");
 		}
 		//200
 		return contact;
@@ -161,7 +160,7 @@ public final class AdvancedTestWebServices implements WebServices {
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) @ServerSideRead @ExcludedFields({ "conId", "name" }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
-			throw new VUserException(new MessageText("Name is mandatory", null));
+			throw new VUserException("Name is mandatory");
 		}
 
 		contactDao.put(contact);
@@ -179,7 +178,7 @@ public final class AdvancedTestWebServices implements WebServices {
 			@IncludedFields({ "firstName", "email" }) Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
-			throw new VUserException(new MessageText("Name is mandatory", null));
+			throw new VUserException("Name is mandatory");
 		}
 
 		contactDao.put(contact);
@@ -223,67 +222,73 @@ public final class AdvancedTestWebServices implements WebServices {
 	public List<Contact> testInnerBodyClientId(//
 			@InnerBodyParam("contactFrom") @ServerSideRead final Contact contactFrom, //
 			@InnerBodyParam("contactTo") @ServerSideRead final Contact contactTo) {
-		final List<Contact> result = new ArrayList<>(2);
-		result.add(contactFrom);
-		result.add(contactTo);
 		//offset + range ?
 		//code 200
-		return result;
+		return Arrays.asList(contactFrom, contactTo);
 	}
 
 	@POST("/search()")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	public List<Contact> testSearch(//
 			@ExcludedFields({ "conId", "email", "birthday", "address", "tels" }) final ContactCriteria contact) {
-		final UnaryOperator<DtList<Contact>> filterFunction = createDtListFunction(contact, Contact.class);
-		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
-		final DtList<Contact> result = filterFunction.apply(fullList);
+		final Predicate<Contact> predicate = createFilterFunction(contact, Contact.class);
+		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
 		//offset + range ?
 		//code 200
-		return result;
+		return allContacts.stream()
+				.filter(predicate)
+				.collect(VCollectors.toDtList(Contact.class));
 	}
 
 	@POST("/searchPagined()")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	public List<Contact> testSearchServicePagined(//
 			@InnerBodyParam("criteria") final ContactCriteria contact, //
-			@InnerBodyParam("listState") final UiListState uiListState) {
-		final UnaryOperator<DtList<Contact>> filterFunction = createDtListFunction(contact, Contact.class);
-		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
-		final DtList<Contact> result = filterFunction.apply(fullList);
+			@InnerBodyParam("listState") final DtListState dtListState) {
+		final Predicate<Contact> predicate = createFilterFunction(contact, Contact.class);
+		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
+
+		final DtList<Contact> filteredContacts = allContacts.stream()
+				.filter(predicate)
+				.collect(VCollectors.toDtList(Contact.class));
 
 		//offset + range ?
 		//code 200
-		return applySortAndPagination(result, uiListState);
+		return applySortAndPagination(filteredContacts, dtListState);
 	}
 
 	@POST("/_searchQueryPagined")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
-	public List<Contact> testSearchServiceQueryPagined(final ContactCriteria contact,
-			@QueryParam("") final UiListState uiListState) {
-		final UnaryOperator<DtList<Contact>> filterFunction = createDtListFunction(contact, Contact.class);
-		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
-		final DtList<Contact> result = filterFunction.apply(fullList);
+	public List<Contact> testSearchServiceQueryPagined(
+			final ContactCriteria contact,
+			@QueryParam("") final DtListState dtListState) {
+		final Predicate<Contact> predicate = createFilterFunction(contact, Contact.class);
+		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
+		final DtList<Contact> filteredContacts = allContacts.stream()
+				.filter(predicate)
+				.collect(VCollectors.toDtList(Contact.class));
 
 		//offset + range ?
 		//code 200
-		return applySortAndPagination(result, uiListState);
+		return applySortAndPagination(filteredContacts, dtListState);
 	}
 
 	@AutoSortAndPagination
 	@POST("/_searchAutoPagined")
 	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
 	public List<Contact> testSearchServiceAutoPagined(final ContactCriteria contact) {
-		final UnaryOperator<DtList<Contact>> filterFunction = createDtListFunction(contact, Contact.class);
-		final DtList<Contact> fullList = asDtList(contactDao.getList(), Contact.class);
-		final DtList<Contact> result = filterFunction.apply(fullList);
+		final Predicate<Contact> predicate = createFilterFunction(contact, Contact.class);
+		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
 		//offset + range ?
 		//code 200
-		return result;
+		return allContacts.stream()
+				.filter(predicate)
+				.collect(VCollectors.toDtList(Contact.class));
 	}
 
 	@POST("/uploadFile")
-	public VFile testUploadFile(final @QueryParam("upfile") VFile inputFile, //
+	public VFile testUploadFile(
+			final @QueryParam("upfile") VFile inputFile, //
 			final @QueryParam("id") Integer id, //
 			final @QueryParam("note") String note) {
 
@@ -329,7 +334,7 @@ public final class AdvancedTestWebServices implements WebServices {
 	@Doc("Just send x-test-param:\"i'ts fine\"")
 	public String testHeaderParams(final @HeaderParam("x-test-param") String testParam) {
 		if (!"i'ts fine".equals(testParam)) {
-			throw new VUserException(new MessageText("Bad param value. Read doc.", null));
+			throw new VUserException("Bad param value. Read doc.");
 		}
 		return "OK";
 	}
@@ -344,7 +349,8 @@ public final class AdvancedTestWebServices implements WebServices {
 	}
 
 	@PUT("/contactExtended/{conId}")
-	public ExtendedObject<Contact> testGetExtended(@PathParam("conId") final long conId,
+	public ExtendedObject<Contact> testGetExtended(
+			@PathParam("conId") final long conId,
 			final @Validate({ ContactValidator.class, EmptyPkValidator.class }) Contact contact,
 			@InnerBodyParam("vanillaUnsupportedMultipleIds") final int[] multipleIds) {
 		contact.setConId(conId);
@@ -363,31 +369,25 @@ public final class AdvancedTestWebServices implements WebServices {
 		return result;
 	}
 
-	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final UiListState uiListState) {
+	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
 		final DtList<D> sortedList;
-		if (uiListState.getSortFieldName() != null) {
-			sortedList = collectionsManager.<D> createDtListProcessor()
-					.sort(StringUtil.camelToConstCase(uiListState.getSortFieldName()), uiListState.isSortDesc())
-					.apply(unFilteredList);
+		if (dtListState.getSortFieldName().isPresent()) {
+			sortedList = collectionsManager.sort(unFilteredList, StringUtil.camelToConstCase(dtListState.getSortFieldName().get()), dtListState.isSortDesc().get());
 		} else {
 			sortedList = unFilteredList;
 		}
-		final DtList<D> filteredList;
-		if (uiListState.getTop() > 0) {
-			final int listSize = sortedList.size();
-			final int usedSkip = Math.min(uiListState.getSkip(), listSize);
-			final int usedTop = Math.min(usedSkip + uiListState.getTop(), listSize);
-			filteredList = collectionsManager.<D> createDtListProcessor()
-					.filterSubList(usedSkip, usedTop)
-					.apply(sortedList);
-		} else {
-			filteredList = sortedList;
+		if (dtListState.getMaxRows().isPresent()) {
+			return sortedList
+					.stream()
+					.skip(dtListState.getSkipRows())
+					.limit(dtListState.getMaxRows().get())
+					.collect(VCollectors.toDtList(sortedList.getDefinition()));
 		}
-		return filteredList;
+		return sortedList;
 	}
 
-	private static <C extends DtObject, O extends DtObject> UnaryOperator<DtList<O>> createDtListFunction(final C criteria, final Class<O> resultClass) {
-		final List<Predicate<O>> filters = new ArrayList<>();
+	private <C extends DtObject, E extends Entity> Predicate<E> createFilterFunction(final C criteria, final Class<E> resultClass) {
+		Predicate<E> filter = (o) -> true;
 		final DtDefinition criteriaDefinition = DtObjectUtil.findDtDefinition(criteria);
 		final DtDefinition resultDefinition = DtObjectUtil.findDtDefinition(resultClass);
 		final Set<String> alreadyAddedField = new HashSet<>();
@@ -401,17 +401,21 @@ public final class AdvancedTestWebServices implements WebServices {
 						final DtField resultDtField = resultDefinition.getField(filteredField);
 						final DtField minField = fieldName.endsWith("_MIN") ? field : criteriaDefinition.getField(filteredField + "_MIN");
 						final DtField maxField = fieldName.endsWith("_MAX") ? field : criteriaDefinition.getField(filteredField + "_MAX");
-						final Comparable minValue = (Comparable) minField.getDataAccessor().getValue(criteria);
-						final Comparable maxValue = (Comparable) maxField.getDataAccessor().getValue(criteria);
-						filters.add(new DtListRangeFilter<O, Comparable>(resultDtField.getName(), Optional.<Comparable> ofNullable(minValue), Optional.<Comparable> ofNullable(maxValue), true, false));
+						final Serializable minValue = (Serializable) minField.getDataAccessor().getValue(criteria);
+						final Serializable maxValue = (Serializable) maxField.getDataAccessor().getValue(criteria);
+						filter = filter.and(Criterions.isBetween(() -> resultDtField.getName(),
+								CriterionLimit.ofIncluded(minValue),
+								CriterionLimit.ofExcluded(maxValue))
+								.toPredicate());
 					} else {
-						filters.add(new DtListValueFilter<O>(field.getName(), (String) value));
+						final Predicate predicate = Criterions.isEqualTo(() -> fieldName, Serializable.class.cast(value)).toPredicate();
+						filter.and(predicate);
 					}
 				}
 			}
 			//si null, alors on ne filtre pas
 		}
-		return new FilterFunction<>(new DtListChainFilter(filters.toArray(new Predicate[filters.size()])));
+		return filter;
 	}
 
 }

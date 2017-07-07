@@ -31,7 +31,6 @@ import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 
 /**
@@ -46,7 +45,7 @@ public final class ResourceManagerTest extends AbstractTestCaseJU4 {
 	@Override
 	protected AppConfig buildAppConfig() {
 		//@formatter:off
-		return new AppConfigBuilder()
+		return AppConfig.builder()
 			.beginBoot()
 				.withLocales(locales)
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -72,6 +71,6 @@ public final class ResourceManagerTest extends AbstractTestCaseJU4 {
 	public void testResourceSelector() {
 		final String expected = "io/vertigo/core/resource/hello.properties";
 		final URL url = resourceManager.resolve(expected);
-		assertTrue(url.getPath().indexOf(expected) != -1);
+		assertTrue(url.getPath().contains(expected));
 	}
 }

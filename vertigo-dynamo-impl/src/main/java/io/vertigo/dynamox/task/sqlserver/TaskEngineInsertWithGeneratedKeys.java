@@ -19,20 +19,26 @@
 package io.vertigo.dynamox.task.sqlserver;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.OptionalInt;
 
 import javax.inject.Inject;
 
 import io.vertigo.commons.script.ScriptManager;
-import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.connection.SqlConnection;
+import io.vertigo.database.sql.parser.SqlNamedParam;
+import io.vertigo.database.sql.statement.SqlPreparedStatement;
+import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Tuples;
 
 /**
  * Permet l'appel de requête insert en utilisant generatedKeys du PreparedStatement pour récupérer
@@ -40,41 +46,50 @@ import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
  * <br>
  * @author  jmainaud, evernat
  */
-public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL<SqlPreparedStatement> {
+public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 
 	/**
-	 * Constructeur.
-	 * @param scriptManager Manager de traitment de scripts
+	 * Constructor.
+	 * @param scriptManager scriptManager
+	 * @param transactionManager transactionManager
+	 * @param storeManager storeManager
+	 * @param sqlDataBaseManager sqlDataBaseManager
 	 */
 	@Inject
-	public TaskEngineInsertWithGeneratedKeys(final ScriptManager scriptManager, final VTransactionManager transactionManager, final StoreManager storeManager, final SqlDataBaseManager sqlDataBaseManager) {
+	public TaskEngineInsertWithGeneratedKeys(
+			final ScriptManager scriptManager,
+			final VTransactionManager transactionManager,
+			final StoreManager storeManager,
+			final SqlDataBaseManager sqlDataBaseManager) {
 		super(scriptManager, transactionManager, storeManager, sqlDataBaseManager);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public int doExecute(final SqlConnection connection, final SqlPreparedStatement statement) throws SQLException {
-		setInParameters(statement);
-		final int sqlRowcount = statement.executeUpdate();
-		setOutParameters(statement);
-		return sqlRowcount;
-	}
+	public OptionalInt doExecute(
+			final String sql,
+			final SqlConnection connection,
+			final SqlPreparedStatement statement,
+			final List<SqlNamedParam> params) throws SQLException {
+		Assertion.checkArgNotEmpty(sql);
+		Assertion.checkNotNull(connection);
+		Assertion.checkNotNull(statement);
+		Assertion.checkNotNull(params);
+		//--
+		final GenerationMode generationMode = connection.getDataBase().getSqlDialect().getGenerationMode();
 
-	private void setOutParameters(final SqlPreparedStatement statement) throws SQLException {
 		// gestion de generatedKey
-		final Entity entity = (Entity) getValue("DTO");
+		final Entity entity = getValue("DTO");
 
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final DtField idField = dtDefinition.getIdField().get();
 
-		final Object id = statement.getGeneratedKey(idField.getName(), idField.getDomain());
-		idField.getDataAccessor().setValue(entity, id);
-	}
+		final Tuples.Tuple2<Integer, ?> result = statement
+				.executeUpdateWithGeneratedKey(sql, buildParameters(params), generationMode, idField.getName(), idField.getDomain().getDataType().getJavaClass());
 
-	/** {@inheritDoc} */
-	@Override
-	protected final SqlPreparedStatement createStatement(final String sql, final SqlConnection connection) {
-		final boolean generatedKeys = true;
-		return getDataBaseManager().createPreparedStatement(connection, sql, generatedKeys);
+		final Object id = result.getVal2();
+		idField.getDataAccessor().setValue(entity, id);
+		//---
+		return /*sqlRowcount*/ OptionalInt.of(result.getVal1());
 	}
 }

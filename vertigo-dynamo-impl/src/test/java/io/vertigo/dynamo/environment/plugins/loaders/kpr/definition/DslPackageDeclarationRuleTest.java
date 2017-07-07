@@ -39,12 +39,14 @@ public final class DslPackageDeclarationRuleTest {
 	@Test(expected = Exception.class)
 	public void testMalFormedExpression() throws PegNoMatchFoundException {
 		final PegResult<String> result = PACKAGE_DECLARATION_RULE
-				.parse("packageio.vertigo", 0);
+				.parse("packageio.vertigo", 0);//<-- en exception is excpected here
+		Assert.assertNotNull(result);
 	}
 
 	@Test(expected = Exception.class)
 	public void testMalFormedExpression2() throws PegNoMatchFoundException {
 		final PegResult<String> cursor = PACKAGE_DECLARATION_RULE
-				.parse("  packageio.vertigo", 0);
+				.parse("  packageio.vertigo", 0);//<-- en exception is excpected here
+		Assert.assertNotNull(cursor);
 	}
 }

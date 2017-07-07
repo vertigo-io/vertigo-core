@@ -25,7 +25,6 @@ import java.util.Optional;
 import javax.inject.Named;
 
 import io.vertigo.app.Home;
-import io.vertigo.dynamo.domain.metamodel.DataStream;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
@@ -37,6 +36,7 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.DataStream;
 
 /**
  * Permet de gérer les accès atomiques à n'importe quel type de stockage SQL/
@@ -54,7 +54,7 @@ abstract class AbstractDbFileStorePlugin {
 	private final String name;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param name Store name
 	 */
 	AbstractDbFileStorePlugin(@Named("name") final Optional<String> name) {
@@ -83,7 +83,9 @@ abstract class AbstractDbFileStorePlugin {
 	 * @param fileInfoDefinition Definition du FileInfo
 	 */
 	protected void checkDefinitionStoreBinding(final FileInfoDefinition fileInfoDefinition) {
-		Assertion.checkArgument(name.equals(fileInfoDefinition.getStoreName()), "This store {0} isn't the good one for this definition {1}, expect {2}.", name, fileInfoDefinition.getName(), fileInfoDefinition.getStoreName());
+		Assertion.checkArgument(
+				name.equals(fileInfoDefinition.getStoreName()),
+				"This store {0} isn't the good one for this definition {1}, expect {2}.", name, fileInfoDefinition.getName(), fileInfoDefinition.getStoreName());
 	}
 
 	/**

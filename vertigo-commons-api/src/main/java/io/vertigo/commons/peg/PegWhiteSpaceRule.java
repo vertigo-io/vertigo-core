@@ -32,7 +32,7 @@ final class PegWhiteSpaceRule implements PegRule<Dummy> {
 	private final String expression;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param blanks Caractères "blancs" et commentaires.
 	 */
 	PegWhiteSpaceRule(final String blanks) {

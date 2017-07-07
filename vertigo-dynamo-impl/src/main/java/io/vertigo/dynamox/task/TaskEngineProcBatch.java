@@ -22,70 +22,71 @@
 package io.vertigo.dynamox.task;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.OptionalInt;
 
 import javax.inject.Inject;
 
 import io.vertigo.commons.script.ScriptManager;
-import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.statement.SqlCallableStatement;
-import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.connection.SqlConnection;
+import io.vertigo.database.sql.parser.SqlNamedParam;
+import io.vertigo.database.sql.statement.SqlParameter;
+import io.vertigo.database.sql.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
-import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
 
 /**
  * @author jmforhan
  */
-public final class TaskEngineProcBatch extends AbstractTaskEngineSQL<SqlCallableStatement> {
+public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
+
 	/**
 	 * Constructeur.
-	 * @param scriptManager Manager de traitment de scripts
+	 * @param scriptManager scriptManager
+	 * @param transactionManager transactionManager
+	 * @param storeManager storeManager
+	 * @param sqlDataBaseManager sqlDataBaseManager
 	 */
 	@Inject
-	public TaskEngineProcBatch(final ScriptManager scriptManager, final VTransactionManager transactionManager, final StoreManager storeManager, final SqlDataBaseManager sqlDataBaseManager) {
+	public TaskEngineProcBatch(
+			final ScriptManager scriptManager,
+			final VTransactionManager transactionManager,
+			final StoreManager storeManager,
+			final SqlDataBaseManager sqlDataBaseManager) {
 		super(scriptManager, transactionManager, storeManager, sqlDataBaseManager);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	protected SqlCallableStatement createStatement(final String procName, final SqlConnection connection) {
-		return getDataBaseManager().createCallableStatement(connection, procName);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public int doExecute(final SqlConnection connection, final SqlCallableStatement statement) throws SQLException {
+	public OptionalInt doExecute(
+			final String sql,
+			final SqlConnection connection,
+			final SqlPreparedStatement statement,
+			final List<SqlNamedParam> params) throws SQLException {
+		Assertion.checkArgNotEmpty(sql);
+		Assertion.checkNotNull(connection);
+		Assertion.checkNotNull(statement);
+		Assertion.checkNotNull(params);
+		//---
 		// on alimente le batch.
 		// La taille du batch est déduite de la taille de la collection en entrée.
 		final int batchSize = getBatchSize();
-		for (int i = 0; i < batchSize; i++) {
-			setBatchInParameters(statement, i);
-			statement.addBatch();
-		}
-
-		return statement.executeBatch();
-	}
-
-	/**
-	 * Modifie le statement en fonction des paramètres pour un statement qui sera exécuter en mode batch. Affecte les
-	 * valeurs en entrée
-	 *
-	 * @param statement de type KPreparedStatement, KCallableStatement...
-	 * @param rowNumber ligne de DTC à prendre en compte
-	 * @throws SQLException En cas d'erreur dans la configuration
-	 */
-	private void setBatchInParameters(final SqlPreparedStatement statement, final int rowNumber) throws SQLException {
-		Assertion.checkNotNull(statement);
-		//-----
-		for (final TaskEngineSQLParam param : getParams()) {
-			if (param.isIn()) {
-				setInParameter(statement, param, rowNumber);
+		final List<List<SqlParameter>> batch = new ArrayList<>();
+		for (int rowNumber = 0; rowNumber < batchSize; rowNumber++) {
+			final List<SqlParameter> sqlParameters = new ArrayList<>();
+			for (final SqlNamedParam param : params) {
+				sqlParameters.add(buildSqlParameter(param, rowNumber));
 			}
+			batch.add(sqlParameters);
 		}
+
+		return statement.executeBatch(sql, batch);
 	}
 
 	private int getBatchSize() {

@@ -19,24 +19,20 @@
 package io.vertigo.commons.impl.codec.compression;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 import io.vertigo.commons.codec.Codec;
-import io.vertigo.core.component.Describable;
-import io.vertigo.core.component.ComponentInfo;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-import io.vertigo.util.ListBuilder;
 
 /**
  * Implémentation standard ThreadSafe gérant les mécanismes permettant de compresser/décompresser un format binaire (byte[]) en un binaire.
  *
  * @author pchretien
  */
-public final class CompressionCodec implements Codec<byte[], byte[]>, Describable {
+public final class CompressionCodec implements Codec<byte[], byte[]> {
 	/**
 	 * Seuil exprimé en octets en deça duquel on ne compresse pas les données.
 	 */
@@ -45,14 +41,14 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 	/**
 	 * Seuil maximal autorisé pour la compression, ce seuil est exprimé en octets.
 	 */
-	public static final int MAX_SIZE_FOR_COMPRESSION = 20 * 1024 * 1024; //au dela de 20Mo, on ne compresse pas en mémoire : le codec est inadapté
+	private static final int MAX_SIZE_FOR_COMPRESSION = 20 * 1024 * 1024; //au dela de 20Mo, on ne compresse pas en mémoire : le codec est inadapté
 
 	/**
 	 * Niveau de compression de 0(pas de compression) à 9 (max compression). se
 	 * référer au classes implémentant zip pour des précisions sur le niveau de
 	 * compression.
 	 */
-	public static final int COMPRESSION_LEVEL = 1;
+	private static final int COMPRESSION_LEVEL = 1;
 
 	private static final byte[] COMPRESS_KEY = { 'C', 'O', 'M', 'P' };
 
@@ -138,15 +134,5 @@ public final class CompressionCodec implements Codec<byte[], byte[]>, Describabl
 			}
 		}
 		return uncompressedObject;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public List<ComponentInfo> getInfos() {
-		return new ListBuilder<ComponentInfo>()
-				.add(new ComponentInfo("compression.minSize(bytes)", MIN_SIZE_FOR_COMPRESSION))
-				.add(new ComponentInfo("compression.compressionLevel", COMPRESSION_LEVEL))
-				.unmodifiable()
-				.build();
 	}
 }

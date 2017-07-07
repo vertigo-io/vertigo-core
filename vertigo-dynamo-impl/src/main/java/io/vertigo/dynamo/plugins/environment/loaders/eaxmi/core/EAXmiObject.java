@@ -274,7 +274,7 @@ final class EAXmiObject {
 				// On peut se retrouver en fin de fichier avec des xrefs qui reviennent.
 				// On ne mets à jour que si on ne l'a pas fait.
 				final String valeur = attributes.getValue(PROPERTY_ALIAS_NAME);
-				isId = (valeur != null && valeur.contains(PROPERTY_ID_NAME));
+				isId = valeur != null && valeur.contains(PROPERTY_ID_NAME);
 				break;
 			case PROPERTY_MULTIPLICITY:
 				final String lower = attributes.getValue(PROPERTY_MULTIPLICITY_LOWER_NAME);
@@ -356,9 +356,9 @@ final class EAXmiObject {
 	public String toString() {
 		final StringBuilder buffer = new StringBuilder(type + "::" + name);
 		if (type == EAXmiType.Association) {
-			buffer.append(" [roleA=" + getRoleALabel() + ", roleB=" + getRoleBLabel() + "]");
+			buffer.append(" [roleA=").append(getRoleALabel()).append(", roleB=").append(getRoleBLabel()).append("]");
 		} else {
-			buffer.append(" [label=" + label + ", multiplicity=" + multiplicity + "]");
+			buffer.append(" [label=").append(label).append(", multiplicity=").append(multiplicity).append("]");
 		}
 		return buffer.toString();
 	}

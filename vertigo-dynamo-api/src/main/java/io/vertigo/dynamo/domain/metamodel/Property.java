@@ -43,6 +43,7 @@ import io.vertigo.lang.Assertion;
  * dans le framework Dynamo ou le framework commun de l'application.
  *
  * @author  pchretien
+ * @param <T> type of the property
  */
 public final class Property<T> {
 	/**
@@ -53,6 +54,7 @@ public final class Property<T> {
 
 	/**
 	 * Constructeur à partir du nom évocateur de la propriété.
+	 * @param name the name of the property
 	 * @param clazz Classe java représentant le type de la propriété.
 	 */
 	public Property(final String name, final Class<T> clazz) {

@@ -49,7 +49,7 @@ public final class FormatterBoolean implements Formatter {
 	private final String falsePattern;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	public FormatterBoolean(final String args) {
 		// Les arguments ne doivent pas être vides.
@@ -121,7 +121,7 @@ public final class FormatterBoolean implements Formatter {
 		if (booleanValue == null) {
 			boolString = null;
 		} else {
-			boolString = booleanValue.booleanValue() ? truePattern : falsePattern;
+			boolString = booleanValue ? truePattern : falsePattern;
 		}
 		return boolString;
 	}

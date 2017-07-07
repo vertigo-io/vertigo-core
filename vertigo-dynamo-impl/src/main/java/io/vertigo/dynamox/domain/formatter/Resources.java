@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamox.domain.formatter;
 
-import io.vertigo.lang.MessageKey;
+import io.vertigo.core.locale.MessageKey;
 
 /**
  * Dictionnaire des ressources.
@@ -40,11 +40,6 @@ public enum Resources implements MessageKey {
 	 * Erreur de formattage d'un booléen.
 	 */
 	DYNAMOX_BOOLEAN_NOT_FORMATTED,
-
-	/**
-	 * La date ne doit pas contenir de lettre.
-	 */
-	DYNAMOX_DATE_NOT_FORMATTED_LETTER,
 
 	/**
 	 * Ce champ doit contenir une date valide.

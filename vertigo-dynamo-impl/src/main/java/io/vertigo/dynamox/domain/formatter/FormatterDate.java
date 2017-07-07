@@ -19,9 +19,13 @@
 package io.vertigo.dynamox.domain.formatter;
 
 import java.text.ParsePosition;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.locale.LocaleManager;
@@ -54,16 +58,6 @@ import io.vertigo.util.StringUtil;
  */
 public final class FormatterDate implements Formatter {
 	/**
-	 * Année minimum tolérée pour les dates.
-	 */
-	public static final int MIN_YEAR = 1850;
-
-	/**
-	 * Année maximum tolérée pour les dates.
-	 */
-	public static final int MAX_YEAR = 2150;
-
-	/**
 	 * Format(s) étendu(s) de la date en saisie.
 	 * Cette variable n'est créée qu'au besoin.
 	 */
@@ -71,9 +65,8 @@ public final class FormatterDate implements Formatter {
 	private final List<String> patterns;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
-
 	public FormatterDate(final String args) {
 		// Les arguments ne doivent pas être vides.
 		assertArgs(args != null);
@@ -97,48 +90,58 @@ public final class FormatterDate implements Formatter {
 	/** {@inheritDoc} */
 	@Override
 	public String valueToString(final Object objValue, final DataType dataType) {
-		Assertion.checkArgument(dataType == DataType.Date, "Formatter ne s'applique qu'aux dates");
+		Assertion.checkArgument(dataType.isAboutDate(), "this formatter only applies on date formats");
 		//-----
-		return dateToString((Date) objValue, patterns.get(0));
+		if (objValue == null) {
+			return ""; //Affichage d'une date non renseignée;
+		}
+		switch (dataType) {
+			case Date:
+				return dateToString((Date) objValue, patterns.get(0));
+			case LocalDate:
+				return localDateToString((LocalDate) objValue, patterns.get(0));
+			case ZonedDateTime:
+				return zonedDateTimeToString((ZonedDateTime) objValue, patterns.get(0));
+			default:
+				throw new IllegalStateException();
+		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Object stringToValue(final String strValue, final DataType dataType) throws FormatterException {
-		Assertion.checkArgument(dataType == DataType.Date, "Formatter ne s'applique qu'aux dates");
+		Assertion.checkArgument(dataType.isAboutDate(), "Formatter ne s'applique qu'aux dates");
 		//-----
-		final String sValue = StringUtil.isEmpty(strValue) ? null : strValue.trim();
-		return stringToDate(sValue);
-	}
-
-	/**
-	 * Convertit une String en Date
-	 * on utilise un format de présentation et un de saisie
-	 * Si néanmoins la date est entre 0 et 9 alors on estime que la date est en 200x.
-	 *
-	 * @param dateString String
-	 * @return Date
-	 * @throws FormatterException Erreur de parsing
-	 */
-	private Date stringToDate(final String dateString) throws FormatterException {
-		if (dateString == null) {
+		if (StringUtil.isEmpty(strValue)) {
 			return null;
 		}
-		final int length = dateString.length();
-		for (int i = 0; i < length; i++) {
-			if (Character.isLetter(dateString.charAt(i))) {
-				//Le parser de date java est trop permissif, on réduit les caractères.
-				throw new FormatterException(Resources.DYNAMOX_DATE_NOT_FORMATTED_LETTER);
+		final String sValue = strValue.trim();
+		switch (dataType) {
+			case Date:
+				return applyStringToObject(sValue, FormatterDate::doStringToDate);
+			case LocalDate:
+				return applyStringToObject(sValue, FormatterDate::doStringToLocalDate);
+			case ZonedDateTime:
+				return applyStringToObject(sValue, FormatterDate::doStringToZonedDateTime);
+			default:
+				throw new IllegalStateException();
+		}
+	}
+
+	/*
+	 *  Cycles through patterns to try and parse given String into a Date | LocalDate | ZonedDateTime
+	 */
+	private <T> T applyStringToObject(final String dateString, final BiFunction<String, String, T> fun) throws FormatterException {
+		//StringToDate renvoit null si elle n'a pas réussi à convertir la date
+		T dateValue = null;
+		for (int i = 0; i < patterns.size() && dateValue == null; i++) {
+			try {
+				dateValue = fun.apply(dateString, patterns.get(i));
+			} catch (final Exception e) {
+				dateValue = null;
 			}
 		}
-
-		Date dateValue = null;
-		//StringToDate renvoit null si elle n'a pas réussi à convertir la date
-		for (int i = 0; i < patterns.size() && dateValue == null; i++) {
-			dateValue = doStringToDate(dateString, patterns.get(i));
-		}
-
-		//Si dateValue est null c'est que toutes les convertions ont échouées.
+		//A null dateValue means all conversions have failed
 		if (dateValue == null) {
 			throw new FormatterException(Resources.DYNAMOX_DATE_NOT_FORMATTED);
 		}
@@ -146,10 +149,23 @@ public final class FormatterDate implements Formatter {
 	}
 
 	/*
-	 * Convertit une String en Date suivant un format de saisie
-	 * Si la date est entre 0 et 9 alors on estime que la date est en 200x
-	 *
-	 * Cette méthode retourne null si la chaine n'a pas pu être convertie en date
+	 * Converts a String to a LocalDate according to a given pattern
+	 */
+	private static LocalDate doStringToLocalDate(final String dateString, final String pattern) {
+		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern);
+		return LocalDate.parse(dateString, dateTimeFormatter);
+	}
+
+	/*
+	 * Converts a String to a ZonedlDateTime according to a given pattern
+	 */
+	private static ZonedDateTime doStringToZonedDateTime(final String dateString, final String pattern) {
+		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern).withZone(ZoneId.of("UTC"));
+		return ZonedDateTime.parse(dateString, dateTimeFormatter);
+	}
+
+	/*
+	 * Converts a String to a java.util.Date according to a given pattern
 	 */
 	private static Date doStringToDate(final String dateString, final String pattern) {
 		Date dateValue;
@@ -158,49 +174,30 @@ public final class FormatterDate implements Formatter {
 		final java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat(pattern, getLocaleManager().getCurrentLocale());
 		formatter.setLenient(false);
 
-		try {
-			final ParsePosition parsePosition = new ParsePosition(0);
-			dateValue = formatter.parse(dateString, parsePosition);
+		final ParsePosition parsePosition = new ParsePosition(0);
+		dateValue = formatter.parse(dateString, parsePosition);
 
-			final Calendar calendar = Calendar.getInstance();
-			calendar.setTime(dateValue);
-			int year = calendar.get(Calendar.YEAR);
-			// Rq : l'année 0 n'existe pas en java.
-			if (year >= 0 && year <= 9) {
-				year += 2000;
-				calendar.set(Calendar.YEAR, year);
-				dateValue = calendar.getTime();
-			}
-			//si le parsing n'a pas consommé toute la chaine, on refuse la converssion
-			if (parsePosition.getIndex() != dateString.length()) {
-				dateValue = null;
-			}
-			if (year < MIN_YEAR || year > MAX_YEAR) {
-				dateValue = null;
-			}
-		} catch (final Exception e) {
-			//Le parsing a échoué on retourne null
-			dateValue = null;
+		//si le parsing n'a pas consommé toute la chaine, on refuse la conversion
+		if (parsePosition.getIndex() != dateString.length()) {
+			throw new IllegalStateException("Error parsing " + dateString + " with pattern :" + pattern + "at position " + parsePosition.getIndex());
 		}
 		return dateValue;
 	}
 
-	/**
-	 * Formate une date en String.
-	 * @param dateValue Date
-	 *
-	 * @return Date formattée
-	 */
-	private static String dateToString(final Date dateValue, final String pattern) {
-		final String dateString;
-		if (dateValue == null) {
-			dateString = ""; //Affichage d'une date non renseignée;
-		} else {
-			final java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat(pattern, getLocaleManager().getCurrentLocale());
-			formatter.setLenient(false);
-			dateString = formatter.format(dateValue);
-		}
-		return dateString;
+	private static String dateToString(final Date date, final String pattern) {
+		final java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat(pattern, getLocaleManager().getCurrentLocale());
+		formatter.setLenient(false);
+		return formatter.format(date);
+	}
+
+	private static String localDateToString(final LocalDate localDate, final String pattern) {
+		return DateTimeFormatter.ofPattern(pattern)
+				.format(localDate);
+	}
+
+	private static String zonedDateTimeToString(final ZonedDateTime zonedDateTime, final String pattern) {
+		return DateTimeFormatter.ofPattern(pattern)
+				.format(zonedDateTime);
 	}
 
 	private static LocaleManager getLocaleManager() {

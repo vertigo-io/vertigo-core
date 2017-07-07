@@ -37,7 +37,7 @@ public final class PegNoMatchFoundException extends Exception {
 	private final Serializable[] commentValues;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param s Texte parsé
 	 * @param index Index dans le texte
 	 * @param rootException Cause

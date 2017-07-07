@@ -10,6 +10,109 @@
 
 	<property name="src.encoding" value="utf8" />
 	<property name="src.path" value="." />
+	
+	
+	<!-- ====================================================================== -->
+	<!-- Replace quarto's ksp definitions by a Java definition provider         -->
+	<!-- ====================================================================== -->
+	<target name="0.9.3 to 0.9.4 publisher definitions from ksp to Java" description="Replace quarto's ksp definitions by a Java definition provider">
+		<copy todir="${src.path}" >
+			<fileset dir="${src.path}">
+				<include name="**/*.ksp" />
+				<containsregexp expression="create(\s)*(PublisherNode|PublisherDefinition)"/>
+			</fileset>
+			<globmapper from="*.ksp" to="*.ksp2java" casesensitive="no"/>
+		</copy>
+
+		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+			<fileset dir="${src.path}">
+				<include name="**/*.ksp2java" />
+			</fileset>
+			<regexp pattern="\n\s*\}\s*\n" />
+			<substitution expression=".build();${line.separator}${line.separator}" />
+		</replaceregexp>
+		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+					<fileset dir="${src.path}">
+						<include name="**/*.ksp2java" />
+					</fileset>
+					<regexp pattern="\n\s*\}" />
+					<substitution expression=".build();${line.separator}${line.separator}}" />
+		</replaceregexp>
+		
+		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+			<fileset dir="${src.path}">
+				<include name="**/*.ksp2java" />
+			</fileset>
+			<regexp pattern="package\s*([A-Za-z0-9\.]*)\.([A-Za-z0-9]+)" />
+			<substitution expression="package \1.\2;
+				${line.separator}import java.util.List;
+				${line.separator}import io.vertigo.core.definition.Definition;
+				${line.separator}import io.vertigo.core.definition.DefinitionSpace;
+				${line.separator}import io.vertigo.core.definition.SimpleDefinitionProvider;
+				${line.separator}import io.vertigo.quarto.services.publisher.metamodel.PublisherDataDefinition;
+				${line.separator}import io.vertigo.quarto.services.publisher.metamodel.PublisherNodeDefinition;
+				${line.separator}import io.vertigo.quarto.services.publisher.metamodel.PublisherNodeDefinitionBuilder;
+				${line.separator}import io.vertigo.util.ListBuilder;
+				${line.separator}
+				${line.separator}public final class \2PublisherDefinitionProvider implements SimpleDefinitionProvider {
+				${line.separator}
+				${line.separator}@Override
+				${line.separator}public List&lt;Definition&gt; provideDefinitions(final DefinitionSpace definitionSpace) {
+				${line.separator}		return new ListBuilder&lt;Definition&gt;()
+				${line.separator}				.add(/*TODO*/)
+				${line.separator}				.build();
+				${line.separator}	} " />
+		</replaceregexp>
+		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+			<fileset dir="${src.path}">
+				<include name="**/*.ksp2java" />
+			</fileset>
+			<regexp pattern="create\s*PublisherNode\s*([A-Za-z_0-9]+)\s*\{" />
+			<substitution expression="private final PublisherNodeDefinition \1 = new PublisherNodeDefinitionBuilder()" />
+		</replaceregexp>
+		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+			<fileset dir="${src.path}">
+				<include name="**/*.ksp2java" />
+			</fileset>
+			<regexp pattern="stringField\s*([A-Za-z_0-9]+)\s*\{\s*\}" />
+			<substitution expression=".addStringField(&quot;\1&quot;)" />
+		</replaceregexp>
+		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+			<fileset dir="${src.path}">
+				<include name="**/*.ksp2java" />
+			</fileset>
+			<regexp pattern="booleanField\s*([A-Za-z_0-9]+)\s*\{\s*\}" />
+			<substitution expression=".addBooleanField(&quot;\1&quot;)" />
+		</replaceregexp>
+		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+			<fileset dir="${src.path}">
+				<include name="**/*.ksp2java" />
+			</fileset>
+			<regexp pattern="imageField\s*([A-Za-z_0-9]+)\s*\{\s*\}" />
+			<substitution expression=".addImageField(&quot;\1&quot;)" />
+		</replaceregexp>
+		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+			<fileset dir="${src.path}">
+				<include name="**/*.ksp2java" />
+			</fileset>
+			<regexp pattern="dataField\s*([A-Za-z_0-9]+)\s*\{\s*type\s*:\s*([A-Za-z_0-9]+)\s*\}" />
+			<substitution expression=".addNodeField(&quot;\1&quot;, \2)" />
+		</replaceregexp>
+		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+			<fileset dir="${src.path}">
+				<include name="**/*.ksp2java" />
+			</fileset>
+			<regexp pattern="listField\s*([A-Za-z_0-9]+)\s*\{\s*type\s*:\s*([A-Za-z_0-9]+)\s*\}" />
+			<substitution expression=".addListField(&quot;\1&quot;, \2)" />
+		</replaceregexp>
+		<replaceregexp encoding="${src.encoding}" flags="gis" byline="false">
+			<fileset dir="${src.path}">
+				<include name="**/*.ksp2java" />
+			</fileset>
+			<regexp pattern="create\s*PublisherDefinition\s*([A-Za-z_0-9]+)\s*\{\s*root\s*:\s*([A-Za-z_0-9]+)(\s)*\}" />
+			<substitution expression="private final PublisherDataDefinition \1 = new PublisherDataDefinition(&quot;\1&quot;, \2);" />
+		</replaceregexp>
+	</target>
 
 	<!-- ====================================================================== -->
 	<!-- Generation des classes de tests                                        -->

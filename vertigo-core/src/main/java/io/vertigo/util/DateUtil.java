@@ -113,7 +113,9 @@ public final class DateUtil {
 	private static void checkIsDate(final Date dateToCheck) {
 		final Calendar calendar = Calendar.getInstance();
 		calendar.setTime(dateToCheck);
-		Assertion.checkArgument(calendar.get(Calendar.HOUR_OF_DAY) == 0 && calendar.get(Calendar.MINUTE) == 0 && calendar.get(Calendar.SECOND) == 0 && calendar.get(Calendar.MILLISECOND) == 0, "Cet objet n'est pas une Date mais une DateTime ({0}).", dateToCheck);
+		Assertion.checkArgument(
+				calendar.get(Calendar.HOUR_OF_DAY) == 0 && calendar.get(Calendar.MINUTE) == 0 && calendar.get(Calendar.SECOND) == 0 && calendar.get(Calendar.MILLISECOND) == 0,
+				"Cet objet n'est pas une Date mais une DateTime ({0}).", dateToCheck);
 	}
 
 	/**
@@ -128,7 +130,7 @@ public final class DateUtil {
 	 * now-12M
 	 * now-2y
 	 * "06/12/2003", "dd/MM/yyyy"
-	 * 
+	 *
 	 * @param dateExpression Expression
 	 * @param datePattern Pattern used to define a date (dd/MM/YYYY)
 	 *

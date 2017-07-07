@@ -19,6 +19,9 @@
 package io.vertigo.dynamo.impl.store.datastore;
 
 import io.vertigo.commons.eventbus.EventBusManager;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
@@ -29,9 +32,7 @@ import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.dynamo.impl.store.datastore.cache.CacheDataStore;
 import io.vertigo.dynamo.impl.store.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.criteria.Criteria;
 import io.vertigo.dynamo.store.datastore.DataStore;
-import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -46,20 +47,27 @@ public final class DataStoreImpl implements DataStore {
 	private final VTransactionManager transactionManager;
 
 	/**
-	 * Constructor.
-	 * @param storeManager Store manager
-	 * @param transactionManager Transaction manager
-	 * @param eventBusManager Event bus manager
-	 * @param dataStoreConfig config of the dataStore
+	 * Constructor
+	 * @param collectionsManager collectionsManager
+	 * @param storeManager storeManager
+	 * @param transactionManager transactionManager
+	 * @param eventBusManager eventBusManager
+	 * @param dataStoreConfig dataStoreConfig
 	 */
-	public DataStoreImpl(final StoreManager storeManager, final VTransactionManager transactionManager, final EventBusManager eventBusManager, final DataStoreConfigImpl dataStoreConfig) {
+	public DataStoreImpl(
+			final CollectionsManager collectionsManager,
+			final StoreManager storeManager,
+			final VTransactionManager transactionManager,
+			final EventBusManager eventBusManager,
+			final DataStoreConfigImpl dataStoreConfig) {
+		Assertion.checkNotNull(collectionsManager);
 		Assertion.checkNotNull(storeManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(eventBusManager);
 		Assertion.checkNotNull(dataStoreConfig);
 		//-----
 		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
-		cacheDataStore = new CacheDataStore(storeManager, eventBusManager, dataStoreConfig);
+		cacheDataStore = new CacheDataStore(collectionsManager, storeManager, eventBusManager, dataStoreConfig);
 		this.eventBusManager = eventBusManager;
 		this.transactionManager = transactionManager;
 	}
@@ -74,7 +82,7 @@ public final class DataStoreImpl implements DataStore {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
-		final E entity = getPhysicalStore(dtDefinition).<E> readNullableForUpdate(dtDefinition, uri);
+		final E entity = getPhysicalStore(dtDefinition).readNullableForUpdate(dtDefinition, uri);
 		//-----
 		Assertion.checkNotNull(entity, "no entity found for : '{0}'", uri);
 		//-----
@@ -95,14 +103,15 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void create(final Entity entity) {
+	public <E extends Entity> E create(final E entity) {
 		Assertion.checkNotNull(entity);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
-		getPhysicalStore(dtDefinition).create(dtDefinition, entity);
+		final E createdEntity = getPhysicalStore(dtDefinition).create(dtDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.CREATE, new URI(dtDefinition, DtObjectUtil.getId(entity)));
+		fireAfterCommit(StoreEvent.Type.CREATE, new URI(dtDefinition, DtObjectUtil.getId(createdEntity)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
+		return createdEntity;
 	}
 
 	/** {@inheritDoc} */
@@ -133,7 +142,7 @@ public final class DataStoreImpl implements DataStore {
 	public <E extends Entity> E readOne(final URI<E> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		final E entity = cacheDataStore.<E> readNullable(uri);
+		final E entity = cacheDataStore.readNullable(uri);
 		//-----
 		Assertion.checkNotNull(entity, "no entity found for : '{0}'", uri);
 		return entity;

@@ -32,8 +32,8 @@ import io.vertigo.util.ListBuilder;
  * @author pchretien
  */
 public final class BootConfig {
-	private final Optional<LogConfig> logConfigOption;
-	private final boolean silence;
+	private final Optional<LogConfig> logConfigOpt;
+	private final boolean verbose;
 	@JsonExclude
 	private final AopPlugin aopPlugin;
 
@@ -43,31 +43,40 @@ public final class BootConfig {
 	/**
 	 * Constructor.
 	 * @param aopPlugin AopPlugin
-	 * @param silence is no logs
+	 * @param verbose if logs are enabled during startup
 	 */
 	BootConfig(
-			final Optional<LogConfig> logConfigOption,
+			final Optional<LogConfig> logConfigOpt,
 			final List<ComponentConfig> componentConfigs,
 			final List<PluginConfig> pluginConfigs,
 			final AopPlugin aopPlugin,
-			final boolean silence) {
-		Assertion.checkNotNull(logConfigOption);
+			final boolean verbose) {
+		Assertion.checkNotNull(logConfigOpt);
 		Assertion.checkNotNull(componentConfigs);
 		Assertion.checkNotNull(pluginConfigs);
 		Assertion.checkNotNull(aopPlugin);
 		//-----
-		this.logConfigOption = logConfigOption;
+		this.logConfigOpt = logConfigOpt;
 		this.componentConfigs = componentConfigs;
 		this.pluginConfigs = pluginConfigs;
-		this.silence = silence;
+		this.verbose = verbose;
 		this.aopPlugin = aopPlugin;
+	}
+
+	/**
+	 * Static method factory for AppConfigBuilder
+	 * @param appConfigBuilder Parent AppConfig builder
+	 * @return AppConfigBuilder
+	 */
+	public static BootConfigBuilder builder(final AppConfigBuilder appConfigBuilder) {
+		return new BootConfigBuilder(appConfigBuilder);
 	}
 
 	/**
 	 * @return the logconfig
 	 */
 	public Optional<LogConfig> getLogConfig() {
-		return logConfigOption;
+		return logConfigOpt;
 	}
 
 	/**
@@ -81,10 +90,10 @@ public final class BootConfig {
 	}
 
 	/**
-	 * @return if silent mode
+	 * @return if the startup is verbose
 	 */
-	public boolean isSilence() {
-		return silence;
+	public boolean isVerbose() {
+		return verbose;
 	}
 
 	/**

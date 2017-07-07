@@ -63,7 +63,7 @@ public final class DtListDeltaJsonConverter implements JsonConverter {
 		final String objectPath;
 		final UiListDelta<DtObject> uiListDelta;
 		if (input instanceof String) {
-			uiListDelta = jsonReaderEngine.<DtObject> uiListDeltaFromJson((String) input, paramGenericType);
+			uiListDelta = jsonReaderEngine.uiListDeltaFromJson((String) input, paramGenericType);
 			objectPath = "";
 		} else if (input instanceof UiContext) {
 			uiListDelta = (UiListDelta<DtObject>) ((UiContext) input).get(webServiceParam.getName());

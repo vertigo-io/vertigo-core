@@ -73,8 +73,25 @@ public final class WebServiceDefinition implements Definition {
 	/**
 	 * Constructor.
 	 */
-	WebServiceDefinition(final String name, final Verb verb, final String path, final String acceptType, final Method method, final boolean needSession, final boolean sessionInvalidate, final boolean needAuthentification, final boolean accessTokenPublish, final boolean accessTokenMandatory, final boolean accessTokenConsume, final boolean serverSideSave, final boolean autoSortAndPagination, final Set<String> includedFields, final Set<String> excludedFields,
-			final List<WebServiceParam> webServiceParams, final String doc, final boolean corsProtected) {
+	WebServiceDefinition(
+			final String name,
+			final Verb verb,
+			final String path,
+			final String acceptType,
+			final Method method,
+			final boolean needSession,
+			final boolean sessionInvalidate,
+			final boolean needAuthentification,
+			final boolean accessTokenPublish,
+			final boolean accessTokenMandatory,
+			final boolean accessTokenConsume,
+			final boolean serverSideSave,
+			final boolean autoSortAndPagination,
+			final Set<String> includedFields,
+			final Set<String> excludedFields,
+			final List<WebServiceParam> webServiceParams,
+			final String doc,
+			final boolean corsProtected) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(verb);
 		Assertion.checkArgNotEmpty(path);
@@ -115,6 +132,15 @@ public final class WebServiceDefinition implements Definition {
 
 		this.doc = doc;
 		this.corsProtected = corsProtected;
+	}
+
+	/**
+	 * Static method factory for WebServiceDefinitionBuilder
+	 * @param method Method to bind to this webService
+	 * @return WebServiceDefinitionBuilder
+	 */
+	public static WebServiceDefinitionBuilder builder(final Method method) {
+		return new WebServiceDefinitionBuilder(method);
 	}
 
 	private static void checkPathParams(final String myPath, final List<WebServiceParam> myWebServiceParams, final String methodName) {

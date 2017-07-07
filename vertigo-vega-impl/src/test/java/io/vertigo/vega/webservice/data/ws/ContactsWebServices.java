@@ -23,7 +23,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.data.domain.Address;
@@ -72,7 +71,7 @@ public final class ContactsWebServices implements WebServices {
 		final Contact contact = contactDao.get(conId);
 		if (contact == null) {
 			//404 ?
-			throw new VUserException(new MessageText("Contact #" + conId + " unknown", null));
+			throw new VUserException("Contact #" + conId + " unknown");
 		}
 		//200
 		return contact;
@@ -83,12 +82,10 @@ public final class ContactsWebServices implements WebServices {
 		final Contact contact = contactDao.get(conId);
 		if (contact == null) {
 			//404 ?
-			throw new VUserException(new MessageText("Contact #" + conId + " unknown", null));
+			throw new VUserException("Contact #" + conId + " unknown");
 		}
-		final DtList<Address> addresses = new DtList<>(Address.class);
-		addresses.add(contact.getAddress());
-		addresses.add(contact.getAddress());
-		addresses.add(contact.getAddress()); //we sheet and use 3 times the same address.
+		//we sheet and use 3 times the same address.
+		final DtList<Address> addresses = DtList.of(contact.getAddress(), contact.getAddress(), contact.getAddress());
 
 		final ContactView contactView = new ContactView();
 		contactView.setName(contact.getName());
@@ -113,10 +110,10 @@ public final class ContactsWebServices implements WebServices {
 	public Contact insert(//
 			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) Contact contact) {
 		if (contact.getConId() != null) {
-			throw new VUserException(new MessageText("Contact #" + contact.getConId() + " already exist", null));
+			throw new VUserException("Contact #" + contact.getConId() + " already exist");
 		}
 		if (contact.getName() == null || contact.getName().isEmpty()) {
-			throw new VUserException(new MessageText("Name is mandatory", null));
+			throw new VUserException("Name is mandatory");
 		}
 		contactDao.post(contact);
 		//code 201 + location header : GET route
@@ -128,10 +125,10 @@ public final class ContactsWebServices implements WebServices {
 	public Contact update(final Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
-			throw new VUserException(new MessageText("Name is mandatory", null));
+			throw new VUserException("Name is mandatory");
 		}
 		if (contact.getConId() == null) {
-			throw new VUserException(new MessageText("Id is mandatory", null));
+			throw new VUserException("Id is mandatory");
 		}
 		contactDao.put(contact);
 		//200
@@ -142,11 +139,11 @@ public final class ContactsWebServices implements WebServices {
 	public void delete(@PathParam("conId") final long conId) {
 		if (!contactDao.containsKey(conId)) {
 			//404
-			throw new VUserException(new MessageText("Contact #" + conId + " unknown", null));
+			throw new VUserException("Contact #" + conId + " unknown");
 		}
 		if (conId < 5) {
 			//401
-			throw new VUserException(new MessageText("You don't have enought rights", null));
+			throw new VUserException("You don't have enought rights");
 		}
 		//200
 		contactDao.remove(conId);

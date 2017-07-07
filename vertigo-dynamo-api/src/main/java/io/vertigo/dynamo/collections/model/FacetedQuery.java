@@ -37,7 +37,7 @@ public final class FacetedQuery implements Serializable {
 	private final List<ListFilter> listFilters;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param facetedQueryDefinition Definition de la requête
 	 * @param listFilters Liste de filtres supplémentaires
 	 */

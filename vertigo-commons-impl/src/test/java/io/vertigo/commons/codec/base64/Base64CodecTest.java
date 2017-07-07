@@ -97,7 +97,7 @@ public final class Base64CodecTest extends AbstractCodecTest<byte[], String> {
 	/** {@inheritDoc} */
 	@Override
 	@Test
-	public void testDecode() throws Exception {
+	public void testDecode() {
 		assertEncodeDecodeEquals(TEXT.getBytes());
 		assertEncodeDecodeEquals(BYTECMS_MOD_0, "");
 		assertEncodeDecodeEquals(BYTECMS_MOD_1, "=");
@@ -118,7 +118,7 @@ public final class Base64CodecTest extends AbstractCodecTest<byte[], String> {
 	/** {@inheritDoc} */
 	@Override
 	@Test
-	public void testFailDecode() throws Exception {
+	public void testFailDecode() {
 		//rien
 	}
 

@@ -25,6 +25,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
+import io.vertigo.commons.transaction.Transactional;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -37,12 +40,7 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskBuilder;
-import io.vertigo.dynamo.transaction.Transactional;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 
@@ -64,9 +62,12 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	/**
 	 * Constructor.
 	 * @param taskManager Task manager
+	 * @param transactionManager transactionManager
 	 */
 	@Inject
-	public AbstractSqlSearchLoader(final TaskManager taskManager, final VTransactionManager transactionManager) {
+	public AbstractSqlSearchLoader(
+			final TaskManager taskManager,
+			final VTransactionManager transactionManager) {
 		Assertion.checkNotNull(taskManager);
 		Assertion.checkNotNull(transactionManager);
 		// -----
@@ -89,7 +90,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 			final String idFieldName = idField.getName();
 			final String request = getNextIdsSqlQuery(tableName, idFieldName);
 
-			final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+			final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 					.withEngine(TaskEngineSelect.class)
 					.withDataSpace(dtDefinition.getDataSpace())
 					.withRequest(request)
@@ -97,7 +98,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 					.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class))
 					.build();
 
-			final Task task = new TaskBuilder(taskDefinition)
+			final Task task = Task.builder(taskDefinition)
 					.addValue(idFieldName, lastId)
 					.build();
 
@@ -121,7 +122,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	 */
 	protected String getNextIdsSqlQuery(final String tableName, final String pkFieldName) {
 		final StringBuilder request = new StringBuilder()
-				.append(" select " + pkFieldName + " from ")
+				.append(" select ").append(pkFieldName).append(" from ")
 				.append(tableName)
 				.append(" where ")
 				.append(pkFieldName)
@@ -131,9 +132,9 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 		final String sqlQueryFilter = getSqlQueryFilter();
 		Assertion.checkNotNull(sqlQueryFilter, "getSqlQueryFilter can't be null");
 		if (!sqlQueryFilter.isEmpty()) {
-			request.append("and (").append(sqlQueryFilter).append(')');
+			request.append(" and (").append(sqlQueryFilter).append(')');
 		}
-		request.append(" order by " + pkFieldName + " ASC");
+		request.append(" order by ").append(pkFieldName).append(" ASC");
 		appendMaxRows(request, SEARCH_CHUNK_SIZE);
 		return request.toString();
 	}

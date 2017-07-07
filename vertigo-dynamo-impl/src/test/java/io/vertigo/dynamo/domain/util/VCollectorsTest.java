@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
@@ -29,7 +30,7 @@ import io.vertigo.dynamo.domain.data.domain.Artist;
 import io.vertigo.dynamo.domain.model.DtList;
 
 /**
- * 
+ *
  * @author xdurand
  *
  */
@@ -40,16 +41,16 @@ public class VCollectorsTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCollectDtListEmpty() {
-		DtList<Artist> emptyDtList = new DtList<>(Artist.class);
-		DtList<Artist> listCollected = emptyDtList.stream().collect(VCollectors.toDtList(Artist.class));
+		final DtList<Artist> emptyDtList = new DtList<>(Artist.class);
+		final DtList<Artist> listCollected = emptyDtList.stream().collect(VCollectors.toDtList(Artist.class));
 
 		assertNotNull(listCollected);
 		assertTrue(listCollected.isEmpty());
 		assertEquals(0, listCollected.size());
 	}
 
-	private static Artist createArtist(long id, String name) {
-		Artist m = new Artist();
+	private static Artist createArtist(final long id, final String name) {
+		final Artist m = new Artist();
 		m.setId(id);
 		m.setName(name);
 		return m;
@@ -60,16 +61,13 @@ public class VCollectorsTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCollectDtList() {
-		DtList<Artist> dtList = new DtList<>(Artist.class);
-		Artist m1 = createArtist(1, "David Bowie");
-		Artist m2 = createArtist(2, "Joe Strummer");
+		final Artist m1 = createArtist(1, "David Bowie");
+		final Artist m2 = createArtist(2, "Joe Strummer");
 
-		dtList.add(m1);
-		dtList.add(m2);
-
+		final DtList<Artist> dtList = DtList.of(m1, m2);
 		// @formatter:off
-		DtList<Artist> listCollected = dtList.stream()
-											.sorted( (mov1, mov2) -> mov1.getId().compareTo(mov2.getId()))
+		final DtList<Artist> listCollected = dtList.stream()
+											.sorted( (art1, art2) -> art1.getId().compareTo(art2.getId()))
 											.collect(VCollectors.toDtList(Artist.class));
 		// @formatter:on
 
@@ -86,22 +84,19 @@ public class VCollectorsTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFilterCollectDtList() {
-		DtList<Artist> dtList = new DtList<>(Artist.class);
-		Artist m1 = createArtist(1, "Louis Armstrong");
-		Artist m2 = createArtist(2, "Duke Ellington");
-		Artist m3 = createArtist(3, "Jimmy Hendricks");
+		final Artist m1 = createArtist(1, "Louis Armstrong");
+		final Artist m2 = createArtist(2, "Duke Ellington");
+		final Artist m3 = createArtist(3, "Jimmy Hendricks");
 
-		dtList.add(m1);
-		dtList.add(m2);
-		dtList.add(m3);
+		final DtList<Artist> dtList = DtList.of(m1, m2, m3);
 
 		// @formatter:off
-		DtList<Artist> listCollected = dtList.stream()
+		final DtList<Artist> listCollected = dtList.stream()
 											.filter( m -> m.getId() % 2 == 0)
 											.collect(VCollectors.toDtList(Artist.class));
 		// @formatter:on
 		assertNotNull(listCollected);
-		assertTrue(listCollected.isEmpty() == false);
+		Assert.assertFalse(listCollected.isEmpty());
 		assertEquals(1, listCollected.size());
 		assertEquals(listCollected.get(0), m2);
 		assertEquals(3, dtList.size());

@@ -23,6 +23,7 @@ import java.util.List;
 import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRules;
+import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionBuilder;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionBody;
@@ -62,7 +63,7 @@ final class DslInnerDefinitionRule extends AbstractRule<DslDefinitionEntry, List
 		final String definitionName = (String) parsing.get(2);
 		final DslDefinitionBody definitionBody = (DslDefinitionBody) parsing.get(4);
 
-		final DslDefinitionBuilder dslDefinitionBuilder = new DslDefinitionBuilder(definitionName, entity);
+		final DslDefinitionBuilder dslDefinitionBuilder = DslDefinition.builder(definitionName, entity);
 		populateDefinition(definitionBody, dslDefinitionBuilder);
 
 		//---

@@ -18,10 +18,10 @@
  */
 package io.vertigo.vega.webservice.validation;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -47,6 +47,14 @@ public final class UiError {
 		this.dtObject = dtObject;
 		this.dtField = dtField;
 		this.messageText = messageText;
+	}
+
+	/**
+	 * Static method factory for UiErrorBuilder
+	 * @return UiErrorBuilder
+	 */
+	public static UiErrorBuilder builder() {
+		return new UiErrorBuilder();
 	}
 
 	/**

@@ -31,7 +31,6 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskBuilder;
 
 /**
  *
@@ -102,7 +101,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		final TaskDefinition taskDefinition = definitionSpace.resolve("TK_ADD", TaskDefinition.class);
 
-		final Task task = new TaskBuilder(taskDefinition)
+		final Task task = Task.builder(taskDefinition)
 				.addValue(ATTR_IN_INT_1, 1)
 				.addValue(ATTR_IN_INT_2, 8)
 				.addValue(ATTR_IN_INT_3, 7)
@@ -128,7 +127,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	 * @return somme des entiers.
 	 */
 	private Integer executeTask(final TaskDefinition taskDefinition, final Integer value1, final Integer value2, final Integer value3) {
-		final Task task = new TaskBuilder(taskDefinition)
+		final Task task = Task.builder(taskDefinition)
 				.addValue(ATTR_IN_INT_1, value1)
 				.addValue(ATTR_IN_INT_2, value2)
 				.addValue(ATTR_IN_INT_3, value3)

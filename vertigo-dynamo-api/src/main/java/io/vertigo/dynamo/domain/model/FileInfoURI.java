@@ -47,14 +47,14 @@ public final class FileInfoURI implements Serializable {
 	 */
 	public static final Pattern REGEX_URN = Pattern.compile("[a-zA-Z0-9_:@$-]{5,80}");
 
-	private final DefinitionReference<FileInfoDefinition> definitionRef;
+	private final DefinitionReference<FileInfoDefinition> fileInfoDefinitionRef;
 	private final Serializable key;
 
 	/** URN de la ressource (Nom complet).*/
 	private final String urn;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param fileInfoDefinition Definition de la ressource
 	 * @param key Clé de la ressource
 	 */
@@ -63,7 +63,7 @@ public final class FileInfoURI implements Serializable {
 		Assertion.checkNotNull(fileInfoDefinition);
 		//-----
 		this.key = Serializable.class.cast(key);
-		definitionRef = new DefinitionReference<>(fileInfoDefinition);
+		fileInfoDefinitionRef = new DefinitionReference<>(fileInfoDefinition);
 
 		//Calcul de l'urn
 		urn = toURN(this);
@@ -76,7 +76,7 @@ public final class FileInfoURI implements Serializable {
 	 * @return Définition de la ressource.
 	 */
 	public FileInfoDefinition getDefinition() {
-		return definitionRef.get();
+		return fileInfoDefinitionRef.get();
 	}
 
 	/**
@@ -129,6 +129,10 @@ public final class FileInfoURI implements Serializable {
 	//=============================STATIC======================================
 	//=========================================================================
 
+	/**
+	 * @param urn File info URN
+	 * @return FileInfoURI for this URN
+	 */
 	public static FileInfoURI fromURN(final String urn) {
 		Assertion.checkNotNull(urn);
 		//-----

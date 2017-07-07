@@ -34,7 +34,7 @@ public final class CompressedSerializationCodec implements Codec<Serializable, b
 	private final Codec<byte[], byte[]> compressionCodec;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param serializationCodec Codec
 	 * @param compressionCodec Codec
 	 */

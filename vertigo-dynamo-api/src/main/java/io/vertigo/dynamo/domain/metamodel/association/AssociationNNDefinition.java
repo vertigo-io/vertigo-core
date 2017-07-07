@@ -31,18 +31,22 @@ public final class AssociationNNDefinition extends AssociationDefinition {
 
 	/**
 	 * Constructeur d'une association n-n.
+	 * @param name the name of the definition
 	 * @param tableName Nom de la table
 	 * @param associationNodeA Noeud A
 	 * @param associationNodeB Noeud B
 	 */
-	public AssociationNNDefinition(final String name, final String tableName, final AssociationNode associationNodeA, final AssociationNode associationNodeB) {
+	public AssociationNNDefinition(
+			final String name,
+			final String tableName,
+			final AssociationNode associationNodeA,
+			final AssociationNode associationNodeB) {
 		super(name, associationNodeA, associationNodeB);
 		//-----
 		Assertion.checkNotNull(tableName);
 		this.tableName = tableName;
 	}
 
-	//==========================================================================
 	/**
 	 * @return Nom de la table porteuse de la relation NN
 	 */

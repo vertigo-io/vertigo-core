@@ -505,7 +505,7 @@ public final class WebServiceManagerTest {
 	@Test
 	public void testPostContactUserException() throws ParseException {
 		final Map<String, Object> newContact = createDefaultContact(null);
-		newContact.remove("name");
+		newContact.put("name", null);
 
 		loggedAndExpect(given().body(newContact))
 				.body("globalErrors", Matchers.contains("Name is mandatory"))
@@ -575,6 +575,40 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
+	public void testPutContactEmptyField() throws ParseException {
+		final Map<String, Object> newContact = createDefaultContact(100L);
+		newContact.put("name", "");
+
+		loggedAndExpect(given().body(newContact))
+				.body("fieldErrors.name", Matchers.contains("Le champ doit être renseigné")) //autovalidation by Vega
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.put("/test/contact");
+
+		//----
+
+		final Map<String, Object> newContact2 = createDefaultContact(100L);
+		newContact2.put("name", null);
+
+		loggedAndExpect(given().body(newContact2))
+				.body("globalErrors", Matchers.contains("Name is mandatory")) //WS manual validation
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.put("/test/contact");
+
+		//----
+
+		final Map<String, Object> newContact3 = createDefaultContact(100L);
+		newContact3.remove("name");
+
+		loggedAndExpect(given().body(newContact3))
+				.body("globalErrors", Matchers.contains("Name is mandatory")) //WS manual validation
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.put("/test/contact");
+	}
+
+	@Test
 	public void testGetContactView() {
 		loggedAndExpect()
 				.body("honorificCode", Matchers.notNullValue())
@@ -591,9 +625,9 @@ public final class WebServiceManagerTest {
 		final Map<String, Object> newContactView = createDefaultContact(100L);
 
 		final List<Map<String, Object>> addresses = new ListBuilder<Map<String, Object>>()
-				.add(createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"))
-				.add(createAddress("24, avenue General De Gaulle", "", "Paris", "75001", "France"))
-				.add(createAddress("38, impasse des puits", "", "Versaille", "78000", "France"))
+				.add(createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"))
+				.add(createAddress(24L, "24, avenue General De Gaulle", "", "Paris", "75001", "France"))
+				.add(createAddress(38L, "38, impasse des puits", "", "Versaille", "78000", "France"))
 				.build();
 
 		newContactView.remove("address");
@@ -616,9 +650,9 @@ public final class WebServiceManagerTest {
 	public void testPutContactViewError() throws ParseException {
 		final Map<String, Object> newContactView = createDefaultContact(100L);
 		final List<Map<String, Object>> addresses = new ListBuilder<Map<String, Object>>()
-				.add(createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"))
-				.add(createAddress("24, avenue General De Gaulle", "", "Paris", "75001", "France"))
-				.add(createAddress("38, impasse des puits -- too long -- overrided DO_TEXT_50 length constraint -- too long -- too long", "", "Versaille", "78000", "France"))
+				.add(createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"))
+				.add(createAddress(24L, "24, avenue General De Gaulle", "", "Paris", "75001", "France"))
+				.add(createAddress(38L, "38, impasse des puits -- too long -- overrided DO_TEXT_50 length constraint -- too long -- too long", "", "Versaille", "78000", "France"))
 				.build();
 
 		newContactView.remove("address");
@@ -1356,8 +1390,17 @@ public final class WebServiceManagerTest {
 		doPaginedSearch(criteriaContact, 5, 5, null, null, serverSideToken, 1, "Garcia", "Garcia", isAuto);
 	}
 
-	private String doPaginedSearch(final Map<String, Object> criteriaContact, final Integer top, final Integer skip, final String sortFieldName, final Boolean sortDesc, final String listServerToken,
-			final int expectedSize, final String firstContactName, final String lastContactName, final boolean isAuto) {
+	private String doPaginedSearch(
+			final Map<String, Object> criteriaContact,
+			final Integer top,
+			final Integer skip,
+			final String sortFieldName,
+			final Boolean sortDesc,
+			final String listServerToken,
+			final int expectedSize,
+			final String firstContactName,
+			final String lastContactName,
+			final boolean isAuto) {
 		final RequestSpecification given = given().filter(loggedSessionFilter);
 		final String wsUrl = isAuto ? "/test/_searchAutoPagined" : "/test/_searchQueryPagined";
 		if (top != null) {
@@ -1707,11 +1750,80 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
+	public void testLocalDate() {
+		loggedAndExpect(given())
+				.body(Matchers.equalTo("\"2017-06-27\""))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/localDate");
+
+		final String inputLocalDate = "2016-01-18";
+		loggedAndExpect(given())
+				.body("input", Matchers.equalTo(inputLocalDate))
+				.body("inputAsString", Matchers.equalTo("2016-01-18"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/localDate?date=" + inputLocalDate);
+	}
+
+	@Test
+	public void testZonedDateTime() {
+		loggedAndExpect(given())
+				.body(Matchers.equalTo("\"2016-05-26T21:30:20Z\""))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/zonedDateTime");
+
+		final String inputZonedDateTime = "2016-01-18T17:21:42Z";
+		loggedAndExpect(given())
+				.body("input", Matchers.equalTo(inputZonedDateTime))
+				.body("inputAsString", Matchers.equalTo("2016-01-18T17:21:42Z[UTC]"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/zonedDateTime?date=" + inputZonedDateTime);
+	}
+
+	@Test
+	public void testZonedDateTimeUTC() {
+		loggedAndExpect(given())
+				.body(Matchers.equalTo("\"2016-07-27T22:00:00Z\""))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/zonedDateTimeUTC");
+
+		final String inputZonedDateTime = "2016-04-25T00:00:00Z";
+		loggedAndExpect(given())
+				.body("input", Matchers.equalTo(inputZonedDateTime))
+				.body("inputAsString", Matchers.equalTo("2016-04-25T00:00Z[UTC]"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/zonedDateTime?date=" + inputZonedDateTime);
+	}
+
+	@Test
 	public void testString() {
 		loggedAndExpect(given().body(UTF8_TEST_STRING))
 				.statusCode(HttpStatus.SC_OK).log().all()
 				.when()
 				.post("/test/string");
+	}
+
+	@Test
+	public void testOptionalQueryParam() throws ParseException {
+		final Map<String, Object> newContact = createDefaultContact(null);
+		loggedAndExpect(given().body(newContact)
+				.queryParam("token", "TestedToken"))
+						.statusCode(HttpStatus.SC_OK)
+						.body(Matchers.equalTo("TestedToken"))
+						.when()
+						.post("/test/contact/secured");
+
+		loggedAndExpect(given().body(newContact))
+				.statusCode(HttpStatus.SC_OK)
+				.body(Matchers.equalTo("empty"))
+				.when()
+				.post("/test/contact/secured");
+
 	}
 
 	//=========================================================================
@@ -1754,13 +1866,20 @@ public final class WebServiceManagerTest {
 
 	private static Map<String, Object> createDefaultContact(final Long conId) throws ParseException {
 		final Map<String, Object> newContact = createContact2(conId, "Mrs", "Fournier", "Catherine", convertDate("24/10/1985"),
-				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"),
+				createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"),
 				"catherine.fournier@gmail.com", "01 91 92 93 94");
 		return newContact;
 	}
 
-	private static Map<String, Object> createContact2(final Long conId, final String honorific, final String name, final String firstName, final String birthday, final Map<String, Object> address,
-			final String email, final String... tels) {
+	private static Map<String, Object> createContact2(
+			final Long conId,
+			final String honorific,
+			final String name,
+			final String firstName,
+			final String birthday,
+			final Map<String, Object> address,
+			final String email,
+			final String... tels) {
 		return new MapBuilder<String, Object>()
 				.putNullable("conId", conId)
 				.put("honorificCode", honorific)
@@ -1773,8 +1892,9 @@ public final class WebServiceManagerTest {
 				.build();
 	}
 
-	private static Map<String, Object> createAddress(final String street1, final String street2, final String city, final String postalCode, final String country) {
+	private static Map<String, Object> createAddress(final Long adrId, final String street1, final String street2, final String city, final String postalCode, final String country) {
 		return new MapBuilder<String, Object>()
+				.put("adrId", adrId)
 				.put("street1", street1)
 				.put("street2", street2)
 				.put("city", city)

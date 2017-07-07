@@ -32,7 +32,7 @@ public final class FileStoreImpl implements FileStore {
 	private final FileStoreConfig fileStoreConfig;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param fileStoreConfig Config of the fileStore
 	 */
 	public FileStoreImpl(final FileStoreConfig fileStoreConfig) {
@@ -47,10 +47,10 @@ public final class FileStoreImpl implements FileStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public void create(final FileInfo fileInfo) {
+	public FileInfo create(final FileInfo fileInfo) {
 		Assertion.checkNotNull(fileInfo);
 		//-----
-		getPhysicalStore(fileInfo.getDefinition()).create(fileInfo);
+		return getPhysicalStore(fileInfo.getDefinition()).create(fileInfo);
 	}
 
 	/** {@inheritDoc} */

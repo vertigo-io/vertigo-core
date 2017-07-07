@@ -33,8 +33,9 @@ public interface FileStore {
 	 * Create a new File.
 	 *
 	 * @param fileInfo File to create
+	 * @return the created FileInfo
 	 */
-	void create(FileInfo fileInfo);
+	FileInfo create(FileInfo fileInfo);
 
 	/**
 	 * Update  an existing File.

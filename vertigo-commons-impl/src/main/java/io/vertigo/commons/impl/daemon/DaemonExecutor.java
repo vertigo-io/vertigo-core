@@ -26,12 +26,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import io.vertigo.commons.daemon.Daemon;
+import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonStat;
-import io.vertigo.lang.Activeable;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.lang.Assertion;
 
 /**
- * Implémentation basic du plugin de gestion de démon.
+ * This class executes the daemons that have been previously registered.
  *
  * @author TINGARGIOLA
  */
@@ -41,20 +42,21 @@ final class DaemonExecutor implements Activeable {
 	private final List<DaemonListener> daemonListeners = new ArrayList<>();
 
 	/**
-	* Enregistre un démon.
-	* Il sera lancé après le temp delay (en milliseconde) et sera réexécuté périodiquement toutes les period (en milliseconde).
+	* Registers a new daemon.
+	* It will be executed after the delay (in milliseconds)
+	* and will be periodically executed after the period (in milliseconds)
 	*
-	* @param daemonInfo Daemono's info
+	* @param daemonDefinition the daemon definition
 	* @param daemon Daemon to schedule.
 	*/
-	void scheduleDaemon(final DaemonInfo daemonInfo, final Daemon daemon) {
-		Assertion.checkNotNull(daemonInfo);
+	void scheduleDaemon(final DaemonDefinition daemonDefinition, final Daemon daemon) {
+		Assertion.checkNotNull(daemonDefinition);
 		Assertion.checkState(isActive, "Manager must be active to schedule a daemon");
 		// -----
-		final DaemonListener daemonListener = new DaemonListener(daemonInfo, daemon.verbose());
+		final DaemonListener daemonListener = new DaemonListener(daemonDefinition, daemon.verbose());
 		final DaemonTimerTask timerTask = new DaemonTimerTask(daemonListener, daemon);
 		daemonListeners.add(daemonListener);
-		scheduler.scheduleWithFixedDelay(timerTask, daemonInfo.getPeriodInSeconds(), daemonInfo.getPeriodInSeconds(), TimeUnit.SECONDS);
+		scheduler.scheduleWithFixedDelay(timerTask, daemonDefinition.getPeriodInSeconds(), daemonDefinition.getPeriodInSeconds(), TimeUnit.SECONDS);
 	}
 
 	/**
@@ -63,7 +65,7 @@ final class DaemonExecutor implements Activeable {
 	List<DaemonStat> getStats() {
 		return daemonListeners
 				.stream()
-				.map(daemonTimerTask -> daemonTimerTask.getStat())
+				.map(DaemonListener::getStat)
 				.collect(Collectors.toList());
 	}
 

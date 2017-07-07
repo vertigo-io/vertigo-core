@@ -20,7 +20,7 @@ package io.vertigo.util.data;
 
 import javax.inject.Named;
 
-import io.vertigo.lang.Component;
+import io.vertigo.core.component.Component;
 
 /**
  * @author mlaroche

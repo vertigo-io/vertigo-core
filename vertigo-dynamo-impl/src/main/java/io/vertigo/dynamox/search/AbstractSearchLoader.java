@@ -115,12 +115,6 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 				return current;
 			}
 
-			/** {@inheritDoc} */
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException("This list is unmodifiable");
-			}
-
 			private SearchChunk<K> nextChunk(final SearchChunk<K> previousChunk) {
 				final List<URI<K>> previousUris = previousChunk.getAllURIs();
 				final P lastId = (P) previousUris.get(previousUris.size() - 1).getId();

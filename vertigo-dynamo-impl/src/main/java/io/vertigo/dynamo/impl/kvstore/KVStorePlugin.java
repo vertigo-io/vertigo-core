@@ -21,7 +21,7 @@ package io.vertigo.dynamo.impl.kvstore;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 
 /**
  * This plugin defines the strategy used to store a 'collection' of elements.
@@ -82,6 +82,7 @@ public interface KVStorePlugin extends Plugin {
 	 * @param collection the collection
 	 * @param skip the position from which the elements are returned
 	 * @param limit the limit size of elements
+	 * @param clazz the type of the searched element
 	 * @return the list of elements.
 	 */
 	<C> List<C> findAll(String collection, int skip, Integer limit, Class<C> clazz);

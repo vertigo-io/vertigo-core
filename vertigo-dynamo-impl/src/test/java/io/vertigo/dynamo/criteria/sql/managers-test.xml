@@ -1,0 +1,49 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<config>
+	<boot locales="fr_FR">
+		<plugin class="io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin" />
+	</boot>
+
+	<module name="vertigo-commons">
+		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
+		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" />
+
+		<component api="ScriptManager" class="io.vertigo.commons.impl.script.ScriptManagerImpl">
+			<plugin class="io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin" />
+		</component>
+
+		<component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
+		<component api="CacheManager" class="io.vertigo.commons.impl.cache.CacheManagerImpl">
+			<plugin class="io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin" />
+		</component>
+		<component api="VTransactionManager" class="io.vertigo.commons.impl.transaction.VTransactionManagerImpl" />
+	</module>
+
+	<module name="vertigo-database">
+		<component api="SqlDataBaseManager" class="io.vertigo.database.impl.sql.SqlDataBaseManagerImpl">
+			<plugin class="io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin">
+				<param name="dataBaseClass" value="io.vertigo.database.impl.sql.vendor.h2.H2DataBase" />
+				<param name="jdbcDriver" value="org.h2.Driver" />
+				<param name="jdbcUrl" value="jdbc:h2:mem:database" />
+			</plugin>
+		</component>
+	</module>
+	<module name="vertigo-dynamo">
+		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl" />
+		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
+		<component api="EventBusManager" class="io.vertigo.commons.impl.eventbus.EventBusManagerImpl" />
+		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl" >
+			<plugin class="io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin"/>
+		</component>
+		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
+	</module>
+
+	<module name="myApp">
+		<definitions>
+			<provider class="io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider" >
+				<resource type="kpr" path="io/vertigo/dynamo/criteria/data/execution.kpr" />
+				<resource type="classes" path="io.vertigo.dynamo.criteria.data.DtDefinitions" />
+			</provider>
+		</definitions>
+	</module>
+</config>

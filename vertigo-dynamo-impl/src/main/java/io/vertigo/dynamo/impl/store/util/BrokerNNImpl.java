@@ -24,7 +24,6 @@ import java.util.Set;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
@@ -34,6 +33,7 @@ import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
+import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
@@ -75,14 +75,14 @@ final class BrokerNNImpl implements BrokerNN {
 	}
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param taskManager Manager des Tasks
 	 */
 	BrokerNNImpl(final TaskManager taskManager) {
 		Assertion.checkNotNull(taskManager);
 		//-----
 		this.taskManager = taskManager;
-		integerDomain = new DomainBuilder("DO_INTEGER_BROKER", DataType.Integer).build();
+		integerDomain = Domain.builder("DO_INTEGER_BROKER", DataType.Integer).build();
 	}
 
 	/** {@inheritDoc} */
@@ -180,13 +180,18 @@ final class BrokerNNImpl implements BrokerNN {
 		}
 	}
 
-	private int processNN(final String taskDefinitionName, final String request, final String dataSpace,
-			final DtField sourceField, final Object sourceValue,
-			final DtField targetField, final Object targetValue) {
+	private int processNN(
+			final String taskDefinitionName,
+			final String request,
+			final String dataSpace,
+			final DtField sourceField,
+			final Object sourceValue,
+			final DtField targetField,
+			final Object targetValue) {
 		//FieldName
 		final String sourceFieldName = sourceField.getName();
 
-		final TaskDefinitionBuilder taskDefinitionBuilder = new TaskDefinitionBuilder(taskDefinitionName)
+		final TaskDefinitionBuilder taskDefinitionBuilder = TaskDefinition.builder(taskDefinitionName)
 				.withEngine(TaskEngineProc.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
@@ -199,7 +204,7 @@ final class BrokerNNImpl implements BrokerNN {
 				.build();
 
 		/* Création de la tache. */
-		final TaskBuilder taskBuilder = new TaskBuilder(taskDefinition)
+		final TaskBuilder taskBuilder = Task.builder(taskDefinition)
 				.addValue(sourceFieldName, sourceValue);
 		if (targetField != null) {
 			taskBuilder.addValue(targetField.getName(), targetValue);

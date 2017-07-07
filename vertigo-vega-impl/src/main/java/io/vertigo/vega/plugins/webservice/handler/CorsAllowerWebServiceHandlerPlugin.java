@@ -27,7 +27,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
-import io.vertigo.lang.MessageText;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.exception.VSecurityException;
@@ -99,7 +99,7 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 			if (!isAllowed(origin, originCORSFiltersSet) || !isAllowed(method, methodCORSFiltersSet)) {
 				response.status(HttpServletResponse.SC_FORBIDDEN);
 				response.raw().resetBuffer();
-				throw new VSecurityException(new MessageText("Invalid CORS Access (Origin:{0}, Method:{1})", null, origin, method));
+				throw new VSecurityException(MessageText.builder().withDefaultMsg("Invalid CORS Access (Origin:{0}, Method:{1})").withParams(origin, method).build());
 			}
 		}
 		response.header("Access-Control-Allow-Origin", originCORSFilter);
@@ -119,7 +119,7 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 
 	private static Set<String> parseStringToSet(final String param) {
 		return Arrays.stream(param.split(","))
-				.map(value -> value.trim())
+				.map(String::trim)
 				.collect(Collectors.toSet());
 	}
 }

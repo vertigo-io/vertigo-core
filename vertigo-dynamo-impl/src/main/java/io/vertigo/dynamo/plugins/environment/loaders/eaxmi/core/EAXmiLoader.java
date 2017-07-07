@@ -46,7 +46,7 @@ public final class EAXmiLoader extends AbstractXmlLoader {
 	private static final Logger LOG = Logger.getLogger(EAXmiLoader.class);
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param resourceManager the vertigo resourceManager
 	 */
 	public EAXmiLoader(final ResourceManager resourceManager) {

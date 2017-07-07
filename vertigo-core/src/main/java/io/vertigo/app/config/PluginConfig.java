@@ -21,11 +21,10 @@ package io.vertigo.app.config;
 import java.util.Arrays;
 import java.util.List;
 
+import io.vertigo.core.component.Plugin;
 import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
-import io.vertigo.lang.Plugin;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 
@@ -45,7 +44,7 @@ import io.vertigo.util.StringUtil;
  * @author npiedeloup, pchretien
  */
 public final class PluginConfig {
-	private final Class<? extends Component> implClass;
+	private final Class<? extends Plugin> implClass;
 	private final List<Param> params;
 	private final String pluginType;
 
@@ -66,6 +65,15 @@ public final class PluginConfig {
 	}
 
 	/**
+	 * Static method factory for PluginConfigBuilder
+	 * @param pluginImplClass impl of the plugin
+	 * @return PluginConfigBuilder
+	 */
+	public static PluginConfigBuilder builder(final Class<? extends Plugin> pluginImplClass) {
+		return new PluginConfigBuilder(pluginImplClass);
+	}
+
+	/**
 	 * @return the type of the plugin
 	 */
 	public String getPluginType() {
@@ -75,7 +83,7 @@ public final class PluginConfig {
 	/**
 	 * @return the impl class of the component
 	 */
-	public Class<? extends Component> getImplClass() {
+	public Class<? extends Plugin> getImplClass() {
 		return implClass;
 	}
 

@@ -39,6 +39,7 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
@@ -51,8 +52,6 @@ import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
-import io.vertigo.vega.webservice.metamodel.WebServiceParamBuilder;
-import io.vertigo.vega.webservice.model.UiListState;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
@@ -60,7 +59,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @see "https://github.com/wordnik/swagger-spec/blob/master/versions/2.0.md"
  * @author npiedeloup (22 juil. 2014 11:12:02)
  */
-public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
+public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 
 	private static final String REQUIRED = "required";
 
@@ -112,10 +111,10 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 
 	/** {@inheritDoc} */
 	@Override
-	public Map<String, Object> build() {
+	public SwaggerApi build() {
 		Assertion.checkNotNull(builderWebServiceDefinitions, "webServiceDefinitions must be set");
 		//-----
-		final Map<String, Object> swagger = new LinkedHashMap<>();
+		final SwaggerApi swagger = new SwaggerApi();
 		swagger.put("swagger", 2.0);
 		swagger.put("info", createInfoObject());
 		swagger.put("basePath", builderContextPath);
@@ -430,21 +429,21 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 	private static List<WebServiceParam> createPseudoWebServiceParams(final WebServiceParam webServiceParam) {
 		final List<WebServiceParam> pseudoWebServiceParams = new ArrayList<>();
 		final String prefix = !webServiceParam.getName().isEmpty() ? webServiceParam.getName() + "." : "";
-		if (UiListState.class.isAssignableFrom(webServiceParam.getType())) {
-			pseudoWebServiceParams.add(new WebServiceParamBuilder(int.class)
+		if (DtListState.class.isAssignableFrom(webServiceParam.getType())) {
+			pseudoWebServiceParams.add(WebServiceParam.builder(int.class)
 					.with(webServiceParam.getParamType(), prefix + "top").build());
-			pseudoWebServiceParams.add(new WebServiceParamBuilder(int.class)
+			pseudoWebServiceParams.add(WebServiceParam.builder(int.class)
 					.with(webServiceParam.getParamType(), prefix + "skip").build());
-			pseudoWebServiceParams.add(new WebServiceParamBuilder(String.class)
+			pseudoWebServiceParams.add(WebServiceParam.builder(String.class)
 					.with(webServiceParam.getParamType(), prefix + "sortFieldName").build());
-			pseudoWebServiceParams.add(new WebServiceParamBuilder(boolean.class)
+			pseudoWebServiceParams.add(WebServiceParam.builder(boolean.class)
 					.with(webServiceParam.getParamType(), prefix + "sortDesc").build());
 		} else if (DtObject.class.isAssignableFrom(webServiceParam.getType())) {
 			final Class<? extends DtObject> paramClass = (Class<? extends DtObject>) webServiceParam.getType();
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(paramClass);
 			for (final DtField dtField : dtDefinition.getFields()) {
 				final String fieldName = StringUtil.constToLowerCamelCase(dtField.getName());
-				pseudoWebServiceParams.add(new WebServiceParamBuilder(dtField.getDomain().getDataType().getJavaClass())
+				pseudoWebServiceParams.add(WebServiceParam.builder(dtField.getDomain().getDataType().getJavaClass())
 						.with(webServiceParam.getParamType(), prefix + fieldName)
 						.build());
 			}
@@ -454,7 +453,7 @@ public final class SwaggerApiBuilder implements Builder<Map<String, Object>> {
 
 	private static boolean isOneInMultipleOutParams(final WebServiceParam webServiceParam) {
 		final Class<?> paramClass = webServiceParam.getType();
-		return webServiceParam.getParamType() == WebServiceParamType.Query && (UiListState.class.isAssignableFrom(paramClass) || DtObject.class.isAssignableFrom(paramClass));
+		return webServiceParam.getParamType() == WebServiceParamType.Query && (DtListState.class.isAssignableFrom(paramClass) || DtObject.class.isAssignableFrom(paramClass));
 	}
 
 	private static boolean isMultipleInOneOutParams(final WebServiceParam webServiceParam) {

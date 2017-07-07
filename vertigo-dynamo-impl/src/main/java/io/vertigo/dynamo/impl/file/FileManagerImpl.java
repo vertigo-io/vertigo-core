@@ -30,16 +30,16 @@ import javax.activation.MimetypesFileTypeMap;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
 import io.vertigo.dynamo.impl.file.model.StreamFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
+import io.vertigo.util.TempFile;
 
 /**
 * Implémentation du gestionnaire de la définition des fichiers.
@@ -48,18 +48,15 @@ import io.vertigo.lang.WrappedException;
 */
 public final class FileManagerImpl implements FileManager {
 
+	private final Optional<Integer> purgeDelayMinutesOpt;
+
 	/**
 	 * Constructor.
-	 * @param purgeDelayMinutes Temp file purge delay.
-	 * @param daemonManager Daemon manager
+	 * @param purgeDelayMinutesOpt Temp file purge delay.
 	 */
 	@Inject
-	public FileManagerImpl(
-			@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutes,
-			final DaemonManager daemonManager) {
-		Assertion.checkNotNull(daemonManager);
-		//-----
-		daemonManager.registerDaemon("PurgeTempFileDaemon", () -> new PurgeTempFileDaemon(purgeDelayMinutes.orElse(60), TempFile.VERTIGO_TMP_DIR_PATH), 5 * 60);
+	public FileManagerImpl(@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
+		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
 	}
 
 	/** {@inheritDoc} */
@@ -94,11 +91,11 @@ public final class FileManagerImpl implements FileManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public VFile createFile(final String fileName, final String typeMime, final URL ressourceUrl) {
+	public VFile createFile(final String fileName, final String typeMime, final URL resourceUrl) {
 		final long length;
 		final long lastModified;
 		try {
-			final URLConnection connection = ressourceUrl.openConnection();
+			final URLConnection connection = resourceUrl.openConnection();
 			try {
 				length = connection.getContentLength();
 				lastModified = connection.getLastModified();
@@ -109,7 +106,7 @@ public final class FileManagerImpl implements FileManager {
 			throw WrappedException.wrap(e, "Can't get file meta from url");
 		}
 		Assertion.checkArgument(length >= 0, "Can't get file meta from url");
-		final InputStreamBuilder inputStreamBuilder = ressourceUrl::openStream;
+		final InputStreamBuilder inputStreamBuilder = resourceUrl::openStream;
 		return createFile(fileName, typeMime, new Date(lastModified), length, inputStreamBuilder);
 	}
 
@@ -148,5 +145,28 @@ public final class FileManagerImpl implements FileManager {
 			inputFile = createTempFile(vFile);
 		}
 		return inputFile;
+	}
+
+	/**
+	 * Daemon for deleting old files.
+	 */
+	@DaemonScheduled(name = "DMN_PRUGE_TEMP_FILE", periodInSeconds = 5 * 60)
+	public void deleteOldFiles() {
+		final File documentRootFile = new File(TempFile.VERTIGO_TMP_DIR_PATH);
+		final long maxTime = System.currentTimeMillis() - purgeDelayMinutesOpt.orElse(60) * 60L * 1000L;
+		doDeleteOldFiles(documentRootFile, maxTime);
+	}
+
+	private static void doDeleteOldFiles(final File documentRootFile, final long maxTime) {
+		for (final File subFiles : documentRootFile.listFiles()) {
+			if (subFiles.isDirectory() && subFiles.canRead()) { //canRead pour les pbs de droits
+				doDeleteOldFiles(subFiles, maxTime);
+			} else if (subFiles.lastModified() < maxTime) {
+				final boolean succeeded = subFiles.delete();
+				if (!succeeded) {
+					subFiles.deleteOnExit();
+				}
+			}
+		}
 	}
 }

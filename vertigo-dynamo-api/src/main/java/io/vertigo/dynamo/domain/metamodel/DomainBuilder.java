@@ -47,7 +47,7 @@ public final class DomainBuilder implements Builder<Domain> {
 	 * @param name the name of the domain
 	 * @param dataType the dataType lof the domain
 	 */
-	public DomainBuilder(final String name, final DataType dataType) {
+	DomainBuilder(final String name, final DataType dataType) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(dataType);
 		//---
@@ -94,8 +94,8 @@ public final class DomainBuilder implements Builder<Domain> {
 				myName,
 				myDataType,
 				myformatterDefinition,
-				myConstraintDefinitions == null ? Collections.<ConstraintDefinition> emptyList() : myConstraintDefinitions,
-				myProperties == null ? new PropertiesBuilder().build() : myProperties);
+				myConstraintDefinitions == null ? Collections.emptyList() : myConstraintDefinitions,
+				myProperties == null ? Properties.builder().build() : myProperties);
 	}
 
 }

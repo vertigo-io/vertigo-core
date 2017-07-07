@@ -45,7 +45,7 @@ public abstract class DtListURI implements Serializable {
 	private String urn;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param dtDefinition Definition de la ressource
 	 */
 	public DtListURI(final DtDefinition dtDefinition) {

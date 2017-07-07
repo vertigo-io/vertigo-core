@@ -26,8 +26,8 @@ import java.util.StringTokenizer;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 
 /**
  * Formatteur multi-lingue.
@@ -60,7 +60,7 @@ public class FormatterNumberLocalized extends FormatterNumber {
 		initLocalizedParameters(args);
 	}
 
-	private final void initLocalizedParameters(final String args) {
+	private void initLocalizedParameters(final String args) {
 		decimalFormatSymbolsMap = java.util.Collections.synchronizedMap(new HashMap<Locale, DecimalFormatSymbols>());
 		if (args != null) {
 			//-----
@@ -74,13 +74,13 @@ public class FormatterNumberLocalized extends FormatterNumber {
 
 			//séparateur de décimal
 			if (st.hasMoreTokens()) {
-				decimalSep = new MessageText(st.nextToken().trim(), null);//trim => l'espace ne peut être un séparateur de décimal
+				decimalSep = MessageText.of(st.nextToken().trim());//trim => l'espace ne peut être un séparateur de décimal
 				Assertion.checkArgNotEmpty(decimalSep.getDisplay(), "Il faut au moins un séparateur de décimal");
 			}
 
 			//séparateur de millier
 			if (st.hasMoreTokens()) {
-				groupSep = new MessageText(st.nextToken(), null);//pas de trim car il est probable que l'espace soit utilisé
+				groupSep = MessageText.of(st.nextToken());//pas de trim car il est probable que l'espace soit utilisé
 			}
 		}
 	}
@@ -135,16 +135,22 @@ public class FormatterNumberLocalized extends FormatterNumber {
 	}
 
 	private static void assertArgs(final boolean test) {
-		Assertion.checkArgument(test, "Les arguments pour la construction de FormatterNumber sont invalides: format d'affichage{|séparateur de décimal}{|séparateur de millier}");
+		Assertion.checkArgument(
+				test,
+				"Les arguments pour la construction de FormatterNumber sont invalides: format d'affichage{|séparateur de décimal}{|séparateur de millier}");
 	}
 
 	private void checkConflict(final Locale currentLocale, final DecimalFormatSymbols decimalFormatSymbols) {
 		if (decimalSep != null) {
 			for (final char decimalChar : decimalSep.getDisplay().toCharArray()) {
-				Assertion.checkArgument(decimalChar != decimalFormatSymbols.getGroupingSeparator(), "A decimal separator ({0}) is in conflict with a grouping separator {1}", decimalChar, currentLocale.getDisplayName());
+				Assertion.checkArgument(
+						decimalChar != decimalFormatSymbols.getGroupingSeparator(),
+						"A decimal separator ({0}) is in conflict with a grouping separator {1}", decimalChar, currentLocale.getDisplayName());
 				if (groupSep != null) {
 					final String groupSepValue = groupSep.getDisplay();
-					Assertion.checkArgument(groupSepValue.indexOf(decimalChar) == -1, "A decimal separator ({0}) is in conflict with a grouping separator {1}", decimalChar, currentLocale.getDisplayName());
+					Assertion.checkArgument(
+							groupSepValue.indexOf(decimalChar) == -1,
+							"A decimal separator ({0}) is in conflict with a grouping separator {1}", decimalChar, currentLocale.getDisplayName());
 				}
 			}
 		}

@@ -19,8 +19,6 @@
 package io.vertigo.commons.impl.codec;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
@@ -34,15 +32,13 @@ import io.vertigo.commons.impl.codec.hash.HashEncoder;
 import io.vertigo.commons.impl.codec.hex.HexEncoder;
 import io.vertigo.commons.impl.codec.html.HtmlCodec;
 import io.vertigo.commons.impl.codec.serialization.SerializationCodec;
-import io.vertigo.core.component.Describable;
-import io.vertigo.core.component.ComponentInfo;
 
 /**
  * Implémentation standard de CodecManager.
  *
  * @author pchretien
  */
-public final class CodecManagerImpl implements CodecManager, Describable {
+public final class CodecManagerImpl implements CodecManager {
 	/** Codage/décodage HTML de String > String. */
 	private final Codec<String, String> htmlCodec;
 
@@ -79,10 +75,8 @@ public final class CodecManagerImpl implements CodecManager, Describable {
 	/** CSV de String > String. */
 	private final Encoder<String, String> csvEncoder;
 
-	private final List<ComponentInfo> componentInfos = new ArrayList<>();
-
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	public CodecManagerImpl() {
 		super();
@@ -90,11 +84,9 @@ public final class CodecManagerImpl implements CodecManager, Describable {
 		//---
 		final CryptoCodec tmpTripleDESCodec = new CryptoCodec(CryptoCodec.Crypto.TRIPLE_DES);
 		tripleDESCodec = new NullCodec<>(tmpTripleDESCodec);
-		componentInfos.addAll(tmpTripleDESCodec.getInfos());
 		//---
 		final CryptoCodec tmpAes128Codec = new CryptoCodec(CryptoCodec.Crypto.AES);
 		aes128Codec = new NullCodec<>(tmpAes128Codec);
-		componentInfos.addAll(tmpAes128Codec.getInfos());
 		//---
 		md5Encoder = new HashEncoder(HashEncoder.Hash.MD5);
 		sha1Encoder = new HashEncoder(HashEncoder.Hash.SHA1);
@@ -105,7 +97,6 @@ public final class CodecManagerImpl implements CodecManager, Describable {
 		//---
 		final CompressionCodec tmpCompressionCodec = new CompressionCodec();
 		compressionCodec = new NullCodec<>(tmpCompressionCodec);
-		componentInfos.addAll(tmpCompressionCodec.getInfos());
 
 		//---
 		serializationCodec = new NullCodec<>(new SerializationCodec());
@@ -183,11 +174,5 @@ public final class CodecManagerImpl implements CodecManager, Describable {
 	@Override
 	public Encoder<String, String> getCsvEncoder() {
 		return csvEncoder;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public List<ComponentInfo> getInfos() {
-		return componentInfos;
 	}
 }

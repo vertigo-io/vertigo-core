@@ -25,13 +25,13 @@ import java.util.Map.Entry;
 
 import javax.inject.Inject;
 
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
-import io.vertigo.vega.webservice.model.UiListState;
 import spark.QueryParamsMap;
 import spark.Request;
 
@@ -64,7 +64,9 @@ public final class QueryJsonReader implements JsonReader<String> {
 	/** {@inheritDoc} */
 	@Override
 	public String extractData(final Request request, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
-		Assertion.checkArgument(getSupportedInput()[0].equals(webServiceParam.getParamType()), "This JsonReader can't read the asked request ParamType {0}. Only {1} is supported", webServiceParam.getParamType(), Arrays.toString(getSupportedInput()));
+		Assertion.checkArgument(
+				getSupportedInput()[0].equals(webServiceParam.getParamType()),
+				"This JsonReader can't read the asked request ParamType {0}. Only {1} is supported", webServiceParam.getParamType(), Arrays.toString(getSupportedInput()));
 		//-----
 		return readQueryValue(request.queryMap(), webServiceParam);
 	}
@@ -75,7 +77,7 @@ public final class QueryJsonReader implements JsonReader<String> {
 		if (queryMap == null) {
 			return null;
 		}
-		if (UiListState.class.isAssignableFrom(paramClass)
+		if (DtListState.class.isAssignableFrom(paramClass)
 				|| DtObject.class.isAssignableFrom(paramClass)) {
 			return convertToJson(queryMap, webServiceParam.getName());
 		}

@@ -33,7 +33,7 @@ public final class HtmlCodec extends AbstractCodec {
 	private final Pattern pattern;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	public HtmlCodec() {
 		super('&', ';', getCharacters());

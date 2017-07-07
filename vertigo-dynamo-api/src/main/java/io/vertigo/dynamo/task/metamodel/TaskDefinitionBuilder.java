@@ -47,7 +47,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 *
 	 * @param taskDefinitionName the name of the taskDefinition (TK_XXX_YYY)
 	 */
-	public TaskDefinitionBuilder(final String taskDefinitionName) {
+	TaskDefinitionBuilder(final String taskDefinitionName) {
 		Assertion.checkNotNull(taskDefinitionName);
 		//-----
 		myTaskDefinitionName = taskDefinitionName;

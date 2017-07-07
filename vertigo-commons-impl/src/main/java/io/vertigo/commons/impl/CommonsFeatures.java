@@ -18,22 +18,36 @@
  */
 package io.vertigo.commons.impl;
 
+import java.util.Optional;
+
+import io.vertigo.app.config.ComponentConfig;
+import io.vertigo.app.config.ComponentConfigBuilder;
 import io.vertigo.app.config.Features;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.eventbus.EventBusManager;
+import io.vertigo.commons.health.HealthManager;
 import io.vertigo.commons.impl.analytics.AnalyticsManagerImpl;
 import io.vertigo.commons.impl.cache.CacheManagerImpl;
 import io.vertigo.commons.impl.cache.CachePlugin;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
+import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.commons.impl.daemon.DaemonManagerImpl;
 import io.vertigo.commons.impl.eventbus.EventBusManagerImpl;
+import io.vertigo.commons.impl.health.HealthManagerImpl;
+import io.vertigo.commons.impl.node.NodeInfosPlugin;
+import io.vertigo.commons.impl.node.NodeManagerImpl;
+import io.vertigo.commons.impl.node.NodeRegistryPlugin;
 import io.vertigo.commons.impl.script.ExpressionEvaluatorPlugin;
 import io.vertigo.commons.impl.script.ScriptManagerImpl;
+import io.vertigo.commons.impl.transaction.VTransactionAspect;
+import io.vertigo.commons.impl.transaction.VTransactionManagerImpl;
+import io.vertigo.commons.node.NodeManager;
 import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
 import io.vertigo.commons.script.ScriptManager;
+import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.param.Param;
 
 /**
@@ -50,7 +64,7 @@ public final class CommonsFeatures extends Features {
 	}
 
 	/**
-	 * Activates script with a default plugin. 
+	 * Activates script with a default plugin.
 	 *
 	 * @return these features
 	 */
@@ -62,13 +76,13 @@ public final class CommonsFeatures extends Features {
 	}
 
 	/**
-	 * Activates script with a defined plugin. 
-	
+	 * Activates script with a defined plugin.
+
 	 * @param expressionEvaluatorPluginClass the type of plugin to use
 	 * @param params the params
 	 * @return these features
 	 */
-	public CommonsFeatures withScript(Class<? extends ExpressionEvaluatorPlugin> expressionEvaluatorPluginClass, Param... params) {
+	public CommonsFeatures withScript(final Class<? extends ExpressionEvaluatorPlugin> expressionEvaluatorPluginClass, final Param... params) {
 		getModuleConfigBuilder()
 				.addComponent(ScriptManager.class, ScriptManagerImpl.class)
 				.addPlugin(expressionEvaluatorPluginClass, params);
@@ -82,20 +96,73 @@ public final class CommonsFeatures extends Features {
 	 * @param params the params
 	 * @return these features
 	 */
-	public CommonsFeatures withCache(final Class<? extends CachePlugin> cachePluginClass, Param... params) {
+	public CommonsFeatures withCache(final Class<? extends CachePlugin> cachePluginClass, final Param... params) {
 		getModuleConfigBuilder()
 				.addComponent(CacheManager.class, CacheManagerImpl.class)
 				.addPlugin(cachePluginClass, params);
 		return this;
 	}
 
+	/**
+	 * Adds a REDIS connector.
+	 * @param host the REDIS host
+	 * @param port the REDIS port
+	 * @param passwordOpt the REDIS password
+	 * @param database the index of the REDIS database
+	 * @return these features
+	 */
+	public CommonsFeatures withRedisConnector(final String host, final int port, final int database, final Optional<String> passwordOpt) {
+		final ComponentConfigBuilder componentConfigBuilder = ComponentConfig.builder(RedisConnector.class)
+				.addParam(Param.of("host", host))
+				.addParam(Param.of("port", Integer.toString(port)))
+				.addParam(Param.of("database", Integer.toString(database)));
+		if (passwordOpt.isPresent()) {
+			componentConfigBuilder
+					.addParam(Param.of("password", passwordOpt.get()));
+		}
+		getModuleConfigBuilder()
+				.addComponent(componentConfigBuilder.build());
+		return this;
+
+	}
+
+	/**
+	 * Adds a NodeRegistryPlugin
+	 * @param nodeRegistryPluginClass the plugin to use
+	 * @param params the params
+	 * @return these features
+	 */
+	public CommonsFeatures withNodeRegistryPlugin(final Class<? extends NodeRegistryPlugin> nodeRegistryPluginClass, final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(nodeRegistryPluginClass, params);
+		return this;
+
+	}
+
+	/**
+	 * Adds a NodeInfosPlugin
+	 * @param nodeInfosPluginClass the plugin to use
+	 * @param params the params
+	 * @return these features
+	 */
+	public CommonsFeatures withNodeInfosPlugin(final Class<? extends NodeInfosPlugin> nodeInfosPluginClass, final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(nodeInfosPluginClass, params);
+		return this;
+
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
+				.addComponent(HealthManager.class, HealthManagerImpl.class)
 				.addComponent(AnalyticsManager.class, AnalyticsManagerImpl.class)
 				.addComponent(CodecManager.class, CodecManagerImpl.class)
 				.addComponent(DaemonManager.class, DaemonManagerImpl.class)
-				.addComponent(EventBusManager.class, EventBusManagerImpl.class);
+				.addComponent(EventBusManager.class, EventBusManagerImpl.class)
+				.addComponent(NodeManager.class, NodeManagerImpl.class)
+				.addComponent(VTransactionManager.class, VTransactionManagerImpl.class)
+				.addAspect(VTransactionAspect.class);
 	}
 }

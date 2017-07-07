@@ -18,8 +18,10 @@
  */
 package io.vertigo.dynamo.impl.store.datastore.cache;
 
-import io.vertigo.commons.cache.CacheConfig;
+import io.vertigo.app.Home;
+import io.vertigo.commons.cache.CacheDefinition;
 import io.vertigo.commons.cache.CacheManager;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
@@ -54,15 +56,16 @@ public final class CacheData {
 	 * @param timeToLiveSeconds Time to live in cache
 	 * @param serializeElements Elements should be serialized to guarantee there aren't modified
 	 */
-	void registerContext(final DtDefinition dtDefinition, final long timeToLiveSeconds, final boolean serializeElements) {
+	void registerContext(final DtDefinition dtDefinition, final int timeToLiveSeconds, final boolean serializeElements) {
 		final String context = getContext(dtDefinition);
 		final int maxElementsInMemory = 1000;
-		final long timeToIdleSeconds = timeToLiveSeconds / 2; //longévité d'un élément non utilisé
-		cacheManager.addCache(context, new CacheConfig("dataCache", serializeElements, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
+		final int timeToIdleSeconds = timeToLiveSeconds / 2; //longévité d'un élément non utilisé
+		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
+				new CacheDefinition(context, serializeElements, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
 	}
 
 	private static String getContext(final DtDefinition dtDefinition) {
-		return "DataCache:" + dtDefinition.getName();
+		return "CACHE_DATA_" + dtDefinition.getName();
 	}
 
 	/**

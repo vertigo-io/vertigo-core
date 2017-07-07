@@ -21,7 +21,6 @@ package io.vertigo.util;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -65,9 +64,7 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	public MapBuilder<K, V> putAll(final Map<K, V> map) {
 		Assertion.checkNotNull(map);
 		//-----
-		for (final Entry<K, V> entry : map.entrySet()) {
-			put(entry.getKey(), entry.getValue());
-		}
+		map.forEach(this::put);
 		return this;
 	}
 

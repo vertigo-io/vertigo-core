@@ -34,7 +34,7 @@ final class XmlConfigHandler extends DefaultHandler {
 	enum TagName {
 		config,
 		path,
-		param;
+		param
 	}
 
 	private final Map<String, Param> params;
@@ -56,7 +56,7 @@ final class XmlConfigHandler extends DefaultHandler {
 				final String paramName = attrs.getValue("name").trim();
 				Assertion.checkArgument(!paramName.endsWith("."), "a path must not be ended with a point");
 				final String paramValue = attrs.getValue("value").trim();
-				final Param param = Param.create(currentPath + "." + paramName, paramValue);
+				final Param param = Param.of(currentPath + "." + paramName, paramValue);
 				params.put(param.getName(), param);
 				break;
 			default:

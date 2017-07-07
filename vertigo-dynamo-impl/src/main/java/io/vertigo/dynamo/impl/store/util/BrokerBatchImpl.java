@@ -56,9 +56,7 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 
@@ -147,7 +145,7 @@ final class BrokerBatchImpl<E extends Entity, P> implements BrokerBatch<E, P> {
 		final Domain dtcDomain = Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDef.getName() + "_DTC", Domain.class);
 		final String taskName = "TK_LOAD_BY_LST_" + fieldName + "_" + dtDef.getLocalName();
 
-		final TaskDefinition taskDefinition = new TaskDefinitionBuilder(taskName)
+		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dtDef.getDataSpace())
 				.withRequest(request)
@@ -159,7 +157,7 @@ final class BrokerBatchImpl<E extends Entity, P> implements BrokerBatch<E, P> {
 		final DtList<E> ret = new DtList<>(dtDefinition);
 		for (final DtList<E> paq : set) {
 			/* Création de la tache. */
-			final Task task = new TaskBuilder(taskDefinition)
+			final Task task = Task.builder(taskDefinition)
 					.addValue(inDtcName, paq)
 					.build();
 			// Exécution de la tache
@@ -219,11 +217,9 @@ final class BrokerBatchImpl<E extends Entity, P> implements BrokerBatch<E, P> {
 		final Map<O, DtList<E>> map = new HashMap<>();
 		for (final E entity : getListByField(dtDefinition, fieldName, value)) {
 			final O key = (O) field.getDataAccessor().getValue(entity);
-			if (!map.containsKey(key)) {
-				final DtList<E> dtc = new DtList<>(dtDefinition);
-				map.put(key, dtc);
-			}
-			map.get(key).add(entity);
+			map.computeIfAbsent(key,
+					k -> new DtList<>(dtDefinition))
+					.add(entity);
 		}
 		return map;
 	}

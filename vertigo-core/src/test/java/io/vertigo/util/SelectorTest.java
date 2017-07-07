@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.lang.Component;
+import io.vertigo.core.component.Component;
 import io.vertigo.lang.Tuples.Tuple2;
 import io.vertigo.util.Selector.ClassConditions;
 import io.vertigo.util.Selector.FieldConditions;
@@ -177,7 +177,7 @@ public final class SelectorTest {
 	//--- from -> filter -> find
 	@Test
 	public void testUsageException() {
-		Assertions.assertThrows(IllegalStateException.class, () -> testException());
+		Assertions.assertThrows(IllegalStateException.class, this::testException);
 	}
 
 	private void testException() {

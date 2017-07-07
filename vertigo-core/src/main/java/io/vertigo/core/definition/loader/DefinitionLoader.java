@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.core.component.Component;
 import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.core.component.loader.ComponentLoader;
 import io.vertigo.core.definition.Definition;
@@ -68,6 +69,19 @@ public final class DefinitionLoader {
 				.stream()
 				.flatMap(moduleConfig -> provide(moduleConfig.getDefinitionProviderConfigs()))
 				.map(supplier -> supplier.get(definitionSpace));
+	}
+
+	/**
+	 * Inject all the definitions provided by components.
+	 * @return a stream of definitions
+	 */
+	public Stream<Definition> createDefinitionsFromComponents() {
+		return componentSpace.keySet()
+				.stream()
+				.map(key -> componentSpace.resolve(key, Component.class))
+				.filter(component -> DefinitionProvider.class.isAssignableFrom(component.getClass()))
+				.flatMap(component -> ((DefinitionProvider) component).get(definitionSpace).stream())
+				.map(defitionSupplier -> defitionSupplier.get(definitionSpace));
 	}
 
 	private Stream<DefinitionSupplier> provide(final List<DefinitionProviderConfig> definitionProviderConfigs) {

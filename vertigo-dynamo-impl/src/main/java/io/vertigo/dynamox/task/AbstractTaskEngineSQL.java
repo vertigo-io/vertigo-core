@@ -20,21 +20,24 @@ package io.vertigo.dynamox.task;
 
 import java.sql.BatchUpdateException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalInt;
 
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.script.SeparatorType;
-import io.vertigo.commons.script.parser.ScriptSeparator;
-import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.connection.SqlConnectionProvider;
-import io.vertigo.dynamo.database.statement.SqlCallableStatement;
-import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
-import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.commons.transaction.VTransaction;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionResourceId;
+import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.connection.SqlConnection;
+import io.vertigo.database.sql.connection.SqlConnectionProvider;
+import io.vertigo.database.sql.parser.SqlNamedParam;
+import io.vertigo.database.sql.statement.SqlParameter;
+import io.vertigo.database.sql.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -44,13 +47,8 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.model.TaskEngine;
-import io.vertigo.dynamo.transaction.VTransaction;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionResourceId;
-import io.vertigo.dynamox.task.TaskEngineSQLParam.InOutType;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.ListBuilder;
+import io.vertigo.lang.Tuples.Tuple2;
 
 /**
  * Fournit des méthodes de haut niveau pour les services de type SQL.<br>
@@ -91,9 +89,8 @@ import io.vertigo.util.ListBuilder;
  *       <%}%> order by <%=1%>";
  *
  * @author  pchretien, npiedeloup
- * @param <S> Type de Statement utilisé
  */
-public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> extends TaskEngine {
+public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	/**
 	 * Identifiant de ressource SQL par défaut.
 	 */
@@ -106,23 +103,13 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	//Qui utilise ça ?? // peut on revenir à une forme explicite
 	public static final String SQL_ROWCOUNT = "INT_SQL_ROWCOUNT";
 
-	/**
-	 * Liste des séparateurs utilisés dans le traitement des requêtes KSP.
-	 */
-	private static final List<ScriptSeparator> SQL_SEPARATORS = createSqlSeparators();
-
-	/**
-	 * Liste des paramètres
-	 */
-	private List<TaskEngineSQLParam> params;
-
 	private final ScriptManager scriptManager;
 	private final VTransactionManager transactionManager;
 	private final StoreManager storeManager;
 	private final SqlDataBaseManager sqlDataBaseManager;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param scriptManager Manager de traitment de scripts
 	 */
 	protected AbstractTaskEngineSQL(
@@ -141,13 +128,6 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		this.sqlDataBaseManager = sqlDataBaseManager;
 	}
 
-	private static List<ScriptSeparator> createSqlSeparators() {
-		return new ListBuilder<ScriptSeparator>()
-				.add(new ScriptSeparator(InOutType.SQL_IN.getSeparator()))
-				.add(new ScriptSeparator(InOutType.SQL_OUT.getSeparator()))
-				.unmodifiable().build();
-	}
-
 	/**
 	 * Exécution de la requête.
 	 * @param connection Connexion BDD
@@ -155,31 +135,32 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @return Nombre de lignes affectées (Insert/ Update / Delete)
 	 * @throws SQLException Erreur sql
 	 */
-	protected abstract int doExecute(final SqlConnection connection, final S statement) throws SQLException;
+	protected abstract OptionalInt doExecute(
+			final String sql,
+			final SqlConnection connection,
+			final SqlPreparedStatement statement,
+			final List<SqlNamedParam> params) throws SQLException;
 
 	/** {@inheritDoc} */
 	@Override
 	public void execute() {
 		final SqlConnection connection = obtainConnection();
-		final String sql = prepareParams(getSqlQuery().trim());
-		try (final S statement = createStatement(sql, connection)) {
-			//Inialise les paramètres.
-			registerParameters(statement);
-			try {
-				//Initialise le statement JDBC.
-				statement.init();
-				//Execute le Statement JDBC.
-				final int sqlRowcount = doExecute(connection, statement);
-				//On positionne le nombre de lignes affectées.
-				setRowCount(sqlRowcount);
-			} catch (final BatchUpdateException sqle) { //some exception embedded the usefull one
-				// Gère les erreurs d'exécution Batch JDBC.
-				handleSQLException(connection, sqle.getNextException(), statement);
-			} catch (final SQLException sqle) {
-				//Gère les erreurs d'exécution JDBC.
-				handleSQLException(connection, sqle, statement);
-			}
+
+		final Tuple2<String, List<SqlNamedParam>> parsedQuery = sqlDataBaseManager.parseQuery(getSqlQuery().trim());
+		final SqlPreparedStatement statement = createStatement(connection);
+		try {
+			//Execute le Statement JDBC.
+			final OptionalInt sqlRowcountOpt = doExecute(parsedQuery.getVal1(), connection, statement, parsedQuery.getVal2());
+			//On positionne le nombre de lignes affectées.
+			sqlRowcountOpt.ifPresent(this::setRowCount);
+		} catch (final BatchUpdateException sqle) { //some exception embedded the usefull one
+			// Gère les erreurs d'exécution Batch JDBC.
+			throw handleSQLException(connection, sqle.getNextException(), statement.toString());
+		} catch (final SQLException sqle) {
+			//Gère les erreurs d'exécution JDBC.
+			throw handleSQLException(connection, sqle, statement.toString());
 		}
+
 	}
 
 	private void setRowCount(final int sqlRowcount) {
@@ -239,69 +220,14 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	}
 
 	/**
-	 * Permet de parser la requête afin d'enregistrer les paramètres utilisés
-	 *
-	 * @return La requête bindée
-	 * @param query Requête SQL
-	 */
-	private String prepareParams(final String query) {
-		Assertion.checkNotNull(query); //La requête ne peut pas être nulle
-		Assertion.checkState(params == null, "La query a déjà été préparée !");
-		//-----
-		final SqlParserHandler scriptHandler = new SqlParserHandler(getTaskDefinition());
-		scriptManager.parse(query, scriptHandler, SQL_SEPARATORS);
-		params = scriptHandler.getParams();
-		return scriptHandler.getSql();
-	}
-
-	//==========================================================================
-	//========================CallableStatement=================================
-	//==========================================================================
-	/**
-	 * Met à jour les paramètres de sorties
-	 *
-	 * @param cs CallableStatement
-	 * @throws SQLException Si erreur */
-	protected final void setOutParameters(final SqlCallableStatement cs) throws SQLException {
-		Assertion.checkNotNull(cs); //KCallableStatement doit être renseigné
-		//-----
-		for (final TaskEngineSQLParam param : params) {
-			if (!param.isIn()) {
-				setOutParameter(cs, param);
-			}
-		}
-	}
-
-	/**
-	 * Met à jour une valeur de sortie à partir du résultat de la requête.
-	 *
-	 * @param cs CallableStatement
-	 * @param param Paramètre traité
-	 * @throws SQLException Si erreur avec la base
-	 */
-	private void setOutParameter(final SqlCallableStatement cs, final TaskEngineSQLParam param) throws SQLException {
-		final Object value = cs.getValue(param.getIndex());
-		setValueParameter(param, value);
-	}
-
-	/**
 	 * Crée le Statement pour le select ou bloc sql.
 	 * Initialise la liste des paramètres en entrée et en sortie
 	 *
-	 * @param sql Requête SQL
 	 * @param connection Connexion vers la base de données
 	 * @return Statement StatementSQL
 	 */
-	protected abstract S createStatement(String sql, SqlConnection connection);
-
-	/**
-	 * Initialise les paramètres en entrée du statement
-	 * @param statement Statement
-	 */
-	private void registerParameters(final SqlPreparedStatement statement) {
-		for (final TaskEngineSQLParam param : params) {
-			statement.registerParameter(param.getIndex(), getDataTypeParameter(param), param.isIn());
-		}
+	protected SqlPreparedStatement createStatement(final SqlConnection connection) {
+		return getDataBaseManager().createPreparedStatement(connection);
 	}
 
 	/**
@@ -311,36 +237,20 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @param statement de type KPreparedStatement, KCallableStatement...
 	 * @throws SQLException En cas d'erreur dans la configuration
 	 */
-	protected final void setInParameters(final SqlPreparedStatement statement) throws SQLException {
-		Assertion.checkNotNull(statement);
-		//-----
-		for (final TaskEngineSQLParam param : params) {
-			if (param.isIn()) {
-				final Integer rowNumber = param.isList() ? param.getRowNumber() : null;
-				setInParameter(statement, param, rowNumber);
-			}
+	protected final List<SqlParameter> buildParameters(final List<SqlNamedParam> params) throws SQLException {
+		final List<SqlParameter> sqlParameters = new ArrayList<>();
+		for (final SqlNamedParam param : params) {
+			final Integer rowNumber = param.isList() ? param.getRowNumber() : null;
+			sqlParameters.add(buildSqlParameter(param, rowNumber));
 		}
+		return sqlParameters;
 	}
 
-	/**
-	 * @return Liste des paramètres
-	 */
-	protected final List<TaskEngineSQLParam> getParams() {
-		return Collections.unmodifiableList(params);
+	protected final SqlParameter buildSqlParameter(final SqlNamedParam param, final Integer rowNumber) {
+		return SqlParameter.of(getDataTypeParameter(param), getValueParameter(param, rowNumber));
 	}
 
-	/**
-	 * Affecte un paramètre au Statement.
-	 * @param ps PrepareStatement
-	 * @param param Paramètre SQL
-	 * @param rowNumber Ligne des données d'entrée.
-	 * @throws SQLException Erreur sql
-	 */
-	protected final void setInParameter(final SqlPreparedStatement ps, final TaskEngineSQLParam param, final Integer rowNumber) throws SQLException {
-		ps.setValue(param.getIndex(), getValueParameter(param, rowNumber));
-	}
-
-	private DataType getDataTypeParameter(final TaskEngineSQLParam param) {
+	private Class getDataTypeParameter(final SqlNamedParam param) {
 		final Domain domain;
 		if (param.isPrimitive()) {
 			// Paramètre primitif
@@ -361,31 +271,10 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		} else {
 			throw new IllegalStateException(" le param doit être un primitif, un objet ou une liste.");
 		}
-		return domain.getDataType();
+		return domain.getDataType().getJavaClass();
 	}
 
-	private void setValueParameter(final TaskEngineSQLParam param, final Object value) {
-		if (param.isPrimitive()) {
-			Assertion.checkArgument(getTaskDefinition().getOutAttributeOption().isPresent(), "{0} must have one attribute ATTR_OUT", param.getAttributeName());
-			setResult(value);
-		} else if (param.isObject()) {
-			//DtObject
-			final DtObject dto = getValue(param.getAttributeName());
-			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-			final DtField dtField = dtDefinition.getField(param.getFieldName());
-			dtField.getDataAccessor().setValue(dto, value);
-		} else if (param.isList()) {
-			// DtList
-			final DtList<? extends DtObject> dtc = getValue(param.getAttributeName());
-			final DtObject dto = dtc.get(param.getRowNumber());
-			final DtField dtField = dtc.getDefinition().getField(param.getFieldName());
-			dtField.getDataAccessor().setValue(dto, value);
-		} else {
-			throw new IllegalStateException(" le param doit être un primitif, un objet ou une liste.");
-		}
-	}
-
-	private Object getValueParameter(final TaskEngineSQLParam param, final Integer rowNumber) {
+	private Object getValueParameter(final SqlNamedParam param, final Integer rowNumber) {
 		final Object value;
 		if (param.isPrimitive()) {
 			value = getValue(param.getAttributeName());
@@ -398,7 +287,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		} else if (param.isList()) {
 			// DtList
 			final DtList<? extends DtObject> dtc = getValue(param.getAttributeName());
-			final DtObject dto = dtc.get(rowNumber.intValue());
+			final DtObject dto = dtc.get(rowNumber);
 			final DtField dtField = dtc.getDefinition().getField(param.getFieldName());
 			value = dtField.getDataAccessor().getValue(dto);
 		} else {
@@ -417,11 +306,7 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 		if (connection == null) {
 			// On récupère une connexion du pool
 			// Utilise le provider de connexion déclaré sur le Container.
-			try {
-				connection = getConnectionProvider().obtainConnection();
-			} catch (final SQLException e) {
-				throw WrappedException.wrap(e, "Can't connect to database");
-			}
+			connection = getConnectionProvider().obtainConnection();
 			transaction.addResource(getVTransactionResourceId(), connection);
 		}
 		return connection;
@@ -461,7 +346,8 @@ public abstract class AbstractTaskEngineSQL<S extends SqlPreparedStatement> exte
 	 * @param sqle Exception SQL
 	 * @param statement Statement
 	 */
-	private static void handleSQLException(final SqlConnection connection, final SQLException sqle, final SqlPreparedStatement statement) {
-		connection.getDataBase().getSqlExceptionHandler().handleSQLException(sqle, statement);
+	private static RuntimeException handleSQLException(final SqlConnection connection, final SQLException sqle, final String statementInfos) {
+		return connection.getDataBase().getSqlExceptionHandler()
+				.handleSQLException(sqle, statementInfos);
 	}
 }

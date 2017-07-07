@@ -62,7 +62,6 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 
 /**
@@ -146,7 +145,7 @@ final class RamLuceneIndex<D extends DtObject> {
 			//2. Traduction du résultat Lucene en une Collection
 			return translateDocs(searcher, topDocs, skip, top);
 		} catch (final TooManyClauses e) {
-			throw new VUserException(new MessageText(Resources.DYNAMO_COLLECTIONS_INDEXER_TOO_MANY_CLAUSES));
+			throw new VUserException(Resources.DYNAMO_COLLECTIONS_INDEXER_TOO_MANY_CLAUSES);
 		}
 	}
 
@@ -250,7 +249,7 @@ final class RamLuceneIndex<D extends DtObject> {
 			final Optional<DtField> boostedField) throws IOException {
 		Assertion.checkNotNull(searchedFields);
 		Assertion.checkNotNull(dtListState);
-		Assertion.checkNotNull(dtListState.getMaxRows().isPresent(), "MaxRows is mandatory, can't get all data :(");
+		Assertion.checkArgument(dtListState.getMaxRows().isPresent(), "MaxRows is mandatory, can't get all data :(");
 		//-----
 		final Query filterQuery = luceneQueryFactory.createFilterQuery(keywords, searchedFields, listFilters, boostedField);
 		final Optional<Sort> optSort = createSort(dtListState);

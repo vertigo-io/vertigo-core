@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import io.vertigo.core.component.Plugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Plugin;
 
 /**
  * The pluginConfigBuilder defines the configuration of a plugin.
@@ -41,7 +41,7 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 	 * Constructor.
 	 * @param pluginImplClass impl of the plugin
 	 */
-	public PluginConfigBuilder(final Class<? extends Plugin> pluginImplClass) {
+	PluginConfigBuilder(final Class<? extends Plugin> pluginImplClass) {
 		Assertion.checkNotNull(pluginImplClass);
 		//-----
 		myPluginImplClass = pluginImplClass;

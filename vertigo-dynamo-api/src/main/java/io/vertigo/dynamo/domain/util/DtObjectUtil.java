@@ -25,13 +25,11 @@ import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.Dynamic;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.DynaDtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.URI;
@@ -55,18 +53,22 @@ public final class DtObjectUtil {
 	/**
 	 * Creates a new instance of 'DtObject' from a 'DtDefinition'.
 	 *
+	 * @param dtDefinition the definition to use for creation
 	 * @return the new instance
 	 */
 	public static DtObject createDtObject(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
-		if (dtDefinition.isDynamic()) {
-			return new DynaDtObject(dtDefinition);
-		}
 		//La création des DtObject n'est pas sécurisée
 		return ClassUtil.newInstance(dtDefinition.getClassCanonicalName(), DtObject.class);
 	}
 
+	/**
+	 * Creates a new entity from a 'DtDefinition'.
+	 *
+	 * @param dtDefinition the definition to use for creation
+	 * @return the new instance
+	 */
 	public static Entity createEntity(final DtDefinition dtDefinition) {
 		return Entity.class.cast(createDtObject(dtDefinition));
 	}
@@ -105,8 +107,8 @@ public final class DtObjectUtil {
 	 *  On recherche une URI correspondant à une association.
 	 *  Exemple : Une Commande possède un bénéficiaire.
 	 *  Dans cetexemple on recherche l'URI du bénéficiaire à partir de l'objet commande.
-	 * @param <E> 
-	
+	 * @param <E>
+
 	 * @param associationDefinitionName Nom de la définition d'une association
 	 * @param dto  Object
 	 * @param dtoTargetClass Class of entity of this association
@@ -202,7 +204,7 @@ public final class DtObjectUtil {
 		return findDtDefinition(dto).getFields()
 				.stream()
 				.filter(dtField -> dtField.getType() != DtField.FieldType.COMPUTED)
-				.map(dtField -> (dtField.getName() + '=' + dtField.getDataAccessor().getValue(dto)))
+				.map(dtField -> dtField.getName() + '=' + dtField.getDataAccessor().getValue(dto))
 				.collect(Collectors.joining(", ", findDtDefinition(dto).getName() + '(', ")"));
 	}
 
@@ -214,9 +216,6 @@ public final class DtObjectUtil {
 	public static DtDefinition findDtDefinition(final DtObject dto) {
 		Assertion.checkNotNull(dto);
 		//-----
-		if (dto instanceof Dynamic) {
-			return Dynamic.class.cast(dto).getDefinition();
-		}
 		return findDtDefinition(dto.getClass());
 	}
 

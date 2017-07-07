@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
@@ -37,7 +38,6 @@ import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.ImplicitParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
 import io.vertigo.vega.webservice.metamodel.WebServiceParamBuilder;
-import io.vertigo.vega.webservice.model.UiListState;
 import io.vertigo.vega.webservice.stereotype.AccessTokenConsume;
 import io.vertigo.vega.webservice.stereotype.AccessTokenMandatory;
 import io.vertigo.vega.webservice.stereotype.AccessTokenPublish;
@@ -92,7 +92,7 @@ final class AnnotationsWebServiceScannerUtil {
 	}
 
 	private static Optional<WebServiceDefinition> buildWebServiceDefinition(final Method method) {
-		final WebServiceDefinitionBuilder builder = new WebServiceDefinitionBuilder(method);
+		final WebServiceDefinitionBuilder builder = WebServiceDefinition.builder(method);
 		final PathPrefix pathPrefix = method.getDeclaringClass().getAnnotation(PathPrefix.class);
 		if (pathPrefix != null) {
 			builder.withPathPrefix(pathPrefix.value());
@@ -148,14 +148,14 @@ final class AnnotationsWebServiceScannerUtil {
 	}
 
 	private static WebServiceParam buildWebServiceParam(final Annotation[] annotations, final Type paramType) {
-		final WebServiceParamBuilder builder = new WebServiceParamBuilder(paramType);
+		final WebServiceParamBuilder builder = WebServiceParam.builder(paramType);
 		if (WebServiceTypeUtil.isAssignableFrom(DtObject.class, paramType)
 				|| WebServiceTypeUtil.isParameterizedBy(DtObject.class, paramType)) {
 			builder.addValidatorClasses(DefaultDtObjectValidator.class);
 		} else if (isImplicitParam(paramType)) {
 			builder.with(WebServiceParamType.Implicit, getImplicitParam(paramType).name());
-		} else if (UiListState.class.equals(paramType)) {
-			builder.with(WebServiceParamType.Query, "listState"); //UiListState don't need to be named, it will be retrieve from query
+		} else if (DtListState.class.equals(paramType)) {
+			builder.with(WebServiceParamType.Query, "listState"); //DtListState don't need to be named, it will be retrieve from query
 		}
 		for (final Annotation annotation : annotations) {
 			if (annotation instanceof PathParam) {

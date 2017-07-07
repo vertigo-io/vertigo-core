@@ -40,7 +40,7 @@ import io.vertigo.vega.webservice.validation.DtObjectValidator;
  */
 public final class WebServiceParamBuilder implements Builder<WebServiceParam> {
 	private final Type myParamType;
-	private final boolean optional;
+	private boolean optional;
 	private WebServiceParamType myWebServiceParamType = WebServiceParamType.Body; // default;
 	private String myWebServiceParamName = "[1]"; //default body Name
 	private final List<Class<? extends DtObjectValidator>> myValidatorClasses = new ArrayList<>();
@@ -53,7 +53,7 @@ public final class WebServiceParamBuilder implements Builder<WebServiceParam> {
 	 * Constructor.
 	 * @param paramType param type
 	 */
-	public WebServiceParamBuilder(final Type paramType) {
+	WebServiceParamBuilder(final Type paramType) {
 		Assertion.checkNotNull(paramType);
 		//-----
 		optional = WebServiceTypeUtil.isAssignableFrom(Optional.class, paramType);
@@ -128,6 +128,15 @@ public final class WebServiceParamBuilder implements Builder<WebServiceParam> {
 	 */
 	public WebServiceParamBuilder consumeServerSideToken() {
 		myConsumeServerSideToken = true;
+		return this;
+	}
+
+	/**
+	 * Force this WebServiceParam as optional
+	 * @return Builder
+	 */
+	public WebServiceParamBuilder optional() {
+		optional = true;
 		return this;
 	}
 

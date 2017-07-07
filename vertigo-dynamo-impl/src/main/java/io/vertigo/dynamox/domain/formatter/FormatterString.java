@@ -64,7 +64,7 @@ public final class FormatterString implements Formatter {
 	private final Mode mode;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	public FormatterString(final String args) {
 		//Si args non renseigné on prend le mode par défaut

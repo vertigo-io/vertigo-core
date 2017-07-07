@@ -61,7 +61,7 @@ public final class TaskDefinition implements Definition {
 	private final Class<? extends TaskEngine> taskEngineClass;
 
 	/**
-	 * Constructeur
+	 * Constructor.
 	 * @param taskEngineClass Classe réalisant l'implémentation
 	 * @param request Chaine de configuration
 	 */
@@ -88,6 +88,15 @@ public final class TaskDefinition implements Definition {
 		this.inTaskAttributes = createMap(inTaskAttributes);
 		this.outTaskAttributeOption = outTaskAttributeOption;
 		this.taskEngineClass = taskEngineClass;
+	}
+
+	/**
+	 * Static method factory for TaskDefinition
+	 * @param taskDefinitionName the name of the taskDefinition (TK_XXX_YYY)
+	 * @return TaskDefinition
+	 */
+	public static TaskDefinitionBuilder builder(final String taskDefinitionName) {
+		return new TaskDefinitionBuilder(taskDefinitionName);
 	}
 
 	/**

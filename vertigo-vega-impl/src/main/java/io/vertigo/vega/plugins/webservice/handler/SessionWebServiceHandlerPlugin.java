@@ -95,7 +95,7 @@ public final class SessionWebServiceHandlerPlugin implements WebServiceHandlerPl
 	 * @return Session utilisateur
 	 */
 	private UserSession obtainUserSession(final Session session) {
-		UserSession user = (UserSession) session.attribute(USER_SESSION);
+		UserSession user = session.attribute(USER_SESSION);
 		// Si la session user n'est pas créée on la crée
 		if (user == null) {
 			user = securityManager.createUserSession();

@@ -19,7 +19,6 @@
 package io.vertigo.app.config.xml;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.xml.sax.Attributes;
@@ -27,18 +26,22 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.BootConfigBuilder;
+import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.app.config.ComponentConfigBuilder;
+import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.DefinitionProviderConfigBuilder;
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.app.config.PluginConfig;
 import io.vertigo.app.config.PluginConfigBuilder;
+import io.vertigo.core.component.Component;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.definition.DefinitionProvider;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
-import io.vertigo.lang.Plugin;
 import io.vertigo.util.ClassUtil;
 
 /**
@@ -65,6 +68,7 @@ final class XMLModulesHandler extends DefaultHandler {
 	}
 
 	enum TagName {
+		app,
 		config,
 		boot,
 		module,
@@ -87,6 +91,8 @@ final class XMLModulesHandler extends DefaultHandler {
 	@Override
 	public void endElement(final String namespaceURI, final String localName, final String qName) {
 		switch (TagName.valueOf(qName)) {
+			case app:
+				break;
 			case boot:
 				bootConfigBuilder.endBoot();
 				bootConfigBuilder = null;
@@ -127,6 +133,16 @@ final class XMLModulesHandler extends DefaultHandler {
 	@Override
 	public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes attrs) {
 		switch (TagName.valueOf(qName)) {
+			case app:
+				final String appName = attrs.getValue("name");
+				final String nodeId = attrs.getValue("nodeId");
+				final String endPoint = attrs.getValue("endPoint");
+				appConfigBuilder.withNodeConfig(NodeConfig.builder()
+						.withAppName(appName)
+						.withNodeId(nodeId)
+						.withEndPoint(endPoint)
+						.build());
+				break;
 			case boot:
 				current = TagName.boot;
 				final String locales = attrs.getValue("locales");
@@ -137,24 +153,17 @@ final class XMLModulesHandler extends DefaultHandler {
 			case module:
 				current = TagName.module;
 				final String moduleName = attrs.getValue("name");
-				final String api = attrs.getValue("api");
-				moduleConfigBuilder = new ModuleConfigBuilder(moduleName);
-				if (api != null && !Boolean.parseBoolean(api)) {
-					moduleConfigBuilder.withNoAPI();
-				}
+				moduleConfigBuilder = ModuleConfig.builder(moduleName);
 				break;
 			case component:
 				current = TagName.component;
 				final String componentApi = attrs.getValue("api");
 				final Class<? extends Component> componentImplClass = ClassUtil.classForName(attrs.getValue("class"), Component.class);
-				final Optional<Class<? extends Component>> optionalApiClass;
+				componentConfigBuilder = ComponentConfig.builder(componentImplClass);
 				if (componentApi != null) {
 					final Class<?> componentApiClass = resolveInterface(componentApi, componentImplClass);
-					optionalApiClass = Optional.of((Class<? extends Component>) componentApiClass);
-				} else {
-					optionalApiClass = Optional.empty();
+					componentConfigBuilder.withApi((Class<? extends Component>) componentApiClass);
 				}
-				componentConfigBuilder = new ComponentConfigBuilder(optionalApiClass, componentImplClass);
 				break;
 			case initializer:
 				final String initClass = attrs.getValue("class");
@@ -166,13 +175,13 @@ final class XMLModulesHandler extends DefaultHandler {
 			case plugin:
 				current = TagName.plugin;
 				final Class<? extends Plugin> pluginImplClass = ClassUtil.classForName(attrs.getValue("class"), Plugin.class);
-				pluginConfigBuilder = new PluginConfigBuilder(pluginImplClass);
+				pluginConfigBuilder = PluginConfig.builder(pluginImplClass);
 				break;
 			case provider:
 				current = TagName.provider;
 				final String definitionProviderClassName = attrs.getValue("class");
 				final Class<? extends DefinitionProvider> definitionProviderClass = ClassUtil.classForName(definitionProviderClassName, DefinitionProvider.class);
-				definitionProviderConfigBuilder = new DefinitionProviderConfigBuilder(definitionProviderClass);
+				definitionProviderConfigBuilder = DefinitionProviderConfig.builder(definitionProviderClass);
 				break;
 			case resource:
 				final String resourceType = attrs.getValue("type");
@@ -182,7 +191,7 @@ final class XMLModulesHandler extends DefaultHandler {
 			case param:
 				final String paramName = attrs.getValue("name");
 				final String paramValue = evalParamValue(attrs.getValue("value"));
-				final Param param = Param.create(paramName, paramValue);
+				final Param param = Param.of(paramName, paramValue);
 				if (current == TagName.plugin) {
 					pluginConfigBuilder.addParam(param);
 				} else if (current == TagName.component) {

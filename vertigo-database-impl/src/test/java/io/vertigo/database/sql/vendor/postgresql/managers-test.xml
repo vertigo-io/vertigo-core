@@ -1,0 +1,24 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<config>
+	<boot locales="fr_FR">
+	</boot>
+	<module name="vertigo-commons">
+		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
+	</module>
+
+	<module name="vertigo-database">
+		<component api="SqlDataBaseManager" class="io.vertigo.database.impl.sql.SqlDataBaseManagerImpl">
+			<plugin class="io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin">
+				<param name="dataBaseClass" value="io.vertigo.database.impl.sql.vendor.postgresql.PostgreSqlDataBase" />
+				<param name="jdbcDriver" value="org.postgresql.Driver" />
+				<param name="jdbcUrl" value="jdbc:postgresql://docker-vertigo.part.klee.lan.net:5432/postgres?user=postgres&amp;password=postgres" />
+			</plugin>
+			<plugin class="io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin">
+				<param name="name" value="secondary" />
+				<param name="dataBaseClass" value="io.vertigo.database.impl.sql.vendor.h2.H2DataBase" />
+				<param name="jdbcDriver" value="org.h2.Driver" />
+				<param name="jdbcUrl" value="jdbc:h2:mem:secondaryDatabase" /> 
+			</plugin>
+		</component>
+	</module>
+</config>

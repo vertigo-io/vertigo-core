@@ -24,9 +24,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.core.component.Component;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
-import io.vertigo.lang.Plugin;
 import io.vertigo.util.Selector;
 import io.vertigo.util.Selector.ClassConditions;
 
@@ -65,9 +65,6 @@ final class ComponentDiscovery {
 		Assertion.checkNotNull(components);
 		Assertion.checkNotNull(moduleConfigBuilder);
 		// ---
-		//we control the api just bellow
-		moduleConfigBuilder.withNoAPI();
-
 		//API
 		final Collection<Class> apiClasses = new Selector()
 				.from(components)
@@ -113,16 +110,15 @@ final class ComponentDiscovery {
 		}
 		//---
 		// With API
-		apiImplMap.entrySet()
-				.stream()
-				.forEach((entry) -> moduleConfigBuilder.addComponent(entry.getKey(), entry.getValue()));
+		apiImplMap
+				.forEach((key, value) -> moduleConfigBuilder.addComponent(key, value));
 
 		// Without API
-		myImplClasses.stream()
+		myImplClasses
 				.forEach(moduleConfigBuilder::addComponent);
 
 		//Plugins
-		pluginsImplClasses.stream()
+		pluginsImplClasses
 				.forEach(moduleConfigBuilder::addPlugin);
 	}
 

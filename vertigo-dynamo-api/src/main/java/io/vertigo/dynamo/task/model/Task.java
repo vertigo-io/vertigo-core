@@ -54,7 +54,7 @@ public final class Task {
 	private final TaskDefinition taskDefinition;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * Le constructeur est protégé, il est nécessaire de passer par le Builder.
 	 */
 	Task(final TaskDefinition taskDefinition, final Map<TaskAttribute, Object> inTaskAttributes) {
@@ -65,6 +65,15 @@ public final class Task {
 		//---
 		this.inTaskAttributes = inTaskAttributes;
 		checkValues();
+	}
+
+	/**
+	 * Static method factory for TaskBuilder
+	 * @param taskDefinition the definition of the task
+	 * @return TaskBuilder
+	 */
+	public static TaskBuilder builder(final TaskDefinition taskDefinition) {
+		return new TaskBuilder(taskDefinition);
 	}
 
 	private void checkValues() {

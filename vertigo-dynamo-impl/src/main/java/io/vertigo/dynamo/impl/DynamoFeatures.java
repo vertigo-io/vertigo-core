@@ -20,12 +20,12 @@ package io.vertigo.dynamo.impl;
 
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
+import io.vertigo.database.impl.sql.SqlConnectionProviderPlugin;
+import io.vertigo.database.impl.sql.SqlDataBaseManagerImpl;
+import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
-import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.impl.collections.CollectionsManagerImpl;
-import io.vertigo.dynamo.impl.database.SqlConnectionProviderPlugin;
-import io.vertigo.dynamo.impl.database.SqlDataBaseManagerImpl;
 import io.vertigo.dynamo.impl.file.FileManagerImpl;
 import io.vertigo.dynamo.impl.kvstore.KVStoreManagerImpl;
 import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
@@ -33,14 +33,12 @@ import io.vertigo.dynamo.impl.search.SearchManagerImpl;
 import io.vertigo.dynamo.impl.search.SearchServicesPlugin;
 import io.vertigo.dynamo.impl.store.StoreManagerImpl;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
+import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.dynamo.impl.task.TaskManagerImpl;
-import io.vertigo.dynamo.impl.transaction.VTransactionAspect;
-import io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.dynamo.transaction.VTransactionManager;
 
 /**
  * Defines dynamo features.
@@ -135,15 +133,25 @@ public final class DynamoFeatures extends Features {
 		return this;
 	}
 
+	/**
+	 * Add a plugin to store files
+	 * @param  fileStorePluginClass the plugin to use
+	 * @param params a list plugin's params
+	 * @return the feature
+	 */
+	public DynamoFeatures addFileStorePlugin(final Class<? extends FileStorePlugin> fileStorePluginClass, final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(fileStorePluginClass, params);
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
 				.addComponent(CollectionsManager.class, CollectionsManagerImpl.class)
 				.addComponent(FileManager.class, FileManagerImpl.class)
-				.addComponent(TaskManager.class, TaskManagerImpl.class)
-				.addComponent(VTransactionManager.class, VTransactionManagerImpl.class)
-				.addAspect(VTransactionAspect.class);
+				.addComponent(TaskManager.class, TaskManagerImpl.class);
 
 	}
 }

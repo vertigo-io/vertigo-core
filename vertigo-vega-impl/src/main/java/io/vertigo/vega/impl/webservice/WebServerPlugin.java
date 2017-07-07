@@ -18,9 +18,9 @@
  */
 package io.vertigo.vega.impl.webservice;
 
-import java.util.List;
+import java.util.Collection;
 
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 
@@ -34,6 +34,6 @@ public interface WebServerPlugin extends Plugin {
 	 * @param handlerChain HandlerChain of this route
 	 * @param webServiceDefinitions WebServiceDefinitions to register
 	 */
-	void registerWebServiceRoute(HandlerChain handlerChain, List<WebServiceDefinition> webServiceDefinitions);
+	void registerWebServiceRoute(HandlerChain handlerChain, Collection<WebServiceDefinition> webServiceDefinitions);
 
 }

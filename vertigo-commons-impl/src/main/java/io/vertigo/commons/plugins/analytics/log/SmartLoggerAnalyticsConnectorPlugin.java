@@ -46,7 +46,8 @@ public final class SmartLoggerAnalyticsConnectorPlugin implements AnalyticsConne
 	 * @param durationThresholdOpt optional param for setting the error level to log in error
 	 */
 	@Inject
-	public SmartLoggerAnalyticsConnectorPlugin(@Named("aggregatedBy") final Optional<String> aggregatedByOpt,
+	public SmartLoggerAnalyticsConnectorPlugin(
+			@Named("aggregatedBy") final Optional<String> aggregatedByOpt,
 			@Named("durationThreshold") final Optional<Long> durationThresholdOpt) {
 		Assertion.checkNotNull(aggregatedByOpt);
 		Assertion.checkNotNull(durationThresholdOpt);

@@ -45,7 +45,7 @@ public final class FormatterDefault implements Formatter {
 	private final Formatter stringFormatter;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	public FormatterDefault(final String args) {
 		// Les arguments doivent être vides.

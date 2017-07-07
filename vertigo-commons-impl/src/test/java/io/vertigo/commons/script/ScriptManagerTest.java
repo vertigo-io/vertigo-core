@@ -21,7 +21,6 @@ package io.vertigo.commons.script;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -98,48 +97,20 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testComment() {
-		final List<ScriptSeparator> separators = new ArrayList<>();
-		separators.add(comment);
-
 		final String script = "bla <!--commentaires-->bla";
 
 		final MyScriptParserHandler scriptHandler = new MyScriptParserHandler();
-		scriptManager.parse(script, scriptHandler, separators);
+		scriptManager.parse(script, scriptHandler, comment);
 		assertEquals("bla bla", scriptHandler.result.toString());
 	}
 
 	@Test(expected = Exception.class)
 	public void testParameterForgotten() {
-		final List<ScriptSeparator> separators = new ArrayList<>();
-		separators.add(comment);
-
 		final String script = "bla <!---->bla";
 
 		final MyScriptParserHandler scriptHandler = new MyScriptParserHandler();
 
-		scriptManager.parse(script, scriptHandler, separators);
-	}
-
-	@Test
-	public void testEchappement() {
-		//Si le séparateur est un car.
-		//il suffit de double le séparateur pour l'échapper.
-		final List<ScriptSeparator> separators = new ArrayList<>();
-		separators.add(new ScriptSeparator('$'));
-		final String script = "le prix du barril est de $price$ $$";
-		final MyScriptParserHandler scriptHandler = new MyScriptParserHandler();
-		scriptManager.parse(script, scriptHandler, separators);
-		assertEquals("le prix du barril est de 100 $", scriptHandler.result.toString());
-	}
-
-	@Test(expected = Exception.class)
-	public void testOubliCaractereDeFin() {
-		final List<ScriptSeparator> separators = new ArrayList<>();
-		separators.add(new ScriptSeparator('$'));
-		final String script = "le prix du barril est de $price";
-		final MyScriptParserHandler scriptHandler = new MyScriptParserHandler();
-
-		scriptManager.parse(script, scriptHandler, separators);
+		scriptManager.parse(script, scriptHandler, comment);
 	}
 
 	@Test
@@ -163,7 +134,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExpressionVarBoolean() {
 		final Boolean test = scriptManager.evaluateExpression("(age>20 && age <60) && nom.startsWith(\"Du\")", createParameters(), Boolean.class);
-		assertTrue(test.booleanValue());
+		assertTrue(test);
 	}
 
 	//

@@ -18,11 +18,14 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.DataStream;
 
 /**
  * Types.
@@ -45,7 +48,12 @@ public enum DataType {
 	/** String. */
 	String(String.class, true),
 	/** Date. */
+	@Deprecated
 	Date(Date.class, true),
+	/** LocalDate. */
+	LocalDate(LocalDate.class, true),
+	/** ZonedDateTime. */
+	ZonedDateTime(ZonedDateTime.class, true),
 	/** BigDecimal. */
 	BigDecimal(java.math.BigDecimal.class, true),
 	/** Long. */
@@ -68,8 +76,7 @@ public enum DataType {
 	private final Class<?> javaClass;
 
 	/**
-	 * Constructeur.
-	 *
+	 * Constructor.
 	 * @param javaClass Classe java encapsulée
 	 * @param primitive Si il s'agit d'un type primitif (sinon composite)
 	 */
@@ -92,6 +99,12 @@ public enum DataType {
 		if (value != null && !javaClass.isInstance(value)) {
 			throw new ClassCastException("Valeur " + value + " ne correspond pas au type :" + this);
 		}
+	}
+
+	public boolean isAboutDate() {
+		return this == DataType.Date
+				|| this == DataType.LocalDate
+				|| this == DataType.ZonedDateTime;
 	}
 
 	public boolean isNumber() {

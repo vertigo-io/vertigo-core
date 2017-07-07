@@ -57,9 +57,9 @@ public final class AProcess {
 	/**
 	 * REGEX used to define rules on category, mesaures and tags.
 	 */
-	public static final Pattern PROCESS_CATEGORY_REGEX = Pattern.compile("[a-z]+");
-	public static final Pattern MEASURE_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
-	public static final Pattern TAG_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
+	private static final Pattern PROCESS_CATEGORY_REGEX = Pattern.compile("[a-z]+");
+	private static final Pattern MEASURE_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
+	private static final Pattern TAG_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
 
 	public static final String CATEGORY_SEPARATOR = "/";
 	private final String category; //ex : sql, page....
@@ -101,7 +101,6 @@ public final class AProcess {
 
 		//---
 		checkRegex(category, PROCESS_CATEGORY_REGEX, "process type");
-		//	ckeckRegex(type, CATEGORY_REGEX, "category");
 		measures.keySet()
 				.forEach(measureName -> checkRegex(measureName, MEASURE_REGEX, "measure name"));
 		tags.keySet()
@@ -114,6 +113,16 @@ public final class AProcess {
 		this.measures = Collections.unmodifiableMap(new HashMap<>(measures));
 		this.tags = Collections.unmodifiableMap(new HashMap<>(tags));
 		this.subProcesses = subProcesses;
+	}
+
+	/**
+	 * Static method factory for AppConfigBuilder
+	 * @param category Categorie
+	 * @param name Name
+	 * @return AProcessBuilder
+	 */
+	public static AProcessBuilder builder(final String category, final String name) {
+		return new AProcessBuilder(category, name);
 	}
 
 	private static void checkRegex(final String s, final Pattern pattern, final String info) {

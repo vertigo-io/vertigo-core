@@ -18,11 +18,13 @@
  */
 package io.vertigo.dynamo.domain.model;
 
+import java.io.Serializable;
+
+import io.vertigo.dynamo.criteria.Criteria;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.store.criteria.Criteria;
-import io.vertigo.dynamo.store.criteria.Criterions;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -39,7 +41,7 @@ public final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	private final Criteria<E> criteria;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *  @param dtDefinition Id de la Définition de DT
 	 * @param criteria critere //null = no criteria
 	 * @param maxRows Nombre de ligne max //null = ALL
@@ -84,7 +86,7 @@ public final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 					//si String et pas une FK : on met en préfix
 					criteria = criteria.and(Criterions.startsWith(() -> fieldName, (String) value));
 				} else if (value != null) {
-					criteria = criteria.and(Criterions.isEqualTo(() -> fieldName, (Comparable) value));
+					criteria = criteria.and(Criterions.isEqualTo(() -> fieldName, (Serializable) value));
 				}
 			}
 			//si null, alors on ne filtre pas

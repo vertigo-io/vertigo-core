@@ -23,10 +23,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Component;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -50,11 +49,16 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	 * Components (sorted by creation)
 	 */
 	private final Map<String, Component> components = new LinkedHashMap<>();
+	/**
+	 * Started components are sublist of components.values(). They are added after the start call of a component.
+	 */
+	private final List<Component> startedComponents = new ArrayList<>();
+	private final AtomicBoolean locked = new AtomicBoolean(false);
 
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		//
+		startComponents();
 	}
 
 	/** {@inheritDoc} */
@@ -70,11 +74,10 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	 * @param component instance of the component
 	 */
 	public void registerComponent(final String componentId, final Component component) {
+		Assertion.checkState(!locked.get(), "Registration is now closed. A component can be registerd only during the boot phase");
 		Assertion.checkArgNotEmpty(componentId);
 		Assertion.checkNotNull(component);
 		//-----
-		//Démarrage du composant
-		startComponent(component);
 		final Object previous = components.put(componentId, component);
 		Assertion.checkState(previous == null, "component '{0}' already registered", componentId);
 	}
@@ -119,11 +122,18 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 		components.clear();
 	}
 
+	private void startComponents() {
+		for (final Component component : components.values()) {
+			startComponent(component);
+			startedComponents.add(component);
+		}
+	}
+
 	private void stopComponents() {
 		/* Fermeture de tous les gestionnaires.*/
 		//On fait les fermetures dans l'ordre inverse des enregistrements.
 		//On se limite aux composants qui ont été démarrés.
-		final List<Component> reversedComponents = new ArrayList<>(components.values());
+		final List<Component> reversedComponents = new ArrayList<>(startedComponents);
 		java.util.Collections.reverse(reversedComponents);
 
 		for (final Component component : reversedComponents) {
@@ -131,4 +141,12 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 		}
 	}
 
+	/**
+	 * Close registration of components.
+	 * After calling this method no more components are added to the componentSpace.
+	 */
+	public void closeRegistration() {
+		//registration is now closed.
+		locked.set(true);
+	}
 }

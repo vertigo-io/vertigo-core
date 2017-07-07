@@ -28,44 +28,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import io.vertigo.core.component.Activeable;
 import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
-public class ContactDao implements StoreServices {
+public class ContactDao implements Activeable, StoreServices {
 	private final Map<Long, Contact> contacts = new HashMap<>();
-
-	public ContactDao() throws ParseException {
-		appendContact(Honorific.Mr, "Martin", "Jean", parseDate("19/05/1980"),
-				createAddress("1, rue de Rivoli", "", "Paris", "75001", "France"),
-				"jean.martin@gmail.com", "01 02 03 04 05");
-		appendContact(Honorific.Miss, "Dubois", "Marie", parseDate("20/06/1981"),
-				createAddress("2, rue Beauregard", "", "Paris", "75002", "France"),
-				"marie.dubois@gmail.com", "01 13 14 15 16");
-		appendContact(Honorific.Cpt, "Petit", "Philippe", parseDate("18/04/1979"),
-				createAddress("3, rue Meslay", "", "Paris", "75003", "France"),
-				"philippe.petit@gmail.com", "01 24 25 26 27");
-		appendContact(Honorific.Off, "Durant", "Nathalie", parseDate("21/07/1982"),
-				createAddress("4, avenue Victoria", "", "Paris", "75004", "France"),
-				"nathalie.durant@gmail.com", "01 35 36 37 38");
-		appendContact(Honorific.PhD, "Leroy", "Michel", parseDate("17/03/1978"),
-				createAddress("5, boulevard Saint-Marcel", "", "Paris", "75005", "France"),
-				"michel.leroy@gmail.com", "01 46 47 48 49");
-		appendContact(Honorific.Ms, "Moreau", "Isabelle", parseDate("22/08/1983"),
-				createAddress("6, boulevard Raspail", "", "Paris", "75006", "France"),
-				"isabelle.moreau@gmail.com", "01 57 58 59 50");
-		appendContact(Honorific.Rev, "Lefebvre", "Alain", parseDate("16/02/1977"),
-				createAddress("7, rue Cler", "", "Paris", "75007", "France"),
-				"alain.lefebvre@gmail.com", "01 68 69 60 61");
-		appendContact(Honorific.Dr, "Garcia", "Sylvie", parseDate("23/09/1984"),
-				createAddress("8, rue de Ponthieu", "", "Paris", "75008", "France"),
-				"sylvie.garcia@gmail.com", "01 79 70 71 72");
-		appendContact(Honorific.Mst, "Roux", "Patrick", parseDate("15/01/1976"),
-				createAddress("9, avenue Frochot", "", "Paris", "75009", "France"),
-				"patrick.roux@gmail.com", "01 80 81 82 83");
-		appendContact(Honorific.Mrs, "Fournier", "Catherine", parseDate("24/10/1985"),
-				createAddress("10, avenue Claude Vellefaux", "", "Paris", "75010", "France"),
-				"catherine.fournier@gmail.com", "01 91 92 93 94");
-	}
 
 	private void appendContact(final Honorific honorific, final String name, final String firstName, final Date birthday, final Address address, final String email, final String... tels) {
 		final long conId = contacts.size() + 1;
@@ -81,12 +50,17 @@ public class ContactDao implements StoreServices {
 		contacts.put(conId, contact);
 	}
 
-	private static Date parseDate(final String dateStr) throws ParseException {
-		return new SimpleDateFormat("dd/MM/yyyy").parse(dateStr);
+	private static Date parseDate(final String dateStr) {
+		try {
+			return new SimpleDateFormat("dd/MM/yyyy").parse(dateStr);
+		} catch (final ParseException e) {
+			throw WrappedException.wrap(e);
+		}
 	}
 
-	private static Address createAddress(final String street1, final String street2, final String city, final String postalCode, final String country) {
+	private static Address createAddress(final Long adrId, final String street1, final String street2, final String city, final String postalCode, final String country) {
 		final Address address = new Address();
+		address.setAdrId(adrId);
 		address.setStreet1(street1);
 		address.setStreet2(street2);
 		address.setCity(city);
@@ -133,5 +107,44 @@ public class ContactDao implements StoreServices {
 
 	public boolean containsKey(final long id) {
 		return contacts.containsKey(id);
+	}
+
+	@Override
+	public void start() {
+		appendContact(Honorific.Mr, "Martin", "Jean", parseDate("19/05/1980"),
+				createAddress(1L, "1, rue de Rivoli", "", "Paris", "75001", "France"),
+				"jean.martin@gmail.com", "01 02 03 04 05");
+		appendContact(Honorific.Miss, "Dubois", "Marie", parseDate("20/06/1981"),
+				createAddress(2L, "2, rue Beauregard", "", "Paris", "75002", "France"),
+				"marie.dubois@gmail.com", "01 13 14 15 16");
+		appendContact(Honorific.Cpt, "Petit", "Philippe", parseDate("18/04/1979"),
+				createAddress(3L, "3, rue Meslay", "", "Paris", "75003", "France"),
+				"philippe.petit@gmail.com", "01 24 25 26 27");
+		appendContact(Honorific.Off, "Durant", "Nathalie", parseDate("21/07/1982"),
+				createAddress(4L, "4, avenue Victoria", "", "Paris", "75004", "France"),
+				"nathalie.durant@gmail.com", "01 35 36 37 38");
+		appendContact(Honorific.PhD, "Leroy", "Michel", parseDate("17/03/1978"),
+				createAddress(5L, "5, boulevard Saint-Marcel", "", "Paris", "75005", "France"),
+				"michel.leroy@gmail.com", "01 46 47 48 49");
+		appendContact(Honorific.Ms, "Moreau", "Isabelle", parseDate("22/08/1983"),
+				createAddress(6L, "6, boulevard Raspail", "", "Paris", "75006", "France"),
+				"isabelle.moreau@gmail.com", "01 57 58 59 50");
+		appendContact(Honorific.Rev, "Lefebvre", "Alain", parseDate("16/02/1977"),
+				createAddress(7L, "7, rue Cler", "", "Paris", "75007", "France"),
+				"alain.lefebvre@gmail.com", "01 68 69 60 61");
+		appendContact(Honorific.Dr, "Garcia", "Sylvie", parseDate("23/09/1984"),
+				createAddress(8L, "8, rue de Ponthieu", "", "Paris", "75008", "France"),
+				"sylvie.garcia@gmail.com", "01 79 70 71 72");
+		appendContact(Honorific.Mst, "Roux", "Patrick", parseDate("15/01/1976"),
+				createAddress(9L, "9, avenue Frochot", "", "Paris", "75009", "France"),
+				"patrick.roux@gmail.com", "01 80 81 82 83");
+		appendContact(Honorific.Mrs, "Fournier", "Catherine", parseDate("24/10/1985"),
+				createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"),
+				"catherine.fournier@gmail.com", "01 91 92 93 94");
+	}
+
+	@Override
+	public void stop() {
+		contacts.clear();
 	}
 }

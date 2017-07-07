@@ -127,19 +127,6 @@ create Domain DO_PASSWORD {
 /**** Domaines utilisés uniquement dans des fichiers KSP  ****/
 
 
-/*Gestion dynamique*/
-
-create Domain DO_DYN_DTO {
-    dataType :DtObject
-    formatter : FMT_DEFAULT
-}
-
-create Domain DO_DYN_DTC {
-    dataType :DtList
-    formatter : FMT_DEFAULT
-}
-
-
 /**************************************************************************************************/
 /*                                          Gestion des formatters                                */
 /**************************************************************************************************/

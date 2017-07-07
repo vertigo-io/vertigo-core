@@ -39,7 +39,7 @@ final class DefaultAnalyzer extends Analyzer {
 	private final CharArraySet stopWords;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 * @param useStopWord utilise les stopWord ou non
 	 */
 	DefaultAnalyzer(final boolean useStopWord) {

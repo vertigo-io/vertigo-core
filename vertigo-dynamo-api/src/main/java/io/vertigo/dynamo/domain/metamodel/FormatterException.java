@@ -20,8 +20,8 @@ package io.vertigo.dynamo.domain.metamodel;
 
 import java.io.Serializable;
 
-import io.vertigo.lang.MessageKey;
-import io.vertigo.lang.MessageText;
+import io.vertigo.core.locale.MessageKey;
+import io.vertigo.core.locale.MessageText;
 
 /**
  * Exception lancée en cas d'échec de formattage.
@@ -33,13 +33,13 @@ public final class FormatterException extends Exception {
 	private final MessageText messageText;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 *
 	 * @param key Clé du message externalisé explicitant la raison du non formattage.
 	 * @param params Paramètres de la ressource
 	 */
 	public FormatterException(final MessageKey key, final Serializable... params) {
-		messageText = new MessageText(null, key, params);
+		messageText = MessageText.builder().withKey(key).withParams(params).build();
 	}
 
 	public MessageText getMessageText() {

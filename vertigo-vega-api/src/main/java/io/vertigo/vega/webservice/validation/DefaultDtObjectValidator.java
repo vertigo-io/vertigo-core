@@ -18,10 +18,10 @@
  */
 package io.vertigo.vega.webservice.validation;
 
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.metamodel.ConstraintException;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.MessageText;
 
 /**
  * Default DtObject validation : check domain's constraints on modified fields.
@@ -36,7 +36,7 @@ public final class DefaultDtObjectValidator<O extends DtObject> extends Abstract
 		final Object value = dtField.getDataAccessor().getValue(dtObject);
 		//pas d'assertion notNull, car le champs n'est pas forcément obligatoire
 		if (value == null && dtField.isRequired()) {
-			dtObjectErrors.addError(getCamelCaseFieldName(dtField), new MessageText("Le champ doit être renseigné", null));
+			dtObjectErrors.addError(getCamelCaseFieldName(dtField), MessageText.of("Le champ doit être renseigné"));
 		} else {
 			try {
 				// Le typage est OK

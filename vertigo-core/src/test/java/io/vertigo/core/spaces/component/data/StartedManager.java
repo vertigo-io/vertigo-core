@@ -18,13 +18,13 @@
  */
 package io.vertigo.core.spaces.component.data;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.core.component.Manager;
 
 public interface StartedManager extends Manager {
 
 	boolean isStarted();
 
-	boolean isPostStarted();
+	boolean isAppPreActivated();
 
 	boolean isInitialized();
 

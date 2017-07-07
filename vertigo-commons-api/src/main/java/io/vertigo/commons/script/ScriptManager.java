@@ -22,7 +22,7 @@ import java.util.List;
 
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
-import io.vertigo.lang.Manager;
+import io.vertigo.core.component.Manager;
 
 /**
  * Manages scripts.
@@ -38,13 +38,15 @@ public interface ScriptManager extends Manager {
 	 *
 	 * @param script the script to analyse
 	 * @param scriptHandler the hander
-	 * @param separators the list of allowed separators in the grammar.
+	 * @param separator the allowed separators in the grammar.
 	 */
-	void parse(final String script, final ScriptParserHandler scriptHandler, final List<ScriptSeparator> separators);
+	void parse(final String script, final ScriptParserHandler scriptHandler, final ScriptSeparator separator);
 
 	/**
 	 * Evaluates the script, transforms a script into a text.
 	 * @param script the script
+	 * @param separatorType the type of separator
+	 * @param parameters the parameters
 	 * @return the evaluated script as a simplet text
 	 */
 	String evaluateScript(final String script, final SeparatorType separatorType, final List<ExpressionParameter> parameters);

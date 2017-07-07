@@ -32,7 +32,7 @@ import io.vertigo.util.StringUtil;
  *
  * @author jmforhan
  */
-public class AnalyticsAspect implements Aspect {
+public final class AnalyticsAspect implements Aspect {
 	private final AnalyticsManager analyticsManager;
 
 	/**

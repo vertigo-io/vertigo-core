@@ -32,8 +32,8 @@ import io.vertigo.lang.Assertion;
 /**
  * This manager allows you to script a text.
  * Some expressions can be used inside the text.
- * These expressions will be parsed and evaluated.   
- * 
+ * These expressions will be parsed and evaluated.
+ *
  * @author pchretien
  */
 public final class ScriptManagerImpl implements ScriptManager {
@@ -55,8 +55,8 @@ public final class ScriptManagerImpl implements ScriptManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void parse(final String script, final ScriptParserHandler scriptHandler, final List<ScriptSeparator> separators) {
-		new ScriptParser(separators).parse(script, scriptHandler);
+	public void parse(final String script, final ScriptParserHandler scriptHandler, final ScriptSeparator separator) {
+		new ScriptParser(separator).parse(script, scriptHandler);
 	}
 
 	/** {@inheritDoc} */

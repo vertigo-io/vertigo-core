@@ -23,10 +23,10 @@ import java.util.List;
 
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionPrefix;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 
 /**
  * Définition de Facette.
@@ -62,7 +62,7 @@ public final class FacetDefinition implements Definition {
 	/**
 	 * Facet order : alpha, count, definition
 	 */
-	public static enum FacetOrder {
+	public enum FacetOrder {
 		/** alphabetical */
 		alpha,
 		/** count (default for term) */
@@ -79,13 +79,21 @@ public final class FacetDefinition implements Definition {
 	 * @param rangeFacet if the facet is of type 'range'
 	 * @param order Facet Order
 	 */
-	private FacetDefinition(final String name, final DtField dtField, final MessageText label, final List<FacetValue> facetValues, final boolean rangeFacet, final FacetOrder order) {
+	private FacetDefinition(
+			final String name,
+			final DtField dtField,
+			final MessageText label,
+			final List<FacetValue> facetValues,
+			final boolean rangeFacet,
+			final FacetOrder order) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(dtField);
 		Assertion.checkNotNull(label);
 		Assertion.checkNotNull(facetValues);
-		Assertion.when(rangeFacet).check(() -> !facetValues.isEmpty(), "Les FacetDefinition de type 'range' doivent fournir la liste des segments non vides (FacetValues)");
-		Assertion.when(!rangeFacet).check(() -> facetValues.isEmpty(), "Les FacetDefinition de type 'term' doivent fournir une liste des segments vide");
+		Assertion.when(rangeFacet)
+				.check(() -> !facetValues.isEmpty(), "Les FacetDefinition de type 'range' doivent fournir la liste des segments non vides (FacetValues)");
+		Assertion.when(!rangeFacet)
+				.check(facetValues::isEmpty, "Les FacetDefinition de type 'term' doivent fournir une liste des segments vide");
 		Assertion.checkNotNull(order);
 		//-----
 		this.name = name;
@@ -111,7 +119,12 @@ public final class FacetDefinition implements Definition {
 	 * @param order Facet Order
 	 * @return new facetDefinition of type 'range'
 	 */
-	static FacetDefinition createFacetDefinitionByRange(final String name, final DtField dtField, final MessageText label, final List<FacetValue> facetValues, final FacetOrder order) {
+	public static FacetDefinition createFacetDefinitionByRange(
+			final String name,
+			final DtField dtField,
+			final MessageText label,
+			final List<FacetValue> facetValues,
+			final FacetOrder order) {
 		return new FacetDefinition(name, dtField, label, facetValues, true, order);
 	}
 
@@ -124,8 +137,12 @@ public final class FacetDefinition implements Definition {
 	 * @param order Facet Order
 	 * @return new facetDefinition of type 'term'
 	 */
-	public static FacetDefinition createFacetDefinitionByTerm(final String name, final DtField dtField, final MessageText label, final FacetOrder order) {
-		return new FacetDefinition(name, dtField, label, Collections.<FacetValue> emptyList(), false, order);
+	public static FacetDefinition createFacetDefinitionByTerm(
+			final String name,
+			final DtField dtField,
+			final MessageText label,
+			final FacetOrder order) {
+		return new FacetDefinition(name, dtField, label, Collections.emptyList(), false, order);
 	}
 
 	/**

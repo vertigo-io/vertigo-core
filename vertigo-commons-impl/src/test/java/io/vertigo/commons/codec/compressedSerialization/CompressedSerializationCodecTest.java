@@ -62,7 +62,7 @@ public final class CompressedSerializationCodecTest extends AbstractCodecTest<Se
 	/** {@inheritDoc} */
 	@Override
 	@Test
-	public void testDecode() throws Exception {
+	public void testDecode() {
 		final byte[] encodedValue = codec.encode(TEXT.getBytes());
 		assertEquals(TEXT, new String((byte[]) codec.decode(encodedValue)));
 
@@ -71,7 +71,7 @@ public final class CompressedSerializationCodecTest extends AbstractCodecTest<Se
 	/** {@inheritDoc} */
 	@Override
 	@Test
-	public void testFailDecode() throws Exception {
+	public void testFailDecode() {
 		//
 	}
 

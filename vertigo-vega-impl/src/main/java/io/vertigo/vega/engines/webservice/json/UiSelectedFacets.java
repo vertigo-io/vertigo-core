@@ -54,7 +54,7 @@ public final class UiSelectedFacets extends HashMap<String, String> {
 					}
 				}
 			} else {
-				final ListFilter filter = new ListFilter(
+				final ListFilter filter = ListFilter.of(
 						facetDefinition.getDtField().getName() + ":\"" + entry.getValue() + "\"");
 				listFilters.add(filter);
 			}

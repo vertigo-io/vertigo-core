@@ -18,8 +18,11 @@
  */
 package io.vertigo.dynamo.impl.store.datastore.cache;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.eventbus.EventBusManager;
-import io.vertigo.commons.eventbus.EventSuscriber;
+import io.vertigo.commons.eventbus.EventBusSubscriptionDefinition;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
+import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
@@ -29,6 +32,7 @@ import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreConfigImpl;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
@@ -42,25 +46,40 @@ import io.vertigo.lang.Assertion;
  * @author  pchretien
  */
 public final class CacheDataStore {
+	private final CollectionsManager collectionsManager;
 	private final StoreManager storeManager;
 	private final CacheDataStoreConfig cacheDataStoreConfig;
 	private final LogicalDataStoreConfig logicalStoreConfig;
 
 	/**
 	 * Constructor.
+	 * @param collectionsManager collectionsManager
 	 * @param storeManager Store manager
 	 * @param eventBusManager Event bus manager
 	 * @param dataStoreConfig Data store configuration
 	 */
-	public CacheDataStore(final StoreManager storeManager, final EventBusManager eventBusManager, final DataStoreConfigImpl dataStoreConfig) {
+	public CacheDataStore(
+			final CollectionsManager collectionsManager,
+			final StoreManager storeManager,
+			final EventBusManager eventBusManager,
+			final DataStoreConfigImpl dataStoreConfig) {
+		Assertion.checkNotNull(collectionsManager);
 		Assertion.checkNotNull(storeManager);
 		Assertion.checkNotNull(eventBusManager);
 		Assertion.checkNotNull(dataStoreConfig);
 		//-----
+		this.collectionsManager = collectionsManager;
 		this.storeManager = storeManager;
 		cacheDataStoreConfig = dataStoreConfig.getCacheStoreConfig();
 		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
-		eventBusManager.register(this);
+
+		//TODO : A revoir plus tard
+		final EventBusSubscriptionDefinition<StoreEvent> eventBusSubscription = new EventBusSubscriptionDefinition<>(
+				"EVT_CLEAR_CACHE",
+				StoreEvent.class,
+				event -> clearCache(event.getUri().getDefinition()));
+		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace())
+				.registerDefinition(eventBusSubscription);
 	}
 
 	private DataStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {
@@ -137,9 +156,11 @@ public final class CacheDataStore {
 		//On compose les fonctions
 		//1.on filtre
 		//2.on trie
-		return storeManager.getMasterDataConfig().getFilter(uri)
-				.sort(uri.getDtDefinition().getSortField().get().getName(), false)
-				.apply(unFilteredDtc);
+		final DtList list = unFilteredDtc
+				.stream()
+				.filter(storeManager.getMasterDataConfig().getFilter(uri))
+				.collect(VCollectors.toDtList(unFilteredDtc.getDefinition()));
+		return collectionsManager.sort(list, uri.getDtDefinition().getSortField().get().getName(), false);
 	}
 
 	/**
@@ -182,15 +203,5 @@ public final class CacheDataStore {
 		// On ne vérifie pas que la definition est cachable, Lucene utilise le même cache
 		// A changer si on gère lucene différemment
 		cacheDataStoreConfig.getDataCache().clear(dtDefinition);
-	}
-
-	/**
-	 * Receive store event.
-	 * @param event Store event
-	 */
-	@EventSuscriber
-	public void onEvent(final StoreEvent event) {
-		final URI<?> uri = event.getUri();
-		clearCache(uri.getDefinition());
 	}
 }

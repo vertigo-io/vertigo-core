@@ -116,8 +116,12 @@ public final class ValidatorWebServiceHandlerPlugin implements WebServiceHandler
 		return dtObjectValidators;
 	}
 
-	private static <D extends DtObject> DtList<D> mergeAndCheckInput(final Class<D> objectType, final Map<String, UiObject<D>> uiObjectMap, final List<DtObjectValidator<D>> dtObjectValidators,
-			final UiMessageStack uiMessageStack, final Map<String, DtObject> contextKeyMap) {
+	private static <D extends DtObject> DtList<D> mergeAndCheckInput(
+			final Class<D> objectType,
+			final Map<String, UiObject<D>> uiObjectMap,
+			final List<DtObjectValidator<D>> dtObjectValidators,
+			final UiMessageStack uiMessageStack,
+			final Map<String, DtObject> contextKeyMap) {
 		final DtList<D> dtList = new DtList<>(objectType);
 		for (final Map.Entry<String, UiObject<D>> entry : uiObjectMap.entrySet()) {
 			final D dto = entry.getValue().mergeAndCheckInput(dtObjectValidators, uiMessageStack);
@@ -127,8 +131,12 @@ public final class ValidatorWebServiceHandlerPlugin implements WebServiceHandler
 		return dtList;
 	}
 
-	private static <D extends DtObject> DtList<D> mergeAndCheckInput(final Class<DtObject> objectType, final UiListModifiable<D> uiList, final List<DtObjectValidator<D>> dtObjectValidators,
-			final UiMessageStack uiMessageStack, final Map<String, DtObject> contextKeyMap) {
+	private static <D extends DtObject> DtList<D> mergeAndCheckInput(
+			final Class<DtObject> objectType,
+			final UiListModifiable<D> uiList,
+			final List<DtObjectValidator<D>> dtObjectValidators,
+			final UiMessageStack uiMessageStack,
+			final Map<String, DtObject> contextKeyMap) {
 		final DtList<D> dtList = new DtList<>(objectType);
 		for (final UiObject<D> element : uiList) {
 			final D dto = element.mergeAndCheckInput(dtObjectValidators, uiMessageStack);

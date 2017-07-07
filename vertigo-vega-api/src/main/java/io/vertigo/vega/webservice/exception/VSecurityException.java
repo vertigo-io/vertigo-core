@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.webservice.exception;
 
-import io.vertigo.lang.MessageText;
+import io.vertigo.core.locale.MessageText;
 
 /**
  * Security exception.
