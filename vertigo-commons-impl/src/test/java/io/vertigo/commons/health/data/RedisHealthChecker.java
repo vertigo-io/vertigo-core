@@ -25,8 +25,8 @@ public class RedisHealthChecker implements Component {
 	public HealthMeasure checkRedisPing() {
 		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
 		try (Jedis jedis = redisConnector.getResource()) {
-			jedis.ping();
-			healthMeasureBuilder.withGreenStatus();
+			final String result = jedis.ping();
+			healthMeasureBuilder.withGreenStatus(result);
 		} catch (final Exception e) {
 			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
 		}

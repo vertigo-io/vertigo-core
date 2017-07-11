@@ -10,7 +10,7 @@ public class SuccessComponentChecker implements Component {
 	public HealthMeasure checkSuccess() {
 		return HealthMeasure
 				.builder()
-				.withGreenStatus()
+				.withGreenStatus(null)
 				.build();
 	}
 

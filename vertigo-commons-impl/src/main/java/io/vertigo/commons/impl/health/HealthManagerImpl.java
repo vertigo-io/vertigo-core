@@ -3,7 +3,6 @@
  */
 package io.vertigo.commons.impl.health;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,25 +63,27 @@ public final class HealthManagerImpl implements HealthManager, SimpleDefinitionP
 	/** {@inheritDoc} */
 	@Override
 	public List<HealthCheck> getHealthChecks() {
-		final List<HealthCheck> healthChecks = new ArrayList<>();
-		try {
-			for (final HealthCheckDefinition healthCheckDefinition : Home.getApp().getDefinitionSpace().getAll(HealthCheckDefinition.class)) {
-				final HealthMeasure healthMeasure = healthCheckDefinition.getCheckMethod().get();
-				final HealthCheck healthCheck = new HealthCheck(
-						healthCheckDefinition.getHealthCheckName(),
-						healthCheckDefinition.getChecker(),
-						healthMeasure);
-				healthChecks.add(healthCheck);
-			}
-		} catch (
+		return Home.getApp().getDefinitionSpace().getAll(HealthCheckDefinition.class).stream()
+				.map(healthCheckDefinition -> buildHealthCheck(healthCheckDefinition))
+				.collect(Collectors.toList());
+	}
 
-		final Exception e) {
+	private HealthCheck buildHealthCheck(final HealthCheckDefinition healthCheckDefinition) {
+		try {
+			final HealthMeasure healthMeasure = healthCheckDefinition.getCheckMethod().get();
+			return new HealthCheck(
+					healthCheckDefinition.getHealthCheckName(),
+					healthCheckDefinition.getChecker(),
+					healthMeasure);
+		} catch (final Exception e) {
 			final HealthMeasure healthMeasure = HealthMeasure.builder()
 					.withRedStatus("Impossible to get status", e)
 					.build();
-			healthChecks.add(new HealthCheck(this.getClass().getSimpleName(), this.getClass().getSimpleName(), healthMeasure));
+			return new HealthCheck(
+					healthCheckDefinition.getHealthCheckName(),
+					healthCheckDefinition.getChecker(),
+					healthMeasure);
 		}
-		return healthChecks;
 	}
 
 	@Override
