@@ -48,6 +48,10 @@ public interface WebServiceHandlerPlugin extends Plugin {
 	 * @return Response body
 	 * @throws SessionException Session expired exception
 	 */
-	Object handle(final Request request, final Response response, final WebServiceCallContext webServiceCallContext, final HandlerChain chain) throws SessionException;
+	Object handle(
+			final Request request,
+			final Response response,
+			final WebServiceCallContext webServiceCallContext,
+			final HandlerChain chain) throws SessionException;
 
 }
