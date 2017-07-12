@@ -16,17 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.authentification;
+package io.vertigo.account.identity;
 
 import java.util.Optional;
 
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.data.TestUserSession;
-import io.vertigo.account.plugins.authentication.ldap.LdapAuthenticatingRealmPlugin;
 import io.vertigo.account.plugins.identity.memory.MemoryAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
-import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
 
@@ -41,19 +39,12 @@ public final class MyAppConfig {
 				.withUserSession(TestUserSession.class);
 
 		if (redis) {
-			commonsFeatures
-					.withRedisConnector(REDIS_HOST, REDIS_PORT, REDIS_DATABASE, Optional.empty());
-			accountFeatures
-					.withRedisAccountStorePlugin();
+			commonsFeatures.withRedisConnector(REDIS_HOST, REDIS_PORT, REDIS_DATABASE, Optional.empty());
+			accountFeatures.withRedisAccountStorePlugin();
 		} else {
-			accountFeatures
-					.withAccountStorePlugin(MemoryAccountStorePlugin.class)
-					.withAuthentificationRealm(LdapAuthenticatingRealmPlugin.class,
-							Param.of("userLoginTemplate", "cn={0},dc=vertigo,dc=io"),
-							Param.of("ldapServerHost", "docker-vertigo.part.klee.lan.net"),
-							Param.of("ldapServerPort", "389"));
+			//else we use memory
+			accountFeatures.withAccountStorePlugin(MemoryAccountStorePlugin.class);
 		}
-
 		return AppConfig.builder()
 				.beginBoot()
 				.withLocales("fr")
@@ -64,4 +55,5 @@ public final class MyAppConfig {
 				.addModule(accountFeatures.build())
 				.build();
 	}
+
 }
