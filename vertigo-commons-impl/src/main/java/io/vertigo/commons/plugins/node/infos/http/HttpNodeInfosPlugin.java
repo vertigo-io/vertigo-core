@@ -50,7 +50,7 @@ public final class HttpNodeInfosPlugin implements NodeInfosPlugin {
 		return "http";
 	}
 
-	private <R> R callRestWS(final String wsUrl, final Type returnType) {
+	private static <R> R callRestWS(final String wsUrl, final Type returnType) {
 		Assertion.checkArgNotEmpty(wsUrl);
 		// ---
 		try {
