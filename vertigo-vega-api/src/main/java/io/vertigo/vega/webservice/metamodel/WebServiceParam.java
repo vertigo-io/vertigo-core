@@ -56,7 +56,12 @@ public final class WebServiceParam {
 	 * Parameter's source types.
 	 */
 	public enum WebServiceParamType {
-		Query, Path, Header, Body, InnerBody, Implicit
+		Query,
+		Path,
+		Header,
+		Body,
+		InnerBody,
+		Implicit
 	}
 
 	public enum ImplicitParam {
