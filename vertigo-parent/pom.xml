@@ -6,8 +6,8 @@
 	<groupId>io.vertigo</groupId>
 	<artifactId>vertigo-parent</artifactId>
 	<version>0.9.5-SNAPSHOT</version>
-	<name>vertigo-parent</name>
 	<packaging>pom</packaging>
+	<name>vertigo-parent</name>
 	<description>Vertigo is a simple java project starter</description>
 	<url>https://github.com/KleeGroup/vertigo</url>
 
@@ -170,7 +170,7 @@
 				<version>2.8.2</version>
 			</plugin>
 		</plugins>
-		
+
 	</build>
 	<profiles>
 		<profile>
@@ -252,15 +252,15 @@
 			</build>
 		</profile>
 		<profile>
-	        <id>KleeRepo</id>
-	        <distributionManagement>
-	           <repository>
-				<id>klee-nexus</id>
-				<name>KleeGoup nexus Releases Candidate</name>
-				<url>http://kleegroup-nexus:8080/nexus/content/repositories/releases/</url>
-			</repository>
-	        </distributionManagement>
-	    </profile>
+			<id>KleeRepo</id>
+			<distributionManagement>
+				<repository>
+					<id>klee-nexus</id>
+					<name>KleeGoup nexus Releases Candidate</name>
+					<url>http://kleegroup-nexus:8080/nexus/content/repositories/releases/</url>
+				</repository>
+			</distributionManagement>
+		</profile>
 	</profiles>
 
 	<distributionManagement>
