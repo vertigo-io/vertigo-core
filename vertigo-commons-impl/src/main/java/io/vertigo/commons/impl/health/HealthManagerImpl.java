@@ -68,7 +68,7 @@ public final class HealthManagerImpl implements HealthManager, SimpleDefinitionP
 				.collect(Collectors.toList());
 	}
 
-	private HealthCheck buildHealthCheck(final HealthCheckDefinition healthCheckDefinition) {
+	private static HealthCheck buildHealthCheck(final HealthCheckDefinition healthCheckDefinition) {
 		try {
 			final HealthMeasure healthMeasure = healthCheckDefinition.getCheckMethod().get();
 			return new HealthCheck(
