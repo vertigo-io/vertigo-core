@@ -13,7 +13,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author jgarnier, npiedeloup
  */
-public class SecurityDimension {
+public final class SecurityDimension {
 
 	private final String name;
 	private final SecurityDimensionType type;

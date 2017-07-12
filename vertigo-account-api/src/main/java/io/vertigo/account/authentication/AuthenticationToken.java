@@ -12,7 +12,7 @@ public interface AuthenticationToken {
 	String getPrincipal();
 
 	/**
-	 * Check if this User-submitted AuthenticationToken matches the realm trustedAuthenticationToken.
+	 * Checks if this User-submitted AuthenticationToken matches the realm trustedAuthenticationToken.
 	 * @param trustedAuthenticationToken realm trustedAuthenticationToken
 	 * @return if this token matches
 	 */

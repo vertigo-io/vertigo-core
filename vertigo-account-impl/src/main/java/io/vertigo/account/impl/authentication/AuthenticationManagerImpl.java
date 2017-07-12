@@ -39,28 +39,28 @@ import io.vertigo.persona.security.VSecurityManager;
 public final class AuthenticationManagerImpl implements AuthenticationManager {
 	private static final String USER_SESSION_ACCOUNT_KEY = "vertigo.account.authentication";
 
-	private final List<AuthenticationRealmPlugin> authenticatingRealmPlugins;
+	private final List<AuthenticationRealmPlugin> authenticationRealmPlugins;
 	private final IdentityManager identityManager;
 	private final VSecurityManager securityManager;
 
 	/**
 	 * Constructor.
-	 * @param identityManager Identity Manager
-	 * @param securityManager Security Manager
-	 * @param authenticatingRealmPlugins List of authenticatingRealmPlugins
+	 * @param identityManager the identity Manager
+	 * @param securityManager the security Manager
+	 * @param authenticationRealmPlugins List of authenticationRealmPlugins
 	 */
 	@Inject
 	public AuthenticationManagerImpl(
 			final IdentityManager identityManager,
 			final VSecurityManager securityManager,
-			final List<AuthenticationRealmPlugin> authenticatingRealmPlugins) {
+			final List<AuthenticationRealmPlugin> authenticationRealmPlugins) {
 		Assertion.checkNotNull(identityManager);
 		Assertion.checkNotNull(securityManager);
-		Assertion.checkNotNull(authenticatingRealmPlugins);
+		Assertion.checkNotNull(authenticationRealmPlugins);
 		//----
 		this.identityManager = identityManager;
 		this.securityManager = securityManager;
-		this.authenticatingRealmPlugins = authenticatingRealmPlugins;
+		this.authenticationRealmPlugins = authenticationRealmPlugins;
 	}
 
 	/** {@inheritDoc} */
@@ -93,7 +93,7 @@ public final class AuthenticationManagerImpl implements AuthenticationManager {
 
 	private Optional<Account> tryLoginAccount(final AuthenticationToken token) {
 		boolean tokenSupported = false;
-		for (final AuthenticationRealmPlugin authenticatingRealmPlugin : authenticatingRealmPlugins) {
+		for (final AuthenticationRealmPlugin authenticatingRealmPlugin : authenticationRealmPlugins) {
 			if (authenticatingRealmPlugin.supports(token)) {
 				tokenSupported = true;
 				final Optional<String> accountAuthToken = authenticatingRealmPlugin.authenticateAccount(token);
@@ -102,7 +102,7 @@ public final class AuthenticationManagerImpl implements AuthenticationManager {
 				}
 			}
 		}
-		Assertion.checkState(tokenSupported, "Can't found any realm to support this token ({0}), in realms ({1})", token.getClass().getSimpleName(), authenticatingRealmPlugins);
+		Assertion.checkState(tokenSupported, "Can't found any realm to support this token ({0}), in realms ({1})", token.getClass().getSimpleName(), authenticationRealmPlugins);
 		return Optional.empty();
 	}
 }

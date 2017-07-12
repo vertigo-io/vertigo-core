@@ -40,12 +40,12 @@ public interface AuthenticationManager extends Manager {
 	Optional<Account> login(final AuthenticationToken token);
 
 	/**
-	 * Reinitialise la session courante.
+	 * Closes the current session.
 	 */
 	void logout();
 
 	/**
-	 * @return Current logged account
+	 * @return the current logged account
 	 */
 	Optional<Account> getLoggedAccount();
 
