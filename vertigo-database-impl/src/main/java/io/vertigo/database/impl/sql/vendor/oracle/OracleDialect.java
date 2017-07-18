@@ -44,7 +44,7 @@ final class OracleDialect implements SqlDialect {
 						.stream()
 						.collect(Collectors.joining(", ")))
 				.append(") values (")
-				.append(getSequenceName(sequencePrefix, tableName) + ".nextval ").append(", ")
+				.append(getSequenceName(sequencePrefix, tableName)).append(".nextval , ")
 				.append(dataFieldsName
 						.stream()
 						.map(fieldName -> " #DTO." + fieldName + '#')

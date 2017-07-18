@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -79,7 +80,7 @@ final class FileRendererUtil {
 			}
 
 			try (final FileOutputStream fos = new FileOutputStream(file)) {
-				try (final OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8")) {//needs to specify charset
+				try (final OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8.name())) {//needs to specify charset
 					try (final BufferedWriter bw = new BufferedWriter(osw)) {
 						bw.write(content);
 					}

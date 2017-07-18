@@ -25,7 +25,7 @@ import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.lang.Assertion;
 
 final class DaemonListener {
-	private static final Logger LOG = Logger.getLogger(DaemonTimerTask.class);
+	private static final Logger LOG = Logger.getLogger(DaemonListener.class);
 
 	private long successes;
 	private boolean lastExecSucceed;

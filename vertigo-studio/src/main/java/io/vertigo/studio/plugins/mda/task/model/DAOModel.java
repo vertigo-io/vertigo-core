@@ -74,6 +74,7 @@ public final class DAOModel {
 			for (final SearchIndexDefinition tmpIndexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 				if (tmpIndexDefinition.getKeyConceptDtDefinition().equals(dtDefinition)) {
 					currentIndexDefinition = tmpIndexDefinition;
+					break;
 				}
 			}
 			indexDefinition = currentIndexDefinition;

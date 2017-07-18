@@ -95,8 +95,8 @@ public final class VAccessor<E extends Entity> implements Serializable {
 	public void set(final E entity) {
 		Assertion.checkNotNull(entity);
 		//---
-		value = entity; //maybe null
-		targetURI = entity == null ? null : entity.getURI();
+		value = entity;
+		targetURI = entity.getURI();
 		status = State.LOADED;
 	}
 

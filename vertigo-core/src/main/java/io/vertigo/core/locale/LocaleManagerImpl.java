@@ -43,7 +43,7 @@ import io.vertigo.util.ListBuilder;
  * @author pchretien
  */
 public final class LocaleManagerImpl implements LocaleManager {
-	private static final Logger LOG = Logger.getLogger(LocaleManager.class);
+	private static final Logger LOG = Logger.getLogger(LocaleManagerImpl.class);
 
 	/**
 	 * Set des clés non trouvées pour ne pas les reloguer.

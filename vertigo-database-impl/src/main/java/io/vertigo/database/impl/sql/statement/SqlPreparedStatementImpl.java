@@ -87,7 +87,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 						.stream()
 						.map(SqlParameter::toString)
 						.collect(Collectors.joining(", ")))
-				.append(")");
+				.append(')');
 		//-----
 		for (int index = 0; index < parameters.size(); index++) {
 			final SqlParameter parameter = parameters.get(index);
