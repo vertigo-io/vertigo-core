@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -93,7 +94,7 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 		//-----
 		final File home;
 		try {
-			home = new File(URLDecoder.decode(esHomeURL.getFile(), "UTF-8"));
+			home = new File(URLDecoder.decode(esHomeURL.getFile(), StandardCharsets.UTF_8.name()));
 		} catch (final UnsupportedEncodingException e) {
 			throw WrappedException.wrap(e, "Error de parametrage du ElasticSearchHome " + esHomeURL);
 		}

@@ -77,7 +77,6 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 		final String preMultiExpression;
 		final String postMultiExpression;
 		//---
-		final boolean block = parsing.getChoiceIndex() == 0;
 		final List<PegChoice> many;
 		switch (parsing.getChoiceIndex()) {
 			case 0:
@@ -111,6 +110,7 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 					throw new IllegalArgumentException("case " + item.getChoiceIndex() + " not implemented");
 			}
 		}
+		final boolean block = parsing.getChoiceIndex() == 0;
 		//---
 		return new DslMultiExpression(preMultiExpression, block, expressionDefinitions, multiExpressionDefinitions, postMultiExpression);
 	}
