@@ -28,18 +28,18 @@ import { ${field.domainTypeName}, ${field.domainTypeName}Node } from "./${field.
 
 export interface ${dtDefinition.classSimpleName} {
 	<#list dtDefinition.fields as dtField>
-	${dtField.camelCaseName}<#if !dtField.isRequired()>?</#if>: ${dtField.javascriptType};
+	${dtField.camelCaseName}<#if !dtField.isRequired()>?</#if>: ${dtField.typescriptType};
     </#list>
 }
 
 export interface ${dtDefinition.classSimpleName}Node extends StoreNode<${dtDefinition.classSimpleName}> {
 	<#list dtDefinition.fields as dtField>
 	<#if dtField.isPrimitive()>
-	${dtField.camelCaseName}: EntityField<${dtField.javascriptType}>;
+	${dtField.camelCaseName}: EntityField<${dtField.typescriptType}>;
 	<#elseif dtField.isList()>
 	${dtField.camelCaseName}: EntityList<StoreListNode<${dtField.domainTypeName}Node>>;
 	<#else>
-	${dtField.camelCaseName}: EntityField<${dtField.javascriptType}Node>;
+	${dtField.camelCaseName}: EntityField<${dtField.typescriptType}Node>;
 	</#if>
     </#list>
 }
@@ -58,7 +58,7 @@ export const ${dtDefinition.classSimpleName}Entity = {
             <#if dtField.isPrimitive()>
             domain: domains.${dtField.domainName},
             <#else>
-            entityName: "${dtField.javascriptType?uncap_first}",
+            entityName: "${dtField.typescriptType?uncap_first}",
             </#if>
             isRequired: ${dtField.required?string("true","false")},
             translationKey: "${dtDefinition.functionnalPackageName}.${dtDefinition.classSimpleName?uncap_first}.${dtField.camelCaseName}"

@@ -33,7 +33,7 @@ import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
-import io.vertigo.studio.plugins.mda.domain.ts.model.JSDtDefinitionModel;
+import io.vertigo.studio.plugins.mda.domain.ts.model.TSDtDefinitionModel;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
 import io.vertigo.util.MapBuilder;
 
@@ -44,24 +44,24 @@ import io.vertigo.util.MapBuilder;
  */
 public final class TSGeneratorPlugin implements GeneratorPlugin {
 	private final String targetSubDir;
-	private final boolean shouldGenerateDtResourcesJS;
-	private final boolean shouldGenerateJsDtDefinitions;
+	private final boolean shouldGenerateDtResourcesTS;
+	private final boolean shouldGenerateTsDtDefinitions;
 
 	/**
 	 * Constructeur.
 	 * @param targetSubDir Repertoire de generation des fichiers de ce plugin
-	 * @param generateDtResourcesJS Si on génère les fichiers i18n pour les labels des champs en JS
-	 * @param generateJsDtDefinitions Si on génère les classes JS.
+	 * @param generateDtResourcesTS Si on génère les fichiers i18n pour les labels des champs en TS
+	 * @param generateTsDtDefinitions Si on génère les classes JS.
 	 */
 	@Inject
 	public TSGeneratorPlugin(
 			@Named("targetSubDir") final String targetSubDir,
-			@Named("generateDtResourcesJS") final boolean generateDtResourcesJS,
-			@Named("generateJsDtDefinitions") final boolean generateJsDtDefinitions) {
+			@Named("generateDtResourcesTS") final boolean generateDtResourcesTS,
+			@Named("generateTsDtDefinitions") final boolean generateTsDtDefinitions) {
 		//-----
 		this.targetSubDir = targetSubDir;
-		shouldGenerateDtResourcesJS = generateDtResourcesJS;
-		shouldGenerateJsDtDefinitions = generateJsDtDefinitions;
+		shouldGenerateDtResourcesTS = generateDtResourcesTS;
+		shouldGenerateTsDtDefinitions = generateTsDtDefinitions;
 	}
 
 	/** {@inheritDoc} */
@@ -71,28 +71,28 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 		Assertion.checkNotNull(mdaResultBuilder);
 		//-----
 		/* Génération des ressources afférentes au DT mais pour la partie JS.*/
-		if (shouldGenerateDtResourcesJS) {
-			generateDtResourcesJS(targetSubDir, fileGeneratorConfig, mdaResultBuilder);
+		if (shouldGenerateDtResourcesTS) {
+			generateDtResourcesTS(targetSubDir, fileGeneratorConfig, mdaResultBuilder);
 		}
 		/* Génération des fichiers javascripts référençant toutes les définitions. */
-		if (shouldGenerateJsDtDefinitions) {
-			generateJsDtDefinitions(targetSubDir, fileGeneratorConfig, mdaResultBuilder);
+		if (shouldGenerateTsDtDefinitions) {
+			generateTsDtDefinitions(targetSubDir, fileGeneratorConfig, mdaResultBuilder);
 		}
 	}
 
-	private static List<JSDtDefinitionModel> getJsDtDefinitionModels() {
+	private static List<TSDtDefinitionModel> getTsDtDefinitionModels() {
 		return DomainUtil.getDtDefinitions().stream()
-				.map(JSDtDefinitionModel::new)
+				.map(TSDtDefinitionModel::new)
 				.collect(Collectors.toList());
 	}
 
-	private static void generateJsDtDefinitions(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
-		for (final JSDtDefinitionModel dtDefinitionModel : getJsDtDefinitionModels()) {
-			generateJs(dtDefinitionModel, targetSubDir, fileGeneratorConfig, mdaResultBuilder);
+	private static void generateTsDtDefinitions(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+		for (final TSDtDefinitionModel dtDefinitionModel : getTsDtDefinitionModels()) {
+			generateTs(dtDefinitionModel, targetSubDir, fileGeneratorConfig, mdaResultBuilder);
 		}
 	}
 
-	private static void generateJs(final JSDtDefinitionModel dtDefinitionModel, final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+	private static void generateTs(final TSDtDefinitionModel dtDefinitionModel, final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
 		final Map<String, Object> model = new MapBuilder<String, Object>()
 				.put("classSimpleName", "DtDefinitions")
 				.put("dtDefinition", dtDefinitionModel)
@@ -103,7 +103,7 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 				.withFileName(dtDefinitionModel.getJsClassFileName() + ".ts")
 				.withGenSubDir(targetSubDir)
 				.withPackageName(fileGeneratorConfig.getProjectPackageName() + ".ui." + dtDefinitionModel.getFunctionnalPackageName() + ".config.entity-definition-gen")
-				.withTemplateName("domain/ts/template/js.ftl")
+				.withTemplateName("domain/ts/template/ts.ftl")
 				.build()
 				.generateFile(mdaResultBuilder);
 	}
@@ -112,13 +112,13 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 	 * Génère les ressources JS pour les traductions.
 	 * @param fileGeneratorConfig Configuration du domaine.
 	 */
-	private static void generateDtResourcesJS(
+	private static void generateDtResourcesTS(
 			final String targetSubDir,
 			final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder) {
 
-		final Map<String, List<JSDtDefinitionModel>> packageMap = new HashMap<>();
-		for (final JSDtDefinitionModel dtDefinitionModel : getJsDtDefinitionModels()) {
+		final Map<String, List<TSDtDefinitionModel>> packageMap = new HashMap<>();
+		for (final TSDtDefinitionModel dtDefinitionModel : getTsDtDefinitionModels()) {
 			final String packageName = dtDefinitionModel.getFunctionnalPackageName();
 			packageMap.computeIfAbsent(packageName, o -> new ArrayList<>()).add(dtDefinitionModel);
 		}
@@ -126,7 +126,7 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 		final String simpleClassName = "DtDefinitions" + "Label";
 		//final String packageName = fileGeneratorConfig.getProjectPackageName() + ".domain";
 
-		for (final Entry<String, List<JSDtDefinitionModel>> entry : packageMap.entrySet()) {
+		for (final Entry<String, List<TSDtDefinitionModel>> entry : packageMap.entrySet()) {
 			final Map<String, Object> model = new MapBuilder<String, Object>()
 					.put("packageName", entry.getKey())
 					.put("simpleClassName", simpleClassName)
@@ -138,7 +138,7 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 					.withFileName(entry.getKey() + ".ts")
 					.withGenSubDir(targetSubDir)
 					.withPackageName(fileGeneratorConfig.getProjectPackageName() + ".ui." + entry.getKey() + ".i18n.generated")
-					.withTemplateName("domain/ts/template/propertiesJS.ftl")
+					.withTemplateName("domain/ts/template/propertiesTS.ftl")
 					.build()
 					.generateFile(mdaResultBuilder);
 		}

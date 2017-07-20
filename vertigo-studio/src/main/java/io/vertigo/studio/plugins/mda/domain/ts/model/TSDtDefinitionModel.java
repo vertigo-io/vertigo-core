@@ -33,23 +33,23 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class JSDtDefinitionModel {
+public final class TSDtDefinitionModel {
 	private final DtDefinition dtDefinition;
-	private final List<JSDtFieldModel> dtFieldModels;
+	private final List<TSDtFieldModel> dtFieldModels;
 
 	/**
 	 * Constructeur.
 	 *
 	 * @param dtDefinition DtDefinition de l'objet Ã  gÃ©nÃ©rer
 	 */
-	public JSDtDefinitionModel(final DtDefinition dtDefinition) {
+	public TSDtDefinitionModel(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		this.dtDefinition = dtDefinition;
 
 		dtFieldModels = dtDefinition.getFields().stream()
 				.filter(dtField -> FieldType.COMPUTED != dtField.getType())
-				.map(JSDtFieldModel::new)
+				.map(TSDtFieldModel::new)
 				.collect(Collectors.toList());
 	}
 
@@ -83,7 +83,7 @@ public final class JSDtDefinitionModel {
 	 * @return true si au moins un champ est de type DtList.
 	 */
 	public boolean isContainsListField() {
-		for (final JSDtFieldModel dtField : getFields()) {
+		for (final TSDtFieldModel dtField : getFields()) {
 			if (dtField.isList()) {
 				return true;
 			}
@@ -125,7 +125,7 @@ public final class JSDtDefinitionModel {
 	/**
 	 * @return Liste de champs
 	 */
-	public List<JSDtFieldModel> getFields() {
+	public List<TSDtFieldModel> getFields() {
 		return dtFieldModels;
 	}
 }

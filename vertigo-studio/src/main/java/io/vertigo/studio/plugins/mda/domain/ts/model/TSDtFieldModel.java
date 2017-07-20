@@ -30,14 +30,14 @@ import io.vertigo.util.StringUtil;
  *
  * @author pchretien
  */
-public final class JSDtFieldModel {
+public final class TSDtFieldModel {
 	private final DtField dtField;
 
 	/***
 	 * Constructeur.
 	 * @param dtField Champ Ã  gÃ©nÃ©rer
 	 */
-	JSDtFieldModel(final DtField dtField) {
+	TSDtFieldModel(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
 		//-----
 		this.dtField = dtField;
@@ -50,8 +50,8 @@ public final class JSDtFieldModel {
 	/**
 	 * @return Type javascript du champ with cardinality
 	 */
-	public String getJavascriptType() {
-		return buildJavascriptType(dtField.getDomain(), true);
+	public String getTypescriptType() {
+		return buildTypescriptType(dtField.getDomain(), true);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public final class JSDtFieldModel {
 	 * @return Simple TS type 
 	 */
 	public String getDomainTypeName() {
-		return buildJavascriptType(dtField.getDomain(), false);
+		return buildTypescriptType(dtField.getDomain(), false);
 	}
 
 	/**
@@ -108,7 +108,7 @@ public final class JSDtFieldModel {
 	 * @param  domain DtDomain
 	 * @return String
 	 */
-	private static String buildJavascriptType(final Domain domain, final boolean withArray) {
+	private static String buildTypescriptType(final Domain domain, final boolean withArray) {
 		final DataType dataType = domain.getDataType();
 		if (dataType.isPrimitive()) {
 			if (dataType.isNumber()) {
