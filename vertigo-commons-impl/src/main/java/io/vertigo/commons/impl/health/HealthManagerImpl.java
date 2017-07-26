@@ -5,6 +5,7 @@ package io.vertigo.commons.impl.health;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.health.HealthCheck;
@@ -13,6 +14,7 @@ import io.vertigo.commons.health.HealthChecked;
 import io.vertigo.commons.health.HealthManager;
 import io.vertigo.commons.health.HealthMeasure;
 import io.vertigo.commons.health.HealthStatus;
+import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.Component;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
@@ -30,9 +32,11 @@ public final class HealthManagerImpl implements HealthManager, SimpleDefinitionP
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		// we need to unwrap the component to scan the real class and not the enhanced version
+		final AopPlugin aopPlugin = Home.getApp().getConfig().getBootConfig().getAopPlugin();
 		return Home.getApp().getComponentSpace().keySet()
 				.stream()
-				.flatMap(id -> createHealthCheckDefinitions(id, Home.getApp().getComponentSpace().resolve(id, Component.class)).stream())
+				.flatMap(id -> createHealthCheckDefinitions(id, aopPlugin.unwrap(Home.getApp().getComponentSpace().resolve(id, Component.class))).stream())
 				.collect(Collectors.toList());
 	}
 
@@ -44,8 +48,8 @@ public final class HealthManagerImpl implements HealthManager, SimpleDefinitionP
 		Assertion.checkNotNull(component);
 		//-----
 		//1. search all methods
-		return ClassUtil.getAllMethods(component.getClass(), HealthChecked.class)
-				.stream()
+		return Stream.of(component.getClass().getMethods())
+				.filter(method -> method.isAnnotationPresent(HealthChecked.class))
 				.map(method -> {
 					final HealthChecked healthChecked = method.getAnnotation(HealthChecked.class);
 					Assertion.checkArgument(HealthMeasure.class.equals(method.getReturnType()), "health check methods of class {0} must return a HealthMeasure instead of {1}", component.getClass(), method.getReturnType());

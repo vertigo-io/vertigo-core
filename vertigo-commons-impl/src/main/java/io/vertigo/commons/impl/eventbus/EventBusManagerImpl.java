@@ -22,13 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.eventbus.Event;
 import io.vertigo.commons.eventbus.EventBusManager;
-import io.vertigo.commons.eventbus.EventBusSubscriptionDefinition;
 import io.vertigo.commons.eventbus.EventBusSubscribed;
+import io.vertigo.commons.eventbus.EventBusSubscriptionDefinition;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.Component;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
@@ -53,9 +55,11 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		// we need to unwrap the component to scan the real class and not the enhanced version
+		final AopPlugin aopPlugin = Home.getApp().getConfig().getBootConfig().getAopPlugin();
 		return Home.getApp().getComponentSpace().keySet()
 				.stream()
-				.flatMap(id -> createEventSubscriptions(id, Home.getApp().getComponentSpace().resolve(id, Component.class)).stream())
+				.flatMap(id -> createEventSubscriptions(id, aopPlugin.unwrap(Home.getApp().getComponentSpace().resolve(id, Component.class))).stream())
 				.collect(Collectors.toList());
 	}
 
@@ -67,8 +71,8 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 		Assertion.checkNotNull(subscriberInstance);
 		//-----
 		//1. search all methods
-		return ClassUtil.getAllMethods(subscriberInstance.getClass(), EventBusSubscribed.class)
-				.stream()
+		return Stream.of(subscriberInstance.getClass().getMethods())
+				.filter(method -> method.isAnnotationPresent(EventBusSubscribed.class))
 				.map(method -> {
 					Assertion.checkArgument(void.class.equals(method.getReturnType()), "subscriber's methods  of class {0} must be void instead of {1}", subscriberInstance.getClass(), method.getReturnType());
 					Assertion.checkArgument(method.getName().startsWith("on"), "subscriber's methods of class {0} must start with on", subscriberInstance.getClass());

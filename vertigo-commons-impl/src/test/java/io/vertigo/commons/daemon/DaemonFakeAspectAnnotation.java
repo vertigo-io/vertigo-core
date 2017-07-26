@@ -18,22 +18,23 @@
  */
 package io.vertigo.commons.daemon;
 
-import io.vertigo.core.component.Component;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@DaemonFakeAspectAnnotation
-public class FakeComponent implements Component {
-	private int executions = 0;
+import io.vertigo.core.component.aop.AspectAnnotation;
 
-	public int getExecutionCount() {
-		return executions;
-	}
-
-	@DaemonScheduled(name = "DMN_SIMPLE", periodInSeconds = 2)
-	public void execute() {
-		executions++;
-		if (executions == 1) {
-			throw new IllegalStateException();
-		}
-	}
-
+/**
+ * This annotation must be inserted on methods and classes that need a transaction.
+ *
+ * For example, this annotation should be placed on each class that is a service.
+ *
+ * @author prahmoune
+ */
+@Target({ ElementType.METHOD, ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+@AspectAnnotation
+public @interface DaemonFakeAspectAnnotation {
+	//
 }

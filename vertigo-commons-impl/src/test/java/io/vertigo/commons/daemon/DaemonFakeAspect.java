@@ -18,22 +18,18 @@
  */
 package io.vertigo.commons.daemon;
 
-import io.vertigo.core.component.Component;
+import io.vertigo.core.component.aop.Aspect;
+import io.vertigo.core.component.aop.AspectMethodInvocation;
 
-@DaemonFakeAspectAnnotation
-public class FakeComponent implements Component {
-	private int executions = 0;
+public final class DaemonFakeAspect implements Aspect {
 
-	public int getExecutionCount() {
-		return executions;
+	@Override
+	public Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation) {
+		return methodInvocation.proceed(args);
 	}
 
-	@DaemonScheduled(name = "DMN_SIMPLE", periodInSeconds = 2)
-	public void execute() {
-		executions++;
-		if (executions == 1) {
-			throw new IllegalStateException();
-		}
+	@Override
+	public Class<DaemonFakeAspectAnnotation> getAnnotationType() {
+		return DaemonFakeAspectAnnotation.class;
 	}
-
 }
