@@ -20,25 +20,25 @@ package io.vertigo.studio.plugins.reporting.task.metrics.join;
 
 import java.util.Locale;
 
+import io.vertigo.commons.impl.metric.MetricEngine;
+import io.vertigo.commons.metric.Metric;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.impl.reporting.ReportMetricEngine;
-import io.vertigo.studio.reporting.ReportMetric;
 
 /**
  * Plugin qui compte le nombre de jointures déclarées dans la requête.
  *
  * @author tchassagnette
  */
-public final class JoinMetricEngine implements ReportMetricEngine<TaskDefinition> {
+public final class JoinMetricEngine implements MetricEngine<TaskDefinition> {
 	/** {@inheritDoc} */
 	@Override
-	public ReportMetric execute(final TaskDefinition taskDefinition) {
+	public Metric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//-----
 		final int joinCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("JOIN").length - 1;
 		final int fromCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("FROM ").length - 1;
-		return ReportMetric.builder()
+		return Metric.builder()
 				.withTitle("Nombre de jointures")
 				.withValue(joinCount + fromCount)
 				.build();

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.reporting;
+package io.vertigo.commons.metric;
 
 import java.util.List;
 
@@ -27,11 +27,10 @@ import io.vertigo.core.component.Manager;
  *
  * @author tchassagnette
  */
-public interface ReportingManager extends Manager {
+public interface MetricManager extends Manager {
 	/**
 	 * Méthode d'analyse des requetes.
 	 */
-	List<Report> analyze();
+	List<Metric> analyze();
 
-	void render(Report report);
 }

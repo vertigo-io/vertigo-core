@@ -18,19 +18,19 @@
  */
 package io.vertigo.studio.plugins.reporting.domain.metrics.count;
 
+import io.vertigo.commons.impl.metric.MetricEngine;
+import io.vertigo.commons.metric.Metric;
+import io.vertigo.commons.metric.MetricBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.impl.reporting.ReportMetricEngine;
-import io.vertigo.studio.reporting.ReportMetric;
-import io.vertigo.studio.reporting.ReportMetricBuilder;
 
 /**
  * Comptage du nombre de lignes.
  *
  * @author pchretien
  */
-public final class CountMetricEngine implements ReportMetricEngine<DtDefinition> {
+public final class CountMetricEngine implements MetricEngine<DtDefinition> {
 	private final StoreManager storeManager;
 
 	/**
@@ -45,28 +45,28 @@ public final class CountMetricEngine implements ReportMetricEngine<DtDefinition>
 
 	/** {@inheritDoc} */
 	@Override
-	public ReportMetric execute(final DtDefinition dtDefinition) {
+	public Metric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
-		final ReportMetricBuilder metricBuilder = ReportMetric.builder()
+		final MetricBuilder metricBuilder = Metric.builder()
 				.withTitle("Nbre lignes")
 				.withUnit("rows");
 
 		if (!dtDefinition.isPersistent()) {
 			return metricBuilder
-					.withStatus(ReportMetric.Status.REJECTETD)
+					.withStatus(Metric.Status.REJECTETD)
 					.build();
 		}
 		//Dans le cas ou DT est persistant on compte le nombre de lignes.
 		try {
 			final int count = storeManager.getDataStore().count(dtDefinition);
 			return metricBuilder
-					.withStatus(ReportMetric.Status.EXECUTED)
+					.withStatus(Metric.Status.EXECUTED)
 					.withValue(count)
 					.build();
 		} catch (final Exception e) {
 			return metricBuilder
-					.withStatus(ReportMetric.Status.ERROR)
+					.withStatus(Metric.Status.ERROR)
 					.build();
 		}
 	}

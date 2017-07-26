@@ -24,22 +24,20 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
+import io.vertigo.commons.impl.metric.MetricEngine;
+import io.vertigo.commons.impl.metric.MetricPlugin;
+import io.vertigo.commons.metric.Metric;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.impl.reporting.ReportMetricEngine;
-import io.vertigo.studio.impl.reporting.ReportingPlugin;
 import io.vertigo.studio.plugins.reporting.task.metrics.explainplan.ExplainPlanMetricEngine;
 import io.vertigo.studio.plugins.reporting.task.metrics.join.JoinMetricEngine;
 import io.vertigo.studio.plugins.reporting.task.metrics.performance.PerformanceMetricEngine;
 import io.vertigo.studio.plugins.reporting.task.metrics.requestsize.RequestSizeMetricEngine;
 import io.vertigo.studio.plugins.reporting.task.metrics.subrequest.SubRequestMetricEngine;
-import io.vertigo.studio.reporting.Report;
-import io.vertigo.studio.reporting.ReportLine;
-import io.vertigo.studio.reporting.ReportMetric;
 import io.vertigo.util.ListBuilder;
 
 /**
@@ -47,12 +45,12 @@ import io.vertigo.util.ListBuilder;
  *
  * @author tchassagnette
  */
-public final class TaskReportingPlugin implements ReportingPlugin {
+public final class TaskReportingPlugin implements MetricPlugin {
 	private final VTransactionManager transactionManager;
 	private final TaskManager taskManager;
 	private final SqlDataBaseManager sqlDataBaseManager;
 
-	private final List<ReportMetricEngine<TaskDefinition>> metricEngines;
+	private final List<MetricEngine<TaskDefinition>> metricEngines;
 
 	@Inject
 	public TaskReportingPlugin(final VTransactionManager transactionManager, final TaskManager taskManager, final SqlDataBaseManager sqlDataBaseManager) {
@@ -69,25 +67,22 @@ public final class TaskReportingPlugin implements ReportingPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Report analyze() {
-		final List<ReportLine> taskAnalyseResults = new ArrayList<>();
+	public List<Metric> analyze() {
+		final List<Metric> taskAnalyseResults = new ArrayList<>();
 		for (final TaskDefinition taskDefinition : Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)) {
-			final List<ReportMetric> results = new ArrayList<>();
-			for (final ReportMetricEngine<TaskDefinition> metricEngine : metricEngines) {
+			for (final MetricEngine<TaskDefinition> metricEngine : metricEngines) {
 				//on crée un transaction à chaque fois, car elle peut-être inutilisable
 				try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-					final ReportMetric result = metricEngine.execute(taskDefinition);
-					results.add(result);
+					final Metric result = metricEngine.execute(taskDefinition);
+					taskAnalyseResults.add(result);
 				}
 			}
-			final TaskDefinitionReport result = new TaskDefinitionReport(taskDefinition, results);
-			taskAnalyseResults.add(result);
 		}
-		return new Report(this.getClass().getSimpleName(), taskAnalyseResults);
+		return taskAnalyseResults;
 	}
 
-	private List<ReportMetricEngine<TaskDefinition>> createMetricEngines() {
-		return new ListBuilder<ReportMetricEngine<TaskDefinition>>()
+	private List<MetricEngine<TaskDefinition>> createMetricEngines() {
+		return new ListBuilder<MetricEngine<TaskDefinition>>()
 				.add(new PerformanceMetricEngine(taskManager))
 				.add(new RequestSizeMetricEngine())
 				.add(new ExplainPlanMetricEngine(taskManager, sqlDataBaseManager))

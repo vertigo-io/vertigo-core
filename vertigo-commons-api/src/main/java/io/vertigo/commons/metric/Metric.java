@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.reporting;
+package io.vertigo.commons.metric;
 
 import io.vertigo.lang.Assertion;
 
@@ -25,7 +25,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author tchassagnette, pchretien
  */
-public final class ReportMetric {
+public final class Metric {
 	public enum Status {
 		/** Exécution OK*/
 		EXECUTED,
@@ -41,7 +41,7 @@ public final class ReportMetric {
 	private final Object value;
 	private final String valueInformation;
 
-	ReportMetric(final Status status, final String title, final String unit, final Object value, final String valueInformation) {
+	Metric(final Status status, final String title, final String unit, final Object value, final String valueInformation) {
 		Assertion.checkNotNull(status);
 		Assertion.checkArgNotEmpty(title);
 		Assertion.checkNotNull(unit); //may be empty
@@ -57,8 +57,8 @@ public final class ReportMetric {
 	 * Static method factory for ReportMetricBuilder
 	 * @return ReportMetricBuilder
 	 */
-	public static ReportMetricBuilder builder() {
-		return new ReportMetricBuilder();
+	public static MetricBuilder builder() {
+		return new MetricBuilder();
 	}
 
 	/**

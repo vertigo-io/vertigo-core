@@ -25,6 +25,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import io.vertigo.commons.impl.metric.MetricEngine;
+import io.vertigo.commons.metric.Metric;
+import io.vertigo.commons.metric.Metric.Status;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.dynamo.task.TaskManager;
@@ -35,17 +38,14 @@ import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-import io.vertigo.studio.impl.reporting.ReportMetricEngine;
 import io.vertigo.studio.plugins.reporting.task.metrics.performance.TaskPopulator;
-import io.vertigo.studio.reporting.ReportMetric;
-import io.vertigo.studio.reporting.ReportMetric.Status;
 
 /**
  * Plugin qui va lancer la commande de calcul puis d'affichage du plan d'exécution.
  *
  * @author tchassagnette
  */
-public final class ExplainPlanMetricEngine implements ReportMetricEngine<TaskDefinition> {
+public final class ExplainPlanMetricEngine implements MetricEngine<TaskDefinition> {
 	private int sequence;
 
 	private final TaskManager taskManager;
@@ -65,7 +65,7 @@ public final class ExplainPlanMetricEngine implements ReportMetricEngine<TaskDef
 
 	/** {@inheritDoc} */
 	@Override
-	public ReportMetric execute(final TaskDefinition taskDefinition) {
+	public Metric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//-----
 		try {
@@ -91,12 +91,12 @@ public final class ExplainPlanMetricEngine implements ReportMetricEngine<TaskDef
 	/**
 	 * @param explainPlan Plan d'execution
 	 */
-	private static ReportMetric createMetric(final String explainPlan, final Status status, final Throwable throwable) {
+	private static Metric createMetric(final String explainPlan, final Status status, final Throwable throwable) {
 		Assertion.checkNotNull(explainPlan);
 		//-----
 		final Integer value = createValue(explainPlan);
 		final String valueInformation = createValueInformation(explainPlan, status, throwable);
-		return ReportMetric.builder()
+		return Metric.builder()
 				.withTitle("Explain Plan")
 				.withStatus(status)
 				.withValue(value)

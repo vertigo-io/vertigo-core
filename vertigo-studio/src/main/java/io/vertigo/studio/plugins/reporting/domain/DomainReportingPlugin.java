@@ -18,26 +18,25 @@
  */
 package io.vertigo.studio.plugins.reporting.domain;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
+import io.vertigo.commons.impl.metric.MetricEngine;
+import io.vertigo.commons.impl.metric.MetricPlugin;
+import io.vertigo.commons.metric.Metric;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.impl.reporting.ReportMetricEngine;
-import io.vertigo.studio.impl.reporting.ReportingPlugin;
 import io.vertigo.studio.plugins.reporting.domain.metrics.count.CountMetricEngine;
 import io.vertigo.studio.plugins.reporting.domain.metrics.dependency.DependencyMetricEngine;
 import io.vertigo.studio.plugins.reporting.domain.metrics.fields.FieldsMetricEngine;
 import io.vertigo.studio.plugins.reporting.domain.metrics.persistence.PersistenceMetricEngine;
-import io.vertigo.studio.reporting.Report;
-import io.vertigo.studio.reporting.ReportLine;
-import io.vertigo.studio.reporting.ReportMetric;
 import io.vertigo.util.ListBuilder;
 
 /**
@@ -45,10 +44,10 @@ import io.vertigo.util.ListBuilder;
  *
  * @author pchretien
  */
-public final class DomainReportingPlugin implements ReportingPlugin {
+public final class DomainReportingPlugin implements MetricPlugin {
 	private final VTransactionManager transactionManager;
 	private final StoreManager storeManager;
-	private final List<ReportMetricEngine<DtDefinition>> metricEngines;
+	private final List<MetricEngine<DtDefinition>> metricEngines;
 
 	/**
 	 * Constructor.
@@ -68,28 +67,29 @@ public final class DomainReportingPlugin implements ReportingPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Report analyze() {
+	public List<Metric> analyze() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			return doAnalyze();
 		}
 	}
 
-	private Report doAnalyze() {
-		final List<ReportLine> domainAnalysisList = new ArrayList<>();
-		for (final DtDefinition dtDefinition : Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)) {
-			final List<ReportMetric> results = new ArrayList<>();
-			for (final ReportMetricEngine<DtDefinition> metricEngine : metricEngines) {
-				final ReportMetric result = metricEngine.execute(dtDefinition);
-				results.add(result);
-			}
-			final ReportLine result = new DtDefinitionReport(dtDefinition, results);
-			domainAnalysisList.add(result);
-		}
-		return new Report(this.getClass().getSimpleName(), domainAnalysisList);
+	private List<Metric> doAnalyze() {
+
+		final Collection<DtDefinition> dtDefinitions = Home.getApp().getDefinitionSpace().getAll(DtDefinition.class);
+
+		return dtDefinitions
+				.stream()
+				.flatMap(dtDefinition -> metricEngines
+						.stream()
+						.map(engine -> engine.execute(dtDefinition))
+						.collect(Collectors.toList())
+						.stream())
+				.collect(Collectors.toList());
+
 	}
 
-	private List<ReportMetricEngine<DtDefinition>> createMetricEngines() {
-		return new ListBuilder<ReportMetricEngine<DtDefinition>>()
+	private List<MetricEngine<DtDefinition>> createMetricEngines() {
+		return new ListBuilder<MetricEngine<DtDefinition>>()
 				.add(new FieldsMetricEngine())
 				.add(new DependencyMetricEngine())
 				.add(new PersistenceMetricEngine(storeManager))

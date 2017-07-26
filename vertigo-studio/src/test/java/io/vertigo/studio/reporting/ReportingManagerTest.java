@@ -23,18 +23,17 @@ import javax.inject.Inject;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.commons.metric.MetricManager;
 
 /**
  * @author pchretien, npiedeloup
  */
 public final class ReportingManagerTest extends AbstractTestCaseJU4 {
 	@Inject
-	private ReportingManager reportingManager;
+	private MetricManager reportingManager;
 
 	@Test
 	public void testAnalyze() {
-		reportingManager.analyze()
-				.stream()
-				.forEach(reportingManager::render);
+		reportingManager.analyze();
 	}
 }

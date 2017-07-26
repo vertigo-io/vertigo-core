@@ -37,8 +37,7 @@
 	</module>
 
 	<module name="vertigo-studio">
-		<component api="ReportingManager" class="io.vertigo.studio.impl.reporting.ReportingManagerImpl">
-			<param name="rootPath" value="D:/perfs/" />
+		<component api="MetricManager" class="io.vertigo.commons.impl.metric.MetricManagerImpl">
 			<plugin class="io.vertigo.studio.plugins.reporting.task.TaskReportingPlugin" />
 			<plugin class="io.vertigo.studio.plugins.reporting.domain.DomainReportingPlugin" />
 		</component>

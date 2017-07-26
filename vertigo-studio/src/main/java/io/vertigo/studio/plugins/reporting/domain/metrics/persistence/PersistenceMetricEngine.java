@@ -18,19 +18,19 @@
  */
 package io.vertigo.studio.plugins.reporting.domain.metrics.persistence;
 
+import io.vertigo.commons.impl.metric.MetricEngine;
+import io.vertigo.commons.metric.Metric;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.impl.reporting.ReportMetricEngine;
-import io.vertigo.studio.reporting.ReportMetric;
 
 /**
  * Vérifier si le DT est persistant.
  *
  * @author pchretien
  */
-public final class PersistenceMetricEngine implements ReportMetricEngine<DtDefinition> {
+public final class PersistenceMetricEngine implements MetricEngine<DtDefinition> {
 	private final StoreManager storeManager;
 
 	/**
@@ -45,18 +45,18 @@ public final class PersistenceMetricEngine implements ReportMetricEngine<DtDefin
 
 	/** {@inheritDoc} */
 	@Override
-	public ReportMetric execute(final DtDefinition dtDefinition) {
+	public Metric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		final boolean test = test(dtDefinition);
-		final ReportMetric.Status status;
+		final Metric.Status status;
 		if (test) {
-			status = ReportMetric.Status.EXECUTED;
+			status = Metric.Status.EXECUTED;
 		} else {
-			status = ReportMetric.Status.ERROR;
+			status = Metric.Status.ERROR;
 		}
 
-		return ReportMetric.builder()
+		return Metric.builder()
 				.withTitle("Persistance")
 				.withStatus(status)
 				.withValue(dtDefinition.isPersistent())

@@ -21,21 +21,21 @@ package io.vertigo.studio.plugins.reporting.task.metrics.performance;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import io.vertigo.commons.impl.metric.MetricEngine;
+import io.vertigo.commons.metric.Metric;
+import io.vertigo.commons.metric.Metric.Status;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.impl.reporting.ReportMetricEngine;
-import io.vertigo.studio.reporting.ReportMetric;
-import io.vertigo.studio.reporting.ReportMetric.Status;
 
 /**
  * Plugin de calcul du temps d'exécution d'une requête.
  *
  * @author tchassagnette
  */
-public final class PerformanceMetricEngine implements ReportMetricEngine<TaskDefinition> {
+public final class PerformanceMetricEngine implements MetricEngine<TaskDefinition> {
 	private final TaskManager taskManager;
 
 	/**
@@ -50,7 +50,7 @@ public final class PerformanceMetricEngine implements ReportMetricEngine<TaskDef
 
 	/** {@inheritDoc} */
 	@Override
-	public ReportMetric execute(final TaskDefinition taskDefinition) {
+	public Metric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//-----
 		try {
@@ -67,8 +67,8 @@ public final class PerformanceMetricEngine implements ReportMetricEngine<TaskDef
 		return sw.getBuffer().toString();
 	}
 
-	private static ReportMetric buildPerformanceMetric(final Status status, final Long executionTime, final String valueInformation) {
-		return ReportMetric.builder()
+	private static Metric buildPerformanceMetric(final Status status, final Long executionTime, final String valueInformation) {
+		return Metric.builder()
 				.withValue(executionTime)
 				.withTitle("Temps d'exécution")
 				.withUnit("ms")
@@ -77,7 +77,7 @@ public final class PerformanceMetricEngine implements ReportMetricEngine<TaskDef
 				.build();
 	}
 
-	private ReportMetric doExecute(final TaskDefinition taskDefinition) {
+	private Metric doExecute(final TaskDefinition taskDefinition) {
 		//System.out.println(">>>>" + currentTask.getEngineClass().getCanonicalName());
 		if (TaskEngineSelect.class.isAssignableFrom(taskDefinition.getTaskEngineClass()) && !hasNotNullOutParams(taskDefinition)) {
 			//	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>" + currentTask.getEngineClass().getCanonicalName());

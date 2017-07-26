@@ -3,6 +3,7 @@
  */
 package io.vertigo.commons.impl.health;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -78,6 +79,7 @@ public final class HealthManagerImpl implements HealthManager, SimpleDefinitionP
 			return new HealthCheck(
 					healthCheckDefinition.getHealthCheckName(),
 					healthCheckDefinition.getChecker(),
+					Instant.now(),
 					healthMeasure);
 		} catch (final Exception e) {
 			final HealthMeasure healthMeasure = HealthMeasure.builder()
@@ -86,6 +88,7 @@ public final class HealthManagerImpl implements HealthManager, SimpleDefinitionP
 			return new HealthCheck(
 					healthCheckDefinition.getHealthCheckName(),
 					healthCheckDefinition.getChecker(),
+					Instant.now(),
 					healthMeasure);
 		}
 	}

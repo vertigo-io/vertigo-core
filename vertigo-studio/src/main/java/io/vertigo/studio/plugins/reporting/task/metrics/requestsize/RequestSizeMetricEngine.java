@@ -18,24 +18,24 @@
  */
 package io.vertigo.studio.plugins.reporting.task.metrics.requestsize;
 
+import io.vertigo.commons.impl.metric.MetricEngine;
+import io.vertigo.commons.metric.Metric;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.impl.reporting.ReportMetricEngine;
-import io.vertigo.studio.reporting.ReportMetric;
 
 /**
  * Plugin de calcul de la taille en caractères d'une requête.
  *
  * @author tchassagnette
  */
-public final class RequestSizeMetricEngine implements ReportMetricEngine<TaskDefinition> {
+public final class RequestSizeMetricEngine implements MetricEngine<TaskDefinition> {
 	/** {@inheritDoc} */
 	@Override
-	public ReportMetric execute(final TaskDefinition taskDefinition) {
+	public Metric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//-----
 		final int size = taskDefinition.getRequest().length();
-		return ReportMetric.builder()
+		return Metric.builder()
 				.withTitle("Taille requête")
 				.withValue(size)
 				.withUnit("caractères")

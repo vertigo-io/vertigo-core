@@ -20,24 +20,24 @@ package io.vertigo.studio.plugins.reporting.task.metrics.subrequest;
 
 import java.util.Locale;
 
+import io.vertigo.commons.impl.metric.MetricEngine;
+import io.vertigo.commons.metric.Metric;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.impl.reporting.ReportMetricEngine;
-import io.vertigo.studio.reporting.ReportMetric;
 
 /**
  * Plugin qui compte le nombre de ss requete dans une requete SQL.
  *
  * @author tchassagnette
  */
-public final class SubRequestMetricEngine implements ReportMetricEngine<TaskDefinition> {
+public final class SubRequestMetricEngine implements MetricEngine<TaskDefinition> {
 	/** {@inheritDoc} */
 	@Override
-	public ReportMetric execute(final TaskDefinition taskDefinition) {
+	public Metric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//-----
 		final int subRequestCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("SELECT").length - 1;
-		return ReportMetric.builder()
+		return Metric.builder()
 				.withTitle("Nombre de ss-requêtes")
 				.withValue(subRequestCount)
 				.build();

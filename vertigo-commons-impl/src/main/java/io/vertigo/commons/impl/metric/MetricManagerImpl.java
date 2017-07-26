@@ -16,19 +16,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.impl.reporting.renderer;
+package io.vertigo.commons.impl.metric;
 
-import io.vertigo.studio.reporting.Report;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
+import io.vertigo.commons.metric.Metric;
+import io.vertigo.commons.metric.MetricManager;
+import io.vertigo.lang.Assertion;
 
 /**
- * Interface de rendu d'un rapport d'analyse relatif à une collection d'objets.
+ * Implémentation de ReportingManager.
  *
  * @author pchretien
  */
-public interface ReportRenderer {
+public final class MetricManagerImpl implements MetricManager {
+	private final List<MetricPlugin> reportingPlugins;
+
 	/**
-	 * Rendu d'un rapport (sous format HTML)
-	 * @param report Rapport
+	 * @param reportingPlugins reportingPlugins
 	 */
-	void render(final Report report);
+	@Inject
+	public MetricManagerImpl(
+			final List<MetricPlugin> reportingPlugins) {
+		Assertion.checkNotNull(reportingPlugins);
+		//-----
+		this.reportingPlugins = reportingPlugins;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<Metric> analyze() {
+		return reportingPlugins
+				.stream()
+				.flatMap(plugin -> plugin.analyze().stream())
+				.collect(Collectors.toList());
+	}
+
 }

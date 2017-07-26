@@ -16,33 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.reporting;
+package io.vertigo.commons.impl.metric;
 
-import java.util.List;
+import io.vertigo.commons.metric.Metric;
 
 /**
- * Résultat d'une ligne d'analyse.
+ * Interface représentant un plugin d'analyse.
  *
  * @author tchassagnette
+ * @param <I> Tyep d'objet dont on souhaite obtenir la métrique
  */
-public interface ReportLine {
+public interface MetricEngine<I> {
 	/**
-	 * @return Intitulé de l'analyse effectuée. (ex : Nom de l'objet)
+	 * Moteur permettant de calculer une métrique.
+	 * @param item item to benchmark
+	 * @return Métrique obtenue.
 	 */
-	String getTitle();
-
-	/**
-	 * @return Nom du fichier
-	 */
-	String getFileName();
-
-	/**
-	 * Description HTML de la donéne
-	 */
-	String getHtmlDescription();
-
-	/**
-	 * @return Métriques associées.
-	 */
-	List<ReportMetric> getMetrics();
+	Metric execute(final I item);
 }

@@ -19,27 +19,27 @@
 package io.vertigo.studio.plugins.reporting.domain.metrics.dependency;
 
 import io.vertigo.app.Home;
+import io.vertigo.commons.impl.metric.MetricEngine;
+import io.vertigo.commons.metric.Metric;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.impl.reporting.ReportMetricEngine;
-import io.vertigo.studio.reporting.ReportMetric;
 
 /**
  * Comptage du nombre de champs.
  *
  * @author pchretien
  */
-public final class DependencyMetricEngine implements ReportMetricEngine<DtDefinition> {
+public final class DependencyMetricEngine implements MetricEngine<DtDefinition> {
 
 	/** {@inheritDoc} */
 	@Override
-	public ReportMetric execute(final DtDefinition dtDefinition) {
+	public Metric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		final int count = count(dtDefinition);
-		return ReportMetric.builder()
+		return Metric.builder()
 				.withTitle("Utilisation dans les dao")
 				.withValue(count)
 				.build();

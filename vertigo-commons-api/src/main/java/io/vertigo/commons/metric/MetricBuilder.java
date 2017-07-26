@@ -16,18 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.reporting;
+package io.vertigo.commons.metric;
 
+import io.vertigo.commons.metric.Metric.Status;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.studio.reporting.ReportMetric.Status;
 
 /**
  * Builder de metric.
  *
  * @author pchretien
  */
-public final class ReportMetricBuilder implements Builder<ReportMetric> {
+public final class MetricBuilder implements Builder<Metric> {
 	private Status myStatus = Status.EXECUTED; //default not required
 	private String myTitle; //require
 	private String myUnit = ""; //default not required
@@ -37,20 +37,20 @@ public final class ReportMetricBuilder implements Builder<ReportMetric> {
 	/**
 	 * Constructor.
 	 */
-	ReportMetricBuilder() {
+	MetricBuilder() {
 		super();
 	}
 
 	@Override
-	public ReportMetric build() {
-		return new ReportMetric(myStatus, myTitle, myUnit, myValue, myValueInformation);
+	public Metric build() {
+		return new Metric(myStatus, myTitle, myUnit, myValue, myValueInformation);
 	}
 
 	/**
 	 * Status de la métrique.
 	 * @return Builder
 	 */
-	public ReportMetricBuilder withStatus(final Status status) {
+	public MetricBuilder withStatus(final Status status) {
 		Assertion.checkNotNull(status);
 		//-----
 		myStatus = status;
@@ -61,7 +61,7 @@ public final class ReportMetricBuilder implements Builder<ReportMetric> {
 	 * Titre de la métrique. (notNull)
 	 * @return Builder
 	 */
-	public ReportMetricBuilder withTitle(final String title) {
+	public MetricBuilder withTitle(final String title) {
 		Assertion.checkArgNotEmpty(title);
 		//-----
 		myTitle = title;
@@ -72,7 +72,7 @@ public final class ReportMetricBuilder implements Builder<ReportMetric> {
 	 * Unité de la métrique. (notNull)
 	 * @return Builder
 	 */
-	public ReportMetricBuilder withUnit(final String unit) {
+	public MetricBuilder withUnit(final String unit) {
 		Assertion.checkArgNotEmpty(unit);
 		//-----
 		myUnit = unit;
@@ -83,7 +83,7 @@ public final class ReportMetricBuilder implements Builder<ReportMetric> {
 	 * Valeur de la métrique. (Integer, Long, String, etc..)
 	 * @return Builder
 	 */
-	public ReportMetricBuilder withValue(final Object value) {
+	public MetricBuilder withValue(final Object value) {
 		myValue = value;
 		return this;
 	}
@@ -92,7 +92,7 @@ public final class ReportMetricBuilder implements Builder<ReportMetric> {
 	 * Complément d'information sur la valeur. (nullable)
 	 * @return Builder
 	 */
-	public ReportMetricBuilder withValueInformation(final String valueInformation) {
+	public MetricBuilder withValueInformation(final String valueInformation) {
 		myValueInformation = valueInformation;
 		return this;
 	}

@@ -16,19 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.impl.reporting;
+package io.vertigo.commons.impl.metric;
 
+import java.util.List;
+
+import io.vertigo.commons.metric.Metric;
 import io.vertigo.core.component.Plugin;
-import io.vertigo.studio.reporting.Report;
 
 /**
  * Plugin permettant de créer un rapport particulier.
  *
  * @author pchretien
  */
-public interface ReportingPlugin extends Plugin {
+public interface MetricPlugin extends Plugin {
 	/**
 	 * @return Rapport d'analyse d'un plugin
 	 */
-	Report analyze();
+	List<Metric> analyze();
 }

@@ -18,24 +18,24 @@
  */
 package io.vertigo.studio.plugins.reporting.domain.metrics.fields;
 
+import io.vertigo.commons.impl.metric.MetricEngine;
+import io.vertigo.commons.metric.Metric;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.impl.reporting.ReportMetricEngine;
-import io.vertigo.studio.reporting.ReportMetric;
 
 /**
  * Comptage du nombre de champs.
  *
  * @author pchretien
  */
-public final class FieldsMetricEngine implements ReportMetricEngine<DtDefinition> {
+public final class FieldsMetricEngine implements MetricEngine<DtDefinition> {
 	/** {@inheritDoc} */
 	@Override
-	public ReportMetric execute(final DtDefinition dtDefinition) {
+	public Metric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		final int size = dtDefinition.getFields().size();
-		return ReportMetric.builder()
+		return Metric.builder()
 				.withTitle("Nombre de champs")
 				.withValue(size)
 				.build();
