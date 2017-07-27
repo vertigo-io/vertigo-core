@@ -37,36 +37,38 @@ public final class CountMetricEngine implements MetricEngine<DtDefinition> {
 	 * Constructeur.
 	 * @param storeManager Manager de persistance
 	 */
-	public CountMetricEngine(final StoreManager storeManager) {
+	public CountMetricEngine(
+			final StoreManager storeManager) {
 		Assertion.checkNotNull(storeManager);
 		//-----
 		this.storeManager = storeManager;
+	}
+
+	@Override
+	public boolean isApplicable(final DtDefinition dtDefinition) {
+		Assertion.checkNotNull(dtDefinition);
+		//---
+		return dtDefinition.isPersistent();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Metric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkState(dtDefinition.isPersistent(), "Count can only be performed on persistent entities, DtDefinition '{0}' is not", dtDefinition.getName());
 		//-----
 		final MetricBuilder metricBuilder = Metric.builder()
-				.withTitle("Nbre lignes")
-				.withUnit("rows");
-
-		if (!dtDefinition.isPersistent()) {
-			return metricBuilder
-					.withStatus(Metric.Status.REJECTETD)
-					.build();
-		}
-		//Dans le cas ou DT est persistant on compte le nombre de lignes.
+				.withType("entityCount")
+				.withSubject(dtDefinition.getName());
 		try {
-			final int count = storeManager.getDataStore().count(dtDefinition);
+			final double count = storeManager.getDataStore().count(dtDefinition);
 			return metricBuilder
-					.withStatus(Metric.Status.EXECUTED)
+					.withSuccess()
 					.withValue(count)
 					.build();
 		} catch (final Exception e) {
 			return metricBuilder
-					.withStatus(Metric.Status.ERROR)
+					.withError()
 					.build();
 		}
 	}

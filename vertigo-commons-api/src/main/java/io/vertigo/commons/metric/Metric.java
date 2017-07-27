@@ -18,39 +18,47 @@
  */
 package io.vertigo.commons.metric;
 
+import java.time.Instant;
+
 import io.vertigo.lang.Assertion;
 
 /**
  * Interface décrivant un résultat de metric.
  *
- * @author tchassagnette, pchretien
+ * @author mlaroche, pchretien
  */
 public final class Metric {
+
 	public enum Status {
 		/** Exécution OK*/
-		EXECUTED,
+		SUCCESS,
 		/** Erreur lors de l'exécution*/
-		ERROR,
-		/** Métrique non pertinente*/
-		REJECTETD
+		ERROR;
 	}
 
+	private final Instant measureTime;
+	private final String type;
+	private final String subject;
+	private final Double value;//migth be null
 	private final Status status;
-	private final String title;
-	private final String unit;
-	private final Object value;
-	private final String valueInformation;
 
-	Metric(final Status status, final String title, final String unit, final Object value, final String valueInformation) {
+	Metric(
+			final Instant measureTime,
+			final String type,
+			final String subject,
+			final Double value,
+			final Status status) {
+		Assertion.checkNotNull(measureTime);
+		Assertion.checkArgNotEmpty(type);
+		Assertion.checkArgNotEmpty(subject);
 		Assertion.checkNotNull(status);
-		Assertion.checkArgNotEmpty(title);
-		Assertion.checkNotNull(unit); //may be empty
 		//-----
-		this.status = status;
-		this.title = title;
-		this.unit = unit;
+		this.measureTime = measureTime;
+		this.type = type;
+		this.subject = subject;
 		this.value = value;
-		this.valueInformation = valueInformation;
+		this.status = status;
+
 	}
 
 	/**
@@ -61,38 +69,24 @@ public final class Metric {
 		return new MetricBuilder();
 	}
 
-	/**
-	 * @return Status de la métrique.
-	 */
+	public Instant getMeasureTime() {
+		return measureTime;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public Double getValue() {
+		return value;
+	}
+
 	public Status getStatus() {
 		return status;
 	}
 
-	/**
-	 * @return Titre de la métrique. (notNull)
-	 */
-	public String getTitle() {
-		return title;
-	}
-
-	/**
-	 * @return Unité de la métrique. (notNull)
-	 */
-	public String getUnit() {
-		return unit;
-	}
-
-	/**
-	 * @return Valeur de la métrique. (Integer, Long, String, etc..)
-	 */
-	public Object getValue() {
-		return value;
-	}
-
-	/**
-	 * @return Complément d'information sur la valeur. (nullable)
-	 */
-	public String getValueInformation() {
-		return valueInformation;
-	}
 }

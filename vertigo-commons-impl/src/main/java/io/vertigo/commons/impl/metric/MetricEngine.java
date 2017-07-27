@@ -33,4 +33,8 @@ public interface MetricEngine<I> {
 	 * @return Métrique obtenue.
 	 */
 	Metric execute(final I item);
+
+	default boolean isApplicable(final I item) {
+		return true;
+	}
 }

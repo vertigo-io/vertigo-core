@@ -38,14 +38,16 @@ public final class DependencyMetricEngine implements MetricEngine<DtDefinition> 
 	public Metric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
-		final int count = count(dtDefinition);
+		final double count = count(dtDefinition);
 		return Metric.builder()
-				.withTitle("Utilisation dans les dao")
+				.withSuccess()
+				.withType("definitionUsageInDao")
+				.withSubject(dtDefinition.getName())
 				.withValue(count)
 				.build();
 	}
 
-	private static int count(final DtDefinition dtDefinition) {
+	private static double count(final DtDefinition dtDefinition) {
 		int count = 0;
 		for (final TaskDefinition taskDefinition : Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)) {
 			for (final TaskAttribute taskAttribute : taskDefinition.getInAttributes()) {
@@ -59,7 +61,7 @@ public final class DependencyMetricEngine implements MetricEngine<DtDefinition> 
 		return count;
 	}
 
-	private static int count(final DtDefinition dtDefinition, final TaskAttribute taskAttribute) {
+	private static double count(final DtDefinition dtDefinition, final TaskAttribute taskAttribute) {
 		int count = 0;
 		if (!taskAttribute.getDomain().getDataType().isPrimitive()) {
 			if (dtDefinition.equals(taskAttribute.getDomain().getDtDefinition())) {

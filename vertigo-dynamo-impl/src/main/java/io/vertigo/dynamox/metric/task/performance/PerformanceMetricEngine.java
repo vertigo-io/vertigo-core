@@ -18,12 +18,11 @@
  */
 package io.vertigo.dynamox.metric.task.performance;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import io.vertigo.commons.impl.metric.MetricEngine;
 import io.vertigo.commons.metric.Metric;
-import io.vertigo.commons.metric.Metric.Status;
+import io.vertigo.commons.metric.MetricBuilder;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
@@ -36,15 +35,21 @@ import io.vertigo.lang.Assertion;
  * @author tchassagnette
  */
 public final class PerformanceMetricEngine implements MetricEngine<TaskDefinition> {
+
+	private final VTransactionManager transactionManager;
 	private final TaskManager taskManager;
 
 	/**
 	 * Constructeur apr défaut.
 	 * @param taskManager Manager des tasks
 	 */
-	public PerformanceMetricEngine(final TaskManager taskManager) {
+	public PerformanceMetricEngine(
+			final VTransactionManager transactionManager,
+			final TaskManager taskManager) {
+		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(taskManager);
 		//-----
+		this.transactionManager = transactionManager;
 		this.taskManager = taskManager;
 	}
 
@@ -53,45 +58,39 @@ public final class PerformanceMetricEngine implements MetricEngine<TaskDefinitio
 	public Metric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//-----
-		try {
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			return doExecute(taskDefinition);
-		} catch (final Exception e) {
-			//throw new RiException("Erreur du plugin perfs", e);
-			return buildPerformanceMetric(Status.ERROR, null, createValueInformation(e));
 		}
 	}
 
-	private static String createValueInformation(final Throwable throwable) {
-		final StringWriter sw = new StringWriter();
-		throwable.printStackTrace(new PrintWriter(sw));
-		return sw.getBuffer().toString();
-	}
-
-	private static Metric buildPerformanceMetric(final Status status, final Long executionTime, final String valueInformation) {
-		return Metric.builder()
-				.withValue(executionTime)
-				.withTitle("Temps d'exécution")
-				.withUnit("ms")
-				.withValueInformation(valueInformation)
-				.withStatus(status)
-				.build();
+	@Override
+	public boolean isApplicable(final TaskDefinition taskDefinition) {
+		Assertion.checkNotNull(taskDefinition);
+		//---
+		return TaskEngineSelect.class.isAssignableFrom(taskDefinition.getTaskEngineClass()) && !hasNotNullOutParams(taskDefinition);
 	}
 
 	private Metric doExecute(final TaskDefinition taskDefinition) {
-		//System.out.println(">>>>" + currentTask.getEngineClass().getCanonicalName());
-		if (TaskEngineSelect.class.isAssignableFrom(taskDefinition.getTaskEngineClass()) && !hasNotNullOutParams(taskDefinition)) {
-			//	System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>" + currentTask.getEngineClass().getCanonicalName());
+		final MetricBuilder metricBuilder = Metric.builder()
+				.withType("taskExecutionTime")
+				.withSubject(taskDefinition.getName());
+
+		try {
 			final TaskPopulator taskPopulator = new TaskPopulator(taskDefinition);
 			final Task task = taskPopulator.populateTask();
 			final long startTime = System.currentTimeMillis();
-			/*TaskResult result =*/taskManager.execute(task);
-			//on n'utilise pas le resultat
+			taskManager.execute(task);
 			final long endTime = System.currentTimeMillis();
-			final long executionTime = endTime - startTime;
-			return buildPerformanceMetric(Status.EXECUTED, executionTime, null);
+			final double executionTime = endTime - startTime;
+			return metricBuilder
+					.withSuccess()
+					.withValue(executionTime)
+					.build();
+		} catch (final Exception e) {
+			return metricBuilder
+					.withError()
+					.build();
 		}
-		//Le test n'a pas de sens.
-		return buildPerformanceMetric(Status.REJECTETD, null, null);
 	}
 
 	private static boolean hasNotNullOutParams(final TaskDefinition taskDefinition) {

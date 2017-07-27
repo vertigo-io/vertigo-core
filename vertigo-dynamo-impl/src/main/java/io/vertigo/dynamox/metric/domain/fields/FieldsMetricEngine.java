@@ -34,9 +34,11 @@ public final class FieldsMetricEngine implements MetricEngine<DtDefinition> {
 	public Metric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
-		final int size = dtDefinition.getFields().size();
+		final double size = dtDefinition.getFields().size();
 		return Metric.builder()
-				.withTitle("Nombre de champs")
+				.withSuccess()
+				.withType("definitionFieldCount")
+				.withSubject(dtDefinition.getName())
 				.withValue(size)
 				.build();
 	}

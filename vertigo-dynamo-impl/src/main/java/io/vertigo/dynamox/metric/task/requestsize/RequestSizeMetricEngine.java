@@ -34,11 +34,12 @@ public final class RequestSizeMetricEngine implements MetricEngine<TaskDefinitio
 	public Metric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//-----
-		final int size = taskDefinition.getRequest().length();
+		final double size = taskDefinition.getRequest().length();
 		return Metric.builder()
-				.withTitle("Taille requête")
+				.withType("taskRequestSize")
+				.withSubject(taskDefinition.getName())
 				.withValue(size)
-				.withUnit("caractères")
+				.withSuccess()
 				.build();
 	}
 }

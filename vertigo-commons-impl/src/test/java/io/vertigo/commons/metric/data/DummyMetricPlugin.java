@@ -13,8 +13,9 @@ public class DummyMetricPlugin implements MetricPlugin {
 		return Collections.singletonList(
 				Metric
 						.builder()
-						.withTitle("test")
-						.withValue(0)
+						.withType("type")
+						.withSubject("subject")
+						.withValue(0.00)
 						.build());
 	}
 
