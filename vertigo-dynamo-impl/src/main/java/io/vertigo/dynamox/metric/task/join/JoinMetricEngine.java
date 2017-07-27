@@ -16,7 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.plugins.reporting.task.metrics.requestsize;
+package io.vertigo.dynamox.metric.task.join;
+
+import java.util.Locale;
 
 import io.vertigo.commons.impl.metric.MetricEngine;
 import io.vertigo.commons.metric.Metric;
@@ -24,21 +26,21 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 
 /**
- * Plugin de calcul de la taille en caractères d'une requête.
+ * Plugin qui compte le nombre de jointures déclarées dans la requête.
  *
  * @author tchassagnette
  */
-public final class RequestSizeMetricEngine implements MetricEngine<TaskDefinition> {
+public final class JoinMetricEngine implements MetricEngine<TaskDefinition> {
 	/** {@inheritDoc} */
 	@Override
 	public Metric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//-----
-		final int size = taskDefinition.getRequest().length();
+		final int joinCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("JOIN").length - 1;
+		final int fromCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("FROM ").length - 1;
 		return Metric.builder()
-				.withTitle("Taille requête")
-				.withValue(size)
-				.withUnit("caractères")
+				.withTitle("Nombre de jointures")
+				.withValue(joinCount + fromCount)
 				.build();
 	}
 }

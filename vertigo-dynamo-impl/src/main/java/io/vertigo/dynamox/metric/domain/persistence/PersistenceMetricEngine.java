@@ -16,28 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.plugins.reporting.domain.metrics.count;
+package io.vertigo.dynamox.metric.domain.persistence;
 
 import io.vertigo.commons.impl.metric.MetricEngine;
 import io.vertigo.commons.metric.Metric;
-import io.vertigo.commons.metric.MetricBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 
 /**
- * Comptage du nombre de lignes.
+ * Vérifier si le DT est persistant.
  *
  * @author pchretien
  */
-public final class CountMetricEngine implements MetricEngine<DtDefinition> {
+public final class PersistenceMetricEngine implements MetricEngine<DtDefinition> {
 	private final StoreManager storeManager;
 
 	/**
 	 * Constructeur.
 	 * @param storeManager Manager de persistance
 	 */
-	public CountMetricEngine(final StoreManager storeManager) {
+	public PersistenceMetricEngine(final StoreManager storeManager) {
 		Assertion.checkNotNull(storeManager);
 		//-----
 		this.storeManager = storeManager;
@@ -48,26 +48,31 @@ public final class CountMetricEngine implements MetricEngine<DtDefinition> {
 	public Metric execute(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
-		final MetricBuilder metricBuilder = Metric.builder()
-				.withTitle("Nbre lignes")
-				.withUnit("rows");
-
-		if (!dtDefinition.isPersistent()) {
-			return metricBuilder
-					.withStatus(Metric.Status.REJECTETD)
-					.build();
+		final boolean test = test(dtDefinition);
+		final Metric.Status status;
+		if (test) {
+			status = Metric.Status.EXECUTED;
+		} else {
+			status = Metric.Status.ERROR;
 		}
-		//Dans le cas ou DT est persistant on compte le nombre de lignes.
+
+		return Metric.builder()
+				.withTitle("Persistance")
+				.withStatus(status)
+				.withValue(dtDefinition.isPersistent())
+				.build();
+	}
+
+	//On teste si la définition est persistante, elle existe en BDD et le mapping est ok.
+	private boolean test(final DtDefinition dtDefinition) {
+		if (!dtDefinition.isPersistent()) {
+			return true;
+		}
 		try {
-			final int count = storeManager.getDataStore().count(dtDefinition);
-			return metricBuilder
-					.withStatus(Metric.Status.EXECUTED)
-					.withValue(count)
-					.build();
+			storeManager.getDataStore().findAll(new DtListURIForCriteria<>(dtDefinition, null, 1));
+			return true;
 		} catch (final Exception e) {
-			return metricBuilder
-					.withStatus(Metric.Status.ERROR)
-					.build();
+			return false;
 		}
 	}
 }

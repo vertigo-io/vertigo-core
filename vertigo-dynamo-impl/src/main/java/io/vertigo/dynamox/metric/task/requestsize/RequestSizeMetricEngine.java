@@ -16,28 +16,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.plugins.reporting.domain.metrics.fields;
+package io.vertigo.dynamox.metric.task.requestsize;
 
 import io.vertigo.commons.impl.metric.MetricEngine;
 import io.vertigo.commons.metric.Metric;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 
 /**
- * Comptage du nombre de champs.
+ * Plugin de calcul de la taille en caractères d'une requête.
  *
- * @author pchretien
+ * @author tchassagnette
  */
-public final class FieldsMetricEngine implements MetricEngine<DtDefinition> {
+public final class RequestSizeMetricEngine implements MetricEngine<TaskDefinition> {
 	/** {@inheritDoc} */
 	@Override
-	public Metric execute(final DtDefinition dtDefinition) {
-		Assertion.checkNotNull(dtDefinition);
+	public Metric execute(final TaskDefinition taskDefinition) {
+		Assertion.checkNotNull(taskDefinition);
 		//-----
-		final int size = dtDefinition.getFields().size();
+		final int size = taskDefinition.getRequest().length();
 		return Metric.builder()
-				.withTitle("Nombre de champs")
+				.withTitle("Taille requête")
 				.withValue(size)
+				.withUnit("caractères")
 				.build();
 	}
 }

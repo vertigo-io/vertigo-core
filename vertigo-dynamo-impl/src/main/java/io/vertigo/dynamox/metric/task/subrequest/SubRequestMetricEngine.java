@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.plugins.reporting.task.metrics.subrequest;
+package io.vertigo.dynamox.metric.task.subrequest;
 
 import java.util.Locale;
 

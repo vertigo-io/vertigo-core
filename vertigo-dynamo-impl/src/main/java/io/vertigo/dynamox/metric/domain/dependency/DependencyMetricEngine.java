@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.plugins.reporting.domain.metrics.dependency;
+package io.vertigo.dynamox.metric.domain.dependency;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.impl.metric.MetricEngine;

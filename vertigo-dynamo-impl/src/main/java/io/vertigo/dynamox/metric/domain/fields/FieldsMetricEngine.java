@@ -16,31 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.plugins.reporting.task.metrics.join;
-
-import java.util.Locale;
+package io.vertigo.dynamox.metric.domain.fields;
 
 import io.vertigo.commons.impl.metric.MetricEngine;
 import io.vertigo.commons.metric.Metric;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 
 /**
- * Plugin qui compte le nombre de jointures déclarées dans la requête.
+ * Comptage du nombre de champs.
  *
- * @author tchassagnette
+ * @author pchretien
  */
-public final class JoinMetricEngine implements MetricEngine<TaskDefinition> {
+public final class FieldsMetricEngine implements MetricEngine<DtDefinition> {
 	/** {@inheritDoc} */
 	@Override
-	public Metric execute(final TaskDefinition taskDefinition) {
-		Assertion.checkNotNull(taskDefinition);
+	public Metric execute(final DtDefinition dtDefinition) {
+		Assertion.checkNotNull(dtDefinition);
 		//-----
-		final int joinCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("JOIN").length - 1;
-		final int fromCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("FROM ").length - 1;
+		final int size = dtDefinition.getFields().size();
 		return Metric.builder()
-				.withTitle("Nombre de jointures")
-				.withValue(joinCount + fromCount)
+				.withTitle("Nombre de champs")
+				.withValue(size)
 				.build();
 	}
 }

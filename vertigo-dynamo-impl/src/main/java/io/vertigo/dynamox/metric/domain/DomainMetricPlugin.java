@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.plugins.reporting.domain;
+package io.vertigo.dynamox.metric.domain;
 
 import java.util.Collection;
 import java.util.List;
@@ -32,11 +32,11 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.dynamox.metric.domain.count.CountMetricEngine;
+import io.vertigo.dynamox.metric.domain.dependency.DependencyMetricEngine;
+import io.vertigo.dynamox.metric.domain.fields.FieldsMetricEngine;
+import io.vertigo.dynamox.metric.domain.persistence.PersistenceMetricEngine;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.plugins.reporting.domain.metrics.count.CountMetricEngine;
-import io.vertigo.studio.plugins.reporting.domain.metrics.dependency.DependencyMetricEngine;
-import io.vertigo.studio.plugins.reporting.domain.metrics.fields.FieldsMetricEngine;
-import io.vertigo.studio.plugins.reporting.domain.metrics.persistence.PersistenceMetricEngine;
 import io.vertigo.util.ListBuilder;
 
 /**
@@ -44,7 +44,7 @@ import io.vertigo.util.ListBuilder;
  *
  * @author pchretien
  */
-public final class DomainReportingPlugin implements MetricPlugin {
+public final class DomainMetricPlugin implements MetricPlugin {
 	private final VTransactionManager transactionManager;
 	private final StoreManager storeManager;
 	private final List<MetricEngine<DtDefinition>> metricEngines;
@@ -55,7 +55,7 @@ public final class DomainReportingPlugin implements MetricPlugin {
 	 * @param storeManager the storeManager
 	 */
 	@Inject
-	public DomainReportingPlugin(final VTransactionManager transactionManager, final StoreManager storeManager) {
+	public DomainMetricPlugin(final VTransactionManager transactionManager, final StoreManager storeManager) {
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(storeManager);
 		//-----

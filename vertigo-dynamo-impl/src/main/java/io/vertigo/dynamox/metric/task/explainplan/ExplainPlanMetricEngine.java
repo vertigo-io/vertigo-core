@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.plugins.reporting.task.metrics.explainplan;
+package io.vertigo.dynamox.metric.task.explainplan;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -35,10 +35,10 @@ import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
+import io.vertigo.dynamox.metric.task.performance.TaskPopulator;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-import io.vertigo.studio.plugins.reporting.task.metrics.performance.TaskPopulator;
 
 /**
  * Plugin qui va lancer la commande de calcul puis d'affichage du plan d'exécution.

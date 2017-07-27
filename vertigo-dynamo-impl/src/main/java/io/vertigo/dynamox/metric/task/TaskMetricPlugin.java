@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.plugins.reporting.task;
+package io.vertigo.dynamox.metric.task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +32,12 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
+import io.vertigo.dynamox.metric.task.explainplan.ExplainPlanMetricEngine;
+import io.vertigo.dynamox.metric.task.join.JoinMetricEngine;
+import io.vertigo.dynamox.metric.task.performance.PerformanceMetricEngine;
+import io.vertigo.dynamox.metric.task.requestsize.RequestSizeMetricEngine;
+import io.vertigo.dynamox.metric.task.subrequest.SubRequestMetricEngine;
 import io.vertigo.lang.Assertion;
-import io.vertigo.studio.plugins.reporting.task.metrics.explainplan.ExplainPlanMetricEngine;
-import io.vertigo.studio.plugins.reporting.task.metrics.join.JoinMetricEngine;
-import io.vertigo.studio.plugins.reporting.task.metrics.performance.PerformanceMetricEngine;
-import io.vertigo.studio.plugins.reporting.task.metrics.requestsize.RequestSizeMetricEngine;
-import io.vertigo.studio.plugins.reporting.task.metrics.subrequest.SubRequestMetricEngine;
 import io.vertigo.util.ListBuilder;
 
 /**
@@ -45,7 +45,7 @@ import io.vertigo.util.ListBuilder;
  *
  * @author tchassagnette
  */
-public final class TaskReportingPlugin implements MetricPlugin {
+public final class TaskMetricPlugin implements MetricPlugin {
 	private final VTransactionManager transactionManager;
 	private final TaskManager taskManager;
 	private final SqlDataBaseManager sqlDataBaseManager;
@@ -53,7 +53,7 @@ public final class TaskReportingPlugin implements MetricPlugin {
 	private final List<MetricEngine<TaskDefinition>> metricEngines;
 
 	@Inject
-	public TaskReportingPlugin(final VTransactionManager transactionManager, final TaskManager taskManager, final SqlDataBaseManager sqlDataBaseManager) {
+	public TaskMetricPlugin(final VTransactionManager transactionManager, final TaskManager taskManager, final SqlDataBaseManager sqlDataBaseManager) {
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(taskManager);
 		Assertion.checkNotNull(sqlDataBaseManager);
