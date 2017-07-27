@@ -36,7 +36,7 @@ public final class Metric {
 		ERROR;
 	}
 
-	private final Instant measureTime;
+	private final Instant measureInstant;
 	private final String type;
 	private final String subject;
 	private final Double value;//migth be null
@@ -53,7 +53,7 @@ public final class Metric {
 		Assertion.checkArgNotEmpty(subject);
 		Assertion.checkNotNull(status);
 		//-----
-		this.measureTime = measureTime;
+		this.measureInstant = measureTime;
 		this.type = type;
 		this.subject = subject;
 		this.value = value;
@@ -69,8 +69,8 @@ public final class Metric {
 		return new MetricBuilder();
 	}
 
-	public Instant getMeasureTime() {
-		return measureTime;
+	public Instant getMeasureInstant() {
+		return measureInstant;
 	}
 
 	public String getType() {
