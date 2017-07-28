@@ -95,7 +95,7 @@ public final class CatalogWebServices implements WebServices {
 			sb.append(((Class) returnType).getSimpleName());
 		} else {
 			//le toString colle pour les autres cas
-			sb.append(returnType.toString());
+			sb.append(returnType);
 		}
 	}
 }

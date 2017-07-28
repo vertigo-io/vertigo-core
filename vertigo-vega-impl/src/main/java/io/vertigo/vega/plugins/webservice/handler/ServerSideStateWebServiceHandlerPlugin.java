@@ -90,7 +90,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 				} else if (webServiceValue instanceof UiListDelta) {
 					readServerSideUiListDelta((UiListDelta<DtObject>) webServiceValue, webServiceParam.isConsumeServerSideToken());
 				} else {
-					throw new UnsupportedOperationException("Can't read serverSide state for this object type : " + webServiceParam.getGenericType().toString());
+					throw new UnsupportedOperationException("Can't read serverSide state for this object type : " + webServiceParam.getGenericType());
 				}
 			}
 		}
