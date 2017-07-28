@@ -56,7 +56,7 @@ final class SparkJavaRoute implements Route {
 			final Request requestWrapper = new SparkJavaRequestWrapper(request, defaultContentCharset);
 			return handlerChain.handle(requestWrapper, response, new WebServiceCallContext(requestWrapper, response, webServiceDefinition));
 		} catch (final Throwable th) {
-			LOGGER.error(th);
+			LOGGER.error(th.getMessage(), th);
 			return th.getMessage();
 		}
 	}

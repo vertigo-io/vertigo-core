@@ -54,6 +54,5 @@ public final class MetricManagerTest extends AbstractTestCaseJU4 {
 		final List<Metric> metrics = metricManager.analyze();
 		//---
 		Assert.assertEquals(1, metrics.size());
-		Assert.assertEquals(0, metrics.get(0).getValue());
 	}
 }

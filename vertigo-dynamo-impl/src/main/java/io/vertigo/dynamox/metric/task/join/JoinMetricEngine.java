@@ -36,10 +36,11 @@ public final class JoinMetricEngine implements MetricEngine<TaskDefinition> {
 	public Metric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//-----
-		final int joinCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("JOIN").length - 1;
-		final int fromCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("FROM ").length - 1;
+		final double joinCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("JOIN").length - 1;
+		final double fromCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("FROM ").length - 1;
 		return Metric.builder()
-				.withTitle("Nombre de jointures")
+				.withType("taskJoinCount")
+				.withSubject(taskDefinition.getName())
 				.withValue(joinCount + fromCount)
 				.build();
 	}

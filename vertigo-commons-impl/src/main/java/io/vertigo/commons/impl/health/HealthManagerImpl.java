@@ -37,7 +37,7 @@ public final class HealthManagerImpl implements HealthManager, SimpleDefinitionP
 		final AopPlugin aopPlugin = Home.getApp().getConfig().getBootConfig().getAopPlugin();
 		return Home.getApp().getComponentSpace().keySet()
 				.stream()
-				.flatMap(id -> createHealthCheckDefinitions(id, aopPlugin.unwrap(Home.getApp().getComponentSpace().resolve(id, Component.class))).stream())
+				.flatMap(id -> createHealthCheckDefinitions(id, Home.getApp().getComponentSpace().resolve(id, Component.class), aopPlugin).stream())
 				.collect(Collectors.toList());
 	}
 
@@ -45,11 +45,11 @@ public final class HealthManagerImpl implements HealthManager, SimpleDefinitionP
 	 * Registers all methods annotated with @Suscriber on the object
 	 * @param suscriberInstance
 	 */
-	private static List<HealthCheckDefinition> createHealthCheckDefinitions(final String componentId, final Component component) {
+	private static List<HealthCheckDefinition> createHealthCheckDefinitions(final String componentId, final Component component, final AopPlugin aopPlugin) {
 		Assertion.checkNotNull(component);
 		//-----
 		//1. search all methods
-		return Stream.of(component.getClass().getMethods())
+		return Stream.of(aopPlugin.unwrap(component).getClass().getMethods())
 				.filter(method -> method.isAnnotationPresent(HealthChecked.class))
 				.map(method -> {
 					final HealthChecked healthChecked = method.getAnnotation(HealthChecked.class);

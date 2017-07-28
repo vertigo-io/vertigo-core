@@ -21,6 +21,7 @@ package io.vertigo.dynamox.metric.domain;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -35,7 +36,6 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamox.metric.domain.count.CountMetricEngine;
 import io.vertigo.dynamox.metric.domain.dependency.DependencyMetricEngine;
 import io.vertigo.dynamox.metric.domain.fields.FieldsMetricEngine;
-import io.vertigo.dynamox.metric.domain.persistence.PersistenceMetricEngine;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ListBuilder;
 
@@ -46,8 +46,8 @@ import io.vertigo.util.ListBuilder;
  */
 public final class DomainMetricPlugin implements MetricPlugin {
 	private final VTransactionManager transactionManager;
-	private final StoreManager storeManager;
-	private final List<MetricEngine<DtDefinition>> metricEngines;
+	private final List<MetricEngine<DtDefinition>> staticMetricEngines;
+	private final CountMetricEngine countMetricEngine;
 
 	/**
 	 * Constructor.
@@ -60,41 +60,49 @@ public final class DomainMetricPlugin implements MetricPlugin {
 		Assertion.checkNotNull(storeManager);
 		//-----
 		this.transactionManager = transactionManager;
-		this.storeManager = storeManager;
-		metricEngines = createMetricEngines();
+		staticMetricEngines = new ListBuilder<MetricEngine<DtDefinition>>()
+				.add(new FieldsMetricEngine())
+				.add(new DependencyMetricEngine())
+				.unmodifiable()
+				.build();
+
+		countMetricEngine = new CountMetricEngine(storeManager);
 
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public List<Metric> analyze() {
-		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			return doAnalyze();
-		}
-	}
-
-	private List<Metric> doAnalyze() {
-
 		final Collection<DtDefinition> dtDefinitions = Home.getApp().getDefinitionSpace().getAll(DtDefinition.class);
 
-		return dtDefinitions
+		final Stream<Metric> staticMetrics = staticMetricEngines
 				.stream()
-				.flatMap(dtDefinition -> metricEngines
+				.flatMap(engine -> dtDefinitions
 						.stream()
-						.map(engine -> engine.execute(dtDefinition))
+						.filter(dtDefinition -> engine.isApplicable(dtDefinition))
+						.map(dtDefinition -> engine.execute(dtDefinition))
 						.collect(Collectors.toList())
-						.stream())
+						.stream());
+
+		// for the countMetric engine we use a single transaction
+		final List<Metric> countMetrics;
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			countMetrics = dtDefinitions
+					.stream()
+					.filter(dtDefinition -> countMetricEngine.isApplicable(dtDefinition))
+					.map(dtDefinition -> doExecute(countMetricEngine, dtDefinition))
+					.collect(Collectors.toList());
+		}
+
+		return Stream.concat(staticMetrics, countMetrics.stream())
 				.collect(Collectors.toList());
 
 	}
 
-	private List<MetricEngine<DtDefinition>> createMetricEngines() {
-		return new ListBuilder<MetricEngine<DtDefinition>>()
-				.add(new FieldsMetricEngine())
-				.add(new DependencyMetricEngine())
-				.add(new PersistenceMetricEngine(storeManager))
-				.add(new CountMetricEngine(storeManager))
-				.unmodifiable()
-				.build();
+	private Metric doExecute(final MetricEngine<DtDefinition> engine, final DtDefinition dtDefinition) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			return engine.execute(dtDefinition);
+		}
 	}
+
 }

@@ -146,12 +146,12 @@ public final class DslMultiExpression {
 		for (final DslExpression expression : expressions) {
 			sb.append(sep);
 			sb.append(expression);
-			sep = " " + boolOperator.toString() + " ";
+			sep = " " + boolOperator + " ";
 		}
 		for (final DslMultiExpression multiExpression : multiExpressions) {
 			sb.append(sep);
 			sb.append(multiExpression);
-			sep = " " + boolOperator.toString() + " ";
+			sep = " " + boolOperator + " ";
 		}
 		sb.append(block ? ")" : "");
 		return sb.toString();

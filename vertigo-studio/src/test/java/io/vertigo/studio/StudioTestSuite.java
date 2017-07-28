@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import io.vertigo.studio.reporting.ReportingManagerTest;
 import io.vertigo.studio.tools.NameSpace2JavaTest;
 
 /**
@@ -32,8 +31,7 @@ import io.vertigo.studio.tools.NameSpace2JavaTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-		NameSpace2JavaTest.class,
-		ReportingManagerTest.class
+		NameSpace2JavaTest.class
 })
 public final class StudioTestSuite {
 	//

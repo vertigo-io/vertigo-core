@@ -18,8 +18,9 @@
  */
 package io.vertigo.dynamox.metric.task;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -28,11 +29,9 @@ import io.vertigo.commons.impl.metric.MetricEngine;
 import io.vertigo.commons.impl.metric.MetricPlugin;
 import io.vertigo.commons.metric.Metric;
 import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamox.metric.task.explainplan.ExplainPlanMetricEngine;
 import io.vertigo.dynamox.metric.task.join.JoinMetricEngine;
 import io.vertigo.dynamox.metric.task.performance.PerformanceMetricEngine;
 import io.vertigo.dynamox.metric.task.requestsize.RequestSizeMetricEngine;
@@ -46,9 +45,6 @@ import io.vertigo.util.ListBuilder;
  * @author tchassagnette
  */
 public final class TaskMetricPlugin implements MetricPlugin {
-	private final VTransactionManager transactionManager;
-	private final TaskManager taskManager;
-	private final SqlDataBaseManager sqlDataBaseManager;
 
 	private final List<MetricEngine<TaskDefinition>> metricEngines;
 
@@ -58,37 +54,31 @@ public final class TaskMetricPlugin implements MetricPlugin {
 		Assertion.checkNotNull(taskManager);
 		Assertion.checkNotNull(sqlDataBaseManager);
 		//-----
-		this.transactionManager = transactionManager;
-		this.taskManager = taskManager;
-		this.sqlDataBaseManager = sqlDataBaseManager;
-		metricEngines = createMetricEngines();
+		metricEngines = new ListBuilder<MetricEngine<TaskDefinition>>()
+				.add(new PerformanceMetricEngine(transactionManager, taskManager))
+				.add(new RequestSizeMetricEngine())
+				.add(new JoinMetricEngine())
+				.add(new SubRequestMetricEngine())
+				.unmodifiable()
+				.build();
 
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public List<Metric> analyze() {
-		final List<Metric> taskAnalyseResults = new ArrayList<>();
-		for (final TaskDefinition taskDefinition : Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)) {
-			for (final MetricEngine<TaskDefinition> metricEngine : metricEngines) {
-				//on crée un transaction à chaque fois, car elle peut-être inutilisable
-				try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-					final Metric result = metricEngine.execute(taskDefinition);
-					taskAnalyseResults.add(result);
-				}
-			}
-		}
-		return taskAnalyseResults;
+		final Collection<TaskDefinition> taskDefinitions = Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class);
+
+		return metricEngines
+				.stream()
+				.flatMap(engine -> taskDefinitions
+						.stream()
+						.filter(taskDefinition -> engine.isApplicable(taskDefinition))
+						.map(taskDefinition -> engine.execute(taskDefinition))
+						.collect(Collectors.toList())
+						.stream())
+				.collect(Collectors.toList());
+
 	}
 
-	private List<MetricEngine<TaskDefinition>> createMetricEngines() {
-		return new ListBuilder<MetricEngine<TaskDefinition>>()
-				.add(new PerformanceMetricEngine(taskManager))
-				.add(new RequestSizeMetricEngine())
-				.add(new ExplainPlanMetricEngine(taskManager, sqlDataBaseManager))
-				.add(new JoinMetricEngine())
-				.add(new SubRequestMetricEngine())
-				.unmodifiable()
-				.build();
-	}
 }

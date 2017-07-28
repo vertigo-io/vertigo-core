@@ -98,9 +98,9 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 	@Override
 	public String getPropertyValue() {
 		return new StringBuilder()
-				.append(maxPrecision.toString())
+				.append(maxPrecision)
 				.append(SEPARATOR_ARGS)
-				.append(maxScale.toString())
+				.append(maxScale)
 				.toString();
 	}
 

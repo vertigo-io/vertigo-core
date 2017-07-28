@@ -101,7 +101,7 @@ public final class DIReactor {
 				//Si une référence est requise
 				//et qu'elle est absente, c'est qu'elle est manquante !
 				if (dependency.isRequired() && !allComponentInfos.contains(dependency.getName())) {
-					missing.append(dependency).append(" (referenced by ").append(componentInfo.toString()).append("), ");
+					missing.append(dependency).append(" (referenced by ").append(componentInfo).append("), ");
 				}
 			}
 		}

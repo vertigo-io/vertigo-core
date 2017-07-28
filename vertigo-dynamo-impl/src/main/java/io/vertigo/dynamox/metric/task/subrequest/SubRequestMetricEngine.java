@@ -36,10 +36,12 @@ public final class SubRequestMetricEngine implements MetricEngine<TaskDefinition
 	public Metric execute(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//-----
-		final int subRequestCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("SELECT").length - 1;
+		final double subRequestCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("SELECT").length - 1;
 		return Metric.builder()
-				.withTitle("Nombre de ss-requêtes")
+				.withType("taskSubrequestsCount")
+				.withSubject(taskDefinition.getName())
 				.withValue(subRequestCount)
+				.withSuccess()
 				.build();
 	}
 }

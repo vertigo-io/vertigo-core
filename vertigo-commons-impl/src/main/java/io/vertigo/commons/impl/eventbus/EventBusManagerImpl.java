@@ -59,7 +59,7 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 		final AopPlugin aopPlugin = Home.getApp().getConfig().getBootConfig().getAopPlugin();
 		return Home.getApp().getComponentSpace().keySet()
 				.stream()
-				.flatMap(id -> createEventSubscriptions(id, aopPlugin.unwrap(Home.getApp().getComponentSpace().resolve(id, Component.class))).stream())
+				.flatMap(id -> createEventSubscriptions(id, Home.getApp().getComponentSpace().resolve(id, Component.class), aopPlugin).stream())
 				.collect(Collectors.toList());
 	}
 
@@ -67,11 +67,11 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 	 * Registers all methods annotated with @Suscriber on the object
 	 * @param suscriberInstance
 	 */
-	private static List<EventBusSubscriptionDefinition> createEventSubscriptions(final String componentId, final Component subscriberInstance) {
+	private static List<EventBusSubscriptionDefinition> createEventSubscriptions(final String componentId, final Component subscriberInstance, final AopPlugin aopPlugin) {
 		Assertion.checkNotNull(subscriberInstance);
 		//-----
 		//1. search all methods
-		return Stream.of(subscriberInstance.getClass().getMethods())
+		return Stream.of(aopPlugin.unwrap(subscriberInstance).getClass().getMethods())
 				.filter(method -> method.isAnnotationPresent(EventBusSubscribed.class))
 				.map(method -> {
 					Assertion.checkArgument(void.class.equals(method.getReturnType()), "subscriber's methods  of class {0} must be void instead of {1}", subscriberInstance.getClass(), method.getReturnType());

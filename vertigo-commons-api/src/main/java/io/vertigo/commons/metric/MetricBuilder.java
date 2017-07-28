@@ -18,6 +18,8 @@
  */
 package io.vertigo.commons.metric;
 
+import java.time.Instant;
+
 import io.vertigo.commons.metric.Metric.Status;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -28,11 +30,12 @@ import io.vertigo.lang.Builder;
  * @author pchretien
  */
 public final class MetricBuilder implements Builder<Metric> {
-	private Status myStatus = Status.EXECUTED; //default not required
-	private String myTitle; //require
-	private String myUnit = ""; //default not required
-	private Object myValue; //null by default not required
-	private String myValueInformation; //null by default not required
+
+	private Instant myMeasureInstant;
+	private String myType;
+	private String mySubject;
+	private Double myValue;
+	private Status myStatus;
 
 	/**
 	 * Constructor.
@@ -41,59 +44,54 @@ public final class MetricBuilder implements Builder<Metric> {
 		super();
 	}
 
-	@Override
-	public Metric build() {
-		return new Metric(myStatus, myTitle, myUnit, myValue, myValueInformation);
-	}
-
-	/**
-	 * Status de la métrique.
-	 * @return Builder
-	 */
-	public MetricBuilder withStatus(final Status status) {
-		Assertion.checkNotNull(status);
-		//-----
-		myStatus = status;
+	public MetricBuilder withType(final String type) {
+		Assertion.checkArgNotEmpty(type);
+		//---
+		myType = type;
 		return this;
 	}
 
-	/**
-	 * Titre de la métrique. (notNull)
-	 * @return Builder
-	 */
-	public MetricBuilder withTitle(final String title) {
-		Assertion.checkArgNotEmpty(title);
-		//-----
-		myTitle = title;
+	public MetricBuilder withSubject(final String subject) {
+		Assertion.checkArgNotEmpty(subject);
+		//---
+		mySubject = subject;
 		return this;
 	}
 
-	/**
-	 * Unité de la métrique. (notNull)
-	 * @return Builder
-	 */
-	public MetricBuilder withUnit(final String unit) {
-		Assertion.checkArgNotEmpty(unit);
-		//-----
-		myUnit = unit;
-		return this;
-	}
-
-	/**
-	 * Valeur de la métrique. (Integer, Long, String, etc..)
-	 * @return Builder
-	 */
-	public MetricBuilder withValue(final Object value) {
+	public MetricBuilder withValue(final Double value) {
+		Assertion.checkNotNull(value);
+		//---
 		myValue = value;
 		return this;
 	}
 
-	/**
-	 * Complément d'information sur la valeur. (nullable)
-	 * @return Builder
-	 */
-	public MetricBuilder withValueInformation(final String valueInformation) {
-		myValueInformation = valueInformation;
+	public MetricBuilder withMeasureInstant(final Instant measureInstant) {
+		Assertion.checkNotNull(measureInstant);
+		//---
+		myMeasureInstant = measureInstant;
 		return this;
+	}
+
+	public MetricBuilder withSuccess() {
+		myStatus = Status.SUCCESS;
+		return this;
+	}
+
+	public MetricBuilder withError() {
+		myStatus = Status.ERROR;
+		return this;
+	}
+
+	@Override
+	public Metric build() {
+		if (myMeasureInstant == null) {
+			myMeasureInstant = Instant.now();
+		}
+		return new Metric(
+				myMeasureInstant != null ? myMeasureInstant : Instant.now(),
+				myType,
+				mySubject,
+				myValue,
+				myStatus);
 	}
 }
