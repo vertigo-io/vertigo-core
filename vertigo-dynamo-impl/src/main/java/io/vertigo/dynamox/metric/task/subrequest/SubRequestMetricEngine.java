@@ -20,8 +20,8 @@ package io.vertigo.dynamox.metric.task.subrequest;
 
 import java.util.Locale;
 
-import io.vertigo.commons.impl.metric.MetricEngine;
 import io.vertigo.commons.metric.Metric;
+import io.vertigo.commons.metric.MetricEngine;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 

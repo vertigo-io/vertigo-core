@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamox.metric.domain.count;
 
-import io.vertigo.commons.impl.metric.MetricEngine;
 import io.vertigo.commons.metric.Metric;
 import io.vertigo.commons.metric.MetricBuilder;
+import io.vertigo.commons.metric.MetricEngine;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;

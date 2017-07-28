@@ -19,8 +19,8 @@
 package io.vertigo.dynamox.metric.domain.dependency;
 
 import io.vertigo.app.Home;
-import io.vertigo.commons.impl.metric.MetricEngine;
 import io.vertigo.commons.metric.Metric;
+import io.vertigo.commons.metric.MetricEngine;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
