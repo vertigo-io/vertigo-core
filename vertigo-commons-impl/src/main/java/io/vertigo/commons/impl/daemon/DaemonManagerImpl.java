@@ -63,13 +63,12 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 		final AopPlugin aopPlugin = Home.getApp().getConfig().getBootConfig().getAopPlugin();
 		return Home.getApp().getComponentSpace().keySet()
 				.stream()
-				.map(id -> aopPlugin.unwrap(Home.getApp().getComponentSpace().resolve(id, Component.class)))
-				.flatMap(component -> createDaemonDefinitions(component).stream())
+				.flatMap(id -> createDaemonDefinitions(Home.getApp().getComponentSpace().resolve(id, Component.class), aopPlugin).stream())
 				.collect(Collectors.toList());
 	}
 
-	private static List<DaemonDefinition> createDaemonDefinitions(final Component component) {
-		return Stream.of(component.getClass().getMethods())
+	private static List<DaemonDefinition> createDaemonDefinitions(final Component component, final AopPlugin aopPlugin) {
+		return Stream.of(aopPlugin.unwrap(component).getClass().getMethods())
 				.filter(method -> method.isAnnotationPresent(DaemonScheduled.class))
 				.map(
 						method -> {
