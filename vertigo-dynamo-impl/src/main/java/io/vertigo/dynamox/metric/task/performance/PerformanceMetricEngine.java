@@ -41,6 +41,7 @@ public final class PerformanceMetricEngine implements MetricEngine<TaskDefinitio
 
 	/**
 	 * Constructeur apr défaut.
+	 * @param transactionManager Transaction Manager
 	 * @param taskManager Manager des tasks
 	 */
 	public PerformanceMetricEngine(
@@ -63,6 +64,7 @@ public final class PerformanceMetricEngine implements MetricEngine<TaskDefinitio
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isApplicable(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
@@ -78,9 +80,9 @@ public final class PerformanceMetricEngine implements MetricEngine<TaskDefinitio
 		try {
 			final TaskPopulator taskPopulator = new TaskPopulator(taskDefinition);
 			final Task task = taskPopulator.populateTask();
-			final long startTime = System.currentTimeMillis();
+			final double startTime = System.currentTimeMillis();
 			taskManager.execute(task);
-			final long endTime = System.currentTimeMillis();
+			final double endTime = System.currentTimeMillis();
 			final double executionTime = endTime - startTime;
 			return metricBuilder
 					.withSuccess()
