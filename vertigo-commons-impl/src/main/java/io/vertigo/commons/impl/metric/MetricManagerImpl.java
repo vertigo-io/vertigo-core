@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import io.vertigo.commons.metric.Metric;
 import io.vertigo.commons.metric.MetricManager;
+import io.vertigo.commons.metric.MetricPlugin;
 import io.vertigo.lang.Assertion;
 
 /**
