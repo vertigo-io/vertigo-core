@@ -145,7 +145,7 @@ final class RamLuceneIndex<D extends DtObject> {
 			//2. Traduction du résultat Lucene en une Collection
 			return translateDocs(searcher, topDocs, skip, top);
 		} catch (final TooManyClauses e) {
-			throw new VUserException(Resources.DYNAMO_COLLECTIONS_INDEXER_TOO_MANY_CLAUSES);
+			throw (VUserException) new VUserException(Resources.DYNAMO_COLLECTIONS_INDEXER_TOO_MANY_CLAUSES).initCause(e);
 		}
 	}
 
