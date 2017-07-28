@@ -16,6 +16,7 @@ public class DummyMetricPlugin implements MetricPlugin {
 						.withType("type")
 						.withSubject("subject")
 						.withValue(0.00)
+						.withSuccess()
 						.build());
 	}
 
