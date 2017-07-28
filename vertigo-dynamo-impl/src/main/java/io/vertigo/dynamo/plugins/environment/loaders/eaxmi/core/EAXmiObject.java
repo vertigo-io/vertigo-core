@@ -354,7 +354,7 @@ final class EAXmiObject {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		final StringBuilder buffer = new StringBuilder(type + "::" + name);
+		final StringBuilder buffer = new StringBuilder(type == null ? "root" : type.toString()).append("::").append(name);
 		if (type == EAXmiType.Association) {
 			buffer.append(" [roleA=").append(getRoleALabel()).append(", roleB=").append(getRoleBLabel()).append(']');
 		} else {
