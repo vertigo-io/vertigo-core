@@ -39,7 +39,7 @@ public final class ConstraintNumberMinimum implements Constraint<Number, Number>
 	public ConstraintNumberMinimum(final String args) {
 		Assertion.checkArgument(args != null && args.length() > 0, "Vous devez préciser la valeur minimum comme argument de ConstraintNumberMinimum");
 		//-----
-		minValue = Double.valueOf(args);
+		minValue = Double.parseDouble(args);
 	}
 
 	/** {@inheritDoc} */
