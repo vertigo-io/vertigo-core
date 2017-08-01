@@ -165,6 +165,12 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 			final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder) {
 		final String simpleClassName = "DtResources";
+		final String resourcesTemplateName = "domain/java/template/resources.ftl";
+		final String propertiesTemplateName = "domain/java/template/properties.ftl";
+
+		//pour les .properties on force l'ISO-8859-1 comme la norme l'impose
+		final FileGeneratorConfig propertiesFileConfig = new FileGeneratorConfig(fileGeneratorConfig.getTargetGenDir(), fileGeneratorConfig.getProjectPackageName(), "ISO-8859-1");
+
 		/**
 		 * Génération des ressources afférentes au DT.
 		 */
@@ -184,19 +190,16 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 					.withFileName(simpleClassName + ".java")
 					.withGenSubDir(targetSubDir)
 					.withPackageName(packageName)
-					.withTemplateName("domain/java/template/resources.ftl")
+					.withTemplateName(resourcesTemplateName)
 					.build()
 					.generateFile(mdaResultBuilder);
-
-			//pour les .properties on force l'ISO-8859-1 comme la norme l'impose
-			final FileGeneratorConfig propertiesFileConfig = new FileGeneratorConfig(fileGeneratorConfig.getTargetGenDir(), fileGeneratorConfig.getProjectPackageName(), "ISO-8859-1");
 
 			FileGenerator.builder(propertiesFileConfig)
 					.withModel(model)
 					.withFileName(simpleClassName + ".properties")
 					.withGenSubDir(targetSubDir)
 					.withPackageName(packageName)
-					.withTemplateName("domain/java/template/properties.ftl")
+					.withTemplateName(propertiesTemplateName)
 					.build()
 					.generateFile(mdaResultBuilder);
 		}
