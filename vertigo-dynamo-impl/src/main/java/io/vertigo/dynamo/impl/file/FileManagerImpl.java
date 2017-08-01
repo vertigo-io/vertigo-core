@@ -57,6 +57,10 @@ public final class FileManagerImpl implements FileManager {
 	@Inject
 	public FileManagerImpl(@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
 		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
+		final File documentRootFile = new File(TempFile.VERTIGO_TMP_DIR_PATH);
+		Assertion.checkState(documentRootFile.exists(), "Vertigo temp dir doesn't exists ({0})", TempFile.VERTIGO_TMP_DIR_PATH);
+		Assertion.checkState(documentRootFile.canRead(), "Vertigo temp dir can't be read ({0})", TempFile.VERTIGO_TMP_DIR_PATH);
+		Assertion.checkState(documentRootFile.canWrite(), "Vertigo temp dir can't be write ({0})", TempFile.VERTIGO_TMP_DIR_PATH);
 	}
 
 	/** {@inheritDoc} */
