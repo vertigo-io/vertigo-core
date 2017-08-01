@@ -20,6 +20,7 @@ package io.vertigo.commons.daemon;
 
 import io.vertigo.core.component.Component;
 
+@DaemonFakeAspectAnnotation
 public class FakeComponent implements Component {
 	private int executions = 0;
 

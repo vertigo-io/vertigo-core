@@ -25,9 +25,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -211,7 +209,6 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		}
 		//we update inputBuffer with older datas
 		if (serverSideDto != null) { //If serverSideObject was kept, we merge input with server object
-			compactModifiedSet();
 			mergeInput();
 		}
 		final D objectToValidate = serverSideDto != null ? serverSideDto : inputDto;
@@ -229,34 +226,6 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 			return serverSideDto;
 		}
 		return inputDto;
-	}
-
-	/**
-	 * Mise à jour des données typées.
-	 * Verifie si la valeur correspond à une modification.
-	 * Si oui, la valeur est gardée, sinon la saisie de l'utilisateur est vidée.
-	 */
-	private void compactModifiedSet() {
-		Assertion.checkNotNull(serverSideDto, "serverSideDto is mandatory");
-		Assertion.checkNotNull(inputDto, "inputDto is mandatory");
-		//-----
-		final List<String> modifiedFields = inputBuffer.keySet().stream().collect(Collectors.toList());
-		for (final String camelField : modifiedFields) {
-			//Si le champs n'a pas d'erreur
-			//On regarde pour vider le buffer
-			if (!getDtObjectErrors().hasError(camelField)) {
-				// ======================================================================
-				// ======================Mise Ã  jour différentielle du BUFFER============
-				// ======================================================================
-				final DtField dtField = getDtField(camelField);
-				// Egalité entre la valeur d'origine et la valeur saisie.
-				if (Objects.equals(dtField.getDataAccessor().getValue(serverSideDto), dtField.getDataAccessor().getValue(inputDto))) {
-					// Si la valeur saisie est identique à la valeur d'origine
-					// alors on purge le buffer de saisie.
-					inputBuffer.remove(camelField);
-				}
-			}
-		}
 	}
 
 	protected final DtField getDtField(final String camelField) {

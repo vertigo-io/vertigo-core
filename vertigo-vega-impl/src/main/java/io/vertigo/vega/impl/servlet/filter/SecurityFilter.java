@@ -71,13 +71,11 @@ public final class SecurityFilter extends AbstractFilter {
 	/** {@inheritDoc} */
 	@Override
 	public void doMyFilter(final ServletRequest req, final ServletResponse res, final FilterChain chain) throws IOException, ServletException {
-		doSecurityFilter(!isUrlMatch(req, noAuthentificationPattern), req, res, chain);
+		doSecurityFilter(!isUrlMatch(req, noAuthentificationPattern), (HttpServletRequest) req, (HttpServletResponse) res, chain);
 	}
 
-	private void doSecurityFilter(final boolean needsAuthentification, final ServletRequest request, final ServletResponse response, final FilterChain chain)
+	private void doSecurityFilter(final boolean needsAuthentification, final HttpServletRequest httpRequest, final HttpServletResponse httpResponse, final FilterChain chain)
 			throws IOException, ServletException {
-		final HttpServletRequest httpRequest = (HttpServletRequest) request;
-		final HttpServletResponse httpResponse = (HttpServletResponse) response;
 		final boolean hasSession = httpRequest.getSession(false) != null;
 
 		// On récupère la session de l'utilisateur
@@ -104,7 +102,7 @@ public final class SecurityFilter extends AbstractFilter {
 			} else if (checkRequestAccess && needsAuthentification && !securityManager.isAuthorized("HttpServletRequest", httpRequest, ".*")) {
 				httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
 			} else {
-				chain.doFilter(request, response);
+				chain.doFilter(httpRequest, httpResponse);
 			}
 		} finally {
 			// On retire le user du ThreadLocal (il est déjà en session)

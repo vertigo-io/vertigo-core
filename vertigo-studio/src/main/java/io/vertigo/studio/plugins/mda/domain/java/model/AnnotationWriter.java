@@ -71,9 +71,9 @@ class AnnotationWriter {
 			final StringBuilder buffer = new StringBuilder()
 					.append('@').append(io.vertigo.dynamo.domain.stereotype.Fragment.class.getCanonicalName());
 			if (dtDefinition.getFragment().isPresent()) {
-				buffer.append('(');
-				buffer.append("fragmentOf = \"" + dtDefinition.getFragment().get().getName() + '\"');
-				buffer.append(')');
+				buffer.append('(')
+						.append("fragmentOf = \"").append(dtDefinition.getFragment().get().getName()).append('\"')
+						.append(')');
 			}
 
 			lines.add(buffer.toString());

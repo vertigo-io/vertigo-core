@@ -48,12 +48,12 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 		final String[] beforeAfter = args.split(SEPARATOR_ARGS);
 		Assertion.checkState(beforeAfter.length == 2, "L'argument doit être au format M,D. M le nombre de chiffre au total (precision) et D le nombre de chiffre à droite de la virgule (scale).");
 		try {
-			maxPrecision = Integer.parseInt(beforeAfter[0]);
+			maxPrecision = Integer.valueOf(beforeAfter[0]);
 		} catch (final NumberFormatException e) {
 			throw WrappedException.wrap(e, args + " : first part is a not an integer");
 		}
 		try {
-			maxScale = Integer.parseInt(beforeAfter[1]);
+			maxScale = Integer.valueOf(beforeAfter[1]);
 		} catch (final NumberFormatException e) {
 			throw WrappedException.wrap(e, args + " : second part is a not an integer");
 		}
@@ -98,9 +98,9 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 	@Override
 	public String getPropertyValue() {
 		return new StringBuilder()
-				.append(maxPrecision.toString())
+				.append(maxPrecision)
 				.append(SEPARATOR_ARGS)
-				.append(maxScale.toString())
+				.append(maxScale)
 				.toString();
 	}
 

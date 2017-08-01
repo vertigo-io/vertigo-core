@@ -108,7 +108,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 					sql.append(SEPARATOR);
 				} else {
 					sqlNamedParams.add(new SqlNamedParam(token));
-					sql.append("?");
+					sql.append('?');
 				}
 			} else {
 				sql.append(token);

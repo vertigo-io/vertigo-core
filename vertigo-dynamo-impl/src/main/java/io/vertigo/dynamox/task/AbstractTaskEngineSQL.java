@@ -235,9 +235,8 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * Affecte les valeurs en entrée
 	 *
 	 * @param statement de type KPreparedStatement, KCallableStatement...
-	 * @throws SQLException En cas d'erreur dans la configuration
 	 */
-	protected final List<SqlParameter> buildParameters(final List<SqlNamedParam> params) throws SQLException {
+	protected final List<SqlParameter> buildParameters(final List<SqlNamedParam> params) {
 		final List<SqlParameter> sqlParameters = new ArrayList<>();
 		for (final SqlNamedParam param : params) {
 			final Integer rowNumber = param.isList() ? param.getRowNumber() : null;

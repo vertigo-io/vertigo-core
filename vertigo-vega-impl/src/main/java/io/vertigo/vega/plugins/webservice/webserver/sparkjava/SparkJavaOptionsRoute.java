@@ -64,7 +64,7 @@ public final class SparkJavaOptionsRoute implements Route {
 		try {
 			return handlerChain.handle(request, response, new WebServiceCallContext(request, response, webServiceCors)); //no WebService
 		} catch (final Exception e) {
-			LOGGER.error(e);
+			LOGGER.error("Option route error", e);
 			return e.getMessage();
 		}
 	}

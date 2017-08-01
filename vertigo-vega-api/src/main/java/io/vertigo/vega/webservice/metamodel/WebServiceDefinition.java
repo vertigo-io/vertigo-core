@@ -44,7 +44,11 @@ public final class WebServiceDefinition implements Definition {
 	 * HTTP Verb supported.
 	 */
 	public enum Verb {
-		GET, POST, PUT, PATCH, DELETE,
+		GET,
+		POST,
+		PUT,
+		PATCH,
+		DELETE,
 	}
 
 	private final String name;

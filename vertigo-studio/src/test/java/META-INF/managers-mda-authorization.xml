@@ -26,8 +26,8 @@
 			
 			<plugin class="io.vertigo.studio.plugins.mda.domain.ts.TSGeneratorPlugin">
 				<param name="targetSubDir" value="tsgen" />
-				<param name="generateDtResourcesJS" value="true" />
-				<param name="generateJsDtDefinitions" value="true" />
+				<param name="generateDtResourcesTS" value="true" />
+				<param name="generateTsDtDefinitions" value="true" />
 			</plugin>
 
 			<plugin class="io.vertigo.studio.plugins.mda.task.TaskGeneratorPlugin" >

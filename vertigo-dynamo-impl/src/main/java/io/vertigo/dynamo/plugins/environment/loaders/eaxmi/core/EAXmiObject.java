@@ -354,11 +354,11 @@ final class EAXmiObject {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		final StringBuilder buffer = new StringBuilder(type + "::" + name);
+		final StringBuilder buffer = new StringBuilder(type == null ? "root" : type.toString()).append("::").append(name);
 		if (type == EAXmiType.Association) {
-			buffer.append(" [roleA=").append(getRoleALabel()).append(", roleB=").append(getRoleBLabel()).append("]");
+			buffer.append(" [roleA=").append(getRoleALabel()).append(", roleB=").append(getRoleBLabel()).append(']');
 		} else {
-			buffer.append(" [label=").append(label).append(", multiplicity=").append(multiplicity).append("]");
+			buffer.append(" [label=").append(label).append(", multiplicity=").append(multiplicity).append(']');
 		}
 		return buffer.toString();
 	}

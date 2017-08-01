@@ -145,7 +145,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	 * @param maxRows Nombre de lignes max
 	 */
 	protected void appendMaxRows(final StringBuilder request, final Integer maxRows) {
-		request.append(" limit ").append(maxRows.toString()); //Attention : non compatible avec toutes les bases
+		request.append(" limit ").append(maxRows); //Attention : non compatible avec toutes les bases
 		//sur Oracle, il faut ajouter "select * from ("+request+") where rownum <= "+mawRows
 	}
 

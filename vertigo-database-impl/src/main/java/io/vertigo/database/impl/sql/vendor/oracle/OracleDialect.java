@@ -25,6 +25,11 @@ import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.lang.Assertion;
 
 final class OracleDialect implements SqlDialect {
+	/**
+	 * Oracle n'autorise pas de sequence de plus de 30 char.
+	 */
+	private static final int ORACLE_SEQUENCE_NAME_MAX_LENGHT = 30;
+
 	/** {@inheritDoc} */
 	@Override
 	public String createInsertQuery(
@@ -44,7 +49,7 @@ final class OracleDialect implements SqlDialect {
 						.stream()
 						.collect(Collectors.joining(", ")))
 				.append(") values (")
-				.append(getSequenceName(sequencePrefix, tableName) + ".nextval ").append(", ")
+				.append(getSequenceName(sequencePrefix, tableName)).append(".nextval , ")
 				.append(dataFieldsName
 						.stream()
 						.map(fieldName -> " #DTO." + fieldName + '#')
@@ -61,8 +66,8 @@ final class OracleDialect implements SqlDialect {
 	private static String getSequenceName(final String sequencePrefix, final String tableName) {
 		//oracle n'autorise pas de sequence de plus de 30 char.
 		String sequenceName = sequencePrefix + tableName;
-		if (sequenceName.length() > 30) {
-			sequenceName = sequenceName.substring(0, 30);
+		if (sequenceName.length() > ORACLE_SEQUENCE_NAME_MAX_LENGHT) {
+			sequenceName = sequenceName.substring(0, ORACLE_SEQUENCE_NAME_MAX_LENGHT);
 		}
 		return sequenceName;
 	}

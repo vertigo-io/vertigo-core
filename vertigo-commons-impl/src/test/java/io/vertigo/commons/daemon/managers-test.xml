@@ -2,6 +2,7 @@
 <config>
 	<module name="vertigo-commons">
 		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" />
+		<aspect class="io.vertigo.commons.daemon.DaemonFakeAspect" />
 	</module>
 	<module name="myApp">
 		<component class="io.vertigo.commons.daemon.FakeComponent" />

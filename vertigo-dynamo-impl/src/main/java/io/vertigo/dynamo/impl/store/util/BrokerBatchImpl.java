@@ -39,11 +39,11 @@
  */
 package io.vertigo.dynamo.impl.store.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.definition.Definition;
@@ -112,12 +112,12 @@ final class BrokerBatchImpl<E extends Entity, P> implements BrokerBatch<E, P> {
 
 	private DtList<E> getList(final DtDefinition dtDefinition, final String fieldName, final DtList<E> dtc) {
 		// On splitte la collection par paquet
-		final Set<DtList<E>> set = new HashSet<>();
+		final List<DtList<E>> paquet = new ArrayList<>();
 		DtList<E> tmp = null;
 		for (int i = 0; i < dtc.size(); i++) {
 			if (i % GET_LIST_PAQUET_SIZE == 0) {
 				tmp = new DtList<>(dtc.getDefinition());
-				set.add(tmp);
+				paquet.add(tmp);
 			}
 			if (tmp != null) {
 				tmp.add(dtc.get(i));
@@ -155,7 +155,7 @@ final class BrokerBatchImpl<E extends Entity, P> implements BrokerBatch<E, P> {
 
 		// On exécute par paquet
 		final DtList<E> ret = new DtList<>(dtDefinition);
-		for (final DtList<E> paq : set) {
+		for (final DtList<E> paq : paquet) {
 			/* Création de la tache. */
 			final Task task = Task.builder(taskDefinition)
 					.addValue(inDtcName, paq)

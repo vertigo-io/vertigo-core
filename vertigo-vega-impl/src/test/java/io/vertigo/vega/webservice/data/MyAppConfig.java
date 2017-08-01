@@ -21,6 +21,8 @@ package io.vertigo.vega.webservice.data;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import io.vertigo.account.AccountFeatures;
+import io.vertigo.account.plugins.identity.memory.MemoryAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
@@ -33,7 +35,6 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
-import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.vega.VegaFeatures;
 import io.vertigo.vega.engines.webservice.cmd.ComponentCmdWebServices;
 import io.vertigo.vega.webservice.data.domain.Address;
@@ -71,9 +72,6 @@ public final class MyAppConfig {
 				.withNodeConfig(NodeConfig.builder()
 						.withEndPoint("http://localhost:" + WS_PORT)
 						.build())
-				.addModule(new PersonaFeatures()
-						.withUserSession(TestUserSession.class)
-						.build())
 				.addModule(new CommonsFeatures()
 						.withCache(MemoryCachePlugin.class)
 						.withNodeInfosPlugin(HttpNodeInfosPlugin.class)
@@ -84,6 +82,10 @@ public final class MyAppConfig {
 						.addKVStorePlugin(DelayedMemoryKVStorePlugin.class,
 								Param.of("collections", "tokens"),
 								Param.of("timeToLiveSeconds", "120"))
+						.build())
+				.addModule(new AccountFeatures()
+						.withUserSession(TestUserSession.class)
+						.withAccountStorePlugin(MemoryAccountStorePlugin.class)
 						.build())
 				.addModule(new VegaFeatures()
 						.withTokens("tokens")

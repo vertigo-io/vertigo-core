@@ -146,14 +146,15 @@ public final class WebServiceManagerImpl implements WebServiceManager, SimpleDef
 	 * @return Scanned webServiceDefinitions
 	 */
 	List<WebServiceDefinition> scanComponents(final ComponentSpace componentSpace) {
-		final ListBuilder<WebServiceDefinition> allWebServiceDefinitionListBuilder = new ListBuilder<>();
+		final AopPlugin aopPlugin = Home.getApp().getConfig().getBootConfig().getAopPlugin();
 
+		final ListBuilder<WebServiceDefinition> allWebServiceDefinitionListBuilder = new ListBuilder<>();
 		//1- We introspect all RestfulService class
 		for (final String componentId : componentSpace.keySet()) {
 			final Object component = componentSpace.resolve(componentId, Object.class);
 			if (component instanceof WebServices) {
-				final AopPlugin aopPlugin = Home.getApp().getConfig().getBootConfig().getAopPlugin();
-				final List<WebServiceDefinition> webServiceDefinitions = webServiceScannerPlugin.scanWebService(aopPlugin.unwrap((WebServices) component).getClass());
+				final WebServices webServices = aopPlugin.unwrap(WebServices.class.cast(component));
+				final List<WebServiceDefinition> webServiceDefinitions = webServiceScannerPlugin.scanWebService(webServices.getClass());
 				allWebServiceDefinitionListBuilder.addAll(webServiceDefinitions);
 			}
 		}

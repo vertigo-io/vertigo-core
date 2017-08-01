@@ -25,60 +25,43 @@ import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.plugins.authentication.ldap.LdapAuthenticatingRealmPlugin;
 import io.vertigo.account.plugins.identity.memory.MemoryAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
-import io.vertigo.persona.impl.security.PersonaFeatures;
 
 public final class MyAppConfig {
-	public static final int WS_PORT = 8088;
+	private static final String REDIS_HOST = "redis-pic.part.klee.lan.net";
+	private static final int REDIS_PORT = 6379;
+	private static final int REDIS_DATABASE = 15;
 
-	private static AppConfigBuilder createAppConfigBuilder(final boolean redis) {
-		final String redisHost = "redis-pic.part.klee.lan.net";
-		final int redisPort = 6379;
-		final int redisDatabase = 15;
+	public static AppConfig config(final boolean redis) {
+		final CommonsFeatures commonsFeatures = new CommonsFeatures();
+		final AccountFeatures accountFeatures = new AccountFeatures()
+				.withUserSession(TestUserSession.class);
 
-		// @formatter:off
-		final AppConfigBuilder appConfigBuilder = AppConfig.builder()
-			.beginBoot()
-				.withLocales("fr")
-				.addPlugin( ClassPathResourceResolverPlugin.class)
-			.endBoot()
-			.addModule(new PersonaFeatures()
-					.withUserSession(TestUserSession.class)
-					.build());
-
-			final CommonsFeatures commonsFeatures = new CommonsFeatures();
-			if (redis) {
-				commonsFeatures.withRedisConnector(redisHost, redisPort, redisDatabase, Optional.empty());
-			}
-
-			appConfigBuilder
-			.addModule(commonsFeatures.build())
-			.addModule(new DynamoFeatures().build());
-		if (redis){
-			return  appConfigBuilder
-			.addModule(new AccountFeatures()
-					.withRedisAccountStorePlugin()
-					.build());
-		}
-		//else we use memory
-		return  appConfigBuilder
-			.addModule(new AccountFeatures()
+		if (redis) {
+			commonsFeatures
+					.withRedisConnector(REDIS_HOST, REDIS_PORT, REDIS_DATABASE, Optional.empty());
+			accountFeatures
+					.withRedisAccountStorePlugin();
+		} else {
+			accountFeatures
 					.withAccountStorePlugin(MemoryAccountStorePlugin.class)
 					.withAuthentificationRealm(LdapAuthenticatingRealmPlugin.class,
 							Param.of("userLoginTemplate", "cn={0},dc=vertigo,dc=io"),
 							Param.of("ldapServerHost", "docker-vertigo.part.klee.lan.net"),
-							Param.of("ldapServerPort", "389"))
-					.build());
-		// @formatter:on
-	}
+							Param.of("ldapServerPort", "389"));
+		}
 
-	public static AppConfig config(final boolean redis) {
-		// @formatter:off
-		return createAppConfigBuilder(redis).build();
+		return AppConfig.builder()
+				.beginBoot()
+				.withLocales("fr")
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(commonsFeatures.build())
+				.addModule(new DynamoFeatures().build())
+				.addModule(accountFeatures.build())
+				.build();
 	}
-
 }

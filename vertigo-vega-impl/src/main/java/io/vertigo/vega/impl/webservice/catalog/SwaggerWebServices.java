@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -145,7 +146,7 @@ public final class SwaggerWebServices implements WebServices {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			//send a content otherwise Jetty change status to 204
 			try (final OutputStream output = response.getOutputStream()) {
-				output.write((resourceName + " not found").getBytes("ISO-8859-1"));
+				output.write((resourceName + " not found").getBytes(StandardCharsets.ISO_8859_1.name()));
 			}
 		}
 	}

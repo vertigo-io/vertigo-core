@@ -20,6 +20,7 @@ package io.vertigo.commons.impl.daemon;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -30,6 +31,7 @@ import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.Component;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
@@ -43,6 +45,7 @@ import io.vertigo.util.ClassUtil;
  * @author TINGARGIOLA
  */
 public final class DaemonManagerImpl implements DaemonManager, Activeable, SimpleDefinitionProvider {
+
 	private final DaemonExecutor daemonExecutor = new DaemonExecutor();
 
 	/**
@@ -51,20 +54,22 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	@Inject
 	public DaemonManagerImpl() {
 		Home.getApp().registerPreActivateFunction(this::startAllDaemons);
+
 	}
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		// we need to unwrap the component to scan the real class and not the enhanced version
+		final AopPlugin aopPlugin = Home.getApp().getConfig().getBootConfig().getAopPlugin();
 		return Home.getApp().getComponentSpace().keySet()
 				.stream()
-				.map(id -> Home.getApp().getComponentSpace().resolve(id, Component.class))
-				.flatMap(component -> createDaemonDefinitions(component).stream())
+				.flatMap(id -> createDaemonDefinitions(Home.getApp().getComponentSpace().resolve(id, Component.class), aopPlugin).stream())
 				.collect(Collectors.toList());
 	}
 
-	private static List<DaemonDefinition> createDaemonDefinitions(final Component component) {
-		return ClassUtil.getAllMethods(component.getClass(), DaemonScheduled.class)
-				.stream()
+	private static List<DaemonDefinition> createDaemonDefinitions(final Component component, final AopPlugin aopPlugin) {
+		return Stream.of(aopPlugin.unwrap(component).getClass().getMethods())
+				.filter(method -> method.isAnnotationPresent(DaemonScheduled.class))
 				.map(
 						method -> {
 							Assertion.checkState(method.getParameterTypes().length == 0, "Method {0} on component {1} cannot have any parameter to be used as a daemon", method.getName(), component.getClass().getName());

@@ -41,7 +41,7 @@ final class PostgreSqlDialect implements SqlDialect {
 						.stream()
 						.collect(Collectors.joining(", ")))
 				.append(") values (")
-				.append("nextval('" + sequencePrefix + tableName + "')").append(", ")
+				.append("nextval('").append(sequencePrefix).append(tableName).append("'), ")
 				.append(dataFieldsName
 						.stream()
 						.map(fieldName -> " #DTO." + fieldName + '#')
