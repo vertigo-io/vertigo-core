@@ -47,7 +47,7 @@
 		<connection>scm:git:https://github.com/KleeGroup/vertigo.git</connection>
 		<developerConnection>scm:git:https://github.com/KleeGroup/vertigo.git</developerConnection>
 		<url>scm:git:https://github.com/KleeGroup/vertigo.git</url>
-		<tag>vertigo-0.9.5-SNAPSHOT</tag>
+		<tag>vertigo-1.1.0-SNAPSHOT</tag>
 	</scm>
 	
 </project>
