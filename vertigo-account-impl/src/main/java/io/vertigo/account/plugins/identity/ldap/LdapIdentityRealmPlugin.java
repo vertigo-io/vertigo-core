@@ -79,11 +79,7 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 	private final Map<AccountProperty, String> ldapAccountAttributeMapping; //Account properties to ldapAttribute
 
 	private enum AccountProperty {
-		id,
-		displayName,
-		email,
-		authToken,
-		photo
+		id, displayName, email, authToken, photo
 	}
 
 	/**
@@ -295,10 +291,10 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 		final SearchControls constraints = new SearchControls();
 		constraints.setSearchScope(SearchControls.SUBTREE_SCOPE);
 		constraints.setReturningAttributes(returningAttributes.toArray(new String[returningAttributes.size()]));
+		constraints.setCountLimit(top);
 		try {
-			int count = 0;
 			final NamingEnumeration<SearchResult> answer = ctx.search(ldapBaseDn, searchRequest, constraints);
-			while (answer.hasMore() && (top == -1 || count++ < top)) {
+			while (answer.hasMore()) {
 				final Attributes attrs = answer.next().getAttributes();
 				userAttributes.add(attrs);
 			}
