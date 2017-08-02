@@ -1,6 +1,6 @@
 package ${packageName};
 
-import io.vertigo.lang.MessageKey;
+import io.vertigo.core.locale.MessageKey;
 
 /**
  * Attention cette classe est générée automatiquement !
