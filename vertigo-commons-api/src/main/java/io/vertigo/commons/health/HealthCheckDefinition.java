@@ -38,6 +38,8 @@ public final class HealthCheckDefinition implements Definition {
 	private final String definitionName;
 	private final String healthCheckName;
 	private final String checker;
+	private final String feature;
+	private final String topic;
 	private final Supplier<HealthMeasure> checkMethod;
 
 	/**
@@ -51,30 +53,27 @@ public final class HealthCheckDefinition implements Definition {
 			final String definitionName,
 			final String healthCheckName,
 			final String checker,
+			final String feature,
+			final String topic,
 			final Supplier<HealthMeasure> checkMethod) {
 		Assertion.checkArgNotEmpty(definitionName);
 		Assertion.checkArgNotEmpty(healthCheckName);
 		Assertion.checkArgNotEmpty(checker);
+		Assertion.checkArgNotEmpty(feature);
+		Assertion.checkArgNotEmpty(topic);
 		Assertion.checkNotNull(checkMethod);
 		//-----
 		this.definitionName = definitionName;
 		this.healthCheckName = healthCheckName;
 		this.checker = checker;
+		this.feature = feature;
+		this.topic = topic;
 		this.checkMethod = checkMethod;
 	}
 
-	/**
-	 * @return the name of the health checker
-	 */
-	public String getChecker() {
-		return checker;
-	}
-
-	/**
-	 * @return the check method that provides a health measure
-	 */
-	public Supplier<HealthMeasure> getCheckMethod() {
-		return checkMethod;
+	@Override
+	public String getName() {
+		return definitionName;
 	}
 
 	/**
@@ -84,8 +83,26 @@ public final class HealthCheckDefinition implements Definition {
 		return healthCheckName;
 	}
 
-	@Override
-	public String getName() {
-		return definitionName;
+	/**
+	 * @return the name of the health checker
+	 */
+	public String getChecker() {
+		return checker;
 	}
+
+	public String getFeature() {
+		return feature;
+	}
+
+	public String getTopic() {
+		return topic;
+	}
+
+	/**
+	 * @return the check method that provides a health measure
+	 */
+	public Supplier<HealthMeasure> getCheckMethod() {
+		return checkMethod;
+	}
+
 }

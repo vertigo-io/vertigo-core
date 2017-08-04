@@ -18,6 +18,8 @@
  */
 package io.vertigo.commons.impl.analytics;
 
+import io.vertigo.commons.health.HealthCheck;
+import io.vertigo.commons.metric.Metric;
 import io.vertigo.core.component.Plugin;
 
 /**
@@ -27,11 +29,22 @@ import io.vertigo.core.component.Plugin;
  * @author pchretien, npiedeloup
  * @version $Id: NetPlugin.java,v 1.1 2012/03/22 18:20:57 pchretien Exp $
  */
-@FunctionalInterface
 public interface AnalyticsConnectorPlugin extends Plugin {
 	/**
 	 * Adds a process to a connector which acts as a consumer.
 	 * @param process the process
 	 */
 	void add(AProcess process);
+
+	/**
+	 * Adds a metric to a connector which acts as a consumer.
+	 * @param metric the metric
+	 */
+	void add(Metric metric);
+
+	/**
+	 * Adds a healthCheck to a connector which acts as a consumer.
+	 * @param healthCheck the healthCheck
+	 */
+	void add(HealthCheck healthCheck);
 }

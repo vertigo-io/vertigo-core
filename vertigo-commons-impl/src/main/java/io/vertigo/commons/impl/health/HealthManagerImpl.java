@@ -22,7 +22,9 @@
 package io.vertigo.commons.impl.health;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,6 +53,8 @@ public final class HealthManagerImpl implements HealthManager, SimpleDefinitionP
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		// here all
+
 		// we need to unwrap the component to scan the real class and not the enhanced version
 		final AopPlugin aopPlugin = Home.getApp().getConfig().getBootConfig().getAopPlugin();
 		return Home.getApp().getComponentSpace().keySet()
@@ -65,6 +69,12 @@ public final class HealthManagerImpl implements HealthManager, SimpleDefinitionP
 	 */
 	private static List<HealthCheckDefinition> createHealthCheckDefinitions(final String componentId, final Component component, final AopPlugin aopPlugin) {
 		Assertion.checkNotNull(component);
+
+		//-- we construct a map of feature by componentId
+		final Map<String, String> featureByComponentId = new HashMap<>();
+		Home.getApp().getConfig().getModuleConfigs()
+				.forEach(moduleConfig -> moduleConfig.getComponentConfigs()
+						.forEach(componentConfig -> featureByComponentId.put(componentConfig.getId(), moduleConfig.getName())));
 		//-----
 		//1. search all methods
 		return Stream.of(aopPlugin.unwrap(component).getClass().getMethods())
@@ -77,7 +87,13 @@ public final class HealthManagerImpl implements HealthManager, SimpleDefinitionP
 					//-----
 					//2. For each method register a listener
 					final String healthCheckDefinitionName = "HCHK_" + StringUtil.camelToConstCase(componentId) + "$" + StringUtil.camelToConstCase(method.getName());
-					return new HealthCheckDefinition(healthCheckDefinitionName, healthChecked.name(), componentId, () -> (HealthMeasure) ClassUtil.invoke(component, method));
+					return new HealthCheckDefinition(
+							healthCheckDefinitionName,
+							healthChecked.name(),
+							componentId,
+							featureByComponentId.get(componentId),
+							healthChecked.topic(),
+							() -> (HealthMeasure) ClassUtil.invoke(component, method));
 				})
 				.collect(Collectors.toList());
 
@@ -97,6 +113,8 @@ public final class HealthManagerImpl implements HealthManager, SimpleDefinitionP
 			return new HealthCheck(
 					healthCheckDefinition.getHealthCheckName(),
 					healthCheckDefinition.getChecker(),
+					healthCheckDefinition.getFeature(),
+					healthCheckDefinition.getTopic(),
 					Instant.now(),
 					healthMeasure);
 		} catch (final Exception e) {
@@ -106,6 +124,8 @@ public final class HealthManagerImpl implements HealthManager, SimpleDefinitionP
 			return new HealthCheck(
 					healthCheckDefinition.getHealthCheckName(),
 					healthCheckDefinition.getChecker(),
+					healthCheckDefinition.getFeature(),
+					healthCheckDefinition.getTopic(),
 					Instant.now(),
 					healthMeasure);
 		}

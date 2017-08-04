@@ -35,8 +35,12 @@ import org.hibernate.exception.ConstraintViolationException;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracer;
+import io.vertigo.commons.health.HealthChecked;
+import io.vertigo.commons.health.HealthMeasure;
+import io.vertigo.commons.health.HealthMeasureBuilder;
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.database.plugins.sql.connection.hibernate.JpaDataBase;
 import io.vertigo.database.plugins.sql.connection.hibernate.JpaResource;
 import io.vertigo.database.sql.SqlDataBaseManager;
@@ -375,6 +379,22 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 					tracer.setMeasure("nbSelectedRow", result != null ? 1 : 0);
 					return result;
 				});
+
+	}
+
+	@HealthChecked(name = "testQuery", topic = "jpa")
+	public HealthMeasure checkJpaStore() {
+		final HealthMeasureBuilder healthMeasure = HealthMeasure.builder();
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			getEntityManager().createNativeQuery("select 1", Integer.class).getFirstResult();
+			healthMeasure
+					.withGreenStatus("ok");
+		} catch (final Exception e) {
+			healthMeasure
+					.withRedStatus(e.getMessage(), e)
+					.build();
+		}
+		return healthMeasure.build();
 
 	}
 

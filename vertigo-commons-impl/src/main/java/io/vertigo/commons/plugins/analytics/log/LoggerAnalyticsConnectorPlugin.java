@@ -25,14 +25,20 @@ import org.apache.log4j.Logger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import io.vertigo.commons.health.HealthCheck;
 import io.vertigo.commons.impl.analytics.AProcess;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
+import io.vertigo.commons.metric.Metric;
 
 /**
  * Processes connector which only use a log4j logger.
  * @author mlaroche,pchretien,npiedeloup
  */
 public final class LoggerAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin {
+
+	private static final Logger LOGGER_HEALTH = Logger.getLogger("health");
+	private static final Logger LOGGER_METRIC = Logger.getLogger("metric");
+
 	private static final Gson GSON = new GsonBuilder().create();
 
 	/** {@inheritDoc} */
@@ -43,6 +49,24 @@ public final class LoggerAnalyticsConnectorPlugin implements AnalyticsConnectorP
 			final String json = GSON.toJson(Collections.singletonList(process));
 			logger.info(json);
 		}
+	}
+
+	@Override
+	public void add(final Metric metric) {
+		if (LOGGER_METRIC.isInfoEnabled()) {
+			final String json = GSON.toJson(Collections.singletonList(metric));
+			LOGGER_METRIC.info(json);
+		}
+
+	}
+
+	@Override
+	public void add(final HealthCheck healthCheck) {
+		if (LOGGER_HEALTH.isInfoEnabled()) {
+			final String json = GSON.toJson(Collections.singletonList(healthCheck));
+			LOGGER_HEALTH.info(json);
+		}
+
 	}
 
 }

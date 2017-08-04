@@ -36,8 +36,10 @@ import com.google.gson.JsonObject;
 
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonScheduled;
+import io.vertigo.commons.health.HealthCheck;
 import io.vertigo.commons.impl.analytics.AProcess;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
+import io.vertigo.commons.metric.Metric;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -49,6 +51,8 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	private static final int DEFAULT_SERVER_PORT = 4560;// DefaultPort of SocketAppender
 
 	private Logger socketLogger;
+	private Logger socketHealthLogger;
+	private Logger socketMetricLogger;
 	private final String hostName;
 	private final int port;
 
@@ -88,6 +92,24 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		processQueue.add(process);
 	}
 
+	@Override
+	public void add(final Metric metric) {
+		if (socketMetricLogger == null) {
+			socketMetricLogger = createLogger("analytics-metric", hostName, port);
+		}
+		sendObject(metric, socketMetricLogger);
+
+	}
+
+	@Override
+	public void add(final HealthCheck healthCheck) {
+		if (socketHealthLogger == null) {
+			socketHealthLogger = createLogger("analytics-health", hostName, port);
+		}
+		sendObject(healthCheck, socketHealthLogger);
+
+	}
+
 	private static String retrieveHostName() {
 		try {
 			return InetAddress.getLocalHost().getHostName();
@@ -97,9 +119,9 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		}
 	}
 
-	private static Logger createLogger(final String hostName, final int port) {
+	private static Logger createLogger(final String loggerName, final String hostName, final int port) {
 		// If it doesn't exist we create it with the right appender
-		final Logger logger = Logger.getLogger(SocketLoggerAnalyticsConnectorPlugin.class);
+		final Logger logger = Logger.getLogger(loggerName);
 		// Create an appender
 		final SocketAppender appender = new SocketAppender(hostName, port);
 		// we make only one try
@@ -108,7 +130,6 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		logger.removeAllAppenders();
 		logger.addAppender(appender);
 		logger.setLevel(Level.INFO);
-		logger.setAdditivity(false);
 		return logger;
 	}
 
@@ -128,14 +149,19 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	private void sendProcess(final AProcess process) {
 		if (socketLogger == null) {
-			socketLogger = createLogger(hostName, port);
+			socketLogger = createLogger(SocketLoggerAnalyticsConnectorPlugin.class.getName(), hostName, port);
 		}
-		if (socketLogger.isInfoEnabled()) {
+		sendObject(process, socketLogger);
+	}
+
+	private void sendObject(final Object object, final Logger logger) {
+
+		if (logger.isInfoEnabled()) {
 			final JsonObject log = new JsonObject();
 			log.addProperty("appName", appName);
 			log.addProperty("host", localHostName);
-			log.add("event", GSON.toJsonTree(process));
-			socketLogger.info(GSON.toJson(log));
+			log.add("event", GSON.toJsonTree(object));
+			logger.info(GSON.toJson(log));
 		}
 	}
 

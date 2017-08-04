@@ -27,6 +27,11 @@ import javax.inject.Inject;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.AnalyticsTracer;
+import io.vertigo.commons.daemon.DaemonScheduled;
+import io.vertigo.commons.health.HealthCheck;
+import io.vertigo.commons.health.HealthManager;
+import io.vertigo.commons.metric.Metric;
+import io.vertigo.commons.metric.MetricManager;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -35,6 +40,9 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class AnalyticsManagerImpl implements AnalyticsManager {
+
+	private final HealthManager healthManager;
+	private final MetricManager metricManager;
 	private final List<AnalyticsConnectorPlugin> processConnectorPlugins;
 	/**
 	 * Processus binde sur le thread courant. Le processus , recoit les notifications des sondes placees dans le code de
@@ -49,12 +57,41 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 	 * @param processConnectorPlugins list of connectors to trace processes
 	 */
 	@Inject
-	public AnalyticsManagerImpl(final List<AnalyticsConnectorPlugin> processConnectorPlugins) {
+	public AnalyticsManagerImpl(
+			final HealthManager healthManager,
+			final MetricManager metricManager,
+			final List<AnalyticsConnectorPlugin> processConnectorPlugins) {
 		Assertion.checkNotNull(processConnectorPlugins);
 		//---
+		this.healthManager = healthManager;
+		this.metricManager = metricManager;
 		this.processConnectorPlugins = processConnectorPlugins;
 		// by default if no connector is defined we disable the collect
 		enabled = !this.processConnectorPlugins.isEmpty();
+	}
+
+	/**
+	 * Daemon to retrieve healthChecks and add them to the connectors
+	 */
+	@DaemonScheduled(name = "DMN_ANALYTICS_HEALTH", periodInSeconds = 10) //every hour
+	public void sendHealthChecks() {
+		if (enabled) {
+			final List<HealthCheck> healthChecks = healthManager.getHealthChecks();
+			processConnectorPlugins.forEach(
+					connectorPlugin -> healthChecks.forEach(connectorPlugin::add));
+		}
+	}
+
+	/**
+	 * Daemon to retrieve metrics and add them to the connectors
+	 */
+	@DaemonScheduled(name = "DMN_ANALYTICS_METRIC", periodInSeconds = 60 * 60) //every hour
+	public void sendMetrics() {
+		if (enabled) {
+			final List<Metric> metrics = metricManager.analyze();
+			processConnectorPlugins.forEach(
+					connectorPlugin -> metrics.forEach(connectorPlugin::add));
+		}
 	}
 
 	/** {@inheritDoc} */

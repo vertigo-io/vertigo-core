@@ -27,8 +27,10 @@ import org.apache.log4j.Logger;
 
 import com.google.gson.JsonObject;
 
+import io.vertigo.commons.health.HealthCheck;
 import io.vertigo.commons.impl.analytics.AProcess;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
+import io.vertigo.commons.metric.Metric;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -104,5 +106,17 @@ public final class SmartLoggerAnalyticsConnectorPlugin implements AnalyticsConne
 	static class AggregatedResult {
 		int count;
 		long duration;
+	}
+
+	@Override
+	public void add(final Metric metric) {
+		//nothing
+
+	}
+
+	@Override
+	public void add(final HealthCheck healthCheck) {
+		//nothing
+
 	}
 }
