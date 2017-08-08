@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import io.vertigo.commons.health.HealthMeasure;
+import io.vertigo.commons.health.HealthCheck;
 import io.vertigo.core.component.Manager;
 
 /**
@@ -68,7 +68,7 @@ public interface NodeManager extends Manager {
 	 * A consolidated view of the cluster (id+status)
 	 * @return the overall status
 	 */
-	Map<String, List<HealthMeasure>> getStatus();
+	Map<String, List<HealthCheck>> getStatus();
 
 	/**
 	 * A consolidated view of the stats of the app

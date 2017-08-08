@@ -35,7 +35,7 @@ import io.vertigo.app.Home;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonScheduled;
-import io.vertigo.commons.health.HealthMeasure;
+import io.vertigo.commons.health.HealthCheck;
 import io.vertigo.commons.node.Node;
 import io.vertigo.commons.node.NodeManager;
 import io.vertigo.commons.plugins.node.registry.single.SingleNodeRegistryPlugin;
@@ -124,7 +124,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 	}
 
 	@Override
-	public Map<String, List<HealthMeasure>> getStatus() {
+	public Map<String, List<HealthCheck>> getStatus() {
 		return aggregateResults(app -> getInfosPlugin(app).getStatus(app));
 	}
 
