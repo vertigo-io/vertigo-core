@@ -27,30 +27,16 @@ package io.vertigo.commons.health;
  * @author jmforhan
  */
 public enum HealthStatus {
-
-	/**
-	 * red : the component is not operational.
-	 */
-	RED(0),
-
-	/**
-	 * yellow : the component is partially operational.
-	 */
-	YELLOW(1),
-
 	/**
 	 * green : the component is fully operational.
 	 */
-	GREEN(2);
-
-	final double code;
-
-	HealthStatus(final double code) {
-		this.code = code;
-	}
-
-	public double getCode() {
-		return code;
-	}
-
+	GREEN,
+	/**
+	 * yellow : the component is partially operational.
+	 */
+	YELLOW,
+	/**
+	 * red : the component is not operational.
+	 */
+	RED
 }
