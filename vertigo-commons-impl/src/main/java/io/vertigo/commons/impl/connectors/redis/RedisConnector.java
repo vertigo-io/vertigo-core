@@ -23,6 +23,9 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.vertigo.commons.health.HealthChecked;
+import io.vertigo.commons.health.HealthMeasure;
+import io.vertigo.commons.health.HealthMeasureBuilder;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.component.Component;
 import io.vertigo.lang.Assertion;
@@ -79,6 +82,19 @@ public final class RedisConnector implements Component, Activeable {
 	@Override
 	public void stop() {
 		jedisPool.destroy();
+	}
+
+	@HealthChecked(name = "ping", topic = "redis")
+	public HealthMeasure checkRedisPing() {
+		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
+		try (Jedis jedis = this.getResource()) {
+			final String result = jedis.ping();
+			healthMeasureBuilder.withGreenStatus(result);
+		} catch (final Exception e) {
+			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
+		}
+		return healthMeasureBuilder.build();
+
 	}
 
 }

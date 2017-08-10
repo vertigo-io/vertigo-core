@@ -20,6 +20,9 @@ package io.vertigo.commons.impl.cache;
 
 import java.io.Serializable;
 
+import io.vertigo.commons.health.HealthChecked;
+import io.vertigo.commons.health.HealthMeasure;
+import io.vertigo.commons.health.HealthMeasureBuilder;
 import io.vertigo.core.component.Plugin;
 
 /**
@@ -71,4 +74,19 @@ public interface CachePlugin extends Plugin {
 	 * Effacement du contenu de TOUS les Contextes de cache.
 	 */
 	void clearAll();
+
+	@HealthChecked(name = "io", topic = "cache")
+	default public HealthMeasure checkIo() {
+		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
+		try {
+			put("CACHE_HEALTH_VERTIGO", "healthcheckkey", "healthcheckvalue");
+			final String result = (String) get("CACHE_HEALTH_VERTIGO", "healthcheckkey");
+			remove("CACHE_HEALTH_VERTIGO", "healthcheckkey");
+			healthMeasureBuilder.withGreenStatus(result);
+		} catch (final Exception e) {
+			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
+		}
+		return healthMeasureBuilder.build();
+
+	}
 }
