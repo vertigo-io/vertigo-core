@@ -18,7 +18,15 @@
  */
 package io.vertigo.database.impl.sql;
 
+import java.util.Collections;
+
+import io.vertigo.app.Home;
+import io.vertigo.commons.health.HealthChecked;
+import io.vertigo.commons.health.HealthMeasure;
+import io.vertigo.commons.health.HealthMeasureBuilder;
 import io.vertigo.core.component.Plugin;
+import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 
 /**
@@ -32,4 +40,28 @@ public interface SqlConnectionProviderPlugin extends SqlConnectionProvider, Plug
 	 * @return ConnectionProvider's name
 	 */
 	String getName();
+
+	@HealthChecked(name = "testQuery", topic = "sqlDatabase")
+	default public HealthMeasure checkTestSelect() {
+
+		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
+
+		final String testQuery = this.getDataBase().getSqlDialect().getTestQuery();
+		try {
+
+			final SqlDataBaseManager sqlDataBaseManager = Home.getApp().getComponentSpace().resolve(SqlDataBaseManager.class);
+			final SqlConnection connection = obtainConnection();
+			try {
+				sqlDataBaseManager.createPreparedStatement(connection)
+						.executeQuery(testQuery, Collections.emptyList(), Integer.class, 1);
+			} finally {
+				connection.release();
+			}
+			healthMeasureBuilder.withGreenStatus("ok");
+		} catch (final Exception e) {
+			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
+		}
+		return healthMeasureBuilder.build();
+
+	}
 }

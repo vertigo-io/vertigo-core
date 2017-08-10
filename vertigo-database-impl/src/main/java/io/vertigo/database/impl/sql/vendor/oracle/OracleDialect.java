@@ -83,4 +83,10 @@ final class OracleDialect implements SqlDialect {
 	public GenerationMode getGenerationMode() {
 		return GenerationMode.GENERATED_COLUMNS;
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getTestQuery() {
+		return "SELECT 1 FROM DUAL";
+	}
 }

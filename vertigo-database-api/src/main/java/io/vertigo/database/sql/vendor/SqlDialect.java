@@ -79,6 +79,14 @@ public interface SqlDialect {
 	}
 
 	/**
+	 * Statement to execute to verify the database connection
+	 * @return statement to execute
+	 */
+	default String getTestQuery() {
+		return "SELECT 1";
+	}
+
+	/**
 	 * @return how keys are generated
 	 */
 	GenerationMode getGenerationMode();
