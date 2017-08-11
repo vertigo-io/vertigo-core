@@ -25,6 +25,7 @@ import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.plugins.resource.local.LocalResourceResolverPlugin;
+import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
@@ -41,15 +42,17 @@ public final class SqlTestConfigurator {
 				.addModule(new CommonsFeatures()
 						.withCache(MemoryCachePlugin.class)
 						.build())
-				.addModule(new DynamoFeatures()
-						.withStore()
-						.addDataStorePlugin(SqlDataStorePlugin.class,
-								Param.of("sequencePrefix", "SEQ_"))
+				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()
 						.addSqlConnectionProviderPlugin(C3p0ConnectionProviderPlugin.class,
 								Param.of("dataBaseClass", "io.vertigo.database.impl.sql.vendor.h2.H2DataBase"),
 								Param.of("jdbcDriver", "org.h2.Driver"),
 								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
+						.build())
+				.addModule(new DynamoFeatures()
+						.withStore()
+						.addDataStorePlugin(SqlDataStorePlugin.class,
+								Param.of("sequencePrefix", "SEQ_"))
 						.build())
 				.build();
 	}
