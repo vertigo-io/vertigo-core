@@ -28,6 +28,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.resource.ResourceManager;
@@ -92,7 +93,7 @@ public final class ESTransportSearchServicesPlugin extends AbstractESSearchServi
 	/** {@inheritDoc} */
 	@Override
 	protected Client createClient() {
-		client = TransportClient.builder().settings(buildNodeSettings()).build();
+		client = new PreBuiltTransportClient(buildNodeSettings());
 		for (final String serverName : serversNames) {
 			final String[] serverNameSplit = serverName.split(":");
 			Assertion.checkArgument(serverNameSplit.length == 2,
@@ -111,7 +112,7 @@ public final class ESTransportSearchServicesPlugin extends AbstractESSearchServi
 
 	private Settings buildNodeSettings() {
 		// Build settings
-		return Settings.settingsBuilder().put("node.name", nodeName)
+		return Settings.builder().put("node.name", nodeName)
 				// .put("node.data", false)
 				// .put("node.master", false)
 				// .put("discovery.zen.fd.ping_timeout", "30s")

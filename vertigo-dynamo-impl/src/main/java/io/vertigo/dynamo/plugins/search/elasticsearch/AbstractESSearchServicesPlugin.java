@@ -64,10 +64,12 @@ import io.vertigo.lang.WrappedException;
 
 /**
  * Gestion de la connexion au serveur Solr de manière transactionnel.
- * @author dchallas
+ * @author dchallas, npiedeloup
  */
 public abstract class AbstractESSearchServicesPlugin implements SearchServicesPlugin, Activeable {
 	private static final int OPTIMIZE_MAX_NUM_SEGMENT = 32;
+	public static final String SUFFIX_SORT_FIELD = ".keyword";
+
 	private static final Logger LOGGER = Logger.getLogger(AbstractESSearchServicesPlugin.class);
 	private final ESDocumentCodec elasticDocumentCodec;
 
@@ -143,14 +145,14 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					esClient.admin().indices().prepareCreate(myIndexName).get();
 				} else {
 					try (InputStream is = configFile.openStream()) {
-						final Settings settings = Settings.settingsBuilder().loadFromStream(configFile.getFile(), is).build();
+						final Settings settings = Settings.builder().loadFromStream(configFile.getFile(), is).build();
 						esClient.admin().indices().prepareCreate(myIndexName).setSettings(settings).get();
 					}
 				}
 			} else if (configFile != null) {
 				// If we use local config file, we check config against ES server
 				try (InputStream is = configFile.openStream()) {
-					final Settings settings = Settings.settingsBuilder().loadFromStream(configFile.getFile(), is).build();
+					final Settings settings = Settings.builder().loadFromStream(configFile.getFile(), is).build();
 					indexSettingsValid = indexSettingsValid && !isIndexSettingsDirty(myIndexName, settings);
 				}
 			}
@@ -293,19 +295,28 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					.startObject(ESDocumentCodec.FULL_RESULT)
 					.field("type", "binary")
 					.endObject();
+
 			/* 3 : Les champs du dto index */
 			final Set<DtField> copyFromFields = indexDefinition.getIndexCopyFromFields();
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
-				//if (!copyToFields.contains(dtField)) {
 				final IndexType indexType = IndexType.readIndexType(dtField.getDomain());
 				typeMapping.startObject(dtField.getName());
 				appendIndexTypeMapping(typeMapping, indexType);
 				if (copyFromFields.contains(dtField)) {
 					appendIndexCopyToMapping(indexDefinition, typeMapping, dtField);
 				}
+				if (indexType.isIndexSubKeyword()) {
+					typeMapping.startObject("fields");
+					typeMapping.startObject("keyword");
+					typeMapping.field("type", "keyword");
+					typeMapping.endObject();
+					typeMapping.endObject();
+				}
+				if (indexType.isIndexFieldData()) {
+					typeMapping.field("fielddata", true);
+				}
 				typeMapping.endObject();
-				//}
 			}
 			typeMapping.endObject().endObject(); //end properties
 
@@ -337,7 +348,10 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	private static void appendIndexTypeMapping(final XContentBuilder typeMapping, final IndexType indexType) throws IOException {
 		typeMapping.field("type", indexType.getIndexDataType());
 		if (indexType.getIndexAnalyzer().isPresent()) {
-			typeMapping.field("analyzer", indexType.getIndexAnalyzer().get());
+			typeMapping.field("keyword".equals(indexType.getIndexDataType()) ? "normalizer" : "analyzer", indexType.getIndexAnalyzer().get());
+		}
+		if ("scaled_float".equals(indexType.getIndexDataType())) {
+			typeMapping.field("scaling_factor", 10000);
 		}
 	}
 

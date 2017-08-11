@@ -19,10 +19,13 @@
 package io.vertigo.dynamo.plugins.search.elasticsearch.embedded;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -30,8 +33,11 @@ import javax.inject.Named;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.node.InternalSettingsPreparer;
 import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
+import org.elasticsearch.node.NodeValidationException;
+import org.elasticsearch.plugins.Plugin;
+import org.elasticsearch.transport.Netty4Plugin;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.resource.ResourceManager;
@@ -79,14 +85,22 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 	@Override
 	protected Client createClient() {
 		node = createNode(elasticSearchHomeURL);
-		node.start();
+		try {
+			node.start();
+		} catch (final NodeValidationException e) {
+			throw WrappedException.wrap(e, "Error at ElasticSearch node start");
+		}
 		return node.client();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected void closeClient() {
-		node.close();
+		try {
+			node.close();
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e, "Error at ElasticSearch node stop");
+		}
 	}
 
 	private static Node createNode(final URL esHomeURL) {
@@ -100,16 +114,22 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 		}
 		Assertion.checkArgument(home.exists() && home.isDirectory(), "Le ElasticSearchHome : {0} n''existe pas, ou n''est pas un répertoire.", home.getAbsolutePath());
 		Assertion.checkArgument(home.canWrite(), "L''application n''a pas les droits d''écriture sur le ElasticSearchHome : {0}", home.getAbsolutePath());
-		return new NodeBuilder()
-				.settings(buildNodeSettings(home.getAbsolutePath()))
-				.local(true)
-				.build();
+		return new MyNode(buildNodeSettings(home.getAbsolutePath()), Collections.singletonList(Netty4Plugin.class));
+	}
+
+	private static class MyNode extends Node {
+		public MyNode(final Settings preparedSettings, final Collection<Class<? extends Plugin>> classpathPlugins) {
+			super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, null), classpathPlugins);
+		}
 	}
 
 	private static Settings buildNodeSettings(final String homePath) {
 		//Build settings
-		return Settings.settingsBuilder()
+		return Settings.builder()
 				.put("node.name", "es-embedded-node-" + System.currentTimeMillis())
+				.put("transport.type", "netty4")
+				.put("http.type", "netty4")
+				.put("http.enabled", "true")
 				.put("path.home", homePath)
 				.build();
 	}

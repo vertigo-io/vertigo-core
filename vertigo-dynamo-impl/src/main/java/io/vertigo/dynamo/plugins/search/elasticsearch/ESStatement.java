@@ -28,6 +28,7 @@ import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -60,8 +61,8 @@ import io.vertigo.lang.WrappedException;
  */
 final class ESStatement<K extends KeyConcept, I extends DtObject> {
 
-	private static final boolean DEFAULT_REFRESH = false; //mettre a true pour TU uniquement
-	private static final boolean BULK_REFRESH = false; //mettre a true pour TU uniquement
+	private static final RefreshPolicy DEFAULT_REFRESH = RefreshPolicy.NONE; //mettre a true pour TU uniquement
+	private static final RefreshPolicy BULK_REFRESH = RefreshPolicy.NONE; //mettre a RefreshPolicy.IMMEDIATE pour TU uniquement
 	static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
 	private static final Logger LOGGER = Logger.getLogger(ESStatement.class);
 
@@ -95,7 +96,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	void putAll(final Collection<SearchIndex<K, I>> indexCollection) {
 		//Injection spécifique au moteur d'indexation.
 		try {
-			final BulkRequestBuilder bulkRequest = esClient.prepareBulk().setRefresh(BULK_REFRESH);
+			final BulkRequestBuilder bulkRequest = esClient.prepareBulk().setRefreshPolicy(BULK_REFRESH);
 			for (final SearchIndex<K, I> index : indexCollection) {
 				try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
 					bulkRequest.add(esClient.prepareIndex()
@@ -124,7 +125,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	void put(final SearchIndex<K, I> index) {
 		//Injection spécifique au moteur d'indexation.
 		try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
-			esClient.prepareIndex().setRefresh(DEFAULT_REFRESH)
+			esClient.prepareIndex().setRefreshPolicy(DEFAULT_REFRESH)
 					.setIndex(indexName)
 					.setType(typeName)
 					.setId(index.getURI().urn())
@@ -148,8 +149,8 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 				.setIndices(indexName)
 				.setTypes(typeName)
 				.setSearchType(SearchType.QUERY_THEN_FETCH)
-				.setNoFields()
-				.addSort("_id", SortOrder.ASC)
+				//.setNoFields() TODO maj version
+				.addSort("_uid", SortOrder.ASC)
 				.setQuery(queryBuilder);
 		try {
 			//get all doc_id
@@ -157,7 +158,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			final SearchHits searchHits = queryResponse.getHits();
 			if (searchHits.getTotalHits() > 0) {
 				//bulk delete all ids
-				final BulkRequestBuilder bulkRequest = esClient.prepareBulk().setRefresh(BULK_REFRESH);
+				final BulkRequestBuilder bulkRequest = esClient.prepareBulk().setRefreshPolicy(BULK_REFRESH);
 				for (final SearchHit searchHit : searchHits) {
 					bulkRequest.add(esClient.prepareDelete(indexName, typeName, searchHit.getId()));
 				}
@@ -180,7 +181,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	void remove(final URI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		esClient.prepareDelete().setRefresh(DEFAULT_REFRESH)
+		esClient.prepareDelete().setRefreshPolicy(DEFAULT_REFRESH)
 				.setIndex(indexName)
 				.setType(typeName)
 				.setId(uri.urn())

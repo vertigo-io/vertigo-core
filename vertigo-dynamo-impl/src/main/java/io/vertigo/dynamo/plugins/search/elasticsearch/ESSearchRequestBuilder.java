@@ -20,6 +20,7 @@ package io.vertigo.dynamo.plugins.search.elasticsearch;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -29,15 +30,16 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.functionscore.exp.ExponentialDecayFunctionBuilder;
+import org.elasticsearch.index.query.functionscore.ExponentialDecayFunctionBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.filters.FiltersAggregationBuilder;
-import org.elasticsearch.search.aggregations.bucket.range.RangeBuilder;
-import org.elasticsearch.search.aggregations.bucket.range.date.DateRangeBuilder;
+import org.elasticsearch.search.aggregations.bucket.filters.FiltersAggregator.KeyedFilter;
+import org.elasticsearch.search.aggregations.bucket.range.RangeAggregationBuilder;
+import org.elasticsearch.search.aggregations.bucket.range.date.DateRangeAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms.Order;
-import org.elasticsearch.search.aggregations.metrics.tophits.TopHitsBuilder;
+import org.elasticsearch.search.aggregations.metrics.tophits.TopHitsAggregationBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
@@ -63,7 +65,6 @@ import io.vertigo.lang.Builder;
 final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 
 	private static final int HIGHLIGHTER_NUM_OF_FRAGMENTS = 3;
-	private static final boolean ACCEPT_UNMAPPED_SORT_FIELD = false; //utile uniquement pour la recherche multi type
 	private static final int TERM_AGGREGATION_SIZE = 50; //max 50 facets values per facet
 	private static final int TOPHITS_SUBAGGREGATION_MAXSIZE = 100; //max 100 documents per cluster when clusterization is used
 	private static final int TOPHITS_SUBAGGREGATION_SIZE = 10; //max 10 documents per cluster when clusterization is used
@@ -92,7 +93,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 				.setIndices(indexName)
 				.setTypes(typeName)
 				.setSearchType(SearchType.QUERY_THEN_FETCH)
-				.addFields(ESDocumentCodec.FULL_RESULT);
+				.setFetchSource(ESDocumentCodec.FULL_RESULT, null);
 	}
 
 	/**
@@ -166,15 +167,15 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 
 	private static FieldSortBuilder getFieldSortBuilder(final SearchIndexDefinition myIndexDefinition, final DtListState myListState) {
 		final DtField sortField = myIndexDefinition.getIndexDtDefinition().getField(myListState.getSortFieldName().get());
-		final FieldSortBuilder sortBuilder = SortBuilders.fieldSort(sortField.getName())
+		String sortIndexFieldName = sortField.getName();
+		final IndexType indexType = IndexType.readIndexType(sortField.getDomain());
+
+		if (indexType.isIndexSubKeyword()) { //s'il y a un subKeyword on tri dessus
+			sortIndexFieldName = sortIndexFieldName + ".keyword";
+		}
+		final FieldSortBuilder sortBuilder = SortBuilders.fieldSort(sortIndexFieldName)
 				.order(myListState.isSortDesc().get() ? SortOrder.DESC : SortOrder.ASC);
 
-		if (ACCEPT_UNMAPPED_SORT_FIELD) {
-			//Code désactivé pour l'instant, peut-être utile pour des recherches multi-type
-			final IndexType indexType = IndexType.readIndexType(sortField.getDomain());
-			final String sortType = indexType.getIndexDataType();
-			sortBuilder.unmappedType(sortType);
-		}
 		return sortBuilder;
 	}
 
@@ -210,17 +211,14 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 				.setQuery(requestQueryBuilder);
 		if (useHighlight) {
 			//.setHighlighterFilter(true) //We don't highlight the security filter
-			searchRequestBuilder
-					.setHighlighterNumOfFragments(HIGHLIGHTER_NUM_OF_FRAGMENTS)
-					.addHighlightedField("*");
+			searchRequestBuilder.highlighter(new HighlightBuilder().numOfFragments(3));//.addHighlightedField("*"); HOW TO ?
 		}
 	}
 
 	private static QueryBuilder appendBoostMostRecent(final SearchQuery searchQuery, final QueryBuilder queryBuilder) {
 		return QueryBuilders.functionScoreQuery(
 				queryBuilder,
-				new ExponentialDecayFunctionBuilder(searchQuery.getBoostedDocumentDateField(), null, searchQuery.getNumDaysOfBoostRefDocument() + "d")
-						.setDecay(searchQuery.getMostRecentBoost() - 1D));
+				new ExponentialDecayFunctionBuilder(searchQuery.getBoostedDocumentDateField(), null, searchQuery.getNumDaysOfBoostRefDocument() + "d", "1d", searchQuery.getMostRecentBoost() - 1D));
 	}
 
 	private static void appendFacetDefinition(
@@ -234,15 +232,14 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		if (searchQuery.isClusteringFacet()) { //si il y a un cluster on le place en premier
 			final FacetDefinition clusteringFacetDefinition = searchQuery.getClusteringFacetDefinition();
 
-			final AggregationBuilder<?> aggregationBuilder = facetToAggregationBuilder(clusteringFacetDefinition);
-			final TopHitsBuilder topHitsBuilder = AggregationBuilders.topHits(TOPHITS_SUBAGGREGATION_NAME)
-					.setSize(myListState.getMaxRows().orElse(TOPHITS_SUBAGGREGATION_SIZE))
-					.setFrom(myListState.getSkipRows())
-					.setHighlighterNumOfFragments(3)
-					.addHighlightedField("*");
+			final AggregationBuilder aggregationBuilder = facetToAggregationBuilder(clusteringFacetDefinition);
+			final TopHitsAggregationBuilder topHitsBuilder = AggregationBuilders.topHits(TOPHITS_SUBAGGREGATION_NAME)
+					.size(myListState.getMaxRows().orElse(TOPHITS_SUBAGGREGATION_SIZE))
+					.from(myListState.getSkipRows())
+					.highlighter(new HighlightBuilder().numOfFragments(3));//.addHighlightedField("*"); HOW TO ?
 
 			if (myListState.getSortFieldName().isPresent()) {
-				topHitsBuilder.addSort(getFieldSortBuilder(myIndexDefinition, myListState));
+				topHitsBuilder.sort(getFieldSortBuilder(myIndexDefinition, myListState));
 			}
 
 			aggregationBuilder.subAggregation(topHitsBuilder);
@@ -257,13 +254,13 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 				facetDefinitions.remove(searchQuery.getClusteringFacetDefinition());
 			}
 			for (final FacetDefinition facetDefinition : facetDefinitions) {
-				final AggregationBuilder<?> aggregationBuilder = facetToAggregationBuilder(facetDefinition);
+				final AggregationBuilder aggregationBuilder = facetToAggregationBuilder(facetDefinition);
 				searchRequestBuilder.addAggregation(aggregationBuilder);
 			}
 		}
 	}
 
-	private static AggregationBuilder<?> facetToAggregationBuilder(final FacetDefinition facetDefinition) {
+	private static AggregationBuilder facetToAggregationBuilder(final FacetDefinition facetDefinition) {
 		final DtField dtField = facetDefinition.getDtField();
 		if (facetDefinition.isRangeFacet()) {
 			return rangeFacetToAggregationBuilder(facetDefinition, dtField);
@@ -271,7 +268,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		return termFacetToAggregationBuilder(facetDefinition, dtField);
 	}
 
-	private static AggregationBuilder<?> termFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
+	private static AggregationBuilder termFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
 		//facette par field
 		final Order facetOrder;
 		switch (facetDefinition.getOrder()) {
@@ -289,13 +286,18 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		}
 
 		//Warning term aggregations are inaccurate : see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html
+		final IndexType indexType = IndexType.readIndexType(dtField.getDomain());
+		String fieldName = dtField.getName();
+		if (!indexType.isIndexFieldData() && indexType.isIndexSubKeyword()) { //si le champs n'est pas facetable mais qu'il y a un sub keyword on le prend
+			fieldName = fieldName + ".keyword";
+		}
 		return AggregationBuilders.terms(facetDefinition.getName())
 				.size(TERM_AGGREGATION_SIZE)
-				.field(dtField.getName())
+				.field(fieldName)
 				.order(facetOrder);
 	}
 
-	private static AggregationBuilder<?> rangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
+	private static AggregationBuilder rangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
 		//facette par range
 		final DataType dataType = dtField.getDomain().getDataType();
 		if (dataType == DataType.Date) {
@@ -304,17 +306,17 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			return numberRangeFacetToAggregationBuilder(facetDefinition, dtField);
 		}
 
-		final FiltersAggregationBuilder filters = AggregationBuilders.filters(facetDefinition.getName());
+		final List<KeyedFilter> filters = new ArrayList<>();
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final String filterValue = facetRange.getListFilter().getFilterValue();
 			Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
-			filters.filter(filterValue, QueryBuilders.queryStringQuery(filterValue));
+			filters.add(new KeyedFilter(filterValue, QueryBuilders.queryStringQuery(filterValue)));
 		}
-		return filters;
+		return AggregationBuilders.filters(facetDefinition.getName(), filters.toArray(new KeyedFilter[filters.size()]));
 	}
 
-	private static AggregationBuilder<RangeBuilder> numberRangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
-		final RangeBuilder rangeBuilder = AggregationBuilders.range(facetDefinition.getName())//
+	private static AggregationBuilder numberRangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
+		final RangeAggregationBuilder rangeBuilder = AggregationBuilders.range(facetDefinition.getName())//
 				.field(dtField.getName());
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final String filterValue = facetRange.getListFilter().getFilterValue();
@@ -333,8 +335,8 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		return rangeBuilder;
 	}
 
-	private static AggregationBuilder<DateRangeBuilder> dateRangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
-		final DateRangeBuilder dateRangeBuilder = AggregationBuilders.dateRange(facetDefinition.getName())
+	private static AggregationBuilder dateRangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
+		final DateRangeAggregationBuilder dateRangeBuilder = AggregationBuilders.dateRange(facetDefinition.getName())
 				.field(dtField.getName())
 				.format(DATE_PATTERN);
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
@@ -378,7 +380,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 				.append(')')
 				.toString();
 		return QueryBuilders.queryStringQuery(query)
-				.lowercaseExpandedTerms(false)
+				//.lowercaseExpandedTerms(false) ?? TODO maj version
 				.analyzeWildcard(true);
 	}
 

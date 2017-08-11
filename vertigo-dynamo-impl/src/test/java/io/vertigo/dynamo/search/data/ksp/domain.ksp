@@ -12,7 +12,7 @@ create Constraint CK_MAX_LENGTH_250 {
 create Domain DO_STRING {
 	dataType : String
 	formatter : FMT_DEFAULT
-	indexType : "text.fr"
+	indexType : "text_fr:sortable"
 }
 
 create Domain DO_LONG {

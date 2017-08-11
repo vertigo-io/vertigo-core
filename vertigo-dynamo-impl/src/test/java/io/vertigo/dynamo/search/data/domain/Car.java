@@ -65,7 +65,7 @@ public final class Car implements KeyConcept {
 		this.make = make;
 	}
 
-	@Field(domain = "DO_FULL_TEXT", required = true, label = "Modéle")
+	@Field(domain = "DO_STRING", required = true, label = "Modéle")
 	public final String getModel() {
 		return model;
 	}
@@ -155,10 +155,10 @@ public final class Car implements KeyConcept {
 		this.optionalString = optionalString;
 	}
 
-	@Field(domain = "DO_KEYWORD", type = "COMPUTED", persistent = false, label = "model sort")
+	/*@Field(domain = "DO_KEYWORD", type = "COMPUTED", persistent = false, label = "model sort")
 	public String getModelSort() {
 		throw new VSystemException("Can't use index copyTo field");
-	}
+	}*/
 
 	@Field(domain = "DO_FULL_TEXT", type = "COMPUTED", persistent = false, label = "index all")
 	public String getAllText() {

@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.search.elasticsearch.commonshttp;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -26,12 +27,13 @@ import javax.inject.Named;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
+import org.elasticsearch.node.NodeValidationException;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 /**
  * Gestion de la connexion au serveur elasticSearch en mode HTTP.
@@ -89,23 +91,28 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 	/** {@inheritDoc} */
 	@Override
 	protected Client createClient() {
-		node = new NodeBuilder()
-				.settings(buildNodeSettings())
-				.client(true)
-				.build();
-		node.start();
+		node = new Node(buildNodeSettings());
+		try {
+			node.start();
+		} catch (final NodeValidationException e) {
+			throw WrappedException.wrap(e, "Error at ElasticSearch node start");
+		}
 		return node.client();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected void closeClient() {
-		node.close();
+		try {
+			node.close();
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e, "Error at ElasticSearch node stop");
+		}
 	}
 
 	private Settings buildNodeSettings() {
 		// Build settings
-		return Settings.settingsBuilder().put("node.name", nodeName)
+		return Settings.builder().put("node.name", nodeName)
 				.put("node.data", false)
 				.put("node.master", false)
 				// .put("discovery.zen.fd.ping_timeout", "30s")
@@ -116,6 +123,7 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 				// .put("index.store.type", "memory")
 				// .put("index.store.fs.memory.enabled", "true")
 				// .put("gateway.type", "none")
+
 				.build();
 	}
 }

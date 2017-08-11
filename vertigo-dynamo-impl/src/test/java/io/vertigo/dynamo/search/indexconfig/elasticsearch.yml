@@ -1,9 +1,9 @@
 index :
     analysis :
-        analyzer :
+        normalizer :
             code :
-                tokenizer : keyword
-                filter : [standard]
+                type : custom          
+        analyzer :
             multiple_code :
                 tokenizer : piped_keywords
                 filter : [standard]

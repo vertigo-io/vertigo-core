@@ -26,12 +26,19 @@ import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.lang.Assertion;
 
 final class IndexType {
+	private static final String INDEX_TYPE_ERROR_MSG = "indexType ({0}) should respect this usage : indexType : \"myAnalyzer{:myDataType}{:stored|notStored}{:sortable|notSortable}{:facetable|notFacetable}\"";
 	private static final String INDEX_STORED = "stored";
 	private static final String INDEX_NOT_STORED = "notStored";
+	private static final String INDEX_SORTABLE = "sortable";
+	private static final String INDEX_NOT_SORTABLE = "notSortable";
+	private static final String INDEX_FACETABLE = "facetable";
+	private static final String INDEX_NOT_FACETABLE = "notFacetable";
 
 	private final Optional<String> indexAnalyzer;
 	private final String indexDataType;
 	private final boolean indexStored;
+	private final boolean indexSubKeyword;
+	private final boolean indexFieldData;
 
 	// par convention l'indexType du domain => l'analyzer de l'index
 	// L'indexType peut-être compléter pour préciser le type si différente de string avec le séparateur :
@@ -45,7 +52,28 @@ final class IndexType {
 	}
 
 	private static String obtainDefaultIndexDataType(final Domain domain) {
-		return domain.getDataType().name();
+		// On peut préciser pour chaque domaine le type d'indexation
+		// Calcul automatique  par default.
+		switch (domain.getDataType()) {
+			case Boolean:
+			case Double:
+			case Integer:
+			case Long:
+				return domain.getDataType().name().toLowerCase();
+			case String:
+				return "text";
+			case Date:
+			case LocalDate:
+			case ZonedDateTime:
+				return "date";
+			case BigDecimal:
+				return "scaled_float";
+			case DataStream:
+			case DtObject:
+			case DtList:
+			default:
+				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + domain + "].");
+		}
 	}
 
 	private IndexType(final String indexType, final Domain domain) {
@@ -57,24 +85,45 @@ final class IndexType {
 			indexAnalyzer = Optional.empty();
 			indexDataType = obtainDefaultIndexDataType(domain);
 			indexStored = true;
+			indexSubKeyword = false;
+			indexFieldData = false;
 		} else {
 			// par convention l'indexType du domain => l'analyzer de l'index
 			// L'indexType peut-être compléter pour préciser le type si différente de string avec le séparateur :
-			final String[] indexTypeArray = indexType.split(":", 3);
-			indexAnalyzer = Optional.ofNullable(!indexTypeArray[0].isEmpty() ? indexTypeArray[0] : null); //le premier est toujours l'analyzer
-			//le deuxième est optionnel et soit indexDataType, soit le indexStored
-			final String defaultIndexType = domain.getDataType().name().toLowerCase(Locale.ENGLISH);
-			final String secondParam = indexTypeArray.length >= 2 ? indexTypeArray[1] : defaultIndexType;
-			if (INDEX_STORED.equals(secondParam) || INDEX_NOT_STORED.equals(secondParam)) {
-				indexDataType = "string";
-				indexStored = INDEX_STORED.equals(secondParam);
+			final String[] indexTypeArray = indexType.split(":", 4);
+			indexAnalyzer = Optional.ofNullable(!indexTypeArray[0].isEmpty() ? indexTypeArray[0] : null); //le premier est toujours l'analyzer (ou le normalizer)
+			//les suivants sont optionnels et soit indexDataType, soit le indexStored, soit le indexKeyword
+			if (indexTypeArray.length == 1) {
+				indexDataType = domain.getDataType().name().toLowerCase(Locale.ROOT);
+				indexStored = true;
+				indexSubKeyword = false;
+				indexFieldData = false;
 			} else {
-				indexDataType = secondParam;
-				//le troisième est optionnel et est le indexStored
-				final String thirdParam = indexTypeArray.length == 3 ? indexTypeArray[2] : INDEX_STORED;
-				Assertion.checkArgument(thirdParam.equals(INDEX_STORED) || thirdParam.equals(INDEX_NOT_STORED),
-						"indexType ({0}) should respect this usage : indexType : \"myAnalyzer{:myDataType}{:stored|notStored\"}", indexType);
-				indexStored = INDEX_STORED.equals(thirdParam);
+				String parsedIndexDataType = null;
+				Boolean parsedIndexStored = null;
+				Boolean parsedIndexSubKeyword = null;
+				Boolean parsedIndexFieldData = null;
+				for (int i = 1; i < indexTypeArray.length; i++) {
+					final String indexTypeParam = indexTypeArray[1];
+					if (INDEX_STORED.equals(indexTypeParam) || INDEX_NOT_STORED.equals(indexTypeParam)) {
+						Assertion.checkArgument(parsedIndexStored == null, INDEX_TYPE_ERROR_MSG, indexType);
+						parsedIndexStored = INDEX_STORED.equals(indexTypeParam);
+					} else if (INDEX_SORTABLE.equals(indexTypeParam) || INDEX_NOT_SORTABLE.equals(indexTypeParam)) {
+						Assertion.checkArgument(parsedIndexSubKeyword == null, INDEX_TYPE_ERROR_MSG, indexType);
+						parsedIndexSubKeyword = INDEX_SORTABLE.equals(indexTypeParam);
+					} else if (INDEX_FACETABLE.equals(indexTypeParam) || INDEX_NOT_FACETABLE.equals(indexTypeParam)) {
+						Assertion.checkArgument(parsedIndexSubKeyword == null, INDEX_TYPE_ERROR_MSG, indexType);
+						parsedIndexFieldData = INDEX_FACETABLE.equals(indexTypeParam);
+					} else {
+						Assertion.checkArgument(parsedIndexDataType == null, INDEX_TYPE_ERROR_MSG, indexType);
+						parsedIndexDataType = indexTypeParam;
+					}
+				}
+				//valeurs par défaut
+				indexDataType = parsedIndexDataType != null ? parsedIndexDataType : obtainDefaultIndexDataType(domain);
+				indexStored = parsedIndexStored != null ? parsedIndexStored : true;
+				indexSubKeyword = parsedIndexSubKeyword != null ? parsedIndexSubKeyword : false;
+				indexFieldData = parsedIndexFieldData != null ? parsedIndexFieldData : false;
 			}
 		}
 	}
@@ -85,13 +134,15 @@ final class IndexType {
 		switch (domain.getDataType()) {
 			case Boolean:
 			case Date:
+			case LocalDate:
+			case ZonedDateTime:
 			case Double:
 			case Integer:
 			case Long:
+			case BigDecimal:
 				// All these types are native
 				break;
 			case String:
-			case BigDecimal:
 				if (indexType == null) {
 					throw new IllegalArgumentException("Précisez la valeur \"indexType\" dans le domain [" + domain + "].");
 				}
@@ -114,5 +165,13 @@ final class IndexType {
 
 	public boolean isIndexStored() {
 		return indexStored;
+	}
+
+	public boolean isIndexSubKeyword() {
+		return indexSubKeyword;
+	}
+
+	public boolean isIndexFieldData() {
+		return indexFieldData;
 	}
 }
