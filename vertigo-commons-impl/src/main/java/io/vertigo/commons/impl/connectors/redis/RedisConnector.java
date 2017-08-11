@@ -97,4 +97,19 @@ public final class RedisConnector implements Component, Activeable {
 
 	}
 
+	@HealthChecked(name = "io", topic = "redis")
+	public HealthMeasure checkRedisIO() {
+		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
+		try (Jedis jedis = this.getResource()) {
+			jedis.set("vertigoHealthCheckIoKey", "vertigoHealthCheckIoValue");
+			jedis.get("vertigoHealthCheckIoKey");
+			jedis.del("vertigoHealthCheckIoKey");
+			healthMeasureBuilder.withGreenStatus("ok");
+		} catch (final Exception e) {
+			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
+		}
+		return healthMeasureBuilder.build();
+
+	}
+
 }
