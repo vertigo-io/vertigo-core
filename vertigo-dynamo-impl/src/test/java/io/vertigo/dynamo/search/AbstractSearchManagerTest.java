@@ -105,7 +105,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@BeforeClass
 	public static void doBeforeClass() throws Exception {
 		//We must remove data dir in index, in order to support versions updates when testing on PIC
-		final URL esDataURL = Thread.currentThread().getContextClassLoader().getResource("io/vertigo/dynamo/search/serverelastic");
+		final URL esDataURL = Thread.currentThread().getContextClassLoader().getResource("io/vertigo/dynamo/search/indexconfig");
 		final File esData = new File(URLDecoder.decode(esDataURL.getFile() + "/data", "UTF-8"));
 		if (esData.exists() && esData.isDirectory()) {
 			recursiveDelete(esData);
