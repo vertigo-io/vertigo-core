@@ -87,7 +87,7 @@ public final class RedisConnector implements Component, Activeable {
 	@HealthChecked(name = "ping", topic = "redis")
 	public HealthMeasure checkRedisPing() {
 		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
-		try (Jedis jedis = this.getResource()) {
+		try (Jedis jedis = getResource()) {
 			final String result = jedis.ping();
 			healthMeasureBuilder.withGreenStatus(result);
 		} catch (final Exception e) {
@@ -100,11 +100,11 @@ public final class RedisConnector implements Component, Activeable {
 	@HealthChecked(name = "io", topic = "redis")
 	public HealthMeasure checkRedisIO() {
 		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
-		try (Jedis jedis = this.getResource()) {
+		try (Jedis jedis = getResource()) {
 			jedis.set("vertigoHealthCheckIoKey", "vertigoHealthCheckIoValue");
 			jedis.get("vertigoHealthCheckIoKey");
 			jedis.del("vertigoHealthCheckIoKey");
-			healthMeasureBuilder.withGreenStatus("ok");
+			healthMeasureBuilder.withGreenStatus();
 		} catch (final Exception e) {
 			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
 		}

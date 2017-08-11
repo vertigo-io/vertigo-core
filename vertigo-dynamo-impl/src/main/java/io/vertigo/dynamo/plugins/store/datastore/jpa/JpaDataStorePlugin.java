@@ -388,7 +388,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			getEntityManager().createNativeQuery("select 1", Integer.class).getFirstResult();
 			healthMeasure
-					.withGreenStatus("ok");
+					.withGreenStatus();
 		} catch (final Exception e) {
 			healthMeasure
 					.withRedStatus(e.getMessage(), e)

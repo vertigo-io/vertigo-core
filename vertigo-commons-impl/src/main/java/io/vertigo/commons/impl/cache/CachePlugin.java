@@ -80,9 +80,9 @@ public interface CachePlugin extends Plugin {
 		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
 		try {
 			put("CACHE_HEALTH_VERTIGO", "healthcheckkey", "healthcheckvalue");
-			final String result = (String) get("CACHE_HEALTH_VERTIGO", "healthcheckkey");
+			get("CACHE_HEALTH_VERTIGO", "healthcheckkey");
 			remove("CACHE_HEALTH_VERTIGO", "healthcheckkey");
-			healthMeasureBuilder.withGreenStatus(result);
+			healthMeasureBuilder.withGreenStatus();
 		} catch (final Exception e) {
 			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
 		}

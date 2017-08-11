@@ -39,6 +39,13 @@ public final class HealthMeasureBuilder implements Builder<HealthMeasure> {
 	/**
 	 * @return this builder
 	 */
+	public HealthMeasureBuilder withGreenStatus() {
+		return withGreenStatus(null);
+	}
+
+	/**
+	 * @return this builder
+	 */
 	public HealthMeasureBuilder withGreenStatus(final String message) {
 		Assertion.checkState(myStatus == null, "status already set");
 		//---

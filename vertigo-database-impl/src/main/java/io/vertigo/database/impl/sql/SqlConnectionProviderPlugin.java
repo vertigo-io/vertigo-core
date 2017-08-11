@@ -46,7 +46,7 @@ public interface SqlConnectionProviderPlugin extends SqlConnectionProvider, Plug
 
 		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
 
-		final String testQuery = this.getDataBase().getSqlDialect().getTestQuery();
+		final String testQuery = getDataBase().getSqlDialect().getTestQuery();
 		try {
 
 			final SqlDataBaseManager sqlDataBaseManager = Home.getApp().getComponentSpace().resolve(SqlDataBaseManager.class);
@@ -57,7 +57,7 @@ public interface SqlConnectionProviderPlugin extends SqlConnectionProvider, Plug
 			} finally {
 				connection.release();
 			}
-			healthMeasureBuilder.withGreenStatus("ok");
+			healthMeasureBuilder.withGreenStatus();
 		} catch (final Exception e) {
 			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
 		}
