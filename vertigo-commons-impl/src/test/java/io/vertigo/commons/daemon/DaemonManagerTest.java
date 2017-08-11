@@ -38,7 +38,9 @@ public final class DaemonManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testSimple() throws Exception {
-		DaemonStat daemonStat = daemonManager.getStats().get(0);
+		DaemonStat daemonStat = daemonManager.getStats().stream()
+				.filter(stat -> FakeComponent.SIMPLE_DAEMON_NAME.equals(stat.getDaemonName()))
+				.findFirst().get();
 		assertEquals(0, daemonStat.getCount());
 		assertEquals(0, daemonStat.getFailures());
 		assertEquals(0, daemonStat.getSuccesses());
@@ -48,7 +50,9 @@ public final class DaemonManagerTest extends AbstractTestCaseJU4 {
 		// -----
 		Thread.sleep(5000); //soit deux execs
 
-		daemonStat = daemonManager.getStats().get(0);
+		daemonStat = daemonManager.getStats().stream()
+				.filter(stat -> FakeComponent.SIMPLE_DAEMON_NAME.equals(stat.getDaemonName()))
+				.findFirst().get();
 		assertEquals(2, daemonStat.getCount());
 		assertEquals(1, daemonStat.getFailures());
 		assertEquals(1, daemonStat.getSuccesses());

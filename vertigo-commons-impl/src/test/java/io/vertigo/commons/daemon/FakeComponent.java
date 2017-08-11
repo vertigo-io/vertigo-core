@@ -22,13 +22,15 @@ import io.vertigo.core.component.Component;
 
 @DaemonFakeAspectAnnotation
 public class FakeComponent implements Component {
+
+	static final String SIMPLE_DAEMON_NAME = "DMN_SIMPLE";
 	private int executions = 0;
 
 	public int getExecutionCount() {
 		return executions;
 	}
 
-	@DaemonScheduled(name = "DMN_SIMPLE", periodInSeconds = 2)
+	@DaemonScheduled(name = SIMPLE_DAEMON_NAME, periodInSeconds = 2)
 	public void execute() {
 		executions++;
 		if (executions == 1) {

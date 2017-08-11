@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
+import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
@@ -47,12 +48,16 @@ import io.vertigo.util.ClassUtil;
 public final class DaemonManagerImpl implements DaemonManager, Activeable, SimpleDefinitionProvider {
 
 	private final DaemonExecutor daemonExecutor = new DaemonExecutor();
+	private final AnalyticsManager analyticsManager;
 
 	/**
 	 * Construct an instance of DaemonManagerImpl.
 	 */
 	@Inject
-	public DaemonManagerImpl() {
+	public DaemonManagerImpl(final AnalyticsManager analyticsManager) {
+		Assertion.checkNotNull(analyticsManager);
+		//---
+		this.analyticsManager = analyticsManager;
 		Home.getApp().registerPreActivateFunction(this::startAllDaemons);
 
 	}
@@ -67,7 +72,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 				.collect(Collectors.toList());
 	}
 
-	private static List<DaemonDefinition> createDaemonDefinitions(final Component component, final AopPlugin aopPlugin) {
+	private List<DaemonDefinition> createDaemonDefinitions(final Component component, final AopPlugin aopPlugin) {
 		return Stream.of(aopPlugin.unwrap(component).getClass().getMethods())
 				.filter(method -> method.isAnnotationPresent(DaemonScheduled.class))
 				.map(
@@ -77,7 +82,11 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 							final DaemonScheduled daemonSchedule = method.getAnnotation(DaemonScheduled.class);
 							return new DaemonDefinition(
 									daemonSchedule.name(),
-									() -> () -> ClassUtil.invoke(component, method), daemonSchedule.periodInSeconds());
+									() -> () -> analyticsManager.trace(
+											"daemon",
+											daemonSchedule.name(),
+											(tracer) -> ClassUtil.invoke(component, method)),
+									daemonSchedule.periodInSeconds());
 						})
 				.collect(Collectors.toList());
 
