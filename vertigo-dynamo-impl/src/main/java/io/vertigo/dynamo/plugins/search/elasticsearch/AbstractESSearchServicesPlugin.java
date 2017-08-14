@@ -32,6 +32,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthAction;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
@@ -45,6 +47,9 @@ import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.commons.health.HealthChecked;
+import io.vertigo.commons.health.HealthMeasure;
+import io.vertigo.commons.health.HealthMeasureBuilder;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -367,6 +372,34 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	private void waitForYellowStatus() {
 		esClient.admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
+	}
+
+	@HealthChecked(name = "clusterHealth", topic = "search")
+	public HealthMeasure checkClusterHealth() {
+		final HealthMeasureBuilder healthMeasure = HealthMeasure.builder();
+		try {
+			final ClusterHealthResponse clusterHealthResponse = esClient
+					.admin()
+					.cluster()
+					.health(ClusterHealthAction.INSTANCE.newRequestBuilder(esClient).request())
+					.get();
+			switch (clusterHealthResponse.getStatus()) {
+				case GREEN:
+					healthMeasure.withGreenStatus();
+					break;
+				case YELLOW:
+					healthMeasure.withYellowStatus(null, null);
+					break;
+				case RED:
+					healthMeasure.withRedStatus(null, null);
+					break;
+				default:
+					break;
+			}
+		} catch (final Exception e) {
+			healthMeasure.withRedStatus(e.getMessage(), e);
+		}
+		return healthMeasure.build();
 	}
 
 }
