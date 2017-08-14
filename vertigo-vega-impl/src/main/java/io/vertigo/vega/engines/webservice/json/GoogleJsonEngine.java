@@ -279,6 +279,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 			dtDefinition.getFields()
 					.stream()
+					.filter(dtField -> dtField.getType() != FieldType.COMPUTED)// we don't serialize computed fields
 					.forEach(field -> {
 						jsonObject.add(StringUtil.constToLowerCamelCase(field.getName()), context.serialize(field.getDataAccessor().getValue(src)));
 					});
