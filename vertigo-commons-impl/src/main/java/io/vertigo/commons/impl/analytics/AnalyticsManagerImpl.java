@@ -73,7 +73,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 	/**
 	 * Daemon to retrieve healthChecks and add them to the connectors
 	 */
-	@DaemonScheduled(name = "DMN_ANALYTICS_HEALTH", periodInSeconds = 10) //every hour
+	@DaemonScheduled(name = "DMN_ANALYTICS_HEALTH", periodInSeconds = 60 * 60) //every hour
 	public void sendHealthChecks() {
 		if (enabled) {
 			final List<HealthCheck> healthChecks = healthManager.getHealthChecks();

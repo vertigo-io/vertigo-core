@@ -50,7 +50,7 @@ import io.vertigo.lang.VSystemException;
  */
 public final class NodeManagerImpl implements NodeManager, Activeable {
 
-	private static final int HEART_BEAT_SECONDS = 5;
+	private static final int HEART_BEAT_SECONDS = 60;
 
 	private final NodeRegistryPlugin nodeRegistryPlugin;
 	private final Map<String, NodeInfosPlugin> nodeInfosPluginMap = new HashMap<>();
