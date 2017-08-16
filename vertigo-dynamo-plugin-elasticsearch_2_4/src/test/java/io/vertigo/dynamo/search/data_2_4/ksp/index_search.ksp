@@ -5,7 +5,7 @@ create IndexDefinition IDX_CAR {
     dtIndex : DT_CAR
     indexCopyTo ALL_TEXT 	{ from: "MAKE,MODEL,DESCRIPTION,YEAR,KILO,PRICE,MOTOR_TYPE" }
     indexCopyTo MODEL_SORT 	{ from: "MODEL" }
-    loaderId : "CarSearchLoader"
+    loaderId : "CarSearchLoader2_4"
 }
 
 create IndexDefinition IDX_DYNA_CAR {
@@ -13,7 +13,7 @@ create IndexDefinition IDX_DYNA_CAR {
     dtIndex : DT_CAR
     indexCopyTo ALL_TEXT 	{ from: "MAKE,MODEL,DESCRIPTION,YEAR,KILO,PRICE,MOTOR_TYPE" }
     indexCopyTo MODEL_SORT 	{ from: "MODEL" }
-    loaderId : "CarSearchLoader"
+    loaderId : "CarSearchLoader2_4"
 }
 
 create FacetDefinition FCT_DESCRIPTION_CAR {

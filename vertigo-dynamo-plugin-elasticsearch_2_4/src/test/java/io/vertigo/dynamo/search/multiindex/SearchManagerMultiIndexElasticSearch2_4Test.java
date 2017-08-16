@@ -18,10 +18,108 @@
  */
 package io.vertigo.dynamo.search.multiindex;
 
+import javax.inject.Inject;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.dynamo.collections.ListFilter;
+import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.search.SearchManager;
+import io.vertigo.dynamo.search.data_2_4.domain.Car;
+import io.vertigo.dynamo.search.data_2_4.domain.CarDataBase;
+import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
+import io.vertigo.dynamo.search.model.SearchIndex;
+import io.vertigo.dynamo.search.model.SearchQuery;
+
 /**
  * @author  npiedeloup
  */
-public final class SearchManagerMultiIndexElasticSearch2_4Test extends SearchManagerMultiIndexTest {
+public final class SearchManagerMultiIndexElasticSearch2_4Test extends AbstractTestCaseJU4 {
+	//Index
+	private static final String IDX_DYNA_CAR = "IDX_DYNA_CAR";
+	private static final String IDX_CAR = "IDX_CAR";
+
+	/** Manager de recherche. */
+	@Inject
+	protected SearchManager searchManager;
+
+	private CarDataBase carDataBase;
+
+	/**{@inheritDoc}*/
+	@Override
+	protected void doSetUp() {
+		carDataBase = new CarDataBase();
+		carDataBase.loadDatas();
+	}
+
+	/**
+	 * Test de création de n enregistrements dans l'index.
+	 * La création s'effectue dans une seule transaction mais sur deux indexes.
+	 * Vérifie la capacité du système à gérer plusieurs indexes.
+	 */
+	@Test
+	public void testIndex() {
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final SearchIndexDefinition carIndexDefinition = definitionSpace.resolve(IDX_CAR, SearchIndexDefinition.class);
+		final SearchIndexDefinition carDynIndexDefinition = definitionSpace.resolve(IDX_DYNA_CAR, SearchIndexDefinition.class);
+
+		for (final Car car : carDataBase.getAllCars()) {
+			final SearchIndex<Car, Car> index = SearchIndex.createIndex(carIndexDefinition, car.getURI(), car);
+			searchManager.put(carIndexDefinition, index);
+
+			final SearchIndex<Car, Car> index2 = SearchIndex.createIndex(carDynIndexDefinition, car.getURI(), car);
+			searchManager.put(carDynIndexDefinition, index2);
+		}
+		waitIndexation();
+
+		final long sizeCar = query("*:*", carIndexDefinition);
+		Assert.assertEquals(carDataBase.size(), sizeCar);
+
+		final long sizeCarDyn = query("*:*", carDynIndexDefinition);
+		Assert.assertEquals(carDataBase.size(), sizeCarDyn);
+	}
+
+	/**
+	 * Test de création nettoyage de l'index.
+	 * La création s'effectue dans une seule transaction.
+	 */
+	@Test
+	public void testClean() {
+		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final SearchIndexDefinition carIndexDefinition = definitionSpace.resolve(IDX_CAR, SearchIndexDefinition.class);
+		final SearchIndexDefinition carDynIndexDefinition = definitionSpace.resolve(IDX_DYNA_CAR, SearchIndexDefinition.class);
+		final ListFilter removeQuery = ListFilter.of("*:*");
+		searchManager.removeAll(carIndexDefinition, removeQuery);
+		searchManager.removeAll(carDynIndexDefinition, removeQuery);
+		waitIndexation();
+
+		final long sizeCar = query("*:*", carIndexDefinition);
+		Assert.assertEquals(0, sizeCar);
+
+		final long sizeCarDyn = query("*:*", carDynIndexDefinition);
+		Assert.assertEquals(0, sizeCarDyn);
+	}
+
+	private long query(final String query, final SearchIndexDefinition indexDefinition) {
+		//recherche
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of(query))
+				.build();
+		final FacetedQueryResult<DtObject, SearchQuery> result = searchManager.loadList(indexDefinition, searchQuery, null);
+		return result.getCount();
+	}
+
+	private static void waitIndexation() {
+		try {
+			Thread.sleep(2000); //wait index was done
+		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt(); //si interrupt on relance
+		}
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	protected String[] getManagersXmlFileName() {

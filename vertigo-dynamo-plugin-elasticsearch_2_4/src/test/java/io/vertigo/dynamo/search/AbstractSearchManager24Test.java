@@ -279,10 +279,10 @@ public abstract class AbstractSearchManager24Test extends AbstractTestCaseJU4 {
 		size = query("ALL_TEXT:(+peugeot +diesel)");
 		Assert.assertEquals(3L, size);
 
-		size = query("MODEL.keyword:(806)");//MODEL est tokenize, MODEL_SORT ne l'est pas (ici on test le match avec le model : "806 final ST PACK")
+		size = query("MODEL_SORT:(806)");//MODEL est tokenize, MODEL_SORT ne l'est pas (ici on test le match avec le model : "806 final ST PACK")
 		Assert.assertEquals(0L, size);
 
-		size = query("MODEL.keyword:(806*)");
+		size = query("MODEL_SORT:(806*)");
 		Assert.assertEquals(1L, size);
 
 		size = query("ALL_TEXT:(+peugeot +diesel +2001)"); //2001 est l'année en number

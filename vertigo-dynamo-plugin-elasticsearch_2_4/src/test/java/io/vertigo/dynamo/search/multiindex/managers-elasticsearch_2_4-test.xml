@@ -27,8 +27,8 @@
 	<module name="myApp">
 		<definitions>
 			<provider class="io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider">
-				<resource type="kpr" path="io/vertigo/dynamo/search/data/execution.kpr" />
-				<resource type="classes" path="io.vertigo.dynamo.search.data.DtDefinitions" />
+				<resource type="kpr" path="io/vertigo/dynamo/search/data_2_4/execution.kpr" />
+				<resource type="classes" path="io.vertigo.dynamo.search.data_2_4.DtDefinitions" />
 			</provider>
 		</definitions>
 	</module>
