@@ -45,7 +45,28 @@ final class IndexType {
 	}
 
 	private static String obtainDefaultIndexDataType(final Domain domain) {
-		return domain.getDataType().name();
+		// On peut préciser pour chaque domaine le type d'indexation
+		// Calcul automatique  par default.
+		switch (domain.getDataType()) {
+			case Boolean:
+			case Double:
+			case Integer:
+			case Long:
+				return domain.getDataType().name().toLowerCase();
+			case String:
+				return "text";
+			case Date:
+			case LocalDate:
+			case ZonedDateTime:
+				return "date";
+			case BigDecimal:
+				return "double";
+			case DataStream:
+			case DtObject:
+			case DtList:
+			default:
+				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + domain + "].");
+		}
 	}
 
 	private IndexType(final String indexType, final Domain domain) {
@@ -85,13 +106,15 @@ final class IndexType {
 		switch (domain.getDataType()) {
 			case Boolean:
 			case Date:
+			case LocalDate:
+			case ZonedDateTime:
 			case Double:
 			case Integer:
 			case Long:
+			case BigDecimal:
 				// All these types are native
 				break;
 			case String:
-			case BigDecimal:
 				if (indexType == null) {
 					throw new IllegalArgumentException("Précisez la valeur \"indexType\" dans le domain [" + domain + "].");
 				}

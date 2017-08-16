@@ -16,26 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.search.standard;
+package io.vertigo.dynamo.search.data_2_4;
 
-import io.vertigo.dynamo.search.AbstractSearchManager24Test;
+import java.util.Arrays;
+import java.util.Iterator;
 
-/**
- * @author  npiedeloup
- */
-public class SearchManagerElasticSearch2_4Test extends AbstractSearchManager24Test {
-	//Index
-	private static final String IDX_CAR = "IDX_CAR";
+import io.vertigo.dynamo.search.data_2_4.domain.Car;
 
-	/**{@inheritDoc}*/
+public final class DtDefinitions implements Iterable<Class<?>> {
 	@Override
-	protected void doSetUp() {
-		init(IDX_CAR);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	protected String[] getManagersXmlFileName() {
-		return new String[] { "./managers-elasticsearch_2_4-test.xml", };
+	public Iterator<Class<?>> iterator() {
+		return Arrays.asList(new Class<?>[] {
+				Car.class,
+		}).iterator();
 	}
 }
