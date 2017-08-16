@@ -152,7 +152,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		//-----
 		appendListState();
 		appendSearchQuery(mySearchQuery, searchRequestBuilder, useHighlight);
-		appendFacetDefinition(mySearchQuery, searchRequestBuilder, myIndexDefinition, myListState);
+		appendFacetDefinition(mySearchQuery, searchRequestBuilder, myIndexDefinition, myListState, useHighlight);
 		return searchRequestBuilder;
 	}
 
@@ -225,7 +225,8 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			final SearchQuery searchQuery,
 			final SearchRequestBuilder searchRequestBuilder,
 			final SearchIndexDefinition myIndexDefinition,
-			final DtListState myListState) {
+			final DtListState myListState,
+			final boolean useHighlight) {
 		Assertion.checkNotNull(searchRequestBuilder);
 		//-----
 		//On ajoute le cluster, si présent
@@ -235,8 +236,11 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			final AggregationBuilder aggregationBuilder = facetToAggregationBuilder(clusteringFacetDefinition);
 			final TopHitsAggregationBuilder topHitsBuilder = AggregationBuilders.topHits(TOPHITS_SUBAGGREGATION_NAME)
 					.size(myListState.getMaxRows().orElse(TOPHITS_SUBAGGREGATION_SIZE))
-					.from(myListState.getSkipRows())
-					.highlighter(new HighlightBuilder().numOfFragments(3));//.addHighlightedField("*"); HOW TO ?
+					.from(myListState.getSkipRows());
+
+			if (useHighlight) {
+				topHitsBuilder.highlighter(new HighlightBuilder().numOfFragments(3));//.addHighlightedField("*"); HOW TO ?
+			}
 
 			if (myListState.getSortFieldName().isPresent()) {
 				topHitsBuilder.sort(getFieldSortBuilder(myIndexDefinition, myListState));

@@ -72,6 +72,7 @@ import io.vertigo.lang.WrappedException;
  * @author dchallas, npiedeloup
  */
 public abstract class AbstractESSearchServicesPlugin implements SearchServicesPlugin, Activeable {
+	private static final int DEFAULT_SCALING_FACTOR = 1000;
 	private static final int OPTIMIZE_MAX_NUM_SEGMENT = 32;
 	public static final String SUFFIX_SORT_FIELD = ".keyword";
 
@@ -356,7 +357,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			typeMapping.field("keyword".equals(indexType.getIndexDataType()) ? "normalizer" : "analyzer", indexType.getIndexAnalyzer().get());
 		}
 		if ("scaled_float".equals(indexType.getIndexDataType())) {
-			typeMapping.field("scaling_factor", 10000);
+			typeMapping.field("scaling_factor", DEFAULT_SCALING_FACTOR);
 		}
 	}
 
