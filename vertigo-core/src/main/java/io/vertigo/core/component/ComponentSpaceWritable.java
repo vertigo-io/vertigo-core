@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.log4j.Logger;
+
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -45,6 +47,8 @@ import io.vertigo.util.StringUtil;
  * @author pchretien
  */
 public final class ComponentSpaceWritable implements ComponentSpace, Activeable {
+
+	private static final Logger LOGGER = Logger.getLogger(ComponentSpaceWritable.class);
 	/**
 	 * Components (sorted by creation)
 	 */
@@ -124,8 +128,8 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 
 	private void startComponents() {
 		for (final Component component : components.values()) {
-			startComponent(component);
 			startedComponents.add(component);
+			startComponent(component);
 		}
 	}
 
@@ -137,7 +141,11 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 		java.util.Collections.reverse(reversedComponents);
 
 		for (final Component component : reversedComponents) {
-			stopComponent(component);
+			try {
+				stopComponent(component);
+			} catch (final Exception e) {
+				LOGGER.error("Failed stopping component " + component, e);
+			}
 		}
 	}
 
