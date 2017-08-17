@@ -86,7 +86,8 @@ public final class HealthManagerImpl implements HealthManager, SimpleDefinitionP
 					Assertion.checkArgument(method.getParameterTypes().length == 0, "health check methods of class {0} must not have any parameter", component.getClass());
 					//-----
 					//2. For each method register a listener
-					final String healthCheckDefinitionName = "HCHK_" + StringUtil.camelToConstCase(componentId) + "$" + StringUtil.camelToConstCase(method.getName());
+					// we remove # because it doesn't comply with definition naming rule
+					final String healthCheckDefinitionName = "HCHK_" + StringUtil.camelToConstCase(componentId.replaceAll("#", "")) + "$" + StringUtil.camelToConstCase(method.getName());
 					return new HealthCheckDefinition(
 							healthCheckDefinitionName,
 							healthChecked.name(),
