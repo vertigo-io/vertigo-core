@@ -39,7 +39,7 @@ public class RedisHealthChecker implements Component {
 		this.redisConnector = redisConnector;
 	}
 
-	@HealthChecked(name = "ping", topic = "redis")
+	@HealthChecked(name = "ping", topic = "redisChecker")
 	public HealthMeasure checkRedisPing() {
 		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
 		try (Jedis jedis = redisConnector.getResource()) {

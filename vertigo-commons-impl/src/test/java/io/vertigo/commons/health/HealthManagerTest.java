@@ -67,7 +67,10 @@ public class HealthManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	void testRedisChecker() {
-		final List<HealthCheck> redisHealthChecks = findHealthChecksByName("ping");
+		final List<HealthCheck> redisHealthChecks = findHealthChecksByName("ping")
+				.stream()
+				.filter(healthCheck -> "redisChecker".equals(healthCheck.getTopic()))
+				.collect(Collectors.toList());
 		//---
 		Assert.assertEquals(1, redisHealthChecks.size());
 		Assert.assertEquals(HealthStatus.GREEN, redisHealthChecks.get(0).getMeasure().getStatus());
