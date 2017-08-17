@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.search.multiindex;
+package io.vertigo.dynamo.search_2_4.multiindex;
 
 import javax.inject.Inject;
 
@@ -29,16 +29,16 @@ import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.search.SearchManager;
-import io.vertigo.dynamo.search.data_2_4.domain.Car;
-import io.vertigo.dynamo.search.data_2_4.domain.CarDataBase;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
+import io.vertigo.dynamo.search_2_4.data.domain.Car;
+import io.vertigo.dynamo.search_2_4.data.domain.CarDataBase;
 
 /**
  * @author  npiedeloup
  */
-public final class SearchManagerMultiIndexElasticSearch2_4Test extends AbstractTestCaseJU4 {
+public final class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 	//Index
 	private static final String IDX_DYNA_CAR = "IDX_DYNA_CAR";
 	private static final String IDX_CAR = "IDX_CAR";
@@ -118,11 +118,5 @@ public final class SearchManagerMultiIndexElasticSearch2_4Test extends AbstractT
 		} catch (final InterruptedException e) {
 			Thread.currentThread().interrupt(); //si interrupt on relance
 		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	protected String[] getManagersXmlFileName() {
-		return new String[] { "./managers-elasticsearch_2_4-test.xml", };
 	}
 }

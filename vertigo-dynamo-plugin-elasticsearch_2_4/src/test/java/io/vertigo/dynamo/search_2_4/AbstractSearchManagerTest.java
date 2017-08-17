@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.search;
+package io.vertigo.dynamo.search_2_4;
 
 import java.io.File;
 import java.net.URL;
@@ -55,18 +55,19 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.search.data_2_4.domain.Car;
-import io.vertigo.dynamo.search.data_2_4.domain.CarDataBase;
-import io.vertigo.dynamo.search.data_2_4.domain.CarSearchLoader;
+import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
+import io.vertigo.dynamo.search_2_4.data.domain.Car;
+import io.vertigo.dynamo.search_2_4.data.domain.CarDataBase;
+import io.vertigo.dynamo.search_2_4.data.domain.CarSearchLoader;
 import io.vertigo.lang.VUserException;
 
 /**
  * @author  npiedeloup
  */
-public abstract class AbstractSearchManager24Test extends AbstractTestCaseJU4 {
+public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	private static final List<ListFilter> EMPTY_LIST_FILTERS = Collections.emptyList();
 
 	/** Logger. */
@@ -105,7 +106,7 @@ public abstract class AbstractSearchManager24Test extends AbstractTestCaseJU4 {
 	@BeforeClass
 	public static void doBeforeClass() throws Exception {
 		//We must remove data dir in index, in order to support versions updates when testing on PIC
-		final URL esDataURL = Thread.currentThread().getContextClassLoader().getResource("io/vertigo/dynamo/search/indexconfig");
+		final URL esDataURL = Thread.currentThread().getContextClassLoader().getResource("io/vertigo/dynamo/search_2_4/serverelastic");
 		final File esData = new File(URLDecoder.decode(esDataURL.getFile() + "/data", "UTF-8"));
 		if (esData.exists() && esData.isDirectory()) {
 			recursiveDelete(esData);

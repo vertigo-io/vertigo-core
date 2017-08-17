@@ -17,7 +17,7 @@
 		<component api="SearchManager" class="io.vertigo.dynamo.impl.search.SearchManagerImpl">
 			<!-- <plugin class="io.vertigo.dynamo.plugins.search.solr.commonshttp.CommonsHttpSolrSearchServicesPlugin" > <param name="solr.url" value="http://localhost:8983/solr" /> <param name="cores" value="IDX_ARTICLE,IDX_VOITURE,IDX_DEMANDE,IDX_DOCUMENT" /> </plugin> -->
 			<plugin class="io.vertigo.dynamo.plugins.search.elasticsearch_2_4.embedded.ESEmbeddedSearchServicesPlugin">
-				<param name="home" value="io/vertigo/dynamo/search/serverelastic" />
+				<param name="home" value="io/vertigo/dynamo/search_2_4/serverelastic" />
 				<param name="envIndex" value="TU_TEST" />
 				<param name="rowsPerQuery" value="50" />
 			</plugin>
@@ -27,8 +27,8 @@
 	<module name="myApp">
 		<definitions>
 			<provider class="io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider">
-				<resource type="kpr" path="io/vertigo/dynamo/search/data_2_4/execution.kpr" />
-				<resource type="classes" path="io.vertigo.dynamo.search.data_2_4.DtDefinitions" />
+				<resource type="kpr" path="io/vertigo/dynamo/search_2_4/data/execution.kpr" />
+				<resource type="classes" path="io.vertigo.dynamo.search_2_4.data.DtDefinitions" />
 			</provider>
 		</definitions>
 	</module>

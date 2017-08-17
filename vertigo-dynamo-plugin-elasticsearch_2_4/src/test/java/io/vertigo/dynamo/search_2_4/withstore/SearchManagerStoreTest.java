@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.search.withstore;
+package io.vertigo.dynamo.search_2_4.withstore;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -41,10 +41,10 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.SearchManager;
-import io.vertigo.dynamo.search.data_2_4.domain.Car;
-import io.vertigo.dynamo.search.data_2_4.domain.CarDataBase;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchQuery;
+import io.vertigo.dynamo.search_2_4.data.domain.Car;
+import io.vertigo.dynamo.search_2_4.data.domain.CarDataBase;
 import io.vertigo.dynamo.store.StoreManager;
 
 /**
@@ -52,7 +52,7 @@ import io.vertigo.dynamo.store.StoreManager;
  *
  * @author npiedeloup
  */
-public final class SearchManagerStoreElasticSearch2_4Test extends AbstractTestCaseJU4 {
+public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 	@Inject
@@ -249,11 +249,5 @@ public final class SearchManagerStoreElasticSearch2_4Test extends AbstractTestCa
 		} catch (final InterruptedException e) {
 			Thread.currentThread().interrupt(); //si interrupt on relance
 		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	protected String[] getManagersXmlFileName() {
-		return new String[] { "./managers-elasticsearch_2_4-test.xml", };
 	}
 }

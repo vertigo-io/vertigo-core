@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.search.data_2_4;
+package io.vertigo.dynamo.search_2_4.data;
 
 import java.util.Arrays;
 import java.util.Iterator;
 
-import io.vertigo.dynamo.search.data_2_4.domain.Car;
+import io.vertigo.dynamo.search_2_4.data.domain.Car;
 
 public final class DtDefinitions implements Iterable<Class<?>> {
 	@Override

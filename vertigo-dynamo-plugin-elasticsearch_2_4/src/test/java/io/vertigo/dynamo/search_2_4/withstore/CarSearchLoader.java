@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.search.withstore;
+package io.vertigo.dynamo.search_2_4.withstore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +34,10 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.SearchManager;
-import io.vertigo.dynamo.search.data_2_4.domain.Car;
 import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
+import io.vertigo.dynamo.search_2_4.data.domain.Car;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
@@ -49,7 +49,7 @@ import io.vertigo.lang.Assertion;
  * SearchLoader of Car keyconcept, load uses StoreManager.
  * @author npiedeloup
  */
-public final class CarSearchLoader2_4 extends AbstractSqlSearchLoader<Long, Car, Car> {
+public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Car> {
 	private final SearchManager searchManager;
 	private final DefinitionSpace definitionSpace;
 
@@ -59,7 +59,7 @@ public final class CarSearchLoader2_4 extends AbstractSqlSearchLoader<Long, Car,
 	 * @param searchManager Search manager
 	 */
 	@Inject
-	public CarSearchLoader2_4(final TaskManager taskManager, final SearchManager searchManager, final VTransactionManager transactionManager) {
+	public CarSearchLoader(final TaskManager taskManager, final SearchManager searchManager, final VTransactionManager transactionManager) {
 		super(taskManager, transactionManager);
 		Assertion.checkNotNull(searchManager);
 		//---

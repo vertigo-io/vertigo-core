@@ -24,10 +24,10 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import io.vertigo.dynamo.collections.CollectionsManagerLucene_5_5Test;
 import io.vertigo.dynamo.collections.FacetManagerLucene_5_5Test;
-import io.vertigo.dynamo.search.dynamic.SearchManagerDynaFieldsElasticSearch2_4Test;
-import io.vertigo.dynamo.search.multiindex.SearchManagerMultiIndexElasticSearch2_4Test;
-import io.vertigo.dynamo.search.standard.SearchManagerElasticSearch2_4Test;
-import io.vertigo.dynamo.search.withstore.SearchManagerStoreElasticSearch2_4Test;
+import io.vertigo.dynamo.search_2_4.dynamic.SearchManagerDynaFieldsTest;
+import io.vertigo.dynamo.search_2_4.multiindex.SearchManagerMultiIndexTest;
+import io.vertigo.dynamo.search_2_4.standard.SearchManagerElasticSearcTest;
+import io.vertigo.dynamo.search_2_4.withstore.SearchManagerStoreTest;
 
 /**
  * This suite contains all the tests for 'dynamo' module.
@@ -41,10 +41,10 @@ import io.vertigo.dynamo.search.withstore.SearchManagerStoreElasticSearch2_4Test
 		FacetManagerLucene_5_5Test.class,
 
 		//--search
-		SearchManagerDynaFieldsElasticSearch2_4Test.class,
-		SearchManagerMultiIndexElasticSearch2_4Test.class,
-		SearchManagerElasticSearch2_4Test.class,
-		SearchManagerStoreElasticSearch2_4Test.class,
+		SearchManagerDynaFieldsTest.class,
+		SearchManagerMultiIndexTest.class,
+		SearchManagerElasticSearcTest.class,
+		SearchManagerStoreTest.class,
 })
 public final class PluginElasticSearch24TestSuite {
 	//
