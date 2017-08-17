@@ -37,8 +37,8 @@ public final class FieldsMetricEngine implements MetricEngine<DtDefinition> {
 		final double size = dtDefinition.getFields().size();
 		return Metric.builder()
 				.withSuccess()
-				.withType("definitionFieldCount")
-				.withSubject(dtDefinition.getName())
+				.withName("definitionFieldCount")
+				.withTopic(dtDefinition.getName())
 				.withValue(size)
 				.build();
 	}

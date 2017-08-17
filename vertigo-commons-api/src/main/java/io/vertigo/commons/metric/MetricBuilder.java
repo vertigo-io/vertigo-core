@@ -32,8 +32,8 @@ import io.vertigo.lang.Builder;
 public final class MetricBuilder implements Builder<Metric> {
 
 	private Instant myMeasureInstant;
-	private String myType;
-	private String mySubject;
+	private String myName;
+	private String myTopic;
 	private Double myValue;
 	private Status myStatus;
 
@@ -44,17 +44,17 @@ public final class MetricBuilder implements Builder<Metric> {
 		super();
 	}
 
-	public MetricBuilder withType(final String type) {
-		Assertion.checkArgNotEmpty(type);
+	public MetricBuilder withName(final String name) {
+		Assertion.checkArgNotEmpty(name);
 		//---
-		myType = type;
+		myName = name;
 		return this;
 	}
 
-	public MetricBuilder withSubject(final String subject) {
-		Assertion.checkArgNotEmpty(subject);
+	public MetricBuilder withTopic(final String topic) {
+		Assertion.checkArgNotEmpty(topic);
 		//---
-		mySubject = subject;
+		myTopic = topic;
 		return this;
 	}
 
@@ -89,8 +89,8 @@ public final class MetricBuilder implements Builder<Metric> {
 		}
 		return new Metric(
 				myMeasureInstant != null ? myMeasureInstant : Instant.now(),
-				myType,
-				mySubject,
+				myName,
+				myTopic,
 				myValue,
 				myStatus);
 	}

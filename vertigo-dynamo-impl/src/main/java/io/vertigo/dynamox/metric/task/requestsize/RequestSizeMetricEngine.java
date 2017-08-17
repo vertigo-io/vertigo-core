@@ -36,8 +36,8 @@ public final class RequestSizeMetricEngine implements MetricEngine<TaskDefinitio
 		//-----
 		final double size = taskDefinition.getRequest().length();
 		return Metric.builder()
-				.withType("taskRequestSize")
-				.withSubject(taskDefinition.getName())
+				.withName("taskRequestSize")
+				.withTopic(taskDefinition.getName())
 				.withValue(size)
 				.withSuccess()
 				.build();

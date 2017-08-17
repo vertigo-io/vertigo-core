@@ -41,8 +41,8 @@ public final class DependencyMetricEngine implements MetricEngine<DtDefinition> 
 		final double count = count(dtDefinition);
 		return Metric.builder()
 				.withSuccess()
-				.withType("definitionUsageInDao")
-				.withSubject(dtDefinition.getName())
+				.withName("definitionUsageInDao")
+				.withTopic(dtDefinition.getName())
 				.withValue(count)
 				.build();
 	}

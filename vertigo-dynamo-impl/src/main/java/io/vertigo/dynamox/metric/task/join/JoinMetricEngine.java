@@ -39,8 +39,8 @@ public final class JoinMetricEngine implements MetricEngine<TaskDefinition> {
 		final double joinCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("JOIN").length - 1d;
 		final double fromCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("FROM ").length - 1d;
 		return Metric.builder()
-				.withType("taskJoinCount")
-				.withSubject(taskDefinition.getName())
+				.withName("taskJoinCount")
+				.withTopic(taskDefinition.getName())
 				.withValue(joinCount + fromCount)
 				.withSuccess()
 				.build();

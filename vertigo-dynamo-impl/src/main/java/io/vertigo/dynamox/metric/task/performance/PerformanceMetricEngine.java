@@ -74,8 +74,8 @@ public final class PerformanceMetricEngine implements MetricEngine<TaskDefinitio
 
 	private Metric doExecute(final TaskDefinition taskDefinition) {
 		final MetricBuilder metricBuilder = Metric.builder()
-				.withType("taskExecutionTime")
-				.withSubject(taskDefinition.getName());
+				.withName("taskExecutionTime")
+				.withTopic(taskDefinition.getName());
 
 		try {
 			final TaskPopulator taskPopulator = new TaskPopulator(taskDefinition);
