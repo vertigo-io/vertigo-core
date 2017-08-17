@@ -34,7 +34,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.health.HealthCheck;
 import io.vertigo.commons.impl.analytics.AProcess;
@@ -63,14 +62,12 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	/**
 	 * Constructor.
-	 * @param daemonManager the daemonManager
 	 * @param appName the app name
 	 * @param hostNameOpt hostName of the remote server
 	 * @param portOpt port of the remote server
 	 */
 	@Inject
 	public SocketLoggerAnalyticsConnectorPlugin(
-			final DaemonManager daemonManager,
 			@Named("appName") final String appName,
 			@Named("hostName") final Optional<String> hostNameOpt,
 			@Named("port") final Optional<Integer> portOpt) {
@@ -92,6 +89,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		processQueue.add(process);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void add(final Metric metric) {
 		if (socketMetricLogger == null) {
@@ -101,6 +99,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void add(final HealthCheck healthCheck) {
 		if (socketHealthLogger == null) {
