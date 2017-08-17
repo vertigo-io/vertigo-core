@@ -33,7 +33,6 @@ import javax.inject.Inject;
 import io.vertigo.app.App;
 import io.vertigo.app.Home;
 import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.health.HealthCheck;
 import io.vertigo.commons.node.Node;
@@ -57,10 +56,8 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 
 	@Inject
 	public NodeManagerImpl(
-			final DaemonManager daemonManager,
 			final Optional<NodeRegistryPlugin> nodeRegistryPluginOpt,
 			final List<NodeInfosPlugin> nodeInfosPlugins) {
-		Assertion.checkNotNull(daemonManager);
 		Assertion.checkNotNull(nodeRegistryPluginOpt);
 		// ---
 		nodeRegistryPlugin = nodeRegistryPluginOpt.orElse(new SingleNodeRegistryPlugin());

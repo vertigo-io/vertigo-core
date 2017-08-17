@@ -21,6 +21,7 @@ package io.vertigo.commons.node;
 import java.time.Instant;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -59,6 +60,7 @@ public abstract class AbstractNodeManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test
+	@Ignore // ignored for now we need heartbeat of node update to be parametized for shorter tests
 	void testUpdate() throws InterruptedException {
 		final NodeManager nodeManager = Home.getApp().getComponentSpace().resolve(NodeManager.class);
 		// ---
