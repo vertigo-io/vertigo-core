@@ -37,25 +37,25 @@ public final class Metric {
 	}
 
 	private final Instant measureInstant;
-	private final String type;
-	private final String subject;
+	private final String name;
+	private final String topic;
 	private final Double value;//migth be null
 	private final Status status;
 
 	Metric(
 			final Instant measureTime,
-			final String type,
-			final String subject,
+			final String name,
+			final String topic,
 			final Double value,
 			final Status status) {
 		Assertion.checkNotNull(measureTime);
-		Assertion.checkArgNotEmpty(type);
-		Assertion.checkArgNotEmpty(subject);
+		Assertion.checkArgNotEmpty(name);
+		Assertion.checkArgNotEmpty(topic);
 		Assertion.checkNotNull(status);
 		//-----
-		this.measureInstant = measureTime;
-		this.type = type;
-		this.subject = subject;
+		measureInstant = measureTime;
+		this.name = name;
+		this.topic = topic;
 		this.value = value;
 		this.status = status;
 
@@ -73,12 +73,12 @@ public final class Metric {
 		return measureInstant;
 	}
 
-	public String getType() {
-		return type;
+	public String getName() {
+		return name;
 	}
 
-	public String getSubject() {
-		return subject;
+	public String getTopic() {
+		return topic;
 	}
 
 	public Double getValue() {

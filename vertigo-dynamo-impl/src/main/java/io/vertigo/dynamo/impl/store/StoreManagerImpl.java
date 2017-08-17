@@ -111,4 +111,5 @@ public final class StoreManagerImpl implements StoreManager {
 	public FileStore getFileStore() {
 		return fileStore;
 	}
+
 }

@@ -38,8 +38,8 @@ public final class SubRequestMetricEngine implements MetricEngine<TaskDefinition
 		//-----
 		final double subRequestCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("SELECT").length - 1d;
 		return Metric.builder()
-				.withType("taskSubrequestsCount")
-				.withSubject(taskDefinition.getName())
+				.withName("taskSubrequestsCount")
+				.withTopic(taskDefinition.getName())
 				.withValue(subRequestCount)
 				.withSuccess()
 				.build();

@@ -58,8 +58,8 @@ public final class CountMetricEngine implements MetricEngine<DtDefinition> {
 		Assertion.checkState(dtDefinition.isPersistent(), "Count can only be performed on persistent entities, DtDefinition '{0}' is not", dtDefinition.getName());
 		//-----
 		final MetricBuilder metricBuilder = Metric.builder()
-				.withType("entityCount")
-				.withSubject(dtDefinition.getName());
+				.withName("entityCount")
+				.withTopic(dtDefinition.getName());
 		try {
 			final double count = storeManager.getDataStore().count(dtDefinition);
 			return metricBuilder
