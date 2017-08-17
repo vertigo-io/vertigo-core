@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -85,7 +84,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	private final String indexNameOrPrefix;
 	private final boolean indexNameIsPrefix;
 	private final Set<String> types = new HashSet<>();
-	private final URL configFile;
+	private final URL configFileUrl;
 	private boolean indexSettingsValid;
 
 	/**
@@ -94,14 +93,14 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	 * @param indexNameIsPrefix indexName use as prefix
 	 * @param defaultMaxRows Nombre de lignes
 	 * @param codecManager Manager de codec
-	 * @param configFileOpt Fichier de configuration des indexs
+	 * @param configFile Fichier de configuration des indexs
 	 * @param resourceManager Manager des resources
 	 */
 	protected AbstractESSearchServicesPlugin(
 			final String indexNameOrPrefix,
 			final boolean indexNameIsPrefix,
 			final int defaultMaxRows,
-			final Optional<String> configFileOpt,
+			final String configFile,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
 		Assertion.checkArgNotEmpty(indexNameOrPrefix);
@@ -115,9 +114,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		//------
 		this.indexNameOrPrefix = indexNameOrPrefix.toLowerCase(Locale.ENGLISH).trim();
 		this.indexNameIsPrefix = indexNameIsPrefix;
-		configFile = configFileOpt
-				.map(resourceManager::resolve)
-				.orElse(null);
+		configFileUrl = resourceManager.resolve(configFile);
 	}
 
 	/** {@inheritDoc} */
@@ -147,18 +144,18 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	private void createIndex(final String myIndexName) {
 		try {
 			if (!esClient.admin().indices().prepareExists(myIndexName).get().isExists()) {
-				if (configFile == null) {
+				if (configFileUrl == null) {
 					esClient.admin().indices().prepareCreate(myIndexName).get();
 				} else {
-					try (InputStream is = configFile.openStream()) {
-						final Settings settings = Settings.builder().loadFromStream(configFile.getFile(), is).build();
+					try (InputStream is = configFileUrl.openStream()) {
+						final Settings settings = Settings.builder().loadFromStream(configFileUrl.getFile(), is).build();
 						esClient.admin().indices().prepareCreate(myIndexName).setSettings(settings).get();
 					}
 				}
-			} else if (configFile != null) {
+			} else if (configFileUrl != null) {
 				// If we use local config file, we check config against ES server
-				try (InputStream is = configFile.openStream()) {
-					final Settings settings = Settings.builder().loadFromStream(configFile.getFile(), is).build();
+				try (InputStream is = configFileUrl.openStream()) {
+					final Settings settings = Settings.builder().loadFromStream(configFileUrl.getFile(), is).build();
 					indexSettingsValid = indexSettingsValid && !isIndexSettingsDirty(myIndexName, settings);
 				}
 			}

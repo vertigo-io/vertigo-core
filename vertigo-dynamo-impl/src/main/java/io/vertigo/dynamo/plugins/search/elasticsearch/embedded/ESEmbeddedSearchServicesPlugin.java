@@ -72,7 +72,7 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 			@Named("envIndex") final String envIndex,
 			@Named("envIndexIsPrefix") final Optional<Boolean> envIndexIsPrefix,
 			@Named("rowsPerQuery") final int rowsPerQuery,
-			@Named("config.file") final Optional<String> configFile,
+			@Named("config.file") final String configFile,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
 		super(envIndex, envIndexIsPrefix.orElse(false), rowsPerQuery, configFile, codecManager, resourceManager);

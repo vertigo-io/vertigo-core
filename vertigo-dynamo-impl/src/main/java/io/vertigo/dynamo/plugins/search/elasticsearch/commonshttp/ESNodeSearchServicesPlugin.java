@@ -71,7 +71,7 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 			@Named("envIndexIsPrefix") final Optional<Boolean> envIndexIsPrefix,
 			@Named("rowsPerQuery") final int rowsPerQuery,
 			@Named("cluster.name") final String clusterName,
-			@Named("config.file") final Optional<String> configFile,
+			@Named("config.file") final String configFile,
 			@Named("node.name") final Optional<String> nodeNameOpt,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
