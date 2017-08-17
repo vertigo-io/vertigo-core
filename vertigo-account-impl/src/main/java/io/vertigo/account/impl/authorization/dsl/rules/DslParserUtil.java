@@ -18,7 +18,7 @@
  */
 package io.vertigo.account.impl.authorization.dsl.rules;
 
-import io.vertigo.account.authorization.metamodel.rulemodel.DslMultiExpression;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 
 /**
@@ -36,9 +36,9 @@ public final class DslParserUtil {
 	 * @return Parsed pattern
 	 * @throws PegNoMatchFoundException If pattern doesn't match grammar
 	 */
-	public static DslMultiExpression parseMultiExpression(final String buildQuery) throws PegNoMatchFoundException {
+	public static RuleMultiExpression parseMultiExpression(final String buildQuery) throws PegNoMatchFoundException {
 		if ("true".equals(buildQuery.trim())) {
-			return new DslMultiExpression(true);
+			return new RuleMultiExpression(true);
 		}
 		return new DslMultiExpressionRule()
 				.parse(buildQuery, 0)

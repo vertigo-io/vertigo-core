@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import io.vertigo.account.authorization.metamodel.rulemodel.DslMultiExpression;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -49,7 +49,7 @@ public final class Permission implements Definition {
 
 	private final Set<String> overrides;
 	private final Set<Permission> grants;
-	private final List<DslMultiExpression> rules; //empty -> always true
+	private final List<RuleMultiExpression> rules; //empty -> always true
 
 	private final Optional<DtDefinition> entityOpt;
 	private final Optional<String> operationOpt;
@@ -94,7 +94,7 @@ public final class Permission implements Definition {
 			final Set<String> overrides,
 			final Set<Permission> grants,
 			final DtDefinition entityDefinition,
-			final List<DslMultiExpression> rules,
+			final List<RuleMultiExpression> rules,
 			final Optional<String> comment) {
 		Assertion.checkArgNotEmpty(operation);
 		Assertion.checkArgNotEmpty(label);
@@ -151,7 +151,7 @@ public final class Permission implements Definition {
 	/**
 	 * @return Rules used to check permission (empty->Always true)
 	 */
-	public List<DslMultiExpression> getRules() {
+	public List<RuleMultiExpression> getRules() {
 		return rules;
 	}
 

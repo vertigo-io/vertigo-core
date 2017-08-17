@@ -25,11 +25,11 @@ import io.vertigo.lang.Assertion;
  * (field)(operator)(value)
  * @author npiedeloup
  */
-public final class DslExpression {
+public final class RuleExpression {
 	/**
 	 * All authorized operators.
 	 */
-	public enum ValueOperator implements Operator {
+	public enum ValueOperator implements RuleOperator {
 		/** Equals. */
 		EQ("="),
 		/** Lesser Than. */
@@ -64,14 +64,14 @@ public final class DslExpression {
 
 	private final String fieldName;
 	private final ValueOperator operator;
-	private final DslValue value;
+	private final RuleValue value;
 
 	/**
 	 * @param fieldName FieldName
 	 * @param operator OperatorDefinition
 	 * @param value QueryDefinition
 	 */
-	public DslExpression(final String fieldName, final ValueOperator operator, final DslValue value) {
+	public RuleExpression(final String fieldName, final ValueOperator operator, final RuleValue value) {
 		Assertion.checkArgNotEmpty(fieldName);
 		Assertion.checkNotNull(operator);
 		Assertion.checkNotNull(value);
@@ -104,7 +104,7 @@ public final class DslExpression {
 	/**
 	 * @return value
 	 */
-	public DslValue getValue() {
+	public RuleValue getValue() {
 		return value;
 	}
 }

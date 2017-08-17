@@ -21,10 +21,10 @@ package io.vertigo.account.impl.authorization.dsl.translator;
 import java.io.Serializable;
 import java.util.List;
 
-import io.vertigo.account.authorization.metamodel.rulemodel.DslExpression;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslFixedValue;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslMultiExpression;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslUserPropertyValue;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleFixedValue;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleUserPropertyValue;
 
 /**
  *
@@ -45,7 +45,7 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 	private String buildQueryString() {
 		final StringBuilder query = new StringBuilder();
 		String sep = "";
-		for (final DslMultiExpression multiExpressionDefinition : getMultiExpressions()) {
+		for (final RuleMultiExpression multiExpressionDefinition : getMultiExpressions()) {
 			query.append(sep);
 			appendMultiExpression(query, multiExpressionDefinition);
 			sep = DEFAULT_BOOL_SEP;
@@ -56,18 +56,18 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 				.replaceAll("\\s+", " "); // replace multiple whitespaces by space
 	}
 
-	private void appendMultiExpression(final StringBuilder query, final DslMultiExpression multiExpressionDefinition) {
+	private void appendMultiExpression(final StringBuilder query, final RuleMultiExpression multiExpressionDefinition) {
 		String sep = "";
 		final String boolSep = " " + multiExpressionDefinition.getBoolOperator() + " ";
 		if (multiExpressionDefinition.isBlock()) {
 			query.append('(');
 		}
-		for (final DslExpression expression : multiExpressionDefinition.getExpressions()) {
+		for (final RuleExpression expression : multiExpressionDefinition.getExpressions()) {
 			query.append(sep);
 			appendExpression(query, expression);
 			sep = boolSep;
 		}
-		for (final DslMultiExpression multiExpression : multiExpressionDefinition.getMultiExpressions()) {
+		for (final RuleMultiExpression multiExpression : multiExpressionDefinition.getMultiExpressions()) {
 			query.append(sep);
 			appendMultiExpression(query, multiExpression);
 			sep = boolSep;
@@ -77,11 +77,11 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 		}
 	}
 
-	private void appendExpression(final StringBuilder query, final DslExpression expressionDefinition) {
+	private void appendExpression(final StringBuilder query, final RuleExpression expressionDefinition) {
 
 		query.append(expressionDefinition.getFieldName());
-		if (expressionDefinition.getValue() instanceof DslUserPropertyValue) {
-			final DslUserPropertyValue userPropertyValue = (DslUserPropertyValue) expressionDefinition.getValue();
+		if (expressionDefinition.getValue() instanceof RuleUserPropertyValue) {
+			final RuleUserPropertyValue userPropertyValue = (RuleUserPropertyValue) expressionDefinition.getValue();
 			final List<Serializable> userValues = getUserCriteria(userPropertyValue.getUserProperty());
 			if (userValues.size() > 0) {
 				if (userValues.size() == 1) {
@@ -99,10 +99,10 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 					query.append(')');
 				}
 			}
-		} else if (expressionDefinition.getValue() instanceof DslFixedValue) {
+		} else if (expressionDefinition.getValue() instanceof RuleFixedValue) {
 			query
 					.append(expressionDefinition.getOperator())
-					.append(((DslFixedValue) expressionDefinition.getValue()).getFixedValue());
+					.append(((RuleFixedValue) expressionDefinition.getValue()).getFixedValue());
 		} else {
 			throw new IllegalArgumentException("value type not supported " + expressionDefinition.getValue().getClass().getName());
 		}

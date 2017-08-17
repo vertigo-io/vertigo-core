@@ -18,11 +18,35 @@
  */
 package io.vertigo.account.authorization.metamodel.rulemodel;
 
+import io.vertigo.lang.Assertion;
+
 /**
- * Query definition.
+ * User property value definition.
+ * \$\{userProperty\}
  * @author npiedeloup
  */
-public interface DslValue {
+public final class RuleUserPropertyValue implements RuleValue {
+	private final String userProperty;
 
-	//nothing
+	/**
+	 * @param userProperty User property name
+	 */
+	public RuleUserPropertyValue(final String userProperty) {
+		Assertion.checkArgNotEmpty(userProperty);
+		//-----
+		this.userProperty = userProperty;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return userProperty;
+	}
+
+	/**
+	 * @return userProperty
+	 */
+	public String getUserProperty() {
+		return userProperty;
+	}
 }

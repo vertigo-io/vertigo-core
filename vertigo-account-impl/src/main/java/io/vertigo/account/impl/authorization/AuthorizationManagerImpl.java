@@ -31,7 +31,7 @@ import io.vertigo.account.authorization.metamodel.OperationName;
 import io.vertigo.account.authorization.metamodel.Permission;
 import io.vertigo.account.authorization.metamodel.PermissionName;
 import io.vertigo.account.authorization.metamodel.SecuredEntity;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslMultiExpression;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
 import io.vertigo.account.impl.authorization.dsl.translator.CriteriaSecurityRuleTranslator;
 import io.vertigo.account.impl.authorization.dsl.translator.SearchSecurityRuleTranslator;
 import io.vertigo.app.Home;
@@ -189,7 +189,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 				.filter(permission -> permission.getOperation().get().equals(operationName.name()))
 				.collect(Collectors.toList());
 		for (final Permission permission : permissions) {
-			for (final DslMultiExpression ruleExpression : permission.getRules()) {
+			for (final RuleMultiExpression ruleExpression : permission.getRules()) {
 				securityRuleTranslator.withRule(ruleExpression);
 			}
 		}

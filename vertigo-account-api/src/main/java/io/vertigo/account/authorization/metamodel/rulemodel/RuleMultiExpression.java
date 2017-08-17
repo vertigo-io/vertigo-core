@@ -28,12 +28,12 @@ import io.vertigo.lang.Assertion;
  * \(?(expression1|multiExpression1) ((logicalOperator) (expression2|multiExpression2))*\)?
  * @author npiedeloup
  */
-public final class DslMultiExpression {
+public final class RuleMultiExpression {
 
 	/**
 	 * All authorized operators.
 	 */
-	public enum BoolOperator implements Operator {
+	public enum BoolOperator implements RuleOperator {
 		/** OR. */
 		OR("OR", "Or", "or", "||"),
 		/** AND. */
@@ -63,13 +63,13 @@ public final class DslMultiExpression {
 	private final boolean block;
 	private final boolean alwaysTrue;
 	private final BoolOperator boolOperator;
-	private final List<DslExpression> expressions;
-	private final List<DslMultiExpression> multiExpressions;
+	private final List<RuleExpression> expressions;
+	private final List<RuleMultiExpression> multiExpressions;
 
 	/**
 	 * @param alwaysTrue Is alwaysTrue
 	 */
-	public DslMultiExpression(final boolean alwaysTrue) {
+	public RuleMultiExpression(final boolean alwaysTrue) {
 		Assertion.checkArgument(alwaysTrue, "Always true constructor, must be use when rule mean alwaysTrue");
 		//-----
 		block = false;
@@ -85,11 +85,11 @@ public final class DslMultiExpression {
 	 * @param expressions List of simple expression
 	 * @param multiExpressions List of multi-expression
 	 */
-	public DslMultiExpression(
+	public RuleMultiExpression(
 			final boolean block,
 			final BoolOperator boolOperator,
-			final List<DslExpression> expressions,
-			final List<DslMultiExpression> multiExpressions) {
+			final List<RuleExpression> expressions,
+			final List<RuleMultiExpression> multiExpressions) {
 		Assertion.checkNotNull(boolOperator);
 		Assertion.checkNotNull(expressions);
 		Assertion.checkNotNull(multiExpressions);
@@ -125,14 +125,14 @@ public final class DslMultiExpression {
 	/**
 	 * @return expressions
 	 */
-	public List<DslExpression> getExpressions() {
+	public List<RuleExpression> getExpressions() {
 		return expressions;
 	}
 
 	/**
 	 * @return multiExpressions
 	 */
-	public List<DslMultiExpression> getMultiExpressions() {
+	public List<RuleMultiExpression> getMultiExpressions() {
 		return multiExpressions;
 	}
 
@@ -143,12 +143,12 @@ public final class DslMultiExpression {
 				.append(alwaysTrue ? "true" : "")
 				.append(block ? "(" : "");
 		String sep = "";
-		for (final DslExpression expression : expressions) {
+		for (final RuleExpression expression : expressions) {
 			sb.append(sep);
 			sb.append(expression);
 			sep = " " + boolOperator + " ";
 		}
-		for (final DslMultiExpression multiExpression : multiExpressions) {
+		for (final RuleMultiExpression multiExpression : multiExpressions) {
 			sb.append(sep);
 			sb.append(multiExpression);
 			sep = " " + boolOperator + " ";

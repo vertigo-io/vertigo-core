@@ -21,11 +21,11 @@ package io.vertigo.account.impl.authorization.dsl.translator;
 import java.io.Serializable;
 import java.util.List;
 
-import io.vertigo.account.authorization.metamodel.rulemodel.DslExpression;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslFixedValue;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslMultiExpression;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslMultiExpression.BoolOperator;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslUserPropertyValue;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleFixedValue;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression.BoolOperator;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleUserPropertyValue;
 
 /**
  *
@@ -46,7 +46,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 	private String buildQueryString() {
 		final StringBuilder query = new StringBuilder();
 		String sep = "";
-		for (final DslMultiExpression multiExpressionDefinition : getMultiExpressions()) {
+		for (final RuleMultiExpression multiExpressionDefinition : getMultiExpressions()) {
 			query.append(sep);
 			appendMultiExpression(query, multiExpressionDefinition);
 			sep = DEFAULT_BOOL_SEP;
@@ -57,7 +57,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 				.replaceAll("\\s+", " "); // replace multiple whitespaces by space
 	}
 
-	private void appendMultiExpression(final StringBuilder query, final DslMultiExpression multiExpressionDefinition) {
+	private void appendMultiExpression(final StringBuilder query, final RuleMultiExpression multiExpressionDefinition) {
 		String sep = "";
 		String boolSep;
 		if (multiExpressionDefinition.getBoolOperator() == BoolOperator.AND) {
@@ -66,13 +66,13 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 			boolSep = "";
 		}
 
-		for (final DslExpression expression : multiExpressionDefinition.getExpressions()) {
+		for (final RuleExpression expression : multiExpressionDefinition.getExpressions()) {
 			query.append(sep).append(boolSep).append('(');
 			appendExpression(query, expression);
 			query.append(')');
 			sep = " ";
 		}
-		for (final DslMultiExpression multiExpression : multiExpressionDefinition.getMultiExpressions()) {
+		for (final RuleMultiExpression multiExpression : multiExpressionDefinition.getMultiExpressions()) {
 			query.append(sep).append(boolSep).append('(');
 			appendMultiExpression(query, multiExpression);
 			query.append(')');
@@ -80,9 +80,9 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		}
 	}
 
-	private void appendExpression(final StringBuilder query, final DslExpression expressionDefinition) {
-		if (expressionDefinition.getValue() instanceof DslUserPropertyValue) {
-			final DslUserPropertyValue userPropertyValue = (DslUserPropertyValue) expressionDefinition.getValue();
+	private void appendExpression(final StringBuilder query, final RuleExpression expressionDefinition) {
+		if (expressionDefinition.getValue() instanceof RuleUserPropertyValue) {
+			final RuleUserPropertyValue userPropertyValue = (RuleUserPropertyValue) expressionDefinition.getValue();
 			final List<Serializable> userValues = getUserCriteria(userPropertyValue.getUserProperty());
 			if (userValues.size() > 0) {
 				query.append(expressionDefinition.getFieldName())
@@ -95,10 +95,10 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 				}
 				query.append(')');
 			}
-		} else if (expressionDefinition.getValue() instanceof DslFixedValue) {
+		} else if (expressionDefinition.getValue() instanceof RuleFixedValue) {
 			query.append(expressionDefinition.getFieldName())
 					.append(':')
-					.append(((DslFixedValue) expressionDefinition.getValue()).getFixedValue());
+					.append(((RuleFixedValue) expressionDefinition.getValue()).getFixedValue());
 		} else {
 			throw new IllegalArgumentException("value type not supported " + expressionDefinition.getValue().getClass().getName());
 		}

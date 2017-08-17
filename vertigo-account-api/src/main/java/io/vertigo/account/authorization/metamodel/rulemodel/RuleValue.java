@@ -18,35 +18,11 @@
  */
 package io.vertigo.account.authorization.metamodel.rulemodel;
 
-import io.vertigo.lang.Assertion;
-
 /**
- * Fixed content.
- * (fixedValue)
+ * Query definition.
  * @author npiedeloup
  */
-public final class DslFixedValue implements DslValue {
-	private final String fixedValue;
+public interface RuleValue {
 
-	/**
-	 * @param fixedValue Fixed content
-	 */
-	public DslFixedValue(final String fixedValue) {
-		Assertion.checkNotNull(fixedValue);
-		//-----
-		this.fixedValue = fixedValue;
-	}
-
-	/**
-	 * @return fixedValue
-	 */
-	public String getFixedValue() {
-		return fixedValue;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String toString() {
-		return fixedValue;
-	}
+	//nothing
 }

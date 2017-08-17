@@ -22,7 +22,7 @@ package io.vertigo.account.authorization.metamodel.rulemodel;
  * Operators.
  * @author npiedeloup
  */
-public interface Operator {
+public interface RuleOperator {
 
 	/**
 	 * @return List of authorized string for this operator

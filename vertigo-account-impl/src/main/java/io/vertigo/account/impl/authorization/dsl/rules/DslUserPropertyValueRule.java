@@ -20,7 +20,7 @@ package io.vertigo.account.impl.authorization.dsl.rules;
 
 import java.util.List;
 
-import io.vertigo.account.authorization.metamodel.rulemodel.DslUserPropertyValue;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleUserPropertyValue;
 import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRules;
@@ -30,7 +30,7 @@ import io.vertigo.commons.peg.PegRules;
  * ${(userProperty)}
  * @author npiedeloup
  */
-final class DslUserPropertyValueRule extends AbstractRule<DslUserPropertyValue, List<Object>> {
+final class DslUserPropertyValueRule extends AbstractRule<RuleUserPropertyValue, List<Object>> {
 
 	DslUserPropertyValueRule() {
 		super(createMainRule(), "userProperty");
@@ -45,9 +45,9 @@ final class DslUserPropertyValueRule extends AbstractRule<DslUserPropertyValue, 
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslUserPropertyValue handle(final List<Object> parsing) {
+	protected RuleUserPropertyValue handle(final List<Object> parsing) {
 		final String userProperty = (String) parsing.get(1);
-		return new DslUserPropertyValue(userProperty);
+		return new RuleUserPropertyValue(userProperty);
 	}
 
 }

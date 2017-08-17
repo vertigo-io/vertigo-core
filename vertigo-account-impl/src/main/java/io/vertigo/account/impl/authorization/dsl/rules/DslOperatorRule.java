@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.vertigo.account.authorization.metamodel.rulemodel.Operator;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleOperator;
 import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegRule;
@@ -34,7 +34,7 @@ import io.vertigo.commons.peg.PegRules;
  * || or OR && and AND
  * @author npiedeloup
  */
-final class DslOperatorRule<O extends Operator> extends AbstractRule<O, List<Object>> {
+final class DslOperatorRule<O extends RuleOperator> extends AbstractRule<O, List<Object>> {
 	private final Map<String, O> operatorIndex;
 
 	DslOperatorRule(final O[] operators, final String ruleName) {
@@ -42,7 +42,7 @@ final class DslOperatorRule<O extends Operator> extends AbstractRule<O, List<Obj
 		operatorIndex = (Map<String, O>) getOperatorIndex(operators);
 	}
 
-	private static PegRule<List<Object>> createMainRule(final Operator[] operators) {
+	private static PegRule<List<Object>> createMainRule(final RuleOperator[] operators) {
 		final List<PegRule<?>> operatorRules = new ArrayList<>();
 		for (final String operator : getOperatorIndex(operators).keySet()) {
 			operatorRules.add(PegRules.term(operator));
@@ -53,9 +53,9 @@ final class DslOperatorRule<O extends Operator> extends AbstractRule<O, List<Obj
 				DslSyntaxRules.SPACES); //2
 	}
 
-	private static Map<String, Operator> getOperatorIndex(final Operator[] operators) {
-		final Map<String, Operator> operatorIndex = new HashMap<>();
-		for (final Operator operator : operators) {
+	private static Map<String, RuleOperator> getOperatorIndex(final RuleOperator[] operators) {
+		final Map<String, RuleOperator> operatorIndex = new HashMap<>();
+		for (final RuleOperator operator : operators) {
 			for (final String authorizedString : operator.authorizedString()) {
 				operatorIndex.put(authorizedString, operator);
 			}

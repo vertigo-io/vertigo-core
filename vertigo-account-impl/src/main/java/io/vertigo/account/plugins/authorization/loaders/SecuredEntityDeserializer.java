@@ -37,7 +37,7 @@ import io.vertigo.account.authorization.metamodel.Permission;
 import io.vertigo.account.authorization.metamodel.SecuredEntity;
 import io.vertigo.account.authorization.metamodel.SecurityDimension;
 import io.vertigo.account.authorization.metamodel.SecurityDimensionType;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslMultiExpression;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
 import io.vertigo.account.impl.authorization.dsl.rules.DslParserUtil;
 import io.vertigo.app.Home;
 import io.vertigo.commons.peg.PegNoMatchFoundException;
@@ -107,7 +107,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 					.collect(Collectors.toSet());
 		}
 
-		final List<DslMultiExpression> rules;
+		final List<RuleMultiExpression> rules;
 		final List<String> strRules = context.deserialize(operation.get("rules"), createParameterizedType(List.class, String.class));
 		if (!strRules.isEmpty()) {
 			rules = strRules.stream()
@@ -126,7 +126,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		return permissionPerOperations.get(operationName);
 	}
 
-	private static DslMultiExpression parseRule(final String securityRule) {
+	private static RuleMultiExpression parseRule(final String securityRule) {
 		Assertion.checkNotNull(securityRule);
 		//-----
 		try {

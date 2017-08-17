@@ -21,32 +21,32 @@ package io.vertigo.account.authorization.metamodel.rulemodel;
 import io.vertigo.lang.Assertion;
 
 /**
- * User property value definition.
- * \$\{userProperty\}
+ * Fixed content.
+ * (fixedValue)
  * @author npiedeloup
  */
-public final class DslUserPropertyValue implements DslValue {
-	private final String userProperty;
+public final class RuleFixedValue implements RuleValue {
+	private final String fixedValue;
 
 	/**
-	 * @param userProperty User property name
+	 * @param fixedValue Fixed content
 	 */
-	public DslUserPropertyValue(final String userProperty) {
-		Assertion.checkArgNotEmpty(userProperty);
+	public RuleFixedValue(final String fixedValue) {
+		Assertion.checkNotNull(fixedValue);
 		//-----
-		this.userProperty = userProperty;
+		this.fixedValue = fixedValue;
+	}
+
+	/**
+	 * @return fixedValue
+	 */
+	public String getFixedValue() {
+		return fixedValue;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return userProperty;
-	}
-
-	/**
-	 * @return userProperty
-	 */
-	public String getUserProperty() {
-		return userProperty;
+		return fixedValue;
 	}
 }
