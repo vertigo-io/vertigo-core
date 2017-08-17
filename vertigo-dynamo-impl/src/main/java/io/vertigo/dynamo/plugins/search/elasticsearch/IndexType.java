@@ -26,7 +26,8 @@ import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.lang.Assertion;
 
 final class IndexType {
-	private static final String INDEX_TYPE_ERROR_MSG = "indexType ({0}) should respect this usage : indexType : \"myAnalyzer{:myDataType}{:stored|notStored}{:sortable|notSortable}{:facetable|notFacetable}\"";
+	private static final String INDEX_TYPE_ERROR_MSG = "indexType ({0}) should respect this usage : indexType : "
+			+ "\"myAnalyzer{:myDataType}{:stored|notStored}{:sortable|notSortable}{:facetable|notFacetable}\"";
 	private static final String INDEX_STORED = "stored";
 	private static final String INDEX_NOT_STORED = "notStored";
 	private static final String INDEX_SORTABLE = "sortable";
@@ -39,42 +40,6 @@ final class IndexType {
 	private final boolean indexStored;
 	private final boolean indexSubKeyword;
 	private final boolean indexFieldData;
-
-	// par convention l'indexType du domain => l'analyzer de l'index
-	// L'indexType peut-être compléter pour préciser le type si différente de string avec le séparateur :
-
-	static IndexType readIndexType(final Domain domain) {
-		final String indexType = domain.getProperties().getValue(DtProperty.INDEX_TYPE);
-		if (indexType == null) {
-			return new IndexType(null, domain);
-		}
-		return new IndexType(indexType, domain);
-	}
-
-	private static String obtainDefaultIndexDataType(final Domain domain) {
-		// On peut préciser pour chaque domaine le type d'indexation
-		// Calcul automatique  par default.
-		switch (domain.getDataType()) {
-			case Boolean:
-			case Double:
-			case Integer:
-			case Long:
-				return domain.getDataType().name().toLowerCase();
-			case String:
-				return "text";
-			case Date:
-			case LocalDate:
-			case ZonedDateTime:
-				return "date";
-			case BigDecimal:
-				return "scaled_float";
-			case DataStream:
-			case DtObject:
-			case DtList:
-			default:
-				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + domain + "].");
-		}
-	}
 
 	private IndexType(final String indexType, final Domain domain) {
 		Assertion.checkNotNull(domain);
@@ -103,6 +68,7 @@ final class IndexType {
 				Boolean parsedIndexStored = null;
 				Boolean parsedIndexSubKeyword = null;
 				Boolean parsedIndexFieldData = null;
+				//On parcours les paramètres et on détermine si on reconnait un mot clé
 				for (int i = 1; i < indexTypeArray.length; i++) {
 					final String indexTypeParam = indexTypeArray[1];
 					if (INDEX_STORED.equals(indexTypeParam) || INDEX_NOT_STORED.equals(indexTypeParam)) {
@@ -125,6 +91,42 @@ final class IndexType {
 				indexSubKeyword = parsedIndexSubKeyword != null ? parsedIndexSubKeyword : false;
 				indexFieldData = parsedIndexFieldData != null ? parsedIndexFieldData : false;
 			}
+		}
+	}
+
+	// par convention l'indexType du domain => l'analyzer de l'index
+	// L'indexType peut-être compléter pour préciser le type si différente de string avec le séparateur :
+
+	static IndexType readIndexType(final Domain domain) {
+		final String indexType = domain.getProperties().getValue(DtProperty.INDEX_TYPE);
+		if (indexType == null) {
+			return new IndexType(null, domain);
+		}
+		return new IndexType(indexType, domain);
+	}
+
+	private static String obtainDefaultIndexDataType(final Domain domain) {
+		// On peut préciser pour chaque domaine le type d'indexation
+		// Calcul automatique  par default.
+		switch (domain.getDataType()) {
+			case Boolean:
+			case Double:
+			case Integer:
+			case Long:
+				return domain.getDataType().name().toLowerCase(Locale.ROOT);
+			case String:
+				return "text";
+			case Date:
+			case LocalDate:
+			case ZonedDateTime:
+				return "date";
+			case BigDecimal:
+				return "scaled_float";
+			case DataStream:
+			case DtObject:
+			case DtList:
+			default:
+				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + domain + "].");
 		}
 	}
 
