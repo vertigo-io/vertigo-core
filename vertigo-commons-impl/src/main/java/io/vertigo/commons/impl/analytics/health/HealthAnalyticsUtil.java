@@ -41,15 +41,22 @@ import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 
 /**
- * HealthManager.
+ * HealthAnalyticsUtil.
  *
- * @author jmforhan
+ * @author jmforhan, mlaroche
  */
 public final class HealthAnalyticsUtil {
 
+	private HealthAnalyticsUtil() {
+		//private constructor for util classes
+	}
+
 	/**
 	 * Registers all methods annotated with @Suscriber on the object
-	 * @param suscriberInstance
+	 * @param componentId componentId to check
+	 * @param component Component to check
+	 * @param aopPlugin Aop plugin use for unwrap
+	 * @return List of HealthCheckDefinition
 	 */
 	public static List<HealthCheckDefinition> createHealthCheckDefinitions(final String componentId, final Component component, final AopPlugin aopPlugin) {
 		Assertion.checkNotNull(component);
@@ -65,7 +72,8 @@ public final class HealthAnalyticsUtil {
 				.filter(method -> method.isAnnotationPresent(HealthChecked.class))
 				.map(method -> {
 					final HealthChecked healthChecked = method.getAnnotation(HealthChecked.class);
-					Assertion.checkArgument(HealthMeasure.class.equals(method.getReturnType()), "health check methods of class {0} must return a HealthMeasure instead of {1}", component.getClass(), method.getReturnType());
+					Assertion.checkArgument(HealthMeasure.class.equals(method.getReturnType()), "health check methods of class {0} must return a HealthMeasure instead of {1}",
+							component.getClass(), method.getReturnType());
 					Assertion.checkArgument(method.getName().startsWith("check"), "health check methods of class {0} must start with check", component.getClass());
 					Assertion.checkArgument(method.getParameterTypes().length == 0, "health check methods of class {0} must not have any parameter", component.getClass());
 					//-----
@@ -86,7 +94,7 @@ public final class HealthAnalyticsUtil {
 
 	public static List<HealthCheck> getHealthChecks() {
 		return Home.getApp().getDefinitionSpace().getAll(HealthCheckDefinition.class).stream()
-				.map(healthCheckDefinition -> buildHealthCheck(healthCheckDefinition))
+				.map(HealthAnalyticsUtil::buildHealthCheck)
 				.collect(Collectors.toList());
 	}
 
