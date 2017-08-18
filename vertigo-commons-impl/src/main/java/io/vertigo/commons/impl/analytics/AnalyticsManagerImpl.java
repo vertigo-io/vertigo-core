@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -31,11 +32,10 @@ import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.health.HealthStatus;
 import io.vertigo.commons.analytics.metric.Metric;
-import io.vertigo.commons.analytics.metric.MetricPlugin;
 import io.vertigo.commons.analytics.process.ProcessAnalyticsTracer;
 import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.impl.analytics.health.HealthAnalyticsUtil;
-import io.vertigo.commons.impl.analytics.metric.MetricAnalyticsImpl;
+import io.vertigo.commons.impl.analytics.metric.MetricAnalyticsUtil;
 import io.vertigo.commons.impl.analytics.process.AProcess;
 import io.vertigo.commons.impl.analytics.process.ProcessAnalyticsImpl;
 import io.vertigo.core.component.AopPlugin;
@@ -52,7 +52,6 @@ import io.vertigo.lang.Assertion;
  */
 public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefinitionProvider {
 
-	private final MetricAnalyticsImpl metricAnalyticsImpl;
 	private final ProcessAnalyticsImpl processAnalyticsImpl;
 	private final List<AnalyticsConnectorPlugin> processConnectorPlugins;
 
@@ -64,12 +63,9 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 	 */
 	@Inject
 	public AnalyticsManagerImpl(
-			final List<AnalyticsConnectorPlugin> processConnectorPlugins,
-			final List<MetricPlugin> reportingPlugins) {
+			final List<AnalyticsConnectorPlugin> processConnectorPlugins) {
 		Assertion.checkNotNull(processConnectorPlugins);
-		Assertion.checkNotNull(reportingPlugins);
 		//---
-		metricAnalyticsImpl = new MetricAnalyticsImpl(reportingPlugins);
 		processAnalyticsImpl = new ProcessAnalyticsImpl();
 		this.processConnectorPlugins = processConnectorPlugins;
 		// by default if no connector is defined we disable the collect
@@ -79,12 +75,15 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		// here all
-
 		// we need to unwrap the component to scan the real class and not the enhanced version
 		final AopPlugin aopPlugin = Home.getApp().getConfig().getBootConfig().getAopPlugin();
 		return Home.getApp().getComponentSpace().keySet()
 				.stream()
-				.flatMap(id -> HealthAnalyticsUtil.createHealthCheckDefinitions(id, Home.getApp().getComponentSpace().resolve(id, Component.class), aopPlugin).stream())
+				.flatMap(id -> Stream.concat(
+						//health
+						HealthAnalyticsUtil.createHealthCheckDefinitions(id, Home.getApp().getComponentSpace().resolve(id, Component.class), aopPlugin).stream(),
+						//metrics
+						MetricAnalyticsUtil.createMetricDefinitions(id, Home.getApp().getComponentSpace().resolve(id, Component.class), aopPlugin).stream()))
 				.collect(Collectors.toList());
 	}
 
@@ -162,7 +161,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 
 	@Override
 	public List<Metric> getMetrics() {
-		return metricAnalyticsImpl.getMetrics();
+		return MetricAnalyticsUtil.getMetrics();
 	}
 
 }

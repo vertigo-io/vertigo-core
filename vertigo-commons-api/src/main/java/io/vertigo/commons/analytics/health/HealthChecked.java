@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 
 /**
  * This annotation must be added on each method of a component.
- * This method is automatically registered in the healthManager as a health measure supplier .
+ * This method is automatically registered in the analytics manager as a health measure supplier .
  *
  * @author mlaroche
  */

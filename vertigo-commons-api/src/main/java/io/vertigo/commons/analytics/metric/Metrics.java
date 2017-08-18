@@ -18,21 +18,19 @@
  */
 package io.vertigo.commons.analytics.metric;
 
-/**
- * Interface représentant un plugin d'analyse.
- *
- * @author tchassagnette
- * @param <I> Tyep d'objet dont on souhaite obtenir la métrique
- */
-public interface MetricEngine<I> {
-	/**
-	 * Moteur permettant de calculer une métrique.
-	 * @param item item to benchmark
-	 * @return Métrique obtenue.
-	 */
-	Metric execute(final I item);
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-	default boolean isApplicable(final I item) {
-		return true;
-	}
+/**
+ * This annotation must be added on each method of a component.
+ * This method is automatically registered in the analyticsManager as a metrics supplier .
+ *
+ * @author mlaroche
+ */
+@Target({ ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Metrics {
+	//
 }

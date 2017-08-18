@@ -16,30 +16,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamox.metric.task.requestsize;
+package io.vertigo.commons.analytics.metric.data;
+
+import java.util.Collections;
+import java.util.List;
 
 import io.vertigo.commons.analytics.metric.Metric;
-import io.vertigo.commons.analytics.metric.MetricEngine;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.lang.Assertion;
+import io.vertigo.commons.analytics.metric.Metrics;
+import io.vertigo.core.component.Component;
 
-/**
- * Plugin de calcul de la taille en caractères d'une requête.
- *
- * @author tchassagnette
- */
-public final class RequestSizeMetricEngine implements MetricEngine<TaskDefinition> {
-	/** {@inheritDoc} */
-	@Override
-	public Metric execute(final TaskDefinition taskDefinition) {
-		Assertion.checkNotNull(taskDefinition);
-		//-----
-		final double size = taskDefinition.getRequest().length();
-		return Metric.builder()
-				.withName("taskRequestSize")
-				.withTopic(taskDefinition.getName())
-				.withValue(size)
-				.withSuccess()
-				.build();
+public class DummyMetricsProvider implements Component {
+
+	@Metrics
+	public List<Metric> getDummyMetric() {
+		return Collections.singletonList(
+				Metric
+						.builder()
+						.withName("type")
+						.withTopic("subject")
+						.withValue(0.00)
+						.withSuccess()
+						.build());
 	}
+
 }

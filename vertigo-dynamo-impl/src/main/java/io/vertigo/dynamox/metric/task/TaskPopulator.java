@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamox.metric.task.performance;
+package io.vertigo.dynamox.metric.task;
 
 import java.math.BigDecimal;
 import java.util.Date;

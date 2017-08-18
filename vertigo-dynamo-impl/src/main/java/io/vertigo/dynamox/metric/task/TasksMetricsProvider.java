@@ -16,13 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamox.metric.task.performance;
+package io.vertigo.dynamox.metric.task;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
+import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.metric.Metric;
 import io.vertigo.commons.analytics.metric.MetricBuilder;
-import io.vertigo.commons.analytics.metric.MetricEngine;
+import io.vertigo.commons.analytics.metric.Metrics;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.component.Component;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
@@ -30,43 +38,86 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 
 /**
- * Plugin de calcul du temps d'exécution d'une requête.
+ * Implémentation de TaskReportingManager.
  *
  * @author tchassagnette
  */
-public final class PerformanceMetricEngine implements MetricEngine<TaskDefinition> {
+public final class TasksMetricsProvider implements Component {
 
 	private final VTransactionManager transactionManager;
 	private final TaskManager taskManager;
 
-	/**
-	 * Constructeur apr défaut.
-	 * @param transactionManager Transaction Manager
-	 * @param taskManager Manager des tasks
-	 */
-	public PerformanceMetricEngine(
-			final VTransactionManager transactionManager,
-			final TaskManager taskManager) {
+	@Inject
+	public TasksMetricsProvider(final VTransactionManager transactionManager, final TaskManager taskManager) {
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(taskManager);
 		//-----
 		this.transactionManager = transactionManager;
 		this.taskManager = taskManager;
+
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public Metric execute(final TaskDefinition taskDefinition) {
-		Assertion.checkNotNull(taskDefinition);
-		//-----
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			return doExecute(taskDefinition);
-		}
+	@Metrics
+	public List<Metric> getTasksRequestSizeMetric() {
+		return Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)
+				.stream()
+				.map(taskDefinition -> Metric.builder()
+						.withName("taskRequestSize")
+						.withTopic(taskDefinition.getName())
+						.withValue(Double.valueOf(taskDefinition.getRequest().length()))
+						.withSuccess()
+						.build())
+				.collect(Collectors.toList());
+
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean isApplicable(final TaskDefinition taskDefinition) {
+	@Metrics
+	public List<Metric> getTasksJoinMetric() {
+		return Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)
+				.stream()
+				.map(taskDefinition -> {
+					final double joinCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("JOIN").length - 1d;
+					final double fromCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("FROM ").length - 1d;
+					return Metric.builder()
+							.withName("taskJoinCount")
+							.withTopic(taskDefinition.getName())
+							.withValue(joinCount + fromCount)
+							.withSuccess()
+							.build();
+				})
+				.collect(Collectors.toList());
+
+	}
+
+	@Metrics
+	public List<Metric> getTasksSubRequestMetric() {
+		return Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)
+				.stream()
+				.map(taskDefinition -> Metric.builder()
+						.withName("taskSubrequestsCount")
+						.withTopic(taskDefinition.getName())
+						.withValue(taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("SELECT").length - 1d)
+						.withSuccess()
+						.build())
+				.collect(Collectors.toList());
+
+	}
+
+	@Metrics
+	public List<Metric> getTasksPerformanceMetric() {
+		return Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)
+				.stream()
+				.filter(TasksMetricsProvider::canBeExecutedForMetric)
+				.map(taskDefinition -> {
+					try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+						return doExecute(taskDefinition);
+					}
+				})
+				.collect(Collectors.toList());
+
+	}
+
+	private static boolean canBeExecutedForMetric(final TaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//---
 		return TaskEngineSelect.class.isAssignableFrom(taskDefinition.getTaskEngineClass()) && !hasNotNullOutParams(taskDefinition);
@@ -99,4 +150,5 @@ public final class PerformanceMetricEngine implements MetricEngine<TaskDefinitio
 		return taskDefinition.getOutAttributeOption().isPresent()
 				&& taskDefinition.getOutAttributeOption().get().isRequired();
 	}
+
 }
