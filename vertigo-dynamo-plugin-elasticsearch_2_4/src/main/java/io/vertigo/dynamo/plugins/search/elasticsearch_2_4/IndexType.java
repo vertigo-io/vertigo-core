@@ -52,7 +52,7 @@ final class IndexType {
 			case Double:
 			case Integer:
 			case Long:
-				return domain.getDataType().name().toLowerCase();
+				return domain.getDataType().name().toLowerCase(Locale.ROOT);
 			case String:
 				return "text";
 			case Date:
