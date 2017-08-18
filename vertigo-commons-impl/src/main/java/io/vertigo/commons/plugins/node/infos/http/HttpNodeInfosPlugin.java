@@ -32,7 +32,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
-import io.vertigo.commons.health.HealthCheck;
+import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.impl.node.NodeInfosPlugin;
 import io.vertigo.commons.node.Node;
 import io.vertigo.lang.Assertion;

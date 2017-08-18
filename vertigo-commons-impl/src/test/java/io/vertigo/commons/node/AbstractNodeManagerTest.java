@@ -59,7 +59,6 @@ public abstract class AbstractNodeManagerTest extends AbstractTestCaseJU4 {
 
 	}
 
-	@Test
 	@Ignore // ignored for now we need heartbeat of node update to be parametized for shorter tests
 	void testUpdate() throws InterruptedException {
 		final NodeManager nodeManager = Home.getApp().getComponentSpace().resolve(NodeManager.class);

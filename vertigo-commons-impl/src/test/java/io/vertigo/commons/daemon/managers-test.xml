@@ -1,8 +1,6 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
 	<module name="vertigo-commons">
-		<component api="HealthManager" class="io.vertigo.commons.impl.health.HealthManagerImpl" />
-		<component api="MetricManager" class="io.vertigo.commons.impl.metric.MetricManagerImpl" />
 		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
 		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" />
 		<aspect class="io.vertigo.commons.daemon.DaemonFakeAspect" />

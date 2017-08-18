@@ -22,16 +22,27 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.AnalyticsTracer;
+import io.vertigo.commons.analytics.health.HealthCheck;
+import io.vertigo.commons.analytics.health.HealthStatus;
+import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.commons.analytics.metric.MetricPlugin;
+import io.vertigo.commons.analytics.process.ProcessAnalyticsTracer;
 import io.vertigo.commons.daemon.DaemonScheduled;
-import io.vertigo.commons.health.HealthCheck;
-import io.vertigo.commons.health.HealthManager;
-import io.vertigo.commons.metric.Metric;
-import io.vertigo.commons.metric.MetricManager;
+import io.vertigo.commons.impl.analytics.health.HealthAnalyticsUtil;
+import io.vertigo.commons.impl.analytics.metric.MetricAnalyticsImpl;
+import io.vertigo.commons.impl.analytics.process.AProcess;
+import io.vertigo.commons.impl.analytics.process.ProcessAnalyticsImpl;
+import io.vertigo.core.component.AopPlugin;
+import io.vertigo.core.component.Component;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -39,16 +50,11 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class AnalyticsManagerImpl implements AnalyticsManager {
+public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefinitionProvider {
 
-	private final HealthManager healthManager;
-	private final MetricManager metricManager;
+	private final MetricAnalyticsImpl metricAnalyticsImpl;
+	private final ProcessAnalyticsImpl processAnalyticsImpl;
 	private final List<AnalyticsConnectorPlugin> processConnectorPlugins;
-	/**
-	 * Processus binde sur le thread courant. Le processus , recoit les notifications des sondes placees dans le code de
-	 * l'application pendant le traitement d'une requete (thread).
-	 */
-	private static final ThreadLocal<AnalyticsTracerImpl> THREAD_LOCAL_PROCESS = new ThreadLocal<>();
 
 	private final boolean enabled;
 
@@ -58,17 +64,65 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 	 */
 	@Inject
 	public AnalyticsManagerImpl(
-			final HealthManager healthManager,
-			final MetricManager metricManager,
-			final List<AnalyticsConnectorPlugin> processConnectorPlugins) {
+			final List<AnalyticsConnectorPlugin> processConnectorPlugins,
+			final List<MetricPlugin> reportingPlugins) {
 		Assertion.checkNotNull(processConnectorPlugins);
+		Assertion.checkNotNull(reportingPlugins);
 		//---
-		this.healthManager = healthManager;
-		this.metricManager = metricManager;
+		metricAnalyticsImpl = new MetricAnalyticsImpl(reportingPlugins);
+		processAnalyticsImpl = new ProcessAnalyticsImpl();
 		this.processConnectorPlugins = processConnectorPlugins;
 		// by default if no connector is defined we disable the collect
 		enabled = !this.processConnectorPlugins.isEmpty();
 	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		// here all
+
+		// we need to unwrap the component to scan the real class and not the enhanced version
+		final AopPlugin aopPlugin = Home.getApp().getConfig().getBootConfig().getAopPlugin();
+		return Home.getApp().getComponentSpace().keySet()
+				.stream()
+				.flatMap(id -> HealthAnalyticsUtil.createHealthCheckDefinitions(id, Home.getApp().getComponentSpace().resolve(id, Component.class), aopPlugin).stream())
+				.collect(Collectors.toList());
+	}
+
+	/*----------------- Process ------------------*/
+
+	/** {@inheritDoc} */
+	@Override
+	public void trace(final String category, final String name, final Consumer<ProcessAnalyticsTracer> consumer) {
+		processAnalyticsImpl.trace(category, name, consumer, this::onClose);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <O> O traceWithReturn(final String category, final String name, final Function<ProcessAnalyticsTracer, O> function) {
+		return processAnalyticsImpl.traceWithReturn(category, name, function, this::onClose);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Optional<ProcessAnalyticsTracer> getCurrentTracer() {
+		if (!enabled) {
+			return Optional.empty();
+		}
+		// When collect feature is enabled
+		return processAnalyticsImpl.getCurrentTracer();
+	}
+
+	private void onClose(final AProcess process) {
+		Assertion.checkNotNull(process);
+		//---
+		//1.
+		processAnalyticsImpl.removeTracer();
+		//2.
+		processConnectorPlugins.forEach(
+				processConnectorPlugin -> processConnectorPlugin.add(process));
+	}
+
+	/*----------------- Health ------------------*/
 
 	/**
 	 * Daemon to retrieve healthChecks and add them to the connectors
@@ -76,11 +130,23 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 	@DaemonScheduled(name = "DMN_ANALYTICS_HEALTH", periodInSeconds = 60 * 60) //every hour
 	public void sendHealthChecks() {
 		if (enabled) {
-			final List<HealthCheck> healthChecks = healthManager.getHealthChecks();
+			final List<HealthCheck> healthChecks = getHealthChecks();
 			processConnectorPlugins.forEach(
 					connectorPlugin -> healthChecks.forEach(connectorPlugin::add));
 		}
 	}
+
+	@Override
+	public List<HealthCheck> getHealthChecks() {
+		return HealthAnalyticsUtil.getHealthChecks();
+	}
+
+	@Override
+	public HealthStatus aggregate(final List<HealthCheck> healthChecks) {
+		return HealthAnalyticsUtil.aggregate(healthChecks);
+	}
+
+	/*----------------- Metrics ------------------*/
 
 	/**
 	 * Daemon to retrieve metrics and add them to the connectors
@@ -88,79 +154,15 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 	@DaemonScheduled(name = "DMN_ANALYTICS_METRIC", periodInSeconds = 60 * 60) //every hour
 	public void sendMetrics() {
 		if (enabled) {
-			final List<Metric> metrics = metricManager.analyze();
+			final List<Metric> metrics = getMetrics();
 			processConnectorPlugins.forEach(
 					connectorPlugin -> metrics.forEach(connectorPlugin::add));
 		}
 	}
 
-	/** {@inheritDoc} */
 	@Override
-	public void trace(final String category, final String name, final Consumer<AnalyticsTracer> consumer) {
-		try (AnalyticsTracerImpl tracer = createTracer(category, name)) {
-			try {
-				consumer.accept(tracer);
-				tracer.markAsSucceeded();
-			} catch (final Exception e) {
-				tracer.markAsFailed(e);
-				throw e;
-			}
-		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <O> O traceWithReturn(final String category, final String name, final Function<AnalyticsTracer, O> function) {
-		try (AnalyticsTracerImpl tracer = createTracer(category, name)) {
-			try {
-				final O result = function.apply(tracer);
-				tracer.markAsSucceeded();
-				return result;
-			} catch (final Exception e) {
-				tracer.markAsFailed(e);
-				throw e;
-			}
-		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Optional<AnalyticsTracer> getCurrentTracer() {
-		if (!enabled) {
-			return Optional.empty();
-		}
-		// When collect feature is enabled
-		return doGetCurrentTracer().map(a -> a); // convert impl to api
-	}
-
-	private static Optional<AnalyticsTracerImpl> doGetCurrentTracer() {
-		return Optional.ofNullable(THREAD_LOCAL_PROCESS.get());
-	}
-
-	private static void push(final AnalyticsTracerImpl analyticstracer) {
-		Assertion.checkNotNull(analyticstracer);
-		//---
-		final Optional<AnalyticsTracerImpl> analyticstracerOptional = doGetCurrentTracer();
-		if (!analyticstracerOptional.isPresent()) {
-			THREAD_LOCAL_PROCESS.set(analyticstracer);
-		}
-	}
-
-	private AnalyticsTracerImpl createTracer(final String category, final String name) {
-		final Optional<AnalyticsTracerImpl> parent = doGetCurrentTracer();
-		final AnalyticsTracerImpl analyticsTracer = new AnalyticsTracerImpl(parent, category, name, this::onClose);
-		push(analyticsTracer);
-		return analyticsTracer;
-	}
-
-	private void onClose(final AProcess process) {
-		Assertion.checkNotNull(process);
-		//---
-		//1.
-		THREAD_LOCAL_PROCESS.remove();
-		//2.
-		processConnectorPlugins.forEach(
-				processConnectorPlugin -> processConnectorPlugin.add(process));
+	public List<Metric> getMetrics() {
+		return metricAnalyticsImpl.getMetrics();
 	}
 
 }

@@ -30,8 +30,8 @@ import com.google.gson.JsonParser;
 
 import io.vertigo.app.Home;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.commons.health.HealthCheck;
-import io.vertigo.commons.health.HealthManager;
+import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.lang.Assertion;
@@ -48,7 +48,7 @@ public final class ComponentCmdWebServices implements WebServices {
 	private final JsonEngine jsonEngine = new GoogleJsonEngine(Optional.empty());
 
 	@Inject
-	private HealthManager healthManager;
+	private AnalyticsManager analyticsManager;
 
 	/**
 	 * Healthcheck WebService.
@@ -58,7 +58,7 @@ public final class ComponentCmdWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	@GET("/vertigo/healthcheck")
 	public List<HealthCheck> healthcheck() {
-		return healthManager.getHealthChecks();
+		return analyticsManager.getHealthChecks();
 	}
 
 	@AnonymousAccessAllowed

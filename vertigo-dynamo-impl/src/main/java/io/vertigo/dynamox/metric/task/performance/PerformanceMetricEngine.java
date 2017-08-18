@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamox.metric.task.performance;
 
-import io.vertigo.commons.metric.Metric;
-import io.vertigo.commons.metric.MetricBuilder;
-import io.vertigo.commons.metric.MetricEngine;
+import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.commons.analytics.metric.MetricBuilder;
+import io.vertigo.commons.analytics.metric.MetricEngine;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.dynamo.task.TaskManager;

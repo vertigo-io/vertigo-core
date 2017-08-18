@@ -21,9 +21,9 @@ package io.vertigo.database.impl.sql;
 import java.util.Collections;
 
 import io.vertigo.app.Home;
-import io.vertigo.commons.health.HealthChecked;
-import io.vertigo.commons.health.HealthMeasure;
-import io.vertigo.commons.health.HealthMeasureBuilder;
+import io.vertigo.commons.analytics.health.HealthChecked;
+import io.vertigo.commons.analytics.health.HealthMeasure;
+import io.vertigo.commons.analytics.health.HealthMeasureBuilder;
 import io.vertigo.core.component.Plugin;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;

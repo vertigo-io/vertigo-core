@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamox.metric.task.requestsize;
 
-import io.vertigo.commons.metric.Metric;
-import io.vertigo.commons.metric.MetricEngine;
+import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.commons.analytics.metric.MetricEngine;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 

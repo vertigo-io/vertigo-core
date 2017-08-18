@@ -26,9 +26,9 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
-import io.vertigo.commons.metric.Metric;
-import io.vertigo.commons.metric.MetricEngine;
-import io.vertigo.commons.metric.MetricPlugin;
+import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.commons.analytics.metric.MetricEngine;
+import io.vertigo.commons.analytics.metric.MetricPlugin;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;

@@ -9,8 +9,6 @@
 		<component api="CacheManager" class="io.vertigo.commons.impl.cache.CacheManagerImpl">
 			<plugin class="io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin" />
 		</component>
-		<component api="HealthManager" class="io.vertigo.commons.impl.health.HealthManagerImpl" />
-		<component api="MetricManager" class="io.vertigo.commons.impl.metric.MetricManagerImpl" />
 		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
 		<component api="VTransactionManager" class="io.vertigo.commons.impl.transaction.VTransactionManagerImpl"/>
 	</module>

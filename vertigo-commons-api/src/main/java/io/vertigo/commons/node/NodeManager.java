@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import io.vertigo.commons.health.HealthCheck;
+import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.core.component.Manager;
 
 /**

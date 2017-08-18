@@ -20,9 +20,9 @@ package io.vertigo.commons.impl.cache;
 
 import java.io.Serializable;
 
-import io.vertigo.commons.health.HealthChecked;
-import io.vertigo.commons.health.HealthMeasure;
-import io.vertigo.commons.health.HealthMeasureBuilder;
+import io.vertigo.commons.analytics.health.HealthChecked;
+import io.vertigo.commons.analytics.health.HealthMeasure;
+import io.vertigo.commons.analytics.health.HealthMeasureBuilder;
 import io.vertigo.core.component.Plugin;
 
 /**

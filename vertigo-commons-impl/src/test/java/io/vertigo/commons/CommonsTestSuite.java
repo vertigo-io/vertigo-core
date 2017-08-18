@@ -22,7 +22,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import io.vertigo.commons.analytics.AnalyticsManagerTest;
+import io.vertigo.commons.analytics.health.HealthAnalyticsTest;
+import io.vertigo.commons.analytics.metric.MetricAnalyticsTest;
+import io.vertigo.commons.analytics.process.ProcessAnalyticsTest;
 import io.vertigo.commons.cache.ehcache.EhCacheManagerTest;
 import io.vertigo.commons.cache.memory.MemoryCacheManagerTest;
 import io.vertigo.commons.cache.redis.RedisCacheManagerTest;
@@ -57,7 +59,9 @@ import io.vertigo.commons.transaction.VTransactionManagerTest;
 @RunWith(Suite.class)
 @SuiteClasses({
 		//--analytics
-		AnalyticsManagerTest.class,
+		ProcessAnalyticsTest.class,
+		HealthAnalyticsTest.class,
+		MetricAnalyticsTest.class,
 		//--cache
 		EhCacheManagerTest.class,
 		MemoryCacheManagerTest.class,

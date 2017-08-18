@@ -28,7 +28,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.AnalyticsTracer;
+import io.vertigo.commons.analytics.process.ProcessAnalyticsTracer;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlParameter;
 import io.vertigo.database.sql.statement.SqlPreparedStatement;
@@ -119,7 +119,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 
 	private <O> List<O> doExecuteQuery(
 			final PreparedStatement statement,
-			final AnalyticsTracer tracer,
+			final ProcessAnalyticsTracer tracer,
 			final Class<O> dataType,
 			final Integer limit) {
 		// ResultSet JDBC
@@ -178,7 +178,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		}
 	}
 
-	private static int doExecute(final PreparedStatement statement, final AnalyticsTracer tracer) {
+	private static int doExecute(final PreparedStatement statement, final ProcessAnalyticsTracer tracer) {
 		try {
 			final int res = statement.executeUpdate();
 			tracer.setMeasure("nbModifiedRow", res);
@@ -223,7 +223,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 		}
 	}
 
-	private OptionalInt doExecuteBatch(final PreparedStatement statement, final AnalyticsTracer tracer) {
+	private OptionalInt doExecuteBatch(final PreparedStatement statement, final ProcessAnalyticsTracer tracer) {
 		try {
 			final int[] res = statement.executeBatch();
 			//Calcul du nombre total de lignes affectées par le batch.
@@ -245,7 +245,7 @@ public final class SqlPreparedStatementImpl implements SqlPreparedStatement {
 	/*
 	 * Enregistre le début d'exécution du PrepareStatement
 	 */
-	private <O> O traceWithReturn(final String sql, final Function<AnalyticsTracer, O> function) {
+	private <O> O traceWithReturn(final String sql, final Function<ProcessAnalyticsTracer, O> function) {
 		return analyticsManager.traceWithReturn(
 				"sql",
 				"/execute/" + sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACER, sql.length())),

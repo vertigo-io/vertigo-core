@@ -34,10 +34,10 @@ import javax.persistence.TypedQuery;
 import org.hibernate.exception.ConstraintViolationException;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.AnalyticsTracer;
-import io.vertigo.commons.health.HealthChecked;
-import io.vertigo.commons.health.HealthMeasure;
-import io.vertigo.commons.health.HealthMeasureBuilder;
+import io.vertigo.commons.analytics.health.HealthChecked;
+import io.vertigo.commons.analytics.health.HealthMeasure;
+import io.vertigo.commons.analytics.health.HealthMeasureBuilder;
+import io.vertigo.commons.analytics.process.ProcessAnalyticsTracer;
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
@@ -149,7 +149,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	}
 
-	private <E extends Entity> E doLoadWithoutClear(final AnalyticsTracer tracer, final URI<E> uri) {
+	private <E extends Entity> E doLoadWithoutClear(final ProcessAnalyticsTracer tracer, final URI<E> uri) {
 		final Class<E> objectClass = (Class<E>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
 		final E result = getEntityManager().find(objectClass, uri.getId());
 		tracer.setMeasure("nbSelectedRow", result != null ? 1 : 0);
@@ -210,7 +210,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	}
 
-	private <E extends Entity> DtList<E> doFindByCriteria(final AnalyticsTracer tracer, final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
+	private <E extends Entity> DtList<E> doFindByCriteria(final ProcessAnalyticsTracer tracer, final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
 		final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
 		final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(sqlDataBase.getSqlDialect());
 		final String tableName = getTableName(dtDefinition);
@@ -261,7 +261,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 				tracer -> doFindAll(tracer, dtDefinition, dtcUri));
 	}
 
-	private <E extends Entity> DtList<E> doFindAll(final AnalyticsTracer tracer, final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
+	private <E extends Entity> DtList<E> doFindAll(final ProcessAnalyticsTracer tracer, final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
 		final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
 		//PK de la DtList recherchée
 		final String idFieldName = dtDefinition.getIdField().get().getName();
@@ -323,7 +323,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		}
 	}
 
-	private void doPut(final AnalyticsTracer tracer, final Entity entity, final boolean persist) {
+	private void doPut(final ProcessAnalyticsTracer tracer, final Entity entity, final boolean persist) {
 		final EntityManager entityManager = getEntityManager();
 		if (persist) {
 			//si pas de PK exception
@@ -354,7 +354,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		}
 	}
 
-	private void doDelete(final AnalyticsTracer tracer, final URI uri) {
+	private void doDelete(final ProcessAnalyticsTracer tracer, final URI uri) {
 		final Object dto = loadWithoutClear(uri);
 		if (dto == null) {
 			throw new VSystemException("Aucune ligne supprimée");

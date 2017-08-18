@@ -27,10 +27,10 @@ import org.apache.log4j.Logger;
 
 import com.google.gson.JsonObject;
 
-import io.vertigo.commons.health.HealthCheck;
-import io.vertigo.commons.impl.analytics.AProcess;
+import io.vertigo.commons.analytics.health.HealthCheck;
+import io.vertigo.commons.analytics.metric.Metric;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
-import io.vertigo.commons.metric.Metric;
+import io.vertigo.commons.impl.analytics.process.AProcess;
 import io.vertigo.lang.Assertion;
 
 /**

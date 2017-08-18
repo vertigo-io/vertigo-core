@@ -28,7 +28,6 @@ import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.eventbus.EventBusManager;
-import io.vertigo.commons.health.HealthManager;
 import io.vertigo.commons.impl.analytics.AnalyticsManagerImpl;
 import io.vertigo.commons.impl.cache.CacheManagerImpl;
 import io.vertigo.commons.impl.cache.CachePlugin;
@@ -36,8 +35,6 @@ import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.commons.impl.daemon.DaemonManagerImpl;
 import io.vertigo.commons.impl.eventbus.EventBusManagerImpl;
-import io.vertigo.commons.impl.health.HealthManagerImpl;
-import io.vertigo.commons.impl.metric.MetricManagerImpl;
 import io.vertigo.commons.impl.node.NodeInfosPlugin;
 import io.vertigo.commons.impl.node.NodeManagerImpl;
 import io.vertigo.commons.impl.node.NodeRegistryPlugin;
@@ -45,7 +42,6 @@ import io.vertigo.commons.impl.script.ExpressionEvaluatorPlugin;
 import io.vertigo.commons.impl.script.ScriptManagerImpl;
 import io.vertigo.commons.impl.transaction.VTransactionAspect;
 import io.vertigo.commons.impl.transaction.VTransactionManagerImpl;
-import io.vertigo.commons.metric.MetricManager;
 import io.vertigo.commons.node.NodeManager;
 import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
 import io.vertigo.commons.script.ScriptManager;
@@ -79,7 +75,7 @@ public final class CommonsFeatures extends Features {
 
 	/**
 	 * Activates script with a defined plugin.
-
+	
 	 * @param expressionEvaluatorPluginClass the type of plugin to use
 	 * @param params the params
 	 * @return these features
@@ -158,8 +154,6 @@ public final class CommonsFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.addComponent(HealthManager.class, HealthManagerImpl.class)
-				.addComponent(MetricManager.class, MetricManagerImpl.class)
 				.addComponent(AnalyticsManager.class, AnalyticsManagerImpl.class)
 				.addComponent(CodecManager.class, CodecManagerImpl.class)
 				.addComponent(DaemonManager.class, DaemonManagerImpl.class)
