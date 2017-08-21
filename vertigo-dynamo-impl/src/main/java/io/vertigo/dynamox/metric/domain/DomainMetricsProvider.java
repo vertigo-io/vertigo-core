@@ -127,24 +127,22 @@ public final class DomainMetricsProvider implements Component {
 	}
 
 	private Metric doExecute(final DtDefinition dtDefinition) {
-		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			Assertion.checkNotNull(dtDefinition);
-			Assertion.checkState(dtDefinition.isPersistent(), "Count can only be performed on persistent entities, DtDefinition '{0}' is not", dtDefinition.getName());
-			//-----
-			final MetricBuilder metricBuilder = Metric.builder()
-					.withName("entityCount")
-					.withTopic(dtDefinition.getName());
-			try {
-				final double count = storeManager.getDataStore().count(dtDefinition);
-				return metricBuilder
-						.withSuccess()
-						.withValue(count)
-						.build();
-			} catch (final Exception e) {
-				return metricBuilder
-						.withError()
-						.build();
-			}
+		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkState(dtDefinition.isPersistent(), "Count can only be performed on persistent entities, DtDefinition '{0}' is not", dtDefinition.getName());
+		//-----
+		final MetricBuilder metricBuilder = Metric.builder()
+				.withName("entityCount")
+				.withTopic(dtDefinition.getName());
+		try {
+			final double count = storeManager.getDataStore().count(dtDefinition);
+			return metricBuilder
+					.withSuccess()
+					.withValue(count)
+					.build();
+		} catch (final Exception e) {
+			return metricBuilder
+					.withError()
+					.build();
 		}
 	}
 
