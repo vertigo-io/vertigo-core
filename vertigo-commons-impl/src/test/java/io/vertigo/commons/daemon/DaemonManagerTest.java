@@ -26,6 +26,9 @@ import javax.inject.Inject;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.analytics.health.HealthCheck;
+import io.vertigo.commons.analytics.health.HealthStatus;
 
 /**
  * @author TINGARGIOLA
@@ -33,6 +36,8 @@ import io.vertigo.AbstractTestCaseJU4;
 public final class DaemonManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private DaemonManager daemonManager;
+	@Inject
+	private AnalyticsManager analyticsManager;
 	@Inject
 	private FakeComponent fakeComponent;
 
@@ -59,6 +64,14 @@ public final class DaemonManagerTest extends AbstractTestCaseJU4 {
 		assertEquals(DaemonStat.Status.pending, daemonStat.getStatus());
 
 		assertTrue(fakeComponent.getExecutionCount() > 0);
+
+		final HealthCheck daemonsExecHealthCheck = analyticsManager.getHealthChecks()
+				.stream()
+				.filter(healtChk -> "daemons".equals(healtChk.getTopic()) && "lastExecs".equals(healtChk.getName()))
+				.findFirst()
+				.get();
+
+		assertTrue(daemonsExecHealthCheck.getMeasure().getStatus() == HealthStatus.GREEN);
 
 	}
 

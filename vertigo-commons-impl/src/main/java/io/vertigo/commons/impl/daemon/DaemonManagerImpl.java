@@ -26,6 +26,9 @@ import javax.inject.Inject;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.analytics.health.HealthChecked;
+import io.vertigo.commons.analytics.health.HealthMeasure;
+import io.vertigo.commons.analytics.health.HealthMeasureBuilder;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
@@ -139,6 +142,30 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	private void startAllDaemons() {
 		Home.getApp().getDefinitionSpace().getAll(DaemonDefinition.class).stream()
 				.forEach(this::startDaemon);
+	}
+
+	@HealthChecked(name = "lastExecs", topic = "daemons")
+	public HealthMeasure checkDaemonsExecs() {
+		final List<DaemonStat> daemonStats = getStats();
+		final long failureCount = daemonStats.stream()
+				.filter(daemonStat -> daemonStat.getCount() > 0) // to have a real indicator we use only daemon that have been executed at least once
+				.filter(daemonStat -> !daemonStat.isLastExecSuccess())
+				.count();
+		//---
+		final HealthMeasureBuilder healthMeasure = HealthMeasure.builder();
+		if (failureCount == 0) {
+			return healthMeasure
+					.withGreenStatus()
+					.build();
+		} else if (failureCount < daemonStats.size()) {
+			return healthMeasure
+					.withYellowStatus("At least one daemon failed", null)
+					.build();
+		}
+		return healthMeasure
+				.withRedStatus("All daemons failed", null)
+				.build();
+
 	}
 
 }
