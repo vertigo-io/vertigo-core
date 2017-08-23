@@ -80,4 +80,8 @@ public final class EventBusSubscriptionDefinition<E extends Event> implements De
 	public String getName() {
 		return name;
 	}
+
+	public Class<E> getEventType() {
+		return eventType;
+	}
 }
