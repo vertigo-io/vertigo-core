@@ -39,7 +39,8 @@ public final class MetricDefinition implements Definition {
 
 	/**
 	 * Constructor
-	 * @param metricProvider the  method that provides a list of metrics
+	 * @param definitionName Definition name
+	 * @param metricSupplier the  method that provides a list of metrics
 	 */
 	public MetricDefinition(
 			final String definitionName,
