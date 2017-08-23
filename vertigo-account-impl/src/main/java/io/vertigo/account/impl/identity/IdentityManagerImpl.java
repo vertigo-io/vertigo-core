@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 import io.vertigo.account.identity.AccountStore;
 import io.vertigo.account.identity.IdentityManager;
-import io.vertigo.account.identity.IdentityRealm;
+import io.vertigo.account.identity.IdentityProvider;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
@@ -34,7 +34,7 @@ import io.vertigo.lang.Assertion;
  */
 public final class IdentityManagerImpl implements IdentityManager {
 	private final AccountStore accountStorePlugin;
-	private final Optional<IdentityRealm> identityRealmPlugin;
+	private final Optional<IdentityProvider> identityRealmPlugin;
 	private final VFile defaultPhoto;
 
 	/**
@@ -74,7 +74,7 @@ public final class IdentityManagerImpl implements IdentityManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<IdentityRealm> getIdentityRealm() {
+	public Optional<IdentityProvider> getIdentityProvider() {
 		return identityRealmPlugin;
 	}
 

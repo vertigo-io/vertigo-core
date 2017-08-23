@@ -18,12 +18,12 @@
  */
 package io.vertigo.account.impl.identity;
 
-import io.vertigo.account.identity.IdentityRealm;
+import io.vertigo.account.identity.IdentityProvider;
 import io.vertigo.core.component.Plugin;
 
 /**
  * @author pchretien, npiedeloup
  */
-public interface IdentityRealmPlugin extends IdentityRealm, Plugin {
+public interface IdentityRealmPlugin extends IdentityProvider, Plugin {
 	//thing more than IdentityRealm
 }

@@ -43,8 +43,8 @@ public interface IdentityManager extends Manager {
 	AccountStore getStore();
 
 	/**
-	 * @return the realm of identities
+	 * @return the provider of identities
 	 */
-	Optional<IdentityRealm> getIdentityRealm();
+	Optional<IdentityProvider> getIdentityProvider();
 
 }

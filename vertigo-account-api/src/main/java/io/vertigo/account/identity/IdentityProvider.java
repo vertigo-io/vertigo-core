@@ -28,7 +28,7 @@ import io.vertigo.dynamo.file.model.VFile;
  * This class defines the source of identity
  * @author npiedeloup
  */
-public interface IdentityRealm {
+public interface IdentityProvider {
 
 	/**
 	 * @return the number of accounts
