@@ -384,17 +384,17 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	@HealthChecked(name = "testQuery", topic = "jpa")
 	public HealthMeasure checkJpaStore() {
-		final HealthMeasureBuilder healthMeasure = HealthMeasure.builder();
+		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			getEntityManager().createNativeQuery("select 1", Integer.class).getFirstResult();
-			healthMeasure
+			healthMeasureBuilder
 					.withGreenStatus();
 		} catch (final Exception e) {
-			healthMeasure
+			healthMeasureBuilder
 					.withRedStatus(e.getMessage(), e)
 					.build();
 		}
-		return healthMeasure.build();
+		return healthMeasureBuilder.build();
 
 	}
 
