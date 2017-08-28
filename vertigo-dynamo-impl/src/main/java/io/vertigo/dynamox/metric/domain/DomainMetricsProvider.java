@@ -30,6 +30,7 @@ import io.vertigo.commons.analytics.metric.Metrics;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.component.Component;
+import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
@@ -88,6 +89,63 @@ public final class DomainMetricsProvider implements Component {
 						.build())
 				.collect(Collectors.toList());
 
+	}
+
+	@Metrics
+	public List<Metric> getDomainUsageTasksMetrics() {
+		return Home.getApp().getDefinitionSpace().getAll(Domain.class)
+				.stream()
+				.map(domain -> Metric.builder()
+						.withSuccess()
+						.withName("domainUsageInTasks")
+						.withTopic(domain.getName())
+						.withValue(countTaskDependencies(domain))
+						.build())
+				.collect(Collectors.toList());
+
+	}
+
+	@Metrics
+	public List<Metric> getDomainUsageDtDefinitionMetrics() {
+		return Home.getApp().getDefinitionSpace().getAll(Domain.class)
+				.stream()
+				.map(domain -> Metric.builder()
+						.withSuccess()
+						.withName("domainUsageInDtDefinitions")
+						.withTopic(domain.getName())
+						.withValue(countDtDefinitionDependencies(domain))
+						.build())
+				.collect(Collectors.toList());
+
+	}
+
+	private static double countTaskDependencies(final Domain domain) {
+		Assertion.checkNotNull(domain);
+		//---
+		int count = 0;
+		for (final TaskDefinition taskDefinition : Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)) {
+			for (final TaskAttribute taskAttribute : taskDefinition.getInAttributes()) {
+				if (domain.equals(taskAttribute.getDomain())) {
+					count++;
+				}
+			}
+			if (taskDefinition.getOutAttributeOption().isPresent()) {
+				if (domain.equals(taskDefinition.getOutAttributeOption().get().getDomain())) {
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+
+	private static double countDtDefinitionDependencies(final Domain domain) {
+		Assertion.checkNotNull(domain);
+		//---
+		return Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)
+				.stream()
+				.flatMap(dtDefinition -> dtDefinition.getFields().stream())
+				.filter(field -> domain.equals(field.getDomain()))
+				.count();
 	}
 
 	private static double countTaskDependencies(final DtDefinition dtDefinition) {
