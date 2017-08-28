@@ -33,7 +33,6 @@ import io.vertigo.lang.Assertion;
 final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCloseable {
 	private final Logger logger;
 
-	private final int processDeep;
 	private final Optional<ProcessAnalyticsTracerImpl> parentOpt;
 	private Boolean succeeded; //default no info
 	private Throwable causeException; //default no info
@@ -61,13 +60,6 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 		this.consumer = consumer;
 
 		processBuilder = AProcess.builder(category, name);
-		if (parentOpt.isPresent()) {
-			processDeep = parentOpt.get().processDeep;
-			Assertion.checkState(processDeep < 100, "More than 100 process deep. All processes must be closed.");
-		} else {
-			processDeep = 0;
-		}
-
 		if (logger.isDebugEnabled()) {
 			logger.debug("Start " + name);
 		}
