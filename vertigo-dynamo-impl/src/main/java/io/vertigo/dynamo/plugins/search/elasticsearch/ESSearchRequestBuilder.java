@@ -64,7 +64,6 @@ import io.vertigo.lang.Builder;
  */
 final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 
-	private static final int HIGHLIGHTER_NUM_OF_FRAGMENTS = 3;
 	private static final int TERM_AGGREGATION_SIZE = 50; //max 50 facets values per facet
 	private static final int TOPHITS_SUBAGGREGATION_MAXSIZE = 100; //max 100 documents per cluster when clusterization is used
 	private static final int TOPHITS_SUBAGGREGATION_SIZE = 10; //max 10 documents per cluster when clusterization is used
@@ -173,10 +172,8 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		if (indexType.isIndexSubKeyword()) { //s'il y a un subKeyword on tri dessus
 			sortIndexFieldName = sortIndexFieldName + ".keyword";
 		}
-		final FieldSortBuilder sortBuilder = SortBuilders.fieldSort(sortIndexFieldName)
+		return SortBuilders.fieldSort(sortIndexFieldName)
 				.order(myListState.isSortDesc().get() ? SortOrder.DESC : SortOrder.ASC);
-
-		return sortBuilder;
 	}
 
 	private static void appendSearchQuery(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder, final boolean useHighlight) {

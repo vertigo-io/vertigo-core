@@ -374,7 +374,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	@HealthChecked(name = "clusterHealth", topic = "search")
 	public HealthMeasure checkClusterHealth() {
-		final HealthMeasureBuilder healthMeasure = HealthMeasure.builder();
+		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
 		try {
 			final ClusterHealthResponse clusterHealthResponse = esClient
 					.admin()
@@ -383,21 +383,21 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					.get();
 			switch (clusterHealthResponse.getStatus()) {
 				case GREEN:
-					healthMeasure.withGreenStatus();
+					healthMeasureBuilder.withGreenStatus();
 					break;
 				case YELLOW:
-					healthMeasure.withYellowStatus(null, null);
+					healthMeasureBuilder.withYellowStatus(null, null);
 					break;
 				case RED:
-					healthMeasure.withRedStatus(null, null);
+					healthMeasureBuilder.withRedStatus(null, null);
 					break;
 				default:
 					break;
 			}
 		} catch (final Exception e) {
-			healthMeasure.withRedStatus(e.getMessage(), e);
+			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
 		}
-		return healthMeasure.build();
+		return healthMeasureBuilder.build();
 	}
 
 }
