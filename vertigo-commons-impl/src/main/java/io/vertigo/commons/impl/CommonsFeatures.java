@@ -28,6 +28,7 @@ import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.eventbus.EventBusManager;
+import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.commons.impl.analytics.AnalyticsManagerImpl;
 import io.vertigo.commons.impl.cache.CacheManagerImpl;
 import io.vertigo.commons.impl.cache.CachePlugin;
@@ -146,6 +147,19 @@ public final class CommonsFeatures extends Features {
 	public CommonsFeatures withNodeInfosPlugin(final Class<? extends NodeInfosPlugin> nodeInfosPluginClass, final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(nodeInfosPluginClass, params);
+		return this;
+
+	}
+
+	/**
+	 * Adds a AnalyticsConnectorPlugin
+	 * @param analyticsConnectorPluginClass the plugin to use
+	 * @param params the params
+	 * @return these features
+	 */
+	public CommonsFeatures addAnalyticsConnectorPlugin(final Class<? extends AnalyticsConnectorPlugin> analyticsConnectorPluginClass, final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(analyticsConnectorPluginClass, params);
 		return this;
 
 	}
