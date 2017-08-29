@@ -20,6 +20,7 @@ package io.vertigo.commons.impl.analytics.process;
 
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.log4j.Logger;
 
@@ -33,10 +34,10 @@ import io.vertigo.lang.Assertion;
 final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCloseable {
 	private final Logger logger;
 
-	private final Optional<ProcessAnalyticsTracerImpl> parentOpt;
 	private Boolean succeeded; //default no info
 	private Throwable causeException; //default no info
 	private final Consumer<AProcess> consumer;
+	private final Supplier<Optional<ProcessAnalyticsTracerImpl>> parentOptSupplier;
 	private final AProcessBuilder processBuilder;
 
 	/**
@@ -47,17 +48,17 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 	 * @param consumer Consumer of this process after closing
 	 */
 	ProcessAnalyticsTracerImpl(
-			final Optional<ProcessAnalyticsTracerImpl> parentOpt,
 			final String category,
 			final String name,
-			final Consumer<AProcess> consumer) {
+			final Consumer<AProcess> consumer,
+			final Supplier<Optional<ProcessAnalyticsTracerImpl>> parentOptSupplier) {
 		Assertion.checkArgNotEmpty(category);
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(consumer);
 		//---
 		logger = Logger.getLogger(category);
-		this.parentOpt = parentOpt;
 		this.consumer = consumer;
+		this.parentOptSupplier = parentOptSupplier;
 
 		processBuilder = AProcess.builder(category, name);
 		if (logger.isDebugEnabled()) {
@@ -96,12 +97,14 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 			addTag("exception", causeException.getClass().getName());
 		}
 		final AProcess process = processBuilder.build();
-		if (!parentOpt.isPresent()) {
-			//when the current process is the root process, it's finished and must be sent to the connector
-			consumer.accept(process);
-		} else {
+
+		final Optional<ProcessAnalyticsTracerImpl> parentOpt = parentOptSupplier.get();
+		if (parentOpt.isPresent()) {
 			//when the current process is a subProcess, it's finished and must be added to the parent
 			parentOpt.get().processBuilder.addSubProcess(process);
+		} else {
+			//when the current process is the root process, it's finished and must be sent to the connector
+			consumer.accept(process);
 		}
 		logProcess(process);
 	}

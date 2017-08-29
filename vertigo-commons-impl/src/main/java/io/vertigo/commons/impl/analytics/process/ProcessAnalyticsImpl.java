@@ -46,10 +46,6 @@ public class ProcessAnalyticsImpl {
 		return doGetCurrentTracer().map(a -> a); // convert impl to api
 	}
 
-	public void removeTracer() {
-		THREAD_LOCAL_PROCESS.get().pop();
-	}
-
 	private static Optional<ProcessAnalyticsTracerImpl> doGetCurrentTracer() {
 		if (THREAD_LOCAL_PROCESS.get() == null || THREAD_LOCAL_PROCESS.get().isEmpty()) {
 			return Optional.empty();
@@ -67,9 +63,17 @@ public class ProcessAnalyticsImpl {
 		THREAD_LOCAL_PROCESS.get().push(analyticstracer);
 	}
 
-	private static ProcessAnalyticsTracerImpl createTracer(final String category, final String name, final Consumer<AProcess> onCloseConsumer) {
-		final Optional<ProcessAnalyticsTracerImpl> parent = doGetCurrentTracer();
-		final ProcessAnalyticsTracerImpl analyticsTracer = new ProcessAnalyticsTracerImpl(parent, category, name, onCloseConsumer);
+	private Optional<ProcessAnalyticsTracerImpl> removeCurrentAndGetParentTracer() {
+		THREAD_LOCAL_PROCESS.get().pop();
+		final Optional<ProcessAnalyticsTracerImpl> parentOpt = doGetCurrentTracer();
+		if (!parentOpt.isPresent()) {
+			THREAD_LOCAL_PROCESS.remove();
+		}
+		return parentOpt;
+	}
+
+	private ProcessAnalyticsTracerImpl createTracer(final String category, final String name, final Consumer<AProcess> onCloseConsumer) {
+		final ProcessAnalyticsTracerImpl analyticsTracer = new ProcessAnalyticsTracerImpl(category, name, onCloseConsumer, this::removeCurrentAndGetParentTracer);
 		push(analyticsTracer);
 		return analyticsTracer;
 	}
