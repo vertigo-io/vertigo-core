@@ -46,10 +46,21 @@ public final class Contact implements Entity {
 	@Field(domain = "DO_EMAIL", label = "Email")
 	private String email;
 
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", label = "AdrId")
-	private Long adrId;
-
 	private List<String> tels;
+
+	@io.vertigo.dynamo.domain.stereotype.Association(
+			name = "A_CON_ADR",
+			fkFieldName = "ADR_ID",
+			primaryDtDefinitionName = "DT_ADDRESS",
+			primaryIsNavigable = true,
+			primaryRole = "Address",
+			primaryLabel = "Address",
+			primaryMultiplicity = "1..1",
+			foreignDtDefinitionName = "DT_CONTACT",
+			foreignIsNavigable = false,
+			foreignRole = "Contact",
+			foreignLabel = "Contact",
+			foreignMultiplicity = "0..*")
 	private final VAccessor<Address> adrIdAccessor = new VAccessor<>(Address.class, "address");
 
 	/** {@inheritDoc} */
@@ -114,12 +125,13 @@ public final class Contact implements Entity {
 		adrIdAccessor.set(address);
 	}
 
+	@Field(domain = "DO_ID", type = "FOREIGN_KEY", label = "AdrId")
 	public Long getAdrId() {
-		return adrId;
+		return (Long) adrIdAccessor.getId();
 	}
 
 	public void setAdrId(final Long adrId) {
-		this.adrId = adrId;
+		adrIdAccessor.setId(adrId);
 	}
 
 	public List<String> getTels() {

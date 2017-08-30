@@ -125,10 +125,13 @@ public final class VAccessor<E extends Entity> implements Serializable {
 	public void setId(final Serializable id) {
 		//id final may be null
 		//---
-		targetURI = id == null ? null : new URI(targetDtDefinitionRef.get(), id);
-		//we have to reset the value and the state
-		value = null;
-		status = State.NOT_LOADED;
+		//If already loaded and same id, we don't touch anything
+		if (!(status == State.LOADED && targetURI.getId().equals(id))) {
+			targetURI = id == null ? null : new URI(targetDtDefinitionRef.get(), id);
+			//we have to reset the value and the state
+			value = null;
+			status = State.NOT_LOADED;
+		}
 	}
 
 	/**
