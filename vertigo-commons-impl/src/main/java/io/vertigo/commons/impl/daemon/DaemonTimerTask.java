@@ -18,6 +18,8 @@
  */
 package io.vertigo.commons.impl.daemon;
 
+import java.lang.reflect.Field;
+
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.lang.Assertion;
 
@@ -47,6 +49,18 @@ final class DaemonTimerTask implements Runnable {
 			daemonListener.onSuccess();
 		} catch (final Exception e) {
 			daemonListener.onFailure(e);
+		} finally {
+			clearAllThreadLocals();
+		}
+	}
+
+	private static void clearAllThreadLocals() {
+		try {
+			final Field threadLocals = Thread.class.getDeclaredField("threadLocals");
+			threadLocals.setAccessible(true);
+			threadLocals.set(Thread.currentThread(), null);
+		} catch (final Exception e) {
+			throw new AssertionError(e);
 		}
 	}
 }
