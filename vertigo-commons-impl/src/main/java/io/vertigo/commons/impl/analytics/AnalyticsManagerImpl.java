@@ -114,9 +114,6 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 	private void onClose(final AProcess process) {
 		Assertion.checkNotNull(process);
 		//---
-		//1.
-		processAnalyticsImpl.removeTracer();
-		//2.
 		processConnectorPlugins.forEach(
 				processConnectorPlugin -> processConnectorPlugin.add(process));
 	}
