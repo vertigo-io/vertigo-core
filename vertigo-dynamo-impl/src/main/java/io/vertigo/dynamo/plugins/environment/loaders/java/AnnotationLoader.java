@@ -178,6 +178,7 @@ public final class AnnotationLoader implements Loader {
 		for (final Field field : fields) {
 			//On regarde si il s'agit d'un champ
 			parseFieldAnnotations(field, dtDefinitionBuilder);
+			parseAssociationDefinition(dynamicModelRepository, field, packageName);
 		}
 
 		final Method[] methods = clazz.getMethods();
@@ -213,67 +214,77 @@ public final class AnnotationLoader implements Loader {
 		return DtStereotype.ValueObject;
 	}
 
+	private static void parseAssociationDefinition(final DslDefinitionRepository dynamicModelRepository, final Field field, final String packageName) {
+		for (final Annotation annotation : field.getAnnotations()) {
+			parseAssociationDefinition(dynamicModelRepository, annotation, packageName);
+		}
+	}
+
 	private static void parseAssociationDefinition(final DslDefinitionRepository dynamicModelRepository, final Method method, final String packageName) {
 		for (final Annotation annotation : method.getAnnotations()) {
-			if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Association) {
-				final io.vertigo.dynamo.domain.stereotype.Association association = (io.vertigo.dynamo.domain.stereotype.Association) annotation;
-				//============================================================
-				//Attention pamc inverse dans oom les déclarations des objets !!
+			parseAssociationDefinition(dynamicModelRepository, annotation, packageName);
+		}
+	}
 
-				final DslDefinition associationDefinition = DslDefinition.builder(association.name(), DomainGrammar.ASSOCIATION_ENTITY)
-						.withPackageName(packageName)
-						// associationDefinition.
-						//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
-						.addPropertyValue(MULTIPLICITY_A, association.primaryMultiplicity())
-						.addPropertyValue(MULTIPLICITY_B, association.foreignMultiplicity())
-						// navigabilités
-						.addPropertyValue(NAVIGABILITY_A, association.primaryIsNavigable())
-						.addPropertyValue(NAVIGABILITY_B, association.foreignIsNavigable())
-						//Roles
-						.addPropertyValue(ROLE_A, association.primaryRole())
-						.addPropertyValue(LABEL_A, association.primaryLabel())
-						.addPropertyValue(ROLE_B, association.foreignRole())
-						.addPropertyValue(LABEL_B, association.foreignRole())
-						//---
-						.addDefinitionLink("dtDefinitionA", association.primaryDtDefinitionName())
-						.addDefinitionLink("dtDefinitionB", association.foreignDtDefinitionName())
-						//---
-						.addPropertyValue(FK_FIELD_NAME, association.fkFieldName())
-						.build();
+	private static void parseAssociationDefinition(final DslDefinitionRepository dynamicModelRepository, final Annotation annotation, final String packageName) {
+		if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Association) {
+			final io.vertigo.dynamo.domain.stereotype.Association association = (io.vertigo.dynamo.domain.stereotype.Association) annotation;
+			//============================================================
+			//Attention pamc inverse dans oom les déclarations des objets !!
 
-				if (!dynamicModelRepository.containsDefinitionName(associationDefinition.getName())) {
-					//Les associations peuvent être déclarées sur les deux noeuds de l'association.
-					dynamicModelRepository.addDefinition(associationDefinition);
-				}
-			} else if (annotation instanceof io.vertigo.dynamo.domain.stereotype.AssociationNN) {
-				final io.vertigo.dynamo.domain.stereotype.AssociationNN association = (io.vertigo.dynamo.domain.stereotype.AssociationNN) annotation;
-				//============================================================
+			final DslDefinition associationDefinition = DslDefinition.builder(association.name(), DomainGrammar.ASSOCIATION_ENTITY)
+					.withPackageName(packageName)
+					// associationDefinition.
+					//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
+					.addPropertyValue(MULTIPLICITY_A, association.primaryMultiplicity())
+					.addPropertyValue(MULTIPLICITY_B, association.foreignMultiplicity())
+					// navigabilités
+					.addPropertyValue(NAVIGABILITY_A, association.primaryIsNavigable())
+					.addPropertyValue(NAVIGABILITY_B, association.foreignIsNavigable())
+					//Roles
+					.addPropertyValue(ROLE_A, association.primaryRole())
+					.addPropertyValue(LABEL_A, association.primaryLabel())
+					.addPropertyValue(ROLE_B, association.foreignRole())
+					.addPropertyValue(LABEL_B, association.foreignRole())
+					//---
+					.addDefinitionLink("dtDefinitionA", association.primaryDtDefinitionName())
+					.addDefinitionLink("dtDefinitionB", association.foreignDtDefinitionName())
+					//---
+					.addPropertyValue(FK_FIELD_NAME, association.fkFieldName())
+					.build();
 
-				//Attention pamc inverse dans oom les déclarations des objets !!
-				final DslDefinition associationDefinition = DslDefinition.builder(association.name(), DomainGrammar.ASSOCIATION_NN_ENTITY)
-						.withPackageName(packageName)
-						.addPropertyValue(TABLE_NAME, association.tableName())
+			if (!dynamicModelRepository.containsDefinitionName(associationDefinition.getName())) {
+				//Les associations peuvent être déclarées sur les deux noeuds de l'association.
+				dynamicModelRepository.addDefinition(associationDefinition);
+			}
+		} else if (annotation instanceof io.vertigo.dynamo.domain.stereotype.AssociationNN) {
+			final io.vertigo.dynamo.domain.stereotype.AssociationNN association = (io.vertigo.dynamo.domain.stereotype.AssociationNN) annotation;
+			//============================================================
 
-						// associationDefinition.
-						//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
+			//Attention pamc inverse dans oom les déclarations des objets !!
+			final DslDefinition associationDefinition = DslDefinition.builder(association.name(), DomainGrammar.ASSOCIATION_NN_ENTITY)
+					.withPackageName(packageName)
+					.addPropertyValue(TABLE_NAME, association.tableName())
 
-						// navigabilités
-						.addPropertyValue(NAVIGABILITY_A, association.navigabilityA())
-						.addPropertyValue(NAVIGABILITY_B, association.navigabilityB())
+					// associationDefinition.
+					//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
 
-						.addPropertyValue(ROLE_A, association.roleA())
-						.addPropertyValue(LABEL_A, association.labelA())
-						.addPropertyValue(ROLE_B, association.roleB())
-						.addPropertyValue(LABEL_B, association.labelB())
+					// navigabilités
+					.addPropertyValue(NAVIGABILITY_A, association.navigabilityA())
+					.addPropertyValue(NAVIGABILITY_B, association.navigabilityB())
 
-						.addDefinitionLink("dtDefinitionA", association.dtDefinitionA())
-						.addDefinitionLink("dtDefinitionB", association.dtDefinitionB())
-						.build();
+					.addPropertyValue(ROLE_A, association.roleA())
+					.addPropertyValue(LABEL_A, association.labelA())
+					.addPropertyValue(ROLE_B, association.roleB())
+					.addPropertyValue(LABEL_B, association.labelB())
 
-				if (!dynamicModelRepository.containsDefinitionName(associationDefinition.getName())) {
-					//Les associations peuvent être déclarées sur les deux noeuds de l'association.
-					dynamicModelRepository.addDefinition(associationDefinition);
-				}
+					.addDefinitionLink("dtDefinitionA", association.dtDefinitionA())
+					.addDefinitionLink("dtDefinitionB", association.dtDefinitionB())
+					.build();
+
+			if (!dynamicModelRepository.containsDefinitionName(associationDefinition.getName())) {
+				//Les associations peuvent être déclarées sur les deux noeuds de l'association.
+				dynamicModelRepository.addDefinition(associationDefinition);
 			}
 		}
 	}
