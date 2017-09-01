@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import io.vertigo.account.AccountFeatures;
-import io.vertigo.account.plugins.identity.memory.MemoryAccountStorePlugin;
+import io.vertigo.account.plugins.identity.cache.memory.MemoryAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;

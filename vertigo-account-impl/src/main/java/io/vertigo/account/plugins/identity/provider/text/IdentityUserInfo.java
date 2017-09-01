@@ -16,26 +16,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.plugins.identity.text;
+package io.vertigo.account.plugins.identity.provider.text;
 
-import io.vertigo.account.identity.Account;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.lang.Assertion;
 
-final class IdentityAccountInfo {
+final class IdentityUserInfo {
 
-	private final Account account;
+	private final Entity user;
 	private final String photoUrl;
 
-	IdentityAccountInfo(final Account account, final String photoUrl) {
-		Assertion.checkNotNull(account);
+	IdentityUserInfo(final Entity user, final String photoUrl) {
+		Assertion.checkNotNull(user);
 		Assertion.checkNotNull(photoUrl);
 		//-----
-		this.account = account;
+		this.user = user;
 		this.photoUrl = photoUrl;
 	}
 
-	Account getAccount() {
-		return account;
+	Entity getUser() {
+		return user;
 	}
 
 	String getPhotoUrl() {

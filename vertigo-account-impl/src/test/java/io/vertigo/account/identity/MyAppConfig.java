@@ -22,9 +22,11 @@ import java.util.Optional;
 
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.data.TestUserSession;
-import io.vertigo.account.plugins.identity.memory.MemoryAccountStorePlugin;
+import io.vertigo.account.plugins.identity.cache.memory.MemoryAccountCachePlugin;
+import io.vertigo.account.plugins.identity.store.text.TextAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
 
@@ -40,10 +42,16 @@ public final class MyAppConfig {
 
 		if (redis) {
 			commonsFeatures.withRedisConnector(REDIS_HOST, REDIS_PORT, REDIS_DATABASE, Optional.empty());
-			accountFeatures.withRedisAccountStorePlugin();
+			accountFeatures.withRedisAccountCachePlugin();
 		} else {
 			//else we use memory
-			accountFeatures.withAccountStorePlugin(MemoryAccountStorePlugin.class);
+			accountFeatures
+					.withAccountCachePlugin(MemoryAccountCachePlugin.class)
+					.withAccountStorePlugin(TextAccountStorePlugin.class,
+							Param.of("accountFilePath", "file:/io/vertigo/account/data/identities.txt"),
+							Param.of("accountFilePattern", "^(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<email>(?<authToken>[^\\s;@]+)@[^\\s;]+);(?<photoUrl>)$"),
+							Param.of("groupFilePath", "file:/io/vertigo/account/data/groups.txt"),
+							Param.of("groupFilePattern", "^(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>.*)$"));
 		}
 		return AppConfig.builder()
 				.beginBoot()

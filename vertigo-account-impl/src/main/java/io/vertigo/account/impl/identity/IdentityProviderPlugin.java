@@ -18,68 +18,44 @@
  */
 package io.vertigo.account.impl.identity;
 
+import java.util.Collection;
 import java.util.Optional;
-import java.util.Set;
 
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.AccountGroup;
 import io.vertigo.core.component.Plugin;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.model.VFile;
 
 /**
- * @author pchretien
+ * @author pchretien, npiedeloup
  */
-public interface AccountStorePlugin extends Plugin {
-
+public interface IdentityProviderPlugin extends Plugin {
 	/**
 	 * @return the number of accounts
 	 */
-	long getAccountsCount();
+	long getUsersCount();
 
 	/**
-	 * @param accountURI the account defined by its URI
-	 * @return the account
+	 * @return all users
+	 * @param <E> project's User entity type
 	 */
-	Account getAccount(URI<Account> accountURI);
-
-	/**
-	 * @param accountURI the account defined by its URI
-	 * @return Set of groups of this account
-	 */
-	Set<URI<AccountGroup>> getGroupURIs(URI<Account> accountURI);
-
-	/**
-	 * @return the number of groups.
-	 */
-	long getGroupsCount();
-
-	/**
-	 * Gets the group defined by an URI.
-	 * @param groupURI the group URI
-	 * @return the group
-	 */
-	AccountGroup getGroup(URI<AccountGroup> groupURI);
-
-	/**
-	 * Lists the accounts for a defined group.
-	 * @param groupURI the group URI
-	 * @return the list of acccounts.
-	 */
-	Set<URI<Account>> getAccountURIs(URI<AccountGroup> groupURI);
+	<E extends Entity> Collection<E> getAllUsers();
 
 	/**
 	 * Gets the photo of an account defined by its URI.
 	 *
 	 * @param accountURI the account defined by its URI
 	 * @return the photo as a file
+	 * @param <E> project's User entity type
 	 */
-	Optional<VFile> getPhoto(URI<Account> accountURI);
+	<E extends Entity> Optional<VFile> getPhoto(URI<E> accountURI);
 
 	/**
 	 * Get an newly authentify user by his authToken.
 	 * @param userAuthToken user authToken
 	 * @return Logged account
+	 * @param <E> project's User entity type
 	 */
-	Optional<Account> getAccountByAuthToken(String userAuthToken);
+	<E extends Entity> E getUserByAuthToken(String userAuthToken);
+
 }

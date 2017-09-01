@@ -23,7 +23,7 @@ import java.util.Optional;
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.plugins.authentication.ldap.LdapAuthenticatingRealmPlugin;
-import io.vertigo.account.plugins.identity.memory.MemoryAccountStorePlugin;
+import io.vertigo.account.plugins.identity.store.text.TextAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.core.param.Param;
@@ -44,10 +44,14 @@ public final class MyAppConfig {
 			commonsFeatures
 					.withRedisConnector(REDIS_HOST, REDIS_PORT, REDIS_DATABASE, Optional.empty());
 			accountFeatures
-					.withRedisAccountStorePlugin();
+					.withRedisAccountCachePlugin();
 		} else {
 			accountFeatures
-					.withAccountStorePlugin(MemoryAccountStorePlugin.class)
+					.withAccountStorePlugin(TextAccountStorePlugin.class,
+							Param.of("accountFilePath", "file:/io/vertigo/account/data/identities.txt"),
+							Param.of("accountFilePattern", "^(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<email>(?<authToken>[^\\s;@]+)@[^\\s;]+);(?<photoUrl>)$"),
+							Param.of("groupFilePath", "file:/io/vertigo/account/data/groups.txt"),
+							Param.of("groupFilePattern", "^(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>.*)$"))
 					.withAuthentificationRealm(LdapAuthenticatingRealmPlugin.class,
 							Param.of("userLoginTemplate", "cn={0},dc=vertigo,dc=io"),
 							Param.of("ldapServerHost", "docker-vertigo.part.klee.lan.net"),

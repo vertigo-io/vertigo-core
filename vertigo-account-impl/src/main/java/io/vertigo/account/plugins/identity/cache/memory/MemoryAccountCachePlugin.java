@@ -16,20 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.plugins.identity.memory;
+package io.vertigo.account.plugins.identity.cache.memory;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import io.vertigo.account.identity.Account;
 import io.vertigo.account.identity.AccountGroup;
-import io.vertigo.account.impl.identity.AccountStorePlugin;
+import io.vertigo.account.impl.identity.AccountCachePlugin;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -39,7 +37,7 @@ import io.vertigo.lang.Assertion;
 /**
  * @author pchretien
  */
-public final class MemoryAccountStorePlugin implements AccountStorePlugin {
+public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 	private final Map<URI<Account>, Account> accountByURI = new HashMap<>();
 	private final Map<String, URI<Account>> accountURIByAuthToken = new HashMap<>();
 	private final Map<URI<AccountGroup>, AccountGroup> groupByURI = new HashMap<>();
@@ -63,25 +61,15 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized Account getAccount(final URI<Account> accountURI) {
+	public synchronized Optional<Account> getAccount(final URI<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
 		//-----
-		final Account account = accountByURI.get(accountURI);
-		Assertion.checkNotNull(account);
-		return account;
+		return Optional.ofNullable(accountByURI.get(accountURI));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized void saveAccounts(final List<Account> accounts) {
-		Assertion.checkNotNull(accounts);
-		//-----
-		for (final Account account : accounts) {
-			saveAccount(account);
-		}
-	}
-
-	private void saveAccount(final Account account) {
+	public synchronized void putAccount(final Account account) {
 		Assertion.checkNotNull(account);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(account);
@@ -97,23 +85,15 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 	//-----
 	/** {@inheritDoc} */
 	@Override
-	public synchronized AccountGroup getGroup(final URI<AccountGroup> groupURI) {
+	public synchronized Optional<AccountGroup> getGroup(final URI<AccountGroup> groupURI) {
 		Assertion.checkNotNull(groupURI);
 		//-----
-		final AccountGroup accountGroup = groupByURI.get(groupURI);
-		Assertion.checkNotNull(accountGroup);
-		return accountGroup;
+		return Optional.ofNullable(groupByURI.get(groupURI));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized Collection<AccountGroup> getAllGroups() {
-		return groupByURI.values();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public synchronized void saveGroup(final AccountGroup group) {
+	public synchronized void putGroup(final AccountGroup group) {
 		Assertion.checkNotNull(group);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(group);
@@ -128,7 +108,21 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 	//-----
 	/** {@inheritDoc} */
 	@Override
-	public synchronized void attach(final URI<Account> accountURI, final URI<AccountGroup> groupURI) {
+	public synchronized void attach(final Set<URI<Account>> accountsURI, final URI<AccountGroup> groupURI) {
+		Assertion.checkNotNull(accountsURI);
+		Assertion.checkNotNull(groupURI);
+		//-----
+		accountsURI.forEach(accountURI -> this.attach(accountURI, groupURI));
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public synchronized void attach(final URI<Account> accountURI, final Set<URI<AccountGroup>> groupURIs) {
+		//-----
+		groupURIs.forEach(groupURI -> this.attach(accountURI, groupURI));
+	}
+
+	private synchronized void attach(final URI<Account> accountURI, final URI<AccountGroup> groupURI) {
 		Assertion.checkNotNull(accountURI);
 		Assertion.checkNotNull(groupURI);
 		//-----
@@ -193,8 +187,9 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 	public Optional<Account> getAccountByAuthToken(final String userAuthToken) {
 		final URI<Account> accountURI = accountURIByAuthToken.get(userAuthToken);
 		if (accountURI != null) {
-			return Optional.of(getAccount(accountURI));
+			return getAccount(accountURI);
 		}
 		return Optional.empty();
 	}
+
 }

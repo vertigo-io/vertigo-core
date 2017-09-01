@@ -34,11 +34,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import io.vertigo.account.data.Identities;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.persona.security.UserSession;
@@ -84,6 +84,14 @@ public final class IdentityManagerTest {
 		this.redis = redis;
 	}
 
+	private static URI<Account> createAccountURI(final String id) {
+		return DtObjectUtil.createURI(Account.class, id);
+	}
+
+	private static URI<AccountGroup> createGroupURI(final String id) {
+		return DtObjectUtil.createURI(AccountGroup.class, id);
+	}
+
 	@Before
 	public void setUp() {
 		app = new AutoCloseableApp(MyAppConfig.config(redis));
@@ -96,13 +104,11 @@ public final class IdentityManagerTest {
 			}
 		}
 
-		accountURI0 = Identities.createAccountURI("0");
-		accountURI1 = Identities.createAccountURI("1");
-		accountURI2 = Identities.createAccountURI("2");
-		groupURI = Identities.createGroupURI("100");
-		groupAllURI = Identities.createGroupURI("ALL");
-
-		Identities.initData(identityManager);
+		accountURI0 = createAccountURI("0");
+		accountURI1 = createAccountURI("1");
+		accountURI2 = createAccountURI("2");
+		groupURI = createGroupURI("100");
+		groupAllURI = createGroupURI("ALL");
 	}
 
 	@After
@@ -129,39 +135,39 @@ public final class IdentityManagerTest {
 
 	@Test
 	public void testAccounts() {
-		Assert.assertEquals("Palmer Luckey", identityManager.getStore().getAccount(accountURI1).getDisplayName());
-		Assert.assertEquals(10 + 4, identityManager.getStore().getAccountsCount());
+		Assert.assertEquals("Palmer Luckey", identityManager.getAccount(accountURI1).getDisplayName());
+		//Assert.assertEquals(10 + 4, identityManager.getAccountsCount());
 	}
 
 	@Test
 	public void testPhoto() throws URISyntaxException {
 		//Before the photo is the default photo
-		Assert.assertFalse(identityManager.getStore().getPhoto(accountURI0).isPresent());
+		Assert.assertFalse(identityManager.getPhoto(accountURI0).isPresent());
 		Assert.assertEquals("defaultPhoto.png", identityManager.getDefaultPhoto().getFileName());
 		//-----
 		final VFile photo = fileManager.createFile(new File(this.getClass().getResource("../data/marianne.png").toURI()));
-		identityManager.getStore().setPhoto(accountURI0, photo);
+		//identityManager.setPhoto(accountURI0, photo);
 		//-----
-		Assert.assertTrue(identityManager.getStore().getPhoto(accountURI0).isPresent());
-		Assert.assertEquals("marianne.png", identityManager.getStore().getPhoto(accountURI0).get().getFileName());
+		Assert.assertTrue(identityManager.getPhoto(accountURI0).isPresent());
+		Assert.assertEquals("marianne.png", identityManager.getPhoto(accountURI0).get().getFileName());
 	}
 
 	@Test
 	public void testGroups() {
-		Assert.assertEquals(2, identityManager.getStore().getGroupsCount());
+		//Assert.assertEquals(2, identityManager.getGroupsCount());
 		//----
-		Assert.assertEquals(1, identityManager.getStore().getGroupURIs(accountURI0).size());
-		Assert.assertEquals(2, identityManager.getStore().getGroupURIs(accountURI1).size());
-		Assert.assertEquals(2, identityManager.getStore().getGroupURIs(accountURI2).size());
-		Assert.assertEquals(2, identityManager.getStore().getAccountURIs(groupURI).size());
-		Assert.assertEquals(10 + 3, identityManager.getStore().getAccountURIs(groupAllURI).size());
+		Assert.assertEquals(1, identityManager.getGroupURIs(accountURI0).size());
+		Assert.assertEquals(2, identityManager.getGroupURIs(accountURI1).size());
+		Assert.assertEquals(2, identityManager.getGroupURIs(accountURI2).size());
+		Assert.assertEquals(2, identityManager.getAccountURIs(groupURI).size());
+		Assert.assertEquals(10 + 3, identityManager.getAccountURIs(groupAllURI).size());
 		//---
-		identityManager.getStore().attach(accountURI0, groupURI);
-		Assert.assertEquals(2, identityManager.getStore().getGroupURIs(accountURI0).size());
-		Assert.assertEquals(2, identityManager.getStore().getGroupURIs(accountURI1).size());
-		Assert.assertEquals(2, identityManager.getStore().getGroupURIs(accountURI2).size());
-		Assert.assertEquals(3, identityManager.getStore().getAccountURIs(groupURI).size());
-		Assert.assertEquals(10 + 3, identityManager.getStore().getAccountURIs(groupAllURI).size());
+		/*identityManager.attach(accountURI0, groupURI);
+		Assert.assertEquals(2, identityManager.getGroupURIs(accountURI0).size());
+		Assert.assertEquals(2, identityManager.getGroupURIs(accountURI1).size());
+		Assert.assertEquals(2, identityManager.getGroupURIs(accountURI2).size());
+		Assert.assertEquals(3, identityManager.getAccountURIs(groupURI).size());
+		Assert.assertEquals(10 + 3, identityManager.getAccountURIs(groupAllURI).size());*/
 	}
 
 }

@@ -29,7 +29,6 @@ import org.junit.Test;
 
 import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.authentication.AuthenticationToken;
-import io.vertigo.account.data.Identities;
 import io.vertigo.account.identity.Account;
 import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
@@ -60,7 +59,6 @@ public final class AuthenticationManagerTest {
 		app = new AutoCloseableApp(MyAppConfig.config(false));
 		DIInjector.injectMembers(this, app.getComponentSpace());
 		securityManager.startCurrentUserSession(securityManager.createUserSession());
-		Identities.initData(identityManager);
 	}
 
 	@After

@@ -16,13 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.plugins.identity.redis;
+package io.vertigo.account.plugins.identity.cache.redis;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -31,7 +28,7 @@ import javax.inject.Inject;
 
 import io.vertigo.account.identity.Account;
 import io.vertigo.account.identity.AccountGroup;
-import io.vertigo.account.impl.identity.AccountStorePlugin;
+import io.vertigo.account.impl.identity.AccountCachePlugin;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -42,13 +39,12 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.MapBuilder;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
 
 /**
  * @author pchretien
  */
-public final class RedisAccountStorePlugin implements AccountStorePlugin {
+public final class RedisAccountCachePlugin implements AccountCachePlugin {
 	private static final String HPHOTO_BY_ACCOUNT_START_KEY = "photoByAccount:";
 	private static final String HGROUP_START_KEY = "group:";
 	private static final String HACCOUNT_START_KEY = "account:";
@@ -68,7 +64,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 	 * @param codecManager Codec manager
 	 */
 	@Inject
-	public RedisAccountStorePlugin(final RedisConnector redisConnector, final CodecManager codecManager) {
+	public RedisAccountCachePlugin(final RedisConnector redisConnector, final CodecManager codecManager) {
 		Assertion.checkNotNull(redisConnector);
 		Assertion.checkNotNull(codecManager);
 		//-----
@@ -78,16 +74,14 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void saveAccounts(final List<Account> accounts) {
-		Assertion.checkNotNull(accounts);
+	public void putAccount(final Account account) {
+		Assertion.checkNotNull(account);
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
 			try (final Transaction tx = jedis.multi()) {
-				for (final Account account : accounts) {
-					tx.hmset(HACCOUNT_START_KEY + account.getId(), account2Map(account));
-					tx.hset(HAUTHTOKEN_INDEX_KEY, account.getAuthToken(), account.getId());
-					tx.sadd(SACCOUNTS_KEY, account.getId());
-				}
+				tx.hmset(HACCOUNT_START_KEY + account.getId(), account2Map(account));
+				tx.hset(HAUTHTOKEN_INDEX_KEY, account.getAuthToken(), account.getId());
+				tx.sadd(SACCOUNTS_KEY, account.getId());
 				tx.exec();
 			} catch (final IOException ex) {
 				throw WrappedException.wrap(ex);
@@ -113,17 +107,21 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Account getAccount(final URI<Account> accountURI) {
+	public Optional<Account> getAccount(final URI<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
-			return map2Account(jedis.hgetAll(HACCOUNT_START_KEY + accountURI.getId()));
+			final String key = HACCOUNT_START_KEY + accountURI.getId();
+			if (jedis.exists(key)) {
+				return Optional.of(map2Account(jedis.hgetAll(key)));
+			}
+			return Optional.empty();
 		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void saveGroup(final AccountGroup group) {
+	public void putGroup(final AccountGroup group) {
 		Assertion.checkNotNull(group);
 		//-----
 		//----
@@ -141,15 +139,19 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public AccountGroup getGroup(final URI<AccountGroup> groupURI) {
+	public Optional<AccountGroup> getGroup(final URI<AccountGroup> groupURI) {
 		Assertion.checkNotNull(groupURI);
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
-			return map2Group(jedis.hgetAll(HGROUP_START_KEY + groupURI.getId()));
+			final String key = HGROUP_START_KEY + groupURI.getId();
+			if (jedis.exists(key)) {
+				return Optional.of(map2Group(jedis.hgetAll(key)));
+			}
+			return Optional.empty();
 		}
 	}
 
-	/** {@inheritDoc} */
+	/*
 	@Override
 	public Collection<AccountGroup> getAllGroups() {
 		final List<Response<Map<String, String>>> responses = new ArrayList<>();
@@ -163,7 +165,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 			} catch (final IOException ex) {
 				throw WrappedException.wrap(ex);
 			}
-
+	
 		}
 		//----- we are using tx to avoid roundtrips
 		final List<AccountGroup> groups = new ArrayList<>();
@@ -174,18 +176,40 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 			}
 		}
 		return groups;
-	}
+	}*/
 
 	/** {@inheritDoc} */
 	@Override
-	public void attach(final URI<Account> accountURI, final URI<AccountGroup> groupURI) {
-		Assertion.checkNotNull(accountURI);
+	public void attach(final Set<URI<Account>> accountsURI, final URI<AccountGroup> groupURI) {
+		Assertion.checkNotNull(accountsURI);
 		Assertion.checkNotNull(groupURI);
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
 			try (final Transaction tx = jedis.multi()) {
-				tx.sadd(SACCOUNTS_BY_GROUP_START_KEY + groupURI.getId(), accountURI.getId().toString());
-				tx.sadd(SGROUPS_BY_ACCOUNT_START_KEY + accountURI.getId(), groupURI.getId().toString());
+				for (final URI<Account> accountURI : accountsURI) {
+					tx.sadd(SACCOUNTS_BY_GROUP_START_KEY + groupURI.getId(), accountURI.getId().toString());
+					tx.sadd(SGROUPS_BY_ACCOUNT_START_KEY + accountURI.getId(), groupURI.getId().toString());
+				}
+				tx.exec();
+			} catch (final IOException ex) {
+				throw WrappedException.wrap(ex);
+			}
+
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void attach(final URI<Account> accountURI, final Set<URI<AccountGroup>> groupURIs) {
+		Assertion.checkNotNull(accountURI);
+		Assertion.checkNotNull(groupURIs);
+		//-----
+		try (final Jedis jedis = redisConnector.getResource()) {
+			try (final Transaction tx = jedis.multi()) {
+				for (final URI<AccountGroup> groupURI : groupURIs) {
+					tx.sadd(SACCOUNTS_BY_GROUP_START_KEY + groupURI.getId(), accountURI.getId().toString());
+					tx.sadd(SGROUPS_BY_ACCOUNT_START_KEY + accountURI.getId(), groupURI.getId().toString());
+				}
 				tx.exec();
 			} catch (final IOException ex) {
 				throw WrappedException.wrap(ex);

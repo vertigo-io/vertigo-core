@@ -22,11 +22,12 @@ import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.account.impl.authentication.AuthenticationManagerImpl;
 import io.vertigo.account.impl.authentication.AuthenticationRealmPlugin;
+import io.vertigo.account.impl.identity.AccountCachePlugin;
 import io.vertigo.account.impl.identity.AccountDefinitionProvider;
 import io.vertigo.account.impl.identity.AccountStorePlugin;
 import io.vertigo.account.impl.identity.IdentityManagerImpl;
 import io.vertigo.account.impl.security.VSecurityManagerImpl;
-import io.vertigo.account.plugins.identity.redis.RedisAccountStorePlugin;
+import io.vertigo.account.plugins.identity.cache.redis.RedisAccountCachePlugin;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.persona.security.UserSession;
@@ -61,8 +62,8 @@ public final class AccountFeatures extends Features {
 	 * Defines REDIS as the database to store the accounts
 	 * @return the features
 	 */
-	public AccountFeatures withRedisAccountStorePlugin() {
-		return withAccountStorePlugin(RedisAccountStorePlugin.class);
+	public AccountFeatures withRedisAccountCachePlugin() {
+		return withAccountCachePlugin(RedisAccountCachePlugin.class);
 	}
 
 	/**
@@ -78,13 +79,13 @@ public final class AccountFeatures extends Features {
 	}
 
 	/**
-	 * @param accountStorePluginClass
+	 * @param accountCachePluginClass
 	 * @param params
 	 * @return the features
 	 */
-	public AccountFeatures withAccountStorePlugin(final Class<? extends AccountStorePlugin> accountStorePluginClass, final Param... params) {
+	public AccountFeatures withAccountCachePlugin(final Class<? extends AccountCachePlugin> accountCachePluginClass, final Param... params) {
 		getModuleConfigBuilder()
-				.addPlugin(accountStorePluginClass, params);
+				.addPlugin(accountCachePluginClass, params);
 		return this;
 	}
 
@@ -96,6 +97,17 @@ public final class AccountFeatures extends Features {
 				.addComponent(AuthenticationManager.class, AuthenticationManagerImpl.class)
 				.addComponent(IdentityManager.class, IdentityManagerImpl.class);
 
+	}
+
+	/**
+	 * @param accountStorePluginClass
+	 * @param params
+	 * @return the features
+	 */
+	public AccountFeatures withAccountStorePlugin(final Class<? extends AccountStorePlugin> accountStorePluginClass, final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(accountStorePluginClass, params);
+		return this;
 	}
 
 }

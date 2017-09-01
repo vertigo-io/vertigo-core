@@ -16,21 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.identity;
+package io.vertigo.account.impl.identity;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import io.vertigo.account.identity.Account;
+import io.vertigo.account.identity.AccountGroup;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.model.VFile;
 
 /**
- * This class defines the storage of accounts
  * @author pchretien
  */
-public interface AccountStore {
+public interface AccountCachePlugin extends Plugin {
 
 	/**
 	 * @return the number of accounts
@@ -41,7 +41,7 @@ public interface AccountStore {
 	 * @param accountURI the account defined by its URI
 	 * @return the account
 	 */
-	Account getAccount(URI<Account> accountURI);
+	Optional<Account> getAccount(URI<Account> accountURI);
 
 	/**
 	 * @param accountURI the account defined by its URI
@@ -55,17 +55,11 @@ public interface AccountStore {
 	long getGroupsCount();
 
 	/**
-	 * Lists all the groups.
-	 * @return all the groups.
-	 */
-	Collection<AccountGroup> getAllGroups();
-
-	/**
 	 * Gets the group defined by an URI.
 	 * @param groupURI the group URI
 	 * @return the group
 	 */
-	AccountGroup getGroup(URI<AccountGroup> groupURI);
+	Optional<AccountGroup> getGroup(URI<AccountGroup> groupURI);
 
 	/**
 	 * Lists the accounts for a defined group.
@@ -83,24 +77,31 @@ public interface AccountStore {
 	Optional<VFile> getPhoto(URI<Account> accountURI);
 
 	/**
-	 * Saves a collection of accounts.
+	 * Saves an account.
 	 * Caution : all the accounts must have an id.
-	 * @param accounts the list of accounts
+	 * @param account account
 	 */
-	void saveAccounts(List<Account> accounts);
+	void putAccount(Account account);
 
 	/**
 	 * Saves a group.
 	 * @param group the group
 	 */
-	void saveGroup(AccountGroup group);
+	void putGroup(AccountGroup group);
 
 	/**
 	 * Attaches an account to a group.
 	 * @param accountURI the account defined by its URI
 	 * @param groupURI the group
 	 */
-	void attach(URI<Account> accountURI, URI<AccountGroup> groupURI);
+	void attach(URI<Account> accountURI, Set<URI<AccountGroup>> groupURI);
+
+	/**
+	 * Attaches an account to a group.
+	 * @param accountsURI the accounts defined by their URI
+	 * @param groupURI the group
+	 */
+	void attach(Set<URI<Account>> accountsURI, URI<AccountGroup> groupURI);
 
 	/**
 	 * Reset:

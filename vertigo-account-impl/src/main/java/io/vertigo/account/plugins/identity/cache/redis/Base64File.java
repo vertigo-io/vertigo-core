@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.plugins.identity.redis;
+package io.vertigo.account.plugins.identity.cache.redis;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

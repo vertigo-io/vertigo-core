@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.plugins.identity.ldap;
+package io.vertigo.account.plugins.identity.provider.ldap;
 
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
@@ -24,10 +24,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -47,10 +45,18 @@ import javax.naming.ldap.LdapContext;
 
 import org.apache.log4j.Logger;
 
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.impl.identity.IdentityRealmPlugin;
+import io.vertigo.account.impl.identity.IdentityMapperHelper;
+import io.vertigo.account.impl.identity.IdentityProviderPlugin;
+import io.vertigo.app.Home;
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.component.Activeable;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.metamodel.Formatter;
+import io.vertigo.dynamo.domain.metamodel.FormatterException;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.StreamFile;
 import io.vertigo.lang.Assertion;
@@ -60,10 +66,11 @@ import io.vertigo.lang.WrappedException;
  * Source of identity.
  * @author npiedeloup
  */
-public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
+public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin, Activeable {
 	private static final String LDAP_PHOTO_MIME_TYPE = "image/jpeg";
+	private static final String PHOTO_RESERVED_FIELD = "photo";
 
-	private static final Logger LOGGER = Logger.getLogger(LdapIdentityRealmPlugin.class);
+	private static final Logger LOGGER = Logger.getLogger(LdapIdentityProviderPlugin.class);
 
 	private static final String DEFAULT_CONTEXT_FACTORY_CLASS_NAME = "com.sun.jndi.ldap.LdapCtxFactory";
 	private static final String SIMPLE_AUTHENTICATION_MECHANISM_NAME = "simple";
@@ -76,11 +83,11 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 	private final String ldapReaderPassword;
 
 	private final String ldapUserAuthAttribute;
-	private final Map<AccountProperty, String> ldapAccountAttributeMapping; //Account properties to ldapAttribute
+	//private Map<DtField, String> ldapUserAttributeMapping; //UserAttribute to ldapAttribute
 
-	private enum AccountProperty {
-		id, displayName, email, authToken, photo
-	}
+	private final String userDtDefinitionName;
+	private final String ldapUserAttributeMappingStr;
+	private IdentityMapperHelper<String, DtField> mapperHelper;
 
 	/**
 	 * Constructor.
@@ -90,18 +97,19 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 	 * @param ldapReaderLogin Login du reader LDAP
 	 * @param ldapReaderPassword Password du reader LDAP
 	 * @param ldapUserAuthAttribute Ldap attribute use to find user by it's authToken
-	 * @param ldapAccountAttributeMappingStr Mapping from LDAP to Account
+	 * @param ldapUserAttributeMappingStr Mapping from LDAP to Account
 	 * @param codecManager Codec Manager
 	 */
 	@Inject
-	public LdapIdentityRealmPlugin(
+	public LdapIdentityProviderPlugin(
 			@Named("ldapServerHost") final String ldapServerHost,
 			@Named("ldapServerPort") final String ldapServerPort,
 			@Named("ldapAccountBaseDn") final String ldapAccountBaseDn,
 			@Named("ldapReaderLogin") final String ldapReaderLogin,
 			@Named("ldapReaderPassword") final String ldapReaderPassword,
 			@Named("ldapUserAuthAttribute") final String ldapUserAuthAttribute,
-			@Named("ldapAccountAttributeMapping") final String ldapAccountAttributeMappingStr,
+			@Named("userDtDefinitionName") final String userDtDefinitionName,
+			@Named("ldapUserAttributeMapping") final String ldapUserAttributeMappingStr,
 			final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(ldapServerHost);
 		Assertion.checkArgNotEmpty(ldapServerPort);
@@ -109,25 +117,40 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 		Assertion.checkArgNotEmpty(ldapReaderLogin);
 		Assertion.checkNotNull(ldapReaderPassword);
 		Assertion.checkArgNotEmpty(ldapUserAuthAttribute);
-		Assertion.checkArgNotEmpty(ldapAccountAttributeMappingStr);
+		Assertion.checkArgNotEmpty(userDtDefinitionName);
+		Assertion.checkArgNotEmpty(ldapUserAttributeMappingStr);
 		Assertion.checkNotNull(codecManager);
 		ldapServer = ldapServerHost + ":" + ldapServerPort;
 		this.ldapAccountBaseDn = ldapAccountBaseDn;
 		this.ldapReaderLogin = ldapReaderLogin;
 		this.ldapReaderPassword = ldapReaderPassword;
 		this.ldapUserAuthAttribute = ldapUserAuthAttribute;
-		ldapAccountAttributeMapping = parseLdapAttributeMapping(ldapAccountAttributeMappingStr, AccountProperty.class);
-		Assertion.checkArgNotEmpty(ldapAccountAttributeMapping.get(AccountProperty.id), "ldapAccountAttributeMapping must declare mapping for accountProperty {0}" + AccountProperty.id);
-		Assertion.checkArgNotEmpty(ldapAccountAttributeMapping.get(AccountProperty.displayName), "ldapAccountAttributeMapping must declare mapping for accountProperty {0}" + AccountProperty.displayName);
+		this.userDtDefinitionName = userDtDefinitionName;
+		this.ldapUserAttributeMappingStr = ldapUserAttributeMappingStr;
 		this.codecManager = codecManager;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Account getAccountByAuthToken(final String userAuthToken) {
+	public void start() {
+		final DtDefinition userDtDefinition = Home.getApp().getDefinitionSpace().resolve(userDtDefinitionName, DtDefinition.class);
+		mapperHelper = new IdentityMapperHelper(userDtDefinition, ldapUserAttributeMappingStr)
+				.withReservedDestField(PHOTO_RESERVED_FIELD)
+				.parseAttributeMapping();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void stop() {
+		//rien
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <E extends Entity> E getUserByAuthToken(final String userAuthToken) {
 		final LdapContext ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
 		try {
-			return getAccountByAuthToken(userAuthToken, ldapContext);
+			return (E) getUserByAuthToken(userAuthToken, ldapContext);
 		} finally {
 			closeLdapContext(ldapContext);
 		}
@@ -135,16 +158,16 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public long getAccountsCount() {
+	public long getUsersCount() {
 		throw new UnsupportedOperationException("Can't count all account from LDAP : anti-spooffing protections");
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Collection<Account> getAllAccounts() {
+	public <E extends Entity> Collection<E> getAllUsers() {
 		final LdapContext ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
 		try {
-			return searchAccount("*", -1, ldapContext);
+			return searchUser("*", -1, ldapContext);
 		} finally {
 			closeLdapContext(ldapContext);
 		}
@@ -152,43 +175,32 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<VFile> getPhoto(final URI<Account> accountURI) {
+	public <E extends Entity> Optional<VFile> getPhoto(final URI<E> accountURI) {
 		final LdapContext ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
 		try {
-			final String photoAttributeName = ldapAccountAttributeMapping.get(AccountProperty.photo);
-			return parseOptionalVFile(getAccountAttributes(accountURI.getId(), Collections.singleton(photoAttributeName), ldapContext));
+			final String photoAttributeName = mapperHelper.getReservedSourceAttribute(PHOTO_RESERVED_FIELD);
+			return parseOptionalVFile(getLdapAttributes(accountURI.getId(), Collections.singleton(photoAttributeName), ldapContext));
 		} finally {
 			closeLdapContext(ldapContext);
 		}
 	}
 
-	private static <E extends Enum<E>> Map<E, String> parseLdapAttributeMapping(final String ldapAttributeMapping, final Class<E> enumClass) {
-		final Map<E, String> accountAttributeMapping = new HashMap<>();
-		for (final String mapping : ldapAttributeMapping.split("\\s*,\\s*")) {
-			final String[] splitedMapping = mapping.split("\\s*:\\s*");
-			Assertion.checkArgument(splitedMapping.length == 2, "Mapping should respect the pattern : LdapAttr1:AccountAttr1, LdapAttr2:AccountAttr2, ... (check : {0})", ldapAttributeMapping);
-			//It's reverse compared to config String : we keep a map of key:accountProperty -> value:ldapAttribute
-			accountAttributeMapping.put(Enum.valueOf(enumClass, splitedMapping[1]), splitedMapping[2]);
-		}
-		return accountAttributeMapping;
-	}
-
-	private Account getAccountByAuthToken(final String authToken, final LdapContext ctx) {
-		final List<Attributes> result = searchLdapAttributes(ldapAccountBaseDn, "(" + ldapUserAuthAttribute + "=" + protectLdap(authToken) + "))", 2, ldapAccountAttributeMapping.values(), ctx);
+	private Entity getUserByAuthToken(final String authToken, final LdapContext ctx) {
+		final List<Attributes> result = searchLdapAttributes(ldapAccountBaseDn, "(" + ldapUserAuthAttribute + "=" + protectLdap(authToken) + "))", 2, mapperHelper.sourceAttributes(), ctx);
 		Assertion.checkState(!result.isEmpty(), "Can't found any user with authToken : {0}", ldapUserAuthAttribute);
 		Assertion.checkState(result.size() == 1, "Too many user with same authToken ({0} shoud be unique)", ldapUserAuthAttribute);
-		return parseAccount(result.get(0));
+		return parseUser(result.get(0));
 	}
 
-	private Collection<Account> searchAccount(final String searchRequest, final int top, final LdapContext ldapContext) {
-		final List<Attributes> result = searchLdapAttributes(ldapAccountBaseDn, searchRequest, top, ldapAccountAttributeMapping.values(), ldapContext);
-		return result.stream()
-				.map(this::parseAccount)
+	private <E extends Entity> Collection<E> searchUser(final String searchRequest, final int top, final LdapContext ldapContext) {
+		final List<Attributes> result = searchLdapAttributes(ldapAccountBaseDn, searchRequest, top, mapperHelper.sourceAttributes(), ldapContext);
+		return (Collection<E>) result.stream()
+				.map(this::parseUser)
 				.collect(Collectors.toList());
 	}
 
-	private Attributes getAccountAttributes(final Serializable accountId, final Set<String> returningAttributes, final LdapContext ldapContext) {
-		final String ldapIdAttr = ldapAccountAttributeMapping.get(AccountProperty.id);
+	private Attributes getLdapAttributes(final Serializable accountId, final Set<String> returningAttributes, final LdapContext ldapContext) {
+		final String ldapIdAttr = mapperHelper.getSourceIdField();
 		final List<Attributes> result = searchLdapAttributes(ldapAccountBaseDn, "(" + ldapIdAttr + "=" + accountId + ")", 2, returningAttributes, ldapContext);
 		Assertion.checkState(!result.isEmpty(), "Can't found any user with id : {0}", accountId);
 		Assertion.checkState(result.size() == 1, "Too many user with same id ({0} shoud be unique)", accountId);
@@ -196,16 +208,34 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 	}
 
 	private Optional<VFile> parseOptionalVFile(final Attributes attrs) {
-		try {
-			final String base64Content = parseOptionalAttribute(String.class, AccountProperty.photo, attrs);
-			if (base64Content == null) {
-				return Optional.empty();
-			}
-			final String displayName = parseAttribute(String.class, AccountProperty.displayName, attrs);
-			return Optional.of(base64toVFile(displayName, base64Content));
-		} catch (final NamingException e) {
-			throw WrappedException.wrap(e, "Can't parse Account from LDAP");
+		final String base64Content = parseNullableAttribute(String.class, mapperHelper.getReservedSourceAttribute(PHOTO_RESERVED_FIELD), attrs);
+		if (base64Content == null) {
+			return Optional.empty();
 		}
+		final String displayName = "photo-" + parseAttribute(String.class, mapperHelper.getSourceIdField(), attrs);
+		return Optional.of(base64toVFile(displayName, base64Content));
+	}
+
+	private <O> O parseAttribute(final Class<O> valueClass, final String attributeName, final Attributes attrs) {
+		try {
+			return valueClass.cast(attrs.get(attributeName).get());
+		} catch (final NamingException e) {
+			throw WrappedException.wrap(e, "Ldap attribute {0} not found or empty", attributeName);
+		}
+	}
+
+	private <O> O parseNullableAttribute(final Class<O> valueClass, final String attributeName, final Attributes attrs) {
+		if (attributeName != null) {
+			final Attribute attribute = attrs.get(attributeName);
+			if (attribute != null) {
+				try {
+					return valueClass.cast(attribute.get());
+				} catch (final NamingException e) {
+					throw WrappedException.wrap(e, "Ldap attribute {0} found, but is empty", attributeName);
+				}
+			}
+		}
+		return null;
 	}
 
 	private VFile base64toVFile(final String displayName, final String base64Content) {
@@ -251,39 +281,25 @@ public final class LdapIdentityRealmPlugin implements IdentityRealmPlugin {
 		}
 	}
 
-	private Account parseAccount(final Attributes attrs) {
+	private Entity parseUser(final Attributes attrs) {
 		try {
-			final String accountId = parseAttribute(String.class, AccountProperty.id, attrs);
-			final String authToken = parseAttribute(String.class, AccountProperty.authToken, attrs);
-			final String displayName = parseAttribute(String.class, AccountProperty.displayName, attrs);
-			final String email = parseOptionalAttribute(String.class, AccountProperty.email, attrs);
-			return Account.builder(accountId)
-					.withAuthToken(authToken)
-					.withDisplayName(displayName)
-					.withEmail(email)
-					.build();
-		} catch (final NamingException e) {
+			final Entity user = Entity.class.cast(DtObjectUtil.createDtObject(mapperHelper.getDestDefinition()));
+			for (final DtField dtField : mapperHelper.destAttributes()) {
+				final Object value = parseNullableAttribute(Object.class, mapperHelper.getSourceAttribute(dtField), attrs);
+				if (value != null) {
+					setTypedValue(dtField, user, String.valueOf(value));
+				}
+			}
+			return user;
+		} catch (final FormatterException e) {
 			throw WrappedException.wrap(e, "Can't parse Account from LDAP");
 		}
 	}
 
-	private <O> O parseAttribute(final Class<O> valueClass, final AccountProperty accountProperty, final Attributes attrs) throws NamingException {
-		return valueClass.cast(attrs.get(ldapAccountAttributeMapping.get(accountProperty)).get());
-	}
-
-	private <O> O parseOptionalAttribute(final Class<O> valueClass, final AccountProperty accountProperty, final Attributes attrs) {
-		final String emailAttributeName = ldapAccountAttributeMapping.get(accountProperty);
-		if (emailAttributeName != null) {
-			final Attribute emailAttribute = attrs.get(emailAttributeName);
-			if (emailAttribute != null) {
-				try {
-					return valueClass.cast(emailAttribute.get());
-				} catch (final NamingException e) {
-					throw WrappedException.wrap(e, "Ldap attribute {0} found, but is empty", emailAttributeName);
-				}
-			}
-		}
-		return null;
+	private void setTypedValue(final DtField dtField, final Entity user, final String valueStr) throws FormatterException {
+		final Formatter formatter = dtField.getDomain().getFormatter();
+		final Serializable typedValue = (Serializable) formatter.stringToValue(valueStr, dtField.getDomain().getDataType());
+		dtField.getDataAccessor().setValue(user, typedValue);
 	}
 
 	private static List<Attributes> searchLdapAttributes(final String ldapBaseDn, final String searchRequest, final int top, final Collection<String> returningAttributes, final LdapContext ctx) {

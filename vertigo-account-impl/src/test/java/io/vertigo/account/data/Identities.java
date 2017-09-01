@@ -28,7 +28,7 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.util.ListBuilder;
 
-public final class Identities {
+private final class Identities {
 
 	private Identities() {
 		//rien

@@ -16,14 +16,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.impl.identity;
+package io.vertigo.account.plugins.identity.store.text;
 
-import io.vertigo.account.identity.IdentityProvider;
-import io.vertigo.core.component.Plugin;
+import io.vertigo.account.identity.Account;
+import io.vertigo.lang.Assertion;
 
-/**
- * @author pchretien, npiedeloup
- */
-public interface IdentityRealmPlugin extends IdentityProvider, Plugin {
-	//thing more than IdentityRealm
+final class AccountInfo {
+
+	private final Account account;
+	private final String photoUrl;
+
+	AccountInfo(final Account account, final String photoUrl) {
+		Assertion.checkNotNull(account);
+		Assertion.checkNotNull(photoUrl);
+		//-----
+		this.account = account;
+		this.photoUrl = photoUrl;
+	}
+
+	Account getAccount() {
+		return account;
+	}
+
+	String getPhotoUrl() {
+		return photoUrl;
+	}
 }
