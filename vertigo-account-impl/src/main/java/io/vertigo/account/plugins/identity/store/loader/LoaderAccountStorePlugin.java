@@ -21,6 +21,7 @@ package io.vertigo.account.plugins.identity.store.loader;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.vertigo.account.identity.Account;
@@ -46,6 +47,7 @@ public final class LoaderAccountStorePlugin implements AccountStorePlugin, Activ
 	 * @param accountLoaderName Custom AccountLoader component name
 	 * @param groupLoaderName Custom GroupLoader component name
 	 */
+	@Inject
 	public LoaderAccountStorePlugin(
 			@Named("accountLoaderName") final String accountLoaderName,
 			@Named("groupLoaderName") final Optional<String> groupLoaderName) {
