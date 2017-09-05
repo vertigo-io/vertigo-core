@@ -93,10 +93,7 @@ public final class AccountFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.addDefinitionProvider(AccountDefinitionProvider.class)
-				.addComponent(AuthenticationManager.class, AuthenticationManagerImpl.class)
-				.addComponent(IdentityManager.class, IdentityManagerImpl.class);
-
+				.addDefinitionProvider(AccountDefinitionProvider.class);
 	}
 
 	/**
@@ -106,6 +103,8 @@ public final class AccountFeatures extends Features {
 	 */
 	public AccountFeatures withAccountStorePlugin(final Class<? extends AccountStorePlugin> accountStorePluginClass, final Param... params) {
 		getModuleConfigBuilder()
+				.addComponent(AuthenticationManager.class, AuthenticationManagerImpl.class)
+				.addComponent(IdentityManager.class, IdentityManagerImpl.class)
 				.addPlugin(accountStorePluginClass, params);
 		return this;
 	}
