@@ -48,10 +48,10 @@ public final class MyAppConfig {
 		} else {
 			accountFeatures
 					.withAccountStorePlugin(TextAccountStorePlugin.class,
-							Param.of("accountFilePath", "file:/io/vertigo/account/data/identities.txt"),
-							Param.of("accountFilePattern", "^(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<email>(?<authToken>[^\\s;@]+)@[^\\s;]+);(?<photoUrl>)$"),
-							Param.of("groupFilePath", "file:/io/vertigo/account/data/groups.txt"),
-							Param.of("groupFilePattern", "^(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>.*)$"))
+							Param.of("accountFilePath", "io/vertigo/account/data/identities.txt"),
+							Param.of("accountFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<email>(?<authToken>[^;@]+)@[^;]+);(?<photoUrl>.*)$"),
+							Param.of("groupFilePath", "io/vertigo/account/data/groups.txt"),
+							Param.of("groupFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<accountIds>.*)$"))
 					.withAuthentificationRealm(LdapAuthenticatingRealmPlugin.class,
 							Param.of("userLoginTemplate", "cn={0},dc=vertigo,dc=io"),
 							Param.of("ldapServerHost", "docker-vertigo.part.klee.lan.net"),

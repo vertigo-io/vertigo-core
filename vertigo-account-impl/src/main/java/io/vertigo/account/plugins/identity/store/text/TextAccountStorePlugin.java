@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -72,7 +73,8 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	private final Map<String, AccountGroup> groups; //id-to-Groups
 	private final Map<String, List<AccountGroup>> groupsPerAccount; //accountId-to-Groups
 	private final ResourceManager resourceManager;
-	private final String filePath;
+	private final String accountFilePath;
+	private final String groupFilePath;
 
 	private enum AccountProperty {
 		id, displayName, email, authToken, photoUrl
@@ -106,7 +108,8 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 		}
 		// -----
 		this.resourceManager = resourceManager;
-		filePath = accountFilePath;
+		this.accountFilePath = accountFilePath.replace(File.separatorChar, '/');
+		this.groupFilePath = groupFilePath.replace(File.separatorChar, '/');
 		//SimpleAccountRealms are memory-only realms
 		accounts = new LinkedHashMap<>();
 		groups = new LinkedHashMap<>();
@@ -168,29 +171,65 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	public Optional<VFile> getPhoto(final URI<Account> accountURI) {
 		final AccountInfo accountInfo = accounts.get(accountURI.getId());
 		Assertion.checkNotNull(accountInfo, "No account found for {0}", accountURI);
-		if (accountInfo.getPhotoUrl() == null) {
+		if (accountInfo.getPhotoUrl() == null || accountInfo.getPhotoUrl().isEmpty()) {
 			return Optional.empty();
 		}
-		final File photoFile = new File(accountInfo.getPhotoUrl());
-		if (!photoFile.exists()) {
+		final URL fileURL;
+		if (accountInfo.getPhotoUrl().startsWith(".")) {//si on est en relatif, on repart du prefix du fichier des accounts
+			final String accountFilePrefix = accountFilePath.substring(0, accountFilePath.lastIndexOf("/")) + "/";
+			fileURL = resourceManager.resolve(accountFilePrefix + accountInfo.getPhotoUrl());
+		} else {
+			fileURL = resourceManager.resolve(accountInfo.getPhotoUrl());
+		}
+
+		//final Optional<VFile> photo = createVFile("photoOf" + accountURI.getId(), fileURL);
+
+		File photoFile;
+		try {
+			photoFile = new File(fileURL.toURI());
+		} catch (final URISyntaxException e) {
 			return Optional.empty();
 		}
+		Assertion.checkArgument(photoFile.exists(), "Account {0} photo {1} not found", accountURI, accountInfo.getPhotoUrl());
+		Assertion.checkArgument(photoFile.isFile(), "Account {0} photo {1} must be a file", accountURI, accountInfo.getPhotoUrl());
 		try {
 			final String contentType = Files.probeContentType(photoFile.toPath());
-			return Optional.of(new FSFile("photoOf" + accountURI.getId(), contentType, photoFile));
+			return Optional.of(new FSFile(photoFile.getName(), contentType, photoFile));
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}
 	}
 
+	/*private Optional<VFile> createVFile(final String fileName, final URL fileURL) {
+		final long length;
+		final long lastModified;
+		try {
+			final URLConnection connection = fileURL.openConnection();
+			try {
+				length = connection.getContentLength();
+				lastModified = connection.getLastModified();
+			} finally {
+				connection.getInputStream().close();
+			}
+		} catch (final IOException e) {
+			return Optional.empty();
+		}
+		if (length >= 0) {
+			return Optional.empty();
+		}
+		final InputStreamBuilder inputStreamBuilder = fileURL::openStream;
+		final String contentType = Files.probeContentType(new File(fileURL.toURI()).toPath());
+		return Optional.of(new StreamFile(fileName, contentType, new Date(lastModified), length, inputStreamBuilder));
+	}*/
+
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		readData(this::parseAccounts);
-		readData(this::parseGroups);
+		readData(this::parseAccounts, accountFilePath);
+		readData(this::parseGroups, groupFilePath);
 	}
 
-	private void readData(final Consumer<String> parser) {
+	private void readData(final Consumer<String> parser, final String filePath) {
 		final URL fileURL = resourceManager.resolve(filePath);
 		try {
 			final String confTest = parseFile(fileURL);
@@ -198,7 +237,6 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 				while (scanner.hasNextLine()) {
 					final String line = scanner.nextLine();
 					parser.accept(line);
-					parseAccounts(line);
 				}
 			}
 		} catch (final Exception e) {
@@ -214,6 +252,8 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 
 	private void parseAccounts(final String line) {
 		final Matcher matcher = accountFilePattern.matcher(line);
+		final boolean matches = matcher.matches();
+		Assertion.checkState(matches, "AccountFile ({2}) can't be parse by this regexp :\nline:{0}\nregexp:{1}", line, matches, accountFilePath);
 		final String id = matcher.group(AccountProperty.id.name());
 		final String displayName = matcher.group(AccountProperty.displayName.name());
 		final String email = matcher.group(AccountProperty.email.name());
@@ -229,6 +269,8 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 
 	private void parseGroups(final String line) {
 		final Matcher matcher = groupFilePattern.matcher(line);
+		final boolean matches = matcher.matches();
+		Assertion.checkState(matches, "GroupFile ({2}) can't be parse by this regexp :\nline:{0}\nregexp:{1}", line, matches, groupFilePath);
 		final String groupId = matcher.group(GroupProperty.id.name());
 		final String displayName = matcher.group(GroupProperty.displayName.name());
 		final String accountIds = matcher.group(GroupProperty.accountIds.name());

@@ -18,7 +18,6 @@
  */
 package io.vertigo.account.identity;
 
-import java.io.File;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,7 +39,6 @@ import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 import redis.clients.jedis.Jedis;
@@ -145,11 +143,11 @@ public final class IdentityManagerTest {
 		Assert.assertFalse(identityManager.getPhoto(accountURI0).isPresent());
 		Assert.assertEquals("defaultPhoto.png", identityManager.getDefaultPhoto().getFileName());
 		//-----
-		final VFile photo = fileManager.createFile(new File(this.getClass().getResource("../data/marianne.png").toURI()));
-		//identityManager.setPhoto(accountURI0, photo);
+		//	final VFile photo = fileManager.createFile(new File(this.getClass().getResource("../data/marianne.png").toURI()));
+		//	identityManager.setPhoto(accountURI0, photo);
 		//-----
-		Assert.assertTrue(identityManager.getPhoto(accountURI0).isPresent());
-		Assert.assertEquals("marianne.png", identityManager.getPhoto(accountURI0).get().getFileName());
+		Assert.assertTrue(identityManager.getPhoto(accountURI1).isPresent());
+		Assert.assertEquals("marianne.png", identityManager.getPhoto(accountURI1).get().getFileName());
 	}
 
 	@Test
@@ -160,7 +158,7 @@ public final class IdentityManagerTest {
 		Assert.assertEquals(2, identityManager.getGroupURIs(accountURI1).size());
 		Assert.assertEquals(2, identityManager.getGroupURIs(accountURI2).size());
 		Assert.assertEquals(2, identityManager.getAccountURIs(groupURI).size());
-		Assert.assertEquals(10 + 3, identityManager.getAccountURIs(groupAllURI).size());
+		Assert.assertEquals(10 + 4, identityManager.getAccountURIs(groupAllURI).size());
 		//---
 		/*identityManager.attach(accountURI0, groupURI);
 		Assert.assertEquals(2, identityManager.getGroupURIs(accountURI0).size());

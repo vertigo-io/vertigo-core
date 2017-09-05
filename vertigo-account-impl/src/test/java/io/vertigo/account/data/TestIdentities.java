@@ -19,18 +19,33 @@
 package io.vertigo.account.data;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import io.vertigo.account.identity.Account;
 import io.vertigo.account.identity.AccountGroup;
 import io.vertigo.account.identity.IdentityManager;
+import io.vertigo.account.plugins.identity.store.loader.AccountLoader;
+import io.vertigo.account.plugins.identity.store.loader.GroupLoader;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.util.ListBuilder;
 
-private final class Identities {
+public final class TestIdentities implements AccountLoader, GroupLoader {
 
-	private Identities() {
+	private final Map<String, Account> accountsMap = new HashMap<>();
+	private final Map<String, Account> accountsMapByAuth = new HashMap<>();
+	private final Map<String, AccountGroup> groupsMap = new HashMap<>();
+	private final Map<URI<Account>, Set<URI<AccountGroup>>> groupsPerAccount = new HashMap<>();
+	private final Map<URI<AccountGroup>, Set<URI<Account>>> accountsPerGroup = new HashMap<>();
+
+	private TestIdentities() {
 		//rien
 	}
 
@@ -42,12 +57,12 @@ private final class Identities {
 		return DtObjectUtil.createURI(AccountGroup.class, id);
 	}
 
-	public static void initData(final IdentityManager identityManager) {
+	public void initData(final IdentityManager identityManager) {
 		final Account testAccount0 = Account.builder("0").withAuthToken("john.doe").withDisplayName("John doe").withEmail("john.doe@yopmail.com").build();
 		final Account testAccount1 = Account.builder("1").withAuthToken("palmer.luckey").withDisplayName("Palmer Luckey").withEmail("palmer.luckey@yopmail.com").build();
 		final Account testAccount2 = Account.builder("2").withAuthToken("bill.clinton").withDisplayName("Bill Clinton").withEmail("bill.clinton@yopmail.com").build();
 		final Account testAccount3 = Account.builder("3").withAuthToken("admin").withDisplayName("Phil Mormon").withEmail("phil.mormon@yopmail.com").build();
-		identityManager.getStore().saveAccounts(Arrays.asList(testAccount0, testAccount1, testAccount2, testAccount3));
+		saveAccounts(Arrays.asList(testAccount0, testAccount1, testAccount2, testAccount3));
 
 		final URI<Account> accountURI0 = createAccountURI(testAccount0.getId());
 		final URI<Account> accountURI1 = createAccountURI(testAccount1.getId());
@@ -55,24 +70,24 @@ private final class Identities {
 
 		final AccountGroup testAccountGroup1 = new AccountGroup("100", "TIME's cover");
 		final URI<AccountGroup> group1Uri = DtObjectUtil.createURI(AccountGroup.class, testAccountGroup1.getId());
-		identityManager.getStore().saveGroup(testAccountGroup1);
+		saveGroup(testAccountGroup1);
 
-		identityManager.getStore().attach(accountURI1, group1Uri);
-		identityManager.getStore().attach(accountURI2, group1Uri);
+		attach(accountURI1, group1Uri);
+		attach(accountURI2, group1Uri);
 
 		final AccountGroup groupAll = new AccountGroup("ALL", "Everyone");
 		final URI<AccountGroup> groupAllUri = DtObjectUtil.createURI(AccountGroup.class, groupAll.getId());
-		identityManager.getStore().saveGroup(groupAll);
-		identityManager.getStore().attach(accountURI0, groupAllUri);
-		identityManager.getStore().attach(accountURI1, groupAllUri);
-		identityManager.getStore().attach(accountURI2, groupAllUri);
+		saveGroup(groupAll);
+		attach(accountURI0, groupAllUri);
+		attach(accountURI1, groupAllUri);
+		attach(accountURI2, groupAllUri);
 
 		//---create 10 noisy data
 		final List<Account> accounts = createAccounts();
-		identityManager.getStore().saveAccounts(accounts);
+		saveAccounts(accounts);
 		for (final Account account : accounts) {
 			final URI<Account> accountUri = createAccountURI(account.getId());
-			identityManager.getStore().attach(accountUri, groupAllUri);
+			attach(accountUri, groupAllUri);
 		}
 
 	}
@@ -100,5 +115,62 @@ private final class Identities {
 				.withDisplayName(displayName)
 				.withEmail(email)
 				.build();
+	}
+
+	private void attach(final URI<Account> accountURI, final URI<AccountGroup> groupURI) {
+		groupsPerAccount.computeIfAbsent(accountURI, key -> new HashSet<>()).add(groupURI);
+		accountsPerGroup.computeIfAbsent(groupURI, key -> new HashSet<>()).add(accountURI);
+	}
+
+	private void saveGroup(final AccountGroup accountGroup) {
+		groupsMap.put(accountGroup.getId(), accountGroup);
+	}
+
+	private void saveAccounts(final List<Account> accounts) {
+		accounts.stream().forEach(account -> {
+			accountsMap.put(account.getId(), account);
+			accountsMapByAuth.put(account.getAuthToken(), account);
+		});
+	}
+
+	@Override
+	public long getAccountsCount() {
+		return accountsMap.size();
+	}
+
+	@Override
+	public Account getAccount(final URI<Account> accountURI) {
+		return accountsMap.get(accountURI);
+	}
+
+	@Override
+	public Optional<VFile> getPhoto(final URI<Account> accountURI) {
+		return Optional.empty();
+	}
+
+	@Override
+	public Optional<Account> getAccountByAuthToken(final String userAuthToken) {
+		return Optional.ofNullable(accountsMapByAuth.get(userAuthToken));
+	}
+
+	@Override
+	public long getGroupsCount() {
+		return groupsMap.size();
+	}
+
+	@Override
+	public AccountGroup getGroup(final URI<AccountGroup> groupURI) {
+		return groupsMap.get(groupURI);
+	}
+
+	@Override
+	public Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
+		return groupsPerAccount.computeIfAbsent(accountURI, key -> Collections.emptySet());
+	}
+
+	@Override
+	public Set<URI<Account>> getAccountURIs(final URI<AccountGroup> groupURI) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

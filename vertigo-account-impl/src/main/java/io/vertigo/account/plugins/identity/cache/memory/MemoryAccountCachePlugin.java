@@ -141,7 +141,9 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 		Assertion.checkNotNull(accountURI);
 		//-----
 		final Set<URI<AccountGroup>> groupURIs = groupByAccountURI.get(accountURI);
-		Assertion.checkNotNull(groupURIs, "account {0} must be create before this operation", accountURI);
+		if (groupURIs == null) {
+			return Collections.emptySet();
+		}
 		return Collections.unmodifiableSet(groupURIs);
 	}
 
@@ -151,7 +153,9 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 		Assertion.checkNotNull(groupURI);
 		//-----
 		final Set<URI<Account>> accountURIs = accountByGroupURI.get(groupURI);
-		Assertion.checkNotNull(accountURIs, "group {0} must be create before this operation", groupURI);
+		if (accountURIs == null) {
+			return Collections.emptySet();
+		}
 		return Collections.unmodifiableSet(accountURIs);
 	}
 

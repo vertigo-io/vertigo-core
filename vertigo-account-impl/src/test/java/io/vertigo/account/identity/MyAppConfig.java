@@ -38,20 +38,20 @@ public final class MyAppConfig {
 	public static AppConfig config(final boolean redis) {
 		final CommonsFeatures commonsFeatures = new CommonsFeatures();
 		final AccountFeatures accountFeatures = new AccountFeatures()
-				.withUserSession(TestUserSession.class);
+				.withUserSession(TestUserSession.class)
+				.withAccountStorePlugin(TextAccountStorePlugin.class,
+						Param.of("accountFilePath", "io/vertigo/account/data/identities.txt"),
+						Param.of("accountFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<email>(?<authToken>[^;@]+)@[^;]+);(?<photoUrl>.*)$"),
+						Param.of("groupFilePath", "io/vertigo/account/data/groups.txt"),
+						Param.of("groupFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<accountIds>.*)$"));
 
 		if (redis) {
 			commonsFeatures.withRedisConnector(REDIS_HOST, REDIS_PORT, REDIS_DATABASE, Optional.empty());
 			accountFeatures.withRedisAccountCachePlugin();
 		} else {
 			//else we use memory
-			accountFeatures
-					.withAccountCachePlugin(MemoryAccountCachePlugin.class)
-					.withAccountStorePlugin(TextAccountStorePlugin.class,
-							Param.of("accountFilePath", "file:/io/vertigo/account/data/identities.txt"),
-							Param.of("accountFilePattern", "^(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<email>(?<authToken>[^\\s;@]+)@[^\\s;]+);(?<photoUrl>)$"),
-							Param.of("groupFilePath", "file:/io/vertigo/account/data/groups.txt"),
-							Param.of("groupFilePattern", "^(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>.*)$"));
+			accountFeatures.withAccountCachePlugin(MemoryAccountCachePlugin.class);
+
 		}
 		return AppConfig.builder()
 				.beginBoot()

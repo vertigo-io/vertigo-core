@@ -1,5 +1,5 @@
 0;John Doe;john.doe@yopmail.com;
-1;Palmer Luckey;palmer.luckey@yopmail.com;
+1;Palmer Luckey;palmer.luckey@yopmail.com;../data/marianne.png
 2;Bill Clinton;bill.clinton@yopmail.com;
 3;Phil Mormon;phil.mormon@yopmail.com;
 4;Jean Meunier;jmeunier@yopmail.com;
