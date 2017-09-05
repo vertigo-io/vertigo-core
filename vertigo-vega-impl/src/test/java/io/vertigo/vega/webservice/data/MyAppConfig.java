@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import io.vertigo.account.AccountFeatures;
-import io.vertigo.account.plugins.identity.cache.memory.MemoryAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
@@ -85,7 +84,6 @@ public final class MyAppConfig {
 						.build())
 				.addModule(new AccountFeatures()
 						.withUserSession(TestUserSession.class)
-						.withAccountStorePlugin(MemoryAccountStorePlugin.class)
 						.build())
 				.addModule(new VegaFeatures()
 						.withTokens("tokens")
