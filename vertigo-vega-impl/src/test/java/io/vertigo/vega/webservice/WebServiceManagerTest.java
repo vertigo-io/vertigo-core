@@ -593,6 +593,24 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
+	public void testPutContactVAcessor() throws ParseException {
+		final Map<String, Object> newContact = createDefaultContact(100L);
+		newContact.put("adrId", 200);
+
+		loggedAndExpect(given().body(newContact))
+				.body("conId", Matchers.equalTo(100))
+				.body("honorificCode", Matchers.notNullValue())
+				.body("name", Matchers.notNullValue())
+				.body("firstName", Matchers.notNullValue())
+				.body("birthday", Matchers.notNullValue())
+				.body("email", Matchers.notNullValue())
+				.body("adrId", Matchers.equalTo(200))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/contact");
+	}
+
+	@Test
 	public void testPutContactEmptyField() throws ParseException {
 		final Map<String, Object> newContact = createDefaultContact(100L);
 		newContact.put("name", "");
