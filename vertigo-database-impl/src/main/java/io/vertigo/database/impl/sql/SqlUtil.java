@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.database.impl.sql.statement;
+package io.vertigo.database.impl.sql;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -157,7 +157,7 @@ final class SqlUtil {
 		return new IllegalStateException("load TooManyRows");
 	}
 
-	private static boolean isPrimitive(final Class dataType) {
+	public static boolean isPrimitive(final Class dataType) {
 		return Stream.of(
 				Integer.class,
 				Double.class,

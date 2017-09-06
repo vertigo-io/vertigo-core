@@ -76,8 +76,8 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testInsertBatch() {
 		final String request = new StringBuilder("insert into SUPER_HERO(ID, NAME) values (")
-				.append("#").append(DTC_SUPER_HERO_IN + ".0.ID").append("# , ")
-				.append("#").append(DTC_SUPER_HERO_IN + ".0.NAME").append("# ) ")
+				.append("#").append(DTC_SUPER_HERO_IN + ".ID").append("# , ")
+				.append("#").append(DTC_SUPER_HERO_IN + ".NAME").append("# ) ")
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_TEST_INSERT_BATCH")
 				.withEngine(TaskEngineProcBatch.class)

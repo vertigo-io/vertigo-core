@@ -20,10 +20,8 @@ package io.vertigo.dynamox.task;
 
 import java.sql.BatchUpdateException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
 
@@ -35,20 +33,12 @@ import io.vertigo.commons.transaction.VTransactionResourceId;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
-import io.vertigo.database.sql.parser.SqlNamedParam;
-import io.vertigo.database.sql.statement.SqlParameter;
-import io.vertigo.database.sql.statement.SqlPreparedStatement;
-import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.database.sql.statement.SqlStatement;
+import io.vertigo.database.sql.statement.SqlStatementBuilder;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Tuples.Tuple2;
 
 /**
  * Fournit des méthodes de haut niveau pour les services de type SQL.<br>
@@ -136,29 +126,28 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * @throws SQLException Erreur sql
 	 */
 	protected abstract OptionalInt doExecute(
-			final String sql,
-			final SqlConnection connection,
-			final SqlPreparedStatement statement,
-			final List<SqlNamedParam> params) throws SQLException;
+			final SqlStatement sqlStatement,
+			final SqlConnection connection) throws SQLException;
 
 	/** {@inheritDoc} */
 	@Override
 	public void execute() {
 		final SqlConnection connection = obtainConnection();
 
-		final Tuple2<String, List<SqlNamedParam>> parsedQuery = sqlDataBaseManager.parseQuery(getSqlQuery().trim());
-		final SqlPreparedStatement statement = createStatement(connection);
+		final SqlStatementBuilder statementBuilder = SqlStatement.builder(getSqlQuery().trim());
+		setNamedParameters(statementBuilder);
+		final SqlStatement sqlStatement = statementBuilder.build();
 		try {
 			//Execute le Statement JDBC.
-			final OptionalInt sqlRowcountOpt = doExecute(parsedQuery.getVal1(), connection, statement, parsedQuery.getVal2());
+			final OptionalInt sqlRowcountOpt = doExecute(sqlStatement, connection);
 			//On positionne le nombre de lignes affectées.
 			sqlRowcountOpt.ifPresent(this::setRowCount);
 		} catch (final BatchUpdateException sqle) { //some exception embedded the usefull one
 			// Gère les erreurs d'exécution Batch JDBC.
-			throw handleSQLException(connection, sqle.getNextException(), statement.toString());
+			throw handleSQLException(connection, sqle.getNextException(), sqlStatement.getSqlQuery());
 		} catch (final SQLException sqle) {
 			//Gère les erreurs d'exécution JDBC.
-			throw handleSQLException(connection, sqle, statement.toString());
+			throw handleSQLException(connection, sqle, sqlStatement.getSqlQuery());
 		}
 
 	}
@@ -219,80 +208,12 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 		return sql;
 	}
 
-	/**
-	 * Crée le Statement pour le select ou bloc sql.
-	 * Initialise la liste des paramètres en entrée et en sortie
-	 *
-	 * @param connection Connexion vers la base de données
-	 * @return Statement StatementSQL
-	 */
-	protected SqlPreparedStatement createStatement(final SqlConnection connection) {
-		return getDataBaseManager().createPreparedStatement(connection);
-	}
-
-	/**
-	 * Modifie le statement en fonction des paramètres
-	 * Affecte les valeurs en entrée
-	 *
-	 * @param statement de type KPreparedStatement, KCallableStatement...
-	 */
-	protected final List<SqlParameter> buildParameters(final List<SqlNamedParam> params) {
-		final List<SqlParameter> sqlParameters = new ArrayList<>();
-		for (final SqlNamedParam param : params) {
-			final Integer rowNumber = param.isList() ? param.getRowNumber() : null;
-			sqlParameters.add(buildSqlParameter(param, rowNumber));
-		}
-		return sqlParameters;
-	}
-
-	protected final SqlParameter buildSqlParameter(final SqlNamedParam param, final Integer rowNumber) {
-		return SqlParameter.of(getDataTypeParameter(param), getValueParameter(param, rowNumber));
-	}
-
-	private Class getDataTypeParameter(final SqlNamedParam param) {
-		final Domain domain;
-		if (param.isPrimitive()) {
-			// Paramètre primitif
-			// TODO reporter l'assertion dans le ServiceProviderSelect
-			//if Assertion.invariant((this.getAttribute(paramName).getInOut() & ServiceRegistry.ATTR_IN) > 0, paramName  " must have attribute  ATTR_IN.");
-			domain = getTaskDefinition().getInAttribute(param.getAttributeName()).getDomain();
-		} else if (param.isObject()) {
-			// DtObject
-			final DtObject dto = getValue(param.getAttributeName());
-			Assertion.checkNotNull(dto);
-			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-			domain = dtDefinition.getField(param.getFieldName()).getDomain();
-		} else if (param.isList()) {
-			// DtList
-			final DtList<?> dtc = getValue(param.getAttributeName());
-			Assertion.checkNotNull(dtc);
-			domain = dtc.getDefinition().getField(param.getFieldName()).getDomain();
-		} else {
-			throw new IllegalStateException(" le param doit être un primitif, un objet ou une liste.");
-		}
-		return domain.getDataType().getJavaClass();
-	}
-
-	private Object getValueParameter(final SqlNamedParam param, final Integer rowNumber) {
-		final Object value;
-		if (param.isPrimitive()) {
-			value = getValue(param.getAttributeName());
-		} else if (param.isObject()) {
-			// DtObject
-			final DtObject dto = getValue(param.getAttributeName());
-			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
-			final DtField dtField = dtDefinition.getField(param.getFieldName());
-			value = dtField.getDataAccessor().getValue(dto);
-		} else if (param.isList()) {
-			// DtList
-			final DtList<? extends DtObject> dtc = getValue(param.getAttributeName());
-			final DtObject dto = dtc.get(rowNumber);
-			final DtField dtField = dtc.getDefinition().getField(param.getFieldName());
-			value = dtField.getDataAccessor().getValue(dto);
-		} else {
-			throw new IllegalStateException(" le param doit être un primitif, un objet ou une liste.");
-		}
-		return value;
+	protected void setNamedParameters(final SqlStatementBuilder sqlStatementBuilder) {
+		getTaskDefinition().getInAttributes()
+				.forEach(taskInAttribute -> sqlStatementBuilder.bind(
+						taskInAttribute.getName(),
+						taskInAttribute.getDomain().getDataType().getJavaClass(),
+						getValue(taskInAttribute.getName())));
 	}
 
 	/**

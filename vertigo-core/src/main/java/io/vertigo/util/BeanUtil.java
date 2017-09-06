@@ -110,7 +110,7 @@ public final class BeanUtil {
 	 * @param propertyName java.lang.String
 	 * @param beanClass java.lang.Class
 	 */
-	private static PropertyDescriptor getPropertyDescriptor(final String propertyName, final Class<?> beanClass) {
+	public static PropertyDescriptor getPropertyDescriptor(final String propertyName, final Class<?> beanClass) {
 		// on pourrait faire new PropertyDescriptor(propertyName, beanClass)
 		// mais si jamais il a été défini des BeanInfo pour certaines classes,
 		//autant les utiliser.

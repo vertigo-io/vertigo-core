@@ -18,7 +18,6 @@
  */
 package io.vertigo.account.identity;
 
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
@@ -138,7 +137,7 @@ public final class IdentityManagerTest {
 	}
 
 	@Test
-	public void testPhoto() throws URISyntaxException {
+	public void testPhoto() {
 		//Before the photo is the default photo
 		Assert.assertFalse(identityManager.getPhoto(accountURI0).isPresent());
 		Assert.assertEquals("defaultPhoto.png", identityManager.getDefaultPhoto().getFileName());

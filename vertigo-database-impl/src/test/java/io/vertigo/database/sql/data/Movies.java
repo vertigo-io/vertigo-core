@@ -56,15 +56,18 @@ public final class Movies {
 			final Double income,
 			final Boolean color,
 			final Date date,
-			final LocalDate localDate) {
+			final LocalDate localDate,
+			final ZonedDateTime releaseZonedDateTime) {
 		final Movie movie = new Movie();
 		movie.setId(id);
 		movie.setTitle(title);
 		movie.setReleaseDate(date);
 		movie.setReleaseLocalDate(localDate);
-		movie.setReleaseZonedDateTime(ZonedDateTime.of(localDate, LocalTime.of(16, 30), ZoneId.of("UTC")));
+		movie.setReleaseZonedDateTime(releaseZonedDateTime);
 		movie.setFps(fps);
-		movie.setIncome(new BigDecimal(income));
+		if (income != null) {
+			movie.setIncome(new BigDecimal(income));
+		}
 		movie.setColor(color);
 		movie.setIcon(buildIcon());
 		return movie;
@@ -155,7 +158,7 @@ public final class Movies {
 		calendar.set(year, month, dayOfMonth);
 
 		final LocalDate localDate = LocalDate.of(year, month, dayOfMonth);
-		return Movies.createMovie(id, title, fps, income, color, calendar.getTime(), localDate);
+		return Movies.createMovie(id, title, fps, income, color, calendar.getTime(), localDate, ZonedDateTime.of(LocalDate.of(year, month, dayOfMonth), LocalTime.of(16, 30), ZoneId.of("UTC")));
 	}
 
 	public static final List<Movie> bondMovies() {

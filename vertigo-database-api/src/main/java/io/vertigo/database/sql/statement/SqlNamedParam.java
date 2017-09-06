@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.database.sql.parser;
+package io.vertigo.database.sql.statement;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -28,7 +28,7 @@ import io.vertigo.lang.WrappedException;
  *
  * @author pchretien
  */
-public final class SqlNamedParam {
+final class SqlNamedParam {
 	private final String attributeName;
 	private final String fieldName;
 	private final Integer rowNumber;

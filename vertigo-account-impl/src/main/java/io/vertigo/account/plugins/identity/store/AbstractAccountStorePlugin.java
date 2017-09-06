@@ -21,7 +21,6 @@ package io.vertigo.account.plugins.identity.store;
 import javax.inject.Named;
 
 import io.vertigo.account.identity.Account;
-import io.vertigo.account.impl.identity.AccountStorePlugin;
 import io.vertigo.account.impl.identity.IdentityMapperHelper;
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
@@ -33,7 +32,7 @@ import io.vertigo.lang.Assertion;
 /**
  * @author pchretien
  */
-public abstract class AbstractAccountStorePlugin implements AccountStorePlugin, Activeable {
+public abstract class AbstractAccountStorePlugin implements Activeable {
 
 	private DtDefinition userDtDefinition;
 	private final String userDtDefinitionName;

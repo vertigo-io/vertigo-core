@@ -160,7 +160,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
 		return analyticsManager.traceWithReturn(
 				CATEGORY,
-				"/loadList" + indexDefinition.getName(),
+				"/loadList/" + indexDefinition.getName(),
 				tracer -> {
 					final FacetedQueryResult<R, SearchQuery> result = searchServicesPlugin.loadList(indexDefinition, searchQuery, listState);
 					tracer.setMeasure("nbSelectedRow", result.getCount());

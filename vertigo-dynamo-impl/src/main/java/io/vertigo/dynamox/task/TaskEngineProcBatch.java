@@ -22,8 +22,7 @@
 package io.vertigo.dynamox.task;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 import java.util.OptionalInt;
 
 import javax.inject.Inject;
@@ -32,14 +31,14 @@ import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
-import io.vertigo.database.sql.parser.SqlNamedParam;
-import io.vertigo.database.sql.statement.SqlParameter;
-import io.vertigo.database.sql.statement.SqlPreparedStatement;
+import io.vertigo.database.sql.statement.SqlStatement;
+import io.vertigo.database.sql.statement.SqlStatementBuilder;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ClassUtil;
 
 /**
  * @author jmforhan
@@ -65,40 +64,25 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 	/** {@inheritDoc} */
 	@Override
 	public OptionalInt doExecute(
-			final String sql,
-			final SqlConnection connection,
-			final SqlPreparedStatement statement,
-			final List<SqlNamedParam> params) throws SQLException {
-		Assertion.checkArgNotEmpty(sql);
+			final SqlStatement sqlStatement,
+			final SqlConnection connection) throws SQLException {
+		Assertion.checkNotNull(sqlStatement);
 		Assertion.checkNotNull(connection);
-		Assertion.checkNotNull(statement);
-		Assertion.checkNotNull(params);
 		//---
-		// on alimente le batch.
-		// La taille du batch est déduite de la taille de la collection en entrée.
-		final int batchSize = getBatchSize();
-		final List<List<SqlParameter>> batch = new ArrayList<>();
-		for (int rowNumber = 0; rowNumber < batchSize; rowNumber++) {
-			final List<SqlParameter> sqlParameters = new ArrayList<>();
-			for (final SqlNamedParam param : params) {
-				sqlParameters.add(buildSqlParameter(param, rowNumber));
-			}
-			batch.add(sqlParameters);
-		}
-
-		return statement.executeBatch(sql, batch);
+		return getDataBaseManager().executeBatch(sqlStatement, connection);
 	}
 
-	private int getBatchSize() {
-		Integer batchSize = null;
-		for (final TaskAttribute attribute : getTaskDefinition().getInAttributes()) {
-			if (attribute.getDomain().getDataType() == DataType.DtList) {
-				Assertion.checkState(batchSize == null, "Pour un traitement Batch, il ne doit y avoir qu'une seule liste en entrée.");
-				final DtList<?> dtc = getValue(attribute.getName());
-				batchSize = dtc.size();
-			}
-		}
-		Assertion.checkNotNull(batchSize, "Pour un traitement Batch, il doit y avoir une (et une seule) liste en entrée.");
-		return batchSize;
+	@Override
+	protected void setNamedParameters(final SqlStatementBuilder sqlStatementBuilder) {
+		final Iterator<TaskAttribute> inAttributes = getTaskDefinition().getInAttributes().iterator();
+		Assertion.checkState(inAttributes.hasNext(), "For batch a single DtList param is required");
+		final TaskAttribute listAttribute = inAttributes.next();
+		Assertion.checkState(listAttribute.getDomain().getDataType() == DataType.DtList && !inAttributes.hasNext(), "For batch a single DtList param is required");
+		//---
+		final DtList<?> dtc = getValue(listAttribute.getName());
+		dtc.forEach(dto -> sqlStatementBuilder
+				.bind(listAttribute.getName(), ClassUtil.classForName(listAttribute.getDomain().getDtDefinition().getClassCanonicalName()), dto)
+				.nextLine());
 	}
+
 }

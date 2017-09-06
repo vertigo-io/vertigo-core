@@ -21,7 +21,6 @@ package io.vertigo.dynamo.search.withstore;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
-import java.util.Collections;
 
 import javax.inject.Inject;
 
@@ -34,6 +33,7 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
+import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -108,8 +108,9 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	}
 
 	private void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
-		dataBaseManager.createPreparedStatement(connection)
-				.executeUpdate(sql, Collections.emptyList());
+		dataBaseManager.executeUpdate(
+				SqlStatement.builder(sql).build(),
+				connection);
 	}
 
 	/**

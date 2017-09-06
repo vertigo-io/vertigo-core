@@ -18,8 +18,6 @@
  */
 package io.vertigo.database.impl.sql;
 
-import java.util.Collections;
-
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.health.HealthChecked;
 import io.vertigo.commons.analytics.health.HealthMeasure;
@@ -28,6 +26,7 @@ import io.vertigo.core.component.Plugin;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
+import io.vertigo.database.sql.statement.SqlStatement;
 
 /**
 * Plugin du provider de connexions.
@@ -52,8 +51,10 @@ public interface SqlConnectionProviderPlugin extends SqlConnectionProvider, Plug
 			final SqlDataBaseManager sqlDataBaseManager = Home.getApp().getComponentSpace().resolve(SqlDataBaseManager.class);
 			final SqlConnection connection = obtainConnection();
 			try {
-				sqlDataBaseManager.createPreparedStatement(connection)
-						.executeQuery(testQuery, Collections.emptyList(), Integer.class, 1);
+				sqlDataBaseManager.executeQuery(
+						SqlStatement.builder(testQuery).build(),
+						Integer.class, 1,
+						connection);
 			} finally {
 				connection.release();
 			}
