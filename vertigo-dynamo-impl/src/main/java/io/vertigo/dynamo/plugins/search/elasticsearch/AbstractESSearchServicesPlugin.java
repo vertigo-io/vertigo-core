@@ -73,6 +73,7 @@ import io.vertigo.lang.WrappedException;
 public abstract class AbstractESSearchServicesPlugin implements SearchServicesPlugin, Activeable {
 	private static final int DEFAULT_SCALING_FACTOR = 1000;
 	private static final int OPTIMIZE_MAX_NUM_SEGMENT = 32;
+	/** field suffix for keyword fields added by this plugin. */
 	public static final String SUFFIX_SORT_FIELD = ".keyword";
 
 	private static final Logger LOGGER = Logger.getLogger(AbstractESSearchServicesPlugin.class);
@@ -112,7 +113,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		defaultListState = new DtListState(defaultMaxRows, 0, null, null);
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
 		//------
-		this.indexNameOrPrefix = indexNameOrPrefix.toLowerCase(Locale.ENGLISH).trim();
+		this.indexNameOrPrefix = indexNameOrPrefix.toLowerCase(Locale.ROOT).trim();
 		this.indexNameIsPrefix = indexNameIsPrefix;
 		configFileUrl = resourceManager.resolve(configFile);
 	}
@@ -131,14 +132,14 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			createIndex(myIndexName);
 			updateTypeMapping(indexDefinition);
 			logMappings(myIndexName);
-			types.add(indexDefinition.getName().toLowerCase(Locale.ENGLISH));
+			types.add(indexDefinition.getName().toLowerCase(Locale.ROOT));
 		}
 
 		waitForYellowStatus();
 	}
 
 	private String obtainIndexName(final SearchIndexDefinition indexDefinition) {
-		return indexNameIsPrefix ? (indexNameOrPrefix + indexDefinition.getName()) : indexNameOrPrefix;
+		return indexNameIsPrefix ? (indexNameOrPrefix + indexDefinition.getName().toLowerCase(Locale.ROOT).trim()) : indexNameOrPrefix;
 	}
 
 	private void createIndex(final String myIndexName) {
@@ -280,9 +281,9 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.checkArgument(indexSettingsValid,
 				"Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
 		Assertion.checkNotNull(indexDefinition);
-		Assertion.checkArgument(types.contains(indexDefinition.getName().toLowerCase(Locale.ENGLISH)), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
+		Assertion.checkArgument(types.contains(indexDefinition.getName().toLowerCase(Locale.ROOT)), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
 		//-----
-		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), indexDefinition.getName().toLowerCase(Locale.ENGLISH), esClient);
+		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), indexDefinition.getName().toLowerCase(Locale.ROOT), esClient);
 	}
 
 	/**
@@ -326,7 +327,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final PutMappingResponse putMappingResponse = esClient.admin()
 					.indices()
 					.preparePutMapping(obtainIndexName(indexDefinition))
-					.setType(indexDefinition.getName().toLowerCase(Locale.ENGLISH))
+					.setType(indexDefinition.getName().toLowerCase(Locale.ROOT))
 					.setSource(typeMapping)
 					.get();
 			putMappingResponse.isAcknowledged();
