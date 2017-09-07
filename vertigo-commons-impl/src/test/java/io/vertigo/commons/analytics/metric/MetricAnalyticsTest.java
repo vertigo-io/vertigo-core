@@ -30,7 +30,6 @@ import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.metric.data.DummyMetricsProvider;
-import io.vertigo.commons.analytics.metric.data.SystemMetricsProvider;
 import io.vertigo.commons.impl.analytics.AnalyticsManagerImpl;
 
 /**
@@ -44,7 +43,6 @@ public final class MetricAnalyticsTest extends AbstractTestCaseJU4 {
 				.addModule(ModuleConfig.builder("test-metric")
 						.addComponent(AnalyticsManager.class, AnalyticsManagerImpl.class)
 						.addComponent(DummyMetricsProvider.class)
-						.addComponent(SystemMetricsProvider.class)
 						.build())
 				.build();
 	}
