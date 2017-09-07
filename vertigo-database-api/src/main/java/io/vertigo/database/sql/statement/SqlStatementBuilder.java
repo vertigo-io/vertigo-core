@@ -44,7 +44,7 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 
 	private final String rawSqlQuery;
 	private final List<SqlNamedParam> sqlNamedParameters;
-	private final List<Map<String, Tuple2<Class, Object>>> sqlNamedParametersValues = new ArrayList();
+	private final List<Map<String, Tuple2<Class, Object>>> sqlNamedParametersValues = new ArrayList<>();
 
 	private int parameterLineIndex = 0;
 
