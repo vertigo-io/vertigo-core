@@ -264,13 +264,6 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 			final PreparedStatement statement,
 			final List<SqlParameter> parameters,
 			final SqlConnection connection) throws SQLException {
-		//		info.append(sql)
-		//				.append('(')
-		//				.append(parameters
-		//						.stream()
-		//						.map(SqlParameter::toString)
-		//						.collect(Collectors.joining(", ")))
-		//				.append(')');
 		//-----
 		for (int index = 0; index < parameters.size(); index++) {
 			final SqlParameter parameter = parameters.get(index);
@@ -285,12 +278,6 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 	//-----> Récupération du statement
 	//-----> Récupération de la connection
 	//=========================================================================
-
-	//	/** {@inheritDoc} */
-	//	@Override
-	//	public String toString() {
-	//		return info.toString();
-	//	}
 
 	private static PreparedStatement createStatement(final String sql, final SqlConnection connection) throws SQLException {
 		final PreparedStatement preparedStatement = connection.getJdbcConnection()

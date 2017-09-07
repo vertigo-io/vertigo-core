@@ -260,6 +260,54 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 	}
 
 	@Test
+	public void testSelectListInput() throws Exception {
+		//On crée les données
+		createDatas();
+		//----
+		final SqlConnection connection = obtainMainConnection();
+		final List<Movie> movies;
+		final List<Movie> moviesParams = new ArrayList<>();
+		moviesParams.add(Movies.createMovie(1, Movies.TITLE_MOVIE_1, null, null, null, null, null, null));
+		moviesParams.add(Movies.createMovie(2, Movies.TITLE_MOVIE_2, null, null, null, null, null, null));
+		try {
+			movies = dataBaseManager.executeQuery(SqlStatement
+					.builder("select * from movie where movie.title in (#movies.0.title#, #movies.1.title#) ")
+					.bind("movies", List.class, moviesParams)
+					.build(),
+					Movie.class,
+					2,
+					connection);
+
+		} finally {
+			connection.release();
+		}
+		Assert.assertEquals(2, movies.size());
+	}
+
+	@Test
+	public void testPrimitiveParam() throws Exception {
+		//On crée les données
+		createDatas();
+		//----
+		final SqlConnection connection = obtainMainConnection();
+		final List<Movie> movies;
+		try {
+			movies = dataBaseManager.executeQuery(SqlStatement
+					.builder("select * from movie where movie.title = #title# ")
+					.bind("title", String.class, Movies.TITLE_MOVIE_1)
+					.build(),
+					Movie.class,
+					1,
+					connection);
+
+		} finally {
+			connection.release();
+		}
+		Assert.assertEquals(1, movies.size());
+		Assert.assertEquals(Movies.TITLE_MOVIE_1, movies.get(0).getTitle());
+	}
+
+	@Test
 	public void testBatchInserts() throws Exception {
 		final SqlConnectionProvider sqlConnectionProvider = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
 		final String sql = INSERT_INTO_MOVIE_VALUES;
