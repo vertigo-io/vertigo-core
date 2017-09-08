@@ -30,7 +30,6 @@ import org.junit.Test;
 import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.authentication.AuthenticationToken;
 import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.DIInjector;
@@ -50,9 +49,6 @@ public final class AuthenticationManagerTest {
 
 	@Inject
 	private AuthenticationManager authenticationManager;
-
-	@Inject
-	private IdentityManager identityManager;
 
 	@Before
 	public void setUp() {

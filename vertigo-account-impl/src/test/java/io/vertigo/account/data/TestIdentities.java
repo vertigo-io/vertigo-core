@@ -29,7 +29,6 @@ import java.util.Set;
 
 import io.vertigo.account.identity.Account;
 import io.vertigo.account.identity.AccountGroup;
-import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.account.plugins.identity.store.loader.AccountLoader;
 import io.vertigo.account.plugins.identity.store.loader.GroupLoader;
 import io.vertigo.dynamo.domain.model.URI;
@@ -57,7 +56,7 @@ public final class TestIdentities implements AccountLoader, GroupLoader {
 		return DtObjectUtil.createURI(AccountGroup.class, id);
 	}
 
-	public void initData(final IdentityManager identityManager) {
+	public void initData() {
 		final Account testAccount0 = Account.builder("0").withAuthToken("john.doe").withDisplayName("John doe").withEmail("john.doe@yopmail.com").build();
 		final Account testAccount1 = Account.builder("1").withAuthToken("palmer.luckey").withDisplayName("Palmer Luckey").withEmail("palmer.luckey@yopmail.com").build();
 		final Account testAccount2 = Account.builder("2").withAuthToken("bill.clinton").withDisplayName("Bill Clinton").withEmail("bill.clinton@yopmail.com").build();
