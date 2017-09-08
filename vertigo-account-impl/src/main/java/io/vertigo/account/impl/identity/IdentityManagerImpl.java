@@ -25,7 +25,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.account.identity.Account;
 import io.vertigo.account.identity.AccountGroup;
@@ -41,38 +40,25 @@ import io.vertigo.lang.Assertion;
 public final class IdentityManagerImpl implements IdentityManager {
 	private final AccountStorePlugin accountStorePlugin; //accès local aux users
 	private final Optional<AccountCachePlugin> accountCachePlugin;
-	private final Optional<IdentityProviderPlugin> identityProviderPlugin;
-	private final boolean defaultToIdentityProvider;
 	private final VFile defaultPhoto;
 
 	/**
 	 * Constructor.
 	 * @param accountStorePlugin the account store plugin
 	 * @param accountCachePlugin the account cache plugin
-	 * @param identityProviderPlugin the identity provider plugin
-	 * @param defaultToIdentityProvider If we default to IdentityProvider if data not in store
 	 * @param fileManager the file manager
 	 */
 	@Inject
 	public IdentityManagerImpl(
 			final AccountStorePlugin accountStorePlugin,
 			final Optional<AccountCachePlugin> accountCachePlugin,
-			final Optional<IdentityProviderPlugin> identityProviderPlugin,
-			@Named("defaultToIdentityProvider") final Optional<Boolean> defaultToIdentityProvider,
 			final FileManager fileManager) {
 		Assertion.checkNotNull(accountStorePlugin);
 		Assertion.checkNotNull(accountCachePlugin);
-		Assertion.checkNotNull(identityProviderPlugin);
 		Assertion.checkNotNull(fileManager);
-		Assertion.when(defaultToIdentityProvider.isPresent() && defaultToIdentityProvider.get())
-				.check(identityProviderPlugin::isPresent, "When defaultToIdentityProvider is set, you must provide a IdentityProviderPlugin");
-		Assertion.checkArgument(!defaultToIdentityProvider.isPresent(), "TODO : defaultToIdentityProvider not implemented yet");
-
 		//-----
 		this.accountStorePlugin = accountStorePlugin;
 		this.accountCachePlugin = accountCachePlugin;
-		this.identityProviderPlugin = identityProviderPlugin;
-		this.defaultToIdentityProvider = defaultToIdentityProvider.orElse(false);
 		defaultPhoto = fileManager.createFile(
 				"defaultPhoto.png",
 				"image/png",
