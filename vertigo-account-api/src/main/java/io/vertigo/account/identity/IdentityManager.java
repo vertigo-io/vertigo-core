@@ -26,22 +26,19 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.model.VFile;
 
 /**
- * Gestion centralisee des droits d'acces.
+ * Centralized management of accounts.
  *
  * @author npiedeloup
  */
 public interface IdentityManager extends Manager {
 
 	/**
-	 * Gets the default photo of an account.
-	 *
+	 * Gets the default photo of any account.
+	 * This default photo will be used if an account does not have one
 	 * @return the photo as a file
 	 */
 	VFile getDefaultPhoto();
 
-	//------------------//
-	//-- AccountStore --//
-	//------------------//
 	/**
 	 * @param accountURI the account defined by its URI
 	 * @return the account
@@ -64,7 +61,7 @@ public interface IdentityManager extends Manager {
 
 	/**
 	 * @param accountURI the account defined by its URI
-	 * @return Set of groups of this account
+	 * @return set of groups of this account
 	 */
 	Set<URI<AccountGroup>> getGroupURIs(URI<Account> accountURI);
 
@@ -77,10 +74,9 @@ public interface IdentityManager extends Manager {
 	Optional<VFile> getPhoto(URI<Account> accountURI);
 
 	/**
-	 * Get an newly authentify user by his authToken.
+	 * Gets an newly authentified account by his authToken.
 	 * @param userAuthToken user authToken
-	 * @return Logged account
+	 * @return the logged account
 	 */
 	Optional<Account> getAccountByAuthToken(String userAuthToken);
-
 }

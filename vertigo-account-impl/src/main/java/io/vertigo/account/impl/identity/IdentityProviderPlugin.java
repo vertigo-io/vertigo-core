@@ -51,7 +51,7 @@ public interface IdentityProviderPlugin extends Plugin {
 	<E extends Entity> Optional<VFile> getPhoto(URI<E> accountURI);
 
 	/**
-	 * Get an newly authentify user by his authToken.
+	 * Gets an newly authentified account by his authToken.
 	 * @param userAuthToken user authToken
 	 * @return Logged account
 	 * @param <E> project's User entity type
