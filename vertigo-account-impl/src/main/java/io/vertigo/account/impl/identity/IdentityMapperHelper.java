@@ -18,19 +18,21 @@
  */
 package io.vertigo.account.impl.identity;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 
 /**
  * @author npiedeloup
+ * @param <S> Source type
+ * @param <D> Destination type
  */
 public final class IdentityMapperHelper<S, D> {
 
@@ -39,12 +41,17 @@ public final class IdentityMapperHelper<S, D> {
 	private final Optional<DtDefinition> destDtDefinition;
 
 	private final String sourceToDestMappingStr;
-	private final List<String> reservedDestField = new ArrayList<>();
-	private final List<D> mandatoryDestField = new ArrayList<>();
+	private final Set<String> reservedDestField = new HashSet<>();
+	private final Set<D> mandatoryDestField = new HashSet<>();
 
 	private final Map<D, S> destToSourceMapping = new HashMap<>(); //DestAttribute from SourceAttribute
 	private final Map<String, S> reservedToSourceMapping = new HashMap<>(); //reservedField from SourceAttribute
 
+	/**
+	 * Constructor.
+	 * @param destDtDefinition Destination dtDefinition
+	 * @param sourceToDestMappingStr source to dest mapping
+	 */
 	public IdentityMapperHelper(final DtDefinition destDtDefinition, final String sourceToDestMappingStr) {
 		sourceDtDefinition = Optional.empty();
 		destEnum = Optional.empty();
@@ -52,6 +59,12 @@ public final class IdentityMapperHelper<S, D> {
 		this.sourceToDestMappingStr = sourceToDestMappingStr;
 	}
 
+	/**
+	 * Constructor.
+	 * @param sourceDtDefinition Source dtDefinition
+	 * @param destEnum Destination enum
+	 * @param sourceToDestMappingStr source to dest mapping
+	 */
 	public IdentityMapperHelper(final DtDefinition sourceDtDefinition, final Class<? extends Enum> destEnum, final String sourceToDestMappingStr) {
 		this.sourceDtDefinition = Optional.of(sourceDtDefinition);
 		this.destEnum = Optional.of(destEnum);
