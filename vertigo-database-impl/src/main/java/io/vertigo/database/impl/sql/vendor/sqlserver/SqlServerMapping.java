@@ -21,7 +21,7 @@ package io.vertigo.database.impl.sql.vendor.sqlserver;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import io.vertigo.database.impl.sql.vendor.core.SqlMappingImpl;
+import io.vertigo.database.impl.sql.vendor.core.DefaultSqlMapping;
 import io.vertigo.database.sql.vendor.SqlMapping;
 
 /**
@@ -30,7 +30,7 @@ import io.vertigo.database.sql.vendor.SqlMapping;
  * @author pchretien
  */
 final class SqlServerMapping implements SqlMapping {
-	private final SqlMapping defaultSQLMapping = new SqlMappingImpl();
+	private final SqlMapping defaultSqlMapping = new DefaultSqlMapping();
 
 	/** {@inheritDoc} */
 	@Override
@@ -39,7 +39,7 @@ final class SqlServerMapping implements SqlMapping {
 			final int index,
 			final Class<O> dataType,
 			final O value) throws SQLException {
-		defaultSQLMapping.setValueOnStatement(statement, index, dataType, value);
+		defaultSqlMapping.setValueOnStatement(statement, index, dataType, value);
 	}
 
 	/** {@inheritDoc} */
@@ -48,6 +48,6 @@ final class SqlServerMapping implements SqlMapping {
 			final ResultSet resultSet,
 			final int col,
 			final Class<O> dataType) throws SQLException {
-		return defaultSQLMapping.getValueForResultSet(resultSet, col, dataType);
+		return defaultSqlMapping.getValueForResultSet(resultSet, col, dataType);
 	}
 }

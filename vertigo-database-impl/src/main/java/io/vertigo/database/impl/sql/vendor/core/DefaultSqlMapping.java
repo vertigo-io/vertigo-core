@@ -38,12 +38,12 @@ import io.vertigo.database.sql.vendor.SqlMapping;
 import io.vertigo.lang.DataStream;
 
 /**
- * this class implements the standard mapping to a sql database
+ * this class implements the default mapping to a sql database
  * this behavior may be partially or fully overridden
  *
  * @author pchretien
  */
-public final class SqlMappingImpl implements SqlMapping {
+public final class DefaultSqlMapping implements SqlMapping {
 	private static final String TYPE_UNSUPPORTED = "Type unsupported : ";
 
 	private static Calendar createCalendarUTC() {
@@ -52,9 +52,7 @@ public final class SqlMappingImpl implements SqlMapping {
 		return calendar;
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public int getSqlType(final Class dataType) {
+	private static int getSqlType(final Class dataType) {
 		if (Boolean.class.isAssignableFrom(dataType)) {
 			return Types.BIT;
 		}

@@ -20,9 +20,8 @@ package io.vertigo.database.impl.sql.vendor.postgresql;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 
-import io.vertigo.database.impl.sql.vendor.core.SqlMappingImpl;
+import io.vertigo.database.impl.sql.vendor.core.DefaultSqlMapping;
 import io.vertigo.database.sql.vendor.SqlMapping;
 
 /**
@@ -30,27 +29,18 @@ import io.vertigo.database.sql.vendor.SqlMapping;
  *
  * @author pchretien
  */
-final class PostgresqlMapping implements SqlMapping {
-	private final SqlMapping defaultSQLMapping = new SqlMappingImpl();
-
-	/** {@inheritDoc} */
-	@Override
-	public int getSqlType(final Class dataType) {
-		if (Boolean.class.isAssignableFrom(dataType)) {
-			return Types.BOOLEAN;
-		}
-		return defaultSQLMapping.getSqlType(dataType);
-	}
+final class PostgreSqlMapping implements SqlMapping {
+	private final SqlMapping defaultSqlMapping = new DefaultSqlMapping();
 
 	/** {@inheritDoc} */
 	@Override
 	public <O> void setValueOnStatement(final java.sql.PreparedStatement statement, final int index, final Class<O> dataType, final O value) throws SQLException {
 		if (value == null) {
-			defaultSQLMapping.setValueOnStatement(statement, index, dataType, null /*value*/);
+			defaultSqlMapping.setValueOnStatement(statement, index, dataType, null /*value*/);
 		} else if (Boolean.class.isAssignableFrom(dataType)) {
 			statement.setBoolean(index, Boolean.TRUE.equals(value));
 		} else {
-			defaultSQLMapping.setValueOnStatement(statement, index, dataType, value);
+			defaultSqlMapping.setValueOnStatement(statement, index, dataType, value);
 		}
 	}
 
@@ -61,6 +51,6 @@ final class PostgresqlMapping implements SqlMapping {
 			final boolean vb = resultSet.getBoolean(col);
 			return resultSet.wasNull() ? null : dataType.cast(vb);
 		}
-		return defaultSQLMapping.getValueForResultSet(resultSet, col, dataType);
+		return defaultSqlMapping.getValueForResultSet(resultSet, col, dataType);
 	}
 }

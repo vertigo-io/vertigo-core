@@ -22,7 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import io.vertigo.database.impl.sql.vendor.core.SqlMappingImpl;
+import io.vertigo.database.impl.sql.vendor.core.DefaultSqlMapping;
 import io.vertigo.database.sql.vendor.SqlMapping;
 
 /**
@@ -31,7 +31,7 @@ import io.vertigo.database.sql.vendor.SqlMapping;
  * @author jmainaud
  */
 final class H2Mapping implements SqlMapping {
-	private final SqlMapping defaultSQLMapping = new SqlMappingImpl();
+	private final SqlMapping defaultSqlMapping = new DefaultSqlMapping();
 
 	/** {@inheritDoc} */
 	@Override
@@ -47,7 +47,7 @@ final class H2Mapping implements SqlMapping {
 				statement.setBoolean(index, Boolean.TRUE.equals(value));
 			}
 		} else {
-			defaultSQLMapping.setValueOnStatement(statement, index, dataType, value);
+			defaultSqlMapping.setValueOnStatement(statement, index, dataType, value);
 		}
 	}
 
@@ -61,6 +61,6 @@ final class H2Mapping implements SqlMapping {
 			final boolean vb = resultSet.getBoolean(col);
 			return resultSet.wasNull() ? null : dataType.cast(vb);
 		}
-		return defaultSQLMapping.getValueForResultSet(resultSet, col, dataType);
+		return defaultSqlMapping.getValueForResultSet(resultSet, col, dataType);
 	}
 }
