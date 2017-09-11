@@ -46,15 +46,29 @@ import io.vertigo.lang.DataStream;
 public final class DefaultSqlMapping implements SqlMapping {
 	private static final String TYPE_UNSUPPORTED = "Type unsupported : ";
 
+	private final boolean booleanAsBit;
+
+	private DefaultSqlMapping(final boolean booleanAsBit) {
+		this.booleanAsBit = booleanAsBit;
+	}
+
+	public static SqlMapping createWithBooleanAsBit() {
+		return new DefaultSqlMapping(true);
+	}
+
+	public static SqlMapping createWithBooleanAsBoolean() {
+		return new DefaultSqlMapping(false);
+	}
+
 	private static Calendar createCalendarUTC() {
 		final Calendar calendar = Calendar.getInstance();
 		calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
 		return calendar;
 	}
 
-	private static int getSqlType(final Class dataType) {
+	private int getSqlType(final Class dataType) {
 		if (Boolean.class.isAssignableFrom(dataType)) {
-			return Types.BIT;
+			return booleanAsBit ? Types.BIT : Types.BOOLEAN;
 		}
 		//---Numbers
 		if (Integer.class.isAssignableFrom(dataType)) {
@@ -106,8 +120,13 @@ public final class DefaultSqlMapping implements SqlMapping {
 			} else if (Long.class.isAssignableFrom(dataType)) {
 				statement.setLong(index, (Long) value);
 			} else if (Boolean.class.isAssignableFrom(dataType)) {
-				final int intValue = Boolean.TRUE.equals(value) ? 1 : 0;
-				statement.setInt(index, intValue);
+				if (booleanAsBit) {
+					final int intValue = Boolean.TRUE.equals(value) ? 1 : 0;
+					statement.setInt(index, intValue);
+				} else {
+					//Boolean as Boolean
+					statement.setBoolean(index, Boolean.TRUE.equals(value));
+				}
 			} else if (Double.class.isAssignableFrom(dataType)) {
 				statement.setDouble(index, (Double) value);
 			} else if (BigDecimal.class.isAssignableFrom(dataType)) {
@@ -169,8 +188,14 @@ public final class DefaultSqlMapping implements SqlMapping {
 			final long vl = resultSet.getLong(col);
 			value = resultSet.wasNull() ? null : vl;
 		} else if (Boolean.class.isAssignableFrom(dataType)) {
-			final int vb = resultSet.getInt(col);
-			value = resultSet.wasNull() ? null : vb != 0 ? Boolean.TRUE : Boolean.FALSE;
+			if (booleanAsBit) {
+				final int vb = resultSet.getInt(col);
+				value = resultSet.wasNull() ? null : vb != 0 ? Boolean.TRUE : Boolean.FALSE;
+			} else {
+				//Boolean as Boolean
+				final boolean vb = resultSet.getBoolean(col);
+				value = resultSet.wasNull() ? null : vb;
+			}
 		} else if (Double.class.isAssignableFrom(dataType)) {
 			final double vd = resultSet.getDouble(col);
 			value = resultSet.wasNull() ? null : vd;
