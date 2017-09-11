@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.metric.Metric;
 import io.vertigo.commons.daemon.DaemonScheduled;
@@ -68,16 +69,16 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	 */
 	@Inject
 	public SocketLoggerAnalyticsConnectorPlugin(
-			@Named("appName") final String appName,
+			@Named("appName") final Optional<String> appNameOpt,
 			@Named("hostName") final Optional<String> hostNameOpt,
 			@Named("port") final Optional<Integer> portOpt) {
-		Assertion.checkArgNotEmpty(appName);
+		Assertion.checkNotNull(appNameOpt);
 		Assertion.checkNotNull(hostNameOpt);
 		Assertion.checkNotNull(portOpt);
 		// ---
+		appName = appNameOpt.orElse(Home.getApp().getConfig().getNodeConfig().getAppName());
 		hostName = hostNameOpt.orElse("analytica.part.klee.lan.net");
 		port = portOpt.orElse(DEFAULT_SERVER_PORT);
-		this.appName = appName;
 		localHostName = retrieveHostName();
 	}
 
