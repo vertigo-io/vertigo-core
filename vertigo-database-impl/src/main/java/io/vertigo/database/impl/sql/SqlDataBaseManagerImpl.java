@@ -27,12 +27,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.process.ProcessAnalyticsTracer;
 import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.database.impl.sql.mapper.SqlMapper;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
@@ -49,7 +51,6 @@ import io.vertigo.lang.Tuples;
 * @author pchretien
 */
 public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
-
 	private static final int NO_GENERATED_KEY_ERROR_VENDOR_CODE = 100;
 
 	private static final int TOO_MANY_GENERATED_KEY_ERROR_VENDOR_CODE = 464;
@@ -65,6 +66,8 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 	private final AnalyticsManager analyticsManager;
 	private final Map<String, SqlConnectionProvider> connectionProviderPluginMap;
 
+	private final SqlMapper sqlMapper;
+
 	/**
 	 * Constructor.
 	 * @param localeManager Manager des messages localisés
@@ -75,10 +78,12 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 	public SqlDataBaseManagerImpl(
 			final LocaleManager localeManager,
 			final AnalyticsManager analyticsManager,
-			final List<SqlConnectionProviderPlugin> sqlConnectionProviderPlugins) {
+			final List<SqlConnectionProviderPlugin> sqlConnectionProviderPlugins,
+			final List<SqlAdapterSupplierPlugin> sqlAdapterSupplierPlugins) {
 		Assertion.checkNotNull(localeManager);
 		Assertion.checkNotNull(analyticsManager);
 		Assertion.checkNotNull(sqlConnectionProviderPlugins);
+		Assertion.checkNotNull(sqlAdapterSupplierPlugins);
 		//-----
 		this.analyticsManager = analyticsManager;
 		connectionProviderPluginMap = new HashMap<>(sqlConnectionProviderPlugins.size());
@@ -88,6 +93,11 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 			Assertion.checkState(previous == null, "ConnectionProvider {0}, was already registered", name);
 		}
 		localeManager.add("io.vertigo.database.impl.sql.DataBase", io.vertigo.database.impl.sql.Resources.values());
+		//---
+		sqlMapper = new SqlMapper(sqlAdapterSupplierPlugins
+				.stream()
+				.flatMap(plugin -> plugin.getAdapters().stream())
+				.collect(Collectors.toList()));
 	}
 
 	/** {@inheritDoc} */
@@ -119,7 +129,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		}
 	}
 
-	private static <O> List<O> doExecuteQuery(
+	private <O> List<O> doExecuteQuery(
 			final PreparedStatement statement,
 			final ProcessAnalyticsTracer tracer,
 			final Class<O> dataType,
@@ -129,7 +139,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		final SqlMapping mapping = connection.getDataBase().getSqlMapping();
 		try (final ResultSet resultSet = statement.executeQuery()) {
 			//Le Handler a la responsabilité de créer les données.
-			final List<O> result = SqlUtil.buildResult(dataType, mapping, resultSet, limit);
+			final List<O> result = SqlUtil.buildResult(dataType, sqlMapper, mapping, resultSet, limit);
 			tracer.setMeasure("nbSelectedRow", result.size());
 			return result;
 		} catch (final SQLException e) {
@@ -259,7 +269,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 				});
 	}
 
-	private static void setParameters(
+	private void setParameters(
 			final String sql,
 			final PreparedStatement statement,
 			final List<SqlParameter> parameters,
@@ -267,8 +277,8 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		//-----
 		for (int index = 0; index < parameters.size(); index++) {
 			final SqlParameter parameter = parameters.get(index);
-			connection.getDataBase().getSqlMapping()
-					.setValueOnStatement(statement, index + 1, parameter.getDataType(), parameter.getValue());
+			sqlMapper.setValueOnStatement(connection.getDataBase().getSqlMapping(),
+					statement, index + 1, parameter.getDataType(), parameter.getValue());
 		}
 	}
 
@@ -310,7 +320,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		return preparedStatement;
 	}
 
-	private static <O> O getGeneratedKey(
+	private <O> O getGeneratedKey(
 			final PreparedStatement statement,
 			final String columnName,
 			final Class<O> dataType,
@@ -321,15 +331,16 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		// L'utilisation des generatedKeys permet d'avoir un seul appel réseau entre le
 		// serveur d'application et la base de données pour un insert et la récupération de la
 		// valeur de la clé primaire en respectant les standards jdbc et sql ansi.
+		final SqlMapping sqlMapping = connection.getDataBase().getSqlMapping();
 		try (final ResultSet rs = statement.getGeneratedKeys()) {
 			final boolean next = rs.next();
 			if (!next) {
 				throw new SQLException("GeneratedKeys empty", "02000", NO_GENERATED_KEY_ERROR_VENDOR_CODE);
 			}
-			final SqlMapping mapping = connection.getDataBase().getSqlMapping();
 			//ResultSet haven't correctly named columns so we fall back to get the first column, instead of looking for column index by name.
 			final int pkRsCol = GENERATED_KEYS_INDEX;//attention le pkRsCol correspond au n° de column dans le RETURNING
-			final O id = mapping.getValueForResultSet(rs, pkRsCol, dataType); //attention le pkRsCol correspond au n° de column dans le RETURNING
+			final O id = sqlMapper.getValueForResultSet(sqlMapping,
+					rs, pkRsCol, dataType); //attention le pkRsCol correspond au n° de column dans le RETURNING
 			if (rs.wasNull()) {
 				throw new SQLException("GeneratedKeys wasNull", "23502", NULL_GENERATED_KEY_ERROR_VENDOR_CODE);
 			}
@@ -340,5 +351,4 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 			return id;
 		}
 	}
-
 }

@@ -31,6 +31,7 @@ import io.vertigo.lang.DataStream;
 public final class Movie {
 	private Long id;
 	private String title;
+	private Mail mail;
 	@Deprecated
 	private Date releaseDate;
 	private LocalDate releaseLocalDate;
@@ -115,13 +116,17 @@ public final class Movie {
 	public void setReleaseZonedDateTime(final ZonedDateTime releaseZonedDateTime) {
 		this.releaseZonedDateTime = releaseZonedDateTime;
 	}
-	//
-	//	public void setMail(final Mail mail) {
-	//		this.mail = mail;
-	//	}
-	//
-	//	public Mail getMail() {
-	//		return mail;
-	//	}
+
+	/*
+	 * Tests extended mapping
+	 */
+
+	public void setMail(final Mail mail) {
+		this.mail = mail;
+	}
+
+	public Mail getMail() {
+		return mail;
+	}
 
 }

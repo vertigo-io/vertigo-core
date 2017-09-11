@@ -55,10 +55,11 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 	private static final String DROP_TABLE_MOVIE = "DROP TABLE movie";
 	private static final String DROP_SEQUENCE_MOVIE = "DROP SEQUENCE seq_movie";
 
-	private static final String INSERT_INTO_MOVIE_VALUES = "insert into movie values (#movie.id#, #movie.title#, #movie.fps#, #movie.income#, #movie.color#, #movie.release_date#, #movie.release_local_date#, #movie.release_zoned_date_time#, #movie.icon#)";
+	private static final String INSERT_INTO_MOVIE_VALUES = "insert into movie values (#movie.id#, #movie.title#, #movie.mail#, #movie.fps#, #movie.income#, #movie.color#, #movie.release_date#, #movie.release_local_date#, #movie.release_zoned_date_time#, #movie.icon#)";
 	private static final String CREATE_TABLE_MOVIE = "create table movie ("
 			+ "id bigint , "
 			+ "title varchar(255) , "
+			+ "mail varchar(255) , "
 			+ "fps double precision ,"
 			+ "income decimal(6,3) , "
 			+ "color boolean , "
@@ -127,7 +128,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 	}
 
 	private void insert(
-			final SqlConnection connection, final Movie movie) throws SQLException {
+			final SqlConnection connection,
+			final Movie movie) throws SQLException {
 		//-----
 		dataBaseManager
 				.executeUpdate(
@@ -143,6 +145,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 			insert(connection, Movies.createMovie(
 					1,
 					Movies.TITLE_MOVIE_1,
+					null, //mail
 					null,
 					null,
 					null,
@@ -153,6 +156,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 			insert(connection, Movies.createMovie(
 					2,
 					Movies.TITLE_MOVIE_2,
+					null, //mail
 					null,
 					null,
 					null,
@@ -164,6 +168,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 			insert(connection, Movies.createMovie(
 					3,
 					Movies.TITLE_MOVIE_3,
+					null, //Mail
 					null,
 					null,
 					null,
@@ -267,8 +272,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		final SqlConnection connection = obtainMainConnection();
 		final List<Movie> movies;
 		final List<Movie> moviesParams = new ArrayList<>();
-		moviesParams.add(Movies.createMovie(1, Movies.TITLE_MOVIE_1, null, null, null, null, null, null));
-		moviesParams.add(Movies.createMovie(2, Movies.TITLE_MOVIE_2, null, null, null, null, null, null));
+		moviesParams.add(Movies.createMovie(1, Movies.TITLE_MOVIE_1, null, null, null, null, null, null, null));
+		moviesParams.add(Movies.createMovie(2, Movies.TITLE_MOVIE_2, null, null, null, null, null, null, null));
 		try {
 			movies = dataBaseManager.executeQuery(SqlStatement
 					.builder("select * from movie where movie.title in (#movies.0.title#, #movies.1.title#) ")
@@ -363,14 +368,15 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary")
 				.obtainConnection();
 		try {
-			execpreparedStatement(connection, "insert into movie values (1, 'Star wars', null, null, null, null, null, null, null)");
-			execpreparedStatement(connection, "insert into movie values (2, 'Will Hunting', null, null, null, null, null, null, null)");
-			execpreparedStatement(connection, "insert into movie values (3, 'Usual Suspects', null, null, null, null, null, null, null)");
+			execpreparedStatement(connection, "insert into movie values (1, 'Star wars', null, null, null, null, null, null, null, null)");
+			execpreparedStatement(connection, "insert into movie values (2, 'Will Hunting', null, null, null, null, null, null, null, null)");
+			execpreparedStatement(connection, "insert into movie values (3, 'Usual Suspects', null, null, null, null, null, null, null, null)");
 			//-----
 			//On passe par une requête bindée
 			insert(connection, Movies.createMovie(
 					3,
 					Movies.TITLE_MOVIE_3,
+					null, //mail
 					null,
 					null,
 					null,

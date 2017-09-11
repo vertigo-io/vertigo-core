@@ -52,6 +52,7 @@ public final class Movies {
 	public static Movie createMovie(
 			final long id,
 			final String title,
+			final Mail mail,
 			final Double fps,
 			final Double income,
 			final Boolean color,
@@ -61,6 +62,7 @@ public final class Movies {
 		final Movie movie = new Movie();
 		movie.setId(id);
 		movie.setTitle(title);
+		movie.setMail(mail);
 		movie.setReleaseDate(date);
 		movie.setReleaseLocalDate(localDate);
 		movie.setReleaseZonedDateTime(releaseZonedDateTime);
@@ -147,6 +149,7 @@ public final class Movies {
 	private static Movie createMovie(
 			final long id,
 			final String title,
+			final String mailAsString,
 			final Double fps,
 			final Double income,
 			final Boolean color,
@@ -158,26 +161,26 @@ public final class Movies {
 		calendar.set(year, month, dayOfMonth);
 
 		final LocalDate localDate = LocalDate.of(year, month, dayOfMonth);
-		return Movies.createMovie(id, title, fps, income, color, calendar.getTime(), localDate, ZonedDateTime.of(LocalDate.of(year, month, dayOfMonth), LocalTime.of(16, 30), ZoneId.of("UTC")));
+		return Movies.createMovie(id, title, new Mail(mailAsString), fps, income, color, calendar.getTime(), localDate, ZonedDateTime.of(LocalDate.of(year, month, dayOfMonth), LocalTime.of(16, 30), ZoneId.of("UTC")));
 	}
 
 	public static final List<Movie> bondMovies() {
 		return new ListBuilder<Movie>()
-				.add(createMovie(1, "Doctor No", 23.976, 59.600, true, 1962, 10, 5))
-				.add(createMovie(2, "From Russia with Love", 23.976, 78.900, true, 1963, 10, 10))
-				.add(createMovie(3, "Goldfinger", 23.976, 124.900, true, 1964, 9, 17))
-				.add(createMovie(4, "Thunderball", 23.976, 141.200, true, 1965, 12, 17))
-				.add(createMovie(5, "You only live twice", 23.976, 111.600, true, 1967, 6, 12))
-				.add(createMovie(6, "On her majesty's secret service", 23.976, 87.400, true, 1969, 12, 18))
-				.add(createMovie(7, "Diamonds are forever", 23.976, 116.000, true, 1971, 12, 14))
-				.add(createMovie(8, "Live and let die", 23.976, 161.800, true, 1973, 6, 27))
-				.add(createMovie(9, "The man with the golden gun", 23.976, 97.600, true, 1974, 12, 19))
-				.add(createMovie(10, "The spy who loved me", 23.976, 185.400, true, 1977, 7, 7))
-				.add(createMovie(11, "Moonraker", 23.976, 210.300, true, 1979, 6, 26))
-				.add(createMovie(12, "For your eyes only", 23.976, 195.300, true, 1981, 6, 24))
-				.add(createMovie(13, "Octopussy", 23.976, 187.500, true, 1983, 6, 6))
-				.add(createMovie(14, "A view to a kill", 23.976, 152.400, true, 1985, 5, 22))
-				.add(createMovie(15, "The living daylights", 23.976, 191.200, true, 1987, 6, 27))
+				.add(createMovie(1, "Doctor No", "drNo@jbonds.com", 23.976, 59.600, true, 1962, 10, 5))
+				.add(createMovie(2, "From Russia with Love", null, 23.976, 78.900, true, 1963, 10, 10))
+				.add(createMovie(3, "Goldfinger", null, 23.976, 124.900, true, 1964, 9, 17))
+				.add(createMovie(4, "Thunderball", null, 23.976, 141.200, true, 1965, 12, 17))
+				.add(createMovie(5, "You only live twice", null, 23.976, 111.600, true, 1967, 6, 12))
+				.add(createMovie(6, "On her majesty's secret service", null, 23.976, 87.400, true, 1969, 12, 18))
+				.add(createMovie(7, "Diamonds are forever", null, 23.976, 116.000, true, 1971, 12, 14))
+				.add(createMovie(8, "Live and let die", null, 23.976, 161.800, true, 1973, 6, 27))
+				.add(createMovie(9, "The man with the golden gun", null, 23.976, 97.600, true, 1974, 12, 19))
+				.add(createMovie(10, "The spy who loved me", null, 23.976, 185.400, true, 1977, 7, 7))
+				.add(createMovie(11, "Moonraker", null, 23.976, 210.300, true, 1979, 6, 26))
+				.add(createMovie(12, "For your eyes only", null, 23.976, 195.300, true, 1981, 6, 24))
+				.add(createMovie(13, "Octopussy", null, 23.976, 187.500, true, 1983, 6, 6))
+				.add(createMovie(14, "A view to a kill", null, 23.976, 152.400, true, 1985, 5, 22))
+				.add(createMovie(15, "The living daylights", null, 23.976, 191.200, true, 1987, 6, 27))
 				.build();
 	}
 }

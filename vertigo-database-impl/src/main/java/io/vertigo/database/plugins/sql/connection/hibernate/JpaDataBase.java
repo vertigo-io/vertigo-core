@@ -25,7 +25,7 @@ import io.vertigo.commons.transaction.VTransactionResourceId;
 import io.vertigo.database.sql.vendor.SqlDataBase;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.database.sql.vendor.SqlExceptionHandler;
-import io.vertigo.database.sql.vendor.SqlVendorMapping;
+import io.vertigo.database.sql.vendor.SqlMapping;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -61,7 +61,7 @@ public final class JpaDataBase implements SqlDataBase {
 
 	/** {@inheritDoc} */
 	@Override
-	public SqlVendorMapping getSqlMapping() {
+	public SqlMapping getSqlMapping() {
 		return innerDataBase.getSqlMapping();
 	}
 

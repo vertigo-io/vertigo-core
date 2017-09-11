@@ -32,7 +32,7 @@ public interface SqlDataBase {
 	/**
 	 * @return the mapping between the vendor database and java
 	 */
-	SqlVendorMapping getSqlMapping();
+	SqlMapping getSqlMapping();
 
 	/**
 	 * @return the specific dialect used by the database.

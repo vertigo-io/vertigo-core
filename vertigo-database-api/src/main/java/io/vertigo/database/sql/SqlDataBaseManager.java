@@ -34,7 +34,7 @@ import io.vertigo.lang.Tuples;
  * @author pchretien
  */
 public interface SqlDataBaseManager extends Manager {
-	/** Main connectionProvider's name. */
+	/** The name of the main connectionProvider. */
 	String MAIN_CONNECTION_PROVIDER_NAME = "main";
 
 	/**
@@ -48,7 +48,7 @@ public interface SqlDataBaseManager extends Manager {
 	 * @param sqlStatement sqlStatement
 	 * @param dataType the return dataType of the list
 	 * @param limit the return limit (null if no limit)
-	 * @param connection sqlConnection
+	 * @param connection the sqlConnection
 	 * @return the list
 	 *
 	 * @throws SQLException
@@ -95,7 +95,7 @@ public interface SqlDataBaseManager extends Manager {
 	 * if no info available an empty Optional is returned
 	 * @throws SQLException Si erreur
 	 */
-	OptionalInt executeBatch(SqlStatement sqlStatement,
+	OptionalInt executeBatch(
+			SqlStatement sqlStatement,
 			final SqlConnection connection) throws SQLException;
-
 }

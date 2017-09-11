@@ -31,7 +31,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
 
-import io.vertigo.database.sql.mapper.SqlMapping;
+import io.vertigo.database.impl.sql.mapper.SqlMapper;
+import io.vertigo.database.sql.vendor.SqlMapping;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.BeanUtil;
@@ -58,19 +59,22 @@ final class SqlUtil {
 	 */
 	static <O> List<O> buildResult(
 			final Class<O> dataType,
-			final SqlMapping mapping,
+			final SqlMapper sqlMapper,
+			final SqlMapping sqlMapping,
 			final ResultSet resultSet,
 			final Integer limit) throws SQLException {
 		Assertion.checkNotNull(dataType);
-		Assertion.checkNotNull(mapping);
+		Assertion.checkNotNull(sqlMapper);
+		Assertion.checkNotNull(sqlMapping);
 		Assertion.checkNotNull(resultSet);
 		//-----
-		return retrieveData(dataType, mapping, resultSet, limit);
+		return retrieveData(dataType, sqlMapper, sqlMapping, resultSet, limit);
 	}
 
 	private static <O> List<O> retrieveData(
 			final Class<O> dataType,
-			final SqlMapping mapping,
+			final SqlMapper sqlMapper,
+			final SqlMapping sqlMapping,
 			final ResultSet resultSet,
 			final Integer limit) throws SQLException {
 		final boolean isPrimitive = isPrimitive(dataType);
@@ -84,22 +88,24 @@ final class SqlUtil {
 				throw createTooManyRowsException();
 			}
 			if (isPrimitive) {
-				list.add(readPrimitive(mapping, resultSet, dataType));
+				list.add(readPrimitive(sqlMapper, sqlMapping, resultSet, dataType));
 			} else {
-				list.add(readRow(mapping, resultSet, dataType, fields));
+				list.add(readRow(sqlMapper, sqlMapping, resultSet, dataType, fields));
 			}
 		}
 		return list;
 	}
 
 	private static <O> O readPrimitive(
+			final SqlMapper sqlMapper,
 			final SqlMapping mapping,
 			final ResultSet resultSet,
 			final Class<O> dataType) throws SQLException {
-		return mapping.getValueForResultSet(resultSet, 1, dataType);
+		return sqlMapper.getValueForResultSet(mapping, resultSet, 1, dataType);
 	}
 
 	private static <O> O readRow(
+			final SqlMapper sqlMapper,
 			final SqlMapping mapping,
 			final ResultSet resultSet,
 			final Class<O> dataType,
@@ -107,7 +113,7 @@ final class SqlUtil {
 		final O bean = ClassUtil.newInstance(dataType);
 		Object value;
 		for (int i = 0; i < fields.length; i++) {
-			value = mapping.getValueForResultSet(resultSet, i + 1, fields[i].type);
+			value = sqlMapper.getValueForResultSet(mapping, resultSet, i + 1, fields[i].type);
 			fields[i].setValue(bean, value);
 		}
 		return bean;

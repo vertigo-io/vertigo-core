@@ -18,11 +18,11 @@
  */
 package io.vertigo.database.impl.sql.vendor.sqlserver;
 
-import io.vertigo.database.impl.sql.vendor.core.SqlVendorMappingImpl;
+import io.vertigo.database.impl.sql.vendor.core.SqlVendorMapping;
 import io.vertigo.database.sql.vendor.SqlDataBase;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.database.sql.vendor.SqlExceptionHandler;
-import io.vertigo.database.sql.vendor.SqlVendorMapping;
+import io.vertigo.database.sql.vendor.SqlMapping;
 
 /**
  * Gestion de la base de données SqlServer.
@@ -31,7 +31,7 @@ import io.vertigo.database.sql.vendor.SqlVendorMapping;
  */
 public final class SqlServerDataBase implements SqlDataBase {
 	private final SqlExceptionHandler sqlExceptionHandler = new SqlServerExceptionHandler();
-	private final SqlVendorMapping sqlVendorMapping = SqlVendorMappingImpl.createWithBooleanAsBit();
+	private final SqlMapping sqlVendorMapping = SqlVendorMapping.createWithBooleanAsBit();
 	private final SqlDialect sqlDialect = new SqlServerDialect();
 
 	/** {@inheritDoc} */
@@ -42,7 +42,7 @@ public final class SqlServerDataBase implements SqlDataBase {
 
 	/** {@inheritDoc} */
 	@Override
-	public SqlVendorMapping getSqlMapping() {
+	public SqlMapping getSqlMapping() {
 		return sqlVendorMapping;
 	}
 

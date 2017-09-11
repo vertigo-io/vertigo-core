@@ -27,6 +27,7 @@ public final class PostgreSqlDataBaseManagerTest extends AbstractSqlDataBaseMana
 		final String myString = "CREATE TABLE movie ( "
 				+ "id 						NUMERIC(6), "
 				+ "title 					VARCHAR(255), "
+				+ "mail 					VARCHAR(255), "
 				+ "fps 						NUMERIC(6,3), "
 				+ "income 					NUMERIC(6,3), "
 				+ "color 					BOOLEAN, "
