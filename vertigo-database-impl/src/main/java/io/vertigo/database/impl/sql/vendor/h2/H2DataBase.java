@@ -18,11 +18,11 @@
  */
 package io.vertigo.database.impl.sql.vendor.h2;
 
-import io.vertigo.database.impl.sql.vendor.core.DefaultSqlMapping;
+import io.vertigo.database.impl.sql.vendor.core.SqlVendorMappingImpl;
 import io.vertigo.database.sql.vendor.SqlDataBase;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.database.sql.vendor.SqlExceptionHandler;
-import io.vertigo.database.sql.vendor.SqlMapping;
+import io.vertigo.database.sql.vendor.SqlVendorMapping;
 
 /**
  * Gestion de la base de données H2.
@@ -31,7 +31,7 @@ import io.vertigo.database.sql.vendor.SqlMapping;
  */
 public final class H2DataBase implements SqlDataBase {
 	private final SqlExceptionHandler sqlExceptionHandler = new H2SqlExceptionHandler();
-	private final SqlMapping sqlMapping = DefaultSqlMapping.createWithBooleanAsBoolean();
+	private final SqlVendorMapping sqlVendorMapping = SqlVendorMappingImpl.createWithBooleanAsBoolean();
 	private final SqlDialect sqlDialect = new H2SqlDialect();
 
 	/** {@inheritDoc} */
@@ -42,8 +42,8 @@ public final class H2DataBase implements SqlDataBase {
 
 	/** {@inheritDoc} */
 	@Override
-	public SqlMapping getSqlMapping() {
-		return sqlMapping;
+	public SqlVendorMapping getSqlMapping() {
+		return sqlVendorMapping;
 	}
 
 	@Override

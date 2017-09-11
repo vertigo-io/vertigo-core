@@ -34,7 +34,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import io.vertigo.database.sql.vendor.SqlMapping;
+import io.vertigo.database.sql.vendor.SqlVendorMapping;
 import io.vertigo.lang.DataStream;
 
 /**
@@ -43,21 +43,21 @@ import io.vertigo.lang.DataStream;
  *
  * @author pchretien
  */
-public final class DefaultSqlMapping implements SqlMapping {
+public final class SqlVendorMappingImpl implements SqlVendorMapping {
 	private static final String TYPE_UNSUPPORTED = "Type unsupported : ";
 
 	private final boolean booleanAsBit;
 
-	private DefaultSqlMapping(final boolean booleanAsBit) {
+	private SqlVendorMappingImpl(final boolean booleanAsBit) {
 		this.booleanAsBit = booleanAsBit;
 	}
 
-	public static SqlMapping createWithBooleanAsBit() {
-		return new DefaultSqlMapping(true);
+	public static SqlVendorMapping createWithBooleanAsBit() {
+		return new SqlVendorMappingImpl(true);
 	}
 
-	public static SqlMapping createWithBooleanAsBoolean() {
-		return new DefaultSqlMapping(false);
+	public static SqlVendorMapping createWithBooleanAsBoolean() {
+		return new SqlVendorMappingImpl(false);
 	}
 
 	private static Calendar createCalendarUTC() {

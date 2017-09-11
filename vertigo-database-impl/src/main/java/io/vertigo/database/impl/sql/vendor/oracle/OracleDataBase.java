@@ -18,11 +18,11 @@
  */
 package io.vertigo.database.impl.sql.vendor.oracle;
 
-import io.vertigo.database.impl.sql.vendor.core.DefaultSqlMapping;
+import io.vertigo.database.impl.sql.vendor.core.SqlVendorMappingImpl;
 import io.vertigo.database.sql.vendor.SqlDataBase;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.database.sql.vendor.SqlExceptionHandler;
-import io.vertigo.database.sql.vendor.SqlMapping;
+import io.vertigo.database.sql.vendor.SqlVendorMapping;
 
 /**
  * Gestiond de la base de données Oracle.
@@ -31,7 +31,7 @@ import io.vertigo.database.sql.vendor.SqlMapping;
  */
 public final class OracleDataBase implements SqlDataBase {
 	private final SqlExceptionHandler sqlExceptionHandler = new OracleExceptionHandler();
-	private final SqlMapping sqlMapping = DefaultSqlMapping.createWithBooleanAsBit();
+	private final SqlVendorMapping sqlMapping = SqlVendorMappingImpl.createWithBooleanAsBit();
 	private final SqlDialect sqlDialect = new OracleDialect();
 
 	/** {@inheritDoc} */
@@ -42,7 +42,7 @@ public final class OracleDataBase implements SqlDataBase {
 
 	/** {@inheritDoc} */
 	@Override
-	public SqlMapping getSqlMapping() {
+	public SqlVendorMapping getSqlMapping() {
 		return sqlMapping;
 	}
 

@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
 
-import io.vertigo.database.sql.vendor.SqlMapping;
+import io.vertigo.database.sql.mapper.SqlMapping;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.BeanUtil;

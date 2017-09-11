@@ -30,9 +30,9 @@ public interface SqlDataBase {
 	SqlExceptionHandler getSqlExceptionHandler();
 
 	/**
-	 * @return the mapping between the database and java
+	 * @return the mapping between the vendor database and java
 	 */
-	SqlMapping getSqlMapping();
+	SqlVendorMapping getSqlMapping();
 
 	/**
 	 * @return the specific dialect used by the database.
