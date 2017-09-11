@@ -29,14 +29,6 @@ import java.sql.SQLException;
  */
 public interface SqlMapping {
 	/**
-	 * Retourne le type SQL correspondant à un type vertigo 'DataType'.
-	 *
-	 * @param dataType Type Vertigo primitif
-	 * @return Type SQL correspondant à un type
-	 */
-	int getSqlType(Class dataType);
-
-	/**
 	 * Affecte les valeurs sur un statement.
 	 *
 	 * @param statement Statement SQL à affecter
@@ -57,4 +49,5 @@ public interface SqlMapping {
 	 * @throws SQLException Exception sql
 	 */
 	<O> O getValueForResultSet(ResultSet resultSet, int col, Class<O> dataType) throws SQLException;
+
 }

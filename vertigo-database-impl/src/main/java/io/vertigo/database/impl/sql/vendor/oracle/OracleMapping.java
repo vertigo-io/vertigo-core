@@ -16,37 +16,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.database.impl.sql.vendor.sqlserver;
+package io.vertigo.database.impl.sql.vendor.oracle;
 
-import io.vertigo.database.sql.vendor.SqlDataBase;
-import io.vertigo.database.sql.vendor.SqlDialect;
-import io.vertigo.database.sql.vendor.SqlExceptionHandler;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import io.vertigo.database.impl.sql.vendor.core.SqlMappingImpl;
 import io.vertigo.database.sql.vendor.SqlMapping;
 
 /**
- * Gestion de la base de données SqlServer.
+ * This class implements the mapping for the Oracle database.
  *
  * @author pchretien
  */
-public final class SqlServerDataBase implements SqlDataBase {
-	private final SqlExceptionHandler sqlExceptionHandler = new SqlServerExceptionHandler();
-	private final SqlMapping sqlMapping = new SqlServerMapping();
-	private final SqlDialect sqlDialect = new SqlServerDialect();
+final class OracleMapping implements SqlMapping {
+	private final SqlMapping defaultSQLMapping = new SqlMappingImpl();
 
 	/** {@inheritDoc} */
 	@Override
-	public SqlExceptionHandler getSqlExceptionHandler() {
-		return sqlExceptionHandler;
+	public <O> void setValueOnStatement(
+			final java.sql.PreparedStatement statement,
+			final int index,
+			final Class<O> dataType,
+			final O value) throws SQLException {
+
+		defaultSQLMapping.setValueOnStatement(statement, index, dataType, value);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public SqlMapping getSqlMapping() {
-		return sqlMapping;
-	}
-
-	@Override
-	public SqlDialect getSqlDialect() {
-		return sqlDialect;
+	public <O> O getValueForResultSet(
+			final ResultSet resultSet,
+			final int col,
+			final Class<O> dataType) throws SQLException {
+		return defaultSQLMapping.getValueForResultSet(resultSet, col, dataType);
 	}
 }

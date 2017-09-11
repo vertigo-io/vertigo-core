@@ -30,7 +30,7 @@ import io.vertigo.database.sql.vendor.SqlMapping;
  */
 public final class PostgreSqlDataBase implements SqlDataBase {
 	private final SqlExceptionHandler sqlExceptionHandler = new PostgreSqlExceptionHandler();
-	private final SqlMapping sqlMapping = new PostgresqlMapping();
+	private final SqlMapping sqlMapping = new PostgreSqlMapping();
 	private final SqlDialect sqlDialect = new PostgreSqlDialect();
 
 	/** {@inheritDoc} */

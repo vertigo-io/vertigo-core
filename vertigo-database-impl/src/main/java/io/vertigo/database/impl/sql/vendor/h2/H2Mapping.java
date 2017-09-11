@@ -26,21 +26,12 @@ import io.vertigo.database.impl.sql.vendor.core.SqlMappingImpl;
 import io.vertigo.database.sql.vendor.SqlMapping;
 
 /**
- * Implémentation spécifique à H2.
+ * This class implements the mapping for the H2 database.
  *
  * @author jmainaud
  */
 final class H2Mapping implements SqlMapping {
 	private final SqlMapping defaultSQLMapping = new SqlMappingImpl();
-
-	/** {@inheritDoc} */
-	@Override
-	public int getSqlType(final Class dataType) {
-		if (Boolean.class.isAssignableFrom(dataType)) {
-			return Types.BOOLEAN;
-		}
-		return defaultSQLMapping.getSqlType(dataType);
-	}
 
 	/** {@inheritDoc} */
 	@Override
@@ -62,7 +53,10 @@ final class H2Mapping implements SqlMapping {
 
 	/** {@inheritDoc} */
 	@Override
-	public <O> O getValueForResultSet(final ResultSet resultSet, final int col, final Class<O> dataType) throws SQLException {
+	public <O> O getValueForResultSet(
+			final ResultSet resultSet,
+			final int col,
+			final Class<O> dataType) throws SQLException {
 		if (Boolean.class.isAssignableFrom(dataType)) {
 			final boolean vb = resultSet.getBoolean(col);
 			return resultSet.wasNull() ? null : dataType.cast(vb);
