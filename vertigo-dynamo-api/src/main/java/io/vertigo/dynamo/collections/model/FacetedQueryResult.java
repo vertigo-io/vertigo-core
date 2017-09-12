@@ -136,8 +136,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	 * @return Extrait avec mise en valeur par champs. (Peut être vide jamais null)
 	 */
 	public Map<DtField, String> getHighlights(final R document) {
-		return highlights
-				.computeIfAbsent(document, k -> Collections.emptyMap());
+		return highlights.getOrDefault(document, Collections.emptyMap());
 	}
 
 	/**
