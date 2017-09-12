@@ -39,7 +39,9 @@ import io.vertigo.lang.DataStream;
 
 /**
  * this class implements the default mapping to a sql database
- * this behavior may be partially or fully overridden
+ * Its behavior is defined by construction :
+ * 	- createWithBooleanAsBit
+ *  - createWithBooleanAsBoolean
  *
  * @author pchretien
  */

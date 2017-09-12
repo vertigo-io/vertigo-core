@@ -51,22 +51,13 @@ import io.vertigo.lang.Tuples;
 * @author pchretien
 */
 public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
-	private static final int NO_GENERATED_KEY_ERROR_VENDOR_CODE = 100;
-
-	private static final int TOO_MANY_GENERATED_KEY_ERROR_VENDOR_CODE = 464;
-
-	private static final int NULL_GENERATED_KEY_ERROR_VENDOR_CODE = -407;
 
 	private static final int REQUEST_HEADER_FOR_TRACER = 50;
-
-	private static final int FETCH_SIZE = 150;
-
-	private static final int GENERATED_KEYS_INDEX = 1;
 
 	private final AnalyticsManager analyticsManager;
 	private final Map<String, SqlConnectionProvider> connectionProviderPluginMap;
 
-	private final SqlMapper sqlMapper;
+	private final SqlStatementDriver sqlStatementDriver;
 
 	/**
 	 * Constructor.
@@ -94,10 +85,10 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		}
 		localeManager.add("io.vertigo.database.impl.sql.DataBase", io.vertigo.database.impl.sql.Resources.values());
 		//---
-		sqlMapper = new SqlMapper(sqlAdapterSupplierPlugins
+		sqlStatementDriver = new SqlStatementDriver(new SqlMapper(sqlAdapterSupplierPlugins
 				.stream()
 				.flatMap(plugin -> plugin.getAdapters().stream())
-				.collect(Collectors.toList()));
+				.collect(Collectors.toList())));
 	}
 
 	/** {@inheritDoc} */
@@ -119,8 +110,8 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		Assertion.checkNotNull(dataType);
 		Assertion.checkNotNull(connection);
 		//-----
-		try (final PreparedStatement statement = createStatement(sqlStatement.getSqlQuery(), connection)) {
-			setParameters(sqlStatement.getSqlQuery(), statement, sqlStatement.getSqlParameters(), connection);
+		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
+			sqlStatementDriver.setParameters(sqlStatement.getSqlQuery(), statement, sqlStatement.getSqlParameters(), connection);
 			//-----
 			return traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecuteQuery(statement, tracer, dataType, limit, connection));
 		} catch (final WrappedSqlException e) {
@@ -139,7 +130,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		final SqlMapping mapping = connection.getDataBase().getSqlMapping();
 		try (final ResultSet resultSet = statement.executeQuery()) {
 			//Le Handler a la responsabilité de créer les données.
-			final List<O> result = SqlUtil.buildResult(dataType, sqlMapper, mapping, resultSet, limit);
+			final List<O> result = sqlStatementDriver.buildResult(dataType, mapping, resultSet, limit);
 			tracer.setMeasure("nbSelectedRow", result.size());
 			return result;
 		} catch (final SQLException e) {
@@ -162,12 +153,12 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		Assertion.checkNotNull(dataType);
 		Assertion.checkNotNull(connection);
 		//---
-		try (final PreparedStatement statement = createStatement(sqlStatement.getSqlQuery(), generationMode, new String[] { columnName }, connection)) {
-			setParameters(sqlStatement.getSqlQuery(), statement, sqlStatement.getSqlParameters(), connection);
+		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), generationMode, new String[] { columnName }, connection)) {
+			sqlStatementDriver.setParameters(sqlStatement.getSqlQuery(), statement, sqlStatement.getSqlParameters(), connection);
 			//---
 			//execution de la Requête
 			final int result = traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecute(statement, tracer));
-			final O generatedId = getGeneratedKey(statement, columnName, dataType, connection);
+			final O generatedId = sqlStatementDriver.getGeneratedKey(statement, columnName, dataType, connection);
 			return Tuples.of(result, generatedId);
 		} catch (final WrappedSqlException e) {
 			throw e.getSqlException();
@@ -182,8 +173,8 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		Assertion.checkNotNull(sqlStatement);
 		Assertion.checkNotNull(connection);
 		//---
-		try (final PreparedStatement statement = createStatement(sqlStatement.getSqlQuery(), connection)) {
-			setParameters(sqlStatement.getSqlQuery(), statement, sqlStatement.getSqlParameters(), connection);
+		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
+			sqlStatementDriver.setParameters(sqlStatement.getSqlQuery(), statement, sqlStatement.getSqlParameters(), connection);
 			//---
 			return traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecute(statement, tracer));
 		} catch (final WrappedSqlException e) {
@@ -225,9 +216,9 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		Assertion.checkNotNull(sqlStatement);
 		Assertion.checkNotNull(connection);
 		//---
-		try (final PreparedStatement statement = createStatement(sqlStatement.getSqlQuery(), connection)) {
+		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
 			for (final List<SqlParameter> parameters : sqlStatement.getSqlParametersForBatch()) {
-				setParameters(sqlStatement.getSqlQuery(), statement, parameters, connection);
+				sqlStatementDriver.setParameters(sqlStatement.getSqlQuery(), statement, parameters, connection);
 				statement.addBatch();
 			}
 			return traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecuteBatch(statement, tracer));
@@ -269,86 +260,4 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 				});
 	}
 
-	private void setParameters(
-			final String sql,
-			final PreparedStatement statement,
-			final List<SqlParameter> parameters,
-			final SqlConnection connection) throws SQLException {
-		//-----
-		for (int index = 0; index < parameters.size(); index++) {
-			final SqlParameter parameter = parameters.get(index);
-			sqlMapper.setValueOnStatement(connection.getDataBase().getSqlMapping(),
-					statement, index + 1, parameter.getDataType(), parameter.getValue());
-		}
-	}
-
-	//=========================================================================
-	//-----Utilitaires
-	//-----> affichages de la Query  avec ou sans binding pour faciliter le debugging
-	//-----> Récupération du statement
-	//-----> Récupération de la connection
-	//=========================================================================
-
-	private static PreparedStatement createStatement(final String sql, final SqlConnection connection) throws SQLException {
-		final PreparedStatement preparedStatement = connection.getJdbcConnection()
-				.prepareStatement(sql, Statement.NO_GENERATED_KEYS);
-		//by experience 150 is a right value (Oracle is set by default at 10 : that's not sufficient)
-		preparedStatement.setFetchSize(FETCH_SIZE);
-		return preparedStatement;
-	}
-
-	private static PreparedStatement createStatement(
-			final String sql,
-			final GenerationMode generationMode,
-			final String[] generatedColumns,
-			final SqlConnection connection) throws SQLException {
-		final PreparedStatement preparedStatement;
-		switch (generationMode) {
-			case GENERATED_KEYS:
-				preparedStatement = connection.getJdbcConnection()
-						.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-				break;
-			case GENERATED_COLUMNS:
-				preparedStatement = connection.getJdbcConnection()
-						.prepareStatement(sql, generatedColumns);
-				break;
-			default:
-				throw new IllegalStateException();
-		}
-		//by experience 150 is a right value (Oracle is set by default at 10 : that's not sufficient)
-		preparedStatement.setFetchSize(FETCH_SIZE);
-		return preparedStatement;
-	}
-
-	private <O> O getGeneratedKey(
-			final PreparedStatement statement,
-			final String columnName,
-			final Class<O> dataType,
-			final SqlConnection connection) throws SQLException {
-		Assertion.checkArgNotEmpty(columnName);
-		Assertion.checkNotNull(dataType);
-		//-----
-		// L'utilisation des generatedKeys permet d'avoir un seul appel réseau entre le
-		// serveur d'application et la base de données pour un insert et la récupération de la
-		// valeur de la clé primaire en respectant les standards jdbc et sql ansi.
-		final SqlMapping sqlMapping = connection.getDataBase().getSqlMapping();
-		try (final ResultSet rs = statement.getGeneratedKeys()) {
-			final boolean next = rs.next();
-			if (!next) {
-				throw new SQLException("GeneratedKeys empty", "02000", NO_GENERATED_KEY_ERROR_VENDOR_CODE);
-			}
-			//ResultSet haven't correctly named columns so we fall back to get the first column, instead of looking for column index by name.
-			final int pkRsCol = GENERATED_KEYS_INDEX;//attention le pkRsCol correspond au n° de column dans le RETURNING
-			final O id = sqlMapper.getValueForResultSet(sqlMapping,
-					rs, pkRsCol, dataType); //attention le pkRsCol correspond au n° de column dans le RETURNING
-			if (rs.wasNull()) {
-				throw new SQLException("GeneratedKeys wasNull", "23502", NULL_GENERATED_KEY_ERROR_VENDOR_CODE);
-			}
-
-			if (rs.next()) {
-				throw new SQLException("GeneratedKeys.size >1 ", "0100E", TOO_MANY_GENERATED_KEY_ERROR_VENDOR_CODE);
-			}
-			return id;
-		}
-	}
 }

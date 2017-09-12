@@ -18,18 +18,16 @@
  */
 package io.vertigo.database.sql.vendor.oracle;
 
-import org.junit.Ignore;
-
 import io.vertigo.database.sql.AbstractSqlDataBaseManagerTest;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 
-@Ignore
 public final class OracleDataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
 	@Override
 	protected String createTableMovie() {
 		return "CREATE TABLE movie ( "
 				+ "id 						NUMBER(6), "
 				+ "title 					VARCHAR2(255), "
+				+ "mail 					VARCHAR2(255), "
 				+ "fps 						NUMBER(6,3), "
 				+ "income 					NUMBER(6,3), "
 				+ "color 					NUMBER(1), "

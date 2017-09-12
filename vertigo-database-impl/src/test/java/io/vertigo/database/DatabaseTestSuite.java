@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import io.vertigo.database.sql.connection.hibernate.HibernateConnectionProviderTest;
 import io.vertigo.database.sql.vendor.h2.H2DataBaseManagerTest;
 import io.vertigo.database.sql.vendor.h2.H2SqlDialectTest;
 import io.vertigo.database.sql.vendor.oracle.OracleDataBaseManagerTest;
@@ -46,6 +47,8 @@ import io.vertigo.database.sql.vendor.sqlserver.SqlServerDialectTest;
 		H2DataBaseManagerTest.class,
 		OracleDataBaseManagerTest.class,
 		PostgreSqlDataBaseManagerTest.class,
+		//---connections
+		HibernateConnectionProviderTest.class,
 })
 
 public final class DatabaseTestSuite {
