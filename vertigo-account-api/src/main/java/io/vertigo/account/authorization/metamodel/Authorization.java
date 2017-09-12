@@ -33,22 +33,23 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 
 /**
- * Une permission est un droit sur une fonction de l'application.
+ * Une authorization est un droit sur une fonction de l'application.
  * Ou sur une opération sur une entite.
  * Sous condition d'un ensemble de règles.
  *
  * @author prahmoune, npiedeloup
  */
-@DefinitionPrefix("PRM_")
-public final class Permission implements Definition {
-	//soit permission globale (sans règle)
-	//soit permission = une opération sur une entity
+@DefinitionPrefix("ATZ_")
+public final class Authorization implements Definition {
+	public static final String PREFIX = "ATZ_";
+	//soit authorization globale (sans règle)
+	//soit authorization = une opération sur une entity
 	private final Optional<String> comment;
 	private final String name;
 	private final String label;
 
 	private final Set<String> overrides;
-	private final Set<Permission> grants;
+	private final Set<Authorization> grants;
 	private final List<RuleMultiExpression> rules; //empty -> always true
 
 	private final Optional<DtDefinition> entityOpt;
@@ -57,16 +58,16 @@ public final class Permission implements Definition {
 	/**
 	 * Constructor.
 	 *
-	 * @param code Code de la permission
+	 * @param code Code de l'authorization
 	 * @param label Label
 	 * @param comment Comment
 	 */
-	public Permission(final String code, final String label, final Optional<String> comment) {
+	public Authorization(final String code, final String label, final Optional<String> comment) {
 		Assertion.checkArgNotEmpty(code);
 		Assertion.checkArgNotEmpty(label);
 		Assertion.checkNotNull(comment);
 		//-----
-		name = "PRM_" + code;
+		name = PREFIX + code;
 		this.label = label;
 
 		overrides = Collections.emptySet();
@@ -88,11 +89,11 @@ public final class Permission implements Definition {
 	 * @param rules Règles d'évaluation
 	 * @param comment Comment
 	 */
-	public Permission(
+	public Authorization(
 			final String operation,
 			final String label,
 			final Set<String> overrides,
-			final Set<Permission> grants,
+			final Set<Authorization> grants,
 			final DtDefinition entityDefinition,
 			final List<RuleMultiExpression> rules,
 			final Optional<String> comment) {
@@ -104,7 +105,7 @@ public final class Permission implements Definition {
 		Assertion.checkNotNull(rules);
 		Assertion.checkNotNull(comment);
 		//-----
-		name = "PRM_" + entityDefinition.getLocalName() + '$' + operation;
+		name = PREFIX + entityDefinition.getLocalName() + '$' + operation;
 		this.label = label;
 		this.overrides = new HashSet<>(overrides);
 		this.grants = new HashSet<>(grants);
@@ -121,35 +122,35 @@ public final class Permission implements Definition {
 	}
 
 	/**
-	 * @return Label de la permission
+	 * @return Label de la authorization
 	 */
 	public String getLabel() {
 		return label;
 	}
 
 	/**
-	 * @return Comment de la permission
+	 * @return Comment de la authorization
 	 */
 	public Optional<String> getComment() {
 		return comment;
 	}
 
 	/**
-	 * @return Overrides for this permission
+	 * @return Overrides for this authorization
 	 */
 	public Set<String> getOverrides() {
 		return overrides;
 	}
 
 	/**
-	 * @return Grants for this permission
+	 * @return Grants for this authorization
 	 */
-	public Set<Permission> getGrants() {
+	public Set<Authorization> getGrants() {
 		return grants;
 	}
 
 	/**
-	 * @return Rules used to check permission (empty->Always true)
+	 * @return Rules used to check authorization (empty->Always true)
 	 */
 	public List<RuleMultiExpression> getRules() {
 		return rules;

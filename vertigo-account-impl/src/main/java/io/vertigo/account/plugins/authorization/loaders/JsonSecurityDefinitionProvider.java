@@ -34,7 +34,7 @@ import javax.inject.Inject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import io.vertigo.account.authorization.metamodel.Permission;
+import io.vertigo.account.authorization.metamodel.Authorization;
 import io.vertigo.account.authorization.metamodel.SecuredEntity;
 import io.vertigo.app.config.DefinitionResourceConfig;
 import io.vertigo.core.definition.DefinitionProvider;
@@ -95,7 +95,7 @@ public final class JsonSecurityDefinitionProvider implements DefinitionProvider 
 				.setPrettyPrinting()
 				//TODO  registerTypeAdapter(String.class, new EmptyStringAsNull<>())// add "" <=> null
 				.registerTypeAdapter(SecuredEntity.class, new SecuredEntityDeserializer())
-				.registerTypeAdapter(Permission.class, new PermissionDeserializer())
+				.registerTypeAdapter(Authorization.class, new AuthorizationDeserializer())
 				.create();
 	}
 
@@ -114,13 +114,13 @@ public final class JsonSecurityDefinitionProvider implements DefinitionProvider 
 	}
 
 	private void registerDefinitions(final AdvancedSecurityConfiguration config) {
-		registerPermissions(config.getPermissions());
+		registerPermissions(config.getGlobalAuthorizations());
 		registerSecurityEntities(config.getSecuredEntities());
 	}
 
-	private void registerPermissions(final List<Permission> permissions) {
-		permissions.stream()
-				.forEach(prm -> definitionSuppliers.add(ds -> prm)); //on register les Permissions globales
+	private void registerPermissions(final List<Authorization> authorizations) {
+		authorizations.stream()
+				.forEach(atz -> definitionSuppliers.add(ds -> atz)); //on register les authorizations globales
 	}
 
 	private void registerSecurityEntities(final List<SecuredEntity> securityEntities) {
@@ -129,7 +129,7 @@ public final class JsonSecurityDefinitionProvider implements DefinitionProvider 
 
 		securityEntities.stream()
 				.flatMap(securityEntity -> securityEntity.getOperations().stream())
-				.forEach(prm -> definitionSuppliers.add(ds -> prm)); //on register les Permissions associées aux opérations
+				.forEach(atz -> definitionSuppliers.add(ds -> atz)); //on register les authorizations associées aux opérations
 	}
 
 }

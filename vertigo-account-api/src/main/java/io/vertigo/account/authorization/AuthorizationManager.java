@@ -20,8 +20,8 @@ package io.vertigo.account.authorization;
 
 import java.util.List;
 
+import io.vertigo.account.authorization.metamodel.AuthorizationName;
 import io.vertigo.account.authorization.metamodel.OperationName;
-import io.vertigo.account.authorization.metamodel.PermissionName;
 import io.vertigo.core.component.Manager;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.domain.model.KeyConcept;
@@ -34,20 +34,20 @@ import io.vertigo.dynamo.domain.model.KeyConcept;
 public interface AuthorizationManager extends Manager {
 
 	/**
-	 * User permissions accessor to test or add permissions.
+	 * User authorization accessor to test or add authorizations.
 	 * A UserSession must exists.
-	 * @return UserPermissions
+	 * @return UserAuthorizations
 	 */
-	UserPermissions obtainUserPermissions();
+	UserAuthorizations obtainUserAuthorizations();
 
 	/**
-	 * Contrôle d'accès basé sur les permissions.
-	 * Indique si l'utilisateur dispose de la permission nécessaire.
+	 * Contrôle d'accès basé sur les authorizations.
+	 * Indique si l'utilisateur dispose de l'authorization nécessaire.
 	 *
-	 * @param permissionName permission. (non null)
+	 * @param authorizationName authorization. (non null)
 	 * @return Si les droits de l'utilisateur lui permettent un accès.
 	 */
-	boolean hasPermission(PermissionName permissionName);
+	boolean hasAuthorization(AuthorizationName authorizationName);
 
 	/**
 	 * Indique si l'utilisateur courant a la permission d'effectuer l'operation

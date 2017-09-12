@@ -21,12 +21,12 @@ package io.vertigo.account.authorization.metamodel;
 import java.io.Serializable;
 
 /**
- * Nom de permission (marqueur).
+ * Authorization name (mark).
  * @author jgarnier, npiedeloup
  */
-public interface PermissionName extends Serializable {
+public interface AuthorizationName extends Serializable {
 
-	/** @return nom de la permission (const case) */
+	/** @return Authorization name (const case) */
 	String name();
 
 }

@@ -33,7 +33,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import io.vertigo.account.authorization.metamodel.Permission;
+import io.vertigo.account.authorization.metamodel.Authorization;
 import io.vertigo.account.authorization.metamodel.SecuredEntity;
 import io.vertigo.account.authorization.metamodel.SecurityDimension;
 import io.vertigo.account.authorization.metamodel.SecurityDimensionType;
@@ -72,9 +72,9 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 			advancedDimensions.add(deserializeSecurityDimensions(entityDefinition, advancedDimension.getAsJsonObject(), context));
 		}
 
-		final Map<String, Permission> permissionPerOperations = new HashMap<>();// on garde la map des operations pour resoudre les grants
+		final Map<String, Authorization> permissionPerOperations = new HashMap<>();// on garde la map des operations pour resoudre les grants
 		for (final JsonElement operation : jsonSecuredEntity.get("operations").getAsJsonArray()) { //TODO if null ?
-			final Permission permission = deserializeOperations(entityDefinition, operation.getAsJsonObject(), context, permissionPerOperations);
+			final Authorization permission = deserializeOperations(entityDefinition, operation.getAsJsonObject(), context, permissionPerOperations);
 			Assertion.checkArgument(!permissionPerOperations.containsKey(permission.getOperation().get()),
 					"Operation {0} already declared on {1}", permission.getOperation().get(), entityDefinition.getName());
 			permissionPerOperations.put(permission.getOperation().get(), permission);
@@ -83,11 +83,11 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		return new SecuredEntity(entityDefinition, securityFields, advancedDimensions, new ArrayList<>(permissionPerOperations.values()));
 	}
 
-	private static Permission deserializeOperations(
+	private static Authorization deserializeOperations(
 			final DtDefinition entityDefinition,
 			final JsonObject operation,
 			final JsonDeserializationContext context,
-			final Map<String, Permission> permissionPerOperations) {
+			final Map<String, Authorization> permissionPerOperations) {
 		final String code = operation.get("name").getAsString();
 		final String label = operation.get("label").getAsString();
 		final Optional<String> comment = Optional.ofNullable(operation.get("__comment"))
@@ -97,7 +97,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		if (overrides == null) {
 			overrides = Collections.emptySet();
 		}
-		final Set<Permission> grants;
+		final Set<Authorization> grants;
 		final Set<String> strGrants = context.deserialize(operation.get("grants"), createParameterizedType(Set.class, String.class));
 		if (strGrants == null) {
 			grants = Collections.emptySet();
@@ -116,10 +116,10 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		} else {
 			rules = Collections.emptyList(); //if empty -> always true
 		}
-		return new Permission(code, label, overrides, grants, entityDefinition, rules, comment);
+		return new Authorization(code, label, overrides, grants, entityDefinition, rules, comment);
 	}
 
-	private static Permission resolvePermission(final String operationName, final Map<String, Permission> permissionPerOperations, final DtDefinition entityDefinition) {
+	private static Authorization resolvePermission(final String operationName, final Map<String, Authorization> permissionPerOperations, final DtDefinition entityDefinition) {
 		Assertion.checkArgument(permissionPerOperations.containsKey(operationName),
 				"Operation {0} not declared on {1} (may check declaration order)", operationName, entityDefinition.getName());
 		//-----

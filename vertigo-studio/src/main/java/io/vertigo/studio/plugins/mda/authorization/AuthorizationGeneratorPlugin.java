@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.account.authorization.metamodel.Permission;
+import io.vertigo.account.authorization.metamodel.Authorization;
 import io.vertigo.account.authorization.metamodel.Role;
 import io.vertigo.account.authorization.metamodel.SecuredEntity;
 import io.vertigo.app.Home;
@@ -76,9 +76,9 @@ public final class AuthorizationGeneratorPlugin implements GeneratorPlugin {
 		return Home.getApp().getDefinitionSpace().getAll(Role.class);
 	}
 
-	private static List<Permission> getGlobalPermissions() {
-		final Collection<Permission> permissions = Home.getApp().getDefinitionSpace().getAll(Permission.class);
-		return permissions.stream()
+	private static List<Authorization> getGlobalAuthorizations() {
+		final Collection<Authorization> authorizations = Home.getApp().getDefinitionSpace().getAll(Authorization.class);
+		return authorizations.stream()
 				.filter(o -> !o.getEntityDefinition().isPresent())
 				.collect(Collectors.toList());
 	}
@@ -92,7 +92,7 @@ public final class AuthorizationGeneratorPlugin implements GeneratorPlugin {
 	}
 
 	private static void generatePermissions(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
-		generateDictionnary("Permissions", targetSubDir, fileGeneratorConfig, mdaResultBuilder, getGlobalPermissions());
+		generateDictionnary("GlobalAuthorizations", targetSubDir, fileGeneratorConfig, mdaResultBuilder, getGlobalAuthorizations());
 	}
 
 	private static void generateOperations(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {

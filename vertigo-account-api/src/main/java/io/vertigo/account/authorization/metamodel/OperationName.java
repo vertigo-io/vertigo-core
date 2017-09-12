@@ -29,7 +29,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
  */
 public interface OperationName<D extends DtObject> extends Serializable {
 
-	/** @return nom du champ (const case) */
+	/** @return operation's name (const case) */
 	String name();
 
 }

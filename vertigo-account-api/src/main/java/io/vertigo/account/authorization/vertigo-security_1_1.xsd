@@ -5,13 +5,13 @@
 	<xs:element name="authorisationConfig">
 		<xs:complexType>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
-				<xs:element name="permission" type="permission" />
+				<xs:element name="globalAuthorization" type="authorization" />
 				<xs:element name="secured-entity" type="secured-entity" />
 			</xs:choice>
 		</xs:complexType>
 	</xs:element>
 
-	<xs:complexType name="permission">
+	<xs:complexType name="authorization">
 		<xs:attribute name="id" type="xs:string" use="required"/>
 		
 		<xs:attribute name="label" type="xs:string" use="required"/>

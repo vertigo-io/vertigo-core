@@ -18,31 +18,31 @@
  */
 package io.vertigo.account.authorization;
 
+import io.vertigo.account.authorization.metamodel.AuthorizationName;
 import io.vertigo.account.authorization.metamodel.OperationName;
-import io.vertigo.account.authorization.metamodel.PermissionName;
 import io.vertigo.account.authorization.model.Record;
 
 public final class SecurityNames {
 
 	/**
-	 * Enumération des Permissions globales.
+	 * Enumération des Authorizations globales.
 	 */
-	public enum Permissions implements PermissionName {
-		PRM_ADMUSR,
-		PRM_ADMPRO,
-		PRM_ADMAPP
+	public enum GlobalAuthorizations implements AuthorizationName {
+		ATZ_ADMUSR,
+		ATZ_ADMPRO,
+		ATZ_ADMAPP
 	}
 
 	/**
-	 * Enumération des Permissions globales.
+	 * Enumération des Authorizations globales.
 	 */
-	public enum RecordPermissions implements PermissionName {
-		PRM_RECORD$READ,
-		PRM_RECORD$READ_HP,
-		PRM_RECORD$DELETE,
-		PRM_RECORD$NOTIFY,
-		PRM_RECORD$CREATE,
-		PRM_RECORD$WRITE;
+	public enum RecordAuthorizations implements AuthorizationName {
+		ATZ_RECORD$READ,
+		ATZ_RECORD$READ_HP,
+		ATZ_RECORD$DELETE,
+		ATZ_RECORD$NOTIFY,
+		ATZ_RECORD$CREATE,
+		ATZ_RECORD$WRITE;
 	}
 
 	/**

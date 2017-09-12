@@ -13,7 +13,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * See the License for the specific language governing authorizations and
  * limitations under the License.
  */
 package io.vertigo.account.authorization;
@@ -28,31 +28,31 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.vertigo.account.authorization.metamodel.Permission;
-import io.vertigo.account.authorization.metamodel.PermissionName;
+import io.vertigo.account.authorization.metamodel.Authorization;
+import io.vertigo.account.authorization.metamodel.AuthorizationName;
 import io.vertigo.account.authorization.metamodel.Role;
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 
 /**
- * Permissions d'un utilisateur.
+ * Authorizations d'un utilisateur.
  *
  * @author alauthier, pchretien, npiedeloup
  */
-public final class UserPermissions implements Serializable {
+public final class UserAuthorizations implements Serializable {
 
 	private static final long serialVersionUID = -7924146007592711123L;
 
 	/**
-	 * Set des permissions global autorisees pour la session utilisateur.
+	 * Set des authorizations global autorisees pour la session utilisateur.
 	 */
-	private final Map<String, DefinitionReference<Permission>> permissionRefs = new HashMap<>();
+	private final Map<String, DefinitionReference<Authorization>> authorizationRefs = new HashMap<>();
 
 	/**
-	 * Set des permissions autorisees par entity pour la session utilisateur.
+	 * Set des authorizations autorisees par entity pour la session utilisateur.
 	 */
-	private final Map<DefinitionReference<DtDefinition>, Set<DefinitionReference<Permission>>> permissionMapRefs = new HashMap<>();
+	private final Map<DefinitionReference<DtDefinition>, Set<DefinitionReference<Authorization>>> authorizationMapRefs = new HashMap<>();
 
 	/**
 	 * Set des roles autorises pour la session utilisateur.
@@ -68,9 +68,9 @@ public final class UserPermissions implements Serializable {
 	 * Le role doit avoir ete prealablement enregistre.
 	 *
 	 * @param role Role e ajouter.
-	 * @return this UserPermissions
+	 * @return this UserAuthorizations
 	 */
-	public UserPermissions addRole(final Role role) {
+	public UserAuthorizations addRole(final Role role) {
 		Assertion.checkNotNull(role);
 		//-----
 		roleRefs.add(new DefinitionReference<>(role));
@@ -107,22 +107,22 @@ public final class UserPermissions implements Serializable {
 	}
 
 	/**
-	 * Ajoute une permission pour l'utilisateur courant.
-	 * La permission doit avoir ete prealablement enregistree.
+	 * Ajoute une authorization pour l'utilisateur courant.
+	 * La authorization doit avoir ete prealablement enregistree.
 	 *
-	 * @param permission Permission à ajouter.
-	 * @return This UserPermissions
+	 * @param authorization Authorization à ajouter.
+	 * @return This UserAuthorizations
 	 */
-	public UserPermissions addPermission(final Permission permission) {
-		Assertion.checkNotNull(permission);
+	public UserAuthorizations addAuthorization(final Authorization authorization) {
+		Assertion.checkNotNull(authorization);
 		//-----
-		permissionRefs.put(permission.getName(), new DefinitionReference<>(permission));
-		if (permission.getEntityDefinition().isPresent()) {
-			permissionMapRefs.computeIfAbsent(new DefinitionReference<>(permission.getEntityDefinition().get()), key -> new HashSet<>())
-					.add(new DefinitionReference<>(permission));
-			for (final Permission grantedPermission : permission.getGrants()) {
-				if (!hasPermission(grantedPermission::getName)) { //On test pour ne pas créer de boucle
-					addPermission(grantedPermission);
+		authorizationRefs.put(authorization.getName(), new DefinitionReference<>(authorization));
+		if (authorization.getEntityDefinition().isPresent()) {
+			authorizationMapRefs.computeIfAbsent(new DefinitionReference<>(authorization.getEntityDefinition().get()), key -> new HashSet<>())
+					.add(new DefinitionReference<>(authorization));
+			for (final Authorization grantedAuthorization : authorization.getGrants()) {
+				if (!hasAuthorization(grantedAuthorization::getName)) { //On test pour ne pas créer de boucle
+					addAuthorization(grantedAuthorization);
 				}
 			}
 		}
@@ -130,37 +130,37 @@ public final class UserPermissions implements Serializable {
 	}
 
 	/**
-	 * Retourne la liste des permissions de securite d'une entity pour l'utilisateur.
+	 * Retourne la liste des authorizations de securite d'une entity pour l'utilisateur.
 	 * @param entityDefinition Entity definition
-	 * @return Set des permissions.
+	 * @return Set des authorizations.
 	 */
-	public Set<Permission> getEntityPermissions(final DtDefinition entityDefinition) {
-		final Set<DefinitionReference<Permission>> entityPermissionRefs = permissionMapRefs.get(new DefinitionReference<>(entityDefinition));
-		if (entityPermissionRefs != null) {
-			return entityPermissionRefs.stream()
-					.map(entityPermissionRef -> entityPermissionRef.get())
+	public Set<Authorization> getEntityAuthorizations(final DtDefinition entityDefinition) {
+		final Set<DefinitionReference<Authorization>> entityAuthorizationRefs = authorizationMapRefs.get(new DefinitionReference<>(entityDefinition));
+		if (entityAuthorizationRefs != null) {
+			return entityAuthorizationRefs.stream()
+					.map(entityAuthorizationRef -> entityAuthorizationRef.get())
 					.collect(Collectors.toSet());
 		}
 		return Collections.emptySet();
 	}
 
 	/**
-	 * @param permissionName Permission
-	 * @return Vrai si la permission est presente
+	 * @param authorizationName Authorization
+	 * @return Vrai si la authorization est presente
 	 */
-	public boolean hasPermission(final PermissionName permissionName) {
-		Assertion.checkNotNull(permissionName);
+	public boolean hasAuthorization(final AuthorizationName authorizationName) {
+		Assertion.checkNotNull(authorizationName);
 		//-----
-		return permissionRefs.containsKey(permissionName.name());
+		return authorizationRefs.containsKey(authorizationName.name());
 	}
 
 	/**
-	 * Retrait de toutes les permissions possedes par l'utilisateur.
+	 * Retrait de toutes les authorizations possedes par l'utilisateur.
 	 * Attention, cela signifie qu'il n'a plus aucun droit.
 	 */
-	public void clearPermissions() {
-		permissionRefs.clear();
-		permissionMapRefs.clear();
+	public void clearAuthorizations() {
+		authorizationRefs.clear();
+		authorizationMapRefs.clear();
 	}
 
 	private final Map<String, List<Serializable>> mySecurityKeys = new HashMap<>();
@@ -180,9 +180,9 @@ public final class UserPermissions implements Serializable {
 	 *
 	 * @param securityKey Name
 	 * @param value Value
-	 * @return this UserPermissions
+	 * @return this UserAuthorizations
 	 */
-	public UserPermissions withSecurityKeys(final String securityKey, final Serializable value) {
+	public UserAuthorizations withSecurityKeys(final String securityKey, final Serializable value) {
 		mySecurityKeys.computeIfAbsent(securityKey, v -> new ArrayList<>()).add(value);
 		return this;
 	}
@@ -190,9 +190,9 @@ public final class UserPermissions implements Serializable {
 	/**
 	 * Clear Security Keys.
 	 * Use when user change it security perimeter.
-	 * @return this UserPermissions
+	 * @return this UserAuthorizations
 	 */
-	public UserPermissions clearSecurityKeys() {
+	public UserAuthorizations clearSecurityKeys() {
 		mySecurityKeys.clear();
 		return this;
 	}

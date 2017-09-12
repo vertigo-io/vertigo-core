@@ -37,7 +37,7 @@ public final class SecuredEntity implements Definition {
 	private final DtDefinition entityDefinition;
 	private final List<DtField> securityFields;
 	private final List<SecurityDimension> advancedDimensions;
-	private final List<Permission> operations;
+	private final List<Authorization> operations;
 
 	/**
 	 * Constructs an instance of SecurityEntity.
@@ -51,7 +51,7 @@ public final class SecuredEntity implements Definition {
 			final DtDefinition entityDefinition,
 			final List<DtField> securityFields,
 			final List<SecurityDimension> advancedDimensions,
-			final List<Permission> operations) {
+			final List<Authorization> operations) {
 		Assertion.checkNotNull(entityDefinition);
 		Assertion.checkNotNull(securityFields);
 		Assertion.checkNotNull(advancedDimensions);
@@ -94,7 +94,7 @@ public final class SecuredEntity implements Definition {
 	/**
 	 * @return the value of operations.
 	 */
-	public List<Permission> getOperations() {
+	public List<Authorization> getOperations() {
 		return operations;
 	}
 }

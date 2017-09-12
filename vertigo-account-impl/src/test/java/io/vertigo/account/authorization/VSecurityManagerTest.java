@@ -27,11 +27,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.account.authorization.SecurityNames.Permissions;
+import io.vertigo.account.authorization.SecurityNames.GlobalAuthorizations;
+import io.vertigo.account.authorization.SecurityNames.RecordAuthorizations;
 import io.vertigo.account.authorization.SecurityNames.RecordOperations;
-import io.vertigo.account.authorization.SecurityNames.RecordPermissions;
-import io.vertigo.account.authorization.metamodel.Permission;
-import io.vertigo.account.authorization.metamodel.PermissionName;
+import io.vertigo.account.authorization.metamodel.Authorization;
+import io.vertigo.account.authorization.metamodel.AuthorizationName;
 import io.vertigo.account.authorization.metamodel.Role;
 import io.vertigo.account.authorization.model.Record;
 import io.vertigo.account.data.TestUserSession;
@@ -97,9 +97,9 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 			securityManager.startCurrentUserSession(userSession);
 			Assert.assertTrue(securityManager.getCurrentUserSession().isPresent());
 			//
-			accessControlManager.obtainUserPermissions().clearSecurityKeys();
-			accessControlManager.obtainUserPermissions().clearPermissions();
-			accessControlManager.obtainUserPermissions().clearRoles();
+			accessControlManager.obtainUserAuthorizations().clearSecurityKeys();
+			accessControlManager.obtainUserAuthorizations().clearAuthorizations();
+			accessControlManager.obtainUserAuthorizations().clearRoles();
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}
@@ -127,30 +127,30 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testToString() {
-		final Permission admUsr = getPermission(Permissions.PRM_ADMUSR);
+		final Authorization admUsr = getAuthorization(GlobalAuthorizations.ATZ_ADMUSR);
 		admUsr.toString();
-		final Permission admPro = getPermission(Permissions.PRM_ADMPRO);
+		final Authorization admPro = getAuthorization(GlobalAuthorizations.ATZ_ADMPRO);
 		admPro.toString();
 		/*Pour la couverture de code, et 35min de dette technique.... */
 	}
 
 	@Test
 	public void testAuthorized() {
-		final Permission admUsr = getPermission(Permissions.PRM_ADMUSR);
-		final Permission admPro = getPermission(Permissions.PRM_ADMPRO);
+		final Authorization admUsr = getAuthorization(GlobalAuthorizations.ATZ_ADMUSR);
+		final Authorization admPro = getAuthorization(GlobalAuthorizations.ATZ_ADMPRO);
 
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			accessControlManager.obtainUserPermissions().withSecurityKeys("utiId", DEFAULT_UTI_ID)
+			accessControlManager.obtainUserAuthorizations().withSecurityKeys("utiId", DEFAULT_UTI_ID)
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
-					.addPermission(admUsr)
-					.addPermission(admPro);
+					.addAuthorization(admUsr)
+					.addAuthorization(admPro);
 
-			Assert.assertTrue(accessControlManager.hasPermission(Permissions.PRM_ADMUSR));
-			Assert.assertTrue(accessControlManager.hasPermission(Permissions.PRM_ADMPRO));
-			Assert.assertFalse(accessControlManager.hasPermission(Permissions.PRM_ADMAPP));
+			Assert.assertTrue(accessControlManager.hasAuthorization(GlobalAuthorizations.ATZ_ADMUSR));
+			Assert.assertTrue(accessControlManager.hasAuthorization(GlobalAuthorizations.ATZ_ADMPRO));
+			Assert.assertFalse(accessControlManager.hasAuthorization(GlobalAuthorizations.ATZ_ADMAPP));
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}
@@ -171,16 +171,16 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
 		recordOtherUserAndTooExpensive.setAmount(10000d);
 
-		final Permission recordRead = getPermission(RecordPermissions.PRM_RECORD$READ);
+		final Authorization recordRead = getAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			accessControlManager.obtainUserPermissions().withSecurityKeys("utiId", DEFAULT_UTI_ID)
+			accessControlManager.obtainUserAuthorizations().withSecurityKeys("utiId", DEFAULT_UTI_ID)
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
-					.addPermission(recordRead);
+					.addAuthorization(recordRead);
 
-			final boolean canReadRecord = accessControlManager.hasPermission(RecordPermissions.PRM_RECORD$READ);
+			final boolean canReadRecord = accessControlManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
 			Assert.assertTrue(canReadRecord);
 
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
@@ -211,17 +211,17 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final Record recordArchivedNotWriteable = createRecord();
 		recordArchivedNotWriteable.setEtaCd("ARC");
 
-		final Permission recordCreate = getPermission(RecordPermissions.PRM_RECORD$CREATE);
+		final Authorization recordCreate = getAuthorization(RecordAuthorizations.ATZ_RECORD$CREATE);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			accessControlManager.obtainUserPermissions()
+			accessControlManager.obtainUserAuthorizations()
 					.withSecurityKeys("utiId", DEFAULT_UTI_ID)
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
-					.addPermission(recordCreate);
+					.addAuthorization(recordCreate);
 
-			final boolean canCreateRecord = accessControlManager.hasPermission(RecordPermissions.PRM_RECORD$CREATE);
+			final boolean canCreateRecord = accessControlManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$CREATE);
 			Assert.assertTrue(canCreateRecord);
 
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
@@ -257,17 +257,17 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
 		recordOtherUserAndTooExpensive.setAmount(10000d);
 
-		final Permission recordRead = getPermission(RecordPermissions.PRM_RECORD$READ_HP);
+		final Authorization recordRead = getAuthorization(RecordAuthorizations.ATZ_RECORD$READ_HP);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			accessControlManager.obtainUserPermissions()
+			accessControlManager.obtainUserAuthorizations()
 					.withSecurityKeys("utiId", DEFAULT_UTI_ID)
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
-					.addPermission(recordRead);
+					.addAuthorization(recordRead);
 
-			final boolean canReadRecord = accessControlManager.hasPermission(RecordPermissions.PRM_RECORD$READ_HP);
+			final boolean canReadRecord = accessControlManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$READ_HP);
 			Assert.assertTrue(canReadRecord);
 
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
@@ -298,17 +298,17 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final Record recordArchivedNotWriteable = createRecord();
 		recordArchivedNotWriteable.setEtaCd("ARC");
 
-		final Permission recordWrite = getPermission(RecordPermissions.PRM_RECORD$WRITE);
+		final Authorization recordWrite = getAuthorization(RecordAuthorizations.ATZ_RECORD$WRITE);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			accessControlManager.obtainUserPermissions()
+			accessControlManager.obtainUserAuthorizations()
 					.withSecurityKeys("utiId", DEFAULT_UTI_ID)
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
-					.addPermission(recordWrite);
+					.addAuthorization(recordWrite);
 
-			final boolean canReadRecord = accessControlManager.hasPermission(RecordPermissions.PRM_RECORD$WRITE);
+			final boolean canReadRecord = accessControlManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$WRITE);
 			Assert.assertTrue(canReadRecord);
 
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
@@ -375,18 +375,18 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		recordNational.setDepId(null);
 		recordNational.setComId(null);
 
-		final Permission recordNotify = getPermission(RecordPermissions.PRM_RECORD$NOTIFY);
+		final Authorization recordNotify = getAuthorization(RecordAuthorizations.ATZ_RECORD$NOTIFY);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			accessControlManager.obtainUserPermissions()
+			accessControlManager.obtainUserAuthorizations()
 					.withSecurityKeys("utiId", DEFAULT_UTI_ID)
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
 					.withSecurityKeys("geo", new Long[] { DEFAULT_REG_ID, DEFAULT_DEP_ID, null }) //droit sur tout un département
-					.addPermission(recordNotify);
+					.addAuthorization(recordNotify);
 
-			Assert.assertTrue(accessControlManager.hasPermission(RecordPermissions.PRM_RECORD$NOTIFY));
+			Assert.assertTrue(accessControlManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$NOTIFY));
 
 			//grant read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
 			Assert.assertTrue(accessControlManager.isAuthorized(record, RecordOperations.READ));
@@ -442,9 +442,9 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		return record;
 	}
 
-	private Permission getPermission(final PermissionName permissionName) {
+	private Authorization getAuthorization(final AuthorizationName authorizationName) {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		return definitionSpace.resolve(permissionName.name(), Permission.class);
+		return definitionSpace.resolve(authorizationName.name(), Authorization.class);
 	}
 
 }

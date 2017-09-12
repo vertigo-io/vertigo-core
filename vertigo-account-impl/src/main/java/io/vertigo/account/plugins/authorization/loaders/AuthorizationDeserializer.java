@@ -26,23 +26,23 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import io.vertigo.account.authorization.metamodel.Permission;
+import io.vertigo.account.authorization.metamodel.Authorization;
 
 /**
  * Deserializer json
  *
  * @author npiedeloup
  */
-final class PermissionDeserializer implements JsonDeserializer<Permission> {
+final class AuthorizationDeserializer implements JsonDeserializer<Authorization> {
 
 	/** {@inheritDoc} */
 	@Override
-	public Permission deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
-		final JsonObject jsonPermission = json.getAsJsonObject();
-		final String code = jsonPermission.get("name").getAsString();
-		final String label = jsonPermission.get("label").getAsString();
-		final Optional<String> comment = Optional.ofNullable(jsonPermission.get("__comment"))
+	public Authorization deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
+		final JsonObject jsonAuthorization = json.getAsJsonObject();
+		final String code = jsonAuthorization.get("name").getAsString();
+		final String label = jsonAuthorization.get("label").getAsString();
+		final Optional<String> comment = Optional.ofNullable(jsonAuthorization.get("__comment"))
 				.map(JsonElement::getAsString);
-		return new Permission(code, label, comment);
+		return new Authorization(code, label, comment);
 	}
 }
