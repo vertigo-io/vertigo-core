@@ -20,7 +20,6 @@ package io.vertigo.studio.plugins.mda.domain.ts.model;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
@@ -76,7 +75,7 @@ public final class TSDtFieldModel {
 	}
 
 	/**
-	 * @return Simple TS type 
+	 * @return Simple TS type
 	 */
 	public String getDomainTypeName() {
 		return buildTypescriptType(dtField.getDomain(), false);
@@ -141,8 +140,7 @@ public final class TSDtFieldModel {
 
 	private static String getSimpleName(final Domain domain) {
 		//on rÃ©cupÃ¨re le DT correspondant au nom passÃ© en paramÃ¨tre
-		final DtDefinition dtDefinition = domain.getDtDefinition();
-		return dtDefinition.getClassSimpleName();
+		return domain.getDtDefinition().getClassSimpleName();
 	}
 
 }

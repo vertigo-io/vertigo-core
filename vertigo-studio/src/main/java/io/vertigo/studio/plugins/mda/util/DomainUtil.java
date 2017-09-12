@@ -67,8 +67,7 @@ public final class DomainUtil {
 		}
 
 		//Cas des DTO et DTC
-		final DtDefinition dtDefinition = domain.getDtDefinition();
-		final String dtoClassCanonicalName = dtDefinition.getClassCanonicalName();
+		final String dtoClassCanonicalName = domain.getDtDefinition().getClassCanonicalName();
 		switch (dataType) {
 			case DtObject:
 				return dtoClassCanonicalName;

@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.lang.Assertion;
 
@@ -71,36 +70,27 @@ public final class TSDtDefinitionModel {
 	 * @return true si au moins un champ est de type primitif.
 	 */
 	public boolean isContainsPrimitiveField() {
-		for (final DtField dtField : dtDefinition.getFields()) {
-			if (dtField.getDomain().getDataType().isPrimitive()) {
-				return true;
-			}
-		}
-		return false;
+		return dtDefinition.getFields()
+				.stream()
+				.anyMatch(dtField -> dtField.getDomain().getDataType().isPrimitive());
 	}
 
 	/**
 	 * @return true si au moins un champ est de type DtList.
 	 */
 	public boolean isContainsListField() {
-		for (final TSDtFieldModel dtField : getFields()) {
-			if (dtField.isList()) {
-				return true;
-			}
-		}
-		return false;
+		return getFields()
+				.stream()
+				.anyMatch(dtField -> dtField.isList());
 	}
 
 	/**
 	 * @return true si au moins un champ est de type DtObject.
 	 */
 	public Boolean isContainsObjectField() {
-		for (final DtField dtField : dtDefinition.getFields()) {
-			if (dtField.getDomain().getDataType() != DataType.DtList && !dtField.getDomain().getDataType().isPrimitive()) {
-				return true;
-			}
-		}
-		return false;
+		return dtDefinition.getFields()
+				.stream()
+				.anyMatch(dtField -> dtField.getDomain().getDataType() == DataType.DtObject);
 	}
 
 	/**
