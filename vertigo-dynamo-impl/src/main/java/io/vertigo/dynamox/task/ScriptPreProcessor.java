@@ -27,7 +27,6 @@ import io.vertigo.commons.script.ExpressionParameter;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.commons.script.parser.ScriptSeparator;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
@@ -79,10 +78,10 @@ final class ScriptPreProcessor {
 			if (domain.getDataType().isPrimitive()) {
 				// Pour les types primitifs
 				clazz = domain.getDataType().getJavaClass();
-			} else if (domain.getDataType() == DataType.DtList) {
+			} else if (domain.isDtList()) {
 				// Pour les types liste
 				clazz = DtList.class;
-			} else if (domain.getDataType() == DataType.DtObject) {
+			} else if (domain.isDtObject()) {
 				clazz = ClassUtil.classForName(domain.getDtDefinition().getClassCanonicalName());
 			} else {
 				throw new VSystemException("Type de paramètre non géré {0} : {1}", taskAttribute.getName(), domain.getName());

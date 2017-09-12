@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -309,14 +309,14 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	}
 
 	private static Type getFieldType(final DtField dtField) {
-		final DataType dataType = dtField.getDomain().getDataType();
-		if (DataType.DtObject == dataType) {
+		final Domain domain = dtField.getDomain();
+		if (domain.isDtObject()) {
 			return ClassUtil.classForName(dtField.getDomain().getDtDefinition().getClassCanonicalName());
-		} else if (DataType.DtList == dataType) {
+		} else if (domain.isDtList()) {
 			final Class<?> dtClass = ClassUtil.classForName(dtField.getDomain().getDtDefinition().getClassCanonicalName());
 			return new CustomParameterizedType(DtList.class, dtClass);
 		}
-		return dataType.getJavaClass();
+		return domain.getDataType().getJavaClass();
 	}
 
 	private void appendPropertiesObject(final Map<String, Object> entity, final Type type, final Class<?> parameterClass) {

@@ -33,7 +33,6 @@ import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.statement.SqlStatementBuilder;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
@@ -77,7 +76,7 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 		final Iterator<TaskAttribute> inAttributes = getTaskDefinition().getInAttributes().iterator();
 		Assertion.checkState(inAttributes.hasNext(), "For batch a single DtList param is required");
 		final TaskAttribute listAttribute = inAttributes.next();
-		Assertion.checkState(listAttribute.getDomain().getDataType() == DataType.DtList && !inAttributes.hasNext(), "For batch a single DtList param is required");
+		Assertion.checkState(listAttribute.getDomain().isDtList() && !inAttributes.hasNext(), "For batch a single DtList param is required");
 		//---
 		final DtList<?> dtc = getValue(listAttribute.getName());
 		dtc.forEach(dto -> sqlStatementBuilder

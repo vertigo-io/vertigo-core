@@ -29,7 +29,6 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.VCollectors;
@@ -96,11 +95,11 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 			result = getDataBaseManager().executeQuery(sqlStatement, outAttribute.getDomain().getDataType().getJavaClass(), 1, connection);
 			Assertion.checkState(result.size() <= 1, "Limit exceeded");
 			setResult(result.isEmpty() ? null : result.get(0));
-		} else if (outAttribute.getDomain().getDataType() == DataType.DtObject) {
+		} else if (outAttribute.getDomain().isDtObject()) {
 			result = getDataBaseManager().executeQuery(sqlStatement, ClassUtil.classForName(outAttribute.getDomain().getDtDefinition().getClassCanonicalName()), 1, connection);
 			Assertion.checkState(result.size() <= 1, "Limit exceeded");
 			setResult(result.isEmpty() ? null : result.get(0));
-		} else if (outAttribute.getDomain().getDataType() == DataType.DtList) {
+		} else if (outAttribute.getDomain().isDtList()) {
 			result = getDataBaseManager().executeQuery(sqlStatement, ClassUtil.classForName(outAttribute.getDomain().getDtDefinition().getClassCanonicalName()), null, connection);
 
 			final DtList<?> dtList = result

@@ -203,6 +203,14 @@ public final class Domain implements Definition {
 		return name;
 	}
 
+	public boolean isDtList() {
+		return dataType == DataType.DtList;
+	}
+
+	public boolean isDtObject() {
+		return dataType == DataType.DtObject;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

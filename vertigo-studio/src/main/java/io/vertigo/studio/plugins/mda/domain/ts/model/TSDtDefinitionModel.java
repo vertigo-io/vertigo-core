@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.lang.Assertion;
@@ -90,7 +89,7 @@ public final class TSDtDefinitionModel {
 	public Boolean isContainsObjectField() {
 		return dtDefinition.getFields()
 				.stream()
-				.anyMatch(dtField -> dtField.getDomain().getDataType() == DataType.DtObject);
+				.anyMatch(dtField -> dtField.getDomain().isDtObject());
 	}
 
 	/**

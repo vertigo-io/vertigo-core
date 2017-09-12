@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
@@ -99,7 +98,7 @@ final class WhereInPreProcessor {
 			final String inputParamName = matcher.group(DTC_INPUTNAME_GROUP);
 			final boolean isNotIn = matcher.group(OPTIONNAL_NOT_GROUP) != null; //null if not found
 			final TaskAttribute attribute = obtainInTaskAttribute(inputParamName);
-			Assertion.checkState(attribute.getDomain().getDataType() == DataType.DtList, "Attribute {0} can't be use in WherInPreProcessor. Check it was declared as IN and is DtList type.", inputParamName);
+			Assertion.checkState(attribute.getDomain().isDtList(), "Attribute {0} can't be use in WherInPreProcessor. Check it was declared as IN and is DtList type.", inputParamName);
 
 			//-----
 			final DtList<?> listObject = (DtList<?>) inTaskAttributes.get(attribute);
