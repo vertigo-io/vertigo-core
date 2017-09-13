@@ -21,14 +21,14 @@ package io.vertigo.account.plugins.authentication.mock;
 import java.util.Optional;
 
 import io.vertigo.account.authentication.AuthenticationToken;
-import io.vertigo.account.impl.authentication.AuthenticationRealmPlugin;
+import io.vertigo.account.impl.authentication.AuthenticationPlugin;
 import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
 
 /**
  * A mock implementation of the Realm.
  * It accept all UsernameToken and create a URI based on the username.
  */
-public class MockAuthenticatingRealmPlugin implements AuthenticationRealmPlugin {
+public class MockAuthenticatingPlugin implements AuthenticationPlugin {
 
 	/** {@inheritDoc} */
 	@Override

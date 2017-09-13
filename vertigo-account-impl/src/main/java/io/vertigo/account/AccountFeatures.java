@@ -21,7 +21,7 @@ package io.vertigo.account;
 import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.account.impl.authentication.AuthenticationManagerImpl;
-import io.vertigo.account.impl.authentication.AuthenticationRealmPlugin;
+import io.vertigo.account.impl.authentication.AuthenticationPlugin;
 import io.vertigo.account.impl.identity.AccountCachePlugin;
 import io.vertigo.account.impl.identity.AccountDefinitionProvider;
 import io.vertigo.account.impl.identity.AccountStorePlugin;
@@ -72,7 +72,7 @@ public final class AccountFeatures extends Features {
 	 * @param params
 	 * @return the features
 	 */
-	public AccountFeatures withAuthentificationRealm(final Class<? extends AuthenticationRealmPlugin> authenticatingRealmPluginClass, final Param... params) {
+	public AccountFeatures withAuthentication(final Class<? extends AuthenticationPlugin> authenticatingRealmPluginClass, final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(authenticatingRealmPluginClass, params);
 		return this;

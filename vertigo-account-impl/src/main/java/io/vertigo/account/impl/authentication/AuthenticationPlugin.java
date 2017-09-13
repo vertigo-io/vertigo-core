@@ -28,7 +28,7 @@ import io.vertigo.core.component.Plugin;
  * Inspired by org.apache.shiro.realm.AuthenticatingRealm.
  * @author npiedeloup
  */
-public interface AuthenticationRealmPlugin extends Plugin {
+public interface AuthenticationPlugin extends Plugin {
 
 	/**
 	 * Convenience implementation that returns getAuthenticationTokenClass().isAssignableFrom( token.getClass() );.
