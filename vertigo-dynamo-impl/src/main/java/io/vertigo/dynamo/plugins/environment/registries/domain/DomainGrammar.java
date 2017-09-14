@@ -210,8 +210,17 @@ public final class DomainGrammar implements DslGrammar {
 	@Override
 	public List<DslDefinition> getRootDefinitions() {
 		//We are listing all primitives types
-		return Arrays.stream(DataType.values())
-				.map(dataType -> DslDefinition.builder(dataType.name(), DATA_TYPE_ENTITY).build())
+		final List<String> types = new ListBuilder()
+				.addAll(Arrays.stream(DataType.values())
+						.map(dataType -> dataType.name())
+						.collect(Collectors.toList()))
+				.add("DtObject")
+				.add("DtList")
+				.build();
+
+		return types
+				.stream()
+				.map(type -> DslDefinition.builder(type, DATA_TYPE_ENTITY).build())
 				.collect(Collectors.toList());
 	}
 }

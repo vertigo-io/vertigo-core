@@ -41,7 +41,7 @@ public final class DefaultDtObjectValidator<O extends DtObject> extends Abstract
 			try {
 				// Le typage est OK
 				// Si non null, on vérifie la validité de la valeur par rapport au champ/domaine.
-				dtField.getDomain().checkValue(value);
+				dtField.getDomain().checkConstraints(value);
 			} catch (final ConstraintException e) {
 				// Erreur lors du check de la valeur,
 				// la valeur est toutefois correctement typée.

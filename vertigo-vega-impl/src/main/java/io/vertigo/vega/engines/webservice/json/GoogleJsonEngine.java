@@ -317,7 +317,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.forEach(field -> field.getDataAccessor()
 							.setValue(
 									dtObject,
-									context.deserialize(jsonObject.get(StringUtil.constToLowerCamelCase(field.getName())), field.getDomain().getDataType().getJavaClass())));
+									context.deserialize(jsonObject.get(StringUtil.constToLowerCamelCase(field.getName())), field.getDomain().getJavaClass())));
 
 			return dtObject;
 

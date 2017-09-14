@@ -164,7 +164,7 @@ public final class DomainMetricsProvider implements Component {
 
 	private static double count(final DtDefinition dtDefinition, final TaskAttribute taskAttribute) {
 		int count = 0;
-		if (!taskAttribute.getDomain().getDataType().isPrimitive()) {
+		if (taskAttribute.getDomain().isDtList() || taskAttribute.getDomain().isDtObject()) {
 			if (dtDefinition.equals(taskAttribute.getDomain().getDtDefinition())) {
 				count++;
 			}

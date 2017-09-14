@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.app.Home;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
@@ -54,9 +53,8 @@ public final class DomainUtil {
 	 * @return String
 	 */
 	public static String buildJavaType(final Domain domain) {
-		final DataType dataType = domain.getDataType();
-		if (dataType.isPrimitive()) {
-			String javaType = dataType.getJavaClass().getName();
+		if (domain.isPrimitive()) {
+			String javaType = domain.getJavaClass().getName();
 
 			//On simplifie l'écriture des types primitifs
 			//java.lang.String => String
@@ -68,25 +66,10 @@ public final class DomainUtil {
 
 		//Cas des DTO et DTC
 		final String dtoClassCanonicalName = domain.getDtDefinition().getClassCanonicalName();
-		switch (dataType) {
-			case DtObject:
-				return dtoClassCanonicalName;
-			case DtList:
-				return io.vertigo.dynamo.domain.model.DtList.class.getCanonicalName() + '<' + dtoClassCanonicalName + '>';
-			case BigDecimal:
-			case Boolean:
-			case DataStream:
-			case Date:
-			case LocalDate:
-			case ZonedDateTime:
-			case Double:
-			case Integer:
-			case Long:
-			case String:
-				throw new IllegalArgumentException("Type unsupported : " + dataType);
-			default:
-				throw new IllegalArgumentException("Type unknown : " + dataType);
+		if (domain.isDtObject()) {
+			return dtoClassCanonicalName;
 		}
+		return io.vertigo.dynamo.domain.model.DtList.class.getCanonicalName() + '<' + dtoClassCanonicalName + '>';
 	}
 
 	public static Collection<DtDefinition> getDtDefinitions() {

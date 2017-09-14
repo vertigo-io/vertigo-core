@@ -152,7 +152,7 @@ public final class FacetFactory {
 			final Object value = dtField.getDataAccessor().getValue(dto);
 			facetValue = facetFilterIndex.get(value);
 			if (facetValue == null) {
-				final String valueAsString = dtField.getDomain().getFormatter().valueToString(value, dtField.getDomain().getDataType());
+				final String valueAsString = dtField.getDomain().valueToString(value);
 				final String label;
 				if (StringUtil.isEmpty(valueAsString)) {
 					label = "<==no label==>";

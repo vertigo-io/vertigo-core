@@ -123,8 +123,6 @@ final class IndexType {
 			case BigDecimal:
 				return "scaled_float";
 			case DataStream:
-			case DtObject:
-			case DtList:
 			default:
 				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + domain + "].");
 		}
@@ -150,8 +148,6 @@ final class IndexType {
 				}
 				break;
 			case DataStream:
-			case DtObject:
-			case DtList:
 			default:
 				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + domain + "].");
 		}

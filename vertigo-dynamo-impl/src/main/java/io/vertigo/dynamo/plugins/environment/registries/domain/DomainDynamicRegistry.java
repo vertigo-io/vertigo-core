@@ -124,24 +124,30 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 	}
 
 	private static Domain createDomain(final DefinitionSpace definitionSpace, final DslDefinition xdomain) {
-		final DataType dataType = DataType.valueOf(xdomain.getDefinitionLinkName("dataType"));
 		final String domainName = xdomain.getName();
-
-		final boolean hasFormatter = !xdomain.getDefinitionLinkNames("formatter").isEmpty();
 		final List<String> constraintNames = xdomain.getDefinitionLinkNames("constraint");
-
-		final DomainBuilder domainBuilder = Domain.builder(domainName, dataType);
-
-		if (hasFormatter) {
-			final String formatterName = xdomain.getDefinitionLinkName("formatter");
-			final FormatterDefinition formatterDefinition = definitionSpace.resolve(formatterName, FormatterDefinition.class);
-			//---
-			domainBuilder.withFormatter(formatterDefinition);
+		final String type = xdomain.getDefinitionLinkName("dataType");
+		final Properties properties = extractProperties(xdomain);
+		final DomainBuilder domainBuilder;
+		if ("DtObject".equals(type)) {
+			domainBuilder = Domain.builder(domainName, properties.getValue(DtProperty.TYPE), false);
+		} else if ("DtList".equals(type)) {
+			domainBuilder = Domain.builder(domainName, properties.getValue(DtProperty.TYPE), true);
+		} else {
+			final DataType dataType = DataType.valueOf(type);
+			domainBuilder = Domain.builder(domainName, dataType);
+			//only primitive can have a formatter
+			final boolean hasFormatter = !xdomain.getDefinitionLinkNames("formatter").isEmpty();
+			if (hasFormatter) {
+				final String formatterName = xdomain.getDefinitionLinkName("formatter");
+				final FormatterDefinition formatterDefinition = definitionSpace.resolve(formatterName, FormatterDefinition.class);
+				//---
+				domainBuilder.withFormatter(formatterDefinition);
+			}
 		}
-
 		return domainBuilder
 				.withConstraints(createConstraints(definitionSpace, constraintNames))
-				.withProperties(extractProperties(xdomain))
+				.withProperties(properties)
 				.build();
 	}
 

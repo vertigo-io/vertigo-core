@@ -29,9 +29,10 @@ import io.vertigo.lang.Builder;
  * @author pchretien
  */
 public final class DomainBuilder implements Builder<Domain> {
-
 	private final String myName;
 	private final DataType myDataType;
+	private final String myDtDefinitionName;
+	private final boolean myMultiple;
 
 	/** Formatter. */
 	private FormatterDefinition myformatterDefinition;
@@ -53,6 +54,23 @@ public final class DomainBuilder implements Builder<Domain> {
 		//---
 		myName = name;
 		myDataType = dataType;
+		myDtDefinitionName = null;
+		myMultiple = false;
+	}
+
+	/**
+	 * Constructor.
+	 * @param name the name of the domain
+	 * @param dataType the dataType lof the domain
+	 */
+	DomainBuilder(final String name, final String dtDefinitionName, final boolean multiple) {
+		Assertion.checkArgNotEmpty(name);
+		Assertion.checkNotNull(dtDefinitionName);
+		//---
+		myName = name;
+		myDataType = null;
+		myDtDefinitionName = dtDefinitionName;
+		myMultiple = multiple;
 	}
 
 	/**
@@ -93,6 +111,8 @@ public final class DomainBuilder implements Builder<Domain> {
 		return new Domain(
 				myName,
 				myDataType,
+				myDtDefinitionName,
+				myMultiple,
 				myformatterDefinition,
 				myConstraintDefinitions == null ? Collections.emptyList() : myConstraintDefinitions,
 				myProperties == null ? Properties.builder().build() : myProperties);

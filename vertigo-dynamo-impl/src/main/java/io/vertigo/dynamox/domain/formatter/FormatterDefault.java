@@ -80,8 +80,6 @@ public final class FormatterDefault implements Formatter {
 			case BigDecimal:
 				return numberformatter;
 			case DataStream:
-			case DtList:
-			case DtObject:
 			default:
 				throw new IllegalArgumentException(dataType + " n'est pas géré par ce formatter");
 		}

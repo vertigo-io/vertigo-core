@@ -52,7 +52,6 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
@@ -297,8 +296,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	}
 
 	private void setTypedValue(final DtField dtField, final Entity user, final String valueStr) throws FormatterException {
-		final Formatter formatter = dtField.getDomain().getFormatter();
-		final Serializable typedValue = (Serializable) formatter.stringToValue(valueStr, dtField.getDomain().getDataType());
+		final Serializable typedValue = (Serializable) dtField.getDomain().stringToValue(valueStr);
 		dtField.getDataAccessor().setValue(user, typedValue);
 	}
 

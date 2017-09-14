@@ -78,7 +78,7 @@ public final class OOMEnvironmentManagerTest extends AbstractTestCaseJU4 {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		final io.vertigo.dynamo.domain.metamodel.Domain domain = definitionSpace.resolve("DO_EMAIL", Domain.class);
 		Assert.assertEquals(DataType.String, domain.getDataType());
-		Assert.assertEquals(FormatterDefault.class.getName(), domain.getFormatter().getFormatterClassName());
+		Assert.assertEquals(FormatterDefault.class.getName(), domain.getFormatterClassName());
 	}
 
 	@Test

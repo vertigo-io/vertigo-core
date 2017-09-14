@@ -101,7 +101,7 @@ public final class TaskAttribute {
 			Assertion.checkNotNull(value, "Attribut task {0} ne doit pas etre null (cf. paramétrage task)", getName());
 		}
 		try {
-			getDomain().checkValue(value);
+			getDomain().checkConstraints(value);
 		} catch (final ConstraintException e) {
 			//On retransforme en Runtime pour conserver une API sur les getters et setters.
 			throw WrappedException.wrap(e);

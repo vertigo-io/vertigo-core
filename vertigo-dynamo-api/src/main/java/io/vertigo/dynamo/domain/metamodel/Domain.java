@@ -26,7 +26,7 @@ import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
+import io.vertigo.util.ClassUtil;
 
 /**
  * A domain exists to enrich the primitive datatypes, giving them super powers.
@@ -50,7 +50,12 @@ import io.vertigo.lang.VSystemException;
 @DefinitionPrefix("DO")
 public final class Domain implements Definition {
 	private final String name;
+	private final boolean multiple;
 	private final DataType dataType;
+	/**
+	 * Name of the DtDefinition (for the DtObject or DtList)
+	 */
+	private final String dtDefinitionName;
 
 	/** Formatter. */
 	private final DefinitionReference<FormatterDefinition> formatterDefinitionRef;
@@ -60,11 +65,6 @@ public final class Domain implements Definition {
 
 	/** List of property-value tuples */
 	private final Properties properties;
-
-	/**
-	 * Name of the DtDefinition (for the DtObject or DtList)
-	 */
-	private final String dtDefinitionName;
 
 	/**
 	 * Constructor.
@@ -77,31 +77,26 @@ public final class Domain implements Definition {
 	Domain(
 			final String name,
 			final DataType dataType,
+			final String dtDefinitionName,
+			final boolean multiple,
 			final FormatterDefinition formatterDefinition,
 			final List<ConstraintDefinition> constraintDefinitions,
 			final Properties properties) {
 		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(dataType);
+		Assertion.checkState(dataType != null ^ dtDefinitionName != null, "a domain must have a primitive xor a dtDefinition");
 		//formatterDefinition can be null
 		Assertion.checkNotNull(constraintDefinitions);
 		Assertion.checkNotNull(properties);
 		//-----
 		this.name = name;
 		this.dataType = dataType;
+		this.dtDefinitionName = dtDefinitionName;
+		this.multiple = multiple;
 		formatterDefinitionRef = formatterDefinition == null ? null : new DefinitionReference<>(formatterDefinition);
 		//---Constraints
 		constraintDefinitionRefs = buildConstraintDefinitionRefs(constraintDefinitions);
 		//---Properties
 		this.properties = buildProperties(constraintDefinitions, properties);
-
-		//---
-		Assertion.when(!getDataType().isPrimitive()).check(() -> this.properties.getValue(DtProperty.TYPE) != null, "a dtDefinition is required on {0}", name);
-		Assertion.when(getDataType().isPrimitive()).check(() -> this.properties.getValue(DtProperty.TYPE) == null, "dtDefinition must be empty on {0}", name);
-		if (this.properties.getValue(DtProperty.TYPE) != null) {
-			dtDefinitionName = this.properties.getValue(DtProperty.TYPE);
-		} else {
-			dtDefinitionName = null;
-		}
 	}
 
 	/**
@@ -112,6 +107,10 @@ public final class Domain implements Definition {
 	 */
 	public static DomainBuilder builder(final String name, final DataType dataType) {
 		return new DomainBuilder(name, dataType);
+	}
+
+	public static DomainBuilder builder(final String name, final String dtDefinitionName, final boolean multiple) {
+		return new DomainBuilder(name, dtDefinitionName, multiple);
 	}
 
 	private static List<DefinitionReference<ConstraintDefinition>> buildConstraintDefinitionRefs(final List<ConstraintDefinition> constraintDefinitions) {
@@ -148,7 +147,7 @@ public final class Domain implements Definition {
 	 *
 	 * @return the formatter.
 	 */
-	public FormatterDefinition getFormatter() {
+	private FormatterDefinition getFormatter() {
 		Assertion.checkNotNull(formatterDefinitionRef, "no formatter defined on {0}", this);
 		//-----
 		return formatterDefinitionRef.get();
@@ -165,13 +164,24 @@ public final class Domain implements Definition {
 	 * Chechs if the value is valid.
 	 *
 	 * @param value the value to check
+	 */
+	public void checkValue(final Object value) {
+		if (isPrimitive()) {
+			dataType.checkValue(value);
+		}
+	}
+
+	/**
+	 * Chechs if
+	 *  - the value is valid
+	 *  - the constraints are ok.
+	 *
+	 * @param value the value to check
 	 * @throws ConstraintException if a constraint has failed
 	 */
-	public void checkValue(final Object value) throws ConstraintException {
-		//1. We are checking the type .
-		getDataType().checkValue(value);
-
-		//2. we are checking all the constraints
+	public void checkConstraints(final Object value) throws ConstraintException {
+		checkValue(value);
+		//---
 		for (final DefinitionReference<ConstraintDefinition> constraintDefinitionRef : constraintDefinitionRefs) {
 			//when a constraint fails, there is no validation
 			if (!constraintDefinitionRef.get().checkConstraint(value)) {
@@ -187,14 +197,9 @@ public final class Domain implements Definition {
 	 * @return the dtDefinition for the domains DtList or DtObject.
 	 */
 	public DtDefinition getDtDefinition() {
-		if (dtDefinitionName != null) {
-			return Home.getApp().getDefinitionSpace().resolve(dtDefinitionName, DtDefinition.class);
-		}
-		//No DtDefinition, so we are building the more explicit error message
-		if (getDataType().isPrimitive()) {
-			throw new VSystemException("the domain {0} is not a DtList/DtObject", getName());
-		}
-		throw new VSystemException("The domain is a dynamic DtList/DtObject, so there is no DtDefinition", getName());
+		Assertion.checkState(isDtObject() || isDtList(), "only DtObject or DtList can have a DtDefinition");
+		//---
+		return Home.getApp().getDefinitionSpace().resolve(dtDefinitionName, DtDefinition.class);
 	}
 
 	/** {@inheritDoc} */
@@ -203,17 +208,43 @@ public final class Domain implements Definition {
 		return name;
 	}
 
+	public boolean isPrimitive() {
+		return dataType != null;
+	}
+
 	public boolean isDtList() {
-		return dataType == DataType.DtList;
+		return dtDefinitionName != null && multiple;
 	}
 
 	public boolean isDtObject() {
-		return dataType == DataType.DtObject;
+		return dtDefinitionName != null && !multiple;
+	}
+
+	public Class getJavaClass() {
+		if (isPrimitive()) {
+			return dataType.getJavaClass();
+		}
+		//		} else if (isDtList()) {
+		//			return DtList.class;
+		//		}
+		return ClassUtil.classForName(getDtDefinition().getClassCanonicalName());
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	public String getFormatterClassName() {
+		return getFormatter().getFormatterClassName();
+	}
+
+	public String valueToString(final Object objValue) {
+		return getFormatter().valueToString(objValue, dataType);
+	}
+
+	public Object stringToValue(final String strValue) throws FormatterException {
+		return getFormatter().stringToValue(strValue, dataType);
 	}
 }

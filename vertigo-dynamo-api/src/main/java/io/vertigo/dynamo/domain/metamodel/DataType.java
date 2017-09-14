@@ -22,53 +22,36 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.DataStream;
 
 /**
- * Types.
- * On distingue :
- * - les types primitifs,
- * - types complexes.
- *
- * Les types complexes permettent de créer des objets composites.
- * Ils unifient le socle autour de la notion clé de domaine.
+ * Primitives types.
  *
  * @author  pchretien
  */
 public enum DataType {
 	/** Integer. */
-	Integer(Integer.class, true),
+	Integer(Integer.class),
 	/** Double. */
-	Double(Double.class, true),
+	Double(Double.class),
 	/** Boolean. */
-	Boolean(Boolean.class, true),
+	Boolean(Boolean.class),
 	/** String. */
-	String(String.class, true),
+	String(String.class),
 	/** Date. */
 	@Deprecated
-	Date(Date.class, true),
+	Date(Date.class),
 	/** LocalDate. */
-	LocalDate(LocalDate.class, true),
+	LocalDate(LocalDate.class),
 	/** ZonedDateTime. */
-	ZonedDateTime(ZonedDateTime.class, true),
+	ZonedDateTime(ZonedDateTime.class),
 	/** BigDecimal. */
-	BigDecimal(java.math.BigDecimal.class, true),
+	BigDecimal(java.math.BigDecimal.class),
 	/** Long. */
-	Long(Long.class, true),
+	Long(Long.class),
 	/** DataStream. */
-	DataStream(DataStream.class, true),
-	/** DtObject. */
-	DtObject(DtObject.class, false),
-	/** DtList. */
-	DtList(DtList.class, false);
-
-	/**
-	 * S'agit-il d'un type primitif
-	 */
-	private final boolean primitive;
+	DataStream(DataStream.class);
 
 	/**
 	 * Classe java que le Type encapsule.
@@ -77,15 +60,12 @@ public enum DataType {
 
 	/**
 	 * Constructor.
-	 * @param javaClass Classe java encapsulée
-	 * @param primitive Si il s'agit d'un type primitif (sinon composite)
+	 * @param javaClass the java class
 	 */
-	DataType(final Class<?> javaClass, final boolean primitive) {
+	DataType(final Class<?> javaClass) {
 		Assertion.checkNotNull(javaClass);
 		//-----
-		//Le nom est égal au type sous forme de String
 		this.javaClass = javaClass;
-		this.primitive = primitive;
 	}
 
 	/**
@@ -93,11 +73,11 @@ public enum DataType {
 	 * Lance une exception avec message adequat si pb.
 	 * @param value Valeur é tester
 	 */
-	public void checkValue(final Object value) {
+	void checkValue(final Object value) {
 		//Il suffit de vérifier que la valeur passée est une instance de la classe java définie pour le type Dynamo.
 		//Le test doit être effectué car le cast est non fiable par les generics
 		if (value != null && !javaClass.isInstance(value)) {
-			throw new ClassCastException("Valeur " + value + " ne correspond pas au type :" + this);
+			throw new ClassCastException("Value " + value + " doesn't match :" + this);
 		}
 	}
 
@@ -117,17 +97,7 @@ public enum DataType {
 	/**
 	 * @return Classe java encapsulé/wrappée par le type
 	 */
-	public Class<?> getJavaClass() {
+	Class<?> getJavaClass() {
 		return javaClass;
-	}
-
-	/**
-	 * Il extiste deux types de types primitifs
-	 * - les types simples ou primitifs (Integer, Long, String...),
-	 * - les types composites (DtObject et DtList).
-	 * @return boolean S'il s'agit d'un type primitif de la grammaire
-	 */
-	public boolean isPrimitive() {
-		return primitive;
 	}
 }

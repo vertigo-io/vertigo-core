@@ -62,7 +62,7 @@ public final class URI<E extends Entity> implements Serializable {
 	public URI(final DtDefinition definition, final Object id) {
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(definition);
-		definition.getIdField().get().getDomain().getDataType().checkValue(id);
+		definition.getIdField().get().getDomain().checkValue(id);
 		//-----
 		this.id = Serializable.class.cast(id);
 		this.definitionRef = new DefinitionReference<>(definition);

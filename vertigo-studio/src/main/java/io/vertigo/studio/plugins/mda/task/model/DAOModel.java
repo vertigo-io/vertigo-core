@@ -123,7 +123,7 @@ public final class DAOModel {
 	 * @return Type de la PK
 	 */
 	public String getIdFieldType() {
-		return dtDefinition.getIdField().get().getDomain().getDataType().getJavaClass().getCanonicalName();
+		return dtDefinition.getIdField().get().getDomain().getJavaClass().getCanonicalName();
 	}
 
 	/**

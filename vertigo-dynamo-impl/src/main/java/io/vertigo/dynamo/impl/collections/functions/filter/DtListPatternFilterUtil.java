@@ -165,8 +165,6 @@ public final class DtListPatternFilterUtil {
 				return stringValue;
 			case Boolean:
 			case DataStream:
-			case DtObject:
-			case DtList:
 			default:
 				throw new IllegalArgumentException("Type de données non comparable : " + dataType.name());
 		}

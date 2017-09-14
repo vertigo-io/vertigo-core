@@ -316,7 +316,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			final Class<?> dtClass = ClassUtil.classForName(dtField.getDomain().getDtDefinition().getClassCanonicalName());
 			return new CustomParameterizedType(DtList.class, dtClass);
 		}
-		return domain.getDataType().getJavaClass();
+		return domain.getJavaClass();
 	}
 
 	private void appendPropertiesObject(final Map<String, Object> entity, final Type type, final Class<?> parameterClass) {
@@ -443,7 +443,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(paramClass);
 			for (final DtField dtField : dtDefinition.getFields()) {
 				final String fieldName = StringUtil.constToLowerCamelCase(dtField.getName());
-				pseudoWebServiceParams.add(WebServiceParam.builder(dtField.getDomain().getDataType().getJavaClass())
+				pseudoWebServiceParams.add(WebServiceParam.builder(dtField.getDomain().getJavaClass())
 						.with(webServiceParam.getParamType(), prefix + fieldName)
 						.build());
 			}

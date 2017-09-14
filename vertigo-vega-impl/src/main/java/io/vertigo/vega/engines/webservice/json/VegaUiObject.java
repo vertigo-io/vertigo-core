@@ -31,7 +31,6 @@ import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -273,9 +272,8 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		}
 		final Object value = doGetTypedValue(fieldName);
 		final Domain domain = getDtField(fieldName).getDomain();
-		if (domain.getDataType().isPrimitive()) {
-			final Formatter formatter = domain.getFormatter();
-			return formatter.valueToString(value, domain.getDataType());
+		if (domain.isPrimitive()) {
+			return domain.valueToString(value);
 		}
 		return null; // Les liste et les objets ne sont pas gérés
 
@@ -365,11 +363,10 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	private String formatValue(final DtField dtField, final String value) {
 		isChecked = false;
 		getDtObjectErrors().clearErrors(dtField.getName());
-		final Formatter formatter = dtField.getDomain().getFormatter();
 		try {
-			final Serializable typedValue = (Serializable) formatter.stringToValue(value, dtField.getDomain().getDataType());
+			final Serializable typedValue = (Serializable) dtField.getDomain().stringToValue(value);
 			doSetTypedValue(dtField, typedValue);
-			return formatter.valueToString(typedValue, dtField.getDomain().getDataType());
+			return dtField.getDomain().valueToString(typedValue);
 		} catch (final FormatterException e) { //We don't log nor rethrow this exception
 			/** Erreur de typage.	 */
 			getDtObjectErrors().addError(StringUtil.constToLowerCamelCase(dtField.getName()), e.getMessageText());

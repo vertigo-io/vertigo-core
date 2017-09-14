@@ -92,14 +92,14 @@ public final class TSDtFieldModel {
 	 * @return True si le type est une primitive.
 	 */
 	public boolean isPrimitive() {
-		return dtField.getDomain().getDataType().isPrimitive();
+		return dtField.getDomain().isPrimitive();
 	}
 
 	/**
 	 * @return True si le type est une liste.
 	 */
 	public boolean isList() {
-		return dtField.getDomain().getDataType() == DataType.DtList;
+		return dtField.getDomain().isDtList();
 	}
 
 	/**

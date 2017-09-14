@@ -254,7 +254,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 		final Criteria<E> criteria = Criterions.isEqualTo(dtFieldName, value);
 		// Verification de la valeur est du type du champ
 		final DtDefinition dtDefinition = getDtDefinition();
-		dtDefinition.getField(dtFieldName.name()).getDomain().getDataType().checkValue(value);
+		dtDefinition.getField(dtFieldName.name()).getDomain().checkValue(value);
 		return dataStore.findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
 

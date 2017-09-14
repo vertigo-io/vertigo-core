@@ -71,7 +71,7 @@ public final class TSDtDefinitionModel {
 	public boolean isContainsPrimitiveField() {
 		return dtDefinition.getFields()
 				.stream()
-				.anyMatch(dtField -> dtField.getDomain().getDataType().isPrimitive());
+				.anyMatch(dtField -> dtField.getDomain().isPrimitive());
 	}
 
 	/**

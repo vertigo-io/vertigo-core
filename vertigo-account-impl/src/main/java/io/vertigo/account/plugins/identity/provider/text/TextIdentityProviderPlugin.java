@@ -46,7 +46,6 @@ import io.vertigo.core.component.Activeable;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
@@ -85,7 +84,8 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 	 * @param filePatternStr File Pattern (id, displayName, email, authToken, photoUrl)
 	 */
 	@Inject
-	public TextIdentityProviderPlugin(@Named("filePath") final String filePath,
+	public TextIdentityProviderPlugin(
+			@Named("filePath") final String filePath,
 			@Named("filePattern") final String filePatternStr,
 			@Named("userAuthTokenFieldName") final String userAuthTokenFieldName,
 			@Named("userDtDefinitionName") final String userDtDefinitionName,
@@ -201,8 +201,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 
 	private void setTypedValue(final DtDefinition userDtDefinition, final Entity user, final String propertyName, final String valueStr) throws FormatterException {
 		final DtField dtField = userDtDefinition.getField(propertyName);
-		final Formatter formatter = dtField.getDomain().getFormatter();
-		final Serializable typedValue = (Serializable) formatter.stringToValue(valueStr, dtField.getDomain().getDataType());
+		final Serializable typedValue = (Serializable) dtField.getDomain().stringToValue(valueStr);
 		dtField.getDataAccessor().setValue(user, typedValue);
 	}
 
