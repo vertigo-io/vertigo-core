@@ -12,7 +12,7 @@ import io.vertigo.account.authorization.metamodel.AuthorizationName;
  */
 public enum ${classSimpleName} implements AuthorizationsName {
 
-<#list authorizations as authorization>
+<#list globalauthorizations as authorization>
 	/**
 	 * ${authorization.comment.orElse(authorization.name)}.
 	 */

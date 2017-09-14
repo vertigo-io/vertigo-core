@@ -1,13 +1,13 @@
 {
-	"permissions": [{
+	"globalAuthorizations": [{
 		"name": "ADMUSR",
-		"label": "security.permission.admin.user"
+		"label": "security.authorization.admin.user"
 	}, {
 		"name": "ADMPRO",
-		"label": "security.permission.admin.profil"
+		"label": "security.authorization.admin.profil"
 	}, {
 		"name": "ADMAPP",
-		"label": "security.permission.admin.appli"
+		"label": "security.authorization.admin.appli"
 	}],
 	"securedEntities": [{
 		"entity": "RECORD",
