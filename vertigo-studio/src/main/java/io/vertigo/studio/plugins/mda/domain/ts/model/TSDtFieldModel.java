@@ -108,34 +108,19 @@ public final class TSDtFieldModel {
 	 * @return String
 	 */
 	private static String buildTypescriptType(final Domain domain, final boolean withArray) {
+		if (domain.isDtObject()) {
+			return getSimpleName(domain);
+		} else if (domain.isDtList()) {
+			return getSimpleName(domain) + (withArray ? "[]" : "");
+		}
+		//primitives
 		final DataType dataType = domain.getDataType();
-		if (dataType.isPrimitive()) {
-			if (dataType.isNumber()) {
-				return "number";
-			} else if (dataType == DataType.Boolean) {
-				return "boolean";
-			}
-			return "string";
+		if (dataType.isNumber()) {
+			return "number";
+		} else if (dataType == DataType.Boolean) {
+			return "boolean";
 		}
-		switch (dataType) {
-			case DtObject:
-				return getSimpleName(domain);
-			case DtList:
-				return getSimpleName(domain) + (withArray ? "[]" : "");
-			case BigDecimal:
-			case Boolean:
-			case DataStream:
-			case Date:
-			case LocalDate:
-			case ZonedDateTime:
-			case Double:
-			case Integer:
-			case Long:
-			case String:
-				throw new IllegalArgumentException("Type unsupported : " + dataType);
-			default:
-				throw new IllegalArgumentException("Type unknown : " + dataType);
-		}
+		return "string";
 	}
 
 	private static String getSimpleName(final Domain domain) {

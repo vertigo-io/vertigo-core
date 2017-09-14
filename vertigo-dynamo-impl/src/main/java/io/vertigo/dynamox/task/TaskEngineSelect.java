@@ -91,8 +91,8 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 			final SqlConnection connection) throws SQLException {
 		final TaskAttribute outAttribute = getOutTaskAttribute();
 		final List<?> result;
-		if (outAttribute.getDomain().getDataType().isPrimitive()) {
-			result = getDataBaseManager().executeQuery(sqlStatement, outAttribute.getDomain().getDataType().getJavaClass(), 1, connection);
+		if (outAttribute.getDomain().isPrimitive()) {
+			result = getDataBaseManager().executeQuery(sqlStatement, outAttribute.getDomain().getJavaClass(), 1, connection);
 			Assertion.checkState(result.size() <= 1, "Limit exceeded");
 			setResult(result.isEmpty() ? null : result.get(0));
 		} else if (outAttribute.getDomain().isDtObject()) {

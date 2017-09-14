@@ -20,7 +20,7 @@ package io.vertigo.studio.plugins.mda.task.model;
 
 import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
-import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -64,29 +64,25 @@ public final class FacetedQueryDefinitionModel {
 	}
 
 	private String obtainCriteriaClassCanonicalName() {
-		final DataType domainDataType = facetedQueryDefinition.getCriteriaDomain().getDataType();
-		final String domainClassName;
-		switch (domainDataType) {
-			case Boolean:
-			case Double:
-			case Integer:
-			case Long:
-			case String:
-				domainClassName = domainDataType.name();
-				break;
-			case Date:
-			case BigDecimal:
-				domainClassName = domainDataType.getJavaClass().getCanonicalName();
-				break;
-			case DtObject:
-				domainClassName = facetedQueryDefinition.getCriteriaDomain().getDtDefinition().getClassCanonicalName();
-				break;
-			case DtList:
-			case DataStream:
-			default:
-				throw new IllegalArgumentException("Domain " + facetedQueryDefinition.getCriteriaDomain().getName() + " can't be use for a searchCriteria : use DtObject or primitive");
+		final Domain domain = facetedQueryDefinition.getCriteriaDomain();
+		if (domain.isDtObject()) {
+			return domain.getDtDefinition().getClassCanonicalName();
+		} else if (domain.isPrimitive()) {
+			switch (domain.getDataType()) {
+				case Boolean:
+				case Double:
+				case Integer:
+				case Long:
+				case String:
+					return domain.getDataType().name();
+				case Date:
+				case BigDecimal:
+					return domain.getJavaClass().getCanonicalName();
+				case DataStream:
+				default:
+			}
 		}
-		return domainClassName;
+		throw new IllegalArgumentException("Domain " + domain + " can't be use for a searchCriteria : use DtObject or primitive");
 	}
 
 }

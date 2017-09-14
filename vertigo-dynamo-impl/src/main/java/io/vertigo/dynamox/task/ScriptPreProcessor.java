@@ -75,9 +75,9 @@ final class ScriptPreProcessor {
 			final Class<?> clazz;
 			final TaskAttribute taskAttribute = entry.getKey();
 			final Domain domain = taskAttribute.getDomain();
-			if (domain.getDataType().isPrimitive()) {
+			if (domain.isPrimitive()) {
 				// Pour les types primitifs
-				clazz = domain.getDataType().getJavaClass();
+				clazz = domain.getJavaClass();
 			} else if (domain.isDtList()) {
 				// Pour les types liste
 				clazz = DtList.class;

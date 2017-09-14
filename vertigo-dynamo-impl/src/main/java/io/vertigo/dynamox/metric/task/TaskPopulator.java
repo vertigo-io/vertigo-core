@@ -62,40 +62,39 @@ public final class TaskPopulator {
 
 	private void populateTaskAttribute(final TaskAttribute attribute) {
 		final String attributeName = attribute.getName();
-		Object value = null;
-		switch (attribute.getDomain().getDataType()) {
-			case Boolean:
-				value = Boolean.TRUE;
-				break;
-			case String:
-				value = "Test";
-				break;
-			case Date:
-				value = new Date();
-				break;
-			case Double:
-				value = Double.valueOf(1);
-				break;
-			case Integer:
-				value = Integer.valueOf(1);
-				break;
-			case BigDecimal:
-				value = BigDecimal.valueOf(1);
-				break;
-			case Long:
-				value = Long.valueOf(1);
-				break;
-			case DtObject:
-				value = DtObjectUtil.createDtObject(attribute.getDomain().getDtDefinition());
-				break;
-			case DtList:
-				value = new DtList(attribute.getDomain().getDtDefinition());
-				break;
-			case DataStream:
-			default:
-				//we do nothing
-				break;
-
+		final Object value;
+		if (attribute.getDomain().isDtObject()) {
+			value = DtObjectUtil.createDtObject(attribute.getDomain().getDtDefinition());
+		} else if (attribute.getDomain().isDtList()) {
+			value = new DtList(attribute.getDomain().getDtDefinition());
+		} else {
+			switch (attribute.getDomain().getDataType()) {
+				case Boolean:
+					value = Boolean.TRUE;
+					break;
+				case String:
+					value = "Test";
+					break;
+				case Date:
+					value = new Date();
+					break;
+				case Double:
+					value = Double.valueOf(1);
+					break;
+				case Integer:
+					value = Integer.valueOf(1);
+					break;
+				case BigDecimal:
+					value = BigDecimal.valueOf(1);
+					break;
+				case Long:
+					value = Long.valueOf(1);
+					break;
+				case DataStream:
+				default:
+					//we do nothing
+					value = null;
+			}
 		}
 		taskBuilder.addValue(attributeName, value);
 	}
