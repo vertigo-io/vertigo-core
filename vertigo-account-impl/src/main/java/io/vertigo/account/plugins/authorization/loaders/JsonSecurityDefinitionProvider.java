@@ -114,11 +114,11 @@ public final class JsonSecurityDefinitionProvider implements DefinitionProvider 
 	}
 
 	private void registerDefinitions(final AdvancedSecurityConfiguration config) {
-		registerPermissions(config.getGlobalAuthorizations());
+		registerGlobalAuthorizations(config.getGlobalAuthorizations());
 		registerSecurityEntities(config.getSecuredEntities());
 	}
 
-	private void registerPermissions(final List<Authorization> authorizations) {
+	private void registerGlobalAuthorizations(final List<Authorization> authorizations) {
 		authorizations.stream()
 				.forEach(atz -> definitionSuppliers.add(ds -> atz)); //on register les authorizations globales
 	}

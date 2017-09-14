@@ -67,7 +67,7 @@ public final class AuthorizationGeneratorPlugin implements GeneratorPlugin {
 		//-----
 		generateRoles(targetSubDir, fileGeneratorConfig, mdaResultBuilder);
 
-		generatePermissions(targetSubDir, fileGeneratorConfig, mdaResultBuilder);
+		generateGlobalAuthorizations(targetSubDir, fileGeneratorConfig, mdaResultBuilder);
 
 		generateOperations(targetSubDir, fileGeneratorConfig, mdaResultBuilder);
 	}
@@ -91,7 +91,7 @@ public final class AuthorizationGeneratorPlugin implements GeneratorPlugin {
 		generateDictionnary("Roles", targetSubDir, fileGeneratorConfig, mdaResultBuilder, getRoles());
 	}
 
-	private static void generatePermissions(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+	private static void generateGlobalAuthorizations(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
 		generateDictionnary("GlobalAuthorizations", targetSubDir, fileGeneratorConfig, mdaResultBuilder, getGlobalAuthorizations());
 	}
 

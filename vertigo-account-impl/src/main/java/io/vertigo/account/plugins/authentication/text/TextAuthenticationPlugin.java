@@ -34,7 +34,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.vertigo.account.authentication.AuthenticationToken;
-import io.vertigo.account.impl.authentication.AuthenticationRealmPlugin;
+import io.vertigo.account.impl.authentication.AuthenticationPlugin;
 import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.core.component.Activeable;
@@ -53,7 +53,7 @@ import io.vertigo.lang.WrappedException;
  *
  * @since 0.1
  */
-public class TextAuthenticationRealmPlugin implements AuthenticationRealmPlugin, Activeable {
+public class TextAuthenticationPlugin implements AuthenticationPlugin, Activeable {
 	//	accountKey  |  login  |  password
 	private static final String FILE_PATTERN_STR = "^(\\S+)\\s+(\\S+)\\s+(\\S+)\\s*$";
 	private static final Pattern FILE_PATTERN = Pattern.compile(FILE_PATTERN_STR);
@@ -68,7 +68,7 @@ public class TextAuthenticationRealmPlugin implements AuthenticationRealmPlugin,
 	 * @param filePath File path
 	 */
 	@Inject
-	public TextAuthenticationRealmPlugin(@Named("filePath") final String filePath, final ResourceManager resourceManager) {
+	public TextAuthenticationPlugin(@Named("filePath") final String filePath, final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
 		// -----
 		this.resourceManager = resourceManager;

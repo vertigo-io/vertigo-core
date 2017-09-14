@@ -24,7 +24,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.vertigo.account.authentication.AuthenticationToken;
-import io.vertigo.account.impl.authentication.AuthenticationRealmPlugin;
+import io.vertigo.account.impl.authentication.AuthenticationPlugin;
 import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.app.Home;
@@ -41,7 +41,7 @@ import io.vertigo.lang.Assertion;
  * A Store implementation of the Realm interface that
  * @author npiedeloup
  */
-public class StoreAuthenticationRealmPlugin implements AuthenticationRealmPlugin, Activeable {
+public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeable {
 
 	private final StoreManager storeManager;
 	private final String userCredentialEntity;
@@ -60,7 +60,7 @@ public class StoreAuthenticationRealmPlugin implements AuthenticationRealmPlugin
 	 * @param userTokenIdField TokenId fieldName
 	 */
 	@Inject
-	public StoreAuthenticationRealmPlugin(
+	public StoreAuthenticationPlugin(
 			@Named("userCredentialEntity") final String userCredentialEntity,
 			@Named("userLoginField") final String userLoginField,
 			@Named("userPasswordField") final String userPasswordField,
