@@ -174,7 +174,7 @@ final class SqlStatementDriver {
 			final SqlMapping mapping,
 			final ResultSet resultSet,
 			final Class<O> dataType) throws SQLException {
-		final Class sqlDataType = sqlMapper.getSqlType(dataType);
+		final Class<?> sqlDataType = sqlMapper.getSqlType(dataType);
 		return sqlMapper.toJava(dataType, mapping.getValueForResultSet(resultSet, 1, sqlDataType));
 	}
 
@@ -186,8 +186,8 @@ final class SqlStatementDriver {
 		final O bean = ClassUtil.newInstance(dataType);
 		Object value;
 		for (int i = 0; i < fields.length; i++) {
-			final Class javaFieldDataType = fields[i].type;
-			final Class sqlFieldDataType = sqlMapper.getSqlType(javaFieldDataType);
+			final Class<?> javaFieldDataType = fields[i].type;
+			final Class<?> sqlFieldDataType = sqlMapper.getSqlType(javaFieldDataType);
 			value = sqlMapper.toJava(javaFieldDataType, mapping.getValueForResultSet(resultSet, i + 1, sqlFieldDataType));
 			fields[i].setValue(bean, value);
 		}
@@ -271,7 +271,7 @@ final class SqlStatementDriver {
 			}
 			//ResultSet haven't correctly named columns so we fall back to get the first column, instead of looking for column index by name.
 			final int pkRsCol = GENERATED_KEYS_INDEX;//attention le pkRsCol correspond au n° de column dans le RETURNING
-			final Class sqlDataType = sqlMapper.getSqlType(dataType);
+			final Class<?> sqlDataType = sqlMapper.getSqlType(dataType);
 			final O id = sqlMapper.toJava(dataType, sqlMapping.getValueForResultSet(
 					rs, pkRsCol, sqlDataType));
 			if (rs.wasNull()) {
