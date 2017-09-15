@@ -222,7 +222,7 @@ final class RamLuceneIndex<D extends DtObject> {
 				final URI<Entity> uri = new URI<>(field.getFkDtDefinition(), value);
 				final DtObject fkDto = getStoreManager().getDataStore().readOne(uri);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
-				stringValue = displayField.getDomain().getFormatter().valueToString(displayValue, displayField.getDomain().getDataType());
+				stringValue = displayField.getDomain().valueToString(displayValue);
 			} else {
 				stringValue = String.valueOf(field.getDataAccessor().getValue(dto));
 			}
