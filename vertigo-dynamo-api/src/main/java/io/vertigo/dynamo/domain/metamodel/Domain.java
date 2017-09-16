@@ -224,9 +224,6 @@ public final class Domain implements Definition {
 		if (isPrimitive()) {
 			return dataType.getJavaClass();
 		}
-		//		} else if (isDtList()) {
-		//			return DtList.class;
-		//		}
 		return ClassUtil.classForName(getDtDefinition().getClassCanonicalName());
 	}
 

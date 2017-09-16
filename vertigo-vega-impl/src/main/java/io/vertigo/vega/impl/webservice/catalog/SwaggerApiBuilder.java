@@ -311,7 +311,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	private static Type getFieldType(final DtField dtField) {
 		final Domain domain = dtField.getDomain();
 		if (domain.isDtObject()) {
-			return ClassUtil.classForName(dtField.getDomain().getDtDefinition().getClassCanonicalName());
+			return dtField.getDomain().getJavaClass();
 		} else if (domain.isDtList()) {
 			final Class<?> dtClass = ClassUtil.classForName(dtField.getDomain().getDtDefinition().getClassCanonicalName());
 			return new CustomParameterizedType(DtList.class, dtClass);
