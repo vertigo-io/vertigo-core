@@ -51,7 +51,7 @@ public final class DataAccessor {
 	 */
 	public void setValue(final DtObject dto, final Object value) {
 		//On vérifie le type java de l'objet.
-		dtField.getDomain().getDataType().checkValue(value);
+		dtField.getDomain().checkValue(value);
 		//-----
 		BeanUtil.setValue(dto, ccFieldName, value);
 	}
