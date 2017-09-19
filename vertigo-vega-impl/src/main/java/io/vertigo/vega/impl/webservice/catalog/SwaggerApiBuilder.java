@@ -315,8 +315,10 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		} else if (domain.isDtList()) {
 			final Class<?> dtClass = ClassUtil.classForName(dtField.getDomain().getDtDefinition().getClassCanonicalName());
 			return new CustomParameterizedType(DtList.class, dtClass);
+		} else if (domain.isPrimitive()) {
+			return domain.getJavaClass();
 		}
-		return domain.getJavaClass();
+		throw new IllegalStateException("Unknown type of domain " + domain);
 	}
 
 	private void appendPropertiesObject(final Map<String, Object> entity, final Type type, final Class<?> parameterClass) {

@@ -139,6 +139,8 @@ public final class Domain implements Definition {
 	 * @return the dataType.
 	 */
 	public DataType getDataType() {
+		Assertion.checkNotNull(dataType, "can only be used with primitives");
+		//---
 		return dataType;
 	}
 
@@ -234,14 +236,20 @@ public final class Domain implements Definition {
 	}
 
 	public String getFormatterClassName() {
+		Assertion.checkNotNull(dataType, "can only be used with primitives");
+		//---
 		return getFormatter().getFormatterClassName();
 	}
 
 	public String valueToString(final Object objValue) {
+		Assertion.checkNotNull(dataType, "can only be used with primitives");
+		//---
 		return getFormatter().valueToString(objValue, dataType);
 	}
 
 	public Object stringToValue(final String strValue) throws FormatterException {
+		Assertion.checkNotNull(dataType, "can only be used with primitives");
+		//---
 		return getFormatter().stringToValue(strValue, dataType);
 	}
 }

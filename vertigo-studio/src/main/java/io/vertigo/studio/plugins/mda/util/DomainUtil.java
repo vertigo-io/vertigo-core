@@ -62,14 +62,15 @@ public final class DomainUtil {
 				javaType = javaType.substring("java.lang.".length());
 			}
 			return javaType;
+		} else if (domain.isDtObject() || domain.isDtList()) {
+			//Cas des DTO et DTC
+			final String dtoClassCanonicalName = domain.getDtDefinition().getClassCanonicalName();
+			if (domain.isDtObject()) {
+				return dtoClassCanonicalName;
+			}
+			return io.vertigo.dynamo.domain.model.DtList.class.getCanonicalName() + '<' + dtoClassCanonicalName + '>';
 		}
-
-		//Cas des DTO et DTC
-		final String dtoClassCanonicalName = domain.getDtDefinition().getClassCanonicalName();
-		if (domain.isDtObject()) {
-			return dtoClassCanonicalName;
-		}
-		return io.vertigo.dynamo.domain.model.DtList.class.getCanonicalName() + '<' + dtoClassCanonicalName + '>';
+		throw new IllegalArgumentException("unknown type of domain " + domain);
 	}
 
 	public static Collection<DtDefinition> getDtDefinitions() {

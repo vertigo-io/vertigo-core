@@ -86,7 +86,7 @@ public final class TSDtDefinitionModel {
 	/**
 	 * @return true si au moins un champ est de type DtObject.
 	 */
-	public Boolean isContainsObjectField() {
+	public boolean isContainsObjectField() {
 		return dtDefinition.getFields()
 				.stream()
 				.anyMatch(dtField -> dtField.getDomain().isDtObject());

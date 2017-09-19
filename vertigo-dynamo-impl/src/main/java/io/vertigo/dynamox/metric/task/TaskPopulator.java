@@ -67,7 +67,7 @@ public final class TaskPopulator {
 			value = DtObjectUtil.createDtObject(attribute.getDomain().getDtDefinition());
 		} else if (attribute.getDomain().isDtList()) {
 			value = new DtList(attribute.getDomain().getDtDefinition());
-		} else {
+		} else if (attribute.getDomain().isPrimitive()) {
 			switch (attribute.getDomain().getDataType()) {
 				case Boolean:
 					value = Boolean.TRUE;
@@ -95,6 +95,8 @@ public final class TaskPopulator {
 					//we do nothing
 					value = null;
 			}
+		} else {
+			throw new IllegalStateException("unknown kind of domain " + attribute.getDomain());
 		}
 		taskBuilder.addValue(attributeName, value);
 	}

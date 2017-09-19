@@ -112,15 +112,16 @@ public final class TSDtFieldModel {
 			return getSimpleName(domain);
 		} else if (domain.isDtList()) {
 			return getSimpleName(domain) + (withArray ? "[]" : "");
+		} else if (domain.isPrimitive()) {
+			final DataType dataType = domain.getDataType();
+			if (dataType.isNumber()) {
+				return "number";
+			} else if (dataType == DataType.Boolean) {
+				return "boolean";
+			}
+			return "string";
 		}
-		//primitives
-		final DataType dataType = domain.getDataType();
-		if (dataType.isNumber()) {
-			return "number";
-		} else if (dataType == DataType.Boolean) {
-			return "boolean";
-		}
-		return "string";
+		throw new IllegalStateException("unknown kind of domain " + domain);
 	}
 
 	private static String getSimpleName(final Domain domain) {
