@@ -22,7 +22,6 @@ import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -35,6 +34,7 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.TestUtil;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -50,7 +50,9 @@ import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.impl.store.util.DAO;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.data.domain.car.Car;
+import io.vertigo.dynamo.store.data.domain.car.Car.CarFields;
 import io.vertigo.dynamo.store.data.domain.car.CarDataBase;
+import io.vertigo.dynamo.store.data.domain.car.MotorTypeEnum;
 import io.vertigo.dynamo.store.data.domain.famille.Famille;
 import io.vertigo.dynamo.store.data.fileinfo.FileInfoStd;
 import io.vertigo.dynamo.task.TaskManager;
@@ -134,7 +136,10 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	protected List<String> getCreateCarRequests() {
 		return new ListBuilder<String>()
 				.add(" create table fam_car_location(fam_id BIGINT , ID BIGINT)")
-				.add(" create table car(ID BIGINT, FAM_ID BIGINT, MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50) )")
+				.add(" create table motor_type(MTY_CD varchar(50) , LABEL varchar(255))")
+				.add("insert into motor_type(MTY_CD, LABEL) values ('ESSENCE', 'Essence')")
+				.add("insert into motor_type(MTY_CD, LABEL) values ('DIESEL', 'Diesel')")
+				.add(" create table car(ID BIGINT, FAM_ID BIGINT, MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MTY_CD varchar(50) )")
 				.add(" create sequence SEQ_CAR start with 10001 increment by 1")
 				.build();
 	}
@@ -152,6 +157,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				.add(" drop sequence if exists SEQ_VX_FILE_INFO")
 				.add(" drop table if exists fam_car_location")
 				.add(" drop table if exists car")
+				.add(" drop table if exists motor_type")
 				.add(" drop sequence if exists SEQ_CAR")
 				.add(" drop table if exists famille")
 				.add(" drop sequence if exists SEQ_FAMILLE")
@@ -186,6 +192,18 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test
+	public void testSelectCarAndTestMasterDataEnum() {
+		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+			final DtList<Car> dtcEssence = storeManager.getDataStore().find(
+					DtObjectUtil.findDtDefinition(Car.class),
+					Criterions.isEqualTo(CarFields.MTY_CD, MotorTypeEnum.essence.getEntityUri().getId()));
+			//---
+			Assert.assertEquals(1, dtcEssence.size());
+			Assert.assertTrue(dtcEssence.get(0).getMotorTypeEnum() == MotorTypeEnum.essence);
+		}
+	}
+
+	@Test
 	public void testSelectCountCars() {
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_COUNT_CARS")
 				.withEngine(TaskEngineSelect.class)
@@ -211,8 +229,8 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_INSERT_CAR")
 				.withEngine(TaskEngineProc.class)
-				.withRequest("insert into CAR (ID, FAM_ID,MAKE, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MOTOR_TYPE) values "
-						+ "(NEXT VALUE FOR SEQ_CAR, #DTO_CAR.FAM_ID#, #DTO_CAR.MAKE#, #DTO_CAR.MODEL#, #DTO_CAR.DESCRIPTION#, #DTO_CAR.YEAR#, #DTO_CAR.KILO#, #DTO_CAR.PRICE#, #DTO_CAR.MOTOR_TYPE#)")
+				.withRequest("insert into CAR (ID, FAM_ID,MAKE, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MTY_CD) values "
+						+ "(NEXT VALUE FOR SEQ_CAR, #DTO_CAR.FAM_ID#, #DTO_CAR.MAKE#, #DTO_CAR.MODEL#, #DTO_CAR.DESCRIPTION#, #DTO_CAR.YEAR#, #DTO_CAR.KILO#, #DTO_CAR.PRICE#, #DTO_CAR.MTY_CD#)")
 				.addInRequired("DTO_CAR", doCar)
 				.build();
 
@@ -736,7 +754,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		car.setModel("407");
 		car.setYear(2014);
 		car.setKilo(20000);
-		car.setMotorType("essence".toLowerCase(Locale.FRENCH));
+		car.setMotorTypeEnum(MotorTypeEnum.essence);
 		car.setDescription("Vds 407 de test, 2014, 20000 kms, rouge, TBEG");
 		return car;
 	}

@@ -16,28 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.domain.metamodel;
+package io.vertigo.dynamo.domain.model;
 
 /**
- * The type of dt (Will be refactored in next releases, not homogeneous)
+ * Interface that enum dictionary of static masterdatas must implement.
  *
+ * @author mlaroche
  */
-public enum DtStereotype {
-	MasterData, //
-	StaticMasterData, //
-	KeyConcept, //
-	ValueObject, //By default
-	Entity, //
-	Fragment;
+public interface MasterDataEnum<E extends Entity> {
 
 	/**
-	 * Returns true if the type of dt is persistent (Will be refactored in next releases)
-	 * @return if the stereotype is persistent
+	 * Return the URI of the target entity represented by the enum value
+	 * @return the target uri
 	 */
-	public boolean isPersistent() {
-		return this == Entity
-				|| this == KeyConcept
-				|| this == MasterData
-				|| this == StaticMasterData;
-	}
+	URI<E> getEntityUri();
 }

@@ -32,6 +32,7 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.dynamo.domain.model.DtMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.DtStaticMasterData;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.KeyConcept;
@@ -163,6 +164,8 @@ public final class DtDefinitionModel {
 				return DtObject.class;
 			case MasterData:
 				return DtMasterData.class;
+			case StaticMasterData:
+				return DtStaticMasterData.class;
 			case KeyConcept:
 				return KeyConcept.class;
 			case Fragment:
@@ -198,6 +201,14 @@ public final class DtDefinitionModel {
 				dtDefinition.getFields()
 						.stream()
 						.anyMatch(field -> field.getType() == FieldType.FOREIGN_KEY);
+
+	}
+
+	public boolean containsEnumAccessor() {
+		return dtDefinition.getStereotype() != DtStereotype.Fragment &&
+				dtDefinition.getFields()
+						.stream()
+						.anyMatch(field -> field.getType() == FieldType.FOREIGN_KEY && field.getFkDtDefinition().getStereotype() == DtStereotype.StaticMasterData);
 
 	}
 }

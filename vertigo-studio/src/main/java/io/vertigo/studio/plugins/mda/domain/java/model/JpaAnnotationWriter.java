@@ -44,6 +44,11 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 	 */
 	@Override
 	List<String> writeUriAnnotations() {
+		return writeTransientAnnotations();
+	}
+
+	@Override
+	List<String> writeTransientAnnotations() {
 		return Collections.singletonList("@javax.persistence.Transient");
 	}
 

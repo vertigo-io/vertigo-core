@@ -51,6 +51,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.model.DtMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.DtStaticMasterData;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.KeyConcept;
@@ -204,7 +205,9 @@ public final class AnnotationLoader implements Loader {
 	}
 
 	private static DtStereotype parseStereotype(final Class<DtObject> clazz) {
-		if (DtMasterData.class.isAssignableFrom(clazz)) {
+		if (DtStaticMasterData.class.isAssignableFrom(clazz)) {
+			return DtStereotype.StaticMasterData;
+		} else if (DtMasterData.class.isAssignableFrom(clazz)) {
 			return DtStereotype.MasterData;
 		} else if (KeyConcept.class.isAssignableFrom(clazz)) {
 			return DtStereotype.KeyConcept;

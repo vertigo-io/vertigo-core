@@ -18,6 +18,7 @@
  */
 package io.vertigo.studio.plugins.mda.domain.java.model;
 
+import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
@@ -92,6 +93,20 @@ public final class AssociationModel {
 	 */
 	public String getReturnType() {
 		return associationNode.getDtDefinition().getClassCanonicalName();
+	}
+
+	/**
+	 * @return Type à retourner
+	 */
+	public String getReturnTypeSimpleName() {
+		return associationNode.getDtDefinition().getClassSimpleName();
+	}
+
+	/**
+	 * @return Type à retourner
+	 */
+	public boolean isTargetStaticMasterData() {
+		return associationNode.getDtDefinition().getStereotype() == DtStereotype.StaticMasterData;
 	}
 
 	/**

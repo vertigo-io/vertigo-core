@@ -4,7 +4,7 @@ create Formatter FMT_DEFAULT{
 	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"
 }
 
-create Domain DO_IDENTIFIANT{
+create Domain DO_ID{
 	dataType : Long
 	formatter : FMT_DEFAULT
 }

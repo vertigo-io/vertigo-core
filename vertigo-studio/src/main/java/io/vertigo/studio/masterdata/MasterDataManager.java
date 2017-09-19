@@ -16,28 +16,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.domain.metamodel;
+package io.vertigo.studio.masterdata;
+
+import io.vertigo.core.component.Manager;
 
 /**
- * The type of dt (Will be refactored in next releases, not homogeneous)
- *
+ * This class handle masterdatas (essentially values) for studio
+ * @author mlaroche
  */
-public enum DtStereotype {
-	MasterData, //
-	StaticMasterData, //
-	KeyConcept, //
-	ValueObject, //By default
-	Entity, //
-	Fragment;
+public interface MasterDataManager extends Manager {
 
 	/**
-	 * Returns true if the type of dt is persistent (Will be refactored in next releases)
-	 * @return if the stereotype is persistent
+	 * Return all known masterdata values
+	 * @return masterdata values
 	 */
-	public boolean isPersistent() {
-		return this == Entity
-				|| this == KeyConcept
-				|| this == MasterData
-				|| this == StaticMasterData;
-	}
+	MasterDataValues getValues();
 }

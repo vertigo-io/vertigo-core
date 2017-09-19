@@ -1,0 +1,13 @@
+{"io.vertigo.studio.domain.stereotype.CommandType" : 
+	{
+		"ferme" : {
+			"ctyId" : "1",
+			"label" : "Ferme"
+		},
+		"optionelle" : {
+			"ctyId" : "2",
+			"label" : "Optionelle"
+		}		
+				
+	}
+}

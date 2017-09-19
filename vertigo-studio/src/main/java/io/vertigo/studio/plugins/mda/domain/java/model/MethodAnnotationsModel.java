@@ -84,4 +84,5 @@ public final class MethodAnnotationsModel implements TemplateMethodModelEx {
 			throw new TemplateModelException("Le type '" + type.getClass() + "' n''est pas dans la liste [DtField, DtDefinition, AssociationSimpleDefinition, AssociationNNDefinition]");
 		}
 	}
+
 }

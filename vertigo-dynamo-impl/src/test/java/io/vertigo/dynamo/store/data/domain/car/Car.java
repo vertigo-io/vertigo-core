@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.store.data.domain.car;
 
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
+import io.vertigo.dynamo.domain.model.EnumVAccessor;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -32,16 +33,7 @@ import io.vertigo.lang.VSystemException;
 @javax.persistence.Table(name = "CAR")
 public final class Car implements KeyConcept {
 	public enum CarFields implements DtFieldName {
-		ID,
-		MAKE,
-		MODEL,
-		DESCRIPTION,
-		YEAR,
-		KILO,
-		PRICE,
-		CONSOMMATION,
-		MOTOR_TYPE,
-		FAM_ID
+		ID, MAKE, MODEL, DESCRIPTION, YEAR, KILO, PRICE, CONSOMMATION, MTY_CD, FAM_ID
 	}
 
 	/** SerialVersionUID. */
@@ -55,7 +47,22 @@ public final class Car implements KeyConcept {
 	private Integer kilo;
 	private Integer price;
 	private java.math.BigDecimal consommation;
-	private String motorType;
+
+	@io.vertigo.dynamo.domain.stereotype.Association(
+			name = "A_MTY_CAR",
+			fkFieldName = "MTY_CD",
+			primaryDtDefinitionName = "DT_MOTOR_TYPE",
+			primaryIsNavigable = true,
+			primaryRole = "MotorType",
+			primaryLabel = "Motor type",
+			primaryMultiplicity = "0..1",
+			foreignDtDefinitionName = "DT_CAR",
+			foreignIsNavigable = false,
+			foreignRole = "Car",
+			foreignLabel = "Car",
+			foreignMultiplicity = "0..*")
+	private final EnumVAccessor<MotorType, MotorTypeEnum> mtyCdAccessor = new EnumVAccessor<>(MotorType.class, "motorType", MotorTypeEnum.class);
+
 	private Long famId;
 
 	/** {@inheritDoc} */
@@ -238,14 +245,27 @@ public final class Car implements KeyConcept {
 	}
 
 	/**
+	 * Récupère la valeur de la propriété 'id'.
+	 * @return
+	 */
+	@javax.persistence.Transient
+	public MotorTypeEnum getMotorTypeEnum() {
+		return mtyCdAccessor.getEnumValue();
+	}
+
+	public void setMotorTypeEnum(final MotorTypeEnum motorTypeEnum) {
+		mtyCdAccessor.setEnumValue(motorTypeEnum);
+	}
+
+	/**
 	 * Champ : DATA. récupère la valeur de la propriété 'Type de moteur'.
 	 *
 	 * @return String motorType <b>Obligatoire</b>
 	 */
-	@javax.persistence.Column(name = "MOTOR_TYPE")
-	@Field(domain = "DO_KEYWORD", required = true, label = "Type de moteur")
-	public final String getMotorType() {
-		return motorType;
+	@javax.persistence.Column(name = "MTY_CD")
+	@Field(domain = "DO_KEYWORD", type = "FOREIGN_KEY", label = "Type de moteur")
+	public final String getMtyCd() {
+		return (String) mtyCdAccessor.getId();
 	}
 
 	/**
@@ -254,8 +274,8 @@ public final class Car implements KeyConcept {
 	 * @param motorType
 	 *            String <b>Obligatoire</b>
 	 */
-	public final void setMotorType(final String motorType) {
-		this.motorType = motorType;
+	public final void setMtyCd(final String mtyCd) {
+		mtyCdAccessor.setId(mtyCd);
 	}
 
 	/**

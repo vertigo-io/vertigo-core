@@ -16,28 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.domain.metamodel;
+package io.vertigo.dynamo.domain.model;
 
 /**
- * The type of dt (Will be refactored in next releases, not homogeneous)
+ * Interface to have a marker on all static MasterData object.
+ * A masterdata is static if the dictionary is closed (not dynamic)
  *
+ * @author mlaroche
  */
-public enum DtStereotype {
-	MasterData, //
-	StaticMasterData, //
-	KeyConcept, //
-	ValueObject, //By default
-	Entity, //
-	Fragment;
-
-	/**
-	 * Returns true if the type of dt is persistent (Will be refactored in next releases)
-	 * @return if the stereotype is persistent
-	 */
-	public boolean isPersistent() {
-		return this == Entity
-				|| this == KeyConcept
-				|| this == MasterData
-				|| this == StaticMasterData;
-	}
+public interface DtStaticMasterData extends DtMasterData {
+	//
 }

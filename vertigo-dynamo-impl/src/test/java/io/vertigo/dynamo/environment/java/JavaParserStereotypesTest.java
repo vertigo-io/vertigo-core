@@ -49,7 +49,7 @@ public final class JavaParserStereotypesTest extends AbstractTestCaseJU4 {
 
 		final DtDefinition dtDefinitionCommandType = getDtDefinition("DT_COMMAND_TYPE");
 		Assert.assertNotNull(dtDefinitionCommandType);
-		Assert.assertEquals(DtStereotype.MasterData, dtDefinitionCommandType.getStereotype());
+		Assert.assertEquals(DtStereotype.StaticMasterData, dtDefinitionCommandType.getStereotype());
 	}
 
 	/**

@@ -1,0 +1,64 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<config>
+	<boot locales="fr_FR">
+		<plugin class="io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin" />
+	</boot>
+
+	<module name="vertigo-studio">
+		<component api="MdaManager" class="io.vertigo.studio.impl.mda.MdaManagerImpl">
+			<param name="projectPackageName" value="io.vertigo.studio" />
+			<param name="targetGenDir" value="target/" />
+			<param name="encoding" value="utf8" />
+ 
+			<plugin class="io.vertigo.studio.plugins.mda.domain.java.DomainGeneratorPlugin">
+				<param name="targetSubDir" value="javagen" />
+				<param name="generateDtResources" value="true" />
+				<param name="generateJpaAnnotations" value="true" />
+				<param name="generateDtDefinitions" value="true" />
+				<param name="generateDtObject" value="true" />
+			</plugin>
+			
+			<plugin class="io.vertigo.studio.plugins.mda.domain.sql.SqlGeneratorPlugin">
+				<param name="targetSubDir" value="databasegen" />
+				<param name="baseCible" value="PostgreSql" />
+				<param name="generateDrop" value="true" />
+			</plugin>
+			
+			<plugin class="io.vertigo.studio.plugins.mda.domain.ts.TSGeneratorPlugin">
+				<param name="targetSubDir" value="tsgen" />
+				<param name="generateDtResourcesTS" value="true" />
+				<param name="generateTsDtDefinitions" value="true" />
+			</plugin>
+
+			<plugin class="io.vertigo.studio.plugins.mda.task.TaskGeneratorPlugin" >
+				<param name="targetSubDir" value="javagen" />
+			</plugin>
+			<!-- plugin class="io.vertigo.studio.plugins.mda.search.SearchGeneratorPlugin"/ -->
+			<plugin class="io.vertigo.studio.plugins.mda.file.FileInfoGeneratorPlugin">
+				<param name="targetSubDir" value="javagen" />
+			</plugin>
+			<plugin class="io.vertigo.studio.plugins.mda.security.SecurityGeneratorPlugin">
+				<param name="targetSubDir" value="javagen" />
+			</plugin>
+		</component>
+		<component  api="MasterDataManager" class="io.vertigo.studio.impl.masterdata.MasterDataManagerImpl">
+			<plugin class="io.vertigo.studio.plugins.masterdata.json.JsonMasterDataValueProvider">
+				<param name="fileName" value="io/vertigo/studio/tools/data/testJsonMasterDataValues.json" />
+			</plugin>
+			<plugin class="io.vertigo.studio.plugins.masterdata.json.JsonMasterDataValueProvider">
+				<param name="fileName" value="io/vertigo/studio/tools/data/testJsonMasterDataValues2.json" />
+			</plugin>
+		</component>
+	</module>
+
+	<module name="myApp">
+		<definitions>	
+			<provider class="io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider" >
+				<resource type="kpr" path="${boot.kpr}" />
+			</provider>
+			<provider class="io.vertigo.persona.plugins.security.loaders.SecurityDefinitionProvider" >
+				<resource type="security" path="META-INF/security/basic-auth-config.xml" />
+			</provider>
+		</definitions>
+	</module>
+</config>

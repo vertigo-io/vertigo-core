@@ -55,7 +55,20 @@ class AnnotationWriter {
 		if ("URI".equalsIgnoreCase(propertyName)) {
 			return writeUriAnnotations();
 		}
+		if ("transientField".equalsIgnoreCase(propertyName)) {
+			return writeTransientAnnotations();
+		}
 		throw new UnsupportedOperationException("This property (" + propertyName + ") is not supported on domain MDA");
+	}
+
+	/**
+	 * Ecriture des annotations transient.
+	 *
+	 * @return Liste des lignes de code java à ajouter.
+	 */
+	List<String> writeTransientAnnotations() {
+		// basic is nothing
+		return Collections.emptyList();
 	}
 
 	/**

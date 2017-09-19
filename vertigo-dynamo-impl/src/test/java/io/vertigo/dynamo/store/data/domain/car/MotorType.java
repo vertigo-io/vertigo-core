@@ -1,4 +1,4 @@
-package io.vertigo.dynamo.environment.java.data.domain;
+package io.vertigo.dynamo.store.data.domain.car;
 
 import io.vertigo.dynamo.domain.model.DtStaticMasterData;
 import io.vertigo.dynamo.domain.model.URI;
@@ -13,17 +13,17 @@ import io.vertigo.lang.Generated;
 @Generated
 @javax.persistence.Entity
 @javax.persistence.Table(name = "COMMAND_TYPE")
-public final class CommandType implements DtStaticMasterData {
+public final class MotorType implements DtStaticMasterData {
 	private static final long serialVersionUID = 1L;
 
-	private Long ctyId;
+	private String mtyCd;
 
 	private String label;
 
 	/** {@inheritDoc} */
 	@javax.persistence.Transient
 	@Override
-	public URI<CommandType> getURI() {
+	public URI<MotorType> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
 
@@ -33,12 +33,10 @@ public final class CommandType implements DtStaticMasterData {
 	 * @return Long ctyId <b>Obligatoire</b>
 	 */
 	@javax.persistence.Id
-	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_COMMAND_TYPE", allocationSize = 1)
-	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = "sequence")
-	@javax.persistence.Column(name = "CTY_ID")
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "id")
-	public Long getCtyId() {
-		return ctyId;
+	@javax.persistence.Column(name = "MTY_CD")
+	@Field(domain = "DO_STRING", type = "ID", required = true, label = "id")
+	public String getMtyCd() {
+		return mtyCd;
 	}
 
 	/**
@@ -46,8 +44,8 @@ public final class CommandType implements DtStaticMasterData {
 	 * Définit la valeur de la propriété 'id'.
 	 * @param ctyId Long <b>Obligatoire</b>
 	 */
-	public void setCtyId(final Long ctyId) {
-		this.ctyId = ctyId;
+	public void setMtyCd(final String mtyCd) {
+		this.mtyCd = mtyCd;
 	}
 
 	/**

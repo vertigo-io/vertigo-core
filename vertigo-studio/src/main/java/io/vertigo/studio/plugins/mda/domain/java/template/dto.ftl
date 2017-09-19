@@ -7,6 +7,9 @@ import io.vertigo.dynamo.domain.model.URI;
 <#if dtDefinition.containsAccessor()>
 import io.vertigo.dynamo.domain.model.VAccessor;
 </#if>	
+<#if dtDefinition.containsEnumAccessor()>
+import io.vertigo.dynamo.domain.model.EnumVAccessor;
+</#if>	
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -24,10 +27,18 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 
 	<#list dtDefinition.fields as dtField>
 		<#if dtField.foreignKey>
+			<#list annotations(dtField.association.definition) as annotation>
+	${annotation}
+			</#list>
+			<#if dtField.association.targetStaticMasterData>
+	private final EnumVAccessor<${dtField.association.returnType}, ${dtField.association.returnType}Enum> ${dtField.upperCamelCaseName?uncap_first}Accessor = new EnumVAccessor<>(${dtField.association.returnType}.class, "${dtField.association.role?uncap_first}", ${dtField.association.returnType}Enum.class);
+			<#else>
 	private final VAccessor<${dtField.association.returnType}> ${dtField.upperCamelCaseName?uncap_first}Accessor = new VAccessor<>(${dtField.association.returnType}.class, "${dtField.association.role?uncap_first}");
+			</#if>
 		<#else>
 	private ${dtField.javaType} ${dtField.upperCamelCaseName?uncap_first};
 		</#if>
+
 	</#list>
 	<#list dtDefinition.associations as association>
 		<#if association.navigable>
@@ -60,6 +71,28 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	</#if>
 
 	<#list dtDefinition.fields as dtField>
+		<#if dtField.foreignKey && dtField.association.targetStaticMasterData>
+	/**
+	 * Récupère la valeur de la propriété '${dtField.association.role}' as an enum.
+	 * @return the enum value
+	 */
+	<#list annotations('transientField') as annotation>
+	${annotation}
+	</#list>
+	public ${dtField.association.returnType}Enum get${dtField.association.role}Enum() {
+		return ${dtField.upperCamelCaseName?uncap_first}Accessor.getEnumValue();
+	}
+
+	/**
+	 * Champ : ${dtField.type}.
+	 * Définit la valeur de la propriété '${dtField.association.role}' as an enum.
+	 * @param ${dtField.association.returnTypeSimpleName?uncap_first} ${dtField.association.returnType}Enum<#if dtField.required> <b>Obligatoire</b></#if>
+	 */
+	public void set${dtField.association.role}Enum(final ${dtField.association.returnType}Enum ${dtField.association.returnTypeSimpleName?uncap_first}Enum) {
+		${dtField.upperCamelCaseName?uncap_first}Accessor.setEnumValue(${dtField.association.returnTypeSimpleName?uncap_first}Enum);
+	}
+		</#if>
+	
 	/**
 	 * Champ : ${dtField.type}.
 	 * Récupère la valeur de la propriété '${dtField.display}'.
@@ -88,7 +121,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 		this.${dtField.upperCamelCaseName?uncap_first} = ${dtField.upperCamelCaseName?uncap_first};
 		</#if>
 	}
-
+	
 	</#list>
 	<#list dtDefinition.dtComputedFields as dtField>
 	/**
@@ -131,14 +164,13 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	 * Association URI: ${association.label}.
 	 * @return URI de l'association
 	 */
-					<#list annotations(association.definition) as annotation>
-	${annotation}
-					</#list>
+					
 	public io.vertigo.dynamo.domain.metamodel.association.DtListURIFor<#if association.simple>Simple<#else>NN</#if>Association get${association.role?cap_first}DtListURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createDtListURIFor<#if association.simple>Simple<#else>NN</#if>Association(this, "${association.urn}", "${association.role}");
 	}
 
 				<#else>
+				
 	public ${association.returnType} get${association.role?cap_first}() {
 		return ${association.upperCamelCaseFkFieldName?uncap_first}Accessor.get();
 	}
@@ -147,9 +179,6 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	 * Retourne l'URI: ${association.label}.
 	 * @return URI de l'association
 	 */
-					<#list annotations(association.definition) as annotation>
-	${annotation}
-					</#list>
 	public io.vertigo.dynamo.domain.model.URI<${association.returnType}> get${association.role?cap_first}URI() {
 		return ${association.upperCamelCaseFkFieldName?uncap_first}Accessor.getURI();
 	}
@@ -158,7 +187,6 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 			</#if>
 		</#list>
 	</#if>
-
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
