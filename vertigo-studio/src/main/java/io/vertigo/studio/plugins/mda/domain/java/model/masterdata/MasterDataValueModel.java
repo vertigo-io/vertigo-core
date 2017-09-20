@@ -25,7 +25,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
 /**
- * Génération des classes/méthodes des fileInfo.
+ * Model Sql des materdata.
  *
  * @author npiedeloup
  */

@@ -27,9 +27,9 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.studio.masterdata.MasterDataValue;
 
 /**
- * Génération des classes/méthodes des fileInfo.
+ * Model Sql des materdata.
  *
- * @author npiedeloup
+ * @author mlaroche
  */
 public final class MasterDataDefinitionModel {
 	private final DtDefinition dtDefinition;
