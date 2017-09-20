@@ -52,6 +52,18 @@ public class NameSpace2JavaTest {
 	 * Lancement du test.
 	 */
 	@Test
+	public void testGenerateMasterDataSql() {
+		NameSpace2Java.main(new String[] { "data/testMasterdata.properties" });
+		try (AutoCloseableApp app = new AutoCloseableApp(SqlTestConfigurator.config())) {
+			execSqlScript("target/databasegenMasterdata/crebas.sql", app);
+			execSqlScript("target/databasegenMasterdata/init_masterdata.sql", app);
+		}
+	}
+
+	/**
+	 * Lancement du test.
+	 */
+	@Test
 	public void testGenerateAuthorization() {
 		NameSpace2Java.main(new String[] { "data/testAuthorization.properties" });
 	}
