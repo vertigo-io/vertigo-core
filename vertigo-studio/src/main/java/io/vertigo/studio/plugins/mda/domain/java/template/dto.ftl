@@ -86,7 +86,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	/**
 	 * Champ : ${dtField.type}.
 	 * Définit la valeur de la propriété '${dtField.association.role}' as an enum.
-	 * @param ${dtField.association.returnTypeSimpleName?uncap_first} ${dtField.association.returnType}Enum<#if dtField.required> <b>Obligatoire</b></#if>
+	 * @param ${dtField.association.returnTypeSimpleName?uncap_first}Enum ${dtField.association.returnType}Enum<#if dtField.required> <b>Obligatoire</b></#if>
 	 */
 	public void set${dtField.association.role}Enum(final ${dtField.association.returnType}Enum ${dtField.association.returnTypeSimpleName?uncap_first}Enum) {
 		${dtField.upperCamelCaseName?uncap_first}Accessor.setEnumValue(${dtField.association.returnTypeSimpleName?uncap_first}Enum);
