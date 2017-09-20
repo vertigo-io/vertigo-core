@@ -48,19 +48,7 @@ public final class Car implements KeyConcept {
 	private Integer price;
 	private java.math.BigDecimal consommation;
 
-	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_MTY_CAR",
-			fkFieldName = "MTY_CD",
-			primaryDtDefinitionName = "DT_MOTOR_TYPE",
-			primaryIsNavigable = true,
-			primaryRole = "MotorType",
-			primaryLabel = "Motor type",
-			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_CAR",
-			foreignIsNavigable = false,
-			foreignRole = "Car",
-			foreignLabel = "Car",
-			foreignMultiplicity = "0..*")
+	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_MTY_CAR", fkFieldName = "MTY_CD", primaryDtDefinitionName = "DT_MOTOR_TYPE", primaryIsNavigable = true, primaryRole = "MotorType", primaryLabel = "Motor type", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DT_CAR", foreignIsNavigable = false, foreignRole = "Car", foreignLabel = "Car", foreignMultiplicity = "0..*")
 	private final EnumVAccessor<MotorType, MotorTypeEnum> mtyCdAccessor = new EnumVAccessor<>(MotorType.class, "motorType", MotorTypeEnum.class);
 
 	private Long famId;
@@ -245,14 +233,18 @@ public final class Car implements KeyConcept {
 	}
 
 	/**
-	 * Récupère la valeur de la propriété 'id'.
-	 * @return
+	 * Récupère la valeur de la propriété 'MotorType'.
+	 * @return MotorTypeEnum
 	 */
 	@javax.persistence.Transient
 	public MotorTypeEnum getMotorTypeEnum() {
 		return mtyCdAccessor.getEnumValue();
 	}
 
+	/**
+	 * Fixe le MotorType par son enum.
+	 * @param motorTypeEnum MotorTypeEnum
+	 */
 	public void setMotorTypeEnum(final MotorTypeEnum motorTypeEnum) {
 		mtyCdAccessor.setEnumValue(motorTypeEnum);
 	}
@@ -270,9 +262,7 @@ public final class Car implements KeyConcept {
 
 	/**
 	 * Champ : DATA. Définit la valeur de la propriété 'Type de moteur'.
-	 *
-	 * @param motorType
-	 *            String <b>Obligatoire</b>
+	 * @param mtyCd String <b>Obligatoire</b>
 	 */
 	public final void setMtyCd(final String mtyCd) {
 		mtyCdAccessor.setId(mtyCd);

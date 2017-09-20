@@ -40,9 +40,9 @@ public final class MotorType implements DtStaticMasterData {
 	}
 
 	/**
-	 * Champ : ID.
-	 * Définit la valeur de la propriété 'id'.
-	 * @param ctyId Long <b>Obligatoire</b>
+	 * Champ : mtyCd.
+	 * Définit la valeur de la propriété 'mtyCd'.
+	 * @param mtyCd Long <b>Obligatoire</b>
 	 */
 	public void setMtyCd(final String mtyCd) {
 		this.mtyCd = mtyCd;
