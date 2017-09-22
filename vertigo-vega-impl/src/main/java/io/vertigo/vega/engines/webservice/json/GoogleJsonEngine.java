@@ -58,6 +58,7 @@ import com.google.gson.reflect.TypeToken;
 
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -465,6 +466,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.registerTypeAdapter(DtList.class, new DtListDeserializer<>())
 					.registerTypeAdapter(DtListState.class, new DtListStateDeserializer())
 					.registerTypeAdapter(FacetedQueryResult.class, searchApiVersion.getJsonSerializerClass().newInstance())
+					.registerTypeAdapter(SelectedFacetValues.class, new SelectedFacetValuesDeserializer())
 					.registerTypeAdapter(List.class, new ListJsonSerializer())
 					.registerTypeAdapter(Map.class, new MapJsonSerializer())
 					.registerTypeAdapter(DefinitionReference.class, new DefinitionReferenceJsonSerializer())
