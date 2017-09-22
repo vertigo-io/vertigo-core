@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.search;
 
+import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.Boolean;
 import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.String;
 
 import java.util.List;
@@ -49,6 +50,9 @@ final class SearchGrammar implements DslGrammar {
 	public static final String FIELD_NAME = "FIELD_NAME";
 	/** Facet order. */
 	public static final String FACET_ORDER = "ORDER";
+
+	/** MultiSelectable values. */
+	public static final String FACET_MULTISELECTABLE = "multiSelectable";
 	/** Range filter. */
 	public static final String RANGE_FILTER_PROPERTY = "FILTER";
 	/** indexCopy to. */
@@ -107,6 +111,7 @@ final class SearchGrammar implements DslGrammar {
 				.addRequiredField("dtDefinition", DomainGrammar.DT_DEFINITION_ENTITY.getLink())
 				.addRequiredField(FIELD_NAME, String)
 				.addRequiredField(KspProperty.LABEL, String)
+				.addOptionalField(FACET_MULTISELECTABLE, Boolean) //facultative, default to false
 				.addOptionalField(FACET_ORDER, String) //facultative, default to count
 				.addManyFields("range", facetRangeEntity)
 				.build();

@@ -48,6 +48,7 @@ import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.model.FacetValue;
+import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtListState;
@@ -177,38 +178,69 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	}
 
 	private static void appendSearchQuery(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder, final boolean useHighlight) {
-		final BoolQueryBuilder mainBoolQueryBuilder = QueryBuilders.boolQuery();
+		final BoolQueryBuilder filterBoolQueryBuilder = QueryBuilders.boolQuery();
+		final BoolQueryBuilder postFilterBoolQueryBuilder = QueryBuilders.boolQuery();
 
 		//on ajoute les critères de la recherche AVEC impact sur le score
-		final QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter());
-		mainBoolQueryBuilder.must(queryBuilder);
+		final QueryBuilder queryBuilder = appendSearchQuery(searchQuery, filterBoolQueryBuilder);
 
 		//on ajoute les filtres de sécurité SANS impact sur le score
-		if (searchQuery.getSecurityListFilter().isPresent()) {
-			final QueryBuilder securityFilterBuilder = translateToQueryBuilder(searchQuery.getSecurityListFilter().get());
-			mainBoolQueryBuilder.filter(securityFilterBuilder);
-			//use filteredQuery instead of PostFilter in order to filter aggregations too.
-		}
+		appendSecurityFilter(searchQuery.getSecurityListFilter(), filterBoolQueryBuilder);
 
 		//on ajoute les filtres des facettes SANS impact sur le score
-		if (searchQuery.getFacetedQuery().isPresent() && !searchQuery.getFacetedQuery().get().getListFilters().isEmpty()) {
-			for (final ListFilter facetQuery : searchQuery.getFacetedQuery().get().getListFilters()) {
-				mainBoolQueryBuilder.filter(translateToQueryBuilder(facetQuery));
-			}
-			//use filteredQuery instead of PostFilter in order to filter aggregations too.
-		}
+		appendSelectedFacetValues(searchQuery.getFacetedQuery(), filterBoolQueryBuilder, postFilterBoolQueryBuilder);
 
 		final QueryBuilder requestQueryBuilder;
 		if (searchQuery.isBoostMostRecent()) {
 			requestQueryBuilder = appendBoostMostRecent(searchQuery, queryBuilder);
 		} else {
-			requestQueryBuilder = mainBoolQueryBuilder;
+			requestQueryBuilder = filterBoolQueryBuilder;
 		}
 		searchRequestBuilder
-				.setQuery(requestQueryBuilder);
+				.setQuery(requestQueryBuilder)
+				.setPostFilter(postFilterBoolQueryBuilder);
+
 		if (useHighlight) {
 			//.setHighlighterFilter(true) //We don't highlight the security filter
 			searchRequestBuilder.highlighter(new HighlightBuilder().numOfFragments(3));//.addHighlightedField("*"); HOW TO ?
+		}
+	}
+
+	private static void appendSelectedFacetValues(final Optional<FacetedQuery> facetedQuery, final BoolQueryBuilder filterBoolQueryBuilder, final BoolQueryBuilder postFilterBoolQueryBuilder) {
+		if (facetedQuery.isPresent()) {
+			for (final FacetDefinition facetDefinition : facetedQuery.get().getDefinition().getFacetDefinitions()) {
+				if (facetDefinition.isMultiSelectable()) {
+					appendSelectedFacetValuesFilter(postFilterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition));
+				} else {
+					appendSelectedFacetValuesFilter(filterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition));
+				}
+			}
+		}
+	}
+
+	private static void appendSecurityFilter(final Optional<ListFilter> securityListFilter, final BoolQueryBuilder filterBoolQueryBuilder) {
+		if (securityListFilter.isPresent()) {
+			final QueryBuilder securityFilterBuilder = translateToQueryBuilder(securityListFilter.get());
+			filterBoolQueryBuilder.filter(securityFilterBuilder);
+			//use filteredQuery instead of PostFilter in order to filter aggregations too.
+		}
+	}
+
+	private static QueryBuilder appendSearchQuery(final SearchQuery searchQuery, final BoolQueryBuilder filterBoolQueryBuilder) {
+		final QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter());
+		filterBoolQueryBuilder.must(queryBuilder);
+		return queryBuilder;
+	}
+
+	private static void appendSelectedFacetValuesFilter(final BoolQueryBuilder filterBoolQueryBuilder, final List<FacetValue> facetValues) {
+		if (facetValues.size() == 1) {
+			filterBoolQueryBuilder.filter(translateToQueryBuilder(facetValues.get(0).getListFilter()));
+		} else if (facetValues.size() > 1) {
+			final BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+			for (final FacetValue facetValue : facetValues) {
+				boolQueryBuilder.should(translateToQueryBuilder(facetValue.getListFilter()));//on ajoute les valeurs en OU
+			}
+			filterBoolQueryBuilder.filter(boolQueryBuilder);
 		}
 	}
 
@@ -256,7 +288,20 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			}
 			for (final FacetDefinition facetDefinition : facetDefinitions) {
 				final AggregationBuilder aggregationBuilder = facetToAggregationBuilder(facetDefinition);
-				searchRequestBuilder.addAggregation(aggregationBuilder);
+				final BoolQueryBuilder aggsFilterBoolQueryBuilder = QueryBuilders.boolQuery();
+				for (final FacetDefinition filterFacetDefinition : searchQuery.getFacetedQuery().get().getDefinition().getFacetDefinitions()) {
+					if (filterFacetDefinition.isMultiSelectable() && !facetDefinition.equals(filterFacetDefinition)) {
+						//on ne doit refiltrer que les multiSelectable (les autres sont dans le filter de la request), sauf la facet qu'on est entrain de traiter
+						appendSelectedFacetValuesFilter(aggsFilterBoolQueryBuilder, searchQuery.getFacetedQuery().get().getSelectedFacetValues().getFacetValues(filterFacetDefinition));
+					}
+				}
+				if (aggsFilterBoolQueryBuilder.hasClauses()) {
+					final AggregationBuilder filterAggregationBuilder = AggregationBuilders.filter(facetDefinition.getName() + "_FILTER", aggsFilterBoolQueryBuilder);
+					filterAggregationBuilder.subAggregation(aggregationBuilder);
+					searchRequestBuilder.addAggregation(filterAggregationBuilder);
+				} else {
+					searchRequestBuilder.addAggregation(aggregationBuilder);
+				}
 			}
 		}
 	}

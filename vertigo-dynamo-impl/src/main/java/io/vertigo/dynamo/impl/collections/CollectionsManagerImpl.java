@@ -36,6 +36,7 @@ import io.vertigo.dynamo.collections.model.Facet;
 import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -71,6 +72,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		return Home.getApp().getComponentSpace().resolve(StoreManager.class);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <D extends DtObject> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc) {
 		Assertion.checkNotNull(list);
@@ -120,10 +122,12 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	//=======================Filtrage==========================================
 	//=========================================================================
 	private <D extends DtObject> Predicate<D> filter(final FacetedQuery facetedQuery) {
-		final List<ListFilter> listFilters = facetedQuery.getListFilters();
+		final SelectedFacetValues selectedFacetValues = facetedQuery.getSelectedFacetValues();
 		Predicate<D> predicate = list -> true;
-		for (final ListFilter listFilter : listFilters) {
-			predicate = predicate.and(this.filter(listFilter));
+		for (final FacetDefinition facetDefinition : facetedQuery.getDefinition().getFacetDefinitions()) {
+			for (final FacetValue facetValue : selectedFacetValues.getFacetValues(facetDefinition)) {
+				predicate = predicate.and(this.filter(facetValue.getListFilter()));
+			}
 		}
 		return predicate;
 	}
@@ -136,6 +140,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		return new IndexDtListFunctionBuilderImpl<>(indexPluginOpt.get());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <D extends DtObject> Predicate<D> filter(final ListFilter listFilter) {
 		return new DtListPatternFilter<>(listFilter.getFilterValue());

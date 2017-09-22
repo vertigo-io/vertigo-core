@@ -151,6 +151,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> {
 					facetDefinitionNameOpt.get(),
 					results.getDefinition().getFields().get(0),
 					MessageText.of("cluster"),
+					false,
 					FacetOrder.definition);
 			final Facet clusterFacet = new Facet(clusterFacetDefinition, clustersCount);
 			facets.add(clusterFacet);

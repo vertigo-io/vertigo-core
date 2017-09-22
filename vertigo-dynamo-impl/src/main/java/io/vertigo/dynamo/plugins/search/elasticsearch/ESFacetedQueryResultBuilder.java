@@ -33,6 +33,7 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation.Bucket;
+import org.elasticsearch.search.aggregations.bucket.filter.Filter;
 import org.elasticsearch.search.aggregations.metrics.tophits.TopHits;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 
@@ -209,7 +210,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 		if (searchQuery.getFacetedQuery().isPresent() && queryResponse.getAggregations() != null) {
 			final FacetedQueryDefinition queryDefinition = searchQuery.getFacetedQuery().get().getDefinition();
 			for (final FacetDefinition facetDefinition : queryDefinition.getFacetDefinitions()) {
-				final Aggregation aggregation = queryResponse.getAggregations().get(facetDefinition.getName());
+				final Aggregation aggregation = obtainAggregation(queryResponse, facetDefinition.getName());
 				if (aggregation != null) {
 					final Facet facet = createFacet(facetDefinition, (MultiBucketsAggregation) aggregation);
 					facets.add(facet);
@@ -217,6 +218,14 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 			}
 		}
 		return facets;
+	}
+
+	private static Aggregation obtainAggregation(final SearchResponse queryResponse, final String name) {
+		final Filter filterAggregation = (Filter) queryResponse.getAggregations().get(name + "_FILTER");
+		if (filterAggregation != null) {
+			return filterAggregation.getAggregations().get(name);
+		}
+		return queryResponse.getAggregations().get(name);
 	}
 
 	private static Facet createFacet(final FacetDefinition facetDefinition, final MultiBucketsAggregation aggregation) {

@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.search.model;
 
-import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.app.Home;
@@ -26,6 +25,7 @@ import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
+import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -73,11 +73,11 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 
 	/**
 	 * @param facetedQueryDefinition FacetedQueryDefinition
-	 * @param listFilters ListFilter of selected facets
+	 * @param selectedFacetValues ListFilter of selected facets
 	 * @return this builder
 	 */
-	public SearchQueryBuilder withFacetStrategy(final FacetedQueryDefinition facetedQueryDefinition, final List<ListFilter> listFilters) {
-		return this.withFacetStrategy(new FacetedQuery(facetedQueryDefinition, listFilters));
+	public SearchQueryBuilder withFacetStrategy(final FacetedQueryDefinition facetedQueryDefinition, final SelectedFacetValues selectedFacetValues) {
+		return this.withFacetStrategy(new FacetedQuery(facetedQueryDefinition, selectedFacetValues));
 	}
 
 	/**

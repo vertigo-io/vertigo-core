@@ -32,6 +32,15 @@ create FacetDefinition FCT_MAKE_CAR_ALPHA {
 	label : "Par constructeur", order : "alpha"
 }
 
+
+create FacetDefinition FCT_MAKE_CAR_MULTI {
+	dtDefinition : DT_CAR 
+	fieldName : "MAKE"
+	label : "Par constructeur", 
+	order : "alpha",
+	multiselectable : "true"
+}
+
 create FacetDefinition FCT_YEAR_CAR {
 	dtDefinition : DT_CAR 
 	fieldName : "YEAR" 
@@ -44,6 +53,14 @@ create FacetDefinition FCT_YEAR_CAR {
 create FacetedQueryDefinition QRY_CAR_FACET {
     keyConcept : DT_CAR
     facets : [ FCT_DESCRIPTION_CAR, FCT_MAKE_CAR, FCT_MAKE_CAR_ALPHA, FCT_YEAR_CAR]
+    domainCriteria : DO_STRING
+    listFilterBuilderClass : "io.vertigo.dynamox.search.DslListFilterBuilder"  
+    listFilterBuilderQuery : "#CRITERIA#"    
+}
+
+create FacetedQueryDefinition QRY_CAR_FACET_MULTI {
+    keyConcept : DT_CAR
+    facets : [ FCT_DESCRIPTION_CAR, FCT_MAKE_CAR_MULTI, FCT_YEAR_CAR]
     domainCriteria : DO_STRING
     listFilterBuilderClass : "io.vertigo.dynamox.search.DslListFilterBuilder"  
     listFilterBuilderQuery : "#CRITERIA#"    
