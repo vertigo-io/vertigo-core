@@ -206,16 +206,10 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		}
 	}
 
-	private static void appendSelectedFacetValues(final Optional<FacetedQuery> facetedQuery, final BoolQueryBuilder filterBoolQueryBuilder, final BoolQueryBuilder postFilterBoolQueryBuilder) {
-		if (facetedQuery.isPresent()) {
-			for (final FacetDefinition facetDefinition : facetedQuery.get().getDefinition().getFacetDefinitions()) {
-				if (facetDefinition.isMultiSelectable()) {
-					appendSelectedFacetValuesFilter(postFilterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition));
-				} else {
-					appendSelectedFacetValuesFilter(filterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition));
-				}
-			}
-		}
+	private static QueryBuilder appendSearchQuery(final SearchQuery searchQuery, final BoolQueryBuilder filterBoolQueryBuilder) {
+		final QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter());
+		filterBoolQueryBuilder.must(queryBuilder);
+		return queryBuilder;
 	}
 
 	private static void appendSecurityFilter(final Optional<ListFilter> securityListFilter, final BoolQueryBuilder filterBoolQueryBuilder) {
@@ -226,10 +220,16 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		}
 	}
 
-	private static QueryBuilder appendSearchQuery(final SearchQuery searchQuery, final BoolQueryBuilder filterBoolQueryBuilder) {
-		final QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter());
-		filterBoolQueryBuilder.must(queryBuilder);
-		return queryBuilder;
+	private static void appendSelectedFacetValues(final Optional<FacetedQuery> facetedQuery, final BoolQueryBuilder filterBoolQueryBuilder, final BoolQueryBuilder postFilterBoolQueryBuilder) {
+		if (facetedQuery.isPresent()) {
+			for (final FacetDefinition facetDefinition : facetedQuery.get().getDefinition().getFacetDefinitions()) {
+				if (facetDefinition.isMultiSelectable()) {
+					appendSelectedFacetValuesFilter(postFilterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition));
+				} else {
+					appendSelectedFacetValuesFilter(filterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition));
+				}
+			}
+		}
 	}
 
 	private static void appendSelectedFacetValuesFilter(final BoolQueryBuilder filterBoolQueryBuilder, final List<FacetValue> facetValues) {
