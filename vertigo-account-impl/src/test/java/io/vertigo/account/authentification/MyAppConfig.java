@@ -22,8 +22,8 @@ import java.util.Optional;
 
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.data.TestUserSession;
+import io.vertigo.account.plugins.account.store.text.TextAccountStorePlugin;
 import io.vertigo.account.plugins.authentication.ldap.LdapAuthenticatingPlugin;
-import io.vertigo.account.plugins.identity.store.text.TextAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.core.param.Param;

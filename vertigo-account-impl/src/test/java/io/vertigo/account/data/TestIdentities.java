@@ -29,8 +29,8 @@ import java.util.Set;
 
 import io.vertigo.account.identity.Account;
 import io.vertigo.account.identity.AccountGroup;
-import io.vertigo.account.plugins.identity.store.loader.AccountLoader;
-import io.vertigo.account.plugins.identity.store.loader.GroupLoader;
+import io.vertigo.account.plugins.account.store.loader.AccountLoader;
+import io.vertigo.account.plugins.account.store.loader.GroupLoader;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
