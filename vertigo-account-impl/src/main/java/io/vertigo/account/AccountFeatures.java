@@ -20,14 +20,14 @@ package io.vertigo.account;
 
 import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.identity.IdentityManager;
+import io.vertigo.account.impl.account.AccountCachePlugin;
+import io.vertigo.account.impl.account.AccountDefinitionProvider;
+import io.vertigo.account.impl.account.AccountStorePlugin;
+import io.vertigo.account.impl.account.AccountManagerImpl;
 import io.vertigo.account.impl.authentication.AuthenticationManagerImpl;
 import io.vertigo.account.impl.authentication.AuthenticationPlugin;
-import io.vertigo.account.impl.identity.AccountCachePlugin;
-import io.vertigo.account.impl.identity.AccountDefinitionProvider;
-import io.vertigo.account.impl.identity.AccountStorePlugin;
-import io.vertigo.account.impl.identity.IdentityManagerImpl;
 import io.vertigo.account.impl.security.VSecurityManagerImpl;
-import io.vertigo.account.plugins.identity.cache.redis.RedisAccountCachePlugin;
+import io.vertigo.account.plugins.account.cache.redis.RedisAccountCachePlugin;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.persona.security.UserSession;
@@ -104,7 +104,7 @@ public final class AccountFeatures extends Features {
 	public AccountFeatures withAccountStorePlugin(final Class<? extends AccountStorePlugin> accountStorePluginClass, final Param... params) {
 		getModuleConfigBuilder()
 				.addComponent(AuthenticationManager.class, AuthenticationManagerImpl.class)
-				.addComponent(IdentityManager.class, IdentityManagerImpl.class)
+				.addComponent(IdentityManager.class, AccountManagerImpl.class)
 				.addPlugin(accountStorePluginClass, params);
 		return this;
 	}

@@ -27,9 +27,9 @@ import javax.inject.Inject;
 
 import io.vertigo.account.authorization.AuthorizationManager;
 import io.vertigo.account.authorization.UserAuthorizations;
-import io.vertigo.account.authorization.metamodel.OperationName;
 import io.vertigo.account.authorization.metamodel.Authorization;
 import io.vertigo.account.authorization.metamodel.AuthorizationName;
+import io.vertigo.account.authorization.metamodel.OperationName;
 import io.vertigo.account.authorization.metamodel.SecuredEntity;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
 import io.vertigo.account.impl.authorization.dsl.translator.CriteriaSecurityRuleTranslator;
@@ -51,7 +51,7 @@ import io.vertigo.persona.security.VSecurityManager;
  * @author npiedeloup
  */
 public final class AuthorizationManagerImpl implements AuthorizationManager {
-	private static final String USER_SESSION_ACL_KEY = "vertigo.account.accessControl";
+	private static final String USER_SESSION_ACL_KEY = "vertigo.account.authorizations";
 
 	private final VSecurityManager securityManager;
 
@@ -79,12 +79,12 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return Optional.empty();
 		}
-		UserAuthorizations userPermissions = userSessionOpt.get().getAttribute(USER_SESSION_ACL_KEY);
-		if (userPermissions == null) {
-			userPermissions = new UserAuthorizations();
-			userSessionOpt.get().putAttribute(USER_SESSION_ACL_KEY, userPermissions);
+		UserAuthorizations userAuthorizations = userSessionOpt.get().getAttribute(USER_SESSION_ACL_KEY);
+		if (userAuthorizations == null) {
+			userAuthorizations = new UserAuthorizations();
+			userSessionOpt.get().putAttribute(USER_SESSION_ACL_KEY, userAuthorizations);
 		}
-		return Optional.of(userPermissions);
+		return Optional.of(userAuthorizations);
 
 	}
 
