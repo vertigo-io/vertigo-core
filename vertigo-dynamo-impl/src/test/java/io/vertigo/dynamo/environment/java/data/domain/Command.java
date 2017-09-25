@@ -95,7 +95,7 @@ public final class Command implements KeyConcept {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Définit la valeur de la propriété 'CommandType' as an enum.
-	 * @param commandType io.vertigo.dynamo.environment.java.data.domain.CommandTypeEnum
+	 * @param commandTypeEnum io.vertigo.dynamo.environment.java.data.domain.CommandTypeEnum
 	 */
 	public void setCommandTypeEnum(final io.vertigo.dynamo.environment.java.data.domain.CommandTypeEnum commandTypeEnum) {
 		ctyIdAccessor.setEnumValue(commandTypeEnum);
