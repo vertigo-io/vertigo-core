@@ -114,7 +114,7 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 			final StringBuilder sb = new StringBuilder()
 					.append("Finish ")
 					.append(process.getName())
-					.append(succeeded ? " successfully" : " with error")
+					.append(succeeded != null ? (succeeded ? " successfully" : " with error") : "with internal error")
 					.append(" in ( ")
 					.append(process.getDurationMillis())
 					.append(" ms)");
