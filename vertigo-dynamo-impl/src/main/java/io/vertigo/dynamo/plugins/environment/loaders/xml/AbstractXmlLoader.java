@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.xml;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Locale;
@@ -78,7 +79,9 @@ public abstract class AbstractXmlLoader implements Loader {
 			factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
 			final SAXParser saxParser = factory.newSAXParser();
-			saxParser.parse(xmiFileURL.openStream(), getHandler());
+			try (final InputStream is = xmiFileURL.openStream()) {
+				saxParser.parse(is, getHandler());
+			}
 		} catch (final Exception e) {
 			throw WrappedException.wrap(e, "erreur lors de la lecture du fichier xmi : " + xmiFileURL);
 		}
