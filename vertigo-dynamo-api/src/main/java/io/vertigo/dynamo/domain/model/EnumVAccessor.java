@@ -45,7 +45,7 @@ public final class EnumVAccessor<E extends Entity, V extends Enum<V> & MasterDat
 	public EnumVAccessor(final Class<E> clazz, final String role, final Class<V> enumClass) {
 		super(DtObjectUtil.findDtDefinition(clazz), role);
 		//---
-		Assertion.checkState(enumClass.isEnum() && MasterDataEnum.class.isAssignableFrom(enumClass), "Enum '{0}' must implement StaticMasterDataEnum");
+		Assertion.checkState(enumClass.isEnum() && MasterDataEnum.class.isAssignableFrom(enumClass), "Enum '{0}' must implement StaticMasterDataEnum", enumClass.getCanonicalName());
 		this.enumClass = enumClass;
 	}
 
@@ -59,7 +59,7 @@ public final class EnumVAccessor<E extends Entity, V extends Enum<V> & MasterDat
 			return Stream.of(enumClass.getEnumConstants())
 					.filter(enumValue -> entityUri.equals(enumValue.getEntityUri()))
 					.findFirst()
-					.orElseThrow(() -> new VSystemException("Unable to find corresponding enum of type '" + enumClass.getName() + "' with uri '" + entityUri + "'"));
+					.orElseThrow(() -> new VSystemException("Unable to find corresponding enum of type '{0}' with uri '{1}'", enumClass.getName(), entityUri));
 		}
 		return null;
 
