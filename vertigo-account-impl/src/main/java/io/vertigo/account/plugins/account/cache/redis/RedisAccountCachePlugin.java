@@ -26,8 +26,8 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.AccountGroup;
+import io.vertigo.account.account.Account;
+import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.impl.account.AccountCachePlugin;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;

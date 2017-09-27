@@ -26,9 +26,9 @@ import java.util.function.Supplier;
 
 import javax.inject.Inject;
 
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.AccountGroup;
-import io.vertigo.account.identity.IdentityManager;
+import io.vertigo.account.account.Account;
+import io.vertigo.account.account.AccountGroup;
+import io.vertigo.account.account.AccountManager;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
@@ -37,7 +37,7 @@ import io.vertigo.lang.Assertion;
 /**
  * @author pchretien, npiedeloup
  */
-public final class AccountManagerImpl implements IdentityManager {
+public final class AccountManagerImpl implements AccountManager {
 	private final AccountStorePlugin accountStorePlugin; //accès local aux users
 	private final Optional<AccountCachePlugin> accountCachePlugin;
 	private final VFile defaultPhoto;

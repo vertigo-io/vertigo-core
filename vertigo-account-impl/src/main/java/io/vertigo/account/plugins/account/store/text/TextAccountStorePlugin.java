@@ -42,8 +42,8 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.AccountGroup;
+import io.vertigo.account.account.Account;
+import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.impl.account.AccountStorePlugin;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.resource.ResourceManager;
