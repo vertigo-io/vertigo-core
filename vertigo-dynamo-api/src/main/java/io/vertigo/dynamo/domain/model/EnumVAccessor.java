@@ -59,7 +59,7 @@ public final class EnumVAccessor<E extends Entity, V extends Enum<V> & MasterDat
 			return Stream.of(enumClass.getEnumConstants())
 					.filter(enumValue -> entityUri.equals(enumValue.getEntityUri()))
 					.findFirst()
-					.orElseThrow(() -> new VSystemException("Unable to find corresponding enum of type '" + enumClass.getName() + "' with uri '" + entityUri.toString() + "'"));
+					.orElseThrow(() -> new VSystemException("Unable to find corresponding enum of type '" + enumClass.getName() + "' with uri '" + entityUri + "'"));
 		}
 		return null;
 
