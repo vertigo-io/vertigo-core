@@ -23,10 +23,10 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import io.vertigo.account.account.Account;
+import io.vertigo.account.account.AccountManager;
 import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.authentication.AuthenticationToken;
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
@@ -40,7 +40,7 @@ public final class AuthenticationManagerImpl implements AuthenticationManager {
 	private static final String USER_SESSION_ACCOUNT_KEY = "vertigo.account.authentication";
 
 	private final List<AuthenticationPlugin> authenticationRealmPlugins;
-	private final IdentityManager identityManager;
+	private final AccountManager identityManager;
 	private final VSecurityManager securityManager;
 
 	/**
@@ -51,7 +51,7 @@ public final class AuthenticationManagerImpl implements AuthenticationManager {
 	 */
 	@Inject
 	public AuthenticationManagerImpl(
-			final IdentityManager identityManager,
+			final AccountManager identityManager,
 			final VSecurityManager securityManager,
 			final List<AuthenticationPlugin> authenticationRealmPlugins) {
 		Assertion.checkNotNull(identityManager);

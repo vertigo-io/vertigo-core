@@ -20,7 +20,7 @@ package io.vertigo.account.plugins.account.store;
 
 import javax.inject.Named;
 
-import io.vertigo.account.identity.Account;
+import io.vertigo.account.account.Account;
 import io.vertigo.account.impl.account.AccountMapperHelper;
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;

@@ -32,6 +32,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import io.vertigo.account.account.Account;
+import io.vertigo.account.account.AccountGroup;
+import io.vertigo.account.account.AccountManager;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.di.injector.DIInjector;
@@ -46,7 +49,7 @@ public final class IdentityManagerTest {
 	private AutoCloseableApp app;
 
 	@Inject
-	private IdentityManager identityManager;
+	private AccountManager identityManager;
 
 	@Inject
 	private VSecurityManager securityManager;

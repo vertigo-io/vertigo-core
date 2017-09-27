@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.identity;
+package io.vertigo.account.account;
 
 import java.util.Optional;
 import java.util.Set;
@@ -30,7 +30,7 @@ import io.vertigo.dynamo.file.model.VFile;
  *
  * @author npiedeloup
  */
-public interface IdentityManager extends Manager {
+public interface AccountManager extends Manager {
 
 	/**
 	 * Gets the default photo of any account.

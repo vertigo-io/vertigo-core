@@ -18,8 +18,8 @@
  */
 package io.vertigo.account;
 
+import io.vertigo.account.account.AccountManager;
 import io.vertigo.account.authentication.AuthenticationManager;
-import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.account.impl.account.AccountCachePlugin;
 import io.vertigo.account.impl.account.AccountDefinitionProvider;
 import io.vertigo.account.impl.account.AccountStorePlugin;
@@ -104,7 +104,7 @@ public final class AccountFeatures extends Features {
 	public AccountFeatures withAccountStorePlugin(final Class<? extends AccountStorePlugin> accountStorePluginClass, final Param... params) {
 		getModuleConfigBuilder()
 				.addComponent(AuthenticationManager.class, AuthenticationManagerImpl.class)
-				.addComponent(IdentityManager.class, AccountManagerImpl.class)
+				.addComponent(AccountManager.class, AccountManagerImpl.class)
 				.addPlugin(accountStorePluginClass, params);
 		return this;
 	}

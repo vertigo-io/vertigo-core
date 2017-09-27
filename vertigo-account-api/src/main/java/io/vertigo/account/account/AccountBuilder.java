@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.identity;
+package io.vertigo.account.account;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
