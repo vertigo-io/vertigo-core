@@ -176,22 +176,24 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 		}
 		final URL fileURL;
 		if (accountInfo.getPhotoUrl().startsWith(".")) {//si on est en relatif, on repart du prefix du fichier des accounts
-			final String accountFilePrefix = accountFilePath.substring(0, accountFilePath.lastIndexOf("/")) + "/";
+			final String accountFilePrefix = accountFilePath.substring(0, accountFilePath.lastIndexOf('/')) + "/";
 			fileURL = resourceManager.resolve(accountFilePrefix + accountInfo.getPhotoUrl());
 		} else {
 			fileURL = resourceManager.resolve(accountInfo.getPhotoUrl());
 		}
 
-		//final Optional<VFile> photo = createVFile("photoOf" + accountURI.getId(), fileURL);
+		return createVFile(accountURI, fileURL, accountInfo.getPhotoUrl());
+	}
 
+	private static Optional<VFile> createVFile(final URI<Account> accountURI, final URL fileURL, final String photoUrl) {
 		File photoFile;
 		try {
 			photoFile = new File(fileURL.toURI());
 		} catch (final URISyntaxException e) {
 			return Optional.empty();
 		}
-		Assertion.checkArgument(photoFile.exists(), "Account {0} photo {1} not found", accountURI, accountInfo.getPhotoUrl());
-		Assertion.checkArgument(photoFile.isFile(), "Account {0} photo {1} must be a file", accountURI, accountInfo.getPhotoUrl());
+		Assertion.checkArgument(photoFile.exists(), "Account {0} photo {1} not found", accountURI, photoUrl);
+		Assertion.checkArgument(photoFile.isFile(), "Account {0} photo {1} must be a file", accountURI, photoUrl);
 		try {
 			final String contentType = Files.probeContentType(photoFile.toPath());
 			return Optional.of(new FSFile(photoFile.getName(), contentType, photoFile));
@@ -199,28 +201,6 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 			throw WrappedException.wrap(e);
 		}
 	}
-
-	/*private Optional<VFile> createVFile(final String fileName, final URL fileURL) {
-		final long length;
-		final long lastModified;
-		try {
-			final URLConnection connection = fileURL.openConnection();
-			try {
-				length = connection.getContentLength();
-				lastModified = connection.getLastModified();
-			} finally {
-				connection.getInputStream().close();
-			}
-		} catch (final IOException e) {
-			return Optional.empty();
-		}
-		if (length >= 0) {
-			return Optional.empty();
-		}
-		final InputStreamBuilder inputStreamBuilder = fileURL::openStream;
-		final String contentType = Files.probeContentType(new File(fileURL.toURI()).toPath());
-		return Optional.of(new StreamFile(fileName, contentType, new Date(lastModified), length, inputStreamBuilder));
-	}*/
 
 	/** {@inheritDoc} */
 	@Override
