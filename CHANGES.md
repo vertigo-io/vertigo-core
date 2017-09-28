@@ -3,6 +3,8 @@ Version history
 
 Running 1.1.0-SNAPSHOT
 ----------------------
+* [all] Code cleaning, refactoring and documenting 
+* __[all] Execution error with jdk 1.8_51 should use more recent version__
 
 more to come :)
 
