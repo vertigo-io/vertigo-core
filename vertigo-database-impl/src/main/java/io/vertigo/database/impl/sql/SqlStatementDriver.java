@@ -77,6 +77,7 @@ final class SqlStatementDriver {
 	//------------------ Statement creations ----------------------------------//
 
 	PreparedStatement createStatement(final String sql, final SqlConnection connection) throws SQLException {
+		//created PrepareStatement must be use into a try-with-resource in caller
 		final PreparedStatement preparedStatement = connection.getJdbcConnection()
 				.prepareStatement(sql, Statement.NO_GENERATED_KEYS);
 		//by experience 150 is a right value (Oracle is set by default at 10 : that's not sufficient)
@@ -89,6 +90,7 @@ final class SqlStatementDriver {
 			final GenerationMode generationMode,
 			final String[] generatedColumns,
 			final SqlConnection connection) throws SQLException {
+		//created PrepareStatement must be use into a try-with-resource in caller
 		final PreparedStatement preparedStatement;
 		switch (generationMode) {
 			case GENERATED_KEYS:

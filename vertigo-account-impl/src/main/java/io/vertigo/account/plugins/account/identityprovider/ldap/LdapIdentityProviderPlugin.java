@@ -82,7 +82,6 @@ public final class LdapIdentityProviderPlugin implements AccountProviderPlugin, 
 	private final String ldapReaderPassword;
 
 	private final String ldapUserAuthAttribute;
-	//private Map<DtField, String> ldapUserAttributeMapping; //UserAttribute to ldapAttribute
 
 	private final String userDtDefinitionName;
 	private final String ldapUserAttributeMappingStr;
@@ -96,6 +95,7 @@ public final class LdapIdentityProviderPlugin implements AccountProviderPlugin, 
 	 * @param ldapReaderLogin Login du reader LDAP
 	 * @param ldapReaderPassword Password du reader LDAP
 	 * @param ldapUserAuthAttribute Ldap attribute use to find user by it's authToken
+	 * @param userDtDefinitionName DtDefinition used for User
 	 * @param ldapUserAttributeMappingStr Mapping from LDAP to Account
 	 * @param codecManager Codec Manager
 	 */
@@ -215,7 +215,7 @@ public final class LdapIdentityProviderPlugin implements AccountProviderPlugin, 
 		return Optional.of(base64toVFile(displayName, base64Content));
 	}
 
-	private <O> O parseAttribute(final Class<O> valueClass, final String attributeName, final Attributes attrs) {
+	private static <O> O parseAttribute(final Class<O> valueClass, final String attributeName, final Attributes attrs) {
 		try {
 			return valueClass.cast(attrs.get(attributeName).get());
 		} catch (final NamingException e) {
@@ -223,7 +223,7 @@ public final class LdapIdentityProviderPlugin implements AccountProviderPlugin, 
 		}
 	}
 
-	private <O> O parseNullableAttribute(final Class<O> valueClass, final String attributeName, final Attributes attrs) {
+	private static <O> O parseNullableAttribute(final Class<O> valueClass, final String attributeName, final Attributes attrs) {
 		if (attributeName != null) {
 			final Attribute attribute = attrs.get(attributeName);
 			if (attribute != null) {
@@ -295,7 +295,7 @@ public final class LdapIdentityProviderPlugin implements AccountProviderPlugin, 
 		}
 	}
 
-	private void setTypedValue(final DtField dtField, final Entity user, final String valueStr) throws FormatterException {
+	private static void setTypedValue(final DtField dtField, final Entity user, final String valueStr) throws FormatterException {
 		final Serializable typedValue = (Serializable) dtField.getDomain().stringToValue(valueStr);
 		dtField.getDataAccessor().setValue(user, typedValue);
 	}
@@ -304,9 +304,10 @@ public final class LdapIdentityProviderPlugin implements AccountProviderPlugin, 
 		final List<Attributes> userAttributes = new ArrayList<>();
 		final SearchControls constraints = new SearchControls();
 		constraints.setSearchScope(SearchControls.SUBTREE_SCOPE);
-		constraints.setReturningAttributes(returningAttributes.toArray(new String[returningAttributes.size()]));
+		constraints.setReturningAttributes(buildReturingAttributes(returningAttributes));
 		constraints.setCountLimit(top);
 		try {
+			//LDAP ctx.search can be vulnerable to LDAP injection : we already protect all user entries by EsapiLdapEncoder
 			final NamingEnumeration<SearchResult> answer = ctx.search(ldapBaseDn, searchRequest, constraints);
 			while (answer.hasMore()) {
 				final Attributes attrs = answer.next().getAttributes();
@@ -316,6 +317,12 @@ public final class LdapIdentityProviderPlugin implements AccountProviderPlugin, 
 			throw WrappedException.wrap(e, "Can't search LDAP user with request: {0}", searchRequest);
 		}
 		return userAttributes;
+	}
+
+	private static String[] buildReturingAttributes(final Collection<String> returningAttributes) {
+		Assertion.checkNotNull(returningAttributes);
+		//-----
+		return returningAttributes.toArray(new String[returningAttributes.size()]);
 	}
 
 }
