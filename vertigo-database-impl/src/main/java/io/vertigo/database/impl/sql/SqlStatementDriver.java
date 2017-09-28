@@ -112,7 +112,6 @@ final class SqlStatementDriver {
 	//------------------ Set values on statement ------------------------------//
 
 	void setParameters(
-			final String sql,
 			final PreparedStatement statement,
 			final List<SqlParameter> parameters,
 			final SqlConnection connection) throws SQLException {

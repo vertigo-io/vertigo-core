@@ -111,7 +111,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		Assertion.checkNotNull(connection);
 		//-----
 		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
-			sqlStatementDriver.setParameters(sqlStatement.getSqlQuery(), statement, sqlStatement.getSqlParameters(), connection);
+			sqlStatementDriver.setParameters(statement, sqlStatement.getSqlParameters(), connection);
 			//-----
 			return traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecuteQuery(statement, tracer, dataType, limit, connection));
 		} catch (final WrappedSqlException e) {
@@ -154,7 +154,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		Assertion.checkNotNull(connection);
 		//---
 		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), generationMode, new String[] { columnName }, connection)) {
-			sqlStatementDriver.setParameters(sqlStatement.getSqlQuery(), statement, sqlStatement.getSqlParameters(), connection);
+			sqlStatementDriver.setParameters(statement, sqlStatement.getSqlParameters(), connection);
 			//---
 			//execution de la Requête
 			final int result = traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecute(statement, tracer));
@@ -174,7 +174,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		Assertion.checkNotNull(connection);
 		//---
 		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
-			sqlStatementDriver.setParameters(sqlStatement.getSqlQuery(), statement, sqlStatement.getSqlParameters(), connection);
+			sqlStatementDriver.setParameters(statement, sqlStatement.getSqlParameters(), connection);
 			//---
 			return traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecute(statement, tracer));
 		} catch (final WrappedSqlException e) {
@@ -218,7 +218,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		//---
 		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
 			for (final List<SqlParameter> parameters : sqlStatement.getSqlParametersForBatch()) {
-				sqlStatementDriver.setParameters(sqlStatement.getSqlQuery(), statement, parameters, connection);
+				sqlStatementDriver.setParameters(statement, parameters, connection);
 				statement.addBatch();
 			}
 			return traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecuteBatch(statement, tracer));
