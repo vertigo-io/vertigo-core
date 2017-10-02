@@ -38,7 +38,8 @@ abstract class AbstractVAccessor<E extends Entity> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private static enum State {
-		LOADED, NOT_LOADED
+		LOADED,
+		NOT_LOADED
 	}
 
 	private State status = State.NOT_LOADED;
@@ -52,7 +53,7 @@ abstract class AbstractVAccessor<E extends Entity> implements Serializable {
 	 * @param clazz the entity class
 	 * @param role the role of the association (case of multiple associations with the same entity)
 	 */
-	public AbstractVAccessor(final Class<E> clazz, final String role) {
+	AbstractVAccessor(final Class<E> clazz, final String role) {
 		this(DtObjectUtil.findDtDefinition(clazz), role);
 	}
 
@@ -61,7 +62,7 @@ abstract class AbstractVAccessor<E extends Entity> implements Serializable {
 	 * @param targetDtDefinition the entity definition
 	 * @param role the role of the association (case of multiple associations with the same entity)
 	 */
-	public AbstractVAccessor(final DtDefinition targetDtDefinition, final String role) {
+	AbstractVAccessor(final DtDefinition targetDtDefinition, final String role) {
 		Assertion.checkNotNull(targetDtDefinition);
 		Assertion.checkArgNotEmpty(role);
 		//---
@@ -77,7 +78,7 @@ abstract class AbstractVAccessor<E extends Entity> implements Serializable {
 	/**
 	 * @return the entity
 	 */
-	public E get() {
+	public final E get() {
 		load();
 		return value;
 	}
@@ -85,14 +86,14 @@ abstract class AbstractVAccessor<E extends Entity> implements Serializable {
 	/**
 	 * @return the entity uri
 	 */
-	public URI<E> getURI() {
+	public final URI<E> getURI() {
 		return targetURI;
 	}
 
 	/**
 	 * @return the entity id
 	 */
-	public Serializable getId() {
+	public final Serializable getId() {
 		return targetURI == null ? null : targetURI.getId();
 	}
 
@@ -110,7 +111,7 @@ abstract class AbstractVAccessor<E extends Entity> implements Serializable {
 	 * Sets the entity
 	 * @param entity the entity
 	 */
-	public void set(final E entity) {
+	public final void set(final E entity) {
 		Assertion.checkNotNull(entity);
 		//---
 		value = entity;
@@ -122,7 +123,7 @@ abstract class AbstractVAccessor<E extends Entity> implements Serializable {
 	 * Sets the entity id
 	 * @param id the entity id
 	 */
-	public void setId(final Serializable id) {
+	public final void setId(final Serializable id) {
 		//id final may be null
 		//---
 		//If already loaded and same id, we don't touch anything
@@ -138,7 +139,7 @@ abstract class AbstractVAccessor<E extends Entity> implements Serializable {
 	 * Sets the entity uri
 	 * @param uri the entity uri
 	 */
-	public void setUri(final URI<E> uri) {
+	public final void setUri(final URI<E> uri) {
 		Assertion.checkNotNull(uri);
 		//---
 		targetURI = uri; //maybe null
@@ -147,11 +148,11 @@ abstract class AbstractVAccessor<E extends Entity> implements Serializable {
 		status = State.NOT_LOADED;
 	}
 
-	public String getRole() {
+	public final String getRole() {
 		return role;
 	}
 
-	public boolean isLoaded() {
+	public final boolean isLoaded() {
 		return status == State.LOADED;
 	}
 }
