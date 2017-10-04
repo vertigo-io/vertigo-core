@@ -18,7 +18,7 @@
  */
 package io.vertigo.app.config;
 
-import io.vertigo.core.component.proxy.ProxyFactory;
+import io.vertigo.core.component.proxy.Proxy;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -30,25 +30,22 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class ProxyFactoryConfig {
-	private final Class<? extends ProxyFactory> proxyFactoryClass;
+public final class ProxyConfig {
+	private final Class<? extends Proxy> proxyClass;
 
 	/**
 	 * Constructor.
 	 */
-	ProxyFactoryConfig(final Class<? extends ProxyFactory> proxyFactoryClass) {
-		Assertion.checkNotNull(proxyFactoryClass);
+	ProxyConfig(final Class<? extends Proxy> proxyClass) {
+		Assertion.checkNotNull(proxyClass);
 		//-----
-		this.proxyFactoryClass = proxyFactoryClass;
+		this.proxyClass = proxyClass;
 	}
 
 	/**
-	 * this class is used to create the factory of proxies.
-	 * this class is created by Dependency Injection using the components already register.
-	 *
-	 * @return the proxy factory class
+	 * @return the proxy class
 	 */
-	public Class<? extends ProxyFactory> getProxyFactoryClass() {
-		return proxyFactoryClass;
+	public Class<? extends Proxy> getProxyClass() {
+		return proxyClass;
 	}
 }
