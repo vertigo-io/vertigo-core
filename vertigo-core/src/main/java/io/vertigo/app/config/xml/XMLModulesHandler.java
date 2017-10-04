@@ -159,7 +159,9 @@ final class XMLModulesHandler extends DefaultHandler {
 				current = TagName.component;
 				final String componentApi = attrs.getValue("api");
 				final Class<? extends Component> componentImplClass = ClassUtil.classForName(attrs.getValue("class"), Component.class);
-				componentConfigBuilder = ComponentConfig.builder(componentImplClass);
+				componentConfigBuilder = ComponentConfig
+						.builder()
+						.withImpl(componentImplClass);
 				if (componentApi != null) {
 					final Class<?> componentApiClass = resolveInterface(componentApi, componentImplClass);
 					componentConfigBuilder.withApi((Class<? extends Component>) componentApiClass);

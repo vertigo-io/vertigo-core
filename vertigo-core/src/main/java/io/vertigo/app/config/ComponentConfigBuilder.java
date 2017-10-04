@@ -36,18 +36,28 @@ import io.vertigo.lang.Builder;
  */
 public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	private String myId;
+	private final boolean proxy;
 	private Class<? extends Component> myApiClass;
-	private final Class<? extends Component> implClass;
+	private Class<? extends Component> myImplClass;
 	private final List<Param> myParams = new ArrayList<>();
 
 	/**
 	 * Constructor of a component config
-	 * @param implClass the impl class of the component
+	 * @param proxy if the component is a proxy
 	 */
-	ComponentConfigBuilder(final Class<? extends Component> implClass) {
+	ComponentConfigBuilder(final boolean proxy) {
+		this.proxy = proxy;
+	}
+
+	/**
+	 * @param implClass the impl class of the component
+	 * @return this builder
+	 */
+	public ComponentConfigBuilder withImpl(final Class<? extends Component> implClass) {
 		Assertion.checkNotNull(implClass);
 		//-----
-		this.implClass = implClass;
+		myImplClass = implClass;
+		return this;
 	}
 
 	/**
@@ -112,11 +122,17 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	@Override
 	public ComponentConfig build() {
 		final Optional<Class<? extends Component>> apiClassOpt = Optional.ofNullable(myApiClass);
+		final Optional<Class<? extends Component>> implClassOpt = Optional.ofNullable(myImplClass);
 		if (myId == null) {
-			//Par convention l'id du composant manager est le simpleName de la classe de l'api ou de l'impl.
-			myId = DIAnnotationUtil.buildId(apiClassOpt.orElse(implClass));
+			if (proxy) {
+				//if proxy then apiClass is required
+				myId = DIAnnotationUtil.buildId(apiClassOpt.get());
+			} else {
+				//if no proxy then implClass is required
+				//By convention the component id is the simpleName of the api or the impl
+				myId = DIAnnotationUtil.buildId(apiClassOpt.orElse(implClassOpt.get()));
+			}
 		}
-		return new ComponentConfig(myId, apiClassOpt, implClass, myParams);
+		return new ComponentConfig(myId, proxy, apiClassOpt, implClassOpt, myParams);
 	}
-
 }

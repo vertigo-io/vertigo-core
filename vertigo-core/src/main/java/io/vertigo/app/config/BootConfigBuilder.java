@@ -121,7 +121,8 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 * @return this builder
 	 */
 	private BootConfigBuilder addComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass, final Param... params) {
-		final ComponentConfig componentConfig = ComponentConfig.builder(implClass)
+		final ComponentConfig componentConfig = ComponentConfig.builder()
+				.withImpl(implClass)
 				.withApi(apiClass)
 				.addParams(params)
 				.build();

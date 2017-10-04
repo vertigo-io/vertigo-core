@@ -111,6 +111,23 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
+	 * Adds a proxy component defined by an interface.
+	 * @param apiClass api of the component
+	 * @param params the list of params
+	 * @return this builder
+	 */
+	public ModuleConfigBuilder addProxy(final Class<? extends Component> apiClass, final Param... params) {
+		Assertion.checkNotNull(apiClass);
+		Assertion.checkNotNull(params);
+		//---
+		final ComponentConfig componentConfig = ComponentConfig.builder(true)
+				.withApi(apiClass)
+				.addParams(params)
+				.build();
+		return addComponent(componentConfig);
+	}
+
+	/**
 	* Adds a component defined by an implementation.
 	 * @param implClass impl of the component
 	 * @param params the list of params
@@ -120,7 +137,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
-		final ComponentConfig componentConfig = ComponentConfig.builder(implClass)
+		final ComponentConfig componentConfig = ComponentConfig.builder()
+				.withImpl(implClass)
 				.addParams(params)
 				.build();
 		return addComponent(componentConfig);
@@ -138,7 +156,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
-		final ComponentConfig componentConfig = ComponentConfig.builder(implClass)
+		final ComponentConfig componentConfig = ComponentConfig.builder()
+				.withImpl(implClass)
 				.withApi(apiClass)
 				.addParams(params)
 				.build();

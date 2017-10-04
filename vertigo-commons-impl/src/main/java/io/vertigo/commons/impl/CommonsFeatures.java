@@ -76,7 +76,7 @@ public final class CommonsFeatures extends Features {
 
 	/**
 	 * Activates script with a defined plugin.
-	
+
 	 * @param expressionEvaluatorPluginClass the type of plugin to use
 	 * @param params the params
 	 * @return these features
@@ -111,7 +111,9 @@ public final class CommonsFeatures extends Features {
 	 * @return these features
 	 */
 	public CommonsFeatures withRedisConnector(final String host, final int port, final int database, final Optional<String> passwordOpt) {
-		final ComponentConfigBuilder componentConfigBuilder = ComponentConfig.builder(RedisConnector.class)
+		final ComponentConfigBuilder componentConfigBuilder = ComponentConfig
+				.builder()
+				.withImpl(RedisConnector.class)
 				.addParam(Param.of("host", host))
 				.addParam(Param.of("port", Integer.toString(port)))
 				.addParam(Param.of("database", Integer.toString(database)));
