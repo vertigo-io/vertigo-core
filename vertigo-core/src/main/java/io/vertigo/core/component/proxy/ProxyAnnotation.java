@@ -25,6 +25,8 @@ import java.lang.annotation.Target;
 
 /**
  * Marks a proxy by a simple annotation
+ * This method can only be used on method
+ * and must be used on each method of a proxy.
  * @author pchretien
  */
 @Target({ ElementType.ANNOTATION_TYPE })
