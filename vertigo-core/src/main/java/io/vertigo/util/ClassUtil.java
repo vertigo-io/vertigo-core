@@ -411,7 +411,7 @@ public final class ClassUtil {
 	 * Ex : List<Car> ==> Car
 	 * @param type the
 	 * @param exceptionSupplier
-	 * @return
+	 * @return first Generic of this class
 	 */
 	public static Class<?> getGeneric(
 			final Type type,
