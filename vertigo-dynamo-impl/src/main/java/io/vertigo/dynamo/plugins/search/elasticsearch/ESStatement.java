@@ -21,7 +21,8 @@ package io.vertigo.dynamo.plugins.search.elasticsearch;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
@@ -64,7 +65,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	private static final RefreshPolicy DEFAULT_REFRESH = RefreshPolicy.NONE; //mettre a true pour TU uniquement
 	private static final RefreshPolicy BULK_REFRESH = RefreshPolicy.NONE; //mettre a RefreshPolicy.IMMEDIATE pour TU uniquement
 	static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
-	private static final Logger LOGGER = Logger.getLogger(ESStatement.class);
+	private static final Logger LOGGER = LogManager.getLogger(ESStatement.class);
 
 	private final String indexName;
 	private final String typeName;

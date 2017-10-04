@@ -24,7 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
@@ -61,7 +62,7 @@ import io.vertigo.util.StringUtil;
  * @author pchretien
  */
 public final class DomainDynamicRegistry implements DynamicRegistry {
-	private static final Logger LOGGER = Logger.getLogger(DomainDynamicRegistry.class);
+	private static final Logger LOGGER = LogManager.getLogger(DomainDynamicRegistry.class);
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
 	private static final String ASSOCIATION_SIMPLE_DEFINITION_PREFIX = DefinitionUtil.getPrefix(AssociationSimpleDefinition.class);
 	private static final String ASSOCIATION_NN_DEFINITION_PREFIX = DefinitionUtil.getPrefix(AssociationNNDefinition.class);

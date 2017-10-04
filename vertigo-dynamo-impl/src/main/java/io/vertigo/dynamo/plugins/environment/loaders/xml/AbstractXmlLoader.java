@@ -27,7 +27,8 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.helpers.DefaultHandler;
 
 import io.vertigo.core.definition.Definition;
@@ -53,7 +54,7 @@ import io.vertigo.lang.WrappedException;
 public abstract class AbstractXmlLoader implements Loader {
 	private static final int MAX_COLUMN_LENGTH = 30;
 	private static final Locale TO_UPPER_CASE_LOCALE = Locale.FRANCE;
-	private static final Logger LOGGER = Logger.getLogger(AbstractXmlLoader.class);
+	private static final Logger LOGGER = LogManager.getLogger(AbstractXmlLoader.class);
 
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;

@@ -8,6 +8,8 @@
 		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" >
 			<plugin class="io.vertigo.commons.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin">
 				<param name="appName" value="vertigo"/>
+				<param name="hostName" value="MLAROCHE-PORT"/>
+				<param name="port" value="4560"/>
 			</plugin>
 		</component>
 		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" />

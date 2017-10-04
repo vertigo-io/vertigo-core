@@ -18,7 +18,8 @@
  */
 package io.vertigo.vega.impl.webservice.filter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.util.MultiException;
 import org.eclipse.jetty.util.MultiPartInputStreamParser;
 
@@ -32,7 +33,7 @@ import spark.Response;
  */
 public final class JettyMultipartCleaner implements Filter {
 	private static final String JETTY_MULTIPART_INPUT_STREAM = org.eclipse.jetty.server.Request.__MULTIPART_INPUT_STREAM;//"org.eclipse.multipartConfig";
-	private static final Logger LOG = Logger.getLogger(JettyMultipartCleaner.class);
+	private static final Logger LOG = LogManager.getLogger(JettyMultipartCleaner.class);
 
 	/** {@inheritDoc} */
 	@Override

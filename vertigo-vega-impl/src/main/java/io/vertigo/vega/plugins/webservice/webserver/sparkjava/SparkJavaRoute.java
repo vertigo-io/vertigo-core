@@ -18,7 +18,8 @@
  */
 package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
@@ -33,7 +34,7 @@ import spark.Route;
  */
 final class SparkJavaRoute implements Route {
 
-	private static final Logger LOGGER = Logger.getLogger(SparkJavaRoute.class);
+	private static final Logger LOGGER = LogManager.getLogger(SparkJavaRoute.class);
 	private final WebServiceDefinition webServiceDefinition;
 	private final HandlerChain handlerChain;
 	private final String defaultContentCharset;

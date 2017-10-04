@@ -30,7 +30,8 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.client.Client;
@@ -68,7 +69,7 @@ import io.vertigo.lang.WrappedException;
  */
 public abstract class AbstractESSearchServicesPlugin implements SearchServicesPlugin, Activeable {
 	private static final int OPTIMIZE_MAX_NUM_SEGMENT = 32;
-	private static final Logger LOGGER = Logger.getLogger(AbstractESSearchServicesPlugin.class);
+	private static final Logger LOGGER = LogManager.getLogger(AbstractESSearchServicesPlugin.class);
 	private final ESDocumentCodec elasticDocumentCodec;
 
 	private Client esClient;

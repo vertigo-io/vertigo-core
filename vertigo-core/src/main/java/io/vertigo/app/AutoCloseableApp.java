@@ -23,7 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ComponentInitializerConfig;
@@ -56,7 +57,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 		CLOSED
 	}
 
-	private static final Logger LOGGER = Logger.getLogger(AutoCloseableApp.class);
+	private static final Logger LOGGER = LogManager.getLogger(AutoCloseableApp.class);
 
 	//Start : used to have 'uptime'
 	private final Instant start;

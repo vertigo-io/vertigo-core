@@ -33,7 +33,8 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -43,7 +44,7 @@ import io.vertigo.util.ListBuilder;
  * @author pchretien
  */
 public final class LocaleManagerImpl implements LocaleManager {
-	private static final Logger LOG = Logger.getLogger(LocaleManagerImpl.class);
+	private static final Logger LOG = LogManager.getLogger(LocaleManagerImpl.class);
 
 	/**
 	 * Set des clés non trouvées pour ne pas les reloguer.

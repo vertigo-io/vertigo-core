@@ -30,7 +30,8 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
@@ -47,7 +48,7 @@ import io.vertigo.studio.plugins.mda.util.TemplateMethodStringUtil;
  * @author dchallas
  */
 final class FileGeneratorFreeMarker implements FileGenerator {
-	private static final Logger LOG = Logger.getLogger(FileGeneratorFreeMarker.class);
+	private static final Logger LOG = LogManager.getLogger(FileGeneratorFreeMarker.class);
 	private static final String EOL = System.getProperty("line.separator");
 
 	/**

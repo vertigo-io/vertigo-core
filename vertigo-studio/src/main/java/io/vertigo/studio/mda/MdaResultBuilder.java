@@ -20,7 +20,8 @@ package io.vertigo.studio.mda;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.lang.Builder;
 
@@ -30,7 +31,7 @@ import io.vertigo.lang.Builder;
  * @author pchretien
  */
 public final class MdaResultBuilder implements Builder<MdaResult> {
-	private static final Logger LOGGER = Logger.getLogger(MdaResult.class);
+	private static final Logger LOGGER = LogManager.getLogger(MdaResult.class);
 
 	/** Nombre de fichiers écrits . */
 	private int updatedFiles;

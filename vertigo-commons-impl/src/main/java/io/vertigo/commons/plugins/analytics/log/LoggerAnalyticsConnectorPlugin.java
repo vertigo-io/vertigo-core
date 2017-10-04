@@ -20,7 +20,7 @@ package io.vertigo.commons.plugins.analytics.log;
 
 import java.util.Collections;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -36,15 +36,15 @@ import io.vertigo.commons.impl.analytics.process.AProcess;
  */
 public final class LoggerAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin {
 
-	private static final Logger LOGGER_HEALTH = Logger.getLogger("health");
-	private static final Logger LOGGER_METRIC = Logger.getLogger("metric");
+	private static final Logger LOGGER_HEALTH = LogManager.getLogger("health");
+	private static final Logger LOGGER_METRIC = LogManager.getLogger("metric");
 
 	private static final Gson GSON = new GsonBuilder().create();
 
 	/** {@inheritDoc} */
 	@Override
 	public void add(final AProcess process) {
-		final Logger logger = Logger.getLogger(process.getCategory());
+		final Logger logger = LogManager.getLogger(process.getCategory());
 		if (logger.isInfoEnabled()) {
 			final String json = GSON.toJson(Collections.singletonList(process));
 			logger.info(json);

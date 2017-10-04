@@ -29,7 +29,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthAction;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
@@ -76,7 +77,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	/** field suffix for keyword fields added by this plugin. */
 	public static final String SUFFIX_SORT_FIELD = ".keyword";
 
-	private static final Logger LOGGER = Logger.getLogger(AbstractESSearchServicesPlugin.class);
+	private static final Logger LOGGER = LogManager.getLogger(AbstractESSearchServicesPlugin.class);
 	private final ESDocumentCodec elasticDocumentCodec;
 
 	private Client esClient;

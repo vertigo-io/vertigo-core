@@ -18,14 +18,14 @@
  */
 package io.vertigo.commons.impl.daemon;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.lang.Assertion;
 
 final class DaemonListener {
-	private static final Logger LOG = Logger.getLogger(DaemonListener.class);
+	private static final Logger LOG = LogManager.getLogger(DaemonListener.class);
 
 	private long successes;
 	private boolean lastExecSucceed;

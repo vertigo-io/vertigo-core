@@ -25,7 +25,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.helpers.DefaultHandler;
 
 import io.vertigo.core.resource.ResourceManager;
@@ -43,7 +44,7 @@ import io.vertigo.util.StringUtil;
 public final class EAXmiLoader extends AbstractXmlLoader {
 	private final Map<XmlId, EAXmiObject> map = new LinkedHashMap<>();
 
-	private static final Logger LOG = Logger.getLogger(EAXmiLoader.class);
+	private static final Logger LOG = LogManager.getLogger(EAXmiLoader.class);
 
 	/**
 	 * Constructor.

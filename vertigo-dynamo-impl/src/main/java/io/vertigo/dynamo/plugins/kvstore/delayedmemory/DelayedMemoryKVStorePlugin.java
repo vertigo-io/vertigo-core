@@ -31,7 +31,8 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonDefinition;
@@ -51,7 +52,7 @@ import io.vertigo.lang.Assertion;
  */
 public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDefinitionProvider {
 
-	private static final Logger LOGGER = Logger.getLogger(DelayedMemoryKVStorePlugin.class);
+	private static final Logger LOGGER = LogManager.getLogger(DelayedMemoryKVStorePlugin.class);
 	private final List<String> collections;
 
 	private final int timeToLiveSeconds;

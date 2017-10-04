@@ -28,7 +28,8 @@ import java.util.Properties;
 
 import javax.servlet.ServletContext;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.LogConfig;
@@ -43,7 +44,7 @@ import io.vertigo.vega.plugins.webservice.servlet.WebAppContextParamPlugin;
  * @author npiedeloup
  */
 final class AppServletStarter {
-	private static final Logger LOG = Logger.getLogger(AppServletStarter.class);
+	private static final Logger LOG = LogManager.getLogger(AppServletStarter.class);
 
 	private static final String BOOT_PROPERTIES_PREFIX = "boot.";
 	private static final String EXTERNAL_PROPERTIES_PARAM_NAME = "external-properties";

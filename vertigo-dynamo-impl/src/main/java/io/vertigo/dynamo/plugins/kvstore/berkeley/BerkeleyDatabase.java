@@ -23,7 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.sleepycat.bind.EntryBinding;
 import com.sleepycat.bind.tuple.TupleBinding;
@@ -48,7 +49,7 @@ import io.vertigo.lang.WrappedException;
  * @author pchretien
  */
 final class BerkeleyDatabase {
-	private static final Logger LOGGER = Logger.getLogger(BerkeleyDatabase.class);
+	private static final Logger LOGGER = LogManager.getLogger(BerkeleyDatabase.class);
 	private final VTransactionResourceId<BerkeleyResource> berkeleyResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "berkeley-db");
 	private final TupleBinding<Serializable> dataBinding;
 	private static final EntryBinding<String> keyBinding = TupleBinding.getPrimitiveBinding(String.class);

@@ -26,9 +26,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.net.SocketAppender;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.SocketAppender;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.layout.SerializedLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -114,22 +119,29 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		try {
 			return InetAddress.getLocalHost().getHostName();
 		} catch (final UnknownHostException e) {
-			Logger.getRootLogger().info("Cannot retrieve hostname", e);
+			LogManager.getRootLogger().info("Cannot retrieve hostname", e);
 			return "UnknownHost";
 		}
 	}
 
 	private static Logger createLogger(final String loggerName, final String hostName, final int port) {
 		// If it doesn't exist we create it with the right appender
-		final Logger logger = Logger.getLogger(loggerName);
-		// Create an appender
-		final SocketAppender appender = new SocketAppender(hostName, port);
-		// we make only one try
-		appender.setReconnectionDelay(0);
-		//---
-		logger.removeAllAppenders();
-		logger.addAppender(appender);
-		logger.setLevel(Level.INFO);
+		final Logger logger = LogManager.getLogger(loggerName);
+		//we create appender
+		final SocketAppender appender = SocketAppender.newBuilder()
+				.withName("socketAnalytics")
+				.withLayout(SerializedLayout.createLayout())
+				.withHost(hostName)
+				.withPort(port)
+				.withReconnectDelayMillis(0)// we make only one try
+				.build();
+		appender.start();
+
+		final LoggerContext context = LoggerContext.getContext(false); //on ne close pas : car ca stop le context
+		final Configuration config = context.getConfiguration();
+		config.getLoggerConfig(loggerName).addAppender(appender, null, null);
+
+		Configurator.setLevel(loggerName, Level.INFO);
 		return logger;
 	}
 
