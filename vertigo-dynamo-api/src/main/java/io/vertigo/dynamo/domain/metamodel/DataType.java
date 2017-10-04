@@ -21,6 +21,7 @@ package io.vertigo.dynamo.domain.metamodel;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.Optional;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.DataStream;
@@ -81,12 +82,18 @@ public enum DataType {
 		}
 	}
 
+	/**
+	 * @return if the dataType talks about a date
+	 */
 	public boolean isAboutDate() {
 		return this == DataType.Date
 				|| this == DataType.LocalDate
 				|| this == DataType.ZonedDateTime;
 	}
 
+	/**
+	 * @return if the dataType is a number
+	 */
 	public boolean isNumber() {
 		return this == DataType.Double
 				|| this == DataType.BigDecimal
@@ -97,7 +104,45 @@ public enum DataType {
 	/**
 	 * @return Classe java encapsulé/wrappée par le type
 	 */
-	Class<?> getJavaClass() {
+	public Class<?> getJavaClass() {
 		return javaClass;
+	}
+
+	/**
+	 * Finds the dataType bound to a class
+	 * @param type
+	 * @return
+	 */
+	public static Optional<DataType> of(final Class type) {
+		Assertion.checkNotNull(type);
+		//---
+		DataType dataType;
+		if (Integer.class.equals(type)) {
+			dataType = DataType.Integer;
+		} else if (Double.class.equals(type)) {
+			dataType = DataType.Double;
+		} else if (Boolean.class.equals(type)) {
+			dataType = DataType.Boolean;
+		} else if (String.class.equals(type)) {
+			dataType = DataType.String;
+		} else if (Date.class.equals(type)) {
+			dataType = DataType.Date;
+		} else if (LocalDate.class.equals(type)) {
+			dataType = DataType.LocalDate;
+		} else if (ZonedDateTime.class.equals(type)) {
+			dataType = DataType.ZonedDateTime;
+		} else if (java.math.BigDecimal.class.equals(type)) {
+			dataType = DataType.BigDecimal;
+		} else if (Long.class.equals(type)) {
+			dataType = DataType.Long;
+		} else if (Long.class.equals(type)) {
+			dataType = DataType.Long;
+		} else if (DataStream.class.equals(type)) {
+			dataType = DataType.DataStream;
+		} else {
+			//not a well known dataType
+			dataType = null;
+		}
+		return Optional.ofNullable(dataType);
 	}
 }

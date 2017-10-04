@@ -26,6 +26,7 @@ import io.vertigo.dynamo.collections.CollectionsManagerTest;
 import io.vertigo.dynamo.collections.FacetManagerTest;
 import io.vertigo.dynamo.criteria.predicate.PredicateCriteriaTest;
 import io.vertigo.dynamo.criteria.sql.SqlCriteriaTest;
+import io.vertigo.dynamo.domain.DataTypeTest;
 import io.vertigo.dynamo.domain.constraint.ConstraintTest;
 import io.vertigo.dynamo.domain.formatter.BooleanFormatterTest;
 import io.vertigo.dynamo.domain.formatter.DateFormatterTest;
@@ -78,6 +79,7 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		CollectionsManagerTest.class,
 		FacetManagerTest.class,
 		//--domain
+		DataTypeTest.class,
 		ConstraintTest.class,
 		BooleanFormatterTest.class,
 		DateFormatterTest.class,
