@@ -109,9 +109,9 @@ public enum DataType {
 	}
 
 	/**
-	 * Finds the dataType bound to a class
+	 * Finds the dataType bound to a class.
 	 * @param type
-	 * @return
+	 * @return Optional DataType of this Class
 	 */
 	public static Optional<DataType> of(final Class type) {
 		Assertion.checkNotNull(type);
