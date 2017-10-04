@@ -32,7 +32,7 @@ import io.vertigo.lang.Assertion;
  *
  * A component is defined by
  *  - an id.
- *  -- proxy or pure component -no proxy-
+ *  - proxy or pure component -no proxy-
  *  - a implemenation class (empty if proxy, required if not proxy)
  *  - an optional api class. (required if proxy)
  *  - a map of params

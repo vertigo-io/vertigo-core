@@ -32,7 +32,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
-import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -82,7 +81,7 @@ final class ScriptPreProcessor {
 				// Pour les types liste
 				clazz = DtList.class;
 			} else if (domain.isDtObject()) {
-				clazz = ClassUtil.classForName(domain.getDtDefinition().getClassCanonicalName());
+				clazz = domain.getJavaClass();
 			} else {
 				throw new VSystemException("Type de paramètre non géré {0} : {1}", taskAttribute.getName(), domain.getName());
 			}
