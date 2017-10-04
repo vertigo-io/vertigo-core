@@ -246,6 +246,17 @@ public final class ClassUtilTest {
 		assertEquals(Map.class, ClassUtil.getGeneric(field));
 	}
 
+	public List<String> getWords() {
+		return null;
+	}
+
+	@Test
+	public void testGenericReturn() throws NoSuchMethodException, SecurityException {
+		assertEquals(String.class, ClassUtil.getGeneric(
+				this.getClass().getMethod("getWords").getGenericReturnType(),
+				() -> new IllegalStateException()));
+	}
+
 	@Test
 	public void testGenericWithError() throws SecurityException {
 		assertThrows(Exception.class, (() -> {
