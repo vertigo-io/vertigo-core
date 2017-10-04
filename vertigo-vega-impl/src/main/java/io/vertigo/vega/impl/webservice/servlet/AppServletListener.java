@@ -18,7 +18,8 @@
  */
 package io.vertigo.vega.impl.webservice.servlet;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Implémentation du listener des événements produits par la servlet.
@@ -29,7 +30,7 @@ final class AppServletListener {
 	/**
 	 * Mécanisme de log racine
 	 */
-	private static final Logger LOGGER = Logger.getRootLogger();
+	private static final Logger LOGGER = LogManager.getRootLogger();
 
 	/**
 	 * Evénement remonté lors du démarrage de la servlet.

@@ -28,7 +28,8 @@ import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.http.Part;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.file.FileManager;
@@ -45,7 +46,7 @@ import spark.Response;
  */
 final class VFileUtil {
 
-	private static final Logger LOG = Logger.getLogger(VFileUtil.class);
+	private static final Logger LOG = LogManager.getLogger(VFileUtil.class);
 	private static final String NOT_ALLOWED_IN_FILENAME = "\\/:*?\"<>|;";
 
 	private VFileUtil() {

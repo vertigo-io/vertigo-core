@@ -23,7 +23,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import com.google.gson.JsonObject;
 
@@ -78,7 +78,7 @@ public final class SmartLoggerAnalyticsConnectorPlugin implements AnalyticsConne
 			}
 		}
 
-		final Logger logger = Logger.getLogger(process.getCategory());
+		final Logger logger = LogManager.getLogger(process.getCategory());
 		if (process.getDurationMillis() > durationThreshold) {
 			logger.error(jsonObject.toString());
 		} else if (logger.isInfoEnabled()) {

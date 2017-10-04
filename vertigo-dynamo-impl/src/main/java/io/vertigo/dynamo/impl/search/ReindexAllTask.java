@@ -20,7 +20,8 @@ package io.vertigo.dynamo.impl.search;
 
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -41,7 +42,7 @@ import io.vertigo.util.ClassUtil;
  * @param <S> KeyConcept type
  */
 final class ReindexAllTask<S extends KeyConcept> implements Runnable {
-	private static final Logger LOGGER = Logger.getLogger(ReindexAllTask.class);
+	private static final Logger LOGGER = LogManager.getLogger(ReindexAllTask.class);
 	private static volatile boolean REINDEXATION_IN_PROGRESS;
 	private static volatile long REINDEX_COUNT;
 	private final WritableFuture<Long> reindexFuture;

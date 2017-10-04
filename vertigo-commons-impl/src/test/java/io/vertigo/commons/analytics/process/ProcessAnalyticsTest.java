@@ -20,7 +20,7 @@ package io.vertigo.commons.analytics.process;
 
 import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -43,7 +43,7 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU4 {
 	private static final String TEST_CATEGORY = "test";
 
 	/** Logger. */
-	private final Logger log = Logger.getLogger(getClass());
+	private final Logger log = LogManager.getLogger(getClass());
 
 	@Inject
 	private AnalyticsManager analyticsManager;

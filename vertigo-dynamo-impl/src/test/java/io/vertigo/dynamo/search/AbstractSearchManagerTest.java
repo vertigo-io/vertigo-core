@@ -36,7 +36,8 @@ import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -70,7 +71,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	private static final SelectedFacetValues EMPTY_SELECTED_FACET_VALUES = SelectedFacetValues.empty().build();
 
 	/** Logger. */
-	private final Logger log = Logger.getLogger(getClass());
+	private final Logger log = LogManager.getLogger(getClass());
 
 	/** Manager de recherche. */
 	@Inject

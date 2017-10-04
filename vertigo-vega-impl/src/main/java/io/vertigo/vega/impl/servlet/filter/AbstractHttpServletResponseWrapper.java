@@ -25,7 +25,7 @@ import java.io.PrintWriter;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Implémentation de HttpServletResponseWrapper pour éviter warnings à la compilation.
@@ -60,7 +60,7 @@ public abstract class AbstractHttpServletResponseWrapper extends javax.servlet.h
 				stream.close();
 			}
 		} catch (final IOException e) {
-			Logger.getRootLogger().trace(e.getMessage(), e);
+			LogManager.getRootLogger().trace(e.getMessage(), e);
 			//ignore IOException : streams are already send
 		}
 	}

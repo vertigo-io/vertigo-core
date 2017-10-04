@@ -23,7 +23,8 @@ package io.vertigo.dynamo.plugins.store.filestore.fs;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.commons.transaction.VTransactionAfterCompletionFunction;
 import io.vertigo.lang.Assertion;
@@ -35,7 +36,7 @@ import io.vertigo.lang.VSystemException;
  * @author skerdudou
  */
 final class FileActionDelete implements VTransactionAfterCompletionFunction {
-	private static final Logger LOG = Logger.getLogger(FileActionDelete.class.getName());
+	private static final Logger LOG = LogManager.getLogger(FileActionDelete.class.getName());
 
 	private final File file;
 

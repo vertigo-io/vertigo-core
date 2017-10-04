@@ -21,7 +21,8 @@ package io.vertigo.vega.plugins.webservice.handler;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.JsonSyntaxException;
 
@@ -47,7 +48,7 @@ public final class ExceptionWebServiceHandlerPlugin implements WebServiceHandler
 
 	private static final int SC_UNPROCESSABLE_ENTITY = 422; //server understands the content syntaxe but not semanticly
 	private static final int SC_TOO_MANY_REQUEST = 429; //RFC 6585 : TooManyRequest in time window
-	private static final Logger LOGGER = Logger.getLogger(ExceptionWebServiceHandlerPlugin.class);
+	private static final Logger LOGGER = LogManager.getLogger(ExceptionWebServiceHandlerPlugin.class);
 	private final JsonEngine jsonWriterEngine;
 
 	/**

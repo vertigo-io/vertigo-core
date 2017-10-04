@@ -165,6 +165,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 	@Override
 	protected void doTearDown() throws Exception {
+		Thread.sleep(10000);
 		cleanDb();
 	}
 

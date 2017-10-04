@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.impl.transaction.listener;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 /**
  * This class is the standard implementation.
@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
 public final class VTransactionListenerImpl implements VTransactionListener {
 	private static final String MS = " ms)";
 
-	private static final Logger LOGGER = Logger.getLogger("transaction");
+	private static final Logger LOGGER = LogManager.getLogger("transaction");
 
 	/** {@inheritDoc} */
 	@Override

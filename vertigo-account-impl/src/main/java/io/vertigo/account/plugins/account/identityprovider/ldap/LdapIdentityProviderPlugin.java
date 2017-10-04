@@ -43,7 +43,7 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import io.vertigo.account.impl.account.AccountMapperHelper;
 import io.vertigo.account.impl.account.AccountProviderPlugin;
@@ -69,7 +69,7 @@ public final class LdapIdentityProviderPlugin implements AccountProviderPlugin, 
 	private static final String LDAP_PHOTO_MIME_TYPE = "image/jpeg";
 	private static final String PHOTO_RESERVED_FIELD = "photo";
 
-	private static final Logger LOGGER = Logger.getLogger(LdapIdentityProviderPlugin.class);
+	private static final Logger LOGGER = LogManager.getLogger(LdapIdentityProviderPlugin.class);
 
 	private static final String DEFAULT_CONTEXT_FACTORY_CLASS_NAME = "com.sun.jndi.ldap.LdapCtxFactory";
 	private static final String SIMPLE_AUTHENTICATION_MECHANISM_NAME = "simple";

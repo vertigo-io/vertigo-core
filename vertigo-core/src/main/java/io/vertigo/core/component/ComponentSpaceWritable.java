@@ -25,7 +25,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
@@ -48,7 +49,7 @@ import io.vertigo.util.StringUtil;
  */
 public final class ComponentSpaceWritable implements ComponentSpace, Activeable {
 
-	private static final Logger LOGGER = Logger.getLogger(ComponentSpaceWritable.class);
+	private static final Logger LOGGER = LogManager.getLogger(ComponentSpaceWritable.class);
 	/**
 	 * Components (sorted by creation)
 	 */
