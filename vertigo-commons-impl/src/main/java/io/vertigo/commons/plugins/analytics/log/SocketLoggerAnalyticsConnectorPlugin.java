@@ -53,7 +53,7 @@ import io.vertigo.lang.Assertion;
  */
 public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin {
 	private static final Gson GSON = new GsonBuilder().create();
-	private static final int DEFAULT_SERVER_PORT = 4560;// DefaultPort of SocketAppender
+	private static final int DEFAULT_SERVER_PORT = 4562;// DefaultPort of SocketAppender 4650 for log4j and 4562 for log4j2
 
 	private Logger socketLogger;
 	private Logger socketHealthLogger;
