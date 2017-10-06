@@ -25,7 +25,7 @@ import java.util.List;
 import io.vertigo.core.component.Component;
 import io.vertigo.core.component.Plugin;
 import io.vertigo.core.component.aop.Aspect;
-import io.vertigo.core.component.proxy.Proxy;
+import io.vertigo.core.component.proxy.ProxyMethod;
 import io.vertigo.core.definition.DefinitionProvider;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
@@ -47,7 +47,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
 	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
-	private final List<ProxyConfig> myProxyConfigs = new ArrayList<>();
+	private final List<ProxyMethodConfig> myProxyMethodConfigs = new ArrayList<>();
 	private final List<DefinitionProviderConfig> myDefinitionProviderConfigs = new ArrayList<>();
 
 	/**
@@ -72,12 +72,12 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	 * Adds a proxy factory.
-	 * @param proxyClass the proxy class
+	 * Adds a proxy method.
+	 * @param proxyMethodClass the proxy method class
 	 * @return this builder
 	 */
-	public ModuleConfigBuilder addProxy(final Class<? extends Proxy> proxyClass) {
-		myProxyConfigs.add(new ProxyConfig(proxyClass));
+	public ModuleConfigBuilder addMethodProxy(final Class<? extends ProxyMethod> proxyMethodClass) {
+		myProxyMethodConfigs.add(new ProxyMethodConfig(proxyMethodClass));
 		return this;
 	}
 
@@ -207,7 +207,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 				myComponentConfigs,
 				myPluginConfigs,
 				myAspectConfigs,
-				myProxyConfigs);
+				myProxyMethodConfigs);
 	}
 
 }

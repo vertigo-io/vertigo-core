@@ -16,36 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.app.config;
+package io.vertigo.core.component.proxy;
 
-import io.vertigo.core.component.proxy.Proxy;
-import io.vertigo.lang.Assertion;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * The ProxyConfig class defines the way to create a new proxy on an interface.
- *
- * this class is composed of
- *  - an interface identified by an annotation
- *  - an factory that creates the proxy
- *
+ * Marks a method to be proxied by a simple annotation
+ * This method can only be used on method
+ * and must be used on each method of a proxy.
  * @author pchretien
  */
-public final class ProxyConfig {
-	private final Class<? extends Proxy> proxyClass;
-
-	/**
-	 * Constructor.
-	 */
-	ProxyConfig(final Class<? extends Proxy> proxyClass) {
-		Assertion.checkNotNull(proxyClass);
-		//-----
-		this.proxyClass = proxyClass;
-	}
-
-	/**
-	 * @return the proxy class
-	 */
-	public Class<? extends Proxy> getProxyClass() {
-		return proxyClass;
-	}
+@Target({ ElementType.ANNOTATION_TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ProxyMethodAnnotation {
+	//
 }

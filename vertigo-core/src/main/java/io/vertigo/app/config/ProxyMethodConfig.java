@@ -16,21 +16,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.component.proxy;
+package io.vertigo.app.config;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import io.vertigo.core.component.proxy.ProxyMethod;
+import io.vertigo.lang.Assertion;
 
 /**
- * Marks a proxy by a simple annotation
- * This method can only be used on method
- * and must be used on each method of a proxy.
+ * The ProxyMethodConfig class defines the way to create a new proxy on an interface using small proxy methods.
+ *
+ * this class is composed of
+ *  - an interface identified by an annotation
+ *  - a proxy method used to build a dynamic the proxy
+ *
  * @author pchretien
  */
-@Target({ ElementType.ANNOTATION_TYPE })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ProxyAnnotation {
-	//
+public final class ProxyMethodConfig {
+	private final Class<? extends ProxyMethod> proxyMethodClass;
+
+	/**
+	 * Constructor.
+	 */
+	ProxyMethodConfig(final Class<? extends ProxyMethod> proxyMethodClass) {
+		Assertion.checkNotNull(proxyMethodClass);
+		//-----
+		this.proxyMethodClass = proxyMethodClass;
+	}
+
+	/**
+	 * @return the proxy method class
+	 */
+	public Class<? extends ProxyMethod> getProxyMethodClass() {
+		return proxyMethodClass;
+	}
 }

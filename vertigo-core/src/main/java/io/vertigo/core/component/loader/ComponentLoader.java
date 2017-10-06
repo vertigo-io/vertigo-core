@@ -25,11 +25,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import io.vertigo.app.config.AspectConfig;
 import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.ProxyMethodConfig;
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.Component;
 import io.vertigo.core.component.ComponentSpaceWritable;
@@ -38,6 +38,7 @@ import io.vertigo.core.component.Plugin;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.core.component.di.reactor.DIReactor;
+import io.vertigo.core.component.proxy.ProxyMethod;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
@@ -50,6 +51,9 @@ public final class ComponentLoader {
 	private final AopPlugin aopPlugin;
 	/** Aspects.*/
 	private final List<Aspect> aspects = new ArrayList<>();
+
+	/** Proxies.*/
+	private final List<ProxyMethod> proxyMethods = new ArrayList<>();
 	private final ComponentSpaceWritable componentSpace;
 
 	/**
@@ -70,43 +74,54 @@ public final class ComponentLoader {
 	 * @param paramManagerOpt optional paramManager
 	 * @param moduleConfigs the config of the module to add.
 	 */
-	public void injectAllComponentsAndAspects(final Optional<ParamManager> paramManagerOpt, final List<ModuleConfig> moduleConfigs) {
+	public void registerAllComponentsAndAspects(final Optional<ParamManager> paramManagerOpt, final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
-			injectComponents(paramManagerOpt, moduleConfig.getName(), moduleConfig.getComponentConfigs());
-			injectAspects(moduleConfig.getAspectConfigs());
+			registerComponents(paramManagerOpt,
+					moduleConfig.getName(),
+					moduleConfig.getComponentConfigs());
+			registerAspects(moduleConfig.getAspectConfigs());
+			registerProxyMethods(moduleConfig.getProxyConfigs());
 		}
 	}
 
 	/**
-	 * Adds all the components defined by theur configs.
+	 * registers all the components defined by their configs.
 	 * @param paramManagerOpt the optional manager of params
 	 * @param moduleName the name of the module
 	 * @param componentConfigs the configs of the components
 	 */
-	public void injectComponents(final Optional<ParamManager> paramManagerOpt, final String moduleName, final List<ComponentConfig> componentConfigs) {
+	public void registerComponents(final Optional<ParamManager> paramManagerOpt, final String moduleName, final List<ComponentConfig> componentConfigs) {
 		Assertion.checkNotNull(componentSpace);
 		Assertion.checkNotNull(paramManagerOpt);
 		Assertion.checkNotNull(moduleName);
 		Assertion.checkNotNull(componentConfigs);
-		//---
+		//---- Proxies----
+		componentConfigs
+				.stream()
+				.filter(componentConfig -> componentConfig.isProxy())
+				.forEach(componentConfig -> {
+					final Component component = createProxyWithOptions(/*paramManagerOpt,*/ componentConfig);
+					componentSpace.registerComponent(componentConfig.getId(), component);
+				});
+
+		//---- No proxy----
 		final DIReactor reactor = new DIReactor();
 		//0; On ajoute la liste des ids qui sont déjà résolus.
 		for (final String id : componentSpace.keySet()) {
 			reactor.addParent(id);
 		}
-
 		//Map des composants définis par leur id
 		final Map<String, ComponentConfig> componentConfigById = componentConfigs
 				.stream()
+				.filter(componentConfig -> !componentConfig.isProxy())
 				.peek(componentConfig -> reactor.addComponent(componentConfig.getId(), componentConfig.getImplClass(), componentConfig.getParams().keySet()))
 				.collect(Collectors.toMap(ComponentConfig::getId, Function.identity()));
 
 		//Comment trouver des plugins orphenlins ?
 
 		final List<String> ids = reactor.proceed();
-
 		//On a récupéré la liste ordonnée des ids.
 		//On positionne un proxy pour compter les plugins non utilisés
 		final ComponentProxyContainer componentProxyContainer = new ComponentProxyContainer(componentSpace);
@@ -122,10 +137,10 @@ public final class ComponentLoader {
 			}
 		}
 
-		//---
 		//--Search for unuseds plugins
 		final List<String> unusedPluginIds = componentConfigs
 				.stream()
+				.filter(componentConfig -> !componentConfig.isProxy())
 				.filter(componentConfig -> Plugin.class.isAssignableFrom(componentConfig.getImplClass()))
 				//only plugins are considered
 				.map(ComponentConfig::getId)
@@ -138,23 +153,19 @@ public final class ComponentLoader {
 		}
 	}
 
-	private void injectAspects(final List<AspectConfig> aspectConfigs) {
-		//. On enrichit la liste des aspects
-		findAspects(componentSpace, aspectConfigs)
+	private void registerAspects(final List<AspectConfig> aspectConfigs) {
+		//. We build then register all the aspects
+		aspectConfigs
+				.stream()
+				.map(aspectConfig -> createAspect(componentSpace, aspectConfig))
 				.forEach(this::registerAspect);
 	}
 
-	/**
-	 * Find all aspects declared inside a module
-	 * @param aspectConfigs the list of all aspects inside the module
-	 * @return aspects (and its config)
-	 */
-	private static Stream<Aspect> findAspects(final Container container, final List<AspectConfig> aspectConfigs) {
-		Assertion.checkNotNull(aspectConfigs);
-		//-----
-		return aspectConfigs
+	private void registerProxyMethods(final List<ProxyMethodConfig> proxyMethodConfigs) {
+		proxyMethodConfigs
 				.stream()
-				.map(aspectConfig -> createAspect(container, aspectConfig));
+				.map(proxyMethodConfig -> createProxyMethod(componentSpace, proxyMethodConfig))
+				.forEach(this::registerProxyMethod);
 	}
 
 	private static Aspect createAspect(final Container container, final AspectConfig aspectConfig) {
@@ -165,12 +176,28 @@ public final class ComponentLoader {
 		return aspect;
 	}
 
+	private static ProxyMethod createProxyMethod(final Container container, final ProxyMethodConfig proxyMethodConfig) {
+		// création de l'instance du composant
+		final ProxyMethod proxyMethod = DIInjector.newInstance(proxyMethodConfig.getProxyMethodClass(), container);
+		//---
+		Assertion.checkNotNull(proxyMethod.getAnnotationType());
+		return proxyMethod;
+	}
+
 	private void registerAspect(final Aspect aspect) {
 		Assertion.checkNotNull(aspect);
 		Assertion.checkArgument(aspects.stream().noneMatch(a -> a.getClass().equals(aspect.getClass())), "aspect {0} already registered with the same class", aspect.getClass());
 		Assertion.checkArgument(aspects.stream().noneMatch(a -> a.getAnnotationType().equals(aspect.getAnnotationType())), "aspect {0} already registered with the same annotation", aspect.getClass());
 		//-----
 		aspects.add(aspect);
+	}
+
+	private void registerProxyMethod(final ProxyMethod proxyMethod) {
+		Assertion.checkNotNull(proxyMethod);
+		Assertion.checkArgument(proxyMethods.stream().noneMatch(a -> a.getClass().equals(proxyMethod.getClass())), "proxy {0} already registered with the same class", proxyMethod.getClass());
+		Assertion.checkArgument(proxyMethods.stream().noneMatch(p -> p.getAnnotationType().equals(proxyMethod.getAnnotationType())), "proxy {0} already registered with the same annotation", proxyMethod.getClass());
+		//-----
+		proxyMethods.add(proxyMethod);
 	}
 
 	private <C extends Component> C injectAspects(final C instance, final Class implClass) {
@@ -194,11 +221,24 @@ public final class ComponentLoader {
 			final Optional<ParamManager> paramManagerOpt,
 			final ComponentProxyContainer componentContainer,
 			final ComponentConfig componentConfig) {
+		Assertion.checkArgument(!componentConfig.isProxy(), "a no-proxy component is expected");
+		//---
 		// 1. An instance is created
 		final Component instance = createInstance(componentContainer, paramManagerOpt, componentConfig);
 
 		//2. AOP , a new instance is created when aspects are injected in the previous instance
 		return injectAspects(instance, componentConfig.getImplClass());
+	}
+
+	private Component createProxyWithOptions(
+			//	final Optional<ParamManager> paramManagerOpt,
+			final ComponentConfig componentConfig) {
+		Assertion.checkArgument(componentConfig.isProxy(), "a proxy component is expected");
+		//---
+		// 1. An instance is created
+		final Component instance = ComponentProxyFactory.createProxy(componentConfig.getApiClass().get(), proxyMethods);
+		//2. AOP , a new instance is created when aspects are injected in the previous instance
+		return injectAspects(instance, componentConfig.getApiClass().get());
 	}
 
 	/**
@@ -224,5 +264,4 @@ public final class ComponentLoader {
 		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in component '{1}'", paramsContainer.getUnusedKeys(), clazz);
 		return component;
 	}
-
 }

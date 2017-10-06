@@ -20,9 +20,6 @@ package io.vertigo.core.component.proxy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-
-import io.vertigo.lang.Assertion;
 
 /**
  * Marks a method to be proxied a simple annotation
@@ -30,36 +27,14 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  * @param <A> the type of annotation used to mark the methods
  */
-public interface Proxy<A extends Annotation> {
-
-	/**
-	 * Find the annotation (one and only one)
-	 * @param method the method
-	 * @return the annotation
-	 */
-	default A findProxyAnnotation(final Method method) {
-		Assertion.checkNotNull(method);
-		//---
-		//We seek all annotations annotated by @ProxyAnnotation
-		//There must be one and only one
-		final Annotation annotation = Arrays.stream(method.getAnnotations())
-				.filter(a -> a.annotationType().isAnnotationPresent(ProxyAnnotation.class))
-				.findFirst()
-				.orElseThrow(() -> new IllegalStateException("No way to find a proxy annotaion on method : " + method));
-
-		if (annotation.annotationType().equals(getAnnotationType())) {
-			return (A) annotation;
-		}
-		throw new IllegalStateException("unknown type of annotation on method" + method);
-	}
-
+public interface ProxyMethod<A extends Annotation> {
 	/**
 	 * Executes the methods with args as a function
 	 * @param method the method
 	 * @param args the args
 	 * @return the result
 	 */
-	Object invoke(final Method method, final Object[] args);
+	Object invoke(final A annotation, final Method method, final Object[] args);
 
 	/**
 	* @return the annotation that must be used to mark the methods

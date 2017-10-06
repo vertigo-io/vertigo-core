@@ -41,7 +41,7 @@ public final class ModuleConfig {
 	private final List<ComponentConfig> components;
 	private final List<PluginConfig> plugins;
 	private final List<AspectConfig> aspects;
-	private final List<ProxyConfig> proxies;
+	private final List<ProxyMethodConfig> proxies;
 
 	ModuleConfig(
 			final String name,
@@ -49,7 +49,7 @@ public final class ModuleConfig {
 			final List<ComponentConfig> componentConfigs,
 			final List<PluginConfig> pluginConfigs,
 			final List<AspectConfig> aspectConfigs,
-			final List<ProxyConfig> proxies) {
+			final List<ProxyMethodConfig> proxies) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(definitionProviderConfigs);
 		Assertion.checkNotNull(componentConfigs);
@@ -98,7 +98,7 @@ public final class ModuleConfig {
 	/**
 	 * @return the list of the proxy configs
 	 */
-	public List<ProxyConfig> getProxyConfigs() {
+	public List<ProxyMethodConfig> getProxyConfigs() {
 		return proxies;
 	}
 
