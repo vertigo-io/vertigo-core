@@ -235,10 +235,14 @@ public final class ComponentLoader {
 			final ComponentConfig componentConfig) {
 		Assertion.checkArgument(componentConfig.isProxy(), "a proxy component is expected");
 		//---
-		// 1. An instance is created
-		final Component instance = ComponentProxyFactory.createProxy(componentConfig.getApiClass().get(), proxyMethods);
-		//2. AOP , a new instance is created when aspects are injected in the previous instance
-		return injectAspects(instance, componentConfig.getApiClass().get());
+		//1. AOP : finds all aspects
+		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig.getApiClass().get(), aspects);
+
+		// 2. An instance is created and all aspects are injected
+		return ComponentProxyFactory.createProxy(
+				componentConfig.getApiClass().get(),
+				proxyMethods,
+				joinPoints);
 	}
 
 	/**
