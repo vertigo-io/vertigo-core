@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store.datastore.sql.vendor;
+package io.vertigo.dynamo.store.datastore.sql.vendor.oracle;
 
 import java.util.List;
 
