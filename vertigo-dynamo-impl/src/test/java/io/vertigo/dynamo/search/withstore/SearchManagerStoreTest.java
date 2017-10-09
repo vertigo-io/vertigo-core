@@ -84,7 +84,6 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		remove("*:*");
 
 		final CarDataBase carDataBase = new CarDataBase();
-		carDataBase.loadDatas();
 		initialDbCarSize = carDataBase.size();
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			for (final Car car : carDataBase.getAllCars()) {

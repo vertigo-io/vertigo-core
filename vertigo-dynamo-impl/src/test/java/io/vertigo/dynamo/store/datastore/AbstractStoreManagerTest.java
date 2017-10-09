@@ -84,10 +84,11 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	private DtListURI allCarsUri;
 
 	private DAO<Famille, Integer> familleDAO;
-	private long initialDbCarSize = 0;
+	private CarDataBase carDataBase;
 
 	@Override
 	protected void doSetUp() throws Exception {
+		carDataBase = new CarDataBase();
 		dtDefinitionFamille = DtObjectUtil.findDtDefinition(Famille.class);
 		familleDAO = new DAO<>(Famille.class, storeManager, taskManager);
 
@@ -106,8 +107,6 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 				"TK_INIT_MAIN",
 				Optional.empty());
 
-		final CarDataBase carDataBase = new CarDataBase();
-		initialDbCarSize = carDataBase.size();
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			for (final Car car : carDataBase.getAllCars()) {
 				car.setId(null);
@@ -736,13 +735,13 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	private void checkNativeCarsCount(final int deltaCount) {
 		final DtList<Car> cars = nativeLoadCarList();
 		Assert.assertNotNull(cars);
-		Assert.assertEquals("Test du nombre de voiture", initialDbCarSize + deltaCount, cars.size());
+		Assert.assertEquals("Test du nombre de voiture", carDataBase.size() + deltaCount, cars.size());
 	}
 
 	private void checkCrudCarsCount(final int deltaCount) {
 		final DtList<Car> cars = storeManager.getDataStore().findAll(allCarsUri);
 		Assert.assertNotNull(cars);
-		Assert.assertEquals("Test du nombre de voiture", initialDbCarSize + deltaCount, cars.size());
+		Assert.assertEquals("Test du nombre de voiture", carDataBase.size() + deltaCount, cars.size());
 	}
 
 	private static Car createNewCar() {

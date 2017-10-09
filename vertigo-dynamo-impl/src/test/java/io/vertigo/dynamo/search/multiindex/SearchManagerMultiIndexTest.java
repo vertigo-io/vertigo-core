@@ -53,7 +53,6 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 	@Override
 	protected void doSetUp() {
 		carDataBase = new CarDataBase();
-		carDataBase.loadDatas();
 	}
 
 	/**

@@ -21,8 +21,6 @@ package io.vertigo.dynamo.store.data.domain.car;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.util.VCollectors;
@@ -88,23 +86,5 @@ public final class CarDataBase {
 	public final DtList<Car> getAllCars() {
 		return cars.stream()
 				.collect(VCollectors.toDtList(Car.class));
-	}
-
-	public List<Car> getCarsByMaker(final String make) {
-		return cars.stream()
-				.filter(car -> car.getMake().toLowerCase(Locale.FRENCH).equals(make))
-				.collect(Collectors.toList());
-	}
-
-	public long getCarsBefore(final int year) {
-		return cars.stream()
-				.filter(car -> car.getYear() <= year)
-				.count();
-	}
-
-	public long containsDescription(final String word) {
-		return cars.stream()
-				.filter(car -> car.getDescription().toLowerCase(Locale.FRENCH).contains(word))
-				.count();
 	}
 }

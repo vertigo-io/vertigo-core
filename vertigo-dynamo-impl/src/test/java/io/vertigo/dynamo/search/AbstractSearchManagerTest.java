@@ -93,7 +93,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		//On construit la BDD des voitures
 		carDataBase = new CarDataBase();
-		carDataBase.loadDatas();
 		final CarSearchLoader carSearchLoader = getApp().getComponentSpace().resolve(CarSearchLoader.class);
 		carSearchLoader.bindDataBase(carDataBase);
 

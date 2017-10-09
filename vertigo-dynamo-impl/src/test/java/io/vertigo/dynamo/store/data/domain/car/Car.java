@@ -33,7 +33,16 @@ import io.vertigo.lang.VSystemException;
 @javax.persistence.Table(name = "CAR")
 public final class Car implements KeyConcept {
 	public enum CarFields implements DtFieldName {
-		ID, MAKE, MODEL, DESCRIPTION, YEAR, KILO, PRICE, CONSOMMATION, MTY_CD, FAM_ID
+		ID,
+		MAKE,
+		MODEL,
+		DESCRIPTION,
+		YEAR,
+		KILO,
+		PRICE,
+		CONSOMMATION,
+		MTY_CD,
+		FAM_ID
 	}
 
 	/** SerialVersionUID. */
