@@ -25,20 +25,18 @@ import java.lang.reflect.Method;
  * Marks a method to be proxied a simple annotation
  *
  * @author pchretien
- * @param <A> the type of annotation used to mark the methods
  */
-public interface ProxyMethod<A extends Annotation> {
+public interface ProxyMethod {
 	/**
 	 * Executes the methods with args as a function
 	 * @param method the method
 	 * @param args the args
 	 * @return the result
 	 */
-	Object invoke(final A annotation, final Method method, final Object[] args);
+	Object invoke(final Method method, final Object[] args);
 
 	/**
 	* @return the annotation that must be used to mark the methods
 	*/
-	Class<A> getAnnotationType();
-
+	Class<? extends Annotation> getAnnotationType();
 }

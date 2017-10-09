@@ -14,8 +14,6 @@ import io.vertigo.core.component.aop.AspectMethodInvocation;
 import io.vertigo.core.component.proxy.ProxyMethod;
 import io.vertigo.core.component.proxy.ProxyMethodAnnotation;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Tuples;
-import io.vertigo.lang.Tuples.Tuple2;
 
 final class ComponentProxyFactory {
 	static <C extends Component> C createProxy(
@@ -35,19 +33,19 @@ final class ComponentProxyFactory {
 	}
 
 	private static final class MyInvocationHandler implements InvocationHandler {
-		private final Map<Method, Tuple2<ProxyMethod, Annotation>> tuples;
-		private final Map<Method, List<Aspect>> joinPoints;
+		private final Map<Method, ProxyMethod> proxyMethodsByMethod;
+		private final Map<Method, List<Aspect>> aspectsByMethod;
 
 		MyInvocationHandler(
 				final Class<? extends Component> intf,
 				final List<ProxyMethod> proxyMethods,
-				final Map<Method, List<Aspect>> joinPoints) {
+				final Map<Method, List<Aspect>> aspectsByMethod) {
 			Assertion.checkNotNull(proxyMethods);
 			//---
-			tuples = Arrays.stream(intf.getDeclaredMethods())
+			proxyMethodsByMethod = Arrays.stream(intf.getDeclaredMethods())
 					.collect(Collectors.toMap(method -> method,
-							method -> findTuple(method, proxyMethods)));
-			this.joinPoints = joinPoints;
+							method -> findProxyMethod(method, proxyMethods)));
+			this.aspectsByMethod = aspectsByMethod;
 		}
 
 		@Override
@@ -59,13 +57,13 @@ final class ComponentProxyFactory {
 			Assertion.checkNotNull(method);
 			//---
 			return new MyMethodInvocation(method,
-					joinPoints.get(method),
-					tuples.get(method))
+					aspectsByMethod.get(method),
+					proxyMethodsByMethod.get(method))
 							.proceed(args);
 		}
 	}
 
-	private static Tuples.Tuple2<ProxyMethod, Annotation> findTuple(
+	private static ProxyMethod findProxyMethod(
 			final Method method,
 			final List<ProxyMethod> proxyMethods) {
 		final Annotation annotation = Arrays.stream(method.getAnnotations())
@@ -79,26 +77,26 @@ final class ComponentProxyFactory {
 				.findFirst()
 				.orElseThrow(() -> new IllegalStateException("No way to find a proxy annotation on method : " + method));
 
-		return Tuples.of(proxyMethod, annotation);
+		return proxyMethod;
 	}
 
 	private static final class MyMethodInvocation implements AspectMethodInvocation {
 		private final List<Aspect> aspects;
 		private final Method method;
 		private int index;
-		private final Tuple2<ProxyMethod, Annotation> tuple;
+		private final ProxyMethod proxyMethod;
 
 		private MyMethodInvocation(
 				final Method method,
 				final List<Aspect> aspects,
-				final Tuple2<ProxyMethod, Annotation> tuple) {
+				final ProxyMethod proxyMethod) {
 			Assertion.checkNotNull(method);
 			Assertion.checkNotNull(aspects);
-			Assertion.checkNotNull(tuple);
+			Assertion.checkNotNull(proxyMethod);
 			//-----
 			this.method = method;
 			this.aspects = aspects;
-			this.tuple = tuple;
+			this.proxyMethod = proxyMethod;
 		}
 
 		/** {@inheritDoc} */
@@ -107,7 +105,7 @@ final class ComponentProxyFactory {
 			if (index < aspects.size()) {
 				return aspects.get(index++).invoke(args, this);
 			}
-			return tuple.getVal1().invoke(tuple.getVal2(), method, args);
+			return proxyMethod.invoke(method, args);
 		}
 
 		@Override
