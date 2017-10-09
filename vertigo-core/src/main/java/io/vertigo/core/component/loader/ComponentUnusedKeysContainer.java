@@ -29,11 +29,11 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-final class ComponentProxyContainer implements Container {
+final class ComponentUnusedKeysContainer implements Container {
 	private final Container container;
 	private final Set<String> usedKeys = new HashSet<>();
 
-	ComponentProxyContainer(final Container container) {
+	ComponentUnusedKeysContainer(final Container container) {
 		Assertion.checkNotNull(container);
 		//-----
 		this.container = container;

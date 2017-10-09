@@ -82,7 +82,7 @@ public final class ComponentLoader {
 					moduleConfig.getName(),
 					moduleConfig.getComponentConfigs());
 			registerAspects(moduleConfig.getAspectConfigs());
-			registerProxyMethods(moduleConfig.getProxyConfigs());
+			registerProxyMethods(moduleConfig.getProxyMethodConfigs());
 		}
 	}
 
@@ -124,7 +124,7 @@ public final class ComponentLoader {
 		final List<String> ids = reactor.proceed();
 		//On a récupéré la liste ordonnée des ids.
 		//On positionne un proxy pour compter les plugins non utilisés
-		final ComponentProxyContainer componentProxyContainer = new ComponentProxyContainer(componentSpace);
+		final ComponentUnusedKeysContainer componentProxyContainer = new ComponentUnusedKeysContainer(componentSpace);
 
 		for (final String id : ids) {
 			if (componentConfigById.containsKey(id)) {
@@ -219,7 +219,7 @@ public final class ComponentLoader {
 	//ici
 	private Component createComponentWithOptions(
 			final Optional<ParamManager> paramManagerOpt,
-			final ComponentProxyContainer componentContainer,
+			final ComponentUnusedKeysContainer componentContainer,
 			final ComponentConfig componentConfig) {
 		Assertion.checkArgument(!componentConfig.isProxy(), "a no-proxy component is expected");
 		//---
