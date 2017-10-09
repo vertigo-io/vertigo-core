@@ -39,7 +39,6 @@ import io.vertigo.util.StringUtil;
  * @author mlaroche
  */
 public final class SqlStatementBuilder implements Builder<SqlStatement> {
-
 	private static final char SEPARATOR = '#';
 
 	private final String rawSqlQuery;
@@ -89,8 +88,10 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 	}
 
 	private static SqlParameter buildSqlParameter(final SqlNamedParam namedParam, final Map<String, Tuple2<Class, Object>> params) {
-		final Object rootHolder = params.get(namedParam.getAttributeName()).getVal2();
-		final Class rootType = params.get(namedParam.getAttributeName()).getVal1();
+		final Tuple2<Class, Object> tuple = params.get(namedParam.getAttributeName());
+		Assertion.checkNotNull(tuple, "no data found for param {0}", namedParam);
+		final Object rootHolder = tuple.getVal2();
+		final Class rootType = tuple.getVal1();
 		//---
 		if (rootHolder != null) {
 			if (namedParam.isObject() || namedParam.isList()) {
@@ -142,7 +143,7 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 					//the separator character has been escaped and must be replaced by a single Separator
 					sql.append(SEPARATOR);
 				} else {
-					sqlNamedParams.add(new SqlNamedParam(token));
+					sqlNamedParams.add(SqlNamedParam.of(token));
 					sql.append('?');
 				}
 			} else {

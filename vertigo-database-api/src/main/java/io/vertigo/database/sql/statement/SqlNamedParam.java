@@ -29,16 +29,28 @@ import io.vertigo.lang.WrappedException;
  * @author pchretien
  */
 final class SqlNamedParam {
+	private final String betweenCar;
 	private final String attributeName;
 	private final String fieldName;
 	private final Integer rowNumber;
+
+	/**
+	 * Static builder.
+	 * param betweenCar String
+	 */
+	public static SqlNamedParam of(final String betweenCar) {
+		return new SqlNamedParam(betweenCar);
+	}
 
 	/**
 	 * Constructor.
 	 *
 	 * @param betweenCar String
 	 */
-	public SqlNamedParam(final String betweenCar) {
+	private SqlNamedParam(final String betweenCar) {
+		Assertion.checkArgNotEmpty(betweenCar);
+		//---
+		this.betweenCar = betweenCar;
 		final String[] tokens = betweenCar.split("\\.");
 		if (tokens.length == 1) {
 			//Simple bound param : CODE
@@ -121,5 +133,10 @@ final class SqlNamedParam {
 		Assertion.checkNotNull(rowNumber, "il ne s'agit pas d'une liste");
 		//-----
 		return rowNumber;
+	}
+
+	@Override
+	public String toString() {
+		return betweenCar;
 	}
 }
