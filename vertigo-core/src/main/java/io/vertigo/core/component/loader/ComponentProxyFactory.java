@@ -110,7 +110,7 @@ final class ComponentProxyFactory {
 
 		@Override
 		public Method getMethod() {
-			return getMethod();
+			return method;
 		}
 	}
 }
