@@ -21,6 +21,7 @@ package io.vertigo.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import io.vertigo.lang.Assertion;
@@ -35,6 +36,7 @@ import io.vertigo.lang.Builder;
 public final class ListBuilder<X> implements Builder<List<X>> {
 	private final List<X> list = new ArrayList<>();
 	private boolean unmodifiable;
+	private Comparator<? super X> myComparator;
 
 	/**
 	 * Adds a value in the list.
@@ -71,8 +73,24 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 		return this;
 	}
 
+	/**
+	 * Sorts the list with the provided comparator.
+	 * @param comparator the comparator to use
+	 * @return this builder
+	 */
+	public ListBuilder<X> sort(final Comparator<? super X> comparator) {
+		Assertion.checkNotNull(comparator);
+		Assertion.checkArgument(myComparator == null, "comparator already set");
+		//---
+		myComparator = comparator;
+		return this;
+	}
+
 	@Override
 	public List<X> build() {
+		if (myComparator != null) {
+			list.sort(myComparator);
+		}
 		return unmodifiable ? Collections.unmodifiableList(list) : list;
 	}
 }
