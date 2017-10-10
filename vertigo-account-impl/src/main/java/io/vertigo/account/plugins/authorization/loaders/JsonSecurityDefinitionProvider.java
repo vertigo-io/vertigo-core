@@ -119,17 +119,20 @@ public final class JsonSecurityDefinitionProvider implements DefinitionProvider 
 	}
 
 	private void registerGlobalAuthorizations(final List<Authorization> authorizations) {
-		authorizations.stream()
-				.forEach(atz -> definitionSuppliers.add(ds -> atz)); //on register les authorizations globales
+		//on register les authorizations globales
+		authorizations
+				.forEach(atz -> definitionSuppliers.add(ds -> atz));
 	}
 
 	private void registerSecurityEntities(final List<SecuredEntity> securityEntities) {
-		securityEntities.stream()
-				.forEach(sec -> definitionSuppliers.add(ds -> sec)); //on register les SecuredEntities
+		//on register les SecuredEntities
+		securityEntities
+				.forEach(sec -> definitionSuppliers.add(ds -> sec));
 
+		//on register les authorizations associées aux opérations
 		securityEntities.stream()
 				.flatMap(securityEntity -> securityEntity.getOperations().stream())
-				.forEach(atz -> definitionSuppliers.add(ds -> atz)); //on register les authorizations associées aux opérations
+				.forEach(atz -> definitionSuppliers.add(ds -> atz));
 	}
 
 }
