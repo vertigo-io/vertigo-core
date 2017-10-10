@@ -33,6 +33,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -289,7 +290,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 		size = query("ALL_TEXT:(+peugeot +diesel +2001)"); //2001 est l'année en number
 		Assert.assertEquals(1L, size);
-
 	}
 
 	/**
@@ -469,7 +469,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 		//On recherche la facette date
 		final Facet yearFacet = getFacetByName(result, "FCT_YEAR_ITEM");
-		Assert.assertNotNull(yearFacet);
 		Assert.assertTrue(yearFacet.getDefinition().isRangeFacet());
 
 		boolean found = false;
@@ -506,7 +505,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 		//On recherche la facette constructeur
 		final Facet manufacturerFacet = getFacetByName(result, "FCT_MANUFACTURER_ITEM");
-		Assert.assertNotNull(manufacturerFacet);
 		//On vérifie que l'on est sur le champ Manufacturer
 		Assert.assertEquals("MANUFACTURER", manufacturerFacet.getDefinition().getDtField().getName());
 		Assert.assertFalse(manufacturerFacet.getDefinition().isRangeFacet());
@@ -572,12 +570,11 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private static Facet getFacetByName(final FacetedQueryResult<Item, ?> result, final String facetName) {
-		for (final Facet facet : result.getFacets()) {
-			if (facetName.equals(facet.getDefinition().getName())) {
-				return facet;
-			}
-		}
-		return null;
+		return result.getFacets()
+				.stream()
+				.filter(facet -> facetName.equals(facet.getDefinition().getName()))
+				.findFirst()
+				.orElseThrow(() -> new IllegalArgumentException());
 	}
 
 	/**
@@ -680,29 +677,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		return new FacetedQuery(previousQuery.getDefinition(), queryFilters);
 	}
 
-	/*private static FacetedQuery createFacetQuery(final String facetName, final FacetedQueryResult<Car, ?> result, final String... facetValueLabels) {
-		final List<FacetValue> facetValues = new ArrayList<>(); //pb d'initialisation, et assert.notNull ne suffit pas
-		final Facet facet = getFacetByName(result, facetName);
-		for (final String facetValueLabel : facetValueLabels) {
-			boolean found = false;
-			for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
-				if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).contains(facetValueLabel)) {
-					facetValues.add(entry.getKey());
-					found = true;
-					break;
-				}
-			}
-			Assertion.checkArgument(found, "Pas de FacetValue contenant {0} dans la facette {1}", facetValueLabel, facetName);
-		}
-		final FacetedQuery previousQuery = result.getFacetedQuery().get();
-		final SelectedFacetValuesBuilder queryFiltersBuilder = SelectedFacetValues
-				.of(previousQuery.getSelectedFacetValues());
-		for (final FacetValue facetValue : facetValues) {
-			queryFiltersBuilder.add(facet.getDefinition(), facetValue);
-		}
-		return new FacetedQuery(previousQuery.getDefinition(), queryFiltersBuilder.build());
-	}*/
-
 	private static long getFacetValueCount(final String facetName, final String facetValueLabel, final FacetedQueryResult<Item, ?> result) {
 		final Facet facet = getFacetByName(result, facetName);
 		for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
@@ -754,7 +728,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	public void testFilterFacetListByTwoTerms() {
 		index(true);
 		final List<Item> peugeotItems = itemDataBase.getItemsByManufacturer("peugeot");
-		final long peugeotContainsCuirCount = containsDescription(peugeotItems, "cuir");
+		final long peugeotContainsCuirCount = ItemDataBase.containsDescription(peugeotItems, "cuir");
 		//final long peugeotContainsSiegCount = carDataBase.containsDescription("cuir");
 
 		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
@@ -794,8 +768,8 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		peugeotVolkswagenItems.addAll(volkswagenItems);
 		final int audiItemsSize = itemDataBase.getItemsByManufacturer("audit").size();
 
-		final long peugeot2000To2005Count = before(peugeotItems, 2005) - before(peugeotItems, 2000);
-		final long peugeotVolkswagen2000To2005Count = before(peugeotVolkswagenItems, 2005) - before(peugeotVolkswagenItems, 2000);
+		final long peugeot2000To2005Count = ItemDataBase.before(peugeotItems, 2005) - ItemDataBase.before(peugeotItems, 2000);
+		final long peugeotVolkswagen2000To2005Count = ItemDataBase.before(peugeotVolkswagenItems, 2005) - ItemDataBase.before(peugeotVolkswagenItems, 2000);
 
 		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetStrategy(itemFacetMultiQueryDefinition, EMPTY_SELECTED_FACET_VALUES)
@@ -851,10 +825,10 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		peugeotVolkswagenItems.addAll(volkswagenItems);
 		final int audiItemsSize = itemDataBase.getItemsByManufacturer("audit").size();
 
-		final long peugeot2000To2005Count = before(peugeotItems, 2005) - before(peugeotItems, 2000);
-		final long volkswagen2000To2005Count = before(volkswagenItems, 2005) - before(volkswagenItems, 2000);
-		final long audi2000To2005Count = before(audiItems, 2005) - before(audiItems, 2000);
-		final long peugeotVolkswagen2000To2005Count = before(peugeotVolkswagenItems, 2005) - before(peugeotVolkswagenItems, 2000);
+		final long peugeot2000To2005Count = ItemDataBase.before(peugeotItems, 2005) - ItemDataBase.before(peugeotItems, 2000);
+		final long volkswagen2000To2005Count = ItemDataBase.before(volkswagenItems, 2005) - ItemDataBase.before(volkswagenItems, 2000);
+		final long audi2000To2005Count = ItemDataBase.before(audiItems, 2005) - ItemDataBase.before(audiItems, 2000);
+		final long peugeotVolkswagen2000To2005Count = ItemDataBase.before(peugeotVolkswagenItems, 2005) - ItemDataBase.before(peugeotVolkswagenItems, 2000);
 
 		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetStrategy(itemFacetMultiQueryDefinition, EMPTY_SELECTED_FACET_VALUES)
@@ -919,7 +893,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		index(true);
 		final long item2000To2005Count = itemDataBase.getItemsBefore(2005) - itemDataBase.getItemsBefore(2000);
 		final List<Item> peugeotItems = itemDataBase.getItemsByManufacturer("peugeot");
-		final long peugeot2000To2005Count = before(peugeotItems, 2005) - before(peugeotItems, 2000);
+		final long peugeot2000To2005Count = ItemDataBase.before(peugeotItems, 2005) - ItemDataBase.before(peugeotItems, 2000);
 
 		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetStrategy(itemFacetQueryDefinition, EMPTY_SELECTED_FACET_VALUES)
@@ -1121,26 +1095,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	private static long containsDescription(final List<Item> items, final String word) {
-		long count = 0;
-		for (final Item item : items) {
-			if (item.getDescription().toLowerCase(Locale.FRENCH).contains(word)) {
-				count++;
-			}
-		}
-		return count;
-	}
-
-	private static long before(final List<Item> items, final int year) {
-		long count = 0;
-		for (final Item item : items) {
-			if (item.getYear() <= year) {
-				count++;
-			}
-		}
-		return count;
-	}
-
 	private FacetedQueryResult<Item, SearchQuery> facetQuery(final String query) {
 		return doFacetQuery(query);
 
@@ -1163,18 +1117,19 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 	private void doIndex(final boolean all) {
 		if (all) {
-			final List<SearchIndex<Item, Item>> indexes = new ArrayList<>();
-			for (final Item item : itemDataBase.getAllItems()) {
-				indexes.add(SearchIndex.createIndex(itemIndexDefinition, item.getURI(), item));
-			}
+			final List<SearchIndex<Item, Item>> indexes = itemDataBase.getAllItems()
+					.stream()
+					.map(item -> SearchIndex.createIndex(itemIndexDefinition, item.getURI(), item))
+					.collect(Collectors.toList());
 			searchManager.putAll(itemIndexDefinition, indexes);
 		} else {
 			//Indexation unitaire
 			//Indexation des items de la base
-			for (final Item item : itemDataBase.getAllItems()) {
-				final SearchIndex<Item, Item> index = SearchIndex.createIndex(itemIndexDefinition, item.getURI(), item);
-				searchManager.put(itemIndexDefinition, index);
-			}
+			itemDataBase.getAllItems().forEach(
+					item -> {
+						final SearchIndex<Item, Item> index = SearchIndex.createIndex(itemIndexDefinition, item.getURI(), item);
+						searchManager.put(itemIndexDefinition, index);
+					});
 		}
 	}
 

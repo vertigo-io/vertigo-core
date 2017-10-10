@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.util.ListBuilder;
 
 /**
@@ -56,6 +54,18 @@ public final class ItemDataBase {
 				.build();
 	}
 
+	public static long containsDescription(final List<Item> items, final String word) {
+		return items.stream()
+				.filter(item -> item.getDescription().toLowerCase(Locale.FRENCH).contains(word))
+				.count();
+	}
+
+	public static long before(final List<Item> items, final int year) {
+		return items.stream()
+				.filter(item -> item.getYear() <= year)
+				.count();
+	}
+
 	private static Item createItem(final long id, final int price, final String manufacturer, final String model, final int year, final String motorType, final int kilo, final double consommation, final String description, final Long optionalNumber, final String optionalString) {
 		final Item item = new Item();
 		item.setId(id);
@@ -79,9 +89,8 @@ public final class ItemDataBase {
 		return items.size();
 	}
 
-	public final DtList<Item> getAllItems() {
-		return items.stream()
-				.collect(VCollectors.toDtList(Item.class));
+	public final List<Item> getAllItems() {
+		return items;
 	}
 
 	public List<Item> getItemsByManufacturer(final String manufacturer) {
@@ -91,14 +100,10 @@ public final class ItemDataBase {
 	}
 
 	public long getItemsBefore(final int year) {
-		return items.stream()
-				.filter(item -> item.getYear() <= year)
-				.count();
+		return before(items, year);
 	}
 
 	public long containsDescription(final String word) {
-		return items.stream()
-				.filter(item -> item.getDescription().toLowerCase(Locale.FRENCH).contains(word))
-				.count();
+		return containsDescription(items, word);
 	}
 }
