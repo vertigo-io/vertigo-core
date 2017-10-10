@@ -86,7 +86,7 @@ public final class ItemDataBase {
 
 	public List<Item> getItemsByManufacturer(final String manufacturer) {
 		return items.stream()
-				.filter(item -> item.getManufacturer().toLowerCase(Locale.FRENCH).equals(manufacturer))
+				.filter(item -> item.getManufacturer().toLowerCase(Locale.FRENCH).equals(manufacturer.toLowerCase(Locale.FRENCH)))
 				.collect(Collectors.toList());
 	}
 
