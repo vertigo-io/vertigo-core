@@ -21,13 +21,13 @@ package io.vertigo.dynamo.search.data;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import io.vertigo.dynamo.search.data.domain.Car;
+import io.vertigo.dynamo.search.data.domain.Item;
 
 public final class DtDefinitions implements Iterable<Class<?>> {
 	@Override
 	public Iterator<Class<?>> iterator() {
 		return Arrays.asList(new Class<?>[] {
-				Car.class,
+				Item.class,
 		}).iterator();
 	}
 }

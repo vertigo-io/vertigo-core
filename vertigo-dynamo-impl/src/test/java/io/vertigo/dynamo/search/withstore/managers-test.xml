@@ -54,10 +54,10 @@
 				<resource type="classes" path="io.vertigo.dynamo.search.data.DtDefinitions" />
 			</provider>
 		</definitions>
-		<component class="io.vertigo.dynamo.search.withstore.CarSearchLoader"/>
+		<component class="io.vertigo.dynamo.search.withstore.ItemSearchLoader"/>
 	</module>
 
 	<init>
-		<initializer class="io.vertigo.dynamo.store.StoreManagerInitializer"/>
+		<initializer class="io.vertigo.dynamo.search.StoreManagerInitializer"/>
 	</init>
 </config>

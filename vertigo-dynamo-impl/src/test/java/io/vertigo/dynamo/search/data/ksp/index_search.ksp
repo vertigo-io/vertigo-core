@@ -1,48 +1,48 @@
 package io.vertigo.dynamo.search.data.domain
 
-create IndexDefinition IDX_CAR {
-    keyConcept : DT_CAR
-    dtIndex : DT_CAR
-    indexCopyTo ALL_TEXT 	{ from: "MAKE,MODEL,DESCRIPTION,YEAR,KILO,PRICE,MOTOR_TYPE" }
-    loaderId : "CarSearchLoader"
+create IndexDefinition IDX_ITEM {
+    keyConcept : DT_ITEM
+    dtIndex : DT_ITEM
+    indexCopyTo ALL_TEXT 	{ from: "MANUFACTURER,MODEL,DESCRIPTION,YEAR,KILO,PRICE,MOTOR_TYPE" }
+    loaderId : "ItemSearchLoader"
 }
 
-create IndexDefinition IDX_DYNA_CAR {
-    keyConcept : DT_CAR
-    dtIndex : DT_CAR
-    indexCopyTo ALL_TEXT 	{ from: "MAKE,MODEL,DESCRIPTION,YEAR,KILO,PRICE,MOTOR_TYPE" }
-    loaderId : "CarSearchLoader"
+create IndexDefinition IDX_DYNA_ITEM {
+    keyConcept : DT_ITEM
+    dtIndex : DT_ITEM
+    indexCopyTo ALL_TEXT 	{ from: "MANUFACTURER,MODEL,DESCRIPTION,YEAR,KILO,PRICE,MOTOR_TYPE" }
+    loaderId : "ItemSearchLoader"
 }
 
-create FacetDefinition FCT_DESCRIPTION_CAR {
-	dtDefinition : DT_CAR 
+create FacetDefinition FCT_DESCRIPTION_ITEM {
+	dtDefinition : DT_ITEM 
 	fieldName : "DESCRIPTION" 
 	label : "Description"
 }
 
-create FacetDefinition FCT_MAKE_CAR {
-	dtDefinition : DT_CAR 
-	fieldName : "MAKE"
+create FacetDefinition FCT_MANUFACTURER_ITEM {
+	dtDefinition : DT_ITEM 
+	fieldName : "MANUFACTURER"
 	label : "Par constructeur"
 }
 
-create FacetDefinition FCT_MAKE_CAR_ALPHA {
-	dtDefinition : DT_CAR 
-	fieldName : "MAKE"
+create FacetDefinition FCT_MANUFACTURER_ITEM_ALPHA {
+	dtDefinition : DT_ITEM 
+	fieldName : "MANUFACTURER"
 	label : "Par constructeur", order : "alpha"
 }
 
 
-create FacetDefinition FCT_MAKE_CAR_MULTI {
-	dtDefinition : DT_CAR 
-	fieldName : "MAKE"
+create FacetDefinition FCT_MANUFACTURER_ITEM_MULTI {
+	dtDefinition : DT_ITEM 
+	fieldName : "MANUFACTURER"
 	label : "Par constructeur", 
 	order : "alpha",
 	multiselectable : "true"
 }
 
-create FacetDefinition FCT_YEAR_CAR {
-	dtDefinition : DT_CAR 
+create FacetDefinition FCT_YEAR_ITEM {
+	dtDefinition : DT_ITEM 
 	fieldName : "YEAR" 
 	label : "Par date"
 	range R1 { filter : "YEAR:[* TO 2000]" 		label : "avant 2000" }
@@ -50,17 +50,17 @@ create FacetDefinition FCT_YEAR_CAR {
 	range R3 { filter : "YEAR:[2005 TO *]" 		label : "apres 2005" }
 }
 
-create FacetedQueryDefinition QRY_CAR_FACET {
-    keyConcept : DT_CAR
-    facets : [ FCT_DESCRIPTION_CAR, FCT_MAKE_CAR, FCT_MAKE_CAR_ALPHA, FCT_YEAR_CAR]
+create FacetedQueryDefinition QRY_ITEM_FACET {
+    keyConcept : DT_ITEM
+    facets : [ FCT_DESCRIPTION_ITEM, FCT_MANUFACTURER_ITEM, FCT_MANUFACTURER_ITEM_ALPHA, FCT_YEAR_ITEM]
     domainCriteria : DO_STRING
     listFilterBuilderClass : "io.vertigo.dynamox.search.DslListFilterBuilder"  
     listFilterBuilderQuery : "#CRITERIA#"    
 }
 
-create FacetedQueryDefinition QRY_CAR_FACET_MULTI {
-    keyConcept : DT_CAR
-    facets : [ FCT_DESCRIPTION_CAR, FCT_MAKE_CAR_MULTI, FCT_YEAR_CAR]
+create FacetedQueryDefinition QRY_ITEM_FACET_MULTI {
+    keyConcept : DT_ITEM
+    facets : [ FCT_DESCRIPTION_ITEM, FCT_MANUFACTURER_ITEM_MULTI, FCT_YEAR_ITEM]
     domainCriteria : DO_STRING
     listFilterBuilderClass : "io.vertigo.dynamox.search.DslListFilterBuilder"  
     listFilterBuilderQuery : "#CRITERIA#"    

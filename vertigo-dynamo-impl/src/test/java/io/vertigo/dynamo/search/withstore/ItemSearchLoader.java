@@ -34,7 +34,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.SearchManager;
-import io.vertigo.dynamo.search.data.domain.Car;
+import io.vertigo.dynamo.search.data.domain.Item;
 import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
@@ -46,10 +46,10 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
 
 /**
- * SearchLoader of Car keyconcept, load uses StoreManager.
+ * SearchLoader of Item keyconcept, load uses StoreManager.
  * @author npiedeloup
  */
-public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Car> {
+public final class ItemSearchLoader extends AbstractSqlSearchLoader<Long, Item, Item> {
 	private final SearchManager searchManager;
 	private final DefinitionSpace definitionSpace;
 
@@ -59,7 +59,7 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 	 * @param searchManager Search manager
 	 */
 	@Inject
-	public CarSearchLoader(final TaskManager taskManager, final SearchManager searchManager, final VTransactionManager transactionManager) {
+	public ItemSearchLoader(final TaskManager taskManager, final SearchManager searchManager, final VTransactionManager transactionManager) {
 		super(taskManager, transactionManager);
 		Assertion.checkNotNull(searchManager);
 		//---
@@ -69,23 +69,23 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 
 	/** {@inheritDoc} */
 	@Override
-	public List<SearchIndex<Car, Car>> loadData(final SearchChunk<Car> searchChunk) {
-		final SearchIndexDefinition indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Car.class);
+	public List<SearchIndex<Item, Item>> loadData(final SearchChunk<Item> searchChunk) {
+		final SearchIndexDefinition indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Item.class);
 		try (final VTransactionWritable tx = getTransactionManager().createCurrentTransaction()) {
-			final List<SearchIndex<Car, Car>> result = new ArrayList<>();
-			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
-			for (final Car car : loadCarList(searchChunk)) {
-				final URI<Car> uri = new URI<>(dtDefinition, car.getId());
-				result.add(SearchIndex.createIndex(indexDefinition, uri, car));
+			final List<SearchIndex<Item, Item>> result = new ArrayList<>();
+			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Item.class);
+			for (final Item item : loadItems(searchChunk)) {
+				final URI<Item> uri = new URI<>(dtDefinition, item.getId());
+				result.add(SearchIndex.createIndex(indexDefinition, uri, item));
 			}
 			return result;
 		}
 	}
 
-	private DtList<Car> loadCarList(final SearchChunk<Car> searchChunk) {
-		final TaskDefinition taskLoadCars = getTaskLoadCarList(searchChunk);
+	private DtList<Item> loadItems(final SearchChunk<Item> searchChunk) {
+		final TaskDefinition taskDefinition = getTaskDefinition(searchChunk);
 
-		final Task task = Task.builder(taskLoadCars)
+		final Task task = Task.builder(taskDefinition)
 				.build();
 
 		return getTaskManager()
@@ -93,18 +93,18 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 				.getResult();
 	}
 
-	private TaskDefinition getTaskLoadCarList(final SearchChunk<Car> searchChunk) {
-		final Domain doCarList = definitionSpace.resolve("DO_DT_CAR_DTC", Domain.class);
+	private TaskDefinition getTaskDefinition(final SearchChunk<Item> searchChunk) {
+		final Domain doItems = definitionSpace.resolve("DO_DT_ITEM_DTC", Domain.class);
 		final String sql = searchChunk.getAllURIs()
 				.stream()
 				.map(uri -> uri.getId().toString())
-				.collect(Collectors.joining(", ", "select * from CAR where ID in (", ")"));
+				.collect(Collectors.joining(", ", "select * from ITEM where ID in (", ")"));
 
-		return TaskDefinition.builder("TK_LOAD_ALL_CARS")
+		return TaskDefinition.builder("TK_LOAD_ALL_ITEMS")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(sql)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withOutRequired("dtc", doCarList)
+				.withOutRequired("dtc", doItems)
 				.build();
 	}
 }

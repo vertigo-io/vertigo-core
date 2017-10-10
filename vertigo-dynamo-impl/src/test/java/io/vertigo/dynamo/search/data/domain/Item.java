@@ -24,12 +24,12 @@ import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.VSystemException;
 
-public final class Car implements KeyConcept {
+public final class Item implements KeyConcept {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	private String make;
+	private String manufacturer;
 	private String model;
 	private String description;
 	private Integer year;
@@ -43,7 +43,7 @@ public final class Car implements KeyConcept {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<Car> getURI() {
+	public URI<Item> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
 
@@ -57,12 +57,12 @@ public final class Car implements KeyConcept {
 	}
 
 	@Field(domain = "DO_KEYWORD", required = true, label = "Constructeur")
-	public final String getMake() {
-		return make;
+	public final String getManufacturer() {
+		return manufacturer;
 	}
 
-	public final void setMake(final String make) {
-		this.make = make;
+	public final void setManufacturer(final String manufacturer) {
+		this.manufacturer = manufacturer;
 	}
 
 	@Field(domain = "DO_STRING", required = true, label = "Modéle")

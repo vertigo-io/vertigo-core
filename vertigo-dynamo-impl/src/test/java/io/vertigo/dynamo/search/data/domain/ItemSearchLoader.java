@@ -34,13 +34,13 @@ import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamox.search.AbstractSearchLoader;
 import io.vertigo.lang.Assertion;
 
-public final class CarSearchLoader extends AbstractSearchLoader<Long, Car, Car> {
+public final class ItemSearchLoader extends AbstractSearchLoader<Long, Item, Item> {
 	private static final int SEARCH_CHUNK_SIZE = 5;
 	private final SearchManager searchManager;
-	private CarDataBase carDataBase;
+	private ItemDataBase itemDataBase;
 
 	@Inject
-	public CarSearchLoader(final SearchManager searchManager) {
+	public ItemSearchLoader(final SearchManager searchManager) {
 		Assertion.checkNotNull(searchManager);
 		//---
 		this.searchManager = searchManager;
@@ -49,40 +49,40 @@ public final class CarSearchLoader extends AbstractSearchLoader<Long, Car, Car> 
 	/**
 	 * @param boundedDataBase Database to bound with this loader (specific for tests)
 	 */
-	public void bindDataBase(final CarDataBase boundedDataBase) {
+	public void bindDataBase(final ItemDataBase boundedDataBase) {
 		Assertion.checkNotNull(boundedDataBase);
 		//----
-		carDataBase = boundedDataBase;
+		itemDataBase = boundedDataBase;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public List<SearchIndex<Car, Car>> loadData(final SearchChunk<Car> searchChunk) {
-		Assertion.checkNotNull(carDataBase, "carDataBase not bound");
+	public List<SearchIndex<Item, Item>> loadData(final SearchChunk<Item> searchChunk) {
+		Assertion.checkNotNull(itemDataBase, "itemDataBase not bound");
 		//-----
-		final SearchIndexDefinition indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Car.class);
-		final List<SearchIndex<Car, Car>> carIndexes = new ArrayList<>();
-		final Map<Long, Car> carPerId = new HashMap<>();
-		for (final Car car : carDataBase.getAllCars()) {
-			carPerId.put(car.getId(), car);
+		final SearchIndexDefinition indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Item.class);
+		final List<SearchIndex<Item, Item>> itemIndexes = new ArrayList<>();
+		final Map<Long, Item> itemPerId = new HashMap<>();
+		for (final Item item : itemDataBase.getAllItems()) {
+			itemPerId.put(item.getId(), item);
 		}
-		for (final URI<Car> uri : searchChunk.getAllURIs()) {
-			final Car car = carPerId.get(uri.getId());
-			carIndexes.add(SearchIndex.createIndex(indexDefinition, uri, car));
+		for (final URI<Item> uri : searchChunk.getAllURIs()) {
+			final Item item = itemPerId.get(uri.getId());
+			itemIndexes.add(SearchIndex.createIndex(indexDefinition, uri, item));
 		}
-		return carIndexes;
+		return itemIndexes;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	protected List<URI<Car>> loadNextURI(final Long lastId, final DtDefinition dtDefinition) {
-		final SearchIndexDefinition indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Car.class);
-		final List<URI<Car>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
+	protected List<URI<Item>> loadNextURI(final Long lastId, final DtDefinition dtDefinition) {
+		final SearchIndexDefinition indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Item.class);
+		final List<URI<Item>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
 		//call loader service
 		int i = 0;
-		for (final Car car : carDataBase.getAllCars()) {
+		for (final Item item : itemDataBase.getAllItems()) {
 			if (i > lastId) {
-				uris.add(new URI(indexDefinition.getKeyConceptDtDefinition(), car.getId()));
+				uris.add(new URI(indexDefinition.getKeyConceptDtDefinition(), item.getId()));
 			}
 			if (uris.size() >= SEARCH_CHUNK_SIZE) {
 				break;

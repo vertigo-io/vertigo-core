@@ -25,12 +25,12 @@ import io.vertigo.dynamo.search.AbstractSearchManagerTest;
  */
 public class SearchManagerTest extends AbstractSearchManagerTest {
 	//Index
-	private static final String IDX_CAR = "IDX_CAR";
+	private static final String IDX_ITEM = "IDX_ITEM";
 
 	/**{@inheritDoc}*/
 	@Override
 	protected void doSetUp() {
-		init(IDX_CAR);
+		init(IDX_ITEM);
 	}
 
 }

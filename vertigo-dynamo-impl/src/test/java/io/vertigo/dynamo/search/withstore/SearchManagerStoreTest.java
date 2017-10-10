@@ -41,8 +41,8 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.SearchManager;
-import io.vertigo.dynamo.search.data.domain.Car;
-import io.vertigo.dynamo.search.data.domain.CarDataBase;
+import io.vertigo.dynamo.search.data.domain.Item;
+import io.vertigo.dynamo.search.data.domain.ItemDataBase;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamo.store.StoreManager;
@@ -62,33 +62,33 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	@Inject
 	private SearchManager searchManager;
 	//Index
-	private static final String IDX_CAR = "IDX_CAR";
+	private static final String IDX_ITEM = "IDX_ITEM";
 
-	private SearchIndexDefinition carIndexDefinition;
+	private SearchIndexDefinition itemIndexDefinition;
 
-	private long initialDbCarSize = 0;
+	private long initialDbItemSize = 0;
 
 	@Override
 	protected void doSetUp() throws Exception {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		carIndexDefinition = definitionSpace.resolve(IDX_CAR, SearchIndexDefinition.class);
+		itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
 
 		//A chaque test on recrée la table famille
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
-			execCallableStatement(connection, "create table car(ID BIGINT, MAKE varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50), OPTIONAL_NUMBER BIGINT, OPTIONAL_STRING varchar(50) );");
-			execCallableStatement(connection, "create sequence SEQ_CAR start with 10001 increment by 1");
+			execCallableStatement(connection, "create table item(ID BIGINT, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50), OPTIONAL_NUMBER BIGINT, OPTIONAL_STRING varchar(50) );");
+			execCallableStatement(connection, "create sequence SEQ_ITEM start with 10001 increment by 1");
 		}
 
 		//On supprime tout
 		remove("*:*");
 
-		final CarDataBase carDataBase = new CarDataBase();
-		initialDbCarSize = carDataBase.size();
+		final ItemDataBase itemDataBase = new ItemDataBase();
+		initialDbItemSize = itemDataBase.size();
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			for (final Car car : carDataBase.getAllCars()) {
-				car.setId(null);
-				storeManager.getDataStore().create(car);
+			for (final Item item : itemDataBase.getAllItems()) {
+				item.setId(null);
+				storeManager.getDataStore().create(item);
 			}
 			transaction.commit();
 		}
@@ -119,7 +119,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testIndexAllQuery() {
 		final long size = query("*:*");
-		Assert.assertEquals(initialDbCarSize, size);
+		Assert.assertEquals(initialDbItemSize, size);
 	}
 
 	/**
@@ -131,12 +131,12 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		testIndexAllQuery();
 
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar();
-			storeManager.getDataStore().create(car);
+			final Item item = createNewItem();
+			storeManager.getDataStore().create(item);
 			transaction.commit();
 		}
 		waitIndexation();
-		Assert.assertEquals(initialDbCarSize + 1, query("*:*"));
+		Assert.assertEquals(initialDbItemSize + 1, query("*:*"));
 		Assert.assertEquals(1, query("DESCRIPTION:légende"));
 	}
 
@@ -155,7 +155,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		}
 		waitIndexation();
 		Assert.assertEquals(0, query("ID:10001"));
-		Assert.assertEquals(initialDbCarSize - 1, query("*:*"));
+		Assert.assertEquals(initialDbItemSize - 1, query("*:*"));
 	}
 
 	/**
@@ -165,25 +165,25 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testIndexUpdateData() {
 		testIndexAllQuery();
-		final Car car = createNewCar();
+		final Item item = createNewItem();
 
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			storeManager.getDataStore().create(car);
+			storeManager.getDataStore().create(item);
 			transaction.commit();
 		}
 
 		waitIndexation();
-		Assert.assertEquals(initialDbCarSize + 1, query("*:*"));
+		Assert.assertEquals(initialDbItemSize + 1, query("*:*"));
 		Assert.assertEquals(1, query("DESCRIPTION:légende"));
 
-		car.setDescription("Vendue");
+		item.setDescription("Vendue");
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			storeManager.getDataStore().update(car);
+			storeManager.getDataStore().update(item);
 			transaction.commit();
 		}
 
 		waitIndexation();
-		Assert.assertEquals(initialDbCarSize + 1, query("*:*"));
+		Assert.assertEquals(initialDbItemSize + 1, query("*:*"));
 		Assert.assertEquals(0, query("DESCRIPTION:légende"));
 		Assert.assertEquals(1, query("DESCRIPTION:vendue"));
 	}
@@ -200,20 +200,20 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(0L, resize);
 	}
 
-	private static Car createNewCar() {
-		final Car car = new Car();
-		car.setId(null);
-		car.setPrice(12000);
-		car.setMake("Acme");
-		car.setModel("Martin");
-		car.setYear(1978);
-		car.setKilo(1500);
+	private static Item createNewItem() {
+		final Item item = new Item();
+		item.setId(null);
+		item.setPrice(12000);
+		item.setManufacturer("Acme");
+		item.setModel("Martin");
+		item.setYear(1978);
+		item.setKilo(1500);
 		final BigDecimal conso = new BigDecimal(7.6);
 		conso.setScale(2, RoundingMode.HALF_UP);
-		car.setConsommation(conso);
-		car.setMotorType("essence");
-		car.setDescription("Voiture de légende assurant une reindexation dès son insertion");
-		return car;
+		item.setConsommation(conso);
+		item.setMotorType("essence");
+		item.setDescription("Voiture de légende assurant une reindexation dès son insertion");
+		return item;
 	}
 
 	private long query(final String query) {
@@ -224,13 +224,13 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		return doQuery(searchQuery, null).getCount();
 	}
 
-	private FacetedQueryResult<Car, SearchQuery> doQuery(final SearchQuery searchQuery, final DtListState listState) {
-		return searchManager.loadList(carIndexDefinition, searchQuery, listState);
+	private FacetedQueryResult<Item, SearchQuery> doQuery(final SearchQuery searchQuery, final DtListState listState) {
+		return searchManager.loadList(itemIndexDefinition, searchQuery, listState);
 	}
 
-	private static URI createURI(final long carId) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
-		return new URI(dtDefinition, carId);
+	private static URI createURI(final long itemId) {
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Item.class);
+		return new URI(dtDefinition, itemId);
 	}
 
 	protected void remove(final String query) {
@@ -240,7 +240,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 
 	private void doRemove(final String query) {
 		final ListFilter removeQuery = ListFilter.of(query);
-		searchManager.removeAll(carIndexDefinition, removeQuery);
+		searchManager.removeAll(itemIndexDefinition, removeQuery);
 	}
 
 	private static void waitIndexation() {

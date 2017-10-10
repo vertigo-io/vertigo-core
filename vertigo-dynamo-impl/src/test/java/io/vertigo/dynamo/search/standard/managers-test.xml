@@ -33,6 +33,6 @@
 			</provider>
 		</definitions>
 		
-		<component class="io.vertigo.dynamo.search.data.domain.CarSearchLoader"/>
+		<component class="io.vertigo.dynamo.search.data.domain.ItemSearchLoader"/>
 	</module>
 </config>

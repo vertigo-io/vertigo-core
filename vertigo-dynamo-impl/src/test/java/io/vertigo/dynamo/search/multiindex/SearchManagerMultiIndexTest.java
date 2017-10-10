@@ -29,8 +29,8 @@ import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.search.SearchManager;
-import io.vertigo.dynamo.search.data.domain.Car;
-import io.vertigo.dynamo.search.data.domain.CarDataBase;
+import io.vertigo.dynamo.search.data.domain.Item;
+import io.vertigo.dynamo.search.data.domain.ItemDataBase;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
@@ -40,19 +40,19 @@ import io.vertigo.dynamo.search.model.SearchQuery;
  */
 public class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 	//Index
-	private static final String IDX_DYNA_CAR = "IDX_DYNA_CAR";
-	private static final String IDX_CAR = "IDX_CAR";
+	private static final String IDX_DYNA_ITEM = "IDX_DYNA_ITEM";
+	private static final String IDX_ITEM = "IDX_ITEM";
 
 	/** Manager de recherche. */
 	@Inject
 	protected SearchManager searchManager;
 
-	private CarDataBase carDataBase;
+	private ItemDataBase carDataBase;
 
 	/**{@inheritDoc}*/
 	@Override
 	protected void doSetUp() {
-		carDataBase = new CarDataBase();
+		carDataBase = new ItemDataBase();
 	}
 
 	/**
@@ -63,14 +63,14 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testIndex() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final SearchIndexDefinition carIndexDefinition = definitionSpace.resolve(IDX_CAR, SearchIndexDefinition.class);
-		final SearchIndexDefinition carDynIndexDefinition = definitionSpace.resolve(IDX_DYNA_CAR, SearchIndexDefinition.class);
+		final SearchIndexDefinition carIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
+		final SearchIndexDefinition carDynIndexDefinition = definitionSpace.resolve(IDX_DYNA_ITEM, SearchIndexDefinition.class);
 
-		for (final Car car : carDataBase.getAllCars()) {
-			final SearchIndex<Car, Car> index = SearchIndex.createIndex(carIndexDefinition, car.getURI(), car);
+		for (final Item car : carDataBase.getAllItems()) {
+			final SearchIndex<Item, Item> index = SearchIndex.createIndex(carIndexDefinition, car.getURI(), car);
 			searchManager.put(carIndexDefinition, index);
 
-			final SearchIndex<Car, Car> index2 = SearchIndex.createIndex(carDynIndexDefinition, car.getURI(), car);
+			final SearchIndex<Item, Item> index2 = SearchIndex.createIndex(carDynIndexDefinition, car.getURI(), car);
 			searchManager.put(carDynIndexDefinition, index2);
 		}
 		waitIndexation();
@@ -89,8 +89,8 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testClean() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final SearchIndexDefinition carIndexDefinition = definitionSpace.resolve(IDX_CAR, SearchIndexDefinition.class);
-		final SearchIndexDefinition carDynIndexDefinition = definitionSpace.resolve(IDX_DYNA_CAR, SearchIndexDefinition.class);
+		final SearchIndexDefinition carIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
+		final SearchIndexDefinition carDynIndexDefinition = definitionSpace.resolve(IDX_DYNA_ITEM, SearchIndexDefinition.class);
 		final ListFilter removeQuery = ListFilter.of("*:*");
 		searchManager.removeAll(carIndexDefinition, removeQuery);
 		searchManager.removeAll(carDynIndexDefinition, removeQuery);

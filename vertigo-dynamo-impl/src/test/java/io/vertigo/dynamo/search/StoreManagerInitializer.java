@@ -16,21 +16,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.search.dynamic;
+package io.vertigo.dynamo.search;
 
-import io.vertigo.dynamo.search.AbstractSearchManagerTest;
+import javax.inject.Inject;
+
+import io.vertigo.core.component.ComponentInitializer;
+import io.vertigo.dynamo.collections.data.domain.Item;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.store.StoreManager;
 
 /**
- * @author  npiedeloup
+ * Initialisation des listes de références.
+ *
+ * @author jmforhan
  */
-public class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest {
-	//Index
-	private static final String IDX_DYNA_ITEM = "IDX_DYNA_ITEM";
+public class StoreManagerInitializer implements ComponentInitializer {
+	@Inject
+	private StoreManager storeManager;
 
-	/**{@inheritDoc}*/
+	/** {@inheritDoc} */
 	@Override
-	protected void doSetUp() {
-		//attention : la première utilisation de l'index fige la définition des types
-		init(IDX_DYNA_ITEM);
+	public void init() {
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Item.class);
+		storeManager.getDataStoreConfig().registerCacheable(dtDefinition, 3600, true, true);
 	}
 }
