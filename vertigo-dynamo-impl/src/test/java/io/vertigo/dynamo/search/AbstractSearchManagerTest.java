@@ -30,7 +30,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
@@ -191,9 +190,9 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(0L, size);
 
 		//on reindex
-		final Future<Long> nbReindexed = searchManager.reindexAll(itemIndexDefinition);
+		size = searchManager.reindexAll(itemIndexDefinition)
+				.get(10, TimeUnit.SECONDS);
 		//on attend 5s + le temps de reindexation
-		size = nbReindexed.get(10, TimeUnit.SECONDS);
 		Assert.assertEquals(itemDataBase.size(), size);
 		waitIndexation();
 
