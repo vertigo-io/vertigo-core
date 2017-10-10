@@ -128,7 +128,11 @@ public final class AccountManagerImpl implements AccountManager {
 				() -> accountCachePlugin.get()::putAccount);
 	}
 
-	private <O extends Object, U extends Object> Optional<O> loadWithCacheOptionalValue(final U uri, final Supplier<Function<U, Optional<O>>> cacheSupplier, final Function<U, Optional<O>> storeSupplier, final Supplier<Consumer<O>> cacheRegister) {
+	private <O extends Object, U extends Object> Optional<O> loadWithCacheOptionalValue(
+			final U uri,
+			final Supplier<Function<U, Optional<O>>> cacheSupplier,
+			final Function<U, Optional<O>> storeSupplier,
+			final Supplier<Consumer<O>> cacheRegister) {
 		if (accountCachePlugin.isPresent()) {
 			final Optional<O> resultOpt = cacheSupplier.get().apply(uri);
 			if (!resultOpt.isPresent()) {
@@ -143,7 +147,11 @@ public final class AccountManagerImpl implements AccountManager {
 
 	}
 
-	private <O extends Object, U extends Object> Set<O> loadWithCacheSetValue(final U uri, final Supplier<Function<U, Set<O>>> cacheSupplier, final Function<U, Set<O>> storeSupplier, final Supplier<Consumer<Set<O>>> cacheRegister) {
+	private <O extends Object, U extends Object> Set<O> loadWithCacheSetValue(
+			final U uri,
+			final Supplier<Function<U, Set<O>>> cacheSupplier,
+			final Function<U, Set<O>> storeSupplier,
+			final Supplier<Consumer<Set<O>>> cacheRegister) {
 		if (accountCachePlugin.isPresent()) {
 			final Set<O> resultOpt = cacheSupplier.get().apply(uri);
 			if (!resultOpt.isEmpty()) {
@@ -158,7 +166,11 @@ public final class AccountManagerImpl implements AccountManager {
 
 	}
 
-	private <O extends Object, U extends Object> O loadWithCache(final U uri, final Supplier<Function<U, Optional<O>>> cacheSupplier, final Function<U, O> storeSupplier, final Supplier<Consumer<O>> cacheRegister) {
+	private <O extends Object, U extends Object> O loadWithCache(
+			final U uri,
+			final Supplier<Function<U, Optional<O>>> cacheSupplier,
+			final Function<U, O> storeSupplier,
+			final Supplier<Consumer<O>> cacheRegister) {
 		if (accountCachePlugin.isPresent()) {
 			final Optional<O> resultOpt = cacheSupplier.get().apply(uri);
 			if (!resultOpt.isPresent()) {

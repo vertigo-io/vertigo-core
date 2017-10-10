@@ -60,6 +60,8 @@ public final class UserAuthorizations implements Serializable {
 	 */
 	private final Set<DefinitionReference<Role>> roleRefs = new HashSet<>();
 
+	private final Map<String, List<Serializable>> mySecurityKeys = new HashMap<>();
+
 	//===========================================================================
 	//=======================GESTION DES ROLES===================================
 	//===========================================================================
@@ -84,7 +86,7 @@ public final class UserAuthorizations implements Serializable {
 	 */
 	public Set<Role> getRoles() {
 		return roleRefs.stream()
-				.map(roleRef -> roleRef.get())
+				.map(DefinitionReference::get)
 				.collect(Collectors.toSet());
 	}
 
@@ -138,7 +140,7 @@ public final class UserAuthorizations implements Serializable {
 		final Set<DefinitionReference<Authorization>> entityAuthorizationRefs = authorizationMapRefs.get(new DefinitionReference<>(entityDefinition));
 		if (entityAuthorizationRefs != null) {
 			return entityAuthorizationRefs.stream()
-					.map(entityAuthorizationRef -> entityAuthorizationRef.get())
+					.map(DefinitionReference::get)
 					.collect(Collectors.toSet());
 		}
 		return Collections.emptySet();
@@ -162,8 +164,6 @@ public final class UserAuthorizations implements Serializable {
 		authorizationRefs.clear();
 		authorizationMapRefs.clear();
 	}
-
-	private final Map<String, List<Serializable>> mySecurityKeys = new HashMap<>();
 
 	/**
 	 * Gestion de la sécurité.

@@ -89,8 +89,10 @@ public final class AccountMapperHelper<S, D> {
 	public AccountMapperHelper<S, D> parseAttributeMapping() {
 		for (final String mapping : sourceToDestMappingStr.split("\\s*,\\s*")) {
 			final String[] splitedMapping = mapping.split("\\s*:\\s*");
-			Assertion.checkArgument(splitedMapping.length == 2, "Mapping should respect the pattern sourceFields:destFields :(like sourceAttr1:destAttr1, sourceAttr2:destAttr2, ... (check : {0})", sourceToDestMappingStr);
-			Assertion.when(sourceDtDefinition.isPresent()).check(() -> sourceDtDefinition.get().contains(splitedMapping[2]), "sourceField {1} must be in DtDefinition {1}", splitedMapping[2], sourceDtDefinition.orElse(null));
+			Assertion.checkArgument(splitedMapping.length == 2,
+					"Mapping should respect the pattern sourceFields:destFields :(like sourceAttr1:destAttr1, sourceAttr2:destAttr2, ... (check : {0})", sourceToDestMappingStr);
+			Assertion.when(sourceDtDefinition.isPresent())
+					.check(() -> sourceDtDefinition.get().contains(splitedMapping[2]), "sourceField {1} must be in DtDefinition {1}", splitedMapping[2], sourceDtDefinition.orElse(null));
 			//It's reverse compared to config String : we keep a map of key:destAttribute -> value:sourceAttribute
 			final S source;
 			if (sourceDtDefinition.isPresent()) {
