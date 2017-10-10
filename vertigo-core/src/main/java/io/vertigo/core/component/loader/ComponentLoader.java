@@ -202,7 +202,7 @@ public final class ComponentLoader {
 
 	private <C extends Component> C injectAspects(final C instance, final Class implClass) {
 		//2. AOP , a new instance is created when aspects are injected in the previous instance
-		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(implClass, aspects);
+		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createAspectsByMethod(implClass, aspects);
 		if (!joinPoints.isEmpty()) {
 			return aopPlugin.wrap(instance, joinPoints);
 		}
@@ -236,13 +236,13 @@ public final class ComponentLoader {
 		Assertion.checkArgument(componentConfig.isProxy(), "a proxy component is expected");
 		//---
 		//1. AOP : finds all aspects
-		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createJoinPoints(componentConfig.getApiClass().get(), aspects);
+		final Map<Method, List<Aspect>> aspectsByMethod = ComponentAspectUtil.createAspectsByMethod(componentConfig.getApiClass().get(), aspects);
 
 		// 2. An instance is created and all aspects are injected
 		return ComponentProxyFactory.createProxy(
 				componentConfig.getApiClass().get(),
 				proxyMethods,
-				joinPoints);
+				aspectsByMethod);
 	}
 
 	/**

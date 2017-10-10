@@ -52,7 +52,9 @@ final class ComponentAspectUtil {
 	 *
 	 * @return Map des aspects par méthode
 	 */
-	static Map<Method, List<Aspect>> createJoinPoints(final Class<?> implClass, final Collection<Aspect> aspects) {
+	static Map<Method, List<Aspect>> createAspectsByMethod(
+			final Class<?> implClass,
+			final Collection<Aspect> aspects) {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(aspects);
 		//-----
@@ -90,6 +92,7 @@ final class ComponentAspectUtil {
 
 	private static Aspect findAspect(final Annotation annotation, final Collection<Aspect> aspects) {
 		Assertion.checkNotNull(annotation);
+		Assertion.checkNotNull(aspects);
 		// --
 		return aspects
 				.stream()

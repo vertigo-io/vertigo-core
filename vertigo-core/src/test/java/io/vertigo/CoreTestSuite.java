@@ -91,6 +91,6 @@ import io.vertigo.util.StringUtilTest;
 		LocaleManagerTest.class
 })
 
-public final class VertigoTestSuite {
+public final class CoreTestSuite {
 	//
 }

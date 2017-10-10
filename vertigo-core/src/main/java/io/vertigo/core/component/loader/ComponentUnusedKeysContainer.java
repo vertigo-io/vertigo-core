@@ -25,7 +25,7 @@ import io.vertigo.core.component.Container;
 import io.vertigo.lang.Assertion;
 
 /**
- * Conteneur permettant de compter les clés non utilisées.
+ * This conatiner lists the used keys... to identify the unused keys (orphans).
  *
  * @author pchretien
  */
