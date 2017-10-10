@@ -34,7 +34,7 @@ import io.vertigo.lang.VSystemException;
 public final class Car implements KeyConcept {
 	public enum CarFields implements DtFieldName {
 		ID,
-		MAKE,
+		MANUFACTURER,
 		MODEL,
 		DESCRIPTION,
 		YEAR,
@@ -49,7 +49,7 @@ public final class Car implements KeyConcept {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	private String make;
+	private String manufacturer;
 	private String model;
 	private String description;
 	private Integer year;
@@ -98,22 +98,22 @@ public final class Car implements KeyConcept {
 	/**
 	 * Champ : DATA. récupère la valeur de la propriété 'Constructeur'.
 	 *
-	 * @return String make <b>Obligatoire</b>
+	 * @return String manufacturer <b>Obligatoire</b>
 	 */
-	@javax.persistence.Column(name = "MAKE")
+	@javax.persistence.Column(name = "MANUFACTURER")
 	@Field(domain = "DO_KEYWORD", required = true, label = "Constructeur")
-	public final String getMake() {
-		return make;
+	public final String getManufacturer() {
+		return manufacturer;
 	}
 
 	/**
 	 * Champ : DATA. Définit la valeur de la propriété 'Constructeur'.
 	 *
-	 * @param make
+	 * @param manufacturer
 	 *            String <b>Obligatoire</b>
 	 */
-	public final void setMake(final String make) {
-		this.make = make;
+	public final void setManufacturer(final String manufacturer) {
+		this.manufacturer = manufacturer;
 	}
 
 	/**

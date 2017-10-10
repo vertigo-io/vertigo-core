@@ -57,7 +57,7 @@ public final class CarDataBase {
 	private static Car createCar(
 			final long id,
 			final int price,
-			final String make,
+			final String manufacturer,
 			final String model,
 			final int year,
 			final MotorTypeEnum motorTypeEnum,
@@ -67,7 +67,7 @@ public final class CarDataBase {
 		final Car car = new Car();
 		car.setId(id);
 		car.setPrice(price);
-		car.setMake(make);
+		car.setManufacturer(manufacturer);
 		car.setModel(model);
 		car.setYear(year);
 		car.setKilo(kilo);
