@@ -605,12 +605,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		final long size = query("*:*");
 		Assert.assertEquals(itemDataBase.size(), size);
 		//on compte les Peugeots
-		int nbPeugeot = 0;
-		for (final Item item : itemDataBase.getAllItems()) {
-			if ("Peugeot".equals(item.getManufacturer())) {
-				nbPeugeot++;
-			}
-		}
+		final int nbPeugeot = itemDataBase.getItemsByManufacturer("Peugeot").size();
 		//On supprime toute les Peugeots
 		remove("MANUFACTURER:Peugeot");
 		final long resize = query("*:*");
