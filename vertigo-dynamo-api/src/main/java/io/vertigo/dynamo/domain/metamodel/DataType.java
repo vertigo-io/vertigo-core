@@ -117,11 +117,11 @@ public enum DataType {
 		Assertion.checkNotNull(type);
 		//---
 		DataType dataType;
-		if (Integer.class.equals(type)) {
+		if (Integer.class.equals(type) || int.class.equals(type)) {
 			dataType = DataType.Integer;
-		} else if (Double.class.equals(type)) {
+		} else if (Double.class.equals(type) || double.class.equals(type)) {
 			dataType = DataType.Double;
-		} else if (Boolean.class.equals(type)) {
+		} else if (Boolean.class.equals(type) || boolean.class.equals(type)) {
 			dataType = DataType.Boolean;
 		} else if (String.class.equals(type)) {
 			dataType = DataType.String;
@@ -133,9 +133,7 @@ public enum DataType {
 			dataType = DataType.ZonedDateTime;
 		} else if (java.math.BigDecimal.class.equals(type)) {
 			dataType = DataType.BigDecimal;
-		} else if (Long.class.equals(type)) {
-			dataType = DataType.Long;
-		} else if (Long.class.equals(type)) {
+		} else if (Long.class.equals(type) || long.class.equals(type)) {
 			dataType = DataType.Long;
 		} else if (DataStream.class.equals(type)) {
 			dataType = DataType.DataStream;
