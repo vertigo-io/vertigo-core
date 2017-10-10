@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.function.Predicate;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -38,11 +37,6 @@ import io.vertigo.dynamo.criteria.data.movies.Movie2DataBase;
 @RunWith(JUnitPlatform.class)
 public final class PredicateCriteriaTest extends AbstractCriteriaTest {
 	private final Movie2DataBase movie2DataBase = new Movie2DataBase();
-
-	@BeforeEach
-	public void before() {
-		movie2DataBase.loadDatas();
-	}
 
 	private static Predicate<Movie2> predicate(final Criteria<Movie2> criteria) {
 		return criteria.toPredicate();

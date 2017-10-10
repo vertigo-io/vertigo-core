@@ -18,83 +18,44 @@
  */
 package io.vertigo.dynamo.criteria.data.movies;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.util.VCollectors;
+import io.vertigo.util.ListBuilder;
 
 /**
- * Base de données des voitures.
- *
  *
  * @author pchretien
  */
 public final class Movie2DataBase {
-	private final List<Movie2> movies = new ArrayList<>();
-	//	private long size = 0;
+	private final List<Movie2> movies = new ListBuilder<Movie2>()
+			.add(createMovie2(1933, "king kong"))
+			.add(createMovie2(1951, "pandora"))
+			.add(createMovie2(1959, "vertigo"))
+			.add(createMovie2(1979, "alien"))
+			.add(createMovie2(1980, "shining"))
+			.add(createMovie2(1984, "amadeus"))
+			.add(createMovie2(1984, "1984"))
+			.add(createMovie2(1984, "terminator"))
+			.add(createMovie2(1985, "porco rosso"))
+			.add(createMovie2(2000, "gladiator"))
+			.add(createMovie2(2014, "interstellar"))
+			.add(createMovie2(2014, "mommy"))
+			.add(createMovie2(null, "ordet"))
+			.unmodifiable()
+			.build();
 
-	public void loadDatas() {
-		add(1933, "king kong");
-		add(1951, "pandora");
-		add(1959, "vertigo");
-		add(1979, "alien");
-		add(1980, "shining");
-		add(1984, "amadeus");
-		add(1984, "1984");
-		add(1984, "terminator");
-		add(1985, "porco rosso");
-		add(2000, "gladiator");
-		add(2014, "interstellar");
-		add(2014, "mommy");
-		add(null, "ordet");
-	}
-
-	private void add(final Integer year, final String title) {
+	private static Movie2 createMovie2(final Integer year, final String title) {
 		final Movie2 movie = new Movie2();
 		movie.setYear(year);
 		movie.setTitle(title);
-		movies.add(movie);
-		//		size++;
+		return movie;
 	}
-
-	//	public long size() {
-	//		return size;
-	//	}
 
 	public final DtList<Movie2> getAllMovies() {
 		return movies
 				.stream()
 				.collect(VCollectors.toDtList(Movie2.class));
 	}
-	//
-	//	public List<Movie2> getCarsByMaker(final String make) {
-	//		final List<Movie2> byMakeCars = new ArrayList<>();
-	//		for (final Movie2 car : movies) {
-	//			if (car.getMake().toLowerCase(Locale.FRENCH).equals(make)) {
-	//				byMakeCars.add(car);
-	//			}
-	//		}
-	//		return byMakeCars;
-	//	}
-	//
-	//	public long getCarsBefore(final int year) {
-	//		long count = 0;
-	//		for (final Movie2 car : movies) {
-	//			if (car.getYear() <= year) {
-	//				count++;
-	//			}
-	//		}
-	//		return count;
-	//	}
-	//
-	//	public long containsDescription(final String word) {
-	//		long count = 0;
-	//		for (final Movie2 car : movies) {
-	//			if (car.getDescription().toLowerCase(Locale.FRENCH).contains(word)) {
-	//				count++;
-	//			}
-	//		}
-	//		return count;
-	//	}
 }

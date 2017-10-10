@@ -73,7 +73,6 @@ public final class SqlCriteriaTest extends AbstractCriteriaTest {
 				Optional.empty());
 
 		final Movie2DataBase movie2DataBase = new Movie2DataBase();
-		movie2DataBase.loadDatas();
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			for (final Movie2 movie2 : movie2DataBase.getAllMovies()) {
 				storeManager.getDataStore().create(movie2);
