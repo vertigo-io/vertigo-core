@@ -47,12 +47,12 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 	@Inject
 	protected SearchManager searchManager;
 
-	private ItemDataBase carDataBase;
+	private ItemDataBase itemDataBase;
 
 	/**{@inheritDoc}*/
 	@Override
 	protected void doSetUp() {
-		carDataBase = new ItemDataBase();
+		itemDataBase = new ItemDataBase();
 	}
 
 	/**
@@ -63,23 +63,23 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testIndex() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final SearchIndexDefinition carIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
-		final SearchIndexDefinition carDynIndexDefinition = definitionSpace.resolve(IDX_DYNA_ITEM, SearchIndexDefinition.class);
+		final SearchIndexDefinition itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
+		final SearchIndexDefinition itemDynIndexDefinition = definitionSpace.resolve(IDX_DYNA_ITEM, SearchIndexDefinition.class);
 
-		for (final Item car : carDataBase.getAllItems()) {
-			final SearchIndex<Item, Item> index = SearchIndex.createIndex(carIndexDefinition, car.getURI(), car);
-			searchManager.put(carIndexDefinition, index);
+		for (final Item item : itemDataBase.getAllItems()) {
+			final SearchIndex<Item, Item> index = SearchIndex.createIndex(itemIndexDefinition, item.getURI(), item);
+			searchManager.put(itemIndexDefinition, index);
 
-			final SearchIndex<Item, Item> index2 = SearchIndex.createIndex(carDynIndexDefinition, car.getURI(), car);
-			searchManager.put(carDynIndexDefinition, index2);
+			final SearchIndex<Item, Item> index2 = SearchIndex.createIndex(itemDynIndexDefinition, item.getURI(), item);
+			searchManager.put(itemDynIndexDefinition, index2);
 		}
 		waitIndexation();
 
-		final long sizeCar = query("*:*", carIndexDefinition);
-		Assert.assertEquals(carDataBase.size(), sizeCar);
+		final long size = query("*:*", itemIndexDefinition);
+		Assert.assertEquals(itemDataBase.size(), size);
 
-		final long sizeCarDyn = query("*:*", carDynIndexDefinition);
-		Assert.assertEquals(carDataBase.size(), sizeCarDyn);
+		final long sizeDyn = query("*:*", itemDynIndexDefinition);
+		Assert.assertEquals(itemDataBase.size(), sizeDyn);
 	}
 
 	/**
@@ -89,18 +89,18 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testClean() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final SearchIndexDefinition carIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
-		final SearchIndexDefinition carDynIndexDefinition = definitionSpace.resolve(IDX_DYNA_ITEM, SearchIndexDefinition.class);
+		final SearchIndexDefinition itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
+		final SearchIndexDefinition itemDynIndexDefinition = definitionSpace.resolve(IDX_DYNA_ITEM, SearchIndexDefinition.class);
 		final ListFilter removeQuery = ListFilter.of("*:*");
-		searchManager.removeAll(carIndexDefinition, removeQuery);
-		searchManager.removeAll(carDynIndexDefinition, removeQuery);
+		searchManager.removeAll(itemIndexDefinition, removeQuery);
+		searchManager.removeAll(itemDynIndexDefinition, removeQuery);
 		waitIndexation();
 
-		final long sizeCar = query("*:*", carIndexDefinition);
-		Assert.assertEquals(0, sizeCar);
+		final long size = query("*:*", itemIndexDefinition);
+		Assert.assertEquals(0, size);
 
-		final long sizeCarDyn = query("*:*", carDynIndexDefinition);
-		Assert.assertEquals(0, sizeCarDyn);
+		final long sizeDyn = query("*:*", itemDynIndexDefinition);
+		Assert.assertEquals(0, sizeDyn);
 	}
 
 	private long query(final String query, final SearchIndexDefinition indexDefinition) {

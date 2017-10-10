@@ -29,7 +29,7 @@ import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.util.ListBuilder;
 
 /**
- * database of cars.
+ * database of items.
  *
  *
  * @author pchretien
@@ -57,22 +57,22 @@ public final class ItemDataBase {
 	}
 
 	private static Item createItem(final long id, final int price, final String manufacturer, final String model, final int year, final String motorType, final int kilo, final double consommation, final String description, final Long optionalNumber, final String optionalString) {
-		final Item car = new Item();
-		car.setId(id);
-		car.setPrice(price);
-		car.setManufacturer(manufacturer);
-		car.setModel(model);
-		car.setYear(year);
-		car.setKilo(kilo);
+		final Item item = new Item();
+		item.setId(id);
+		item.setPrice(price);
+		item.setManufacturer(manufacturer);
+		item.setModel(model);
+		item.setYear(year);
+		item.setKilo(kilo);
 		final BigDecimal conso = new BigDecimal(consommation);
 		conso.setScale(2, RoundingMode.HALF_UP);
-		car.setConsommation(conso);
-		car.setMotorType(motorType.toLowerCase(Locale.FRENCH));
-		car.setDescription(description);
-		car.setOptionalNumber(optionalNumber);
-		car.setOptionalString(optionalString);
+		item.setConsommation(conso);
+		item.setMotorType(motorType.toLowerCase(Locale.FRENCH));
+		item.setDescription(description);
+		item.setOptionalNumber(optionalNumber);
+		item.setOptionalString(optionalString);
 		//-----
-		return (car);
+		return (item);
 	}
 
 	public long size() {
@@ -86,19 +86,19 @@ public final class ItemDataBase {
 
 	public List<Item> getItemsByManufacturer(final String manufacturer) {
 		return items.stream()
-				.filter(car -> car.getManufacturer().toLowerCase(Locale.FRENCH).equals(manufacturer))
+				.filter(item -> item.getManufacturer().toLowerCase(Locale.FRENCH).equals(manufacturer))
 				.collect(Collectors.toList());
 	}
 
 	public long getItemsBefore(final int year) {
 		return items.stream()
-				.filter(car -> car.getYear() <= year)
+				.filter(item -> item.getYear() <= year)
 				.count();
 	}
 
 	public long containsDescription(final String word) {
 		return items.stream()
-				.filter(car -> car.getDescription().toLowerCase(Locale.FRENCH).contains(word))
+				.filter(item -> item.getDescription().toLowerCase(Locale.FRENCH).contains(word))
 				.count();
 	}
 }
