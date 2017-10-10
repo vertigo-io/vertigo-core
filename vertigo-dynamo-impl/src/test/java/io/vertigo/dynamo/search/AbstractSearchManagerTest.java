@@ -247,7 +247,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(0L, (int) size); //Les constructeur sont des mots clés donc sensible à la casse (y compris en wildcard)
 
 		size = query("YEAR:[* TO 2005]"); //On compte les véhicules avant 2005
-		Assert.assertEquals(itemDataBase.getItemsBefore(2005), size);
+		Assert.assertEquals(itemDataBase.before(2005), size);
 
 		size = query("DESCRIPTION:panoRAmique");//La description est un text insenssible à la casse
 		Assert.assertEquals(itemDataBase.containsDescription("panoramique"), size);
@@ -475,7 +475,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		for (final Entry<FacetValue, Long> entry : yearFacet.getFacetValues().entrySet()) {
 			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).contains("avant")) {
 				found = true;
-				Assert.assertEquals(itemDataBase.getItemsBefore(2000), entry.getValue().longValue());
+				Assert.assertEquals(itemDataBase.before(2000), entry.getValue().longValue());
 			}
 		}
 		Assert.assertTrue(found);
@@ -553,7 +553,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		index(false);
 		long size;
 		size = query("*:*", "+YEAR:[ 2005 TO * ]");
-		Assert.assertEquals(itemDataBase.size() - itemDataBase.getItemsBefore(2005), size);
+		Assert.assertEquals(itemDataBase.size() - itemDataBase.before(2005), size);
 
 		size = query("MANUFACTURER:Peugeot", "+YEAR:[2005 TO * ]"); //Les constructeur sont des mots clés donc sensible à la casse
 		Assert.assertEquals(0L, (int) size);
@@ -654,7 +654,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 				.withFacetStrategy(createFacetQuery("FCT_YEAR_ITEM", "avant", result))
 				.build();
 		final FacetedQueryResult<Item, SearchQuery> resultFiltered = searchManager.loadList(itemIndexDefinition, searchQuery2, null);
-		Assert.assertEquals(itemDataBase.getItemsBefore(2000), resultFiltered.getCount());
+		Assert.assertEquals(itemDataBase.before(2000), resultFiltered.getCount());
 	}
 
 	private static FacetedQuery createFacetQuery(final String facetName, final String facetValueLabel, final FacetedQueryResult<Item, ?> result) {
@@ -729,7 +729,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		index(true);
 		final List<Item> peugeotItems = itemDataBase.getItemsByManufacturer("peugeot");
 		final long peugeotContainsCuirCount = ItemDataBase.containsDescription(peugeotItems, "cuir");
-		//final long peugeotContainsSiegCount = carDataBase.containsDescription("cuir");
 
 		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetStrategy(itemFacetQueryDefinition, EMPTY_SELECTED_FACET_VALUES)
@@ -763,13 +762,12 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		index(true);
 		final List<Item> peugeotItems = itemDataBase.getItemsByManufacturer("peugeot");
 		final List<Item> volkswagenItems = itemDataBase.getItemsByManufacturer("volkswagen");
-		final List<Item> peugeotVolkswagenItems = new ArrayList<>();
-		peugeotVolkswagenItems.addAll(peugeotItems);
-		peugeotVolkswagenItems.addAll(volkswagenItems);
+		final List<Item> peugeotVolkswagenItems = itemDataBase.getItemsByManufacturers("peugeot", "volkswagen");
+
 		final int audiItemsSize = itemDataBase.getItemsByManufacturer("audit").size();
 
-		final long peugeot2000To2005Count = ItemDataBase.before(peugeotItems, 2005) - ItemDataBase.before(peugeotItems, 2000);
-		final long peugeotVolkswagen2000To2005Count = ItemDataBase.before(peugeotVolkswagenItems, 2005) - ItemDataBase.before(peugeotVolkswagenItems, 2000);
+		final long peugeot2000To2005Count = ItemDataBase.between(peugeotItems, 2000, 2005);
+		final long peugeotVolkswagen2000To2005Count = ItemDataBase.between(peugeotVolkswagenItems, 2000, 2005);
 
 		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetStrategy(itemFacetMultiQueryDefinition, EMPTY_SELECTED_FACET_VALUES)
@@ -819,16 +817,14 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		final List<Item> peugeotItems = itemDataBase.getItemsByManufacturer("peugeot");
 		final List<Item> volkswagenItems = itemDataBase.getItemsByManufacturer("volkswagen");
 		final List<Item> audiItems = itemDataBase.getItemsByManufacturer("audi");
+		final List<Item> peugeotVolkswagenItems = itemDataBase.getItemsByManufacturers("peugeot", "volkswagen");
 
-		final List<Item> peugeotVolkswagenItems = new ArrayList<>();
-		peugeotVolkswagenItems.addAll(peugeotItems);
-		peugeotVolkswagenItems.addAll(volkswagenItems);
 		final int audiItemsSize = itemDataBase.getItemsByManufacturer("audit").size();
 
-		final long peugeot2000To2005Count = ItemDataBase.before(peugeotItems, 2005) - ItemDataBase.before(peugeotItems, 2000);
-		final long volkswagen2000To2005Count = ItemDataBase.before(volkswagenItems, 2005) - ItemDataBase.before(volkswagenItems, 2000);
-		final long audi2000To2005Count = ItemDataBase.before(audiItems, 2005) - ItemDataBase.before(audiItems, 2000);
-		final long peugeotVolkswagen2000To2005Count = ItemDataBase.before(peugeotVolkswagenItems, 2005) - ItemDataBase.before(peugeotVolkswagenItems, 2000);
+		final long peugeot2000To2005Count = ItemDataBase.between(peugeotItems, 2000, 2005);
+		final long volkswagen2000To2005Count = ItemDataBase.between(volkswagenItems, 2000, 2005);
+		final long audi2000To2005Count = ItemDataBase.between(audiItems, 2000, 2005);
+		final long peugeotVolkswagen2000To2005Count = ItemDataBase.between(peugeotVolkswagenItems, 2000, 2005);
 
 		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetStrategy(itemFacetMultiQueryDefinition, EMPTY_SELECTED_FACET_VALUES)
@@ -891,9 +887,9 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testFilterFacetListByRangeAndTerm() {
 		index(true);
-		final long item2000To2005Count = itemDataBase.getItemsBefore(2005) - itemDataBase.getItemsBefore(2000);
+		final long item2000To2005Count = itemDataBase.before(2005) - itemDataBase.before(2000);
 		final List<Item> peugeotItems = itemDataBase.getItemsByManufacturer("peugeot");
-		final long peugeot2000To2005Count = ItemDataBase.before(peugeotItems, 2005) - ItemDataBase.before(peugeotItems, 2000);
+		final long peugeot2000To2005Count = ItemDataBase.between(peugeotItems, 2000, 2005);
 
 		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetStrategy(itemFacetQueryDefinition, EMPTY_SELECTED_FACET_VALUES)

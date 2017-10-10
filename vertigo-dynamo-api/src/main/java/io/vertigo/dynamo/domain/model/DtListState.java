@@ -40,7 +40,11 @@ public final class DtListState {
 	 * @param sortFieldName sort fieldName (null if not use)
 	 * @param sortDesc desc or asc order (null if not use)
 	 */
-	public DtListState(final Integer maxRows, final int skipRows, final String sortFieldName, final Boolean sortDesc) {
+	public DtListState(
+			final Integer maxRows,
+			final int skipRows,
+			final String sortFieldName,
+			final Boolean sortDesc) {
 		Assertion.when(maxRows != null)
 				.check(() -> maxRows > 0, "maxRows must be positive ({0})", maxRows);
 		Assertion.checkArgument(skipRows >= 0, "SkipRows must be positive ({0})", skipRows);

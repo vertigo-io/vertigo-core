@@ -20,6 +20,8 @@ package io.vertigo.dynamo.search.data.domain;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -60,6 +62,10 @@ public final class ItemDataBase {
 				.count();
 	}
 
+	public static long between(final List<Item> items, final int year1, final int year2) {
+		return before(items, year2) - before(items, year1);
+	}
+
 	public static long before(final List<Item> items, final int year) {
 		return items.stream()
 				.filter(item -> item.getYear() <= year)
@@ -93,13 +99,20 @@ public final class ItemDataBase {
 		return items;
 	}
 
+	public List<Item> getItemsByManufacturers(final String... manufacturers) {
+		final List<Item> list = new ArrayList<>();
+		Arrays.stream(manufacturers)
+				.forEach(manufacturer -> list.addAll(getItemsByManufacturer(manufacturer)));
+		return list;
+	}
+
 	public List<Item> getItemsByManufacturer(final String manufacturer) {
 		return items.stream()
 				.filter(item -> item.getManufacturer().toLowerCase(Locale.FRENCH).equals(manufacturer.toLowerCase(Locale.FRENCH)))
 				.collect(Collectors.toList());
 	}
 
-	public long getItemsBefore(final int year) {
+	public long before(final int year) {
 		return before(items, year);
 	}
 
