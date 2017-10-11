@@ -46,19 +46,19 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private CollectionsManager collectionsManager;
 	private FacetedQueryDefinition carFacetQueryDefinition;
-	private SmartCarDataBase carDataBase;
+	private SmartCarDataBase smartCarDataBase;
 
 	/**{@inheritDoc}*/
 	@Override
 	protected void doSetUp() {
 		//On construit la BDD des voitures
-		carDataBase = new SmartCarDataBase();
+		smartCarDataBase = new SmartCarDataBase();
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		carFacetQueryDefinition = definitionSpace.resolve("QRY_CAR_FACET", FacetedQueryDefinition.class);
 	}
 
 	private void testFacetResultByRange(final FacetedQueryResult<SmartCar, ?> result) {
-		Assert.assertEquals(carDataBase.size(), result.getCount());
+		Assert.assertEquals(smartCarDataBase.size(), result.getCount());
 
 		//On vérifie qu'il y a le bon nombre de facettes.
 		Assert.assertEquals(3, result.getFacets().size());
@@ -71,32 +71,32 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 		for (final Entry<FacetValue, Long> entry : yearFacet.getFacetValues().entrySet()) {
 			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).contains("avant")) {
 				found = true;
-				Assert.assertEquals(carDataBase.getCarsBefore(2000), entry.getValue().longValue());
+				Assert.assertEquals(smartCarDataBase.getCarsBefore(2000), entry.getValue().longValue());
 			}
 		}
 		Assert.assertTrue(found);
 	}
 
 	private void testFacetResultByTerm(final FacetedQueryResult<SmartCar, ?> result) {
-		Assert.assertEquals(carDataBase.size(), result.getCount());
+		Assert.assertEquals(smartCarDataBase.size(), result.getCount());
 
 		//On vérifie qu'il y a le bon nombre de facettes.
 		Assert.assertEquals(3, result.getFacets().size());
 
 		//On recherche la facette constructeur
-		final Facet makeFacet = getFacetByName(result, "FCT_MANUFACTURER_CAR");
+		final Facet manufacturerFacet = getFacetByName(result, "FCT_MANUFACTURER_CAR");
 		//On vérifie que l'on est sur le champ Make
-		Assert.assertEquals("MANUFACTURER", makeFacet.getDefinition().getDtField().getName());
-		Assert.assertFalse(makeFacet.getDefinition().isRangeFacet());
+		Assert.assertEquals("MANUFACTURER", manufacturerFacet.getDefinition().getDtField().getName());
+		Assert.assertFalse(manufacturerFacet.getDefinition().isRangeFacet());
 
 		//On vérifie qu'il existe une valeur pour peugeot et que le nombre d'occurrences est correct
 		boolean found = false;
 		final String manufacturer = "peugeot";
-		for (final Entry<FacetValue, Long> entry : makeFacet.getFacetValues().entrySet()) {
+		for (final Entry<FacetValue, Long> entry : manufacturerFacet.getFacetValues().entrySet()) {
 			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).equals(manufacturer)) {
 				found = true;
-				//System.out.println("make" + entry.getKey().getLabel().getDisplay());
-				Assert.assertEquals(carDataBase.getCarsByManufacturer(manufacturer).size(), entry.getValue().intValue());
+				//System.out.println("manufacturer" + entry.getKey().getLabel().getDisplay());
+				Assert.assertEquals(smartCarDataBase.getCarsByManufacturer(manufacturer).size(), entry.getValue().intValue());
 			}
 		}
 		Assert.assertTrue(found);
@@ -115,7 +115,7 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFacetListByRange() {
-		final DtList<SmartCar> cars = carDataBase.getAllCars();
+		final DtList<SmartCar> cars = smartCarDataBase.getAllCars();
 		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, SelectedFacetValues.empty().build());
 		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery);
 		testFacetResultByRange(result);
@@ -127,13 +127,13 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFilterFacetListByRange() {
-		final DtList<SmartCar> cars = carDataBase.getAllCars();
+		final DtList<SmartCar> cars = smartCarDataBase.getAllCars();
 		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, SelectedFacetValues.empty().build());
 		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery);
 		//on applique une facette
 		final FacetedQuery query = addFacetQuery("FCT_YEAR_CAR", "avant", result);
 		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered = collectionsManager.facetList(result.getSource(), query);
-		Assert.assertEquals(carDataBase.getCarsBefore(2000), resultFiltered.getCount());
+		Assert.assertEquals(smartCarDataBase.getCarsBefore(2000), resultFiltered.getCount());
 	}
 
 	private static FacetedQuery addFacetQuery(final String facetName, final String facetValueLabel, final FacetedQueryResult<SmartCar, ?> result) {
@@ -161,7 +161,7 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFacetListByTerm() {
-		final DtList<SmartCar> cars = carDataBase.getAllCars();
+		final DtList<SmartCar> cars = smartCarDataBase.getAllCars();
 		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, SelectedFacetValues.empty().build());
 		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery);
 		testFacetResultByTerm(result);
@@ -173,13 +173,13 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFilterFacetListByTerm() {
-		final DtList<SmartCar> cars = carDataBase.getAllCars();
+		final DtList<SmartCar> cars = smartCarDataBase.getAllCars();
 		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, SelectedFacetValues.empty().build());
 		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery);
 		//on applique une facette
 		final FacetedQuery query = addFacetQuery("FCT_MANUFACTURER_CAR", "peugeot", result);
 		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered = collectionsManager.facetList(result.getSource(), query);
-		Assert.assertEquals(carDataBase.getCarsByManufacturer("peugeot").size(), (int) resultFiltered.getCount());
+		Assert.assertEquals(smartCarDataBase.getCarsByManufacturer("peugeot").size(), (int) resultFiltered.getCount());
 	}
 
 }
