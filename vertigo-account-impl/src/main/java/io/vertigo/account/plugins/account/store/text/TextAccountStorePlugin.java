@@ -77,11 +77,17 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	private final String groupFilePath;
 
 	private enum AccountProperty {
-		id, displayName, email, authToken, photoUrl
+		id,
+		displayName,
+		email,
+		authToken,
+		photoUrl
 	}
 
 	private enum GroupProperty {
-		id, displayName, accountIds
+		id,
+		displayName,
+		accountIds
 	}
 
 	/**
@@ -91,7 +97,8 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	 * @param accountFilePatternStr File Pattern (id, displayName, email, authToken, photoUrl)
 	 */
 	@Inject
-	public TextAccountStorePlugin(@Named("accountFilePath") final String accountFilePath,
+	public TextAccountStorePlugin(
+			@Named("accountFilePath") final String accountFilePath,
 			@Named("accountFilePattern") final String accountFilePatternStr,
 			@Named("groupFilePath") final String groupFilePath,
 			@Named("groupFilePattern") final String groupFilePatternStr,
@@ -160,10 +167,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 		final Optional<AccountInfo> accountInfoOpt = accounts.values().stream()
 				.filter(accountInfo -> accountAuthToken.equals(accountInfo.getAccount().getAuthToken()))
 				.findFirst();
-		if (accountInfoOpt.isPresent()) {
-			return Optional.of(accountInfoOpt.get().getAccount());
-		}
-		return Optional.empty();
+		return accountInfoOpt.map(accountInfo -> accountInfo.getAccount());
 	}
 
 	/** {@inheritDoc} */

@@ -29,7 +29,8 @@ import javax.naming.NamingException;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.account.authentication.AuthenticationToken;
 import io.vertigo.account.impl.authentication.AuthenticationPlugin;
@@ -38,11 +39,11 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
 /**
- * LDAP impl of AuthentificationRealm.
+ * LDAP impl of Authentification.
  * @author npiedeloup
  */
-public final class LdapAuthenticatingPlugin implements AuthenticationPlugin {
-	private static final Logger LOGGER = LogManager.getLogger(LdapAuthenticatingPlugin.class);
+public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
+	private static final Logger LOGGER = LogManager.getLogger(LdapAuthenticationPlugin.class);
 
 	private static final String DEFAULT_CONTEXT_FACTORY_CLASS_NAME = "com.sun.jndi.ldap.LdapCtxFactory";
 	private static final String SIMPLE_AUTHENTICATION_MECHANISM_NAME = "simple";
@@ -60,7 +61,7 @@ public final class LdapAuthenticatingPlugin implements AuthenticationPlugin {
 	 * @param ldapServerPort Ldap server port (default : 389)
 	 */
 	@Inject
-	public LdapAuthenticatingPlugin(
+	public LdapAuthenticationPlugin(
 			@Named("userLoginTemplate") final String userLoginTemplate,
 			@Named("ldapServerHost") final String ldapServerHost,
 			@Named("ldapServerPort") final String ldapServerPort) {

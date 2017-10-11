@@ -36,9 +36,9 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 
 /**
- * Authorizations d'un utilisateur.
+ * This class lisstAuthorizations d'un utilisateur.
  *
- * @author alauthier, pchretien, npiedeloup
+ * @author  pchretien, npiedeloup
  */
 public final class UserAuthorizations implements Serializable {
 

@@ -22,9 +22,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import io.vertigo.account.account.AccountManagerTest;
 import io.vertigo.account.authentification.AuthenticationManagerTest;
 import io.vertigo.account.authorization.VSecurityManagerTest;
-import io.vertigo.account.identity.IdentityManagerTest;
 
 /**
  * Test de l'implementation standard.
@@ -34,7 +34,7 @@ import io.vertigo.account.identity.IdentityManagerTest;
 @RunWith(Suite.class)
 @SuiteClasses({
 		AuthenticationManagerTest.class,
-		IdentityManagerTest.class,
+		AccountManagerTest.class,
 		VSecurityManagerTest.class
 })
 public final class AccountTestSuite {

@@ -33,9 +33,9 @@ import io.vertigo.core.component.Manager;
 public interface AuthenticationManager extends Manager {
 
 	/**
-	 * Try and check to login.
-	 * @param token Authentification token
-	 * @return Account User account (Principal)
+	 * Tries and checks to login.
+	 * @param token the authentification token
+	 * @return Account the user account (Principal)
 	 */
 	Optional<Account> login(final AuthenticationToken token);
 

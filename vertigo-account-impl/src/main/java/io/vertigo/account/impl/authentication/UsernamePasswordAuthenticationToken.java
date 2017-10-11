@@ -26,7 +26,6 @@ import io.vertigo.lang.Assertion;
  * @author npiedeloup
  */
 public final class UsernamePasswordAuthenticationToken implements AuthenticationToken {
-
 	private final PasswordHelper passwordHelper;
 
 	/**

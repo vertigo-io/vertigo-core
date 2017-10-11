@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.identity;
+package io.vertigo.account.account;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,11 +45,11 @@ import io.vertigo.persona.security.VSecurityManager;
 import redis.clients.jedis.Jedis;
 
 @RunWith(Parameterized.class)
-public final class IdentityManagerTest {
+public final class AccountManagerTest {
 	private AutoCloseableApp app;
 
 	@Inject
-	private AccountManager identityManager;
+	private AccountManager accountManager;
 
 	@Inject
 	private VSecurityManager securityManager;
@@ -75,7 +75,7 @@ public final class IdentityManagerTest {
 	 * Constructor
 	 * @param redis use redis or memory
 	 */
-	public IdentityManagerTest(final boolean redis) {
+	public AccountManagerTest(final boolean redis) {
 		//params are automatically injected
 		this.redis = redis;
 	}
@@ -131,32 +131,32 @@ public final class IdentityManagerTest {
 
 	@Test
 	public void testAccounts() {
-		Assert.assertEquals("Palmer Luckey", identityManager.getAccount(accountURI1).getDisplayName());
+		Assert.assertEquals("Palmer Luckey", accountManager.getAccount(accountURI1).getDisplayName());
 		//Assert.assertEquals(10 + 4, identityManager.getAccountsCount());
 	}
 
 	@Test
 	public void testPhoto() {
 		//Before the photo is the default photo
-		Assert.assertFalse(identityManager.getPhoto(accountURI0).isPresent());
-		Assert.assertEquals("defaultPhoto.png", identityManager.getDefaultPhoto().getFileName());
+		Assert.assertFalse(accountManager.getPhoto(accountURI0).isPresent());
+		Assert.assertEquals("defaultPhoto.png", accountManager.getDefaultPhoto().getFileName());
 		//-----
 		//	final VFile photo = fileManager.createFile(new File(this.getClass().getResource("../data/marianne.png").toURI()));
 		//	identityManager.setPhoto(accountURI0, photo);
 		//-----
-		Assert.assertTrue(identityManager.getPhoto(accountURI1).isPresent());
-		Assert.assertEquals("marianne.png", identityManager.getPhoto(accountURI1).get().getFileName());
+		Assert.assertTrue(accountManager.getPhoto(accountURI1).isPresent());
+		Assert.assertEquals("marianne.png", accountManager.getPhoto(accountURI1).get().getFileName());
 	}
 
 	@Test
 	public void testGroups() {
 		//Assert.assertEquals(2, identityManager.getGroupsCount());
 		//----
-		Assert.assertEquals(1, identityManager.getGroupURIs(accountURI0).size());
-		Assert.assertEquals(2, identityManager.getGroupURIs(accountURI1).size());
-		Assert.assertEquals(2, identityManager.getGroupURIs(accountURI2).size());
-		Assert.assertEquals(2, identityManager.getAccountURIs(groupURI).size());
-		Assert.assertEquals(10 + 4, identityManager.getAccountURIs(groupAllURI).size());
+		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI0).size());
+		Assert.assertEquals(2, accountManager.getGroupURIs(accountURI1).size());
+		Assert.assertEquals(2, accountManager.getGroupURIs(accountURI2).size());
+		Assert.assertEquals(2, accountManager.getAccountURIs(groupURI).size());
+		Assert.assertEquals(10 + 4, accountManager.getAccountURIs(groupAllURI).size());
 		//---
 		/*identityManager.attach(accountURI0, groupURI);
 		Assert.assertEquals(2, identityManager.getGroupURIs(accountURI0).size());

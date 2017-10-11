@@ -23,13 +23,13 @@ import java.io.Serializable;
 import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
- * Security operation's name.
- * @param <D> the dtobject associated to this operation
+ * the name of the security operation.
+ * @param <D> the object associated to this operation
  * @author npiedeloup
  */
 public interface OperationName<D extends DtObject> extends Serializable {
 
-	/** @return operation's name (const case) */
+	/** @return the name of the operation (const case) */
 	String name();
 
 }
