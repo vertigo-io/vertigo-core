@@ -1080,7 +1080,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		return searchManager.loadList(carIndexDefinition, searchQuery, null);
 	}
 
-	private static URI<io.vertigo.dynamo.search.data.domain.Car> createURI(final long id) {
+	private static URI<io.vertigo.dynamo.search_2_4.data.domain.Car> createURI(final long id) {
 		return new URI<>(DtObjectUtil.findDtDefinition(Car.class), id);
 	}
 
