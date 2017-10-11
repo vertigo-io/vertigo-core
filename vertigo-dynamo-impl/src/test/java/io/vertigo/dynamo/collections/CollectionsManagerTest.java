@@ -32,7 +32,7 @@ import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.collections.data.DtDefinitions;
-import io.vertigo.dynamo.collections.data.domain.Item;
+import io.vertigo.dynamo.collections.data.domain.SmartItem;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -56,21 +56,21 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	/** {@inheritDoc} */
 	@Override
 	protected void doSetUp() {
-		dtDefinitionItem = DtObjectUtil.findDtDefinition(Item.class);
+		dtDefinitionItem = DtObjectUtil.findDtDefinition(SmartItem.class);
 	}
 
 	@Test
 	public void testHeavySort() {
 		// final DtList<Item> sortDtc;
-		final DtList<Item> dtc = createItems();
+		final DtList<SmartItem> dtc = createItems();
 		//
 		for (int i = 0; i < 50000; i++) {
-			final Item mocka = new Item();
+			final SmartItem mocka = new SmartItem();
 			mocka.setLabel(String.valueOf(i % 100));
 			dtc.add(mocka);
 		}
 
-		final DtList<Item> sortedDtc = collectionsManager.sort(dtc, "LABEL", false);
+		final DtList<SmartItem> sortedDtc = collectionsManager.sort(dtc, "LABEL", false);
 
 		nop(sortedDtc);
 
@@ -78,8 +78,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testSort() {
-		DtList<Item> sortDtc;
-		final DtList<Item> dtc = createItems();
+		DtList<SmartItem> sortDtc;
+		final DtList<SmartItem> dtc = createItems();
 		final String[] indexDtc = extractLabels(dtc);
 
 		// Cas de base.
@@ -101,8 +101,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testNumericSort() {
-		DtList<Item> sortDtc;
-		final DtList<Item> dtc = createItems();
+		DtList<SmartItem> sortDtc;
+		final DtList<SmartItem> dtc = createItems();
 		final String[] indexDtc = extractLabels(dtc);
 
 		// Cas de base.
@@ -124,28 +124,28 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testFilter() {
-		final DtList<Item> result = createItems()
+		final DtList<SmartItem> result = createItems()
 				.stream()
 				.filter(Criterions.isEqualTo(DtDefinitions.Fields.LABEL, aaa_ba).toPredicate())
-				.collect(VCollectors.toDtList(Item.class));
+				.collect(VCollectors.toDtList(SmartItem.class));
 		Assert.assertEquals(1, result.size());
 	}
 
 	@Test
 	public void testFilterTwoValues() {
-		final Predicate<Item> filterA = Criterions.isEqualTo(DtDefinitions.Fields.LABEL, "aaa").toPredicate();
-		final Predicate<Item> filterB = Criterions.isEqualTo(DtDefinitions.Fields.ID, 13L).toPredicate();
+		final Predicate<SmartItem> filterA = Criterions.isEqualTo(DtDefinitions.Fields.LABEL, "aaa").toPredicate();
+		final Predicate<SmartItem> filterB = Criterions.isEqualTo(DtDefinitions.Fields.ID, 13L).toPredicate();
 
-		final DtList<Item> result = createItemsForRangeTest()
+		final DtList<SmartItem> result = createItemsForRangeTest()
 				.stream()
 				.filter(filterA.and(filterB))
-				.collect(VCollectors.toDtList(Item.class));
+				.collect(VCollectors.toDtList(SmartItem.class));
 		Assert.assertEquals(1, result.size());
 	}
 
 	@Test
 	public void testFilterFullText() {
-		final DtList<Item> result = collectionsManager.<Item> createIndexDtListFunctionBuilder()
+		final DtList<SmartItem> result = collectionsManager.<SmartItem> createIndexDtListFunctionBuilder()
 				.filter("aa", 1000, dtDefinitionItem.getFields())
 				.build()
 				.apply(createItems());
@@ -155,14 +155,14 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testFilterFullTextTokenizer() {
-		final DtList<Item> dtc = createItems();
+		final DtList<SmartItem> dtc = createItems();
 		final Collection<DtField> searchedDtFields = dtDefinitionItem.getFields();
-		final Item mock1 = new Item();
+		final SmartItem mock1 = new SmartItem();
 		mock1.setId(seqId++);
 		mock1.setLabel("Agence de l'Ouest");
 		dtc.add(mock1);
 
-		final Item mock2 = new Item();
+		final SmartItem mock2 = new SmartItem();
 		mock2.setId(seqId++);
 		mock2.setLabel("Hôpital et autres accents çava où ãpied");
 		dtc.add(mock2);
@@ -175,8 +175,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertTrue("La recherche ne supporte pas la recherche par préfix", filter(dtc, "apie", 1000, searchedDtFields).size() == 1);//prefix
 	}
 
-	private List<Item> filter(final DtList<Item> dtc, final String query, final int nbRows, final Collection<DtField> searchedDtFields) {
-		return collectionsManager.<Item> createIndexDtListFunctionBuilder()
+	private List<SmartItem> filter(final DtList<SmartItem> dtc, final String query, final int nbRows, final Collection<DtField> searchedDtFields) {
+		return collectionsManager.<SmartItem> createIndexDtListFunctionBuilder()
 				.filter(query, nbRows, searchedDtFields)
 				.build()
 				.apply(dtc);
@@ -184,15 +184,15 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testFilterFullTextElision() {
-		final DtList<Item> dtc = createItems();
+		final DtList<SmartItem> dtc = createItems();
 		final Collection<DtField> searchedDtFields = dtDefinitionItem.getFields();
 
-		final Item mock1 = new Item();
+		final SmartItem mock1 = new SmartItem();
 		mock1.setId(seqId++);
 		mock1.setLabel("Agence de l'Ouest");
 		dtc.add(mock1);
 
-		final Item mock2 = new Item();
+		final SmartItem mock2 = new SmartItem();
 		mock2.setId(seqId++);
 		mock2.setLabel("Hôpital et autres accents çava où àpied");
 		dtc.add(mock2);
@@ -202,15 +202,15 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testFilterFullTextMultiKeyword() {
-		final DtList<Item> dtc = createItems();
+		final DtList<SmartItem> dtc = createItems();
 		final Collection<DtField> searchedDtFields = dtDefinitionItem.getFields();
 
-		final Item mock1 = new Item();
+		final SmartItem mock1 = new SmartItem();
 		mock1.setId(seqId++);
 		mock1.setLabel("Agence de l'Ouest");
 		dtc.add(mock1);
 
-		final Item mock2 = new Item();
+		final SmartItem mock2 = new SmartItem();
 		mock2.setId(seqId++);
 		mock2.setLabel("Hôpital et autres accents çava où ãpied");
 		dtc.add(mock2);
@@ -227,30 +227,30 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testFilterFullTextBigList() {
-		final UnaryOperator<DtList<Item>> filterFunction = collectionsManager.<Item> createIndexDtListFunctionBuilder()
+		final UnaryOperator<DtList<SmartItem>> filterFunction = collectionsManager.<SmartItem> createIndexDtListFunctionBuilder()
 				.filter("a", 2000, dtDefinitionItem.getFields())
 				.build();
 		Assert.assertNotNull(filterFunction);
-		final DtList<Item> bigFamillyList = new DtList<>(Item.class);
+		final DtList<SmartItem> bigFamillyList = new DtList<>(SmartItem.class);
 		for (int i = 0; i < 50000; i++) {
-			final Item mocka = new Item();
+			final SmartItem mocka = new SmartItem();
 			mocka.setId(seqId++);
 			mocka.setLabel("blabla a" + (char) ('a' + i % 26) + String.valueOf(i % 100));
 			bigFamillyList.add(mocka);
 		}
-		final DtList<Item> result = filterFunction.apply(bigFamillyList);
+		final DtList<SmartItem> result = filterFunction.apply(bigFamillyList);
 		Assert.assertEquals(2000, result.size(), 0);
 	}
 
 	@Test
 	public void testSortWithIndex() {
-		DtList<Item> sortDtc;
-		final DtList<Item> dtc = createItems();
+		DtList<SmartItem> sortDtc;
+		final DtList<SmartItem> dtc = createItems();
 		final String[] indexDtc = extractLabels(dtc);
 
 		// Cas de base.
 		// ======================== Ascendant
-		sortDtc = collectionsManager.<Item> createIndexDtListFunctionBuilder()
+		sortDtc = collectionsManager.<SmartItem> createIndexDtListFunctionBuilder()
 				.sort("LABEL", false)
 				.build()
 				.apply(dtc);
@@ -259,7 +259,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		assertEquals(new String[] { aaa_ba, Ba_aa, bb_aa, null }, extractLabels(sortDtc));
 
 		// ======================== Descendant
-		sortDtc = collectionsManager.<Item> createIndexDtListFunctionBuilder()
+		sortDtc = collectionsManager.<SmartItem> createIndexDtListFunctionBuilder()
 				.sort("LABEL", true)
 				.build()
 				.apply(dtc);
@@ -269,15 +269,15 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testNumericSortWithIndex() {
-		DtList<Item> sortDtc;
-		final DtList<Item> dtc = createItems();
+		DtList<SmartItem> sortDtc;
+		final DtList<SmartItem> dtc = createItems();
 		final String[] indexDtc = extractLabels(dtc);
 
 		// Cas de base.
 		// ======================== Ascendant
 		// =================================== nullLast
 		// ================================================ ignoreCase
-		sortDtc = collectionsManager.<Item> createIndexDtListFunctionBuilder()
+		sortDtc = collectionsManager.<SmartItem> createIndexDtListFunctionBuilder()
 				.sort("ID", false)
 				.build()
 				.apply(dtc);
@@ -288,7 +288,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== Descendant
 		// =================================== not nullLast
 		// ================================================ ignoreCase
-		sortDtc = collectionsManager.<Item> createIndexDtListFunctionBuilder()
+		sortDtc = collectionsManager.<SmartItem> createIndexDtListFunctionBuilder()
 				.sort("ID", true)
 				.build()
 				.apply(dtc);
@@ -311,8 +311,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		//can't test subList(2,2) : illegal argument
 	}
 
-	private DtList<Item> subListWithIndex(final DtList<Item> dtc, final int start, final int end) {
-		return collectionsManager.<Item> createIndexDtListFunctionBuilder()
+	private DtList<SmartItem> subListWithIndex(final DtList<SmartItem> dtc, final int start, final int end) {
+		return collectionsManager.<SmartItem> createIndexDtListFunctionBuilder()
 				.filterSubList(start, end)
 				.build()
 				.apply(dtc);
@@ -333,7 +333,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(0, subList(createItems(), 2, 2).size());
 	}
 
-	private DtList<Item> subList(final DtList<Item> dtc, final int start, final int end) {
+	private DtList<SmartItem> subList(final DtList<SmartItem> dtc, final int start, final int end) {
 		return dtc
 				.stream()
 				.skip(start)
@@ -348,21 +348,21 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testChainFilterSortSubList() {
 
-		final DtList<Item> dtc = createItems();
+		final DtList<SmartItem> dtc = createItems();
 		final String[] indexDtc = extractLabels(dtc);
 
-		final Predicate<Item> predicate = Criterions.isEqualTo(DtDefinitions.Fields.LABEL, aaa_ba).toPredicate();
-		final Function<DtList<Item>, DtList<Item>> sort = (list) -> collectionsManager.sort(list, "LABEL", false);
+		final Predicate<SmartItem> predicate = Criterions.isEqualTo(DtDefinitions.Fields.LABEL, aaa_ba).toPredicate();
+		final Function<DtList<SmartItem>, DtList<SmartItem>> sort = (list) -> collectionsManager.sort(list, "LABEL", false);
 
 		final int sizeDtc = dtc.size();
 
-		DtList<Item> sortDtc, filterDtc, subList;
+		DtList<SmartItem> sortDtc, filterDtc, subList;
 		// ======================== sort/filter
 		sortDtc = sort.apply(dtc);
 		assertEquals(new String[] { aaa_ba, Ba_aa, bb_aa, null }, extractLabels(sortDtc));
 		filterDtc = sortDtc.stream()
 				.filter(predicate)
-				.collect(VCollectors.toDtList(Item.class));
+				.collect(VCollectors.toDtList(SmartItem.class));
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// ======================== sort/sublist
@@ -372,13 +372,13 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// ======================== filter/sort
-		filterDtc = dtc.stream().filter(predicate).collect(VCollectors.toDtList(Item.class));
+		filterDtc = dtc.stream().filter(predicate).collect(VCollectors.toDtList(SmartItem.class));
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 		sortDtc = sort.apply(filterDtc);
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// ======================== filter/sublist
-		filterDtc = dtc.stream().filter(predicate).collect(VCollectors.toDtList(Item.class));
+		filterDtc = dtc.stream().filter(predicate).collect(VCollectors.toDtList(SmartItem.class));
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 		subList = subList(filterDtc, 0, filterDtc.size() - 1);
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
@@ -392,7 +392,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		// ======================== sublist/filter
 		subList = subList(dtc, 0, sizeDtc - 1);
 		assertEquals(new String[] { Ba_aa, null, aaa_ba }, extractLabels(subList));
-		filterDtc = subList.stream().filter(predicate).collect(VCollectors.toDtList(Item.class));
+		filterDtc = subList.stream().filter(predicate).collect(VCollectors.toDtList(SmartItem.class));
 		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
 
 		// === dtc non modifié
@@ -452,51 +452,51 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private void testTermFilter(final String filterString, final int countEspected) {
-		final DtList<Item> result = createItemsForRangeTest()
+		final DtList<SmartItem> result = createItemsForRangeTest()
 				.stream()
 				.filter(collectionsManager.filter(ListFilter.of(filterString)))
-				.collect(VCollectors.toDtList(Item.class));
+				.collect(VCollectors.toDtList(SmartItem.class));
 
 		Assert.assertEquals(countEspected, result.size());
 	}
 
 	private void testRangeFilter(final String filterString, final int countEspected) {
-		final Predicate<Item> predicate = collectionsManager
+		final Predicate<SmartItem> predicate = collectionsManager
 				.filter(ListFilter.of(filterString));
 		Assert.assertNotNull(predicate);
-		final DtList<Item> result = createItemsForRangeTest().stream().filter(predicate).collect(VCollectors.toDtList(Item.class));
+		final DtList<SmartItem> result = createItemsForRangeTest().stream().filter(predicate).collect(VCollectors.toDtList(SmartItem.class));
 		Assert.assertEquals(countEspected, result.size());
 	}
 
-	private static DtList<Item> createItemsForRangeTest() {
-		final DtList<Item> dtc = createItems();
+	private static DtList<SmartItem> createItemsForRangeTest() {
+		final DtList<SmartItem> dtc = createItems();
 
-		final Item mock1 = new Item();
+		final SmartItem mock1 = new SmartItem();
 		mock1.setId(1L);
 		mock1.setLabel("aaab");
 		dtc.add(mock1);
 
-		final Item mock2 = new Item();
+		final SmartItem mock2 = new SmartItem();
 		mock2.setId(10L);
 		mock2.setLabel("aaac");
 		dtc.add(mock2);
 
-		final Item mock3 = new Item();
+		final SmartItem mock3 = new SmartItem();
 		mock3.setId(11L);
 		mock3.setLabel("caaa");
 		dtc.add(mock3);
 
-		final Item mock4 = new Item();
+		final SmartItem mock4 = new SmartItem();
 		mock4.setId(12L);
 		mock4.setLabel("aaa");
 		dtc.add(mock4);
 
-		final Item mock5 = new Item();
+		final SmartItem mock5 = new SmartItem();
 		mock5.setId(13L);
 		mock5.setLabel("aaa");
 		dtc.add(mock5);
 
-		final Item mock6 = new Item();
+		final SmartItem mock6 = new SmartItem();
 		mock6.setId(3L);
 		mock6.setLabel("c");
 		dtc.add(mock6);
@@ -512,7 +512,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(Arrays.toString(expected), Arrays.toString(actual));
 	}
 
-	private static String[] extractLabels(final DtList<Item> dtc) {
+	private static String[] extractLabels(final DtList<SmartItem> dtc) {
 		final String[] index = new String[dtc.size()];
 		for (int i = 0; i < dtc.size(); i++) {
 			index[i] = dtc.get(i).getLabel();
@@ -522,32 +522,32 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 
 	private static long seqId = 100;
 
-	private static DtList<Item> createItems() {
-		final DtList<Item> dtc = new DtList<>(Item.class);
+	private static DtList<SmartItem> createItems() {
+		final DtList<SmartItem> dtc = new DtList<>(SmartItem.class);
 		// les index sont données par ordre alpha > null à la fin >
-		final Item mockB = new Item();
+		final SmartItem mockB = new SmartItem();
 		mockB.setId(seqId++);
 		mockB.setLabel(Ba_aa);
 		dtc.add(mockB);
 
-		final Item mockNull = new Item();
+		final SmartItem mockNull = new SmartItem();
 		mockNull.setId(seqId++);
 		// On ne renseigne pas le Label > null
 		dtc.add(mockNull);
 
-		final Item mocka = new Item();
+		final SmartItem mocka = new SmartItem();
 		mocka.setId(seqId++);
 		mocka.setLabel(aaa_ba);
 		dtc.add(mocka);
 
-		final Item mockb = new Item();
+		final SmartItem mockb = new SmartItem();
 		mockb.setId(seqId++);
 		mockb.setLabel(bb_aa);
 		dtc.add(mockb);
 
 		// On crée et on supprimme un élément dans la liste pour vérifier
 		// l'intégrité de la liste (Par rapport aux null).
-		final Item mockRemoved = new Item();
+		final SmartItem mockRemoved = new SmartItem();
 		mockRemoved.setId(seqId++);
 		mockRemoved.setLabel("mockRemoved");
 		dtc.add(mockRemoved);

@@ -30,7 +30,7 @@ public final class SmartCar implements KeyConcept {
 	@Field(domain = "DO_ID", type = "ID", required = true, label = "identifiant de la voiture")
 	private Long id;
 	@Field(domain = "DO_KEYWORD", required = true, label = "Constructeur")
-	private String maker;
+	private String manufacturer;
 	@Field(domain = "DO_INTEGER", required = true, label = "Année")
 	private Integer year;
 	@Field(domain = "DO_TEXT", required = true, label = "Descriptif")
@@ -50,12 +50,12 @@ public final class SmartCar implements KeyConcept {
 		this.id = id;
 	}
 
-	public String getMaker() {
-		return maker;
+	public String getManufacturer() {
+		return manufacturer;
 	}
 
-	public void setMaker(final String maker) {
-		this.maker = maker;
+	public void setManufacturer(final String manufacturer) {
+		this.manufacturer = manufacturer;
 	}
 
 	public String getDescription() {

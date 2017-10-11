@@ -23,7 +23,7 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
-public final class Item implements Entity {
+public final class SmartItem implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
@@ -35,7 +35,7 @@ public final class Item implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<Item> getURI() {
+	public URI<SmartItem> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
 

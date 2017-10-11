@@ -23,7 +23,7 @@ import java.util.Optional;
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.plugins.account.store.text.TextAccountStorePlugin;
-import io.vertigo.account.plugins.authentication.ldap.LdapAuthenticatingPlugin;
+import io.vertigo.account.plugins.authentication.ldap.LdapAuthenticationPlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.core.param.Param;
@@ -52,7 +52,7 @@ public final class MyAppConfig {
 							Param.of("accountFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<email>(?<authToken>[^;@]+)@[^;]+);(?<photoUrl>.*)$"),
 							Param.of("groupFilePath", "io/vertigo/account/data/groups.txt"),
 							Param.of("groupFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<accountIds>.*)$"))
-					.withAuthentication(LdapAuthenticatingPlugin.class,
+					.withAuthentication(LdapAuthenticationPlugin.class,
 							Param.of("userLoginTemplate", "cn={0},dc=vertigo,dc=io"),
 							Param.of("ldapServerHost", "docker-vertigo.part.klee.lan.net"),
 							Param.of("ldapServerPort", "389"));
