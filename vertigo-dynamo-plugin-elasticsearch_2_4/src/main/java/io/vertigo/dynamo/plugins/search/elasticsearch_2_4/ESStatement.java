@@ -20,6 +20,7 @@ package io.vertigo.dynamo.plugins.search.elasticsearch_2_4;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,6 +31,7 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
@@ -63,6 +65,8 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 
 	private static final boolean DEFAULT_REFRESH = false; //mettre a true pour TU uniquement
 	private static final boolean BULK_REFRESH = false; //mettre a true pour TU uniquement
+	private static final TimeValue DEFAULT_SCROLL_KEEP_ALIVE = new TimeValue(1, TimeUnit.MINUTES);
+	private static final int DEFAULT_SCROLL_SIZE = 10000;
 	static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
 	private static final Logger LOGGER = LogManager.getLogger(ESStatement.class);
 
@@ -150,22 +154,33 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 				.setTypes(typeName)
 				.setSearchType(SearchType.QUERY_THEN_FETCH)
 				.setNoFields()
+				.setSize(DEFAULT_SCROLL_SIZE) //
+				.setScroll(DEFAULT_SCROLL_KEEP_ALIVE) //
 				.addSort("_id", SortOrder.ASC)
 				.setQuery(queryBuilder);
 		try {
-			//get all doc_id
-			final SearchResponse queryResponse = searchRequestBuilder.execute().actionGet();
-			final SearchHits searchHits = queryResponse.getHits();
-			if (searchHits.getTotalHits() > 0) {
-				//bulk delete all ids
+			//get first scroll doc_id
+			SearchResponse queryResponse = searchRequestBuilder.execute().actionGet();
+			//the scrolling id
+			final String scrollid = queryResponse.getScrollId();
+			SearchHits searchHits = queryResponse.getHits();
+			while (searchHits.getHits().length > 0) {
+				// collect the id for this scroll
 				final BulkRequestBuilder bulkRequest = esClient.prepareBulk().setRefresh(BULK_REFRESH);
 				for (final SearchHit searchHit : searchHits) {
 					bulkRequest.add(esClient.prepareDelete(indexName, typeName, searchHit.getId()));
 				}
+				//bulk delete all ids
 				final BulkResponse bulkResponse = bulkRequest.execute().actionGet();
 				if (bulkResponse.hasFailures()) {
 					throw new VSystemException("Can't removeBQuery {0} into {1} index.\nCause by {3}", typeName, indexName, bulkResponse.buildFailureMessage());
 				}
+				LOGGER.info("Deleted " + searchHits.getHits().length + " elements from index " + indexName);
+				// new scrolling
+				queryResponse = esClient.prepareSearchScroll(scrollid)//
+						.setScroll(DEFAULT_SCROLL_KEEP_ALIVE) //
+						.execute().actionGet();
+				searchHits = queryResponse.getHits();
 			}
 		} catch (final SearchPhaseExecutionException e) {
 			final VUserException vue = new VUserException(SearchResource.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR);
