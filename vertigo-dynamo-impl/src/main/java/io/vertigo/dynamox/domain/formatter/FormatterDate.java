@@ -20,6 +20,7 @@ package io.vertigo.dynamox.domain.formatter;
 
 import java.text.ParsePosition;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -160,8 +161,8 @@ public final class FormatterDate implements Formatter {
 	 * Converts a String to a ZonedlDateTime according to a given pattern
 	 */
 	private static ZonedDateTime doStringToZonedDateTime(final String dateString, final String pattern) {
-		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern).withZone(ZoneId.of("UTC"));
-		return ZonedDateTime.parse(dateString, dateTimeFormatter);
+		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern);
+		return LocalDateTime.parse(dateString, dateTimeFormatter).atZone(ZoneId.of("UTC"));
 	}
 
 	/*
