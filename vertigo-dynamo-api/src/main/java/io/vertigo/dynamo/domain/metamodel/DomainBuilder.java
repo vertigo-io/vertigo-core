@@ -48,14 +48,14 @@ public final class DomainBuilder implements Builder<Domain> {
 	 * @param name the name of the domain
 	 * @param dataType the dataType lof the domain
 	 */
-	DomainBuilder(final String name, final DataType dataType) {
+	DomainBuilder(final String name, final DataType dataType, final boolean multiple) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(dataType);
 		//---
 		myName = name;
 		myDataType = dataType;
 		myDtDefinitionName = null;
-		myMultiple = false;
+		myMultiple = multiple;
 	}
 
 	/**
@@ -96,9 +96,9 @@ public final class DomainBuilder implements Builder<Domain> {
 	}
 
 	/**
-	 * @param properties the properties
-	 * @return this builder
-	 */
+	* @param properties the properties
+	* @return this builder
+	*/
 	public DomainBuilder withProperties(final Properties properties) {
 		Assertion.checkNotNull(properties);
 		//---

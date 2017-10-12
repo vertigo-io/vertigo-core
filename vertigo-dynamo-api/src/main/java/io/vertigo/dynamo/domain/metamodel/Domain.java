@@ -105,8 +105,12 @@ public final class Domain implements Definition {
 	 * @param dataType the dataType lof the domain
 	 * @return DomainBuilder
 	 */
+	public static DomainBuilder builder(final String name, final DataType dataType, final boolean multiple) {
+		return new DomainBuilder(name, dataType, multiple);
+	}
+
 	public static DomainBuilder builder(final String name, final DataType dataType) {
-		return new DomainBuilder(name, dataType);
+		return new DomainBuilder(name, dataType, false);
 	}
 
 	public static DomainBuilder builder(final String name, final String dtDefinitionName, final boolean multiple) {
@@ -131,6 +135,10 @@ public final class Domain implements Definition {
 			propertiesBuilder.addValue(constraintDefinition.getProperty(), constraintDefinition.getPropertyValue());
 		}
 		return propertiesBuilder.build();
+	}
+
+	public boolean isMultiple() {
+		return multiple;
 	}
 
 	/**
@@ -169,7 +177,14 @@ public final class Domain implements Definition {
 	 */
 	public void checkValue(final Object value) {
 		if (isPrimitive()) {
-			dataType.checkValue(value);
+			if (isMultiple()) {
+				if (!(value instanceof List)) {
+					throw new ClassCastException("Value " + value + " must be a list");
+				}
+				List.class.cast(value).forEach(element -> dataType.checkValue(element));
+			} else {
+				dataType.checkValue(value);
+			}
 		}
 	}
 

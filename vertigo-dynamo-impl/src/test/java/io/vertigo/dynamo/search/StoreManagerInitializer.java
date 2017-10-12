@@ -21,9 +21,9 @@ package io.vertigo.dynamo.search;
 import javax.inject.Inject;
 
 import io.vertigo.core.component.ComponentInitializer;
-import io.vertigo.dynamo.collections.data.domain.SmartItem;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.search.data.domain.Item;
 import io.vertigo.dynamo.store.StoreManager;
 
 /**
@@ -38,7 +38,7 @@ public class StoreManagerInitializer implements ComponentInitializer {
 	/** {@inheritDoc} */
 	@Override
 	public void init() {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(SmartItem.class);
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Item.class);
 		storeManager.getDataStoreConfig().registerCacheable(dtDefinition, 3600, true, true);
 	}
 }
