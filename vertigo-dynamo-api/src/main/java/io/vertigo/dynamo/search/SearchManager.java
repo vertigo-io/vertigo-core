@@ -45,8 +45,7 @@ public interface SearchManager extends Manager {
 	 * @param keyConceptClass keyConcept class
 	 * @return SearchIndexDefinition for this keyConcept (not null)
 	 */
-	//TODO si par DtDefinition comment s'assurer que c'est un keyConcept ?
-	SearchIndexDefinition findIndexDefinitionByKeyConcept(Class<? extends KeyConcept> keyConceptClass);
+	SearchIndexDefinition findFirstIndexDefinitionByKeyConcept(Class<? extends KeyConcept> keyConceptClass);
 
 	/**
 	 * Mark an uri list as dirty. Index of these elements will be reindexed.
