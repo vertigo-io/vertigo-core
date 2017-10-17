@@ -104,11 +104,11 @@ public final class ClassUtil {
 		try {
 			return constructor.newInstance(args);
 		} catch (final InvocationTargetException e) {
-			throw WrappedException.wrap(e, "Erreur lors de l'appel au constructeur de la classe: {0} ", constructor.getDeclaringClass());
+			throw WrappedException.wrap(e, "An error has occurred while invoking the constructor on class : {0} ", constructor.getDeclaringClass());
 		} catch (final java.lang.IllegalAccessException e) {
-			throw WrappedException.wrap(e, "Accès final impossible à la classe :" + constructor.getDeclaringClass().getName());
+			throw WrappedException.wrap(e, "The constructor on class {0} is not accessible", constructor.getDeclaringClass());
 		} catch (final Exception e) {
-			throw WrappedException.wrap(e, "Instanciation impossible de la classe : " + constructor.getDeclaringClass().getName());
+			throw WrappedException.wrap(e, "Unable to instanciate the class {0}", constructor.getDeclaringClass());
 		}
 	}
 

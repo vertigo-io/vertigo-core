@@ -96,15 +96,15 @@ final class ComponentDiscovery {
 		final Collection<Class> myImplClasses = new ArrayList<>(componentsImplClasses);
 		//---
 		for (final Class apiClazz : apiClasses) {
-			final Collection<Class> potentialImpl = new Selector()
+			final Collection<Class> candidates = new Selector()
 					.from(componentsImplClasses)
 					.filterClasses(ClassConditions.subTypeOf(apiClazz))
 					.findClasses();
 			// ---
-			Assertion.checkState(!potentialImpl.isEmpty(), "No implentation found for the api {0}", apiClazz);
-			Assertion.checkState(potentialImpl.size() == 1, "Multiple implentations found for the api {0}", apiClazz);
+			Assertion.checkState(!candidates.isEmpty(), "No implentation found for the api {0}", apiClazz);
+			Assertion.checkState(candidates.size() == 1, "Multiple implentations found for the api {0}", apiClazz);
 			// ---
-			final Class implClass = potentialImpl.stream().findFirst().get();
+			final Class implClass = candidates.stream().findFirst().get();
 			myImplClasses.remove(implClass);
 			apiImplMap.put(apiClazz, implClass);
 		}
