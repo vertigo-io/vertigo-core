@@ -208,6 +208,13 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		return indexDefinition.get();
 	}
 
+	/** {@inheritDoc} */
+	@Deprecated
+	@Override
+	public SearchIndexDefinition findIndexDefinitionByKeyConcept(final Class<? extends KeyConcept> keyConceptClass) {
+		return findFirstIndexDefinitionByKeyConcept(keyConceptClass);
+	}
+
 	private static boolean hasIndexDefinitionByKeyConcept(final DtDefinition keyConceptDefinition) {
 		final List<SearchIndexDefinition> indexDefinitions = findIndexDefinitionByKeyConcept(keyConceptDefinition);
 		return !indexDefinitions.isEmpty();
