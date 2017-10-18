@@ -34,7 +34,7 @@ import io.vertigo.lang.Assertion;
  *
  * @param <E> the type of entity
  */
-abstract class AbstractVAccessor<E extends Entity> implements Serializable {
+public abstract class AbstractVAccessor<E extends Entity> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private static enum State {
@@ -148,10 +148,16 @@ abstract class AbstractVAccessor<E extends Entity> implements Serializable {
 		status = State.NOT_LOADED;
 	}
 
+	/**
+	 * @return Role of this relation
+	 */
 	public final String getRole() {
 		return role;
 	}
 
+	/**
+	 * @return if entity is already loaded
+	 */
 	public final boolean isLoaded() {
 		return status == State.LOADED;
 	}
