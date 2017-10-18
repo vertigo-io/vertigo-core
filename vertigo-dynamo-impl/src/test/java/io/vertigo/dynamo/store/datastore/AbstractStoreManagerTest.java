@@ -197,7 +197,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 					Criterions.isEqualTo(CarFields.MTY_CD, MotorTypeEnum.essence.getEntityUri().getId()));
 			//---
 			Assert.assertEquals(1, dtcEssence.size());
-			Assert.assertTrue(dtcEssence.get(0).getMotorTypeEnum() == MotorTypeEnum.essence);
+			Assert.assertTrue(dtcEssence.get(0).getMotorTypeAccessor().getEnumValue() == MotorTypeEnum.essence);
 		}
 	}
 
@@ -752,7 +752,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		car.setModel("407");
 		car.setYear(2014);
 		car.setKilo(20000);
-		car.setMotorTypeEnum(MotorTypeEnum.essence);
+		car.getMotorTypeAccessor().setEnumValue(MotorTypeEnum.essence);
 		car.setDescription("Vds 407 de test, 2014, 20000 kms, rouge, TBEG");
 		return car;
 	}

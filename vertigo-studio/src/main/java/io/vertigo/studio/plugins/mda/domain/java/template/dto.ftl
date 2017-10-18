@@ -71,27 +71,32 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	</#if>
 
 	<#list dtDefinition.fields as dtField>
-		<#if dtField.foreignKey && dtField.association.targetStaticMasterData>
+	
+	<#if dtField.foreignKey>
 	/**
-	 * Récupère la valeur de la propriété '${dtField.association.role}' as an enum.
-	 * @return the enum value
+	 * Champ : ${dtField.type}.
+	 * Récupère la valeur de la propriété '${dtField.display}'.
+	 * @return ${dtField.javaType} ${dtField.upperCamelCaseName?uncap_first}<#if dtField.required> <b>Obligatoire</b></#if>
 	 */
-	<#list annotations('transientField') as annotation>
+		<#list annotations(dtField) as annotation>
 	${annotation}
-	</#list>
-	public ${dtField.association.returnType}Enum get${dtField.association.role}Enum() {
-		return ${dtField.upperCamelCaseName?uncap_first}Accessor.getEnumValue();
+		</#list>
+	@Deprecated
+	public ${dtField.javaType} get${dtField.upperCamelCaseName}() {
+		return (${dtField.javaType})  ${dtField.upperCamelCaseName?uncap_first}Accessor.getId();
 	}
 
 	/**
 	 * Champ : ${dtField.type}.
-	 * Définit la valeur de la propriété '${dtField.association.role}' as an enum.
-	 * @param ${dtField.association.returnTypeSimpleName?uncap_first}Enum ${dtField.association.returnType}Enum<#if dtField.required> <b>Obligatoire</b></#if>
+	 * Définit la valeur de la propriété '${dtField.display}'.
+	 * @param ${dtField.upperCamelCaseName?uncap_first} ${dtField.javaType}<#if dtField.required> <b>Obligatoire</b></#if>
 	 */
-	public void set${dtField.association.role}Enum(final ${dtField.association.returnType}Enum ${dtField.association.returnTypeSimpleName?uncap_first}Enum) {
-		${dtField.upperCamelCaseName?uncap_first}Accessor.setEnumValue(${dtField.association.returnTypeSimpleName?uncap_first}Enum);
+	@Deprecated
+	public void set${dtField.upperCamelCaseName}(final ${dtField.javaType} ${dtField.upperCamelCaseName?uncap_first}) {
+		${dtField.upperCamelCaseName?uncap_first}Accessor.setId(${dtField.upperCamelCaseName?uncap_first});
 	}
-		</#if>
+	
+	</#if>
 	
 	/**
 	 * Champ : ${dtField.type}.
@@ -102,11 +107,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	${annotation}
 		</#list>
 	public ${dtField.javaType} get${dtField.upperCamelCaseName}() {
-		<#if dtField.foreignKey>
-		return (${dtField.javaType})  ${dtField.upperCamelCaseName?uncap_first}Accessor.getId();
-		<#else> 
 		return ${dtField.upperCamelCaseName?uncap_first};
-		</#if>
 	}
 
 	/**
@@ -114,12 +115,9 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	 * Définit la valeur de la propriété '${dtField.display}'.
 	 * @param ${dtField.upperCamelCaseName?uncap_first} ${dtField.javaType}<#if dtField.required> <b>Obligatoire</b></#if>
 	 */
+	<#if dtField.foreignKey>@Deprecated</#if>
 	public void set${dtField.upperCamelCaseName}(final ${dtField.javaType} ${dtField.upperCamelCaseName?uncap_first}) {
-		<#if dtField.foreignKey>
-		${dtField.upperCamelCaseName?uncap_first}Accessor.setId(${dtField.upperCamelCaseName?uncap_first});
-		<#else> 
 		this.${dtField.upperCamelCaseName?uncap_first} = ${dtField.upperCamelCaseName?uncap_first};
-		</#if>
 	}
 	
 	</#list>
@@ -140,11 +138,12 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	<#if dtDefinition.associations?has_content>
 		<#list dtDefinition.associations as association>
 			<#if association.navigable>
+	
+				<#if association.multiple>
 	/**
 	 * Association : ${association.label}.
-	 * @return <#if association.multiple>io.vertigo.dynamo.domain.model.DtList<${association.returnType}><#else>${association.returnType}</#if>
+	 * @return io.vertigo.dynamo.domain.model.DtList<${association.returnType}>
 	 */
-				<#if association.multiple>
 	public io.vertigo.dynamo.domain.model.DtList<${association.returnType}> get${association.role?cap_first}List() {
 		// On doit avoir une clé primaire renseignée. Si ce n'est pas le cas, on renvoie une liste vide
 		if (io.vertigo.dynamo.domain.util.DtObjectUtil.getId(this) == null) {
@@ -170,7 +169,22 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	}
 
 				<#else>
-				
+	 /**
+	 * Association : ${association.label}.
+	 * @return l'accesseur vers la propriété '${association.label}'
+	 */
+	 <#list annotations('transientField') as annotation>
+	${annotation}
+	</#list>
+<#if association.targetStaticMasterData>
+	public EnumVAccessor<${association.returnType}, ${association.returnType}Enum> get${association.role?cap_first}Accessor() {
+<#else>
+	public VAccessor<${association.returnType}> get${association.role?cap_first}Accessor() {
+</#if>
+		return ${association.upperCamelCaseFkFieldName?uncap_first}Accessor;
+	}
+	
+	@Deprecated
 	public ${association.returnType} get${association.role?cap_first}() {
 		return ${association.upperCamelCaseFkFieldName?uncap_first}Accessor.get();
 	}
@@ -179,6 +193,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	 * Retourne l'URI: ${association.label}.
 	 * @return URI de l'association
 	 */
+	@Deprecated
 	public io.vertigo.dynamo.domain.model.URI<${association.returnType}> get${association.role?cap_first}URI() {
 		return ${association.upperCamelCaseFkFieldName?uncap_first}Accessor.getURI();
 	}
