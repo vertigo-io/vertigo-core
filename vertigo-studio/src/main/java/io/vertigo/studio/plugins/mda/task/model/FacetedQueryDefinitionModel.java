@@ -22,6 +22,7 @@ import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.lang.Assertion;
+import io.vertigo.studio.plugins.mda.util.DomainUtil;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -65,24 +66,8 @@ public final class FacetedQueryDefinitionModel {
 
 	private String obtainCriteriaClassCanonicalName() {
 		final Domain domain = facetedQueryDefinition.getCriteriaDomain();
-		if (domain.isDtObject()) {
-			return domain.getDtDefinition().getClassCanonicalName();
-		} else if (domain.isPrimitive()) {
-			switch (domain.getDataType()) {
-				case Boolean:
-				case Double:
-				case Integer:
-				case Long:
-				case String:
-					return domain.getDataType().name();
-				case Date:
-				case BigDecimal:
-					return domain.getJavaClass().getCanonicalName();
-				case DataStream:
-				default:
-			}
-		}
-		throw new IllegalArgumentException("Domain " + domain + " can't be use for a searchCriteria : use DtObject or primitive");
+		Assertion.checkArgument(!domain.isMultiple(), "only not multiple domain are accepted");
+		//---
+		return DomainUtil.buildJavaType(domain);
 	}
-
 }

@@ -21,6 +21,7 @@ package io.vertigo.dynamo.domain.metamodel;
 import java.util.Collections;
 import java.util.List;
 
+import io.vertigo.dynamo.domain.metamodel.Domain.Scope;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 
@@ -30,9 +31,12 @@ import io.vertigo.lang.Builder;
  */
 public final class DomainBuilder implements Builder<Domain> {
 	private final String myName;
+	private final Domain.Scope myScope;
+	private final boolean myMultiple;
+
 	private final DataType myDataType;
 	private final String myDtDefinitionName;
-	private final boolean myMultiple;
+	private final Class myValueObjectClass;
 
 	/** Formatter. */
 	private FormatterDefinition myformatterDefinition;
@@ -53,24 +57,48 @@ public final class DomainBuilder implements Builder<Domain> {
 		Assertion.checkNotNull(dataType);
 		//---
 		myName = name;
+		myScope = Domain.Scope.PRIMITIVE;
+		myMultiple = multiple;
+
 		myDataType = dataType;
 		myDtDefinitionName = null;
-		myMultiple = multiple;
+		myValueObjectClass = null;
 	}
 
 	/**
 	 * Constructor.
 	 * @param name the name of the domain
-	 * @param dataType the dataType lof the domain
+	 * @param dtDefinitionName the data-object definition of the domain
 	 */
 	DomainBuilder(final String name, final String dtDefinitionName, final boolean multiple) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(dtDefinitionName);
 		//---
 		myName = name;
+		myScope = Scope.DATA_OBJECT;
+		myMultiple = multiple;
+
 		myDataType = null;
 		myDtDefinitionName = dtDefinitionName;
+		myValueObjectClass = null;
+	}
+
+	/**
+	 * Constructor.
+	 * @param name the name of the domain
+	 * @param valueObjectClass the value-object class of the domain
+	 */
+	DomainBuilder(final String name, final Class valueObjectClass, final boolean multiple) {
+		Assertion.checkArgNotEmpty(name);
+		Assertion.checkNotNull(valueObjectClass);
+		//---
+		myName = name;
+		myScope = Domain.Scope.VALUE_OBJECT;
 		myMultiple = multiple;
+
+		myDataType = null;
+		myDtDefinitionName = null;
+		myValueObjectClass = valueObjectClass;
 	}
 
 	/**
@@ -110,12 +138,13 @@ public final class DomainBuilder implements Builder<Domain> {
 	public Domain build() {
 		return new Domain(
 				myName,
+				myScope,
+				myMultiple,
 				myDataType,
 				myDtDefinitionName,
-				myMultiple,
+				myValueObjectClass,
 				myformatterDefinition,
 				myConstraintDefinitions == null ? Collections.emptyList() : myConstraintDefinitions,
 				myProperties == null ? Properties.builder().build() : myProperties);
 	}
-
 }

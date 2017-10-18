@@ -53,24 +53,31 @@ public final class DomainUtil {
 	 * @return String
 	 */
 	public static String buildJavaType(final Domain domain) {
-		if (domain.isPrimitive()) {
-			String javaType = domain.getJavaClass().getName();
+		final String className;
+		switch (domain.getScope()) {
+			case PRIMITIVE:
+				String javaType = domain.getJavaClass().getName();
 
-			//On simplifie l'écriture des types primitifs
-			//java.lang.String => String
-			if (javaType.startsWith("java.lang.")) {
-				javaType = javaType.substring("java.lang.".length());
-			}
-			return javaType;
-		} else if (domain.isDtObject() || domain.isDtList()) {
-			//Cas des DTO et DTC
-			final String dtoClassCanonicalName = domain.getDtDefinition().getClassCanonicalName();
-			if (domain.isDtObject()) {
-				return dtoClassCanonicalName;
-			}
-			return io.vertigo.dynamo.domain.model.DtList.class.getCanonicalName() + '<' + dtoClassCanonicalName + '>';
+				//On simplifie l'écriture des types primitifs
+				//java.lang.String => String
+				if (javaType.startsWith("java.lang.")) {
+					javaType = javaType.substring("java.lang.".length());
+				}
+				className = javaType;
+				break;
+			case DATA_OBJECT:
+				className = domain.getDtDefinition().getClassCanonicalName();
+				break;
+			case VALUE_OBJECT:
+				className = domain.getJavaClass().getName();
+				break;
+			default:
+				throw new IllegalStateException();
 		}
-		throw new IllegalArgumentException("unknown type of domain " + domain);
+		if (domain.isMultiple()) {
+			return domain.getTargetJavaClass().getName() + '<' + className + '>';
+		}
+		return className;
 	}
 
 	public static Collection<DtDefinition> getDtDefinitions() {

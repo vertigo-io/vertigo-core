@@ -163,13 +163,12 @@ public final class DomainMetricsProvider implements Component {
 	}
 
 	private static double count(final DtDefinition dtDefinition, final TaskAttribute taskAttribute) {
-		int count = 0;
-		if (taskAttribute.getDomain().isDtList() || taskAttribute.getDomain().isDtObject()) {
+		if (taskAttribute.getDomain().getScope().isDataObject()) {
 			if (dtDefinition.equals(taskAttribute.getDomain().getDtDefinition())) {
-				count++;
+				return 1;
 			}
 		}
-		return count;
+		return 0;
 	}
 
 	@Metrics
@@ -203,5 +202,4 @@ public final class DomainMetricsProvider implements Component {
 					.build();
 		}
 	}
-
 }

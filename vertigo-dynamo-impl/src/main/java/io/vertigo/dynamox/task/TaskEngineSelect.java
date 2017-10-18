@@ -36,7 +36,6 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
-import io.vertigo.util.ClassUtil;
 
 /**
  * Permet de réaliser des requêtes sur un base de données.<br>
@@ -91,29 +90,32 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 			final SqlConnection connection) throws SQLException {
 		final TaskAttribute outAttribute = getOutTaskAttribute();
 		final List<?> result;
-		if (outAttribute.getDomain().isPrimitive()) {
-			final Integer limit = outAttribute.getDomain().isMultiple() ? null : 1;
-			result = getDataBaseManager().executeQuery(sqlStatement, outAttribute.getDomain().getJavaClass(), limit, connection);
-			if (outAttribute.getDomain().isMultiple()) {
-				setResult(result);
-			} else {
-				Assertion.checkState(result.size() <= 1, "Limit exceeded");
-				setResult(result.isEmpty() ? null : result.get(0));
-			}
-		} else if (outAttribute.getDomain().isDtObject()) {
-			result = getDataBaseManager().executeQuery(sqlStatement, ClassUtil.classForName(outAttribute.getDomain().getDtDefinition().getClassCanonicalName()), 1, connection);
-			Assertion.checkState(result.size() <= 1, "Limit exceeded");
-			setResult(result.isEmpty() ? null : result.get(0));
-		} else if (outAttribute.getDomain().isDtList()) {
-			result = getDataBaseManager().executeQuery(sqlStatement, ClassUtil.classForName(outAttribute.getDomain().getDtDefinition().getClassCanonicalName()), null, connection);
-
-			final DtList<?> dtList = result
-					.stream()
-					.map(DtObject.class::cast)
-					.collect(VCollectors.toDtList(outAttribute.getDomain().getDtDefinition()));
-			setResult(dtList);
-		} else {
-			throw new IllegalArgumentException("Task out attribute type " + outAttribute.getDomain().getDataType() + "is not allowed");
+		final Integer limit = outAttribute.getDomain().isMultiple() ? null : 1;
+		result = getDataBaseManager().executeQuery(sqlStatement, outAttribute.getDomain().getJavaClass(), limit, connection);
+		switch (outAttribute.getDomain().getScope()) {
+			case DATA_OBJECT:
+				if (outAttribute.getDomain().isMultiple()) {
+					final DtList<?> dtList = result
+							.stream()
+							.map(DtObject.class::cast)
+							.collect(VCollectors.toDtList(outAttribute.getDomain().getDtDefinition()));
+					setResult(dtList);
+				} else {
+					Assertion.checkState(result.size() <= 1, "Limit exceeded");
+					setResult(result.isEmpty() ? null : result.get(0));
+				}
+				break;
+			case PRIMITIVE:
+			case VALUE_OBJECT:
+				if (outAttribute.getDomain().isMultiple()) {
+					setResult(result);
+				} else {
+					Assertion.checkState(result.size() <= 1, "Limit exceeded");
+					setResult(result.isEmpty() ? null : result.get(0));
+				}
+				break;
+			default:
+				throw new IllegalStateException();
 		}
 		return OptionalInt.of(result.size());
 	}

@@ -25,6 +25,7 @@ import io.vertigo.app.Home;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 
@@ -49,9 +50,38 @@ import io.vertigo.util.ClassUtil;
  */
 @DefinitionPrefix("DO")
 public final class Domain implements Definition {
+	public enum Scope {
+		PRIMITIVE,
+		VALUE_OBJECT,
+		DATA_OBJECT;
+		/**
+		 * @return if the domain is a primitive type
+		 */
+		public boolean isPrimitive() {
+			return this == Scope.PRIMITIVE;
+		}
+
+		/**
+		 * @return if the domain is a value-object
+		 */
+		public boolean isValueObject() {
+			return this == Scope.VALUE_OBJECT;
+		}
+
+		/**
+		 * @return if the domain is a data-object
+		 */
+		public boolean isDataObject() {
+			return this == Scope.DATA_OBJECT;
+		}
+	}
+
 	private final String name;
+	private final Scope scope;
 	private final boolean multiple;
 	private final DataType dataType;
+
+	private final Class valueObjectClass;
 	/**
 	 * Name of the DtDefinition (for the DtObject or DtList)
 	 */
@@ -69,6 +99,7 @@ public final class Domain implements Definition {
 	/**
 	 * Constructor.
 	 * @param name the name of the domain
+	 * @param scope the scope of the domain
 	 * @param dataType the type of the domain
 	 * @param formatterDefinition the formatter
 	 * @param constraintDefinitions the list of constraints
@@ -76,22 +107,39 @@ public final class Domain implements Definition {
 	 */
 	Domain(
 			final String name,
+			final Scope scope,
+			final boolean multiple,
 			final DataType dataType,
 			final String dtDefinitionName,
-			final boolean multiple,
+			final Class valueObjectClass,
 			final FormatterDefinition formatterDefinition,
 			final List<ConstraintDefinition> constraintDefinitions,
 			final Properties properties) {
 		Assertion.checkArgNotEmpty(name);
-		Assertion.checkState(dataType != null ^ dtDefinitionName != null, "a domain must have a primitive xor a dtDefinition");
-		//formatterDefinition can be null
+		Assertion.checkNotNull(scope);
+		//---
+		Assertion.when(scope == Scope.PRIMITIVE).check(() -> dataType != null, "a primitive domain must define a primitive type");
+		Assertion.when(scope == Scope.PRIMITIVE).check(() -> dtDefinitionName == null && valueObjectClass == null, "a primitive domain can't have nor a data-object-definition nor a value-object class");
+		//---
+		Assertion.when(scope == Scope.DATA_OBJECT).check(() -> dtDefinitionName != null, "a data-object domain must define a data-object definition");
+		Assertion.when(scope == Scope.DATA_OBJECT).check(() -> dataType == null && valueObjectClass == null, "a data-object domain can't have nor a primitive type nor a value-object class");
+		//---
+		Assertion.when(scope == Scope.VALUE_OBJECT).check(() -> valueObjectClass != null, "a value-object domain must define a value-object class");
+		Assertion.when(scope == Scope.VALUE_OBJECT).check(() -> dataType == null && dtDefinitionName == null, "a value-object domain can't have nor a primitive type nor a data-object-definition");
+		//formatterDefinition is nullable
 		Assertion.checkNotNull(constraintDefinitions);
 		Assertion.checkNotNull(properties);
 		//-----
 		this.name = name;
-		this.dataType = dataType;
-		this.dtDefinitionName = dtDefinitionName;
+		this.scope = scope;
 		this.multiple = multiple;
+		//--- Primitive
+		this.dataType = dataType;
+		//---data-object
+		this.dtDefinitionName = dtDefinitionName;
+		//---
+		this.valueObjectClass = valueObjectClass;
+		//---
 		formatterDefinitionRef = formatterDefinition == null ? null : new DefinitionReference<>(formatterDefinition);
 		//---Constraints
 		constraintDefinitionRefs = buildConstraintDefinitionRefs(constraintDefinitions);
@@ -102,17 +150,31 @@ public final class Domain implements Definition {
 	/**
 	 * Static method factory for DomainBuilder
 	 * @param name the name of the domain
-	 * @param dataType the dataType lof the domain
+	 * @param dataType the dataType managed by the domain
+	 * @param multiple if the domain is a list
 	 * @return DomainBuilder
 	 */
 	public static DomainBuilder builder(final String name, final DataType dataType, final boolean multiple) {
 		return new DomainBuilder(name, dataType, multiple);
 	}
 
+	/**
+	 * Static method factory for DomainBuilder
+	 * @param name the name of the domain
+	 * @param dataType the dataType managed by the domain
+	 * @return DomainBuilder
+	 */
 	public static DomainBuilder builder(final String name, final DataType dataType) {
 		return new DomainBuilder(name, dataType, false);
 	}
 
+	/**
+	 * Static method factory for DomainBuilder
+	 * @param name the name of the domain
+	 * @param dtDefinitionName the definition managed by the domain
+	 * @param multiple if the domain is a list
+	 * @return DomainBuilder
+	 */
 	public static DomainBuilder builder(final String name, final String dtDefinitionName, final boolean multiple) {
 		return new DomainBuilder(name, dtDefinitionName, multiple);
 	}
@@ -137,6 +199,9 @@ public final class Domain implements Definition {
 		return propertiesBuilder.build();
 	}
 
+	/**
+	 * @return if the domain is a list of objects
+	 */
 	public boolean isMultiple() {
 		return multiple;
 	}
@@ -147,7 +212,7 @@ public final class Domain implements Definition {
 	 * @return the dataType.
 	 */
 	public DataType getDataType() {
-		Assertion.checkNotNull(dataType, "can only be used with primitives");
+		Assertion.checkState(scope == Scope.PRIMITIVE, "can only be used with primitives");
 		//---
 		return dataType;
 	}
@@ -176,7 +241,7 @@ public final class Domain implements Definition {
 	 * @param value the value to check
 	 */
 	public void checkValue(final Object value) {
-		if (isPrimitive()) {
+		if (getScope().isPrimitive()) {
 			if (isMultiple()) {
 				if (!(value instanceof List)) {
 					throw new ClassCastException("Value " + value + " must be a list");
@@ -214,7 +279,7 @@ public final class Domain implements Definition {
 	 * @return the dtDefinition for the domains DtList or DtObject.
 	 */
 	public DtDefinition getDtDefinition() {
-		Assertion.checkState(isDtObject() || isDtList(), "only DtObject or DtList can have a DtDefinition");
+		Assertion.checkState(scope == Scope.DATA_OBJECT, "can only be used with data-objects");
 		//---
 		return Home.getApp().getDefinitionSpace().resolve(dtDefinitionName, DtDefinition.class);
 	}
@@ -225,23 +290,51 @@ public final class Domain implements Definition {
 		return name;
 	}
 
-	public boolean isPrimitive() {
-		return dataType != null;
+	/**
+	 * @return the domain scope
+	 */
+	public Scope getScope() {
+		return scope;
 	}
 
-	public boolean isDtList() {
-		return dtDefinitionName != null && multiple;
-	}
-
-	public boolean isDtObject() {
-		return dtDefinitionName != null && !multiple;
-	}
-
+	/**
+	 * Gets the type managed by this domain.
+	 * Warn : if the domain is a list, the return type is the one inside the list.
+	 *
+	 * Example :
+	 *	Integer => Integer
+	 * 	List<Integer> => Integer
+	 * 	Car => Car
+	 * 	DtList<Car> => Car
+	 * @return the class of the object
+	 */
 	public Class getJavaClass() {
-		if (isPrimitive()) {
-			return dataType.getJavaClass();
+		switch (scope) {
+			case PRIMITIVE:
+				return dataType.getJavaClass();
+			case DATA_OBJECT:
+				return ClassUtil.classForName(getDtDefinition().getClassCanonicalName());
+			case VALUE_OBJECT:
+				return valueObjectClass;
+			default:
+				throw new IllegalStateException();
 		}
-		return ClassUtil.classForName(getDtDefinition().getClassCanonicalName());
+	}
+
+	public Class getTargetJavaClass() {
+		if (isMultiple()) {
+			switch (scope) {
+				case PRIMITIVE:
+					return List.class;
+				case DATA_OBJECT:
+					return DtList.class;
+				case VALUE_OBJECT:
+					return List.class;
+				default:
+					throw new IllegalStateException();
+			}
+		}
+		return getJavaClass();
 	}
 
 	/** {@inheritDoc} */
@@ -266,5 +359,9 @@ public final class Domain implements Definition {
 		Assertion.checkNotNull(dataType, "can only be used with primitives");
 		//---
 		return getFormatter().stringToValue(strValue, dataType);
+	}
+
+	public boolean isDtList() {
+		return getScope().isDataObject() && isMultiple();
 	}
 }

@@ -19,7 +19,9 @@
 package io.vertigo.dynamox.metric.task;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -28,6 +30,7 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ClassUtil;
 
 /**
  * Classe de bouchon pour mettre des données fictives dans les requêtes.
@@ -63,40 +66,63 @@ public final class TaskPopulator {
 	private void populateTaskAttribute(final TaskAttribute attribute) {
 		final String attributeName = attribute.getName();
 		final Object value;
-		if (attribute.getDomain().isDtObject()) {
-			value = DtObjectUtil.createDtObject(attribute.getDomain().getDtDefinition());
-		} else if (attribute.getDomain().isDtList()) {
-			value = new DtList(attribute.getDomain().getDtDefinition());
-		} else if (attribute.getDomain().isPrimitive()) {
-			switch (attribute.getDomain().getDataType()) {
-				case Boolean:
-					value = Boolean.TRUE;
-					break;
-				case String:
-					value = "Test";
-					break;
-				case Date:
-					value = new Date();
-					break;
-				case Double:
-					value = Double.valueOf(1);
-					break;
-				case Integer:
-					value = Integer.valueOf(1);
-					break;
-				case BigDecimal:
-					value = BigDecimal.valueOf(1);
-					break;
-				case Long:
-					value = Long.valueOf(1);
-					break;
-				case DataStream:
-				default:
-					//we do nothing
-					value = null;
-			}
-		} else {
-			throw new IllegalStateException("unknown kind of domain " + attribute.getDomain());
+		switch (attribute.getDomain().getScope()) {
+			case PRIMITIVE:
+				Object item;
+				switch (attribute.getDomain().getDataType()) {
+					case Boolean:
+						item = Boolean.TRUE;
+						break;
+					case String:
+						item = "Test";
+						break;
+					case Date:
+						item = new Date();
+						break;
+					case Double:
+						item = Double.valueOf(1);
+						break;
+					case Integer:
+						item = Integer.valueOf(1);
+						break;
+					case BigDecimal:
+						item = BigDecimal.valueOf(1);
+						break;
+					case Long:
+						item = Long.valueOf(1);
+						break;
+					case DataStream:
+					default:
+						//we do nothing
+						item = null;
+				}
+				if (attribute.getDomain().isMultiple()) {
+					final List list = new ArrayList();
+					list.add(item);
+					value = list;
+				} else {
+					value = item;
+				}
+				break;
+			case DATA_OBJECT:
+				if (attribute.getDomain().isMultiple()) {
+					value = new DtList(attribute.getDomain().getDtDefinition());
+				} else {
+					value = DtObjectUtil.createDtObject(attribute.getDomain().getDtDefinition());
+				}
+				break;
+			case VALUE_OBJECT:
+				final Object valueObject = ClassUtil.newInstance(attribute.getDomain().getJavaClass());
+				if (attribute.getDomain().isMultiple()) {
+					final List list = new ArrayList();
+					list.add(valueObject);
+					value = list;
+				} else {
+					value = valueObject;
+				}
+				break;
+			default:
+				throw new IllegalStateException();
 		}
 		taskBuilder.addValue(attributeName, value);
 	}

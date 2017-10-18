@@ -35,10 +35,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -46,7 +44,6 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.VSystemException;
-import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
@@ -309,16 +306,11 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	}
 
 	private static Type getFieldType(final DtField dtField) {
-		final Domain domain = dtField.getDomain();
-		if (domain.isDtObject()) {
-			return dtField.getDomain().getJavaClass();
-		} else if (domain.isDtList()) {
-			final Class<?> dtClass = ClassUtil.classForName(dtField.getDomain().getDtDefinition().getClassCanonicalName());
-			return new CustomParameterizedType(DtList.class, dtClass);
-		} else if (domain.isPrimitive()) {
-			return domain.getJavaClass();
+		final Class<?> dtClass = dtField.getDomain().getJavaClass();
+		if (dtField.getDomain().isMultiple()) {
+			return new CustomParameterizedType(dtField.getDomain().getTargetJavaClass(), dtClass);
 		}
-		throw new IllegalStateException("Unknown type of domain " + domain);
+		return dtClass;
 	}
 
 	private void appendPropertiesObject(final Map<String, Object> entity, final Type type, final Class<?> parameterClass) {

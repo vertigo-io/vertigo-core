@@ -37,7 +37,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.ClassUtil;
 
 /**
  * @author jmforhan
@@ -80,7 +79,7 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 		//---
 		final DtList<?> dtc = getValue(listAttribute.getName());
 		dtc.forEach(dto -> sqlStatementBuilder
-				.bind(listAttribute.getName(), ClassUtil.classForName(listAttribute.getDomain().getDtDefinition().getClassCanonicalName()), dto)
+				.bind(listAttribute.getName(), listAttribute.getDomain().getJavaClass(), dto)
 				.nextLine());
 	}
 

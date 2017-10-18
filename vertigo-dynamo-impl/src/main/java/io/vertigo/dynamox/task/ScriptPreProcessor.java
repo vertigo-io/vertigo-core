@@ -27,11 +27,8 @@ import io.vertigo.commons.script.ExpressionParameter;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.commons.script.parser.ScriptSeparator;
-import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -71,24 +68,13 @@ final class ScriptPreProcessor {
 		//==========Initialisation des types et noms de paramètre==============
 		ExpressionParameter scriptEvaluatorParameter;
 		for (final Entry<TaskAttribute, Object> entry : inTaskAttributes.entrySet()) {
-			final Class<?> clazz;
 			final TaskAttribute taskAttribute = entry.getKey();
-			final Domain domain = taskAttribute.getDomain();
-			if (domain.isPrimitive()) {
-				// Pour les types primitifs
-				clazz = domain.getJavaClass();
-			} else if (domain.isDtList()) {
-				// Pour les types liste
-				clazz = DtList.class;
-			} else if (domain.isDtObject()) {
-				clazz = domain.getJavaClass();
-			} else {
-				throw new VSystemException("Type de paramètre non géré {0} : {1}", taskAttribute.getName(), domain.getName());
-			}
+			final Class<?> clazz = taskAttribute.getDomain().getTargetJavaClass();
 			scriptEvaluatorParameter = new ExpressionParameter(StringUtil.constToLowerCamelCase(taskAttribute.getName()), clazz, entry.getValue());
 			tmpParameters.add(scriptEvaluatorParameter);
 		}
 		return tmpParameters;
+
 	}
 
 	String evaluate(final String query) {
