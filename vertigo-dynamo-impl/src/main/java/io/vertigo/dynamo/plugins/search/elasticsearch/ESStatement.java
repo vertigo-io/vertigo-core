@@ -28,14 +28,13 @@ import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.sort.SortOrder;
+import org.elasticsearch.index.reindex.BulkByScrollResponse;
+import org.elasticsearch.index.reindex.DeleteByQueryAction;
+import org.elasticsearch.index.reindex.DeleteByQueryRequestBuilder;
 
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
@@ -145,29 +144,17 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	void remove(final ListFilter query) {
 		Assertion.checkNotNull(query);
 		//-----
-		final QueryBuilder queryBuilder = ESSearchRequestBuilder.translateToQueryBuilder(query);
-		final SearchRequestBuilder searchRequestBuilder = esClient.prepareSearch()
-				.setIndices(indexName)
-				.setTypes(typeName)
-				.setSearchType(SearchType.QUERY_THEN_FETCH)
-				//.setNoFields() TODO maj version
-				.addSort("_uid", SortOrder.ASC)
-				.setQuery(queryBuilder);
 		try {
-			//get all doc_id
-			final SearchResponse queryResponse = searchRequestBuilder.execute().actionGet();
-			final SearchHits searchHits = queryResponse.getHits();
-			if (searchHits.getTotalHits() > 0) {
-				//bulk delete all ids
-				final BulkRequestBuilder bulkRequest = esClient.prepareBulk().setRefreshPolicy(BULK_REFRESH);
-				for (final SearchHit searchHit : searchHits) {
-					bulkRequest.add(esClient.prepareDelete(indexName, typeName, searchHit.getId()));
-				}
-				final BulkResponse bulkResponse = bulkRequest.execute().actionGet();
-				if (bulkResponse.hasFailures()) {
-					throw new VSystemException("Can't removeBQuery {0} into {1} index.\nCause by {3}", typeName, indexName, bulkResponse.buildFailureMessage());
-				}
-			}
+			final QueryBuilder queryBuilder = ESSearchRequestBuilder.translateToQueryBuilder(query);
+			final DeleteByQueryRequestBuilder deleteByQueryAction = DeleteByQueryAction.INSTANCE.newRequestBuilder(esClient)
+					.filter(queryBuilder);
+			deleteByQueryAction
+					.source()
+					.setIndices(indexName)
+					.setTypes(typeName);
+			final BulkByScrollResponse response = deleteByQueryAction.get();
+			final long deleted = response.getDeleted();
+			LOGGER.debug("Removed {0} elements", deleted);
 		} catch (final SearchPhaseExecutionException e) {
 			final VUserException vue = new VUserException(SearchResource.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR);
 			vue.initCause(e);

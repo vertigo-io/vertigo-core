@@ -24,10 +24,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -200,24 +202,34 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
+	public SearchIndexDefinition findFirstIndexDefinitionByKeyConcept(final Class<? extends KeyConcept> keyConceptClass) {
+		final Optional<SearchIndexDefinition> indexDefinition = findFirstIndexDefinitionByKeyConcept(DtObjectUtil.findDtDefinition(keyConceptClass));
+		Assertion.checkArgument(indexDefinition.isPresent(), "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptClass.getSimpleName());
+		return indexDefinition.get();
+	}
+
+	/** {@inheritDoc} */
+	@Deprecated
+	@Override
 	public SearchIndexDefinition findIndexDefinitionByKeyConcept(final Class<? extends KeyConcept> keyConceptClass) {
-		final SearchIndexDefinition indexDefinition = findIndexDefinitionByKeyConcept(DtObjectUtil.findDtDefinition(keyConceptClass));
-		Assertion.checkNotNull(indexDefinition, "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptClass.getSimpleName());
-		return indexDefinition;
+		return findFirstIndexDefinitionByKeyConcept(keyConceptClass);
 	}
 
 	private static boolean hasIndexDefinitionByKeyConcept(final DtDefinition keyConceptDefinition) {
-		final SearchIndexDefinition indexDefinition = findIndexDefinitionByKeyConcept(keyConceptDefinition);
-		return indexDefinition != null;
+		final List<SearchIndexDefinition> indexDefinitions = findIndexDefinitionByKeyConcept(keyConceptDefinition);
+		return !indexDefinitions.isEmpty();
 	}
 
-	private static SearchIndexDefinition findIndexDefinitionByKeyConcept(final DtDefinition keyConceptDtDefinition) {
-		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
-			if (indexDefinition.getKeyConceptDtDefinition().equals(keyConceptDtDefinition)) {
-				return indexDefinition;
-			}
-		}
-		return null;
+	private static Optional<SearchIndexDefinition> findFirstIndexDefinitionByKeyConcept(final DtDefinition keyConceptDtDefinition) {
+		return Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class).stream()
+				.filter(indexDefinition -> indexDefinition.getKeyConceptDtDefinition().equals(keyConceptDtDefinition))
+				.findFirst();
+	}
+
+	private static List<SearchIndexDefinition> findIndexDefinitionByKeyConcept(final DtDefinition keyConceptDtDefinition) {
+		return Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class).stream()
+				.filter(indexDefinition -> indexDefinition.getKeyConceptDtDefinition().equals(keyConceptDtDefinition))
+				.collect(Collectors.toList());
 	}
 
 	/** {@inheritDoc} */
@@ -227,12 +239,14 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		Assertion.checkArgument(!keyConceptUris.isEmpty(), "dirty keyConceptUris cant be empty");
 		//-----
 		final DtDefinition keyConceptDefinition = keyConceptUris.get(0).getDefinition();
-		final SearchIndexDefinition searchIndexDefinition = findIndexDefinitionByKeyConcept(keyConceptDefinition);
-		Assertion.checkNotNull(searchIndexDefinition, "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptDefinition.getName());
+		final List<SearchIndexDefinition> searchIndexDefinitions = findIndexDefinitionByKeyConcept(keyConceptDefinition);
+		Assertion.checkNotNull(!searchIndexDefinitions.isEmpty(), "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptDefinition.getName());
 		//-----
-		final List<URI<? extends KeyConcept>> dirtyElements = dirtyElementsPerIndexName.get(searchIndexDefinition.getName());
-		synchronized (dirtyElements) {
-			dirtyElements.addAll(keyConceptUris); //TODO : doublons ?
+		for (final SearchIndexDefinition searchIndexDefinition : searchIndexDefinitions) {
+			final List<URI<? extends KeyConcept>> dirtyElements = dirtyElementsPerIndexName.get(searchIndexDefinition.getName());
+			synchronized (dirtyElements) {
+				dirtyElements.addAll(keyConceptUris); //TODO : doublons ?
+			}
 		}
 	}
 

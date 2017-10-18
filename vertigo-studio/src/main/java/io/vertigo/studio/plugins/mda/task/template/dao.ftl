@@ -119,7 +119,7 @@ public final class ${dao.classSimpleName} extends DAO<${dao.dtClassSimpleName}, 
 	 * @return Résultat correspondant à la requête (de type ${dao.indexDtClassSimpleName}) 
 	 */
 	public FacetedQueryResult<${dao.indexDtClassSimpleName}, SearchQuery> loadList(final SearchQuery searchQuery, final DtListState listState) {
-		final SearchIndexDefinition indexDefinition = searchManager.findIndexDefinitionByKeyConcept(${dao.dtClassSimpleName}.class);
+		final SearchIndexDefinition indexDefinition = searchManager.findFirstIndexDefinitionByKeyConcept(${dao.dtClassSimpleName}.class);
 		return searchManager.loadList(indexDefinition, searchQuery, listState);
 	}
 	

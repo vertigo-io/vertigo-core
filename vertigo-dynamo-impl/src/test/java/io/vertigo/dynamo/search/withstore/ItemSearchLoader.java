@@ -70,7 +70,7 @@ public final class ItemSearchLoader extends AbstractSqlSearchLoader<Long, Item, 
 	/** {@inheritDoc} */
 	@Override
 	public List<SearchIndex<Item, Item>> loadData(final SearchChunk<Item> searchChunk) {
-		final SearchIndexDefinition indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Item.class);
+		final SearchIndexDefinition indexDefinition = searchManager.findFirstIndexDefinitionByKeyConcept(Item.class);
 		try (final VTransactionWritable tx = getTransactionManager().createCurrentTransaction()) {
 			final List<SearchIndex<Item, Item>> result = new ArrayList<>();
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Item.class);

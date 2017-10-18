@@ -46,8 +46,7 @@ import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 
 /**
- * Implementation standard de la gestion centralisee des droits d'acces.
- *
+ * Main authorizations manager implementation.
  * @author npiedeloup
  */
 public final class AuthorizationManagerImpl implements AuthorizationManager {
@@ -128,6 +127,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 						.toPredicate().test(keyConcept));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <K extends KeyConcept> Criteria<K> getCriteriaSecurity(final K keyConcept, final OperationName<K> operation) {
 		Assertion.checkNotNull(keyConcept);
@@ -170,6 +170,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		return securityCriteria;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <K extends KeyConcept> String getSearchSecurity(final K keyConcept, final OperationName<K> operationName) {
 		Assertion.checkNotNull(keyConcept);

@@ -28,6 +28,12 @@ import io.vertigo.lang.Assertion;
 
 /**
  * Une SecuredEntity est une entité sécurisé.
+ * Secured entity definition defined how an entity is secured.
+ * - entity definition
+ * - fields used for security purpose
+ * - security dimension
+ * - allowed operations
+ *
  *
  * @author jgarnier, npiedeloup
  */

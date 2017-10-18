@@ -60,7 +60,7 @@ public final class ItemSearchLoader extends AbstractSearchLoader<Long, Item, Ite
 	public List<SearchIndex<Item, Item>> loadData(final SearchChunk<Item> searchChunk) {
 		Assertion.checkNotNull(itemDataBase, "itemDataBase not bound");
 		//-----
-		final SearchIndexDefinition indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Item.class);
+		final SearchIndexDefinition indexDefinition = searchManager.findFirstIndexDefinitionByKeyConcept(Item.class);
 		final List<SearchIndex<Item, Item>> itemIndexes = new ArrayList<>();
 		final Map<Long, Item> itemPerId = new HashMap<>();
 		for (final Item item : itemDataBase.getAllItems()) {
@@ -76,7 +76,7 @@ public final class ItemSearchLoader extends AbstractSearchLoader<Long, Item, Ite
 	/** {@inheritDoc} */
 	@Override
 	protected List<URI<Item>> loadNextURI(final Long lastId, final DtDefinition dtDefinition) {
-		final SearchIndexDefinition indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Item.class);
+		final SearchIndexDefinition indexDefinition = searchManager.findFirstIndexDefinitionByKeyConcept(Item.class);
 		final List<URI<Item>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
 		//call loader service
 		int i = 0;

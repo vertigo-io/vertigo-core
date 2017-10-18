@@ -22,8 +22,7 @@
 package io.vertigo.account.authorization.metamodel;
 
 /**
- * Types de dimension implémentés.
- *
+ * Allowed security dimenssion types.
  * @author jgarnier, npiedeloup
  */
 public enum SecurityDimensionType {

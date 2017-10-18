@@ -31,8 +31,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.VSecurityManager;
 
 /**
- * Implementation standard de la gestion centralisee des droits d'acces.
- *
+ * Main authentication manager implementation.
  * @author npiedeloup
  */
 public final class AuthenticationManagerImpl implements AuthenticationManager {

@@ -45,7 +45,15 @@ public interface SearchManager extends Manager {
 	 * @param keyConceptClass keyConcept class
 	 * @return SearchIndexDefinition for this keyConcept (not null)
 	 */
-	//TODO si par DtDefinition comment s'assurer que c'est un keyConcept ?
+	SearchIndexDefinition findFirstIndexDefinitionByKeyConcept(Class<? extends KeyConcept> keyConceptClass);
+
+	/**
+	 * Find IndexDefinition for a keyConcept. It must be one and only one IndexDefinition.
+	 * @param keyConceptClass keyConcept class
+	 * @return SearchIndexDefinition for this keyConcept (not null)
+	 * @deprecated use findFirstIndexDefinitionByKeyConcept instead
+	 */
+	@Deprecated
 	SearchIndexDefinition findIndexDefinitionByKeyConcept(Class<? extends KeyConcept> keyConceptClass);
 
 	/**

@@ -70,7 +70,7 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 	/** {@inheritDoc} */
 	@Override
 	public List<SearchIndex<Car, Car>> loadData(final SearchChunk<Car> searchChunk) {
-		final SearchIndexDefinition indexDefinition = searchManager.findIndexDefinitionByKeyConcept(Car.class);
+		final SearchIndexDefinition indexDefinition = searchManager.findFirstIndexDefinitionByKeyConcept(Car.class);
 		try (final VTransactionWritable tx = getTransactionManager().createCurrentTransaction()) {
 			final List<SearchIndex<Car, Car>> result = new ArrayList<>();
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
