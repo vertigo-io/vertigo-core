@@ -36,7 +36,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
 
 /**
- * This class lisstAuthorizations d'un utilisateur.
+ * This class list User's Authorizations.
  *
  * @author  pchretien, npiedeloup
  */
@@ -45,18 +45,18 @@ public final class UserAuthorizations implements Serializable {
 	private static final long serialVersionUID = -7924146007592711123L;
 
 	/**
-	 * Set des authorizations global autorisees pour la session utilisateur.
+	 * Global authorizations list of this user.
 	 */
 	private final Map<String, DefinitionReference<Authorization>> authorizationRefs = new HashMap<>();
 
 	/**
-	 * Set des authorizations autorisees par entity pour la session utilisateur.
+	 * KeyConcept dependent authorizations list by keyConcept of this user.
 	 */
 	private final Map<DefinitionReference<DtDefinition>, Set<DefinitionReference<Authorization>>> authorizationMapRefs = new HashMap<>();
 
 	/**
-	 * Set des roles autorises pour la session utilisateur.
-	 * Pour compatibilité d'api.
+	 * Accepted roles for this user.
+	 * Use for asc-compatibility.
 	 */
 	private final Set<DefinitionReference<Role>> roleRefs = new HashSet<>();
 
@@ -66,10 +66,10 @@ public final class UserAuthorizations implements Serializable {
 	//=======================GESTION DES ROLES===================================
 	//===========================================================================
 	/**
-	 * Ajoute un role pour l'utilisateur courant.
-	 * Le role doit avoir ete prealablement enregistre.
+	 * Add a role to this User.
+	 * Role must be previously declared.
 	 *
-	 * @param role Role e ajouter.
+	 * @param role Role to add
 	 * @return this UserAuthorizations
 	 */
 	public UserAuthorizations addRole(final Role role) {
@@ -80,9 +80,8 @@ public final class UserAuthorizations implements Serializable {
 	}
 
 	/**
-	 * Retourne la liste des roles de securite pour l'utilisateur.
-	 *
-	 * @return Set des roles.
+	 * Return roles set of this user.
+	 * @return roles set
 	 */
 	public Set<Role> getRoles() {
 		return roleRefs.stream()
@@ -92,7 +91,7 @@ public final class UserAuthorizations implements Serializable {
 
 	/**
 	 * @param role Role
-	 * @return Vrai si le role est present
+	 * @return if user has this role
 	 */
 	public boolean hasRole(final Role role) {
 		Assertion.checkNotNull(role);
@@ -101,19 +100,19 @@ public final class UserAuthorizations implements Serializable {
 	}
 
 	/**
-	 * Retrait de tous les roles possedes par l'utilisateur.
-	 * Attention, cela signifie qu'il n'a plus aucun droit.
+	 * Clear all roles on this user. (but only roles : authorizations aren't cleared)
+	 * Warning : no more rights after that.
 	 */
 	public void clearRoles() {
 		roleRefs.clear();
 	}
 
 	/**
-	 * Ajoute une authorization pour l'utilisateur courant.
-	 * La authorization doit avoir ete prealablement enregistree.
+	 * Add a authorization to this User.
+	 * Authorization must be previously declared.
 	 *
-	 * @param authorization Authorization à ajouter.
-	 * @return This UserAuthorizations
+	 * @param authorization Authorization to add
+	 * @return this UserAuthorizations
 	 */
 	public UserAuthorizations addAuthorization(final Authorization authorization) {
 		Assertion.checkNotNull(authorization);
@@ -132,9 +131,10 @@ public final class UserAuthorizations implements Serializable {
 	}
 
 	/**
-	 * Retourne la liste des authorizations de securite d'une entity pour l'utilisateur.
+	 * Return authorizations set for this type of entity.
+	 *
 	 * @param entityDefinition Entity definition
-	 * @return Set des authorizations.
+	 * @return Authorizations set
 	 */
 	public Set<Authorization> getEntityAuthorizations(final DtDefinition entityDefinition) {
 		final Set<DefinitionReference<Authorization>> entityAuthorizationRefs = authorizationMapRefs.get(new DefinitionReference<>(entityDefinition));
@@ -148,7 +148,7 @@ public final class UserAuthorizations implements Serializable {
 
 	/**
 	 * @param authorizationName Authorization
-	 * @return Vrai si la authorization est presente
+	 * @return true if user has this authorization
 	 */
 	public boolean hasAuthorization(final AuthorizationName authorizationName) {
 		Assertion.checkNotNull(authorizationName);
@@ -157,8 +157,8 @@ public final class UserAuthorizations implements Serializable {
 	}
 
 	/**
-	 * Retrait de toutes les authorizations possedes par l'utilisateur.
-	 * Attention, cela signifie qu'il n'a plus aucun droit.
+	 * Clear all authorization on this user. (but only authorization : roles aren't cleared)
+	 * Warning : no more rights after that.
 	 */
 	public void clearAuthorizations() {
 		authorizationRefs.clear();
@@ -166,8 +166,9 @@ public final class UserAuthorizations implements Serializable {
 	}
 
 	/**
-	 * Gestion de la sécurité.
-	 * @return Liste des clés de sécurité et leur valeur.
+	 * Return the security keys of this user.
+	 * Used for data dependent security rules.
+	 * @return User's security keys.
 	 */
 	public Map<String, List<Serializable>> getSecurityKeys() {
 		return mySecurityKeys;

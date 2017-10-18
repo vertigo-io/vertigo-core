@@ -27,7 +27,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
 
 /**
- * Dimension de sécurité.
+ * Secured data dimension.
  *
  * @author jgarnier, npiedeloup
  */

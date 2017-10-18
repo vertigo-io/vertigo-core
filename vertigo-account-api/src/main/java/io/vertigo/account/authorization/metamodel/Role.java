@@ -25,8 +25,9 @@ import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.lang.Assertion;
 
 /**
- * Un rôle est la réunion d'un ensemble de authorizations.
- * Un utilisateur peut avoir  plusieurs rôles.
+ * Role is a coherent group of more atomic authorizations.
+ * Users have multiple roles.
+ * Applications could use a concept of "profils" as a list of roles, but this concept isn't in this module's scope.
  *
  * @author prahmoune, npiedeloup
  */
@@ -39,9 +40,9 @@ public final class Role implements Definition {
 	/**
 	 * Constructor.
 	 *
-	 * @param name Nom du rôle
-	 * @param description Description du rôle
-	 * @param authorizations Liste des authorizations associées au rôle
+	 * @param name Role name
+	 * @param description Role description
+	 * @param authorizations Authorizations list of this role
 	 */
 	public Role(final String name, final String description, final List<Authorization> authorizations) {
 		Assertion.checkArgNotEmpty(name);
@@ -61,14 +62,14 @@ public final class Role implements Definition {
 	}
 
 	/**
-	 * @return Liste des authorizations
+	 * @return Authorizations list of this role
 	 */
 	public List<Authorization> getAuthorizations() {
 		return authorizations;
 	}
 
 	/**
-	 * @return Nom du rôle
+	 * @return Role name
 	 */
 	@Override
 	public String getName() {
