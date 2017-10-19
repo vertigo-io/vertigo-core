@@ -33,7 +33,7 @@ public class DummyMetricsProvider implements Component {
 				Metric
 						.builder()
 						.withName("type")
-						.withTopic("subject")
+						.withFeature("subject")
 						.withValue(0.00)
 						.withSuccess()
 						.build());

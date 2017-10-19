@@ -40,7 +40,7 @@ public interface SqlConnectionProviderPlugin extends SqlConnectionProvider, Plug
 	 */
 	String getName();
 
-	@HealthChecked(name = "testQuery", topic = "sqlDatabase")
+	@HealthChecked(name = "testQuery", feature = "sqlDatabase")
 	default public HealthMeasure checkTestSelect() {
 
 		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();

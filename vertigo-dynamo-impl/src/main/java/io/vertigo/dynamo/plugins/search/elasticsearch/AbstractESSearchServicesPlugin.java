@@ -374,7 +374,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		esClient.admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
 	}
 
-	@HealthChecked(name = "clusterHealth", topic = "search")
+	@HealthChecked(name = "clusterHealth", feature = "search")
 	public HealthMeasure checkClusterHealth() {
 		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
 		try {

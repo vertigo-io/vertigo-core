@@ -38,8 +38,8 @@ public final class HealthCheckDefinition implements Definition {
 	private final String definitionName;
 	private final String healthCheckName;
 	private final String checker;
+	private final String module;
 	private final String feature;
-	private final String topic;
 	private final Supplier<HealthMeasure> checkMethod;
 
 	/**
@@ -53,21 +53,21 @@ public final class HealthCheckDefinition implements Definition {
 			final String definitionName,
 			final String healthCheckName,
 			final String checker,
+			final String module,
 			final String feature,
-			final String topic,
 			final Supplier<HealthMeasure> checkMethod) {
 		Assertion.checkArgNotEmpty(definitionName);
 		Assertion.checkArgNotEmpty(healthCheckName);
 		Assertion.checkArgNotEmpty(checker);
+		Assertion.checkArgNotEmpty(module);
 		Assertion.checkArgNotEmpty(feature);
-		Assertion.checkArgNotEmpty(topic);
 		Assertion.checkNotNull(checkMethod);
 		//-----
 		this.definitionName = definitionName;
 		this.healthCheckName = healthCheckName;
 		this.checker = checker;
+		this.module = module;
 		this.feature = feature;
-		this.topic = topic;
 		this.checkMethod = checkMethod;
 	}
 
@@ -90,12 +90,12 @@ public final class HealthCheckDefinition implements Definition {
 		return checker;
 	}
 
-	public String getFeature() {
-		return feature;
+	public String getModule() {
+		return module;
 	}
 
-	public String getTopic() {
-		return topic;
+	public String getFeature() {
+		return feature;
 	}
 
 	/**

@@ -84,7 +84,7 @@ public final class RedisConnector implements Component, Activeable {
 		jedisPool.destroy();
 	}
 
-	@HealthChecked(name = "ping", topic = "redis")
+	@HealthChecked(name = "ping", feature = "redis")
 	public HealthMeasure checkRedisPing() {
 		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
 		try (Jedis jedis = getResource()) {
@@ -97,7 +97,7 @@ public final class RedisConnector implements Component, Activeable {
 
 	}
 
-	@HealthChecked(name = "io", topic = "redis")
+	@HealthChecked(name = "io", feature = "redis")
 	public HealthMeasure checkRedisIO() {
 		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
 		try (Jedis jedis = getResource()) {

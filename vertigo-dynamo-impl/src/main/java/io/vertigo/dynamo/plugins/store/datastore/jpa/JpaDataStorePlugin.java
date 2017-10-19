@@ -382,7 +382,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	}
 
-	@HealthChecked(name = "testQuery", topic = "jpa")
+	@HealthChecked(name = "testQuery", feature = "jpa")
 	public HealthMeasure checkJpaStore() {
 		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {

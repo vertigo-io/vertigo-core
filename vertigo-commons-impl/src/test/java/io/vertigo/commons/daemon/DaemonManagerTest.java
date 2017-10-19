@@ -67,7 +67,7 @@ public final class DaemonManagerTest extends AbstractTestCaseJU4 {
 
 		final HealthCheck daemonsExecHealthCheck = analyticsManager.getHealthChecks()
 				.stream()
-				.filter(healtChk -> "daemons".equals(healtChk.getTopic()) && "lastExecs".equals(healtChk.getName()))
+				.filter(healtChk -> "daemons".equals(healtChk.getFeature()) && "lastExecs".equals(healtChk.getName()))
 				.findFirst()
 				.get();
 

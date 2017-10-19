@@ -144,7 +144,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 				.forEach(this::startDaemon);
 	}
 
-	@HealthChecked(name = "lastExecs", topic = "daemons")
+	@HealthChecked(name = "lastExecs", feature = "daemons")
 	public HealthMeasure checkDaemonsExecs() {
 		final List<DaemonStat> daemonStats = getStats();
 		final long failureCount = daemonStats.stream()
