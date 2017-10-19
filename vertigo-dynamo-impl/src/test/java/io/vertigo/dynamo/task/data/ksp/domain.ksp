@@ -20,3 +20,9 @@ create Domain DO_INTEGER {
 	dataType : Integer
 	formatter : FMT_DEFAULT
 }
+
+create Domain DO_INTEGERS {
+	dataType : Integer
+	multiple : "true"
+	formatter : FMT_DEFAULT
+}

@@ -128,6 +128,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		final String domainName = xdomain.getName();
 		final List<String> constraintNames = xdomain.getDefinitionLinkNames("constraint");
 		final String type = xdomain.getDefinitionLinkName("dataType");
+		final Boolean multiple = (Boolean) xdomain.getPropertyValue(KspProperty.MULTIPLE);
 		final Properties properties = extractProperties(xdomain);
 		final DomainBuilder domainBuilder;
 		if ("DtObject".equals(type)) {
@@ -136,7 +137,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 			domainBuilder = Domain.builder(domainName, properties.getValue(DtProperty.TYPE), true);
 		} else {
 			final DataType dataType = DataType.valueOf(type);
-			domainBuilder = Domain.builder(domainName, dataType);
+			domainBuilder = Domain.builder(domainName, dataType, multiple == null ? false : multiple);
 			//only primitive can have a formatter
 			final boolean hasFormatter = !xdomain.getDefinitionLinkNames("formatter").isEmpty();
 			if (hasFormatter) {

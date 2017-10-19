@@ -72,6 +72,8 @@ public final class DtProperty {
 	 */
 	public static final Property<String> STORE_TYPE = new Property<>("storeType", String.class);
 
+	public static final Property<Boolean> MULTIPLE = new Property<>("multiple", Boolean.class);
+
 	private DtProperty() {
 		//private
 	}
@@ -87,7 +89,7 @@ public final class DtProperty {
 			Assertion.checkNotNull(property);
 			return property;
 		} catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-			throw WrappedException.wrap(e, "Propriete " + propertyName + " non trouvee sur DtProperty");
+			throw WrappedException.wrap(e, "property '{0}' not found on DtProperty", propertyName);
 		}
 	}
 }

@@ -18,36 +18,25 @@
  */
 package io.vertigo.dynamo.task;
 
+import java.util.List;
+
 import io.vertigo.dynamo.task.model.TaskEngine;
 
 /**
- * This class defines the engine with several inputs and an output.
- * Each input is a required integer
+ * This class defines the engine with a single input and an output.
+ * The input is composed of a list of integers
  *
- * This class is a parameterized function : (Integer, Integer, Integer) -> Integer
+ * This class is a parameterized function : List<Integer> -> Integer
  * The parameter is defined by the "request" and represents the operation to execute.
- * @author dchallas
+ *
+ * @author pchretien
  */
-public final class TaskEngineMock extends TaskEngine {
-	/** entier 1. */
-	public static final String ATTR_IN_INT_1 = "ATTR_IN_INT_1";
-	/** entier 2. */
-	public static final String ATTR_IN_INT_2 = "ATTR_IN_INT_2";
-	/** entier 3. */
-	public static final String ATTR_IN_INT_3 = "ATTR_IN_INT_3";
-	/** Somme. */
-	public static final String ATTR_OUT = "ATTR_OUT";
+public final class TaskEngineMock2 extends TaskEngine {
+	/** list<Integer>. */
+	public static final String ATTR_IN_INTEGERS = "ATTR_IN_INTEGERS";
 
-	private Integer getValue1() {
-		return getValue(ATTR_IN_INT_1);
-	}
-
-	private Integer getValue2() {
-		return getValue(ATTR_IN_INT_2);
-	}
-
-	private Integer getValue3() {
-		return getValue(ATTR_IN_INT_3);
+	private List<Integer> getValues() {
+		return getValue(ATTR_IN_INTEGERS);
 	}
 
 	private void setOutput(final Integer result) {
@@ -57,17 +46,23 @@ public final class TaskEngineMock extends TaskEngine {
 	/** {@inheritDoc} */
 	@Override
 	public void execute() {
-		final int outPut;
+		int output;
 		switch (this.getTaskDefinition().getRequest()) {
 			case "+":
-				outPut = getValue1() + getValue2() + getValue3();
+				output = 0;
+				for (final int value : getValues()) {
+					output += value;
+				}
 				break;
 			case "*":
-				outPut = getValue1() * getValue2() * getValue3();
+				output = 1;
+				for (final int value : getValues()) {
+					output *= value;
+				}
 				break;
 			default:
 				throw new IllegalArgumentException("Operateur non reconnu.");
 		}
-		setOutput(outPut);
+		setOutput(output);
 	}
 }

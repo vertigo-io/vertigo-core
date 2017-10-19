@@ -31,6 +31,7 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.MAX_LENGTH;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.MSG;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_A;
@@ -116,6 +117,7 @@ public final class DomainGrammar implements DslGrammar {
 		DOMAIN_ENTITY = DslEntity.builder("Domain")
 				.addOptionalField(MAX_LENGTH, Integer)
 				.addOptionalField(TYPE, String)
+				.addOptionalField(MULTIPLE, Boolean)
 				.addOptionalField(UNIT, String)
 				.addOptionalField(INDEX_TYPE, String)
 				.addOptionalField(STORE_TYPE, String)
