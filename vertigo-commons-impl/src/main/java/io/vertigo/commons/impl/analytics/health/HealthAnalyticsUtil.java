@@ -85,7 +85,7 @@ public final class HealthAnalyticsUtil {
 							healthChecked.name(),
 							componentId,
 							featureByComponentId.get(componentId),
-							healthChecked.topic(),
+							healthChecked.feature(),
 							() -> (HealthMeasure) ClassUtil.invoke(component, method));
 				})
 				.collect(Collectors.toList());
@@ -104,8 +104,8 @@ public final class HealthAnalyticsUtil {
 			return new HealthCheck(
 					healthCheckDefinition.getHealthCheckName(),
 					healthCheckDefinition.getChecker(),
+					healthCheckDefinition.getModule(),
 					healthCheckDefinition.getFeature(),
-					healthCheckDefinition.getTopic(),
 					Instant.now(),
 					healthMeasure);
 		} catch (final Exception e) {
@@ -115,8 +115,8 @@ public final class HealthAnalyticsUtil {
 			return new HealthCheck(
 					healthCheckDefinition.getHealthCheckName(),
 					healthCheckDefinition.getChecker(),
+					healthCheckDefinition.getModule(),
 					healthCheckDefinition.getFeature(),
-					healthCheckDefinition.getTopic(),
 					Instant.now(),
 					healthMeasure);
 		}

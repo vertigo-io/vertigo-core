@@ -75,7 +75,7 @@ public interface CachePlugin extends Plugin {
 	 */
 	void clearAll();
 
-	@HealthChecked(name = "io", topic = "cache")
+	@HealthChecked(name = "io", feature = "cache")
 	default public HealthMeasure checkIo() {
 		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
 		try {

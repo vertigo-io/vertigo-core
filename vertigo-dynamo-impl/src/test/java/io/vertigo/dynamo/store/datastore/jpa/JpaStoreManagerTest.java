@@ -27,4 +27,5 @@ import io.vertigo.dynamo.store.datastore.AbstractStoreManagerTest;
  */
 public final class JpaStoreManagerTest extends AbstractStoreManagerTest {
 	//rien
+
 }

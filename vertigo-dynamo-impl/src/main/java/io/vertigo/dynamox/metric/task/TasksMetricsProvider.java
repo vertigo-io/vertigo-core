@@ -63,7 +63,7 @@ public final class TasksMetricsProvider implements Component {
 				.stream()
 				.map(taskDefinition -> Metric.builder()
 						.withName("taskRequestSize")
-						.withTopic(taskDefinition.getName())
+						.withFeature(taskDefinition.getName())
 						.withValue(Double.valueOf(taskDefinition.getRequest().length()))
 						.withSuccess()
 						.build())
@@ -80,7 +80,7 @@ public final class TasksMetricsProvider implements Component {
 					final double fromCount = taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("FROM ").length - 1d;
 					return Metric.builder()
 							.withName("taskJoinCount")
-							.withTopic(taskDefinition.getName())
+							.withFeature(taskDefinition.getName())
 							.withValue(joinCount + fromCount)
 							.withSuccess()
 							.build();
@@ -95,7 +95,7 @@ public final class TasksMetricsProvider implements Component {
 				.stream()
 				.map(taskDefinition -> Metric.builder()
 						.withName("taskSubrequestsCount")
-						.withTopic(taskDefinition.getName())
+						.withFeature(taskDefinition.getName())
 						.withValue(taskDefinition.getRequest().toUpperCase(Locale.ENGLISH).split("SELECT").length - 1d)
 						.withSuccess()
 						.build())
@@ -126,7 +126,7 @@ public final class TasksMetricsProvider implements Component {
 	private Metric doExecute(final TaskDefinition taskDefinition) {
 		final MetricBuilder metricBuilder = Metric.builder()
 				.withName("taskExecutionTime")
-				.withTopic(taskDefinition.getName());
+				.withFeature(taskDefinition.getName());
 
 		try {
 			final TaskPopulator taskPopulator = new TaskPopulator(taskDefinition);

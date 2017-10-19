@@ -24,7 +24,7 @@ import io.vertigo.core.component.Component;
 
 public class SuccessComponentChecker implements Component {
 
-	@HealthChecked(name = "success", topic = "successOnes")
+	@HealthChecked(name = "success", feature = "successOnes")
 	public HealthMeasure checkSuccess() {
 		return HealthMeasure
 				.builder()

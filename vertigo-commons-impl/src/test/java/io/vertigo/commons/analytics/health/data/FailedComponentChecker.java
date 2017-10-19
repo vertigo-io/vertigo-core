@@ -25,7 +25,7 @@ import io.vertigo.lang.VSystemException;
 
 public class FailedComponentChecker implements Component {
 
-	@HealthChecked(name = "failure", topic = "failedOnes")
+	@HealthChecked(name = "failure", feature = "failedOnes")
 	public HealthMeasure checkFails() {
 		return HealthMeasure.builder()
 				.withRedStatus("an error", new VSystemException("an error"))

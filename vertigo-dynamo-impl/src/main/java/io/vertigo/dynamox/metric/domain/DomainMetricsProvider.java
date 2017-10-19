@@ -69,7 +69,7 @@ public final class DomainMetricsProvider implements Component {
 					return Metric.builder()
 							.withSuccess()
 							.withName("definitionFieldCount")
-							.withTopic(dtDefinition.getName())
+							.withFeature(dtDefinition.getName())
 							.withValue(Double.valueOf(dtDefinition.getFields().size()))
 							.build();
 				})
@@ -84,7 +84,7 @@ public final class DomainMetricsProvider implements Component {
 				.map(dtDefinition -> Metric.builder()
 						.withSuccess()
 						.withName("definitionUsageInDao")
-						.withTopic(dtDefinition.getName())
+						.withFeature(dtDefinition.getName())
 						.withValue(countTaskDependencies(dtDefinition))
 						.build())
 				.collect(Collectors.toList());
@@ -98,7 +98,7 @@ public final class DomainMetricsProvider implements Component {
 				.map(domain -> Metric.builder()
 						.withSuccess()
 						.withName("domainUsageInTasks")
-						.withTopic(domain.getName())
+						.withFeature(domain.getName())
 						.withValue(countTaskDependencies(domain))
 						.build())
 				.collect(Collectors.toList());
@@ -112,7 +112,7 @@ public final class DomainMetricsProvider implements Component {
 				.map(domain -> Metric.builder()
 						.withSuccess()
 						.withName("domainUsageInDtDefinitions")
-						.withTopic(domain.getName())
+						.withFeature(domain.getName())
 						.withValue(countDtDefinitionDependencies(domain))
 						.build())
 				.collect(Collectors.toList());
@@ -189,7 +189,7 @@ public final class DomainMetricsProvider implements Component {
 		//-----
 		final MetricBuilder metricBuilder = Metric.builder()
 				.withName("entityCount")
-				.withTopic(dtDefinition.getName());
+				.withFeature(dtDefinition.getName());
 		try {
 			final double count = storeManager.getDataStore().count(dtDefinition);
 			return metricBuilder

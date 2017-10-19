@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.store.data.domain.car;
 
+import javax.persistence.Transient;
+
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.EnumVAccessor;
 import io.vertigo.dynamo.domain.model.KeyConcept;
@@ -33,16 +35,7 @@ import io.vertigo.lang.VSystemException;
 @javax.persistence.Table(name = "CAR")
 public final class Car implements KeyConcept {
 	public enum CarFields implements DtFieldName {
-		ID,
-		MANUFACTURER,
-		MODEL,
-		DESCRIPTION,
-		YEAR,
-		KILO,
-		PRICE,
-		CONSOMMATION,
-		MTY_CD,
-		FAM_ID
+		ID, MANUFACTURER, MODEL, DESCRIPTION, YEAR, KILO, PRICE, CONSOMMATION, MTY_CD, FAM_ID
 	}
 
 	/** SerialVersionUID. */
@@ -242,20 +235,12 @@ public final class Car implements KeyConcept {
 	}
 
 	/**
-	 * Récupère la valeur de la propriété 'MotorType'.
-	 * @return MotorTypeEnum
+	 * Retourne l'accesseur vers la propriété 'MotorType'
+	 * @return l'accesseur
 	 */
-	@javax.persistence.Transient
-	public MotorTypeEnum getMotorTypeEnum() {
-		return mtyCdAccessor.getEnumValue();
-	}
-
-	/**
-	 * Fixe le MotorType par son enum.
-	 * @param motorTypeEnum MotorTypeEnum
-	 */
-	public void setMotorTypeEnum(final MotorTypeEnum motorTypeEnum) {
-		mtyCdAccessor.setEnumValue(motorTypeEnum);
+	@Transient
+	public EnumVAccessor<MotorType, MotorTypeEnum> getMotorTypeAccessor() {
+		return mtyCdAccessor;
 	}
 
 	/**
@@ -265,6 +250,7 @@ public final class Car implements KeyConcept {
 	 */
 	@javax.persistence.Column(name = "MTY_CD")
 	@Field(domain = "DO_KEYWORD", type = "FOREIGN_KEY", label = "Type de moteur")
+	@Deprecated
 	public final String getMtyCd() {
 		return (String) mtyCdAccessor.getId();
 	}
@@ -273,6 +259,7 @@ public final class Car implements KeyConcept {
 	 * Champ : DATA. Définit la valeur de la propriété 'Type de moteur'.
 	 * @param mtyCd String <b>Obligatoire</b>
 	 */
+	@Deprecated
 	public final void setMtyCd(final String mtyCd) {
 		mtyCdAccessor.setId(mtyCd);
 	}

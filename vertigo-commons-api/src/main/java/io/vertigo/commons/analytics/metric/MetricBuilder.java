@@ -33,7 +33,8 @@ public final class MetricBuilder implements Builder<Metric> {
 
 	private Instant myMeasureInstant;
 	private String myName;
-	private String myTopic;
+	private String myModule;
+	private String myFeature;
 	private Double myValue;
 	private Status myStatus;
 
@@ -51,10 +52,17 @@ public final class MetricBuilder implements Builder<Metric> {
 		return this;
 	}
 
-	public MetricBuilder withTopic(final String topic) {
-		Assertion.checkArgNotEmpty(topic);
+	public MetricBuilder withModule(final String module) {
+		Assertion.checkArgNotEmpty(module);
 		//---
-		myTopic = topic;
+		myModule = module;
+		return this;
+	}
+
+	public MetricBuilder withFeature(final String feature) {
+		Assertion.checkArgNotEmpty(feature);
+		//---
+		myFeature = feature;
 		return this;
 	}
 
@@ -90,7 +98,8 @@ public final class MetricBuilder implements Builder<Metric> {
 		return new Metric(
 				myMeasureInstant != null ? myMeasureInstant : Instant.now(),
 				myName,
-				myTopic,
+				myModule,
+				myFeature,
 				myValue,
 				myStatus);
 	}

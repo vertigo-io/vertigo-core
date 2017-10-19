@@ -67,7 +67,7 @@ public final class SystemMetricsProvider implements Component {
 		//---
 		final MetricBuilder metricBuilder = Metric.builder()
 				.withName(name)
-				.withTopic(SYSTEM_TOPIC);
+				.withFeature(SYSTEM_TOPIC);
 		try {
 			metricBuilder
 					.withValue(supplier.get())

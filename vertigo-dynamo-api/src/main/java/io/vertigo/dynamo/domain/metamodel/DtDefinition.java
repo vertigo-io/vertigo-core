@@ -91,16 +91,19 @@ public final class DtDefinition implements Definition {
 		//-----
 		this.name = name;
 		//
-		this.fragmentOpt = fragment;
+		fragmentOpt = fragment;
 		//
 		this.stereotype = stereotype;
 		this.packageName = packageName;
 		DtField id = null;
 
-		this.sortFieldOpt = sortField;
-		this.displayFieldOpt = displayField;
+		sortFieldOpt = sortField;
+		displayFieldOpt = displayField;
 
 		for (final DtField dtField : dtFields) {
+			Assertion.when(stereotype.isPersistent())
+					.check(() -> dtField.getDomain().getScope().isPrimitive() && !dtField.getDomain().isMultiple(),
+							"Only non multiple primitives are allowed in entity '{0}'", name);
 			if (dtField.getType().isId()) {
 				Assertion.checkState(id == null, "Only one ID Field is allowed : {0}", name);
 				id = dtField;

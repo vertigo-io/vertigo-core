@@ -70,7 +70,7 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU4 {
 	void testRedisChecker() {
 		final List<HealthCheck> redisHealthChecks = findHealthChecksByName("ping")
 				.stream()
-				.filter(healthCheck -> "redisChecker".equals(healthCheck.getTopic()))
+				.filter(healthCheck -> "redisChecker".equals(healthCheck.getFeature()))
 				.collect(Collectors.toList());
 		//---
 		Assert.assertEquals(1, redisHealthChecks.size());

@@ -38,24 +38,27 @@ public final class Metric {
 
 	private final Instant measureInstant;
 	private final String name;
-	private final String topic;
+	private final String module;// may be null for now
+	private final String feature;
 	private final Double value;//migth be null
 	private final Status status;
 
 	Metric(
 			final Instant measureTime,
 			final String name,
-			final String topic,
+			final String module,
+			final String feature,
 			final Double value,
 			final Status status) {
 		Assertion.checkNotNull(measureTime);
 		Assertion.checkArgNotEmpty(name);
-		Assertion.checkArgNotEmpty(topic);
+		Assertion.checkArgNotEmpty(feature);
 		Assertion.checkNotNull(status);
 		//-----
 		measureInstant = measureTime;
 		this.name = name;
-		this.topic = topic;
+		this.module = module;
+		this.feature = feature;
 		this.value = value;
 		this.status = status;
 
@@ -77,8 +80,12 @@ public final class Metric {
 		return name;
 	}
 
-	public String getTopic() {
-		return topic;
+	public String getModule() {
+		return module;
+	}
+
+	public String getFeature() {
+		return feature;
 	}
 
 	public Double getValue() {

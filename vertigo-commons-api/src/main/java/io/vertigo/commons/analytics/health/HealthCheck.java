@@ -36,8 +36,8 @@ import io.vertigo.lang.Assertion;
 public final class HealthCheck {
 	private final String name;
 	private final String checker;
+	private final String module;
 	private final String feature;
-	private final String topic;
 	private final HealthMeasure healthMeasure;
 	private final Instant checkInstant;
 
@@ -46,29 +46,29 @@ public final class HealthCheck {
 	 *
 	 * @param name the health check name
 	 * @param checker who  created the measure
-	 * @param feature the feature/module (either technical or functional) the healthcheck is relative to (ex: commons, administration...)
-	 * @param topic the topic (a semantic one) to link healthchecks that concern the same subject (ex: database, billing...)
+	 * @param module the module (either technical or functional) the healthcheck is relative to (ex: commons, administration...)
+	 * @param feature the feature (a semantic one) to link healthchecks that concern the same subject (ex: database, billing...)
 	 * @param checkInstant when the check was performed
 	 * @param healthMeasure the measure
 	 */
 	public HealthCheck(
 			final String name,
 			final String checker,
+			final String module,
 			final String feature,
-			final String topic,
 			final Instant checkInstant,
 			final HealthMeasure healthMeasure) {
 		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(checker);
+		Assertion.checkNotNull(module);
 		Assertion.checkNotNull(feature);
-		Assertion.checkNotNull(topic);
 		Assertion.checkNotNull(checkInstant);
 		Assertion.checkNotNull(healthMeasure);
 		//-----
 		this.name = name;
 		this.checker = checker;
+		this.module = module;
 		this.feature = feature;
-		this.topic = topic;
 		this.checkInstant = checkInstant;
 		this.healthMeasure = healthMeasure;
 	}
@@ -87,12 +87,12 @@ public final class HealthCheck {
 		return checker;
 	}
 
-	public String getFeature() {
-		return feature;
+	public String getModule() {
+		return module;
 	}
 
-	public String getTopic() {
-		return topic;
+	public String getFeature() {
+		return feature;
 	}
 
 	/**

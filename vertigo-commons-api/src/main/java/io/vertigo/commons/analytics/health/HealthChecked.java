@@ -40,8 +40,8 @@ public @interface HealthChecked {
 	String name();
 
 	/**
-	 * The topic of the health check.
-	 * @return topic of the health check
+	 * The feature of the health check.
+	 * @return feature of the health check
 	 */
-	String topic();
+	String feature();
 }
