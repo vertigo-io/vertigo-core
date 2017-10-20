@@ -29,6 +29,7 @@
 				<param name="targetSubDir" value="tsgen" />
 				<param name="generateDtResourcesTS" value="true" />
 				<param name="generateTsDtDefinitions" value="true" />
+				<param name="generateTsMasterData" value="true" />
 			</plugin>
 
 			<plugin class="io.vertigo.studio.plugins.mda.task.TaskGeneratorPlugin" >

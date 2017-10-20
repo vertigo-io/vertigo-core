@@ -23,17 +23,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.vertigo.app.Home;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
+import io.vertigo.studio.masterdata.MasterDataManager;
+import io.vertigo.studio.masterdata.MasterDataValues;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 import io.vertigo.studio.plugins.mda.domain.ts.model.TSDtDefinitionModel;
+import io.vertigo.studio.plugins.mda.domain.ts.model.TSMasterDataDefinitionModel;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
 import io.vertigo.util.MapBuilder;
 
@@ -46,6 +53,8 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 	private final String targetSubDir;
 	private final boolean shouldGenerateDtResourcesTS;
 	private final boolean shouldGenerateTsDtDefinitions;
+	private final boolean shouldGenerateTsMasterData;
+	private final Optional<MasterDataManager> masterDataManagerOpt;
 
 	/**
 	 * Constructeur.
@@ -57,11 +66,15 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 	public TSGeneratorPlugin(
 			@Named("targetSubDir") final String targetSubDir,
 			@Named("generateDtResourcesTS") final boolean generateDtResourcesTS,
-			@Named("generateTsDtDefinitions") final boolean generateTsDtDefinitions) {
+			@Named("generateTsDtDefinitions") final boolean generateTsDtDefinitions,
+			@Named("generateTsMasterData") final Optional<Boolean> generateTsMasterDataOpt,
+			final Optional<MasterDataManager> masterDataManagerOpt) {
 		//-----
 		this.targetSubDir = targetSubDir;
 		shouldGenerateDtResourcesTS = generateDtResourcesTS;
 		shouldGenerateTsDtDefinitions = generateTsDtDefinitions;
+		shouldGenerateTsMasterData = generateTsMasterDataOpt.orElse(false);
+		this.masterDataManagerOpt = masterDataManagerOpt;
 	}
 
 	/** {@inheritDoc} */
@@ -78,6 +91,10 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 		if (shouldGenerateTsDtDefinitions) {
 			generateTsDtDefinitions(targetSubDir, fileGeneratorConfig, mdaResultBuilder);
 		}
+		/* Génération des fichiers javascripts référençant toutes les masterdatas. */
+		if (shouldGenerateTsMasterData) {
+			generateTsMasterData(fileGeneratorConfig, mdaResultBuilder);
+		}
 	}
 
 	private static List<TSDtDefinitionModel> getTsDtDefinitionModels() {
@@ -90,6 +107,32 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 		for (final TSDtDefinitionModel dtDefinitionModel : getTsDtDefinitionModels()) {
 			generateTs(dtDefinitionModel, targetSubDir, fileGeneratorConfig, mdaResultBuilder);
 		}
+	}
+
+	private void generateTsMasterData(final FileGeneratorConfig fileGeneratorConfig,
+			final MdaResultBuilder mdaResultBuilder) {
+
+		final MasterDataValues masterDataValues = masterDataManagerOpt.isPresent() ? masterDataManagerOpt.get().getValues() : new MasterDataValues();
+
+		final List<TSMasterDataDefinitionModel> tsMasterDataDefinitionModels = Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)
+				.stream()
+				.filter(dtDefinition -> dtDefinition.getStereotype() == DtStereotype.StaticMasterData)
+				.map(dtDefinition -> new TSMasterDataDefinitionModel(dtDefinition, masterDataValues.get(dtDefinition.getClassCanonicalName())))
+				.collect(Collectors.toList());
+
+		final Map<String, Object> model = new MapBuilder<String, Object>()
+				.put("masterdatas", tsMasterDataDefinitionModels)
+				.build();
+
+		FileGenerator.builder(fileGeneratorConfig)
+				.withModel(model)
+				.withFileName("masterdata.ts")
+				.withGenSubDir(targetSubDir)
+				.withPackageName("")
+				.withTemplateName("domain/ts/template/ts_masterdata.ftl")
+				.build()
+				.generateFile(mdaResultBuilder);
+
 	}
 
 	private static void generateTs(final TSDtDefinitionModel dtDefinitionModel, final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {

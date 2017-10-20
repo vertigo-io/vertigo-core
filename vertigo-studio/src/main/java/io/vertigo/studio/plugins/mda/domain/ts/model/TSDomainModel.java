@@ -20,93 +20,59 @@ package io.vertigo.studio.plugins.mda.domain.ts.model;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
- * Model used to define a DtField.
+ * Model used to define a Domain.
  *
- * @author pchretien
+ * @author npiedeloup
  */
-public final class TSDtFieldModel {
-	private final DtField dtField;
+public final class TSDomainModel {
+	private final Domain domain;
 
 	/***
-	 * Constructeur.
-	 * @param dtField Champ Ã  gÃ©nÃ©rer
+	 * Constructor.
+	 * @param domain Domain
 	 */
-	TSDtFieldModel(final DtField dtField) {
-		Assertion.checkNotNull(dtField);
+	TSDomainModel(final Domain domain) {
+		Assertion.checkNotNull(domain);
 		//-----
-		this.dtField = dtField;
-	}
-
-	public String getCamelCaseName() {
-		return StringUtil.constToLowerCamelCase(dtField.getName());
+		this.domain = domain;
 	}
 
 	/**
 	 * @return Type javascript du champ with cardinality
 	 */
 	public String getTypescriptType() {
-		return buildTypescriptType(dtField.getDomain(), true);
-	}
-
-	/**
-	 * @return Label du champ
-	 */
-	public String getLabel() {
-		return dtField.getLabel().getDisplay();
+		return buildTypescriptType(domain, true);
 	}
 
 	/**
 	 * @return Name of the domain
 	 */
 	public String getDomainName() {
-		return dtField.getDomain().getName();
+		return domain.getName();
 	}
 
 	/**
 	 * @return Local name of the domain
 	 */
 	public String getDomainDefinitionName() {
-		return dtField.getDomain().getDtDefinition().getLocalName();
+		return domain.getDtDefinition().getLocalName();
 	}
 
 	/**
 	 * @return Simple TS type
 	 */
 	public String getDomainTypeName() {
-		return buildTypescriptType(dtField.getDomain(), false);
-	}
-
-	/**
-	 * @return Si la propriÃ©tÃ© est requise
-	 */
-	public boolean isRequired() {
-		return dtField.isRequired();
+		return buildTypescriptType(domain, false);
 	}
 
 	/**
 	 * @return True si le type est une primitive.
 	 */
 	public boolean isPrimitive() {
-		return dtField.getDomain().getScope().isPrimitive();
-	}
-
-	/**
-	 * @return True si le type est un objet (au sens js).
-	 */
-	public boolean isObject() {
-		return dtField.getDomain().getScope().isDataObject() || dtField.getDomain().getScope().isValueObject();
-	}
-
-	/**
-	 * @return True si le type est une liste.
-	 */
-	public boolean isListOfObject() {
-		return dtField.getDomain().isMultiple() && (dtField.getDomain().getScope().isDataObject() || dtField.getDomain().getScope().isValueObject());
+		return domain.getScope().isPrimitive();
 	}
 
 	/**
@@ -115,19 +81,15 @@ public final class TSDtFieldModel {
 	 * @return String
 	 */
 	private static String buildTypescriptType(final Domain domain, final boolean withArray) {
-		final String typescriptType;
 		if (domain.getScope().isPrimitive()) {
 			final DataType dataType = domain.getDataType();
 			if (dataType.isNumber()) {
-				typescriptType = "number";
+				return "number";
 			} else if (dataType == DataType.Boolean) {
-				typescriptType = "boolean";
-			} else {
-				typescriptType = "string";
+				return "boolean";
 			}
-		} else {
-			typescriptType = domain.getJavaClass().getSimpleName();
+			return "string";
 		}
-		return typescriptType + ((domain.isMultiple() && withArray) ? "[]" : "");
+		return domain.getJavaClass().getSimpleName() + ((domain.isMultiple() && withArray) ? "[]" : "");
 	}
 }
