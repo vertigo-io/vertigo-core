@@ -57,7 +57,7 @@ public final class DIDependency {
 		final String named = getNamedValue(field.getAnnotations());
 		final Class<?> rootType = field.getType();
 
-		isOption = isOption(rootType);
+		isOption = isOptional(rootType);
 		isList = isList(rootType);
 		type = (isOption || isList) ? ClassUtil.getGeneric(field) : rootType;
 		targetId = named != null ? named : DIAnnotationUtil.buildId(type);
@@ -74,7 +74,7 @@ public final class DIDependency {
 		final String named = getNamedValue(constructor.getParameterAnnotations()[i]);
 		final Class<?> rootType = constructor.getParameterTypes()[i];
 
-		isOption = isOption(rootType);
+		isOption = isOptional(rootType);
 		isList = isList(rootType);
 		type = (isOption || isList) ? ClassUtil.getGeneric(constructor, i) : rootType;
 		targetId = named != null ? named : DIAnnotationUtil.buildId(type);
@@ -131,7 +131,7 @@ public final class DIDependency {
 		return List.class.isAssignableFrom(type);
 	}
 
-	private static boolean isOption(final Class<?> type) {
+	private static boolean isOptional(final Class<?> type) {
 		return Optional.class.isAssignableFrom(type);
 	}
 
