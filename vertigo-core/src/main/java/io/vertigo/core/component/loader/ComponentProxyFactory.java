@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -57,7 +58,7 @@ final class ComponentProxyFactory {
 			Assertion.checkNotNull(method);
 			//---
 			return new MyMethodInvocation(method,
-					aspectsByMethod.get(method),
+					aspectsByMethod.containsKey(method) ? aspectsByMethod.get(method) : Collections.emptyList(),
 					proxyMethodsByMethod.get(method))
 							.proceed(args);
 		}
