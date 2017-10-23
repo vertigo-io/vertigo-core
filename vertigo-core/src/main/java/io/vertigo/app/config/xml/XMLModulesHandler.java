@@ -39,6 +39,7 @@ import io.vertigo.app.config.PluginConfigBuilder;
 import io.vertigo.core.component.Component;
 import io.vertigo.core.component.Plugin;
 import io.vertigo.core.component.aop.Aspect;
+import io.vertigo.core.component.proxy.ProxyMethod;
 import io.vertigo.core.definition.DefinitionProvider;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
@@ -82,6 +83,8 @@ final class XMLModulesHandler extends DefaultHandler {
 		plugin,
 		param,
 		aspect,
+		proxyMethod,
+		proxy,
 		//-----
 		initializer,
 		//----
@@ -118,6 +121,8 @@ final class XMLModulesHandler extends DefaultHandler {
 				definitionProviderConfigBuilder = null;
 				break;
 			case aspect:
+			case proxyMethod:
+			case proxy:
 			case param:
 			case definitions:
 			case resource:
@@ -179,6 +184,10 @@ final class XMLModulesHandler extends DefaultHandler {
 				final Class<? extends Plugin> pluginImplClass = ClassUtil.classForName(attrs.getValue("class"), Plugin.class);
 				pluginConfigBuilder = PluginConfig.builder(pluginImplClass);
 				break;
+			case proxy:
+				final Class<? extends Component> proxyApiClass = ClassUtil.classForName(attrs.getValue("api"), Component.class);
+				moduleConfigBuilder.addProxy(proxyApiClass);
+				break;
 			case provider:
 				current = TagName.provider;
 				final String definitionProviderClassName = attrs.getValue("class");
@@ -206,6 +215,11 @@ final class XMLModulesHandler extends DefaultHandler {
 				final String aspectImplClassStr = attrs.getValue("class");
 				final Class<? extends Aspect> aspectImplClass = ClassUtil.classForName(aspectImplClassStr, Aspect.class);
 				moduleConfigBuilder.addAspect(aspectImplClass);
+				break;
+			case proxyMethod:
+				final String proxyMethodImplClassStr = attrs.getValue("class");
+				final Class<? extends ProxyMethod> proxyMethodClass = ClassUtil.classForName(proxyMethodImplClassStr, ProxyMethod.class);
+				moduleConfigBuilder.addProxyMethod(proxyMethodClass);
 				break;
 			case feature:
 				final String featureClassStr = attrs.getValue("class");

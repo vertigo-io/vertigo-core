@@ -15,6 +15,7 @@
 			<plugin class="io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin" />
 		</component>
 		<component api="VTransactionManager" class="io.vertigo.commons.impl.transaction.VTransactionManagerImpl" />
+		<aspect class="io.vertigo.commons.impl.transaction.VTransactionAspect" />
 	</module>
 
 	<module name="vertigo-database">
@@ -34,6 +35,7 @@
 			<plugin class="io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin"/>
 		</component>
 		<component api="FileManager" class="io.vertigo.dynamo.impl.file.FileManagerImpl" />
+		<proxyMethod class="io.vertigo.dynamo.impl.task.proxy.TaskProxyMethod" />
 	</module>
 
 	<module name="myApp">
@@ -43,5 +45,6 @@
 				<resource type="classes" path="io.vertigo.dynamo.task.data.DtDefinitions" />
 			</provider>
 		</definitions>
+		<proxy api="io.vertigo.dynamo.task.x.SuperHeroDao" />
 	</module>
 </config>

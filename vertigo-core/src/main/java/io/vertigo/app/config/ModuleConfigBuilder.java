@@ -76,7 +76,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @param proxyMethodClass the proxy method class
 	 * @return this builder
 	 */
-	public ModuleConfigBuilder addMethodProxy(final Class<? extends ProxyMethod> proxyMethodClass) {
+	public ModuleConfigBuilder addProxyMethod(final Class<? extends ProxyMethod> proxyMethodClass) {
 		myProxyMethodConfigs.add(new ProxyMethodConfig(proxyMethodClass));
 		return this;
 	}

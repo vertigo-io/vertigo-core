@@ -73,7 +73,11 @@
 				minOccurs="0" />
 			<xs:element name="component" type="componentType"
 				minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="proxy" type="proxyType"
+				minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="aspect" type="aspectType" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="proxyMethod" type="proxyMethodType" minOccurs="0"
 				maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required" />
@@ -88,6 +92,10 @@
 		</xs:sequence>
 		<xs:attribute name="api" type="xs:string" use="optional" />
 		<xs:attribute name="class" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="proxyType">
+		<xs:attribute name="api" type="xs:string" use="required" />
 	</xs:complexType>
 
 	<xs:complexType name="pluginType">
@@ -105,6 +113,11 @@
 
 	<!-- Aspects -->
 	<xs:complexType name="aspectType">
+		<xs:attribute name="class" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<!-- ProxyMethod -->
+	<xs:complexType name="proxyMethodType">
 		<xs:attribute name="class" type="xs:string" use="required" />
 	</xs:complexType>
 

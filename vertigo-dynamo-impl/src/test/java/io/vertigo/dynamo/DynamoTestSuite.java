@@ -66,6 +66,7 @@ import io.vertigo.dynamo.store.datastore.sql.vendor.oracle.OracleSqlStoreManager
 import io.vertigo.dynamo.task.TaskManagerTest;
 import io.vertigo.dynamo.task.x.TaskEngineProcBatchTest;
 import io.vertigo.dynamo.task.x.TaskEngineSelectDynamicTest;
+import io.vertigo.dynamo.task.x.TaskProxyTest;
 import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 
 /**
@@ -133,6 +134,7 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		TaskManagerTest.class,
 		TaskEngineSelectDynamicTest.class,
 		TaskEngineProcBatchTest.class,
+		TaskProxyTest.class,
 		//x
 		DslListFilterBuilderTest.class,
 

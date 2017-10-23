@@ -9,6 +9,12 @@ create Domain DO_STRING {
 	formatter : FMT_DEFAULT
 }
 
+create Domain DO_STRINGS {
+	dataType : String
+	multiple : "true"
+	formatter : FMT_DEFAULT
+}
+
 create Domain DO_ID {
 	dataType : Long
 	formatter : FMT_DEFAULT
