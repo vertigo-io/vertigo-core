@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.app.Home;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -33,7 +32,6 @@ import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.data.domain.SuperHero;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineProcBatch;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 
@@ -52,22 +50,12 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU4 {
 	@Inject
 	private VTransactionManager transactionManager;
 
+	private SuperHeroDataBase superHeroDataBase;
+
 	@Override
 	protected void doSetUp() throws Exception {
-		//A chaque test on recrée la table SUPER_HERO
-		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
-			execStatement("create table SUPER_HERO(id BIGINT , name varchar(255));");
-			execStatement("create sequence SEQ_SUPER_HERO start with 10001 increment by 1");
-		}
-	}
-
-	private void execStatement(final String request) {
-		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_INIT")
-				.withEngine(TaskEngineProc.class)
-				.withRequest(request)
-				.build();
-		final Task task = Task.builder(taskDefinition).build();
-		taskManager.execute(task);
+		superHeroDataBase = new SuperHeroDataBase(transactionManager, taskManager);
+		superHeroDataBase.createDataBase();
 	}
 
 	/**
@@ -81,11 +69,11 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU4 {
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_TEST_INSERT_BATCH")
 				.withEngine(TaskEngineProcBatch.class)
-				.addInRequired(DTC_SUPER_HERO_IN, Home.getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class))
+				.addInRequired(DTC_SUPER_HERO_IN, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class))
 				.withRequest(request)
 				.build();
 
-		final DtList<SuperHero> superHeroes = getSuperHeroes();
+		final DtList<SuperHero> superHeroes = SuperHeroDataBase.getSuperHeroes();
 
 		final Task task = Task.builder(taskDefinition)
 				.addValue(DTC_SUPER_HERO_IN, superHeroes)
@@ -100,36 +88,16 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU4 {
 
 	}
 
-	private DtList<SuperHero> getSuperHeroes() {
-		return DtList.of(
-				createSuperHero(1, "superman"),
-				createSuperHero(2, "batman"),
-				createSuperHero(3, "catwoman"),
-				createSuperHero(4, "wonderwoman"),
-				createSuperHero(5, "aquaman"),
-				createSuperHero(6, "green lantern"),
-				createSuperHero(7, "captain america"),
-				createSuperHero(8, "spiderman"));
-	}
-
-	private SuperHero createSuperHero(final long id, final String name) {
-		final SuperHero superHero = new SuperHero();
-		superHero.setId(id);
-		superHero.setName(name);
-		return superHero;
-	}
-
 	private DtList<SuperHero> selectHeroes() {
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_SELECT_HEROES")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from SUPER_HERO")
-				.withOutRequired(DTC_SUPER_HERO_OUT, Home.getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class))
+				.withOutRequired(DTC_SUPER_HERO_OUT, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class))
 				.build();
 		final Task task = Task.builder(taskDefinition).build();
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
 			return taskManager.execute(task).getResult();
 		}
-
 	}
 
 }
