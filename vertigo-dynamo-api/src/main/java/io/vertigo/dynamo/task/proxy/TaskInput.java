@@ -7,10 +7,8 @@ import java.lang.annotation.Target;
 
 @Target({ ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TaskAttributeAnnotation {
-	boolean required();
-
+public @interface TaskInput {
 	String name();
 
-	String domain() default ""; //null is not allowed here
+	String domain();
 }
