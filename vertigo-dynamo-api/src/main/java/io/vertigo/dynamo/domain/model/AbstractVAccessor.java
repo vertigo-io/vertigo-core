@@ -38,8 +38,7 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 	private static final long serialVersionUID = 1L;
 
 	private static enum State {
-		LOADED,
-		NOT_LOADED
+		LOADED, NOT_LOADED
 	}
 
 	private State status = State.NOT_LOADED;
@@ -79,7 +78,8 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 	 * @return the entity
 	 */
 	public final E get() {
-		load();
+		Assertion.checkState(status == State.LOADED, "Accessor is not loaded, you must load it before calling get method");
+		//---
 		return value;
 	}
 
@@ -100,11 +100,9 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 	/**
 	 * Loads the value if needed.
 	 */
-	private void load() {
-		if (status == State.NOT_LOADED) {
-			value = targetURI == null ? null : getDataStore().readOne(targetURI);
-			status = State.LOADED;
-		}
+	public void load() {
+		value = targetURI == null ? null : getDataStore().readOne(targetURI);
+		status = State.LOADED;
 	}
 
 	/**

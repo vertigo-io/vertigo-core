@@ -196,8 +196,7 @@ class AnnotationWriter {
 				.add(INDENT + "roleA = \"" + nodeA.getRole() + "\",")
 				.add(INDENT + "roleB = \"" + nodeB.getRole() + "\",")
 				.add(INDENT + "labelA = \"" + nodeA.getLabel() + "\",")
-				.add(INDENT + "labelB = \"" + nodeB.getLabel() + "\"")
-				.add(")")
+				.add(INDENT + "labelB = \"" + nodeB.getLabel() + "\")")
 				.build();
 	}
 }

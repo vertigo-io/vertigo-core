@@ -28,7 +28,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-abstract class DtListURIForAssociation<A extends AssociationDefinition> extends DtListURI {
+public abstract class DtListURIForAssociation<A extends AssociationDefinition> extends DtListURI {
 	private static final long serialVersionUID = 5933412183954919000L;
 
 	private final String roleName;

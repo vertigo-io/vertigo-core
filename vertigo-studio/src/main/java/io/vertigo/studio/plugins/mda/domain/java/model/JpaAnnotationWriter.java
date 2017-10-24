@@ -77,7 +77,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 			if (dtDefinition.isPersistent()) {
 				lines.add("@javax.persistence.Table (name = \"" + getTableName(dtDefinition) + "\")");
 				if (containsDataStreamField(dtDefinition)) {
-					lines.add("@org.hibernate.annotations.TypeDefs(value = { @org.hibernate.annotations.TypeDef(name = \"DO_STREAM\", typeClass = io.vertigo.dynamo.plugins.database.connection.hibernate.DataStreamType.class) })");
+					lines.add("@org.hibernate.annotations.TypeDefs(value = { @org.hibernate.annotations.TypeDef(name = \"DO_STREAM\", typeClass = io.vertigo.database.plugins.sql.connection.hibernate.DataStreamType.class) })");
 				}
 			}
 		}
@@ -125,13 +125,13 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 		if (field.isPersistent()) {
 			final String fieldName = field.getName();
 			lines.add("@javax.persistence.Column(name = \"" + fieldName + "\")");
-			if (!field.isPersistent()) {
-				lines.add("@javax.persistence.Transient");
-			}
-			if (field.isPersistent() && field.getDomain().getDataType() == DataType.DataStream) {
+			if (field.getDomain().getDataType() == DataType.DataStream) {
 				lines.add("@org.hibernate.annotations.Type(type = \"DO_STREAM\")");
 			}
 		} else if (field.getType() == DtField.FieldType.COMPUTED) {
+			lines.add("@javax.persistence.Transient");
+		} else {
+			// not persistent
 			lines.add("@javax.persistence.Transient");
 		}
 		return lines;

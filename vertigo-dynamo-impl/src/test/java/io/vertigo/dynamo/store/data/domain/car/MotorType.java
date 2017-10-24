@@ -12,12 +12,11 @@ import io.vertigo.lang.Generated;
  */
 @Generated
 @javax.persistence.Entity
-@javax.persistence.Table(name = "COMMAND_TYPE")
+@javax.persistence.Table(name = "MOTOR_TYPE")
 public final class MotorType implements DtStaticMasterData {
 	private static final long serialVersionUID = 1L;
 
 	private String mtyCd;
-
 	private String label;
 
 	/** {@inheritDoc} */
@@ -30,9 +29,11 @@ public final class MotorType implements DtStaticMasterData {
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'id'.
-	 * @return Long ctyId <b>Obligatoire</b>
+	 * @return String mtyCd <b>Obligatoire</b>
 	 */
 	@javax.persistence.Id
+	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_MOTOR_TYPE", allocationSize = 1)
+	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = "sequence")
 	@javax.persistence.Column(name = "MTY_CD")
 	@Field(domain = "DO_STRING", type = "ID", required = true, label = "id")
 	public String getMtyCd() {
@@ -40,9 +41,9 @@ public final class MotorType implements DtStaticMasterData {
 	}
 
 	/**
-	 * Champ : mtyCd.
-	 * Définit la valeur de la propriété 'mtyCd'.
-	 * @param mtyCd Long <b>Obligatoire</b>
+	 * Champ : ID.
+	 * Définit la valeur de la propriété 'id'.
+	 * @param mtyCd String <b>Obligatoire</b>
 	 */
 	public void setMtyCd(final String mtyCd) {
 		this.mtyCd = mtyCd;

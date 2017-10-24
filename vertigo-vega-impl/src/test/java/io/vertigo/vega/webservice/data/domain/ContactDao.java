@@ -44,7 +44,7 @@ public class ContactDao implements Activeable, StoreServices {
 		contact.setName(name);
 		contact.setFirstName(firstName);
 		contact.setBirthday(birthday);
-		contact.setAddress(address);
+		contact.getAddressAccessor().set(address);
 		contact.setEmail(email);
 		contact.setTels(Arrays.asList(tels));
 		contacts.put(conId, contact);

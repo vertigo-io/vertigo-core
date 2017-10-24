@@ -19,6 +19,7 @@
 package io.vertigo.studio.plugins.mda.domain.ts;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,7 +118,7 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 		final List<TSMasterDataDefinitionModel> tsMasterDataDefinitionModels = Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)
 				.stream()
 				.filter(dtDefinition -> dtDefinition.getStereotype() == DtStereotype.StaticMasterData)
-				.map(dtDefinition -> new TSMasterDataDefinitionModel(dtDefinition, masterDataValues.get(dtDefinition.getClassCanonicalName())))
+				.map(dtDefinition -> new TSMasterDataDefinitionModel(dtDefinition, masterDataValues.getOrDefault(dtDefinition.getClassCanonicalName(), Collections.emptyMap())))
 				.collect(Collectors.toList());
 
 		final Map<String, Object> model = new MapBuilder<String, Object>()

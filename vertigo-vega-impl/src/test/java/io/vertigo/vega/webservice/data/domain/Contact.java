@@ -117,21 +117,24 @@ public final class Contact implements Entity {
 		this.email = email;
 	}
 
-	public Address getAddress() {
-		return adrIdAccessor.get();
-	}
-
-	public void setAddress(final Address address) {
-		adrIdAccessor.set(address);
+	public VAccessor<Address> getAddressAccessor() {
+		return adrIdAccessor;
 	}
 
 	@Field(domain = "DO_ID", type = "FOREIGN_KEY", label = "AdrId")
+	@Deprecated
 	public Long getAdrId() {
 		return (Long) adrIdAccessor.getId();
 	}
 
+	@Deprecated
 	public void setAdrId(final Long adrId) {
 		adrIdAccessor.setId(adrId);
+	}
+
+	@Deprecated
+	public Address getAddress() {
+		return adrIdAccessor.get();
 	}
 
 	public List<String> getTels() {

@@ -20,6 +20,7 @@ package io.vertigo.studio.plugins.mda.domain.sql;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,7 +120,7 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 		final List<SqlMasterDataDefinitionModel> sqlMasterDataDefinitionModels = Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)
 				.stream()
 				.filter(dtDefinition -> dtDefinition.getStereotype() == DtStereotype.StaticMasterData)
-				.map(dtDefinition -> new SqlMasterDataDefinitionModel(dtDefinition, masterDataValues.get(dtDefinition.getClassCanonicalName())))
+				.map(dtDefinition -> new SqlMasterDataDefinitionModel(dtDefinition, masterDataValues.getOrDefault(dtDefinition.getClassCanonicalName(), Collections.emptyMap())))
 				.collect(Collectors.toList());
 
 		final Map<String, Object> model = new MapBuilder<String, Object>()

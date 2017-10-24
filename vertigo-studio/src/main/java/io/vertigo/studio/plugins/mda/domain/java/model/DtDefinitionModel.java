@@ -211,4 +211,14 @@ public final class DtDefinitionModel {
 						.anyMatch(field -> field.getType() == FieldType.FOREIGN_KEY && field.getFkDtDefinition().getStereotype() == DtStereotype.StaticMasterData);
 
 	}
+
+	public boolean containsListAccessor() {
+		return associationModels
+				.stream()
+				//only multiples
+				.filter(associationModel -> associationModel.isMultiple())
+				//simple navigable ou nn
+				.anyMatch(associationModel -> (associationModel.isSimple() && associationModel.isNavigable()) || !associationModel.isSimple());
+
+	}
 }
