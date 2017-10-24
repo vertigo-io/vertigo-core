@@ -166,8 +166,8 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	</#list>
 	public ${association.returnType} get${association.role?cap_first}() {
 		// we keep the lazyness
-		if (!${association.role?uncap_first}Accessor.isLoaded()) {
-			${association.role?uncap_first}Accessor.load();
+		if (!${association.upperCamelCaseFkFieldName?uncap_first}Accessor.isLoaded()) {
+			${association.upperCamelCaseFkFieldName?uncap_first}Accessor.load();
 		}
 		return ${association.upperCamelCaseFkFieldName?uncap_first}Accessor.get();
 	}
