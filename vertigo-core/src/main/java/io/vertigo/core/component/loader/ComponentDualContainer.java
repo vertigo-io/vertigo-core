@@ -26,7 +26,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 
 /**
- * Super Conteneur.
+ * This class is a 'virtual' container composed of two containers.
  *
  * @author pchretien
  */
