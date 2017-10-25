@@ -38,7 +38,7 @@ import io.vertigo.lang.VSystemException;
  * This class is a way to access to a list of entities managed by a relationship.
  * It's a kind of box (aka optional) that offers a small list of methods.
  *
- * @author pchretien
+ * @author mlaroche
  *
  * @param <E> the type of the targetedEntity
  */
@@ -46,7 +46,8 @@ public final class ListVAccessor<E extends Entity> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private static enum State {
-		LOADED, NOT_LOADED
+		LOADED,
+		NOT_LOADED
 	}
 
 	private State status = State.NOT_LOADED;
@@ -58,8 +59,8 @@ public final class ListVAccessor<E extends Entity> implements Serializable {
 
 	/**
 	 * Constructor.
-	 * @param clazz the entity class
-	 * @param role the role of the association (case of multiple associations with the same entity)
+	 * @param entity the entity
+	 * @param roleName the role of the association (case of multiple associations with the same entity)
 	 */
 	public ListVAccessor(final Entity entity, final String associationDefinitionName, final String roleName) {
 		Assertion.checkNotNull(entity);
