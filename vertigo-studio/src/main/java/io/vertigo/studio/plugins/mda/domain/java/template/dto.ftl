@@ -87,7 +87,6 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 		<#list annotations(dtField) as annotation>
 	${annotation}
 		</#list>
-	@Deprecated
 	public ${dtField.javaType} get${dtField.upperCamelCaseName}() {
 		return (${dtField.javaType})  ${dtField.upperCamelCaseName?uncap_first}Accessor.getId();
 	}
@@ -97,7 +96,6 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	 * Définit la valeur de la propriété '${dtField.display}'.
 	 * @param ${dtField.upperCamelCaseName?uncap_first} ${dtField.javaType}<#if dtField.required> <b>Obligatoire</b></#if>
 	 */
-	@Deprecated
 	public void set${dtField.upperCamelCaseName}(final ${dtField.javaType} ${dtField.upperCamelCaseName?uncap_first}) {
 		${dtField.upperCamelCaseName?uncap_first}Accessor.setId(${dtField.upperCamelCaseName?uncap_first});
 	}
@@ -120,7 +118,6 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	 * Définit la valeur de la propriété '${dtField.display}'.
 	 * @param ${dtField.upperCamelCaseName?uncap_first} ${dtField.javaType}<#if dtField.required> <b>Obligatoire</b></#if>
 	 */
-	<#if dtField.foreignKey>@Deprecated</#if><#t>
 	public void set${dtField.upperCamelCaseName}(final ${dtField.javaType} ${dtField.upperCamelCaseName?uncap_first}) {
 		this.${dtField.upperCamelCaseName?uncap_first} = ${dtField.upperCamelCaseName?uncap_first};
 	}
@@ -152,9 +149,9 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	${annotation}
 	</#list>
 		<#if association.targetStaticMasterData>
-	public EnumVAccessor<${association.returnType}, ${association.returnType}Enum> get${association.role?cap_first}Accessor() {
+	public EnumVAccessor<${association.returnType}, ${association.returnType}Enum> ${association.role?uncap_first}() {
 		<#else>
-	public VAccessor<${association.returnType}> get${association.role?cap_first}Accessor() {
+	public VAccessor<${association.returnType}> ${association.role?uncap_first}() {
 		</#if>
 		return ${association.upperCamelCaseFkFieldName?uncap_first}Accessor;
 	}
@@ -193,7 +190,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	<#list annotations('transientField') as annotation>
 	${annotation}
 	</#list>
-	public ListVAccessor<${association.returnType}> get${association.role?cap_first}Accessor() {
+	public ListVAccessor<${association.returnType}> ${association.role?uncap_first}() {
 		return ${association.role?uncap_first}Accessor;
 	}
 	
