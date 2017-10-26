@@ -20,7 +20,8 @@ package io.vertigo.database.impl.sql.vendor.core;
 
 import java.sql.SQLException;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.locale.MessageKey;
 import io.vertigo.core.locale.MessageText;
