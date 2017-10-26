@@ -300,7 +300,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.map(field -> getListAccessor(field, src))
 					.filter(ListVAccessor::isLoaded)
 					.forEach(accessor -> {
-						jsonObject.add(accessor.getRole(), context.serialize(accessor.get()));
+						jsonObject.add(StringUtil.first2LowerCase(accessor.getRole()), context.serialize(accessor.get()));
 					});
 			return jsonObject;
 
