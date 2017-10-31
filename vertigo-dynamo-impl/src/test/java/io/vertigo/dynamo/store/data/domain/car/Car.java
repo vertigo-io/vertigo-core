@@ -252,7 +252,6 @@ public final class Car implements Entity {
 	 */
 	@javax.persistence.Column(name = "MTY_CD")
 	@Field(domain = "DO_STRING", type = "FOREIGN_KEY", label = "Motor type")
-	@Deprecated
 	public String getMtyCd() {
 		return (String) mtyCdAccessor.getId();
 	}
@@ -262,7 +261,6 @@ public final class Car implements Entity {
 	 * Définit la valeur de la propriété 'Motor type'.
 	 * @param mtyCd String
 	 */
-	@Deprecated
 	public void setMtyCd(final String mtyCd) {
 		mtyCdAccessor.setId(mtyCd);
 	}
@@ -274,7 +272,6 @@ public final class Car implements Entity {
 	 */
 	@javax.persistence.Column(name = "FAM_ID")
 	@Field(domain = "DO_ID", type = "FOREIGN_KEY", required = true, label = "Famille")
-	@Deprecated
 	public Long getFamId() {
 		return (Long) famIdAccessor.getId();
 	}
@@ -284,7 +281,6 @@ public final class Car implements Entity {
 	 * Définit la valeur de la propriété 'Famille'.
 	 * @param famId Long <b>Obligatoire</b>
 	 */
-	@Deprecated
 	public void setFamId(final Long famId) {
 		famIdAccessor.setId(famId);
 	}
@@ -294,7 +290,7 @@ public final class Car implements Entity {
 	 * @return l'accesseur vers la propriété 'Famille'
 	 */
 	@javax.persistence.Transient
-	public VAccessor<Famille> getFamilleAccessor() {
+	public VAccessor<Famille> famille() {
 		return famIdAccessor;
 	}
 
@@ -303,13 +299,17 @@ public final class Car implements Entity {
 	 * @return l'accesseur vers la propriété 'Motor type'
 	 */
 	@javax.persistence.Transient
-	public EnumVAccessor<MotorType, MotorTypeEnum> getMotorTypeAccessor() {
+	public EnumVAccessor<MotorType, MotorTypeEnum> motorType() {
 		return mtyCdAccessor;
 	}
 
 	@Deprecated
 	@javax.persistence.Transient
 	public MotorType getMotorType() {
+		// we keep the lazyness
+		if (!mtyCdAccessor.isLoaded()) {
+			mtyCdAccessor.load();
+		}
 		return mtyCdAccessor.get();
 	}
 

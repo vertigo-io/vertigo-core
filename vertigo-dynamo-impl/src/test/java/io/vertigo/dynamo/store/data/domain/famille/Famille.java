@@ -18,7 +18,7 @@ import io.vertigo.lang.Generated;
 @javax.persistence.Table(name = "FAMILLE")
 public final class Famille implements Entity {
 
-	public enum CarFields implements DtFieldName {
+	public enum CarFields implements DtFieldName<Car> {
 		ID, MANUFACTURER, MODEL, DESCRIPTION, YEAR, KILO, PRICE, CONSOMMATION, MTY_CD, FAM_ID
 	}
 
@@ -128,7 +128,7 @@ public final class Famille implements Entity {
 	 * @return l'accesseur vers la propriété 'Voitures de la famille'
 	 */
 	@javax.persistence.Transient
-	public ListVAccessor<Car> getVoituresFamilleAccessor() {
+	public ListVAccessor<Car> voituresFamille() {
 		return voituresFamilleAccessor;
 	}
 
@@ -161,7 +161,7 @@ public final class Famille implements Entity {
 	 * @return l'accesseur vers la propriété 'Voitures de location'
 	 */
 	@javax.persistence.Transient
-	public ListVAccessor<Car> getVoituresLocationAccessor() {
+	public ListVAccessor<Car> voituresLocation() {
 		return voituresLocationAccessor;
 	}
 

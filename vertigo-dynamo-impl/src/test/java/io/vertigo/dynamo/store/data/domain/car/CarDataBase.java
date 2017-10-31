@@ -74,7 +74,7 @@ public final class CarDataBase {
 		final BigDecimal conso = new BigDecimal(consommation);
 		conso.setScale(2, RoundingMode.HALF_UP);
 		car.setConsommation(conso);
-		car.getMotorTypeAccessor().setEnumValue(motorTypeEnum);
+		car.motorType().setEnumValue(motorTypeEnum);
 		car.setDescription(description);
 		return car;
 	}
