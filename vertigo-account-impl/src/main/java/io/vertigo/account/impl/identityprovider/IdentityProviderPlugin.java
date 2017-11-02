@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.impl.account;
+package io.vertigo.account.impl.identityprovider;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -27,9 +27,14 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.model.VFile;
 
 /**
+ * Provider of Identities for external sources.
+ * Convert external entities to local User's model.
+ *
+ * IdentityProviders could be use to get users and store them in local system.
+ *
  * @author pchretien, npiedeloup
  */
-public interface AccountProviderPlugin extends Plugin {
+public interface IdentityProviderPlugin extends Plugin {
 	/**
 	 * @return the number of accounts
 	 */

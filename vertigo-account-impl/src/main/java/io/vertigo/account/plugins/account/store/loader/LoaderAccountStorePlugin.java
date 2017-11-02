@@ -34,7 +34,8 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 
 /**
- * @author pchretien
+ * Specific account store, use to redirect loading to a applicative component.
+ * @author npiedeloup
  */
 public final class LoaderAccountStorePlugin implements AccountStorePlugin, Activeable {
 

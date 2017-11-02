@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.plugins.account.identityprovider.ldap;
+package io.vertigo.account.plugins.identityprovider.ldap;
 
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
@@ -43,10 +43,11 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.account.impl.account.AccountMapperHelper;
-import io.vertigo.account.impl.account.AccountProviderPlugin;
+import io.vertigo.account.impl.identityprovider.IdentityProviderPlugin;
 import io.vertigo.app.Home;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.component.Activeable;
@@ -65,7 +66,7 @@ import io.vertigo.lang.WrappedException;
  * Source of identity.
  * @author npiedeloup
  */
-public final class LdapIdentityProviderPlugin implements AccountProviderPlugin, Activeable {
+public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin, Activeable {
 	private static final String LDAP_PHOTO_MIME_TYPE = "image/jpeg";
 	private static final String PHOTO_RESERVED_FIELD = "photo";
 

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.plugins.account.identityprovider.ldap;
+package io.vertigo.account.plugins.identityprovider.ldap;
 
 /**
  * Extract from org.owasp.esapi.reference.DefaultEncoder.

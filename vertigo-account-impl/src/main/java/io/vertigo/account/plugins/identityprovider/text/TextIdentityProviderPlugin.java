@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.plugins.account.identityprovider.text;
+package io.vertigo.account.plugins.identityprovider.text;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.account.impl.account.AccountProviderPlugin;
+import io.vertigo.account.impl.identityprovider.IdentityProviderPlugin;
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.resource.ResourceManager;
@@ -66,7 +66,7 @@ import io.vertigo.lang.WrappedException;
  *
  * @since 0.1
  */
-public class TextIdentityProviderPlugin implements AccountProviderPlugin, Activeable {
+public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activeable {
 	private static final String PHOTO_URL_RESERVED_FIELD = "photoUrl";
 	private final Pattern filePattern;
 	private final List<String> filePatternFieldsOrdered;

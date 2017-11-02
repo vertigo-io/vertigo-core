@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.plugins.account.identityprovider.store;
+package io.vertigo.account.plugins.identityprovider.store;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -24,7 +24,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.account.impl.account.AccountProviderPlugin;
+import io.vertigo.account.impl.identityprovider.IdentityProviderPlugin;
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.dynamo.criteria.Criteria;
@@ -41,7 +41,7 @@ import io.vertigo.lang.Assertion;
  * Source of identity.
  * @author npiedeloup
  */
-public final class StoreIdentityProviderPlugin implements AccountProviderPlugin, Activeable {
+public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin, Activeable {
 
 	private final StoreManager storeManager;
 
