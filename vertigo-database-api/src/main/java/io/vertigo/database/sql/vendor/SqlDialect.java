@@ -52,7 +52,11 @@ public interface SqlDialect {
 	 * @param tableName the name of the table in which we want to insert
 	 * @return the sql request
 	 */
-	String createInsertQuery(final String idFieldName, final List<String> dataFieldsName, String sequencePrefix, String tableName);
+	String createInsertQuery(
+			final String idFieldName,
+			final List<String> dataFieldsName,
+			String sequencePrefix,
+			String tableName);
 
 	/**
 	 * Ajoute à la requete les éléments techniques nécessaire pour limiter le resultat à {maxRows}.

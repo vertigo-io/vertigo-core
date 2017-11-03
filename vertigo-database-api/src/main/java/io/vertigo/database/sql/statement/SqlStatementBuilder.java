@@ -87,9 +87,9 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 		return this;
 	}
 
-	private static SqlParameter buildSqlParameter(final SqlNamedParam namedParam, final Map<String, Tuple2<Class, Object>> params) {
+	private SqlParameter buildSqlParameter(final SqlNamedParam namedParam, final Map<String, Tuple2<Class, Object>> params) {
 		final Tuple2<Class, Object> tuple = params.get(namedParam.getAttributeName());
-		Assertion.checkNotNull(tuple, "no data found for param {0}", namedParam);
+		Assertion.checkNotNull(tuple, "no data found for param {0} in sql {1}", namedParam, rawSqlQuery);
 		final Object rootHolder = tuple.getVal2();
 		final Class rootType = tuple.getVal1();
 		//---
