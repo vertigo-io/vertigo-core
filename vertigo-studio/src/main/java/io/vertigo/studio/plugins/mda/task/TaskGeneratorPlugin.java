@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -167,8 +168,20 @@ public final class TaskGeneratorPlugin implements GeneratorPlugin {
 			if (outDomain.getScope().isDataObject()) {
 				return outDomain.getDtDefinition();
 			}
+			return null;
 		}
-		//Si pad de donnée en sortie on considére PAO.
+		//there is no OUT param
+		//We are searching igf there is an no-ambiguous IN param defined as a DataObject(DTO or DTC)
+		final List<Domain> candidates = templateTaskDefinition.getInAttributes()
+				.stream()
+				.map(taskAtributeModel -> taskAtributeModel.getDomain())
+				.filter(domain -> domain.getScope().isDataObject())
+				.collect(Collectors.toList());
+		//There MUST be only ONE candidate
+		if (candidates.size() == 1) {
+			return candidates.get(0).getDtDefinition();
+		}
+		//Ambiguosity => PAO
 		return null;
 	}
 
