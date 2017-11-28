@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
 import java.util.Map;
 
 import io.vertigo.commons.codec.Codec;
@@ -79,8 +79,7 @@ final class PhotoCodec {
 			final String fileName = vFileMap.get("fileName");
 			final String mimeType = vFileMap.get("mimeType");
 			final Long length = Long.valueOf(vFileMap.get("length"));
-			final Date lastModified = new SimpleDateFormat(CODEC_DATE_FORMAT).parse(vFileMap.get("lastModified"));
-
+			final Instant lastModified = new SimpleDateFormat(CODEC_DATE_FORMAT).parse(vFileMap.get("lastModified")).toInstant();
 			final String base64Content = vFileMap.get("base64Content");
 			return new Base64File(codecManager, fileName, mimeType, length, lastModified, base64Content);
 		} catch (final ParseException e) {
