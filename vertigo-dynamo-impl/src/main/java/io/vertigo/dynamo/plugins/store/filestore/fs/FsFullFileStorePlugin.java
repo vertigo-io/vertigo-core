@@ -29,6 +29,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -180,11 +182,12 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		Assertion.checkArgument(fileInfo.getURI() == null, "Only file without any id can be created.");
 		//-----
 		final VFile vFile = fileInfo.getVFile();
-		final SimpleDateFormat format = new SimpleDateFormat(INFOS_DATE_PATTERN);
+		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INFOS_DATE_PATTERN)
+				.withZone(ZoneId.of("UTC"));
 		final String metaData = new StringBuilder()
 				.append(vFile.getFileName()).append('\n')
 				.append(vFile.getMimeType()).append('\n')
-				.append(format.format(vFile.getLastModified())).append('\n')
+				.append(formatter.format(vFile.getLastModified())).append('\n')
 				.append(vFile.getLength()).append('\n')
 				.toString();
 
@@ -206,11 +209,12 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		Assertion.checkNotNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
 		//-----
 		final VFile vFile = fileInfo.getVFile();
-		final SimpleDateFormat format = new SimpleDateFormat(INFOS_DATE_PATTERN);
+		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INFOS_DATE_PATTERN)
+				.withZone(ZoneId.of("UTC"));
 		final String metaData = new StringBuilder()
 				.append(vFile.getFileName()).append('\n')
 				.append(vFile.getMimeType()).append('\n')
-				.append(format.format(vFile.getLastModified()))
+				.append(formatter.format(vFile.getLastModified()))
 				.append(vFile.getLength()).append('\n')
 				.toString();
 

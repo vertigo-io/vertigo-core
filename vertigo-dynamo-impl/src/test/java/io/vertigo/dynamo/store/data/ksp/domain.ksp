@@ -29,6 +29,11 @@ create Domain DO_DATE {
 	formatter : FMT_DEFAULT
 }
 
+create Domain DO_INSTANT {
+	dataType : Instant
+	formatter : FMT_DEFAULT
+}
+
 create Domain DO_BOOLEAN {
 	dataType :Boolean
 	formatter : FMT_DEFAULT

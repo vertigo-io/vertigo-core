@@ -21,7 +21,7 @@ public final class VxFileInfo implements Entity {
 	private String fileName;
 	private String mimeType;
 	private Long length;
-	private java.util.Date lastModified;
+	private java.time.Instant lastModified;
 	private io.vertigo.lang.DataStream fileData;
 
 	/** {@inheritDoc} */
@@ -117,20 +117,20 @@ public final class VxFileInfo implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de derniÃ¨re modification'.
-	 * @return java.util.Date lastModified <b>Obligatoire</b>
+	 * @return java.time.Instant lastModified <b>Obligatoire</b>
 	 */
 	@javax.persistence.Column(name = "LAST_MODIFIED")
-	@Field(domain = "DO_DATE", required = true, label = "Date de derniÃ¨re modification")
-	public java.util.Date getLastModified() {
+	@Field(domain = "DO_INSTANT", required = true, label = "Date de derniÃ¨re modification")
+	public java.time.Instant getLastModified() {
 		return lastModified;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de derniÃ¨re modification'.
-	 * @param lastModified java.util.Date <b>Obligatoire</b>
+	 * @param lastModified java.time.Instant <b>Obligatoire</b>
 	 */
-	public void setLastModified(final java.util.Date lastModified) {
+	public void setLastModified(final java.time.Instant lastModified) {
 		this.lastModified = lastModified;
 	}
 

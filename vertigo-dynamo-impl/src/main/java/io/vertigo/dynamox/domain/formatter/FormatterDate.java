@@ -21,7 +21,6 @@ package io.vertigo.dynamox.domain.formatter;
 import java.text.ParsePosition;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -159,11 +158,14 @@ public final class FormatterDate implements Formatter {
 	}
 
 	/*
-	 * Converts a String to a ZonedlDateTime according to a given pattern
+	 * Converts a String to a Instant according to a given pattern
 	 */
-	private static ZonedDateTime doStringToInstant(final String dateString, final String pattern) {
-		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern);
-		return LocalDateTime.parse(dateString, dateTimeFormatter).atZone(ZoneId.of("UTC"));
+	private static Instant doStringToInstant(final String dateString, final String pattern) {
+		return ZonedDateTime.parse(
+				dateString,
+				DateTimeFormatter.ofPattern(pattern)
+						.withZone(ZoneId.of("UTC")))
+				.toInstant();
 	}
 
 	/*
@@ -199,6 +201,7 @@ public final class FormatterDate implements Formatter {
 
 	private static String instantToString(final Instant instant, final String pattern) {
 		return DateTimeFormatter.ofPattern(pattern)
+				.withZone(ZoneId.of("UTC"))
 				.format(instant);
 	}
 

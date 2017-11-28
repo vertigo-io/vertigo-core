@@ -57,7 +57,7 @@ final class IndexType {
 				return "text";
 			case Date:
 			case LocalDate:
-			case ZonedDateTime:
+			case Instant:
 				return "date";
 			case BigDecimal:
 				return "double";
@@ -105,7 +105,7 @@ final class IndexType {
 			case Boolean:
 			case Date:
 			case LocalDate:
-			case ZonedDateTime:
+			case Instant:
 			case Double:
 			case Integer:
 			case Long:
