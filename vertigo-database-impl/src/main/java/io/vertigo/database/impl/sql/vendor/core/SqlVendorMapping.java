@@ -27,9 +27,6 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -93,14 +90,14 @@ public final class SqlVendorMapping implements SqlMapping {
 			return Types.BLOB;
 		}
 		//---Dates
-		//java.util.Date is now Deprecated and must be replaced by LocalDate or ZonedDateTime
+		//java.util.Date is now Deprecated and must be replaced by LocalDate or Instant
 		if (Date.class.isAssignableFrom(dataType)) {
 			return Types.TIMESTAMP;
 		}
 		if (LocalDate.class.isAssignableFrom(dataType)) {
 			return Types.DATE;
 		}
-		if (ZonedDateTime.class.isAssignableFrom(dataType)) {
+		if (Instant.class.isAssignableFrom(dataType)) {
 			return Types.TIMESTAMP;
 		}
 		throw new IllegalArgumentException(TYPE_UNSUPPORTED + dataType);
@@ -142,12 +139,9 @@ public final class SqlVendorMapping implements SqlMapping {
 				final Date date = (Date) value;
 				final Timestamp ts = new Timestamp(date.getTime());
 				statement.setTimestamp(index, ts);
-			} else if (ZonedDateTime.class.isAssignableFrom(dataType)) {
-				final ZonedDateTime zonedDateTime = (ZonedDateTime) value;
-				final Instant instant = zonedDateTime.toInstant();
-				final LocalDateTime dt = LocalDateTime.ofInstant(instant, ZoneId.of("UTC"));
-				//final Timestamp ts = new Timestamp(zonedDateTime.toInstant().getEpochSecond() * 1000L);
-				final Timestamp ts = Timestamp.valueOf(dt);
+			} else if (Instant.class.isAssignableFrom(dataType)) {
+				final Instant instant = (Instant) value;
+				final Timestamp ts = Timestamp.from(instant);
 				statement.setTimestamp(index, ts);
 			} else if (DataStream.class.isAssignableFrom(dataType)) {
 				try {
@@ -209,9 +203,9 @@ public final class SqlVendorMapping implements SqlMapping {
 		} else if (Date.class.isAssignableFrom(dataType)) {
 			final Timestamp timestamp = resultSet.getTimestamp(col);
 			value = timestamp == null ? null : new java.util.Date(timestamp.getTime());
-		} else if (ZonedDateTime.class.isAssignableFrom(dataType)) {
+		} else if (Instant.class.isAssignableFrom(dataType)) {
 			final Timestamp timestamp = resultSet.getTimestamp(col, createCalendarUTC());
-			value = timestamp == null ? null : ZonedDateTime.ofInstant(Instant.ofEpochMilli(timestamp.getTime()), ZoneId.of("UTC"));
+			value = timestamp == null ? null : timestamp.toInstant();
 		} else if (DataStream.class.isAssignableFrom(dataType)) {
 			value = SqlDataStreamMappingUtil.getDataStream(resultSet, col);
 		} else {

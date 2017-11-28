@@ -36,7 +36,7 @@ public final class OracleDataBaseManagerTest extends AbstractSqlDataBaseManagerT
 				+ "color 					NUMBER(1), "
 				+ "release_date 			DATE, "
 				+ "release_local_date 		DATE, "
-				+ "release_zoned_date_time 	DATE, "
+				+ "release_instant 			DATE	, "
 				+ "icon 					BLOB"
 				+ ")";
 	}

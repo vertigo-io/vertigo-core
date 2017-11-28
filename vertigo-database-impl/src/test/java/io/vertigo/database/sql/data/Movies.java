@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -58,14 +59,14 @@ public final class Movies {
 			final Boolean color,
 			final Date date,
 			final LocalDate localDate,
-			final ZonedDateTime releaseZonedDateTime) {
+			final Instant releaseInstant) {
 		final Movie movie = new Movie();
 		movie.setId(id);
 		movie.setTitle(title);
 		movie.setMail(mail);
 		movie.setReleaseDate(date);
 		movie.setReleaseLocalDate(localDate);
-		movie.setReleaseZonedDateTime(releaseZonedDateTime);
+		movie.setReleaseInstant(releaseInstant);
 		movie.setFps(fps);
 		if (income != null) {
 			movie.setIncome(new BigDecimal(income));
@@ -95,6 +96,7 @@ public final class Movies {
 	}
 
 	public static void checkMovie(final Movie movie) {
+		final ZonedDateTime zdt = movie.getReleaseInstant().atZone(ZoneId.of("UTC"));
 		switch (movie.getId().intValue()) {
 			case 1:
 				Assert.assertEquals(TITLE_MOVIE_1, movie.getTitle());
@@ -105,13 +107,13 @@ public final class Movies {
 				Assert.assertEquals(5, movie.getReleaseLocalDate().getMonthValue());
 				Assert.assertEquals(1941, movie.getReleaseLocalDate().getYear());
 				//ZonedDateTime
-				Assert.assertEquals("UTC", movie.getReleaseZonedDateTime().getZone().getId());
-				Assert.assertEquals(1, movie.getReleaseZonedDateTime().getDayOfMonth());
-				Assert.assertEquals(5, movie.getReleaseZonedDateTime().getMonthValue());
-				Assert.assertEquals(1941, movie.getReleaseZonedDateTime().getYear());
-				Assert.assertEquals(16, movie.getReleaseZonedDateTime().getHour());
-				Assert.assertEquals(30, movie.getReleaseZonedDateTime().getMinute());
-				Assert.assertEquals(0, movie.getReleaseZonedDateTime().getSecond());
+				Assert.assertEquals("UTC", zdt.getZone().getId());
+				Assert.assertEquals(1, zdt.getDayOfMonth());
+				Assert.assertEquals(5, zdt.getMonthValue());
+				Assert.assertEquals(1941, zdt.getYear());
+				Assert.assertEquals(16, zdt.getHour());
+				Assert.assertEquals(30, zdt.getMinute());
+				Assert.assertEquals(0, zdt.getSecond());
 
 				break;
 			case 2:
@@ -123,13 +125,13 @@ public final class Movies {
 				Assert.assertEquals(5, movie.getReleaseLocalDate().getMonthValue());
 				Assert.assertEquals(1958, movie.getReleaseLocalDate().getYear());
 				//ZonedDateTime
-				Assert.assertEquals("UTC", movie.getReleaseZonedDateTime().getZone().getId());
-				Assert.assertEquals(9, movie.getReleaseZonedDateTime().getDayOfMonth());
-				Assert.assertEquals(5, movie.getReleaseZonedDateTime().getMonthValue());
-				Assert.assertEquals(1958, movie.getReleaseZonedDateTime().getYear());
-				Assert.assertEquals(16, movie.getReleaseZonedDateTime().getHour());
-				Assert.assertEquals(30, movie.getReleaseZonedDateTime().getMinute());
-				Assert.assertEquals(0, movie.getReleaseZonedDateTime().getSecond());
+				Assert.assertEquals("UTC", zdt.getZone().getId());
+				Assert.assertEquals(9, zdt.getDayOfMonth());
+				Assert.assertEquals(5, zdt.getMonthValue());
+				Assert.assertEquals(1958, zdt.getYear());
+				Assert.assertEquals(16, zdt.getHour());
+				Assert.assertEquals(30, zdt.getMinute());
+				Assert.assertEquals(0, zdt.getSecond());
 
 				break;
 			case 3:
@@ -139,7 +141,7 @@ public final class Movies {
 				//LocalDate
 				Assert.assertEquals(null, movie.getReleaseLocalDate());
 				//ZonedDateTime
-				Assert.assertEquals(null, movie.getReleaseZonedDateTime());
+				Assert.assertEquals(null, zdt);
 				break;
 			default:
 				Assert.fail();
@@ -161,7 +163,18 @@ public final class Movies {
 		calendar.set(year, month, dayOfMonth);
 
 		final LocalDate localDate = LocalDate.of(year, month, dayOfMonth);
-		return Movies.createMovie(id, title, new Mail(mailAsString), fps, income, color, calendar.getTime(), localDate, ZonedDateTime.of(LocalDate.of(year, month, dayOfMonth), LocalTime.of(16, 30), ZoneId.of("UTC")));
+		return Movies.createMovie(
+				id,
+				title,
+				new Mail(mailAsString),
+				fps,
+				income,
+				color,
+				calendar.getTime(),
+				localDate,
+				ZonedDateTime
+						.of(LocalDate.of(year, month, dayOfMonth), LocalTime.of(16, 30), ZoneId.of("UTC"))
+						.toInstant());
 	}
 
 	public static final List<Movie> bondMovies() {

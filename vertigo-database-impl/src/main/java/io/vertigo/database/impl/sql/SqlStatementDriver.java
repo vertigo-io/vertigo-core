@@ -25,8 +25,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -246,7 +246,7 @@ final class SqlStatementDriver {
 				Boolean.class,
 				String.class,
 				Date.class,
-				ZonedDateTime.class,
+				Instant.class,
 				LocalDate.class,
 				BigDecimal.class,
 				Long.class)

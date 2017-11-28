@@ -10,7 +10,7 @@ package io.vertigo.database.sql.mapper;
  * 	- Integer, Long, Double, BigDecimal
  * 	- Boolean
  * 	- String
- *  - LocalDate, ZonedDateTime
+ *  - LocalDate, Instant
  *  - DataStream
  *
  *  If you want to store another value type like 'mail' you have to define a specific adapter.

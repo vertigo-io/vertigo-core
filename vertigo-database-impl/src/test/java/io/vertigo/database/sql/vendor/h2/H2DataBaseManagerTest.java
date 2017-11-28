@@ -33,7 +33,7 @@ public final class H2DataBaseManagerTest extends AbstractSqlDataBaseManagerTest 
 				+ "color 					BOOLEAN, "
 				+ "release_date 			TIMESTAMP, "
 				+ "release_local_date 		DATE, "
-				+ "release_zoned_date_time 	TIMESTAMP, "
+				+ "release_instant 			TIMESTAMP, "
 				+ "icon 					BLOB"
 				+ ")";
 	}

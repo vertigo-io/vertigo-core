@@ -20,6 +20,7 @@ package io.vertigo.database.sql;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -55,7 +56,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 	private static final String DROP_TABLE_MOVIE = "DROP TABLE movie";
 	private static final String DROP_SEQUENCE_MOVIE = "DROP SEQUENCE seq_movie";
 
-	private static final String INSERT_INTO_MOVIE_VALUES = "insert into movie values (#movie.id#, #movie.title#, #movie.mail#, #movie.fps#, #movie.income#, #movie.color#, #movie.release_date#, #movie.release_local_date#, #movie.release_zoned_date_time#, #movie.icon#)";
+	private static final String INSERT_INTO_MOVIE_VALUES = "insert into movie values (#movie.id#, #movie.title#, #movie.mail#, #movie.fps#, #movie.income#, #movie.color#, #movie.release_date#, #movie.release_local_date#, #movie.release_instant#, #movie.icon#)";
 	private static final String CREATE_TABLE_MOVIE = "create table movie ("
 			+ "id bigint , "
 			+ "title varchar(255) , "
@@ -65,7 +66,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 			+ "color boolean , "
 			+ "release_date timestamp , "
 			+ "release_local_date date , "
-			+ "release_zoned_date_time datetime , "
+			+ "release_instant timestamp , "
 			+ "icon blob );";
 	@Inject
 	protected SqlDataBaseManager dataBaseManager;
@@ -151,7 +152,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 					null,
 					new Date(1941 - 1900, 5 - 1, 1, 16, 30),
 					LocalDate.of(1941, 5, 1),
-					ZonedDateTime.of(LocalDate.of(1941, 5, 1), LocalTime.of(16, 30), ZoneId.of("UTC"))));
+					ZonedDateTime.of(LocalDate.of(1941, 5, 1), LocalTime.of(16, 30), ZoneId.of("UTC")).toInstant()));
 			//-----
 			insert(connection, Movies.createMovie(
 					2,
@@ -162,7 +163,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 					null,
 					new Date(1958 - 1900, 5 - 1, 9, 16, 30),
 					LocalDate.of(1958, 5, 9),
-					ZonedDateTime.of(LocalDate.of(1958, 5, 9), LocalTime.of(16, 30), ZoneId.of("UTC"))));
+					ZonedDateTime.of(LocalDate.of(1958, 5, 9), LocalTime.of(16, 30), ZoneId.of("UTC")).toInstant()));
 			//-----
 			//On passe par une requête bindée
 			insert(connection, Movies.createMovie(
@@ -330,7 +331,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 					SqlParameter.of(Boolean.class, movie.getColor()),
 					SqlParameter.of(Date.class, movie.getReleaseDate()),
 					SqlParameter.of(LocalDate.class, movie.getReleaseLocalDate()),
-					SqlParameter.of(ZonedDateTime.class, movie.getReleaseZonedDateTime()),
+					SqlParameter.of(Instant.class, movie.getReleaseInstant()),
 					SqlParameter.of(DataStream.class, movie.getIcon()));
 			batch.add(sqlParameters);
 		}

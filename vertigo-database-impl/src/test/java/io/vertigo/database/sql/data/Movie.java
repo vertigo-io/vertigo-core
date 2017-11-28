@@ -19,8 +19,8 @@
 package io.vertigo.database.sql.data;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.Date;
 
 import io.vertigo.lang.DataStream;
@@ -40,7 +40,7 @@ public final class Movie {
 	private Boolean color;
 	private DataStream icon;
 
-	private ZonedDateTime releaseZonedDateTime;
+	private Instant releaseInstant;
 	//	private Mail mail;
 
 	public final Long getId() {
@@ -109,12 +109,12 @@ public final class Movie {
 		this.color = color;
 	}
 
-	public ZonedDateTime getReleaseZonedDateTime() {
-		return releaseZonedDateTime;
+	public Instant getReleaseInstant() {
+		return releaseInstant;
 	}
 
-	public void setReleaseZonedDateTime(final ZonedDateTime releaseZonedDateTime) {
-		this.releaseZonedDateTime = releaseZonedDateTime;
+	public void setReleaseInstant(final Instant releaseInstant) {
+		this.releaseInstant = releaseInstant;
 	}
 
 	/*
