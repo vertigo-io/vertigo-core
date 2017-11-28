@@ -160,7 +160,7 @@ public final class DtListPatternFilterUtil {
 			case Double:
 				return Double.valueOf(stringValue);
 			case Date:
-				return DateUtil.parse(stringValue, DATE_PATTERN);
+				return DateUtil.parseToInstant(stringValue, DATE_PATTERN);
 			case String:
 				return stringValue;
 			case Boolean:

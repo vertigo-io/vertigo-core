@@ -137,7 +137,7 @@ public final class DateUtil {
 	 *
 	 * @return date
 	 */
-	public static Date parseDate(final String dateExpression, final String datePattern) {
+	public static Date parseToDate(final String dateExpression, final String datePattern) {
 		return DateQueryParserUtil.parse(dateExpression, datePattern);
 	}
 
@@ -159,7 +159,7 @@ public final class DateUtil {
 	 *
 	 * @return Instant
 	 */
-	public static Instant parse(final String dateExpression, final String datePattern) {
+	public static Instant parseToInstant(final String dateExpression, final String datePattern) {
 		return DateQueryParserUtil.parse(dateExpression, datePattern).toInstant();
 	}
 }

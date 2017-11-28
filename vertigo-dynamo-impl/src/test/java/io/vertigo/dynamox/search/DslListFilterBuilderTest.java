@@ -313,8 +313,8 @@ public final class DslListFilterBuilderTest {
 
 	@Test
 	public void testBeanQuery() {
-		final Date dateTest1 = DateUtil.parse("230715 123000 -00", "ddMMyy HHmmss X");
-		final Date dateTest2 = DateUtil.parse("230715 164500 -00", "ddMMyy HHmmss X");
+		final Date dateTest1 = DateUtil.parseToDate("230715 123000 -00", "ddMMyy HHmmss X");
+		final Date dateTest2 = DateUtil.parseToDate("230715 164500 -00", "ddMMyy HHmmss X");
 		final TestBean testBean = new TestBean("Test", "Test test2", dateTest1, dateTest2, 5, 10);
 		final Object[][] testQueries = new Object[][] {
 				//QueryPattern, UserQuery, EspectedResult
@@ -346,7 +346,7 @@ public final class DslListFilterBuilderTest {
 
 	@Test
 	public void testMultiQuery() {
-		final Date dateTest1 = DateUtil.parse("230715 123000 -00", "ddMMyy HHmmss X");
+		final Date dateTest1 = DateUtil.parseToDate("230715 123000 -00", "ddMMyy HHmmss X");
 		final TestBean testBeanNull = new TestBean(null, "Test test2", null, dateTest1, null, 5);
 		final TestBean testBeanEmpty = new TestBean("", "Test test2", null, dateTest1, null, 5);
 		final TestBean testBeanOne = new TestBean("12", "Test test2", null, null, null, null);
