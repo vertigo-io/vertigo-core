@@ -19,6 +19,7 @@
 package io.vertigo.dynamox.domain.formatter;
 
 import java.text.ParsePosition;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -101,8 +102,8 @@ public final class FormatterDate implements Formatter {
 				return dateToString((Date) objValue, patterns.get(0));
 			case LocalDate:
 				return localDateToString((LocalDate) objValue, patterns.get(0));
-			case ZonedDateTime:
-				return zonedDateTimeToString((ZonedDateTime) objValue, patterns.get(0));
+			case Instant:
+				return instantToString((Instant) objValue, patterns.get(0));
 			default:
 				throw new IllegalStateException();
 		}
@@ -122,8 +123,8 @@ public final class FormatterDate implements Formatter {
 				return applyStringToObject(sValue, FormatterDate::doStringToDate);
 			case LocalDate:
 				return applyStringToObject(sValue, FormatterDate::doStringToLocalDate);
-			case ZonedDateTime:
-				return applyStringToObject(sValue, FormatterDate::doStringToZonedDateTime);
+			case Instant:
+				return applyStringToObject(sValue, FormatterDate::doStringToInstant);
 			default:
 				throw new IllegalStateException();
 		}
@@ -160,7 +161,7 @@ public final class FormatterDate implements Formatter {
 	/*
 	 * Converts a String to a ZonedlDateTime according to a given pattern
 	 */
-	private static ZonedDateTime doStringToZonedDateTime(final String dateString, final String pattern) {
+	private static ZonedDateTime doStringToInstant(final String dateString, final String pattern) {
 		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern);
 		return LocalDateTime.parse(dateString, dateTimeFormatter).atZone(ZoneId.of("UTC"));
 	}
@@ -196,9 +197,9 @@ public final class FormatterDate implements Formatter {
 				.format(localDate);
 	}
 
-	private static String zonedDateTimeToString(final ZonedDateTime zonedDateTime, final String pattern) {
+	private static String instantToString(final Instant instant, final String pattern) {
 		return DateTimeFormatter.ofPattern(pattern)
-				.format(zonedDateTime);
+				.format(instant);
 	}
 
 	private static LocaleManager getLocaleManager() {

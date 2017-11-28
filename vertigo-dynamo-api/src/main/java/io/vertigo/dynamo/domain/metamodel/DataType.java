@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Optional;
 
@@ -45,8 +45,8 @@ public enum DataType {
 	Date(Date.class),
 	/** LocalDate. */
 	LocalDate(LocalDate.class),
-	/** ZonedDateTime. */
-	ZonedDateTime(ZonedDateTime.class),
+	/** Instant. */
+	Instant(Instant.class),
 	/** BigDecimal. */
 	BigDecimal(java.math.BigDecimal.class),
 	/** Long. */
@@ -88,7 +88,7 @@ public enum DataType {
 	public boolean isAboutDate() {
 		return this == DataType.Date
 				|| this == DataType.LocalDate
-				|| this == DataType.ZonedDateTime;
+				|| this == DataType.Instant;
 	}
 
 	/**
@@ -129,8 +129,8 @@ public enum DataType {
 			dataType = DataType.Date;
 		} else if (LocalDate.class.equals(type)) {
 			dataType = DataType.LocalDate;
-		} else if (ZonedDateTime.class.equals(type)) {
-			dataType = DataType.ZonedDateTime;
+		} else if (Instant.class.equals(type)) {
+			dataType = DataType.Instant;
 		} else if (java.math.BigDecimal.class.equals(type)) {
 			dataType = DataType.BigDecimal;
 		} else if (Long.class.equals(type) || long.class.equals(type)) {

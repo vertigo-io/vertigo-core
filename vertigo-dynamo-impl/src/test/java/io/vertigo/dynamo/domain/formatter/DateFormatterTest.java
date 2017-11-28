@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.domain.formatter;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -59,9 +60,11 @@ public class DateFormatterTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testZonedDateTimeFormatter() throws FormatterException {
-		final ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDateTime.of(2009, 2, 23, 16, 30), ZoneId.of("UTC"));
-		Assert.assertEquals("2009-02-23 16:30:00", formatterDateZDT.valueToString(zonedDateTime, DataType.ZonedDateTime));
-		Assert.assertEquals(zonedDateTime, formatterDateZDT.stringToValue("2009-02-23 16:30:00", DataType.ZonedDateTime));
+		final Instant instant = ZonedDateTime
+				.of(LocalDateTime.of(2009, 2, 23, 16, 30), ZoneId.of("UTC"))
+				.toInstant();
+		Assert.assertEquals("2009-02-23 16:30:00", formatterDateZDT.valueToString(instant, DataType.Instant));
+		Assert.assertEquals(instant, formatterDateZDT.stringToValue("2009-02-23 16:30:00", DataType.Instant));
 	}
 
 	@Test(expected = FormatterException.class)
@@ -78,8 +81,10 @@ public class DateFormatterTest extends AbstractTestCaseJU4 {
 
 	@Test(expected = FormatterException.class)
 	public void testFormatterErrorZonedDateTime() throws FormatterException {
-		final ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDateTime.of(2009, 2, 23, 16, 30), ZoneId.of("UTC"));
-		Assert.assertEquals(zonedDateTime, formatterDate.stringToValue("2003/09/15 16:30:00", DataType.ZonedDateTime));
+		final Instant instant = ZonedDateTime
+				.of(LocalDateTime.of(2009, 2, 23, 16, 30), ZoneId.of("UTC"))
+				.toInstant();
+		Assert.assertEquals(instant, formatterDate.stringToValue("2003/09/15 16:30:00", DataType.Instant));
 	}
 
 }
