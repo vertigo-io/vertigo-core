@@ -20,10 +20,10 @@ package io.vertigo.account.plugins.identityprovider.ldap;
 
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Optional;
@@ -240,7 +240,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 
 	private VFile base64toVFile(final String displayName, final String base64Content) {
 		final byte[] photo = codecManager.getBase64Codec().decode(base64Content);
-		return new StreamFile(displayName, LDAP_PHOTO_MIME_TYPE, new Date(), photo.length, () -> new ByteArrayInputStream(photo));
+		return new StreamFile(displayName, LDAP_PHOTO_MIME_TYPE, Instant.now(), photo.length, () -> new ByteArrayInputStream(photo));
 	}
 
 	private LdapContext createLdapContext(final String principal, final String credentials) {

@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Optional;
@@ -151,7 +152,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		// récupération du fichier
 		final String fileName = getValue(fileInfoDto, DtoFields.FILE_NAME, String.class);
 		final String mimeType = getValue(fileInfoDto, DtoFields.MIME_TYPE, String.class);
-		final Date lastModified = getValue(fileInfoDto, DtoFields.LAST_MODIFIED, Date.class);
+		final Instant lastModified = getValue(fileInfoDto, DtoFields.LAST_MODIFIED, Instant.class);
 		final Long length = getValue(fileInfoDto, DtoFields.LENGTH, Long.class);
 		final String filePath = getValue(fileInfoDto, DtoFields.FILE_PATH, String.class);
 

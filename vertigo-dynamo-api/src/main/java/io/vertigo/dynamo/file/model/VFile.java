@@ -21,7 +21,7 @@ package io.vertigo.dynamo.file.model;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * Représentation d'un Fichier logique.
@@ -51,7 +51,7 @@ public interface VFile extends Serializable {
 	/**
 	 * @return Date de modification du fichier en milli-secondes.
 	 */
-	Date getLastModified();
+	Instant getLastModified();
 
 	/**
 	 * @return Type mime du fichier

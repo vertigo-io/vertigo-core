@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.impl.file.model;
 
-import java.util.Date;
+import java.time.Instant;
 
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
@@ -31,7 +31,7 @@ abstract class AbstractVFile implements VFile {
 	private static final long serialVersionUID = 1L;
 	private final String fileName;
 	private final String mimeType;
-	private final Date lastModified;
+	private final Instant lastModified;
 	private final long length;
 
 	/**
@@ -42,7 +42,7 @@ abstract class AbstractVFile implements VFile {
 	 * @param lastModified Date de derniére modification du fichier
 	 * @param length Longueur du fichier (en octet)
 	 */
-	protected AbstractVFile(final String fileName, final String mimeType, final Date lastModified, final long length) {
+	protected AbstractVFile(final String fileName, final String mimeType, final Instant lastModified, final long length) {
 		Assertion.checkNotNull(fileName);
 		Assertion.checkNotNull(mimeType);
 		Assertion.checkNotNull(lastModified);
@@ -74,7 +74,7 @@ abstract class AbstractVFile implements VFile {
 
 	/** {@inheritDoc} */
 	@Override
-	public final Date getLastModified() {
-		return (Date) lastModified.clone();
+	public final Instant getLastModified() {
+		return lastModified;
 	}
 }

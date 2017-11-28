@@ -20,7 +20,7 @@ package io.vertigo.account.plugins.account.cache.redis;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.Date;
+import java.time.Instant;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.file.model.VFile;
@@ -38,7 +38,7 @@ final class Base64File implements VFile {
 	private final String fileName;
 	private final String mimeType;
 	private final Long length;
-	private final Date lastModified;
+	private final Instant lastModified;
 	private final String base64Content;
 	private final CodecManager codecManager;
 
@@ -55,7 +55,7 @@ final class Base64File implements VFile {
 			final String fileName,
 			final String mimeType,
 			final Long length,
-			final Date lastModified,
+			final Instant lastModified,
 			final String base64Content) {
 		Assertion.checkNotNull(codecManager);
 		//---
@@ -95,7 +95,7 @@ final class Base64File implements VFile {
 	 *@return lastModified.
 	 */
 	@Override
-	public Date getLastModified() {
+	public Instant getLastModified() {
 		return lastModified;
 	}
 

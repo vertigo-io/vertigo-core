@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -128,7 +129,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			// récupération des infos
 			final String fileName = infos.get(0);
 			final String mimeType = infos.get(1);
-			final Date lastModified = DateUtil.parse(infos.get(2), INFOS_DATE_PATTERN);
+			final Instant lastModified = DateUtil.parse(infos.get(2), INFOS_DATE_PATTERN);
 			final Long length = Long.valueOf(infos.get(3));
 
 			final InputStreamBuilder inputStreamBuilder = new FileInputStreamBuilder(new File(documentRoot + String.class.cast(uri.getKey())));
