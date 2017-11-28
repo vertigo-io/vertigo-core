@@ -152,7 +152,9 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 					null,
 					new Date(1941 - 1900, 5 - 1, 1, 16, 30),
 					LocalDate.of(1941, 5, 1),
-					ZonedDateTime.of(LocalDate.of(1941, 5, 1), LocalTime.of(16, 30), ZoneId.of("UTC")).toInstant()));
+					ZonedDateTime
+							.of(LocalDate.of(1941, 5, 1), LocalTime.of(16, 30), ZoneId.of("UTC"))
+							.toInstant()));
 			//-----
 			insert(connection, Movies.createMovie(
 					2,
@@ -163,7 +165,9 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 					null,
 					new Date(1958 - 1900, 5 - 1, 9, 16, 30),
 					LocalDate.of(1958, 5, 9),
-					ZonedDateTime.of(LocalDate.of(1958, 5, 9), LocalTime.of(16, 30), ZoneId.of("UTC")).toInstant()));
+					ZonedDateTime
+							.of(LocalDate.of(1958, 5, 9), LocalTime.of(16, 30), ZoneId.of("UTC"))
+							.toInstant()));
 			//-----
 			//On passe par une requête bindée
 			insert(connection, Movies.createMovie(

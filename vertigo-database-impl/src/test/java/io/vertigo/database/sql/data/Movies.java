@@ -106,7 +106,7 @@ public final class Movies {
 				Assert.assertEquals(1, movie.getReleaseLocalDate().getDayOfMonth());
 				Assert.assertEquals(5, movie.getReleaseLocalDate().getMonthValue());
 				Assert.assertEquals(1941, movie.getReleaseLocalDate().getYear());
-				//ZonedDateTime
+				//Instant
 				Assert.assertEquals("UTC", zdt.getZone().getId());
 				Assert.assertEquals(1, zdt.getDayOfMonth());
 				Assert.assertEquals(5, zdt.getMonthValue());
@@ -124,7 +124,7 @@ public final class Movies {
 				Assert.assertEquals(9, movie.getReleaseLocalDate().getDayOfMonth());
 				Assert.assertEquals(5, movie.getReleaseLocalDate().getMonthValue());
 				Assert.assertEquals(1958, movie.getReleaseLocalDate().getYear());
-				//ZonedDateTime
+				//Instant
 				Assert.assertEquals("UTC", zdt.getZone().getId());
 				Assert.assertEquals(9, zdt.getDayOfMonth());
 				Assert.assertEquals(5, zdt.getMonthValue());
@@ -140,7 +140,7 @@ public final class Movies {
 				Assert.assertEquals(null, movie.getReleaseDate());
 				//LocalDate
 				Assert.assertEquals(null, movie.getReleaseLocalDate());
-				//ZonedDateTime
+				//Instant
 				Assert.assertEquals(null, zdt);
 				break;
 			default:
