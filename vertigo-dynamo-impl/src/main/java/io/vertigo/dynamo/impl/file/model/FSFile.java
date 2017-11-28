@@ -21,7 +21,7 @@ package io.vertigo.dynamo.impl.file.model;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * Représentation d'un fichier créé à partir d'un FileSystem.
@@ -40,7 +40,7 @@ public final class FSFile extends AbstractVFile {
 	 * @param file Fichier en lui même (non null)
 	 */
 	public FSFile(final String fileName, final String mimeType, final File file) {
-		super(fileName, mimeType, new Date(file.lastModified()), file.length());
+		super(fileName, mimeType, Instant.ofEpochMilli(file.lastModified()), file.length());
 		//-----
 		this.file = file;
 	}

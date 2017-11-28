@@ -20,6 +20,7 @@ package io.vertigo.dynamo.file;
 
 import java.io.File;
 import java.net.URL;
+import java.time.Instant;
 import java.util.Date;
 
 import io.vertigo.core.component.Manager;
@@ -73,8 +74,22 @@ public interface FileManager extends Manager {
 	 * @param lastModified Date de dernière modification
 	 * @param length Taille du fichier
 	 * @param inputStreamBuilder Builder du flux des données
-	 * @return VFile crée
+	 * @return VFile créé
 	 */
+	VFile createFile(final String fileName, final Instant lastModified, final long length, final InputStreamBuilder inputStreamBuilder);
+
+	/**
+	 * Crée un VFile temporaire à partir d'un Builder du flux des données.
+	 * Le typeMime sera déterminé à partir du fileName.
+	 *
+	 * @param fileName Nom du fichier
+	 * @param lastModified Date de dernière modification
+	 * @param length Taille du fichier
+	 * @param inputStreamBuilder Builder du flux des données
+	 * @return VFile crée	 *
+	 * @Deprecated Use createFile with ZonedDateTime lastModified instead
+	 */
+	@Deprecated
 	VFile createFile(final String fileName, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder);
 
 	/**
@@ -86,6 +101,19 @@ public interface FileManager extends Manager {
 	 * @param inputStreamBuilder Builder du flux des données
 	 * @return VFile crée
 	 */
+	VFile createFile(final String fileName, final String typeMime, final Instant lastModified, final long length, final InputStreamBuilder inputStreamBuilder);
+
+	/**
+	 * Crée un VFile temporaire à partir d'un Builder du flux des données.
+	 * @param fileName Nom du fichier
+	 * @param typeMime Type mime
+	 * @param lastModified Date de dernière modification
+	 * @param length Taille du fichier
+	 * @param inputStreamBuilder Builder du flux des données
+	 * @return VFile crée
+	 * @Deprecated Use createFile with ZonedDateTime lastModified instead
+	 */
+	@Deprecated
 	VFile createFile(final String fileName, final String typeMime, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder);
 
 }

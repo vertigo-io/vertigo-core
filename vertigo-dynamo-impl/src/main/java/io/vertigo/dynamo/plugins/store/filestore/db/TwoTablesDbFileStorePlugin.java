@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.store.filestore.db;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -98,7 +98,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(getValue(fileDataDto, DtoFields.FILE_DATA, DataStream.class));
 		final String fileName = getValue(fileMetadataDto, DtoFields.FILE_NAME, String.class);
 		final String mimeType = getValue(fileMetadataDto, DtoFields.MIME_TYPE, String.class);
-		final Date lastModified = getValue(fileMetadataDto, DtoFields.LAST_MODIFIED, Date.class);
+		final Instant lastModified = getValue(fileMetadataDto, DtoFields.LAST_MODIFIED, Instant.class);
 		final Long length = getValue(fileMetadataDto, DtoFields.LENGTH, Long.class);
 		final VFile vFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
 
