@@ -27,9 +27,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 
 import io.vertigo.database.sql.vendor.SqlMapping;
 import io.vertigo.lang.DataStream;
@@ -57,12 +55,6 @@ public final class SqlVendorMapping implements SqlMapping {
 
 	public static SqlMapping createWithBooleanAsBoolean() {
 		return new SqlVendorMapping(false);
-	}
-
-	private static Calendar createCalendarUTC() {
-		final Calendar calendar = Calendar.getInstance();
-		calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
-		return calendar;
 	}
 
 	private int getSqlType(final Class dataType) {
@@ -204,7 +196,7 @@ public final class SqlVendorMapping implements SqlMapping {
 			final Timestamp timestamp = resultSet.getTimestamp(col);
 			value = timestamp == null ? null : new java.util.Date(timestamp.getTime());
 		} else if (Instant.class.isAssignableFrom(dataType)) {
-			final Timestamp timestamp = resultSet.getTimestamp(col, createCalendarUTC());
+			final Timestamp timestamp = resultSet.getTimestamp(col);
 			value = timestamp == null ? null : timestamp.toInstant();
 		} else if (DataStream.class.isAssignableFrom(dataType)) {
 			value = SqlDataStreamMappingUtil.getDataStream(resultSet, col);
