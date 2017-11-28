@@ -148,7 +148,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	/**
 	 * Daemon to unstack processes to end them
 	 */
-	@DaemonScheduled(name = "DMN_REMOTE_LOGGER", periodInSeconds = 1)
+	@DaemonScheduled(name = "DMN_REMOTE_LOGGER", periodInSeconds = 1, analytics = false)
 	public void pollQueue() {
 		while (!processQueue.isEmpty()) {
 			final AProcess head = processQueue.poll();

@@ -70,7 +70,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 
 	}
 
-	@DaemonScheduled(name = "DMN_UPDATE_NODE_STATUS", periodInSeconds = HEART_BEAT_SECONDS)
+	@DaemonScheduled(name = "DMN_UPDATE_NODE_STATUS", periodInSeconds = HEART_BEAT_SECONDS, analytics = false)
 	public void updateNodeStatus() {
 		nodeRegistryPlugin.updateStatus(toAppNode(Home.getApp()));
 	}

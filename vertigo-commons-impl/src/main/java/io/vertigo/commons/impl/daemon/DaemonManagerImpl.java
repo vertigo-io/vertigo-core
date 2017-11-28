@@ -19,6 +19,7 @@
 package io.vertigo.commons.impl.daemon;
 
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -83,12 +84,20 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 							Assertion.checkState(method.getParameterTypes().length == 0, "Method {0} on component {1} cannot have any parameter to be used as a daemon", method.getName(), component.getClass().getName());
 							//---
 							final DaemonScheduled daemonSchedule = method.getAnnotation(DaemonScheduled.class);
+							final Supplier<Daemon> daemonSupplier;
+							if (daemonSchedule.analytics()) {
+								// if analytics is enabled (by default) we trace the execution with a tracer
+								daemonSupplier = () -> () -> analyticsManager.trace(
+										"daemon",
+										daemonSchedule.name(),
+										(tracer) -> ClassUtil.invoke(component, method));
+							} else {
+								// otherwise we just execute it
+								daemonSupplier = () -> () -> ClassUtil.invoke(component, method);
+							}
 							return new DaemonDefinition(
 									daemonSchedule.name(),
-									() -> () -> analyticsManager.trace(
-											"daemon",
-											daemonSchedule.name(),
-											(tracer) -> ClassUtil.invoke(component, method)),
+									daemonSupplier,
 									daemonSchedule.periodInSeconds());
 						})
 				.collect(Collectors.toList());

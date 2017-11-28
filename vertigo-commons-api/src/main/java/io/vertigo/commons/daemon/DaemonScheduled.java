@@ -44,4 +44,10 @@ public @interface DaemonScheduled {
 	 */
 	int periodInSeconds();
 
+	/**
+	 * If the deaemon from this method is monitored by an analytics tracer.
+	 * @return daemon execution monitored by a tracer
+	 */
+	boolean analytics() default true;
+
 }
