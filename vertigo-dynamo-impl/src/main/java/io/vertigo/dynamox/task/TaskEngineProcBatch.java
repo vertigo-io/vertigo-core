@@ -23,6 +23,7 @@ package io.vertigo.dynamox.task;
 
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.OptionalInt;
 
 import javax.inject.Inject;
@@ -33,7 +34,6 @@ import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.statement.SqlStatementBuilder;
-import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.lang.Assertion;
@@ -75,11 +75,11 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 		final Iterator<TaskAttribute> inAttributes = getTaskDefinition().getInAttributes().iterator();
 		Assertion.checkState(inAttributes.hasNext(), "For batch a single DtList param is required");
 		final TaskAttribute listAttribute = inAttributes.next();
-		Assertion.checkState(listAttribute.getDomain().isDtList() && !inAttributes.hasNext(), "For batch a single DtList param is required");
+		Assertion.checkState(listAttribute.getDomain().isMultiple() && !inAttributes.hasNext(), "For batch a single DtList param is required");
 		//---
-		final DtList<?> dtc = getValue(listAttribute.getName());
-		dtc.forEach(dto -> sqlStatementBuilder
-				.bind(listAttribute.getName(), listAttribute.getDomain().getJavaClass(), dto)
+		final List<?> list = getValue(listAttribute.getName());
+		list.forEach(object -> sqlStatementBuilder
+				.bind(listAttribute.getName(), listAttribute.getDomain().getJavaClass(), object)
 				.nextLine());
 	}
 

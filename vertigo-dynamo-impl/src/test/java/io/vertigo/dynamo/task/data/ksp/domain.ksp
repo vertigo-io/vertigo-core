@@ -32,3 +32,9 @@ create Domain DO_INTEGERS {
 	multiple : "true"
 	formatter : FMT_DEFAULT
 }
+
+create Domain DO_LONGS {
+	dataType : Long
+	multiple : "true"
+	formatter : FMT_DEFAULT
+}

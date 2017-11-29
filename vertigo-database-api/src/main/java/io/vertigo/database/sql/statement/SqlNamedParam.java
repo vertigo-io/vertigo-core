@@ -58,11 +58,20 @@ final class SqlNamedParam {
 			fieldName = null;
 			rowNumber = null;
 		} else if (tokens.length == 2) {
-			// a field of a bean is bound
-			// example : DTO_MOVIE.TITLE
-			attributeName = tokens[0];
-			fieldName = tokens[1];
-			rowNumber = null;
+			// we have two cases : a list of primitive or an objet with a field
+			if (tokens[1].matches("\\d+")) {
+				//list of primivtives
+				// example : MOVIE_ID_LIST.0
+				attributeName = tokens[0];
+				fieldName = null;
+				rowNumber = parseDtcRowNumber(tokens[1]);
+			} else {
+				// a field of a bean is bound
+				// example : DTO_MOVIE.TITLE
+				attributeName = tokens[0];
+				fieldName = tokens[1];
+				rowNumber = null;
+			}
 		} else if (tokens.length == 3) {
 			// cas particulier des DTC : il y a qqc entre le premier et le deuxieme point
 			// qui doit être un entier >= 0
@@ -74,9 +83,6 @@ final class SqlNamedParam {
 			throw new IllegalStateException();
 		}
 		Assertion.checkNotNull(attributeName);
-		//Si le numéro de ligne est renseignée alors le champ doit l'être aussi
-		Assertion.when(rowNumber != null)
-				.check(() -> fieldName != null, "Invalid syntax for field in DTC. Use : MY_DTO.0.MY_FIELD");
 	}
 
 	private static int parseDtcRowNumber(final String betweenPoints) {
@@ -90,7 +96,7 @@ final class SqlNamedParam {
 	}
 
 	/**
-	 * Un paramètre est primitif si il ne correspond pas à une DTC ou un DTO.
+	 * Un paramètre est primitif s'il n'y a pas de champ associé.
 	 *
 	 * @return S'il s'agit d'un paramètre primitif
 	 */
@@ -99,17 +105,17 @@ final class SqlNamedParam {
 	}
 
 	/**
-	 * @return Paramètre de type liste.(DTC)
+	 * @return Paramètre de type liste.
 	 */
 	public boolean isList() {
-		return rowNumber != null && !isPrimitive();
+		return rowNumber != null;
 	}
 
 	/**
 	 * @return Paramètre de type Objet.(DTO)
 	 */
 	public boolean isObject() {
-		return rowNumber == null && !isPrimitive();
+		return !isPrimitive();
 	}
 
 	/**
