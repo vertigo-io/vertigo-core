@@ -95,7 +95,6 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 		//---
 		if (rootHolder != null) {
 			if (namedParam.isObject() || namedParam.isList()) {
-				final String fieldName = StringUtil.constToLowerCamelCase(namedParam.getFieldName());
 				final Object valueHolder;
 				if (namedParam.isList()) {
 					valueHolder = ((List) rootHolder).get(namedParam.getRowNumber());
@@ -103,6 +102,10 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 					// we are an object
 					valueHolder = rootHolder;
 				}
+				if (namedParam.isPrimitive()) {
+					return SqlParameter.of((Class) valueHolder.getClass(), valueHolder);
+				}
+				final String fieldName = StringUtil.constToLowerCamelCase(namedParam.getFieldName());
 				final Class valueHolderClass = valueHolder.getClass();
 				final PropertyDescriptor propertyDescriptor = BeanUtil.getPropertyDescriptor(fieldName, valueHolderClass);
 				return SqlParameter.of((Class) propertyDescriptor.getPropertyType(), BeanUtil.getValue(valueHolder, fieldName));

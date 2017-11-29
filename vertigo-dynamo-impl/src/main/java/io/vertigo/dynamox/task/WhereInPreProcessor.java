@@ -18,18 +18,17 @@
  */
 package io.vertigo.dynamox.task;
 
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
 /**
- * Ce processor permet de remplacer le Where XXX_ID in (#YYY.ROWNUM.ZZZ_ID#).
+ * Ce processor permet de remplacer le Where XXX_ID in (#YYY.ROWNUM.ZZZ_ID#) ou (#YYY.ROWNUM#).
  * @author npiedeloup
  */
 final class WhereInPreProcessor {
@@ -39,15 +38,14 @@ final class WhereInPreProcessor {
 	private static final int DTC_INPUTNAME_GROUP = 3;
 	private static final int DTC_INPUT_PK_GROUP = 4;
 
-	private static final String REGEXP_CHECK_PATTERN = "\\s(?:IN|in).+#.+(?:ROWNUM|rownum).+#";
+	private static final String REGEXP_CHECK_PATTERN = "\\s(?:IN|in).+#.+(?:ROWNUM|rownum).*#";
 	private static final Pattern JAVA_CHECK_PATTERN = Pattern.compile(REGEXP_CHECK_PATTERN);
 
-	private static final String REGEXP_PATTERN = "\\W([A-Za-z0-9_\\.]+)\\s+((?:NOT|not)\\s+)?(?:IN|in)\\s+\\(\\s*#([A-Z0-9_]+)\\.(?:ROWNUM|rownum)\\.([A-Z0-9_]+)#\\s*\\)";
+	private static final String REGEXP_PATTERN = "\\W([A-Za-z0-9_\\.]+)\\s+((?:NOT|not)\\s+)?(?:IN|in)\\s+\\(\\s*#([A-Z0-9_]+)\\.(?:ROWNUM|rownum)(?:\\.+([A-Z0-9_]+))?#\\s*\\)";
 	private static final Pattern JAVA_PATTERN = Pattern.compile(REGEXP_PATTERN);
 
 	private static final int NB_MAX_WHERE_IN_ITEM = 1000;
 	private static final char IN_CHAR = '#';
-
 	private final Map<TaskAttribute, Object> inTaskAttributes;
 
 	/**
@@ -98,10 +96,10 @@ final class WhereInPreProcessor {
 			final String inputParamName = matcher.group(DTC_INPUTNAME_GROUP);
 			final boolean isNotIn = matcher.group(OPTIONNAL_NOT_GROUP) != null; //null if not found
 			final TaskAttribute attribute = obtainInTaskAttribute(inputParamName);
-			Assertion.checkState(attribute.getDomain().isDtList(), "Attribute {0} can't be use in WherInPreProcessor. Check it was declared as IN and is DtList type.", inputParamName);
+			Assertion.checkState(attribute.getDomain().isMultiple(), "Attribute {0} can't be use in WherInPreProcessor. Check it was declared as IN and is DtList type.", inputParamName);
 
 			//-----
-			final DtList<?> listObject = (DtList<?>) inTaskAttributes.get(attribute);
+			final List<?> listObject = (List<?>) inTaskAttributes.get(attribute);
 			if (listObject.isEmpty()) {
 				//where XX not in <<empty>> => always true
 				//where XX in <<empty>> => always false
@@ -112,7 +110,15 @@ final class WhereInPreProcessor {
 				if (moreThanOneWhereIn) {
 					buildQuery.append("( ");
 				}
-				appendValuesToSqlQuery(buildQuery, fkFieldName, pkFieldName, inputParamName, isNotIn, listObject, moreThanOneWhereIn);
+				appendValuesToSqlQuery(
+						buildQuery,
+						fkFieldName,
+						pkFieldName,
+						inputParamName,
+						isNotIn,
+						listObject,
+						attribute.getDomain().getScope().isPrimitive(),
+						moreThanOneWhereIn);
 				if (moreThanOneWhereIn) {
 					buildQuery.append(')');
 				}
@@ -130,23 +136,27 @@ final class WhereInPreProcessor {
 			final String pkFieldName,
 			final String inputParamName,
 			final boolean isNotIn,
-			final DtList<?> listObject,
+			final List<?> listObject,
+			final boolean isPrimitive,
 			final boolean moreThanOneWhereIn) {
 		buildQuery.append(fkFieldName);
 		buildQuery.append(isNotIn ? " NOT IN (" : " IN (");
 		//-----
 		String separator = "";
 		int index = 1;
-		for (final DtObject dto : listObject) {
+		for (final Object object : listObject) {
 			buildQuery
 					.append(separator)
 					.append(IN_CHAR)
 					.append(inputParamName)
 					.append('.')
-					.append(String.valueOf(listObject.indexOf(dto)))
-					.append('.')
-					.append(pkFieldName)
-					.append(IN_CHAR);
+					.append(String.valueOf(listObject.indexOf(object)));
+			if (!isPrimitive) {
+				buildQuery
+						.append('.')
+						.append(pkFieldName);
+			}
+			buildQuery.append(IN_CHAR);
 			separator = ",";
 			//-----
 			if (moreThanOneWhereIn && index % NB_MAX_WHERE_IN_ITEM == 0 && index != listObject.size()) {

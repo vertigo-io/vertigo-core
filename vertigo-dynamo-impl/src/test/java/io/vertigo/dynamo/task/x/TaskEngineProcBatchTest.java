@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamo.task.x;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 
 import org.junit.Assert;
@@ -42,8 +45,10 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
  */
 public final class TaskEngineProcBatchTest extends AbstractTestCaseJU4 {
 	private static final String DTC_SUPER_HERO_IN = "DTC_SUPER_HERO_IN";
+	private static final String SUPER_HERO_ID_LIST_IN = "SUPER_HERO_ID_LIST_IN";
 	private static final String DTC_SUPER_HERO_OUT = "DTC_SUPER_HERO_OUT";
 	private static final String DO_DT_SUPER_HERO_DTC = "DO_DT_SUPER_HERO_DTC";
+	private static final String DO_LONGS = "DO_LONGS";
 
 	@Inject
 	private TaskManager taskManager;
@@ -85,6 +90,35 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU4 {
 		}
 
 		Assert.assertEquals(superHeroes.size(), selectHeroes().size());
+
+	}
+
+	/**
+	 * Tests batch insertion with a task
+	 */
+	@Test
+	public void testInsertBatchPrimitive() {
+		final String request = new StringBuilder("insert into SUPER_HERO(ID, NAME) values (")
+				.append("#").append(SUPER_HERO_ID_LIST_IN).append("# , 'test' ").append(" )")
+				.toString();
+		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_TEST_INSERT_BATCH")
+				.withEngine(TaskEngineProcBatch.class)
+				.addInRequired(SUPER_HERO_ID_LIST_IN, getApp().getDefinitionSpace().resolve(DO_LONGS, Domain.class))
+				.withRequest(request)
+				.build();
+
+		final List<Long> superHeroesIds = SuperHeroDataBase.getSuperHeroes().stream().map(superHero -> superHero.getId()).collect(Collectors.toList());
+
+		final Task task = Task.builder(taskDefinition)
+				.addValue(SUPER_HERO_ID_LIST_IN, superHeroesIds)
+				.build();
+
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			taskManager.execute(task);
+			transaction.commit();
+		}
+
+		Assert.assertEquals(superHeroesIds.size(), selectHeroes().size());
 
 	}
 
