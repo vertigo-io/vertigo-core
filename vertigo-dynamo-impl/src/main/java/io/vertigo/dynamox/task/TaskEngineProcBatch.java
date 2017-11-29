@@ -73,9 +73,9 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 	@Override
 	protected void setNamedParameters(final SqlStatementBuilder sqlStatementBuilder) {
 		final Iterator<TaskAttribute> inAttributes = getTaskDefinition().getInAttributes().iterator();
-		Assertion.checkState(inAttributes.hasNext(), "For batch a single DtList param is required");
+		Assertion.checkState(inAttributes.hasNext(), "For batch a single List param is required");
 		final TaskAttribute listAttribute = inAttributes.next();
-		Assertion.checkState(listAttribute.getDomain().isMultiple() && !inAttributes.hasNext(), "For batch a single DtList param is required");
+		Assertion.checkState(listAttribute.getDomain().isMultiple() && !inAttributes.hasNext(), "For batch a single List param is required");
 		//---
 		final List<?> list = getValue(listAttribute.getName());
 		list.forEach(object -> sqlStatementBuilder

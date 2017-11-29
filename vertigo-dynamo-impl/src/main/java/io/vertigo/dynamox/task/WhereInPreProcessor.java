@@ -28,7 +28,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
 /**
- * Ce processor permet de remplacer le Where XXX_ID in (#YYY.ROWNUM.ZZZ_ID#).
+ * Ce processor permet de remplacer le Where XXX_ID in (#YYY.ROWNUM.ZZZ_ID#) ou (#YYY.ROWNUM#).
  * @author npiedeloup
  */
 final class WhereInPreProcessor {
