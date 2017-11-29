@@ -144,7 +144,7 @@ final class VFileUtil {
 		response.header("Content-Length", String.valueOf(length.intValue()));
 		response.header("Content-Disposition",
 				encodeFileNameToContentDisposition(vFile.getFileName(), isAttachment));
-		response.raw().addDateHeader("Last-Modified", vFile.getLastModified().getTime());
+		response.raw().addDateHeader("Last-Modified", vFile.getLastModified().toEpochMilli());
 		response.type(vFile.getMimeType());
 
 		try (final InputStream input = vFile.createInputStream()) {

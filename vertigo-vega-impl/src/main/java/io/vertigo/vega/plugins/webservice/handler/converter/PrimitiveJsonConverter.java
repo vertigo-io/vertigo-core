@@ -18,8 +18,8 @@
  */
 package io.vertigo.vega.plugins.webservice.handler.converter;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -57,7 +57,7 @@ public final class PrimitiveJsonConverter implements JsonConverter {
 				|| Double.class.isAssignableFrom(paramClass)
 				|| Date.class.isAssignableFrom(paramClass)
 				|| LocalDate.class.isAssignableFrom(paramClass)
-				|| ZonedDateTime.class.isAssignableFrom(paramClass);
+				|| Instant.class.isAssignableFrom(paramClass);
 	}
 
 	/** {@inheritDoc} */
@@ -104,7 +104,7 @@ public final class PrimitiveJsonConverter implements JsonConverter {
 			return paramClass.cast(Double.valueOf(json));
 		} else if (Date.class.isAssignableFrom(paramClass)
 				|| LocalDate.class.isAssignableFrom(paramClass)
-				|| ZonedDateTime.class.isAssignableFrom(paramClass)) {
+				|| Instant.class.isAssignableFrom(paramClass)) {
 			return jsonReaderEngine.fromJson(escapeJsonValue(json), paramClass); //Pour utiliser Gson sur des valeurs seules, il faut entourer de "", sinon elles sont splitées sur le :
 		} else {
 			throw new IllegalArgumentException("Unsupported type " + paramClass.getSimpleName());
