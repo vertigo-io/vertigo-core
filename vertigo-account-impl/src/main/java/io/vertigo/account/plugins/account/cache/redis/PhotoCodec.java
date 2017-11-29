@@ -21,9 +21,6 @@ package io.vertigo.account.plugins.account.cache.redis;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
 
@@ -36,7 +33,6 @@ import io.vertigo.util.MapBuilder;
 
 final class PhotoCodec {
 	private static final int CODEC_BUFFER_SIZE = 3 * 1024;
-	private static final String CODEC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	private final CodecManager codecManager;
 
 	/**
@@ -58,10 +54,7 @@ final class PhotoCodec {
 	Map<String, String> vFile2Map(final VFile vFile) {
 		Assertion.checkNotNull(vFile);
 		//-----
-		final String lastModified = DateTimeFormatter
-				.ofPattern(CODEC_DATE_FORMAT)
-				.withZone(ZoneId.of("UTC"))
-				.format(vFile.getLastModified());
+		final String lastModified = vFile.getLastModified().toString();
 		final String base64Content = encode2Base64(vFile);
 		return new MapBuilder<String, String>()
 				.put("fileName", vFile.getFileName())
@@ -84,11 +77,7 @@ final class PhotoCodec {
 			final String fileName = vFileMap.get("fileName");
 			final String mimeType = vFileMap.get("mimeType");
 			final Long length = Long.valueOf(vFileMap.get("length"));
-			final Instant lastModified = ZonedDateTime.parse(
-					vFileMap.get("lastModified"),
-					DateTimeFormatter.ofPattern(CODEC_DATE_FORMAT)
-							.withZone(ZoneId.of("UTC")))
-					.toInstant();
+			final Instant lastModified = Instant.parse(vFileMap.get("lastModified"));
 			final String base64Content = vFileMap.get("base64Content");
 			return new Base64File(codecManager, fileName, mimeType, length, lastModified, base64Content);
 		} catch (final DateTimeParseException e) {
