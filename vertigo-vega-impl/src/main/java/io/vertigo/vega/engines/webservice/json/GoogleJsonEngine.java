@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -448,13 +449,28 @@ public final class GoogleJsonEngine implements JsonEngine {
 		/** {@inheritDoc} */
 		@Override
 		public JsonElement serialize(final ZonedDateTime date, final Type typeOfSrc, final JsonSerializationContext context) {
-			return new JsonPrimitive(date.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.of("UTC")))); // "yyyy-mm-ddTHH:MI:SSZ"
+			return new JsonPrimitive(date.format(DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.of("UTC")))); // "yyyy-mm-ddTHH:MI:SSZ"
 		}
 
 		/** {@inheritDoc} */
 		@Override
 		public ZonedDateTime deserialize(final JsonElement jsonElement, final Type type, final JsonDeserializationContext jsonDeserializationContext) {
-			return ZonedDateTime.parse(jsonElement.getAsString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.of("UTC")));
+			return ZonedDateTime.parse(jsonElement.getAsString(), DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.of("UTC")));
+		}
+	}
+
+	private static class InstantAdapter implements JsonSerializer<Instant>, JsonDeserializer<Instant> {
+
+		/** {@inheritDoc} */
+		@Override
+		public JsonElement serialize(final Instant date, final Type typeOfSrc, final JsonSerializationContext context) {
+			return new JsonPrimitive(date.toString()); // "yyyy-mm-ddTHH:MI:SSZ"
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public Instant deserialize(final JsonElement jsonElement, final Type type, final JsonDeserializationContext jsonDeserializationContext) {
+			return UTCDateUtil.parseInstant(jsonElement.getAsString());
 		}
 	}
 
@@ -480,6 +496,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.registerTypeAdapter(Date.class, new UTCDateAdapter())
 					.registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
 					.registerTypeAdapter(ZonedDateTime.class, new ZonedDateTimeAdapter())
+					.registerTypeAdapter(Instant.class, new InstantAdapter())
 					.registerTypeAdapter(String.class, new EmptyStringAsNull())// add "" <=> null
 					.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())
 					.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())

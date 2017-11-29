@@ -18,8 +18,11 @@
  */
 package io.vertigo.vega.webservice.data.ws;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -390,6 +393,19 @@ public final class SimplerTestWebServices implements WebServices {
 		final UiContext result = new UiContext();
 		result.put("input", zonedDateTime);
 		result.put("inputAsString", zonedDateTime.toString());
+		return result;
+	}
+
+	@GET("/instant")
+	public Instant getInstant() {
+		return LocalDateTime.of(2016, 5, 26, 21, 30, 20, 0).toInstant(ZoneOffset.UTC);
+	}
+
+	@PUT("/instant")
+	public UiContext putInstant(@QueryParam("date") final Instant instant) {
+		final UiContext result = new UiContext();
+		result.put("input", instant);
+		result.put("inputAsString", instant.toString());
 		return result;
 	}
 

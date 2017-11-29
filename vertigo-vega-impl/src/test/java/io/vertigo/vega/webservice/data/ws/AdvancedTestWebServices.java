@@ -25,6 +25,7 @@ import java.net.URL;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -310,9 +311,9 @@ public final class AdvancedTestWebServices implements WebServices {
 	}
 
 	@GET("/downloadNotModifiedFile")
-	public VFile testDownloadNotModifiedFile(final @QueryParam("id") Integer id, final @HeaderParam("If-Modified-Since") Optional<Instant> ifModifiedSince, final HttpServletResponse response) {
+	public VFile testDownloadNotModifiedFile(final @QueryParam("id") Integer id, final @HeaderParam("If-Modified-Since") Optional<Date> ifModifiedSince, final HttpServletResponse response) {
 		final VFile imageFile = testDownloadFile(id);
-		if (ifModifiedSince.isPresent() && imageFile.getLastModified().compareTo(ifModifiedSince.get()) <= 0) {
+		if (ifModifiedSince.isPresent() && imageFile.getLastModified().compareTo(Instant.ofEpochMilli(ifModifiedSince.get().getTime())) <= 0) {
 			response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
 			return null;
 			//this service must declared VFile as return type because it should return VFile when file was modified

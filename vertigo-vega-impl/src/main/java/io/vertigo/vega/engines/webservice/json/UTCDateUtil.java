@@ -21,6 +21,10 @@ package io.vertigo.vega.engines.webservice.json;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -32,6 +36,7 @@ public final class UTCDateUtil {
 
 	private static final String[] INPUT_DATE_FORMATS = new String[] {
 			"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", //ISO8601
+			"yyyy-MM-dd'T'HH:mm:ss'Z'", //ISO8601
 			"EEE, dd MMM yyyy HH:mm:ss zzz", // RFC 822, updated by RFC 1123
 			"EEEE, dd-MMM-yy HH:mm:ss zzz", // RFC 850, obsoleted by RFC 1036
 			//not supported : "EEE MMM d HH:mm:ss yyyy", // ANSI C's asctime() format
@@ -66,6 +71,22 @@ public final class UTCDateUtil {
 			}
 		}
 		throw new JsonParseException("Unsupported Date format " + inputDate);
+	}
+
+	/**
+	 * Parse Date string to Instant
+	 * @param inputDate date string
+	 * @return Instant
+	 */
+	public static Instant parseInstant(final String inputDate) {
+		for (final String format : INPUT_DATE_FORMATS) {
+			try {
+				return Instant.from(DateTimeFormatter.ofPattern(format).withZone(ZoneId.of("UTC")).parse(inputDate));
+			} catch (final DateTimeParseException e) {
+				//nothing
+			}
+		}
+		throw new JsonParseException("Unsupported Instant format " + inputDate);
 	}
 
 	private static DateFormat createDateFormat(final String dateFormat, final boolean isTruncatedDate) {
