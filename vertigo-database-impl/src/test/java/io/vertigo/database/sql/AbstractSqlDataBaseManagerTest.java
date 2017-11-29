@@ -22,9 +22,8 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -152,9 +151,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 					null,
 					new Date(1941 - 1900, 5 - 1, 1, 16, 30),
 					LocalDate.of(1941, 5, 1),
-					ZonedDateTime
-							.of(LocalDate.of(1941, 5, 1), LocalTime.of(16, 30), ZoneId.of("UTC"))
-							.toInstant()));
+					LocalDateTime.of(1941, 5, 1, 16, 30).toInstant(ZoneOffset.UTC)));
 			//-----
 			insert(connection, Movies.createMovie(
 					2,
@@ -165,9 +162,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 					null,
 					new Date(1958 - 1900, 5 - 1, 9, 16, 30),
 					LocalDate.of(1958, 5, 9),
-					ZonedDateTime
-							.of(LocalDate.of(1958, 5, 9), LocalTime.of(16, 30), ZoneId.of("UTC"))
-							.toInstant()));
+					LocalDateTime.of(1958, 5, 9, 16, 30).toInstant(ZoneOffset.UTC)));
 			//-----
 			//On passe par une requête bindée
 			insert(connection, Movies.createMovie(
