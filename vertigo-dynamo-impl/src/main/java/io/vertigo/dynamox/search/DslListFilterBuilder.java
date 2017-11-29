@@ -20,6 +20,7 @@ package io.vertigo.dynamox.search;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -304,6 +305,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		final StringBuilder queryPart = new StringBuilder();
 		if (value instanceof String) { //so not null too
 			useBlock = appendUserStringCriteria(queryPart, dslQuery, expressionDefinition, (String) value, outExpressionQuery);
+		} else if (value instanceof Instant) { //so not null too
+			useBlock = appendSimpleCriteria(queryPart, dslQuery, formatInstant((Instant) value));
 		} else if (value instanceof Date) { //so not null too
 			useBlock = appendSimpleCriteria(queryPart, dslQuery, formatDate((Date) value));
 		} else if (value != null) {
@@ -463,5 +466,15 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		final TimeZone tz = TimeZone.getTimeZone("UTC");
 		formatter.setTimeZone(tz);
 		return formatter.format(date);
+	}
+
+	/**
+	 * Retourne l'Instant UTC en string.
+	 *
+	 * @param instant l'Instant.
+	 * @return la chaine de caractere formattée.
+	 */
+	private static String formatInstant(final Instant instant) {
+		return instant.toString();
 	}
 }
