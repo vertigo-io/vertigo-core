@@ -22,7 +22,6 @@ import java.text.ParsePosition;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
@@ -130,7 +129,7 @@ public final class FormatterDate implements Formatter {
 	}
 
 	/*
-	 *  Cycles through patterns to try and parse given String into a Date | LocalDate | ZonedDateTime
+	 *  Cycles through patterns to try and parse given String into a Date | LocalDate | Instant
 	 */
 	private <T> T applyStringToObject(final String dateString, final BiFunction<String, String, T> fun) throws FormatterException {
 		//StringToDate renvoit null si elle n'a pas réussi à convertir la date
@@ -161,11 +160,7 @@ public final class FormatterDate implements Formatter {
 	 * Converts a String to a Instant according to a given pattern
 	 */
 	private static Instant doStringToInstant(final String dateString, final String pattern) {
-		return ZonedDateTime.parse(
-				dateString,
-				DateTimeFormatter.ofPattern(pattern)
-						.withZone(ZoneId.of("UTC")))
-				.toInstant();
+		return DateTimeFormatter.ofPattern(pattern).parse(dateString, Instant::from);
 	}
 
 	/*

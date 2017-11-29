@@ -21,8 +21,7 @@ package io.vertigo.dynamo.domain.formatter;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -59,10 +58,8 @@ public class DateFormatterTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test
-	public void testZonedDateTimeFormatter() throws FormatterException {
-		final Instant instant = ZonedDateTime
-				.of(LocalDateTime.of(2009, 2, 23, 16, 30), ZoneId.of("UTC"))
-				.toInstant();
+	public void testInstantFormatter() throws FormatterException {
+		final Instant instant = LocalDateTime.of(2009, 2, 23, 16, 30).toInstant(ZoneOffset.UTC);
 		Assert.assertEquals("2009-02-23 16:30:00", formatterDateZDT.valueToString(instant, DataType.Instant));
 		Assert.assertEquals(instant, formatterDateZDT.stringToValue("2009-02-23 16:30:00", DataType.Instant));
 	}
@@ -80,10 +77,8 @@ public class DateFormatterTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test(expected = FormatterException.class)
-	public void testFormatterErrorZonedDateTime() throws FormatterException {
-		final Instant instant = ZonedDateTime
-				.of(LocalDateTime.of(2009, 2, 23, 16, 30), ZoneId.of("UTC"))
-				.toInstant();
+	public void testFormatterErrorInstant() throws FormatterException {
+		final Instant instant = LocalDateTime.of(2009, 2, 23, 16, 30).toInstant(ZoneOffset.UTC);
 		Assert.assertEquals(instant, formatterDate.stringToValue("2003/09/15 16:30:00", DataType.Instant));
 	}
 

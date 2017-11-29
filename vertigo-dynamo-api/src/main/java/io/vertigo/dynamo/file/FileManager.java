@@ -87,7 +87,7 @@ public interface FileManager extends Manager {
 	 * @param length Taille du fichier
 	 * @param inputStreamBuilder Builder du flux des données
 	 * @return VFile crée	 *
-	 * @Deprecated Use createFile with ZonedDateTime lastModified instead
+	 * @Deprecated Use createFile with Instant lastModified instead
 	 */
 	@Deprecated
 	VFile createFile(final String fileName, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder);
@@ -111,7 +111,7 @@ public interface FileManager extends Manager {
 	 * @param length Taille du fichier
 	 * @param inputStreamBuilder Builder du flux des données
 	 * @return VFile crée
-	 * @Deprecated Use createFile with ZonedDateTime lastModified instead
+	 * @Deprecated Use createFile with Instant lastModified instead
 	 */
 	@Deprecated
 	VFile createFile(final String fileName, final String typeMime, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder);
