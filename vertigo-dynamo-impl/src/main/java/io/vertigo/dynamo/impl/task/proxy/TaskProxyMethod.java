@@ -25,21 +25,6 @@ public final class TaskProxyMethod implements ProxyMethod {
 	}
 
 	private static Domain resolveDomain(final String domainName) {
-		//is there an available domain on the parameter?
-		// - yes
-		//todo
-		//		if (DtList.class.isAssignableFrom(type)) {
-		//			return Domain.builder(
-		//					"DO_L",
-		//					DtObjectUtil.findDtDefinition(
-		//							(Class<DtObject>) ClassUtil.getGeneric(type,
-		//									() -> new RuntimeException("No generic found on the list")))
-		//							.getName(),
-		//					true).build();
-		//		}
-		//		//- no then we have to build one.
-		//		final DataType dataType = DataType.of(type).get();
-		//		return Domain.builder("DO_CC", dataType, false).build();
 		return Home.getApp().getDefinitionSpace().resolve(domainName, Domain.class);
 	}
 
@@ -55,32 +40,6 @@ public final class TaskProxyMethod implements ProxyMethod {
 		final TaskOutput taskOutput = method.getAnnotation(TaskOutput.class);
 		Assertion.checkNotNull(taskOutput, "The return method '{0}' must be annotated with '{1}'", method, TaskOutput.class);
 		return resolveDomain(taskOutput.domain());
-		//		//is there an available domain on the parameter?
-		//		// - yes
-		//		//todo
-		//		if (List.class.isAssignableFrom(method.getReturnType())) {
-		//			final Class returnClass = ClassUtil.getGeneric(
-		//					method.getGenericReturnType(),
-		//					() -> new RuntimeException("No generic found on the list"));
-		//			//- no then we have to build one.
-		//
-		//			final Optional<DataType> dataTypeOpt = DataType.of(returnClass);
-		//			if (dataTypeOpt.isPresent()) {
-		//				return Domain.builder(
-		//						"DO_OUT",
-		//						dataTypeOpt.get(),
-		//						true).build();
-		//			}
-		//			return Domain.builder(
-		//					"DO_OUT",
-		//					DtObjectUtil.findDtDefinition(returnClass).getName(),
-		//					true).build();
-		//		} else if (Optionnal.class.isAssignableFrom(method.getReturnType())) {
-		//
-		//		}
-		//		//- no then we have to build one.
-		//		final DataType dataType = DataType.of(method.getReturnType()).get();
-		//		return Domain.builder("DO_OUT", dataType, false).build();
 	}
 
 	private static TaskManager getTaskManager() {
