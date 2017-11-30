@@ -71,35 +71,7 @@ public final class MessageText implements Serializable {
 		return new MessageText(defaultMsg, null, new Serializable[0]);
 	}
 
-	/**
-	 * Constructor.
-	 * La clé et/ou le message par défaut doit être non null.
-	 *
-	 * @param defaultMsg Message par défaut (non formatté) de la ressource
-	 * @param key Clé de la ressource
-	 * @param params paramètres de la ressource
-	 */
-	@Deprecated //use builder or of methods
-	public MessageText(final String defaultMsg, final MessageKey key, final Serializable... params) {
-		Assertion.checkNotNull(params);
-		Assertion.checkArgument(defaultMsg != null || key != null, "key or msg must be defined");
-		//---
-		this.key = key;
-		this.defaultMsg = defaultMsg;
-		this.params = params;
-
-	}
-
-	/**
-	 * Constructor.
-	 *
-	 * @param key Clé de la ressource
-	 * @param params paramètres de la ressource
-	 */
-	@Deprecated //use builder or of methods
-	public MessageText(final MessageKey key, final Serializable... params) {
-		this(null, key, params);
-	}
+	
 
 	/**
 	 * @return paramètres du message

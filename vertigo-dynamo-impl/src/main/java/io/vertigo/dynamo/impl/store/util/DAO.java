@@ -233,18 +233,6 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	}
 
 	/**
-	 * @param fieldName de l'object à récupérer NOT NULL
-	 * @param value de l'object à récupérer NOT NULL
-	 * @param maxRows Nombre maximum de ligne
-	 * @return DtList<D> récupéré NOT NUL
-	 */
-	@Deprecated
-	public final DtList<E> getListByDtField(final String fieldName, final Object value, final int maxRows) {
-		// we assume that this method was always used with comparable objects (String, Long, Integer, Boolean...)
-		return getListByDtFieldName(() -> fieldName, (Serializable) value, maxRows);
-	}
-
-	/**
 	 * @param dtFieldName de l'object à récupérer NOT NULL
 	 * @param value de l'object à récupérer NOT NULL
 	 * @param maxRows Nombre maximum de ligne
