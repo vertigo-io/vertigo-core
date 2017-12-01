@@ -27,6 +27,7 @@ import javax.inject.Named;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleProvider;
+import io.vertigo.core.locale.ZoneProvider;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.ResourceNameFactory;
 import io.vertigo.persona.security.UserSession;
@@ -69,6 +70,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	@Override
 	public void start() {
 		localeManager.registerLocaleProvider(createLocaleProvider());
+		localeManager.registerZoneProvider(createZoneIdProvider());
 	}
 
 	/** {@inheritDoc} */
@@ -86,6 +88,12 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	private LocaleProvider createLocaleProvider() {
 		return () -> getCurrentUserSession()
 				.map(userSession -> userSession.getLocale())
+				.orElse(null);
+	}
+
+	private ZoneProvider createZoneIdProvider() {
+		return () -> getCurrentUserSession()
+				.map(userSession -> userSession.getZoneId())
 				.orElse(null);
 	}
 

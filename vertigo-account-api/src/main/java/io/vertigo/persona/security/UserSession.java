@@ -19,6 +19,7 @@
 package io.vertigo.persona.security;
 
 import java.io.Serializable;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -117,9 +118,17 @@ public abstract class UserSession implements Serializable {
 
 	/**
 	 * Gestion multilingue.
-	 * Local associée à l'utilisateur.
 	 * @return Locale associée à l'utilisateur.
 	 */
 	public abstract Locale getLocale();
+
+	/**
+	 * Gestion des times zones.
+	 * Could be override.
+	 * @return ZoneId associée à l'utilisateur.
+	 */
+	public ZoneId getZoneId() {
+		return null; //null mean use default
+	}
 
 }
