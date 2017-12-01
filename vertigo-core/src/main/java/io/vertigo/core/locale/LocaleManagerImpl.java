@@ -18,6 +18,7 @@
  */
 package io.vertigo.core.locale;
 
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -58,11 +60,20 @@ public final class LocaleManagerImpl implements LocaleManager {
 	/** liste des locales gérées. */
 	private final List<Locale> locales;
 
+	/** Zone par défaut. */
+	private final ZoneId defaultZoneId;
+
 	/**
 	 * Stratégie de choix de la langue.
 	 * Si pas de stratégie ou pas de langue trouvée alors langue par défaut = première langue déclarée.
 	 */
 	private LocaleProvider localeProvider;
+
+	/**
+	 * Stratégie de choix de la zone.
+	 * Si pas de stratégie ou pas de zone trouvée alors zone par défaut.
+	 */
+	private ZoneProvider zoneProvider;
 
 	/**
 	 * Constructor.
@@ -76,12 +87,15 @@ public final class LocaleManagerImpl implements LocaleManager {
 	 * Locale.FRANCE + Locale.us : 'fr_FR,us'
 	 * Une locale est définie par une langue{_Pays{_Variante}}
 	 * @param locales Liste des locales gérées par l'application.
+	 * @param defaultZoneId ZoneId par défaut utilisée par l'application.
 	 */
 	@Inject
-	public LocaleManagerImpl(@Named("locales") final String locales) {
+	public LocaleManagerImpl(@Named("locales") final String locales, @Named("defaultZoneId") final Optional<String> defaultZoneId) {
 		Assertion.checkArgNotEmpty(locales);
+		Assertion.checkNotNull(defaultZoneId);
 		//-----
 		this.locales = createLocales(locales);
+		this.defaultZoneId = createDefaultZoneId(defaultZoneId);
 		//-----
 		Assertion.checkNotNull(this.locales);
 		Assertion.checkArgument(!this.locales.isEmpty(), "Il faut au moins déclarer une locale");
@@ -89,6 +103,13 @@ public final class LocaleManagerImpl implements LocaleManager {
 		for (final Locale locale : this.locales) {
 			dictionaries.put(locale, new HashMap<>());
 		}
+	}
+
+	private static ZoneId createDefaultZoneId(final Optional<String> defaultZoneId) {
+		if (defaultZoneId.isPresent()) {
+			return ZoneId.of(defaultZoneId.get());
+		}
+		return ZoneId.systemDefault();
 	}
 
 	private static List<Locale> createLocales(final String locales) {
@@ -106,6 +127,15 @@ public final class LocaleManagerImpl implements LocaleManager {
 			listBuilder.add(new Locale(language, country, variant));
 		}
 		return listBuilder.unmodifiable().build();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void registerZoneProvider(final ZoneProvider newZoneProvider) {
+		Assertion.checkArgument(zoneProvider == null, "zoneProvider already registered");
+		Assertion.checkNotNull(newZoneProvider);
+		//-----
+		zoneProvider = newZoneProvider;
 	}
 
 	/** {@inheritDoc} */
@@ -205,6 +235,16 @@ public final class LocaleManagerImpl implements LocaleManager {
 			return null;
 		}
 		return msg;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public ZoneId getCurrentZoneId() {
+		if (zoneProvider != null && zoneProvider.getCurrentZoneId() != null) {
+			return zoneProvider.getCurrentZoneId();
+		}
+		//If there is no user, we can pick the default zone.
+		return defaultZoneId;
 	}
 
 	/** {@inheritDoc} */

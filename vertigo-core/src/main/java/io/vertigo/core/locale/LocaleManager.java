@@ -18,6 +18,7 @@
  */
 package io.vertigo.core.locale;
 
+import java.time.ZoneId;
 import java.util.Locale;
 
 import io.vertigo.core.component.Manager;
@@ -51,6 +52,12 @@ public interface LocaleManager extends Manager {
 	 * @param localeProvider Définit la langue par défaut de façon contextuelle
 	 */
 	void registerLocaleProvider(LocaleProvider localeProvider);
+
+	/**
+	 * Enregistre une stratégie de choix de time zone.
+	 * @param zoneProvider Définit la time zone par défaut de façon contextuelle
+	 */
+	void registerZoneProvider(ZoneProvider zoneProvider);
 
 	/**
 	 * Ajout d'un dictionnaire de ressources.
@@ -88,4 +95,12 @@ public interface LocaleManager extends Manager {
 	 * @return Locale courante
 	 */
 	Locale getCurrentLocale();
+
+	/**
+	 * Retourne la time zone courante.
+	 * C'est à dire correspondant à l'utilisateur courant si il y en a un,
+	 * sinon correspond à la time zone de l'application.
+	 * @return Zone courante
+	 */
+	ZoneId getCurrentZoneId();
 }

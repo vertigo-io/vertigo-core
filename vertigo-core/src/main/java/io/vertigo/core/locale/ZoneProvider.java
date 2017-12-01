@@ -18,18 +18,18 @@
  */
 package io.vertigo.core.locale;
 
-import java.util.Locale;
+import java.time.ZoneId;
 
 /**
- * Provide current language.
+ * Provide current time zone.
  *
  * @author  pchretien, npiedeloup
  */
 @FunctionalInterface
-public interface LocaleProvider {
-	/**
-	 * @return Current locale (may be null)
-	 */
-	Locale getCurrentLocale();
+public interface ZoneProvider {
 
+	/**
+	 * @return Current ZoneId (may be null)
+	 */
+	ZoneId getCurrentZoneId();
 }
