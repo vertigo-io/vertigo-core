@@ -475,6 +475,6 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	 * @return la chaine de caractere formattée.
 	 */
 	private static String formatInstant(final Instant instant) {
-		return instant.toString();
+		return new StringBuilder("\"").append(instant.toString()).append("\"").toString();
 	}
 }

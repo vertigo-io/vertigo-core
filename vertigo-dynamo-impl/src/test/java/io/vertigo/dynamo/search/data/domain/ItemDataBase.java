@@ -20,6 +20,8 @@ package io.vertigo.dynamo.search.data.domain;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -87,6 +89,7 @@ public final class ItemDataBase {
 		item.setDescription(description);
 		item.setOptionalNumber(optionalNumber);
 		item.setOptionalString(optionalString);
+		item.setLastModified(LocalDateTime.of(year, 2, 4, 8, 16, 32).toInstant(ZoneOffset.UTC));
 		//-----
 		return (item);
 	}

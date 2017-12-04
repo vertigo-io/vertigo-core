@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.search.data.domain;
 
+import java.time.Instant;
+
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -40,6 +42,7 @@ public final class Item implements KeyConcept {
 	private Long famId;
 	private Long optionalNumber;
 	private String optionalString;
+	private Instant lastModified;
 
 	/** {@inheritDoc} */
 	@Override
@@ -153,6 +156,15 @@ public final class Item implements KeyConcept {
 
 	public final void setOptionalString(final String optionalString) {
 		this.optionalString = optionalString;
+	}
+
+	@Field(domain = "DO_DATE_TIME", label = "LastModified")
+	public final Instant getLastModified() {
+		return lastModified;
+	}
+
+	public final void setLastModified(final Instant lastModified) {
+		this.lastModified = lastModified;
 	}
 
 	/*@Field(domain = "DO_KEYWORD", type = "COMPUTED", persistent = false, label = "model sort")
