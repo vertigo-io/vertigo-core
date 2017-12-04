@@ -198,7 +198,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	}
 
 	private static FileInfoURI createNewFileInfoURI(final FileInfoDefinition fileInfoDefinition) {
-		final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd-", Locale.FRANCE);
+		final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd/", Locale.FRANCE);
 		final String pathToSave = format.format(new Date()) + UUID.randomUUID();
 		return new FileInfoURI(fileInfoDefinition, pathToSave);
 	}
