@@ -125,8 +125,8 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	public FileInfo read(final FileInfoURI uri) {
 		/* read metadata*/
 		try {
-			final String metadataUri = String.class.cast(uri.getKey()) + METADATA_SUFFIX;
-			final Path metadataPath = Paths.get(documentRoot, metadataUri);
+			final String metadataUri = obtainFullMetaDataFilePath(uri);
+			final Path metadataPath = Paths.get(metadataUri);
 			final List<String> infos = Files.readAllLines(metadataPath, Charset.forName(METADATA_CHARSET));
 			// récupération des infos
 			final String fileName = infos.get(0);
@@ -134,7 +134,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			final Instant lastModified = DateUtil.parseToInstant(infos.get(2), INFOS_DATE_PATTERN);
 			final Long length = Long.valueOf(infos.get(3));
 
-			final InputStreamBuilder inputStreamBuilder = new FileInputStreamBuilder(new File(documentRoot + String.class.cast(uri.getKey())));
+			final InputStreamBuilder inputStreamBuilder = new FileInputStreamBuilder(new File(obtainFullFilePath(uri)));
 			final VFile vFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
 
 			// retourne le fileinfo avec le fichier et son URI
