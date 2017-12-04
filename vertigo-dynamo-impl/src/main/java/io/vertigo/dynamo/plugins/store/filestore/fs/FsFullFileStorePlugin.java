@@ -168,11 +168,15 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	}
 
 	private String obtainFullFilePath(final FileInfoURI uri) {
-		return documentRoot + String.class.cast(uri.getKey());
+		final String uriAsString = String.class.cast(uri.getKey());
+		final String uriAsPath = uriAsString.replaceFirst("^([0-9]{4})([0-9]{2})([0-9]{2})-", "$1/$2/$3/");
+		return documentRoot + uriAsPath;
 	}
 
 	private String obtainFullMetaDataFilePath(final FileInfoURI uri) {
-		return documentRoot + String.class.cast(uri.getKey()) + METADATA_SUFFIX;
+		final String uriAsString = String.class.cast(uri.getKey());
+		final String uriAsPath = uriAsString.replaceFirst("^([0-9]{4})([0-9]{2})([0-9]{2})-", "$1/$2/$3/");
+		return documentRoot + uriAsPath + METADATA_SUFFIX;
 	}
 
 	/** {@inheritDoc} */
@@ -198,7 +202,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	}
 
 	private static FileInfoURI createNewFileInfoURI(final FileInfoDefinition fileInfoDefinition) {
-		final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd/", Locale.FRANCE);
+		final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd-", Locale.FRANCE);
 		final String pathToSave = format.format(new Date()) + UUID.randomUUID();
 		return new FileInfoURI(fileInfoDefinition, pathToSave);
 	}
