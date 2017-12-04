@@ -96,7 +96,7 @@ public final class Movies {
 	}
 
 	public static void checkMovie(final Movie movie) {
-		final LocalDateTime ldt = LocalDateTime.ofInstant(movie.getReleaseInstant(), ZoneId.of("UTC"));
+		final LocalDateTime ldt = movie.getReleaseInstant() == null ? null : LocalDateTime.ofInstant(movie.getReleaseInstant(), ZoneId.of("UTC"));
 		switch (movie.getId().intValue()) {
 			case 1:
 				Assert.assertEquals(TITLE_MOVIE_1, movie.getTitle());
