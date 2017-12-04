@@ -41,7 +41,7 @@ import io.vertigo.dynamox.domain.formatter.FormatterDate;
  */
 public class DateFormatterTest extends AbstractTestCaseJU4 {
 	private final FormatterDate formatterDate = new FormatterDate("yyyy-MM-dd");
-	private final FormatterDate formatterDateZDT = new FormatterDate("yyyy-MM-dd' 'HH:mm:ss");
+	private final FormatterDate formatterDateTime = new FormatterDate("yyyy-MM-dd' 'HH:mm:ss");
 
 	@Test
 	public void testFormatter() throws FormatterException {
@@ -60,8 +60,8 @@ public class DateFormatterTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testInstantFormatter() throws FormatterException {
 		final Instant instant = LocalDateTime.of(2009, 2, 23, 16, 30).toInstant(ZoneOffset.UTC);
-		Assert.assertEquals("2009-02-23 16:30:00", formatterDateZDT.valueToString(instant, DataType.Instant));
-		Assert.assertEquals(instant, formatterDateZDT.stringToValue("2009-02-23 16:30:00", DataType.Instant));
+		Assert.assertEquals("2009-02-23 16:30:00", formatterDateTime.valueToString(instant, DataType.Instant));
+		Assert.assertEquals(instant, formatterDateTime.stringToValue("2009-02-23 16:30:00", DataType.Instant));
 	}
 
 	@Test(expected = FormatterException.class)
