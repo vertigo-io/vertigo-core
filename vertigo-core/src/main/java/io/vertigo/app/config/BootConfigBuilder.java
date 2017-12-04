@@ -49,6 +49,8 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	private AopPlugin myAopPlugin = new CGLIBAopPlugin(); //By default
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
 	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
+	private String locales = null;
+	private String defaultZoneId = null;
 
 	/**
 	 * @param appConfigBuilder Parent AppConfig builder
@@ -63,14 +65,22 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 * Opens the boot module.
 	 * There is exactly one BootConfig per AppConfig.
 	 *
-	 * @param locales a string which contains all the locales separated with a simple comma : ',' .
+	 * @param myLocales a string which contains all the locales separated with a simple comma : ',' .
 	 * @return this builder
 	 */
-	public BootConfigBuilder withLocales(final String locales) {
-		addComponent(
-				LocaleManager.class,
-				LocaleManagerImpl.class,
-				Param.of("locales", locales));
+	public BootConfigBuilder withLocales(final String myLocales) {
+		locales = myLocales;
+		return this;
+	}
+
+	/**
+	 * Fix the default ZoneId for DateTime formatter.
+	 *
+	 * @param myDefaultZoneId a string which contains defaultZoneId.
+	 * @return this builder
+	 */
+	public BootConfigBuilder withDefaultZoneId(final String myDefaultZoneId) {
+		defaultZoneId = myDefaultZoneId;
 		return this;
 	}
 
@@ -157,6 +167,16 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 */
 	@Override
 	public BootConfig build() {
+		final List<Param> localeParams = new ArrayList<>();
+		localeParams.add(Param.of("locales", locales));
+		if (defaultZoneId != null) {
+			localeParams.add(Param.of("defaultZoneId", defaultZoneId));
+		}
+		addComponent(
+				LocaleManager.class,
+				LocaleManagerImpl.class,
+				localeParams.toArray(new Param[localeParams.size()]));
+
 		addComponent(ResourceManager.class, ResourceManagerImpl.class)
 				.addComponent(ParamManager.class, ParamManagerImpl.class);
 
@@ -167,4 +187,5 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 				myAopPlugin,
 				myVerbose);
 	}
+
 }

@@ -65,6 +65,7 @@
 				maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="locales" type="xs:string" use="required" />
+		<xs:attribute name="defaultZoneId" type="xs:string" />
 	</xs:complexType>
 
 	<xs:complexType name="moduleType">
