@@ -152,10 +152,16 @@ final class XMLModulesHandler extends DefaultHandler {
 				current = TagName.boot;
 				final String locales = attrs.getValue("locales");
 				final String defaultZoneId = attrs.getValue("defaultZoneId");
-				bootConfigBuilder = appConfigBuilder
-						.beginBoot()
-						.withLocales(locales)
-						.withDefaultZoneId(defaultZoneId);
+				if (defaultZoneId == null) {
+					bootConfigBuilder = appConfigBuilder
+							.beginBoot()
+							.withLocales(locales);
+				} else {
+					bootConfigBuilder = appConfigBuilder
+							.beginBoot()
+							.withLocalesAndDefaultZoneId(locales, defaultZoneId);
+				}
+
 				break;
 			case module:
 				current = TagName.module;
