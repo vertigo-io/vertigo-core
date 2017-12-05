@@ -18,7 +18,7 @@
  */
 package io.vertigo.account.impl.identityprovider;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.core.component.Plugin;
@@ -44,7 +44,7 @@ public interface IdentityProviderPlugin extends Plugin {
 	 * @return all users
 	 * @param <E> project's User entity type
 	 */
-	<E extends Entity> Collection<E> getAllUsers();
+	<E extends Entity> List<E> getAllUsers();
 
 	/**
 	 * Gets the photo of an account defined by its URI.

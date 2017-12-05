@@ -18,7 +18,7 @@
  */
 package io.vertigo.account.plugins.identityprovider.store;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -87,7 +87,7 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> Collection<E> getAllUsers() {
+	public <E extends Entity> List<E> getAllUsers() {
 		return storeManager.getDataStore().find(userIdentityDefinition, Criterions.alwaysTrue());
 	}
 

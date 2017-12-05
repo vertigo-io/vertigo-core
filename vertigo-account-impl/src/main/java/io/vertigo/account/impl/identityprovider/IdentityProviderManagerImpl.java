@@ -18,7 +18,7 @@
  */
 package io.vertigo.account.impl.identityprovider;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -55,7 +55,7 @@ public final class IdentityProviderManagerImpl implements IdentityProviderManage
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> Collection<E> getAllUsers() {
+	public <E extends Entity> List<E> getAllUsers() {
 		return identityProviderPlugin.getAllUsers();
 	}
 

@@ -18,9 +18,10 @@
  */
 package io.vertigo.account.identityprovider;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
+import io.vertigo.core.component.Manager;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.model.VFile;
@@ -33,7 +34,7 @@ import io.vertigo.dynamo.file.model.VFile;
  *
  * @author pchretien, npiedeloup
  */
-public interface IdentityProviderManager {
+public interface IdentityProviderManager extends Manager {
 	/**
 	 * @return the number of accounts
 	 */
@@ -43,7 +44,7 @@ public interface IdentityProviderManager {
 	 * @return all users
 	 * @param <E> project's User entity type
 	 */
-	<E extends Entity> Collection<E> getAllUsers();
+	<E extends Entity> List<E> getAllUsers();
 
 	/**
 	 * Gets the photo of an account defined by its URI.

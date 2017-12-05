@@ -181,17 +181,4 @@ public final class AccountManagerImpl implements AccountManager {
 		}
 		return storeSupplier.apply(uri);
 	}
-
-	/*public long provisionUsersFromIdentityProviders() {
-		if (identityProviderPlugin.isPresent()) {
-			final List<Account> accounts = identityProviderPlugin.get().getAllUsers()
-					.stream()
-					.map(this::convertUserToAccount)
-					.collect(Collectors.toList());
-			accountStorePlugin.saveAccounts(accounts);
-			return accounts.size();
-		}
-		return 0;
-	}*/
-
 }

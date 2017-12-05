@@ -27,7 +27,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -126,7 +125,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> Collection<E> getAllUsers() {
+	public <E extends Entity> List<E> getAllUsers() {
 		return users.values().stream()
 				.map(accountInfo -> (E) accountInfo.getUser())
 				.collect(Collectors.toList());

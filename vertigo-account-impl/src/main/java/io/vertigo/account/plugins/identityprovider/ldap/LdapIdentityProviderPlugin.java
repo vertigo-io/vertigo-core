@@ -164,10 +164,10 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> Collection<E> getAllUsers() {
+	public <E extends Entity> List<E> getAllUsers() {
 		final LdapContext ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
 		try {
-			return searchUser("*", -1, ldapContext);
+			return searchUser("(cn=*)", 500, ldapContext);
 		} finally {
 			closeLdapContext(ldapContext);
 		}
@@ -186,15 +186,15 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	}
 
 	private Entity getUserByAuthToken(final String authToken, final LdapContext ctx) {
-		final List<Attributes> result = searchLdapAttributes(ldapAccountBaseDn, "(" + ldapUserAuthAttribute + "=" + protectLdap(authToken) + "))", 2, mapperHelper.sourceAttributes(), ctx);
+		final List<Attributes> result = searchLdapAttributes(ldapAccountBaseDn, "(&(" + ldapUserAuthAttribute + "=" + protectLdap(authToken) + "))", 2, mapperHelper.sourceAttributes(), ctx);
 		Assertion.checkState(!result.isEmpty(), "Can't found any user with authToken : {0}", ldapUserAuthAttribute);
 		Assertion.checkState(result.size() == 1, "Too many user with same authToken ({0} shoud be unique)", ldapUserAuthAttribute);
 		return parseUser(result.get(0));
 	}
 
-	private <E extends Entity> Collection<E> searchUser(final String searchRequest, final int top, final LdapContext ldapContext) {
+	private <E extends Entity> List<E> searchUser(final String searchRequest, final int top, final LdapContext ldapContext) {
 		final List<Attributes> result = searchLdapAttributes(ldapAccountBaseDn, searchRequest, top, mapperHelper.sourceAttributes(), ldapContext);
-		return (Collection<E>) result.stream()
+		return (List<E>) result.stream()
 				.map(this::parseUser)
 				.collect(Collectors.toList());
 	}
