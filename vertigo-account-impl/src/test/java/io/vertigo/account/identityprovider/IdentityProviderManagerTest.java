@@ -74,6 +74,13 @@ public final class IdentityProviderManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test
+	public void testNoPhoto() {
+		final List<User> users = identityProviderManager.getAllUsers();
+		//Before the photo is the default photo
+		Assert.assertFalse(identityProviderManager.getPhoto(users.get(0).getURI()).isPresent());
+	}
+
+	@Test
 	public void testUserByAuthToken() {
 		final User user = identityProviderManager.getUserByAuthToken("admin");
 		Assert.assertNotNull("Can't find user by login ", user);
