@@ -32,9 +32,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import io.vertigo.account.account.Account;
-import io.vertigo.account.account.AccountGroup;
-import io.vertigo.account.account.AccountManager;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.di.injector.DIInjector;
@@ -132,12 +129,6 @@ public final class AccountManagerTest {
 	@Test
 	public void testAccounts() {
 		Assert.assertEquals("Palmer Luckey", accountManager.getAccount(accountURI1).getDisplayName());
-		//Assert.assertEquals(10 + 4, identityManager.getAccountsCount());
-	}
-
-	@Test
-	public void testAccounts() {
-		Assert.assertEquals("Palmer Luckey", accountManager.);
 		//Assert.assertEquals(10 + 4, identityManager.getAccountsCount());
 	}
 
