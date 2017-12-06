@@ -136,6 +136,12 @@ public final class AccountManagerTest {
 	}
 
 	@Test
+	public void testAccounts() {
+		Assert.assertEquals("Palmer Luckey", accountManager.);
+		//Assert.assertEquals(10 + 4, identityManager.getAccountsCount());
+	}
+
+	@Test
 	public void testPhoto() {
 		//Before the photo is the default photo
 		Assert.assertFalse(accountManager.getPhoto(accountURI0).isPresent());

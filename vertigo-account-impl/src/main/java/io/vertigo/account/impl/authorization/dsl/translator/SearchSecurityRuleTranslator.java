@@ -92,14 +92,14 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 			final List<Serializable> userValues = getUserCriteria(userPropertyValue.getUserProperty());
 			if (userValues.size() == 1) {
 				query.append(expressionDefinition.getFieldName())
-						.append(":")
+						.append(':')
 						.append(toOperator(expressionDefinition.getOperator()))
 						.append(userValues.get(0));
 			} else if (userValues.size() > 0) {
 				query.append(expressionDefinition.getFieldName())
-						.append(":")
+						.append(':')
 						.append(toOperator(expressionDefinition.getOperator()))
-						.append("(");
+						.append('(');
 				String inSep = "";
 				for (final Serializable userValue : userValues) {
 					query.append(inSep)
