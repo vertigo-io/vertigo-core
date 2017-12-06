@@ -33,7 +33,13 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import io.vertigo.app.AutoCloseableApp;
+import io.vertigo.app.Home;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
+import io.vertigo.commons.transaction.VTransactionAfterCompletionFunction;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionResource;
+import io.vertigo.commons.transaction.VTransactionResourceId;
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -43,11 +49,20 @@ import redis.clients.jedis.Jedis;
 
 @RunWith(Parameterized.class)
 public final class AccountManagerTest {
-	private AutoCloseableApp app;
+	@Parameters
+	public static Collection<Object[]> params() {
+		return Arrays.asList(
+				//redis
+				new Object[] { true, false },
+				//memory (redis= false)
+				new Object[] { false, false },
+				//redis and database
+				new Object[] { true, true });
+	}
 
+	private AutoCloseableApp app;
 	@Inject
 	private AccountManager accountManager;
-
 	@Inject
 	private VSecurityManager securityManager;
 
@@ -57,24 +72,18 @@ public final class AccountManagerTest {
 	private URI<AccountGroup> groupURI;
 	private URI<AccountGroup> groupAllURI;
 
-	@Parameters
-	public static Collection<Object[]> params() {
-		return Arrays.asList(
-				//redis
-				new Object[] { true },
-				//memory (redis= false)
-				new Object[] { false });
-	}
-
-	final boolean redis;
+	private final boolean redis;
+	private final boolean database;
 
 	/**
 	 * Constructor
 	 * @param redis use redis or memory
+	 * @param database use database or memory
 	 */
-	public AccountManagerTest(final boolean redis) {
+	public AccountManagerTest(final boolean redis, final boolean database) {
 		//params are automatically injected
 		this.redis = redis;
+		this.database = database;
 	}
 
 	private static URI<Account> createAccountURI(final String id) {
@@ -87,7 +96,7 @@ public final class AccountManagerTest {
 
 	@Before
 	public void setUp() {
-		app = new AutoCloseableApp(MyAppConfig.config(redis));
+		app = new AutoCloseableApp(MyAppConfig.config(redis, database));
 
 		DIInjector.injectMembers(this, app.getComponentSpace());
 		if (redis) {
@@ -95,6 +104,10 @@ public final class AccountManagerTest {
 			try (final Jedis jedis = redisConnector.getResource()) {
 				jedis.flushAll();
 			}
+		}
+
+		if (database) {
+			CreateTestDataBase.initMainStore();
 		}
 
 		accountURI0 = createAccountURI("0");
@@ -128,8 +141,17 @@ public final class AccountManagerTest {
 
 	@Test
 	public void testAccounts() {
-		Assert.assertEquals("Palmer Luckey", accountManager.getAccount(accountURI1).getDisplayName());
-		//Assert.assertEquals(10 + 4, identityManager.getAccountsCount());
+		try (VTransactionWritable tx = obtainTx()) {
+			Assert.assertEquals("Palmer Luckey", accountManager.getAccount(accountURI1).getDisplayName());
+			//Assert.assertEquals(10 + 4, identityManager.getAccountsCount());
+		}
+	}
+
+	private VTransactionWritable obtainTx() {
+		if (database) {
+			return Home.getApp().getComponentSpace().resolve(VTransactionManager.class).createCurrentTransaction();
+		}
+		return new MockVTransactionWritable();
 	}
 
 	@Test
@@ -141,26 +163,74 @@ public final class AccountManagerTest {
 		//	final VFile photo = fileManager.createFile(new File(this.getClass().getResource("../data/marianne.png").toURI()));
 		//	identityManager.setPhoto(accountURI0, photo);
 		//-----
-		Assert.assertTrue(accountManager.getPhoto(accountURI1).isPresent());
-		Assert.assertEquals("marianne.png", accountManager.getPhoto(accountURI1).get().getFileName());
+		if (database) {
+			Assert.assertFalse(accountManager.getPhoto(accountURI1).isPresent());
+		} else {
+			Assert.assertTrue(accountManager.getPhoto(accountURI1).isPresent());
+			Assert.assertEquals("marianne.png", accountManager.getPhoto(accountURI1).get().getFileName());
+		}
 	}
 
 	@Test
 	public void testGroups() {
-		//Assert.assertEquals(2, identityManager.getGroupsCount());
-		//----
-		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI0).size());
-		Assert.assertEquals(2, accountManager.getGroupURIs(accountURI1).size());
-		Assert.assertEquals(2, accountManager.getGroupURIs(accountURI2).size());
-		Assert.assertEquals(2, accountManager.getAccountURIs(groupURI).size());
-		Assert.assertEquals(10 + 4, accountManager.getAccountURIs(groupAllURI).size());
-		//---
-		/*identityManager.attach(accountURI0, groupURI);
-		Assert.assertEquals(2, identityManager.getGroupURIs(accountURI0).size());
-		Assert.assertEquals(2, identityManager.getGroupURIs(accountURI1).size());
-		Assert.assertEquals(2, identityManager.getGroupURIs(accountURI2).size());
-		Assert.assertEquals(3, identityManager.getAccountURIs(groupURI).size());
-		Assert.assertEquals(10 + 3, identityManager.getAccountURIs(groupAllURI).size());*/
+		try (VTransactionWritable tx = obtainTx()) {
+			//Assert.assertEquals(2, identityManager.getGroupsCount());
+			//----
+			Assert.assertEquals(1, accountManager.getGroupURIs(accountURI0).size());
+			if (!database) {
+				Assert.assertEquals(2, accountManager.getGroupURIs(accountURI1).size());
+				Assert.assertEquals(2, accountManager.getGroupURIs(accountURI2).size());
+			}
+			Assert.assertEquals(2, accountManager.getAccountURIs(groupURI).size());
+			Assert.assertEquals(database ? 8 : 10 + 4, accountManager.getAccountURIs(groupAllURI).size());
+			//---
+			/*identityManager.attach(accountURI0, groupURI);
+			Assert.assertEquals(2, identityManager.getGroupURIs(accountURI0).size());
+			Assert.assertEquals(2, identityManager.getGroupURIs(accountURI1).size());
+			Assert.assertEquals(2, identityManager.getGroupURIs(accountURI2).size());
+			Assert.assertEquals(3, identityManager.getAccountURIs(groupURI).size());
+			Assert.assertEquals(10 + 3, identityManager.getAccountURIs(groupAllURI).size());*/
+		}
+	}
+
+	private class MockVTransactionWritable implements VTransactionWritable {
+
+		@Override
+		public <R extends VTransactionResource> void addResource(final VTransactionResourceId<R> id, final R resource) {
+			//
+		}
+
+		@Override
+		public <R extends VTransactionResource> R getResource(final VTransactionResourceId<R> transactionResourceId) {
+			//
+			return null;
+		}
+
+		@Override
+		public void addBeforeCommit(final Runnable function) {
+			//
+
+		}
+
+		@Override
+		public void addAfterCompletion(final VTransactionAfterCompletionFunction function) {
+			//
+		}
+
+		@Override
+		public void commit() {
+			//
+		}
+
+		@Override
+		public void rollback() {
+			//
+		}
+
+		@Override
+		public void close() {
+			//
+		}
 	}
 
 }

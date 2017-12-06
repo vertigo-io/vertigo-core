@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.identityprovider.model;
+package io.vertigo.account.account.model;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
@@ -26,45 +26,45 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 /**
  * User.
  */
-public final class User implements KeyConcept {
+public final class UserGroup implements KeyConcept {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	private String usrId;
-	private String fullName;
-	private String email;
+	private String grpId;
+	private String name;
+	private String otherProperty;
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<User> getURI() {
+	public URI<UserGroup> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
 
 	@Field(domain = "DO_CODE", type = "ID", required = true, label = "Id")
-	public final String getUsrId() {
-		return usrId;
+	public final String getGrpId() {
+		return grpId;
 	}
 
-	public final void setUsrId(final String usrId) {
-		this.usrId = usrId;
+	public final void setGrpId(final String grpId) {
+		this.grpId = grpId;
 	}
 
-	@Field(domain = "DO_LABEL", required = true, label = "FullName")
-	public final String getFullName() {
-		return fullName;
+	@Field(domain = "DO_LABEL", required = true, label = "Name")
+	public final String getName() {
+		return name;
 	}
 
-	public final void setFullName(final String fullName) {
-		this.fullName = fullName;
+	public final void setName(final String name) {
+		this.name = name;
 	}
 
-	@Field(domain = "DO_LABEL", required = true, label = "Email")
-	public final String getEmail() {
-		return email;
+	@Field(domain = "DO_LABEL", required = true, label = "otherProperty")
+	public final String getOtherProperty() {
+		return otherProperty;
 	}
 
-	public final void setEmail(final String email) {
-		this.email = email;
+	public final void setOtherProperty(final String otherProperty) {
+		this.otherProperty = otherProperty;
 	}
 
 	/** {@inheritDoc} */

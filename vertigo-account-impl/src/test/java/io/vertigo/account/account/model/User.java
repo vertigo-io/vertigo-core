@@ -16,10 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.identityprovider.model;
+package io.vertigo.account.account.model;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -33,6 +34,9 @@ public final class User implements KeyConcept {
 	private String usrId;
 	private String fullName;
 	private String email;
+
+	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_GRP_USR", fkFieldName = "GRP_ID", primaryDtDefinitionName = "DT_USER_GROUP", primaryIsNavigable = true, primaryRole = "Group", primaryLabel = "Group", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DT_USER", foreignIsNavigable = false, foreignRole = "User", foreignLabel = "User", foreignMultiplicity = "0..*")
+	private final VAccessor<UserGroup> grpIdAccessor = new VAccessor<>(UserGroup.class, "Group");
 
 	/** {@inheritDoc} */
 	@Override
@@ -65,6 +69,25 @@ public final class User implements KeyConcept {
 
 	public final void setEmail(final String email) {
 		this.email = email;
+	}
+
+	/**
+	 * Champ : FOREIGN_KEY.
+	 * Récupère la valeur de la propriété 'Group'.
+	 * @return String grpId
+	 */
+	@Field(domain = "DO_CODE", type = "FOREIGN_KEY", label = "Group")
+	public String getGrpId() {
+		return (String) grpIdAccessor.getId();
+	}
+
+	/**
+	 * Champ : FOREIGN_KEY.
+	 * Définit la valeur de la propriété 'Motor type'.
+	 * @param grpId Long
+	 */
+	public void setGrpId(final String grpId) {
+		grpIdAccessor.setId(grpId);
 	}
 
 	/** {@inheritDoc} */

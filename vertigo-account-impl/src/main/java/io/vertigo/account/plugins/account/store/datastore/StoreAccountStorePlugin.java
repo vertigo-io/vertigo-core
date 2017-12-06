@@ -18,6 +18,7 @@
  */
 package io.vertigo.account.plugins.account.store.datastore;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -138,15 +139,21 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	public Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
 		final DtListURI groupDtListURI;
 		if (associationUserGroup instanceof AssociationSimpleDefinition) {
-			groupDtListURI = new DtListURIForSimpleAssociation((AssociationSimpleDefinition) associationUserGroup, accountURI, associationGroupRoleName);
-		} else { //autres cas éliminés par assertion dans le postStart
-			Assertion.checkArgument(associationUserGroup instanceof AssociationNNDefinition, "Association ({0}) between User and Group must be an AssociationSimpleDefinition or an AssociationNNDefinition", associationUserGroup.getName());
-			groupDtListURI = new DtListURIForNNAssociation((AssociationNNDefinition) associationUserGroup, accountURI, associationGroupRoleName);
+			final URI<Entity> userURI = new URI(getUserDtDefinition(), accountURI.getId());
+			final Entity userEntity = storeManager.getDataStore().readOne(userURI);
+			final Object fkValue = ((AssociationSimpleDefinition) associationUserGroup).getFKField().getDataAccessor().getValue(userEntity);
+			final URI<AccountGroup> groupURI = new URI(userGroupDtDefinition, fkValue);
+			return Collections.singleton(groupURI);
 		}
+		//autres cas éliminés par assertion dans le postStart
+		Assertion.checkArgument(associationUserGroup instanceof AssociationNNDefinition, "Association ({0}) between User and Group must be an AssociationSimpleDefinition or an AssociationNNDefinition", associationUserGroup.getName());
+		groupDtListURI = new DtListURIForNNAssociation((AssociationNNDefinition) associationUserGroup, accountURI, associationGroupRoleName);
+
 		//-----
 		final DtList<? extends Entity> result = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().findAll(groupDtListURI);
-		return result.stream()
-				.map(groupEntity -> groupToAccount(groupEntity).getURI())
+		return result.stream().map(groupEntity ->
+
+		groupToAccount(groupEntity).getURI())
 				.collect(Collectors.toSet());
 	}
 
