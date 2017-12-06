@@ -18,7 +18,6 @@ public final class Attachment implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private Long attId;
-
 	private String url;
 
 	@javax.persistence.Transient
@@ -35,7 +34,7 @@ public final class Attachment implements Entity {
 			foreignRole = "Attachment",
 			foreignLabel = "Attachment",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.dynamo.environment.java.data.domain.Command> cmdIdAccessor = new VAccessor<>(io.vertigo.dynamo.environment.java.data.domain.Command.class, "command");
+	private final VAccessor<Command> cmdIdAccessor = new VAccessor<>(Command.class, "Command");
 
 	/** {@inheritDoc} */
 	@javax.persistence.Transient
@@ -107,15 +106,22 @@ public final class Attachment implements Entity {
 		cmdIdAccessor.setId(cmdId);
 	}
 
-	public VAccessor<io.vertigo.dynamo.environment.java.data.domain.Command> getCommandAccessor() {
+	/**
+	 * Association : Command.
+	 * @return l'accesseur vers la propriété 'Command'
+	 */
+	@javax.persistence.Transient
+	public VAccessor<Command> command() {
 		return cmdIdAccessor;
 	}
 
-	/**
-	 * Association : Command.
-	 * @return io.vertigo.dynamo.environment.java.data.domain.Command
-	 */
-	public io.vertigo.dynamo.environment.java.data.domain.Command getCommand() {
+	@Deprecated
+	@javax.persistence.Transient
+	public Command getCommand() {
+		// we keep the lazyness
+		if (!cmdIdAccessor.isLoaded()) {
+			cmdIdAccessor.load();
+		}
 		return cmdIdAccessor.get();
 	}
 
@@ -123,7 +129,9 @@ public final class Attachment implements Entity {
 	 * Retourne l'URI: Command.
 	 * @return URI de l'association
 	 */
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.Command> getCommandURI() {
+	@Deprecated
+	@javax.persistence.Transient
+	public io.vertigo.dynamo.domain.model.URI<Command> getCommandURI() {
 		return cmdIdAccessor.getURI();
 	}
 

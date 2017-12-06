@@ -17,7 +17,6 @@ public final class CommandType implements DtStaticMasterData {
 	private static final long serialVersionUID = 1L;
 
 	private Long ctyId;
-
 	private String label;
 
 	/** {@inheritDoc} */

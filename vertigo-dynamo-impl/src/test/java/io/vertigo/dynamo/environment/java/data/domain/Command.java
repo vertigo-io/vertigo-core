@@ -2,6 +2,7 @@ package io.vertigo.dynamo.environment.java.data.domain;
 
 import io.vertigo.dynamo.domain.model.EnumVAccessor;
 import io.vertigo.dynamo.domain.model.KeyConcept;
+import io.vertigo.dynamo.domain.model.ListVAccessor;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -34,7 +35,7 @@ public final class Command implements KeyConcept {
 			foreignRole = "Command",
 			foreignLabel = "Command",
 			foreignMultiplicity = "0..*")
-	private final EnumVAccessor<io.vertigo.dynamo.environment.java.data.domain.CommandType, io.vertigo.dynamo.environment.java.data.domain.CommandTypeEnum> ctyIdAccessor = new EnumVAccessor<>(io.vertigo.dynamo.environment.java.data.domain.CommandType.class, "commandType", io.vertigo.dynamo.environment.java.data.domain.CommandTypeEnum.class);
+	private final EnumVAccessor<CommandType, CommandTypeEnum> ctyIdAccessor = new EnumVAccessor<>(CommandType.class, "CommandType", CommandTypeEnum.class);
 
 	@javax.persistence.Transient
 	@io.vertigo.dynamo.domain.stereotype.Association(
@@ -50,9 +51,23 @@ public final class Command implements KeyConcept {
 			foreignRole = "Command",
 			foreignLabel = "Command",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.dynamo.environment.java.data.domain.City> citIdAccessor = new VAccessor<>(io.vertigo.dynamo.environment.java.data.domain.City.class, "city");
+	private final VAccessor<City> citIdAccessor = new VAccessor<>(City.class, "City");
 
-	private io.vertigo.dynamo.domain.model.DtList<io.vertigo.dynamo.environment.java.data.domain.Attachment> attachment;
+	@javax.persistence.Transient
+	@io.vertigo.dynamo.domain.stereotype.Association(
+			name = "A_CMD_ATT",
+			fkFieldName = "CMD_ID",
+			primaryDtDefinitionName = "DT_COMMAND",
+			primaryIsNavigable = true,
+			primaryRole = "Command",
+			primaryLabel = "Command",
+			primaryMultiplicity = "0..1",
+			foreignDtDefinitionName = "DT_ATTACHMENT",
+			foreignIsNavigable = true,
+			foreignRole = "Attachment",
+			foreignLabel = "Attachment",
+			foreignMultiplicity = "0..*")
+	private final ListVAccessor<Attachment> attachmentAccessor = new ListVAccessor<>(this, "A_CMD_ATT", "Attachment");
 
 	/** {@inheritDoc} */
 	@javax.persistence.Transient
@@ -82,23 +97,6 @@ public final class Command implements KeyConcept {
 	 */
 	public void setCmdId(final Long cmdId) {
 		this.cmdId = cmdId;
-	}
-
-	/**
-	 * Récupère la valeur de la propriété 'CommandType' as an enum.
-	 * @return the enum value
-	 */
-	public io.vertigo.dynamo.environment.java.data.domain.CommandTypeEnum getCommandTypeEnum() {
-		return ctyIdAccessor.getEnumValue();
-	}
-
-	/**
-	 * Champ : FOREIGN_KEY.
-	 * Définit la valeur de la propriété 'CommandType' as an enum.
-	 * @param commandTypeEnum io.vertigo.dynamo.environment.java.data.domain.CommandTypeEnum
-	 */
-	public void setCommandTypeEnum(final io.vertigo.dynamo.environment.java.data.domain.CommandTypeEnum commandTypeEnum) {
-		ctyIdAccessor.setEnumValue(commandTypeEnum);
 	}
 
 	/**
@@ -143,10 +141,20 @@ public final class Command implements KeyConcept {
 
 	/**
 	 * Association : City.
-	 * @return io.vertigo.dynamo.environment.java.data.domain.City
+	 * @return l'accesseur vers la propriété 'City'
 	 */
+	@javax.persistence.Transient
+	public VAccessor<City> city() {
+		return citIdAccessor;
+	}
 
-	public io.vertigo.dynamo.environment.java.data.domain.City getCity() {
+	@Deprecated
+	@javax.persistence.Transient
+	public City getCity() {
+		// we keep the lazyness
+		if (!citIdAccessor.isLoaded()) {
+			citIdAccessor.load();
+		}
 		return citIdAccessor.get();
 	}
 
@@ -154,44 +162,61 @@ public final class Command implements KeyConcept {
 	 * Retourne l'URI: City.
 	 * @return URI de l'association
 	 */
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.City> getCityURI() {
+	@Deprecated
+	@javax.persistence.Transient
+	public io.vertigo.dynamo.domain.model.URI<City> getCityURI() {
 		return citIdAccessor.getURI();
 	}
 
 	/**
 	 * Association : Attachment.
-	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.dynamo.environment.java.data.domain.Attachment>
+	 * @return l'accesseur vers la propriété 'Attachment'
 	 */
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.dynamo.environment.java.data.domain.Attachment> getAttachmentList() {
-		// On doit avoir une clé primaire renseignée. Si ce n'est pas le cas, on renvoie une liste vide
-		if (io.vertigo.dynamo.domain.util.DtObjectUtil.getId(this) == null) {
-			return new io.vertigo.dynamo.domain.model.DtList<>(io.vertigo.dynamo.environment.java.data.domain.Attachment.class);
+	@javax.persistence.Transient
+	public ListVAccessor<Attachment> attachment() {
+		return attachmentAccessor;
+	}
+
+	/**
+	 * Association : Attachment.
+	 * @return io.vertigo.dynamo.domain.model.DtList<Attachment>
+	 */
+	@Deprecated
+	@javax.persistence.Transient
+	public io.vertigo.dynamo.domain.model.DtList<Attachment> getAttachmentList() {
+		// we keep the lazyness
+		if (!attachmentAccessor.isLoaded()) {
+			attachmentAccessor.load();
 		}
-		final io.vertigo.dynamo.domain.model.DtListURI fkDtListURI = getAttachmentDtListURI();
-		io.vertigo.lang.Assertion.checkNotNull(fkDtListURI);
-		//---------------------------------------------------------------------
-		//On est toujours dans un mode lazy.
-		if (attachment == null) {
-			attachment = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().findAll(fkDtListURI);
-		}
-		return attachment;
+		return attachmentAccessor.get();
 	}
 
 	/**
 	 * Association URI: Attachment.
 	 * @return URI de l'association
 	 */
-
+	@Deprecated
+	@javax.persistence.Transient
 	public io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation getAttachmentDtListURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createDtListURIForSimpleAssociation(this, "A_CMD_ATT", "Attachment");
+		return (io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation) attachmentAccessor.getDtListURI();
 	}
 
 	/**
 	 * Association : Command type.
-	 * @return io.vertigo.dynamo.environment.java.data.domain.CommandType
+	 * @return l'accesseur vers la propriété 'Command type'
 	 */
+	@javax.persistence.Transient
+	public EnumVAccessor<CommandType, CommandTypeEnum> commandType() {
+		return ctyIdAccessor;
+	}
 
-	public io.vertigo.dynamo.environment.java.data.domain.CommandType getCommandType() {
+	@Deprecated
+	@javax.persistence.Transient
+	public CommandType getCommandType() {
+		// we keep the lazyness
+		if (!ctyIdAccessor.isLoaded()) {
+			ctyIdAccessor.load();
+		}
 		return ctyIdAccessor.get();
 	}
 
@@ -199,7 +224,9 @@ public final class Command implements KeyConcept {
 	 * Retourne l'URI: Command type.
 	 * @return URI de l'association
 	 */
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.dynamo.environment.java.data.domain.CommandType> getCommandTypeURI() {
+	@Deprecated
+	@javax.persistence.Transient
+	public io.vertigo.dynamo.domain.model.URI<CommandType> getCommandTypeURI() {
 		return ctyIdAccessor.getURI();
 	}
 
