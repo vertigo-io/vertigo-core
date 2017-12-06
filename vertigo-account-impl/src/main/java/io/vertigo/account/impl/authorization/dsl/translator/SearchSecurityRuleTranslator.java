@@ -90,27 +90,26 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		if (expressionDefinition.getValue() instanceof RuleUserPropertyValue) {
 			final RuleUserPropertyValue userPropertyValue = (RuleUserPropertyValue) expressionDefinition.getValue();
 			final List<Serializable> userValues = getUserCriteria(userPropertyValue.getUserProperty());
-			if (userValues.size() == 1) {
+			final boolean useParenthesisAroundValue = userValues.size() > 1;
+			if (!userValues.isEmpty()) {
 				query.append(expressionDefinition.getFieldName())
 						.append(':')
-						.append(toOperator(expressionDefinition.getOperator()))
-						.append(userValues.get(0));
-			} else if (userValues.size() > 0) {
-				query.append(expressionDefinition.getFieldName())
-						.append(':')
-						.append(toOperator(expressionDefinition.getOperator()))
-						.append('(');
+						.append(toOperator(expressionDefinition.getOperator()));
+				if (useParenthesisAroundValue) {
+					query.append('(');
+				}
+
 				String inSep = "";
 				for (final Serializable userValue : userValues) {
 					query.append(inSep)
 							.append(userValue);
 					inSep = " ";
 				}
-				query.append(')');
+				if (useParenthesisAroundValue) {
+					query.append(')');
+				}
 			}
-		} else if (expressionDefinition.getValue() instanceof RuleFixedValue)
-
-		{
+		} else if (expressionDefinition.getValue() instanceof RuleFixedValue) {
 			query.append(expressionDefinition.getFieldName())
 					.append(':')
 					.append(toOperator(expressionDefinition.getOperator()))
