@@ -118,8 +118,8 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 			if (field.isPersistent()) {
 				final String sequence = getSequenceName(field);
 				//allocationSize=1 pour Hibernate 5
-				lines.add("@javax.persistence.SequenceGenerator(name = \"sequence\", sequenceName = \"" + sequence + "\", allocationSize=1)");
-				lines.add("@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = \"sequence\")");
+				lines.add("@javax.persistence.SequenceGenerator(name = \"" + sequence + "\", sequenceName = \"" + sequence + "\", allocationSize=1)");
+				lines.add("@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = \"" + sequence + "\")");
 			}
 		}
 		if (field.isPersistent()) {
