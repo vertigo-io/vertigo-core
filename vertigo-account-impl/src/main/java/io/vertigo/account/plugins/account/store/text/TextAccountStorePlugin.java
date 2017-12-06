@@ -126,12 +126,6 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 		groupFilePattern = Pattern.compile(groupFilePatternStr);
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public long getAccountsCount() {
-		return accounts.size();
-	}
-
 	@Override
 	public Account getAccount(final URI<Account> accountURI) {
 		return accounts.get(accountURI.getId()).getAccount();
@@ -142,11 +136,6 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 		return groupsPerAccount.get(accountURI.getId()).stream()
 				.map(AccountGroup::getURI)
 				.collect(Collectors.toSet());
-	}
-
-	@Override
-	public long getGroupsCount() {
-		return groups.size();
 	}
 
 	@Override

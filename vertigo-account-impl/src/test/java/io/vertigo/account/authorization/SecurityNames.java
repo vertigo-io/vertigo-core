@@ -38,6 +38,7 @@ public final class SecurityNames {
 	 */
 	public enum RecordAuthorizations implements AuthorizationName {
 		ATZ_RECORD$READ,
+		ATZ_RECORD$READ2,
 		ATZ_RECORD$READ_HP,
 		ATZ_RECORD$DELETE,
 		ATZ_RECORD$NOTIFY,
@@ -50,6 +51,7 @@ public final class SecurityNames {
 	 */
 	public enum RecordOperations implements OperationName<Record> {
 		READ,
+		READ2,
 		READ_HP,
 		WRITE,
 		CREATE,

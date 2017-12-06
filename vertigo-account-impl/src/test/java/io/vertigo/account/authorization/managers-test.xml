@@ -3,7 +3,7 @@
 	<boot locales="fr_FR">
 		<plugin class="io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin" />
 	</boot>
-
+	
 	<module name="vertigo-persona">
 		<component api="VSecurityManager" class="io.vertigo.account.impl.security.VSecurityManagerImpl">
 			<param name="userSessionClassName" value="io.vertigo.account.data.TestUserSession" />

@@ -49,18 +49,6 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public long getAccountsCount() {
-		return accountByURI.size();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public long getGroupsCount() {
-		return groupByURI.size();
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public synchronized Optional<Account> getAccount(final URI<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
 		//-----

@@ -18,6 +18,8 @@
  */
 package io.vertigo.account.authentification;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -26,6 +28,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.account.authentication.AuthenticationManager;
@@ -41,6 +46,7 @@ import io.vertigo.persona.security.VSecurityManager;
  *
  * @author npiedeloup
  */
+@RunWith(Parameterized.class)
 public final class AuthenticationManagerTest {
 	private AutoCloseableApp app;
 
@@ -50,9 +56,29 @@ public final class AuthenticationManagerTest {
 	@Inject
 	private AuthenticationManager authenticationManager;
 
+	@Parameters
+	public static Collection<Object[]> params() {
+		return Arrays.asList(
+				//redis
+				new Object[] { true },
+				//memory (redis= false)
+				new Object[] { false });
+	}
+
+	final boolean redis;
+
+	/**
+	 * Constructor
+	 * @param redis use redis or memory
+	 */
+	public AuthenticationManagerTest(final boolean redis) {
+		//params are automatically injected
+		this.redis = redis;
+	}
+
 	@Before
 	public void setUp() {
-		app = new AutoCloseableApp(MyAppConfig.config(false));
+		app = new AutoCloseableApp(MyAppConfig.config(redis));
 		DIInjector.injectMembers(this, app.getComponentSpace());
 		securityManager.startCurrentUserSession(securityManager.createUserSession());
 	}

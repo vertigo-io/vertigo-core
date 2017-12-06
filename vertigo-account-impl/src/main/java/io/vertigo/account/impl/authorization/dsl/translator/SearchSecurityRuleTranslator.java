@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression.ValueOperator;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleFixedValue;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression.BoolOperator;
@@ -47,14 +48,17 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		final StringBuilder query = new StringBuilder();
 		String sep = "";
 		for (final RuleMultiExpression multiExpressionDefinition : getMultiExpressions()) {
-			query.append(sep);
+			query.append(sep).append('(');//On ajoute cette parenthèse car le premier niveau de multiExpression est en OR
 			appendMultiExpression(query, multiExpressionDefinition);
+			query.append(')');
 			sep = DEFAULT_BOOL_SEP;
 		}
 		return query.toString()
 				.replaceAll("^\\s+", "") //replace whitespaces at beginning of a line
 				.replaceAll("\\s+$", "") //replace whitespaces at end of a line
-				.replaceAll("\\s+", " "); // replace multiple whitespaces by space
+				.replaceAll("\\s+", " ") // replace multiple whitespaces by space
+				.replaceAll("^\\(\\)$", "(*:*)") // replace empty query to all
+		;
 	}
 
 	private void appendMultiExpression(final StringBuilder query, final RuleMultiExpression multiExpressionDefinition) {
@@ -67,9 +71,8 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		}
 
 		for (final RuleExpression expression : multiExpressionDefinition.getExpressions()) {
-			query.append(sep).append(boolSep).append('(');
+			query.append(sep).append(boolSep);
 			appendExpression(query, expression);
-			query.append(')');
 			sep = " ";
 		}
 		for (final RuleMultiExpression multiExpression : multiExpressionDefinition.getMultiExpressions()) {
@@ -81,12 +84,22 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 	}
 
 	private void appendExpression(final StringBuilder query, final RuleExpression expressionDefinition) {
+		if (expressionDefinition.getOperator() == ValueOperator.NEQ) {
+			query.append('-');
+		}
 		if (expressionDefinition.getValue() instanceof RuleUserPropertyValue) {
 			final RuleUserPropertyValue userPropertyValue = (RuleUserPropertyValue) expressionDefinition.getValue();
 			final List<Serializable> userValues = getUserCriteria(userPropertyValue.getUserProperty());
-			if (userValues.size() > 0) {
+			if (userValues.size() == 1) {
 				query.append(expressionDefinition.getFieldName())
-						.append(":(");
+						.append(":")
+						.append(toOperator(expressionDefinition.getOperator()))
+						.append(userValues.get(0));
+			} else if (userValues.size() > 0) {
+				query.append(expressionDefinition.getFieldName())
+						.append(":")
+						.append(toOperator(expressionDefinition.getOperator()))
+						.append("(");
 				String inSep = "";
 				for (final Serializable userValue : userValues) {
 					query.append(inSep)
@@ -95,12 +108,33 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 				}
 				query.append(')');
 			}
-		} else if (expressionDefinition.getValue() instanceof RuleFixedValue) {
+		} else if (expressionDefinition.getValue() instanceof RuleFixedValue)
+
+		{
 			query.append(expressionDefinition.getFieldName())
 					.append(':')
+					.append(toOperator(expressionDefinition.getOperator()))
 					.append(((RuleFixedValue) expressionDefinition.getValue()).getFixedValue());
 		} else {
 			throw new IllegalArgumentException("value type not supported " + expressionDefinition.getValue().getClass().getName());
+		}
+	}
+
+	private String toOperator(final ValueOperator operator) {
+		switch (operator) {
+			case GT:
+				return ">";
+			case GTE:
+				return ">=";
+			case LT:
+				return "<";
+			case LTE:
+				return "<=";
+			case EQ:
+			case NEQ:
+				return "";
+			default:
+				throw new IllegalArgumentException("Operator not supported " + operator.name());
 		}
 	}
 

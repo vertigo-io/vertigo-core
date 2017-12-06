@@ -20,6 +20,7 @@ package io.vertigo.account.authorization;
 
 import java.util.Locale;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.inject.Inject;
 
@@ -36,6 +37,10 @@ import io.vertigo.account.authorization.metamodel.Role;
 import io.vertigo.account.authorization.model.Record;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.database.impl.sql.vendor.postgresql.PostgreSqlDataBase;
+import io.vertigo.database.sql.vendor.SqlDialect;
+import io.vertigo.dynamo.criteria.CriteriaCtx;
+import io.vertigo.lang.Tuples.Tuple2;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 
@@ -189,6 +194,127 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 			Assert.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.READ));
 			Assert.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.READ));
 
+		} finally {
+			securityManager.stopCurrentUserSession();
+		}
+	}
+
+	@Test
+	public void testPredicateOnEntity() {
+
+		final Record record = createRecord();
+
+		final Record recordTooExpensive = createRecord();
+		recordTooExpensive.setAmount(10000d);
+
+		final Record recordOtherUser = createRecord();
+		recordOtherUser.setUtiIdOwner(2000L);
+
+		final Record recordOtherUserAndTooExpensive = createRecord();
+		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
+		recordOtherUserAndTooExpensive.setAmount(10000d);
+
+		final Authorization recordRead = getAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
+		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
+		try {
+			securityManager.startCurrentUserSession(userSession);
+			authorizationManager.obtainUserAuthorizations().withSecurityKeys("utiId", DEFAULT_UTI_ID)
+					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
+					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
+					.addAuthorization(recordRead);
+
+			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
+			Assert.assertTrue(canReadRecord);
+
+			final Predicate<Record> readRecordPredicate = authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ).toPredicate();
+			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
+			Assert.assertTrue(readRecordPredicate.test(record));
+			Assert.assertTrue(readRecordPredicate.test(recordTooExpensive));
+			Assert.assertTrue(readRecordPredicate.test(recordOtherUser));
+			Assert.assertFalse(readRecordPredicate.test(recordOtherUserAndTooExpensive));
+
+		} finally {
+			securityManager.stopCurrentUserSession();
+		}
+	}
+
+	@Test
+	public void testSecuritySqlOnEntity() {
+
+		final Record recordTooExpensive = createRecord();
+		recordTooExpensive.setAmount(10000d);
+
+		final Record recordOtherUser = createRecord();
+		recordOtherUser.setUtiIdOwner(2000L);
+
+		final Record recordOtherUserAndTooExpensive = createRecord();
+		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
+		recordOtherUserAndTooExpensive.setAmount(10000d);
+
+		final Authorization recordRead = getAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
+		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
+		try {
+			securityManager.startCurrentUserSession(userSession);
+			authorizationManager.obtainUserAuthorizations().withSecurityKeys("utiId", DEFAULT_UTI_ID)
+					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
+					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
+					.addAuthorization(recordRead);
+
+			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
+			Assert.assertTrue(canReadRecord);
+
+			final SqlDialect sqlDialect = new PostgreSqlDataBase().getSqlDialect();
+			final Tuple2<String, CriteriaCtx> readRecordSql = authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ).toSql(sqlDialect);
+			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
+			Assert.assertEquals("( AMOUNT <= #AMOUNT_0# OR UTI_ID_OWNER = #UTI_ID_OWNER_1# ) ", readRecordSql.getVal1());
+			Assert.assertEquals(100.0, readRecordSql.getVal2().getAttributeValue("AMOUNT_0"));
+			Assert.assertEquals(1000L, readRecordSql.getVal2().getAttributeValue("UTI_ID_OWNER_1"));
+
+		} finally {
+			securityManager.stopCurrentUserSession();
+		}
+	}
+
+	@Test
+	public void testSecuritySearchOnEntity() {
+
+		final Record recordTooExpensive = createRecord();
+		recordTooExpensive.setAmount(10000d);
+
+		final Record recordOtherUser = createRecord();
+		recordOtherUser.setUtiIdOwner(2000L);
+
+		final Record recordOtherUserAndTooExpensive = createRecord();
+		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
+		recordOtherUserAndTooExpensive.setAmount(10000d);
+
+		final Authorization recordRead = getAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
+		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
+		try {
+			securityManager.startCurrentUserSession(userSession);
+			authorizationManager.obtainUserAuthorizations().withSecurityKeys("utiId", DEFAULT_UTI_ID)
+					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
+					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
+					.addAuthorization(recordRead)
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$READ_HP))
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$WRITE))
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$CREATE))
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$DELETE));
+
+			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
+			Assert.assertTrue(canReadRecord);
+
+			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
+			Assert.assertEquals("(+AMOUNT:<=100.0) (+UTI_ID_OWNER:1000)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.READ));
+			Assert.assertEquals("(AMOUNT:<=100.0 UTI_ID_OWNER:1000)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.READ2));
+			Assert.assertEquals("(*:*)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.READ_HP));
+			Assert.assertEquals("(+UTI_ID_OWNER:1000 +ETA_CD:<ARC) (+TYP_ID:10 +AMOUNT:<=100.0 +ETA_CD:<ARC)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.WRITE));
+			Assert.assertEquals("(+TYP_ID:10 +AMOUNT:<=100.0)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.CREATE));
+			Assert.assertEquals("(+TYP_ID:10) (+UTI_ID_OWNER:1000 +ETA_CD:<PUB)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.DELETE));
+
+			final boolean canReadNotify = authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$NOTIFY);
+			Assert.assertFalse(canReadNotify);
+			Assert.assertEquals("", authorizationManager.getSearchSecurity(Record.class, RecordOperations.NOTIFY));
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}
@@ -392,6 +518,10 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 			Assert.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.READ));
 			Assert.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.READ));
 			Assert.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.READ));
+			//grant read2 -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
+			Assert.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.READ2));
+			Assert.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.READ2));
+			Assert.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.READ2));
 
 			//notify -> TYP_ID=${typId} and ETA_CD=PUB and GEO<=${geo}
 			Assert.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.NOTIFY));

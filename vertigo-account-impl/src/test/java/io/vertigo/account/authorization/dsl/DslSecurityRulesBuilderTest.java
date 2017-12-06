@@ -35,17 +35,17 @@ public final class DslSecurityRulesBuilderTest {
 	public void testStringQuery() {
 		final String[][] testQueries = new String[][] {
 				//QueryPattern, UserQuery, EspectedResult, OtherAcceptedResult ...
-				{ "ALL=${query}", "Test", "ALL=Test", "+(ALL:(Test))" }, //0
-				{ "ALL=${query}", "'Test test2'", "ALL='Test test2'", "+(ALL:('Test test2'))" }, //1
-				{ "ALL=${query} && OTHER='VALID'", "Test", "ALL=Test AND OTHER='VALID'", "+(ALL:(Test)) +(OTHER:'VALID')" }, //2
-				{ "ALL=${query} || OTHER='VALID'", "Test", "ALL=Test OR OTHER='VALID'", "(ALL:(Test)) (OTHER:'VALID')" }, //3
-				{ "(ALL=${query} || OTHER='VALID')", "Test", "(ALL=Test OR OTHER='VALID')", "(ALL:(Test)) (OTHER:'VALID')" }, //4
+				{ "ALL=${query}", "Test", "ALL=Test", "(+ALL:Test)" }, //0
+				{ "ALL=${query}", "'Test test2'", "ALL='Test test2'", "(+ALL:'Test test2')" }, //1
+				{ "ALL=${query} && OTHER='VALID'", "Test", "ALL=Test AND OTHER='VALID'", "(+ALL:Test +OTHER:'VALID')" }, //2
+				{ "ALL=${query} || OTHER='VALID'", "Test", "ALL=Test OR OTHER='VALID'", "(ALL:Test OTHER:'VALID')" }, //3
+				{ "(ALL=${query} || OTHER='VALID')", "Test", "(ALL=Test OR OTHER='VALID')", "(ALL:Test OTHER:'VALID')" }, //4
 				{ "((ALL=${query} || OTHER='VALID') && (ALL=${query} || OTHER='VALID'))", "Test",
 						"((ALL=Test OR OTHER='VALID') AND (ALL=Test OR OTHER='VALID'))",
-						"+((ALL:(Test)) (OTHER:'VALID')) +((ALL:(Test)) (OTHER:'VALID'))" }, //5
+						"(+(ALL:Test OTHER:'VALID') +(ALL:Test OTHER:'VALID'))" }, //5
 				{ "(ALL=${query} || OTHER='VALID') && (ALL=${query} || OTHER='VALID')", "Test",
 						"(ALL=Test OR OTHER='VALID') AND (ALL=Test OR OTHER='VALID')",
-						"+((ALL:(Test)) (OTHER:'VALID')) +((ALL:(Test)) (OTHER:'VALID'))" }, //6
+						"(+(ALL:Test OTHER:'VALID') +(ALL:Test OTHER:'VALID'))" }, //6
 				//{ "ALL>${query}", "'Test'", "ALL like 'Test' || '%'" }, //3
 
 		};

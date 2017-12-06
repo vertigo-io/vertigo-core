@@ -78,18 +78,6 @@ public final class LoaderAccountStorePlugin implements AccountStorePlugin, Activ
 
 	/** {@inheritDoc} */
 	@Override
-	public long getAccountsCount() {
-		return accountLoader.getAccountsCount();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public long getGroupsCount() {
-		return getGroupLoader().getGroupsCount();
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public synchronized Account getAccount(final URI<Account> accountURI) {
 		return accountLoader.getAccount(accountURI);
 	}

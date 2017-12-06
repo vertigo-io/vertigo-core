@@ -25,6 +25,8 @@ import org.junit.runners.Suite.SuiteClasses;
 import io.vertigo.account.account.AccountManagerTest;
 import io.vertigo.account.authentification.AuthenticationManagerTest;
 import io.vertigo.account.authorization.VSecurityManagerTest;
+import io.vertigo.account.authorization.dsl.DslSecurityRulesBuilderTest;
+import io.vertigo.account.identityprovider.IdentityProviderManagerTest;
 
 /**
  * Test de l'implementation standard.
@@ -33,10 +35,13 @@ import io.vertigo.account.authorization.VSecurityManagerTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-		AuthenticationManagerTest.class,
 		AccountManagerTest.class,
-		VSecurityManagerTest.class
+		AuthenticationManagerTest.class,
+		VSecurityManagerTest.class,
+		IdentityProviderManagerTest.class,
+		DslSecurityRulesBuilderTest.class
 })
+
 public final class AccountTestSuite {
 	//
 }

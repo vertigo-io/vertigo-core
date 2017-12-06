@@ -63,24 +63,24 @@ public interface AuthorizationManager extends Manager {
 	<K extends KeyConcept> boolean isAuthorized(final K keyConcept, OperationName<K> operation);
 
 	/**
-	 * Return Criteria of security rules for this current user on this keyConcept.
+	 * Return Criteria of security rules for this current user on this keyConceptClass.
 	 *
-	 * @param keyConcept secured data to check
+	 * @param keyConceptClass secured data to check
 	 * @param operation operation name
 	 * @return Criteria of security rule for this current user on this keyConcept
 	 * @param <K> keyConcept type
 	 */
-	<K extends KeyConcept> Criteria<K> getCriteriaSecurity(K keyConcept, OperationName<K> operation);
+	<K extends KeyConcept> Criteria<K> getCriteriaSecurity(Class<K> keyConceptClass, OperationName<K> operation);
 
 	/**
-	 * Return Search query filter of security rules for this current user on this keyConcept.
+	 * Return Search query filter of security rules for this current user on this keyConceptClass.
 	 *
-	 * @param keyConcept secured data to check
+	 * @param keyConceptClass secured data to check
 	 * @param operation operation name
 	 * @return Search query filter of security rules for this current user on this keyConcept.
 	 * @param <K> keyConcept type
 	 */
-	<K extends KeyConcept> String getSearchSecurity(final K keyConcept, OperationName<K> operation);
+	<K extends KeyConcept> String getSearchSecurity(final Class<K> keyConceptClass, OperationName<K> operation);
 
 	/**
 	 * Get all operation doable on this object by current user.

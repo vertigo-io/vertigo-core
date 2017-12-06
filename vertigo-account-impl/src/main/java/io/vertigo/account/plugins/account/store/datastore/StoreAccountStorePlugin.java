@@ -127,12 +127,6 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 
 	/** {@inheritDoc} */
 	@Override
-	public long getAccountsCount() {
-		return storeManager.getDataStore().count(getUserDtDefinition());
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public Account getAccount(final URI<Account> accountURI) {
 		final URI<Entity> userURI = new URI(getUserDtDefinition(), accountURI.getId());
 		final Entity userEntity = storeManager.getDataStore().readOne(userURI);
@@ -154,12 +148,6 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		return result.stream()
 				.map(groupEntity -> groupToAccount(groupEntity).getURI())
 				.collect(Collectors.toSet());
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public long getGroupsCount() {
-		return storeManager.getDataStore().count(userGroupDtDefinition);
 	}
 
 	/** {@inheritDoc} */

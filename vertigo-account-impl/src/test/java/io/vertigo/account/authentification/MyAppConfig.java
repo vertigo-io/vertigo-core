@@ -45,18 +45,17 @@ public final class MyAppConfig {
 					.withRedisConnector(REDIS_HOST, REDIS_PORT, REDIS_DATABASE, Optional.empty());
 			accountFeatures
 					.withRedisAccountCachePlugin();
-		} else {
-			accountFeatures
-					.withAccountStorePlugin(TextAccountStorePlugin.class,
-							Param.of("accountFilePath", "io/vertigo/account/data/identities.txt"),
-							Param.of("accountFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<email>(?<authToken>[^;@]+)@[^;]+);(?<photoUrl>.*)$"),
-							Param.of("groupFilePath", "io/vertigo/account/data/groups.txt"),
-							Param.of("groupFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<accountIds>.*)$"))
-					.withAuthentication(LdapAuthenticationPlugin.class,
-							Param.of("userLoginTemplate", "cn={0},dc=vertigo,dc=io"),
-							Param.of("ldapServerHost", "docker-vertigo.part.klee.lan.net"),
-							Param.of("ldapServerPort", "389"));
 		}
+		accountFeatures
+				.withAccountStorePlugin(TextAccountStorePlugin.class,
+						Param.of("accountFilePath", "io/vertigo/account/data/identities.txt"),
+						Param.of("accountFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<email>(?<authToken>[^;@]+)@[^;]+);(?<photoUrl>.*)$"),
+						Param.of("groupFilePath", "io/vertigo/account/data/groups.txt"),
+						Param.of("groupFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<accountIds>.*)$"))
+				.withAuthentication(LdapAuthenticationPlugin.class,
+						Param.of("userLoginTemplate", "cn={0},dc=vertigo,dc=io"),
+						Param.of("ldapServerHost", "docker-vertigo.part.klee.lan.net"),
+						Param.of("ldapServerPort", "389"));
 
 		return AppConfig.builder()
 				.beginBoot()

@@ -37,6 +37,7 @@ public final class MyAppConfig {
 
 	public static AppConfig config(final boolean redis) {
 		final CommonsFeatures commonsFeatures = new CommonsFeatures();
+		final DynamoFeatures dynamoFeatures = new DynamoFeatures();
 		final AccountFeatures accountFeatures = new AccountFeatures()
 				.withUserSession(TestUserSession.class)
 				.withAccountStorePlugin(TextAccountStorePlugin.class,
@@ -59,7 +60,7 @@ public final class MyAppConfig {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(commonsFeatures.build())
-				.addModule(new DynamoFeatures().build())
+				.addModule(dynamoFeatures.build())
 				.addModule(accountFeatures.build())
 				.build();
 	}

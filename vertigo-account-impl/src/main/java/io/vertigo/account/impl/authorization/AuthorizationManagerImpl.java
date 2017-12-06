@@ -129,8 +129,8 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <K extends KeyConcept> Criteria<K> getCriteriaSecurity(final K keyConcept, final OperationName<K> operation) {
-		Assertion.checkNotNull(keyConcept);
+	public <K extends KeyConcept> Criteria<K> getCriteriaSecurity(final Class<K> keyConceptClass, final OperationName<K> operation) {
+		Assertion.checkNotNull(keyConceptClass);
 		Assertion.checkNotNull(operation);
 		//---
 		final Optional<UserAuthorizations> userPermissionsOpt = getUserPermissionsOpt();
@@ -140,7 +140,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		}
 
 		final UserAuthorizations userPermissions = userPermissionsOpt.get();
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConceptClass);
 		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
 
 		final List<Criteria<K>> criterions = userPermissions.getEntityAuthorizations(dtDefinition).stream()
@@ -172,8 +172,8 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <K extends KeyConcept> String getSearchSecurity(final K keyConcept, final OperationName<K> operationName) {
-		Assertion.checkNotNull(keyConcept);
+	public <K extends KeyConcept> String getSearchSecurity(final Class<K> keyConceptClass, final OperationName<K> operationName) {
+		Assertion.checkNotNull(keyConceptClass);
 		Assertion.checkNotNull(operationName);
 		//---
 		final Optional<UserAuthorizations> userPermissionsOpt = getUserPermissionsOpt();
@@ -185,7 +185,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		final SearchSecurityRuleTranslator securityRuleTranslator = new SearchSecurityRuleTranslator();
 		securityRuleTranslator.withCriteria(userPermissions.getSecurityKeys());
 
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConceptClass);
 		final List<Authorization> permissions = userPermissions.getEntityAuthorizations(dtDefinition).stream()
 				.filter(permission -> permission.getOperation().get().equals(operationName.name()))
 				.collect(Collectors.toList());

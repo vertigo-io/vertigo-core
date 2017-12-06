@@ -20,7 +20,13 @@
 		],
 		"operations": [{
 			"__comment": "Visibilité attribuable avec un montant maximum, et visibilité pour l'utilisateur créateur.",
-			"name": "READ",	"label" : "Lecture",
+			"name": "READ2",	"label" : "Lecture",
+			"rules": [
+				"AMOUNT<=${montantMax} or UTI_ID_OWNER=${utiId}"
+			]
+		}, {
+			"__comment": "Visibilité attribuable avec un montant maximum, et visibilité pour l'utilisateur créateur.",
+			"name": "READ",	"grants": ["READ2"], "label" : "Lecture",
 			"rules": [
 				"AMOUNT<=${montantMax}",
 				"UTI_ID_OWNER=${utiId}"

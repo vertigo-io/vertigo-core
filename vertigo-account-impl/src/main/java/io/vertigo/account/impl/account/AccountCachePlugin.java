@@ -33,11 +33,6 @@ import io.vertigo.dynamo.file.model.VFile;
 public interface AccountCachePlugin extends Plugin {
 
 	/**
-	 * @return the number of accounts
-	 */
-	long getAccountsCount();
-
-	/**
 	 * @param accountURI the account defined by its URI
 	 * @return the account
 	 */
@@ -48,11 +43,6 @@ public interface AccountCachePlugin extends Plugin {
 	 * @return Set of groups of this account
 	 */
 	Set<URI<AccountGroup>> getGroupURIs(URI<Account> accountURI);
-
-	/**
-	 * @return the number of groups.
-	 */
-	long getGroupsCount();
 
 	/**
 	 * Gets the group defined by an URI.

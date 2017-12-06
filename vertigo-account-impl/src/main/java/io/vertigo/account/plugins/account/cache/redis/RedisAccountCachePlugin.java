@@ -89,21 +89,19 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 		}
 	}
 
-	/** {@inheritDoc} */
-	@Override
+	/*@Override
 	public long getAccountsCount() {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			return jedis.scard(SACCOUNTS_KEY);
 		}
-	}
+	}*/
 
-	/** {@inheritDoc} */
-	@Override
+	/*@Override
 	public long getGroupsCount() {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			return jedis.scard(SGROUPS_KEY);
 		}
-	}
+	}*/
 
 	/** {@inheritDoc} */
 	@Override
@@ -165,7 +163,7 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 			} catch (final IOException ex) {
 				throw WrappedException.wrap(ex);
 			}
-	
+
 		}
 		//----- we are using tx to avoid roundtrips
 		final List<AccountGroup> groups = new ArrayList<>();
