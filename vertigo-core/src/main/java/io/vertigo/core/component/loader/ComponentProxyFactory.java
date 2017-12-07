@@ -17,6 +17,11 @@ import io.vertigo.core.component.proxy.ProxyMethodAnnotation;
 import io.vertigo.lang.Assertion;
 
 final class ComponentProxyFactory {
+
+	private ComponentProxyFactory() {
+		//private
+	}
+
 	static <C extends Component> C createProxy(
 			final Class<C> intf,
 			final List<ProxyMethod> proxyMethods,
