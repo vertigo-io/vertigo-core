@@ -298,7 +298,6 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final Set<DtField> copyFromFields = indexDefinition.getIndexCopyFromFields();
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
-				//if (!copyToFields.contains(dtField)) {
 				final IndexType indexType = IndexType.readIndexType(dtField.getDomain());
 				typeMapping.startObject(dtField.getName());
 				appendIndexTypeMapping(typeMapping, indexType);
@@ -306,7 +305,6 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					appendIndexCopyToMapping(indexDefinition, typeMapping, dtField);
 				}
 				typeMapping.endObject();
-				//}
 			}
 			typeMapping.endObject().endObject(); //end properties
 

@@ -121,7 +121,7 @@ public final class SearchDynamicRegistry implements DynamicRegistry {
 					definitionName,
 					dtField,
 					labelMsg,
-					getMultiSelectable(xdefinition, false),
+					isMultiSelectable(xdefinition, false),
 					getFacetOrder(xdefinition, FacetOrder.count));
 		} else {
 			final List<FacetValue> facetValues = rangeDefinitions.stream()
@@ -132,7 +132,7 @@ public final class SearchDynamicRegistry implements DynamicRegistry {
 					dtField,
 					labelMsg,
 					facetValues,
-					getMultiSelectable(xdefinition, false),
+					isMultiSelectable(xdefinition, false),
 					getFacetOrder(xdefinition, FacetOrder.definition));
 		}
 		return facetDefinition;
@@ -147,7 +147,7 @@ public final class SearchDynamicRegistry implements DynamicRegistry {
 		return orderStr != null ? FacetOrder.valueOf(orderStr) : defaultOrder;
 	}
 
-	private static boolean getMultiSelectable(final DslDefinition xdefinition, final boolean defaultValue) {
+	private static boolean isMultiSelectable(final DslDefinition xdefinition, final boolean defaultValue) {
 		final Boolean multiSelectable = (Boolean) xdefinition.getPropertyValue(SearchGrammar.FACET_MULTISELECTABLE);
 		return multiSelectable != null ? multiSelectable : defaultValue;
 	}

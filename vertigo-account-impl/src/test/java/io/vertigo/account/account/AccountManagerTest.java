@@ -21,6 +21,7 @@ package io.vertigo.account.account;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -190,6 +191,23 @@ public final class AccountManagerTest {
 			Assert.assertEquals(2, identityManager.getGroupURIs(accountURI2).size());
 			Assert.assertEquals(3, identityManager.getAccountURIs(groupURI).size());
 			Assert.assertEquals(10 + 3, identityManager.getAccountURIs(groupAllURI).size());*/
+		}
+	}
+
+	@Test
+	public void testLoginFail() {
+		try (VTransactionWritable tx = obtainTx()) {
+			final Optional<Account> account = accountManager.getAccountByAuthToken("test");
+			Assert.assertFalse("Shouldn't found any account with a bad login", account.isPresent());
+		}
+	}
+
+	@Test
+	public void testLoginSuccess() {
+		try (VTransactionWritable tx = obtainTx()) {
+			final Optional<Account> accountAdmin = accountManager.getAccountByAuthToken("admin");
+			final Optional<Account> accountBill = accountManager.getAccountByAuthToken("bill.clinton@yopmail.com");
+			Assert.assertTrue("Authent fail", accountAdmin.isPresent() || accountBill.isPresent());
 		}
 	}
 

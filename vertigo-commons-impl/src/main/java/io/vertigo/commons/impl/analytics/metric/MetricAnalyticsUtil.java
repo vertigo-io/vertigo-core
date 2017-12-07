@@ -41,6 +41,10 @@ import io.vertigo.util.StringUtil;
  */
 public final class MetricAnalyticsUtil {
 
+	private MetricAnalyticsUtil() {
+		//private
+	}
+
 	/**
 	 * Registers all methods annotated with @Metrics
 	 */
