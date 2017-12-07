@@ -154,7 +154,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		final DtListURI groupDtListURI = new DtListURIForNNAssociation((AssociationNNDefinition) associationUserGroup, accountURI, associationGroupRoleName);
 
 		//-----
-		final DtList<? extends Entity> result = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().findAll(groupDtListURI);
+		final DtList<? extends Entity> result = Home.getApp().getComponentSpace().resolve(StoreManager.class).getDataStore().findAll(groupDtListURI);
 		return result.stream().map(groupEntity ->
 
 		groupToAccount(groupEntity).getURI())
@@ -181,7 +181,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 			userDtListURI = new DtListURIForNNAssociation((AssociationNNDefinition) associationUserGroup, groupURI, associationUserRoleName);
 		}
 		//-----
-		final DtList<? extends Entity> result = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().findAll(userDtListURI);
+		final DtList<? extends Entity> result = Home.getApp().getComponentSpace().resolve(StoreManager.class).getDataStore().findAll(userDtListURI);
 		return result.stream()
 				.map(userEntity -> userToAccount(userEntity).getURI())
 				.collect(Collectors.toSet());

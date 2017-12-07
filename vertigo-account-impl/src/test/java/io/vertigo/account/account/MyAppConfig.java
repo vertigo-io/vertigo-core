@@ -69,7 +69,7 @@ public final class MyAppConfig {
 			accountFeatures.withAccountStorePlugin(StoreAccountStorePlugin.class,
 					Param.of("userIdentityEntity", "DT_USER"),
 					Param.of("groupIdentityEntity", "DT_USER_GROUP"),
-					Param.of("userAuthField", "LOGIN"),
+					Param.of("userAuthField", "EMAIL"),
 					Param.of("userToAccountMapping", "id:USR_ID, displayName:FULL_NAME, email:EMAIL, authToken:EMAIL"),
 					Param.of("groupToGroupAccountMapping", "id:GRP_ID, displayName:NAME"));
 		} else {
