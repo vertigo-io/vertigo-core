@@ -18,8 +18,10 @@
  */
 package io.vertigo.account.impl.security;
 
+import java.time.ZoneId;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -27,7 +29,6 @@ import javax.inject.Named;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleProvider;
-import io.vertigo.core.locale.ZoneProvider;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.ResourceNameFactory;
 import io.vertigo.persona.security.UserSession;
@@ -91,7 +92,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 				.orElse(null);
 	}
 
-	private ZoneProvider createZoneIdProvider() {
+	private Supplier<ZoneId> createZoneIdProvider() {
 		return () -> getCurrentUserSession()
 				.map(userSession -> userSession.getZoneId())
 				.orElse(null);
