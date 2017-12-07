@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,11 +27,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthAction;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
@@ -44,6 +46,9 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
 
 import io.vertigo.app.Home;
+import io.vertigo.commons.analytics.health.HealthChecked;
+import io.vertigo.commons.analytics.health.HealthMeasure;
+import io.vertigo.commons.analytics.health.HealthMeasureBuilder;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.resource.ResourceManager;
@@ -64,11 +69,15 @@ import io.vertigo.lang.WrappedException;
 
 /**
  * Gestion de la connexion au serveur Solr de manière transactionnel.
- * @author dchallas
+ * @author dchallas, npiedeloup
  */
 public abstract class AbstractESSearchServicesPlugin implements SearchServicesPlugin, Activeable {
+	private static final int DEFAULT_SCALING_FACTOR = 1000;
 	private static final int OPTIMIZE_MAX_NUM_SEGMENT = 32;
-	private static final Logger LOGGER = Logger.getLogger(AbstractESSearchServicesPlugin.class);
+	/** field suffix for keyword fields added by this plugin. */
+	public static final String SUFFIX_SORT_FIELD = ".keyword";
+
+	private static final Logger LOGGER = LogManager.getLogger(AbstractESSearchServicesPlugin.class);
 	private final ESDocumentCodec elasticDocumentCodec;
 
 	private Client esClient;
@@ -77,7 +86,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	private final String indexNameOrPrefix;
 	private final boolean indexNameIsPrefix;
 	private final Set<String> types = new HashSet<>();
-	private final URL configFile;
+	private final URL configFileUrl;
 	private boolean indexSettingsValid;
 
 	/**
@@ -86,14 +95,14 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	 * @param indexNameIsPrefix indexName use as prefix
 	 * @param defaultMaxRows Nombre de lignes
 	 * @param codecManager Manager de codec
-	 * @param configFileOpt Fichier de configuration des indexs
+	 * @param configFile Fichier de configuration des indexs
 	 * @param resourceManager Manager des resources
 	 */
 	protected AbstractESSearchServicesPlugin(
 			final String indexNameOrPrefix,
 			final boolean indexNameIsPrefix,
 			final int defaultMaxRows,
-			final Optional<String> configFileOpt,
+			final String configFile,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
 		Assertion.checkArgNotEmpty(indexNameOrPrefix);
@@ -105,11 +114,9 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		defaultListState = new DtListState(defaultMaxRows, 0, null, null);
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
 		//------
-		this.indexNameOrPrefix = indexNameOrPrefix.toLowerCase(Locale.ENGLISH).trim();
+		this.indexNameOrPrefix = indexNameOrPrefix.toLowerCase(Locale.ROOT).trim();
 		this.indexNameIsPrefix = indexNameIsPrefix;
-		configFile = configFileOpt
-				.map(resourceManager::resolve)
-				.orElse(null);
+		configFileUrl = resourceManager.resolve(configFile);
 	}
 
 	/** {@inheritDoc} */
@@ -126,31 +133,31 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			createIndex(myIndexName);
 			updateTypeMapping(indexDefinition);
 			logMappings(myIndexName);
-			types.add(indexDefinition.getName().toLowerCase(Locale.ENGLISH));
+			types.add(indexDefinition.getName().toLowerCase(Locale.ROOT));
 		}
 
 		waitForYellowStatus();
 	}
 
 	private String obtainIndexName(final SearchIndexDefinition indexDefinition) {
-		return indexNameIsPrefix ? (indexNameOrPrefix + indexDefinition.getName()) : indexNameOrPrefix;
+		return indexNameIsPrefix ? (indexNameOrPrefix + indexDefinition.getName().toLowerCase(Locale.ROOT).trim()) : indexNameOrPrefix;
 	}
 
 	private void createIndex(final String myIndexName) {
 		try {
 			if (!esClient.admin().indices().prepareExists(myIndexName).get().isExists()) {
-				if (configFile == null) {
+				if (configFileUrl == null) {
 					esClient.admin().indices().prepareCreate(myIndexName).get();
 				} else {
-					try (InputStream is = configFile.openStream()) {
-						final Settings settings = Settings.settingsBuilder().loadFromStream(configFile.getFile(), is).build();
+					try (InputStream is = configFileUrl.openStream()) {
+						final Settings settings = Settings.builder().loadFromStream(configFileUrl.getFile(), is).build();
 						esClient.admin().indices().prepareCreate(myIndexName).setSettings(settings).get();
 					}
 				}
-			} else if (configFile != null) {
+			} else if (configFileUrl != null) {
 				// If we use local config file, we check config against ES server
-				try (InputStream is = configFile.openStream()) {
-					final Settings settings = Settings.settingsBuilder().loadFromStream(configFile.getFile(), is).build();
+				try (InputStream is = configFileUrl.openStream()) {
+					final Settings settings = Settings.builder().loadFromStream(configFileUrl.getFile(), is).build();
 					indexSettingsValid = indexSettingsValid && !isIndexSettingsDirty(myIndexName, settings);
 				}
 			}
@@ -275,9 +282,9 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.checkArgument(indexSettingsValid,
 				"Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
 		Assertion.checkNotNull(indexDefinition);
-		Assertion.checkArgument(types.contains(indexDefinition.getName().toLowerCase(Locale.ENGLISH)), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
+		Assertion.checkArgument(types.contains(indexDefinition.getName().toLowerCase(Locale.ROOT)), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
 		//-----
-		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), indexDefinition.getName().toLowerCase(Locale.ENGLISH), esClient);
+		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), indexDefinition.getName().toLowerCase(Locale.ROOT), esClient);
 	}
 
 	/**
@@ -293,26 +300,35 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					.startObject(ESDocumentCodec.FULL_RESULT)
 					.field("type", "binary")
 					.endObject();
+
 			/* 3 : Les champs du dto index */
 			final Set<DtField> copyFromFields = indexDefinition.getIndexCopyFromFields();
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
-				//if (!copyToFields.contains(dtField)) {
 				final IndexType indexType = IndexType.readIndexType(dtField.getDomain());
 				typeMapping.startObject(dtField.getName());
 				appendIndexTypeMapping(typeMapping, indexType);
 				if (copyFromFields.contains(dtField)) {
 					appendIndexCopyToMapping(indexDefinition, typeMapping, dtField);
 				}
+				if (indexType.isIndexSubKeyword()) {
+					typeMapping.startObject("fields");
+					typeMapping.startObject("keyword");
+					typeMapping.field("type", "keyword");
+					typeMapping.endObject();
+					typeMapping.endObject();
+				}
+				if (indexType.isIndexFieldData()) {
+					typeMapping.field("fielddata", true);
+				}
 				typeMapping.endObject();
-				//}
 			}
 			typeMapping.endObject().endObject(); //end properties
 
 			final PutMappingResponse putMappingResponse = esClient.admin()
 					.indices()
 					.preparePutMapping(obtainIndexName(indexDefinition))
-					.setType(indexDefinition.getName().toLowerCase(Locale.ENGLISH))
+					.setType(indexDefinition.getName().toLowerCase(Locale.ROOT))
 					.setSource(typeMapping)
 					.get();
 			putMappingResponse.isAcknowledged();
@@ -337,7 +353,10 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	private static void appendIndexTypeMapping(final XContentBuilder typeMapping, final IndexType indexType) throws IOException {
 		typeMapping.field("type", indexType.getIndexDataType());
 		if (indexType.getIndexAnalyzer().isPresent()) {
-			typeMapping.field("analyzer", indexType.getIndexAnalyzer().get());
+			typeMapping.field("keyword".equals(indexType.getIndexDataType()) ? "normalizer" : "analyzer", indexType.getIndexAnalyzer().get());
+		}
+		if ("scaled_float".equals(indexType.getIndexDataType())) {
+			typeMapping.field("scaling_factor", DEFAULT_SCALING_FACTOR);
 		}
 	}
 
@@ -353,6 +372,34 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	private void waitForYellowStatus() {
 		esClient.admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
+	}
+
+	@HealthChecked(name = "clusterHealth", feature = "search")
+	public HealthMeasure checkClusterHealth() {
+		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
+		try {
+			final ClusterHealthResponse clusterHealthResponse = esClient
+					.admin()
+					.cluster()
+					.health(ClusterHealthAction.INSTANCE.newRequestBuilder(esClient).request())
+					.get();
+			switch (clusterHealthResponse.getStatus()) {
+				case GREEN:
+					healthMeasureBuilder.withGreenStatus();
+					break;
+				case YELLOW:
+					healthMeasureBuilder.withYellowStatus(null, null);
+					break;
+				case RED:
+					healthMeasureBuilder.withRedStatus(null, null);
+					break;
+				default:
+					break;
+			}
+		} catch (final Exception e) {
+			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
+		}
+		return healthMeasureBuilder.build();
 	}
 
 }

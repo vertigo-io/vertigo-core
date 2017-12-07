@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,12 +54,12 @@ public final class BeanUtil {
 	public static Object getValue(final Object object, final String propertyName) {
 		Assertion.checkNotNull(object);
 		Assertion.checkNotNull(propertyName);
-		Assertion.checkArgument(propertyName.indexOf('.') == -1, "La notation par point est interdite.");
+		Assertion.checkArgument(propertyName.indexOf('.') == -1, "the dot notation is forbidden");
 		//-----
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method readMethod = pd.getReadMethod();
 		if (readMethod == null) {
-			throw new VSystemException("Getter non trouvé pour l'attribut '{0}' sur classe '{1}'", propertyName, object.getClass().getName());
+			throw new VSystemException("no getter found for property '{0}' on class '{1}'", propertyName, object.getClass().getName());
 		}
 		return ClassUtil.invoke(object, readMethod);
 	}
@@ -74,12 +74,12 @@ public final class BeanUtil {
 	public static void setValue(final Object object, final String propertyName, final Object value) {
 		Assertion.checkNotNull(object);
 		Assertion.checkNotNull(propertyName);
-		Assertion.checkArgument(propertyName.indexOf('.') == -1, "La notation par point est interdite.");
+		Assertion.checkArgument(propertyName.indexOf('.') == -1, "the dot notation is forbidden");
 		//-----
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method writeMethod = pd.getWriteMethod();
 		if (writeMethod == null) {
-			throw new VSystemException("Setter non trouvé pour l'attribut '{0}' sur classe '{1}'", propertyName, object.getClass().getName());
+			throw new VSystemException("no setter found for property '{0}' on class '{1}'", propertyName, object.getClass().getName());
 		}
 		ClassUtil.invoke(object, writeMethod, value);
 	}
@@ -110,7 +110,7 @@ public final class BeanUtil {
 	 * @param propertyName java.lang.String
 	 * @param beanClass java.lang.Class
 	 */
-	private static PropertyDescriptor getPropertyDescriptor(final String propertyName, final Class<?> beanClass) {
+	public static PropertyDescriptor getPropertyDescriptor(final String propertyName, final Class<?> beanClass) {
 		// on pourrait faire new PropertyDescriptor(propertyName, beanClass)
 		// mais si jamais il a été défini des BeanInfo pour certaines classes,
 		//autant les utiliser.
@@ -120,7 +120,7 @@ public final class BeanUtil {
 				return propertyDescriptor;
 			}
 		}
-		throw new VSystemException("Aucune méthode trouvée pour l'attribut '{0}' sur classe '{1}'", propertyName, beanClass.getName());
+		throw new VSystemException("No method found for property '{0}' on class '{1}'", propertyName, beanClass.getName());
 	}
 
 	private static PropertyDescriptor[] getPropertyDescriptors(final Class<?> beanClass) {

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,9 +20,6 @@ package io.vertigo.dynamo.impl;
 
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
-import io.vertigo.database.impl.sql.SqlConnectionProviderPlugin;
-import io.vertigo.database.impl.sql.SqlDataBaseManagerImpl;
-import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.impl.collections.CollectionsManagerImpl;
@@ -108,28 +105,6 @@ public final class DynamoFeatures extends Features {
 	public DynamoFeatures addKVStorePlugin(final Class<? extends KVStorePlugin> kvStorePlugin, final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(kvStorePlugin, params);
-		return this;
-	}
-
-	/**
-	 * Add sqlDataBase management to dynamo.
-	 * @return  the feature
-	 */
-	public DynamoFeatures withSqlDataBase() {
-		getModuleConfigBuilder()
-				.addComponent(SqlDataBaseManager.class, SqlDataBaseManagerImpl.class);
-		return this;
-	}
-
-	/**
-	 * Add a database connection provider plugin
-	 * @param  connectionProviderPluginClass the plugin to use
-	 * @param params a list plugin's params
-	 * @return the feature
-	 */
-	public DynamoFeatures addSqlConnectionProviderPlugin(final Class<? extends SqlConnectionProviderPlugin> connectionProviderPluginClass, final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(connectionProviderPluginClass, params);
 		return this;
 	}
 

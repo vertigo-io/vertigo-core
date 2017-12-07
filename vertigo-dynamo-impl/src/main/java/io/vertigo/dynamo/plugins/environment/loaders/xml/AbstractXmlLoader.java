@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.xml;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Locale;
@@ -26,7 +27,8 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.helpers.DefaultHandler;
 
 import io.vertigo.core.definition.Definition;
@@ -52,7 +54,7 @@ import io.vertigo.lang.WrappedException;
 public abstract class AbstractXmlLoader implements Loader {
 	private static final int MAX_COLUMN_LENGTH = 30;
 	private static final Locale TO_UPPER_CASE_LOCALE = Locale.FRANCE;
-	private static final Logger LOGGER = Logger.getLogger(AbstractXmlLoader.class);
+	private static final Logger LOGGER = LogManager.getLogger(AbstractXmlLoader.class);
 
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
@@ -78,7 +80,9 @@ public abstract class AbstractXmlLoader implements Loader {
 			factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
 			final SAXParser saxParser = factory.newSAXParser();
-			saxParser.parse(xmiFileURL.openStream(), getHandler());
+			try (final InputStream is = xmiFileURL.openStream()) {
+				saxParser.parse(is, getHandler());
+			}
 		} catch (final Exception e) {
 			throw WrappedException.wrap(e, "erreur lors de la lecture du fichier xmi : " + xmiFileURL);
 		}

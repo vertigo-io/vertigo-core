@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,9 +34,13 @@ import javax.persistence.TypedQuery;
 import org.hibernate.exception.ConstraintViolationException;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.AnalyticsTracer;
+import io.vertigo.commons.analytics.health.HealthChecked;
+import io.vertigo.commons.analytics.health.HealthMeasure;
+import io.vertigo.commons.analytics.health.HealthMeasureBuilder;
+import io.vertigo.commons.analytics.process.ProcessAnalyticsTracer;
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.database.plugins.sql.connection.hibernate.JpaDataBase;
 import io.vertigo.database.plugins.sql.connection.hibernate.JpaResource;
 import io.vertigo.database.sql.SqlDataBaseManager;
@@ -145,7 +149,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	}
 
-	private <E extends Entity> E doLoadWithoutClear(final AnalyticsTracer tracer, final URI<E> uri) {
+	private <E extends Entity> E doLoadWithoutClear(final ProcessAnalyticsTracer tracer, final URI<E> uri) {
 		final Class<E> objectClass = (Class<E>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
 		final E result = getEntityManager().find(objectClass, uri.getId());
 		tracer.setMeasure("nbSelectedRow", result != null ? 1 : 0);
@@ -206,7 +210,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	}
 
-	private <E extends Entity> DtList<E> doFindByCriteria(final AnalyticsTracer tracer, final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
+	private <E extends Entity> DtList<E> doFindByCriteria(final ProcessAnalyticsTracer tracer, final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
 		final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
 		final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(sqlDataBase.getSqlDialect());
 		final String tableName = getTableName(dtDefinition);
@@ -257,7 +261,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 				tracer -> doFindAll(tracer, dtDefinition, dtcUri));
 	}
 
-	private <E extends Entity> DtList<E> doFindAll(final AnalyticsTracer tracer, final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
+	private <E extends Entity> DtList<E> doFindAll(final ProcessAnalyticsTracer tracer, final DtDefinition dtDefinition, final DtListURIForNNAssociation dtcUri) {
 		final Class<E> resultClass = (Class<E>) ClassUtil.classForName(dtDefinition.getClassCanonicalName());
 		//PK de la DtList recherchée
 		final String idFieldName = dtDefinition.getIdField().get().getName();
@@ -319,7 +323,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		}
 	}
 
-	private void doPut(final AnalyticsTracer tracer, final Entity entity, final boolean persist) {
+	private void doPut(final ProcessAnalyticsTracer tracer, final Entity entity, final boolean persist) {
 		final EntityManager entityManager = getEntityManager();
 		if (persist) {
 			//si pas de PK exception
@@ -350,7 +354,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		}
 	}
 
-	private void doDelete(final AnalyticsTracer tracer, final URI uri) {
+	private void doDelete(final ProcessAnalyticsTracer tracer, final URI uri) {
 		final Object dto = loadWithoutClear(uri);
 		if (dto == null) {
 			throw new VSystemException("Aucune ligne supprimée");
@@ -375,6 +379,22 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 					tracer.setMeasure("nbSelectedRow", result != null ? 1 : 0);
 					return result;
 				});
+
+	}
+
+	@HealthChecked(name = "testQuery", feature = "jpa")
+	public HealthMeasure checkJpaStore() {
+		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			getEntityManager().createNativeQuery("select 1", Integer.class).getFirstResult();
+			healthMeasureBuilder
+					.withGreenStatus();
+		} catch (final Exception e) {
+			healthMeasureBuilder
+					.withRedStatus(e.getMessage(), e)
+					.build();
+		}
+		return healthMeasureBuilder.build();
 
 	}
 

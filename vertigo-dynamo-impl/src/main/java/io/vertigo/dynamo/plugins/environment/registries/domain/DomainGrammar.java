@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,6 +31,7 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.MAX_LENGTH;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.MSG;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_A;
@@ -116,6 +117,7 @@ public final class DomainGrammar implements DslGrammar {
 		DOMAIN_ENTITY = DslEntity.builder("Domain")
 				.addOptionalField(MAX_LENGTH, Integer)
 				.addOptionalField(TYPE, String)
+				.addOptionalField(MULTIPLE, Boolean)
 				.addOptionalField(UNIT, String)
 				.addOptionalField(INDEX_TYPE, String)
 				.addOptionalField(STORE_TYPE, String)
@@ -210,8 +212,17 @@ public final class DomainGrammar implements DslGrammar {
 	@Override
 	public List<DslDefinition> getRootDefinitions() {
 		//We are listing all primitives types
-		return Arrays.stream(DataType.values())
-				.map(dataType -> DslDefinition.builder(dataType.name(), DATA_TYPE_ENTITY).build())
+		final List<String> types = new ListBuilder()
+				.addAll(Arrays.stream(DataType.values())
+						.map(dataType -> dataType.name())
+						.collect(Collectors.toList()))
+				.add("DtObject")
+				.add("DtList")
+				.build();
+
+		return types
+				.stream()
+				.map(type -> DslDefinition.builder(type, DATA_TYPE_ENTITY).build())
 				.collect(Collectors.toList());
 	}
 }

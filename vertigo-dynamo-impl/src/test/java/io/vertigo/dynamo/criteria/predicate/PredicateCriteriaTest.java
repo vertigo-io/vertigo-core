@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.function.Predicate;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -38,11 +37,6 @@ import io.vertigo.dynamo.criteria.data.movies.Movie2DataBase;
 @RunWith(JUnitPlatform.class)
 public final class PredicateCriteriaTest extends AbstractCriteriaTest {
 	private final Movie2DataBase movie2DataBase = new Movie2DataBase();
-
-	@BeforeEach
-	public void before() {
-		movie2DataBase.loadDatas();
-	}
 
 	private static Predicate<Movie2> predicate(final Criteria<Movie2> criteria) {
 		return criteria.toPredicate();

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.app.Home;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
@@ -54,40 +53,31 @@ public final class DomainUtil {
 	 * @return String
 	 */
 	public static String buildJavaType(final Domain domain) {
-		final DataType dataType = domain.getDataType();
-		if (dataType.isPrimitive()) {
-			String javaType = dataType.getJavaClass().getName();
+		final String className;
+		switch (domain.getScope()) {
+			case PRIMITIVE:
+				String javaType = domain.getJavaClass().getName();
 
-			//On simplifie l'écriture des types primitifs
-			//java.lang.String => String
-			if (javaType.startsWith("java.lang.")) {
-				javaType = javaType.substring("java.lang.".length());
-			}
-			return javaType;
-		}
-
-		//Cas des DTO et DTC
-		final DtDefinition dtDefinition = domain.getDtDefinition();
-		final String dtoClassCanonicalName = dtDefinition.getClassCanonicalName();
-		switch (dataType) {
-			case DtObject:
-				return dtoClassCanonicalName;
-			case DtList:
-				return io.vertigo.dynamo.domain.model.DtList.class.getCanonicalName() + '<' + dtoClassCanonicalName + '>';
-			case BigDecimal:
-			case Boolean:
-			case DataStream:
-			case Date:
-			case LocalDate:
-			case ZonedDateTime:
-			case Double:
-			case Integer:
-			case Long:
-			case String:
-				throw new IllegalArgumentException("Type unsupported : " + dataType);
+				//On simplifie l'écriture des types primitifs
+				//java.lang.String => String
+				if (javaType.startsWith("java.lang.")) {
+					javaType = javaType.substring("java.lang.".length());
+				}
+				className = javaType;
+				break;
+			case DATA_OBJECT:
+				className = domain.getDtDefinition().getClassCanonicalName();
+				break;
+			case VALUE_OBJECT:
+				className = domain.getJavaClass().getName();
+				break;
 			default:
-				throw new IllegalArgumentException("Type unknown : " + dataType);
+				throw new IllegalStateException();
 		}
+		if (domain.isMultiple()) {
+			return domain.getTargetJavaClass().getName() + '<' + className + '>';
+		}
+		return className;
 	}
 
 	public static Collection<DtDefinition> getDtDefinitions() {

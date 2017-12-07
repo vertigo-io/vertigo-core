@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@ import java.util.List;
 import io.vertigo.core.component.Component;
 import io.vertigo.core.component.Plugin;
 import io.vertigo.core.component.aop.Aspect;
-import io.vertigo.core.component.proxy.ProxyFactory;
+import io.vertigo.core.component.proxy.ProxyMethod;
 import io.vertigo.core.definition.DefinitionProvider;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
@@ -47,7 +47,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
 	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
-	private final List<ProxyFactoryConfig> myProxyConfigs = new ArrayList<>();
+	private final List<ProxyMethodConfig> myProxyMethodConfigs = new ArrayList<>();
 	private final List<DefinitionProviderConfig> myDefinitionProviderConfigs = new ArrayList<>();
 
 	/**
@@ -72,12 +72,12 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	 * Adds a proxy factory.
-	 * @param proxyFactoryClass Class of the proxy factoy
+	 * Adds a proxy method.
+	 * @param proxyMethodClass the proxy method class
 	 * @return this builder
 	 */
-	public ModuleConfigBuilder addProxyFactory(final Class<? extends ProxyFactory> proxyFactoryClass) {
-		myProxyConfigs.add(new ProxyFactoryConfig(proxyFactoryClass));
+	public ModuleConfigBuilder addProxyMethod(final Class<? extends ProxyMethod> proxyMethodClass) {
+		myProxyMethodConfigs.add(new ProxyMethodConfig(proxyMethodClass));
 		return this;
 	}
 
@@ -111,6 +111,23 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
+	 * Adds a proxy component defined by an interface.
+	 * @param apiClass api of the component
+	 * @param params the list of params
+	 * @return this builder
+	 */
+	public ModuleConfigBuilder addProxy(final Class<? extends Component> apiClass, final Param... params) {
+		Assertion.checkNotNull(apiClass);
+		Assertion.checkNotNull(params);
+		//---
+		final ComponentConfig componentConfig = ComponentConfig.builder(true)
+				.withApi(apiClass)
+				.addParams(params)
+				.build();
+		return addComponent(componentConfig);
+	}
+
+	/**
 	* Adds a component defined by an implementation.
 	 * @param implClass impl of the component
 	 * @param params the list of params
@@ -120,7 +137,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
-		final ComponentConfig componentConfig = ComponentConfig.builder(implClass)
+		final ComponentConfig componentConfig = ComponentConfig.builder()
+				.withImpl(implClass)
 				.addParams(params)
 				.build();
 		return addComponent(componentConfig);
@@ -138,7 +156,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
-		final ComponentConfig componentConfig = ComponentConfig.builder(implClass)
+		final ComponentConfig componentConfig = ComponentConfig.builder()
+				.withImpl(implClass)
 				.withApi(apiClass)
 				.addParams(params)
 				.build();
@@ -188,7 +207,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 				myComponentConfigs,
 				myPluginConfigs,
 				myAspectConfigs,
-				myProxyConfigs);
+				myProxyMethodConfigs);
 	}
 
 }

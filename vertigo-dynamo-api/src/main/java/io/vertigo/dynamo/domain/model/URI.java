@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,7 +62,7 @@ public final class URI<E extends Entity> implements Serializable {
 	public URI(final DtDefinition definition, final Object id) {
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(definition);
-		definition.getIdField().get().getDomain().getDataType().checkValue(id);
+		definition.getIdField().get().getDomain().checkValue(id);
 		//-----
 		this.id = Serializable.class.cast(id);
 		this.definitionRef = new DefinitionReference<>(definition);

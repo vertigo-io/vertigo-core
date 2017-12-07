@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.task.metamodel;
 
 import io.vertigo.dynamo.domain.metamodel.ConstraintException;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -56,7 +55,7 @@ public final class TaskAttribute {
 	TaskAttribute(final String attributeName, final Domain domain, final boolean required) {
 		Assertion.checkNotNull(attributeName);
 		Assertion.checkNotNull(domain);
-		Assertion.when(!required).check(() -> DataType.DtList != domain.getDataType(), "A list in never optional. Check attribute '{0}'", attributeName);
+		Assertion.when(!required).check(() -> !domain.isDtList(), "A list in never optional. Check attribute '{0}'", attributeName);
 		//-----
 		name = attributeName;
 		this.domain = domain;
@@ -102,7 +101,7 @@ public final class TaskAttribute {
 			Assertion.checkNotNull(value, "Attribut task {0} ne doit pas etre null (cf. paramétrage task)", getName());
 		}
 		try {
-			getDomain().checkValue(value);
+			getDomain().checkConstraints(value);
 		} catch (final ConstraintException e) {
 			//On retransforme en Runtime pour conserver une API sur les getters et setters.
 			throw WrappedException.wrap(e);

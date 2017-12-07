@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,6 @@ package io.vertigo.studio.plugins.mda.domain.ts.model;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
@@ -76,7 +75,7 @@ public final class TSDtFieldModel {
 	}
 
 	/**
-	 * @return Simple TS type 
+	 * @return Simple TS type
 	 */
 	public String getDomainTypeName() {
 		return buildTypescriptType(dtField.getDomain(), false);
@@ -93,14 +92,21 @@ public final class TSDtFieldModel {
 	 * @return True si le type est une primitive.
 	 */
 	public boolean isPrimitive() {
-		return dtField.getDomain().getDataType().isPrimitive();
+		return dtField.getDomain().getScope().isPrimitive();
+	}
+
+	/**
+	 * @return True si le type est un objet (au sens js).
+	 */
+	public boolean isObject() {
+		return dtField.getDomain().getScope().isDataObject() || dtField.getDomain().getScope().isValueObject();
 	}
 
 	/**
 	 * @return True si le type est une liste.
 	 */
-	public boolean isList() {
-		return dtField.getDomain().getDataType() == DataType.DtList;
+	public boolean isListOfObject() {
+		return dtField.getDomain().isMultiple() && (dtField.getDomain().getScope().isDataObject() || dtField.getDomain().getScope().isValueObject());
 	}
 
 	/**
@@ -109,40 +115,19 @@ public final class TSDtFieldModel {
 	 * @return String
 	 */
 	private static String buildTypescriptType(final Domain domain, final boolean withArray) {
-		final DataType dataType = domain.getDataType();
-		if (dataType.isPrimitive()) {
+		final String typescriptType;
+		if (domain.getScope().isPrimitive()) {
+			final DataType dataType = domain.getDataType();
 			if (dataType.isNumber()) {
-				return "number";
+				typescriptType = "number";
 			} else if (dataType == DataType.Boolean) {
-				return "boolean";
+				typescriptType = "boolean";
+			} else {
+				typescriptType = "string";
 			}
-			return "string";
+		} else {
+			typescriptType = domain.getJavaClass().getSimpleName();
 		}
-		switch (dataType) {
-			case DtObject:
-				return getSimpleName(domain);
-			case DtList:
-				return getSimpleName(domain) + (withArray ? "[]" : "");
-			case BigDecimal:
-			case Boolean:
-			case DataStream:
-			case Date:
-			case LocalDate:
-			case ZonedDateTime:
-			case Double:
-			case Integer:
-			case Long:
-			case String:
-				throw new IllegalArgumentException("Type unsupported : " + dataType);
-			default:
-				throw new IllegalArgumentException("Type unknown : " + dataType);
-		}
+		return typescriptType + ((domain.isMultiple() && withArray) ? "[]" : "");
 	}
-
-	private static String getSimpleName(final Domain domain) {
-		//on rÃ©cupÃ¨re le DT correspondant au nom passÃ© en paramÃ¨tre
-		final DtDefinition dtDefinition = domain.getDtDefinition();
-		return dtDefinition.getClassSimpleName();
-	}
-
 }

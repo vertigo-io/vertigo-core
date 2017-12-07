@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,15 +24,23 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
-import io.vertigo.commons.health.HealthMeasure;
+import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.impl.node.NodeInfosPlugin;
 import io.vertigo.commons.node.Node;
 import io.vertigo.lang.Assertion;
@@ -45,7 +53,24 @@ import io.vertigo.lang.WrappedException;
  */
 public final class HttpNodeInfosPlugin implements NodeInfosPlugin {
 
-	private static final Gson GSON = new Gson();
+	private static class InstantAdapter implements JsonSerializer<Instant>, JsonDeserializer<Instant> {
+
+		/** {@inheritDoc} */
+		@Override
+		public JsonElement serialize(final Instant date, final Type typeOfSrc, final JsonSerializationContext context) {
+			return new JsonPrimitive(date.toString()); // "yyyy-mm-ddTHH:MI:SSZ"
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public Instant deserialize(final JsonElement jsonElement, final Type type, final JsonDeserializationContext jsonDeserializationContext) {
+			return Instant.parse(jsonElement.getAsString());
+		}
+	}
+
+	private static final Gson GSON = new GsonBuilder()
+			.registerTypeAdapter(Instant.class, new InstantAdapter())
+			.create();
 
 	@Override
 	public String getConfig(final Node app) {
@@ -53,8 +78,8 @@ public final class HttpNodeInfosPlugin implements NodeInfosPlugin {
 	}
 
 	@Override
-	public List<HealthMeasure> getStatus(final Node app) {
-		return callRestWS(app.getEndPoint().get() + "/vertigo/healthcheck", new TypeToken<List<HealthMeasure>>() {
+	public List<HealthCheck> getStatus(final Node app) {
+		return callRestWS(app.getEndPoint().get() + "/vertigo/healthcheck", new TypeToken<List<HealthCheck>>() {
 			/**/}.getType());
 	}
 

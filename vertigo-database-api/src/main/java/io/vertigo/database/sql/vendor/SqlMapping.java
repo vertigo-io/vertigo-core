@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,14 +29,6 @@ import java.sql.SQLException;
  */
 public interface SqlMapping {
 	/**
-	 * Retourne le type SQL correspondant à un type vertigo 'DataType'.
-	 *
-	 * @param dataType Type Vertigo primitif
-	 * @return Type SQL correspondant à un type
-	 */
-	int getSqlType(Class dataType);
-
-	/**
 	 * Affecte les valeurs sur un statement.
 	 *
 	 * @param statement Statement SQL à affecter
@@ -57,4 +49,5 @@ public interface SqlMapping {
 	 * @throws SQLException Exception sql
 	 */
 	<O> O getValueForResultSet(ResultSet resultSet, int col, Class<O> dataType) throws SQLException;
+
 }

@@ -8,6 +8,6 @@ create DtDefinition DT_VX_FILE_INFO {
 	 key FIL_ID 			{domain : DO_URI 	label : "Identifiant" 			notNull : "true" }
 	 field FILE_NAME 		{domain : DO_LABEL 	label : "Nom" 					notNull : "true" }
  	 field LENGTH 			{domain : DO_SIZE 	label : "Taille" 				notNull : "true" }
-	 field LAST_MODIFIED 	{domain : DO_DATE 	label : "Date de modification" 	notNull : "true" }
+	 field LAST_MODIFIED 	{domain : DO_INSTANT	label : "Date de modification" 	notNull : "true" }
 	 field FILE_DATA 		{domain : DO_LABEL	label : "data" 					notNull : "false", persistent:"false" }	 
 }

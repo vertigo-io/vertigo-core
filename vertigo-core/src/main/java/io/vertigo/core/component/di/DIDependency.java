@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -57,7 +57,7 @@ public final class DIDependency {
 		final String named = getNamedValue(field.getAnnotations());
 		final Class<?> rootType = field.getType();
 
-		isOption = isOption(rootType);
+		isOption = isOptional(rootType);
 		isList = isList(rootType);
 		type = (isOption || isList) ? ClassUtil.getGeneric(field) : rootType;
 		targetId = named != null ? named : DIAnnotationUtil.buildId(type);
@@ -74,7 +74,7 @@ public final class DIDependency {
 		final String named = getNamedValue(constructor.getParameterAnnotations()[i]);
 		final Class<?> rootType = constructor.getParameterTypes()[i];
 
-		isOption = isOption(rootType);
+		isOption = isOptional(rootType);
 		isList = isList(rootType);
 		type = (isOption || isList) ? ClassUtil.getGeneric(constructor, i) : rootType;
 		targetId = named != null ? named : DIAnnotationUtil.buildId(type);
@@ -131,7 +131,7 @@ public final class DIDependency {
 		return List.class.isAssignableFrom(type);
 	}
 
-	private static boolean isOption(final Class<?> type) {
+	private static boolean isOptional(final Class<?> type) {
 		return Optional.class.isAssignableFrom(type);
 	}
 

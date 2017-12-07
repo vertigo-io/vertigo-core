@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.criteria;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.function.Predicate;
 
 import io.vertigo.database.sql.vendor.SqlDialect;
@@ -74,5 +75,26 @@ public abstract class Criteria<E extends Entity> implements Serializable {
 		final String sql = this.toSql(ctx, sqlDialect);
 		return Tuples.of(sql, ctx);
 
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return toSql(new SqlDialect() {
+			@Override
+			public void appendMaxRows(final StringBuilder query, final Integer maxRows) {
+				//rien
+			}
+
+			@Override
+			public String createInsertQuery(final String idFieldName, final List<String> dataFieldsName, final String sequencePrefix, final String tableName) {
+				return null;
+			}
+
+			@Override
+			public GenerationMode getGenerationMode() {
+				return null;
+			}
+		}).getVal1();
 	}
 }

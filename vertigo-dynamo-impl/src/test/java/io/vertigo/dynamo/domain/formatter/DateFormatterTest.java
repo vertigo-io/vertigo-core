@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.domain.formatter;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -41,7 +41,7 @@ import io.vertigo.dynamox.domain.formatter.FormatterDate;
  */
 public class DateFormatterTest extends AbstractTestCaseJU4 {
 	private final FormatterDate formatterDate = new FormatterDate("yyyy-MM-dd");
-	private final FormatterDate formatterDateZDT = new FormatterDate("yyyy-MM-dd' 'HH:mm:ss");
+	private final FormatterDate formatterDateTime = new FormatterDate("yyyy-MM-dd' 'HH:mm:ss");
 
 	@Test
 	public void testFormatter() throws FormatterException {
@@ -58,10 +58,10 @@ public class DateFormatterTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test
-	public void testZonedDateTimeFormatter() throws FormatterException {
-		final ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDateTime.of(2009, 2, 23, 16, 30), ZoneId.of("UTC"));
-		Assert.assertEquals("2009-02-23 16:30:00", formatterDateZDT.valueToString(zonedDateTime, DataType.ZonedDateTime));
-		Assert.assertEquals(zonedDateTime, formatterDateZDT.stringToValue("2009-02-23 16:30:00", DataType.ZonedDateTime));
+	public void testInstantFormatter() throws FormatterException {
+		final Instant instant = LocalDateTime.of(2009, 2, 23, 16, 30).toInstant(ZoneOffset.UTC);
+		Assert.assertEquals("2009-02-23 16:30:00", formatterDateTime.valueToString(instant, DataType.Instant));
+		Assert.assertEquals(instant, formatterDateTime.stringToValue("2009-02-23 16:30:00", DataType.Instant));
 	}
 
 	@Test(expected = FormatterException.class)
@@ -77,9 +77,9 @@ public class DateFormatterTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test(expected = FormatterException.class)
-	public void testFormatterErrorZonedDateTime() throws FormatterException {
-		final ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDateTime.of(2009, 2, 23, 16, 30), ZoneId.of("UTC"));
-		Assert.assertEquals(zonedDateTime, formatterDate.stringToValue("2003/09/15 16:30:00", DataType.ZonedDateTime));
+	public void testFormatterErrorInstant() throws FormatterException {
+		final Instant instant = LocalDateTime.of(2009, 2, 23, 16, 30).toInstant(ZoneOffset.UTC);
+		Assert.assertEquals(instant, formatterDate.stringToValue("2003/09/15 16:30:00", DataType.Instant));
 	}
 
 }

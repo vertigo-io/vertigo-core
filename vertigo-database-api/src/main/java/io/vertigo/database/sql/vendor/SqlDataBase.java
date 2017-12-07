@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ public interface SqlDataBase {
 	SqlExceptionHandler getSqlExceptionHandler();
 
 	/**
-	 * @return the mapping between the database and java
+	 * @return the mapping between the vendor database and java
 	 */
 	SqlMapping getSqlMapping();
 

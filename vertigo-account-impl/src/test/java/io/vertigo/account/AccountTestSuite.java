@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,9 +22,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import io.vertigo.account.account.AccountManagerTest;
 import io.vertigo.account.authentification.AuthenticationManagerTest;
 import io.vertigo.account.authorization.VSecurityManagerTest;
-import io.vertigo.account.identity.IdentityManagerTest;
+import io.vertigo.account.authorization.dsl.DslSecurityRulesBuilderTest;
+import io.vertigo.account.identityprovider.IdentityProviderManagerTest;
 
 /**
  * Test de l'implementation standard.
@@ -33,10 +35,13 @@ import io.vertigo.account.identity.IdentityManagerTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+		AccountManagerTest.class,
 		AuthenticationManagerTest.class,
-		IdentityManagerTest.class,
-		VSecurityManagerTest.class
+		VSecurityManagerTest.class,
+		IdentityProviderManagerTest.class,
+		DslSecurityRulesBuilderTest.class
 })
+
 public final class AccountTestSuite {
 	//
 }

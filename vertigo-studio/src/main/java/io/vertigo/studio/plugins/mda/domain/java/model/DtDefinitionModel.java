@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,6 +32,7 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.dynamo.domain.model.DtMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.DtStaticMasterData;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.KeyConcept;
@@ -163,6 +164,8 @@ public final class DtDefinitionModel {
 				return DtObject.class;
 			case MasterData:
 				return DtMasterData.class;
+			case StaticMasterData:
+				return DtStaticMasterData.class;
 			case KeyConcept:
 				return KeyConcept.class;
 			case Fragment:
@@ -198,6 +201,24 @@ public final class DtDefinitionModel {
 				dtDefinition.getFields()
 						.stream()
 						.anyMatch(field -> field.getType() == FieldType.FOREIGN_KEY);
+
+	}
+
+	public boolean containsEnumAccessor() {
+		return dtDefinition.getStereotype() != DtStereotype.Fragment &&
+				dtDefinition.getFields()
+						.stream()
+						.anyMatch(field -> field.getType() == FieldType.FOREIGN_KEY && field.getFkDtDefinition().getStereotype() == DtStereotype.StaticMasterData);
+
+	}
+
+	public boolean containsListAccessor() {
+		return associationModels
+				.stream()
+				//only multiples
+				.filter(associationModel -> associationModel.isMultiple())
+				//simple navigable ou nn
+				.anyMatch(associationModel -> (associationModel.isSimple() && associationModel.isNavigable()) || !associationModel.isSimple());
 
 	}
 }

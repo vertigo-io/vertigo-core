@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +28,12 @@ import io.vertigo.lang.Assertion;
 
 /**
  * Une SecuredEntity est une entité sécurisé.
+ * Secured entity definition defined how an entity is secured.
+ * - entity definition
+ * - fields used for security purpose
+ * - security dimension
+ * - allowed operations
+ *
  *
  * @author jgarnier, npiedeloup
  */
@@ -37,7 +43,7 @@ public final class SecuredEntity implements Definition {
 	private final DtDefinition entityDefinition;
 	private final List<DtField> securityFields;
 	private final List<SecurityDimension> advancedDimensions;
-	private final List<Permission> operations;
+	private final List<Authorization> operations;
 
 	/**
 	 * Constructs an instance of SecurityEntity.
@@ -51,7 +57,7 @@ public final class SecuredEntity implements Definition {
 			final DtDefinition entityDefinition,
 			final List<DtField> securityFields,
 			final List<SecurityDimension> advancedDimensions,
-			final List<Permission> operations) {
+			final List<Authorization> operations) {
 		Assertion.checkNotNull(entityDefinition);
 		Assertion.checkNotNull(securityFields);
 		Assertion.checkNotNull(advancedDimensions);
@@ -94,7 +100,7 @@ public final class SecuredEntity implements Definition {
 	/**
 	 * @return the value of operations.
 	 */
-	public List<Permission> getOperations() {
+	public List<Authorization> getOperations() {
 		return operations;
 	}
 }

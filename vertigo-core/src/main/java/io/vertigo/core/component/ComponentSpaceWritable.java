@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +25,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -45,6 +48,8 @@ import io.vertigo.util.StringUtil;
  * @author pchretien
  */
 public final class ComponentSpaceWritable implements ComponentSpace, Activeable {
+
+	private static final Logger LOGGER = LogManager.getLogger(ComponentSpaceWritable.class);
 	/**
 	 * Components (sorted by creation)
 	 */
@@ -124,8 +129,8 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 
 	private void startComponents() {
 		for (final Component component : components.values()) {
-			startComponent(component);
 			startedComponents.add(component);
+			startComponent(component);
 		}
 	}
 
@@ -137,7 +142,11 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 		java.util.Collections.reverse(reversedComponents);
 
 		for (final Component component : reversedComponents) {
-			stopComponent(component);
+			try {
+				stopComponent(component);
+			} catch (final Exception e) {
+				LOGGER.error("Failed stopping component " + component, e);
+			}
 		}
 	}
 

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,10 +18,12 @@
  */
 package io.vertigo.persona.impl.security;
 
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
@@ -77,6 +79,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	@Override
 	public void start() {
 		localeManager.registerLocaleProvider(createLocaleProvider());
+		localeManager.registerZoneProvider(createZoneIdProvider());
 	}
 
 	/** {@inheritDoc} */
@@ -96,6 +99,12 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 			final Optional<UserSession> userSession = getCurrentUserSession();
 			return userSession.isPresent() ? userSession.get().getLocale() : null;
 		};
+	}
+
+	private Supplier<ZoneId> createZoneIdProvider() {
+		return () -> getCurrentUserSession()
+				.map(userSession -> userSession.getZoneId())
+				.orElse(null);
 	}
 
 	/** {@inheritDoc} */

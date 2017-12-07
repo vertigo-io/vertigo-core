@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,13 +22,15 @@ import io.vertigo.core.component.Component;
 
 @DaemonFakeAspectAnnotation
 public class FakeComponent implements Component {
+
+	static final String SIMPLE_DAEMON_NAME = "DMN_SIMPLE";
 	private int executions = 0;
 
 	public int getExecutionCount() {
 		return executions;
 	}
 
-	@DaemonScheduled(name = "DMN_SIMPLE", periodInSeconds = 2)
+	@DaemonScheduled(name = SIMPLE_DAEMON_NAME, periodInSeconds = 2)
 	public void execute() {
 		executions++;
 		if (executions == 1) {

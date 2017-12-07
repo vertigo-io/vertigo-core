@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -75,6 +75,23 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	}
 
 	/**
+	 * Opens the boot module.
+	 * There is exactly one BootConfig per AppConfig.
+	 * With a default ZoneId for DateTime formatter.
+	 *
+	 * @param locales a string which contains all the locales separated with a simple comma : ',' .
+	 * @param defaultZoneId a string which contains defaultZoneId.
+	 * @return this builder
+	 */
+	public BootConfigBuilder withLocalesAndDefaultZoneId(final String locales, final String defaultZoneId) {
+		addComponent(
+				LocaleManager.class,
+				LocaleManagerImpl.class,
+				Param.of("locales", locales), Param.of("defaultZoneId", defaultZoneId));
+		return this;
+	}
+
+	/**
 	 * Ajout de paramètres
 	 * @param logConfig Config of logs
 	 * @return this builder
@@ -121,7 +138,8 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 * @return this builder
 	 */
 	private BootConfigBuilder addComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass, final Param... params) {
-		final ComponentConfig componentConfig = ComponentConfig.builder(implClass)
+		final ComponentConfig componentConfig = ComponentConfig.builder()
+				.withImpl(implClass)
 				.withApi(apiClass)
 				.addParams(params)
 				.build();
@@ -166,4 +184,5 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 				myAopPlugin,
 				myVerbose);
 	}
+
 }

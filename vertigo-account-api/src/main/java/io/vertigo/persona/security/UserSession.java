@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@
 package io.vertigo.persona.security;
 
 import java.io.Serializable;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -117,9 +118,17 @@ public abstract class UserSession implements Serializable {
 
 	/**
 	 * Gestion multilingue.
-	 * Local associée à l'utilisateur.
 	 * @return Locale associée à l'utilisateur.
 	 */
 	public abstract Locale getLocale();
+
+	/**
+	 * Gestion des times zones.
+	 * Could be override.
+	 * @return ZoneId associée à l'utilisateur.
+	 */
+	public ZoneId getZoneId() {
+		return null; //null mean use default
+	}
 
 }

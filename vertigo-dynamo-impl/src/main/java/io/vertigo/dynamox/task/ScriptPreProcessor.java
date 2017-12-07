@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,13 +27,8 @@ import io.vertigo.commons.script.ExpressionParameter;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.commons.script.parser.ScriptSeparator;
-import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
-import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -73,24 +68,13 @@ final class ScriptPreProcessor {
 		//==========Initialisation des types et noms de paramètre==============
 		ExpressionParameter scriptEvaluatorParameter;
 		for (final Entry<TaskAttribute, Object> entry : inTaskAttributes.entrySet()) {
-			final Class<?> clazz;
 			final TaskAttribute taskAttribute = entry.getKey();
-			final Domain domain = taskAttribute.getDomain();
-			if (domain.getDataType().isPrimitive()) {
-				// Pour les types primitifs
-				clazz = domain.getDataType().getJavaClass();
-			} else if (domain.getDataType() == DataType.DtList) {
-				// Pour les types liste
-				clazz = DtList.class;
-			} else if (domain.getDataType() == DataType.DtObject) {
-				clazz = ClassUtil.classForName(domain.getDtDefinition().getClassCanonicalName());
-			} else {
-				throw new VSystemException("Type de paramètre non géré {0} : {1}", taskAttribute.getName(), domain.getName());
-			}
+			final Class<?> clazz = taskAttribute.getDomain().getTargetJavaClass();
 			scriptEvaluatorParameter = new ExpressionParameter(StringUtil.constToLowerCamelCase(taskAttribute.getName()), clazz, entry.getValue());
 			tmpParameters.add(scriptEvaluatorParameter);
 		}
 		return tmpParameters;
+
 	}
 
 	String evaluate(final String query) {

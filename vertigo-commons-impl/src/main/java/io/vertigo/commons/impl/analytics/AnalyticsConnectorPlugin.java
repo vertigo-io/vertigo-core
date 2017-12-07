@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,9 @@
  */
 package io.vertigo.commons.impl.analytics;
 
+import io.vertigo.commons.analytics.health.HealthCheck;
+import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.commons.impl.analytics.process.AProcess;
 import io.vertigo.core.component.Plugin;
 
 /**
@@ -27,11 +30,22 @@ import io.vertigo.core.component.Plugin;
  * @author pchretien, npiedeloup
  * @version $Id: NetPlugin.java,v 1.1 2012/03/22 18:20:57 pchretien Exp $
  */
-@FunctionalInterface
 public interface AnalyticsConnectorPlugin extends Plugin {
 	/**
 	 * Adds a process to a connector which acts as a consumer.
 	 * @param process the process
 	 */
 	void add(AProcess process);
+
+	/**
+	 * Adds a metric to a connector which acts as a consumer.
+	 * @param metric the metric
+	 */
+	void add(Metric metric);
+
+	/**
+	 * Adds a healthCheck to a connector which acts as a consumer.
+	 * @param healthCheck the healthCheck
+	 */
+	void add(HealthCheck healthCheck);
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,18 +26,25 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.net.SocketAppender;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.SocketAppender;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.layout.SerializedLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.app.Home;
+import io.vertigo.commons.analytics.health.HealthCheck;
+import io.vertigo.commons.analytics.metric.Metric;
 import io.vertigo.commons.daemon.DaemonScheduled;
-import io.vertigo.commons.impl.analytics.AProcess;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
+import io.vertigo.commons.impl.analytics.process.AProcess;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -46,9 +53,11 @@ import io.vertigo.lang.Assertion;
  */
 public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin {
 	private static final Gson GSON = new GsonBuilder().create();
-	private static final int DEFAULT_SERVER_PORT = 4560;// DefaultPort of SocketAppender
+	private static final int DEFAULT_SERVER_PORT = 4562;// DefaultPort of SocketAppender 4650 for log4j and 4562 for log4j2
 
 	private Logger socketLogger;
+	private Logger socketHealthLogger;
+	private Logger socketMetricLogger;
 	private final String hostName;
 	private final int port;
 
@@ -59,24 +68,22 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	/**
 	 * Constructor.
-	 * @param daemonManager the daemonManager
-	 * @param appName the app name
+	 * @param appNameOpt the app name
 	 * @param hostNameOpt hostName of the remote server
 	 * @param portOpt port of the remote server
 	 */
 	@Inject
 	public SocketLoggerAnalyticsConnectorPlugin(
-			final DaemonManager daemonManager,
-			@Named("appName") final String appName,
+			@Named("appName") final Optional<String> appNameOpt,
 			@Named("hostName") final Optional<String> hostNameOpt,
 			@Named("port") final Optional<Integer> portOpt) {
-		Assertion.checkArgNotEmpty(appName);
+		Assertion.checkNotNull(appNameOpt);
 		Assertion.checkNotNull(hostNameOpt);
 		Assertion.checkNotNull(portOpt);
 		// ---
+		appName = appNameOpt.orElse(Home.getApp().getConfig().getNodeConfig().getAppName());
 		hostName = hostNameOpt.orElse("analytica.part.klee.lan.net");
 		port = portOpt.orElse(DEFAULT_SERVER_PORT);
-		this.appName = appName;
 		localHostName = retrieveHostName();
 	}
 
@@ -88,34 +95,60 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		processQueue.add(process);
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public void add(final Metric metric) {
+		if (socketMetricLogger == null) {
+			socketMetricLogger = createLogger("analytics-metric", hostName, port);
+		}
+		sendObject(metric, socketMetricLogger);
+
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void add(final HealthCheck healthCheck) {
+		if (socketHealthLogger == null) {
+			socketHealthLogger = createLogger("analytics-health", hostName, port);
+		}
+		sendObject(healthCheck, socketHealthLogger);
+
+	}
+
 	private static String retrieveHostName() {
 		try {
 			return InetAddress.getLocalHost().getHostName();
 		} catch (final UnknownHostException e) {
-			Logger.getRootLogger().info("Cannot retrieve hostname", e);
+			LogManager.getRootLogger().info("Cannot retrieve hostname", e);
 			return "UnknownHost";
 		}
 	}
 
-	private static Logger createLogger(final String hostName, final int port) {
+	private static Logger createLogger(final String loggerName, final String hostName, final int port) {
 		// If it doesn't exist we create it with the right appender
-		final Logger logger = Logger.getLogger(SocketLoggerAnalyticsConnectorPlugin.class);
-		// Create an appender
-		final SocketAppender appender = new SocketAppender(hostName, port);
-		// we make only one try
-		appender.setReconnectionDelay(0);
-		//---
-		logger.removeAllAppenders();
-		logger.addAppender(appender);
-		logger.setLevel(Level.INFO);
-		logger.setAdditivity(false);
+		final Logger logger = LogManager.getLogger(loggerName);
+		//we create appender
+		final SocketAppender appender = SocketAppender.newBuilder()
+				.withName("socketAnalytics")
+				.withLayout(SerializedLayout.createLayout())
+				.withHost(hostName)
+				.withPort(port)
+				.withReconnectDelayMillis(0)// we make only one try
+				.build();
+		appender.start();
+
+		final LoggerContext context = LoggerContext.getContext(false); //on ne close pas : car ca stop le context
+		final Configuration config = context.getConfiguration();
+		config.getLoggerConfig(loggerName).addAppender(appender, null, null);
+
+		Configurator.setLevel(loggerName, Level.INFO);
 		return logger;
 	}
 
 	/**
 	 * Daemon to unstack processes to end them
 	 */
-	@DaemonScheduled(name = "DMN_REMOTE_LOGGER", periodInSeconds = 1)
+	@DaemonScheduled(name = "DMN_REMOTE_LOGGER", periodInSeconds = 1, analytics = false)
 	public void pollQueue() {
 		while (!processQueue.isEmpty()) {
 			final AProcess head = processQueue.poll();
@@ -128,14 +161,19 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	private void sendProcess(final AProcess process) {
 		if (socketLogger == null) {
-			socketLogger = createLogger(hostName, port);
+			socketLogger = createLogger(SocketLoggerAnalyticsConnectorPlugin.class.getName(), hostName, port);
 		}
-		if (socketLogger.isInfoEnabled()) {
+		sendObject(process, socketLogger);
+	}
+
+	private void sendObject(final Object object, final Logger logger) {
+
+		if (logger.isInfoEnabled()) {
 			final JsonObject log = new JsonObject();
 			log.addProperty("appName", appName);
 			log.addProperty("host", localHostName);
-			log.add("event", GSON.toJsonTree(process));
-			socketLogger.info(GSON.toJson(log));
+			log.add("event", GSON.toJsonTree(object));
+			logger.info(GSON.toJson(log));
 		}
 	}
 

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@ package io.vertigo.account.impl.authorization.dsl.rules;
 
 import java.util.List;
 
-import io.vertigo.account.authorization.metamodel.rulemodel.DslUserPropertyValue;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleUserPropertyValue;
 import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRules;
@@ -30,7 +30,7 @@ import io.vertigo.commons.peg.PegRules;
  * ${(userProperty)}
  * @author npiedeloup
  */
-final class DslUserPropertyValueRule extends AbstractRule<DslUserPropertyValue, List<Object>> {
+final class DslUserPropertyValueRule extends AbstractRule<RuleUserPropertyValue, List<Object>> {
 
 	DslUserPropertyValueRule() {
 		super(createMainRule(), "userProperty");
@@ -45,9 +45,9 @@ final class DslUserPropertyValueRule extends AbstractRule<DslUserPropertyValue, 
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslUserPropertyValue handle(final List<Object> parsing) {
+	protected RuleUserPropertyValue handle(final List<Object> parsing) {
 		final String userProperty = (String) parsing.get(1);
-		return new DslUserPropertyValue(userProperty);
+		return new RuleUserPropertyValue(userProperty);
 	}
 
 }

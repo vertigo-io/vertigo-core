@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +34,7 @@ import javax.inject.Inject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import io.vertigo.account.authorization.metamodel.Permission;
+import io.vertigo.account.authorization.metamodel.Authorization;
 import io.vertigo.account.authorization.metamodel.SecuredEntity;
 import io.vertigo.app.config.DefinitionResourceConfig;
 import io.vertigo.core.definition.DefinitionProvider;
@@ -95,7 +95,7 @@ public final class JsonSecurityDefinitionProvider implements DefinitionProvider 
 				.setPrettyPrinting()
 				//TODO  registerTypeAdapter(String.class, new EmptyStringAsNull<>())// add "" <=> null
 				.registerTypeAdapter(SecuredEntity.class, new SecuredEntityDeserializer())
-				.registerTypeAdapter(Permission.class, new PermissionDeserializer())
+				.registerTypeAdapter(Authorization.class, new AuthorizationDeserializer())
 				.create();
 	}
 
@@ -114,22 +114,25 @@ public final class JsonSecurityDefinitionProvider implements DefinitionProvider 
 	}
 
 	private void registerDefinitions(final AdvancedSecurityConfiguration config) {
-		registerPermissions(config.getPermissions());
+		registerGlobalAuthorizations(config.getGlobalAuthorizations());
 		registerSecurityEntities(config.getSecuredEntities());
 	}
 
-	private void registerPermissions(final List<Permission> permissions) {
-		permissions.stream()
-				.forEach(prm -> definitionSuppliers.add(ds -> prm)); //on register les Permissions globales
+	private void registerGlobalAuthorizations(final List<Authorization> authorizations) {
+		//on register les authorizations globales
+		authorizations
+				.forEach(atz -> definitionSuppliers.add(ds -> atz));
 	}
 
 	private void registerSecurityEntities(final List<SecuredEntity> securityEntities) {
-		securityEntities.stream()
-				.forEach(sec -> definitionSuppliers.add(ds -> sec)); //on register les SecuredEntities
+		//on register les SecuredEntities
+		securityEntities
+				.forEach(sec -> definitionSuppliers.add(ds -> sec));
 
+		//on register les authorizations associées aux opérations
 		securityEntities.stream()
 				.flatMap(securityEntity -> securityEntity.getOperations().stream())
-				.forEach(prm -> definitionSuppliers.add(ds -> prm)); //on register les Permissions associées aux opérations
+				.forEach(atz -> definitionSuppliers.add(ds -> atz));
 	}
 
 }

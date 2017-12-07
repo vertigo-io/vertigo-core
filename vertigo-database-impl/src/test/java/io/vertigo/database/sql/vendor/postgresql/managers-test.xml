@@ -19,6 +19,7 @@
 				<param name="jdbcDriver" value="org.h2.Driver" />
 				<param name="jdbcUrl" value="jdbc:h2:mem:secondaryDatabase" /> 
 			</plugin>
+			<plugin class="io.vertigo.database.sql.mapper.MailAdapterSupplierPlugin"/>
 		</component>
 	</module>
 </config>

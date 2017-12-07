@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,12 +27,13 @@ public final class PostgreSqlDataBaseManagerTest extends AbstractSqlDataBaseMana
 		final String myString = "CREATE TABLE movie ( "
 				+ "id 						NUMERIC(6), "
 				+ "title 					VARCHAR(255), "
+				+ "mail 					VARCHAR(255), "
 				+ "fps 						NUMERIC(6,3), "
 				+ "income 					NUMERIC(6,3), "
 				+ "color 					BOOLEAN, "
 				+ "release_date 			TIMESTAMP, "
 				+ "release_local_date 		DATE, "
-				+ "release_zoned_date_time 	TIMESTAMP, "
+				+ "release_instant 			TIMESTAMP, "
 				+ "icon 					BYTEA"
 				+ ")";
 		return myString;

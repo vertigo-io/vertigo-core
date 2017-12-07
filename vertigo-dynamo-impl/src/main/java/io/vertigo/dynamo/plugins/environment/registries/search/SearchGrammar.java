@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.search;
 
+import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.Boolean;
 import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.String;
 
 import java.util.List;
@@ -49,6 +50,9 @@ final class SearchGrammar implements DslGrammar {
 	public static final String FIELD_NAME = "FIELD_NAME";
 	/** Facet order. */
 	public static final String FACET_ORDER = "ORDER";
+
+	/** MultiSelectable values. */
+	public static final String FACET_MULTISELECTABLE = "multiSelectable";
 	/** Range filter. */
 	public static final String RANGE_FILTER_PROPERTY = "FILTER";
 	/** indexCopy to. */
@@ -107,6 +111,7 @@ final class SearchGrammar implements DslGrammar {
 				.addRequiredField("dtDefinition", DomainGrammar.DT_DEFINITION_ENTITY.getLink())
 				.addRequiredField(FIELD_NAME, String)
 				.addRequiredField(KspProperty.LABEL, String)
+				.addOptionalField(FACET_MULTISELECTABLE, Boolean) //facultative, default to false
 				.addOptionalField(FACET_ORDER, String) //facultative, default to count
 				.addManyFields("range", facetRangeEntity)
 				.build();

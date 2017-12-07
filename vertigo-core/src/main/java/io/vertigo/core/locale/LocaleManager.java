@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,9 @@
  */
 package io.vertigo.core.locale;
 
+import java.time.ZoneId;
 import java.util.Locale;
+import java.util.function.Supplier;
 
 import io.vertigo.core.component.Manager;
 
@@ -51,6 +53,12 @@ public interface LocaleManager extends Manager {
 	 * @param localeProvider Définit la langue par défaut de façon contextuelle
 	 */
 	void registerLocaleProvider(LocaleProvider localeProvider);
+
+	/**
+	 * Enregistre une stratégie de choix de time zone.
+	 * @param zoneProvider Définit la time zone par défaut de façon contextuelle
+	 */
+	void registerZoneProvider(Supplier<ZoneId> zoneProvider);
 
 	/**
 	 * Ajout d'un dictionnaire de ressources.
@@ -88,4 +96,12 @@ public interface LocaleManager extends Manager {
 	 * @return Locale courante
 	 */
 	Locale getCurrentLocale();
+
+	/**
+	 * Retourne la time zone courante.
+	 * C'est à dire correspondant à l'utilisateur courant si il y en a un,
+	 * sinon correspond à la time zone de l'application.
+	 * @return Zone courante
+	 */
+	ZoneId getCurrentZoneId();
 }

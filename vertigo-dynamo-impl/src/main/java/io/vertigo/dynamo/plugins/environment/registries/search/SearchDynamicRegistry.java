@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -121,6 +121,7 @@ public final class SearchDynamicRegistry implements DynamicRegistry {
 					definitionName,
 					dtField,
 					labelMsg,
+					isMultiSelectable(xdefinition, false),
 					getFacetOrder(xdefinition, FacetOrder.count));
 		} else {
 			final List<FacetValue> facetValues = rangeDefinitions.stream()
@@ -131,6 +132,7 @@ public final class SearchDynamicRegistry implements DynamicRegistry {
 					dtField,
 					labelMsg,
 					facetValues,
+					isMultiSelectable(xdefinition, false),
 					getFacetOrder(xdefinition, FacetOrder.definition));
 		}
 		return facetDefinition;
@@ -143,6 +145,11 @@ public final class SearchDynamicRegistry implements DynamicRegistry {
 				|| FacetOrder.count.name().equals(orderStr)
 				|| FacetOrder.definition.name().equals(orderStr), "Facet order must be one of {0}", Arrays.toString(FacetOrder.values()));
 		return orderStr != null ? FacetOrder.valueOf(orderStr) : defaultOrder;
+	}
+
+	private static boolean isMultiSelectable(final DslDefinition xdefinition, final boolean defaultValue) {
+		final Boolean multiSelectable = (Boolean) xdefinition.getPropertyValue(SearchGrammar.FACET_MULTISELECTABLE);
+		return multiSelectable != null ? multiSelectable : defaultValue;
 	}
 
 	private static FacetValue createFacetValue(final DslDefinition rangeDefinition) {

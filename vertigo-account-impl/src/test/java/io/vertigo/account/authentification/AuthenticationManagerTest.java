@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,8 @@
  */
 package io.vertigo.account.authentification;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -26,12 +28,13 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
+import io.vertigo.account.account.Account;
 import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.authentication.AuthenticationToken;
-import io.vertigo.account.data.Identities;
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.DIInjector;
@@ -43,6 +46,7 @@ import io.vertigo.persona.security.VSecurityManager;
  *
  * @author npiedeloup
  */
+@RunWith(Parameterized.class)
 public final class AuthenticationManagerTest {
 	private AutoCloseableApp app;
 
@@ -52,15 +56,31 @@ public final class AuthenticationManagerTest {
 	@Inject
 	private AuthenticationManager authenticationManager;
 
-	@Inject
-	private IdentityManager identityManager;
+	@Parameters
+	public static Collection<Object[]> params() {
+		return Arrays.asList(
+				//redis
+				new Object[] { true },
+				//memory (redis= false)
+				new Object[] { false });
+	}
+
+	final boolean redis;
+
+	/**
+	 * Constructor
+	 * @param redis use redis or memory
+	 */
+	public AuthenticationManagerTest(final boolean redis) {
+		//params are automatically injected
+		this.redis = redis;
+	}
 
 	@Before
 	public void setUp() {
-		app = new AutoCloseableApp(MyAppConfig.config(false));
+		app = new AutoCloseableApp(MyAppConfig.config(redis));
 		DIInjector.injectMembers(this, app.getComponentSpace());
 		securityManager.startCurrentUserSession(securityManager.createUserSession());
-		Identities.initData(identityManager);
 	}
 
 	@After

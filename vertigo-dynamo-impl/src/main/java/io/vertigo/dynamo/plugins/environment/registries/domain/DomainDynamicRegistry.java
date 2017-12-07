@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
@@ -61,7 +62,7 @@ import io.vertigo.util.StringUtil;
  * @author pchretien
  */
 public final class DomainDynamicRegistry implements DynamicRegistry {
-	private static final Logger LOGGER = Logger.getLogger(DomainDynamicRegistry.class);
+	private static final Logger LOGGER = LogManager.getLogger(DomainDynamicRegistry.class);
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
 	private static final String ASSOCIATION_SIMPLE_DEFINITION_PREFIX = DefinitionUtil.getPrefix(AssociationSimpleDefinition.class);
 	private static final String ASSOCIATION_NN_DEFINITION_PREFIX = DefinitionUtil.getPrefix(AssociationNNDefinition.class);
@@ -124,24 +125,31 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 	}
 
 	private static Domain createDomain(final DefinitionSpace definitionSpace, final DslDefinition xdomain) {
-		final DataType dataType = DataType.valueOf(xdomain.getDefinitionLinkName("dataType"));
 		final String domainName = xdomain.getName();
-
-		final boolean hasFormatter = !xdomain.getDefinitionLinkNames("formatter").isEmpty();
 		final List<String> constraintNames = xdomain.getDefinitionLinkNames("constraint");
-
-		final DomainBuilder domainBuilder = Domain.builder(domainName, dataType);
-
-		if (hasFormatter) {
-			final String formatterName = xdomain.getDefinitionLinkName("formatter");
-			final FormatterDefinition formatterDefinition = definitionSpace.resolve(formatterName, FormatterDefinition.class);
-			//---
-			domainBuilder.withFormatter(formatterDefinition);
+		final String type = xdomain.getDefinitionLinkName("dataType");
+		final Boolean multiple = (Boolean) xdomain.getPropertyValue(KspProperty.MULTIPLE);
+		final Properties properties = extractProperties(xdomain);
+		final DomainBuilder domainBuilder;
+		if ("DtObject".equals(type)) {
+			domainBuilder = Domain.builder(domainName, properties.getValue(DtProperty.TYPE), false);
+		} else if ("DtList".equals(type)) {
+			domainBuilder = Domain.builder(domainName, properties.getValue(DtProperty.TYPE), true);
+		} else {
+			final DataType dataType = DataType.valueOf(type);
+			domainBuilder = Domain.builder(domainName, dataType, multiple == null ? false : multiple);
+			//only primitive can have a formatter
+			final boolean hasFormatter = !xdomain.getDefinitionLinkNames("formatter").isEmpty();
+			if (hasFormatter) {
+				final String formatterName = xdomain.getDefinitionLinkName("formatter");
+				final FormatterDefinition formatterDefinition = definitionSpace.resolve(formatterName, FormatterDefinition.class);
+				//---
+				domainBuilder.withFormatter(formatterDefinition);
+			}
 		}
-
 		return domainBuilder
 				.withConstraints(createConstraints(definitionSpace, constraintNames))
-				.withProperties(extractProperties(xdomain))
+				.withProperties(properties)
 				.build();
 	}
 

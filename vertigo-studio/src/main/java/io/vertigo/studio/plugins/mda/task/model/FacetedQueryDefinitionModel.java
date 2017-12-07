@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +20,9 @@ package io.vertigo.studio.plugins.mda.task.model;
 
 import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
-import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.lang.Assertion;
+import io.vertigo.studio.plugins.mda.util.DomainUtil;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -64,29 +65,9 @@ public final class FacetedQueryDefinitionModel {
 	}
 
 	private String obtainCriteriaClassCanonicalName() {
-		final DataType domainDataType = facetedQueryDefinition.getCriteriaDomain().getDataType();
-		final String domainClassName;
-		switch (domainDataType) {
-			case Boolean:
-			case Double:
-			case Integer:
-			case Long:
-			case String:
-				domainClassName = domainDataType.name();
-				break;
-			case Date:
-			case BigDecimal:
-				domainClassName = domainDataType.getJavaClass().getCanonicalName();
-				break;
-			case DtObject:
-				domainClassName = facetedQueryDefinition.getCriteriaDomain().getDtDefinition().getClassCanonicalName();
-				break;
-			case DtList:
-			case DataStream:
-			default:
-				throw new IllegalArgumentException("Domain " + facetedQueryDefinition.getCriteriaDomain().getName() + " can't be use for a searchCriteria : use DtObject or primitive");
-		}
-		return domainClassName;
+		final Domain domain = facetedQueryDefinition.getCriteriaDomain();
+		Assertion.checkArgument(!domain.isMultiple(), "only not multiple domain are accepted");
+		//---
+		return DomainUtil.buildJavaType(domain);
 	}
-
 }

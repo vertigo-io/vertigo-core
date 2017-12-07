@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -45,7 +45,15 @@ public interface SearchManager extends Manager {
 	 * @param keyConceptClass keyConcept class
 	 * @return SearchIndexDefinition for this keyConcept (not null)
 	 */
-	//TODO si par DtDefinition comment s'assurer que c'est un keyConcept ?
+	SearchIndexDefinition findFirstIndexDefinitionByKeyConcept(Class<? extends KeyConcept> keyConceptClass);
+
+	/**
+	 * Find IndexDefinition for a keyConcept. It must be one and only one IndexDefinition.
+	 * @param keyConceptClass keyConcept class
+	 * @return SearchIndexDefinition for this keyConcept (not null)
+	 * @deprecated use findFirstIndexDefinitionByKeyConcept instead
+	 */
+	@Deprecated
 	SearchIndexDefinition findIndexDefinitionByKeyConcept(Class<? extends KeyConcept> keyConceptClass);
 
 	/**

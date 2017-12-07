@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,31 +18,32 @@
  */
 package io.vertigo.account.authorization;
 
+import io.vertigo.account.authorization.metamodel.AuthorizationName;
 import io.vertigo.account.authorization.metamodel.OperationName;
-import io.vertigo.account.authorization.metamodel.PermissionName;
 import io.vertigo.account.authorization.model.Record;
 
 public final class SecurityNames {
 
 	/**
-	 * Enumération des Permissions globales.
+	 * Enumération des Authorizations globales.
 	 */
-	public enum Permissions implements PermissionName {
-		PRM_ADMUSR,
-		PRM_ADMPRO,
-		PRM_ADMAPP
+	public enum GlobalAuthorizations implements AuthorizationName {
+		ATZ_ADMUSR,
+		ATZ_ADMPRO,
+		ATZ_ADMAPP
 	}
 
 	/**
-	 * Enumération des Permissions globales.
+	 * Enumération des Authorizations globales.
 	 */
-	public enum RecordPermissions implements PermissionName {
-		PRM_RECORD$READ,
-		PRM_RECORD$READ_HP,
-		PRM_RECORD$DELETE,
-		PRM_RECORD$NOTIFY,
-		PRM_RECORD$CREATE,
-		PRM_RECORD$WRITE;
+	public enum RecordAuthorizations implements AuthorizationName {
+		ATZ_RECORD$READ,
+		ATZ_RECORD$READ2,
+		ATZ_RECORD$READ_HP,
+		ATZ_RECORD$DELETE,
+		ATZ_RECORD$NOTIFY,
+		ATZ_RECORD$CREATE,
+		ATZ_RECORD$WRITE;
 	}
 
 	/**
@@ -50,6 +51,7 @@ public final class SecurityNames {
 	 */
 	public enum RecordOperations implements OperationName<Record> {
 		READ,
+		READ2,
 		READ_HP,
 		WRITE,
 		CREATE,

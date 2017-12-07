@@ -6,7 +6,7 @@ create DtDefinition DT_COMMAND {
 }
 
 create DtDefinition DT_COMMAND_TYPE {
-		stereotype : "MasterData",
+		stereotype : "StaticMasterData",
 		key CTY_ID 			{ domain:DO_ID,	label:"id",			notNull : "true"}
 		field LABEL  		{ domain:DO_FULL_TEXT, 		label:"Label",		notNull : "true"}		
 }

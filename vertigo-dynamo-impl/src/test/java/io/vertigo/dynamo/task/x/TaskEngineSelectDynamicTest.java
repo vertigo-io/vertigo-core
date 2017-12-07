@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,9 @@
  */
 package io.vertigo.dynamo.task.x;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.junit.Assert;
@@ -26,7 +29,6 @@ import org.junit.Test;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.store.StoreManager;
@@ -34,7 +36,6 @@ import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.data.domain.SuperHero;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 
 /**
@@ -43,7 +44,9 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
  */
 public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	private static final String DTC_SUPER_HERO_IN = "DTC_SUPER_HERO_IN";
+	private static final String SUPER_HERO_ID_LIST = "SUPER_HERO_ID_LIST";
 	private static final String DO_INTEGER = "DO_INTEGER";
+	private static final String DO_LONGS = "DO_LONGS";
 	private static final String DO_DT_SUPER_HERO_DTO = "DO_DT_SUPER_HERO_DTO";
 	private static final String DO_DT_SUPER_HERO_DTC = "DO_DT_SUPER_HERO_DTC";
 	private static final String DTO_SUPER_HERO = "DTO_SUPER_HERO";
@@ -54,35 +57,13 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Inject
 	private VTransactionManager transactionManager;
 
+	private SuperHeroDataBase superHeroDataBase;
+
 	@Override
 	protected void doSetUp() throws Exception {
-		//A chaque test on recrée la table SUPER_HERO
-		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
-			execStatement("create table SUPER_HERO(id BIGINT , name varchar(255));");
-			execStatement("create sequence SEQ_SUPER_HERO start with 10001 increment by 1");
-		}
-		addNSuperHero(10);
-	}
-
-	private void execStatement(final String request) {
-		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_INIT")
-				.withEngine(TaskEngineProc.class)
-				.withRequest(request)
-				.build();
-		final Task task = Task.builder(taskDefinition).build();
-		taskManager.execute(task);
-	}
-
-	private void addNSuperHero(final int size) {
-		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			//-----
-			for (int i = 0; i < size; i++) {
-				final SuperHero superHero = new SuperHero();
-				superHero.setName("SuperHero ( " + i + ")");
-				storeManager.getDataStore().create(superHero);
-			}
-			transaction.commit();
-		}
+		superHeroDataBase = new SuperHeroDataBase(transactionManager, taskManager);
+		superHeroDataBase.createDataBase();
+		superHeroDataBase.populateSuperHero(storeManager, 10);
 	}
 
 	/**
@@ -234,6 +215,31 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	 * Test exécution d'une tache.
 	 */
 	@Test
+	public void testWhereInPrimitive() {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			final TaskDefinition taskDefinition = registerTaskListPrimitive("TK_WHERE_IN_PRIMITIVE_TEST",
+					"select * from SUPER_HERO  where ID in (#SUPER_HERO_ID_LIST.ROWNUM#)");
+
+			final List<Long> ids = Arrays.asList(10001L + 1, 10001L + 3);
+
+			final Task task = Task.builder(taskDefinition)
+					.addValue(SUPER_HERO_ID_LIST, ids)
+					.build();
+
+			final DtList<SuperHero> resultList = taskManager
+					.execute(task)
+					.getResult();
+
+			Assert.assertEquals(2, resultList.size());
+			Assert.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
+			Assert.assertEquals(10001L + 3, resultList.get(1).getId().longValue());
+		}
+	}
+
+	/**
+	 * Test exécution d'une tache.
+	 */
+	@Test
 	public void testWhereInTab() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
@@ -363,7 +369,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testWhereIn2200() {
-		addNSuperHero(4500);
+		superHeroDataBase.populateSuperHero(storeManager, 4500);
+		//---
 
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
@@ -391,7 +398,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testWhereNotIn2200() {
-		addNSuperHero(4500);
+		superHeroDataBase.populateSuperHero(storeManager, 4500);
+		//---
 
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
@@ -421,9 +429,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	}
 
 	private TaskDefinition registerTaskWithNullableIn(final String taskDefinitionName, final String params) {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final Domain doInteger = definitionSpace.resolve(DO_INTEGER, Domain.class);
-		final Domain doSuperHeroes = definitionSpace.resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
+		final Domain doInteger = getApp().getDefinitionSpace().resolve(DO_INTEGER, Domain.class);
+		final Domain doSuperHeroes = getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
 
 		return TaskDefinition.builder(taskDefinitionName)
 				.withEngine(TaskEngineSelect.class)
@@ -437,9 +444,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	}
 
 	private TaskDefinition registerTaskObject(final String taskDefinitionName, final String params) {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final Domain doSupeHeroes = definitionSpace.resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
-		final Domain doSupeHero = definitionSpace.resolve(DO_DT_SUPER_HERO_DTO, Domain.class);
+		final Domain doSupeHeroes = getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
+		final Domain doSupeHero = getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTO, Domain.class);
 
 		return TaskDefinition.builder(taskDefinitionName)
 				.withEngine(TaskEngineSelect.class)
@@ -451,14 +457,26 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	}
 
 	private TaskDefinition registerTaskList(final String taskDefinitionName, final String params) {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final Domain doSupeHeroes = definitionSpace.resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
+		final Domain doSupeHeroes = getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
 
 		return TaskDefinition.builder(taskDefinitionName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
 				.addInRequired(DTC_SUPER_HERO_IN, doSupeHeroes)
+				.withOutRequired("dtc", doSupeHeroes)
+				.build();
+	}
+
+	private TaskDefinition registerTaskListPrimitive(final String taskDefinitionName, final String params) {
+		final Domain doLongs = getApp().getDefinitionSpace().resolve(DO_LONGS, Domain.class);
+		final Domain doSupeHeroes = getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
+
+		return TaskDefinition.builder(taskDefinitionName)
+				.withEngine(TaskEngineSelect.class)
+				.withRequest(params)
+				.withPackageName(TaskEngineSelect.class.getPackage().getName())
+				.addInRequired(SUPER_HERO_ID_LIST, doLongs)
 				.withOutRequired("dtc", doSupeHeroes)
 				.build();
 	}

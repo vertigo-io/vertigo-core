@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -80,8 +80,6 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 			case Boolean:
 			case Double:
 			case Date:
-			case DtList:
-			case DtObject:
 			default:
 				throw new IllegalArgumentException("Type's PK " + idDataType.name() + " of "
 						+ dtDefinition.getClassSimpleName() + " is not supported, prefer int, long or String ID.");

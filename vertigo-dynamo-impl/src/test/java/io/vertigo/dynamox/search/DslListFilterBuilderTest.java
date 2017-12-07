@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamox.search;
 
+import java.time.Instant;
 import java.util.Date;
 
 import org.junit.Assert;
@@ -313,9 +314,12 @@ public final class DslListFilterBuilderTest {
 
 	@Test
 	public void testBeanQuery() {
-		final Date dateTest1 = DateUtil.parse("230715 123000 -00", "ddMMyy HHmmss X");
-		final Date dateTest2 = DateUtil.parse("230715 164500 -00", "ddMMyy HHmmss X");
-		final TestBean testBean = new TestBean("Test", "Test test2", dateTest1, dateTest2, 5, 10);
+		final Date dateTest1 = DateUtil.parseToDate("230715 123000 -00", "ddMMyy HHmmss X");
+		final Date dateTest2 = DateUtil.parseToDate("230715 164500 -00", "ddMMyy HHmmss X");
+		final Instant instantTest1 = DateUtil.parseToInstant("230715 123000 -00", "ddMMyy HHmmss X");
+		final Instant instantTest2 = DateUtil.parseToInstant("230715 164500 -00", "ddMMyy HHmmss X");
+
+		final TestBean testBean = new TestBean("Test", "Test test2", dateTest1, dateTest2, instantTest1, instantTest2, 5, 10);
 		final Object[][] testQueries = new Object[][] {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#str1#", testBean, "ALL:(Test)", "ALL:Test" }, //0
@@ -327,32 +331,38 @@ public final class DslListFilterBuilderTest {
 				{ "ALL:[#int1# to #int2#]", testBean, "ALL:[5 TO 10]" }, //6
 				{ "ALL:[#int1# TO #int2#]", testBean, "ALL:[5 TO 10]" }, //7
 				{ "ALL:[#date1# to #date2#]", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" TO \"2015-07-23T16:45:00.000Z\"]" }, //8
-				{ "ALL:[#int1# to #null#]", testBean, "ALL:[5 TO *]" }, //9
-				{ "ALL:[#int1# to #null#!(*)]", testBean, "ALL:[5 TO *]" }, //10
-				{ "ALL:[#null#!(*) to #int2#]", testBean, "ALL:[* TO 10]" }, //11
-				{ "ALL:[#null# to #null#]", testBean, "" }, //12
-				{ "ALL:[ #null# to #null# ]", testBean, "ALL:[  ]", "" }, //13
-				{ "ALL:[#date1# to #null#!(*)]", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" TO *]" }, //14
-				{ "ALL:[#null#!(*) to #null#!(*)]", testBean, "ALL:[* TO *]", "" }, //15
-				{ "ALL:{#int1# TO #int2#]", testBean, "ALL:{5 TO 10]" }, //16
-				{ "ALL:[#int1# TO #int2#}", testBean, "ALL:[5 TO 10}" }, //17
-				{ "ALL:{#int1# TO #int2#}", testBean, "ALL:{5 TO 10}" }, //18
-				{ "+DATE_SESSION:[* to #date1#}", testBean, "+DATE_SESSION:[* TO \"2015-07-23T12:30:00.000Z\"}" }, //19
-				{ "+DATE_SESSION:[#date1# to *}", testBean, "+DATE_SESSION:[\"2015-07-23T12:30:00.000Z\" TO *}" }, //20
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#date1#!(*) TO *] +DATE_NAISSANCE:#date2#!(*)", testBean, "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:\"2015-07-23T16:45:00.000Z\"" }, //21
+				{ "ALL:[#instant1# to #instant2#]", testBean, "ALL:[\"2015-07-23T12:30:00Z\" TO \"2015-07-23T16:45:00Z\"]" }, //9
+				{ "ALL:[#int1# to #null#]", testBean, "ALL:[5 TO *]" }, //10
+				{ "ALL:[#int1# to #null#!(*)]", testBean, "ALL:[5 TO *]" }, //11
+				{ "ALL:[#null#!(*) to #int2#]", testBean, "ALL:[* TO 10]" }, //12
+				{ "ALL:[#null# to #null#]", testBean, "" }, //13
+				{ "ALL:[ #null# to #null# ]", testBean, "ALL:[  ]", "" }, //14
+				{ "ALL:[#date1# to #null#!(*)]", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" TO *]" }, //15
+				{ "ALL:[#instant1# to #null#!(*)]", testBean, "ALL:[\"2015-07-23T12:30:00Z\" TO *]" }, //16
+				{ "ALL:[#null#!(*) to #null#!(*)]", testBean, "ALL:[* TO *]", "" }, //17
+				{ "ALL:{#int1# TO #int2#]", testBean, "ALL:{5 TO 10]" }, //18
+				{ "ALL:[#int1# TO #int2#}", testBean, "ALL:[5 TO 10}" }, //19
+				{ "ALL:{#int1# TO #int2#}", testBean, "ALL:{5 TO 10}" }, //20
+				{ "+DATE_SESSION:[* to #date1#}", testBean, "+DATE_SESSION:[* TO \"2015-07-23T12:30:00.000Z\"}" }, //21
+				{ "+DATE_SESSION:[* to #instant1#}", testBean, "+DATE_SESSION:[* TO \"2015-07-23T12:30:00Z\"}" }, //22
+				{ "+DATE_SESSION:[#date1# to *}", testBean, "+DATE_SESSION:[\"2015-07-23T12:30:00.000Z\" TO *}" }, //23
+				{ "+DATE_SESSION:[#instant1# to *}", testBean, "+DATE_SESSION:[\"2015-07-23T12:30:00Z\" TO *}" }, //24
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#instant1#!(*) TO *] +DATE_NAISSANCE:#instant2#!(*)", testBean, "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:\"2015-07-23T16:45:00Z\"" }, //25
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#date1#!(*) TO *] +DATE_NAISSANCE:#date2#!(*)", testBean, "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:\"2015-07-23T16:45:00.000Z\"" }, //26
 		};
 		testObjectFixedQuery(testQueries);
 	}
 
 	@Test
 	public void testMultiQuery() {
-		final Date dateTest1 = DateUtil.parse("230715 123000 -00", "ddMMyy HHmmss X");
-		final TestBean testBeanNull = new TestBean(null, "Test test2", null, dateTest1, null, 5);
-		final TestBean testBeanEmpty = new TestBean("", "Test test2", null, dateTest1, null, 5);
-		final TestBean testBeanOne = new TestBean("12", "Test test2", null, null, null, null);
-		final TestBean testBeanMultiple = new TestBean("12 13", "Test test2", null, null, null, null);
-		final TestBean testBeanMultipleCode = new TestBean("CODE_1 CODE_3", "Test test2", null, null, null, null);
-		final TestBean testBeanMultipleTrackIt = new TestBean(null, "item", null, null, null, null);
+		final Date dateTest1 = DateUtil.parseToDate("230715 123000 -00", "ddMMyy HHmmss X");
+		final Instant instantTest1 = DateUtil.parseToInstant("230715 123000 -00", "ddMMyy HHmmss X");
+		final TestBean testBeanNull = new TestBean(null, "Test test2", null, dateTest1, null, instantTest1, null, 5);
+		final TestBean testBeanEmpty = new TestBean("", "Test test2", null, dateTest1, null, instantTest1, null, 5);
+		final TestBean testBeanOne = new TestBean("12", "Test test2", null, null, null, null, null, null);
+		final TestBean testBeanMultiple = new TestBean("12 13", "Test test2", null, null, null, null, null, null);
+		final TestBean testBeanMultipleCode = new TestBean("CODE_1 CODE_3", "Test test2", null, null, null, null, null, null);
+		final TestBean testBeanMultipleTrackIt = new TestBean(null, "item", null, null, null, null, null, null);
 		final Object[][] testQueries = new Object[][] {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanNull, " +ALL:(Test test2)", "+ALL:(Test test2)" }, //0
@@ -366,10 +376,13 @@ public final class DslListFilterBuilderTest {
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:*" }, //8
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanEmpty, "+(NOM_NAISSANCE:* OR NOM:*) +PRENOM:* +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:*" }, //9
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:*" }, //10
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#instant2#!(*) TO *] +DATE_NAISSANCE:#instant1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:*" }, //11
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#instant2#!(*) TO *] +DATE_NAISSANCE:#instant1#!(*)", testBeanEmpty, "+(NOM_NAISSANCE:* OR NOM:*) +PRENOM:* +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:*" }, //12
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#instant2#!(*) TO *] +DATE_NAISSANCE:#instant1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:*" }, //13
 				{ "+ITM_ID:#int1# +OPE_STATUS_CODE_NOT_ANALYZED:#str2# PART_NUMBER:#str1#^10 +[PART_NUMBER^10,DESCRIPTION_TRACKIT,COLLECTIONS,FAMILY]:#+str2*#", testBeanMultipleTrackIt,
-						"+OPE_STATUS_CODE_NOT_ANALYZED:item +(+(PART_NUMBER:(item*)^10 DESCRIPTION_TRACKIT:(item*) COLLECTIONS:(item*) FAMILY:(item*)))" }, //11
+						"+OPE_STATUS_CODE_NOT_ANALYZED:item +(+(PART_NUMBER:(item*)^10 DESCRIPTION_TRACKIT:(item*) COLLECTIONS:(item*) FAMILY:(item*)))" }, //14
 				{ "+COM_ID:#str1# +INC_AGENTS_ACTIFS:#str1# +QUA_ID:#str1# +COR_ID:#str1# +COG_ID:#str1# +STR_ID:#str1# +MCL_ID_1:#str1# +MCL_ID_2:#str1# +MCL_ID_3:#str1# +MCL_ID_4:#str1# +MCL_ID_5:#str1# +(LISTE_MCL_ID:#str2#) +MOT_CLE_SUP:#str2# +(DATE_SEANCE:[#date1#!(*) to #date1#!(*)] INC_SEANCES_NULL:#booTrue#)",
-						testBeanNull, "+MOT_CLE_SUP:(Test test2) +(LISTE_MCL_ID:(Test test2)) +(INC_SEANCES_NULL:true)"
+						testBeanNull, "+MOT_CLE_SUP:(Test test2) +(LISTE_MCL_ID:(Test test2)) +(INC_SEANCES_NULL:true)" //15
 				}
 		};
 		//testObjectFixedQuery(testQueries[12]);
@@ -444,6 +457,8 @@ public final class DslListFilterBuilderTest {
 		private final String str2;
 		private final Date date1;
 		private final Date date2;
+		private final Instant instant1;
+		private final Instant instant2;
 		private final Integer int1;
 		private final Integer int2;
 
@@ -452,12 +467,16 @@ public final class DslListFilterBuilderTest {
 				final String str2,
 				final Date date1,
 				final Date date2,
+				final Instant instant1,
+				final Instant instant2,
 				final Integer int1,
 				final Integer int2) {
 			this.str1 = str1;
 			this.str2 = str2;
 			this.date1 = date1;
 			this.date2 = date2;
+			this.instant1 = instant1;
+			this.instant2 = instant2;
 			this.int1 = int1;
 			this.int2 = int2;
 		}
@@ -476,6 +495,14 @@ public final class DslListFilterBuilderTest {
 
 		public Date getDate2() {
 			return date2;
+		}
+
+		public Instant getInstant1() {
+			return instant1;
+		}
+
+		public Instant getInstant2() {
+			return instant2;
 		}
 
 		public Integer getInt1() {

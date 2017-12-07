@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import io.vertigo.lang.Assertion;
@@ -103,11 +104,11 @@ public final class ClassUtil {
 		try {
 			return constructor.newInstance(args);
 		} catch (final InvocationTargetException e) {
-			throw WrappedException.wrap(e, "Erreur lors de l'appel au constructeur de la classe: {0} ", constructor.getDeclaringClass());
+			throw WrappedException.wrap(e, "An error has occurred while invoking the constructor on class : {0} ", constructor.getDeclaringClass());
 		} catch (final java.lang.IllegalAccessException e) {
-			throw WrappedException.wrap(e, "Accès final impossible à la classe :" + constructor.getDeclaringClass().getName());
+			throw WrappedException.wrap(e, "The constructor on class {0} is not accessible", constructor.getDeclaringClass());
 		} catch (final Exception e) {
-			throw WrappedException.wrap(e, "Instanciation impossible de la classe : " + constructor.getDeclaringClass().getName());
+			throw WrappedException.wrap(e, "Unable to instanciate the class {0}", constructor.getDeclaringClass());
 		}
 	}
 
@@ -366,11 +367,9 @@ public final class ClassUtil {
 	public static Class<?> getGeneric(final Constructor<?> constructor, final int i) {
 		Assertion.checkNotNull(constructor);
 		//-----
-		final Class<?> generic = getGeneric(constructor.getGenericParameterTypes()[i]);
-		if (generic == null) {
-			throw new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur le constructeur " + constructor);
-		}
-		return generic;
+		return getGeneric(
+				constructor.getGenericParameterTypes()[i],
+				() -> new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur le constructeur " + constructor));
 	}
 
 	/**
@@ -386,11 +385,9 @@ public final class ClassUtil {
 	public static Class<?> getGeneric(final Method method, final int i) {
 		Assertion.checkNotNull(method);
 		//-----
-		final Class<?> generic = getGeneric(method.getGenericParameterTypes()[i]);
-		if (generic == null) {
-			throw new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur la methode " + method.getDeclaringClass() + "." + method.getName());
-		}
-		return generic;
+		return getGeneric(
+				method.getGenericParameterTypes()[i],
+				() -> new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur la methode " + method.getDeclaringClass() + "." + method.getName()));
 	}
 
 	/**
@@ -405,14 +402,23 @@ public final class ClassUtil {
 	public static Class<?> getGeneric(final Field field) {
 		Assertion.checkNotNull(field);
 		//-----
-		final Class<?> generic = getGeneric(field.getGenericType());
-		if (generic == null) {
-			throw new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur le champ " + field.getName());
-		}
-		return generic;
+		return getGeneric(field.getGenericType(),
+				() -> new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur le champ " + field.getName()));
 	}
 
-	private static Class<?> getGeneric(final Type type) {
+	/**
+	 * Finds the generic type.
+	 * Ex : List<Car> ==> Car
+	 * @param type the
+	 * @param exceptionSupplier
+	 * @return first Generic of this class
+	 */
+	public static Class<?> getGeneric(
+			final Type type,
+			final Supplier<RuntimeException> exceptionSupplier) {
+		Assertion.checkNotNull(type);
+		Assertion.checkNotNull(exceptionSupplier);
+		//---
 		if (type instanceof ParameterizedType) {
 			final ParameterizedType parameterizedType = ParameterizedType.class.cast(type);
 			Assertion.checkArgument(parameterizedType.getActualTypeArguments().length == 1, "Il doit y avoir 1 et 1 seul générique déclaré");
@@ -425,7 +431,7 @@ public final class ClassUtil {
 			}
 
 		}
-		return null;
+		throw exceptionSupplier.get();
 	}
 
 	/**

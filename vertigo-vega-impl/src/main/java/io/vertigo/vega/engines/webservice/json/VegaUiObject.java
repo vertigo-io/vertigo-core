@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +31,6 @@ import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -273,19 +272,17 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		}
 		final Object value = doGetTypedValue(fieldName);
 		final Domain domain = getDtField(fieldName).getDomain();
-		if (domain.getDataType().isPrimitive()) {
-			final Formatter formatter = domain.getFormatter();
-			return formatter.valueToString(value, domain.getDataType());
+		if (domain.getScope().isPrimitive() && !domain.isMultiple()) {
+			return domain.valueToString(value);
 		}
-		return null; // Les liste et les objets ne sont pas gérés
-
+		return null; // only non multiple primitives are supported (from user input)
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void setInputValue(final String fieldName, final String stringValue) {
 		Assertion.checkArgNotEmpty(fieldName);
-		Assertion.checkNotNull(stringValue, "La valeur formatée ne doit pas être null mais vide ({0})", fieldName);
+		Assertion.checkNotNull(stringValue, "formatted value can't be null, but may be empty : {0}", fieldName);
 		//-----
 		final DtField dtField = getDtField(fieldName);
 		inputBuffer.put(fieldName, formatValue(dtField, stringValue));
@@ -307,9 +304,6 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		return type.cast(doGetTypedValue(fieldName));
 	}
 
-	/* (non-Javadoc)
-	 * @see io.vertigo.vega.webservice.model.UiObject#setTypedValue(java.lang.String, java.io.Serializable)
-	 */
 	@Override
 	public final void setTypedValue(final String fieldName, final Serializable value) {
 		final DtField dtField = getDtField(fieldName);
@@ -365,11 +359,10 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	private String formatValue(final DtField dtField, final String value) {
 		isChecked = false;
 		getDtObjectErrors().clearErrors(dtField.getName());
-		final Formatter formatter = dtField.getDomain().getFormatter();
 		try {
-			final Serializable typedValue = (Serializable) formatter.stringToValue(value, dtField.getDomain().getDataType());
+			final Serializable typedValue = (Serializable) dtField.getDomain().stringToValue(value);
 			doSetTypedValue(dtField, typedValue);
-			return formatter.valueToString(typedValue, dtField.getDomain().getDataType());
+			return dtField.getDomain().valueToString(typedValue);
 		} catch (final FormatterException e) { //We don't log nor rethrow this exception
 			/** Erreur de typage.	 */
 			getDtObjectErrors().addError(StringUtil.constToLowerCamelCase(dtField.getName()), e.getMessageText());
@@ -381,49 +374,31 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		dtField.getDataAccessor().setValue(inputDto, typedValue);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.vertigo.vega.webservice.model.UiObject#getInteger(java.lang.String)
-	 */
 	@Override
 	public Integer getInteger(final String fieldName) {
 		return getTypedValue(getCamelCase(fieldName), Integer.class);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.vertigo.vega.webservice.model.UiObject#getLong(java.lang.String)
-	 */
 	@Override
 	public Long getLong(final String fieldName) {
 		return getTypedValue(getCamelCase(fieldName), Long.class);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.vertigo.vega.webservice.model.UiObject#getString(java.lang.String)
-	 */
 	@Override
 	public String getString(final String fieldName) {
 		return getTypedValue(getCamelCase(fieldName), String.class);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.vertigo.vega.webservice.model.UiObject#getBoolean(java.lang.String)
-	 */
 	@Override
 	public Boolean getBoolean(final String fieldName) {
 		return getTypedValue(getCamelCase(fieldName), Boolean.class);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.vertigo.vega.webservice.model.UiObject#getDate(java.lang.String)
-	 */
 	@Override
 	public Date getDate(final String fieldName) {
 		return getTypedValue(getCamelCase(fieldName), Date.class);
 	}
 
-	/* (non-Javadoc)
-	 * @see io.vertigo.vega.webservice.model.UiObject#getBigDecimal(java.lang.String)
-	 */
 	@Override
 	public BigDecimal getBigDecimal(final String fieldName) {
 		return getTypedValue(getCamelCase(fieldName), BigDecimal.class);

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -55,7 +55,20 @@ class AnnotationWriter {
 		if ("URI".equalsIgnoreCase(propertyName)) {
 			return writeUriAnnotations();
 		}
+		if ("transientField".equalsIgnoreCase(propertyName)) {
+			return writeTransientAnnotations();
+		}
 		throw new UnsupportedOperationException("This property (" + propertyName + ") is not supported on domain MDA");
+	}
+
+	/**
+	 * Ecriture des annotations transient.
+	 *
+	 * @return Liste des lignes de code java à ajouter.
+	 */
+	List<String> writeTransientAnnotations() {
+		// basic is nothing
+		return Collections.emptyList();
 	}
 
 	/**
@@ -183,8 +196,7 @@ class AnnotationWriter {
 				.add(INDENT + "roleA = \"" + nodeA.getRole() + "\",")
 				.add(INDENT + "roleB = \"" + nodeB.getRole() + "\",")
 				.add(INDENT + "labelA = \"" + nodeA.getLabel() + "\",")
-				.add(INDENT + "labelB = \"" + nodeB.getLabel() + "\"")
-				.add(")")
+				.add(INDENT + "labelB = \"" + nodeB.getLabel() + "\")")
 				.build();
 	}
 }

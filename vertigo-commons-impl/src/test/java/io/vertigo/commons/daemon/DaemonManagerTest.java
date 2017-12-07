@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,6 +26,9 @@ import javax.inject.Inject;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.analytics.health.HealthCheck;
+import io.vertigo.commons.analytics.health.HealthStatus;
 
 /**
  * @author TINGARGIOLA
@@ -34,11 +37,15 @@ public final class DaemonManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private DaemonManager daemonManager;
 	@Inject
+	private AnalyticsManager analyticsManager;
+	@Inject
 	private FakeComponent fakeComponent;
 
 	@Test
 	public void testSimple() throws Exception {
-		DaemonStat daemonStat = daemonManager.getStats().get(0);
+		DaemonStat daemonStat = daemonManager.getStats().stream()
+				.filter(stat -> FakeComponent.SIMPLE_DAEMON_NAME.equals(stat.getDaemonName()))
+				.findFirst().get();
 		assertEquals(0, daemonStat.getCount());
 		assertEquals(0, daemonStat.getFailures());
 		assertEquals(0, daemonStat.getSuccesses());
@@ -48,13 +55,23 @@ public final class DaemonManagerTest extends AbstractTestCaseJU4 {
 		// -----
 		Thread.sleep(5000); //soit deux execs
 
-		daemonStat = daemonManager.getStats().get(0);
+		daemonStat = daemonManager.getStats().stream()
+				.filter(stat -> FakeComponent.SIMPLE_DAEMON_NAME.equals(stat.getDaemonName()))
+				.findFirst().get();
 		assertEquals(2, daemonStat.getCount());
 		assertEquals(1, daemonStat.getFailures());
 		assertEquals(1, daemonStat.getSuccesses());
 		assertEquals(DaemonStat.Status.pending, daemonStat.getStatus());
 
 		assertTrue(fakeComponent.getExecutionCount() > 0);
+
+		final HealthCheck daemonsExecHealthCheck = analyticsManager.getHealthChecks()
+				.stream()
+				.filter(healtChk -> "daemons".equals(healtChk.getFeature()) && "lastExecs".equals(healtChk.getName()))
+				.findFirst()
+				.get();
+
+		assertTrue(daemonsExecHealthCheck.getMeasure().getStatus() == HealthStatus.GREEN);
 
 	}
 

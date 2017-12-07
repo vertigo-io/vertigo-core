@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,6 +29,7 @@ import org.hibernate.Session;
 
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.database.plugins.sql.connection.AbstractSqlConnectionProviderPlugin;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
@@ -41,8 +42,9 @@ import io.vertigo.util.ClassUtil;
  *
  * @author pchretien, npiedeloup
  */
-public final class HibernateConnectionProviderPlugin extends AbstractSqlConnectionProviderPlugin {
+public final class HibernateConnectionProviderPlugin extends AbstractSqlConnectionProviderPlugin implements Activeable {
 	private final VTransactionManager transactionManager;
+	private final String persistenceUnit;
 
 	/**
 	 * Constructor.
@@ -57,11 +59,22 @@ public final class HibernateConnectionProviderPlugin extends AbstractSqlConnecti
 			@Named("persistenceUnit") final String persistenceUnit,
 			@Named("dataBaseName") final String dataBaseName,
 			final VTransactionManager transactionManager) {
-		super(name.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), new JpaDataBase(createDataBase(dataBaseName), Persistence.createEntityManagerFactory(persistenceUnit)));
+		super(name.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), new JpaDataBase(createDataBase(dataBaseName)));
 		Assertion.checkArgNotEmpty(persistenceUnit);
 		Assertion.checkNotNull(transactionManager);
 		//-----
 		this.transactionManager = transactionManager;
+		this.persistenceUnit = persistenceUnit;
+	}
+
+	@Override
+	public void start() {
+		((JpaDataBase) getDataBase()).setEntityManagerFactory(Persistence.createEntityManagerFactory(persistenceUnit));
+	}
+
+	@Override
+	public void stop() {
+		// nothing
 	}
 
 	/**
@@ -97,4 +110,5 @@ public final class HibernateConnectionProviderPlugin extends AbstractSqlConnecti
 	private static SqlDataBase createDataBase(final String dataBaseName) {
 		return ClassUtil.newInstance(dataBaseName, SqlDataBase.class);
 	}
+
 }

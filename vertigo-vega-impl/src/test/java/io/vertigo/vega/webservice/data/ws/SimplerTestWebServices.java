@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,8 +18,11 @@
  */
 package io.vertigo.vega.webservice.data.ws;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -390,6 +393,19 @@ public final class SimplerTestWebServices implements WebServices {
 		final UiContext result = new UiContext();
 		result.put("input", zonedDateTime);
 		result.put("inputAsString", zonedDateTime.toString());
+		return result;
+	}
+
+	@GET("/instant")
+	public Instant getInstant() {
+		return LocalDateTime.of(2016, 5, 26, 21, 30, 20, 0).toInstant(ZoneOffset.UTC);
+	}
+
+	@PUT("/instant")
+	public UiContext putInstant(@QueryParam("date") final Instant instant) {
+		final UiContext result = new UiContext();
+		result.put("input", instant);
+		result.put("inputAsString", instant.toString());
 		return result;
 	}
 

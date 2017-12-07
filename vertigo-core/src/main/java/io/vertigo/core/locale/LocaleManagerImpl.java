@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
  */
 package io.vertigo.core.locale;
 
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,14 +27,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -43,7 +47,7 @@ import io.vertigo.util.ListBuilder;
  * @author pchretien
  */
 public final class LocaleManagerImpl implements LocaleManager {
-	private static final Logger LOG = Logger.getLogger(LocaleManagerImpl.class);
+	private static final Logger LOG = LogManager.getLogger(LocaleManagerImpl.class);
 
 	/**
 	 * Set des clés non trouvées pour ne pas les reloguer.
@@ -57,11 +61,20 @@ public final class LocaleManagerImpl implements LocaleManager {
 	/** liste des locales gérées. */
 	private final List<Locale> locales;
 
+	/** Zone par défaut. */
+	private final ZoneId defaultZoneId;
+
 	/**
 	 * Stratégie de choix de la langue.
 	 * Si pas de stratégie ou pas de langue trouvée alors langue par défaut = première langue déclarée.
 	 */
 	private LocaleProvider localeProvider;
+
+	/**
+	 * Stratégie de choix de la zone.
+	 * Si pas de stratégie ou pas de zone trouvée alors zone par défaut.
+	 */
+	private Supplier<ZoneId> zoneSupplier;
 
 	/**
 	 * Constructor.
@@ -75,12 +88,15 @@ public final class LocaleManagerImpl implements LocaleManager {
 	 * Locale.FRANCE + Locale.us : 'fr_FR,us'
 	 * Une locale est définie par une langue{_Pays{_Variante}}
 	 * @param locales Liste des locales gérées par l'application.
+	 * @param defaultZoneId ZoneId par défaut utilisée par l'application.
 	 */
 	@Inject
-	public LocaleManagerImpl(@Named("locales") final String locales) {
+	public LocaleManagerImpl(@Named("locales") final String locales, @Named("defaultZoneId") final Optional<String> defaultZoneId) {
 		Assertion.checkArgNotEmpty(locales);
+		Assertion.checkNotNull(defaultZoneId);
 		//-----
 		this.locales = createLocales(locales);
+		this.defaultZoneId = createDefaultZoneId(defaultZoneId);
 		//-----
 		Assertion.checkNotNull(this.locales);
 		Assertion.checkArgument(!this.locales.isEmpty(), "Il faut au moins déclarer une locale");
@@ -88,6 +104,13 @@ public final class LocaleManagerImpl implements LocaleManager {
 		for (final Locale locale : this.locales) {
 			dictionaries.put(locale, new HashMap<>());
 		}
+	}
+
+	private static ZoneId createDefaultZoneId(final Optional<String> defaultZoneId) {
+		if (defaultZoneId.isPresent()) {
+			return ZoneId.of(defaultZoneId.get());
+		}
+		return ZoneId.systemDefault();
 	}
 
 	private static List<Locale> createLocales(final String locales) {
@@ -105,6 +128,15 @@ public final class LocaleManagerImpl implements LocaleManager {
 			listBuilder.add(new Locale(language, country, variant));
 		}
 		return listBuilder.unmodifiable().build();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void registerZoneProvider(final Supplier<ZoneId> newZoneSupplier) {
+		Assertion.checkArgument(zoneSupplier == null, "zoneSupplier already registered");
+		Assertion.checkNotNull(newZoneSupplier);
+		//-----
+		zoneSupplier = newZoneSupplier;
 	}
 
 	/** {@inheritDoc} */
@@ -204,6 +236,16 @@ public final class LocaleManagerImpl implements LocaleManager {
 			return null;
 		}
 		return msg;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public ZoneId getCurrentZoneId() {
+		if (zoneSupplier != null && zoneSupplier.get() != null) {
+			return zoneSupplier.get();
+		}
+		//If there is no user, we can pick the default zone.
+		return defaultZoneId;
 	}
 
 	/** {@inheritDoc} */

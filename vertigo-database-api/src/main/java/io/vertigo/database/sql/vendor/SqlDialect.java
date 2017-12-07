@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,7 +52,11 @@ public interface SqlDialect {
 	 * @param tableName the name of the table in which we want to insert
 	 * @return the sql request
 	 */
-	String createInsertQuery(final String idFieldName, final List<String> dataFieldsName, String sequencePrefix, String tableName);
+	String createInsertQuery(
+			final String idFieldName,
+			final List<String> dataFieldsName,
+			String sequencePrefix,
+			String tableName);
 
 	/**
 	 * Ajoute à la requete les éléments techniques nécessaire pour limiter le resultat à {maxRows}.
@@ -76,6 +80,14 @@ public interface SqlDialect {
 				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
 				.append(" for update ")
 				.toString();
+	}
+
+	/**
+	 * Statement to execute to verify the database connection
+	 * @return statement to execute
+	 */
+	default String getTestQuery() {
+		return "SELECT 1";
 	}
 
 	/**

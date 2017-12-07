@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -233,18 +233,6 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	}
 
 	/**
-	 * @param fieldName de l'object à récupérer NOT NULL
-	 * @param value de l'object à récupérer NOT NULL
-	 * @param maxRows Nombre maximum de ligne
-	 * @return DtList<D> récupéré NOT NUL
-	 */
-	@Deprecated
-	public final DtList<E> getListByDtField(final String fieldName, final Object value, final int maxRows) {
-		// we assume that this method was always used with comparable objects (String, Long, Integer, Boolean...)
-		return getListByDtFieldName(() -> fieldName, (Serializable) value, maxRows);
-	}
-
-	/**
 	 * @param dtFieldName de l'object à récupérer NOT NULL
 	 * @param value de l'object à récupérer NOT NULL
 	 * @param maxRows Nombre maximum de ligne
@@ -254,7 +242,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 		final Criteria<E> criteria = Criterions.isEqualTo(dtFieldName, value);
 		// Verification de la valeur est du type du champ
 		final DtDefinition dtDefinition = getDtDefinition();
-		dtDefinition.getField(dtFieldName.name()).getDomain().getDataType().checkValue(value);
+		dtDefinition.getField(dtFieldName.name()).getDomain().checkValue(value);
 		return dataStore.findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
 	}
 

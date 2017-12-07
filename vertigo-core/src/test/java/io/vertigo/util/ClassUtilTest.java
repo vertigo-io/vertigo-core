@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -244,6 +244,17 @@ public final class ClassUtilTest {
 		//---
 		field = MyGenerics.class.getField("myList3");
 		assertEquals(Map.class, ClassUtil.getGeneric(field));
+	}
+
+	public List<String> getWords() {
+		return null;
+	}
+
+	@Test
+	public void testGenericReturn() throws NoSuchMethodException, SecurityException {
+		assertEquals(String.class, ClassUtil.getGeneric(
+				this.getClass().getMethod("getWords").getGenericReturnType(),
+				() -> new IllegalStateException()));
 	}
 
 	@Test

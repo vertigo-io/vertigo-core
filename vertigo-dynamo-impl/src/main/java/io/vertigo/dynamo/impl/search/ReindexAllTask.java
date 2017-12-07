@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,8 @@ package io.vertigo.dynamo.impl.search;
 
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -41,7 +42,7 @@ import io.vertigo.util.ClassUtil;
  * @param <S> KeyConcept type
  */
 final class ReindexAllTask<S extends KeyConcept> implements Runnable {
-	private static final Logger LOGGER = Logger.getLogger(ReindexAllTask.class);
+	private static final Logger LOGGER = LogManager.getLogger(ReindexAllTask.class);
 	private static volatile boolean REINDEXATION_IN_PROGRESS;
 	private static volatile long REINDEX_COUNT;
 	private final WritableFuture<Long> reindexFuture;
@@ -129,7 +130,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 
 	private static ListFilter urisRangeToListFilter(final String firstUri, final String lastUri) {
 		final String filterValue = new StringBuilder()
-				.append("_id").append(":{") //{ for exclude min
+				.append("urn").append(":{") //{ for exclude min
 				.append(firstUri != null ? ("\"" + firstUri + "\"") : "*")
 				.append(" TO ")
 				.append(lastUri != null ? ("\"" + lastUri + "\"") : "*")

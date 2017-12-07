@@ -33,6 +33,7 @@
 
 		<module>vertigo-dynamo-api</module>
 		<module>vertigo-dynamo-impl</module>
+		<module>vertigo-dynamo-plugin-elasticsearch_2_4</module>
 		
 		<module>vertigo-account-api</module>
 		<module>vertigo-account-impl</module>

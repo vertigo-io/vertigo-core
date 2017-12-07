@@ -24,6 +24,10 @@ alter Domain DO_DATE {
 	storeType : "DATE"
 }
 
+alter Domain DO_INSTANT {
+	storeType : "TIMESTAMP"
+}
+
 alter Domain DO_BOOLEAN {
 	storeType : "NUMERIC"
 }

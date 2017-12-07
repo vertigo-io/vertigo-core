@@ -75,13 +75,13 @@
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>5.5.4</version> <!-- 5.5.4 compatible with ElasticSearch 2.4.5 -->
+			<version>6.6.1</version> <!-- 6.6.1 compatible with ElasticSearch 5.6.2 -->
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-analyzers-common</artifactId>
-			<version>5.5.4</version> <!-- 5.5.4 compatible with ElasticSearch 2.4.5 -->
+			<version>6.6.1</version> <!-- 6.6.1 compatible with ElasticSearch 5.6.2 -->
 			<optional>true</optional>
 		</dependency>
 
@@ -95,13 +95,13 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>5.2.10.Final</version>
+			<version>5.2.11.Final</version>
 			<optional>true</optional> <!-- HibernateConnectionProviderPlugin -->
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>5.2.10.Final</version>
+			<version>5.2.11.Final</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -109,10 +109,21 @@
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>2.4.5</version>
+			<version>5.6.2</version>
 			<optional>true</optional><!-- EsTransportSearchServicesPlugin -->
 		</dependency>
-
+		<dependency>
+		    <groupId>org.elasticsearch.client</groupId>
+		    <artifactId>transport</artifactId>
+		    <version>5.6.2</version>
+		    <optional>true</optional><!-- EsTransportSearchServicesPlugin -->
+		</dependency>
+		<dependency>
+	        <groupId>org.elasticsearch.plugin</groupId>
+	        <artifactId>transport-netty4-client</artifactId> 
+	        <version>5.6.2</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
+	        <optional>true</optional>
+	    </dependency>
 		<!-- Connections Pool -->
 		<dependency>
 			<groupId>com.mchange</groupId>

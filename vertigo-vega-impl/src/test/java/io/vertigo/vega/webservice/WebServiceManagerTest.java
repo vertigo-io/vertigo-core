@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -569,6 +569,24 @@ public final class WebServiceManagerTest {
 				.body("firstName", Matchers.notNullValue())
 				.body("birthday", Matchers.notNullValue())
 				.body("email", Matchers.notNullValue())
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/contact");
+	}
+
+	@Test
+	public void testPutContactVAccessor() throws ParseException {
+		final Map<String, Object> newContact = createDefaultContact(100L);
+		newContact.put("adrId", 200);
+
+		loggedAndExpect(given().body(newContact))
+				.body("conId", Matchers.equalTo(100))
+				.body("honorificCode", Matchers.notNullValue())
+				.body("name", Matchers.notNullValue())
+				.body("firstName", Matchers.notNullValue())
+				.body("birthday", Matchers.notNullValue())
+				.body("email", Matchers.notNullValue())
+				.body("adrId", Matchers.equalTo(200))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
 				.put("/test/contact");
@@ -1798,6 +1816,23 @@ public final class WebServiceManagerTest {
 				.statusCode(HttpStatus.SC_OK)
 				.when()
 				.put("/test/zonedDateTime?date=" + inputZonedDateTime);
+	}
+
+	@Test
+	public void testInstant() {
+		loggedAndExpect(given())
+				.body(Matchers.equalTo("\"2016-05-26T21:30:20Z\""))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/instant");
+
+		final String inputInstant = "2016-01-18T17:21:42Z";
+		loggedAndExpect(given())
+				.body("input", Matchers.equalTo(inputInstant))
+				.body("inputAsString", Matchers.equalTo("2016-01-18T17:21:42Z"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/instant?date=" + inputInstant);
 	}
 
 	@Test

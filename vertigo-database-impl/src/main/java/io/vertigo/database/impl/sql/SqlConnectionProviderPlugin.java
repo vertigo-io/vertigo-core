@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,8 +18,15 @@
  */
 package io.vertigo.database.impl.sql;
 
+import io.vertigo.app.Home;
+import io.vertigo.commons.analytics.health.HealthChecked;
+import io.vertigo.commons.analytics.health.HealthMeasure;
+import io.vertigo.commons.analytics.health.HealthMeasureBuilder;
 import io.vertigo.core.component.Plugin;
+import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
+import io.vertigo.database.sql.statement.SqlStatement;
 
 /**
 * Plugin du provider de connexions.
@@ -32,4 +39,30 @@ public interface SqlConnectionProviderPlugin extends SqlConnectionProvider, Plug
 	 * @return ConnectionProvider's name
 	 */
 	String getName();
+
+	@HealthChecked(name = "testQuery", feature = "sqlDatabase")
+	default HealthMeasure checkTestSelect() {
+
+		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
+
+		final String testQuery = getDataBase().getSqlDialect().getTestQuery();
+		try {
+
+			final SqlDataBaseManager sqlDataBaseManager = Home.getApp().getComponentSpace().resolve(SqlDataBaseManager.class);
+			final SqlConnection connection = obtainConnection();
+			try {
+				sqlDataBaseManager.executeQuery(
+						SqlStatement.builder(testQuery).build(),
+						Integer.class, 1,
+						connection);
+			} finally {
+				connection.release();
+			}
+			healthMeasureBuilder.withGreenStatus();
+		} catch (final Exception e) {
+			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
+		}
+		return healthMeasureBuilder.build();
+
+	}
 }

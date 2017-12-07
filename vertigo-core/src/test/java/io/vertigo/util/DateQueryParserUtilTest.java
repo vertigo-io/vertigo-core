@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +34,7 @@ public final class DateQueryParserUtilTest {
 	private static final Long DIFF_MS = 5 * 1000L;
 
 	private static void assertEquals(final Date expectedDate, final String query) {
-		final Date compareDate = DateUtil.parse(query, DATE_PATTERN);
+		final Date compareDate = DateUtil.parseToDate(query, DATE_PATTERN);
 		final long deltaInMillis = Math.abs(expectedDate.getTime() - compareDate.getTime());
 		assertTrue(deltaInMillis < DIFF_MS, "expects " + expectedDate + " and finds " + compareDate);
 	}
@@ -43,7 +43,7 @@ public final class DateQueryParserUtilTest {
 	@Test
 	public void testWithError0() {
 		Assertions.assertThrows(Exception.class,
-				() -> DateUtil.parse("now+", DATE_PATTERN));
+				() -> DateUtil.parseToDate("now+", DATE_PATTERN));
 	}
 
 	/** Test le keyword now avec une erreur. */
@@ -51,7 +51,7 @@ public final class DateQueryParserUtilTest {
 	public void testWithError1() {
 		Assertions.assertThrows(Exception.class,
 				//an explicit  number must be defined
-				() -> DateUtil.parse("now+DAY", DATE_PATTERN));
+				() -> DateUtil.parseToDate("now+DAY", DATE_PATTERN));
 	}
 
 	/** Test le keyword now avec une erreur. */
@@ -59,7 +59,7 @@ public final class DateQueryParserUtilTest {
 	public void testWithError2() {
 		Assertions.assertThrows(Exception.class,
 				//Day must be in upperCase : DAY
-				() -> DateUtil.parse("now+1Day", DATE_PATTERN));
+				() -> DateUtil.parseToDate("now+1Day", DATE_PATTERN));
 	}
 
 	/** Test le keyword now avec une erreur. */
@@ -67,7 +67,7 @@ public final class DateQueryParserUtilTest {
 	public void testWithError3() {
 		Assertions.assertThrows(Exception.class,
 				//day is not a calendar unit
-				() -> DateUtil.parse("now+1day", DATE_PATTERN));
+				() -> DateUtil.parseToDate("now+1day", DATE_PATTERN));
 	}
 
 	/** Test le keyword now avec une erreur. */
@@ -75,7 +75,7 @@ public final class DateQueryParserUtilTest {
 	public void testWithError4() {
 		Assertions.assertThrows(Exception.class,
 				//D is not a calendar unit even if d is valid
-				() -> DateUtil.parse("now+1D", DATE_PATTERN));
+				() -> DateUtil.parseToDate("now+1D", DATE_PATTERN));
 	}
 
 	/**

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,14 +24,19 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.model.FacetValue;
+import io.vertigo.dynamo.collections.model.SelectedFacetValues;
+import io.vertigo.dynamo.collections.model.SelectedFacetValues.SelectedFacetValuesBuilder;
 
 /**
  * Selected facets.
  * @author npiedeloup
+ * @deprecated Use SelectedFacetValues instead
  */
+@Deprecated
 public final class UiSelectedFacets extends HashMap<String, String> {
 
 	private static final long serialVersionUID = -6356451500854322017L;
@@ -62,4 +67,32 @@ public final class UiSelectedFacets extends HashMap<String, String> {
 		return listFilters;
 	}
 
+	/**
+	 * Convert this Ui Selected Facets to a SelectedFacetValues.
+	 * @return ListFilter for these Facets
+	 */
+	public SelectedFacetValues toSelectedFacetValues() {
+		final SelectedFacetValuesBuilder selectedFacetValuesBuilder = SelectedFacetValues.empty();
+		// facet selection list.
+		for (final Map.Entry<String, String> entry : entrySet()) {
+			final FacetDefinition facetDefinition = Home.getApp().getDefinitionSpace().resolve(entry.getKey(),
+					FacetDefinition.class);
+			if (facetDefinition.isRangeFacet()) {
+				final String label = entry.getValue();
+				for (final FacetValue facet : facetDefinition.getFacetRanges()) {
+					if (facet.getLabel().getDisplay().equals(label)) {
+						selectedFacetValuesBuilder.add(facetDefinition, facet);
+						break;
+					}
+				}
+			} else {
+				final String term = entry.getValue();
+				final MessageText label = MessageText.of(term);
+				final String query = facetDefinition.getDtField().getName() + ":\"" + term + "\"";
+				final FacetValue facetValue = new FacetValue(term, ListFilter.of(query), label);
+				selectedFacetValuesBuilder.add(facetDefinition, facetValue);
+			}
+		}
+		return selectedFacetValuesBuilder.build();
+	}
 }

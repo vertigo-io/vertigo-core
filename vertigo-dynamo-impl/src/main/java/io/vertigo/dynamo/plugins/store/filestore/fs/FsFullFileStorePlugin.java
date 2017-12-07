@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +28,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -122,16 +125,16 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	public FileInfo read(final FileInfoURI uri) {
 		/* read metadata*/
 		try {
-			final String metadataUri = String.class.cast(uri.getKey()) + METADATA_SUFFIX;
-			final Path metadataPath = Paths.get(documentRoot, metadataUri);
+			final String metadataUri = obtainFullMetaDataFilePath(uri);
+			final Path metadataPath = Paths.get(metadataUri);
 			final List<String> infos = Files.readAllLines(metadataPath, Charset.forName(METADATA_CHARSET));
 			// récupération des infos
 			final String fileName = infos.get(0);
 			final String mimeType = infos.get(1);
-			final Date lastModified = DateUtil.parse(infos.get(2), INFOS_DATE_PATTERN);
+			final Instant lastModified = DateUtil.parseToInstant(infos.get(2), INFOS_DATE_PATTERN);
 			final Long length = Long.valueOf(infos.get(3));
 
-			final InputStreamBuilder inputStreamBuilder = new FileInputStreamBuilder(new File(documentRoot + String.class.cast(uri.getKey())));
+			final InputStreamBuilder inputStreamBuilder = new FileInputStreamBuilder(new File(obtainFullFilePath(uri)));
 			final VFile vFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
 
 			// retourne le fileinfo avec le fichier et son URI
@@ -165,11 +168,15 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	}
 
 	private String obtainFullFilePath(final FileInfoURI uri) {
-		return documentRoot + String.class.cast(uri.getKey());
+		final String uriAsString = String.class.cast(uri.getKey());
+		final String uriAsPath = uriAsString.replaceFirst("^([0-9]{4})([0-9]{2})([0-9]{2})-", "$1/$2/$3/");
+		return documentRoot + uriAsPath;
 	}
 
 	private String obtainFullMetaDataFilePath(final FileInfoURI uri) {
-		return documentRoot + String.class.cast(uri.getKey()) + METADATA_SUFFIX;
+		final String uriAsString = String.class.cast(uri.getKey());
+		final String uriAsPath = uriAsString.replaceFirst("^([0-9]{4})([0-9]{2})([0-9]{2})-", "$1/$2/$3/");
+		return documentRoot + uriAsPath + METADATA_SUFFIX;
 	}
 
 	/** {@inheritDoc} */
@@ -179,11 +186,12 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		Assertion.checkArgument(fileInfo.getURI() == null, "Only file without any id can be created.");
 		//-----
 		final VFile vFile = fileInfo.getVFile();
-		final SimpleDateFormat format = new SimpleDateFormat(INFOS_DATE_PATTERN);
+		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INFOS_DATE_PATTERN)
+				.withZone(ZoneId.of("UTC"));
 		final String metaData = new StringBuilder()
 				.append(vFile.getFileName()).append('\n')
 				.append(vFile.getMimeType()).append('\n')
-				.append(format.format(vFile.getLastModified())).append('\n')
+				.append(formatter.format(vFile.getLastModified())).append('\n')
 				.append(vFile.getLength()).append('\n')
 				.toString();
 
@@ -205,11 +213,12 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		Assertion.checkNotNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
 		//-----
 		final VFile vFile = fileInfo.getVFile();
-		final SimpleDateFormat format = new SimpleDateFormat(INFOS_DATE_PATTERN);
+		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INFOS_DATE_PATTERN)
+				.withZone(ZoneId.of("UTC"));
 		final String metaData = new StringBuilder()
 				.append(vFile.getFileName()).append('\n')
 				.append(vFile.getMimeType()).append('\n')
-				.append(format.format(vFile.getLastModified()))
+				.append(formatter.format(vFile.getLastModified()))
 				.append(vFile.getLength()).append('\n')
 				.toString();
 

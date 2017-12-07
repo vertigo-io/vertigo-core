@@ -6,23 +6,23 @@
 /* tslint:disable */
 <@compress single_line=true>
 import {
-<#if dtDefinition.isContainsPrimitiveField() || dtDefinition.isContainsObjectField()>
+<#if dtDefinition.isContainsPrimitiveField()>
 EntityField,
 </#if>
-<#if dtDefinition.isContainsListField()>
-StoreListNode, EntityList,
+<#if dtDefinition.isContainsListOfObjectField()>
+StoreListNode,
 </#if>
 StoreNode }  from "focus4/entity";
 </@compress>
 
 <#if dtDefinition.isContainsPrimitiveField()>
-import * as domains from "../../../common/domain"
+import * as domains from "../../../../00-core/domain"
 </#if>
-<#list dtDefinition.fields as field>
-	<#if field.isPrimitive()>	
+<#list dtDefinition.domains as domain>
+	<#if domain.isPrimitive()>	
 	<#else>
 <#--import { ${dtDefinition.classSimpleName}, ${dtDefinition.classSimpleName}Node } from "./${dtDefinition.localName?lower_case?replace("_", "-")}" -->
-import { ${field.domainTypeName}, ${field.domainTypeName}Node } from "./${field.domainDefinitionName?lower_case?replace("_", "-")}"
+import { ${domain.domainTypeName}, ${domain.domainTypeName}Node } from "./${domain.domainDefinitionName?lower_case?replace("_", "-")}"
 	</#if>
 </#list>
 
@@ -35,11 +35,11 @@ export interface ${dtDefinition.classSimpleName} {
 export interface ${dtDefinition.classSimpleName}Node extends StoreNode<${dtDefinition.classSimpleName}> {
 	<#list dtDefinition.fields as dtField>
 	<#if dtField.isPrimitive()>
-	${dtField.camelCaseName}: EntityField<${dtField.typescriptType}>;
-	<#elseif dtField.isList()>
-	${dtField.camelCaseName}: EntityList<StoreListNode<${dtField.domainTypeName}Node>>;
+	${dtField.camelCaseName}: EntityField<${dtField.typescriptType}, typeof ${dtField.domainName}>;
+	<#elseif dtField.isListOfObject()>
+	${dtField.camelCaseName}: StoreListNode<${dtField.domainTypeName}Node>;
 	<#else>
-	${dtField.camelCaseName}: EntityField<${dtField.typescriptType}Node>;
+	${dtField.camelCaseName}: EntityField<${dtField.domainTypeName}Node>;
 	</#if>
     </#list>
 }
@@ -48,22 +48,23 @@ export const ${dtDefinition.classSimpleName}Entity = {
     name: "${dtDefinition.classSimpleName?uncap_first}",
     fields: {
     	<#list dtDefinition.fields as dtField>
-        ${dtField.camelCaseName}: {
-        	<#if dtField.isList()>
-            type: "list" as "list",
-            entityName: "${dtField.domainTypeName?uncap_first}"        
-        	<#else>
+        ${dtField.camelCaseName}: {        
             name: "${dtField.camelCaseName}",
+        	<#if dtField.isPrimitive()>
             type: "field" as "field",
+			<#elseif dtField.isListOfObject()>
+            type: "list" as "list",
+           	<#else>
+            type: "object" as "object",
+            </#if>            
             <#if dtField.isPrimitive()>
             domain: domains.${dtField.domainName},
             <#else>
-            entityName: "${dtField.typescriptType?uncap_first}",
+            entityName: "${dtField.domainTypeName?uncap_first}",
             </#if>
             isRequired: ${dtField.required?string("true","false")},
             translationKey: "${dtDefinition.functionnalPackageName}.${dtDefinition.classSimpleName?uncap_first}.${dtField.camelCaseName}"
-          	</#if>            
-        }<#if (dtField_index+1) < dtDefinition.fields?size>,</#if>
+        }<#sep>,</#sep>
         </#list>
     }
 };

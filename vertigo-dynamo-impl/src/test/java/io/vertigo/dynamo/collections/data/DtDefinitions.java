@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ package io.vertigo.dynamo.collections.data;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import io.vertigo.dynamo.collections.data.domain.Item;
+import io.vertigo.dynamo.collections.data.domain.SmartItem;
 import io.vertigo.dynamo.collections.data.domain.SmartCar;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 
@@ -29,12 +29,12 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	@Override
 	public Iterator<Class<?>> iterator() {
 		return Arrays.asList(new Class<?>[] {
-				Item.class,
+				SmartItem.class,
 				SmartCar.class
 		}).iterator();
 	}
 
-	public enum Fields implements DtFieldName<Item> {
+	public enum Fields implements DtFieldName<SmartItem> {
 		ID,
 		LABEL
 	}

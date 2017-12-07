@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,8 +22,8 @@ import java.util.Optional;
 
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.data.TestUserSession;
-import io.vertigo.account.plugins.authentication.ldap.LdapAuthenticatingRealmPlugin;
-import io.vertigo.account.plugins.identity.memory.MemoryAccountStorePlugin;
+import io.vertigo.account.plugins.account.store.text.TextAccountStorePlugin;
+import io.vertigo.account.plugins.authentication.ldap.LdapAuthenticationPlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.core.param.Param;
@@ -44,15 +44,18 @@ public final class MyAppConfig {
 			commonsFeatures
 					.withRedisConnector(REDIS_HOST, REDIS_PORT, REDIS_DATABASE, Optional.empty());
 			accountFeatures
-					.withRedisAccountStorePlugin();
-		} else {
-			accountFeatures
-					.withAccountStorePlugin(MemoryAccountStorePlugin.class)
-					.withAuthentificationRealm(LdapAuthenticatingRealmPlugin.class,
-							Param.of("userLoginTemplate", "cn={0},dc=vertigo,dc=io"),
-							Param.of("ldapServerHost", "docker-vertigo.part.klee.lan.net"),
-							Param.of("ldapServerPort", "389"));
+					.withRedisAccountCachePlugin();
 		}
+		accountFeatures
+				.withAccountStorePlugin(TextAccountStorePlugin.class,
+						Param.of("accountFilePath", "io/vertigo/account/data/identities.txt"),
+						Param.of("accountFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<email>(?<authToken>[^;@]+)@[^;]+);(?<photoUrl>.*)$"),
+						Param.of("groupFilePath", "io/vertigo/account/data/groups.txt"),
+						Param.of("groupFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<accountIds>.*)$"))
+				.withAuthentication(LdapAuthenticationPlugin.class,
+						Param.of("userLoginTemplate", "cn={0},dc=vertigo,dc=io"),
+						Param.of("ldapServerHost", "docker-vertigo.part.klee.lan.net"),
+						Param.of("ldapServerPort", "389"));
 
 		return AppConfig.builder()
 				.beginBoot()

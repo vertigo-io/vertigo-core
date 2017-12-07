@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,13 @@
 package io.vertigo.dynamo.plugins.search.elasticsearch.embedded;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -30,8 +33,12 @@ import javax.inject.Named;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.index.reindex.ReindexPlugin;
+import org.elasticsearch.node.InternalSettingsPreparer;
 import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
+import org.elasticsearch.node.NodeValidationException;
+import org.elasticsearch.plugins.Plugin;
+import org.elasticsearch.transport.Netty4Plugin;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.resource.ResourceManager;
@@ -66,7 +73,7 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 			@Named("envIndex") final String envIndex,
 			@Named("envIndexIsPrefix") final Optional<Boolean> envIndexIsPrefix,
 			@Named("rowsPerQuery") final int rowsPerQuery,
-			@Named("config.file") final Optional<String> configFile,
+			@Named("config.file") final String configFile,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
 		super(envIndex, envIndexIsPrefix.orElse(false), rowsPerQuery, configFile, codecManager, resourceManager);
@@ -79,14 +86,22 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 	@Override
 	protected Client createClient() {
 		node = createNode(elasticSearchHomeURL);
-		node.start();
+		try {
+			node.start();
+		} catch (final NodeValidationException e) {
+			throw WrappedException.wrap(e, "Error at ElasticSearch node start");
+		}
 		return node.client();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected void closeClient() {
-		node.close();
+		try {
+			node.close();
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e, "Error at ElasticSearch node stop");
+		}
 	}
 
 	private static Node createNode(final URL esHomeURL) {
@@ -100,16 +115,22 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 		}
 		Assertion.checkArgument(home.exists() && home.isDirectory(), "Le ElasticSearchHome : {0} n''existe pas, ou n''est pas un répertoire.", home.getAbsolutePath());
 		Assertion.checkArgument(home.canWrite(), "L''application n''a pas les droits d''écriture sur le ElasticSearchHome : {0}", home.getAbsolutePath());
-		return new NodeBuilder()
-				.settings(buildNodeSettings(home.getAbsolutePath()))
-				.local(true)
-				.build();
+		return new MyNode(buildNodeSettings(home.getAbsolutePath()), Arrays.asList(Netty4Plugin.class, ReindexPlugin.class));
+	}
+
+	private static class MyNode extends Node {
+		public MyNode(final Settings preparedSettings, final Collection<Class<? extends Plugin>> classpathPlugins) {
+			super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, null), classpathPlugins);
+		}
 	}
 
 	private static Settings buildNodeSettings(final String homePath) {
 		//Build settings
-		return Settings.settingsBuilder()
+		return Settings.builder()
 				.put("node.name", "es-embedded-node-" + System.currentTimeMillis())
+				.put("transport.type", "netty4")
+				.put("http.type", "netty4")
+				.put("http.enabled", "true")
 				.put("path.home", homePath)
 				.build();
 	}

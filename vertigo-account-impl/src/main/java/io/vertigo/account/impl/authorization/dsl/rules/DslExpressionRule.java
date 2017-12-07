@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,9 +20,9 @@ package io.vertigo.account.impl.authorization.dsl.rules;
 
 import java.util.List;
 
-import io.vertigo.account.authorization.metamodel.rulemodel.DslExpression;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslExpression.ValueOperator;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslValue;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression.ValueOperator;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleValue;
 import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegRule;
@@ -33,7 +33,7 @@ import io.vertigo.commons.peg.PegRules;
  * (field)(operator)(value)
  * @author npiedeloup
  */
-final class DslExpressionRule extends AbstractRule<DslExpression, List<Object>> {
+final class DslExpressionRule extends AbstractRule<RuleExpression, List<Object>> {
 
 	DslExpressionRule() {
 		super(createMainRule(), "expression");
@@ -57,10 +57,10 @@ final class DslExpressionRule extends AbstractRule<DslExpression, List<Object>> 
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslExpression handle(final List<Object> parsing) {
+	protected RuleExpression handle(final List<Object> parsing) {
 		final String fieldName = (String) parsing.get(1);
 		final ValueOperator operator = (ValueOperator) parsing.get(3);
-		final DslValue value = (DslValue) ((PegChoice) parsing.get(5)).getValue();
-		return new DslExpression(fieldName, operator, value);
+		final RuleValue value = (RuleValue) ((PegChoice) parsing.get(5)).getValue();
+		return new RuleExpression(fieldName, operator, value);
 	}
 }

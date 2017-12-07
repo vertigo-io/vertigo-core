@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,12 +26,12 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import io.vertigo.account.authorization.AuthorizationManager;
-import io.vertigo.account.authorization.UserPermissions;
+import io.vertigo.account.authorization.UserAuthorizations;
+import io.vertigo.account.authorization.metamodel.Authorization;
+import io.vertigo.account.authorization.metamodel.AuthorizationName;
 import io.vertigo.account.authorization.metamodel.OperationName;
-import io.vertigo.account.authorization.metamodel.Permission;
-import io.vertigo.account.authorization.metamodel.PermissionName;
 import io.vertigo.account.authorization.metamodel.SecuredEntity;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslMultiExpression;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
 import io.vertigo.account.impl.authorization.dsl.translator.CriteriaSecurityRuleTranslator;
 import io.vertigo.account.impl.authorization.dsl.translator.SearchSecurityRuleTranslator;
 import io.vertigo.app.Home;
@@ -46,12 +46,11 @@ import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 
 /**
- * Implementation standard de la gestion centralisee des droits d'acces.
- *
+ * Main authorizations manager implementation.
  * @author npiedeloup
  */
 public final class AuthorizationManagerImpl implements AuthorizationManager {
-	private static final String USER_SESSION_ACL_KEY = "vertigo.account.accessControl";
+	private static final String USER_SESSION_ACL_KEY = "vertigo.account.authorizations";
 
 	private final VSecurityManager securityManager;
 
@@ -68,33 +67,33 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public UserPermissions obtainUserPermissions() {
+	public UserAuthorizations obtainUserAuthorizations() {
 		return getUserPermissionsOpt().orElseThrow(() -> new IllegalArgumentException("Can't getUserPermissions, check your have create an UserSession before."));
 
 	}
 
-	private Optional<UserPermissions> getUserPermissionsOpt() {
+	private Optional<UserAuthorizations> getUserPermissionsOpt() {
 		final Optional<UserSession> userSessionOpt = securityManager.getCurrentUserSession();
 		if (!userSessionOpt.isPresent()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return Optional.empty();
 		}
-		UserPermissions userPermissions = userSessionOpt.get().getAttribute(USER_SESSION_ACL_KEY);
-		if (userPermissions == null) {
-			userPermissions = new UserPermissions();
-			userSessionOpt.get().putAttribute(USER_SESSION_ACL_KEY, userPermissions);
+		UserAuthorizations userAuthorizations = userSessionOpt.get().getAttribute(USER_SESSION_ACL_KEY);
+		if (userAuthorizations == null) {
+			userAuthorizations = new UserAuthorizations();
+			userSessionOpt.get().putAttribute(USER_SESSION_ACL_KEY, userAuthorizations);
 		}
-		return Optional.of(userPermissions);
+		return Optional.of(userAuthorizations);
 
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean hasPermission(final PermissionName permissionName) {
+	public boolean hasAuthorization(final AuthorizationName permissionName) {
 		Assertion.checkNotNull(permissionName);
 		//---
 		return getUserPermissionsOpt()
-				.map(userPermissions -> userPermissions.hasPermission(permissionName))
+				.map(userPermissions -> userPermissions.hasAuthorization(permissionName))
 				// Si il n'y a pas de userPermissions alors pas d'autorisation.
 				.orElse(false);
 
@@ -106,17 +105,17 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		Assertion.checkNotNull(keyConcept);
 		Assertion.checkNotNull(operationName);
 		//---
-		final Optional<UserPermissions> userPermissionsOpt = getUserPermissionsOpt();
+		final Optional<UserAuthorizations> userPermissionsOpt = getUserPermissionsOpt();
 		if (!userPermissionsOpt.isPresent()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return false;
 		}
 
-		final UserPermissions userPermissions = userPermissionsOpt.get();
+		final UserAuthorizations userPermissions = userPermissionsOpt.get();
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
 		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
 
-		return userPermissions.getEntityPermissions(dtDefinition).stream()
+		return userPermissions.getEntityAuthorizations(dtDefinition).stream()
 				.filter(permission -> permission.getOperation().get().equals(operationName.name())
 						|| permission.getOverrides().contains(operationName.name()))
 				.flatMap(permission -> permission.getRules().stream())
@@ -128,22 +127,23 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 						.toPredicate().test(keyConcept));
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public <K extends KeyConcept> Criteria<K> getCriteriaSecurity(final K keyConcept, final OperationName<K> operation) {
-		Assertion.checkNotNull(keyConcept);
+	public <K extends KeyConcept> Criteria<K> getCriteriaSecurity(final Class<K> keyConceptClass, final OperationName<K> operation) {
+		Assertion.checkNotNull(keyConceptClass);
 		Assertion.checkNotNull(operation);
 		//---
-		final Optional<UserPermissions> userPermissionsOpt = getUserPermissionsOpt();
+		final Optional<UserAuthorizations> userPermissionsOpt = getUserPermissionsOpt();
 		if (!userPermissionsOpt.isPresent()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return Criterions.alwaysFalse();
 		}
 
-		final UserPermissions userPermissions = userPermissionsOpt.get();
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
+		final UserAuthorizations userPermissions = userPermissionsOpt.get();
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConceptClass);
 		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
 
-		final List<Criteria<K>> criterions = userPermissions.getEntityPermissions(dtDefinition).stream()
+		final List<Criteria<K>> criterions = userPermissions.getEntityAuthorizations(dtDefinition).stream()
 				.filter(permission -> permission.getOperation().get().equals(operation.name())
 						|| permission.getOverrides().contains(operation.name()))
 				.flatMap(permission -> permission.getRules().stream())
@@ -170,26 +170,27 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		return securityCriteria;
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public <K extends KeyConcept> String getSearchSecurity(final K keyConcept, final OperationName<K> operationName) {
-		Assertion.checkNotNull(keyConcept);
+	public <K extends KeyConcept> String getSearchSecurity(final Class<K> keyConceptClass, final OperationName<K> operationName) {
+		Assertion.checkNotNull(keyConceptClass);
 		Assertion.checkNotNull(operationName);
 		//---
-		final Optional<UserPermissions> userPermissionsOpt = getUserPermissionsOpt();
+		final Optional<UserAuthorizations> userPermissionsOpt = getUserPermissionsOpt();
 		if (!userPermissionsOpt.isPresent()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return ""; //Attention : pas de *:*
 		}
-		final UserPermissions userPermissions = userPermissionsOpt.get();
+		final UserAuthorizations userPermissions = userPermissionsOpt.get();
 		final SearchSecurityRuleTranslator securityRuleTranslator = new SearchSecurityRuleTranslator();
 		securityRuleTranslator.withCriteria(userPermissions.getSecurityKeys());
 
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
-		final List<Permission> permissions = userPermissions.getEntityPermissions(dtDefinition).stream()
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConceptClass);
+		final List<Authorization> permissions = userPermissions.getEntityAuthorizations(dtDefinition).stream()
 				.filter(permission -> permission.getOperation().get().equals(operationName.name()))
 				.collect(Collectors.toList());
-		for (final Permission permission : permissions) {
-			for (final DslMultiExpression ruleExpression : permission.getRules()) {
+		for (final Authorization permission : permissions) {
+			for (final RuleMultiExpression ruleExpression : permission.getRules()) {
 				securityRuleTranslator.withRule(ruleExpression);
 			}
 		}
@@ -201,13 +202,13 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 	public <K extends KeyConcept> List<String> getAuthorizedOperations(final K keyConcept) {
 		Assertion.checkNotNull(keyConcept);
 		//---
-		final Optional<UserPermissions> userPermissionsOpt = getUserPermissionsOpt();
+		final Optional<UserAuthorizations> userPermissionsOpt = getUserPermissionsOpt();
 		if (!userPermissionsOpt.isPresent()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return Collections.emptyList();
 		}
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConcept);
-		return userPermissionsOpt.get().getEntityPermissions(dtDefinition).stream()
+		return userPermissionsOpt.get().getEntityAuthorizations(dtDefinition).stream()
 				.map(permission -> permission.getOperation().get())
 				.collect(Collectors.toList());
 	}

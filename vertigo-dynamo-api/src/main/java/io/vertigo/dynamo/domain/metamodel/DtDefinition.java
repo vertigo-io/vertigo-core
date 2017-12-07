@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -91,16 +91,19 @@ public final class DtDefinition implements Definition {
 		//-----
 		this.name = name;
 		//
-		this.fragmentOpt = fragment;
+		fragmentOpt = fragment;
 		//
 		this.stereotype = stereotype;
 		this.packageName = packageName;
 		DtField id = null;
 
-		this.sortFieldOpt = sortField;
-		this.displayFieldOpt = displayField;
+		sortFieldOpt = sortField;
+		displayFieldOpt = displayField;
 
 		for (final DtField dtField : dtFields) {
+			Assertion.when(stereotype.isPersistent() && dtField.isPersistent())
+					.check(() -> dtField.getDomain().getScope().isPrimitive() && !dtField.getDomain().isMultiple(),
+							"Only non multiple primitives are allowed in entity '{0}'", name);
 			if (dtField.getType().isId()) {
 				Assertion.checkState(id == null, "Only one ID Field is allowed : {0}", name);
 				id = dtField;

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,7 +52,9 @@ final class ComponentAspectUtil {
 	 *
 	 * @return Map des aspects par méthode
 	 */
-	static Map<Method, List<Aspect>> createJoinPoints(final Class<?> implClass, final Collection<Aspect> aspects) {
+	static Map<Method, List<Aspect>> createAspectsByMethod(
+			final Class<?> implClass,
+			final Collection<Aspect> aspects) {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(aspects);
 		//-----
@@ -90,6 +92,7 @@ final class ComponentAspectUtil {
 
 	private static Aspect findAspect(final Annotation annotation, final Collection<Aspect> aspects) {
 		Assertion.checkNotNull(annotation);
+		Assertion.checkNotNull(aspects);
 		// --
 		return aspects
 				.stream()

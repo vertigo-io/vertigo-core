@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 
@@ -83,26 +84,38 @@ public final class FileManagerImpl implements FileManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public VFile createFile(final String fileName, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
+	public VFile createFile(final String fileName, final Instant lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
 		return createFile(fileName, new MimetypesFileTypeMap().getContentType(fileName), lastModified, length, inputStreamBuilder);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public VFile createFile(final String fileName, final String mimeType, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
-		return new StreamFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
+	public VFile createFile(final String fileName, final String typeMime, final Instant lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
+		return new StreamFile(fileName, typeMime, lastModified, length, inputStreamBuilder);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public VFile createFile(final String fileName, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
+		return createFile(fileName, lastModified.toInstant(), length, inputStreamBuilder);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public VFile createFile(final String fileName, final String typeMime, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
+		return createFile(fileName, typeMime, lastModified.toInstant(), length, inputStreamBuilder);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public VFile createFile(final String fileName, final String typeMime, final URL resourceUrl) {
 		final long length;
-		final long lastModified;
+		final Instant lastModified;
 		try {
 			final URLConnection connection = resourceUrl.openConnection();
 			try {
 				length = connection.getContentLength();
-				lastModified = connection.getLastModified();
+				lastModified = Instant.ofEpochMilli(connection.getLastModified());
 			} finally {
 				connection.getInputStream().close();
 			}
@@ -111,7 +124,7 @@ public final class FileManagerImpl implements FileManager {
 		}
 		Assertion.checkArgument(length >= 0, "Can't get file meta from url");
 		final InputStreamBuilder inputStreamBuilder = resourceUrl::openStream;
-		return createFile(fileName, typeMime, new Date(lastModified), length, inputStreamBuilder);
+		return createFile(fileName, typeMime, lastModified, length, inputStreamBuilder);
 	}
 
 	/**
@@ -173,4 +186,5 @@ public final class FileManagerImpl implements FileManager {
 			}
 		}
 	}
+
 }

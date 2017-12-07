@@ -14,7 +14,7 @@ create Domain DO_LABEL {
 	formatter : FMT_DEFAULT
 }
 
-create Domain DO_DATE {
+create Domain DO_INSTANT {
 	dataType : Date
 	formatter : FMT_DATE
 }

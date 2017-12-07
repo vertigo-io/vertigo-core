@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,57 +18,41 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.Optional;
 
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.DataStream;
 
 /**
- * Types.
- * On distingue :
- * - les types primitifs,
- * - types complexes.
- *
- * Les types complexes permettent de créer des objets composites.
- * Ils unifient le socle autour de la notion clé de domaine.
+ * Primitives types.
  *
  * @author  pchretien
  */
 public enum DataType {
 	/** Integer. */
-	Integer(Integer.class, true),
+	Integer(Integer.class),
 	/** Double. */
-	Double(Double.class, true),
+	Double(Double.class),
 	/** Boolean. */
-	Boolean(Boolean.class, true),
+	Boolean(Boolean.class),
 	/** String. */
-	String(String.class, true),
+	String(String.class),
 	/** Date. */
 	@Deprecated
-	Date(Date.class, true),
+	Date(Date.class),
 	/** LocalDate. */
-	LocalDate(LocalDate.class, true),
-	/** ZonedDateTime. */
-	ZonedDateTime(ZonedDateTime.class, true),
+	LocalDate(LocalDate.class),
+	/** Instant. */
+	Instant(Instant.class),
 	/** BigDecimal. */
-	BigDecimal(java.math.BigDecimal.class, true),
+	BigDecimal(java.math.BigDecimal.class),
 	/** Long. */
-	Long(Long.class, true),
+	Long(Long.class),
 	/** DataStream. */
-	DataStream(DataStream.class, true),
-	/** DtObject. */
-	DtObject(DtObject.class, false),
-	/** DtList. */
-	DtList(DtList.class, false);
-
-	/**
-	 * S'agit-il d'un type primitif
-	 */
-	private final boolean primitive;
+	DataStream(DataStream.class);
 
 	/**
 	 * Classe java que le Type encapsule.
@@ -77,15 +61,12 @@ public enum DataType {
 
 	/**
 	 * Constructor.
-	 * @param javaClass Classe java encapsulée
-	 * @param primitive Si il s'agit d'un type primitif (sinon composite)
+	 * @param javaClass the java class
 	 */
-	DataType(final Class<?> javaClass, final boolean primitive) {
+	DataType(final Class<?> javaClass) {
 		Assertion.checkNotNull(javaClass);
 		//-----
-		//Le nom est égal au type sous forme de String
 		this.javaClass = javaClass;
-		this.primitive = primitive;
 	}
 
 	/**
@@ -93,20 +74,26 @@ public enum DataType {
 	 * Lance une exception avec message adequat si pb.
 	 * @param value Valeur é tester
 	 */
-	public void checkValue(final Object value) {
+	void checkValue(final Object value) {
 		//Il suffit de vérifier que la valeur passée est une instance de la classe java définie pour le type Dynamo.
 		//Le test doit être effectué car le cast est non fiable par les generics
 		if (value != null && !javaClass.isInstance(value)) {
-			throw new ClassCastException("Valeur " + value + " ne correspond pas au type :" + this);
+			throw new ClassCastException("Value " + value + " doesn't match :" + this);
 		}
 	}
 
+	/**
+	 * @return if the dataType talks about a date
+	 */
 	public boolean isAboutDate() {
 		return this == DataType.Date
 				|| this == DataType.LocalDate
-				|| this == DataType.ZonedDateTime;
+				|| this == DataType.Instant;
 	}
 
+	/**
+	 * @return if the dataType is a number
+	 */
 	public boolean isNumber() {
 		return this == DataType.Double
 				|| this == DataType.BigDecimal
@@ -122,12 +109,38 @@ public enum DataType {
 	}
 
 	/**
-	 * Il extiste deux types de types primitifs
-	 * - les types simples ou primitifs (Integer, Long, String...),
-	 * - les types composites (DtObject et DtList).
-	 * @return boolean S'il s'agit d'un type primitif de la grammaire
+	 * Finds the dataType bound to a class.
+	 * @param type
+	 * @return Optional DataType of this Class
 	 */
-	public boolean isPrimitive() {
-		return primitive;
+	public static Optional<DataType> of(final Class type) {
+		Assertion.checkNotNull(type);
+		//---
+		DataType dataType;
+		if (Integer.class.equals(type) || int.class.equals(type)) {
+			dataType = DataType.Integer;
+		} else if (Double.class.equals(type) || double.class.equals(type)) {
+			dataType = DataType.Double;
+		} else if (Boolean.class.equals(type) || boolean.class.equals(type)) {
+			dataType = DataType.Boolean;
+		} else if (String.class.equals(type)) {
+			dataType = DataType.String;
+		} else if (Date.class.equals(type)) {
+			dataType = DataType.Date;
+		} else if (LocalDate.class.equals(type)) {
+			dataType = DataType.LocalDate;
+		} else if (Instant.class.equals(type)) {
+			dataType = DataType.Instant;
+		} else if (java.math.BigDecimal.class.equals(type)) {
+			dataType = DataType.BigDecimal;
+		} else if (Long.class.equals(type) || long.class.equals(type)) {
+			dataType = DataType.Long;
+		} else if (DataStream.class.equals(type)) {
+			dataType = DataType.DataStream;
+		} else {
+			//not a well known dataType
+			dataType = null;
+		}
+		return Optional.ofNullable(dataType);
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,10 +22,10 @@ import static io.vertigo.dynamo.task.TaskEngineMock.ATTR_IN_INT_1;
 import static io.vertigo.dynamo.task.TaskEngineMock.ATTR_IN_INT_2;
 import static io.vertigo.dynamo.task.TaskEngineMock.ATTR_IN_INT_3;
 import static io.vertigo.dynamo.task.TaskEngineMock.ATTR_OUT;
+import static io.vertigo.dynamo.task.TaskEngineMock2.ATTR_IN_INTEGERS;
 
 import java.util.List;
 
-import io.vertigo.app.Home;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
@@ -34,18 +34,27 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.util.ListBuilder;
 
 public final class TaskDefinitionProvider implements SimpleDefinitionProvider {
+	public static String TK_MULTIPLICATION = "TK_MULTIPLICATION";
+	public static String TK_ADDITION = "TK_ADDITION";
+
+	public static String TK_MULTIPLICATION_2 = "TK_MULTIPLICATION_2";
+	public static String TK_ADDITION_2 = "TK_ADDITION_2";
 
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		return new ListBuilder<Definition>()
-				.add(buildTaskDefinition("TK_MULTI", "*"))
-				.add(buildTaskDefinition("TK_ADD", "+"))
+				.add(buildTaskDefinition(definitionSpace, TK_MULTIPLICATION, "*"))
+				.add(buildTaskDefinition(definitionSpace, TK_ADDITION, "+"))
+				.add(buildTaskDefinition2(definitionSpace, TK_MULTIPLICATION_2, "*"))
+				.add(buildTaskDefinition2(definitionSpace, TK_ADDITION_2, "+"))
 				.build();
 
 	}
 
-	private TaskDefinition buildTaskDefinition(final String taskDefinitionName, final String params) {
-		final DefinitionSpace definitionSpace = Home.getApp().getDefinitionSpace();
+	private TaskDefinition buildTaskDefinition(
+			final DefinitionSpace definitionSpace,
+			final String taskDefinitionName,
+			final String params) {
 		final Domain doInteger = definitionSpace.resolve("DO_INTEGER", Domain.class);
 
 		return TaskDefinition.builder(taskDefinitionName)
@@ -55,6 +64,22 @@ public final class TaskDefinitionProvider implements SimpleDefinitionProvider {
 				.addInRequired(ATTR_IN_INT_1, doInteger)
 				.addInRequired(ATTR_IN_INT_2, doInteger)
 				.addInRequired(ATTR_IN_INT_3, doInteger)
+				.withOutRequired(ATTR_OUT, doInteger)
+				.build();
+	}
+
+	private TaskDefinition buildTaskDefinition2(
+			final DefinitionSpace definitionSpace,
+			final String taskDefinitionName,
+			final String params) {
+		final Domain doIntegers = definitionSpace.resolve("DO_INTEGERS", Domain.class);
+		final Domain doInteger = definitionSpace.resolve("DO_INTEGER", Domain.class);
+
+		return TaskDefinition.builder(taskDefinitionName)
+				.withEngine(TaskEngineMock2.class)
+				.withRequest(params)
+				.withPackageName(TaskEngineMock.class.getPackage().getName())
+				.addInRequired(ATTR_IN_INTEGERS, doIntegers)
 				.withOutRequired(ATTR_OUT, doInteger)
 				.build();
 	}

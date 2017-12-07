@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,6 +44,11 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 	 */
 	@Override
 	List<String> writeUriAnnotations() {
+		return writeTransientAnnotations();
+	}
+
+	@Override
+	List<String> writeTransientAnnotations() {
 		return Collections.singletonList("@javax.persistence.Transient");
 	}
 
@@ -72,7 +77,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 			if (dtDefinition.isPersistent()) {
 				lines.add("@javax.persistence.Table (name = \"" + getTableName(dtDefinition) + "\")");
 				if (containsDataStreamField(dtDefinition)) {
-					lines.add("@org.hibernate.annotations.TypeDefs(value = { @org.hibernate.annotations.TypeDef(name = \"DO_STREAM\", typeClass = io.vertigo.dynamo.plugins.database.connection.hibernate.DataStreamType.class) })");
+					lines.add("@org.hibernate.annotations.TypeDefs(value = { @org.hibernate.annotations.TypeDef(name = \"DO_STREAM\", typeClass = io.vertigo.database.plugins.sql.connection.hibernate.DataStreamType.class) })");
 				}
 			}
 		}
@@ -113,20 +118,20 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 			if (field.isPersistent()) {
 				final String sequence = getSequenceName(field);
 				//allocationSize=1 pour Hibernate 5
-				lines.add("@javax.persistence.SequenceGenerator(name = \"sequence\", sequenceName = \"" + sequence + "\", allocationSize=1)");
-				lines.add("@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = \"sequence\")");
+				lines.add("@javax.persistence.SequenceGenerator(name = \"" + sequence + "\", sequenceName = \"" + sequence + "\", allocationSize=1)");
+				lines.add("@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = \"" + sequence + "\")");
 			}
 		}
 		if (field.isPersistent()) {
 			final String fieldName = field.getName();
 			lines.add("@javax.persistence.Column(name = \"" + fieldName + "\")");
-			if (!field.isPersistent()) {
-				lines.add("@javax.persistence.Transient");
-			}
-			if (field.isPersistent() && field.getDomain().getDataType() == DataType.DataStream) {
+			if (field.getDomain().getDataType() == DataType.DataStream) {
 				lines.add("@org.hibernate.annotations.Type(type = \"DO_STREAM\")");
 			}
 		} else if (field.getType() == DtField.FieldType.COMPUTED) {
+			lines.add("@javax.persistence.Transient");
+		} else {
+			// not persistent
 			lines.add("@javax.persistence.Transient");
 		}
 		return lines;

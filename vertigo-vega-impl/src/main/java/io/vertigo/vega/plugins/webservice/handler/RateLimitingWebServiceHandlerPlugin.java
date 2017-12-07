@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.core.definition.Definition;
@@ -93,7 +92,7 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return Collections.singletonList(new DaemonDefinition("DMN_RATE_LIMIT_WINDOW_RESET", () -> new RateLimitWindowResetDaemon(this), windowSeconds));
+		return Collections.singletonList(new DaemonDefinition("DMN_RATE_LIMIT_WINDOW_RESET", () -> () -> resetRateLimitWindow(), windowSeconds));
 	}
 
 	/** {@inheritDoc} */
@@ -140,28 +139,6 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 	void resetRateLimitWindow() {
 		hitsCounter.clear();
 		lastRateLimitResetTime = System.currentTimeMillis();
-	}
-
-	/**
-	 * @author npiedeloup
-	 */
-	public static final class RateLimitWindowResetDaemon implements Daemon {
-		private final RateLimitingWebServiceHandlerPlugin rateLimitingWebServiceHandlerPlugin;
-
-		/**
-		 * @param rateLimitingWebServiceHandlerPlugin This plugin
-		 */
-		public RateLimitWindowResetDaemon(final RateLimitingWebServiceHandlerPlugin rateLimitingWebServiceHandlerPlugin) {
-			Assertion.checkNotNull(rateLimitingWebServiceHandlerPlugin);
-			//------
-			this.rateLimitingWebServiceHandlerPlugin = rateLimitingWebServiceHandlerPlugin;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public void run() {
-			rateLimitingWebServiceHandlerPlugin.resetRateLimitWindow();
-		}
 	}
 
 }

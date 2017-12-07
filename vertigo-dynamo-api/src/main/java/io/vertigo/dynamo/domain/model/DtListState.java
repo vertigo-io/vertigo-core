@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,7 +40,11 @@ public final class DtListState {
 	 * @param sortFieldName sort fieldName (null if not use)
 	 * @param sortDesc desc or asc order (null if not use)
 	 */
-	public DtListState(final Integer maxRows, final int skipRows, final String sortFieldName, final Boolean sortDesc) {
+	public DtListState(
+			final Integer maxRows,
+			final int skipRows,
+			final String sortFieldName,
+			final Boolean sortDesc) {
 		Assertion.when(maxRows != null)
 				.check(() -> maxRows > 0, "maxRows must be positive ({0})", maxRows);
 		Assertion.checkArgument(skipRows >= 0, "SkipRows must be positive ({0})", skipRows);

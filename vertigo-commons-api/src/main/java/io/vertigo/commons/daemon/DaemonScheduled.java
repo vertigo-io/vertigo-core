@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,5 +43,11 @@ public @interface DaemonScheduled {
 	 * @return daemon execution period
 	 */
 	int periodInSeconds();
+
+	/**
+	 * If the deaemon from this method is monitored by an analytics tracer.
+	 * @return daemon execution monitored by a tracer
+	 */
+	boolean analytics() default true;
 
 }

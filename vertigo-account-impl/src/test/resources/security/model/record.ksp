@@ -1,4 +1,4 @@
-package io.vertigo.persona.security.model
+package io.vertigo.account.authorization.model
 
 
 create DtDefinition DT_RECORD {

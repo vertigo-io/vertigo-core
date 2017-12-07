@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import io.vertigo.commons.analytics.AnalyticsManagerTest;
+import io.vertigo.commons.analytics.health.HealthAnalyticsTest;
+import io.vertigo.commons.analytics.metric.MetricAnalyticsTest;
+import io.vertigo.commons.analytics.process.ProcessAnalyticsTest;
 import io.vertigo.commons.cache.ehcache.EhCacheManagerTest;
 import io.vertigo.commons.cache.memory.MemoryCacheManagerTest;
 import io.vertigo.commons.cache.redis.RedisCacheManagerTest;
@@ -57,7 +59,9 @@ import io.vertigo.commons.transaction.VTransactionManagerTest;
 @RunWith(Suite.class)
 @SuiteClasses({
 		//--analytics
-		AnalyticsManagerTest.class,
+		ProcessAnalyticsTest.class,
+		HealthAnalyticsTest.class,
+		MetricAnalyticsTest.class,
 		//--cache
 		EhCacheManagerTest.class,
 		MemoryCacheManagerTest.class,

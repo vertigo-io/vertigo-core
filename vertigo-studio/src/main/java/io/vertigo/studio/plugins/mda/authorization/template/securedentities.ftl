@@ -1,12 +1,12 @@
 package ${packageName};
 
 import io.vertigo.account.authorization.metamodel.OperationName;
-import io.vertigo.account.authorization.metamodel.PermissionName;
+import io.vertigo.account.authorization.metamodel.AuthorizationName;
 
 /**
  * Warning. This class is generated automatically !
  *
- * Enum of the security permissions and operations associated with secured entities known by the application.
+ * Enum of the security authorizations and operations associated with secured entities known by the application.
  */
 public final class ${classSimpleName} {
 
@@ -16,30 +16,30 @@ public final class ${classSimpleName} {
 
 <#list securedentities as securedEntity>
 	/**
-	 * Permissions of ${securedEntity.entity.classSimpleName}.
+	 * Authorizations of ${securedEntity.entity.classSimpleName}.
 	 */
-	public enum ${securedEntity.entity.classSimpleName}Permissions implements PermissionName {
+	public enum ${securedEntity.entity.classSimpleName}Authorizations implements AuthorizationName {
 		<#list securedEntity.operations as operation>
 			 /** ${operation.comment.orElse(operation.name)}. */
 			${operation.name}<#if operation_has_next>,<#else>;</#if>
 		</#list>
 		
 		/**
-		 * Get the associated permission.
+		 * Get the associated authorization.
 		 *
-		 * @param code permission code
-		 * @return permission
+		 * @param code authorization code
+		 * @return authorization
 		 */
-		public static Permission of(final String code) {
-			return Home.getApp().getDefinitionSpace().resolve(code, Permission.class);
+		public static Authorization of(final String code) {
+			return Home.getApp().getDefinitionSpace().resolve(code, Authorization.class);
 		}
 	
 		/**
-		 * Get the associated permission.
+		 * Get the associated authorization.
 		 *
 		 * @return role
 		 */
-		public Permission getPermission() {
+		public Authorization getAuthorization() {
 			return of(name());
 		}
 	}

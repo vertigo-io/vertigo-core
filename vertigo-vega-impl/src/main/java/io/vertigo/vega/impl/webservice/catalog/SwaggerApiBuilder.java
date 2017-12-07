@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,10 +35,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -46,7 +44,6 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.VSystemException;
-import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
@@ -309,14 +306,11 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	}
 
 	private static Type getFieldType(final DtField dtField) {
-		final DataType dataType = dtField.getDomain().getDataType();
-		if (DataType.DtObject == dataType) {
-			return ClassUtil.classForName(dtField.getDomain().getDtDefinition().getClassCanonicalName());
-		} else if (DataType.DtList == dataType) {
-			final Class<?> dtClass = ClassUtil.classForName(dtField.getDomain().getDtDefinition().getClassCanonicalName());
-			return new CustomParameterizedType(DtList.class, dtClass);
+		final Class<?> dtClass = dtField.getDomain().getJavaClass();
+		if (dtField.getDomain().isMultiple()) {
+			return new CustomParameterizedType(dtField.getDomain().getTargetJavaClass(), dtClass);
 		}
-		return dataType.getJavaClass();
+		return dtClass;
 	}
 
 	private void appendPropertiesObject(final Map<String, Object> entity, final Type type, final Class<?> parameterClass) {
@@ -443,7 +437,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(paramClass);
 			for (final DtField dtField : dtDefinition.getFields()) {
 				final String fieldName = StringUtil.constToLowerCamelCase(dtField.getName());
-				pseudoWebServiceParams.add(WebServiceParam.builder(dtField.getDomain().getDataType().getJavaClass())
+				pseudoWebServiceParams.add(WebServiceParam.builder(dtField.getDomain().getJavaClass())
 						.with(webServiceParam.getParamType(), prefix + fieldName)
 						.build());
 			}

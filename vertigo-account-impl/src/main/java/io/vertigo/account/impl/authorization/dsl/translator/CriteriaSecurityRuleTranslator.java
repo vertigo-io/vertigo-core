@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.vertigo.account.authorization.metamodel.SecurityDimension;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslExpression;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslExpression.ValueOperator;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslFixedValue;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslMultiExpression;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslMultiExpression.BoolOperator;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslUserPropertyValue;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression.ValueOperator;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleFixedValue;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression.BoolOperator;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleUserPropertyValue;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -49,27 +49,27 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 	 */
 	public Criteria<E> toCriteria() {
 		Criteria<E> mainCriteria = null;
-		for (final DslMultiExpression expression : getMultiExpressions()) {
+		for (final RuleMultiExpression expression : getMultiExpressions()) {
 			mainCriteria = orCriteria(mainCriteria, toCriteria(expression));
 		}
 		Assertion.checkNotNull(mainCriteria);//can't be null
 		return mainCriteria;
 	}
 
-	private Criteria<E> toCriteria(final DslMultiExpression multiExpression) {
+	private Criteria<E> toCriteria(final RuleMultiExpression multiExpression) {
 		Criteria<E> mainCriteria = null;
 		if (multiExpression.isAlwaysTrue()) {
 			return Criterions.alwaysTrue();
 		}
 
-		for (final DslExpression expression : multiExpression.getExpressions()) {
+		for (final RuleExpression expression : multiExpression.getExpressions()) {
 			if (multiExpression.getBoolOperator() == BoolOperator.AND) {
 				mainCriteria = andCriteria(mainCriteria, toCriteria(expression));
 			} else {
 				mainCriteria = orCriteria(mainCriteria, toCriteria(expression));
 			}
 		}
-		for (final DslMultiExpression expression : multiExpression.getMultiExpressions()) {
+		for (final RuleMultiExpression expression : multiExpression.getMultiExpressions()) {
 			if (multiExpression.getBoolOperator() == BoolOperator.AND) {
 				mainCriteria = andCriteria(mainCriteria, toCriteria(expression));
 			} else {
@@ -80,9 +80,9 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		return mainCriteria;
 	}
 
-	private Criteria<E> toCriteria(final DslExpression expression) {
-		if (expression.getValue() instanceof DslUserPropertyValue) {
-			final DslUserPropertyValue userPropertyValue = (DslUserPropertyValue) expression.getValue();
+	private Criteria<E> toCriteria(final RuleExpression expression) {
+		if (expression.getValue() instanceof RuleUserPropertyValue) {
+			final RuleUserPropertyValue userPropertyValue = (RuleUserPropertyValue) expression.getValue();
 			final List<Serializable> userValues = getUserCriteria(userPropertyValue.getUserProperty());
 			if (userValues.size() > 0) {
 
@@ -104,8 +104,8 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 				return mainCriteria;
 			}
 			return Criterions.alwaysFalse();
-		} else if (expression.getValue() instanceof DslFixedValue) {
-			return toCriteria(expression.getFieldName(), expression.getOperator(), ((DslFixedValue) expression.getValue()).getFixedValue());
+		} else if (expression.getValue() instanceof RuleFixedValue) {
+			return toCriteria(expression.getFieldName(), expression.getOperator(), ((RuleFixedValue) expression.getValue()).getFixedValue());
 		} else {
 			throw new IllegalArgumentException("value type not supported " + expression.getValue().getClass().getName());
 		}

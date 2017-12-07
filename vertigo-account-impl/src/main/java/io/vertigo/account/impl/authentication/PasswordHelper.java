@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,12 +27,13 @@ import java.security.spec.KeySpec;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
-import io.vertigo.commons.impl.codec.base64.Base64Codec;
+import io.vertigo.app.Home;
+import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
 /**
- * Classe utilitaire offrant un ensemble de services concernant les Password.
+ * Utility class used for password managment.
  *
  * @author npiedeloup
  */
@@ -46,11 +47,11 @@ public final class PasswordHelper {
 
 	private final Charset defaultCharsetUTF8;
 	private final SecretKeyFactory secretKeyFactory;
-	private final Base64Codec base64Codec;
+	private final CodecManager codecManager;
 	private final SecureRandom rnd;
 
 	/**
-	 * Contructeur
+	 * Constructor.
 	 */
 	public PasswordHelper() {
 		try {
@@ -59,7 +60,7 @@ public final class PasswordHelper {
 			throw WrappedException.wrap(e);
 		}
 		defaultCharsetUTF8 = Charset.forName("UTF-8");
-		base64Codec = new Base64Codec();
+		codecManager = Home.getApp().getComponentSpace().resolve(CodecManager.class);
 		rnd = new SecureRandom();
 	}
 
@@ -105,7 +106,7 @@ public final class PasswordHelper {
 	 * @return La valeur encodee.
 	 */
 	private String encodeBase64(final byte[] data) {
-		return base64Codec.encode(data);
+		return codecManager.getBase64Codec().encode(data);
 	}
 
 	private static String encodeInt(final int value) {

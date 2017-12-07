@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.commons.transaction.VTransactionAfterCompletionFunction;
 import io.vertigo.dynamo.file.util.FileUtil;
@@ -42,7 +43,7 @@ import io.vertigo.lang.WrappedException;
 final class FileActionSave implements VTransactionAfterCompletionFunction {
 	private static final String EXT_NEW = "toSave";
 	private static final char EXT_SEPARATOR = '.';
-	private static final Logger LOG = Logger.getLogger(FileActionSave.class.getName());
+	private static final Logger LOG = LogManager.getLogger(FileActionSave.class.getName());
 
 	//ref the file before this save action
 	private final File txPrevFile;

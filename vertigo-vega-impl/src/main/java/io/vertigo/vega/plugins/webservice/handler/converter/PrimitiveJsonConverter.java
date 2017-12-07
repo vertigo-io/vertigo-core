@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
  */
 package io.vertigo.vega.plugins.webservice.handler.converter;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -57,7 +58,8 @@ public final class PrimitiveJsonConverter implements JsonConverter {
 				|| Double.class.isAssignableFrom(paramClass)
 				|| Date.class.isAssignableFrom(paramClass)
 				|| LocalDate.class.isAssignableFrom(paramClass)
-				|| ZonedDateTime.class.isAssignableFrom(paramClass);
+				|| ZonedDateTime.class.isAssignableFrom(paramClass)
+				|| Instant.class.isAssignableFrom(paramClass);
 	}
 
 	/** {@inheritDoc} */
@@ -104,7 +106,8 @@ public final class PrimitiveJsonConverter implements JsonConverter {
 			return paramClass.cast(Double.valueOf(json));
 		} else if (Date.class.isAssignableFrom(paramClass)
 				|| LocalDate.class.isAssignableFrom(paramClass)
-				|| ZonedDateTime.class.isAssignableFrom(paramClass)) {
+				|| ZonedDateTime.class.isAssignableFrom(paramClass)
+				|| Instant.class.isAssignableFrom(paramClass)) {
 			return jsonReaderEngine.fromJson(escapeJsonValue(json), paramClass); //Pour utiliser Gson sur des valeurs seules, il faut entourer de "", sinon elles sont splitées sur le :
 		} else {
 			throw new IllegalArgumentException("Unsupported type " + paramClass.getSimpleName());

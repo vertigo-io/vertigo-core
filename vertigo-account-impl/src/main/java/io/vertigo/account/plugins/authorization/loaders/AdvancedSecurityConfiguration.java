@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@ package io.vertigo.account.plugins.authorization.loaders;
 
 import java.util.List;
 
-import io.vertigo.account.authorization.metamodel.Permission;
+import io.vertigo.account.authorization.metamodel.Authorization;
 import io.vertigo.account.authorization.metamodel.SecuredEntity;
 
 /**
@@ -30,20 +30,20 @@ import io.vertigo.account.authorization.metamodel.SecuredEntity;
  */
 final class AdvancedSecurityConfiguration {
 
-	private final List<Permission> permissions;
+	private final List<Authorization> globalAuthorizations;
 	private final List<SecuredEntity> securedEntities;
 
 	/**
 	 * Construct an instance of AdvancedSecurityConfiguration.
 	 *
-	 * @param permissions Permissions attribuables aux utilisateurs.
+	 * @param globalAuthorizations Authorizations attribuables aux utilisateurs.
 	 * @param securedEntities Description des entités sécurisés.
 	 */
 	public AdvancedSecurityConfiguration(
-			final List<Permission> permissions,
+			final List<Authorization> globalAuthorizations,
 			final List<SecuredEntity> securedEntities) {
 		super();
-		this.permissions = permissions;
+		this.globalAuthorizations = globalAuthorizations;
 		this.securedEntities = securedEntities;
 	}
 
@@ -52,8 +52,8 @@ final class AdvancedSecurityConfiguration {
 	 *
 	 * @return the value of permissions.
 	 */
-	public List<Permission> getPermissions() {
-		return permissions;
+	public List<Authorization> getGlobalAuthorizations() {
+		return globalAuthorizations;
 	}
 
 	/**

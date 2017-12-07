@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,13 +20,12 @@ package io.vertigo.database.sql;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.OptionalInt;
@@ -43,6 +42,8 @@ import io.vertigo.database.sql.data.Movie;
 import io.vertigo.database.sql.data.MovieInfo;
 import io.vertigo.database.sql.data.Movies;
 import io.vertigo.database.sql.statement.SqlParameter;
+import io.vertigo.database.sql.statement.SqlStatement;
+import io.vertigo.database.sql.statement.SqlStatementBuilder;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.lang.DataStream;
 
@@ -54,16 +55,17 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 	private static final String DROP_TABLE_MOVIE = "DROP TABLE movie";
 	private static final String DROP_SEQUENCE_MOVIE = "DROP SEQUENCE seq_movie";
 
-	private static final String INSERT_INTO_MOVIE_VALUES = "insert into movie values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String INSERT_INTO_MOVIE_VALUES = "insert into movie values (#movie.id#, #movie.title#, #movie.mail#, #movie.fps#, #movie.income#, #movie.color#, #movie.release_date#, #movie.release_local_date#, #movie.release_instant#, #movie.icon#)";
 	private static final String CREATE_TABLE_MOVIE = "create table movie ("
 			+ "id bigint , "
 			+ "title varchar(255) , "
+			+ "mail varchar(255) , "
 			+ "fps double precision ,"
 			+ "income decimal(6,3) , "
 			+ "color boolean , "
 			+ "release_date timestamp , "
 			+ "release_local_date date , "
-			+ "release_zoned_date_time datetime , "
+			+ "release_instant timestamp , "
 			+ "icon blob );";
 	@Inject
 	protected SqlDataBaseManager dataBaseManager;
@@ -122,51 +124,57 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 
 	protected void execpreparedStatement(final SqlConnection connection, final String sql) throws SQLException {
 		dataBaseManager
-				.createPreparedStatement(connection)
-				.executeUpdate(sql, Collections.emptyList());
+				.executeUpdate(SqlStatement.builder(sql).build(), connection);
 	}
 
 	private void insert(
 			final SqlConnection connection,
-			final long id,
-			final String title,
-			final Date releaseDate,
-			final LocalDate releaseLocalDate,
-			final ZonedDateTime releaseZonedDateTime) throws SQLException {
-
-		final String sql = INSERT_INTO_MOVIE_VALUES;
-		final List<SqlParameter> sqlParameters = Arrays.asList(
-				SqlParameter.of(Long.class, id),
-				SqlParameter.of(String.class, title),
-				SqlParameter.of(Double.class, null),
-				SqlParameter.of(BigDecimal.class, null),
-				SqlParameter.of(Boolean.class, null),
-				SqlParameter.of(Date.class, releaseDate),
-				SqlParameter.of(LocalDate.class, releaseLocalDate),
-				SqlParameter.of(ZonedDateTime.class, releaseZonedDateTime),
-				SqlParameter.of(DataStream.class, Movies.buildIcon()));
+			final Movie movie) throws SQLException {
 		//-----
-		dataBaseManager.createPreparedStatement(connection)
-				.executeUpdate(sql, sqlParameters);
+		dataBaseManager
+				.executeUpdate(
+						SqlStatement.builder(INSERT_INTO_MOVIE_VALUES)
+								.bind("movie", Movie.class, movie)
+								.build(),
+						connection);
 	}
 
 	private void createDatas() throws Exception {
 		final SqlConnection connection = obtainMainConnection();
 		try {
-			insert(connection, 1,
+			insert(connection, Movies.createMovie(
+					1,
 					Movies.TITLE_MOVIE_1,
+					null, //mail
+					null,
+					null,
+					null,
 					new Date(1941 - 1900, 5 - 1, 1, 16, 30),
 					LocalDate.of(1941, 5, 1),
-					ZonedDateTime.of(LocalDate.of(1941, 5, 1), LocalTime.of(16, 30), ZoneId.of("UTC")));
+					LocalDateTime.of(1941, 5, 1, 16, 30).toInstant(ZoneOffset.UTC)));
 			//-----
-			insert(connection, 2,
+			insert(connection, Movies.createMovie(
+					2,
 					Movies.TITLE_MOVIE_2,
+					null, //mail
+					null,
+					null,
+					null,
 					new Date(1958 - 1900, 5 - 1, 9, 16, 30),
 					LocalDate.of(1958, 5, 9),
-					ZonedDateTime.of(LocalDate.of(1958, 5, 9), LocalTime.of(16, 30), ZoneId.of("UTC")));
+					LocalDateTime.of(1958, 5, 9, 16, 30).toInstant(ZoneOffset.UTC)));
 			//-----
 			//On passe par une requête bindée
-			insert(connection, 3, Movies.TITLE_MOVIE_3, null, null, null);
+			insert(connection, Movies.createMovie(
+					3,
+					Movies.TITLE_MOVIE_3,
+					null, //Mail
+					null,
+					null,
+					null,
+					null,
+					null,
+					null));
 			connection.commit();
 		} finally {
 			connection.release();
@@ -219,8 +227,10 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
 		try {
 			return dataBaseManager
-					.createPreparedStatement(connection)
-					.executeQuery(sql, Collections.emptyList(), dataType, limit);
+					.executeQuery(
+							SqlStatement.builder(sql).build(),
+							dataType, limit,
+							connection);
 		} finally {
 			connection.release();
 		}
@@ -255,6 +265,54 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 	}
 
 	@Test
+	public void testSelectListInput() throws Exception {
+		//On crée les données
+		createDatas();
+		//----
+		final SqlConnection connection = obtainMainConnection();
+		final List<Movie> movies;
+		final List<Movie> moviesParams = new ArrayList<>();
+		moviesParams.add(Movies.createMovie(1, Movies.TITLE_MOVIE_1, null, null, null, null, null, null, null));
+		moviesParams.add(Movies.createMovie(2, Movies.TITLE_MOVIE_2, null, null, null, null, null, null, null));
+		try {
+			movies = dataBaseManager.executeQuery(SqlStatement
+					.builder("select * from movie where movie.title in (#movies.0.title#, #movies.1.title#) ")
+					.bind("movies", List.class, moviesParams)
+					.build(),
+					Movie.class,
+					2,
+					connection);
+
+		} finally {
+			connection.release();
+		}
+		Assert.assertEquals(2, movies.size());
+	}
+
+	@Test
+	public void testPrimitiveParam() throws Exception {
+		//On crée les données
+		createDatas();
+		//----
+		final SqlConnection connection = obtainMainConnection();
+		final List<Movie> movies;
+		try {
+			movies = dataBaseManager.executeQuery(SqlStatement
+					.builder("select * from movie where movie.title = #title# ")
+					.bind("title", String.class, Movies.TITLE_MOVIE_1)
+					.build(),
+					Movie.class,
+					1,
+					connection);
+
+		} finally {
+			connection.release();
+		}
+		Assert.assertEquals(1, movies.size());
+		Assert.assertEquals(Movies.TITLE_MOVIE_1, movies.get(0).getTitle());
+	}
+
+	@Test
 	public void testBatchInserts() throws Exception {
 		final SqlConnectionProvider sqlConnectionProvider = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
 		final String sql = INSERT_INTO_MOVIE_VALUES;
@@ -272,7 +330,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 					SqlParameter.of(Boolean.class, movie.getColor()),
 					SqlParameter.of(Date.class, movie.getReleaseDate()),
 					SqlParameter.of(LocalDate.class, movie.getReleaseLocalDate()),
-					SqlParameter.of(ZonedDateTime.class, movie.getReleaseZonedDateTime()),
+					SqlParameter.of(Instant.class, movie.getReleaseInstant()),
 					SqlParameter.of(DataStream.class, movie.getIcon()));
 			batch.add(sqlParameters);
 		}
@@ -280,9 +338,14 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
 		final OptionalInt result;
 		try {
-			result = dataBaseManager
-					.createPreparedStatement(connection)
-					.executeBatch(sql, batch);
+			final SqlStatementBuilder sqlStatementBuilder = SqlStatement.builder(sql);
+
+			for (final Movie movie : movies) {
+				sqlStatementBuilder
+						.bind("movie", Movie.class, movie)
+						.nextLine();
+			}
+			result = dataBaseManager.executeBatch(sqlStatementBuilder.build(), connection);
 			connection.commit();
 		} finally {
 			connection.release();
@@ -305,12 +368,21 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary")
 				.obtainConnection();
 		try {
-			execpreparedStatement(connection, "insert into movie values (1, 'Star wars', null, null, null, null, null, null, null)");
-			execpreparedStatement(connection, "insert into movie values (2, 'Will Hunting', null, null, null, null, null, null, null)");
-			execpreparedStatement(connection, "insert into movie values (3, 'Usual Suspects', null, null, null, null, null, null, null)");
+			execpreparedStatement(connection, "insert into movie values (1, 'Star wars', null, null, null, null, null, null, null, null)");
+			execpreparedStatement(connection, "insert into movie values (2, 'Will Hunting', null, null, null, null, null, null, null, null)");
+			execpreparedStatement(connection, "insert into movie values (3, 'Usual Suspects', null, null, null, null, null, null, null, null)");
 			//-----
 			//On passe par une requête bindée
-			insert(connection, 4, Movies.TITLE_MOVIE_4, null, null, null);
+			insert(connection, Movies.createMovie(
+					3,
+					Movies.TITLE_MOVIE_3,
+					null, //mail
+					null,
+					null,
+					null,
+					null,
+					null,
+					null));
 			connection.commit();
 		} finally {
 			connection.release();
@@ -357,14 +429,15 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		final SqlConnection connection = obtainMainConnection();
 		long generatedKey;
 		try {
-			final String sql = dataBaseManager.parseQuery(insertWithgeneratedKey).getVal1();
-			generatedKey = dataBaseManager.createPreparedStatement(connection)
+			final Movie movie = new Movie();
+			movie.setTitle("frankenstein");
+			generatedKey = dataBaseManager
 					.executeUpdateWithGeneratedKey(
-							sql,
-							Arrays.asList(SqlParameter.of(String.class, "frankenstein")),
+							SqlStatement.builder(insertWithgeneratedKey).bind("DTO", Movie.class, movie).build(),
 							generationMode,
 							"ID",
-							Long.class)
+							Long.class,
+							connection)
 					.getVal2();
 			connection.commit();
 		} finally {

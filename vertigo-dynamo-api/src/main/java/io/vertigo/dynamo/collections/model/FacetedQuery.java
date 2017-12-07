@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,8 @@
 package io.vertigo.dynamo.collections.model;
 
 import java.io.Serializable;
-import java.util.List;
 
 import io.vertigo.core.definition.DefinitionReference;
-import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.lang.Assertion;
 
@@ -34,19 +32,19 @@ public final class FacetedQuery implements Serializable {
 	private static final long serialVersionUID = -3215786603726103410L;
 
 	private final DefinitionReference<FacetedQueryDefinition> facetedQueryDefinitionRef;
-	private final List<ListFilter> listFilters;
+	private final SelectedFacetValues selectedFacetValues;
 
 	/**
 	 * Constructor.
 	 * @param facetedQueryDefinition Definition de la requête
-	 * @param listFilters Liste de filtres supplémentaires
+	 * @param selectedFacetValue Liste des valeurs de facette selectionnées par facette
 	 */
-	public FacetedQuery(final FacetedQueryDefinition facetedQueryDefinition, final List<ListFilter> listFilters) {
+	public FacetedQuery(final FacetedQueryDefinition facetedQueryDefinition, final SelectedFacetValues selectedFacetValue) {
 		Assertion.checkNotNull(facetedQueryDefinition);
-		Assertion.checkNotNull(listFilters);
+		Assertion.checkNotNull(selectedFacetValue);
 		//-----
-		this.facetedQueryDefinitionRef = new DefinitionReference<>(facetedQueryDefinition);
-		this.listFilters = listFilters;
+		facetedQueryDefinitionRef = new DefinitionReference<>(facetedQueryDefinition);
+		selectedFacetValues = selectedFacetValue;
 	}
 
 	/**
@@ -57,10 +55,10 @@ public final class FacetedQuery implements Serializable {
 	}
 
 	/**
-	 * Liste de filtres supplémentaires.
+	 * Liste des supplémentaires.
 	 * @return Liste des filtres.
 	 */
-	public List<ListFilter> getListFilters() {
-		return listFilters;
+	public SelectedFacetValues getSelectedFacetValues() {
+		return selectedFacetValues;
 	}
 }

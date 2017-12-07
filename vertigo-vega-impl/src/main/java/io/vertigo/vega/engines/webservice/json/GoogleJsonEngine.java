@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -58,11 +59,14 @@ import com.google.gson.reflect.TypeToken;
 
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.ListVAccessor;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -269,7 +273,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
-	private final class DtObjectJsonAdapter<D extends DtObject> implements JsonSerializer<D>, JsonDeserializer<D> {
+	private final class EntityJsonAdapter<D extends DtObject> implements JsonSerializer<D>, JsonDeserializer<D> {
 
 		/** {@inheritDoc} */
 		@Override
@@ -279,6 +283,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 			dtDefinition.getFields()
 					.stream()
+					.filter(dtField -> dtField.getType() != FieldType.COMPUTED)// we don't serialize computed fields
 					.forEach(field -> {
 						jsonObject.add(StringUtil.constToLowerCamelCase(field.getName()), context.serialize(field.getDataAccessor().getValue(src)));
 					});
@@ -289,6 +294,14 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.filter(VAccessor::isLoaded)
 					.forEach(accessor -> {
 						jsonObject.add(accessor.getRole(), context.serialize(accessor.get()));
+					});
+
+			Stream.of(src.getClass().getDeclaredFields())
+					.filter(field -> ListVAccessor.class.isAssignableFrom(field.getType()))
+					.map(field -> getListAccessor(field, src))
+					.filter(ListVAccessor::isLoaded)
+					.forEach(accessor -> {
+						jsonObject.add(StringUtil.first2LowerCase(accessor.getRole()), context.serialize(accessor.get()));
 					});
 			return jsonObject;
 
@@ -301,6 +314,8 @@ public final class GoogleJsonEngine implements JsonEngine {
 			// we use as base the default deserialization
 			final D dtObject = (D) gson.getDelegateAdapter(null, TypeToken.get(typeOfT)).fromJsonTree(json);
 			final JsonObject jsonObject = json.getAsJsonObject();
+
+			//for now Many relationships (represented by ListVAccessor) are readonly so we don't handle them at deserialization
 
 			// case of the lazy objet passed
 			Stream.of(((Class<D>) typeOfT).getDeclaredFields())
@@ -316,7 +331,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.forEach(field -> field.getDataAccessor()
 							.setValue(
 									dtObject,
-									context.deserialize(jsonObject.get(StringUtil.constToLowerCamelCase(field.getName())), field.getDomain().getDataType().getJavaClass())));
+									context.deserialize(jsonObject.get(StringUtil.constToLowerCamelCase(field.getName())), field.getDomain().getJavaClass())));
 
 			return dtObject;
 
@@ -328,6 +343,15 @@ public final class GoogleJsonEngine implements JsonEngine {
 		try {
 			field.setAccessible(true);
 			return (VAccessor) field.get(object);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			throw WrappedException.wrap(e);
+		}
+	}
+
+	private static ListVAccessor getListAccessor(final Field field, final Object object) {
+		try {
+			field.setAccessible(true);
+			return (ListVAccessor) field.get(object);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			throw WrappedException.wrap(e);
 		}
@@ -425,13 +449,28 @@ public final class GoogleJsonEngine implements JsonEngine {
 		/** {@inheritDoc} */
 		@Override
 		public JsonElement serialize(final ZonedDateTime date, final Type typeOfSrc, final JsonSerializationContext context) {
-			return new JsonPrimitive(date.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.of("UTC")))); // "yyyy-mm-ddTHH:MI:SSZ"
+			return new JsonPrimitive(date.format(DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.of("UTC")))); // "yyyy-mm-ddTHH:MI:SSZ"
 		}
 
 		/** {@inheritDoc} */
 		@Override
 		public ZonedDateTime deserialize(final JsonElement jsonElement, final Type type, final JsonDeserializationContext jsonDeserializationContext) {
-			return ZonedDateTime.parse(jsonElement.getAsString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.of("UTC")));
+			return ZonedDateTime.parse(jsonElement.getAsString(), DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.of("UTC")));
+		}
+	}
+
+	private static class InstantAdapter implements JsonSerializer<Instant>, JsonDeserializer<Instant> {
+
+		/** {@inheritDoc} */
+		@Override
+		public JsonElement serialize(final Instant date, final Type typeOfSrc, final JsonSerializationContext context) {
+			return new JsonPrimitive(date.toString()); // "yyyy-mm-ddTHH:MI:SSZ"
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public Instant deserialize(final JsonElement jsonElement, final Type type, final JsonDeserializationContext jsonDeserializationContext) {
+			return UTCDateUtil.parseInstant(jsonElement.getAsString());
 		}
 	}
 
@@ -453,10 +492,11 @@ public final class GoogleJsonEngine implements JsonEngine {
 			return new GsonBuilder()
 					.setPrettyPrinting()
 					//.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-					.registerTypeHierarchyAdapter(DtObject.class, new DtObjectJsonAdapter())
+					.registerTypeHierarchyAdapter(Entity.class, new EntityJsonAdapter())
 					.registerTypeAdapter(Date.class, new UTCDateAdapter())
 					.registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
 					.registerTypeAdapter(ZonedDateTime.class, new ZonedDateTimeAdapter())
+					.registerTypeAdapter(Instant.class, new InstantAdapter())
 					.registerTypeAdapter(String.class, new EmptyStringAsNull())// add "" <=> null
 					.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())
 					.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())
@@ -464,6 +504,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.registerTypeAdapter(DtList.class, new DtListDeserializer<>())
 					.registerTypeAdapter(DtListState.class, new DtListStateDeserializer())
 					.registerTypeAdapter(FacetedQueryResult.class, searchApiVersion.getJsonSerializerClass().newInstance())
+					.registerTypeAdapter(SelectedFacetValues.class, new SelectedFacetValuesDeserializer())
 					.registerTypeAdapter(List.class, new ListJsonSerializer())
 					.registerTypeAdapter(Map.class, new MapJsonSerializer())
 					.registerTypeAdapter(DefinitionReference.class, new DefinitionReferenceJsonSerializer())

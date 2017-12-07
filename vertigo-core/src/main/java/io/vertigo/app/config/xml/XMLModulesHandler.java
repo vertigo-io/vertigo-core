@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,6 +39,7 @@ import io.vertigo.app.config.PluginConfigBuilder;
 import io.vertigo.core.component.Component;
 import io.vertigo.core.component.Plugin;
 import io.vertigo.core.component.aop.Aspect;
+import io.vertigo.core.component.proxy.ProxyMethod;
 import io.vertigo.core.definition.DefinitionProvider;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
@@ -82,6 +83,8 @@ final class XMLModulesHandler extends DefaultHandler {
 		plugin,
 		param,
 		aspect,
+		proxyMethod,
+		proxy,
 		//-----
 		initializer,
 		//----
@@ -118,6 +121,8 @@ final class XMLModulesHandler extends DefaultHandler {
 				definitionProviderConfigBuilder = null;
 				break;
 			case aspect:
+			case proxyMethod:
+			case proxy:
 			case param:
 			case definitions:
 			case resource:
@@ -146,9 +151,17 @@ final class XMLModulesHandler extends DefaultHandler {
 			case boot:
 				current = TagName.boot;
 				final String locales = attrs.getValue("locales");
-				bootConfigBuilder = appConfigBuilder
-						.beginBoot()
-						.withLocales(locales);
+				final String defaultZoneId = attrs.getValue("defaultZoneId");
+				if (defaultZoneId == null) {
+					bootConfigBuilder = appConfigBuilder
+							.beginBoot()
+							.withLocales(locales);
+				} else {
+					bootConfigBuilder = appConfigBuilder
+							.beginBoot()
+							.withLocalesAndDefaultZoneId(locales, defaultZoneId);
+				}
+
 				break;
 			case module:
 				current = TagName.module;
@@ -159,7 +172,9 @@ final class XMLModulesHandler extends DefaultHandler {
 				current = TagName.component;
 				final String componentApi = attrs.getValue("api");
 				final Class<? extends Component> componentImplClass = ClassUtil.classForName(attrs.getValue("class"), Component.class);
-				componentConfigBuilder = ComponentConfig.builder(componentImplClass);
+				componentConfigBuilder = ComponentConfig
+						.builder()
+						.withImpl(componentImplClass);
 				if (componentApi != null) {
 					final Class<?> componentApiClass = resolveInterface(componentApi, componentImplClass);
 					componentConfigBuilder.withApi((Class<? extends Component>) componentApiClass);
@@ -176,6 +191,10 @@ final class XMLModulesHandler extends DefaultHandler {
 				current = TagName.plugin;
 				final Class<? extends Plugin> pluginImplClass = ClassUtil.classForName(attrs.getValue("class"), Plugin.class);
 				pluginConfigBuilder = PluginConfig.builder(pluginImplClass);
+				break;
+			case proxy:
+				final Class<? extends Component> proxyApiClass = ClassUtil.classForName(attrs.getValue("api"), Component.class);
+				moduleConfigBuilder.addProxy(proxyApiClass);
 				break;
 			case provider:
 				current = TagName.provider;
@@ -204,6 +223,11 @@ final class XMLModulesHandler extends DefaultHandler {
 				final String aspectImplClassStr = attrs.getValue("class");
 				final Class<? extends Aspect> aspectImplClass = ClassUtil.classForName(aspectImplClassStr, Aspect.class);
 				moduleConfigBuilder.addAspect(aspectImplClass);
+				break;
+			case proxyMethod:
+				final String proxyMethodImplClassStr = attrs.getValue("class");
+				final Class<? extends ProxyMethod> proxyMethodClass = ClassUtil.classForName(proxyMethodImplClassStr, ProxyMethod.class);
+				moduleConfigBuilder.addProxyMethod(proxyMethodClass);
 				break;
 			case feature:
 				final String featureClassStr = attrs.getValue("class");

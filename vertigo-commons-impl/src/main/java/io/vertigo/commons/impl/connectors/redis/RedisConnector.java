@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,9 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.vertigo.commons.analytics.health.HealthChecked;
+import io.vertigo.commons.analytics.health.HealthMeasure;
+import io.vertigo.commons.analytics.health.HealthMeasureBuilder;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.component.Component;
 import io.vertigo.lang.Assertion;
@@ -79,6 +82,34 @@ public final class RedisConnector implements Component, Activeable {
 	@Override
 	public void stop() {
 		jedisPool.destroy();
+	}
+
+	@HealthChecked(name = "ping", feature = "redis")
+	public HealthMeasure checkRedisPing() {
+		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
+		try (Jedis jedis = getResource()) {
+			final String result = jedis.ping();
+			healthMeasureBuilder.withGreenStatus(result);
+		} catch (final Exception e) {
+			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
+		}
+		return healthMeasureBuilder.build();
+
+	}
+
+	@HealthChecked(name = "io", feature = "redis")
+	public HealthMeasure checkRedisIO() {
+		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
+		try (Jedis jedis = getResource()) {
+			jedis.set("vertigoHealthCheckIoKey", "vertigoHealthCheckIoValue");
+			jedis.get("vertigoHealthCheckIoKey");
+			jedis.del("vertigoHealthCheckIoKey");
+			healthMeasureBuilder.withGreenStatus();
+		} catch (final Exception e) {
+			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
+		}
+		return healthMeasureBuilder.build();
+
 	}
 
 }

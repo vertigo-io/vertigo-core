@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@
 package io.vertigo.vega.webservice.data.domain;
 
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.ListVAccessor;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -38,6 +39,21 @@ public final class Address implements Entity {
 	private String postalCode;
 	@Field(domain = "DO_TEXTE_50", label = "country")
 	private String country;
+
+	@io.vertigo.dynamo.domain.stereotype.Association(
+			name = "A_CON_ADR",
+			fkFieldName = "ADR_ID",
+			primaryDtDefinitionName = "DT_ADDRESS",
+			primaryIsNavigable = true,
+			primaryRole = "Address",
+			primaryLabel = "Address",
+			primaryMultiplicity = "1..1",
+			foreignDtDefinitionName = "DT_CONTACT",
+			foreignIsNavigable = false,
+			foreignRole = "Contact",
+			foreignLabel = "Contact",
+			foreignMultiplicity = "0..*")
+	private final ListVAccessor<Contact> contactAccessor = new ListVAccessor<>(this, "A_CON_ADR", "Contact");
 
 	/** {@inheritDoc} */
 	@Override
@@ -91,6 +107,10 @@ public final class Address implements Entity {
 
 	public void setCountry(final String country) {
 		this.country = country;
+	}
+
+	public ListVAccessor<Contact> getContactAccessor() {
+		return contactAccessor;
 	}
 
 }

@@ -9,6 +9,12 @@ create Domain DO_STRING {
 	formatter : FMT_DEFAULT
 }
 
+create Domain DO_STRINGS {
+	dataType : String
+	multiple : "true"
+	formatter : FMT_DEFAULT
+}
+
 create Domain DO_ID {
 	dataType : Long
 	formatter : FMT_DEFAULT
@@ -18,5 +24,17 @@ create Domain DO_ID {
 /* DO_INTEGER is used to count */ 
 create Domain DO_INTEGER {
 	dataType : Integer
+	formatter : FMT_DEFAULT
+}
+
+create Domain DO_INTEGERS {
+	dataType : Integer
+	multiple : "true"
+	formatter : FMT_DEFAULT
+}
+
+create Domain DO_LONGS {
+	dataType : Long
+	multiple : "true"
 	formatter : FMT_DEFAULT
 }

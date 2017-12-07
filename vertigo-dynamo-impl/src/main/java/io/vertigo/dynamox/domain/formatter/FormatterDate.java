@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,8 @@
 package io.vertigo.dynamox.domain.formatter;
 
 import java.text.ParsePosition;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
@@ -100,8 +99,8 @@ public final class FormatterDate implements Formatter {
 				return dateToString((Date) objValue, patterns.get(0));
 			case LocalDate:
 				return localDateToString((LocalDate) objValue, patterns.get(0));
-			case ZonedDateTime:
-				return zonedDateTimeToString((ZonedDateTime) objValue, patterns.get(0));
+			case Instant:
+				return instantToString((Instant) objValue, patterns.get(0));
 			default:
 				throw new IllegalStateException();
 		}
@@ -121,15 +120,15 @@ public final class FormatterDate implements Formatter {
 				return applyStringToObject(sValue, FormatterDate::doStringToDate);
 			case LocalDate:
 				return applyStringToObject(sValue, FormatterDate::doStringToLocalDate);
-			case ZonedDateTime:
-				return applyStringToObject(sValue, FormatterDate::doStringToZonedDateTime);
+			case Instant:
+				return applyStringToObject(sValue, FormatterDate::doStringToInstant);
 			default:
 				throw new IllegalStateException();
 		}
 	}
 
 	/*
-	 *  Cycles through patterns to try and parse given String into a Date | LocalDate | ZonedDateTime
+	 *  Cycles through patterns to try and parse given String into a Date | LocalDate | Instant
 	 */
 	private <T> T applyStringToObject(final String dateString, final BiFunction<String, String, T> fun) throws FormatterException {
 		//StringToDate renvoit null si elle n'a pas réussi à convertir la date
@@ -157,11 +156,12 @@ public final class FormatterDate implements Formatter {
 	}
 
 	/*
-	 * Converts a String to a ZonedlDateTime according to a given pattern
+	 * Converts a String to a Instant according to a given pattern
 	 */
-	private static ZonedDateTime doStringToZonedDateTime(final String dateString, final String pattern) {
-		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern).withZone(ZoneId.of("UTC"));
-		return ZonedDateTime.parse(dateString, dateTimeFormatter);
+	private static Instant doStringToInstant(final String dateString, final String pattern) {
+		return DateTimeFormatter.ofPattern(pattern)
+				.withZone(getLocaleManager().getCurrentZoneId())
+				.parse(dateString, Instant::from);
 	}
 
 	/*
@@ -195,9 +195,10 @@ public final class FormatterDate implements Formatter {
 				.format(localDate);
 	}
 
-	private static String zonedDateTimeToString(final ZonedDateTime zonedDateTime, final String pattern) {
+	private static String instantToString(final Instant instant, final String pattern) {
 		return DateTimeFormatter.ofPattern(pattern)
-				.format(zonedDateTime);
+				.withZone(getLocaleManager().getCurrentZoneId())
+				.format(instant);
 	}
 
 	private static LocaleManager getLocaleManager() {

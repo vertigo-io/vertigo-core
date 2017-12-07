@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,12 +30,13 @@ public final class OracleDataBaseManagerTest extends AbstractSqlDataBaseManagerT
 		return "CREATE TABLE movie ( "
 				+ "id 						NUMBER(6), "
 				+ "title 					VARCHAR2(255), "
+				+ "mail 					VARCHAR2(255), "
 				+ "fps 						NUMBER(6,3), "
 				+ "income 					NUMBER(6,3), "
 				+ "color 					NUMBER(1), "
 				+ "release_date 			DATE, "
 				+ "release_local_date 		DATE, "
-				+ "release_zoned_date_time 	DATE, "
+				+ "release_instant 			DATE	, "
 				+ "icon 					BLOB"
 				+ ")";
 	}

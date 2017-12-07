@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,19 +21,20 @@ package io.vertigo.dynamo.plugins.search.elasticsearch;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.sort.SortOrder;
+import org.elasticsearch.index.reindex.BulkByScrollResponse;
+import org.elasticsearch.index.reindex.DeleteByQueryAction;
+import org.elasticsearch.index.reindex.DeleteByQueryRequestBuilder;
 
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
@@ -60,10 +61,10 @@ import io.vertigo.lang.WrappedException;
  */
 final class ESStatement<K extends KeyConcept, I extends DtObject> {
 
-	private static final boolean DEFAULT_REFRESH = false; //mettre a true pour TU uniquement
-	private static final boolean BULK_REFRESH = false; //mettre a true pour TU uniquement
+	private static final RefreshPolicy DEFAULT_REFRESH = RefreshPolicy.NONE; //mettre a true pour TU uniquement
+	private static final RefreshPolicy BULK_REFRESH = RefreshPolicy.NONE; //mettre a RefreshPolicy.IMMEDIATE pour TU uniquement
 	static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
-	private static final Logger LOGGER = Logger.getLogger(ESStatement.class);
+	private static final Logger LOGGER = LogManager.getLogger(ESStatement.class);
 
 	private final String indexName;
 	private final String typeName;
@@ -95,7 +96,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	void putAll(final Collection<SearchIndex<K, I>> indexCollection) {
 		//Injection spécifique au moteur d'indexation.
 		try {
-			final BulkRequestBuilder bulkRequest = esClient.prepareBulk().setRefresh(BULK_REFRESH);
+			final BulkRequestBuilder bulkRequest = esClient.prepareBulk().setRefreshPolicy(BULK_REFRESH);
 			for (final SearchIndex<K, I> index : indexCollection) {
 				try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
 					bulkRequest.add(esClient.prepareIndex()
@@ -124,7 +125,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	void put(final SearchIndex<K, I> index) {
 		//Injection spécifique au moteur d'indexation.
 		try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
-			esClient.prepareIndex().setRefresh(DEFAULT_REFRESH)
+			esClient.prepareIndex().setRefreshPolicy(DEFAULT_REFRESH)
 					.setIndex(indexName)
 					.setType(typeName)
 					.setId(index.getURI().urn())
@@ -143,29 +144,17 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	void remove(final ListFilter query) {
 		Assertion.checkNotNull(query);
 		//-----
-		final QueryBuilder queryBuilder = ESSearchRequestBuilder.translateToQueryBuilder(query);
-		final SearchRequestBuilder searchRequestBuilder = esClient.prepareSearch()
-				.setIndices(indexName)
-				.setTypes(typeName)
-				.setSearchType(SearchType.QUERY_THEN_FETCH)
-				.setNoFields()
-				.addSort("_id", SortOrder.ASC)
-				.setQuery(queryBuilder);
 		try {
-			//get all doc_id
-			final SearchResponse queryResponse = searchRequestBuilder.execute().actionGet();
-			final SearchHits searchHits = queryResponse.getHits();
-			if (searchHits.getTotalHits() > 0) {
-				//bulk delete all ids
-				final BulkRequestBuilder bulkRequest = esClient.prepareBulk().setRefresh(BULK_REFRESH);
-				for (final SearchHit searchHit : searchHits) {
-					bulkRequest.add(esClient.prepareDelete(indexName, typeName, searchHit.getId()));
-				}
-				final BulkResponse bulkResponse = bulkRequest.execute().actionGet();
-				if (bulkResponse.hasFailures()) {
-					throw new VSystemException("Can't removeBQuery {0} into {1} index.\nCause by {3}", typeName, indexName, bulkResponse.buildFailureMessage());
-				}
-			}
+			final QueryBuilder queryBuilder = ESSearchRequestBuilder.translateToQueryBuilder(query);
+			final DeleteByQueryRequestBuilder deleteByQueryAction = DeleteByQueryAction.INSTANCE.newRequestBuilder(esClient)
+					.filter(queryBuilder);
+			deleteByQueryAction
+					.source()
+					.setIndices(indexName)
+					.setTypes(typeName);
+			final BulkByScrollResponse response = deleteByQueryAction.get();
+			final long deleted = response.getDeleted();
+			LOGGER.debug("Removed {0} elements", deleted);
 		} catch (final SearchPhaseExecutionException e) {
 			final VUserException vue = new VUserException(SearchResource.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR);
 			vue.initCause(e);
@@ -180,7 +169,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	void remove(final URI uri) {
 		Assertion.checkNotNull(uri);
 		//-----
-		esClient.prepareDelete().setRefresh(DEFAULT_REFRESH)
+		esClient.prepareDelete().setRefreshPolicy(DEFAULT_REFRESH)
 				.setIndex(indexName)
 				.setType(typeName)
 				.setId(uri.urn())

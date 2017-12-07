@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ import java.util.Map;
 
 import io.vertigo.account.authorization.metamodel.SecuredEntity;
 import io.vertigo.account.authorization.metamodel.SecurityDimension;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslMultiExpression;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
 import io.vertigo.account.impl.authorization.dsl.rules.DslParserUtil;
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.lang.Assertion;
@@ -36,7 +36,7 @@ import io.vertigo.util.StringUtil;
 abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTranslator<S>> {
 
 	private SecuredEntity mySecuredEntity;
-	private final List<DslMultiExpression> myMultiExpressions = new ArrayList<>();
+	private final List<RuleMultiExpression> myMultiExpressions = new ArrayList<>();
 	private Map<String, List<Serializable>> myUserCriteria;
 
 	/**
@@ -56,7 +56,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	 * @param securityMultiExpression security parsed expression
 	 * @return this builder
 	 */
-	public final S withRule(final DslMultiExpression securityMultiExpression) {
+	public final S withRule(final RuleMultiExpression securityMultiExpression) {
 		Assertion.checkNotNull(securityMultiExpression);
 		//-----
 		myMultiExpressions.add(securityMultiExpression);
@@ -72,7 +72,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 		Assertion.checkNotNull(securityRule);
 		//-----
 		try {
-			final DslMultiExpression myMultiExpression = DslParserUtil.parseMultiExpression(securityRule);
+			final RuleMultiExpression myMultiExpression = DslParserUtil.parseMultiExpression(securityRule);
 			myMultiExpressions.add(myMultiExpression);
 		} catch (final PegNoMatchFoundException e) {
 			final String message = StringUtil.format("Echec de lecture de la securityRule {0}\n{1}", securityRule, e.getFullMessage());
@@ -113,7 +113,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 				.get();
 	}
 
-	protected final List<DslMultiExpression> getMultiExpressions() {
+	protected final List<RuleMultiExpression> getMultiExpressions() {
 		Assertion.checkNotNull(myMultiExpressions, "MultiExpressions was not set");
 		//----
 		return myMultiExpressions;

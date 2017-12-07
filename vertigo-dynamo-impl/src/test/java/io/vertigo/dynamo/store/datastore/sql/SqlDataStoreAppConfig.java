@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +25,7 @@ import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
@@ -49,14 +50,16 @@ public class SqlDataStoreAppConfig {
 						.withScript()
 						.withCache(MemoryCachePlugin.class)
 						.build())
-				.addModule(new DynamoFeatures()
-						.withStore()
+				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()
-						.addDataStorePlugin(SqlDataStorePlugin.class)
 						.addSqlConnectionProviderPlugin(C3p0ConnectionProviderPlugin.class,
 								Param.of("dataBaseClass", dataBaseClass),
 								Param.of("jdbcDriver", jdbcDriver),
 								Param.of("jdbcUrl", jdbcUrl))
+						.build())
+				.addModule(new DynamoFeatures()
+						.withStore()
+						.addDataStorePlugin(SqlDataStorePlugin.class)
 						.addFileStorePlugin(DbFileStorePlugin.class,
 								Param.of("storeDtName", "DT_VX_FILE_INFO"))
 						.build())

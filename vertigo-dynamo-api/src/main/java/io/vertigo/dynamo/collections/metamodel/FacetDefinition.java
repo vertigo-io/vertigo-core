@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -57,6 +57,7 @@ public final class FacetDefinition implements Definition {
 	private final MessageText label;
 	private final List<FacetValue> facetValues;
 	private final boolean rangeFacet;
+	private final boolean multiSelectable;
 	private final FacetOrder order;
 
 	/**
@@ -77,6 +78,7 @@ public final class FacetDefinition implements Definition {
 	 * @param dtField the field of the facet
 	 * @param facetValues the list of filters
 	 * @param rangeFacet if the facet is of type 'range'
+	 * @param multiSelectable Can select multiple values
 	 * @param order Facet Order
 	 */
 	private FacetDefinition(
@@ -85,6 +87,7 @@ public final class FacetDefinition implements Definition {
 			final MessageText label,
 			final List<FacetValue> facetValues,
 			final boolean rangeFacet,
+			final boolean multiSelectable,
 			final FacetOrder order) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(dtField);
@@ -101,6 +104,7 @@ public final class FacetDefinition implements Definition {
 		this.label = label;
 		this.facetValues = Collections.unmodifiableList(facetValues);
 		this.rangeFacet = rangeFacet;
+		this.multiSelectable = multiSelectable;
 		this.order = order;
 	}
 
@@ -116,6 +120,7 @@ public final class FacetDefinition implements Definition {
 	 * @param dtField the field of the facet
 	 * @param label the label of the facet
 	 * @param facetValues the list of filters
+	 * @param multiSelectable Can select multiple values
 	 * @param order Facet Order
 	 * @return new facetDefinition of type 'range'
 	 */
@@ -124,8 +129,9 @@ public final class FacetDefinition implements Definition {
 			final DtField dtField,
 			final MessageText label,
 			final List<FacetValue> facetValues,
+			final boolean multiSelectable,
 			final FacetOrder order) {
-		return new FacetDefinition(name, dtField, label, facetValues, true, order);
+		return new FacetDefinition(name, dtField, label, facetValues, true, multiSelectable, order);
 	}
 
 	/**
@@ -134,6 +140,7 @@ public final class FacetDefinition implements Definition {
 	 * @param name the name of the facet
 	 * @param dtField the field of the facet
 	 * @param label the label of the facet
+	 * @param multiSelectable Can select multiple values
 	 * @param order Facet Order
 	 * @return new facetDefinition of type 'term'
 	 */
@@ -141,8 +148,9 @@ public final class FacetDefinition implements Definition {
 			final String name,
 			final DtField dtField,
 			final MessageText label,
+			final boolean multiSelectable,
 			final FacetOrder order) {
-		return new FacetDefinition(name, dtField, label, Collections.emptyList(), false, order);
+		return new FacetDefinition(name, dtField, label, Collections.emptyList(), false, multiSelectable, order);
 	}
 
 	/**
@@ -174,6 +182,13 @@ public final class FacetDefinition implements Definition {
 	 */
 	public boolean isRangeFacet() {
 		return rangeFacet;
+	}
+
+	/**
+	 * @return if the facet is multiSelectable
+	 */
+	public boolean isMultiSelectable() {
+		return multiSelectable;
 	}
 
 	/**

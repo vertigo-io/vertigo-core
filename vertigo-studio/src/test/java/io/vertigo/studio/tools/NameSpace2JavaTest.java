@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,6 +38,26 @@ public class NameSpace2JavaTest {
 	@Test
 	public void testGenerate() {
 		NameSpace2Java.main(new String[] { "data/test.properties" });
+	}
+
+	/**
+	 * Lancement du test.
+	 */
+	@Test
+	public void testGenerateMasterData() {
+		NameSpace2Java.main(new String[] { "data/testMasterData.properties" });
+	}
+
+	/**
+	 * Lancement du test.
+	 */
+	@Test
+	public void testGenerateMasterDataSql() {
+		NameSpace2Java.main(new String[] { "data/testMasterData.properties" });
+		try (AutoCloseableApp app = new AutoCloseableApp(SqlTestConfigurator.config())) {
+			execSqlScript("target/databasegenMasterdata/crebas.sql", app);
+			execSqlScript("target/databasegenMasterdata/init_masterdata.sql", app);
+		}
 	}
 
 	/**

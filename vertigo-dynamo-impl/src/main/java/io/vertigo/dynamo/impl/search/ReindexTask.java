@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,8 +25,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -41,7 +42,7 @@ import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.lang.Assertion;
 
 final class ReindexTask implements Runnable {
-	private static final Logger LOGGER = Logger.getLogger(ReindexTask.class);
+	private static final Logger LOGGER = LogManager.getLogger(ReindexTask.class);
 	private static final int DIRTY_ELEMENTS_CHUNK_SIZE = 500;
 	private static final int REINDEX_ERROR_WAIT = 1000; // attend 1s avant de recommencer
 	private static final int REINDEX_ERROR_MAX_RETRY = 5; //il y a 5 + 1 essais au total (le premier + 5 retry)

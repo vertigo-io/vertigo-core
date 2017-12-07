@@ -1,0 +1,25 @@
+index :
+    analysis :
+        normalizer :
+            code :
+                type : custom          
+        analyzer :
+            multiple_code :
+                tokenizer : piped_keywords
+                filter : [standard]
+            text_fr :
+                tokenizer : standard
+                filter : [standard, lowercase, snowball, elision]
+        tokenizer :
+            keyword :
+                type : keyword
+            piped_keywords :
+                type : pattern
+                pattern : '([|])'
+        filter :
+            snowball:
+                type : snowball
+                language: French
+            elision:
+                type : elision
+                articles: [l, m, t, qu, n, s, j, d]

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,10 +46,21 @@ public final class Contact implements Entity {
 	@Field(domain = "DO_EMAIL", label = "Email")
 	private String email;
 
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", label = "AdrId")
-	private Long adrId;
-
 	private List<String> tels;
+
+	@io.vertigo.dynamo.domain.stereotype.Association(
+			name = "A_CON_ADR",
+			fkFieldName = "ADR_ID",
+			primaryDtDefinitionName = "DT_ADDRESS",
+			primaryIsNavigable = true,
+			primaryRole = "Address",
+			primaryLabel = "Address",
+			primaryMultiplicity = "1..1",
+			foreignDtDefinitionName = "DT_CONTACT",
+			foreignIsNavigable = false,
+			foreignRole = "Contact",
+			foreignLabel = "Contact",
+			foreignMultiplicity = "0..*")
 	private final VAccessor<Address> adrIdAccessor = new VAccessor<>(Address.class, "address");
 
 	/** {@inheritDoc} */
@@ -106,20 +117,24 @@ public final class Contact implements Entity {
 		this.email = email;
 	}
 
+	public VAccessor<Address> getAddressAccessor() {
+		return adrIdAccessor;
+	}
+
+	@Field(domain = "DO_ID", type = "FOREIGN_KEY", label = "AdrId")
+	@Deprecated
+	public Long getAdrId() {
+		return (Long) adrIdAccessor.getId();
+	}
+
+	@Deprecated
+	public void setAdrId(final Long adrId) {
+		adrIdAccessor.setId(adrId);
+	}
+
+	@Deprecated
 	public Address getAddress() {
 		return adrIdAccessor.get();
-	}
-
-	public void setAddress(final Address address) {
-		adrIdAccessor.set(address);
-	}
-
-	public Long getAdrId() {
-		return adrId;
-	}
-
-	public void setAdrId(final Long adrId) {
-		this.adrId = adrId;
 	}
 
 	public List<String> getTels() {

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.account.authorization.metamodel.Permission;
+import io.vertigo.account.authorization.metamodel.Authorization;
 import io.vertigo.account.authorization.metamodel.Role;
 import io.vertigo.account.authorization.metamodel.SecuredEntity;
 import io.vertigo.app.Home;
@@ -67,7 +67,7 @@ public final class AuthorizationGeneratorPlugin implements GeneratorPlugin {
 		//-----
 		generateRoles(targetSubDir, fileGeneratorConfig, mdaResultBuilder);
 
-		generatePermissions(targetSubDir, fileGeneratorConfig, mdaResultBuilder);
+		generateGlobalAuthorizations(targetSubDir, fileGeneratorConfig, mdaResultBuilder);
 
 		generateOperations(targetSubDir, fileGeneratorConfig, mdaResultBuilder);
 	}
@@ -76,9 +76,9 @@ public final class AuthorizationGeneratorPlugin implements GeneratorPlugin {
 		return Home.getApp().getDefinitionSpace().getAll(Role.class);
 	}
 
-	private static List<Permission> getGlobalPermissions() {
-		final Collection<Permission> permissions = Home.getApp().getDefinitionSpace().getAll(Permission.class);
-		return permissions.stream()
+	private static List<Authorization> getGlobalAuthorizations() {
+		final Collection<Authorization> authorizations = Home.getApp().getDefinitionSpace().getAll(Authorization.class);
+		return authorizations.stream()
 				.filter(o -> !o.getEntityDefinition().isPresent())
 				.collect(Collectors.toList());
 	}
@@ -91,8 +91,8 @@ public final class AuthorizationGeneratorPlugin implements GeneratorPlugin {
 		generateDictionnary("Roles", targetSubDir, fileGeneratorConfig, mdaResultBuilder, getRoles());
 	}
 
-	private static void generatePermissions(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
-		generateDictionnary("Permissions", targetSubDir, fileGeneratorConfig, mdaResultBuilder, getGlobalPermissions());
+	private static void generateGlobalAuthorizations(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+		generateDictionnary("GlobalAuthorizations", targetSubDir, fileGeneratorConfig, mdaResultBuilder, getGlobalAuthorizations());
 	}
 
 	private static void generateOperations(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {

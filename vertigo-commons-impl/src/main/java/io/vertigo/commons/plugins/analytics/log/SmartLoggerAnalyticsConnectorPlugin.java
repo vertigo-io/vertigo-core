@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,12 +23,14 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
 
 import com.google.gson.JsonObject;
 
-import io.vertigo.commons.impl.analytics.AProcess;
+import io.vertigo.commons.analytics.health.HealthCheck;
+import io.vertigo.commons.analytics.metric.Metric;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
+import io.vertigo.commons.impl.analytics.process.AProcess;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -76,7 +78,7 @@ public final class SmartLoggerAnalyticsConnectorPlugin implements AnalyticsConne
 			}
 		}
 
-		final Logger logger = Logger.getLogger(process.getCategory());
+		final Logger logger = LogManager.getLogger(process.getCategory());
 		if (process.getDurationMillis() > durationThreshold) {
 			logger.error(jsonObject.toString());
 		} else if (logger.isInfoEnabled()) {
@@ -104,5 +106,17 @@ public final class SmartLoggerAnalyticsConnectorPlugin implements AnalyticsConne
 	static class AggregatedResult {
 		int count;
 		long duration;
+	}
+
+	@Override
+	public void add(final Metric metric) {
+		//nothing
+
+	}
+
+	@Override
+	public void add(final HealthCheck healthCheck) {
+		//nothing
+
 	}
 }

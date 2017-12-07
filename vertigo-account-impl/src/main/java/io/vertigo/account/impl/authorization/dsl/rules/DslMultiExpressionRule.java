@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,9 +21,9 @@ package io.vertigo.account.impl.authorization.dsl.rules;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vertigo.account.authorization.metamodel.rulemodel.DslExpression;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslMultiExpression;
-import io.vertigo.account.authorization.metamodel.rulemodel.DslMultiExpression.BoolOperator;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression.BoolOperator;
 import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegRule;
@@ -34,7 +34,7 @@ import io.vertigo.commons.peg.PegRules;
  * \(?(expression1|multiExpression1) ((logicalOperator) (expression2|multiExpression2))*\)?
  * @author npiedeloup
  */
-final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegChoice> {
+final class DslMultiExpressionRule extends AbstractRule<RuleMultiExpression, PegChoice> {
 	private static final int MAX_DEPTH = 3;
 
 	/**
@@ -59,7 +59,7 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 		);
 		final PegRule<List<Object>> nextExpressionsRule = PegRules.sequence(
 				DslSyntaxRules.SPACES, //0
-				new DslOperatorRule<>(DslMultiExpression.BoolOperator.values(), "boolOperator"), //1
+				new DslOperatorRule<>(RuleMultiExpression.BoolOperator.values(), "boolOperator"), //1
 				DslSyntaxRules.SPACES, //2
 				expressionsRule, //3
 				DslSyntaxRules.SPACES //4
@@ -94,7 +94,7 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 
 	/** {@inheritDoc} */
 	@Override
-	protected DslMultiExpression handle(final PegChoice parsing) {
+	protected RuleMultiExpression handle(final PegChoice parsing) {
 		final List<Object> innerBlock;
 		switch (parsing.getChoiceIndex()) {
 			case 0:
@@ -108,16 +108,16 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 				throw new IllegalArgumentException("case " + parsing.getChoiceIndex() + " not implemented");
 		}
 
-		final List<DslExpression> expressionDefinitions = new ArrayList<>();
-		final List<DslMultiExpression> multiExpressionDefinitions = new ArrayList<>();
+		final List<RuleExpression> expressionDefinitions = new ArrayList<>();
+		final List<RuleMultiExpression> multiExpressionDefinitions = new ArrayList<>();
 
 		final PegChoice firstExpressionChoice = (PegChoice) innerBlock.get(1); //first (expression1|multiExpression1)
 		switch (firstExpressionChoice.getChoiceIndex()) {
 			case 0:
-				expressionDefinitions.add((DslExpression) firstExpressionChoice.getValue());
+				expressionDefinitions.add((RuleExpression) firstExpressionChoice.getValue());
 				break;
 			case 1:
-				multiExpressionDefinitions.add((DslMultiExpression) firstExpressionChoice.getValue());
+				multiExpressionDefinitions.add((RuleMultiExpression) firstExpressionChoice.getValue());
 				break;
 			default:
 				throw new IllegalArgumentException("case " + parsing.getChoiceIndex() + " not implemented");
@@ -134,10 +134,10 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 			final PegChoice nextExpressionChoice = (PegChoice) item.get(3); //next (expression2|multiExpression2)
 			switch (nextExpressionChoice.getChoiceIndex()) {
 				case 0:
-					expressionDefinitions.add((DslExpression) nextExpressionChoice.getValue());
+					expressionDefinitions.add((RuleExpression) nextExpressionChoice.getValue());
 					break;
 				case 1:
-					multiExpressionDefinitions.add((DslMultiExpression) nextExpressionChoice.getValue());
+					multiExpressionDefinitions.add((RuleMultiExpression) nextExpressionChoice.getValue());
 					break;
 				default:
 					throw new IllegalArgumentException("case " + nextExpressionChoice.getChoiceIndex() + " not implemented");
@@ -145,6 +145,6 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 		}
 		final boolean block = parsing.getChoiceIndex() == 0;
 		//---
-		return new DslMultiExpression(block, operator != null ? operator : BoolOperator.AND, expressionDefinitions, multiExpressionDefinitions);
+		return new RuleMultiExpression(block, operator != null ? operator : BoolOperator.AND, expressionDefinitions, multiExpressionDefinitions);
 	}
 }

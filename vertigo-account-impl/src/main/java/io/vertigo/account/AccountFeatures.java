@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,16 @@
  */
 package io.vertigo.account;
 
+import io.vertigo.account.account.AccountManager;
 import io.vertigo.account.authentication.AuthenticationManager;
-import io.vertigo.account.identity.IdentityManager;
+import io.vertigo.account.impl.account.AccountCachePlugin;
+import io.vertigo.account.impl.account.AccountDefinitionProvider;
+import io.vertigo.account.impl.account.AccountStorePlugin;
+import io.vertigo.account.impl.account.AccountManagerImpl;
 import io.vertigo.account.impl.authentication.AuthenticationManagerImpl;
-import io.vertigo.account.impl.authentication.AuthenticationRealmPlugin;
-import io.vertigo.account.impl.identity.AccountDefinitionProvider;
-import io.vertigo.account.impl.identity.AccountStorePlugin;
-import io.vertigo.account.impl.identity.IdentityManagerImpl;
+import io.vertigo.account.impl.authentication.AuthenticationPlugin;
 import io.vertigo.account.impl.security.VSecurityManagerImpl;
-import io.vertigo.account.plugins.identity.redis.RedisAccountStorePlugin;
+import io.vertigo.account.plugins.account.cache.redis.RedisAccountCachePlugin;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.persona.security.UserSession;
@@ -61,8 +62,8 @@ public final class AccountFeatures extends Features {
 	 * Defines REDIS as the database to store the accounts
 	 * @return the features
 	 */
-	public AccountFeatures withRedisAccountStorePlugin() {
-		return withAccountStorePlugin(RedisAccountStorePlugin.class);
+	public AccountFeatures withRedisAccountCachePlugin() {
+		return withAccountCachePlugin(RedisAccountCachePlugin.class);
 	}
 
 	/**
@@ -71,10 +72,28 @@ public final class AccountFeatures extends Features {
 	 * @param params
 	 * @return the features
 	 */
-	public AccountFeatures withAuthentificationRealm(final Class<? extends AuthenticationRealmPlugin> authenticatingRealmPluginClass, final Param... params) {
+	public AccountFeatures withAuthentication(final Class<? extends AuthenticationPlugin> authenticatingRealmPluginClass, final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(authenticatingRealmPluginClass, params);
 		return this;
+	}
+
+	/**
+	 * @param accountCachePluginClass
+	 * @param params
+	 * @return the features
+	 */
+	public AccountFeatures withAccountCachePlugin(final Class<? extends AccountCachePlugin> accountCachePluginClass, final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(accountCachePluginClass, params);
+		return this;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	protected void buildFeatures() {
+		getModuleConfigBuilder()
+				.addDefinitionProvider(AccountDefinitionProvider.class);
 	}
 
 	/**
@@ -84,18 +103,10 @@ public final class AccountFeatures extends Features {
 	 */
 	public AccountFeatures withAccountStorePlugin(final Class<? extends AccountStorePlugin> accountStorePluginClass, final Param... params) {
 		getModuleConfigBuilder()
+				.addComponent(AuthenticationManager.class, AuthenticationManagerImpl.class)
+				.addComponent(AccountManager.class, AccountManagerImpl.class)
 				.addPlugin(accountStorePluginClass, params);
 		return this;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	protected void buildFeatures() {
-		getModuleConfigBuilder()
-				.addDefinitionProvider(AccountDefinitionProvider.class)
-				.addComponent(AuthenticationManager.class, AuthenticationManagerImpl.class)
-				.addComponent(IdentityManager.class, IdentityManagerImpl.class);
-
 	}
 
 }

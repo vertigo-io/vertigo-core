@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,18 +38,22 @@ public final class JpaDataBase implements SqlDataBase {
 	private static final VTransactionResourceId<JpaResource> JPA_RESOURCE_ID = new VTransactionResourceId<>(VTransactionResourceId.Priority.NORMAL, "Jpa");
 
 	private final SqlDataBase innerDataBase;
-	private final EntityManagerFactory entityManagerFactory;
+	private EntityManagerFactory entityManagerFactory;
 
 	/**
 	 * Constructor.
 	 * @param innerDataBase Base sous jacente
 	 * @param entityManagerFactory entityManagerFactory
 	 */
-	JpaDataBase(final SqlDataBase innerDataBase, final EntityManagerFactory entityManagerFactory) {
+	JpaDataBase(final SqlDataBase innerDataBase) {
 		Assertion.checkNotNull(innerDataBase);
-		Assertion.checkNotNull(entityManagerFactory);
 		//-----
 		this.innerDataBase = innerDataBase;
+	}
+
+	void setEntityManagerFactory(final EntityManagerFactory entityManagerFactory) {
+		Assertion.checkNotNull(entityManagerFactory);
+		//---
 		this.entityManagerFactory = entityManagerFactory;
 	}
 
@@ -76,6 +80,8 @@ public final class JpaDataBase implements SqlDataBase {
 	 * @return ResourceJpa de la transaction, elle est crée si nécessaire.
 	 * */
 	public JpaResource obtainJpaResource(final VTransaction transaction) {
+		Assertion.checkNotNull(entityManagerFactory);
+		//---
 		JpaResource resource = transaction.getResource(JPA_RESOURCE_ID);
 
 		if (resource == null) {

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -73,11 +73,8 @@ public final class SqlCriteriaTest extends AbstractCriteriaTest {
 				Optional.empty());
 
 		final Movie2DataBase movie2DataBase = new Movie2DataBase();
-		movie2DataBase.loadDatas();
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			for (final Movie2 movie2 : movie2DataBase.getAllMovies()) {
-				storeManager.getDataStore().create(movie2);
-			}
+			movie2DataBase.getAllMovies().forEach(movie2 -> storeManager.getDataStore().create(movie2));
 			transaction.commit();
 		}
 	}

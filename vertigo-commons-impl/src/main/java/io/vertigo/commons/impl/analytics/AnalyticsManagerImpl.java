@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,11 +22,27 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.AnalyticsTracer;
+import io.vertigo.commons.analytics.health.HealthCheck;
+import io.vertigo.commons.analytics.health.HealthStatus;
+import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.commons.analytics.process.ProcessAnalyticsTracer;
+import io.vertigo.commons.daemon.DaemonScheduled;
+import io.vertigo.commons.impl.analytics.health.HealthAnalyticsUtil;
+import io.vertigo.commons.impl.analytics.metric.MetricAnalyticsUtil;
+import io.vertigo.commons.impl.analytics.process.AProcess;
+import io.vertigo.commons.impl.analytics.process.ProcessAnalyticsImpl;
+import io.vertigo.core.component.AopPlugin;
+import io.vertigo.core.component.Component;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -34,13 +50,10 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class AnalyticsManagerImpl implements AnalyticsManager {
+public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefinitionProvider {
+
+	private final ProcessAnalyticsImpl processAnalyticsImpl;
 	private final List<AnalyticsConnectorPlugin> processConnectorPlugins;
-	/**
-	 * Processus binde sur le thread courant. Le processus , recoit les notifications des sondes placees dans le code de
-	 * l'application pendant le traitement d'une requete (thread).
-	 */
-	private static final ThreadLocal<AnalyticsTracerImpl> THREAD_LOCAL_PROCESS = new ThreadLocal<>();
 
 	private final boolean enabled;
 
@@ -49,81 +62,103 @@ public final class AnalyticsManagerImpl implements AnalyticsManager {
 	 * @param processConnectorPlugins list of connectors to trace processes
 	 */
 	@Inject
-	public AnalyticsManagerImpl(final List<AnalyticsConnectorPlugin> processConnectorPlugins) {
+	public AnalyticsManagerImpl(
+			final List<AnalyticsConnectorPlugin> processConnectorPlugins) {
 		Assertion.checkNotNull(processConnectorPlugins);
 		//---
+		processAnalyticsImpl = new ProcessAnalyticsImpl();
 		this.processConnectorPlugins = processConnectorPlugins;
 		// by default if no connector is defined we disable the collect
 		enabled = !this.processConnectorPlugins.isEmpty();
 	}
 
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		// here all
+		// we need to unwrap the component to scan the real class and not the enhanced version
+		final AopPlugin aopPlugin = Home.getApp().getConfig().getBootConfig().getAopPlugin();
+		return Home.getApp().getComponentSpace().keySet()
+				.stream()
+				.flatMap(id -> Stream.concat(
+						//health
+						HealthAnalyticsUtil.createHealthCheckDefinitions(id, Home.getApp().getComponentSpace().resolve(id, Component.class), aopPlugin).stream(),
+						//metrics
+						MetricAnalyticsUtil.createMetricDefinitions(id, Home.getApp().getComponentSpace().resolve(id, Component.class), aopPlugin).stream()))
+				.collect(Collectors.toList());
+	}
+
+	/*----------------- Process ------------------*/
+
 	/** {@inheritDoc} */
 	@Override
-	public void trace(final String category, final String name, final Consumer<AnalyticsTracer> consumer) {
-		try (AnalyticsTracerImpl tracer = createTracer(category, name)) {
-			try {
-				consumer.accept(tracer);
-				tracer.markAsSucceeded();
-			} catch (final Exception e) {
-				tracer.markAsFailed(e);
-				throw e;
-			}
-		}
+	public void trace(final String category, final String name, final Consumer<ProcessAnalyticsTracer> consumer) {
+		processAnalyticsImpl.trace(category, name, consumer, this::onClose);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <O> O traceWithReturn(final String category, final String name, final Function<AnalyticsTracer, O> function) {
-		try (AnalyticsTracerImpl tracer = createTracer(category, name)) {
-			try {
-				final O result = function.apply(tracer);
-				tracer.markAsSucceeded();
-				return result;
-			} catch (final Exception e) {
-				tracer.markAsFailed(e);
-				throw e;
-			}
-		}
+	public <O> O traceWithReturn(final String category, final String name, final Function<ProcessAnalyticsTracer, O> function) {
+		return processAnalyticsImpl.traceWithReturn(category, name, function, this::onClose);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<AnalyticsTracer> getCurrentTracer() {
+	public Optional<ProcessAnalyticsTracer> getCurrentTracer() {
 		if (!enabled) {
 			return Optional.empty();
 		}
 		// When collect feature is enabled
-		return doGetCurrentTracer().map(a -> a); // convert impl to api
-	}
-
-	private static Optional<AnalyticsTracerImpl> doGetCurrentTracer() {
-		return Optional.ofNullable(THREAD_LOCAL_PROCESS.get());
-	}
-
-	private static void push(final AnalyticsTracerImpl analyticstracer) {
-		Assertion.checkNotNull(analyticstracer);
-		//---
-		final Optional<AnalyticsTracerImpl> analyticstracerOptional = doGetCurrentTracer();
-		if (!analyticstracerOptional.isPresent()) {
-			THREAD_LOCAL_PROCESS.set(analyticstracer);
-		}
-	}
-
-	private AnalyticsTracerImpl createTracer(final String category, final String name) {
-		final Optional<AnalyticsTracerImpl> parent = doGetCurrentTracer();
-		final AnalyticsTracerImpl analyticsTracer = new AnalyticsTracerImpl(parent, category, name, this::onClose);
-		push(analyticsTracer);
-		return analyticsTracer;
+		return processAnalyticsImpl.getCurrentTracer();
 	}
 
 	private void onClose(final AProcess process) {
 		Assertion.checkNotNull(process);
 		//---
-		//1.
-		THREAD_LOCAL_PROCESS.remove();
-		//2.
 		processConnectorPlugins.forEach(
 				processConnectorPlugin -> processConnectorPlugin.add(process));
+	}
+
+	/*----------------- Health ------------------*/
+
+	/**
+	 * Daemon to retrieve healthChecks and add them to the connectors
+	 */
+	@DaemonScheduled(name = "DMN_ANALYTICS_HEALTH", periodInSeconds = 60 * 60) //every hour
+	public void sendHealthChecks() {
+		if (enabled) {
+			final List<HealthCheck> healthChecks = getHealthChecks();
+			processConnectorPlugins.forEach(
+					connectorPlugin -> healthChecks.forEach(connectorPlugin::add));
+		}
+	}
+
+	@Override
+	public List<HealthCheck> getHealthChecks() {
+		return HealthAnalyticsUtil.getHealthChecks();
+	}
+
+	@Override
+	public HealthStatus aggregate(final List<HealthCheck> healthChecks) {
+		return HealthAnalyticsUtil.aggregate(healthChecks);
+	}
+
+	/*----------------- Metrics ------------------*/
+
+	/**
+	 * Daemon to retrieve metrics and add them to the connectors
+	 */
+	@DaemonScheduled(name = "DMN_ANALYTICS_METRIC", periodInSeconds = 60 * 60) //every hour
+	public void sendMetrics() {
+		if (enabled) {
+			final List<Metric> metrics = getMetrics();
+			processConnectorPlugins.forEach(
+					connectorPlugin -> metrics.forEach(connectorPlugin::add));
+		}
+	}
+
+	@Override
+	public List<Metric> getMetrics() {
+		return MetricAnalyticsUtil.getMetrics();
 	}
 
 }

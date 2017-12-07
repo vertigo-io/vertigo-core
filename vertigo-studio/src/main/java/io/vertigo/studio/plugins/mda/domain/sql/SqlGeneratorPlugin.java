@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@ package io.vertigo.studio.plugins.mda.domain.sql;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,15 +31,20 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
+import io.vertigo.studio.masterdata.MasterDataManager;
+import io.vertigo.studio.masterdata.MasterDataValues;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 import io.vertigo.studio.plugins.mda.domain.sql.model.SqlDtDefinitionModel;
+import io.vertigo.studio.plugins.mda.domain.sql.model.SqlMasterDataDefinitionModel;
 import io.vertigo.studio.plugins.mda.domain.sql.model.SqlMethodModel;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
 import io.vertigo.util.MapBuilder;
@@ -58,6 +64,9 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 	private final String baseCible;
 	private final Optional<String> tableSpaceDataOpt;
 	private final Optional<String> tableSpaceIndexOpt;
+	private final boolean generateMasterData;
+
+	private final Optional<MasterDataManager> masterDataManagerOpt;
 
 	/**
 	 * Constructeur.
@@ -73,14 +82,18 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 			@Named("targetSubDir") final String targetSubDir,
 			@Named("generateDrop") final boolean generateDrop,
 			@Named("baseCible") final String baseCible,
+			@Named("generateMasterData") final Optional<Boolean> generateMasterDataOpt,
 			@Named("tableSpaceData") final Optional<String> tableSpaceData,
-			@Named("tableSpaceIndex") final Optional<String> tableSpaceIndex) {
+			@Named("tableSpaceIndex") final Optional<String> tableSpaceIndex,
+			final Optional<MasterDataManager> masterDataManagerOpt) {
 		//-----
 		this.targetSubDir = targetSubDir;
 		this.generateDrop = generateDrop;
 		this.baseCible = baseCible;
-		this.tableSpaceDataOpt = tableSpaceData;
-		this.tableSpaceIndexOpt = tableSpaceIndex;
+		tableSpaceDataOpt = tableSpaceData;
+		tableSpaceIndexOpt = tableSpaceIndex;
+		generateMasterData = generateMasterDataOpt.orElse(false);
+		this.masterDataManagerOpt = masterDataManagerOpt;
 	}
 
 	/** {@inheritDoc} */
@@ -92,6 +105,37 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 		Assertion.checkNotNull(mdaResultBuilder);
 		//-----
 		generateSql(fileGeneratorConfig, mdaResultBuilder);
+
+		if (generateMasterData) {
+			generateMasterDataInserts(fileGeneratorConfig, mdaResultBuilder);
+		}
+	}
+
+	private void generateMasterDataInserts(
+			final FileGeneratorConfig fileGeneratorConfig,
+			final MdaResultBuilder mdaResultBuilder) {
+
+		final MasterDataValues masterDataValues = masterDataManagerOpt.isPresent() ? masterDataManagerOpt.get().getValues() : new MasterDataValues();
+
+		final List<SqlMasterDataDefinitionModel> sqlMasterDataDefinitionModels = Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)
+				.stream()
+				.filter(dtDefinition -> dtDefinition.getStereotype() == DtStereotype.StaticMasterData)
+				.map(dtDefinition -> new SqlMasterDataDefinitionModel(dtDefinition, masterDataValues.getOrDefault(dtDefinition.getClassCanonicalName(), Collections.emptyMap())))
+				.collect(Collectors.toList());
+
+		final Map<String, Object> model = new MapBuilder<String, Object>()
+				.put("masterdatas", sqlMasterDataDefinitionModels)
+				.build();
+
+		FileGenerator.builder(fileGeneratorConfig)
+				.withModel(model)
+				.withFileName("init_masterdata.sql")
+				.withGenSubDir(targetSubDir)
+				.withPackageName("")
+				.withTemplateName("domain/sql/template/init_masterdata.ftl")
+				.build()
+				.generateFile(mdaResultBuilder);
+
 	}
 
 	private void generateSql(

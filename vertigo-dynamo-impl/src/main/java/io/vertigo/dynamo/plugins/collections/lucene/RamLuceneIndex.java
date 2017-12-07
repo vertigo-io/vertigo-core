@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -222,7 +222,7 @@ final class RamLuceneIndex<D extends DtObject> {
 				final URI<Entity> uri = new URI<>(field.getFkDtDefinition(), value);
 				final DtObject fkDto = getStoreManager().getDataStore().readOne(uri);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
-				stringValue = displayField.getDomain().getFormatter().valueToString(displayValue, displayField.getDomain().getDataType());
+				stringValue = displayField.getDomain().valueToString(displayValue);
 			} else {
 				stringValue = String.valueOf(field.getDataAccessor().getValue(dto));
 			}

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
  */
 package io.vertigo.util;
 
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -136,7 +137,29 @@ public final class DateUtil {
 	 *
 	 * @return date
 	 */
-	public static Date parse(final String dateExpression, final String datePattern) {
+	public static Date parseToDate(final String dateExpression, final String datePattern) {
 		return DateQueryParserUtil.parse(dateExpression, datePattern);
+	}
+
+	/**
+	 * Retourne la date correspondant à l'expression passée en parametre.
+	 * Implements parsing of a date expression.
+	 * y=year, M=month, w=week
+	 * d=day, h=hour, m=minute, s= second
+	 * Mind the UpperCase : 'M'onth and 'm'inute !
+	 * now+1d
+	 * now-6d
+	 * now+2w
+	 * now-12M
+	 * now-2y
+	 * "06/12/2003", "dd/MM/yyyy"
+	 *
+	 * @param dateExpression Expression
+	 * @param datePattern Pattern used to define a date (dd/MM/YYYY)
+	 *
+	 * @return Instant
+	 */
+	public static Instant parseToInstant(final String dateExpression, final String datePattern) {
+		return DateQueryParserUtil.parse(dateExpression, datePattern).toInstant();
 	}
 }

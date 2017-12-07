@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@ import java.io.PrintWriter;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Implémentation de HttpServletResponseWrapper pour éviter warnings à la compilation.
@@ -60,7 +60,7 @@ public abstract class AbstractHttpServletResponseWrapper extends javax.servlet.h
 				stream.close();
 			}
 		} catch (final IOException e) {
-			Logger.getRootLogger().trace(e.getMessage(), e);
+			LogManager.getRootLogger().trace(e.getMessage(), e);
 			//ignore IOException : streams are already send
 		}
 	}

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,6 +26,7 @@ import io.vertigo.dynamo.collections.CollectionsManagerTest;
 import io.vertigo.dynamo.collections.FacetManagerTest;
 import io.vertigo.dynamo.criteria.predicate.PredicateCriteriaTest;
 import io.vertigo.dynamo.criteria.sql.SqlCriteriaTest;
+import io.vertigo.dynamo.domain.DataTypeTest;
 import io.vertigo.dynamo.domain.constraint.ConstraintTest;
 import io.vertigo.dynamo.domain.formatter.BooleanFormatterTest;
 import io.vertigo.dynamo.domain.formatter.DateFormatterTest;
@@ -60,11 +61,12 @@ import io.vertigo.dynamo.search.withstore.SearchManagerStoreTest;
 import io.vertigo.dynamo.store.cache.CachedStoreManagerTest;
 import io.vertigo.dynamo.store.datastore.jpa.JpaStoreManagerTest;
 import io.vertigo.dynamo.store.datastore.multistore.MultiStoreManagerTest;
-import io.vertigo.dynamo.store.datastore.sql.vendor.H2SqlStoreManagerTest;
-import io.vertigo.dynamo.store.datastore.sql.vendor.OracleSqlStoreManagerTest;
+import io.vertigo.dynamo.store.datastore.sql.vendor.h2.H2SqlStoreManagerTest;
+import io.vertigo.dynamo.store.datastore.sql.vendor.oracle.OracleSqlStoreManagerTest;
 import io.vertigo.dynamo.task.TaskManagerTest;
 import io.vertigo.dynamo.task.x.TaskEngineProcBatchTest;
 import io.vertigo.dynamo.task.x.TaskEngineSelectDynamicTest;
+import io.vertigo.dynamo.task.x.TaskProxyTest;
 import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 
 /**
@@ -78,6 +80,7 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		CollectionsManagerTest.class,
 		FacetManagerTest.class,
 		//--domain
+		DataTypeTest.class,
 		ConstraintTest.class,
 		BooleanFormatterTest.class,
 		DateFormatterTest.class,
@@ -131,6 +134,7 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		TaskManagerTest.class,
 		TaskEngineSelectDynamicTest.class,
 		TaskEngineProcBatchTest.class,
+		TaskProxyTest.class,
 		//x
 		DslListFilterBuilderTest.class,
 

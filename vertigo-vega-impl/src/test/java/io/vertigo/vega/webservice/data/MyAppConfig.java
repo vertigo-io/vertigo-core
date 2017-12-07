@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import io.vertigo.account.AccountFeatures;
-import io.vertigo.account.plugins.identity.memory.MemoryAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
@@ -85,7 +84,6 @@ public final class MyAppConfig {
 						.build())
 				.addModule(new AccountFeatures()
 						.withUserSession(TestUserSession.class)
-						.withAccountStorePlugin(MemoryAccountStorePlugin.class)
 						.build())
 				.addModule(new VegaFeatures()
 						.withTokens("tokens")

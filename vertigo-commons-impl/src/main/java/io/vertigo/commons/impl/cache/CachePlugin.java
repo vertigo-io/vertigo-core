@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,9 @@ package io.vertigo.commons.impl.cache;
 
 import java.io.Serializable;
 
+import io.vertigo.commons.analytics.health.HealthChecked;
+import io.vertigo.commons.analytics.health.HealthMeasure;
+import io.vertigo.commons.analytics.health.HealthMeasureBuilder;
 import io.vertigo.core.component.Plugin;
 
 /**
@@ -71,4 +74,22 @@ public interface CachePlugin extends Plugin {
 	 * Effacement du contenu de TOUS les Contextes de cache.
 	 */
 	void clearAll();
+
+	/**
+	 * @return HealthMeasure of this plugin
+	 */
+	@HealthChecked(name = "io", feature = "cache")
+	default HealthMeasure checkIo() {
+		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
+		try {
+			put("CACHE_HEALTH_VERTIGO", "healthcheckkey", "healthcheckvalue");
+			get("CACHE_HEALTH_VERTIGO", "healthcheckkey");
+			remove("CACHE_HEALTH_VERTIGO", "healthcheckkey");
+			healthMeasureBuilder.withGreenStatus();
+		} catch (final Exception e) {
+			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
+		}
+		return healthMeasureBuilder.build();
+
+	}
 }

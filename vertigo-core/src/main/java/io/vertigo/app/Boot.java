@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,8 +21,8 @@ package io.vertigo.app;
 import java.io.File;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import io.vertigo.app.config.BootConfig;
 import io.vertigo.app.config.LogConfig;
@@ -53,16 +53,16 @@ final class Boot {
 		Assertion.checkArgument(log4jFileName.endsWith(".xml"), "Use the XML format for log4j configurations (instead of : {0}).", log4jFileName);
 		final URL url = Home.class.getResource(log4jFileName);
 		if (url != null) {
-			DOMConfigurator.configure(url);
-			Logger.getRootLogger().info("Log4J configuration chargée (resource) : " + url.getFile());
+			Configurator.initialize("definedLog4jContext", Home.class.getClassLoader(), log4jFileName);
+			LogManager.getRootLogger().info("Log4J configuration chargée (resource) : " + url.getFile());
 		} else {
 			Assertion.checkArgument(new File(log4jFileName).exists(), "Fichier de configuration log4j : {0} est introuvable", log4jFileName);
 			// Avec configureAndWatch (utilise un anonymous thread)
 			// on peut modifier à chaud le fichier de conf log4j
 			// mais en cas de hot-deploy, le thread reste présent ce qui peut-entrainer des problèmes.
-			DOMConfigurator.configureAndWatch(log4jFileName);
+			Configurator.initialize("definedLog4jContext", null, log4jFileName);
+			LogManager.getRootLogger().info("Log4J configuration chargée (fichier) : " + log4jFileName);
 		}
-		Logger.getRootLogger().info("Log4J configuration chargée (fichier) : " + log4jFileName);
 	}
 
 	void init() {

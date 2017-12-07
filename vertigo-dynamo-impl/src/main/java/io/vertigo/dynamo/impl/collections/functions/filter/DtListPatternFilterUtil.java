@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -160,13 +160,11 @@ public final class DtListPatternFilterUtil {
 			case Double:
 				return Double.valueOf(stringValue);
 			case Date:
-				return DateUtil.parse(stringValue, DATE_PATTERN);
+				return DateUtil.parseToInstant(stringValue, DATE_PATTERN);
 			case String:
 				return stringValue;
 			case Boolean:
 			case DataStream:
-			case DtObject:
-			case DtList:
 			default:
 				throw new IllegalArgumentException("Type de données non comparable : " + dataType.name());
 		}

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,8 +33,9 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation.Bucket;
+import org.elasticsearch.search.aggregations.bucket.filter.Filter;
 import org.elasticsearch.search.aggregations.metrics.tophits.TopHits;
-import org.elasticsearch.search.highlight.HighlightField;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -209,7 +210,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 		if (searchQuery.getFacetedQuery().isPresent() && queryResponse.getAggregations() != null) {
 			final FacetedQueryDefinition queryDefinition = searchQuery.getFacetedQuery().get().getDefinition();
 			for (final FacetDefinition facetDefinition : queryDefinition.getFacetDefinitions()) {
-				final Aggregation aggregation = queryResponse.getAggregations().get(facetDefinition.getName());
+				final Aggregation aggregation = obtainAggregation(queryResponse, facetDefinition.getName());
 				if (aggregation != null) {
 					final Facet facet = createFacet(facetDefinition, (MultiBucketsAggregation) aggregation);
 					facets.add(facet);
@@ -217,6 +218,14 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 			}
 		}
 		return facets;
+	}
+
+	private static Aggregation obtainAggregation(final SearchResponse queryResponse, final String name) {
+		final Filter filterAggregation = queryResponse.getAggregations().get(name + "_FILTER");
+		if (filterAggregation != null) {
+			return filterAggregation.getAggregations().get(name);
+		}
+		return queryResponse.getAggregations().get(name);
 	}
 
 	private static Facet createFacet(final FacetDefinition facetDefinition, final MultiBucketsAggregation aggregation) {

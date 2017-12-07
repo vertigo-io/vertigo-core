@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 package io.vertigo.commons.impl.daemon;
+
+import java.lang.reflect.Field;
 
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.lang.Assertion;
@@ -47,6 +49,18 @@ final class DaemonTimerTask implements Runnable {
 			daemonListener.onSuccess();
 		} catch (final Exception e) {
 			daemonListener.onFailure(e);
+		} finally {
+			clearAllThreadLocals();
+		}
+	}
+
+	private static void clearAllThreadLocals() {
+		try {
+			final Field threadLocals = Thread.class.getDeclaredField("threadLocals");
+			threadLocals.setAccessible(true);
+			threadLocals.set(Thread.currentThread(), null);
+		} catch (final Exception e) {
+			throw new AssertionError(e);
 		}
 	}
 }

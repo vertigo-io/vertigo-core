@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,7 @@ import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.eventbus.EventBusManager;
-import io.vertigo.commons.health.HealthManager;
+import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.commons.impl.analytics.AnalyticsManagerImpl;
 import io.vertigo.commons.impl.cache.CacheManagerImpl;
 import io.vertigo.commons.impl.cache.CachePlugin;
@@ -36,7 +36,6 @@ import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.commons.impl.daemon.DaemonManagerImpl;
 import io.vertigo.commons.impl.eventbus.EventBusManagerImpl;
-import io.vertigo.commons.impl.health.HealthManagerImpl;
 import io.vertigo.commons.impl.node.NodeInfosPlugin;
 import io.vertigo.commons.impl.node.NodeManagerImpl;
 import io.vertigo.commons.impl.node.NodeRegistryPlugin;
@@ -77,7 +76,7 @@ public final class CommonsFeatures extends Features {
 
 	/**
 	 * Activates script with a defined plugin.
-	
+
 	 * @param expressionEvaluatorPluginClass the type of plugin to use
 	 * @param params the params
 	 * @return these features
@@ -112,7 +111,9 @@ public final class CommonsFeatures extends Features {
 	 * @return these features
 	 */
 	public CommonsFeatures withRedisConnector(final String host, final int port, final int database, final Optional<String> passwordOpt) {
-		final ComponentConfigBuilder componentConfigBuilder = ComponentConfig.builder(RedisConnector.class)
+		final ComponentConfigBuilder componentConfigBuilder = ComponentConfig
+				.builder()
+				.withImpl(RedisConnector.class)
 				.addParam(Param.of("host", host))
 				.addParam(Param.of("port", Integer.toString(port)))
 				.addParam(Param.of("database", Integer.toString(database)));
@@ -152,11 +153,23 @@ public final class CommonsFeatures extends Features {
 
 	}
 
+	/**
+	 * Adds a AnalyticsConnectorPlugin
+	 * @param analyticsConnectorPluginClass the plugin to use
+	 * @param params the params
+	 * @return these features
+	 */
+	public CommonsFeatures addAnalyticsConnectorPlugin(final Class<? extends AnalyticsConnectorPlugin> analyticsConnectorPluginClass, final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(analyticsConnectorPluginClass, params);
+		return this;
+
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.addComponent(HealthManager.class, HealthManagerImpl.class)
 				.addComponent(AnalyticsManager.class, AnalyticsManagerImpl.class)
 				.addComponent(CodecManager.class, CodecManagerImpl.class)
 				.addComponent(DaemonManager.class, DaemonManagerImpl.class)

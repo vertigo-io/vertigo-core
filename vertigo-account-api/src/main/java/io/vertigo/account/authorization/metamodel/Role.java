@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,8 +25,9 @@ import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.lang.Assertion;
 
 /**
- * Un rôle est la réunion d'un ensemble de permissions.
- * Un utilisateur peut avoir  plusieurs rôles.
+ * Role is a coherent group of more atomic authorizations.
+ * Users have multiple roles.
+ * Applications could use a concept of "profils" as a list of roles, but this concept isn't in this module's scope.
  *
  * @author prahmoune, npiedeloup
  */
@@ -34,23 +35,23 @@ import io.vertigo.lang.Assertion;
 public final class Role implements Definition {
 	private final String name;
 	private final String description;
-	private final List<Permission> permissions;
+	private final List<Authorization> authorizations;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param name Nom du rôle
-	 * @param description Description du rôle
-	 * @param permissions Liste des permissions associées au rôle
+	 * @param name Role name
+	 * @param description Role description
+	 * @param authorizations Authorizations list of this role
 	 */
-	public Role(final String name, final String description, final List<Permission> permissions) {
+	public Role(final String name, final String description, final List<Authorization> authorizations) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkArgNotEmpty(description);
-		Assertion.checkNotNull(permissions);
+		Assertion.checkNotNull(authorizations);
 		//-----
 		this.name = name;
 		this.description = description;
-		this.permissions = permissions;
+		this.authorizations = authorizations;
 	}
 
 	/**
@@ -61,14 +62,14 @@ public final class Role implements Definition {
 	}
 
 	/**
-	 * @return Liste des permissions
+	 * @return Authorizations list of this role
 	 */
-	public List<Permission> getPermissions() {
-		return permissions;
+	public List<Authorization> getAuthorizations() {
+		return authorizations;
 	}
 
 	/**
-	 * @return Nom du rôle
+	 * @return Role name
 	 */
 	@Override
 	public String getName() {

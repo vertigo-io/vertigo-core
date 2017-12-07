@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -72,6 +72,8 @@ public final class DtProperty {
 	 */
 	public static final Property<String> STORE_TYPE = new Property<>("storeType", String.class);
 
+	public static final Property<Boolean> MULTIPLE = new Property<>("multiple", Boolean.class);
+
 	private DtProperty() {
 		//private
 	}
@@ -87,7 +89,7 @@ public final class DtProperty {
 			Assertion.checkNotNull(property);
 			return property;
 		} catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-			throw WrappedException.wrap(e, "Propriete " + propertyName + " non trouvee sur DtProperty");
+			throw WrappedException.wrap(e, "property '{0}' not found on DtProperty", propertyName);
 		}
 	}
 }

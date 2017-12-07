@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,9 +33,8 @@ import javax.inject.Inject;
 import io.vertigo.app.App;
 import io.vertigo.app.Home;
 import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.daemon.DaemonScheduled;
-import io.vertigo.commons.health.HealthMeasure;
 import io.vertigo.commons.node.Node;
 import io.vertigo.commons.node.NodeManager;
 import io.vertigo.commons.plugins.node.registry.single.SingleNodeRegistryPlugin;
@@ -50,17 +49,15 @@ import io.vertigo.lang.VSystemException;
  */
 public final class NodeManagerImpl implements NodeManager, Activeable {
 
-	private static final int HEART_BEAT_SECONDS = 5;
+	private static final int HEART_BEAT_SECONDS = 60;
 
 	private final NodeRegistryPlugin nodeRegistryPlugin;
 	private final Map<String, NodeInfosPlugin> nodeInfosPluginMap = new HashMap<>();
 
 	@Inject
 	public NodeManagerImpl(
-			final DaemonManager daemonManager,
 			final Optional<NodeRegistryPlugin> nodeRegistryPluginOpt,
 			final List<NodeInfosPlugin> nodeInfosPlugins) {
-		Assertion.checkNotNull(daemonManager);
 		Assertion.checkNotNull(nodeRegistryPluginOpt);
 		// ---
 		nodeRegistryPlugin = nodeRegistryPluginOpt.orElse(new SingleNodeRegistryPlugin());
@@ -73,7 +70,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 
 	}
 
-	@DaemonScheduled(name = "DMN_UPDATE_NODE_STATUS", periodInSeconds = HEART_BEAT_SECONDS)
+	@DaemonScheduled(name = "DMN_UPDATE_NODE_STATUS", periodInSeconds = HEART_BEAT_SECONDS, analytics = false)
 	public void updateNodeStatus() {
 		nodeRegistryPlugin.updateStatus(toAppNode(Home.getApp()));
 	}
@@ -124,7 +121,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 	}
 
 	@Override
-	public Map<String, List<HealthMeasure>> getStatus() {
+	public Map<String, List<HealthCheck>> getStatus() {
 		return aggregateResults(app -> getInfosPlugin(app).getStatus(app));
 	}
 

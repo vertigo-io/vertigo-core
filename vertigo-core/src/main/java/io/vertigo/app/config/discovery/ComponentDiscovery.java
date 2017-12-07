@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -96,15 +96,15 @@ final class ComponentDiscovery {
 		final Collection<Class> myImplClasses = new ArrayList<>(componentsImplClasses);
 		//---
 		for (final Class apiClazz : apiClasses) {
-			final Collection<Class> potentialImpl = new Selector()
+			final Collection<Class> candidates = new Selector()
 					.from(componentsImplClasses)
 					.filterClasses(ClassConditions.subTypeOf(apiClazz))
 					.findClasses();
 			// ---
-			Assertion.checkState(!potentialImpl.isEmpty(), "No implentation found for the api {0}", apiClazz);
-			Assertion.checkState(potentialImpl.size() == 1, "Multiple implentations found for the api {0}", apiClazz);
+			Assertion.checkState(!candidates.isEmpty(), "No implentation found for the api {0}", apiClazz);
+			Assertion.checkState(candidates.size() == 1, "Multiple implentations found for the api {0}", apiClazz);
 			// ---
-			final Class implClass = potentialImpl.stream().findFirst().get();
+			final Class implClass = candidates.stream().findFirst().get();
 			myImplClasses.remove(implClass);
 			apiImplMap.put(apiClazz, implClass);
 		}

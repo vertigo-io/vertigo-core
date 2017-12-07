@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,7 @@ public final class ModuleConfig {
 	private final List<ComponentConfig> components;
 	private final List<PluginConfig> plugins;
 	private final List<AspectConfig> aspects;
-	private final List<ProxyFactoryConfig> proxyFactoryConfigs;
+	private final List<ProxyMethodConfig> proxyMethods;
 
 	ModuleConfig(
 			final String name,
@@ -49,20 +49,20 @@ public final class ModuleConfig {
 			final List<ComponentConfig> componentConfigs,
 			final List<PluginConfig> pluginConfigs,
 			final List<AspectConfig> aspectConfigs,
-			final List<ProxyFactoryConfig> proxyFactoryConfigs) {
+			final List<ProxyMethodConfig> proxyMethods) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(definitionProviderConfigs);
 		Assertion.checkNotNull(componentConfigs);
 		Assertion.checkNotNull(pluginConfigs);
 		Assertion.checkNotNull(aspectConfigs);
-		Assertion.checkNotNull(proxyFactoryConfigs);
+		Assertion.checkNotNull(proxyMethods);
 		//-----
 		this.name = name;
 		definitionProviders = Collections.unmodifiableList(new ArrayList<>(definitionProviderConfigs));
 		components = Collections.unmodifiableList(new ArrayList<>(componentConfigs));
 		plugins = Collections.unmodifiableList(new ArrayList<>(pluginConfigs));
 		aspects = aspectConfigs;
-		this.proxyFactoryConfigs = proxyFactoryConfigs;
+		this.proxyMethods = proxyMethods;
 	}
 
 	/**
@@ -96,10 +96,10 @@ public final class ModuleConfig {
 	}
 
 	/**
-	 * @return the list of the ProxyFactory-configs
+	 * @return the list of the proxy configs
 	 */
-	public List<ProxyFactoryConfig> getProxyFactoryConfigs() {
-		return proxyFactoryConfigs;
+	public List<ProxyMethodConfig> getProxyMethodConfigs() {
+		return proxyMethods;
 	}
 
 	/**

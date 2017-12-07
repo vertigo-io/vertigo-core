@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@
 package io.vertigo.studio.plugins.mda.domain.java;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,14 +29,20 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
+import io.vertigo.studio.masterdata.MasterDataManager;
+import io.vertigo.studio.masterdata.MasterDataValue;
+import io.vertigo.studio.masterdata.MasterDataValues;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 import io.vertigo.studio.plugins.mda.domain.java.model.DtDefinitionModel;
 import io.vertigo.studio.plugins.mda.domain.java.model.MethodAnnotationsModel;
+import io.vertigo.studio.plugins.mda.domain.java.model.masterdata.MasterDataDefinitionModel;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
 import io.vertigo.util.MapBuilder;
 
@@ -52,6 +59,8 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 	private final boolean shouldGenerateDtObject;
 	private final String dictionaryClassName;
 
+	private final Optional<MasterDataManager> masterDataManagerOpt;
+
 	/**
 	 * Constructeur.
 	 * @param targetSubDir Repertoire de generation des fichiers de ce plugin
@@ -67,7 +76,8 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 			@Named("generateJpaAnnotations") final boolean generateJpaAnnotations,
 			@Named("generateDtDefinitions") final boolean generateDtDefinitions,
 			@Named("dictionaryClassName") final Optional<String> dictionaryClassNameOption,
-			@Named("generateDtObject") final boolean generateDtObject) {
+			@Named("generateDtObject") final boolean generateDtObject,
+			final Optional<MasterDataManager> masterDataManagerOpt) {
 		//-----
 		this.targetSubDir = targetSubDir;
 		shouldGenerateDtResources = generateDtResources;
@@ -75,6 +85,8 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 		shouldGenerateDtDefinitions = generateDtDefinitions;
 		dictionaryClassName = dictionaryClassNameOption.orElse("DtDefinitions");
 		shouldGenerateDtObject = generateDtObject;
+		//---
+		this.masterDataManagerOpt = masterDataManagerOpt;
 	}
 
 	/** {@inheritDoc} */
@@ -98,6 +110,7 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 		/* Générations des DTO. */
 		if (shouldGenerateDtObject) {
 			generateDtObjects(fileGeneratorConfig, mdaResultBuilder);
+			generateJavaEnums(fileGeneratorConfig, mdaResultBuilder);
 		}
 
 	}
@@ -203,5 +216,42 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 					.build()
 					.generateFile(mdaResultBuilder);
 		}
+	}
+
+	private void generateJavaEnums(
+			final FileGeneratorConfig fileGeneratorConfig,
+			final MdaResultBuilder mdaResultBuilder) {
+		final MasterDataValues masterDataValues = masterDataManagerOpt.isPresent() ? masterDataManagerOpt.get().getValues() : new MasterDataValues();
+
+		Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)
+				.stream()
+				.filter(dtDefinition -> dtDefinition.getStereotype() == DtStereotype.StaticMasterData)
+				.forEach(dtDefintion -> generateJavaEnum(
+						fileGeneratorConfig,
+						mdaResultBuilder,
+						dtDefintion, masterDataValues.getOrDefault(dtDefintion.getClassCanonicalName(), Collections.emptyMap())));
+	}
+
+	private void generateJavaEnum(
+			final FileGeneratorConfig fileGeneratorConfig,
+			final MdaResultBuilder mdaResultBuilder,
+			final DtDefinition dtDefinition,
+			final Map<String, MasterDataValue> values) {
+
+		final MasterDataDefinitionModel masterDataDefinitionModel = new MasterDataDefinitionModel(dtDefinition, values);
+
+		final Map<String, Object> model = new MapBuilder<String, Object>()
+				.put("entity", masterDataDefinitionModel)
+				.build();
+
+		FileGenerator.builder(fileGeneratorConfig)
+				.withModel(model)
+				.withFileName(masterDataDefinitionModel.getClassSimpleName() + "Enum.java")
+				.withGenSubDir(targetSubDir)
+				.withPackageName(dtDefinition.getPackageName())
+				.withTemplateName("domain/java/template/masterdata_enum.ftl")
+				.build()
+				.generateFile(mdaResultBuilder);
+
 	}
 }

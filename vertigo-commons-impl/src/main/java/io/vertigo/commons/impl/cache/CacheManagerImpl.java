@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,16 @@
 package io.vertigo.commons.impl.cache;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 
+import io.vertigo.commons.cache.CacheDefinition;
 import io.vertigo.commons.cache.CacheManager;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -30,7 +36,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class CacheManagerImpl implements CacheManager {
+public final class CacheManagerImpl implements CacheManager, SimpleDefinitionProvider {
 	private final CachePlugin cachePlugin;
 
 	/**
@@ -42,6 +48,16 @@ public final class CacheManagerImpl implements CacheManager {
 		Assertion.checkNotNull(cachePlugin);
 		//-----
 		this.cachePlugin = cachePlugin;
+	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(DefinitionSpace definitionSpace) {
+		return Collections.singletonList(new CacheDefinition(
+				"CACHE_HEALTH_VERTIGO",
+				false,
+				10,
+				60,
+				60));
 	}
 
 	//===========================================================================
@@ -76,4 +92,5 @@ public final class CacheManagerImpl implements CacheManager {
 	public void clearAll() {
 		cachePlugin.clearAll();
 	}
+
 }

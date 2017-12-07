@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,10 +28,7 @@ import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
-import io.vertigo.database.sql.parser.SqlNamedParam;
-import io.vertigo.database.sql.statement.SqlParameter;
-import io.vertigo.database.sql.statement.SqlPreparedStatement;
-import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.VCollectors;
@@ -39,7 +36,6 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
-import io.vertigo.util.ClassUtil;
 
 /**
  * Permet de réaliser des requêtes sur un base de données.<br>
@@ -90,32 +86,36 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 	/** {@inheritDoc} */
 	@Override
 	protected OptionalInt doExecute(
-			final String sql,
-			final SqlConnection connection,
-			final SqlPreparedStatement statement,
-			final List<SqlNamedParam> params) throws SQLException {
+			final SqlStatement sqlStatement,
+			final SqlConnection connection) throws SQLException {
 		final TaskAttribute outAttribute = getOutTaskAttribute();
-		final List<SqlParameter> sqlParameters = buildParameters(params);
 		final List<?> result;
-		if (outAttribute.getDomain().getDataType().isPrimitive()) {
-			result = statement.executeQuery(sql, sqlParameters, outAttribute.getDomain().getDataType().getJavaClass(), 1);
-			Assertion.checkState(result.size() <= 1, "Limit exceeded");
-			setResult(result.isEmpty() ? null : result.get(0));
-		} else if (outAttribute.getDomain().getDataType() == DataType.DtObject) {
-			result = statement.executeQuery(sql, sqlParameters, ClassUtil.classForName(outAttribute.getDomain().getDtDefinition().getClassCanonicalName()), 1);
-			Assertion.checkState(result.size() <= 1, "Limit exceeded");
-			setResult(result.isEmpty() ? null : result.get(0));
-		} else if (outAttribute.getDomain().getDataType() == DataType.DtList) {
-			result = statement.executeQuery(sql, sqlParameters, ClassUtil.classForName(outAttribute.getDomain().getDtDefinition().getClassCanonicalName()), null);
-
-			final DtList<?> dtList = result
-					.stream()
-					.map(DtObject.class::cast)
-					.collect(VCollectors.toDtList(outAttribute.getDomain().getDtDefinition()));
-			setResult(dtList);
-
-		} else {
-			throw new IllegalArgumentException("Task out attribute type " + outAttribute.getDomain().getDataType() + "is not allowed");
+		final Integer limit = outAttribute.getDomain().isMultiple() ? null : 1;
+		result = getDataBaseManager().executeQuery(sqlStatement, outAttribute.getDomain().getJavaClass(), limit, connection);
+		switch (outAttribute.getDomain().getScope()) {
+			case DATA_OBJECT:
+				if (outAttribute.getDomain().isMultiple()) {
+					final DtList<?> dtList = result
+							.stream()
+							.map(DtObject.class::cast)
+							.collect(VCollectors.toDtList(outAttribute.getDomain().getDtDefinition()));
+					setResult(dtList);
+				} else {
+					Assertion.checkState(result.size() <= 1, "Limit exceeded");
+					setResult(result.isEmpty() ? null : result.get(0));
+				}
+				break;
+			case PRIMITIVE:
+			case VALUE_OBJECT:
+				if (outAttribute.getDomain().isMultiple()) {
+					setResult(result);
+				} else {
+					Assertion.checkState(result.size() <= 1, "Limit exceeded");
+					setResult(result.isEmpty() ? null : result.get(0));
+				}
+				break;
+			default:
+				throw new IllegalStateException();
 		}
 		return OptionalInt.of(result.size());
 	}

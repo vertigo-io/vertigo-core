@@ -2422,7 +2422,7 @@ LABL 0 Arial,8,N</a:FontList>
 <a:Creator>npiedeloup</a:Creator>
 <a:ModificationDate>1425649883</a:ModificationDate>
 <a:Modifier>npiedeloup</a:Modifier>
-<a:Stereotype>MasterData</a:Stereotype>
+<a:Stereotype>StaticMasterData</a:Stereotype>
 <a:UseParentNamespace>0</a:UseParentNamespace>
 <c:Attributes>
 <o:Attribute Id="o37">

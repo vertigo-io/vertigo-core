@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.store.filestore.db;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -98,7 +98,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(getValue(fileDataDto, DtoFields.FILE_DATA, DataStream.class));
 		final String fileName = getValue(fileMetadataDto, DtoFields.FILE_NAME, String.class);
 		final String mimeType = getValue(fileMetadataDto, DtoFields.MIME_TYPE, String.class);
-		final Date lastModified = getValue(fileMetadataDto, DtoFields.LAST_MODIFIED, Date.class);
+		final Instant lastModified = getValue(fileMetadataDto, DtoFields.LAST_MODIFIED, Instant.class);
 		final Long length = getValue(fileMetadataDto, DtoFields.LENGTH, Long.class);
 		final VFile vFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
 

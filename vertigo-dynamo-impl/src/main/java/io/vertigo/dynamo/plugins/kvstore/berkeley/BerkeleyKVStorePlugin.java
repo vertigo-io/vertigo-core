@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,8 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.DatabaseException;
@@ -52,7 +53,7 @@ import io.vertigo.util.ListBuilder;
 public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	private static final boolean READONLY = false;
 	//cleaner : 1000 elements every minutes -> 500 simultaneous users (took about 100ms)
-	private static final Logger LOGGER = Logger.getLogger(BerkeleyKVStorePlugin.class);
+	private static final Logger LOGGER = LogManager.getLogger(BerkeleyKVStorePlugin.class);
 	private static final int MAX_REMOVED_TOO_OLD_ELEMENTS = 1000;
 	private static final int REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS = 60;
 

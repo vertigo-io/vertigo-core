@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -51,7 +51,7 @@ public final class OOMParserStereotypesTest extends AbstractTestCaseJU4 {
 
 		final DtDefinition dtDefinitionCommandType = getDtDefinition("DT_COMMAND_TYPE");
 		Assert.assertNotNull(dtDefinitionCommandType);
-		Assert.assertEquals(DtStereotype.MasterData, dtDefinitionCommandType.getStereotype());
+		Assert.assertEquals(DtStereotype.StaticMasterData, dtDefinitionCommandType.getStereotype());
 	}
 
 	/**

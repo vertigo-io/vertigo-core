@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,11 @@ package io.vertigo.dynamo.task;
 import io.vertigo.dynamo.task.model.TaskEngine;
 
 /**
+ * This class defines the engine with several inputs and an output.
+ * Each input is a required integer
  *
+ * This class is a parameterized function : (Integer, Integer, Integer) -> Integer
+ * The parameter is defined by the "request" and represents the operation to execute.
  * @author dchallas
  */
 public final class TaskEngineMock extends TaskEngine {
@@ -54,14 +58,16 @@ public final class TaskEngineMock extends TaskEngine {
 	@Override
 	public void execute() {
 		final int outPut;
-		if ("+".equals(this.getTaskDefinition().getRequest())) {
-			outPut = getValue1() + getValue2() + getValue3();
-		} else if ("*".equals(this.getTaskDefinition().getRequest())) {
-			outPut = getValue1() * getValue2() * getValue3();
-		} else {
-			throw new IllegalArgumentException("Operateur non reconnu.");
+		switch (this.getTaskDefinition().getRequest()) {
+			case "+":
+				outPut = getValue1() + getValue2() + getValue3();
+				break;
+			case "*":
+				outPut = getValue1() * getValue2() * getValue3();
+				break;
+			default:
+				throw new IllegalArgumentException("Operateur non reconnu.");
 		}
-
 		setOutput(outPut);
 	}
 }

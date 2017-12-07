@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ public final class SmartCar implements KeyConcept {
 	@Field(domain = "DO_ID", type = "ID", required = true, label = "identifiant de la voiture")
 	private Long id;
 	@Field(domain = "DO_KEYWORD", required = true, label = "Constructeur")
-	private String maker;
+	private String manufacturer;
 	@Field(domain = "DO_INTEGER", required = true, label = "Année")
 	private Integer year;
 	@Field(domain = "DO_TEXT", required = true, label = "Descriptif")
@@ -50,12 +50,12 @@ public final class SmartCar implements KeyConcept {
 		this.id = id;
 	}
 
-	public String getMaker() {
-		return maker;
+	public String getManufacturer() {
+		return manufacturer;
 	}
 
-	public void setMaker(final String maker) {
-		this.maker = maker;
+	public void setManufacturer(final String manufacturer) {
+		this.manufacturer = manufacturer;
 	}
 
 	public String getDescription() {

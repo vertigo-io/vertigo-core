@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ComponentInitializerConfig;
@@ -56,7 +57,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 		CLOSED
 	}
 
-	private static final Logger LOGGER = Logger.getLogger(AutoCloseableApp.class);
+	private static final Logger LOGGER = LogManager.getLogger(AutoCloseableApp.class);
 
 	//Start : used to have 'uptime'
 	private final Instant start;
@@ -95,11 +96,11 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			//contient donc à minima resourceManager et paramManager.
 
 			//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
-			componentLoader.injectComponents(Optional.empty(), "boot",
+			componentLoader.registerComponents(Optional.empty(), "boot",
 					appConfig.getBootConfig().getComponentConfigs());
 
 			//-----1. Loads all components (and aspects).
-			componentLoader.injectAllComponentsAndAspects(Optional.of(componentSpaceWritable.resolve(ParamManager.class)), appConfig.getModuleConfigs());
+			componentLoader.registerAllComponentsAndAspects(Optional.of(componentSpaceWritable.resolve(ParamManager.class)), appConfig.getModuleConfigs());
 			//-----2. Print components
 			if (appConfig.getBootConfig().isVerbose()) {
 				Logo.printCredits(System.out);
