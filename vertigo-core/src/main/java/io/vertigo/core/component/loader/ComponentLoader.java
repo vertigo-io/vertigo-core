@@ -100,7 +100,7 @@ public final class ComponentLoader {
 		//---- Proxies----
 		componentConfigs
 				.stream()
-				.filter(componentConfig -> componentConfig.isProxy())
+				.filter(ComponentConfig::isProxy)
 				.forEach(componentConfig -> {
 					final Component component = createProxyWithOptions(/*paramManagerOpt,*/ componentConfig);
 					componentSpace.registerComponent(componentConfig.getId(), component);
@@ -186,16 +186,20 @@ public final class ComponentLoader {
 
 	private void registerAspect(final Aspect aspect) {
 		Assertion.checkNotNull(aspect);
-		Assertion.checkArgument(aspects.stream().noneMatch(a -> a.getClass().equals(aspect.getClass())), "aspect {0} already registered with the same class", aspect.getClass());
-		Assertion.checkArgument(aspects.stream().noneMatch(a -> a.getAnnotationType().equals(aspect.getAnnotationType())), "aspect {0} already registered with the same annotation", aspect.getClass());
+		Assertion.checkArgument(aspects.stream().noneMatch(a -> a.getClass().equals(aspect.getClass())),
+				"aspect {0} already registered with the same class", aspect.getClass());
+		Assertion.checkArgument(aspects.stream().noneMatch(a -> a.getAnnotationType().equals(aspect.getAnnotationType())),
+				"aspect {0} already registered with the same annotation", aspect.getClass());
 		//-----
 		aspects.add(aspect);
 	}
 
 	private void registerProxyMethod(final ProxyMethod proxyMethod) {
 		Assertion.checkNotNull(proxyMethod);
-		Assertion.checkArgument(proxyMethods.stream().noneMatch(a -> a.getClass().equals(proxyMethod.getClass())), "proxy {0} already registered with the same class", proxyMethod.getClass());
-		Assertion.checkArgument(proxyMethods.stream().noneMatch(p -> p.getAnnotationType().equals(proxyMethod.getAnnotationType())), "proxy {0} already registered with the same annotation", proxyMethod.getClass());
+		Assertion.checkArgument(proxyMethods.stream().noneMatch(a -> a.getClass().equals(proxyMethod.getClass())),
+				"proxy {0} already registered with the same class", proxyMethod.getClass());
+		Assertion.checkArgument(proxyMethods.stream().noneMatch(p -> p.getAnnotationType().equals(proxyMethod.getAnnotationType())),
+				"proxy {0} already registered with the same annotation", proxyMethod.getClass());
 		//-----
 		proxyMethods.add(proxyMethod);
 	}

@@ -77,13 +77,11 @@ final class ComponentProxyFactory {
 				.findFirst()
 				.orElseThrow(() -> new IllegalStateException("No way to find a proxy annotaion on method : " + method));
 
-		final ProxyMethod proxyMethod = proxyMethods
+		return proxyMethods
 				.stream()
 				.filter(p -> annotation.annotationType().equals(p.getAnnotationType()))
 				.findFirst()
 				.orElseThrow(() -> new IllegalStateException("No way to find a proxy annotation on method : " + method));
-
-		return proxyMethod;
 	}
 
 	private static final class MyMethodInvocation implements AspectMethodInvocation {
@@ -109,7 +107,8 @@ final class ComponentProxyFactory {
 		@Override
 		public Object proceed(final Object[] args) {
 			if (index < aspects.size()) {
-				return aspects.get(index++).invoke(args, this);
+				index++;
+				return aspects.get(index).invoke(args, this);
 			}
 			return proxyMethod.invoke(method, args);
 		}

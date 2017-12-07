@@ -75,8 +75,11 @@ public interface CachePlugin extends Plugin {
 	 */
 	void clearAll();
 
+	/**
+	 * @return HealthMeasure of this plugin
+	 */
 	@HealthChecked(name = "io", feature = "cache")
-	default public HealthMeasure checkIo() {
+	default HealthMeasure checkIo() {
 		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
 		try {
 			put("CACHE_HEALTH_VERTIGO", "healthcheckkey", "healthcheckvalue");

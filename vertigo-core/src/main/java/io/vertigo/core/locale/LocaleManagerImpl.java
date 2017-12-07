@@ -30,6 +30,7 @@ import java.util.MissingResourceException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -73,7 +74,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 	 * Stratégie de choix de la zone.
 	 * Si pas de stratégie ou pas de zone trouvée alors zone par défaut.
 	 */
-	private ZoneProvider zoneProvider;
+	private Supplier<ZoneId> zoneSupplier;
 
 	/**
 	 * Constructor.
@@ -131,11 +132,11 @@ public final class LocaleManagerImpl implements LocaleManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void registerZoneProvider(final ZoneProvider newZoneProvider) {
-		Assertion.checkArgument(zoneProvider == null, "zoneProvider already registered");
-		Assertion.checkNotNull(newZoneProvider);
+	public void registerZoneProvider(final Supplier<ZoneId> newZoneSupplier) {
+		Assertion.checkArgument(zoneSupplier == null, "zoneSupplier already registered");
+		Assertion.checkNotNull(newZoneSupplier);
 		//-----
-		zoneProvider = newZoneProvider;
+		zoneSupplier = newZoneSupplier;
 	}
 
 	/** {@inheritDoc} */
@@ -240,8 +241,8 @@ public final class LocaleManagerImpl implements LocaleManager {
 	/** {@inheritDoc} */
 	@Override
 	public ZoneId getCurrentZoneId() {
-		if (zoneProvider != null && zoneProvider.getCurrentZoneId() != null) {
-			return zoneProvider.getCurrentZoneId();
+		if (zoneSupplier != null && zoneSupplier.get() != null) {
+			return zoneSupplier.get();
 		}
 		//If there is no user, we can pick the default zone.
 		return defaultZoneId;

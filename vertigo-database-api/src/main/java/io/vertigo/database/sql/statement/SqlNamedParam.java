@@ -35,14 +35,6 @@ final class SqlNamedParam {
 	private final Integer rowNumber;
 
 	/**
-	 * Static builder.
-	 * param betweenCar String
-	 */
-	public static SqlNamedParam of(final String betweenCar) {
-		return new SqlNamedParam(betweenCar);
-	}
-
-	/**
 	 * Constructor.
 	 *
 	 * @param betweenCar String
@@ -83,6 +75,15 @@ final class SqlNamedParam {
 			throw new IllegalStateException();
 		}
 		Assertion.checkNotNull(attributeName);
+	}
+
+	/**
+	 * Static builder.
+	 * @param betweenCar Separator char
+	 * @return new SqlNamedParam
+	 */
+	public static SqlNamedParam of(final String betweenCar) {
+		return new SqlNamedParam(betweenCar);
 	}
 
 	private static int parseDtcRowNumber(final String betweenPoints) {

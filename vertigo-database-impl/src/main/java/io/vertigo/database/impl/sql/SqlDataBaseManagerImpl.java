@@ -54,6 +54,8 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 
 	private static final int REQUEST_HEADER_FOR_TRACER = 50;
 
+	private static final int REQUEST_STATEMENT_FOR_TRACER = 4000;
+
 	private final AnalyticsManager analyticsManager;
 	private final Map<String, SqlConnectionProvider> connectionProviderPluginMap;
 
@@ -64,6 +66,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 	 * @param localeManager Manager des messages localisés
 	 * @param analyticsManager Manager de la performance applicative
 	 * @param sqlConnectionProviderPlugins List of connectionProviderPlugin. Names must be unique.
+	 * @param sqlAdapterSupplierPlugins List of adapterSupplierPlugin. Names must be unique.
 	 */
 	@Inject
 	public SqlDataBaseManagerImpl(
@@ -227,7 +230,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		}
 	}
 
-	private OptionalInt doExecuteBatch(final PreparedStatement statement, final ProcessAnalyticsTracer tracer) {
+	private static OptionalInt doExecuteBatch(final PreparedStatement statement, final ProcessAnalyticsTracer tracer) {
 		try {
 			final int[] res = statement.executeBatch();
 			//Calcul du nombre total de lignes affectées par le batch.
@@ -255,7 +258,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 				"/execute/" + sql.substring(0, Math.min(REQUEST_HEADER_FOR_TRACER, sql.length())),
 				tracer -> {
 					final O result = function.apply(tracer);
-					tracer.addTag("statement", toString());
+					tracer.addTag("statement", sql.substring(0, Math.min(REQUEST_STATEMENT_FOR_TRACER, sql.length())));
 					return result;
 				});
 	}

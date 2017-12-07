@@ -20,6 +20,7 @@ package io.vertigo.core.locale;
 
 import java.time.ZoneId;
 import java.util.Locale;
+import java.util.function.Supplier;
 
 import io.vertigo.core.component.Manager;
 
@@ -57,7 +58,7 @@ public interface LocaleManager extends Manager {
 	 * Enregistre une stratégie de choix de time zone.
 	 * @param zoneProvider Définit la time zone par défaut de façon contextuelle
 	 */
-	void registerZoneProvider(ZoneProvider zoneProvider);
+	void registerZoneProvider(Supplier<ZoneId> zoneProvider);
 
 	/**
 	 * Ajout d'un dictionnaire de ressources.

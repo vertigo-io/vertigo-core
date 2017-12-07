@@ -90,7 +90,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 								daemonSupplier = () -> () -> analyticsManager.trace(
 										"daemon",
 										daemonSchedule.name(),
-										(tracer) -> ClassUtil.invoke(component, method));
+										tracer -> ClassUtil.invoke(component, method));
 							} else {
 								// otherwise we just execute it
 								daemonSupplier = () -> () -> ClassUtil.invoke(component, method);
