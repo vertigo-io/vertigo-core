@@ -122,8 +122,10 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 				break;
 			}
 		}
-		Assertion.checkNotNull(associationUserGroup, "Association between User ({0}) and Group ({1}) not found", getUserDtDefinition().getClassSimpleName(), userGroupDtDefinition.getClassSimpleName());
-		Assertion.checkState(associationUserGroup instanceof AssociationSimpleDefinition || associationUserGroup instanceof AssociationNNDefinition, "Association ({0}) between User and Group must be an AssociationSimpleDefinition or an AssociationNNDefinition", associationUserGroup.getName());
+		Assertion.checkNotNull(associationUserGroup, "Association between User ({0}) and Group ({1}) not found",
+				getUserDtDefinition().getClassSimpleName(), userGroupDtDefinition.getClassSimpleName());
+		Assertion.checkState(associationUserGroup instanceof AssociationSimpleDefinition || associationUserGroup instanceof AssociationNNDefinition,
+				"Association ({0}) between User and Group must be an AssociationSimpleDefinition or an AssociationNNDefinition", associationUserGroup.getName());
 	}
 
 	/** {@inheritDoc} */
@@ -137,17 +139,19 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	/** {@inheritDoc} */
 	@Override
 	public Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
-		final DtListURI groupDtListURI;
 		if (associationUserGroup instanceof AssociationSimpleDefinition) {
+			//case 1 group per user
 			final URI<Entity> userURI = new URI(getUserDtDefinition(), accountURI.getId());
 			final Entity userEntity = storeManager.getDataStore().readOne(userURI);
 			final Object fkValue = ((AssociationSimpleDefinition) associationUserGroup).getFKField().getDataAccessor().getValue(userEntity);
 			final URI<AccountGroup> groupURI = new URI(userGroupDtDefinition, fkValue);
 			return Collections.singleton(groupURI);
 		}
-		//autres cas éliminés par assertion dans le postStart
-		Assertion.checkArgument(associationUserGroup instanceof AssociationNNDefinition, "Association ({0}) between User and Group must be an AssociationSimpleDefinition or an AssociationNNDefinition", associationUserGroup.getName());
-		groupDtListURI = new DtListURIForNNAssociation((AssociationNNDefinition) associationUserGroup, accountURI, associationGroupRoleName);
+		//case N group per user
+		//other case checked in postStart by assertions
+		Assertion.checkArgument(associationUserGroup instanceof AssociationNNDefinition,
+				"Association ({0}) between User and Group must be an AssociationSimpleDefinition or an AssociationNNDefinition", associationUserGroup.getName());
+		final DtListURI groupDtListURI = new DtListURIForNNAssociation((AssociationNNDefinition) associationUserGroup, accountURI, associationGroupRoleName);
 
 		//-----
 		final DtList<? extends Entity> result = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().findAll(groupDtListURI);
@@ -172,7 +176,8 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		if (associationUserGroup instanceof AssociationSimpleDefinition) {
 			userDtListURI = new DtListURIForSimpleAssociation((AssociationSimpleDefinition) associationUserGroup, groupURI, associationUserRoleName);
 		} else { //autres cas éliminés par assertion dans le postStart
-			Assertion.checkArgument(associationUserGroup instanceof AssociationNNDefinition, "Association ({0}) between User and Group must be an AssociationSimpleDefinition or an AssociationNNDefinition", associationUserGroup.getName());
+			Assertion.checkArgument(associationUserGroup instanceof AssociationNNDefinition,
+					"Association ({0}) between User and Group must be an AssociationSimpleDefinition or an AssociationNNDefinition", associationUserGroup.getName());
 			userDtListURI = new DtListURIForNNAssociation((AssociationNNDefinition) associationUserGroup, groupURI, associationUserRoleName);
 		}
 		//-----
@@ -200,7 +205,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		return Optional.empty();
 	}
 
-	protected AccountGroup groupToAccount(final Entity groupEntity) {
+	private AccountGroup groupToAccount(final Entity groupEntity) {
 		final String groupId = parseAttribute(String.class, GroupProperty.id, groupEntity);
 		final String displayName = parseAttribute(String.class, GroupProperty.displayName, groupEntity);
 		return new AccountGroup(groupId, displayName);

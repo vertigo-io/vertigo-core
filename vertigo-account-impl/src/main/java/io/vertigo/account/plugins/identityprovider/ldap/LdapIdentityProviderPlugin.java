@@ -67,6 +67,7 @@ import io.vertigo.lang.WrappedException;
  * @author npiedeloup
  */
 public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin, Activeable {
+	private static final int MAX_ROWS = 500;
 	private static final String LDAP_PHOTO_MIME_TYPE = "image/jpeg";
 	private static final String PHOTO_RESERVED_FIELD = "photo";
 
@@ -167,7 +168,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	public <E extends Entity> List<E> getAllUsers() {
 		final LdapContext ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
 		try {
-			return searchUser("(cn=*)", 500, ldapContext);
+			return searchUser("(cn=*)", MAX_ROWS, ldapContext);
 		} finally {
 			closeLdapContext(ldapContext);
 		}
