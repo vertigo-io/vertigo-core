@@ -1,12 +1,58 @@
 Version history
 ===============
 
-Running 1.1.0-SNAPSHOT
+Running 2.0.0-SNAPSHOT
 ----------------------
+
 * [all] Code cleaning, refactoring and documenting 
-* __[all] Execution error with jdk 1.8_51 should use more recent version__
 
 more to come :)
+
+Release 1.1.0 - 2017/12/07
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-100-to-110)
+
+* [core] stop failed started component + resilience on stop 
+* [core] added proxies
+* [core] Added ZoneIdProvider like LocaleProvider
+* [core] Added defaultZoneId to managers.xml boot tag 
+* [commons] healthchecks and metrics are handled by AnalyticsManager 
+* [commons] daemons are traced by analytics
+* [commons] metric provider are now registered with annotated methods
+* [commons] change default port for log4j socket connector 4562 for log4j2 
+* [commons] clean ThreadLocals on daemons to avoid non wanted behaviours 
+* [commons] fix bug in processTracer tree 
+* [database] created features' class
+* [database] refac sql : named params are now supported
+* [database] [dynamo] moved vendors 
+* [database] added sqlMapper 
+* [dynamo] Update ElasticSearch to 5.6, and Lucene to 6.6.0 
+* [dynamo] Fixed lowercase dtDefinition when index is per type 
+* [dynamo] added plugin for ES 2.4 and removed plugin for 1.7
+* [dynamo] Removed highlights in clustered result 
+* [dynamo] refactoring domain (multiple + valueobjects)
+* [dynamo] replaced ZonedDateTime by Instant
+* [dynamo, studio] static masterdata are accessed by an enum (via a dedicated accessor)
+* [dynamo] Added multi selectable facet support
+* [dynamo] Fixed SearchManager for multiple SearchIndexDef on same KeyConcept
+* [dynamo] added support of list of primitives in taskengines
+* [dynamo] switch to accessor for accessing fks on entities 
+* [dynamo]  FsFullFileStorePlugin uses a store path with year, month, day
+* [account] Renamed IdentityManager to AccountManager
+* [account] Renamed AccountProvider to IdentityProvider 
+* [vega] remove serialization of computed fields 
+* [vega] added test for embeded entities in post payload
+* [studio] added sql generation for masterdata 
+* [studio] Updated Typescript generation for Focus4 (Node, Entity and masterData)
+* [studio] Task with one input of Data-Object are DAO instead of PAO
+* [studio] Changed sequence generator name in JPA annotation to be unique 
+* [all] Added healhchecks on multiple components
+* [all] Code cleaning, refactoring and documenting 
+* [all] Migrated Log4j to Log4j2
+* [all] Updated versions (gson, hibernate, junit) : gson 2.8.1 to 2.8.2, hibernate 5.2.10 to 5.2.11, junit 5.0.0-M4 to 5.0.1
+* __[all] Execution error with jdk 1.8_51 should use more recent version__
+
+
 
 Release 1.0.0 - 2017/07/07
 ----------------------
