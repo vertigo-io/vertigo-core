@@ -101,7 +101,7 @@ public final class DtDefinition implements Definition {
 		displayFieldOpt = displayField;
 
 		for (final DtField dtField : dtFields) {
-			Assertion.when(stereotype.isPersistent())
+			Assertion.when(stereotype.isPersistent() && dtField.isPersistent())
 					.check(() -> dtField.getDomain().getScope().isPrimitive() && !dtField.getDomain().isMultiple(),
 							"Only non multiple primitives are allowed in entity '{0}'", name);
 			if (dtField.getType().isId()) {
