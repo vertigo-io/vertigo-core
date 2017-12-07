@@ -107,8 +107,7 @@ final class ComponentProxyFactory {
 		@Override
 		public Object proceed(final Object[] args) {
 			if (index < aspects.size()) {
-				index++;
-				return aspects.get(index).invoke(args, this);
+				return aspects.get(index++).invoke(args, this);
 			}
 			return proxyMethod.invoke(method, args);
 		}
