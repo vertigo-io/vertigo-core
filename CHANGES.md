@@ -28,7 +28,7 @@ Release 1.1.0 - 2017/12/07
 * [database] added sqlMapper 
 * [dynamo] Update ElasticSearch to 5.6, and Lucene to 6.6.0 
 * [dynamo] Fixed lowercase dtDefinition when index is per type 
-* [dynamo] added plugin for ES 2.4 and removed plugin for 1.7
+* [dynamo] added plugin for ES 2.4
 * [dynamo] Removed highlights in clustered result 
 * [dynamo] refactoring domain (multiple + valueobjects)
 * [dynamo] replaced ZonedDateTime by Instant
