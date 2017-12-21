@@ -64,7 +64,8 @@ final class SelectedFacetValuesDeserializer implements JsonDeserializer<Selected
 
 	private static void appendRangeFacetValue(final JsonElement label, final FacetDefinition facetDefinition, final SelectedFacetValuesBuilder selectedFacetValuesBuilder) {
 		for (final FacetValue facet : facetDefinition.getFacetRanges()) {
-			if (facet.getLabel().getDisplay().equals(label.getAsString())) {
+			if (facet.getLabel().getDisplay().equals(label.getAsString())
+					|| facet.getCode().equals(label.getAsString())) {
 				selectedFacetValuesBuilder.add(facetDefinition, facet);
 				break;
 			}
