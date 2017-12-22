@@ -200,7 +200,7 @@ public final class DtDefinitionModel {
 		return dtDefinition.getStereotype() != DtStereotype.Fragment &&
 				dtDefinition.getFields()
 						.stream()
-						.anyMatch(field -> field.getType() == FieldType.FOREIGN_KEY);
+						.anyMatch(field -> field.getType() == FieldType.FOREIGN_KEY && field.getFkDtDefinition().getStereotype() != DtStereotype.StaticMasterData);
 
 	}
 

@@ -1,7 +1,16 @@
 package ${packageName};
 
-import io.vertigo.account.authorization.metamodel.OperationName;
+<#if securedentities?size != 0 >
+import io.vertigo.account.authorization.metamodel.Authorization;
+</#if>
 import io.vertigo.account.authorization.metamodel.AuthorizationName;
+import io.vertigo.account.authorization.metamodel.OperationName;
+<#if securedentities?size != 0 >
+import io.vertigo.app.Home;
+</#if>
+<#list securedentities as securedEntity>
+import ${securedEntity.classCanonicalName};
+</#list>
 
 /**
  * Warning. This class is generated automatically !
@@ -10,20 +19,20 @@ import io.vertigo.account.authorization.metamodel.AuthorizationName;
  */
 public final class ${classSimpleName} {
 
-	private  ${classSimpleName}() {
+	private ${classSimpleName}() {
 		//private constructor
 	}
 
 <#list securedentities as securedEntity>
 	/**
-	 * Authorizations of ${securedEntity.entity.classSimpleName}.
+	 * Authorizations of ${securedEntity.classSimpleName}.
 	 */
-	public enum ${securedEntity.entity.classSimpleName}Authorizations implements AuthorizationName {
-		<#list securedEntity.operations as operation>
-			 /** ${operation.comment.orElse(operation.name)}. */
-			${operation.name}<#if operation_has_next>,<#else>;</#if>
-		</#list>
-		
+	public enum ${securedEntity.classSimpleName}Authorizations implements AuthorizationName {
+	<#list securedEntity.operations as operation>
+		/** ${operation.comment.orElse(operation.name)}. */
+		${operation.name}<#if operation_has_next>,<#else>;</#if>
+	</#list>
+
 		/**
 		 * Get the associated authorization.
 		 *
@@ -33,7 +42,7 @@ public final class ${classSimpleName} {
 		public static Authorization of(final String code) {
 			return Home.getApp().getDefinitionSpace().resolve(code, Authorization.class);
 		}
-	
+
 		/**
 		 * Get the associated authorization.
 		 *
@@ -45,13 +54,13 @@ public final class ${classSimpleName} {
 	}
 
 	/**
-	 * Operations of ${securedEntity.entity.classSimpleName}.
+	 * Operations of ${securedEntity.classSimpleName}.
 	 */
-	public enum ${securedEntity.entity.classSimpleName}Operations implements OperationName<${securedEntity.entity.classSimpleName}> {
-		<#list securedEntity.operations as operation>
-			/** ${operation.comment.orElse(operation.operation.get())}. */
-			${operation.operation.get()}<#if operation_has_next>,<#else>;</#if>
-		</#list>
+	public enum ${securedEntity.classSimpleName}Operations implements OperationName<${securedEntity.classSimpleName}> {
+	<#list securedEntity.operations as operation>
+		/** ${operation.comment.orElse(operation.operationName)}. */
+		${operation.operationName}<#if operation_has_next>,<#else>;</#if>
+	</#list>
 	}
 </#list>
 }
