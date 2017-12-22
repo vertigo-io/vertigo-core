@@ -1861,6 +1861,140 @@ public final class WebServiceManagerTest {
 
 	}
 
+	@Test
+	public void testSelectedFacetValues() throws ParseException {
+		final Map<String, Object> emptySelectedFacets = new MapBuilder<String, Object>()
+				.build();
+		loggedAndExpect(given().body(emptySelectedFacets))
+				.statusCode(HttpStatus.SC_OK)
+				.body(Matchers.equalTo("{}"))
+				.when()
+				.post("/search/selectedFacetValues");
+
+		final Map<String, Object> selectedFacetsMono = new MapBuilder<String, Object>()
+				.put("FCT_HONORIFIC_CODE", "Mr")
+				.build();
+		loggedAndExpect(given().body(selectedFacetsMono))
+				.statusCode(HttpStatus.SC_OK)
+				.body(Matchers.equalTo("{\"FCT_HONORIFIC_CODE\":\"Mr\"}"))
+				.when()
+				.post("/search/selectedFacetValues");
+
+		final Map<String, Object> selectedFacetsByCode = new MapBuilder<String, Object>()
+				.put("FCT_BIRTHDAY", "R1")
+				.build();
+		loggedAndExpect(given().body(selectedFacetsByCode))
+				.statusCode(HttpStatus.SC_OK)
+				.body(Matchers.equalTo("{\"FCT_BIRTHDAY\":\"R1\"}"))
+				.when()
+				.post("/search/selectedFacetValues");
+
+		final Map<String, Object> selectedFacetsByLabel = new MapBuilder<String, Object>()
+				.put("FCT_BIRTHDAY", "1980-1990")
+				.build();
+		loggedAndExpect(given().body(selectedFacetsByLabel))
+				.statusCode(HttpStatus.SC_OK)
+				.body(Matchers.equalTo("{\"FCT_BIRTHDAY\":\"R2\"}"))
+				.when()
+				.post("/search/selectedFacetValues");
+
+		final Map<String, Object> selectedFacetsBoth = new MapBuilder<String, Object>()
+				.put("FCT_HONORIFIC_CODE", "Mr")
+				.put("FCT_BIRTHDAY", "R1")
+				.build();
+		loggedAndExpect(given().body(selectedFacetsBoth))
+				.statusCode(HttpStatus.SC_OK)
+				.body(Matchers.equalTo("{\"FCT_HONORIFIC_CODE\":\"Mr\", \"FCT_BIRTHDAY\":\"R1\"}"))
+				.when()
+				.post("/search/selectedFacetValues");
+
+		final Map<String, Object> selectedFacetsMultiple = new MapBuilder<String, Object>()
+				.put("FCT_HONORIFIC_CODE", "Mr")
+				.put("FCT_BIRTHDAY", new String[] { "R1", "R3" })
+				.build();
+		loggedAndExpect(given().body(selectedFacetsMultiple))
+				.statusCode(HttpStatus.SC_OK)
+				.body(Matchers.equalTo("{\"FCT_HONORIFIC_CODE\":\"Mr\", \"FCT_BIRTHDAY\":\"R1,R3\"}"))
+				.when()
+				.post("/search/selectedFacetValues");
+
+	}
+
+	@Test
+	public void testFacetedSearchResult() throws ParseException {
+		final Map<String, Object> emptySelectedFacets = new MapBuilder<String, Object>()
+				.build();
+		loggedAndExpect(given().body(emptySelectedFacets))
+				.statusCode(HttpStatus.SC_OK)
+				.body("list", Matchers.hasSize(10))
+				.body("facets.get(1).code", Matchers.equalTo("FCT_BIRTHDAY"))
+				.body("facets.get(1).values.get(0).code", Matchers.equalTo("R1"))
+				.body("facets.get(1).values.get(0).count", Matchers.equalTo(4))
+				.body("facets.get(1).values.get(1).code", Matchers.equalTo("R2"))
+				.body("facets.get(1).values.get(1).count", Matchers.equalTo(6))
+				.body("totalCount", Matchers.equalTo(10))
+				.when()
+				.post("/search/facetedResult");
+
+		final Map<String, Object> selectedFacetsMono = new MapBuilder<String, Object>()
+				.put("FCT_HONORIFIC_CODE", "MR_")
+				.build();
+		loggedAndExpect(given().body(selectedFacetsMono))
+				.statusCode(HttpStatus.SC_OK)
+				.body("list", Matchers.hasSize(1))
+				.body("totalCount", Matchers.equalTo(1))
+				.body("facets.get(0).values", Matchers.hasSize(1))
+				.when()
+				.post("/search/facetedResult");
+
+		final Map<String, Object> selectedFacetsByCode = new MapBuilder<String, Object>()
+				.put("FCT_BIRTHDAY", "R1")
+				.build();
+		loggedAndExpect(given().body(selectedFacetsByCode))
+				.statusCode(HttpStatus.SC_OK)
+				.body("list", Matchers.hasSize(4))
+				.body("totalCount", Matchers.equalTo(4))
+				.body("facets.get(0).values", Matchers.hasSize(4))
+				.when()
+				.post("/search/facetedResult");
+
+		final Map<String, Object> selectedFacetsByLabel = new MapBuilder<String, Object>()
+				.put("FCT_BIRTHDAY", "1980-1990")
+				.build();
+		loggedAndExpect(given().body(selectedFacetsByLabel))
+				.statusCode(HttpStatus.SC_OK)
+				.body("list", Matchers.hasSize(6))
+				.body("totalCount", Matchers.equalTo(6))
+				.body("facets.get(0).values", Matchers.hasSize(6))
+				.when()
+				.post("/search/facetedResult");
+
+		final Map<String, Object> selectedFacetsBoth = new MapBuilder<String, Object>()
+				.put("FCT_HONORIFIC_CODE", "MR_")
+				.put("FCT_BIRTHDAY", "R2")
+				.build();
+		loggedAndExpect(given().body(selectedFacetsBoth))
+				.statusCode(HttpStatus.SC_OK)
+				.body("list", Matchers.hasSize(1))
+				.body("totalCount", Matchers.equalTo(1))
+				.body("facets.get(0).values", Matchers.hasSize(1))
+				.when()
+				.post("/search/facetedResult");
+
+		final Map<String, Object> selectedFacetsMultiple = new MapBuilder<String, Object>()
+				.put("FCT_HONORIFIC_CODE", new String[] { "MR_", "MS_" })
+				.put("FCT_BIRTHDAY", "R2")
+				.build();
+		loggedAndExpect(given().body(selectedFacetsMultiple))
+				.statusCode(HttpStatus.SC_OK)
+				.body("list", Matchers.hasSize(2))
+				.body("totalCount", Matchers.equalTo(2))
+				.body("facets.get(0).values", Matchers.hasSize(2))
+				.when()
+				.post("/search/facetedResult");
+
+	}
+
 	//=========================================================================
 
 	private static RequestSpecification given() {
