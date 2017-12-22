@@ -131,12 +131,28 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 			final String myIndexName = obtainIndexName(indexDefinition);
 			createIndex(myIndexName);
-			updateTypeMapping(indexDefinition);
+
+			updateTypeMapping(indexDefinition, hasSortableNormalizer(myIndexName));
 			logMappings(myIndexName);
 			types.add(indexDefinition.getName().toLowerCase(Locale.ROOT));
 		}
 
 		waitForYellowStatus();
+	}
+
+	private boolean hasSortableNormalizer(final String myIndexName) {
+		try {
+			final Settings currentSettings = esClient.admin()
+					.indices()
+					.prepareGetIndex()
+					.addIndices(myIndexName)
+					.get()
+					.getSettings()
+					.get(myIndexName);
+			return !currentSettings.getAsSettings("index.analysis.normalizer.sortable").isEmpty();
+		} catch (final ElasticsearchException e) {
+			throw WrappedException.wrap(e, "Error on index " + myIndexName);
+		}
 	}
 
 	private String obtainIndexName(final SearchIndexDefinition indexDefinition) {
@@ -291,7 +307,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	 * Update template definition of this type.
 	 * @param indexDefinition Index concerné
 	 */
-	private void updateTypeMapping(final SearchIndexDefinition indexDefinition) {
+	private void updateTypeMapping(final SearchIndexDefinition indexDefinition, final boolean sortableNormalizer) {
 		Assertion.checkNotNull(indexDefinition);
 		//-----
 		try (final XContentBuilder typeMapping = XContentFactory.jsonBuilder()) {
@@ -315,6 +331,9 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					typeMapping.startObject("fields");
 					typeMapping.startObject("keyword");
 					typeMapping.field("type", "keyword");
+					if (sortableNormalizer) {
+						typeMapping.field("normalizer", "sortable");
+					}
 					typeMapping.endObject();
 					typeMapping.endObject();
 				}
