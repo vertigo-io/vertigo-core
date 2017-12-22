@@ -29,6 +29,7 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.Home;
 import io.vertigo.app.config.discovery.data.DiscoveryA;
 import io.vertigo.app.config.discovery.data.DiscoveryB;
+import io.vertigo.app.config.discovery.data.DiscoveryD;
 import io.vertigo.core.component.ComponentSpace;
 
 /**
@@ -40,9 +41,13 @@ public final class DiscoveryTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testComponentSpace() {
 		final ComponentSpace componentSpace = Home.getApp().getComponentSpace();
-		assertEquals(componentSpace.keySet().size(), 2 + 2); //ParamManager and ResourceManager are automaticaly declared
+		assertEquals(componentSpace.keySet().size(), 2 + 3); //ParamManager and ResourceManager are automaticaly declared
 		final DiscoveryB discoveryB = componentSpace.resolve(DiscoveryB.class);
+		//---
 		assertTrue(DiscoveryA.class.getName().equals(discoveryB.getClass().getName()));
+		//---
+		final DiscoveryD discoveryD = componentSpace.resolve(DiscoveryD.class);
+		assertTrue(discoveryD.isTrue());
 	}
 
 }
