@@ -1862,7 +1862,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSelectedFacetValues() throws ParseException {
+	public void testSelectedFacetValues() {
 		final Map<String, Object> emptySelectedFacets = new MapBuilder<String, Object>()
 				.build();
 		loggedAndExpect(given().body(emptySelectedFacets))
@@ -1921,20 +1921,22 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testFacetedSearchResult() throws ParseException {
+	public void testFacetedSearchResult() {
 		final Map<String, Object> emptySelectedFacets = new MapBuilder<String, Object>()
 				.build();
-		loggedAndExpect(given().body(emptySelectedFacets))
+		final Response getResponse = loggedAndExpect(given().body(emptySelectedFacets))
 				.statusCode(HttpStatus.SC_OK)
-				.body("list", Matchers.hasSize(10))
+				.body("list", Matchers.hasSize(Matchers.greaterThanOrEqualTo(10)))
 				.body("facets.get(1).code", Matchers.equalTo("FCT_BIRTHDAY"))
 				.body("facets.get(1).values.get(0).code", Matchers.equalTo("R1"))
 				.body("facets.get(1).values.get(0).count", Matchers.equalTo(4))
 				.body("facets.get(1).values.get(1).code", Matchers.equalTo("R2"))
-				.body("facets.get(1).values.get(1).count", Matchers.equalTo(6))
-				.body("totalCount", Matchers.equalTo(10))
+				.body("facets.get(1).values.get(1).count", Matchers.greaterThanOrEqualTo(6))
+				.body("totalCount", Matchers.greaterThanOrEqualTo(10))
 				.when()
 				.post("/search/facetedResult");
+		final int fctBirthDayR1 = getResponse.body().path("facets.get(1).values.get(0).count");
+		final int fctBirthDayR2 = getResponse.body().path("facets.get(1).values.get(1).count");
 
 		final Map<String, Object> selectedFacetsMono = new MapBuilder<String, Object>()
 				.put("FCT_HONORIFIC_CODE", "MR_")
@@ -1952,9 +1954,9 @@ public final class WebServiceManagerTest {
 				.build();
 		loggedAndExpect(given().body(selectedFacetsByCode))
 				.statusCode(HttpStatus.SC_OK)
-				.body("list", Matchers.hasSize(4))
-				.body("totalCount", Matchers.equalTo(4))
-				.body("facets.get(0).values", Matchers.hasSize(4))
+				.body("list", Matchers.hasSize(fctBirthDayR1))
+				.body("totalCount", Matchers.equalTo(fctBirthDayR1))
+				.body("facets.get(0).values", Matchers.hasSize(fctBirthDayR1))
 				.when()
 				.post("/search/facetedResult");
 
@@ -1963,8 +1965,8 @@ public final class WebServiceManagerTest {
 				.build();
 		loggedAndExpect(given().body(selectedFacetsByLabel))
 				.statusCode(HttpStatus.SC_OK)
-				.body("list", Matchers.hasSize(6))
-				.body("totalCount", Matchers.equalTo(6))
+				.body("list", Matchers.hasSize(fctBirthDayR2))
+				.body("totalCount", Matchers.equalTo(fctBirthDayR2))
 				.body("facets.get(0).values", Matchers.hasSize(6))
 				.when()
 				.post("/search/facetedResult");
@@ -2034,7 +2036,7 @@ public final class WebServiceManagerTest {
 	}
 
 	private static Map<String, Object> createDefaultContact(final Long conId) throws ParseException {
-		final Map<String, Object> newContact = createContact2(conId, "Mrs", "Fournier", "Catherine", convertDate("24/10/1985"),
+		final Map<String, Object> newContact = createContact2(conId, "MRS", "Fournier", "Catherine", convertDate("24/10/1985"),
 				createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"),
 				"catherine.fournier@gmail.com", "01 91 92 93 94");
 		return newContact;
