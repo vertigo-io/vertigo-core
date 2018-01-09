@@ -47,8 +47,10 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU4 {
 	private static final String DTC_SUPER_HERO_IN = "DTC_SUPER_HERO_IN";
 	private static final String SUPER_HERO_ID_LIST_IN = "SUPER_HERO_ID_LIST_IN";
 	private static final String DTC_SUPER_HERO_OUT = "DTC_SUPER_HERO_OUT";
+	private static final String OTHER_PARAM_IN = "OTHER_PARAM";
 	private static final String DO_DT_SUPER_HERO_DTC = "DO_DT_SUPER_HERO_DTC";
 	private static final String DO_LONGS = "DO_LONGS";
+	private static final String DO_STRING = "DO_STRING";
 
 	@Inject
 	private TaskManager taskManager;
@@ -82,6 +84,38 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU4 {
 
 		final Task task = Task.builder(taskDefinition)
 				.addValue(DTC_SUPER_HERO_IN, superHeroes)
+				.build();
+
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			taskManager.execute(task);
+			transaction.commit();
+		}
+
+		Assert.assertEquals(superHeroes.size(), selectHeroes().size());
+
+	}
+
+	/**
+	 * Tests batch insertion with a task
+	 */
+	@Test
+	public void testInsertBatchWithAdditionalParam() {
+		final String request = new StringBuilder("insert into SUPER_HERO(ID, NAME) values (")
+				.append("#").append(DTC_SUPER_HERO_IN + ".ID").append("# , ")
+				.append("#").append(OTHER_PARAM_IN).append("# ) ")
+				.toString();
+		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_TEST_INSERT_BATCH")
+				.withEngine(TaskEngineProcBatch.class)
+				.addInRequired(DTC_SUPER_HERO_IN, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class))
+				.addInRequired(OTHER_PARAM_IN, getApp().getDefinitionSpace().resolve(DO_STRING, Domain.class))
+				.withRequest(request)
+				.build();
+
+		final DtList<SuperHero> superHeroes = SuperHeroDataBase.getSuperHeroes();
+
+		final Task task = Task.builder(taskDefinition)
+				.addValue(DTC_SUPER_HERO_IN, superHeroes)
+				.addValue(OTHER_PARAM_IN, "test")
 				.build();
 
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
