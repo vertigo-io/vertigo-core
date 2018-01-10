@@ -41,7 +41,7 @@ public final class TSDtDefinitionModel {
 	/**
 	 * Constructeur.
 	 *
-	 * @param dtDefinition DtDefinition de l'objet Ã  gÃ©nÃ©rer
+	 * @param dtDefinition DtDefinition de l'objet à générer
 	 */
 	public TSDtDefinitionModel(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
@@ -56,6 +56,7 @@ public final class TSDtDefinitionModel {
 		domainModels = dtDefinition.getFields().stream()
 				.filter(dtField -> FieldType.COMPUTED != dtField.getType())
 				.map(DtField::getDomain)
+				.distinct()
 				.map(TSDomainModel::new)
 				.collect(Collectors.toSet());
 	}
