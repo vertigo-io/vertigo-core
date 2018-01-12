@@ -96,6 +96,13 @@ public final class DtFieldModel {
 	}
 
 	/**
+	 * @return Type java du champ
+	 */
+	public String getJavaTypeLabel() {
+		return DomainUtil.buildJavaTypeLabel(dtField.getDomain());
+	}
+
+	/**
 	 * @return Label du champ
 	 */
 	public String getDisplay() {

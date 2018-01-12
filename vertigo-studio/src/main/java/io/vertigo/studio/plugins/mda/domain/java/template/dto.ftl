@@ -82,7 +82,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	/**
 	 * Champ : ${dtField.type}.
 	 * Récupère la valeur de la propriété '${dtField.display}'.
-	 * @return ${dtField.javaType} ${dtField.upperCamelCaseName?uncap_first}<#if dtField.required> <b>Obligatoire</b></#if>
+	 * @return ${dtField.javaTypeLabel} ${dtField.upperCamelCaseName?uncap_first}<#if dtField.required> <b>Obligatoire</b></#if>
 	 */
 		<#list annotations(dtField) as annotation>
 	${annotation}
@@ -94,7 +94,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	/**
 	 * Champ : ${dtField.type}.
 	 * Définit la valeur de la propriété '${dtField.display}'.
-	 * @param ${dtField.upperCamelCaseName?uncap_first} ${dtField.javaType}<#if dtField.required> <b>Obligatoire</b></#if>
+	 * @param ${dtField.upperCamelCaseName?uncap_first} ${dtField.javaTypeLabel}<#if dtField.required> <b>Obligatoire</b></#if>
 	 */
 	public void set${dtField.upperCamelCaseName}(final ${dtField.javaType} ${dtField.upperCamelCaseName?uncap_first}) {
 		${dtField.upperCamelCaseName?uncap_first}Accessor.setId(${dtField.upperCamelCaseName?uncap_first});
@@ -104,7 +104,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	/**
 	 * Champ : ${dtField.type}.
 	 * Récupère la valeur de la propriété '${dtField.display}'.
-	 * @return ${dtField.javaType} ${dtField.upperCamelCaseName?uncap_first}<#if dtField.required> <b>Obligatoire</b></#if>
+	 * @return ${dtField.javaTypeLabel} ${dtField.upperCamelCaseName?uncap_first}<#if dtField.required> <b>Obligatoire</b></#if>
 	 */
 		<#list annotations(dtField) as annotation>
 	${annotation}
@@ -116,7 +116,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	/**
 	 * Champ : ${dtField.type}.
 	 * Définit la valeur de la propriété '${dtField.display}'.
-	 * @param ${dtField.upperCamelCaseName?uncap_first} ${dtField.javaType}<#if dtField.required> <b>Obligatoire</b></#if>
+	 * @param ${dtField.upperCamelCaseName?uncap_first} ${dtField.javaTypeLabel}<#if dtField.required> <b>Obligatoire</b></#if>
 	 */
 	public void set${dtField.upperCamelCaseName}(final ${dtField.javaType} ${dtField.upperCamelCaseName?uncap_first}) {
 		this.${dtField.upperCamelCaseName?uncap_first} = ${dtField.upperCamelCaseName?uncap_first};
@@ -128,7 +128,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	/**
 	 * Champ : ${dtField.type}.
 	 * Récupère la valeur de la propriété calculée '${dtField.display}'.
-	 * @return ${dtField.javaType} ${dtField.upperCamelCaseName?uncap_first}<#if dtField.required> <b>Obligatoire</b></#if>
+	 * @return ${dtField.javaTypeLabel} ${dtField.upperCamelCaseName?uncap_first}<#if dtField.required> <b>Obligatoire</b></#if>
 	 */
 		<#list annotations(dtField) as annotation>
 	${annotation}
@@ -196,7 +196,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	
 	/**
 	 * Association : ${association.label}.
-	 * @return io.vertigo.dynamo.domain.model.DtList<${association.returnType}>
+	 * @return DtList de ${association.returnType}
 	 */
 	@Deprecated
 	<#list annotations('transientField') as annotation>
