@@ -127,10 +127,11 @@ public final class WebServiceManagerTest {
 	@Test
 	public void testSwaggerUi() {
 		assertStatusCode(HttpStatus.SC_OK, "/swaggerUi");
-		assertStatusCode(HttpStatus.SC_OK, "/swaggerUi/swagger-ui.min.js");
-		assertStatusCode(HttpStatus.SC_OK, "/swaggerUi/css/screen.css");
-		assertStatusCode(HttpStatus.SC_OK, "/swaggerUi/images/logo_small.png");
-		assertStatusCode(HttpStatus.SC_OK, "/swaggerUi/images/throbber.gif");
+		assertStatusCode(HttpStatus.SC_OK, "/swaggerUi/swagger-ui.js");
+		assertStatusCode(HttpStatus.SC_OK, "/swaggerUi/swagger-ui.css");
+		assertStatusCode(HttpStatus.SC_OK, "/swaggerUi/swagger-ui-bundle.js");
+		assertStatusCode(HttpStatus.SC_OK, "/swaggerUi/swagger-ui-standalone-preset.js");
+
 		assertStatusCode(HttpStatus.SC_NOT_FOUND, "/swaggerUi/test404.mp4");
 	}
 
