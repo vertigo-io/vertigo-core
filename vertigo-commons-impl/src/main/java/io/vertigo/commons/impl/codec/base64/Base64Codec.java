@@ -25,7 +25,7 @@ import io.vertigo.lang.Assertion;
 
 /**
  * Implémentation threadSafe des mécanismes standards d'encodage/décodage.
- * Base 64 modifié pour passer dans les urls ('+', '/' remplacer par '_', '-' )
+ * Base 64 modifié pour passer dans les urls ('+', '/' remplacer par '-', '_' )
  * Les codes sont gérés par quatre octets.
  * {voir wikipedia http://en.wikipedia.org/wiki/Base64#Privacy-Enhanced_Mail_.28PEM.29}
  * @author  npiedeloup
