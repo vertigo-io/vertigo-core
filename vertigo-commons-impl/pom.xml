@@ -37,7 +37,7 @@
 		<dependency>
 			<groupId>org.codehaus.janino</groupId>
 			<artifactId>janino</artifactId>
-			<version>3.0.7</version>
+			<version>3.0.8</version>
 			<optional>false</optional><!-- pour JaninoExpressionEvaluatorPlugin -->
 		</dependency>
 
@@ -79,7 +79,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.4.196</version>
+			<version>1.4.197</version>
 			<scope>test</scope>
 		</dependency>
 

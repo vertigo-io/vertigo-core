@@ -88,8 +88,8 @@ public final class Famille implements Entity {
 	 * @return Long famId <b>Obligatoire</b>
 	 */
 	@javax.persistence.Id
-	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_FAMILLE", allocationSize = 1)
-	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = "sequence")
+	@javax.persistence.SequenceGenerator(name = "SEQ_FAMILLE", sequenceName = "SEQ_FAMILLE", allocationSize = 1)
+	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = "SEQ_FAMILLE")
 	@javax.persistence.Column(name = "FAM_ID")
 	@Field(domain = "DO_ID", type = "ID", required = true, label = "identifiant de la famille")
 	public Long getFamId() {
