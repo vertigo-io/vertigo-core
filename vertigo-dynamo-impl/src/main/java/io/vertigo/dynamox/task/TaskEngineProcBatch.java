@@ -22,9 +22,9 @@
 package io.vertigo.dynamox.task;
 
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.OptionalInt;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -72,15 +72,28 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 
 	@Override
 	protected void setNamedParameters(final SqlStatementBuilder sqlStatementBuilder) {
-		final Iterator<TaskAttribute> inAttributes = getTaskDefinition().getInAttributes().iterator();
-		Assertion.checkState(inAttributes.hasNext(), "For batch a single List param is required");
-		final TaskAttribute listAttribute = inAttributes.next();
-		Assertion.checkState(listAttribute.getDomain().isMultiple() && !inAttributes.hasNext(), "For batch a single List param is required");
+		final List<TaskAttribute> potentialBatchAttributes = getTaskDefinition().getInAttributes()
+				.stream()
+				.filter(inAttribute -> inAttribute.getDomain().isMultiple())// multiple
+				.collect(Collectors.toList());
+
+		Assertion.checkState(potentialBatchAttributes.size() == 1, "For batch a single List param is required");
+		final TaskAttribute listAttribute = potentialBatchAttributes.get(0);
+
+		final List<TaskAttribute> otherAttributes = getTaskDefinition().getInAttributes()
+				.stream()
+				.filter(inAttribute -> !inAttribute.getDomain().isMultiple())// not multiple
+				.collect(Collectors.toList());
 		//---
 		final List<?> list = getValue(listAttribute.getName());
-		list.forEach(object -> sqlStatementBuilder
-				.bind(listAttribute.getName(), listAttribute.getDomain().getJavaClass(), object)
-				.nextLine());
+		list.forEach(object -> {
+			// we bind the parameter of the batch
+			sqlStatementBuilder.bind(listAttribute.getName(), listAttribute.getDomain().getJavaClass(), object);
+			// we add all the "constant" parameters
+			otherAttributes.forEach(
+					otherAttribute -> sqlStatementBuilder.bind(otherAttribute.getName(), otherAttribute.getDomain().getJavaClass(), getValue(otherAttribute.getName())));
+			sqlStatementBuilder.nextLine();
+		});
 	}
 
 }

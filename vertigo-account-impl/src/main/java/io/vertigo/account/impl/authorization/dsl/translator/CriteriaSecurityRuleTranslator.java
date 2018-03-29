@@ -57,11 +57,11 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 	}
 
 	private Criteria<E> toCriteria(final RuleMultiExpression multiExpression) {
-		Criteria<E> mainCriteria = null;
 		if (multiExpression.isAlwaysTrue()) {
 			return Criterions.alwaysTrue();
 		}
 
+		Criteria<E> mainCriteria = null;
 		for (final RuleExpression expression : multiExpression.getExpressions()) {
 			if (multiExpression.getBoolOperator() == BoolOperator.AND) {
 				mainCriteria = andCriteria(mainCriteria, toCriteria(expression));
@@ -84,8 +84,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		if (expression.getValue() instanceof RuleUserPropertyValue) {
 			final RuleUserPropertyValue userPropertyValue = (RuleUserPropertyValue) expression.getValue();
 			final List<Serializable> userValues = getUserCriteria(userPropertyValue.getUserProperty());
-			if (userValues.size() > 0) {
-
+			if (!userValues.isEmpty()) {
 				Criteria<E> mainCriteria = null; //comment collecter en stream ?
 				for (final Serializable userValue : userValues) {
 					Assertion.checkNotNull(userValue);

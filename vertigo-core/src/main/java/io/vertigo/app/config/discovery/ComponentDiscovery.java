@@ -18,14 +18,18 @@
  */
 package io.vertigo.app.config.discovery;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.core.component.Component;
 import io.vertigo.core.component.Plugin;
+import io.vertigo.core.component.proxy.ProxyMethodAnnotation;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.Selector;
 import io.vertigo.util.Selector.ClassConditions;
@@ -66,11 +70,24 @@ final class ComponentDiscovery {
 		Assertion.checkNotNull(moduleConfigBuilder);
 		// ---
 		//API
-		final Collection<Class> apiClasses = new Selector()
+		final Collection<Class> allApiClasses = new Selector()
 				.from(components)
 				.filterClasses(ClassConditions.interfaces())
 				// we dont check api for plugins
 				.filterClasses(ClassConditions.subTypeOf(Plugin.class).negate())
+				.findClasses();
+
+		final Predicate<Method> proxyMethodPredicate = method -> Stream.of(method.getAnnotations())
+				.anyMatch(annotation -> ClassConditions.annotatedWith(ProxyMethodAnnotation.class).test(annotation.annotationType()));
+
+		final Collection<Class> proxyClasses = new Selector()
+				.from(allApiClasses)
+				.filterMethods(proxyMethodPredicate)
+				.findClasses();
+
+		final Collection<Class> apiClasses = new Selector()
+				.from(allApiClasses)
+				.filterMethods(proxyMethodPredicate.negate())
 				.findClasses();
 
 		//Impl
@@ -109,6 +126,10 @@ final class ComponentDiscovery {
 			apiImplMap.put(apiClazz, implClass);
 		}
 		//---
+		// Proxies
+		proxyClasses
+				.forEach(moduleConfigBuilder::addProxy);
+
 		// With API
 		apiImplMap
 				.forEach((key, value) -> moduleConfigBuilder.addComponent(key, value));

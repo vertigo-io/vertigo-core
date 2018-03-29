@@ -1,0 +1,42 @@
+package io.vertigo.dynamo.search.data.domain
+
+alter DtDefinition DT_CONTACT {
+	stereotype : "KeyConcept"
+	computed ALL_TEXT {domain : DO_TEXTE_50, label:"all"
+        expression:"return \"\";"
+  } 
+}
+	
+
+create IndexDefinition IDX_CONTACT {
+    keyConcept : DT_CONTACT
+    dtIndex : DT_CONTACT
+    indexCopyTo ALL_TEXT { from: "CON_ID,HONORIFIC_CODE,NAME,FIRST_NAME,BIRTHDAY,EMAIL" }
+    loaderId : "ContactSearchLoader"
+}
+
+create FacetDefinition FCT_HONORIFIC_CODE {
+	dtDefinition : DT_CONTACT 
+	fieldName : "HONORIFIC_CODE"
+	label : "Par code honorific"
+	multiselectable : "true"
+}
+
+create FacetDefinition FCT_BIRTHDAY {
+	dtDefinition : DT_CONTACT 
+	fieldName : "BIRTHDAY" 
+	label : "Par date"
+	range R1 { filter : "BIRTHDAY:[* TO 01/01/1980]" 		label : "avant 1980" }
+	range R2 { filter : "BIRTHDAY:[01/01/1980 TO 01/01/1990]" 	label : "1980-1990" }
+	range R3 { filter : "BIRTHDAY:[01/01/1990 TO 01/01/2000]" 	label : "1990-2000" }
+	range R4 { filter : "BIRTHDAY:[01/01/2000 TO 01/01/2010]" 	label : "2000-2010"  }
+	range R5 { filter : "BIRTHDAY:[01/01/2010 TO *]" 		label : "apres 2010" }
+}
+
+create FacetedQueryDefinition QRY_CONTACT_FACET {
+    keyConcept : DT_CONTACT
+    facets : [ FCT_HONORIFIC_CODE, FCT_BIRTHDAY]
+    domainCriteria : DO_TEXTE_50
+    listFilterBuilderClass : "io.vertigo.dynamox.search.DslListFilterBuilder"  
+    listFilterBuilderQuery : "#CRITERIA#"    
+}

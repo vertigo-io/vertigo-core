@@ -27,7 +27,7 @@ import io.vertigo.lang.Assertion;
 
 final class IndexType {
 	private static final String INDEX_TYPE_ERROR_MSG = "indexType ({0}) should respect this usage : indexType : "
-			+ "\"myAnalyzer{:myDataType}{:stored|notStored}{:sortable|notSortable}{:facetable|notFacetable}\"";
+			+ "\"myAnalyzer\\{:myDataType\\}\\{:stored|notStored\\}\\{:sortable|notSortable\\}\\{:facetable|notFacetable\\}\"";
 	private static final String INDEX_STORED = "stored";
 	private static final String INDEX_NOT_STORED = "notStored";
 	private static final String INDEX_SORTABLE = "sortable";
@@ -70,7 +70,7 @@ final class IndexType {
 				Boolean parsedIndexFieldData = null;
 				//On parcours les paramètres et on détermine si on reconnait un mot clé
 				for (int i = 1; i < indexTypeArray.length; i++) {
-					final String indexTypeParam = indexTypeArray[1];
+					final String indexTypeParam = indexTypeArray[i];
 					if (INDEX_STORED.equals(indexTypeParam) || INDEX_NOT_STORED.equals(indexTypeParam)) {
 						Assertion.checkArgument(parsedIndexStored == null, INDEX_TYPE_ERROR_MSG, indexType);
 						parsedIndexStored = INDEX_STORED.equals(indexTypeParam);
@@ -78,7 +78,7 @@ final class IndexType {
 						Assertion.checkArgument(parsedIndexSubKeyword == null, INDEX_TYPE_ERROR_MSG, indexType);
 						parsedIndexSubKeyword = INDEX_SORTABLE.equals(indexTypeParam);
 					} else if (INDEX_FACETABLE.equals(indexTypeParam) || INDEX_NOT_FACETABLE.equals(indexTypeParam)) {
-						Assertion.checkArgument(parsedIndexSubKeyword == null, INDEX_TYPE_ERROR_MSG, indexType);
+						Assertion.checkArgument(parsedIndexFieldData == null, INDEX_TYPE_ERROR_MSG, indexType);
 						parsedIndexFieldData = INDEX_FACETABLE.equals(indexTypeParam);
 					} else {
 						Assertion.checkArgument(parsedIndexDataType == null, INDEX_TYPE_ERROR_MSG, indexType);

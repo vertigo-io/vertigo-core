@@ -47,6 +47,7 @@ import io.vertigo.vega.webservice.data.ws.AnonymousTestWebServices;
 import io.vertigo.vega.webservice.data.ws.CommonWebServices;
 import io.vertigo.vega.webservice.data.ws.ContactsWebServices;
 import io.vertigo.vega.webservice.data.ws.FileDownloadWebServices;
+import io.vertigo.vega.webservice.data.ws.SearchTestWebServices;
 import io.vertigo.vega.webservice.data.ws.SimplerTestWebServices;
 
 public final class MyAppConfig {
@@ -103,6 +104,7 @@ public final class MyAppConfig {
 						.addComponent(AdvancedTestWebServices.class)
 						.addComponent(AnonymousTestWebServices.class)
 						.addComponent(FileDownloadWebServices.class)
+						.addComponent(SearchTestWebServices.class)
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)

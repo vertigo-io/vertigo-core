@@ -55,8 +55,8 @@ public final class VxFileInfo implements Entity {
 	 * @return Long filId <b>Obligatoire</b>
 	 */
 	@javax.persistence.Id
-	@javax.persistence.SequenceGenerator(name = "sequence", sequenceName = "SEQ_VX_FILE_INFO", allocationSize = 1)
-	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = "sequence")
+	@javax.persistence.SequenceGenerator(name = "SEQ_VX_FILE_INFO", sequenceName = "SEQ_VX_FILE_INFO", allocationSize = 1)
+	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.SEQUENCE, generator = "SEQ_VX_FILE_INFO")
 	@javax.persistence.Column(name = "FIL_ID")
 	@Field(domain = "DO_ID", type = "ID", required = true, label = "Identifiant")
 	public Long getFilId() {

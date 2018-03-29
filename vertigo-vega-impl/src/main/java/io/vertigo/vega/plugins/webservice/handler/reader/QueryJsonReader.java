@@ -32,6 +32,7 @@ import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
+import io.vertigo.vega.webservice.model.UiListState;
 import spark.QueryParamsMap;
 import spark.Request;
 
@@ -78,6 +79,7 @@ public final class QueryJsonReader implements JsonReader<String> {
 			return null;
 		}
 		if (DtListState.class.isAssignableFrom(paramClass)
+				|| UiListState.class.isAssignableFrom(paramClass)
 				|| DtObject.class.isAssignableFrom(paramClass)) {
 			return convertToJson(queryMap, webServiceParam.getName());
 		}

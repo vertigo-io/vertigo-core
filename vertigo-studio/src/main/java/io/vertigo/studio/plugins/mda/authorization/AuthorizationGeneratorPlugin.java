@@ -36,6 +36,7 @@ import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
+import io.vertigo.studio.plugins.mda.authorization.model.SecuredEntityModel;
 import io.vertigo.util.MapBuilder;
 
 /**
@@ -83,8 +84,10 @@ public final class AuthorizationGeneratorPlugin implements GeneratorPlugin {
 				.collect(Collectors.toList());
 	}
 
-	private static Collection<SecuredEntity> getSecuredEntities() {
-		return Home.getApp().getDefinitionSpace().getAll(SecuredEntity.class);
+	private static Collection<SecuredEntityModel> getSecuredEntities() {
+		return Home.getApp().getDefinitionSpace().getAll(SecuredEntity.class).stream()
+				.map(SecuredEntityModel::new)
+				.collect(Collectors.toList());
 	}
 
 	private static void generateRoles(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {

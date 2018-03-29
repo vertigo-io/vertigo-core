@@ -378,6 +378,17 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 
 		firstItem = doQueryAndGetFirst("*:*", "YEAR", true);
 		Assert.assertEquals(2010, firstItem.getYear().intValue());
+
+		final DtListState listState = new DtListState(null, 0, itemIndexDefinition.getIndexDtDefinition().getField("MODEL").getName(), true);
+		final DtList<Item> dtList = doQuery(SearchQuery.builder(ListFilter.of("*:*"))
+				.build(), listState).getDtList();
+
+		Assert.assertEquals("Tucson 2.0 CRDi Pack Luxe BA", dtList.get(0).getModel());
+		Assert.assertEquals("passat", dtList.get(1).getModel());
+		Assert.assertEquals("Eos TDI 140 CARAT DSG", dtList.get(2).getModel());
+
+		firstItem = doQueryAndGetFirst("*:*", "MODEL", true);
+		Assert.assertEquals("Tucson 2.0 CRDi Pack Luxe BA", firstItem.getModel());
 	}
 
 	/**

@@ -30,6 +30,7 @@ import com.sleepycat.bind.EntryBinding;
 import com.sleepycat.bind.tuple.TupleBinding;
 import com.sleepycat.je.Cursor;
 import com.sleepycat.je.Database;
+import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.DatabaseEntry;
 import com.sleepycat.je.DatabaseException;
 import com.sleepycat.je.LockMode;
@@ -214,9 +215,10 @@ final class BerkeleyDatabase {
 	 */
 	public void clear() {
 		final String dataBaseName = database.getDatabaseName();
+		final DatabaseConfig databaseConfig = database.getConfig();
 		database.close();
 		database.getEnvironment().truncateDatabase(null, dataBaseName, false);
-		database = database.getEnvironment().openDatabase(null, dataBaseName, database.getConfig());
+		database = database.getEnvironment().openDatabase(null, dataBaseName, databaseConfig);
 		database.getEnvironment().cleanLog();
 	}
 

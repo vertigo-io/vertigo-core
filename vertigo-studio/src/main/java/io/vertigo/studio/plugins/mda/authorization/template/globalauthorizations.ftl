@@ -1,16 +1,15 @@
 package ${packageName};
 
-import io.vertigo.app.Home;
 import io.vertigo.account.authorization.metamodel.Authorization;
 import io.vertigo.account.authorization.metamodel.AuthorizationName;
-
+import io.vertigo.app.Home;
 
 /**
  * Warning. This class is generated automatically !
  *
  * Enum of the authorizations known by the application.
  */
-public enum ${classSimpleName} implements AuthorizationsName {
+public enum ${classSimpleName} implements AuthorizationName {
 
 <#list globalauthorizations as authorization>
 	/**
@@ -18,7 +17,6 @@ public enum ${classSimpleName} implements AuthorizationsName {
 	 */
 	${authorization.name}<#if authorization_has_next>,<#else>;</#if>
 </#list>
-
 
 	/**
 	 * Get the associated authorization.

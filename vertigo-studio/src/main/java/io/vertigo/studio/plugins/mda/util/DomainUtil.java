@@ -80,6 +80,33 @@ public final class DomainUtil {
 		return className;
 	}
 
+	/**
+	 * Construite le label du type java (sous forme de chaine de caractère) correspondant
+	 * à un Domaine.
+	 * @param domain DtDomain
+	 * @return String
+	 */
+	public static String buildJavaTypeLabel(final Domain domain) {
+		final String classLabel;
+		switch (domain.getScope()) {
+			case PRIMITIVE:
+				classLabel = domain.getJavaClass().getSimpleName();
+				break;
+			case DATA_OBJECT:
+				classLabel = domain.getDtDefinition().getClassSimpleName();
+				break;
+			case VALUE_OBJECT:
+				classLabel = domain.getJavaClass().getSimpleName();
+				break;
+			default:
+				throw new IllegalStateException();
+		}
+		if (domain.isMultiple()) {
+			return domain.getTargetJavaClass().getSimpleName() + " de " + classLabel;
+		}
+		return classLabel;
+	}
+
 	public static Collection<DtDefinition> getDtDefinitions() {
 		return sortDefinitionCollection(Home.getApp().getDefinitionSpace().getAll(DtDefinition.class));
 	}

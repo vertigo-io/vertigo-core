@@ -49,6 +49,7 @@ import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
+import io.vertigo.vega.webservice.model.UiListState;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
@@ -382,7 +383,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			final String[] splittedDefinitionName = webServiceDefinition.getName().split("\\$");
 			final String bodyName = splittedDefinitionName[0].replaceAll("_+", "_") + "$" + splittedDefinitionName[1] + "Body";
 			final Map<String, Object> compositeSchema = (Map<String, Object>) bodyParameter.get(SCHEMA);
-			bodyParameter.put(SCHEMA, Collections.singletonMap("$ref", bodyName));
+			bodyParameter.put(SCHEMA, Collections.singletonMap("$ref", "#/definitions/" + bodyName));
 			final Map<String, Object> bodyDefinition = new LinkedHashMap<>();
 			bodyDefinition.put(REQUIRED, compositeSchema.keySet().toArray(new String[compositeSchema.size()]));
 			putIfNotEmpty(bodyDefinition, "properties", compositeSchema);
@@ -423,7 +424,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	private static List<WebServiceParam> createPseudoWebServiceParams(final WebServiceParam webServiceParam) {
 		final List<WebServiceParam> pseudoWebServiceParams = new ArrayList<>();
 		final String prefix = !webServiceParam.getName().isEmpty() ? webServiceParam.getName() + "." : "";
-		if (DtListState.class.isAssignableFrom(webServiceParam.getType())) {
+		if (DtListState.class.isAssignableFrom(webServiceParam.getType())
+				|| UiListState.class.isAssignableFrom(webServiceParam.getType())) {
 			pseudoWebServiceParams.add(WebServiceParam.builder(int.class)
 					.with(webServiceParam.getParamType(), prefix + "top").build());
 			pseudoWebServiceParams.add(WebServiceParam.builder(int.class)
@@ -447,7 +449,10 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 
 	private static boolean isOneInMultipleOutParams(final WebServiceParam webServiceParam) {
 		final Class<?> paramClass = webServiceParam.getType();
-		return webServiceParam.getParamType() == WebServiceParamType.Query && (DtListState.class.isAssignableFrom(paramClass) || DtObject.class.isAssignableFrom(paramClass));
+		return webServiceParam.getParamType() == WebServiceParamType.Query &&
+				(DtListState.class.isAssignableFrom(paramClass)
+						|| UiListState.class.isAssignableFrom(paramClass)
+						|| DtObject.class.isAssignableFrom(paramClass));
 	}
 
 	private static boolean isMultipleInOneOutParams(final WebServiceParam webServiceParam) {

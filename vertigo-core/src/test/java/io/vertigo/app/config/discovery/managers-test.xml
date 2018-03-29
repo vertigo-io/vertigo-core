@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <config>
-	
+	<module name="proxyMethod">
+		<proxyMethod class="io.vertigo.app.config.discovery.data.TrueProxyMethod" />
+	</module>
 	<feature class="io.vertigo.app.config.discovery.TestModuleDiscoveryFeatures" />
-	
 </config>
