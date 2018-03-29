@@ -47,6 +47,7 @@ import io.vertigo.util.StringUtil;
 public final class DtDefinitionModel {
 	private final DtDefinition dtDefinition;
 	private final List<DtFieldModel> dtFieldModels = new ArrayList<>();
+	private final List<DtFieldModel> dtAllFieldModels = new ArrayList<>();
 	private final List<DtFieldModel> dtComputedFieldModels = new ArrayList<>();
 	private final List<AssociationModel> associationModels = new ArrayList<>();
 
@@ -61,10 +62,12 @@ public final class DtDefinitionModel {
 		this.dtDefinition = dtDefinition;
 
 		for (final DtField dtField : dtDefinition.getFields()) {
+			final DtFieldModel dtFieldModel = new DtFieldModel(dtDefinition, dtField);
+			dtAllFieldModels.add(dtFieldModel);
 			if (FieldType.COMPUTED == dtField.getType()) {
-				dtComputedFieldModels.add(new DtFieldModel(dtDefinition, dtField));
+				dtComputedFieldModels.add(dtFieldModel);
 			} else {
-				dtFieldModels.add(new DtFieldModel(dtDefinition, dtField));
+				dtFieldModels.add(dtFieldModel);
 			}
 		}
 
@@ -180,6 +183,13 @@ public final class DtDefinitionModel {
 	 */
 	public List<DtFieldModel> getFields() {
 		return dtFieldModels;
+	}
+
+	/**
+	 * @return Liste de tous les champs
+	 */
+	public List<DtFieldModel> getAllFields() {
+		return dtAllFieldModels;
 	}
 
 	/**
