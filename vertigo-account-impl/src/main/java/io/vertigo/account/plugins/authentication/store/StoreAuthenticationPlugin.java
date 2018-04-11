@@ -112,7 +112,7 @@ public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeab
 		//may ensure, that valid or invalid login took the same time, so we don't assert no result here
 		if (token.match(trustedAuthenticationToken) //tokens match
 				&& !results.isEmpty()) {//and Username exists (after)
-			final String userTokenId = (String) userCredentialDefinition.getField(userTokenIdField).getDataAccessor().getValue(results.get(0));
+			final String userTokenId = String.valueOf(userCredentialDefinition.getField(userTokenIdField).getDataAccessor().getValue(results.get(0)));
 			return Optional.of(userTokenId);
 		}
 		return Optional.empty();

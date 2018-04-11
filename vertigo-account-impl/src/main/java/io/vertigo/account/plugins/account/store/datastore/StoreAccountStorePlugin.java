@@ -18,6 +18,7 @@
  */
 package io.vertigo.account.plugins.account.store.datastore;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
@@ -36,6 +37,7 @@ import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
@@ -48,6 +50,7 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 /**
  * Source of identity.
@@ -196,7 +199,14 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	/** {@inheritDoc} */
 	@Override
 	public Optional<Account> getAccountByAuthToken(final String userAuthToken) {
-		final Criteria<Entity> criteriaByAuthToken = Criterions.isEqualTo(() -> userAuthField, userAuthToken);
+
+		Serializable userAuthTokenValue;
+		try {
+			userAuthTokenValue = Serializable.class.cast(getUserDtDefinition().getField(userAuthField).getDomain().stringToValue(userAuthToken));
+		} catch (final FormatterException e) {
+			throw WrappedException.wrap(e);
+		}
+		final Criteria<Entity> criteriaByAuthToken = Criterions.isEqualTo(() -> userAuthField, userAuthTokenValue);
 		final DtList<Entity> results = storeManager.getDataStore().find(getUserDtDefinition(), criteriaByAuthToken);
 		Assertion.checkState(results.size() <= 1, "Too many matching for authToken {0}", userAuthToken);
 		if (!results.isEmpty()) {
@@ -206,14 +216,13 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	}
 
 	private AccountGroup groupToAccount(final Entity groupEntity) {
-		final String groupId = parseAttribute(String.class, GroupProperty.id, groupEntity);
-		final String displayName = parseAttribute(String.class, GroupProperty.displayName, groupEntity);
+		final String groupId = parseAttribute(GroupProperty.id, groupEntity);
+		final String displayName = parseAttribute(GroupProperty.displayName, groupEntity);
 		return new AccountGroup(groupId, displayName);
 	}
 
-	private <O> O parseAttribute(final Class<O> valueClass, final GroupProperty accountProperty, final Entity userEntity) {
+	private String parseAttribute(final GroupProperty accountProperty, final Entity userEntity) {
 		final DtField attributeField = mapperHelper.getSourceAttribute(accountProperty);
-		return valueClass.cast(attributeField.getDataAccessor().getValue(userEntity));
+		return String.valueOf(attributeField.getDataAccessor().getValue(userEntity));
 	}
-
 }
