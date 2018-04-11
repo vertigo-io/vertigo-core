@@ -48,10 +48,10 @@ final class ReindexTask implements Runnable {
 	private static final int REINDEX_ERROR_MAX_RETRY = 5; //il y a 5 + 1 essais au total (le premier + 5 retry)
 
 	private final SearchIndexDefinition searchIndexDefinition;
-	private final List<URI<? extends KeyConcept>> dirtyElements;
+	private final Set<URI<? extends KeyConcept>> dirtyElements;
 	private final SearchManager searchManager;
 
-	ReindexTask(final SearchIndexDefinition searchIndexDefinition, final List<URI<? extends KeyConcept>> dirtyElements, final SearchManager searchManager) {
+	ReindexTask(final SearchIndexDefinition searchIndexDefinition, final Set<URI<? extends KeyConcept>> dirtyElements, final SearchManager searchManager) {
 		Assertion.checkNotNull(searchIndexDefinition);
 		Assertion.checkNotNull(dirtyElements);
 		Assertion.checkNotNull(searchManager);
@@ -71,7 +71,9 @@ final class ReindexTask implements Runnable {
 			try {
 				synchronized (dirtyElements) {
 					if (!dirtyElements.isEmpty()) {
-						reindexUris.addAll(dirtyElements.subList(0, Math.min(dirtyElements.size(), DIRTY_ELEMENTS_CHUNK_SIZE)));
+						reindexUris.addAll(dirtyElements.stream()
+								.limit(DIRTY_ELEMENTS_CHUNK_SIZE)
+								.collect(Collectors.toList()));
 						dirtyElements.removeAll(reindexUris);
 					}
 				}

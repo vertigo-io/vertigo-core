@@ -189,6 +189,39 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	}
 
 	/**
+	 * Test de mise à jour de l'index après une creation.
+	 * La création s'effectue dans une seule transaction.
+	 */
+	@Test
+	public void testIndexDoubleUpdateData() {
+		testIndexAllQuery();
+		final Item item = createNewItem();
+
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			storeManager.getDataStore().create(item);
+			transaction.commit();
+		}
+
+		waitIndexation();
+		Assert.assertEquals(initialDbItemSize + 1, query("*:*"));
+		Assert.assertEquals(1, query("DESCRIPTION:légende"));
+
+		item.setDescription("Vendue");
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			storeManager.getDataStore().update(item);
+			storeManager.getDataStore().update(item);
+			storeManager.getDataStore().update(item);
+			storeManager.getDataStore().update(item);
+			transaction.commit();
+		}
+
+		waitIndexation();
+		Assert.assertEquals(initialDbItemSize + 1, query("*:*"));
+		Assert.assertEquals(0, query("DESCRIPTION:légende"));
+		Assert.assertEquals(1, query("DESCRIPTION:vendue"));
+	}
+
+	/**
 	 * Test de requétage de l'index.
 	 * La création s'effectue dans une seule transaction.
 	 */

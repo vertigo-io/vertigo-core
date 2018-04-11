@@ -18,13 +18,14 @@
  */
 package io.vertigo.dynamo.impl.search;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
@@ -67,7 +68,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	private final SearchServicesPlugin searchServicesPlugin;
 
 	private final ScheduledExecutorService executorService; //TODO : replace by WorkManager to make distributed work easier
-	private final Map<String, List<URI<? extends KeyConcept>>> dirtyElementsPerIndexName = new HashMap<>();
+	private final Map<String, Set<URI<? extends KeyConcept>>> dirtyElementsPerIndexName = new HashMap<>();
 
 	/**
 	 * Constructor.
@@ -97,7 +98,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	@Override
 	public void start() {
 		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
-			final List<URI<? extends KeyConcept>> dirtyElements = new ArrayList<>();
+			final Set<URI<? extends KeyConcept>> dirtyElements = new LinkedHashSet<>();
 			dirtyElementsPerIndexName.put(indexDefinition.getName(), dirtyElements);
 			executorService.scheduleWithFixedDelay(new ReindexTask(indexDefinition, dirtyElements, this), 1, 1, TimeUnit.SECONDS); //on dépile les dirtyElements toutes les 1 secondes
 		}
@@ -123,7 +124,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 				Thread.currentThread().interrupt(); //si interrupt on relance
 			}
 			remaningDirty = 0;
-			for (final List<URI<? extends KeyConcept>> dirtyElements : dirtyElementsPerIndexName.values()) {
+			for (final Set<URI<? extends KeyConcept>> dirtyElements : dirtyElementsPerIndexName.values()) {
 				remaningDirty += dirtyElements.size();
 			}
 		} while (remaningDirty > 0 && System.currentTimeMillis() - time < timeoutSeconds * 1000);
@@ -243,9 +244,9 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		Assertion.checkNotNull(!searchIndexDefinitions.isEmpty(), "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptDefinition.getName());
 		//-----
 		for (final SearchIndexDefinition searchIndexDefinition : searchIndexDefinitions) {
-			final List<URI<? extends KeyConcept>> dirtyElements = dirtyElementsPerIndexName.get(searchIndexDefinition.getName());
+			final Set<URI<? extends KeyConcept>> dirtyElements = dirtyElementsPerIndexName.get(searchIndexDefinition.getName());
 			synchronized (dirtyElements) {
-				dirtyElements.addAll(keyConceptUris); //TODO : doublons ?
+				dirtyElements.addAll(keyConceptUris);
 			}
 		}
 	}
