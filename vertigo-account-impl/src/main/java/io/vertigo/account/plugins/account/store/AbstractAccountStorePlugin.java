@@ -86,10 +86,10 @@ public abstract class AbstractAccountStorePlugin implements Activeable {
 	}
 
 	protected Account userToAccount(final Entity userEntity) {
-		final String accountId = parseAttribute(String.class, AccountProperty.id, userEntity);
-		final String authToken = parseAttribute(String.class, AccountProperty.authToken, userEntity);
-		final String displayName = parseAttribute(String.class, AccountProperty.displayName, userEntity);
-		final String email = parseOptionalAttribute(String.class, AccountProperty.email, userEntity);
+		final String accountId = parseAttribute(AccountProperty.id, userEntity);
+		final String authToken = parseAttribute(AccountProperty.authToken, userEntity);
+		final String displayName = parseAttribute(AccountProperty.displayName, userEntity);
+		final String email = parseOptionalAttribute(AccountProperty.email, userEntity);
 		return Account.builder(accountId)
 				.withAuthToken(authToken)
 				.withDisplayName(displayName)
@@ -97,15 +97,15 @@ public abstract class AbstractAccountStorePlugin implements Activeable {
 				.build();
 	}
 
-	private <O> O parseAttribute(final Class<O> valueClass, final AccountProperty accountProperty, final Entity userEntity) {
+	private String parseAttribute(final AccountProperty accountProperty, final Entity userEntity) {
 		final DtField attributeField = mapperHelper.getSourceAttribute(accountProperty);
-		return valueClass.cast(attributeField.getDataAccessor().getValue(userEntity));
+		return String.valueOf(attributeField.getDataAccessor().getValue(userEntity));
 	}
 
-	private <O> O parseOptionalAttribute(final Class<O> valueClass, final AccountProperty accountProperty, final Entity userEntity) {
+	private String parseOptionalAttribute(final AccountProperty accountProperty, final Entity userEntity) {
 		final DtField attributeField = mapperHelper.getSourceAttribute(accountProperty);
 		if (attributeField != null) {
-			return valueClass.cast(attributeField.getDataAccessor().getValue(userEntity));
+			return String.valueOf(attributeField.getDataAccessor().getValue(userEntity));
 		}
 		return null;
 	}

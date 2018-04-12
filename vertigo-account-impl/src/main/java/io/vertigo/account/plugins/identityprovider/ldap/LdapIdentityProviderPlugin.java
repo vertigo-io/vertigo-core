@@ -209,28 +209,30 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	}
 
 	private Optional<VFile> parseOptionalVFile(final Attributes attrs) {
-		final String base64Content = parseNullableAttribute(String.class, mapperHelper.getReservedSourceAttribute(PHOTO_RESERVED_FIELD), attrs);
+		final String base64Content = parseNullableAttribute(mapperHelper.getReservedSourceAttribute(PHOTO_RESERVED_FIELD), attrs);
 		if (base64Content == null) {
 			return Optional.empty();
 		}
-		final String displayName = "photo-" + parseAttribute(String.class, mapperHelper.getSourceIdField(), attrs);
+		final String displayName = "photo-" + parseAttribute(mapperHelper.getSourceIdField(), attrs);
 		return Optional.of(base64toVFile(displayName, base64Content));
 	}
 
-	private static <O> O parseAttribute(final Class<O> valueClass, final String attributeName, final Attributes attrs) {
+	private static String parseAttribute(final String attributeName, final Attributes attrs) {
 		try {
-			return valueClass.cast(attrs.get(attributeName).get());
+			return String.valueOf((attrs.get(attributeName).get()));
 		} catch (final NamingException e) {
 			throw WrappedException.wrap(e, "Ldap attribute {0} not found or empty", attributeName);
 		}
 	}
 
-	private static <O> O parseNullableAttribute(final Class<O> valueClass, final String attributeName, final Attributes attrs) {
+	private static String parseNullableAttribute(final String attributeName, final Attributes attrs) {
 		if (attributeName != null) {
 			final Attribute attribute = attrs.get(attributeName);
 			if (attribute != null) {
 				try {
-					return valueClass.cast(attribute.get());
+					final Object value = attribute.get();
+					Assertion.checkNotNull(value);
+					return String.valueOf(value);
 				} catch (final NamingException e) {
 					throw WrappedException.wrap(e, "Ldap attribute {0} found, but is empty", attributeName);
 				}
@@ -286,9 +288,9 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 		try {
 			final Entity user = Entity.class.cast(DtObjectUtil.createDtObject(mapperHelper.getDestDefinition()));
 			for (final DtField dtField : mapperHelper.destAttributes()) {
-				final Object value = parseNullableAttribute(Object.class, mapperHelper.getSourceAttribute(dtField), attrs);
+				final String value = parseNullableAttribute(mapperHelper.getSourceAttribute(dtField), attrs);
 				if (value != null) {
-					setTypedValue(dtField, user, String.valueOf(value));
+					setTypedValue(dtField, user, value);
 				}
 			}
 			return user;
