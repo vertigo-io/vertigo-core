@@ -99,7 +99,7 @@ public final class SecurityFilter extends AbstractFilter {
 					//Par défaut on considère que la session a expirer
 					throw new ServletException(new SessionException("Session expirée"));
 				}
-			} else if (checkRequestAccess && needsAuthentification && !securityManager.isAuthorized("HttpServletRequest", httpRequest, ".*")) {
+			} else if (checkRequestAccess && needsAuthentification && !securityManager.isAuthorized("HttpServletRequest", httpRequest, "OP_READ")) {
 				httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
 			} else {
 				chain.doFilter(httpRequest, httpResponse);

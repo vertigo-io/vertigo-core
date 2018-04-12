@@ -40,7 +40,7 @@ public final class SessionWebServiceHandlerPlugin implements WebServiceHandlerPl
 	/**
 	 * UserSession attributeName in HttpSession.
 	 */
-	private static final String USER_SESSION = "vertigo.webservice.Session";
+	private static final String USER_SESSION = "io.vertigo.Session";
 
 	private final VSecurityManager securityManager;
 
