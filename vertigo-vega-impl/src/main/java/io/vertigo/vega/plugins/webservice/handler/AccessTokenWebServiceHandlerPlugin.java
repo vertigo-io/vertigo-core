@@ -23,12 +23,12 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.token.TokenManager;
 import io.vertigo.vega.webservice.exception.SessionException;
-import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import spark.Request;
 import spark.Response;
