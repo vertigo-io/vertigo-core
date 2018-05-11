@@ -202,12 +202,12 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	public void removeTooOldElements() {
 		Assertion.checkArgument(MAX_REMOVED_TOO_OLD_ELEMENTS > 0 && MAX_REMOVED_TOO_OLD_ELEMENTS < 100000, "maxRemovedTooOldElements must stay between 1 and 100000");
 		//---
-		try {
-			for (final String collection : collectionNames) {
+		for (final String collection : collectionNames) {
+			try {
 				getDatabase(collection).removeTooOldElements(MAX_REMOVED_TOO_OLD_ELEMENTS);
+			} catch (final DatabaseException dbe) {
+				LOGGER.error("Error closing BerkeleyContextCachePlugin (database:" + collection + ") " + dbe, dbe);
 			}
-		} catch (final DatabaseException dbe) {
-			LOGGER.error("Error closing BerkeleyContextCachePlugin: " + dbe, dbe);
 		}
 	}
 
