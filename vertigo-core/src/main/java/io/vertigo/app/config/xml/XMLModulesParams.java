@@ -36,7 +36,7 @@ final class XMLModulesParams {
 		Assertion.checkNotNull(properties);
 		//-----
 		this.properties = properties;
-		keys = properties.stringPropertyNames();
+		keys = new HashSet<>(properties.stringPropertyNames());
 	}
 
 	String getParam(final String paramName) {

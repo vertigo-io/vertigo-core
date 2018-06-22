@@ -40,6 +40,11 @@
 			<plugin class="io.vertigo.studio.plugins.mda.security.SecurityGeneratorPlugin">
 				<param name="targetSubDir" value="javagen" />
 			</plugin>
+			<!--  -->
+			<plugin class="io.vertigo.studio.plugins.mda.task.test.TaskTestGeneratorPlugin">
+				<param name="targetSubDir" value="." />
+				<param name="baseTestClass" value="io.vertigo.studio.plugins.mda.tools.DaoTestClass" />
+			</plugin>
 		</component>
 	</module>
 

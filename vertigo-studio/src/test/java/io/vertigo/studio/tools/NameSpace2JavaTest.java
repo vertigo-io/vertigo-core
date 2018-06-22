@@ -119,4 +119,12 @@ public class NameSpace2JavaTest {
 	public void testGenerateWsRoute() {
 		NameSpace2Java.main(new String[] { "data/testWsRoute.properties" });
 	}
+
+	/**
+	 * Lancement du test.
+	 */
+	@Test
+	public void testGenerateTestSql() {
+		NameSpace2Java.main(new String[] { "data/testTestSql.properties" });
+	}
 }
