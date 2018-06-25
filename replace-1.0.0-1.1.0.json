@@ -13,6 +13,8 @@
 		"import io.vertigo.commons.health.HealthChecked;":"import io.vertigo.commons.analytics.health.HealthChecked;",
 		"@HealthChecked(name =":"@HealthChecked(feature = \"APP\", name =",
 		
+		"DateUtil.parse(":"DateUtil.parseToDate(",
+		
 		".getDataType().isPrimitive()":".getScope().isPrimitive()"
 	},
 	"replaceregexp": {
