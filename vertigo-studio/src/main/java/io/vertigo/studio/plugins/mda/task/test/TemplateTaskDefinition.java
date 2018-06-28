@@ -26,7 +26,7 @@ public final class TemplateTaskDefinition {
 	private final String packageName;
 	private final String className;
 	private final Set<String> imports = new HashSet<>();
-	
+
 	private final boolean hasOptions;
 
 	TemplateTaskDefinition(final TaskDefinition taskDefinition, final String packageName, final String className) {
@@ -37,28 +37,26 @@ public final class TemplateTaskDefinition {
 		this.taskDefinition = taskDefinition;
 		this.packageName = packageName;
 		this.className = className;
-		
-		this.testPackageName =  this.packageName + "." + StringUtil.first2LowerCase(this.className) + "Test";
-		this.testClassName = StringUtil.first2UpperCase(this.getMethodName()) + "Test"; 
-		
-		this.imports.add(packageName + "." + getClassName());
-		
+
+		testPackageName = this.packageName + "." + StringUtil.first2LowerCase(this.className) + "Test";
+		testClassName = StringUtil.first2UpperCase(getMethodName()) + "Test";
+
+		imports.add(packageName + "." + getClassName());
+
 		// Paramètres in
 		boolean hasOption = false;
 		for (final TaskAttribute attribute : taskDefinition.getInAttributes()) {
 			final TemplateTaskAttribute templateTaskAttribute = new TemplateTaskAttribute(taskDefinition, attribute);
 			ins.add(templateTaskAttribute);
-			this.imports.addAll(templateTaskAttribute.getValue().getImports());	
-			
+			imports.addAll(templateTaskAttribute.getValue().getImports());
+
 			hasOption = hasOption || !attribute.isRequired();
 		}
 
 		// Paramètre out
-		Optional<TaskAttribute> outAttributeOption = taskDefinition.getOutAttributeOption();		
-		out = outAttributeOption.isPresent() ? 
-			new TemplateTaskAttribute(taskDefinition, outAttributeOption.get()) : 
-			null;
-			
+		final Optional<TaskAttribute> outAttributeOption = taskDefinition.getOutAttributeOption();
+		out = outAttributeOption.isPresent() ? new TemplateTaskAttribute(taskDefinition, outAttributeOption.get()) : null;
+
 		hasOptions = hasOption;
 	}
 
@@ -67,49 +65,49 @@ public final class TemplateTaskDefinition {
 	 */
 	public String getMethodName() {
 		final String localName = DefinitionUtil.getLocalName(taskDefinition.getName(), TaskDefinition.class);
-		return StringUtil.constToLowerCamelCase(localName);		
+		return StringUtil.constToLowerCamelCase(localName);
 	}
-	
+
 	/**
 	 * @return Nom du package de test en cascalCase
 	 */
 	public String getTestPackageName() {
 		return testPackageName;
 	}
-	
+
 	/**
 	 * @return Nom simple de la classe de test en PascalCase
 	 */
 	public String getTestClassName() {
 		return testClassName;
 	}
-	
+
 	/**
 	 * @return Nom canonique de la classe de test
 	 */
 	public String getTestClassCanonicalName() {
 		return testPackageName + "." + testClassName;
 	}
-	
+
 	/**
 	 * @return Simple Nom (i.e. sans le package) de la classe d'implémentation du DtObject
 	 */
 	public String getClassName() {
 		return className;
 	}
-	
+
 	/**
 	 * @return Nom de la variable PAO dans le test.
 	 */
 	public String getDaoVariable() {
 		return StringUtil.first2LowerCase(className);
 	}
-	
+
 	/**
 	 * @return Nom de la méthode de test en CamelCase
 	 */
 	public String getTestMethodName() {
-		return "check_" + this.getMethodName() + "_Ok";
+		return "check_" + getMethodName() + "_Ok";
 	}
 
 	/**
@@ -134,7 +132,7 @@ public final class TemplateTaskDefinition {
 		//-----
 		return out;
 	}
-	
+
 	/**
 	 * @return Si cette task utilise vertigo.core.lang.Option
 	 */
@@ -147,6 +145,6 @@ public final class TemplateTaskDefinition {
 	 */
 	public List<String> getImports() {
 		// TODO tri ?
-		return new ArrayList<String>(imports);
+		return new ArrayList<>(imports);
 	}
 }

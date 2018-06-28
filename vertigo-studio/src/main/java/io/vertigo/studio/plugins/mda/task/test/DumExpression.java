@@ -2,7 +2,6 @@ package io.vertigo.studio.plugins.mda.task.test;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -13,7 +12,7 @@ import io.vertigo.dynamo.domain.model.DtList;
  * @author sezratty
  */
 public class DumExpression {
-	
+
 	private final List<String> imports;
 	private final String rawValue;
 	private final boolean isRequired;
@@ -24,9 +23,9 @@ public class DumExpression {
 	 * @param isRequired Si champ obligatoire.
 	 * @return Expression factice.
 	 */
-	public static DumExpression create(Domain domain, boolean isRequired){
+	public static DumExpression create(final Domain domain, final boolean isRequired) {
 		if (domain.getScope().isPrimitive()) {
-			switch(domain.getDataType()){
+			switch (domain.getDataType()) {
 				case Boolean:
 					return new DumExpression("dum().booleen()", isRequired);
 				case Long:
@@ -46,48 +45,45 @@ public class DumExpression {
 				default:
 					return null;
 			}
-			
+
 		}
-		
+
 		if (domain.getScope().isDataObject() || domain.getScope().isValueObject()) {
 			if (domain.isMultiple()) {
-				DtDefinition dtcDef = domain.getDtDefinition();
+				final DtDefinition dtcDef = domain.getDtDefinition();
 				return new DumExpression(
-						"dum().dumList("+dtcDef.getClassSimpleName()+".class)",
+						"dum().dumList(" + dtcDef.getClassSimpleName() + ".class)",
 						isRequired,
 						dtcDef.getClassCanonicalName(),
 						DtList.class.getCanonicalName());
-			} else {
-				DtDefinition dtoDef = domain.getDtDefinition();
-				return new DumExpression(
-						"dum().dum("+dtoDef.getClassSimpleName()+".class)",
-						isRequired,
-						dtoDef.getClassCanonicalName());
 			}
+			final DtDefinition dtoDef = domain.getDtDefinition();
+			return new DumExpression(
+					"dum().dum(" + dtoDef.getClassSimpleName() + ".class)",
+					isRequired,
+					dtoDef.getClassCanonicalName());
 		}
-		
+
 		return null;
 	}
-	
-	private DumExpression(String rawValue, boolean isRequired, String... imports){
+
+	private DumExpression(final String rawValue, final boolean isRequired, final String... imports) {
 		this.rawValue = rawValue;
 		this.isRequired = isRequired;
 		this.imports = Arrays.asList(imports);
 	}
-	
+
 	/**
 	 * @return Expression de la valeur factice.
 	 */
-	public String getValue(){
-		return isRequired ?
-			this.rawValue : 
-			"Optional.of(" + this.rawValue + ")";
+	public String getValue() {
+		return isRequired ? rawValue : "Optional.of(" + rawValue + ")";
 	}
-	
+
 	/**
 	 * @return Liste des imports pour l'expression.
 	 */
-	public List<String> getImports(){
+	public List<String> getImports() {
 		return imports;
-	}	
+	}
 }
