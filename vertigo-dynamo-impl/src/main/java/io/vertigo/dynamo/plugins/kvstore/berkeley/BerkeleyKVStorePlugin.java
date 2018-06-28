@@ -88,7 +88,6 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	public BerkeleyKVStorePlugin(
 			@Named("collections") final String collections,
 			@Named("dbFilePath") final String dbFilePath,
-			@Named("minFreeDisk") final Optional<String> minFreeDisk,
 			final VTransactionManager transactionManager,
 			final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(collections);
@@ -102,7 +101,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 				.collect(Collectors.toList());
 		//-----
 		dbFilePathTranslated = FileUtil.translatePath(dbFilePath);
-		this.minFreeDisk = minFreeDisk.orElse("100000000");
+		minFreeDisk = "100000000";
 		this.transactionManager = transactionManager;
 		this.codecManager = codecManager;
 	}
