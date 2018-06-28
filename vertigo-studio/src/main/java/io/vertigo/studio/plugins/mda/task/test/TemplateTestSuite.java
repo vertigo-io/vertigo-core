@@ -16,34 +16,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.vega.webservice.exception;
+package io.vertigo.studio.plugins.mda.task.test;
 
-import io.vertigo.core.locale.MessageText;
+import java.util.List;
+
+import io.vertigo.lang.Assertion;
 
 /**
- * Security exception.
- * @author npiedeloup
+ * Objet utilisé par FreeMarker.
+ *
+ * @author sezratty
  */
-public final class VSecurityException extends RuntimeException {
-	private static final long serialVersionUID = 3911465988816189879L;
-	private final MessageText messageText;
+public final class TemplateTestSuite {
+	private final String packageName;	
+	private final List<TemplateTestClass> testClasses;
 
 	/**
-	 * Constructor.
-	 * @param messageText Message de l'exception
+	 * Constructeur.
 	 */
-	public VSecurityException(final MessageText messageText) {
-		//Attention il convient d'utiliser une méthode qui ne remonte d'exception.
-		super(messageText.getDisplay());
-		// On rerentre sur l'API des Exception en passant le message.
-		this.messageText = messageText;
+	TemplateTestSuite(final List<TemplateTestClass> testClasses, final String packageName) {
+		Assertion.checkNotNull(testClasses);
+		Assertion.checkNotNull(packageName);
+		//-----
+		this.packageName = packageName;
+		this.testClasses = testClasses;
 	}
 
 	/**
-	 * Gestion des messages d'erreur externalisés.
-	 * @return messageText.
+	 * @return Nom du package de la classe de suite.
 	 */
-	public MessageText getMessageText() {
-		return messageText;
+	public String getPackageName() {
+		return packageName;
+	}
+
+	/**
+	 * @return Liste des classes de test.
+	 */
+	public List<TemplateTestClass> getTestClasses() {
+		return testClasses;
 	}
 }

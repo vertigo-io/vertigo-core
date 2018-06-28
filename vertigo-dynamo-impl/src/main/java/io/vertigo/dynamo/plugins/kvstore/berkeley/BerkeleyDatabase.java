@@ -240,14 +240,12 @@ final class BerkeleyDatabase {
 					if (value == null) {//null si erreur de lecture, ou si trop vieux
 						cursor.delete();
 						checked++;
-					} else {
-						break;
 					}
 				}
 			}
 		} finally {
 			transaction.commit();
-			LOGGER.info("purge " + checked + " elements");
+			LOGGER.info("Berkeley database (" + database.getDatabaseName() + ") purge " + checked + " elements");
 		}
 	}
 
@@ -257,7 +255,7 @@ final class BerkeleyDatabase {
 			key = keyBinding.entryToObject(theKey);
 			return dataBinding.entryToObject(theData);
 		} catch (final RuntimeException e) {
-			LOGGER.warn("Berkeley database read error, remove tokenKey : " + key, e);
+			LOGGER.warn("Berkeley database (" + database.getDatabaseName() + ") read error, remove tokenKey : " + key, e);
 		}
 		return null;
 	}

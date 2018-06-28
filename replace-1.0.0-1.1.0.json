@@ -9,9 +9,12 @@
 		"import io.vertigo.commons.health.HealthMeasure;":"import io.vertigo.commons.analytics.health.HealthMeasure;",
 		"import io.vertigo.commons.health.HealthStatus;":"import io.vertigo.commons.analytics.health.HealthStatus;",
 		"import io.vertigo.commons.analytics.Analytics;":"import io.vertigo.commons.analytics.process.Analytics;",
-		
+		"io.vertigo.commons.impl.analytics.AnalyticsAspect":"io.vertigo.commons.impl.analytics.process.AnalyticsAspect",
+
 		"import io.vertigo.commons.health.HealthChecked;":"import io.vertigo.commons.analytics.health.HealthChecked;",
 		"@HealthChecked(name =":"@HealthChecked(feature = \"APP\", name =",
+		
+		"DateUtil.parse(":"DateUtil.parseToDate(",
 		
 		".getDataType().isPrimitive()":".getScope().isPrimitive()"
 	},

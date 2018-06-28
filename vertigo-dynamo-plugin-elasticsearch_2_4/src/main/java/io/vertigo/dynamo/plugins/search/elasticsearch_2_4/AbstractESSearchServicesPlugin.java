@@ -134,7 +134,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	}
 
 	private String obtainIndexName(final SearchIndexDefinition indexDefinition) {
-		return indexNameIsPrefix ? (indexNameOrPrefix + indexDefinition.getName()) : indexNameOrPrefix;
+		return indexNameIsPrefix ? indexNameOrPrefix + indexDefinition.getName().toLowerCase(Locale.ROOT).trim() : indexNameOrPrefix;
 	}
 
 	private void createIndex(final String myIndexName) {

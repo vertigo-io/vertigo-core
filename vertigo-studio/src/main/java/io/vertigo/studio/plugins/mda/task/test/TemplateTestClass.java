@@ -16,39 +16,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.app.config.xml;
-
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
+package io.vertigo.studio.plugins.mda.task.test;
 
 import io.vertigo.lang.Assertion;
 
 /**
- * @author pchretien
+ * Objet utilisé par FreeMarker.
+ *
+ * @author sezratty
  */
-final class XMLModulesParams {
-	private final Properties properties;
-	private final Set<String> keys;
-	private final Set<String> readKeys = new HashSet<>();
+public final class TemplateTestClass {
+	private final String packageName;
+	private final String className;
 
-	XMLModulesParams(final Properties properties) {
-		Assertion.checkNotNull(properties);
+	/**
+	 * Constructeur.
+	 */
+	TemplateTestClass(final String packageName, final String className) {
+		Assertion.checkNotNull(packageName);
+		Assertion.checkNotNull(className);
 		//-----
-		this.properties = properties;
-		keys = new HashSet<>(properties.stringPropertyNames());
+		this.packageName = packageName;
+		this.className = className;
 	}
 
-	String getParam(final String paramName) {
-		Assertion.checkArgNotEmpty(paramName);
-		Assertion.checkArgument(properties.containsKey(paramName), "property '{0}' not found", paramName);
-		//-----
-		readKeys.add(paramName);
-		return properties.getProperty(paramName);
+	/**
+	 * @return Nom du package de la classe de suite.
+	 */
+	public String getPackageName() {
+		return packageName;
 	}
 
-	Set<String> unreadProperties() {
-		keys.removeAll(readKeys);
-		return keys;
+	public String getClassName() {
+		return className;
+	}
+	
+	/**
+	 * @return Nom canonique de la classe de test
+	 */
+	public String getClassCanonicalName() {
+		return packageName + "." + className;
 	}
 }

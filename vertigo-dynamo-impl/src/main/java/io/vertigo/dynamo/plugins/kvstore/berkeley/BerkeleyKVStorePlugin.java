@@ -63,6 +63,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	private final CodecManager codecManager;
 	private final VTransactionManager transactionManager;
 	private final String dbFilePathTranslated;
+	private final String minFreeDisk;
 
 	private Environment fsEnvironment;
 	private Environment ramEnvironment;
@@ -79,6 +80,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	 *  - inMemory default to false meaning store on file system
 	 * @param collections List of collections managed by this plugin (comma separated)
 	 * @param dbFilePath Base Berkeley DB file system path (Could use java env param like user.home user.dir or java.io.tmpdir)
+	 * @param minFreeDisk Minimum free disk space to maintain, in bytes. If the limit is exceeded, write operations will be prohibited. Default to 100M.
 	 * @param transactionManager Transaction manager
 	 * @param codecManager Codec manager
 	 */
@@ -99,6 +101,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 				.collect(Collectors.toList());
 		//-----
 		dbFilePathTranslated = FileUtil.translatePath(dbFilePath);
+		minFreeDisk = "100000000";
 		this.transactionManager = transactionManager;
 		this.codecManager = codecManager;
 	}
@@ -138,7 +141,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	public void start() {
 		final boolean readOnly = READONLY;
 		ramEnvironment = buildRamEnvironment(new File(dbFilePathTranslated + File.separator + "ram"), readOnly);
-		fsEnvironment = buildFsEnvironment(new File(dbFilePathTranslated), readOnly);
+		fsEnvironment = buildFsEnvironment(new File(dbFilePathTranslated), readOnly, minFreeDisk);
 
 		final DatabaseConfig databaseConfig = new DatabaseConfig()
 				.setReadOnly(readOnly)
@@ -154,7 +157,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 		}
 	}
 
-	private static Environment buildFsEnvironment(final File dbFile, final boolean readOnly) {
+	private static Environment buildFsEnvironment(final File dbFile, final boolean readOnly, final String minFreeDisk) {
 		dbFile.mkdirs();
 		final EnvironmentConfig fsEnvironmentConfig = new EnvironmentConfig()
 				.setConfigParam(EnvironmentConfig.LOG_MEM_ONLY, "false")
@@ -162,6 +165,8 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 				.setConfigParam(EnvironmentConfig.CLEANER_MIN_UTILIZATION, "90")
 				//A log file will be cleaned if its utilization percentage is below this value, irrespective of total utilization.
 				.setConfigParam(EnvironmentConfig.CLEANER_MIN_FILE_UTILIZATION, "50")
+				//By default in Berkeley FREE_DISK is set to 5G. When free disk space is below this value, Berkeley goes read-only.
+				.setConfigParam(EnvironmentConfig.FREE_DISK, minFreeDisk)
 				.setReadOnly(readOnly)
 				.setAllowCreate(!readOnly)
 				.setTransactional(!readOnly);
@@ -202,12 +207,12 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	public void removeTooOldElements() {
 		Assertion.checkArgument(MAX_REMOVED_TOO_OLD_ELEMENTS > 0 && MAX_REMOVED_TOO_OLD_ELEMENTS < 100000, "maxRemovedTooOldElements must stay between 1 and 100000");
 		//---
-		try {
-			for (final String collection : collectionNames) {
+		for (final String collection : collectionNames) {
+			try {
 				getDatabase(collection).removeTooOldElements(MAX_REMOVED_TOO_OLD_ELEMENTS);
+			} catch (final DatabaseException dbe) {
+				LOGGER.error("Error closing BerkeleyContextCachePlugin (database:" + collection + ") " + dbe, dbe);
 			}
-		} catch (final DatabaseException dbe) {
-			LOGGER.error("Error closing BerkeleyContextCachePlugin: " + dbe, dbe);
 		}
 	}
 

@@ -59,7 +59,7 @@ final class IndexType {
 			indexAnalyzer = Optional.ofNullable(!indexTypeArray[0].isEmpty() ? indexTypeArray[0] : null); //le premier est toujours l'analyzer (ou le normalizer)
 			//les suivants sont optionnels et soit indexDataType, soit le indexStored, soit le indexKeyword
 			if (indexTypeArray.length == 1) {
-				indexDataType = domain.getDataType().name().toLowerCase(Locale.ROOT);
+				indexDataType = obtainDefaultIndexDataType(domain);
 				indexStored = true;
 				indexSubKeyword = false;
 				indexFieldData = false;
