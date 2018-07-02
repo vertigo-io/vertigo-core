@@ -23,7 +23,6 @@ import java.math.BigDecimal;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamox.domain.constraint.ConstraintBigDecimal;
 import io.vertigo.dynamox.domain.constraint.ConstraintBigDecimalLength;
 import io.vertigo.dynamox.domain.constraint.ConstraintDoubleLength;
@@ -31,6 +30,7 @@ import io.vertigo.dynamox.domain.constraint.ConstraintIntegerLength;
 import io.vertigo.dynamox.domain.constraint.ConstraintLongLength;
 import io.vertigo.dynamox.domain.constraint.ConstraintRegex;
 import io.vertigo.dynamox.domain.constraint.ConstraintStringLength;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * Test des contraintes.

@@ -25,10 +25,10 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.health.HealthStatus;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * @author TINGARGIOLA

@@ -31,8 +31,8 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  *

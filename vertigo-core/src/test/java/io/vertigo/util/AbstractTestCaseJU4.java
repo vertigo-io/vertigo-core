@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo;
+package io.vertigo.util;
 
 import java.util.Properties;
 
@@ -56,7 +56,7 @@ public abstract class AbstractTestCaseJU4 {
 	protected final App getApp() {
 		return app;
 	}
-
+ 
 	/**
 	 * Tear down de l'environnement de test.
 	 *
@@ -117,7 +117,7 @@ public abstract class AbstractTestCaseJU4 {
 	 * @return fichier managers.xml (par defaut managers-test.xml)
 	 */
 	protected String[] getManagersXmlFileName() {
-		return new String[] { "./managers-test.xml", };
+		return new String[] { "managers-test.xml", };
 	}
 
 	/**

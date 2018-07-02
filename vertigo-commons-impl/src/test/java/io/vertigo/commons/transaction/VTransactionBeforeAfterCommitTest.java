@@ -25,10 +25,10 @@ import javax.inject.Inject;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.transaction.data.SampleDataBase;
 import io.vertigo.commons.transaction.data.SampleDataBaseConnection;
 import io.vertigo.commons.transaction.data.SampleTransactionResource;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * @author npiedeloup

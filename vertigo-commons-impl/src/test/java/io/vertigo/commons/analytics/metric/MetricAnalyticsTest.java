@@ -25,12 +25,12 @@ import javax.inject.Inject;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.metric.data.DummyMetricsProvider;
 import io.vertigo.commons.impl.analytics.AnalyticsManagerImpl;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * @author mlaroche

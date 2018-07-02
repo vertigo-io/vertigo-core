@@ -21,13 +21,13 @@ package io.vertigo.dynamo.environment.java;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * Test de l'implémentation standard.

@@ -24,10 +24,10 @@ import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logge
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.process.data.TestAProcessConnectorPlugin;
 import io.vertigo.commons.analytics.process.data.TestAnalyticsAspectServices;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * Cas de Test JUNIT de l'API Analytics.

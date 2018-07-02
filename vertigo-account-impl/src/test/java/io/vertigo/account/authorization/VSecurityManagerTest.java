@@ -27,7 +27,6 @@ import javax.inject.Inject;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.account.authorization.SecurityNames.GlobalAuthorizations;
 import io.vertigo.account.authorization.SecurityNames.RecordAuthorizations;
 import io.vertigo.account.authorization.SecurityNames.RecordOperations;
@@ -43,6 +42,7 @@ import io.vertigo.dynamo.criteria.CriteriaCtx;
 import io.vertigo.lang.Tuples.Tuple2;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * @author pchretien

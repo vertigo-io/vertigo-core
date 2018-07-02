@@ -26,7 +26,6 @@ import javax.inject.Inject;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -37,6 +36,7 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamox.task.TaskEngineProcBatch;
 import io.vertigo.dynamox.task.TaskEngineSelect;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  *	TaskEngineProcBatch tests

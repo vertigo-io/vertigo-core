@@ -25,12 +25,12 @@ import org.junit.Ignore;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.Home;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 public abstract class AbstractNodeManagerTest extends AbstractTestCaseJU4 {
 

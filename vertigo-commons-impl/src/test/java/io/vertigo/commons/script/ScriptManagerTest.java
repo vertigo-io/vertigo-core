@@ -27,9 +27,9 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
+import io.vertigo.util.AbstractTestCaseJU4;
 import io.vertigo.util.ListBuilder;
 
 /**

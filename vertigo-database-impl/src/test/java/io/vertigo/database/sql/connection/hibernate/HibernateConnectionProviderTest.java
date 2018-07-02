@@ -24,13 +24,13 @@ import javax.inject.Inject;
 
 import org.junit.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.statement.SqlStatement;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 public final class HibernateConnectionProviderTest extends AbstractTestCaseJU4 {
 

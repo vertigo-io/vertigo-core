@@ -30,10 +30,10 @@ import javax.inject.Inject;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * This class tests the usage of a task from its registration to its execution.

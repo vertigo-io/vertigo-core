@@ -28,10 +28,10 @@ import javax.inject.Inject;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.persona.impl.security.BeanResourceNameFactory;
 import io.vertigo.persona.security.metamodel.Role;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * @author pchretien

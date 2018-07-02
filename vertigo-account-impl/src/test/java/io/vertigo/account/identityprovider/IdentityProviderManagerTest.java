@@ -26,9 +26,9 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.account.identityprovider.model.User;
 import io.vertigo.persona.security.VSecurityManager;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * Implementation standard de la gestion centralisee des droits d'acces.

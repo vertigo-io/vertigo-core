@@ -29,11 +29,11 @@ import javax.inject.Inject;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.WrappedException;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * Test de l'implémentation standard.

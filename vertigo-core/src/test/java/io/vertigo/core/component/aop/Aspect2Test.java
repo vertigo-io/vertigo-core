@@ -50,7 +50,7 @@ public final class Aspect2Test {
 	}
 
 	private static String[] getManagersXmlFileName() {
-		return new String[] { "./managers-without-aspects-test.xml", };
+		return new String[] { "managers-without-aspects-test.xml", };
 	}
 
 }

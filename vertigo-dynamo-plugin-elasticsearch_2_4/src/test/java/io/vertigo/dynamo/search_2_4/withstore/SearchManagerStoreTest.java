@@ -27,7 +27,6 @@ import javax.inject.Inject;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.definition.DefinitionSpace;
@@ -46,6 +45,7 @@ import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamo.search_2_4.data.domain.Car;
 import io.vertigo.dynamo.search_2_4.data.domain.CarDataBase;
 import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * Test de l'implémentation standard couplé au store.
