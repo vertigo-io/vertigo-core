@@ -16,12 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.app.config.xml;
+package io.vertigo.core.component;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
@@ -29,49 +27,30 @@ import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.core.component.BioManager;
+import io.vertigo.app.config.LogConfig;
+import io.vertigo.app.config.ModuleConfig;
 
 @RunWith(JUnitPlatform.class)
-public final class AppConfig2Test {
-	@Test
-	public void HomeTest() {
-
-		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(), "bio.xml")
-				.build();
-
-		testBioManager(appConfig);
-	}
+public final class ComponentSpace4Test {
 
 	@Test
-	public void FeatureTest() {
-
-		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(), "bio-features.xml")
+	public void testStartedComponent() {
+		final AppConfig appConfig = AppConfig.builder()
+				.beginBoot()
+				.withLogConfig(new LogConfig("/log4j.xml"))
+				.endBoot()
+				.addModule(ModuleConfig.builder("Started")
+						.addComponent(StartedManager.class, StartedManagerImpl.class)
+						.build())
+				.addInitializer(StartedManagerInitializer.class)
 				.build();
-
-		testBioManager(appConfig);
-
-	}
-
-	@Test
-	public void nodeTest() {
-
-		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(), "bio-node.xml")
-				.build();
-
-		testBioManager(appConfig);
-	}
-
-	private void testBioManager(final AppConfig appConfig) {
+		final StartedManager startedManager;
 		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
-			assertEquals(app, app);
-			assertTrue(app.getComponentSpace().contains("bioManager"));
-			final BioManager bioManager = app.getComponentSpace().resolve(BioManager.class);
-			final int res = bioManager.add(1, 2, 3);
-			assertEquals(366, res);
-			assertTrue(bioManager.isActive());
+			startedManager = app.getComponentSpace().resolve(StartedManager.class);
+			assertTrue(startedManager.isInitialized(), "Component StartedManager not Initialized");
+			assertTrue(startedManager.isStarted(), "Component StartedManager not Started");
+			assertTrue(startedManager.isAppPreActivated(), "Component StartedManager not PostStarted");
 		}
+		assertFalse(startedManager.isStarted(), "Component StartedManager not Stopped");
 	}
 }

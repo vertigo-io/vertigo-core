@@ -16,33 +16,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.app.config.xml;
+package io.vertigo.core.component.aop;
 
-import io.vertigo.app.config.Features;
-import io.vertigo.core.component.BioManager;
-import io.vertigo.core.component.BioManagerImpl;
-import io.vertigo.core.component.MathManager;
-import io.vertigo.core.component.MathManagerImpl;
-import io.vertigo.core.component.MathPlugin;
-import io.vertigo.core.param.Param;
+import io.vertigo.core.component.aop.Aspect;
+import io.vertigo.core.component.aop.AspectMethodInvocation;
 
 /**
- * A feature for the Bio Module.
- * @author mlaroche
- *
+ * @author pchretien
  */
-public class BioFeatures extends Features {
-
-	public BioFeatures() {
-		super("bio");
+public final class TenMoreAspect implements Aspect {
+	@Override
+	public Integer invoke(final Object[] args, final AspectMethodInvocation methodInvocation) {
+		return (Integer) methodInvocation.proceed(args) + 10;
 	}
 
 	@Override
-	protected void buildFeatures() {
-		getModuleConfigBuilder()
-				.addComponent(BioManager.class, BioManagerImpl.class)
-				.addComponent(MathManager.class, MathManagerImpl.class, Param.of("start", "100"))
-				.addPlugin(MathPlugin.class, Param.of("factor", "20"));
+	public Class<TenMore> getAnnotationType() {
+		return TenMore.class;
 	}
-
 }

@@ -16,33 +16,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.app.config.xml;
+package io.vertigo.core.component.aop;
 
-import io.vertigo.app.config.Features;
-import io.vertigo.core.component.BioManager;
-import io.vertigo.core.component.BioManagerImpl;
-import io.vertigo.core.component.MathManager;
-import io.vertigo.core.component.MathManagerImpl;
-import io.vertigo.core.component.MathPlugin;
-import io.vertigo.core.param.Param;
+import javax.inject.Named;
 
 /**
- * A feature for the Bio Module.
- * @author mlaroche
- *
+ * @author prahmoune
  */
-public class BioFeatures extends Features {
+@Named("computer")
+public class ComputerImpl implements Computer {
 
-	public BioFeatures() {
-		super("bio");
+	/**
+	 * On ajoute un Modifier AOP pour fausser le calcul !
+	 */
+	@Override
+	@OneMore
+	public int sum(final int i, final int j) {
+		return i + j;
 	}
 
 	@Override
-	protected void buildFeatures() {
-		getModuleConfigBuilder()
-				.addComponent(BioManager.class, BioManagerImpl.class)
-				.addComponent(MathManager.class, MathManagerImpl.class, Param.of("start", "100"))
-				.addPlugin(MathPlugin.class, Param.of("factor", "20"));
+	@TenMore
+	@OneMore
+	public int multi(final int i, final int j) {
+		return i * j;
 	}
 
+	@Override
+	public int no(final int i) {
+		return i;
+	}
 }

@@ -21,50 +21,45 @@ package io.vertigo.app.config.xml;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Properties;
-
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.component.BioManager;
+import io.vertigo.core.component.BioManagerImpl;
+import io.vertigo.core.component.MathManager;
+import io.vertigo.core.component.MathManagerImpl;
+import io.vertigo.core.component.MathPlugin;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 
 @RunWith(JUnitPlatform.class)
-public final class AppConfig2Test {
+public final class AppConfigTest {
 	@Test
 	public void HomeTest() {
+		final String locales = "fr_FR";
 
-		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(), "bio.xml")
+		final AppConfig appConfig = AppConfig.builder()
+				.beginBoot()
+				.withLocales(locales)
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.addPlugin(XmlParamPlugin.class,
+						Param.of("url", "io/vertigo/app/config/xml/basic-app-config.xml"))
+				.endBoot()
+
+				.addModule(ModuleConfig.builder("bio")
+						.addComponent(BioManager.class, BioManagerImpl.class)
+						.addComponent(MathManager.class, MathManagerImpl.class,
+								Param.of("start", "${math.test.start}"))
+						.addPlugin(MathPlugin.class,
+								Param.of("factor", "20"))
+						.build())
 				.build();
 
-		testBioManager(appConfig);
-	}
-
-	@Test
-	public void FeatureTest() {
-
-		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(), "bio-features.xml")
-				.build();
-
-		testBioManager(appConfig);
-
-	}
-
-	@Test
-	public void nodeTest() {
-
-		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(), "bio-node.xml")
-				.build();
-
-		testBioManager(appConfig);
-	}
-
-	private void testBioManager(final AppConfig appConfig) {
 		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			assertEquals(app, app);
 			assertTrue(app.getComponentSpace().contains("bioManager"));

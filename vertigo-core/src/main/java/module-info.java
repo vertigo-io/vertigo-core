@@ -2,7 +2,7 @@
  * @author mlaroche
  *
  */
-open module io.vertigo.core {
+module io.vertigo.core {
 	exports io.vertigo.core.plugins.param.properties;
 	exports io.vertigo.core.plugins.param.env;
 	exports io.vertigo.core.component.di.injector;
@@ -28,7 +28,9 @@ open module io.vertigo.core {
 	exports io.vertigo.core.definition;
 	exports io.vertigo.app.config;
 	exports io.vertigo.core.component.proxy;
-
+	
+	opens io.vertigo.core.component.aop to cglib.nodep;
+	
 	requires cglib.nodep;
 	requires guava;
 	requires java.desktop;

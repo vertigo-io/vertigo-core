@@ -16,33 +16,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.app.config.xml;
+package io.vertigo.core.component.aop;
 
-import io.vertigo.app.config.Features;
-import io.vertigo.core.component.BioManager;
-import io.vertigo.core.component.BioManagerImpl;
-import io.vertigo.core.component.MathManager;
-import io.vertigo.core.component.MathManagerImpl;
-import io.vertigo.core.component.MathPlugin;
-import io.vertigo.core.param.Param;
+import io.vertigo.core.component.Component;
 
 /**
- * A feature for the Bio Module.
- * @author mlaroche
- *
+ * @author pchretien
  */
-public class BioFeatures extends Features {
-
-	public BioFeatures() {
-		super("bio");
+@OneMore
+public class F implements Component {
+	public int getValue(final int value) {
+		return value;
 	}
 
-	@Override
-	protected void buildFeatures() {
-		getModuleConfigBuilder()
-				.addComponent(BioManager.class, BioManagerImpl.class)
-				.addComponent(MathManager.class, MathManagerImpl.class, Param.of("start", "100"))
-				.addPlugin(MathPlugin.class, Param.of("factor", "20"));
+	@OneMore
+	public int getValue2(final int value) {
+		return value;
 	}
 
+	@TenMore
+	@OneMore
+	public int getValue3(final int value) {
+		return value;
+	}
 }

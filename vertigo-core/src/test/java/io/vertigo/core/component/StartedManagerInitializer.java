@@ -16,33 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.app.config.xml;
+package io.vertigo.core.component;
 
-import io.vertigo.app.config.Features;
-import io.vertigo.core.component.BioManager;
-import io.vertigo.core.component.BioManagerImpl;
-import io.vertigo.core.component.MathManager;
-import io.vertigo.core.component.MathManagerImpl;
-import io.vertigo.core.component.MathPlugin;
-import io.vertigo.core.param.Param;
+import javax.inject.Inject;
 
-/**
- * A feature for the Bio Module.
- * @author mlaroche
- *
- */
-public class BioFeatures extends Features {
+import io.vertigo.core.component.ComponentInitializer;
+import io.vertigo.lang.Assertion;
 
-	public BioFeatures() {
-		super("bio");
-	}
+public final class StartedManagerInitializer implements ComponentInitializer {
 
+	@Inject
+	private StartedManager startedManager;
+
+	/** {@inheritDoc} */
 	@Override
-	protected void buildFeatures() {
-		getModuleConfigBuilder()
-				.addComponent(BioManager.class, BioManagerImpl.class)
-				.addComponent(MathManager.class, MathManagerImpl.class, Param.of("start", "100"))
-				.addPlugin(MathPlugin.class, Param.of("factor", "20"));
+	public void init() {
+		Assertion.checkState(!startedManager.isStarted(), "Component StartedManager already Started");
+		Assertion.checkState(!startedManager.isAppPreActivated(), "Component StartedManager already PostStarted");
+		Assertion.checkState(!startedManager.isInitialized(), "Component StartedManager already Initialized");
+		startedManager.init();
 	}
 
 }

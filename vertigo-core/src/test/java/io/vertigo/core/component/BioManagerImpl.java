@@ -16,33 +16,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.app.config.xml;
+package io.vertigo.core.component;
 
-import io.vertigo.app.config.Features;
-import io.vertigo.core.component.BioManager;
-import io.vertigo.core.component.BioManagerImpl;
-import io.vertigo.core.component.MathManager;
-import io.vertigo.core.component.MathManagerImpl;
-import io.vertigo.core.component.MathPlugin;
-import io.vertigo.core.param.Param;
+import javax.inject.Inject;
 
-/**
- * A feature for the Bio Module.
- * @author mlaroche
- *
- */
-public class BioFeatures extends Features {
+import io.vertigo.core.component.Activeable;
 
-	public BioFeatures() {
-		super("bio");
+public final class BioManagerImpl implements BioManager, Activeable {
+	private boolean active = false;
+	@Inject
+	private MathManager mathManager;
+
+	@Override
+	public int add(final int... all) {
+		int res = 0;
+		for (final int a : all) {
+			res = mathManager.add(res, a);
+		}
+		return res;
 	}
 
 	@Override
-	protected void buildFeatures() {
-		getModuleConfigBuilder()
-				.addComponent(BioManager.class, BioManagerImpl.class)
-				.addComponent(MathManager.class, MathManagerImpl.class, Param.of("start", "100"))
-				.addPlugin(MathPlugin.class, Param.of("factor", "20"));
+	public boolean isActive() {
+		return active;
+	}
+
+	@Override
+	public void start() {
+		active = true;
+	}
+
+	@Override
+	public void stop() {
+		//
 	}
 
 }

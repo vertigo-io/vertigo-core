@@ -2,12 +2,12 @@
 <config>
 	<module name="aspects" >
 		<!--Aspects declaration-->
-		<aspect class="io.vertigo.core.component.aop.data.aspects.OneMoreAspect" />
+		<aspect class="io.vertigo.core.component.aop.OneMoreAspect" />
 <!--  		<aspect class="io.vertigo.core.component.aop.data.aspects.TenMoreAspect" />
  --></module> 
 	<module name="components">
 		<!-- Components declaration -->
-		<component class="io.vertigo.core.component.aop.data.components.ComputerImpl" />
+		<component class="io.vertigo.core.component.aop.ComputerImpl" />
 		<!-- <component class="io.vertigo.core.component.aop.data.components.A" />
 		<component class="io.vertigo.core.component.aop.data.components.BImpl" />
 		<component class="io.vertigo.core.component.aop.data.components.C" />
