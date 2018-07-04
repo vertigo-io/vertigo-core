@@ -31,14 +31,11 @@ import org.junit.runner.RunWith;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.commons.AbstractTestCaseJU4;
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.health.data.FailedComponentChecker;
-import io.vertigo.commons.analytics.health.data.RedisHealthChecker;
-import io.vertigo.commons.analytics.health.data.SuccessComponentChecker;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
-import io.vertigo.util.AbstractTestCaseJU4;
 
 @RunWith(JUnitPlatform.class)
 public class HealthAnalyticsTest extends AbstractTestCaseJU4 {
@@ -67,7 +64,7 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test
-	void testRedisChecker() {
+	public void testRedisChecker() {
 		final List<HealthCheck> redisHealthChecks = findHealthChecksByName("ping")
 				.stream()
 				.filter(healthCheck -> "redisChecker".equals(healthCheck.getFeature()))
@@ -79,7 +76,7 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test
-	void testFailComponent() {
+	public void testFailComponent() {
 		final List<HealthCheck> failedHealthChecks = findHealthChecksByName("failure");
 		//---
 		Assert.assertEquals(1, failedHealthChecks.size());
@@ -88,7 +85,7 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test
-	void testSuccessComponent() {
+	public void testSuccessComponent() {
 		final List<HealthCheck> successHealthChecks = findHealthChecksByName("success");
 		//---
 		Assert.assertEquals(1, successHealthChecks.size());
@@ -96,7 +93,7 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test
-	void testAggregate() {
+	public void testAggregate() {
 		final List<HealthCheck> successHealthChecks = findHealthChecksByName("success");
 		final List<HealthCheck> failedHealthChecks = findHealthChecksByName("failure");
 		//---

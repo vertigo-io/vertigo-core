@@ -21,7 +21,8 @@ package io.vertigo.commons.peg;
 import java.util.Arrays;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class PegRulesTest {
 	/**
@@ -42,9 +43,11 @@ public class PegRulesTest {
 		Assert.assertEquals(2, choice.parse("ha", 0).getValue().getChoiceIndex());
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
+	@Test
 	public void choice2() throws PegNoMatchFoundException {
-		choice.parse("hu", 0);
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
+			choice.parse("hu", 0);
+		});
 	}
 
 	@Test
@@ -52,9 +55,11 @@ public class PegRulesTest {
 		Assert.assertEquals(Arrays.asList("hi", "ho", "ha"), sequence.parse("hihoha", 0).getValue());
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
+	@Test
 	public void sequence2() throws PegNoMatchFoundException {
-		Assert.assertEquals(Arrays.asList("hi", "ho", "ha"), sequence.parse("hiho", 0).getValue());
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
+			Assert.assertEquals(Arrays.asList("hi", "ho", "ha"), sequence.parse("hiho", 0).getValue());
+		});
 	}
 
 	@Test
@@ -70,9 +75,11 @@ public class PegRulesTest {
 		Assert.assertEquals(Arrays.asList("hi", "hi", "hi"), oneOrMore.parse("hihihi", 0).getValue());
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
+	@Test
 	public void oneOrMoreUntilTheEnd2() throws PegNoMatchFoundException {
-		oneOrMore.parse("hihihiho", 0);
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
+			oneOrMore.parse("hihihiho", 0);
+		});
 	}
 
 	@Test
@@ -81,9 +88,11 @@ public class PegRulesTest {
 		Assert.assertEquals(Arrays.asList("hi", "hi", "hi"), zeroOrMore.parse("hihihi", 0).getValue());
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
+	@Test
 	public void zeroOrMoreUntilTheEnd2() throws PegNoMatchFoundException {
-		zeroOrMore.parse("hihihiho", 0);
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
+			zeroOrMore.parse("hihihiho", 0);
+		});
 	}
 
 	@Test

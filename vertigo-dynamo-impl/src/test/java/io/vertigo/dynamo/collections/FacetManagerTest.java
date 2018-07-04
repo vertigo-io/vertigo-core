@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.collections.data.domain.SmartCar;
 import io.vertigo.dynamo.collections.data.domain.SmartCarDataBase;
@@ -36,7 +37,6 @@ import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * @author  npiedeloup

@@ -5,10 +5,10 @@
 	</module>
 	
 	<module name="aspects" >
-		<aspect class="io.vertigo.commons.eventbus.data.aspects.FlipAspect" />
+		<aspect class="io.vertigo.commons.eventbus.FlipAspect" />
 	</module>
 
 	<module name="myApp">
-		<component class="io.vertigo.commons.eventbus.data.MySubscriber" />
+		<component class="io.vertigo.commons.eventbus.MySubscriber" />
 	</module>
 </config>

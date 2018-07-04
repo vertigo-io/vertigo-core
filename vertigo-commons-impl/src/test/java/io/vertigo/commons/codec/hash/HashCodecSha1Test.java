@@ -20,7 +20,8 @@ package io.vertigo.commons.codec.hash;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.codec.AbstractEncoderTest;
 import io.vertigo.commons.codec.CodecManager;
@@ -42,13 +43,15 @@ public final class HashCodecSha1Test extends AbstractEncoderTest<Encoder<byte[],
 
 	/** {@inheritDoc} */
 	@Override
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testNull() {
 		/*
 		 * Test de création de l'empreinte SHA 1.
 		 * On vérifie que null ne respecte pas le contrat.
 		 */
-		codec.encode(null);
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			codec.encode(null);
+		});
 	}
 
 	/** {@inheritDoc} */

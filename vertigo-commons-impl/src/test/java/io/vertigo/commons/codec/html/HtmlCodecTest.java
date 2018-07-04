@@ -20,7 +20,8 @@ package io.vertigo.commons.codec.html;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.codec.AbstractCodecTest;
 import io.vertigo.commons.codec.Codec;
@@ -112,9 +113,11 @@ public final class HtmlCodecTest extends AbstractCodecTest<String, String> {
 
 	/** {@inheritDoc} */
 	@Override
-	@Test(expected = Exception.class)
+	@Test
 	public void testFailDecode() {
-		codec.decode("&eplat;");
+		Assertions.assertThrows(Exception.class, () -> {
+			codec.decode("&eplat;");
+		});
 	}
 
 	/**

@@ -20,14 +20,14 @@ package io.vertigo.commons.analytics.process;
 
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
+import io.vertigo.commons.AbstractTestCaseJU4;
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.process.data.TestAProcessConnectorPlugin;
-import io.vertigo.commons.analytics.process.data.TestAnalyticsAspectServices;
-import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * Cas de Test JUNIT de l'API Analytics.
@@ -103,8 +103,9 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastcategory());
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testFail() {
+		Assertions.assertThrows(IllegalStateException.class, () -> {
 		TestAProcessConnectorPlugin.reset();
 		try {
 			analyticsAspectServices.checkPositive(-1);
@@ -112,7 +113,7 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU4 {
 			Assert.assertEquals(1, TestAProcessConnectorPlugin.getCount());
 			Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastcategory());
 			throw e;
-		}
+		}});
 
 	}
 

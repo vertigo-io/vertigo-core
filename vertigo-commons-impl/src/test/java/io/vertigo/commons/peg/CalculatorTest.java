@@ -20,7 +20,8 @@ package io.vertigo.commons.peg;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public final class CalculatorTest {
 	private static final PegRule<Integer> MAIN = new CalculatorRule();
@@ -38,9 +39,11 @@ public final class CalculatorTest {
 		assertEquals(11, eval("121 /11"));
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
+	@Test
 	public void testFail() throws PegNoMatchFoundException {
-		eval("2 $ 3");
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
+			eval("2 $ 3");
+		});
 		//l'opérateur  $ n'existe pas
 	}
 }

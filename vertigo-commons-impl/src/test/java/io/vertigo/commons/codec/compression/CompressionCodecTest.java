@@ -23,7 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.codec.AbstractCodecTest;
 import io.vertigo.commons.codec.Codec;
@@ -93,7 +94,7 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 
 	/** {@inheritDoc} */
 	@Override
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testFailDecode() {
 		// object avec prefix ne correspondant pas à une classe;
 		final byte[] s = "COMPqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdf".getBytes();
@@ -101,6 +102,8 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 		/* final byte[] result = */
 
 		//Le decodage lance une exception
-		codec.decode(s);
+		Assertions.assertThrows(RuntimeException.class, () -> {
+			codec.decode(s);
+		});
 	}
 }

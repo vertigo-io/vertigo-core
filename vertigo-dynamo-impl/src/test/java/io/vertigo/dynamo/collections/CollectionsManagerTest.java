@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.collections.data.DtDefinitions;
 import io.vertigo.dynamo.collections.data.domain.SmartItem;
 import io.vertigo.dynamo.criteria.Criterions;
@@ -39,7 +40,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.domain.util.VCollectors;
-import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * @author pchretien

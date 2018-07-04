@@ -30,7 +30,7 @@ import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
-import io.vertigo.util.AbstractTestCaseJU4;
+import io.vertigo.commons.AbstractTestCaseJU4;
 
 public abstract class AbstractNodeManagerTest extends AbstractTestCaseJU4 {
 
@@ -47,7 +47,7 @@ public abstract class AbstractNodeManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	@Test
-	void testRegisterNode() {
+	public void testRegisterNode() {
 		final NodeManager nodeManager = Home.getApp().getComponentSpace().resolve(NodeManager.class);
 
 		final List<Node> nodesWithDbSkill = nodeManager.locateSkills("db");
@@ -60,7 +60,7 @@ public abstract class AbstractNodeManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	@Ignore // ignored for now we need heartbeat of node update to be parametized for shorter tests
-	void testUpdate() throws InterruptedException {
+	public void testUpdate() throws InterruptedException {
 		final NodeManager nodeManager = Home.getApp().getComponentSpace().resolve(NodeManager.class);
 		// ---
 		final Instant firstTouch = nodeManager.find("nodeTest1").get().getLastTouch();

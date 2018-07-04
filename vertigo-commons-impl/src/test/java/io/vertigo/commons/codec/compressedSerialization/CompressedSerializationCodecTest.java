@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.Serializable;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.codec.AbstractCodecTest;
 import io.vertigo.commons.codec.Codec;

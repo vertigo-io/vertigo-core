@@ -23,9 +23,9 @@ import static io.vertigo.dynamo.criteria.CriterionLimit.ofIncluded;
 
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.criteria.data.movies.Movie2;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
-import io.vertigo.util.AbstractTestCaseJU4;
 
 public abstract class AbstractCriteriaTest extends AbstractTestCaseJU4 {
 	private static final DtFieldName<Movie2> YEAR = () -> "YEAR";

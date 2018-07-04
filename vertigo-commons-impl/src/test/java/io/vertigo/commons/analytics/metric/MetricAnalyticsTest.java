@@ -23,14 +23,13 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.metric.data.DummyMetricsProvider;
 import io.vertigo.commons.impl.analytics.AnalyticsManagerImpl;
-import io.vertigo.util.AbstractTestCaseJU4;
+import io.vertigo.commons.AbstractTestCaseJU4;
 
 /**
  * @author mlaroche

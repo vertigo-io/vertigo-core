@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
@@ -33,7 +34,6 @@ import io.vertigo.dynamo.search.data.domain.ItemDataBase;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * @author  npiedeloup

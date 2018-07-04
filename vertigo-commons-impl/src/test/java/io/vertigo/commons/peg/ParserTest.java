@@ -25,7 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public final class ParserTest {
 	private static final PegRule<String> HELLO = PegRules.term("hello");
@@ -102,9 +103,11 @@ public final class ParserTest {
 
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
+	@Test
 	public void testTermFail() throws PegNoMatchFoundException {
-		HELLO.parse("Hi", 0);
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
+			HELLO.parse("Hi", 0);
+		});
 	}
 
 	@Test
@@ -124,10 +127,12 @@ public final class ParserTest {
 		assertEquals("world", cursor2.getValue().get(2));
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
+	@Test
 	public void testSequenceFail() throws PegNoMatchFoundException {
-		HELLO_WORLD
-				.parse("hello worms", 0);
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
+			HELLO_WORLD
+					.parse("hello worms", 0);
+		});
 	}
 
 	@Test
@@ -146,16 +151,20 @@ public final class ParserTest {
 		assertEquals("music", choice2.getValue());
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
+	@Test
 	public void testFirstOfFail() throws PegNoMatchFoundException {
-		WORLD_MUSIC.parse("worm", 0);
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
+			WORLD_MUSIC.parse("worm", 0);
+		});
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
+	@Test
 	public void testChoiceEmptyFailed() throws PegNoMatchFoundException {
 		//An empty list of choices
-		PegRules.choice()
-				.parse("world", 0);
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
+			PegRules.choice()
+					.parse("world", 0);
+		});
 	}
 
 	@Test
@@ -237,14 +246,18 @@ public final class ParserTest {
 		assertEquals("ab", results.get(3));
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
+	@Test
 	public void testManyGlobalFail() throws PegNoMatchFoundException {
-		MANY_AB2.parse("a", 0);
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
+			MANY_AB2.parse("a", 0);
+		});
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
+	@Test
 	public void testManyGlobalFail2() throws PegNoMatchFoundException {
-		MANY_AB2.parse("abc", 0);
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
+			MANY_AB2.parse("abc", 0);
+		});
 	}
 
 	@Test
@@ -288,14 +301,18 @@ public final class ParserTest {
 		assertEquals("ab", results.get(3));
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
+	@Test
 	public void testManyMoreFail() throws PegNoMatchFoundException {
-		MANY_AB_MORE.parse("", 0);
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
+			MANY_AB_MORE.parse("", 0);
+		});
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
+	@Test
 	public void testManyMoreFail2() throws PegNoMatchFoundException {
-		MANY_AB_MORE.parse("a", 0);
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
+			MANY_AB_MORE.parse("a", 0);
+		});
 	}
 
 	public static void main(final String[] args) throws PegNoMatchFoundException {

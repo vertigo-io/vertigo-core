@@ -21,8 +21,8 @@ package io.vertigo.dynamo.environment.oom;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * Test de lecture d'un OOM.

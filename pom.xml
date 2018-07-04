@@ -25,7 +25,6 @@
 		<module>vertigo-parent</module>
 		<module>vertigo-core</module>
 
-		<module>vertigo-commons-api</module>
 		<module>vertigo-commons-impl</module>
 		
 		<module>vertigo-database-api</module>

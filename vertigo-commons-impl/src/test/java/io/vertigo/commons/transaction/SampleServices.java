@@ -22,9 +22,6 @@ import javax.inject.Inject;
 
 import org.junit.Assert;
 
-import io.vertigo.commons.transaction.data.SampleDataBase;
-import io.vertigo.commons.transaction.data.SampleDataBaseConnection;
-import io.vertigo.commons.transaction.data.SampleTransactionResource;
 import io.vertigo.core.component.Component;
 
 public class SampleServices implements Component {

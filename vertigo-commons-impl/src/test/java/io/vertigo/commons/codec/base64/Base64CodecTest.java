@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Base64;
 import java.util.regex.Pattern;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.codec.AbstractCodecTest;
 import io.vertigo.commons.codec.Codec;
@@ -151,7 +151,7 @@ public final class Base64CodecTest extends AbstractCodecTest<byte[], String> {
 
 	/** {@inheritDoc} */
 	@Override
-	protected void checkEncodedValue(final String encodedValue) {
+	public void checkEncodedValue(final String encodedValue) {
 		//On vérifie que la valeur encodée respecte bien le pattern.
 		assertTrue(REGEX.matcher(encodedValue).matches(), "Pattern Base 64");
 	}

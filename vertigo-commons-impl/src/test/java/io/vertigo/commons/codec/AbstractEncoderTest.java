@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
-import io.vertigo.util.AbstractTestCaseJU4;
+import io.vertigo.commons.AbstractTestCaseJU4;
 
 /**
  * @author dchallas
@@ -53,7 +53,7 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends
 	/** {@inheritDoc} */
 	@Override
 	public final void doSetUp() {
-		codec = obtainCodec(codecManager);
+		codec = obtainCodec(codecManager); 
 	}
 
 	/**

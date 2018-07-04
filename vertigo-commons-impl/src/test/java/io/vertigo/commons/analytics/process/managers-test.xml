@@ -2,7 +2,7 @@
 <config>
 	<module name="vertigo-commons">
 		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl">
-			<plugin class="io.vertigo.commons.analytics.process.data.TestAProcessConnectorPlugin" />
+			<plugin class="io.vertigo.commons.analytics.process.TestAProcessConnectorPlugin" />
 			<plugin class="io.vertigo.commons.plugins.analytics.log.LoggerAnalyticsConnectorPlugin" />
 			<plugin class="io.vertigo.commons.plugins.analytics.log.SmartLoggerAnalyticsConnectorPlugin" >
 				<param name="aggregatedBy" value="test" />
@@ -12,6 +12,6 @@
 	</module>
 
 	<module name="vertigo-commons">
-		<component class="io.vertigo.commons.analytics.process.data.TestAnalyticsAspectServices"/>
+		<component class="io.vertigo.commons.analytics.process.TestAnalyticsAspectServices"/>
 	</module>
 </config>

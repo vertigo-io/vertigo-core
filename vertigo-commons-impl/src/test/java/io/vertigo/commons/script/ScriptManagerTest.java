@@ -25,11 +25,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
-import io.vertigo.util.AbstractTestCaseJU4;
+import io.vertigo.commons.AbstractTestCaseJU4;
+import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.util.ListBuilder;
 
 /**
@@ -79,12 +81,14 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 		assertEquals("Il s'agit bien de M.Duraton", result);
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void testSyntaxError() {
 		//On génère une erreur java
-		final String script = "<%if (nom.sttart(\"Dur\")) {%>Il s'agit bien de M.Duraton<%}%>";
-		final String result = scriptManager.evaluateScript(script, SeparatorType.CLASSIC, createParameters());
-		nop(result);
+		Assertions.assertThrows(Exception.class, () -> {
+			final String script = "<%if (nom.sttart(\"Dur\")) {%>Il s'agit bien de M.Duraton<%}%>";
+			final String result = scriptManager.evaluateScript(script, SeparatorType.CLASSIC, createParameters());
+			nop(result);
+		});
 	}
 
 	@Test
@@ -104,13 +108,15 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 		assertEquals("bla bla", scriptHandler.result.toString());
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void testParameterForgotten() {
 		final String script = "bla <!---->bla";
 
 		final MyScriptParserHandler scriptHandler = new MyScriptParserHandler();
 
-		scriptManager.parse(script, scriptHandler, comment);
+		Assertions.assertThrows(Exception.class, () -> {
+			scriptManager.parse(script, scriptHandler, comment);
+		});
 	}
 
 	@Test

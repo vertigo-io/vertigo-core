@@ -50,7 +50,9 @@ final class DaemonTimerTask implements Runnable {
 		} catch (final Exception e) {
 			daemonListener.onFailure(e);
 		} finally {
-			clearAllThreadLocals();
+			// with java 9 we cannot clean threadLocals globally... some further investigations are required
+			// so we need to rely on every good use of those variables...
+			//clearAllThreadLocals();
 		}
 	}
 

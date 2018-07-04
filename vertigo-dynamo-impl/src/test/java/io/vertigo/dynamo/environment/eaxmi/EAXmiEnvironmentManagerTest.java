@@ -21,6 +21,7 @@ package io.vertigo.dynamo.environment.eaxmi;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.ConstraintDefinition;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -30,7 +31,6 @@ import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 import io.vertigo.dynamox.domain.formatter.FormatterNumber;
-import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * Test de l'implémentation standard.

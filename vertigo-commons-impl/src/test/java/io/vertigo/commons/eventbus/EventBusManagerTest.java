@@ -23,15 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.commons.eventbus.data.BlueColorEvent;
-import io.vertigo.commons.eventbus.data.DummyEvent;
-import io.vertigo.commons.eventbus.data.MySubscriber;
-import io.vertigo.commons.eventbus.data.RedColorEvent;
-import io.vertigo.commons.eventbus.data.WhiteColorEvent;
-import io.vertigo.commons.eventbus.data.aspects.FlipAspect;
-import io.vertigo.util.AbstractTestCaseJU4;
+import io.vertigo.commons.AbstractTestCaseJU4;
 
 /**
  * @author pchretien

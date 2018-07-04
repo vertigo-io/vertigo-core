@@ -29,10 +29,10 @@ import java.util.GregorianCalendar;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamox.domain.formatter.FormatterDate;
-import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * Test de l'implémentation standard.

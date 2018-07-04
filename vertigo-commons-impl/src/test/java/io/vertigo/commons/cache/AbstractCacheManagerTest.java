@@ -29,10 +29,10 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.AbstractTestCaseJU4;
+import io.vertigo.commons.AbstractTestCaseJU4;
 
 /**
  *

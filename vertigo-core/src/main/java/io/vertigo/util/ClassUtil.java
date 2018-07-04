@@ -200,6 +200,8 @@ public final class ClassUtil {
 			throw WrappedException.wrap(e, "accès impossible à la méthode : " + method.getName() + " de " + method.getDeclaringClass().getName());
 		} catch (final InvocationTargetException e) {
 			throw WrappedException.wrap(e, "Erreur lors de l'appel de la méthode : {0} de {1}", method.getName(), method.getDeclaringClass().getName());
+		} catch (Throwable t) {
+			throw t;
 		}
 	}
 

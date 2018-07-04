@@ -34,12 +34,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
+import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
-import io.vertigo.util.AbstractTestCaseJU4;
 
 @RunWith(JUnitPlatform.class)
 public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
