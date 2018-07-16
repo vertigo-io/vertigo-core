@@ -20,7 +20,7 @@
 
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-commons-api</artifactId>
+			<artifactId>vertigo-commons-impl</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

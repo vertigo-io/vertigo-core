@@ -30,6 +30,7 @@ import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 import io.vertigo.core.component.di.injector.DIInjector;
+import io.vertigo.lang.WrappedException;
 
 /**
  * Classe parente de tous les TNR associés à vertigo.

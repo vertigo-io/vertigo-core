@@ -31,7 +31,7 @@ import io.vertigo.core.locale.LocaleManagerImpl;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.param.ParamManagerImpl;
-import io.vertigo.core.plugins.component.aop.cglib.CGLIBAopPlugin;
+import io.vertigo.core.plugins.component.aop.javassist.JavassistAopPlugin;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.resource.ResourceManagerImpl;
 import io.vertigo.lang.Assertion;
@@ -46,7 +46,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	private Optional<LogConfig> myLogConfigOpt = Optional.empty(); //par défaut
 	private final AppConfigBuilder appConfigBuilder;
 	private boolean myVerbose;
-	private AopPlugin myAopPlugin = new CGLIBAopPlugin(); //By default
+	private AopPlugin myAopPlugin = new JavassistAopPlugin(); //By default
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
 	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
 

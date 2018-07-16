@@ -39,6 +39,7 @@ module io.vertigo.core {
 	requires log4j.api;
 	requires log4j.core;
 	requires reflections;
+	requires javassist;
 
 	
 		

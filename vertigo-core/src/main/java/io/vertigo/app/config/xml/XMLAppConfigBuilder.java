@@ -18,9 +18,12 @@
  */
 package io.vertigo.app.config.xml;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,13 +34,14 @@ import io.vertigo.app.config.BootConfigBuilder;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
+import io.vertigo.lang.WrappedException;
 
 /**
  * @author npiedeloup, pchretien
  */
 public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 	private final AppConfigBuilder appConfigBuilder = AppConfig.builder();
-
+	
 	/**
 	 * Begin the boot config of the app.
 	 * @return the bootConfig builder
@@ -66,7 +70,7 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 		XMLModulesParser.parseAll(appConfigBuilder, xmlModulesParams, xmlModulesAsUrls);
 		return this;
 	}
-
+	
 	/**
 	 * @param logConfig Config of logs
 	 * @return  this builder
@@ -90,16 +94,42 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 	 * @param fileName Nom du fichier
 	 * @return URL non null
 	 */
-	private static URL createURL(final String fileName, final Class<?> relativeRootClass) {
+	private  URL createURL(final String fileName, final Class<?> relativeRootClass) {
 		Assertion.checkArgNotEmpty(fileName);
 		//-----
 		try {
 			return new URL(fileName);
 		} catch (final MalformedURLException e) {
 			//Si fileName non trouvé, on recherche dans le classPath
-			final URL url = relativeRootClass.getResource(fileName);
-			Assertion.checkNotNull(url, "Impossible de récupérer le fichier [" + fileName + "]");
-			return url;
+			try {
+				final String resourceName = resolveName(fileName, relativeRootClass);
+				final Optional<URI> optUri = relativeRootClass.getModule().getLayer().configuration().findModule(relativeRootClass.getModule().getName()).get().reference().open().find(resourceName);
+				Assertion.checkState(optUri.isPresent(), "Impossible de récupérer le fichier [" + fileName + "]");
+				return optUri.get().toURL();
+			} catch (IOException e1) {
+				throw WrappedException.wrap(e1);
+			}
 		}
 	}
+	
+	/**
+     * Add a package name prefix if the name is not absolute Remove leading "/"
+     * if name is absolute
+     */
+    private String resolveName(String myName, final Class clazz ) {
+    	String name  = myName;
+        if (!name.startsWith("/")) {
+            Class<?> c = clazz;
+            while (c.isArray()) {
+                c = c.getComponentType();
+            }
+            String baseName = c.getPackageName();
+            if (baseName != null && !baseName.isEmpty()) {
+                name = baseName.replace('.', '/') + "/" + name;
+            }
+        } else {
+            name = name.substring(1);
+        }
+        return name;
+    }
 }

@@ -55,22 +55,7 @@ module io.vertigo.commons {
 	exports io.vertigo.commons.plugins.analytics.log to io.vertigo.core;
 	
 	
-	opens io.vertigo.commons to io.vertigo.core;
-	opens io.vertigo.commons.script to io.vertigo.core;
-	opens io.vertigo.commons.analytics to io.vertigo.core;
-	opens io.vertigo.commons.analytics.health to io.vertigo.core, cglib.nodep;
-	opens io.vertigo.commons.analytics.metric to io.vertigo.core;
-	opens io.vertigo.commons.analytics.process to io.vertigo.core, cglib.nodep;
-	opens io.vertigo.commons.daemon to io.vertigo.core, cglib.nodep;
-	opens io.vertigo.commons.codec to io.vertigo.core;
-	opens io.vertigo.commons.node to io.vertigo.core, gson;
-	opens io.vertigo.commons.cache to io.vertigo.core;
-	opens io.vertigo.commons.transaction to io.vertigo.core, cglib.nodep;
-	opens io.vertigo.commons.eventbus to io.vertigo.core, cglib.nodep;
-	opens io.vertigo.commons.peg to io.vertigo.core;
-	opens io.vertigo.commons.script.parser to io.vertigo.core;
-	
-	
+	opens io.vertigo.commons.node to gson;
 	opens io.vertigo.commons.impl.analytics.process to gson; 
 
 	requires c3p0;
