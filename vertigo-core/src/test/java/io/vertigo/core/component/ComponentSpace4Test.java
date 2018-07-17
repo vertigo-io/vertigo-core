@@ -29,6 +29,7 @@ import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 @RunWith(JUnitPlatform.class)
 public final class ComponentSpace4Test {
@@ -39,7 +40,7 @@ public final class ComponentSpace4Test {
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
-				.addModule(ModuleConfig.builder("Started")
+				.addModule(ModuleConfig.builder("Started", AbstractTestCaseJU4.getCoreLookup())
 						.addComponent(StartedManager.class, StartedManagerImpl.class)
 						.build())
 				.addInitializer(StartedManagerInitializer.class)

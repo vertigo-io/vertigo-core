@@ -52,7 +52,7 @@ public final class ComponentSpace2Test extends AbstractTestCaseJU4 {
 	@Override
 	protected AppConfig buildAppConfig() {
 		return AppConfig.builder()
-				.addModule(ModuleConfig.builder("bio")
+				.addModule(ModuleConfig.builder("bio", AbstractTestCaseJU4.getCoreLookup())
 						.addComponent(BioManager.class, BioManagerImpl.class)
 						.addComponent(MathManager.class, MathManagerImpl.class,
 								Param.of("start", "100"))

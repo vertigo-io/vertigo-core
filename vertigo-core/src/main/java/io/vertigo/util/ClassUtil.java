@@ -19,6 +19,7 @@
 package io.vertigo.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -111,6 +112,29 @@ public final class ClassUtil {
 			throw WrappedException.wrap(e, "Unable to instanciate the class {0}", constructor.getDeclaringClass());
 		}
 	}
+	
+	/**
+	 * Création d'une nouvelle instance typée via un constructeur et ses arguments.
+	 *
+	 * @param <J> Type de l'instance retournée
+	 * @param constructor Constructeur
+	 * @param args Arguments de la construction
+	 * @return Nouvelle instance
+	 */
+	public static <J> J newInstance(final Constructor<J> constructor, final Object[] args, final Lookup privateLookup) {
+		Assertion.checkNotNull(constructor);
+		Assertion.checkNotNull(args);
+		//-----
+		try {
+			return (J) privateLookup.unreflectConstructor(constructor).invokeWithArguments(args);
+		} catch (final InvocationTargetException e) {
+			throw WrappedException.wrap(e, "An error has occurred while invoking the constructor on class : {0} ", constructor.getDeclaringClass());
+		} catch (final java.lang.IllegalAccessException e) {
+			throw WrappedException.wrap(e, "The constructor on class {0} is not accessible", constructor.getDeclaringClass());
+		} catch (final Throwable e) {
+			throw WrappedException.wrap(e, "Unable to instanciate the class {0}", constructor.getDeclaringClass());
+		} 
+	}
 
 	/**
 	 * Récupère le constructeur sans paramètres.
@@ -181,6 +205,31 @@ public final class ClassUtil {
 			throw WrappedException.wrap(e, "La classe " + javaClassName + " doit être une sous-class de : " + type.getSimpleName());
 		}
 	}
+	
+	
+
+	/**
+	 * Dynamic invocation of a method on a specific instance.
+	 *
+	 * @param instance Object
+	 * @param method method which is invocated
+	 * @param args Args
+	 * @return value provided as the result by the method
+	 */
+	public static Object invoke(final Object instance, final Method method, final Lookup privateLookup, final Object... args) {
+		Assertion.checkNotNull(instance);
+		Assertion.checkNotNull(method);
+		//-----
+		try {
+			return privateLookup.unreflect(method).bindTo(instance).invokeWithArguments(args);
+		} catch (final IllegalAccessException e) {
+			throw WrappedException.wrap(e, "accès impossible à la méthode : " + method.getName() + " de " + method.getDeclaringClass().getName());
+		} catch (final InvocationTargetException e) {
+			throw WrappedException.wrap(e, "Erreur lors de l'appel de la méthode : {0} de {1}", method.getName(), method.getDeclaringClass().getName());
+		} catch (Throwable t) {
+			throw WrappedException.wrap(t);
+		}
+	}
 
 	/**
 	 * Dynamic invocation of a method on a specific instance.
@@ -223,6 +272,24 @@ public final class ClassUtil {
 			throw WrappedException.wrap(e, "accès impossible au champ : " + field.getName() + " de " + field.getDeclaringClass().getName());
 		}
 	}
+	
+	/**
+	 * Affectation dynamique de la valeur d'un champ (méme privé).
+	 *
+	 * @param instance Objet sur lequel est invoqué la méthode
+	 * @param field Champ concerné
+	 * @param value Nouvelle valeur
+	 */
+	public static void set(final Object instance, final Field field, final Object value, final Lookup privateLookup) {
+		Assertion.checkNotNull(instance);
+		Assertion.checkNotNull(field);
+		//-----
+		try {
+			privateLookup.unreflectVarHandle(field).set(instance, value);
+		} catch (final IllegalAccessException e) {
+			throw WrappedException.wrap(e, "accès impossible au champ : " + field.getName() + " de " + field.getDeclaringClass().getName());
+		}
+	}
 
 	/**
 	 * Récupération dynamique de la valeur d'un champ.
@@ -238,6 +305,25 @@ public final class ClassUtil {
 		try {
 			field.setAccessible(true);
 			return field.get(instance);
+		} catch (final IllegalAccessException e) {
+			throw WrappedException.wrap(e, "accès impossible au champ : " + field.getName() + " de " + field.getDeclaringClass().getName());
+		}
+	}
+	
+	/**
+	 * Récupération dynamique de la valeur d'un champ.
+	 *
+	 * @param instance Objet sur lequel est invoqué la méthode
+	 * @param field Champ concerné
+	 * @return Valeur
+	 */
+	public static Object get(final Object instance, final Field field, final Lookup privateLookup) {
+		Assertion.checkNotNull(instance);
+		Assertion.checkNotNull(field);
+		Assertion.checkNotNull(privateLookup);
+		//-----
+		try {
+			return privateLookup.unreflectVarHandle(field).get(instance);
 		} catch (final IllegalAccessException e) {
 			throw WrappedException.wrap(e, "accès impossible au champ : " + field.getName() + " de " + field.getDeclaringClass().getName());
 		}

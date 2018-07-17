@@ -18,9 +18,12 @@
  */
 package io.vertigo.app.config;
 
+import java.lang.invoke.MethodHandles.Lookup;
+import java.util.function.Function;
+
 import io.vertigo.lang.Builder;
 
-/**
+/**O
  * Defines a module by its features.
  * @author pchretien
  */
@@ -28,7 +31,7 @@ public abstract class Features implements Builder<ModuleConfig> {
 	private final ModuleConfigBuilder moduleConfigBuilder;
 
 	protected Features(final String name) {
-		moduleConfigBuilder = ModuleConfig.builder(name);
+		moduleConfigBuilder = ModuleConfig.builder(name, getLookupProvider());
 	}
 
 	protected abstract void buildFeatures();
@@ -42,5 +45,7 @@ public abstract class Features implements Builder<ModuleConfig> {
 		buildFeatures();
 		return moduleConfigBuilder.build();
 	}
+	
+	public abstract Function<Class, Lookup> getLookupProvider();
 
 }

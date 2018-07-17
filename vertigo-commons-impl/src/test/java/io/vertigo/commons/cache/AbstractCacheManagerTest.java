@@ -24,15 +24,21 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.commons.AbstractTestCaseJU4;
+import io.vertigo.commons.CommonsFeatures;
 
 /**
  *
@@ -50,6 +56,11 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
 
 	public AbstractCacheManagerTest() {
 		maxNbRow = 10000;
+	}
+	
+	@Override
+	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
+		return Map.of("vertigo-commons", getCommonsLookup());
 	}
 
 	public AbstractCacheManagerTest(final int maxNbRow) {

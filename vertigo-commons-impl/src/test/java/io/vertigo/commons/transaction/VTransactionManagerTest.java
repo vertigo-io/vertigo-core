@@ -18,6 +18,10 @@
  */
 package io.vertigo.commons.transaction;
 
+import java.lang.invoke.MethodHandles.Lookup;
+import java.util.Map;
+import java.util.function.Function;
+
 import javax.inject.Inject;
 
 import org.junit.Assert;
@@ -49,6 +53,12 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 	private static String createData() {
 		count++;
 		return "data - [" + count + "]" + String.valueOf(System.currentTimeMillis());
+	}
+	
+	@Override
+	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
+		return Map.of("vertigo-commons", getCommonsLookup(),
+				"myApp", getCommonsLookup());
 	}
 
 	@Override

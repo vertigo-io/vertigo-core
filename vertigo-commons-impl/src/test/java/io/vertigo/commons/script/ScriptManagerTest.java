@@ -21,7 +21,10 @@ package io.vertigo.commons.script;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.invoke.MethodHandles.Lookup;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 
@@ -51,6 +54,11 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 				.add(new ExpressionParameter("prenom", String.class, "jean paul"))
 				.add(new ExpressionParameter("age", Integer.class, 54))
 				.build();
+	}
+	
+	@Override
+	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
+		return Map.of("vertigo-commons", getCommonsLookup());
 	}
 
 	@Test

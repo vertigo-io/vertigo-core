@@ -21,6 +21,7 @@ package io.vertigo.app.config.xml;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,7 @@ import org.junit.runner.RunWith;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.core.component.BioManager;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 @RunWith(JUnitPlatform.class)
 public final class AppConfig2Test {
@@ -37,7 +39,7 @@ public final class AppConfig2Test {
 	public void HomeTest() {
 
 		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(), "bio.xml")
+				.withModules(getClass(), new Properties(), Map.of("bio", AbstractTestCaseJU4.getCoreLookup()), "bio.xml")
 				.build();
 
 		testBioManager(appConfig);
@@ -47,7 +49,7 @@ public final class AppConfig2Test {
 	public void FeatureTest() {
 
 		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(), "bio-features.xml")
+				.withModules(getClass(), new Properties(), Map.of("bio", AbstractTestCaseJU4.getCoreLookup()),  "bio-features.xml")
 				.build();
 
 		testBioManager(appConfig);
@@ -58,7 +60,7 @@ public final class AppConfig2Test {
 	public void nodeTest() {
 
 		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(), "bio-node.xml")
+				.withModules(getClass(), new Properties(), Map.of("bio", AbstractTestCaseJU4.getCoreLookup()), "bio-node.xml")
 				.build();
 
 		testBioManager(appConfig);

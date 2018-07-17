@@ -31,6 +31,7 @@ import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.param.Param;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 @RunWith(JUnitPlatform.class)
 public final class ComponentSpaceTest {
@@ -41,7 +42,7 @@ public final class ComponentSpaceTest {
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
-				.addModule(ModuleConfig.builder("Bio")
+				.addModule(ModuleConfig.builder("Bio", AbstractTestCaseJU4.getCoreLookup())
 						.addComponent(BioManager.class, BioManagerImpl.class)
 						.addComponent(MathManager.class, MathManagerImpl.class,
 								Param.of("start", "100"))
@@ -64,7 +65,7 @@ public final class ComponentSpaceTest {
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
-				.addModule(ModuleConfig.builder("Bio")
+				.addModule(ModuleConfig.builder("Bio", AbstractTestCaseJU4.getCoreLookup())
 						.addComponent(BioManager.class, BioManagerImpl.class)
 						//This plugin DummyPlugin is not used By BioManager !!
 						.addPlugin(DummyPlugin.class)
@@ -89,13 +90,13 @@ public final class ComponentSpaceTest {
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
-				.addModule(ModuleConfig.builder("Bio-core")
+				.addModule(ModuleConfig.builder("Bio-core", AbstractTestCaseJU4.getCoreLookup())
 						.addComponent(MathManager.class, MathManagerImpl.class,
 								Param.of("start", "100"))
 						.addPlugin(MathPlugin.class,
 								Param.of("factor", "20"))
 						.build())
-				.addModule(ModuleConfig.builder("Bio-spe") //This module depends of Bio-core module
+				.addModule(ModuleConfig.builder("Bio-spe", AbstractTestCaseJU4.getCoreLookup()) //This module depends of Bio-core module
 						.addComponent(BioManager.class, BioManagerImpl.class)
 						.build())
 				.build();

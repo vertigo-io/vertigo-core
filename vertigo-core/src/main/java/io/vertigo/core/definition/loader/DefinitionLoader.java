@@ -18,8 +18,10 @@
  */
 package io.vertigo.core.definition.loader;
 
+import java.lang.invoke.MethodHandles.Lookup;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import io.vertigo.app.config.DefinitionProviderConfig;
@@ -67,7 +69,7 @@ public final class DefinitionLoader {
 		//-----
 		return moduleConfigs
 				.stream()
-				.flatMap(moduleConfig -> provide(moduleConfig.getDefinitionProviderConfigs()))
+				.flatMap(moduleConfig -> provide(moduleConfig.getDefinitionProviderConfigs(), moduleConfig.getPrivateLookup()))
 				.map(supplier -> supplier.get(definitionSpace));
 	}
 
@@ -84,16 +86,16 @@ public final class DefinitionLoader {
 				.map(defitionSupplier -> defitionSupplier.get(definitionSpace));
 	}
 
-	private Stream<DefinitionSupplier> provide(final List<DefinitionProviderConfig> definitionProviderConfigs) {
+	private Stream<DefinitionSupplier> provide(final List<DefinitionProviderConfig> definitionProviderConfigs, final Function<Class, Lookup> privateLookupProvider) {
 		return definitionProviderConfigs
 				.stream()
-				.map(this::createDefinitionProvider)
+				.map(providerConfig -> createDefinitionProvider(providerConfig, privateLookupProvider))
 				.flatMap(definitionProvider -> definitionProvider.get(definitionSpace).stream());
 	}
 
-	private DefinitionProvider createDefinitionProvider(final DefinitionProviderConfig definitionProviderConfig) {
+	private DefinitionProvider createDefinitionProvider(final DefinitionProviderConfig definitionProviderConfig, final  Function<Class, Lookup> privateLookupProvider) {
 		final DefinitionProvider definitionProvider = ComponentLoader.createInstance(definitionProviderConfig.getDefinitionProviderClass(), componentSpace, Optional.empty(),
-				definitionProviderConfig.getParams());
+				definitionProviderConfig.getParams(), privateLookupProvider);
 
 		definitionProviderConfig.getDefinitionResourceConfigs()
 				.forEach(definitionProvider::addDefinitionResourceConfig);

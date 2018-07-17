@@ -36,6 +36,7 @@ import io.vertigo.core.component.MathPlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 @RunWith(JUnitPlatform.class)
 public final class AppConfigTest {
@@ -51,7 +52,7 @@ public final class AppConfigTest {
 						Param.of("url", "io/vertigo/app/config/xml/basic-app-config.xml"))
 				.endBoot()
 
-				.addModule(ModuleConfig.builder("bio")
+				.addModule(ModuleConfig.builder("bio", AbstractTestCaseJU4.getCoreLookup())
 						.addComponent(BioManager.class, BioManagerImpl.class)
 						.addComponent(MathManager.class, MathManagerImpl.class,
 								Param.of("start", "${math.test.start}"))

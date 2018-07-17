@@ -18,9 +18,11 @@
  */
 package io.vertigo.app.config;
 
+import java.lang.invoke.MethodHandles.Lookup;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ListBuilder;
@@ -37,6 +39,7 @@ import io.vertigo.util.ListBuilder;
  */
 public final class ModuleConfig {
 	private final String name;
+	private final Function<Class, Lookup> privateLookup;
 	private final List<DefinitionProviderConfig> definitionProviders;
 	private final List<ComponentConfig> components;
 	private final List<PluginConfig> plugins;
@@ -45,12 +48,14 @@ public final class ModuleConfig {
 
 	ModuleConfig(
 			final String name,
+			final Function<Class, Lookup> privateLookup,
 			final List<DefinitionProviderConfig> definitionProviderConfigs,
 			final List<ComponentConfig> componentConfigs,
 			final List<PluginConfig> pluginConfigs,
 			final List<AspectConfig> aspectConfigs,
 			final List<ProxyMethodConfig> proxyMethods) {
 		Assertion.checkArgNotEmpty(name);
+		Assertion.checkNotNull(privateLookup);
 		Assertion.checkNotNull(definitionProviderConfigs);
 		Assertion.checkNotNull(componentConfigs);
 		Assertion.checkNotNull(pluginConfigs);
@@ -58,6 +63,7 @@ public final class ModuleConfig {
 		Assertion.checkNotNull(proxyMethods);
 		//-----
 		this.name = name;
+		this.privateLookup = privateLookup;
 		definitionProviders = Collections.unmodifiableList(new ArrayList<>(definitionProviderConfigs));
 		components = Collections.unmodifiableList(new ArrayList<>(componentConfigs));
 		plugins = Collections.unmodifiableList(new ArrayList<>(pluginConfigs));
@@ -70,8 +76,8 @@ public final class ModuleConfig {
 	 * @param name Name of the module
 	 * @return ModuleConfigBuilder
 	 */
-	public static ModuleConfigBuilder builder(final String name) {
-		return new ModuleConfigBuilder(name);
+	public static ModuleConfigBuilder builder(final String name, final Function<Class, Lookup> privateLookup) {
+		return new ModuleConfigBuilder(name, privateLookup);
 	}
 
 	public List<DefinitionProviderConfig> getDefinitionProviderConfigs() {
@@ -107,6 +113,10 @@ public final class ModuleConfig {
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	public Function<Class, Lookup> getPrivateLookup() {
+		return privateLookup;
 	}
 
 	@Override

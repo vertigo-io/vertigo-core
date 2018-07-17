@@ -18,6 +18,10 @@
  */
 package io.vertigo.commons.analytics.process;
 
+import java.lang.invoke.MethodHandles.Lookup;
+import java.util.Map;
+import java.util.function.Function;
+
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
@@ -50,6 +54,12 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU4 {
 
 	@Inject
 	private TestAnalyticsAspectServices analyticsAspectServices;
+	
+	
+	@Override
+	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
+		return Map.of("vertigo-commons", getCommonsLookup());
+	}
 
 	/**
 	 * Test simple avec deux compteurs.

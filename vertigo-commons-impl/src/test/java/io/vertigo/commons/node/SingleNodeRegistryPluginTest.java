@@ -22,7 +22,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.commons.CommonsFeatures;
 
 @RunWith(JUnitPlatform.class)
 public class SingleNodeRegistryPluginTest extends AbstractNodeManagerTest {

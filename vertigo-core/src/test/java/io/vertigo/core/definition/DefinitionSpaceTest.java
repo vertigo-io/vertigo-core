@@ -54,7 +54,7 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
-				.addModule(ModuleConfig.builder("test")
+				.addModule(ModuleConfig.builder("test", AbstractTestCaseJU4.getCoreLookup())
 						.addDefinitionProvider(DefinitionProviderConfig.builder(TestDefinitionprovider.class)
 								.addParam(Param.of("testParam", "testParamValue"))
 								.addDefinitionResource("type1", "resource1")

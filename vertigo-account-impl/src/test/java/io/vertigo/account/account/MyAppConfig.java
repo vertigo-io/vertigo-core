@@ -29,7 +29,7 @@ import io.vertigo.account.plugins.account.store.text.TextAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;

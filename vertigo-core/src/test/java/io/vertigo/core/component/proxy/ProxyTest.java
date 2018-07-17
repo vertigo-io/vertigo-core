@@ -20,6 +20,10 @@ package io.vertigo.core.component.proxy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.lang.invoke.MethodHandles.Lookup;
+import java.util.Map;
+import java.util.function.Function;
+
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
@@ -33,6 +37,12 @@ import io.vertigo.util.AbstractTestCaseJU4;
 public final class ProxyTest extends AbstractTestCaseJU4 {
 	@Inject
 	private Aggregate aggregatea;
+	
+	@Override
+	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
+		return Map.of("proxies", AbstractTestCaseJU4.getCoreLookup(),
+				"components", AbstractTestCaseJU4.getCoreLookup());
+	}
 
 	@Test
 	public final void testMin() {

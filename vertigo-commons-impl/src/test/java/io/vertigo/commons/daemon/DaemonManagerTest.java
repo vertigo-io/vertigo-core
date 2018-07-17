@@ -21,6 +21,10 @@ package io.vertigo.commons.daemon;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.invoke.MethodHandles.Lookup;
+import java.util.Map;
+import java.util.function.Function;
+
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
@@ -73,6 +77,12 @@ public final class DaemonManagerTest extends AbstractTestCaseJU4 {
 
 		assertTrue(daemonsExecHealthCheck.getMeasure().getStatus() == HealthStatus.GREEN);
 
+	}
+	
+	@Override
+	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
+		return Map.of("vertigo-commons", getCommonsLookup(),
+				"myApp", getCommonsLookup());
 	}
 
 }

@@ -18,7 +18,11 @@
  */
 package io.vertigo.app.config.xml;
 
+import java.lang.invoke.MethodHandles.Lookup;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.xml.sax.Attributes;
@@ -52,6 +56,7 @@ final class XMLModulesHandler extends DefaultHandler {
 	private final AppConfigBuilder appConfigBuilder;
 	//Global Params
 	private final XMLModulesParams params;
+	private final Map<String,Function<Class, Lookup>> privateLookupByModule = new HashMap<>(); 
 
 	private BootConfigBuilder bootConfigBuilder;
 	private ModuleConfigBuilder moduleConfigBuilder;
@@ -60,12 +65,15 @@ final class XMLModulesHandler extends DefaultHandler {
 	private DefinitionProviderConfigBuilder definitionProviderConfigBuilder;
 	private TagName current;
 
-	XMLModulesHandler(final AppConfigBuilder appConfigBuilder, final XMLModulesParams params) {
+	XMLModulesHandler(final AppConfigBuilder appConfigBuilder, final XMLModulesParams params, final Map<String,Function<Class, Lookup>> privateLookupByModule) {
 		Assertion.checkNotNull(appConfigBuilder);
 		Assertion.checkNotNull(params);
+		//for now we have a singlePrivatelookup...
+		Assertion.checkNotNull(privateLookupByModule);
 		//-----
 		this.appConfigBuilder = appConfigBuilder;
 		this.params = params;
+		this.privateLookupByModule.putAll(privateLookupByModule);
 	}
 
 	enum TagName {
@@ -166,7 +174,7 @@ final class XMLModulesHandler extends DefaultHandler {
 			case module:
 				current = TagName.module;
 				final String moduleName = attrs.getValue("name");
-				moduleConfigBuilder = ModuleConfig.builder(moduleName);
+				moduleConfigBuilder = ModuleConfig.builder(moduleName, privateLookupByModule.get(moduleName));
 				break;
 			case component:
 				current = TagName.component;

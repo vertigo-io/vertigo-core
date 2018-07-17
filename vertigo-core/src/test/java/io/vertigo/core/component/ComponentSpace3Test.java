@@ -29,6 +29,7 @@ import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.param.Param;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 @RunWith(JUnitPlatform.class)
 public final class ComponentSpace3Test {
@@ -93,7 +94,7 @@ public final class ComponentSpace3Test {
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
-				.addModule(ModuleConfig.builder("Function")
+				.addModule(ModuleConfig.builder("Function", AbstractTestCaseJU4.getCoreLookup())
 						.addComponent(FunctionManager.class, implClass)
 						.addPlugin(FunctionPlugin.class,
 								Param.of("name", "x+1"),

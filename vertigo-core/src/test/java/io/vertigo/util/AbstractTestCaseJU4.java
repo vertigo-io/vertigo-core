@@ -18,7 +18,12 @@
  */
 package io.vertigo.util;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Properties;
+import java.util.function.Function;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,6 +35,7 @@ import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 import io.vertigo.core.component.di.injector.DIInjector;
+import io.vertigo.lang.WrappedException;
 
 /**
  * Classe parente de tous les TNR associés à vertigo.
@@ -127,8 +133,28 @@ public abstract class AbstractTestCaseJU4 {
 	protected AppConfig buildAppConfig() {
 		//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
 		return new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(), getManagersXmlFileName())
+				.withModules(getClass(), new Properties(), getPrivateLookups(), getManagersXmlFileName())
 				.build();
+	}
+	
+	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
+		return Collections.emptyMap();
+	}
+	
+	public static Function<Class, Lookup> getCoreLookup() {
+		
+		final Function<Class, Lookup> featuresLookup = new Function<>() {
+			@Override
+			public Lookup apply(Class t) {
+				try {
+					return MethodHandles.privateLookupIn(t, MethodHandles.lookup());
+				} catch (IllegalAccessException e) {
+					throw WrappedException.wrap(e);
+				}
+			}
+		
+		};
+		return featuresLookup;
 	}
 
 }

@@ -18,9 +18,11 @@
  */
 package io.vertigo.app.config;
 
+import java.lang.invoke.MethodHandles.Lookup;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import io.vertigo.core.component.Component;
 import io.vertigo.core.component.Plugin;
@@ -49,16 +51,20 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
 	private final List<ProxyMethodConfig> myProxyMethodConfigs = new ArrayList<>();
 	private final List<DefinitionProviderConfig> myDefinitionProviderConfigs = new ArrayList<>();
+	
+	private final Function<Class, Lookup> myPrivateLookup;
 
 	/**
 	 * Constructor.
 	 * @param name Name of the module
 	 */
-	ModuleConfigBuilder(final String name) {
+	ModuleConfigBuilder(final String name, final Function<Class, Lookup> privateLookup) {
 		Assertion.checkArgument(!"boot".equalsIgnoreCase(name), "boot is a reserved name");
 		Assertion.checkArgNotEmpty(name);
+		Assertion.checkNotNull(privateLookup);
 		//-----
 		myName = name;
+		myPrivateLookup = privateLookup;
 	}
 
 	/**
@@ -203,6 +209,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	public ModuleConfig build() {
 		return new ModuleConfig(
 				myName,
+				myPrivateLookup,
 				myDefinitionProviderConfigs,
 				myComponentConfigs,
 				myPluginConfigs,

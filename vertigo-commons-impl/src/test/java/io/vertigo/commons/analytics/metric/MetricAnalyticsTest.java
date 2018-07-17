@@ -39,7 +39,7 @@ public final class MetricAnalyticsTest extends AbstractTestCaseJU4 {
 	@Override
 	protected AppConfig buildAppConfig() {
 		return AppConfig.builder()
-				.addModule(ModuleConfig.builder("test-metric")
+				.addModule(ModuleConfig.builder("test-metric", getCommonsLookup())
 						.addComponent(AnalyticsManager.class, AnalyticsManagerImpl.class)
 						.addComponent(DummyMetricsProvider.class)
 						.build())

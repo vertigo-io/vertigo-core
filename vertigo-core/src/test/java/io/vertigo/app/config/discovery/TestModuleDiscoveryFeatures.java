@@ -18,6 +18,12 @@
  */
 package io.vertigo.app.config.discovery;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
+import java.util.function.Function;
+
+import io.vertigo.lang.WrappedException;
+
 public class TestModuleDiscoveryFeatures extends ModuleDiscoveryFeatures {
 
 	public TestModuleDiscoveryFeatures() {
@@ -27,6 +33,22 @@ public class TestModuleDiscoveryFeatures extends ModuleDiscoveryFeatures {
 	@Override
 	protected String getPackageRoot() {
 		return this.getClass().getPackage().getName();
+	}
+	
+	@Override
+	public Function<Class, Lookup> getLookupProvider() {
+		final Function<Class, Lookup> featuresLookup = new Function<>() {
+			@Override
+			public Lookup apply(Class t) {
+				try {
+					return MethodHandles.privateLookupIn(t, MethodHandles.lookup());
+				} catch (IllegalAccessException e) {
+					throw WrappedException.wrap(e);
+				}
+			}
+			
+		};
+		return featuresLookup;
 	}
 
 }

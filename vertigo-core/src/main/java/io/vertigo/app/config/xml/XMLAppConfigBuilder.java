@@ -19,12 +19,15 @@
 package io.vertigo.app.config.xml;
 
 import java.io.IOException;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,6 +45,8 @@ import io.vertigo.lang.WrappedException;
 public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 	private final AppConfigBuilder appConfigBuilder = AppConfig.builder();
 	
+	private Lookup myLookup;
+	
 	/**
 	 * Begin the boot config of the app.
 	 * @return the bootConfig builder
@@ -58,16 +63,17 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 	*
 	* @return this builder
 	*/
-	public XMLAppConfigBuilder withModules(final Class relativeRootClass, final Properties xmlModulesParams, final String... xmlModulesFileNames) {
+	public XMLAppConfigBuilder withModules(final Class relativeRootClass, final Properties xmlModulesParams, final Map<String, Function<Class, Lookup>> privateLookupByModule, final String... xmlModulesFileNames) {
 		Assertion.checkNotNull(relativeRootClass);
 		Assertion.checkNotNull(xmlModulesParams);
 		Assertion.checkNotNull(xmlModulesFileNames);
+		Assertion.checkNotNull(privateLookupByModule);
 		//-----
 		final List<URL> xmlModulesAsUrls = Stream.of(xmlModulesFileNames)
 				.map(xmlModulesFileName -> createURL(xmlModulesFileName, relativeRootClass))
 				.collect(Collectors.toList());
 
-		XMLModulesParser.parseAll(appConfigBuilder, xmlModulesParams, xmlModulesAsUrls);
+		XMLModulesParser.parseAll(appConfigBuilder, xmlModulesParams, xmlModulesAsUrls, privateLookupByModule);
 		return this;
 	}
 	
@@ -110,6 +116,14 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 				throw WrappedException.wrap(e1);
 			}
 		}
+	}
+	
+	public XMLAppConfigBuilder withLookUp(final Lookup lookup) {
+		Assertion.checkNotNull(lookup);
+		//---
+		myLookup = lookup;
+		return this;
+		
 	}
 	
 	/**

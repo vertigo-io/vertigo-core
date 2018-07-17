@@ -21,6 +21,10 @@ package io.vertigo.app.config.discovery;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.invoke.MethodHandles.Lookup;
+import java.util.Map;
+import java.util.function.Function;
+
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -37,6 +41,11 @@ import io.vertigo.util.AbstractTestCaseJU4;
 */
 @RunWith(JUnitPlatform.class)
 public final class DiscoveryTest extends AbstractTestCaseJU4 {
+	
+	@Override
+	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
+		return Map.of("proxyMethod", AbstractTestCaseJU4.getCoreLookup());
+	}
 
 	@Test
 	public void testComponentSpace() {

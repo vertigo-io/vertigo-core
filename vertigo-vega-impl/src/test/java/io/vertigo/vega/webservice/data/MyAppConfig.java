@@ -26,7 +26,7 @@ import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
-import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.commons.plugins.node.infos.http.HttpNodeInfosPlugin;
 import io.vertigo.core.param.Param;

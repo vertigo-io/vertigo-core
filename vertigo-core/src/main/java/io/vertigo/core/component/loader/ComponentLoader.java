@@ -18,6 +18,7 @@
  */
 package io.vertigo.core.component.loader;
 
+import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,8 +81,10 @@ public final class ComponentLoader {
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
 			registerComponents(paramManagerOpt,
 					moduleConfig.getName(),
-					moduleConfig.getComponentConfigs());
-			registerAspects(moduleConfig.getAspectConfigs());
+					moduleConfig.getComponentConfigs(),
+					moduleConfig.getPrivateLookup());
+			registerAspects(moduleConfig.getAspectConfigs(),
+					moduleConfig.getPrivateLookup());
 			registerProxyMethods(moduleConfig.getProxyMethodConfigs());
 		}
 	}
@@ -92,7 +95,7 @@ public final class ComponentLoader {
 	 * @param moduleName the name of the module
 	 * @param componentConfigs the configs of the components
 	 */
-	public void registerComponents(final Optional<ParamManager> paramManagerOpt, final String moduleName, final List<ComponentConfig> componentConfigs) {
+	public void registerComponents(final Optional<ParamManager> paramManagerOpt, final String moduleName, final List<ComponentConfig> componentConfigs, final Function<Class, Lookup> privateLookup) {
 		Assertion.checkNotNull(componentSpace);
 		Assertion.checkNotNull(paramManagerOpt);
 		Assertion.checkNotNull(moduleName);
@@ -131,7 +134,7 @@ public final class ComponentLoader {
 				//Si il s'agit d'un composant (y compris plugin)
 				final ComponentConfig componentConfig = componentConfigById.get(id);
 				// 2.a On crée le composant avec AOP et autres options (elastic)
-				final Component component = createComponentWithOptions(paramManagerOpt, componentProxyContainer, componentConfig);
+				final Component component = createComponentWithOptions(paramManagerOpt, componentProxyContainer, componentConfig, privateLookup);
 				// 2.b. On enregistre le composant
 				componentSpace.registerComponent(componentConfig.getId(), component);
 			}
@@ -153,11 +156,11 @@ public final class ComponentLoader {
 		}
 	}
 
-	private void registerAspects(final List<AspectConfig> aspectConfigs) {
+	private void registerAspects(final List<AspectConfig> aspectConfigs, final Function<Class, Lookup> privateLookup) {
 		//. We build then register all the aspects
 		aspectConfigs
 				.stream()
-				.map(aspectConfig -> createAspect(componentSpace, aspectConfig))
+				.map(aspectConfig -> createAspect(componentSpace, aspectConfig, privateLookup))
 				.forEach(this::registerAspect);
 	}
 
@@ -168,9 +171,9 @@ public final class ComponentLoader {
 				.forEach(this::registerProxyMethod);
 	}
 
-	private static Aspect createAspect(final Container container, final AspectConfig aspectConfig) {
+	private static Aspect createAspect(final Container container, final AspectConfig aspectConfig,final Function<Class, Lookup> privateLookupProvider) {
 		// création de l'instance du composant
-		final Aspect aspect = DIInjector.newInstance(aspectConfig.getAspectClass(), container);
+		final Aspect aspect = DIInjector.newInstance(aspectConfig.getAspectClass(), container, privateLookupProvider);
 		//---
 		Assertion.checkNotNull(aspect.getAnnotationType());
 		return aspect;
@@ -216,19 +219,21 @@ public final class ComponentLoader {
 	private static <C extends Component> C createInstance(
 			final Container container,
 			final Optional<ParamManager> paramManagerOpt,
-			final ComponentConfig componentConfig) {
-		return (C) createInstance(componentConfig.getImplClass(), container, paramManagerOpt, componentConfig.getParams());
+			final ComponentConfig componentConfig,
+			final Function<Class, Lookup> privateLookupProvider ) {
+		return (C) createInstance(componentConfig.getImplClass(), container, paramManagerOpt, componentConfig.getParams(), privateLookupProvider);
 	}
 
 	//ici
 	private Component createComponentWithOptions(
 			final Optional<ParamManager> paramManagerOpt,
 			final ComponentUnusedKeysContainer componentContainer,
-			final ComponentConfig componentConfig) {
+			final ComponentConfig componentConfig, 
+			final Function<Class, Lookup> privateLookupProvider) {
 		Assertion.checkArgument(!componentConfig.isProxy(), "a no-proxy component is expected");
 		//---
 		// 1. An instance is created
-		final Component instance = createInstance(componentContainer, paramManagerOpt, componentConfig);
+		final Component instance = createInstance(componentContainer, paramManagerOpt, componentConfig, privateLookupProvider);
 
 		//2. AOP , a new instance is created when aspects are injected in the previous instance
 		return injectAspects(instance, componentConfig.getImplClass());
@@ -261,14 +266,20 @@ public final class ComponentLoader {
 			final Class<T> clazz,
 			final Container container,
 			final Optional<ParamManager> paramManagerOpt,
-			final Map<String, String> params) {
+			final Map<String, String> params,
+			final Function<Class, Lookup> privateLookupProvider) {
 		Assertion.checkNotNull(paramManagerOpt);
 		Assertion.checkNotNull(params);
 		// ---
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOpt, params);
 		final Container dualContainer = new ComponentDualContainer(container, paramsContainer);
 		//---
-		final T component = DIInjector.newInstance(clazz, dualContainer);
+		final T component;
+		if (privateLookupProvider == null) {
+			component = DIInjector.newInstance(clazz, dualContainer);
+		} else {
+			component = DIInjector.newInstance(clazz, dualContainer, privateLookupProvider);
+		}
 		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in component '{1}'", paramsContainer.getUnusedKeys(), clazz);
 		return component;
 	}

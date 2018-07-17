@@ -24,7 +24,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.node.registry.redis.RedisNodeRegistryPlugin;
 
 @RunWith(JUnitPlatform.class)

@@ -18,6 +18,7 @@
  */
 package io.vertigo.core.component.aop;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.junit.jupiter.api.Assertions;
@@ -28,6 +29,7 @@ import org.junit.runner.RunWith;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.xml.XMLAppConfigBuilder;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 @RunWith(JUnitPlatform.class)
 public final class Aspect2Test {
@@ -45,7 +47,7 @@ public final class Aspect2Test {
 	private AppConfig buildAppConfig() {
 		//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
 		return new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(), getManagersXmlFileName())
+				.withModules(getClass(), new Properties(), Map.of("components", AbstractTestCaseJU4.getCoreLookup(), "aspects", AbstractTestCaseJU4.getCoreLookup()), getManagersXmlFileName())
 				.build();
 	}
 

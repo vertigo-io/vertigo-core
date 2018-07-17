@@ -42,7 +42,7 @@ public abstract class AbstractNodeManagerTest extends AbstractTestCaseJU4 {
 						.withAppName("nodeTestApp")
 						.withNodeId("nodeTest1")
 						.build())
-				.addModule(ModuleConfig.builder("db")
+				.addModule(ModuleConfig.builder("db", getCommonsLookup())
 						.build());
 	}
 

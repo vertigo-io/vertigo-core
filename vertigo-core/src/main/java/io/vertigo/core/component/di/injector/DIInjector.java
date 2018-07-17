@@ -18,6 +18,7 @@
  */
 package io.vertigo.core.component.di.injector;
 
+import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 
@@ -46,7 +48,7 @@ public final class DIInjector {
 	private DIInjector() {
 		//constructor is protected, Injector contains only static methods
 	}
-
+	
 	/**
 	 * Injection de dépendances.
 	 * Création d'une instance  à partir d'un conteneur de composants déjà intsanciés.
@@ -71,12 +73,45 @@ public final class DIInjector {
 		}
 	}
 
+	/**
+	 * Injection de dépendances.
+	 * Création d'une instance  à partir d'un conteneur de composants déjà intsanciés.
+	 *
+	 * @param <T> Type de l'instance
+	 * @param clazz Classe de l'instance
+	 * @param container Fournisseur de composants
+	 * @return Instance de composants créée.
+	 */
+	public static <T> T newInstance(final Class<T> clazz, final Container container, final Function<Class, Lookup> privateLookupProvider) {
+		Assertion.checkNotNull(clazz);
+		Assertion.checkNotNull(container);
+		Assertion.checkNotNull(privateLookupProvider);
+		//-----
+		//On encapsule la création par un bloc try/ctach afin de préciser le type de composant qui n'a pas pu être créé.
+		try {
+			final T instance = createInstance(clazz, container, privateLookupProvider);
+			injectMembers(instance, container, privateLookupProvider);
+			return instance;
+		} catch (final Exception e) {
+			//Contextualisation de l'exception et des assertions.
+			throw new DIException("Erreur lors de la création du composant de type : '" + clazz.getName() + "'", e);
+		}
+	}
+	
 	private static <T> T createInstance(final Class<T> clazz, final Container container) {
 		//On a un et un seul constructeur public injectable.
 		final Constructor<T> constructor = DIAnnotationUtil.findInjectableConstructor(clazz);
 		//On recherche les paramètres
 		final Object[] constructorParameters = findConstructorParameters(container, constructor);
 		return ClassUtil.newInstance(constructor, constructorParameters);
+	}
+
+	private static <T> T createInstance(final Class<T> clazz, final Container container, final Function<Class, Lookup> privateLookupProvider) {
+		//On a un et un seul constructeur public injectable.
+		final Constructor<T> constructor = DIAnnotationUtil.findInjectableConstructor(clazz);
+		//On recherche les paramètres
+		final Object[] constructorParameters = findConstructorParameters(container, constructor);
+		return ClassUtil.newInstance(constructor, constructorParameters, privateLookupProvider.apply(clazz));
 	}
 
 	/**
@@ -97,6 +132,27 @@ public final class DIInjector {
 			Assertion.when(!field.getType().isPrimitive())
 					.check(() -> null == ClassUtil.get(instance, field), "field '{0}' is already initialized", field);
 			ClassUtil.set(instance, field, injected);
+		}
+	}
+	
+	/**
+	 * Inject members/properties into an instance in a contex defined by a container.
+	 * @param instance Object in which the members/propertis will be injected
+	 * @param container container of all the components that can be injected in the instance
+	 */
+	public static void injectMembers(final Object instance, final Container container, final Function<Class, Lookup> privateLookupProvider) {
+		Assertion.checkNotNull(instance);
+		Assertion.checkNotNull(container);
+		//-----
+		final Collection<Field> fields = ClassUtil.getAllFields(instance.getClass(), Inject.class);
+		for (final Field field : fields) {
+			final DIDependency dependency = new DIDependency(field);
+			final Object injected = getInjected(container, dependency);
+			final Lookup privateLookup = privateLookupProvider.apply(field.getDeclaringClass());
+			//On vérifie que si il s'agit d'un champ non primitif alors ce champs n'avait pas été initialisé
+			Assertion.when(!field.getType().isPrimitive())
+					.check(() -> null == ClassUtil.get(instance, field, privateLookup), "field '{0}' is already initialized", field);
+			ClassUtil.set(instance, field, injected, privateLookup);
 		}
 	}
 

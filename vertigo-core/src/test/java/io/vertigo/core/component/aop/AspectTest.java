@@ -23,6 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.invoke.MethodHandles.Lookup;
+import java.util.Map;
+import java.util.function.Function;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
@@ -36,6 +40,11 @@ public final class AspectTest extends AbstractTestCaseJU4 {
 	private A a;
 	private B b;
 	private C c;
+	
+	@Override
+	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
+		return Map.of("aspects", AbstractTestCaseJU4.getCoreLookup(), "components", AbstractTestCaseJU4.getCoreLookup());
+	}
 
 	@Test
 	public final void testNo() {

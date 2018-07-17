@@ -18,7 +18,10 @@
  */
 package io.vertigo.commons.transaction;
 
+import java.lang.invoke.MethodHandles.Lookup;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 
@@ -43,6 +46,12 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4
 	@Inject
 	private VTransactionManager transactionManager;
 	private SampleDataBase dataBase;
+	
+	@Override
+	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
+		return Map.of("vertigo-commons", getCommonsLookup(),
+				"myApp", getCommonsLookup());
+	}
 
 	@Override
 	protected void doSetUp() {

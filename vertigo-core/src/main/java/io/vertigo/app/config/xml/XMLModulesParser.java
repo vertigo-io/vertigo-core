@@ -20,9 +20,12 @@ package io.vertigo.app.config.xml;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.function.Function;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
@@ -49,25 +52,26 @@ final class XMLModulesParser {
 	/**
 	 * Parser à partir d'une description XML et d'un fichier de propriétés.
 	 */
-	static void parseAll(final AppConfigBuilder appConfigBuilder, final Properties properties, final List<URL> managersURLs) {
+	static void parseAll(final AppConfigBuilder appConfigBuilder, final Properties properties, final List<URL> managersURLs, final Map<String, Function<Class, Lookup>> privateLookupByModule) {
 		Assertion.checkNotNull(appConfigBuilder);
 		Assertion.checkNotNull(managersURLs);
 		Assertion.checkNotNull(properties);
 		//-----
 		final XMLModulesParams params = new XMLModulesParams(properties);
 		for (final URL managersURL : managersURLs) {
-			parse(appConfigBuilder, managersURL, params);
+			parse(appConfigBuilder, managersURL, params, privateLookupByModule);
 		}
 		//-----
 		Assertion.checkArgument(params.unreadProperties().isEmpty(), "Some boot properties are unused {0}; Check they must starts with 'boot.'", params.unreadProperties());
 	}
 
-	private static void parse(final AppConfigBuilder appConfigBuilder, final URL managersURL, final XMLModulesParams params) {
+	private static void parse(final AppConfigBuilder appConfigBuilder, final URL managersURL, final XMLModulesParams params, final Map<String, Function<Class, Lookup>> privateLookupByModule) {
 		Assertion.checkNotNull(appConfigBuilder);
 		Assertion.checkNotNull(managersURL);
+		Assertion.checkNotNull(privateLookupByModule);
 		//-----
 		try {
-			doParse(appConfigBuilder, managersURL, params);
+			doParse(appConfigBuilder, managersURL, params, privateLookupByModule);
 		} catch (final ParserConfigurationException pce) {
 			throw WrappedException.wrap(pce, "Erreur de configuration du parseur (fichier " + managersURL.getPath() + "), lors de l'appel à newSAXParser()");
 		} catch (final SAXException se) {
@@ -77,13 +81,13 @@ final class XMLModulesParser {
 		}
 	}
 
-	private static void doParse(final AppConfigBuilder appConfigBuilder, final URL managersURL, final XMLModulesParams params) throws ParserConfigurationException, SAXException, IOException {
+	private static void doParse(final AppConfigBuilder appConfigBuilder, final URL managersURL, final XMLModulesParams params,final Map<String, Function<Class, Lookup>> privateLookupByModule) throws ParserConfigurationException, SAXException, IOException {
 		//---validation XSD
 		final URL xsd = XMLModulesParser.class.getResource("vertigo_1_0.xsd");
 		XMLUtil.validateXmlByXsd(managersURL, xsd);
 		//---fin validation XSD
 
-		final XMLModulesHandler handler = new XMLModulesHandler(appConfigBuilder, params);
+		final XMLModulesHandler handler = new XMLModulesHandler(appConfigBuilder, params, privateLookupByModule );
 		final SAXParserFactory factory = SAXParserFactory.newInstance();
 		factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 

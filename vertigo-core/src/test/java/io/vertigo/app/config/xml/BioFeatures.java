@@ -18,6 +18,9 @@
  */
 package io.vertigo.app.config.xml;
 
+import java.lang.invoke.MethodHandles.Lookup;
+import java.util.function.Function;
+
 import io.vertigo.app.config.Features;
 import io.vertigo.core.component.BioManager;
 import io.vertigo.core.component.BioManagerImpl;
@@ -25,6 +28,7 @@ import io.vertigo.core.component.MathManager;
 import io.vertigo.core.component.MathManagerImpl;
 import io.vertigo.core.component.MathPlugin;
 import io.vertigo.core.param.Param;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * A feature for the Bio Module.
@@ -35,6 +39,11 @@ public class BioFeatures extends Features {
 
 	public BioFeatures() {
 		super("bio");
+	}
+	
+	@Override
+	public Function<Class, Lookup> getLookupProvider() {
+		return AbstractTestCaseJU4.getCoreLookup();
 	}
 
 	@Override

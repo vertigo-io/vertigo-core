@@ -21,38 +21,6 @@ module io.vertigo.commons {
 	exports io.vertigo.commons.peg;
 	exports io.vertigo.commons.script.parser;
 	
-	exports io.vertigo.commons.impl.transaction.listener to io.vertigo.core;
-	exports io.vertigo.commons.impl.analytics to io.vertigo.core;
-	exports io.vertigo.commons.impl.codec.hash to io.vertigo.core;
-	exports io.vertigo.commons.impl.transaction to io.vertigo.core;
-	exports io.vertigo.commons.impl.node to io.vertigo.core;
-	exports io.vertigo.commons.impl.analytics.metric to io.vertigo.core;
-	exports io.vertigo.commons.impl.eventbus to io.vertigo.core;
-	exports io.vertigo.commons.impl.codec.compression to io.vertigo.core;
-	exports io.vertigo.commons.impl.daemon to io.vertigo.core;
-	exports io.vertigo.commons.impl.analytics.process to io.vertigo.core;
-	exports io.vertigo.commons.impl.script to io.vertigo.core;
-	exports io.vertigo.commons.impl to io.vertigo.core;
-	exports io.vertigo.commons.impl.cache to io.vertigo.core;
-	exports io.vertigo.commons.plugins.node.registry.redis to io.vertigo.core;
-	exports io.vertigo.commons.plugins.script.janino to io.vertigo.core;
-	exports io.vertigo.commons.impl.codec.crypto to io.vertigo.core;
-	exports io.vertigo.commons.impl.connectors.redis to io.vertigo.core;
-	exports io.vertigo.commons.plugins.cache.ehcache to io.vertigo.core;
-	exports io.vertigo.commons.impl.codec.csv to io.vertigo.core;
-	exports io.vertigo.commons.plugins.node.registry.db to io.vertigo.core;
-	exports io.vertigo.commons.impl.codec to io.vertigo.core;
-	exports io.vertigo.commons.plugins.cache.memory to io.vertigo.core;
-	exports io.vertigo.commons.plugins.node.infos.http to io.vertigo.core;
-	exports io.vertigo.commons.plugins.cache.redis to io.vertigo.core;
-	exports io.vertigo.commons.impl.codec.compressedserialization to io.vertigo.core;
-	exports io.vertigo.commons.plugins.node.registry.single to io.vertigo.core;
-	exports io.vertigo.commons.impl.codec.html to io.vertigo.core;
-	exports io.vertigo.commons.impl.codec.hex to io.vertigo.core;
-	exports io.vertigo.commons.impl.analytics.health to io.vertigo.core;
-	exports io.vertigo.commons.impl.codec.base64 to io.vertigo.core;
-	exports io.vertigo.commons.impl.codec.serialization to io.vertigo.core;
-	exports io.vertigo.commons.plugins.analytics.log to io.vertigo.core;
 	
 	
 	opens io.vertigo.commons.node to gson;

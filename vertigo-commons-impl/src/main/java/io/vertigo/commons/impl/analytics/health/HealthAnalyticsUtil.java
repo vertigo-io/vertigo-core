@@ -21,6 +21,7 @@
  */
 package io.vertigo.commons.impl.analytics.health;
 
+import java.lang.invoke.MethodHandles.Lookup;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
@@ -80,13 +81,20 @@ public final class HealthAnalyticsUtil {
 					//2. For each method register a listener
 					// we remove # because it doesn't comply with definition naming rule
 					final String healthCheckDefinitionName = "HCHK_" + StringUtil.camelToConstCase(componentId.replaceAll("#", "")) + "$" + StringUtil.camelToConstCase(method.getName());
+					
+					final Lookup privateLookup = Home.getApp().getConfig().getModuleConfigs()
+					.stream()
+					.filter(moduleConfig -> moduleConfig.getName().equals(featureByComponentId.get(componentId)))
+					.findFirst()
+					.get()
+					.getPrivateLookup().apply(component.getClass());
 					return new HealthCheckDefinition(
 							healthCheckDefinitionName,
 							healthChecked.name(),
 							componentId,
 							featureByComponentId.get(componentId),
 							healthChecked.feature(),
-							() -> (HealthMeasure) ClassUtil.invoke(component, method));
+							() -> (HealthMeasure) ClassUtil.invoke(component, method, privateLookup));
 				})
 				.collect(Collectors.toList());
 

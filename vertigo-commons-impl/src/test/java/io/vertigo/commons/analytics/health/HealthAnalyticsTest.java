@@ -32,8 +32,8 @@ import org.junit.runner.RunWith;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.AbstractTestCaseJU4;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 
@@ -55,7 +55,7 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU4 {
 				.addModule(new CommonsFeatures()
 						.withRedisConnector(redisHost, redisPort, redisDatabase, Optional.empty())
 						.build())
-				.addModule(ModuleConfig.builder("checkers")
+				.addModule(ModuleConfig.builder("checkers", getCommonsLookup())
 						.addComponent(RedisHealthChecker.class)
 						.addComponent(FailedComponentChecker.class)
 						.addComponent(SuccessComponentChecker.class)

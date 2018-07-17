@@ -21,6 +21,10 @@ package io.vertigo.commons.eventbus;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.lang.invoke.MethodHandles.Lookup;
+import java.util.Map;
+import java.util.function.Function;
+
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
@@ -38,6 +42,13 @@ public final class EventBusManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private MySubscriber mySubscriber;
 	private int deadEvents = 0;
+	
+	@Override
+	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
+		return Map.of("vertigo-commons", getCommonsLookup(),
+				"aspects", getCommonsLookup(),
+				"myApp", getCommonsLookup());
+	}
 
 	@Override
 	protected void doSetUp() {

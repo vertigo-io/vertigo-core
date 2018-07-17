@@ -42,7 +42,7 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends
 	@Override
 	protected AppConfig buildAppConfig() {
 		return AppConfig.builder()
-				.addModule(ModuleConfig.builder("commons")
+				.addModule(ModuleConfig.builder("commons", getCommonsLookup())
 						.addComponent(CodecManager.class, CodecManagerImpl.class)
 						.build())
 				.build();
