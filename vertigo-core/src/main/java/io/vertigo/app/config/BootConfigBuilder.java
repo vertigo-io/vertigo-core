@@ -18,10 +18,13 @@
  */
 package io.vertigo.app.config;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.Component;
@@ -36,6 +39,7 @@ import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.resource.ResourceManagerImpl;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
+import io.vertigo.lang.WrappedException;
 
 /**
  * Configuration.
@@ -49,6 +53,8 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	private AopPlugin myAopPlugin = new JavassistAopPlugin(); //By default
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
 	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
+
+	private final Function<Class, Lookup> myPrivateLookupProvider = coreLookupProvider();
 
 	/**
 	 * @param appConfigBuilder Parent AppConfig builder
@@ -139,7 +145,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 */
 	private BootConfigBuilder addComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass, final Param... params) {
 		final ComponentConfig componentConfig = ComponentConfig.builder()
-				.withImpl(implClass)
+				.withImpl(implClass, myPrivateLookupProvider)
 				.withApi(apiClass)
 				.addParams(params)
 				.build();
@@ -154,7 +160,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 * @return this builder
 	 */
 	public BootConfigBuilder addPlugin(final Class<? extends Plugin> pluginImplClass, final Param... params) {
-		return addPlugin(new PluginConfig(pluginImplClass, Arrays.asList(params)));
+		return addPlugin(new PluginConfig(pluginImplClass, myPrivateLookupProvider, Arrays.asList(params)));
 	}
 
 	/**
@@ -183,6 +189,21 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 				myPluginConfigs,
 				myAopPlugin,
 				myVerbose);
+	}
+
+	private static Function<Class, Lookup> coreLookupProvider() {
+		final Function<Class, Lookup> featuresLookup = new Function<>() {
+			@Override
+			public Lookup apply(final Class t) {
+				try {
+					return MethodHandles.privateLookupIn(t, MethodHandles.lookup());
+				} catch (final IllegalAccessException e) {
+					throw WrappedException.wrap(e);
+				}
+			}
+
+		};
+		return featuresLookup;
 	}
 
 }

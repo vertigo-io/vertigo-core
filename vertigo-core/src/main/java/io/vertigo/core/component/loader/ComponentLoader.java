@@ -81,10 +81,8 @@ public final class ComponentLoader {
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
 			registerComponents(paramManagerOpt,
 					moduleConfig.getName(),
-					moduleConfig.getComponentConfigs(),
-					moduleConfig.getPrivateLookup());
-			registerAspects(moduleConfig.getAspectConfigs(),
-					moduleConfig.getPrivateLookup());
+					moduleConfig.getComponentConfigs());
+			registerAspects(moduleConfig.getAspectConfigs());
 			registerProxyMethods(moduleConfig.getProxyMethodConfigs());
 		}
 	}
@@ -95,7 +93,7 @@ public final class ComponentLoader {
 	 * @param moduleName the name of the module
 	 * @param componentConfigs the configs of the components
 	 */
-	public void registerComponents(final Optional<ParamManager> paramManagerOpt, final String moduleName, final List<ComponentConfig> componentConfigs, final Function<Class, Lookup> privateLookup) {
+	public void registerComponents(final Optional<ParamManager> paramManagerOpt, final String moduleName, final List<ComponentConfig> componentConfigs) {
 		Assertion.checkNotNull(componentSpace);
 		Assertion.checkNotNull(paramManagerOpt);
 		Assertion.checkNotNull(moduleName);
@@ -134,7 +132,7 @@ public final class ComponentLoader {
 				//Si il s'agit d'un composant (y compris plugin)
 				final ComponentConfig componentConfig = componentConfigById.get(id);
 				// 2.a On crée le composant avec AOP et autres options (elastic)
-				final Component component = createComponentWithOptions(paramManagerOpt, componentProxyContainer, componentConfig, privateLookup);
+				final Component component = createComponentWithOptions(paramManagerOpt, componentProxyContainer, componentConfig);
 				// 2.b. On enregistre le composant
 				componentSpace.registerComponent(componentConfig.getId(), component);
 			}
@@ -156,11 +154,11 @@ public final class ComponentLoader {
 		}
 	}
 
-	private void registerAspects(final List<AspectConfig> aspectConfigs, final Function<Class, Lookup> privateLookup) {
+	private void registerAspects(final List<AspectConfig> aspectConfigs) {
 		//. We build then register all the aspects
 		aspectConfigs
 				.stream()
-				.map(aspectConfig -> createAspect(componentSpace, aspectConfig, privateLookup))
+				.map(aspectConfig -> createAspect(componentSpace, aspectConfig))
 				.forEach(this::registerAspect);
 	}
 
@@ -171,9 +169,9 @@ public final class ComponentLoader {
 				.forEach(this::registerProxyMethod);
 	}
 
-	private static Aspect createAspect(final Container container, final AspectConfig aspectConfig, final Function<Class, Lookup> privateLookupProvider) {
+	private static Aspect createAspect(final Container container, final AspectConfig aspectConfig) {
 		// création de l'instance du composant
-		final Aspect aspect = DIInjector.newInstance(aspectConfig.getAspectClass(), container, privateLookupProvider);
+		final Aspect aspect = DIInjector.newInstance(aspectConfig.getAspectClass(), container, aspectConfig.getPrivateLookupProvider());
 		//---
 		Assertion.checkNotNull(aspect.getAnnotationType());
 		return aspect;
@@ -219,21 +217,19 @@ public final class ComponentLoader {
 	private static <C extends Component> C createInstance(
 			final Container container,
 			final Optional<ParamManager> paramManagerOpt,
-			final ComponentConfig componentConfig,
-			final Function<Class, Lookup> privateLookupProvider) {
-		return (C) createInstance(componentConfig.getImplClass(), container, paramManagerOpt, componentConfig.getParams(), privateLookupProvider);
+			final ComponentConfig componentConfig) {
+		return (C) createInstance(componentConfig.getImplClass(), container, paramManagerOpt, componentConfig.getParams(), componentConfig.getPrivateLookupProvider());
 	}
 
 	//ici
 	private Component createComponentWithOptions(
 			final Optional<ParamManager> paramManagerOpt,
 			final ComponentUnusedKeysContainer componentContainer,
-			final ComponentConfig componentConfig,
-			final Function<Class, Lookup> privateLookupProvider) {
+			final ComponentConfig componentConfig) {
 		Assertion.checkArgument(!componentConfig.isProxy(), "a no-proxy component is expected");
 		//---
 		// 1. An instance is created
-		final Component instance = createInstance(componentContainer, paramManagerOpt, componentConfig, privateLookupProvider);
+		final Component instance = createInstance(componentContainer, paramManagerOpt, componentConfig);
 
 		//2. AOP , a new instance is created when aspects are injected in the previous instance
 		return injectAspects(instance, componentConfig.getImplClass());

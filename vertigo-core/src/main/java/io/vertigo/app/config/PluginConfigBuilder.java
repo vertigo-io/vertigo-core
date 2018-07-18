@@ -18,9 +18,11 @@
  */
 package io.vertigo.app.config;
 
+import java.lang.invoke.MethodHandles.Lookup;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import io.vertigo.core.component.Plugin;
 import io.vertigo.core.param.Param;
@@ -36,15 +38,18 @@ import io.vertigo.lang.Builder;
 public final class PluginConfigBuilder implements Builder<PluginConfig> {
 	private final Class<? extends Plugin> myPluginImplClass;
 	private final List<Param> myParams = new ArrayList<>();
+	private final Function<Class, Lookup> myPrivateLookupProvider;
 
 	/**
 	 * Constructor.
 	 * @param pluginImplClass impl of the plugin
 	 */
-	PluginConfigBuilder(final Class<? extends Plugin> pluginImplClass) {
+	PluginConfigBuilder(final Class<? extends Plugin> pluginImplClass, final Function<Class, Lookup> privateLookupProvider) {
 		Assertion.checkNotNull(pluginImplClass);
+		Assertion.checkNotNull(privateLookupProvider);
 		//-----
 		myPluginImplClass = pluginImplClass;
+		myPrivateLookupProvider = privateLookupProvider;
 	}
 
 	/**
@@ -76,6 +81,7 @@ public final class PluginConfigBuilder implements Builder<PluginConfig> {
 	public PluginConfig build() {
 		return new PluginConfig(
 				myPluginImplClass,
+				myPrivateLookupProvider,
 				myParams);
 	}
 }

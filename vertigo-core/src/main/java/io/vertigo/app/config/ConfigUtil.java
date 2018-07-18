@@ -48,7 +48,7 @@ final class ConfigUtil {
 			}
 
 			final ComponentConfig componentConfig = ComponentConfig.builder()
-					.withImpl(pluginConfig.getImplClass())
+					.withImpl(pluginConfig.getImplClass(), pluginConfig.getPrivateLookupProvider())
 					.withId(id)
 					.addParams(pluginConfig.getParams())
 					.build();

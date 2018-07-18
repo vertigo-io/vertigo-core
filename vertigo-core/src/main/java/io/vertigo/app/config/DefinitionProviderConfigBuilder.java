@@ -18,9 +18,11 @@
  */
 package io.vertigo.app.config;
 
+import java.lang.invoke.MethodHandles.Lookup;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import io.vertigo.core.definition.DefinitionProvider;
 import io.vertigo.core.param.Param;
@@ -38,7 +40,7 @@ import io.vertigo.lang.Builder;
  */
 public final class DefinitionProviderConfigBuilder implements Builder<DefinitionProviderConfig> {
 	private final Class<? extends DefinitionProvider> myClass;
-
+	private final Function<Class, Lookup> myPrivateLookupProvider;
 	private final List<DefinitionResourceConfig> myDefinitionResourceConfigs = new ArrayList<>();
 	private final List<Param> myParams = new ArrayList<>();
 
@@ -47,10 +49,12 @@ public final class DefinitionProviderConfigBuilder implements Builder<Definition
 	 * @param definitionProviderClass the class of the definitionProvider
 	 */
 
-	DefinitionProviderConfigBuilder(final Class<? extends DefinitionProvider> definitionProviderClass) {
+	DefinitionProviderConfigBuilder(final Class<? extends DefinitionProvider> definitionProviderClass, final Function<Class, Lookup> privateLookupProvider) {
 		Assertion.checkNotNull(definitionProviderClass);
+		Assertion.checkNotNull(privateLookupProvider);
 		//-----
 		myClass = definitionProviderClass;
+		myPrivateLookupProvider = privateLookupProvider;
 	}
 
 	/**
@@ -96,6 +100,7 @@ public final class DefinitionProviderConfigBuilder implements Builder<Definition
 	public DefinitionProviderConfig build() {
 		return new DefinitionProviderConfig(
 				myClass,
+				myPrivateLookupProvider,
 				myParams,
 				myDefinitionResourceConfigs);
 	}

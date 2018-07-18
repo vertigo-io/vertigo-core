@@ -67,13 +67,13 @@ public final class CommonsFeatures extends Features {
 	}
 
 	@Override
-	public Function<Class, Lookup> getLookupProvider() {
+	protected Function<Class, Lookup> getLookupProvider() {
 		final Function<Class, Lookup> featuresLookup = new Function<>() {
 			@Override
-			public Lookup apply(Class t) {
+			public Lookup apply(final Class t) {
 				try {
 					return MethodHandles.privateLookupIn(t, MethodHandles.lookup());
-				} catch (IllegalAccessException e) {
+				} catch (final IllegalAccessException e) {
 					throw WrappedException.wrap(e);
 				}
 			}
@@ -133,7 +133,7 @@ public final class CommonsFeatures extends Features {
 	public CommonsFeatures withRedisConnector(final String host, final int port, final int database, final Optional<String> passwordOpt) {
 		final ComponentConfigBuilder componentConfigBuilder = ComponentConfig
 				.builder()
-				.withImpl(RedisConnector.class)
+				.withImpl(RedisConnector.class, getLookupProvider())
 				.addParam(Param.of("host", host))
 				.addParam(Param.of("port", Integer.toString(port)))
 				.addParam(Param.of("database", Integer.toString(database)));

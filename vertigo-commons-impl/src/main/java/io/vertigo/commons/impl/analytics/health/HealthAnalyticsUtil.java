@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.vertigo.app.Home;
+import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.health.HealthCheckDefinition;
 import io.vertigo.commons.analytics.health.HealthChecked;
@@ -64,9 +65,13 @@ public final class HealthAnalyticsUtil {
 
 		//-- we construct a map of feature by componentId
 		final Map<String, String> featureByComponentId = new HashMap<>();
+		final Map<String, ComponentConfig> componentConfigById = new HashMap<>();
 		Home.getApp().getConfig().getModuleConfigs()
 				.forEach(moduleConfig -> moduleConfig.getComponentConfigs()
-						.forEach(componentConfig -> featureByComponentId.put(componentConfig.getId(), moduleConfig.getName())));
+						.forEach(componentConfig -> {
+							componentConfigById.put(componentId, componentConfig);
+							featureByComponentId.put(componentConfig.getId(), moduleConfig.getName());
+						}));
 		//-----
 		//1. search all methods
 		return Stream.of(aopPlugin.unwrap(component).getClass().getMethods())
@@ -82,12 +87,7 @@ public final class HealthAnalyticsUtil {
 					// we remove # because it doesn't comply with definition naming rule
 					final String healthCheckDefinitionName = "HCHK_" + StringUtil.camelToConstCase(componentId.replaceAll("#", "")) + "$" + StringUtil.camelToConstCase(method.getName());
 
-					final Lookup privateLookup = Home.getApp().getConfig().getModuleConfigs()
-							.stream()
-							.filter(moduleConfig -> moduleConfig.getName().equals(featureByComponentId.get(componentId)))
-							.findFirst()
-							.get()
-							.getPrivateLookup().apply(component.getClass());
+					final Lookup privateLookup = componentConfigById.get(componentId).getPrivateLookupProvider().apply(component.getClass());
 					return new HealthCheckDefinition(
 							healthCheckDefinitionName,
 							healthChecked.name(),

@@ -73,7 +73,17 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return this builder
 	 */
 	public ModuleConfigBuilder addAspect(final Class<? extends Aspect> implClass) {
-		myAspectConfigs.add(new AspectConfig(implClass));
+		myAspectConfigs.add(new AspectConfig(implClass, myPrivateLookup));
+		return this;
+	}
+
+	/**
+	 * Adds an aspect.
+	 * @param implClass Class of the aspect
+	 * @return this builder
+	 */
+	public ModuleConfigBuilder addAspect(final Class<? extends Aspect> implClass, final Function<Class, Lookup> privateLookupProvider) {
+		myAspectConfigs.add(new AspectConfig(implClass, privateLookupProvider));
 		return this;
 	}
 
@@ -110,7 +120,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(params);
 		//-----
 		myDefinitionProviderConfigs.add(
-				DefinitionProviderConfig.builder(definitionProviderClass)
+				DefinitionProviderConfig.builder(definitionProviderClass, myPrivateLookup)
 						.addAllParams(params)
 						.build());
 		return this;
@@ -128,6 +138,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		//---
 		final ComponentConfig componentConfig = ComponentConfig.builder(true)
 				.withApi(apiClass)
+				.withPrivateLookupProvider(myPrivateLookup)
 				.addParams(params)
 				.build();
 		return addComponent(componentConfig);
@@ -144,7 +155,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(params);
 		//---
 		final ComponentConfig componentConfig = ComponentConfig.builder()
-				.withImpl(implClass)
+				.withImpl(implClass, myPrivateLookup)
 				.addParams(params)
 				.build();
 		return addComponent(componentConfig);
@@ -163,7 +174,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(params);
 		//---
 		final ComponentConfig componentConfig = ComponentConfig.builder()
-				.withImpl(implClass)
+				.withImpl(implClass, myPrivateLookup)
 				.withApi(apiClass)
 				.addParams(params)
 				.build();
@@ -201,7 +212,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return this builder
 	 */
 	public ModuleConfigBuilder addPlugin(final Class<? extends Plugin> pluginImplClass, final Param... params) {
-		return this.addPlugin(new PluginConfig(pluginImplClass, Arrays.asList(params)));
+		return this.addPlugin(new PluginConfig(pluginImplClass, myPrivateLookup, Arrays.asList(params)));
 	}
 
 	/** {@inheritDoc} */
@@ -209,7 +220,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	public ModuleConfig build() {
 		return new ModuleConfig(
 				myName,
-				myPrivateLookup,
 				myDefinitionProviderConfigs,
 				myComponentConfigs,
 				myPluginConfigs,

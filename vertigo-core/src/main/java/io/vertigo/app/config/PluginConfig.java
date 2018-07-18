@@ -18,8 +18,10 @@
  */
 package io.vertigo.app.config;
 
+import java.lang.invoke.MethodHandles.Lookup;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import io.vertigo.core.component.Plugin;
 import io.vertigo.core.component.di.DIAnnotationUtil;
@@ -45,6 +47,7 @@ import io.vertigo.util.StringUtil;
  */
 public final class PluginConfig {
 	private final Class<? extends Plugin> implClass;
+	private final Function<Class, Lookup> privateLookupProvider;
 	private final List<Param> params;
 	private final String pluginType;
 
@@ -53,13 +56,16 @@ public final class PluginConfig {
 	 * @param implClass the impl class of the component
 	 * @param params the params
 	 */
-	public PluginConfig(final Class<? extends Plugin> implClass, final List<Param> params) {
+	public PluginConfig(final Class<? extends Plugin> implClass,
+			final Function<Class, Lookup> privateLookupProvider,
+			final List<Param> params) {
 		Assertion.checkNotNull(implClass);
+		Assertion.checkNotNull(privateLookupProvider);
 		Assertion.checkArgument(Plugin.class.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, Plugin.class);
 		Assertion.checkNotNull(params);
 		//-----
 		this.implClass = implClass;
-
+		this.privateLookupProvider = privateLookupProvider;
 		this.params = params;
 		pluginType = StringUtil.first2LowerCase(getType(implClass));
 	}
@@ -69,8 +75,8 @@ public final class PluginConfig {
 	 * @param pluginImplClass impl of the plugin
 	 * @return PluginConfigBuilder
 	 */
-	public static PluginConfigBuilder builder(final Class<? extends Plugin> pluginImplClass) {
-		return new PluginConfigBuilder(pluginImplClass);
+	public static PluginConfigBuilder builder(final Class<? extends Plugin> pluginImplClass, final Function<Class, Lookup> privateLookupProvider) {
+		return new PluginConfigBuilder(pluginImplClass, privateLookupProvider);
 	}
 
 	/**
@@ -85,6 +91,10 @@ public final class PluginConfig {
 	 */
 	public Class<? extends Plugin> getImplClass() {
 		return implClass;
+	}
+
+	public Function<Class, Lookup> getPrivateLookupProvider() {
+		return privateLookupProvider;
 	}
 
 	/**

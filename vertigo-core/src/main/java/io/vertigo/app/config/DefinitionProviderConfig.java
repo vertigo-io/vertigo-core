@@ -18,10 +18,12 @@
  */
 package io.vertigo.app.config;
 
+import java.lang.invoke.MethodHandles.Lookup;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.definition.DefinitionProvider;
@@ -33,18 +35,23 @@ import io.vertigo.lang.Assertion;
  */
 public final class DefinitionProviderConfig {
 	private final Class<? extends DefinitionProvider> definitionProviderClass;
+	private final Function<Class, Lookup> privateLookupProvider;
 	private final Map<String, String> params;
 	private final List<DefinitionResourceConfig> definitionResources;
 
 	DefinitionProviderConfig(
 			final Class<? extends DefinitionProvider> definitionProviderClass,
+
+			final Function<Class, Lookup> privateLookupProvider,
 			final List<Param> params,
 			final List<DefinitionResourceConfig> definitionResourceConfigs) {
 		Assertion.checkNotNull(definitionProviderClass);
+		Assertion.checkNotNull(privateLookupProvider);
 		Assertion.checkNotNull(params);
 		Assertion.checkNotNull(definitionResourceConfigs);
 		//-----
 		this.definitionProviderClass = definitionProviderClass;
+		this.privateLookupProvider = privateLookupProvider;
 		this.params = params
 				.stream()
 				.collect(Collectors.toMap(Param::getName, Param::getValue));
@@ -56,12 +63,16 @@ public final class DefinitionProviderConfig {
 	 * @param definitionProviderClass the class of the definitionProvider
 	 * @return ComponentConfigBuilder
 	 */
-	public static DefinitionProviderConfigBuilder builder(final Class<? extends DefinitionProvider> definitionProviderClass) {
-		return new DefinitionProviderConfigBuilder(definitionProviderClass);
+	public static DefinitionProviderConfigBuilder builder(final Class<? extends DefinitionProvider> definitionProviderClass, final Function<Class, Lookup> privateLookupProvider) {
+		return new DefinitionProviderConfigBuilder(definitionProviderClass, privateLookupProvider);
 	}
 
 	public Class<? extends DefinitionProvider> getDefinitionProviderClass() {
 		return definitionProviderClass;
+	}
+
+	public Function<Class, Lookup> getPrivateLookupProvider() {
+		return privateLookupProvider;
 	}
 
 	public List<DefinitionResourceConfig> getDefinitionResourceConfigs() {

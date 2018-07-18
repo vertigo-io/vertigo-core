@@ -18,6 +18,9 @@
  */
 package io.vertigo.app.config;
 
+import java.lang.invoke.MethodHandles.Lookup;
+import java.util.function.Function;
+
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.lang.Assertion;
 
@@ -31,14 +34,17 @@ import io.vertigo.lang.Assertion;
  */
 public final class AspectConfig {
 	private final Class<? extends Aspect> aspectClass;
+	private final Function<Class, Lookup> privateLookupProvider;
 
 	/**
 	 * Constructor.
 	 */
-	AspectConfig(final Class<? extends Aspect> aspectClass) {
+	AspectConfig(final Class<? extends Aspect> aspectClass, final Function<Class, Lookup> privateLookupProvider) {
 		Assertion.checkNotNull(aspectClass);
+		Assertion.checkNotNull(privateLookupProvider);
 		//-----
 		this.aspectClass = aspectClass;
+		this.privateLookupProvider = privateLookupProvider;
 	}
 
 	/**
@@ -46,6 +52,10 @@ public final class AspectConfig {
 	 */
 	public Class<? extends Aspect> getAspectClass() {
 		return aspectClass;
+	}
+
+	public Function<Class, Lookup> getPrivateLookupProvider() {
+		return privateLookupProvider;
 	}
 
 }

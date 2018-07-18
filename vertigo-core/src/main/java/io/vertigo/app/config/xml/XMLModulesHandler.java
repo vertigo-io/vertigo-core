@@ -57,6 +57,7 @@ final class XMLModulesHandler extends DefaultHandler {
 	//Global Params
 	private final XMLModulesParams params;
 	private final Map<String, Function<Class, Lookup>> privateLookupByModule = new HashMap<>();
+	private String currentModuleName;
 
 	private BootConfigBuilder bootConfigBuilder;
 	private ModuleConfigBuilder moduleConfigBuilder;
@@ -100,6 +101,7 @@ final class XMLModulesHandler extends DefaultHandler {
 			case module:
 				appConfigBuilder.addModule(moduleConfigBuilder.build());
 				moduleConfigBuilder = null;
+				currentModuleName = null;
 				break;
 			case component:
 				moduleConfigBuilder.addComponent(componentConfigBuilder.build());
@@ -163,6 +165,7 @@ final class XMLModulesHandler extends DefaultHandler {
 			case module:
 				current = TagName.module;
 				final String moduleName = attrs.getValue("name");
+				currentModuleName = moduleName;
 				moduleConfigBuilder = ModuleConfig.builder(moduleName, privateLookupByModule.get(moduleName));
 				break;
 			case component:
@@ -171,7 +174,7 @@ final class XMLModulesHandler extends DefaultHandler {
 				final Class<? extends Component> componentImplClass = ClassUtil.classForName(attrs.getValue("class"), Component.class);
 				componentConfigBuilder = ComponentConfig
 						.builder()
-						.withImpl(componentImplClass);
+						.withImpl(componentImplClass, privateLookupByModule.get(currentModuleName));
 				if (componentApi != null) {
 					final Class<?> componentApiClass = resolveInterface(componentApi, componentImplClass);
 					componentConfigBuilder.withApi((Class<? extends Component>) componentApiClass);
@@ -187,7 +190,7 @@ final class XMLModulesHandler extends DefaultHandler {
 			case plugin:
 				current = TagName.plugin;
 				final Class<? extends Plugin> pluginImplClass = ClassUtil.classForName(attrs.getValue("class"), Plugin.class);
-				pluginConfigBuilder = PluginConfig.builder(pluginImplClass);
+				pluginConfigBuilder = PluginConfig.builder(pluginImplClass, privateLookupByModule.get(currentModuleName));
 				break;
 			case proxy:
 				final Class<? extends Component> proxyApiClass = ClassUtil.classForName(attrs.getValue("api"), Component.class);
@@ -197,7 +200,7 @@ final class XMLModulesHandler extends DefaultHandler {
 				current = TagName.provider;
 				final String definitionProviderClassName = attrs.getValue("class");
 				final Class<? extends DefinitionProvider> definitionProviderClass = ClassUtil.classForName(definitionProviderClassName, DefinitionProvider.class);
-				definitionProviderConfigBuilder = DefinitionProviderConfig.builder(definitionProviderClass);
+				definitionProviderConfigBuilder = DefinitionProviderConfig.builder(definitionProviderClass, privateLookupByModule.get(currentModuleName));
 				break;
 			case resource:
 				final String resourceType = attrs.getValue("type");

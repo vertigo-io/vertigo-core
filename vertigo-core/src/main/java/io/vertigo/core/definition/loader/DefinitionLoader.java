@@ -18,10 +18,8 @@
  */
 package io.vertigo.core.definition.loader;
 
-import java.lang.invoke.MethodHandles.Lookup;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import io.vertigo.app.config.DefinitionProviderConfig;
@@ -69,7 +67,7 @@ public final class DefinitionLoader {
 		//-----
 		return moduleConfigs
 				.stream()
-				.flatMap(moduleConfig -> provide(moduleConfig.getDefinitionProviderConfigs(), moduleConfig.getPrivateLookup()))
+				.flatMap(moduleConfig -> provide(moduleConfig.getDefinitionProviderConfigs()))
 				.map(supplier -> supplier.get(definitionSpace));
 	}
 
@@ -86,16 +84,16 @@ public final class DefinitionLoader {
 				.map(defitionSupplier -> defitionSupplier.get(definitionSpace));
 	}
 
-	private Stream<DefinitionSupplier> provide(final List<DefinitionProviderConfig> definitionProviderConfigs, final Function<Class, Lookup> privateLookupProvider) {
+	private Stream<DefinitionSupplier> provide(final List<DefinitionProviderConfig> definitionProviderConfigs) {
 		return definitionProviderConfigs
 				.stream()
-				.map(providerConfig -> createDefinitionProvider(providerConfig, privateLookupProvider))
+				.map(providerConfig -> createDefinitionProvider(providerConfig))
 				.flatMap(definitionProvider -> definitionProvider.get(definitionSpace).stream());
 	}
 
-	private DefinitionProvider createDefinitionProvider(final DefinitionProviderConfig definitionProviderConfig, final Function<Class, Lookup> privateLookupProvider) {
+	private DefinitionProvider createDefinitionProvider(final DefinitionProviderConfig definitionProviderConfig) {
 		final DefinitionProvider definitionProvider = ComponentLoader.createInstance(definitionProviderConfig.getDefinitionProviderClass(), componentSpace, Optional.empty(),
-				definitionProviderConfig.getParams(), privateLookupProvider);
+				definitionProviderConfig.getParams(), definitionProviderConfig.getPrivateLookupProvider());
 
 		definitionProviderConfig.getDefinitionResourceConfigs()
 				.forEach(definitionProvider::addDefinitionResourceConfig);

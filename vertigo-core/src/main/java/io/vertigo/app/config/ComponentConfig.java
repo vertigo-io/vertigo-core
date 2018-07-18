@@ -18,9 +18,11 @@
  */
 package io.vertigo.app.config;
 
+import java.lang.invoke.MethodHandles.Lookup;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.component.Component;
@@ -44,6 +46,7 @@ public final class ComponentConfig {
 	private final boolean proxy;
 	private final Optional<Class<? extends Component>> implClassOpt;
 	private final Optional<Class<? extends Component>> apiClassOpt;
+	private final Function<Class, Lookup> privateLookupProvider;
 	private final Map<String, String> params;
 
 	/**
@@ -57,10 +60,13 @@ public final class ComponentConfig {
 			final boolean proxy,
 			final Optional<Class<? extends Component>> apiClassOpt,
 			final Optional<Class<? extends Component>> implClassOpt,
+			final Function<Class, Lookup> privateLookupProvider,
 			final List<Param> params) {
 		Assertion.checkArgNotEmpty(id);
 		Assertion.checkNotNull(apiClassOpt);
 		Assertion.checkNotNull(implClassOpt);
+		Assertion.checkNotNull(privateLookupProvider);
+		//---
 		if (proxy) {
 			Assertion.checkArgument(!implClassOpt.isPresent(), "When a proxy is declared there is no impl");
 			Assertion.checkArgument(apiClassOpt.isPresent(), "When a proxy is declared, an api is required");
@@ -76,7 +82,7 @@ public final class ComponentConfig {
 		//-----
 		this.apiClassOpt = apiClassOpt;
 		this.implClassOpt = implClassOpt;
-
+		this.privateLookupProvider = privateLookupProvider;
 		this.params = params
 				.stream()
 				.collect(Collectors.toMap(Param::getName, Param::getValue));
@@ -128,6 +134,10 @@ public final class ComponentConfig {
 	 */
 	public boolean isProxy() {
 		return proxy;
+	}
+
+	public Function<Class, Lookup> getPrivateLookupProvider() {
+		return privateLookupProvider;
 	}
 
 	/**

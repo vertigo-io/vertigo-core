@@ -18,10 +18,12 @@
  */
 package io.vertigo.app.config;
 
+import java.lang.invoke.MethodHandles.Lookup;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import io.vertigo.core.component.Component;
 import io.vertigo.core.component.di.DIAnnotationUtil;
@@ -40,6 +42,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	private Class<? extends Component> myApiClass;
 	private Class<? extends Component> myImplClass;
 	private final List<Param> myParams = new ArrayList<>();
+	private Function<Class, Lookup> myPrivateLookupProvider;
 
 	/**
 	 * Constructor of a component config
@@ -53,10 +56,12 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	 * @param implClass the impl class of the component
 	 * @return this builder
 	 */
-	public ComponentConfigBuilder withImpl(final Class<? extends Component> implClass) {
+	public ComponentConfigBuilder withImpl(final Class<? extends Component> implClass, final Function<Class, Lookup> privateLookupProvider) {
 		Assertion.checkNotNull(implClass);
+		Assertion.checkNotNull(privateLookupProvider);
 		//-----
 		myImplClass = implClass;
+		myPrivateLookupProvider = privateLookupProvider;
 		return this;
 	}
 
@@ -68,6 +73,13 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 		Assertion.checkNotNull(apiClass);
 		//-----
 		myApiClass = apiClass;
+		return this;
+	}
+
+	public ComponentConfigBuilder withPrivateLookupProvider(final Function<Class, Lookup> privateLookupProvider) {
+		Assertion.checkNotNull(privateLookupProvider);
+		//-----
+		myPrivateLookupProvider = privateLookupProvider;
 		return this;
 	}
 
@@ -133,6 +145,6 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 				myId = DIAnnotationUtil.buildId(apiClassOpt.orElse(implClassOpt.get()));
 			}
 		}
-		return new ComponentConfig(myId, proxy, apiClassOpt, implClassOpt, myParams);
+		return new ComponentConfig(myId, proxy, apiClassOpt, implClassOpt, myPrivateLookupProvider, myParams);
 	}
 }
