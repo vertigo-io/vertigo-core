@@ -34,7 +34,7 @@ public class TestModuleDiscoveryFeatures extends ModuleDiscoveryFeatures {
 	protected String getPackageRoot() {
 		return this.getClass().getPackage().getName();
 	}
-	
+
 	@Override
 	public Function<Class, Lookup> getLookupProvider() {
 		final Function<Class, Lookup> featuresLookup = new Function<>() {
@@ -46,7 +46,7 @@ public class TestModuleDiscoveryFeatures extends ModuleDiscoveryFeatures {
 					throw WrappedException.wrap(e);
 				}
 			}
-			
+
 		};
 		return featuresLookup;
 	}

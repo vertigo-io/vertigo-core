@@ -56,7 +56,7 @@ final class XMLModulesHandler extends DefaultHandler {
 	private final AppConfigBuilder appConfigBuilder;
 	//Global Params
 	private final XMLModulesParams params;
-	private final Map<String,Function<Class, Lookup>> privateLookupByModule = new HashMap<>(); 
+	private final Map<String, Function<Class, Lookup>> privateLookupByModule = new HashMap<>();
 
 	private BootConfigBuilder bootConfigBuilder;
 	private ModuleConfigBuilder moduleConfigBuilder;
@@ -65,7 +65,7 @@ final class XMLModulesHandler extends DefaultHandler {
 	private DefinitionProviderConfigBuilder definitionProviderConfigBuilder;
 	private TagName current;
 
-	XMLModulesHandler(final AppConfigBuilder appConfigBuilder, final XMLModulesParams params, final Map<String,Function<Class, Lookup>> privateLookupByModule) {
+	XMLModulesHandler(final AppConfigBuilder appConfigBuilder, final XMLModulesParams params, final Map<String, Function<Class, Lookup>> privateLookupByModule) {
 		Assertion.checkNotNull(appConfigBuilder);
 		Assertion.checkNotNull(params);
 		//for now we have a singlePrivatelookup...
@@ -77,22 +77,11 @@ final class XMLModulesHandler extends DefaultHandler {
 	}
 
 	enum TagName {
-		app,
-		config,
-		boot,
-		module,
-		init,
+		app, config, boot, module, init,
 		//---
-		definitions,
-		resource,
-		provider,
+		definitions, resource, provider,
 		//---
-		component,
-		plugin,
-		param,
-		aspect,
-		proxyMethod,
-		proxy,
+		component, plugin, param, aspect, proxyMethod, proxy,
 		//-----
 		initializer,
 		//----

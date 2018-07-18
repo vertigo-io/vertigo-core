@@ -41,7 +41,7 @@ import io.vertigo.util.AbstractTestCaseJU4;
 */
 @RunWith(JUnitPlatform.class)
 public final class DiscoveryTest extends AbstractTestCaseJU4 {
-	
+
 	@Override
 	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
 		return Map.of("proxyMethod", AbstractTestCaseJU4.getCoreLookup());

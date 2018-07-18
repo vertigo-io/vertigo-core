@@ -114,7 +114,7 @@ public final class ModuleConfig {
 	public String getName() {
 		return name;
 	}
-	
+
 	public Function<Class, Lookup> getPrivateLookup() {
 		return privateLookup;
 	}

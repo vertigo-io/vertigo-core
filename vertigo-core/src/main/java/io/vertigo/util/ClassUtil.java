@@ -112,7 +112,7 @@ public final class ClassUtil {
 			throw WrappedException.wrap(e, "Unable to instanciate the class {0}", constructor.getDeclaringClass());
 		}
 	}
-	
+
 	/**
 	 * Création d'une nouvelle instance typée via un constructeur et ses arguments.
 	 *
@@ -133,7 +133,7 @@ public final class ClassUtil {
 			throw WrappedException.wrap(e, "The constructor on class {0} is not accessible", constructor.getDeclaringClass());
 		} catch (final Throwable e) {
 			throw WrappedException.wrap(e, "Unable to instanciate the class {0}", constructor.getDeclaringClass());
-		} 
+		}
 	}
 
 	/**
@@ -205,8 +205,6 @@ public final class ClassUtil {
 			throw WrappedException.wrap(e, "La classe " + javaClassName + " doit être une sous-class de : " + type.getSimpleName());
 		}
 	}
-	
-	
 
 	/**
 	 * Dynamic invocation of a method on a specific instance.
@@ -272,7 +270,7 @@ public final class ClassUtil {
 			throw WrappedException.wrap(e, "accès impossible au champ : " + field.getName() + " de " + field.getDeclaringClass().getName());
 		}
 	}
-	
+
 	/**
 	 * Affectation dynamique de la valeur d'un champ (méme privé).
 	 *
@@ -309,7 +307,7 @@ public final class ClassUtil {
 			throw WrappedException.wrap(e, "accès impossible au champ : " + field.getName() + " de " + field.getDeclaringClass().getName());
 		}
 	}
-	
+
 	/**
 	 * Récupération dynamique de la valeur d'un champ.
 	 *

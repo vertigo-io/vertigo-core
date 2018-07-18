@@ -49,7 +49,7 @@ public final class AppConfig2Test {
 	public void FeatureTest() {
 
 		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(), Map.of("bio", AbstractTestCaseJU4.getCoreLookup()),  "bio-features.xml")
+				.withModules(getClass(), new Properties(), Map.of("bio", AbstractTestCaseJU4.getCoreLookup()), "bio-features.xml")
 				.build();
 
 		testBioManager(appConfig);

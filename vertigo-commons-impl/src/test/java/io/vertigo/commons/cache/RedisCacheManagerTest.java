@@ -33,7 +33,7 @@ public class RedisCacheManagerTest extends AbstractCacheManagerTest {
 	public RedisCacheManagerTest() {
 		super(500);
 	}
-	
+
 	@Override
 	protected String[] getManagersXmlFileName() {
 		return new String[] { "managers-test-redis.xml", };

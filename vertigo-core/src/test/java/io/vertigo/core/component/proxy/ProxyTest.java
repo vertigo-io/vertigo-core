@@ -37,7 +37,7 @@ import io.vertigo.util.AbstractTestCaseJU4;
 public final class ProxyTest extends AbstractTestCaseJU4 {
 	@Inject
 	private Aggregate aggregatea;
-	
+
 	@Override
 	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
 		return Map.of("proxies", AbstractTestCaseJU4.getCoreLookup(),

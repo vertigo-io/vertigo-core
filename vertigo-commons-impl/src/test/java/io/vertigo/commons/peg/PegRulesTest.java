@@ -44,7 +44,7 @@ public class PegRulesTest {
 	}
 
 	@Test
-	public void choice2() throws PegNoMatchFoundException {
+	public void choice2() {
 		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
 			choice.parse("hu", 0);
 		});
@@ -56,7 +56,7 @@ public class PegRulesTest {
 	}
 
 	@Test
-	public void sequence2() throws PegNoMatchFoundException {
+	public void sequence2() {
 		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
 			Assert.assertEquals(Arrays.asList("hi", "ho", "ha"), sequence.parse("hiho", 0).getValue());
 		});
@@ -76,7 +76,7 @@ public class PegRulesTest {
 	}
 
 	@Test
-	public void oneOrMoreUntilTheEnd2() throws PegNoMatchFoundException {
+	public void oneOrMoreUntilTheEnd2() {
 		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
 			oneOrMore.parse("hihihiho", 0);
 		});
@@ -89,7 +89,7 @@ public class PegRulesTest {
 	}
 
 	@Test
-	public void zeroOrMoreUntilTheEnd2() throws PegNoMatchFoundException {
+	public void zeroOrMoreUntilTheEnd2() {
 		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
 			zeroOrMore.parse("hihihiho", 0);
 		});

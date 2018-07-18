@@ -25,7 +25,7 @@ package io.vertigo.commons.cache;
  */
 public class EhCacheManagerTest extends AbstractCacheManagerTest {
 	// Unit tests use abstract class methods
-	
+
 	@Override
 	protected String[] getManagersXmlFileName() {
 		return new String[] { "managers-test-ehcache.xml", };

@@ -40,7 +40,7 @@ public class BioFeatures extends Features {
 	public BioFeatures() {
 		super("bio");
 	}
-	
+
 	@Override
 	public Function<Class, Lookup> getLookupProvider() {
 		return AbstractTestCaseJU4.getCoreLookup();

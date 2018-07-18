@@ -51,7 +51,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
 	private final List<ProxyMethodConfig> myProxyMethodConfigs = new ArrayList<>();
 	private final List<DefinitionProviderConfig> myDefinitionProviderConfigs = new ArrayList<>();
-	
+
 	private final Function<Class, Lookup> myPrivateLookup;
 
 	/**

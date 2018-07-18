@@ -57,17 +57,17 @@ public final class JavassistAopPlugin implements AopPlugin {
 		ProxyFactory.onlyPublicMethods = Boolean.TRUE;
 		f.setInterfaces(intfs);
 		f.setSuperclass(implClass);
-		
+
 		Class c = f.createClass();
 		C proxyInstance;
 		try {
-			proxyInstance = (C)c.getDeclaredConstructor().newInstance();
+			proxyInstance = (C) c.getDeclaredConstructor().newInstance();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
 			throw WrappedException.wrap(e);
 		}
-		((Proxy)proxyInstance).setHandler(createCallBack(instance, joinPoints));
-		
+		((Proxy) proxyInstance).setHandler(createCallBack(instance, joinPoints));
+
 		return proxyInstance;
 	}
 

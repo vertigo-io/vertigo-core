@@ -38,18 +38,18 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 	 *
 	 */
 	public enum Hash {
-		/**
-		 * MD5. Unsure already cracked.
-		 */
-		MD5("MD5"),
-		/**
-		 * SHA1. Unsure attack in progress.
-		 */
-		SHA1("SHA-1"),
-		/**
-		 * SHA256.
-		 */
-		SHA256("SHA-256");
+	/**
+	 * MD5. Unsure already cracked.
+	 */
+	MD5("MD5"),
+	/**
+	 * SHA1. Unsure attack in progress.
+	 */
+	SHA1("SHA-1"),
+	/**
+	 * SHA256.
+	 */
+	SHA256("SHA-256");
 		//-----
 		//the name of the algo
 		private final String algoName;

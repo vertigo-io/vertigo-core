@@ -20,7 +20,8 @@ package io.vertigo.commons.plugins.analytics.log;
 
 import java.util.Collections;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

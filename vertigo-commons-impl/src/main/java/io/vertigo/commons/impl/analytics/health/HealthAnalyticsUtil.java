@@ -81,13 +81,13 @@ public final class HealthAnalyticsUtil {
 					//2. For each method register a listener
 					// we remove # because it doesn't comply with definition naming rule
 					final String healthCheckDefinitionName = "HCHK_" + StringUtil.camelToConstCase(componentId.replaceAll("#", "")) + "$" + StringUtil.camelToConstCase(method.getName());
-					
+
 					final Lookup privateLookup = Home.getApp().getConfig().getModuleConfigs()
-					.stream()
-					.filter(moduleConfig -> moduleConfig.getName().equals(featureByComponentId.get(componentId)))
-					.findFirst()
-					.get()
-					.getPrivateLookup().apply(component.getClass());
+							.stream()
+							.filter(moduleConfig -> moduleConfig.getName().equals(featureByComponentId.get(componentId)))
+							.findFirst()
+							.get()
+							.getPrivateLookup().apply(component.getClass());
 					return new HealthCheckDefinition(
 							healthCheckDefinitionName,
 							healthChecked.name(),

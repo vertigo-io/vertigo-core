@@ -31,13 +31,13 @@ import io.vertigo.lang.Assertion;
 public final class PegWordRule implements PegRule<String> {
 	/** Mode de selection des caractères. */
 	public enum Mode {
-		/** N'accepte que les caractères passés en paramètre. */
-		ACCEPT,
-		/** Accepte tout sauf les caractères passés en paramètre. */
-		REJECT,
-		/** Accepte tout sauf les caractères passés en paramètre.
-		 * Avec la possibilité d'echaper un caractère avec le \ */
-		REJECT_ESCAPABLE
+	/** N'accepte que les caractères passés en paramètre. */
+	ACCEPT,
+	/** Accepte tout sauf les caractères passés en paramètre. */
+	REJECT,
+	/** Accepte tout sauf les caractères passés en paramètre.
+	 * Avec la possibilité d'echaper un caractère avec le \ */
+	REJECT_ESCAPABLE
 	}
 
 	private static final char escapeChar = '\\';

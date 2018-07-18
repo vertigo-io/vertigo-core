@@ -48,7 +48,7 @@ public final class DIInjector {
 	private DIInjector() {
 		//constructor is protected, Injector contains only static methods
 	}
-	
+
 	/**
 	 * Injection de dépendances.
 	 * Création d'une instance  à partir d'un conteneur de composants déjà intsanciés.
@@ -97,7 +97,7 @@ public final class DIInjector {
 			throw new DIException("Erreur lors de la création du composant de type : '" + clazz.getName() + "'", e);
 		}
 	}
-	
+
 	private static <T> T createInstance(final Class<T> clazz, final Container container) {
 		//On a un et un seul constructeur public injectable.
 		final Constructor<T> constructor = DIAnnotationUtil.findInjectableConstructor(clazz);
@@ -134,7 +134,7 @@ public final class DIInjector {
 			ClassUtil.set(instance, field, injected);
 		}
 	}
-	
+
 	/**
 	 * Inject members/properties into an instance in a contex defined by a container.
 	 * @param instance Object in which the members/propertis will be injected

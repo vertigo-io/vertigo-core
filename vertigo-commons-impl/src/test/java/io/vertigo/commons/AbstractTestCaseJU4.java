@@ -62,7 +62,7 @@ public abstract class AbstractTestCaseJU4 {
 	protected final App getApp() {
 		return app;
 	}
- 
+
 	/**
 	 * Tear down de l'environnement de test.
 	 *
@@ -133,16 +133,16 @@ public abstract class AbstractTestCaseJU4 {
 	protected AppConfig buildAppConfig() {
 		//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
 		return new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(),getPrivateLookups() ,getManagersXmlFileName())
+				.withModules(getClass(), new Properties(), getPrivateLookups(), getManagersXmlFileName())
 				.build();
 	}
-	
+
 	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
 		return Collections.emptyMap();
 	}
-	
+
 	protected Function<Class, Lookup> getCommonsLookup() {
-		
+
 		final Function<Class, Lookup> featuresLookup = new Function<>() {
 			@Override
 			public Lookup apply(Class t) {
@@ -152,7 +152,7 @@ public abstract class AbstractTestCaseJU4 {
 					throw WrappedException.wrap(e);
 				}
 			}
-		
+
 		};
 		return featuresLookup;
 	}

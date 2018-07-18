@@ -104,7 +104,7 @@ public final class ParserTest {
 	}
 
 	@Test
-	public void testTermFail() throws PegNoMatchFoundException {
+	public void testTermFail() {
 		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
 			HELLO.parse("Hi", 0);
 		});
@@ -128,7 +128,7 @@ public final class ParserTest {
 	}
 
 	@Test
-	public void testSequenceFail() throws PegNoMatchFoundException {
+	public void testSequenceFail() {
 		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
 			HELLO_WORLD
 					.parse("hello worms", 0);
@@ -152,14 +152,14 @@ public final class ParserTest {
 	}
 
 	@Test
-	public void testFirstOfFail() throws PegNoMatchFoundException {
+	public void testFirstOfFail() {
 		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
 			WORLD_MUSIC.parse("worm", 0);
 		});
 	}
 
 	@Test
-	public void testChoiceEmptyFailed() throws PegNoMatchFoundException {
+	public void testChoiceEmptyFailed() {
 		//An empty list of choices
 		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
 			PegRules.choice()
@@ -247,14 +247,14 @@ public final class ParserTest {
 	}
 
 	@Test
-	public void testManyGlobalFail() throws PegNoMatchFoundException {
+	public void testManyGlobalFail() {
 		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
 			MANY_AB2.parse("a", 0);
 		});
 	}
 
 	@Test
-	public void testManyGlobalFail2() throws PegNoMatchFoundException {
+	public void testManyGlobalFail2() {
 		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
 			MANY_AB2.parse("abc", 0);
 		});
@@ -302,14 +302,14 @@ public final class ParserTest {
 	}
 
 	@Test
-	public void testManyMoreFail() throws PegNoMatchFoundException {
+	public void testManyMoreFail() {
 		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
 			MANY_AB_MORE.parse("", 0);
 		});
 	}
 
 	@Test
-	public void testManyMoreFail2() throws PegNoMatchFoundException {
+	public void testManyMoreFail2() {
 		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
 			MANY_AB_MORE.parse("a", 0);
 		});

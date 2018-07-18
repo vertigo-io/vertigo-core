@@ -46,7 +46,7 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4
 	@Inject
 	private VTransactionManager transactionManager;
 	private SampleDataBase dataBase;
-	
+
 	@Override
 	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
 		return Map.of("vertigo-commons", getCommonsLookup(),
@@ -108,26 +108,26 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4
 	public void testBeforeCommitErrors() {
 		Assertions.assertThrows(ArithmeticException.class, () -> {
 			try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
-	
+
 				final SampleDataBaseConnection sampleDataBaseConnection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
 				sampleDataBaseConnection1.setData("TEST-SYNCHRONIZATION-COMMIT");
-	
+
 				final boolean beforeCommitError = true;
 				final boolean afterCommitError = false;
 				registerBeforeAfterCommit(currentTransaction, new ErronousTransactionResource(null, null, null), beforeCommitError, afterCommitError);
-	
+
 				Assert.assertNull(dataBase.getData());
-	
+
 				currentTransaction.commit();
 			} finally {
 				//not committed
 				Assert.assertNull(dataBase.getData());
-	
+
 				//only beforeCommit before error was proceeded
 				Assert.assertTrue(run1BeforeCommit.get());
 				Assert.assertTrue(run2BeforeCommit.get());
 				Assert.assertFalse(run3BeforeCommit.get());
-	
+
 				//none afterCommit was proceeded
 				Assert.assertFalse(run1AfterCommit.get());
 				Assert.assertFalse(run2AfterCommit.get());
@@ -177,26 +177,26 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4
 	public void testBeforeAfterCommitErrors() {
 		Assertions.assertThrows(ArithmeticException.class, () -> {
 			try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
-	
+
 				final SampleDataBaseConnection sampleDataBaseConnection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
 				sampleDataBaseConnection1.setData("TEST-SYNCHRONIZATION-COMMIT");
-	
+
 				final boolean beforeCommitError = true;
 				final boolean afterCommitError = true;
 				registerBeforeAfterCommit(currentTransaction, new ErronousTransactionResource(null, null, null), beforeCommitError, afterCommitError);
-	
+
 				Assert.assertNull(dataBase.getData());
-	
+
 				currentTransaction.commit();
 			} finally {
 				//not committed
 				Assert.assertNull(dataBase.getData());
-	
+
 				//only beforeCommit before error was proceeded
 				Assert.assertTrue(run1BeforeCommit.get());
 				Assert.assertTrue(run2BeforeCommit.get());
 				Assert.assertFalse(run3BeforeCommit.get());
-	
+
 				//none afterCommit was proceeded
 				Assert.assertFalse(run1AfterCommit.get());
 				Assert.assertFalse(run2AfterCommit.get());
@@ -213,26 +213,26 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4
 	public void testBeforeAfterCommitWithErrorOnCommitResource() {
 		Assertions.assertThrows(Error.class, () -> {
 			try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
-	
+
 				final SampleDataBaseConnection sampleDataBaseConnection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
 				sampleDataBaseConnection1.setData("TEST-SYNCHRONIZATION-COMMIT");
-	
+
 				final boolean beforeCommitError = false;
 				final boolean afterCommitError = false;
 				registerBeforeAfterCommit(currentTransaction, new ErronousTransactionResource(new Error("SpecificException on commit"), null, null), beforeCommitError, afterCommitError);
-	
+
 				Assert.assertNull(dataBase.getData());
-	
+
 				currentTransaction.commit();
 			} finally {
 				//not committed
 				Assert.assertNull(dataBase.getData());
-	
+
 				//all beforeCommit was proceeded
 				Assert.assertTrue(run1BeforeCommit.get());
 				Assert.assertTrue(run2BeforeCommit.get());
 				Assert.assertTrue(run3BeforeCommit.get());
-	
+
 				//none afterCommit was proceeded
 				Assert.assertFalse(run1AfterCommit.get());
 				Assert.assertFalse(run2AfterCommit.get());

@@ -45,7 +45,7 @@ public abstract class Features implements Builder<ModuleConfig> {
 		buildFeatures();
 		return moduleConfigBuilder.build();
 	}
-	
+
 	public abstract Function<Class, Lookup> getLookupProvider();
 
 }

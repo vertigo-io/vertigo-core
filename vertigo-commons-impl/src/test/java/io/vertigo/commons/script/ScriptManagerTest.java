@@ -31,10 +31,9 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.commons.AbstractTestCaseJU4;
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
-import io.vertigo.commons.AbstractTestCaseJU4;
-import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.util.ListBuilder;
 
 /**
@@ -55,7 +54,7 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 				.add(new ExpressionParameter("age", Integer.class, 54))
 				.build();
 	}
-	
+
 	@Override
 	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
 		return Map.of("vertigo-commons", getCommonsLookup());

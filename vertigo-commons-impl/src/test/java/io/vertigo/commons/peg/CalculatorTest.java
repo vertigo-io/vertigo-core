@@ -40,7 +40,7 @@ public final class CalculatorTest {
 	}
 
 	@Test
-	public void testFail() throws PegNoMatchFoundException {
+	public void testFail() {
 		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
 			eval("2 $ 3");
 		});

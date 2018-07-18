@@ -93,7 +93,7 @@ public final class DefinitionLoader {
 				.flatMap(definitionProvider -> definitionProvider.get(definitionSpace).stream());
 	}
 
-	private DefinitionProvider createDefinitionProvider(final DefinitionProviderConfig definitionProviderConfig, final  Function<Class, Lookup> privateLookupProvider) {
+	private DefinitionProvider createDefinitionProvider(final DefinitionProviderConfig definitionProviderConfig, final Function<Class, Lookup> privateLookupProvider) {
 		final DefinitionProvider definitionProvider = ComponentLoader.createInstance(definitionProviderConfig.getDefinitionProviderClass(), componentSpace, Optional.empty(),
 				definitionProviderConfig.getParams(), privateLookupProvider);
 

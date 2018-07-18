@@ -78,7 +78,7 @@ public final class DaemonManagerTest extends AbstractTestCaseJU4 {
 		assertTrue(daemonsExecHealthCheck.getMeasure().getStatus() == HealthStatus.GREEN);
 
 	}
-	
+
 	@Override
 	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
 		return Map.of("vertigo-commons", getCommonsLookup(),

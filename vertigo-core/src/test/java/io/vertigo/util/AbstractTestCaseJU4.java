@@ -62,7 +62,7 @@ public abstract class AbstractTestCaseJU4 {
 	protected final App getApp() {
 		return app;
 	}
- 
+
 	/**
 	 * Tear down de l'environnement de test.
 	 *
@@ -136,13 +136,13 @@ public abstract class AbstractTestCaseJU4 {
 				.withModules(getClass(), new Properties(), getPrivateLookups(), getManagersXmlFileName())
 				.build();
 	}
-	
+
 	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
 		return Collections.emptyMap();
 	}
-	
+
 	public static Function<Class, Lookup> getCoreLookup() {
-		
+
 		final Function<Class, Lookup> featuresLookup = new Function<>() {
 			@Override
 			public Lookup apply(Class t) {
@@ -152,7 +152,7 @@ public abstract class AbstractTestCaseJU4 {
 					throw WrappedException.wrap(e);
 				}
 			}
-		
+
 		};
 		return featuresLookup;
 	}

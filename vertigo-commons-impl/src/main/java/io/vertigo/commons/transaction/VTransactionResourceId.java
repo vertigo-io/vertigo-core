@@ -32,15 +32,15 @@ public final class VTransactionResourceId<R extends VTransactionResource> {
 	 * @author pchretien
 	 */
 	public enum Priority {
-		/**
-		 * Priorité maximale.
-		 * Doit être utilisée pour la ressource critique.
-		 */
-		TOP,
-		/**
-		 * Priorité normale.
-		 */
-		NORMAL
+	/**
+	 * Priorité maximale.
+	 * Doit être utilisée pour la ressource critique.
+	 */
+	TOP,
+	/**
+	 * Priorité normale.
+	 */
+	NORMAL
 	}
 
 	private final Priority priority;

@@ -40,8 +40,7 @@ import io.vertigo.lang.WrappedException;
 final class VTransactionImpl implements VTransactionWritable {
 
 	private enum State {
-		ALIVE,
-		CLOSED;
+		ALIVE, CLOSED;
 
 		/**
 		 * A transaction is alive or closed.

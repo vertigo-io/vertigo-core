@@ -40,7 +40,7 @@ public final class AspectTest extends AbstractTestCaseJU4 {
 	private A a;
 	private B b;
 	private C c;
-	
+
 	@Override
 	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
 		return Map.of("aspects", AbstractTestCaseJU4.getCoreLookup(), "components", AbstractTestCaseJU4.getCoreLookup());

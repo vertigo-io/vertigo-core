@@ -54,8 +54,7 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU4 {
 
 	@Inject
 	private TestAnalyticsAspectServices analyticsAspectServices;
-	
-	
+
 	@Override
 	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
 		return Map.of("vertigo-commons", getCommonsLookup());
@@ -116,14 +115,15 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testFail() {
 		Assertions.assertThrows(IllegalStateException.class, () -> {
-		TestAProcessConnectorPlugin.reset();
-		try {
-			analyticsAspectServices.checkPositive(-1);
-		} catch (final IllegalStateException e) {
-			Assert.assertEquals(1, TestAProcessConnectorPlugin.getCount());
-			Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastcategory());
-			throw e;
-		}});
+			TestAProcessConnectorPlugin.reset();
+			try {
+				analyticsAspectServices.checkPositive(-1);
+			} catch (final IllegalStateException e) {
+				Assert.assertEquals(1, TestAProcessConnectorPlugin.getCount());
+				Assert.assertEquals("test", TestAProcessConnectorPlugin.getLastcategory());
+				throw e;
+			}
+		});
 
 	}
 

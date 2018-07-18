@@ -54,7 +54,7 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 		count++;
 		return "data - [" + count + "]" + String.valueOf(System.currentTimeMillis());
 	}
-	
+
 	@Override
 	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
 		return Map.of("vertigo-commons", getCommonsLookup(),
@@ -139,9 +139,9 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testCommitCommit() {
 		Assertions.assertThrows(Exception.class, () -> {
-		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+			try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 				currentTransaction.commit();
-	
+
 				//L'appel au second commit doit déclencher une exception
 				currentTransaction.commit();
 			}
@@ -157,7 +157,7 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 		Assertions.assertThrows(Exception.class, () -> {
 			try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 				currentTransaction.rollback();
-	
+
 				//L'appel au commit après un rollback doit déclencher une exception
 				currentTransaction.commit();
 			}
@@ -238,7 +238,7 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 				final String rootValue = createData();
 				rootConnection.setData(rootValue);
 				Assert.assertEquals(rootValue, rootConnection.getData());
-	
+
 				try (final VTransactionWritable autonomousTransaction = transactionManager.createAutonomousTransaction()) {
 					final SampleDataBaseConnection connection = obtainDataBaseConnection(dataBase, "test-memory-2");
 					// --- modification de la bdd sur la transaction autonome.
@@ -399,7 +399,7 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 					// --- resource 1
 					final VTransactionResourceId<VTransactionResource> transactionResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Ressource-commit-exception");
 					transactionManager.getCurrentTransaction().addResource(transactionResourceId, sampleTransactionResource);
-	
+
 					currentTransaction.commit();
 				}
 			} catch (final RuntimeException e) {
@@ -426,11 +426,11 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 					// --- resource 1
 					final VTransactionResourceId<VTransactionResource> transactionResource1Id = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Ressource1-commit-exception");
 					transactionManager.getCurrentTransaction().addResource(transactionResource1Id, sampleTransactionResource1);
-	
+
 					// --- resource 2
 					final VTransactionResourceId<VTransactionResource> transactionResource2Id = new VTransactionResourceId<>(VTransactionResourceId.Priority.NORMAL, "Ressource2-commit-exception");
 					transactionManager.getCurrentTransaction().addResource(transactionResource2Id, sampleTransactionResource2);
-	
+
 					currentTransaction.commit();
 				}
 			} catch (final RuntimeException e) {
@@ -439,12 +439,12 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 				Assert.assertTrue("Commit resource1 must be called", sampleTransactionResource1.commitCalled);
 				Assert.assertFalse("Rollback resource1 should not be called", sampleTransactionResource1.rollbackCalled);
 				Assert.assertTrue("Release resource1 must be called", sampleTransactionResource1.releaseCalled);
-	
+
 				Assert.assertFalse("Commit resource2 should not be called", sampleTransactionResource2.commitCalled);
 				Assert.assertTrue("Rollback resource2 must be called", sampleTransactionResource2.rollbackCalled);
 				Assert.assertTrue("Release resource2 must be called", sampleTransactionResource2.releaseCalled);
 			}
-		}, "SpecificException on commit 1" );
+		}, "SpecificException on commit 1");
 	}
 
 	/**

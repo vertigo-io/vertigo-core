@@ -39,14 +39,14 @@ public final class CryptoCodec implements Codec<byte[], byte[]> {
 	 *
 	 */
 	public enum Crypto {
-		/**
-		 * Triple DES.
-		 */
-		TRIPLE_DES("DESede", 168),
-		/**
-		 * AES (256bits inacessible sans security policies :http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html)
-		 */
-		AES("AES", 128);
+	/**
+	 * Triple DES.
+	 */
+	TRIPLE_DES("DESede", 168),
+	/**
+	 * AES (256bits inacessible sans security policies :http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html)
+	 */
+	AES("AES", 128);
 
 		//-----
 		private final String algoName;

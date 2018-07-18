@@ -53,7 +53,7 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends
 	/** {@inheritDoc} */
 	@Override
 	public final void doSetUp() {
-		codec = obtainCodec(codecManager); 
+		codec = obtainCodec(codecManager);
 	}
 
 	/**

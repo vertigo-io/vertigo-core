@@ -81,13 +81,13 @@ final class XMLModulesParser {
 		}
 	}
 
-	private static void doParse(final AppConfigBuilder appConfigBuilder, final URL managersURL, final XMLModulesParams params,final Map<String, Function<Class, Lookup>> privateLookupByModule) throws ParserConfigurationException, SAXException, IOException {
+	private static void doParse(final AppConfigBuilder appConfigBuilder, final URL managersURL, final XMLModulesParams params, final Map<String, Function<Class, Lookup>> privateLookupByModule) throws ParserConfigurationException, SAXException, IOException {
 		//---validation XSD
 		final URL xsd = XMLModulesParser.class.getResource("vertigo_1_0.xsd");
 		XMLUtil.validateXmlByXsd(managersURL, xsd);
 		//---fin validation XSD
 
-		final XMLModulesHandler handler = new XMLModulesHandler(appConfigBuilder, params, privateLookupByModule );
+		final XMLModulesHandler handler = new XMLModulesHandler(appConfigBuilder, params, privateLookupByModule);
 		final SAXParserFactory factory = SAXParserFactory.newInstance();
 		factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 

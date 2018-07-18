@@ -28,9 +28,9 @@ module io.vertigo.core {
 	exports io.vertigo.core.definition;
 	exports io.vertigo.app.config;
 	exports io.vertigo.core.component.proxy;
-	
+
 	opens io.vertigo.core.component.aop to cglib.nodep;
-	
+
 	requires cglib.nodep;
 	requires guava;
 	requires java.desktop;
@@ -41,6 +41,4 @@ module io.vertigo.core {
 	requires reflections;
 	requires javassist;
 
-	
-		
 }

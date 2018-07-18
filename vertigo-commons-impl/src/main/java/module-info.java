@@ -20,11 +20,9 @@ module io.vertigo.commons {
 	exports io.vertigo.commons.eventbus;
 	exports io.vertigo.commons.peg;
 	exports io.vertigo.commons.script.parser;
-	
-	
-	
+
 	opens io.vertigo.commons.node to gson;
-	opens io.vertigo.commons.impl.analytics.process to gson; 
+	opens io.vertigo.commons.impl.analytics.process to gson;
 
 	requires c3p0;
 	requires commons.compiler;

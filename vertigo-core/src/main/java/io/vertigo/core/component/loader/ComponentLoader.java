@@ -171,7 +171,7 @@ public final class ComponentLoader {
 				.forEach(this::registerProxyMethod);
 	}
 
-	private static Aspect createAspect(final Container container, final AspectConfig aspectConfig,final Function<Class, Lookup> privateLookupProvider) {
+	private static Aspect createAspect(final Container container, final AspectConfig aspectConfig, final Function<Class, Lookup> privateLookupProvider) {
 		// création de l'instance du composant
 		final Aspect aspect = DIInjector.newInstance(aspectConfig.getAspectClass(), container, privateLookupProvider);
 		//---
@@ -220,7 +220,7 @@ public final class ComponentLoader {
 			final Container container,
 			final Optional<ParamManager> paramManagerOpt,
 			final ComponentConfig componentConfig,
-			final Function<Class, Lookup> privateLookupProvider ) {
+			final Function<Class, Lookup> privateLookupProvider) {
 		return (C) createInstance(componentConfig.getImplClass(), container, paramManagerOpt, componentConfig.getParams(), privateLookupProvider);
 	}
 
@@ -228,7 +228,7 @@ public final class ComponentLoader {
 	private Component createComponentWithOptions(
 			final Optional<ParamManager> paramManagerOpt,
 			final ComponentUnusedKeysContainer componentContainer,
-			final ComponentConfig componentConfig, 
+			final ComponentConfig componentConfig,
 			final Function<Class, Lookup> privateLookupProvider) {
 		Assertion.checkArgument(!componentConfig.isProxy(), "a no-proxy component is expected");
 		//---

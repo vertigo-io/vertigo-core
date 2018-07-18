@@ -44,9 +44,9 @@ import io.vertigo.lang.WrappedException;
  */
 public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 	private final AppConfigBuilder appConfigBuilder = AppConfig.builder();
-	
+
 	private Lookup myLookup;
-	
+
 	/**
 	 * Begin the boot config of the app.
 	 * @return the bootConfig builder
@@ -76,7 +76,7 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 		XMLModulesParser.parseAll(appConfigBuilder, xmlModulesParams, xmlModulesAsUrls, privateLookupByModule);
 		return this;
 	}
-	
+
 	/**
 	 * @param logConfig Config of logs
 	 * @return  this builder
@@ -100,7 +100,7 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 	 * @param fileName Nom du fichier
 	 * @return URL non null
 	 */
-	private  URL createURL(final String fileName, final Class<?> relativeRootClass) {
+	private URL createURL(final String fileName, final Class<?> relativeRootClass) {
 		Assertion.checkArgNotEmpty(fileName);
 		//-----
 		try {
@@ -117,33 +117,33 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 			}
 		}
 	}
-	
+
 	public XMLAppConfigBuilder withLookUp(final Lookup lookup) {
 		Assertion.checkNotNull(lookup);
 		//---
 		myLookup = lookup;
 		return this;
-		
+
 	}
-	
+
 	/**
-     * Add a package name prefix if the name is not absolute Remove leading "/"
-     * if name is absolute
-     */
-    private String resolveName(String myName, final Class clazz ) {
-    	String name  = myName;
-        if (!name.startsWith("/")) {
-            Class<?> c = clazz;
-            while (c.isArray()) {
-                c = c.getComponentType();
-            }
-            String baseName = c.getPackageName();
-            if (baseName != null && !baseName.isEmpty()) {
-                name = baseName.replace('.', '/') + "/" + name;
-            }
-        } else {
-            name = name.substring(1);
-        }
-        return name;
-    }
+	 * Add a package name prefix if the name is not absolute Remove leading "/"
+	 * if name is absolute
+	 */
+	private String resolveName(String myName, final Class clazz) {
+		String name = myName;
+		if (!name.startsWith("/")) {
+			Class<?> c = clazz;
+			while (c.isArray()) {
+				c = c.getComponentType();
+			}
+			String baseName = c.getPackageName();
+			if (baseName != null && !baseName.isEmpty()) {
+				name = baseName.replace('.', '/') + "/" + name;
+			}
+		} else {
+			name = name.substring(1);
+		}
+		return name;
+	}
 }

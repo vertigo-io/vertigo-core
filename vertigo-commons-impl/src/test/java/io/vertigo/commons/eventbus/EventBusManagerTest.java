@@ -42,7 +42,7 @@ public final class EventBusManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private MySubscriber mySubscriber;
 	private int deadEvents = 0;
-	
+
 	@Override
 	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
 		return Map.of("vertigo-commons", getCommonsLookup(),

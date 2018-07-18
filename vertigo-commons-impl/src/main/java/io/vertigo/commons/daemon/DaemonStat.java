@@ -29,10 +29,10 @@ public interface DaemonStat {
 	 * Daemon execution status.
 	 */
 	enum Status {
-		/** Waiting for next execution. */
-		pending,
-		/** Running. */
-		running;
+	/** Waiting for next execution. */
+	pending,
+	/** Running. */
+	running;
 	}
 
 	/**
