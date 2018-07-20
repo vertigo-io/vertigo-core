@@ -18,16 +18,27 @@
  */
 package io.vertigo.vega.impl.webservice.healthcheck;
 
+import java.util.List;
+
+import javax.inject.Inject;
+
+import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.GET;
+import io.vertigo.vega.webservice.stereotype.PathPrefix;
 import io.vertigo.vega.webservice.stereotype.SessionLess;
 
 /**
  * Healthcheck WebService.
  * @author xdurand (30 mars 2017 18:00:02)
  */
+@PathPrefix("/healthcheck")
 public final class HealthcheckWebServices implements WebServices {
+
+	@Inject
+	private AnalyticsManager analyticsManager;
 
 	/**
 	 * Healthcheck WebService.
@@ -36,9 +47,20 @@ public final class HealthcheckWebServices implements WebServices {
 	@SuppressWarnings("static-method")
 	@SessionLess
 	@AnonymousAccessAllowed
-	@GET("/healthcheck")
+	@GET("/ping")
 	public String healthcheck() {
 		return "OK";
+	}
+
+	/**
+	 * Complete app healthcheck WebService.
+	 * @return a complete health status of the app for all the monitored components.
+	 */
+	@SessionLess
+	@AnonymousAccessAllowed
+	@GET("/complete")
+	public List<HealthCheck> completeHealthcheck() {
+		return analyticsManager.getHealthChecks();
 	}
 
 }
