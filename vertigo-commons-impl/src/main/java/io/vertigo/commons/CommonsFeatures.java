@@ -68,6 +68,10 @@ public final class CommonsFeatures extends Features {
 
 	@Override
 	protected Function<Class, Lookup> getLookupProvider() {
+		return getCommonsLookupProvider();
+	}
+
+	public static Function<Class, Lookup> getCommonsLookupProvider() {
 		final Function<Class, Lookup> featuresLookup = new Function<>() {
 			@Override
 			public Lookup apply(final Class t) {
@@ -96,7 +100,7 @@ public final class CommonsFeatures extends Features {
 
 	/**
 	 * Activates script with a defined plugin.
-	
+
 	 * @param expressionEvaluatorPluginClass the type of plugin to use
 	 * @param params the params
 	 * @return these features

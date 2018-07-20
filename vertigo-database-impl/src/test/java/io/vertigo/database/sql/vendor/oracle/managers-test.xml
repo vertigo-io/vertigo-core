@@ -2,11 +2,11 @@
 <config>
 	<boot locales="fr_FR">
 	</boot>
-	<module name="vertigo-commons">
+	<module name="io.vertigo.commons">
 		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
 	</module>
 
-	<module name="vertigo-database">
+	<module name="io.vertigo.database">
 		<component api="SqlDataBaseManager" class="io.vertigo.database.impl.sql.SqlDataBaseManagerImpl">
 			<plugin class="io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin">
 				<param name="dataBaseClass" value="io.vertigo.database.impl.sql.vendor.oracle.OracleDataBase" />

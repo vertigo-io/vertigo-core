@@ -18,6 +18,7 @@
  */
 package io.vertigo.database.sql;
 
+import java.lang.invoke.MethodHandles.Lookup;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.Instant;
@@ -28,13 +29,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.OptionalInt;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
+import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.data.Movie;
@@ -77,6 +82,12 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 	}
 
 	@Override
+	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
+		return Map.of("io.vertigo.commons", CommonsFeatures.getCommonsLookupProvider(),
+				"io.vertigo.database", DatabaseFeatures.getDatabaseLookupProvider());
+	}
+
+	@Override
 	protected final void doSetUp() throws Exception {
 		final SqlConnection connection = obtainMainConnection();
 		try {
@@ -115,7 +126,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 	public void testConnection() throws Exception {
 		final SqlConnection connection = obtainMainConnection();
 		try {
-			Assert.assertNotNull(connection);
+			Assertions.assertNotNull(connection);
 			connection.commit();
 		} finally {
 			connection.release();
@@ -192,7 +203,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		//----
 		final List<Movie> movies = executeQuery(Movie.class, "select * from movie", null);
 
-		Assert.assertEquals(3, movies.size());
+		Assertions.assertEquals(3, movies.size());
 		movies.forEach(Movies::checkMovie);
 	}
 
@@ -201,7 +212,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		createDatas();
 		//----
 		final List<MovieInfo> movieInfos = executeQuery(MovieInfo.class, "select title from movie", null);
-		Assert.assertEquals(3, movieInfos.size());
+		Assertions.assertEquals(3, movieInfos.size());
 	}
 
 	@Test
@@ -209,9 +220,9 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		createDatas();
 		//----
 		final List<Movie> movies = executeQuery(Movie.class, "select * from movie where id=1", null);
-		Assert.assertEquals(1, movies.size());
+		Assertions.assertEquals(1, movies.size());
 		final Movie movie = movies.get(0);
-		Assert.assertEquals("citizen kane", movie.getTitle());
+		Assertions.assertEquals("citizen kane", movie.getTitle());
 	}
 
 	protected final <O> List<O> executeQuery(final Class<O> dataType, final String sql, final Integer limit) throws SQLException, Exception {
@@ -242,8 +253,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		createDatas();
 		//----
 		final List<Integer> result = executeQuery(Integer.class, "select count(*) from movie", 1);
-		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(3, result.get(0).intValue());
+		Assertions.assertEquals(1, result.size());
+		Assertions.assertEquals(3, result.get(0).intValue());
 	}
 
 	@Test
@@ -251,8 +262,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		createDatas();
 		//----
 		final List<String> result = executeQuery(String.class, "select title from movie where id=1", 1);
-		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(Movies.TITLE_MOVIE_1, result.get(0));
+		Assertions.assertEquals(1, result.size());
+		Assertions.assertEquals(Movies.TITLE_MOVIE_1, result.get(0));
 	}
 
 	@Test
@@ -261,7 +272,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		createDatas();
 		//----
 		final List<String> result = executeQuery(String.class, "select title from movie", null);
-		Assert.assertEquals(3, result.size());
+		Assertions.assertEquals(3, result.size());
 	}
 
 	@Test
@@ -286,7 +297,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		} finally {
 			connection.release();
 		}
-		Assert.assertEquals(2, movies.size());
+		Assertions.assertEquals(2, movies.size());
 	}
 
 	@Test
@@ -308,8 +319,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		} finally {
 			connection.release();
 		}
-		Assert.assertEquals(1, movies.size());
-		Assert.assertEquals(Movies.TITLE_MOVIE_1, movies.get(0).getTitle());
+		Assertions.assertEquals(1, movies.size());
+		Assertions.assertEquals(Movies.TITLE_MOVIE_1, movies.get(0).getTitle());
 	}
 
 	@Test
@@ -352,10 +363,10 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		}
 		//---
 		if (result.isPresent()) {
-			Assert.assertEquals(movies.size(), result.getAsInt());
+			Assertions.assertEquals(movies.size(), result.getAsInt());
 		}
 		final List<Integer> countMovie = executeQuery(Integer.class, "select count(*) from movie", 1);
-		Assert.assertEquals(movies.size(), countMovie.get(0).intValue());
+		Assertions.assertEquals(movies.size(), countMovie.get(0).intValue());
 	}
 
 	//On teste un preparestatement mappé sur un type statique (Class famille)
@@ -389,15 +400,15 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		}
 		//----
 		final List<Integer> result2 = executeQuery(Integer.class, "select count(*) from movie", dataBaseManager.getConnectionProvider("secondary"), 1);
-		Assert.assertEquals(1, result2.size());
-		Assert.assertEquals(4, result2.get(0).intValue());
+		Assertions.assertEquals(1, result2.size());
+		Assertions.assertEquals(4, result2.get(0).intValue());
 		final List<Movie> resultMovie1 = executeQuery(Movie.class, "select * from movie where id=1", dataBaseManager.getConnectionProvider("secondary"), 1);
-		Assert.assertEquals(1, resultMovie1.size());
-		Assert.assertEquals("Star wars", resultMovie1.get(0).getTitle());
+		Assertions.assertEquals(1, resultMovie1.size());
+		Assertions.assertEquals("Star wars", resultMovie1.get(0).getTitle());
 
 		final List<Integer> result1 = executeQuery(Integer.class, "select count(*) from movie", dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), 1);
-		Assert.assertEquals(1, result1.size());
-		Assert.assertEquals(3, result1.get(0).intValue());
+		Assertions.assertEquals(1, result1.size());
+		Assertions.assertEquals(3, result1.get(0).intValue());
 	}
 
 	private void setupSecondary() throws Exception {
@@ -424,7 +435,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 
 		final GenerationMode generationMode = obtainMainConnection().getDataBase().getSqlDialect().getGenerationMode();
 		//We check that we have the right expected mode
-		Assert.assertEquals(getExpectedGenerationMode(), generationMode);
+		Assertions.assertEquals(getExpectedGenerationMode(), generationMode);
 		//---
 		final SqlConnection connection = obtainMainConnection();
 		long generatedKey;
@@ -444,11 +455,11 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 			connection.release();
 		}
 		final List<Integer> result = executeQuery(Integer.class, "select count(*) from movie", null);
-		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(1, result.get(0).intValue());
+		Assertions.assertEquals(1, result.size());
+		Assertions.assertEquals(1, result.get(0).intValue());
 
 		final List<Integer> keys = executeQuery(Integer.class, "select id from movie", null);
-		Assert.assertEquals(1, keys.size());
-		Assert.assertEquals(generatedKey, keys.get(0).intValue());
+		Assertions.assertEquals(1, keys.size());
+		Assertions.assertEquals(generatedKey, keys.get(0).intValue());
 	}
 }

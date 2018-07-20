@@ -30,6 +30,7 @@ import java.util.function.Function;
 
 import javax.inject.Inject;
 
+import io.vertigo.app.Home;
 import io.vertigo.core.component.Container;
 import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.core.component.di.DIDependency;
@@ -129,9 +130,10 @@ public final class DIInjector {
 			final Object injected = getInjected(container, dependency);
 
 			//On vérifie que si il s'agit d'un champ non primitif alors ce champs n'avait pas été initialisé
+			final Lookup privateLookup = Home.getApp().getConfig().getLookupProviderForClass(field.getDeclaringClass()).apply(field.getDeclaringClass());
 			Assertion.when(!field.getType().isPrimitive())
-					.check(() -> null == ClassUtil.get(instance, field), "field '{0}' is already initialized", field);
-			ClassUtil.set(instance, field, injected);
+					.check(() -> null == ClassUtil.get(instance, field, privateLookup), "field '{0}' is already initialized", field);
+			ClassUtil.set(instance, field, injected, privateLookup);
 		}
 	}
 

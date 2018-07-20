@@ -36,6 +36,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import io.vertigo.app.Home;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
@@ -87,7 +88,7 @@ public final class ClassUtil {
 	 */
 	public static <J> J newInstance(final Class<J> clazz) {
 		final Constructor<? extends J> constructor = findConstructor(clazz);
-		return newInstance(constructor, EMPTY_CLAZZ_ARRAY);
+		return newInstance(constructor, EMPTY_CLAZZ_ARRAY, Home.getApp().getConfig().getLookupProviderForClass(clazz).apply(clazz));
 	}
 
 	/**
@@ -224,7 +225,7 @@ public final class ClassUtil {
 			throw WrappedException.wrap(e, "accès impossible à la méthode : " + method.getName() + " de " + method.getDeclaringClass().getName());
 		} catch (final InvocationTargetException e) {
 			throw WrappedException.wrap(e, "Erreur lors de l'appel de la méthode : {0} de {1}", method.getName(), method.getDeclaringClass().getName());
-		} catch (Throwable t) {
+		} catch (final Throwable t) {
 			throw WrappedException.wrap(t);
 		}
 	}
@@ -247,7 +248,7 @@ public final class ClassUtil {
 			throw WrappedException.wrap(e, "accès impossible à la méthode : " + method.getName() + " de " + method.getDeclaringClass().getName());
 		} catch (final InvocationTargetException e) {
 			throw WrappedException.wrap(e, "Erreur lors de l'appel de la méthode : {0} de {1}", method.getName(), method.getDeclaringClass().getName());
-		} catch (Throwable t) {
+		} catch (final Throwable t) {
 			throw t;
 		}
 	}

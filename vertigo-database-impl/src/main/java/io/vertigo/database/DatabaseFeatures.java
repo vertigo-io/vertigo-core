@@ -18,11 +18,16 @@
  */
 package io.vertigo.database;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
+import java.util.function.Function;
+
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.database.impl.sql.SqlConnectionProviderPlugin;
 import io.vertigo.database.impl.sql.SqlDataBaseManagerImpl;
 import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.lang.WrappedException;
 
 /**
  * Defines database features.
@@ -36,6 +41,26 @@ public final class DatabaseFeatures extends Features {
 	 */
 	public DatabaseFeatures() {
 		super("database");
+	}
+
+	@Override
+	protected Function<Class, Lookup> getLookupProvider() {
+		return getDatabaseLookupProvider();
+	}
+
+	public static Function<Class, Lookup> getDatabaseLookupProvider() {
+		final Function<Class, Lookup> featuresLookup = new Function<>() {
+			@Override
+			public Lookup apply(final Class t) {
+				try {
+					return MethodHandles.privateLookupIn(t, MethodHandles.lookup());
+				} catch (final IllegalAccessException e) {
+					throw WrappedException.wrap(e);
+				}
+			}
+
+		};
+		return featuresLookup;
 	}
 
 	/**
@@ -61,10 +86,11 @@ public final class DatabaseFeatures extends Features {
 	}
 
 	/**
-
+	
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
 		//
 	}
+
 }

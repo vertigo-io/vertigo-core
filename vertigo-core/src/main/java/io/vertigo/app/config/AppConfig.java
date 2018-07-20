@@ -19,11 +19,16 @@
 package io.vertigo.app.config;
 
 import java.io.PrintStream;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 
 /**
  * The AppConfig class defines the config.
@@ -37,6 +42,8 @@ public final class AppConfig {
 	private final List<ModuleConfig> modules;
 	private final List<ComponentInitializerConfig> initializers;
 	private final NodeConfig nodeConfig;
+	private final Map<String, Function<Class, Lookup>> lookupByModule = new HashMap<>();
+	private final Map<String, Function<Class, Lookup>> lookupByComponent = new HashMap<>();
 
 	AppConfig(
 			final BootConfig bootConfig,
@@ -52,6 +59,13 @@ public final class AppConfig {
 		modules = Collections.unmodifiableList(new ArrayList<>(moduleConfigs));
 		initializers = Collections.unmodifiableList(new ArrayList<>(componentInitializerConfigs));
 		this.nodeConfig = nodeConfig;
+
+		moduleConfigs.stream()
+				.forEach(moduleConfig -> lookupByModule.put(moduleConfig.getName(), moduleConfig.getPrivateLookup()));
+
+		moduleConfigs.stream()
+				.flatMap(moduleConfig -> moduleConfig.getComponentConfigs().stream())
+				.forEach(componentConfig -> lookupByComponent.put(componentConfig.getImplClass().getName(), componentConfig.getPrivateLookupProvider()));
 	}
 
 	/**
@@ -91,6 +105,20 @@ public final class AppConfig {
 	 */
 	public NodeConfig getNodeConfig() {
 		return nodeConfig;
+	}
+
+	public Function<Class, Lookup> getLookupProviderForClass(final Class clazz) {
+		if (lookupByComponent.containsKey(clazz.getName())) {
+			return lookupByComponent.get(clazz.getName());
+		}
+		final String module = lookupByModule.keySet()
+				.stream()
+				.filter(moduleName -> clazz.getName().startsWith(moduleName))
+				.findFirst()// there should be only one according to the java module specification
+				.orElseThrow(() -> new VSystemException("Unable to find the module corresponding to the class : " + clazz.getName()));
+
+		return lookupByModule.get(module);
+
 	}
 
 	//=========================================================================

@@ -22,10 +22,12 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import io.vertigo.app.Home;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;
@@ -56,12 +58,13 @@ public final class BeanUtil {
 		Assertion.checkNotNull(propertyName);
 		Assertion.checkArgument(propertyName.indexOf('.') == -1, "the dot notation is forbidden");
 		//-----
+		final Lookup privateLookup = Home.getApp().getConfig().getLookupProviderForClass(object.getClass()).apply(object.getClass());
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method readMethod = pd.getReadMethod();
 		if (readMethod == null) {
 			throw new VSystemException("no getter found for property '{0}' on class '{1}'", propertyName, object.getClass().getName());
 		}
-		return ClassUtil.invoke(object, readMethod);
+		return ClassUtil.invoke(object, readMethod, privateLookup);
 	}
 
 	/**
@@ -76,12 +79,13 @@ public final class BeanUtil {
 		Assertion.checkNotNull(propertyName);
 		Assertion.checkArgument(propertyName.indexOf('.') == -1, "the dot notation is forbidden");
 		//-----
+		final Lookup privateLookup = Home.getApp().getConfig().getLookupProviderForClass(object.getClass()).apply(object.getClass());
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method writeMethod = pd.getWriteMethod();
 		if (writeMethod == null) {
 			throw new VSystemException("no setter found for property '{0}' on class '{1}'", propertyName, object.getClass().getName());
 		}
-		ClassUtil.invoke(object, writeMethod, value);
+		ClassUtil.invoke(object, writeMethod, privateLookup, value);
 	}
 
 	/**

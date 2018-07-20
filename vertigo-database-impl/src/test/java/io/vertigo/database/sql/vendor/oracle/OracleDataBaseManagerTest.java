@@ -18,12 +18,12 @@
  */
 package io.vertigo.database.sql.vendor.oracle;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
 import io.vertigo.database.sql.AbstractSqlDataBaseManagerTest;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 
-@Ignore
+@Disabled
 public final class OracleDataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
 	@Override
 	protected String createTableMovie() {

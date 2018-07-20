@@ -220,6 +220,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	public ModuleConfig build() {
 		return new ModuleConfig(
 				myName,
+				myPrivateLookup,
 				myDefinitionProviderConfigs,
 				myComponentConfigs,
 				myPluginConfigs,
