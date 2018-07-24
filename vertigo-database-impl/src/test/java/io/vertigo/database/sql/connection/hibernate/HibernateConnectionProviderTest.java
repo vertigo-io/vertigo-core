@@ -30,7 +30,7 @@ import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.statement.SqlStatement;
-import io.vertigo.util.AbstractTestCaseJU4;
+import io.vertigo.database.AbstractTestCaseJU4;
 
 public final class HibernateConnectionProviderTest extends AbstractTestCaseJU4 {
 

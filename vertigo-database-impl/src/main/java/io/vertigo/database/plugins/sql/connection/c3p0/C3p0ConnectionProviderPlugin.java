@@ -57,7 +57,7 @@ public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionPro
 			@Named("dataBaseClass") final String dataBaseClass,
 			@Named("jdbcDriver") final String jdbcDriver,
 			@Named("jdbcUrl") final String jdbcUrl) {
-		super(name.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), ClassUtil.newInstance(dataBaseClass, SqlDataBase.class));
+		super(name.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), ClassUtil.newInstanceSpecial(dataBaseClass, SqlDataBase.class));
 		Assertion.checkNotNull(jdbcUrl);
 		Assertion.checkNotNull(jdbcDriver);
 		//-----

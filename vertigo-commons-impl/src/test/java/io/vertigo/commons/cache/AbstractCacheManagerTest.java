@@ -57,7 +57,7 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
 
 	@Override
 	protected Map<String, Function<Class, Lookup>> getPrivateLookups() {
-		return Map.of("vertigo-commons", getCommonsLookup());
+		return Map.of("io.vertigo.commons", getCommonsLookup());
 	}
 
 	public AbstractCacheManagerTest(final int maxNbRow) {

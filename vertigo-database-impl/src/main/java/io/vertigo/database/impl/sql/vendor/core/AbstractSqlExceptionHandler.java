@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.locale.MessageKey;
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.database.impl.sql.Resources;
+import io.vertigo.database.impl.sql.i18n.Resources;
 import io.vertigo.database.sql.vendor.SqlExceptionHandler;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VUserException;

@@ -19,6 +19,7 @@
 package io.vertigo.util;
 
 import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -63,7 +64,7 @@ public final class ClassUtil {
 	 */
 	public static Object newInstance(final String javaClassName) {
 		final Class<?> javaClass = classForName(javaClassName);
-		return newInstance(javaClass);
+		return newInstance(javaClass, MethodHandles.lookup());
 	}
 
 	/**
@@ -76,7 +77,44 @@ public final class ClassUtil {
 	 */
 	public static <J> J newInstance(final String javaClassName, final Class<J> type) {
 		final Class<? extends J> javaClass = classForName(javaClassName, type);
-		return newInstance(javaClass);
+		return newInstance(javaClass, MethodHandles.lookup());
+	}
+
+	/**
+	 * Création d'une nouvelle instance typée via un nom de classe (constructeur vide).
+	 *
+	 * @param <J> Type de l'instance retournée
+	 * @param javaClassName Nom de la classe
+	 * @param  type Type retourné
+	 * @return Nouvelle instance
+	 */
+	public static <J> J newInstanceSpecial(final String javaClassName, final Class<J> type) {
+		final Class<? extends J> javaClass = classForName(javaClassName, type);
+		return newInstance(javaClass, Home.getApp().getConfig().getLookupProviderForClass(javaClass).apply(javaClass));
+	}
+
+	/**
+	 * Création d'une nouvelle instance typée via un nom de classe (constructeur vide).
+	 *
+	 * @param <J> Type de l'instance retournée
+	 * @param javaClassName Nom de la classe
+	 * @param  type Type retourné
+	 * @return Nouvelle instance
+	 */
+	public static <J> J newInstanceSpecial(final Class<? extends J> javaClass) {
+		return newInstance(javaClass, Home.getApp().getConfig().getLookupProviderForClass(javaClass).apply(javaClass));
+	}
+
+	/**
+	 * Création d'une nouvelle instance typée via une classe (constructeur vide).
+	 *
+	 * @param <J> Type de l'instance retournée
+	 * @param clazz Classe
+	 * @return Nouvelle instance
+	 */
+	public static <J> J newInstance(final Class<J> clazz, final Lookup privateLookup) {
+		final Constructor<? extends J> constructor = findConstructor(clazz);
+		return newInstance(constructor, EMPTY_CLAZZ_ARRAY, privateLookup);
 	}
 
 	/**
@@ -87,8 +125,7 @@ public final class ClassUtil {
 	 * @return Nouvelle instance
 	 */
 	public static <J> J newInstance(final Class<J> clazz) {
-		final Constructor<? extends J> constructor = findConstructor(clazz);
-		return newInstance(constructor, EMPTY_CLAZZ_ARRAY, Home.getApp().getConfig().getLookupProviderForClass(clazz).apply(clazz));
+		return newInstance(clazz, MethodHandles.lookup());
 	}
 
 	/**
@@ -541,4 +578,5 @@ public final class ClassUtil {
 		//On abaisse la première lettre
 		return StringUtil.first2LowerCase(property);
 	}
+
 }

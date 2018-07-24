@@ -20,6 +20,8 @@ package io.vertigo.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.lang.invoke.MethodHandles;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
@@ -47,7 +49,7 @@ public final class BeanUtilTest {
 	public void testgetAuthor() {
 		final Book book = new Book();
 		book.setAuthor("Murakami");
-		assertEquals("Murakami", BeanUtil.getValue(book, "author"));
+		assertEquals("Murakami", BeanUtil.getValue(book, "author", MethodHandles.lookup()));
 	}
 
 	@Test
@@ -55,20 +57,20 @@ public final class BeanUtilTest {
 		final Book book = new Book();
 		book.setAuthor("Murakami");
 		Assertions.assertThrows(Exception.class,
-				() -> BeanUtil.getValue(book, "creator"));
+				() -> BeanUtil.getValue(book, "creator", MethodHandles.lookup()));
 	}
 
 	@Test
 	public void testsetAuthor() {
 		final Book book = new Book();
-		BeanUtil.setValue(book, "author", "Mishima");
-		assertEquals("Mishima", BeanUtil.getValue(book, "author"));
+		BeanUtil.setValue(book, "author", MethodHandles.lookup(), "Mishima");
+		assertEquals("Mishima", BeanUtil.getValue(book, "author", MethodHandles.lookup()));
 	}
 
 	@Test
 	public void testFailsetAuthor() {
 		final Book book = new Book();
 		Assertions.assertThrows(Exception.class,
-				() -> BeanUtil.setValue(book, "creator", "Mishima"));
+				() -> BeanUtil.setValue(book, "creator", MethodHandles.lookup(), "Mishima"));
 	}
 }

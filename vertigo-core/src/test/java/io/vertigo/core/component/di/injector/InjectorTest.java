@@ -43,6 +43,7 @@ import io.vertigo.core.component.di.data.P;
 import io.vertigo.core.component.di.data.P2;
 import io.vertigo.core.component.di.data.P3;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.AbstractTestCaseJU4;
 
 /**
  * Voir sur reactor pour l'arbre des dépendances des objets A==>F.
@@ -105,7 +106,7 @@ public final class InjectorTest {
 			public Set<String> keySet() {
 				return Collections.emptySet();
 			}
-		});
+		}, AbstractTestCaseJU4.getCoreLookup());
 		nop(a);
 	}
 
@@ -129,7 +130,7 @@ public final class InjectorTest {
 						public Set<String> keySet() {
 							return Collections.emptySet();
 						}
-					});
+					}, AbstractTestCaseJU4.getCoreLookup());
 					nop(b);
 				});
 	}
@@ -137,12 +138,12 @@ public final class InjectorTest {
 	@Test
 	public void testB2() {
 		final MyContainer container = new MyContainer();
-		final A a = DIInjector.newInstance(A.class, container);
+		final A a = DIInjector.newInstance(A.class, container, AbstractTestCaseJU4.getCoreLookup());
 		container.put("a", a);
 
 		Assertions.assertThrows(DIException.class,
 				() -> {
-					final B2 b2 = DIInjector.newInstance(B2.class, container);
+					final B2 b2 = DIInjector.newInstance(B2.class, container, AbstractTestCaseJU4.getCoreLookup());
 					nop(b2);
 				});
 	}
@@ -150,19 +151,19 @@ public final class InjectorTest {
 	@Test
 	public void testB() {
 		final MyContainer container = new MyContainer();
-		final A a = DIInjector.newInstance(A.class, container);
+		final A a = DIInjector.newInstance(A.class, container, AbstractTestCaseJU4.getCoreLookup());
 		container.put("a", a);
-		final B b = DIInjector.newInstance(B.class, container);
+		final B b = DIInjector.newInstance(B.class, container, AbstractTestCaseJU4.getCoreLookup());
 		assertEquals(a, b.getA());
 	}
 
 	@Test
 	public void testE() {
 		final MyContainer container = new MyContainer();
-		final A a = DIInjector.newInstance(A.class, container);
+		final A a = DIInjector.newInstance(A.class, container, AbstractTestCaseJU4.getCoreLookup());
 		container.put("a", a);
 		container.put("p3", new P3());
-		E e = DIInjector.newInstance(E.class, container);
+		E e = DIInjector.newInstance(E.class, container, AbstractTestCaseJU4.getCoreLookup());
 		assertTrue(e.getA().isPresent());
 		assertEquals(a, e.getA().get());
 		assertFalse(e.getB().isPresent());
@@ -174,7 +175,7 @@ public final class InjectorTest {
 		container.put("pen", new P2());
 		container.put("pen#1", new P2());
 		container.put("pen#2", new P2());
-		e = DIInjector.newInstance(E.class, container);
+		e = DIInjector.newInstance(E.class, container, AbstractTestCaseJU4.getCoreLookup());
 		assertTrue(e.getA().isPresent());
 		assertEquals(a, e.getA().get());
 		assertFalse(e.getB().isPresent());
@@ -185,12 +186,12 @@ public final class InjectorTest {
 	@Test
 	public void testF() {
 		final MyContainer container = new MyContainer();
-		final A a = DIInjector.newInstance(A.class, container);
+		final A a = DIInjector.newInstance(A.class, container, AbstractTestCaseJU4.getCoreLookup());
 		container.put("a", a);
 		container.put("param1", "test1");
 		container.put("param2", "test2");
 		container.put("param3", "test3");
-		final F f = DIInjector.newInstance(F.class, container);
+		final F f = DIInjector.newInstance(F.class, container, AbstractTestCaseJU4.getCoreLookup());
 		assertEquals(f.getA(), a);
 		assertEquals(f.getParam1(), "test1");
 		assertEquals(f.getParam2(), "test2");

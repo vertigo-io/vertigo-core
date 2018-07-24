@@ -184,7 +184,7 @@ final class SqlStatementDriver {
 			final ResultSet resultSet,
 			final Class<O> dataType,
 			final MyField[] fields) throws SQLException {
-		final O bean = ClassUtil.newInstance(dataType);
+		final O bean = ClassUtil.newInstanceSpecial(dataType);
 		Object value;
 		for (int i = 0; i < fields.length; i++) {
 			final Class<?> javaFieldDataType = fields[i].type;

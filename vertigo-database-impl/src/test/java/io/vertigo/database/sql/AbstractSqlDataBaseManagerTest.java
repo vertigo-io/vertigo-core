@@ -50,7 +50,7 @@ import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.statement.SqlStatementBuilder;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.lang.DataStream;
-import io.vertigo.util.AbstractTestCaseJU4;
+import io.vertigo.database.AbstractTestCaseJU4;
 
 /**
  *

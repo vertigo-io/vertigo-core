@@ -53,18 +53,44 @@ public final class BeanUtil {
 	 * @param object java.lang.Object
 	 * @param propertyName java.lang.String
 	 */
-	public static Object getValue(final Object object, final String propertyName) {
+	public static Object getValue(final Object object, final String propertyName, final Lookup privateLookup) {
 		Assertion.checkNotNull(object);
 		Assertion.checkNotNull(propertyName);
 		Assertion.checkArgument(propertyName.indexOf('.') == -1, "the dot notation is forbidden");
+		Assertion.checkNotNull(privateLookup);
 		//-----
-		final Lookup privateLookup = Home.getApp().getConfig().getLookupProviderForClass(object.getClass()).apply(object.getClass());
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method readMethod = pd.getReadMethod();
 		if (readMethod == null) {
 			throw new VSystemException("no getter found for property '{0}' on class '{1}'", propertyName, object.getClass().getName());
 		}
 		return ClassUtil.invoke(object, readMethod, privateLookup);
+	}
+
+	public static Object getValue(final Object object, final String propertyName) {
+		final Lookup privateLookup = Home.getApp().getConfig().getLookupProviderForClass(object.getClass()).apply(object.getClass());
+		return getValue(object, propertyName, privateLookup);
+	}
+
+	/**
+	 * Définit la valeur d'une propriété d'un bean
+	 * (ex : "name" -> object.setName(value) ou "country.name" -> object.getCountry().setName(value)).
+	 * @param object java.lang.Object
+	 * @param propertyName java.lang.String
+	 * @param value java.lang.Object
+	 */
+	public static void setValue(final Object object, final String propertyName, final Lookup privateLookup, final Object value) {
+		Assertion.checkNotNull(object);
+		Assertion.checkNotNull(propertyName);
+		Assertion.checkArgument(propertyName.indexOf('.') == -1, "the dot notation is forbidden");
+		Assertion.checkNotNull(privateLookup);
+		//-----
+		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
+		final Method writeMethod = pd.getWriteMethod();
+		if (writeMethod == null) {
+			throw new VSystemException("no setter found for property '{0}' on class '{1}'", propertyName, object.getClass().getName());
+		}
+		ClassUtil.invoke(object, writeMethod, privateLookup, value);
 	}
 
 	/**
@@ -75,17 +101,8 @@ public final class BeanUtil {
 	 * @param value java.lang.Object
 	 */
 	public static void setValue(final Object object, final String propertyName, final Object value) {
-		Assertion.checkNotNull(object);
-		Assertion.checkNotNull(propertyName);
-		Assertion.checkArgument(propertyName.indexOf('.') == -1, "the dot notation is forbidden");
-		//-----
 		final Lookup privateLookup = Home.getApp().getConfig().getLookupProviderForClass(object.getClass()).apply(object.getClass());
-		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
-		final Method writeMethod = pd.getWriteMethod();
-		if (writeMethod == null) {
-			throw new VSystemException("no setter found for property '{0}' on class '{1}'", propertyName, object.getClass().getName());
-		}
-		ClassUtil.invoke(object, writeMethod, privateLookup, value);
+		setValue(object, propertyName, privateLookup, value);
 	}
 
 	/**

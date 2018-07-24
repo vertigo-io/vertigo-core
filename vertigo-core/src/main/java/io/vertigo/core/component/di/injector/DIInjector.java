@@ -18,6 +18,7 @@
  */
 package io.vertigo.core.component.di.injector;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -36,6 +37,7 @@ import io.vertigo.core.component.di.DIAnnotationUtil;
 import io.vertigo.core.component.di.DIDependency;
 import io.vertigo.core.component.di.DIException;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ClassUtil;
 
 /**
@@ -60,18 +62,9 @@ public final class DIInjector {
 	 * @return Instance de composants créée.
 	 */
 	public static <T> T newInstance(final Class<T> clazz, final Container container) {
-		Assertion.checkNotNull(clazz);
-		Assertion.checkNotNull(container);
-		//-----
-		//On encapsule la création par un bloc try/ctach afin de préciser le type de composant qui n'a pas pu être créé.
-		try {
-			final T instance = createInstance(clazz, container);
-			injectMembers(instance, container);
-			return instance;
-		} catch (final Exception e) {
-			//Contextualisation de l'exception et des assertions.
-			throw new DIException("Erreur lors de la création du composant de type : '" + clazz.getName() + "'", e);
-		}
+		//only when an app is started
+		return newInstance(clazz, container, Home.getApp().getConfig().getLookupProviderForClass(clazz));//we need to find another place for it (not accessible to othermodules)
+		//return newInstance(clazz, container, getCoreLookup().apply(clazz));
 	}
 
 	/**
@@ -97,14 +90,6 @@ public final class DIInjector {
 			//Contextualisation de l'exception et des assertions.
 			throw new DIException("Erreur lors de la création du composant de type : '" + clazz.getName() + "'", e);
 		}
-	}
-
-	private static <T> T createInstance(final Class<T> clazz, final Container container) {
-		//On a un et un seul constructeur public injectable.
-		final Constructor<T> constructor = DIAnnotationUtil.findInjectableConstructor(clazz);
-		//On recherche les paramètres
-		final Object[] constructorParameters = findConstructorParameters(container, constructor);
-		return ClassUtil.newInstance(constructor, constructorParameters);
 	}
 
 	private static <T> T createInstance(final Class<T> clazz, final Container container, final Function<Class, Lookup> privateLookupProvider) {
@@ -196,4 +181,21 @@ public final class DIInjector {
 		//-----
 		return value;
 	}
+
+	private static Function<Class, Lookup> getCoreLookup() {
+
+		final Function<Class, Lookup> featuresLookup = new Function<>() {
+			@Override
+			public Lookup apply(final Class t) {
+				try {
+					return MethodHandles.privateLookupIn(t, MethodHandles.lookup());
+				} catch (final IllegalAccessException e) {
+					throw WrappedException.wrap(e);
+				}
+			}
+
+		};
+		return featuresLookup;
+	}
+
 }
