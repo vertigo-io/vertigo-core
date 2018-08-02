@@ -47,7 +47,7 @@ public final class TemplateAoTaskTest {
 		this.taskDefinition = new TemplateTaskDefinition(taskDefinition, packageName, className);
 		this.daoTestBaseClass = daoTestBaseClass;
 	}
-	
+
 	/**
 	 * @return Simple Nom (i.e. sans le package) de la classe de test.
 	 */
@@ -67,13 +67,6 @@ public final class TemplateAoTaskTest {
 	 */
 	public String getPackageName() {
 		return packageName;
-	}	
-
-	/**
-	 * @return Si ce pao utilise au moins une Option : vertigo.core.lang.Option
-	 */
-	public boolean isOptions() {
-		return this.taskDefinition.hasOptions();
 	}
 
 	/**
@@ -82,14 +75,14 @@ public final class TemplateAoTaskTest {
 	public String getDaoTestBaseClass() {
 		return daoTestBaseClass;
 	}
-	
+
 	/**
 	 * @return Nom simple de la classe de base pour le test de DAO.
 	 */
 	public String getDaoTestBaseClassSimpleName() {
 		return getLastPackagename(daoTestBaseClass);
 	}
-	
+
 	private static String getLastPackagename(final String canonicalName) {
 		final String[] parts = canonicalName.split("\\.");
 		return parts[parts.length - 1];

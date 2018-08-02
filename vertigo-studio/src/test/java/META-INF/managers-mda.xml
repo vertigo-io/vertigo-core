@@ -13,7 +13,7 @@
 			<plugin class="io.vertigo.studio.plugins.mda.domain.java.DomainGeneratorPlugin">
 				<param name="targetSubDir" value="javagen" />
 				<param name="generateDtResources" value="true" />
-				<param name="generateJpaAnnotations" value="true" />
+				<param name="generateJpaAnnotations" value="false" />
 				<param name="generateDtDefinitions" value="true" />
 				<param name="generateDtObject" value="true" />
 			</plugin>
@@ -42,8 +42,8 @@
 			</plugin>
 			<!--  -->
 			<plugin class="io.vertigo.studio.plugins.mda.task.test.TaskTestGeneratorPlugin">
-				<param name="targetSubDir" value="." />
-				<param name="baseTestClass" value="io.vertigo.studio.plugins.mda.tools.DaoTestClass" />
+				<param name="targetSubDir" value="javagen" />
+				<param name="baseTestClass" value="io.vertigo.studio.data.tasktest.DaoTestClass" />
 			</plugin>
 		</component>
 	</module>

@@ -19,10 +19,7 @@
 package io.vertigo.studio.plugins.mda.task.test;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
@@ -33,19 +30,15 @@ import io.vertigo.util.StringUtil;
 /**
  * Génération des classes/méthodes des taches de type DAO.
  *
- * @author sezratty
+ * @author sezratty, mlaroche
  */
 public final class TemplateTaskDefinition {
 	private final TaskDefinition taskDefinition;
 	private final List<TemplateTaskAttribute> ins = new ArrayList<>();
-	private final TemplateTaskAttribute out;
 	private final String testPackageName;
 	private final String testClassName;
 	private final String packageName;
 	private final String className;
-	private final Set<String> imports = new HashSet<>();
-
-	private final boolean hasOptions;
 
 	TemplateTaskDefinition(final TaskDefinition taskDefinition, final String packageName, final String className) {
 		Assertion.checkNotNull(taskDefinition);
@@ -59,23 +52,12 @@ public final class TemplateTaskDefinition {
 		testPackageName = this.packageName + "." + StringUtil.first2LowerCase(this.className) + "Test";
 		testClassName = StringUtil.first2UpperCase(getMethodName()) + "Test";
 
-		imports.add(packageName + "." + getClassName());
-
 		// Paramètres in
-		boolean hasOption = false;
 		for (final TaskAttribute attribute : taskDefinition.getInAttributes()) {
-			final TemplateTaskAttribute templateTaskAttribute = new TemplateTaskAttribute(taskDefinition, attribute);
+			final TemplateTaskAttribute templateTaskAttribute = new TemplateTaskAttribute(attribute);
 			ins.add(templateTaskAttribute);
-			imports.addAll(templateTaskAttribute.getValue().getImports());
-
-			hasOption = hasOption || !attribute.isRequired();
 		}
 
-		// Paramètre out
-		final Optional<TaskAttribute> outAttributeOption = taskDefinition.getOutAttributeOption();
-		out = outAttributeOption.isPresent() ? new TemplateTaskAttribute(taskDefinition, outAttributeOption.get()) : null;
-
-		hasOptions = hasOption;
 	}
 
 	/**
@@ -108,10 +90,10 @@ public final class TemplateTaskDefinition {
 	}
 
 	/**
-	 * @return Simple Nom (i.e. sans le package) de la classe d'implémentation du DtObject
+	 * @return Nom cannonique  (i.e. avec le package) de la classe d'implémentation du DAO
 	 */
 	public String getClassName() {
-		return className;
+		return packageName + "." + className;
 	}
 
 	/**
@@ -135,34 +117,4 @@ public final class TemplateTaskDefinition {
 		return ins;
 	}
 
-	/**
-	 * @return Si la méthode possède un type de retour (sinon void)
-	 */
-	public boolean isOut() {
-		return out != null;
-	}
-
-	/**
-	 * @return Attribut de sortie (Unique)
-	 */
-	public TemplateTaskAttribute getOutAttribute() {
-		Assertion.checkNotNull(out);
-		//-----
-		return out;
-	}
-
-	/**
-	 * @return Si cette task utilise vertigo.core.lang.Option
-	 */
-	public boolean hasOptions() {
-		return hasOptions;
-	}
-
-	/**
-	 * @return Liste des imports.
-	 */
-	public List<String> getImports() {
-		// TODO tri ?
-		return new ArrayList<>(imports);
-	}
 }
