@@ -38,6 +38,7 @@ import io.vertigo.dynamo.environment.eaxmi.EAXmiTestParserAA;
 import io.vertigo.dynamo.environment.eaxmi.EAXmiTestParserIdentifiers;
 import io.vertigo.dynamo.environment.java.JavaEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.java.JavaParserStereotypesTest;
+import io.vertigo.dynamo.environment.ksp.KspEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.loader.EnvironmentManagerTest;
 import io.vertigo.dynamo.environment.multi.MultiResourcesEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.oom.OOMEnvironmentManagerTest;
@@ -95,6 +96,8 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		//----Java
 		JavaParserStereotypesTest.class,
 		JavaEnvironmentManagerTest.class,
+		//----KSP
+		KspEnvironmentManagerTest.class,
 		//----Multi
 		MultiResourcesEnvironmentManagerTest.class,
 		//----OOM
@@ -145,6 +148,7 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		EnvironmentManagerTest.class
 
 })
+
 public final class DynamoTestSuite {
 	//
 }

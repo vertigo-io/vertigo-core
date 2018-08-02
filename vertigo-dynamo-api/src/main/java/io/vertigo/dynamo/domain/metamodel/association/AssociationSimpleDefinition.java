@@ -37,7 +37,7 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 
 	/**
 	 * Constructor.
-
+	
 	 * @param name the name of the association
 	 * @param fkFieldName the fieldname that represents the foreign key
 	 * @param associationNodeA the A node for this assocation
@@ -68,7 +68,7 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 		}
 		this.fkFieldName = fkFieldName;
 		//-----
-		// no one can make an association with you if you're not identified by a key (for now, before refac, isPersistent is the way to make the test isPeristent() <=> isEntity() )
+		// no one can make an association with you if you're not identified by a key (for now, before refac, isPersistent is the way to make the test isPersistent() <=> isEntity() )
 		Assertion.checkState(primaryAssociationNode.getDtDefinition().getStereotype().isPersistent(), "assocation : {0}. The primary associationNode must be an entity ", name);
 	}
 
