@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import io.vertigo.commons.transaction.VTransactionWritable;
@@ -113,6 +114,47 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 
 		final Optional<Flower> flower2bis = kvStoreManager.find("flowers", "2", Flower.class);
 		Assert.assertFalse("Rollback flower id 2 failed", flower2bis.isPresent());
+
+	}
+
+	@Test
+	@Ignore
+	public void testPurgeTooOldElements() {
+		int flowerId = 1;
+		for (int i = 0; i < 40; i++) {
+			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+				final int countFlowers = kvStoreManager.count("flowers");
+				System.out.println("flowers count " + countFlowers);
+				//Assert.assertEquals(0, nbFlowers);
+				//put a flower a t+0s (expire a T+10s)
+				final Flower tulip1 = buildFlower("tulip", 100);
+				kvStoreManager.put("flowers", String.valueOf(flowerId++), tulip1);
+
+				//put a flower a t+2s (expire a T+12s)
+				final Flower tulip2 = buildFlower("tulip", 110);
+				kvStoreManager.put("flowers", String.valueOf(flowerId++), tulip2);
+
+				//put a flower a t+4s (expire a T+14s)
+				final Flower tulip3 = buildFlower("tulip", 120);
+				kvStoreManager.put("flowers", String.valueOf(flowerId++), tulip3);
+
+				final long searchFlowers = kvStoreManager.findAll("flowers", 0, 1000, Flower.class).size(); //can't use count as it doesnt detect too old element (needs daemon)
+				System.out.println("flowers search " + searchFlowers);
+				//
+				transaction.commit();
+			}
+			sleep(2);
+		}
+		sleep(10);
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			final int finalSearchFlowers = kvStoreManager.findAll("flowers", 0, 1000, Flower.class).size();
+			//search always filter too old elements
+			Assert.assertEquals(0, finalSearchFlowers);
+
+			final int finalCountFlowers = kvStoreManager.count("flowers");
+			//count needs daemon
+			Assert.assertNotEquals(3 * 50 - 3, finalCountFlowers);
+		}
 
 	}
 
