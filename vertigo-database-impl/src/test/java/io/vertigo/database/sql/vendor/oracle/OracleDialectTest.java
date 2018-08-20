@@ -38,7 +38,7 @@ public final class OracleDialectTest extends AbstractSqlDialectTest {
 
 	@Override
 	public String getExpectedInsertQuery() {
-		return "insert into MOVIE ( TITLE) values (  #DTO.TITLE#) ";
+		return "insert into MOVIE (ID, TITLE) values (SEQ_MOVIE.nextval ,  #DTO.TITLE#)";
 	}
 
 	@Override

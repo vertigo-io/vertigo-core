@@ -1,0 +1,21 @@
+package io.vertigo.dynamock.domain
+
+/* wrong way!! */
+create Association A_ENT_VOB {
+ 	fkFieldName : "VOB_ID"
+    
+ 	dtDefinitionA : DT_TEST_ENTITY
+	dtDefinitionB : DT_TEST_VOBJECT
+			
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..*"
+	multiplicityB:"1..1"
+	
+	labelA : "Entity"
+	labelB : "ValueObject"
+	roleA : "Entity"
+	roleB : "ValueObject"
+			
+}

@@ -1,0 +1,43 @@
+package io.vertigo.dynamock.domain
+
+create Formatter FMT_DEFAULT{
+	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"
+}
+
+create Domain DO_ID{
+	dataType : Long
+	formatter : FMT_DEFAULT
+}
+
+create Domain DO_STRING {
+	dataType : String
+	formatter : FMT_DEFAULT
+}
+
+create DtDefinition DT_TEST_ENTITY {
+	key ID			{domain : DO_ID, 		label :"Id", 					notNull:"true"  }
+	field LABEL   	{domain : DO_STRING, 	label :"label", 				notNull:"false" }
+}
+
+create DtDefinition DT_TEST_VOBJECT {
+	field LABEL   	{domain : DO_STRING, 	label :"label", 				notNull:"false" }
+}
+
+create Association A_VOB_ENT {
+ 	 fkFieldName : "ID"
+    
+ 	dtDefinitionA : DT_TEST_VOBJECT
+	dtDefinitionB : DT_TEST_ENTITY
+			
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..*"
+	multiplicityB:"1..1"
+	
+	labelA : "ValueObject"
+	labelB : "Entity"
+	roleA : "ValueObject"
+	roleB : "Entity"
+			
+}

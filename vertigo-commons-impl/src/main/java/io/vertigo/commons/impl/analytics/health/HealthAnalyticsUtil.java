@@ -158,18 +158,11 @@ public final class HealthAnalyticsUtil {
 			final int nbGreen,
 			final int nbYellow,
 			final int nbRed) {
-		if (nbRed == 0) {
-			if (nbYellow == 0) {
-				return HealthStatus.GREEN;
-			}
-			//yellow >0
+		if (nbRed > 0) {
+			return HealthStatus.RED;
+		} else if (nbYellow > 0) {
 			return HealthStatus.YELLOW;
 		}
-		//red >0
-		if (nbYellow == 0 && nbGreen == 0) {
-			return HealthStatus.RED;
-		}
-		//red>0
-		return HealthStatus.YELLOW;
+		return HealthStatus.GREEN;
 	}
 }

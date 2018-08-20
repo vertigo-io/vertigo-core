@@ -38,7 +38,7 @@ public final class PostgreSqlDialectTest extends AbstractSqlDialectTest {
 
 	@Override
 	public String getExpectedInsertQuery() {
-		return "insert into MOVIE ( TITLE) values (  #DTO.TITLE#) ";
+		return "insert into MOVIE (ID, TITLE) values (nextval('SEQ_MOVIE'),  #DTO.TITLE#);";
 	}
 
 	@Override

@@ -7,12 +7,12 @@
 	<module name="vertigo-studio">
 		<component api="MdaManager" class="io.vertigo.studio.impl.mda.MdaManagerImpl">
 			<param name="projectPackageName" value="io.vertigo.studio" />
-			<param name="targetGenDir" value="target/" />
+			<param name="targetGenDir" value="target/javagen/" />
 			<param name="encoding" value="utf8" />
  
 			<plugin class="io.vertigo.studio.plugins.mda.task.test.TaskTestGeneratorPlugin">
 				<param name="targetSubDir" value="." />
-				<param name="baseTestClass" value="io.vertigo.studio.plugins.mda.tools.DaoTestClass" />
+				<param name="baseTestClass" value="io.vertigo.studio.data.tasktest.DaoTestClass" />
 			</plugin>
 			
 		</component>

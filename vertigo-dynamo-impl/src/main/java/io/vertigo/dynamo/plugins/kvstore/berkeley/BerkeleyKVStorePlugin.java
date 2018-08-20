@@ -80,7 +80,6 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	 *  - inMemory default to false meaning store on file system
 	 * @param collections List of collections managed by this plugin (comma separated)
 	 * @param dbFilePath Base Berkeley DB file system path (Could use java env param like user.home user.dir or java.io.tmpdir)
-	 * @param minFreeDisk Minimum free disk space to maintain, in bytes. If the limit is exceeded, write operations will be prohibited. Default to 100M.
 	 * @param transactionManager Transaction manager
 	 * @param codecManager Codec manager
 	 */
@@ -101,7 +100,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 				.collect(Collectors.toList());
 		//-----
 		dbFilePathTranslated = FileUtil.translatePath(dbFilePath);
-		minFreeDisk = "100000000";
+		minFreeDisk = "100000000"; //Minimum free disk space to maintain, in bytes. If the limit is exceeded, write operations will be prohibited. Default to 100M.
 		this.transactionManager = transactionManager;
 		this.codecManager = codecManager;
 	}
