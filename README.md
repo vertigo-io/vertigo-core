@@ -1,11 +1,13 @@
 # Vertigo
 =================
 
-A Simple Java Starter  kit for **real projects**.
+A Simple Java Starter kit for **real projects**.
 
 Its main purpose is to publish simple and homogeneous APIs over more complex libraries.
 
-__Vertigo__ is split into different modules.
+__Vertigo__ is split into different modules, detailed below.
+
+For [Eclipse](https://www.eclipse.org/) users, it is advised to use the [KSP Plugin](https://github.com/sebez/vertigo-chroma-kspplugin) to enhance Developer Experience.
 
 ## vertigo-core
 ### Build and configure your own modules 
