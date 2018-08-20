@@ -79,7 +79,8 @@ A bundle of all above modules
 ## vertigo-parent
 just the parent pom
 
-For [Eclipse](https://www.eclipse.org/) users, a plugin named [KSP Plugin](https://github.com/sebez/vertigo-chroma-kspplugin) developped by [sebez](https://github.com/sebez/) enhances Developer Experience.
+## Additional note for [Eclipse](https://www.eclipse.org/) users
+A plugin named [KSP Plugin](https://github.com/sebez/vertigo-chroma-kspplugin) developped by [sebez](https://github.com/sebez/) enhances Developer Experience.
 
 -----
 #License
