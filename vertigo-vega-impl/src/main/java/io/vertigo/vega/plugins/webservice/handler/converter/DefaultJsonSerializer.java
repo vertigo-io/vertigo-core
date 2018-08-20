@@ -75,7 +75,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 		/** Type JSON simple */
 		JSON(""),
 		/** Type JSON UiContext */
-		JSON_UI_CONTEXT("json+uicontext"),
+		JSON_UI_CONTEXT("json+uicontext="),
 		/** Type JSON list */
 		JSON_LIST("json+list=%s"),
 		/** Type JSON entity */
