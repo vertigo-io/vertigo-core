@@ -24,7 +24,6 @@ import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.database.impl.sql.vendor.sqlserver.SqlServerDataBase;
 import io.vertigo.database.sql.vendor.SqlDialect;
 
 /**
@@ -36,7 +35,7 @@ public abstract class AbstractSqlDialectTest {
 	@Test
 	public void testInsertQuery() {
 
-		final SqlDialect sqlDialect = new SqlServerDataBase().getSqlDialect();
+		final SqlDialect sqlDialect = getDialect();
 		final String insertQuery = sqlDialect.createInsertQuery("ID", Collections.singletonList("TITLE"), "SEQ_", "MOVIE");
 		Assert.assertEquals(getExpectedInsertQuery(), insertQuery);
 	}
