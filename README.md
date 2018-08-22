@@ -7,8 +7,6 @@ Its main purpose is to publish simple and homogeneous APIs over more complex lib
 
 __Vertigo__ is split into different modules, detailed below.
 
-For [Eclipse](https://www.eclipse.org/) users, it is advised to use the [KSP Plugin](https://github.com/sebez/vertigo-chroma-kspplugin) to enhance Developer Experience.
-
 ## vertigo-core
 ### Build and configure your own modules 
 
@@ -80,6 +78,9 @@ A bundle of all above modules
 
 ## vertigo-parent
 just the parent pom
+
+## Additional note for [Eclipse](https://www.eclipse.org/) users
+A plugin named [KSP Plugin](https://github.com/sebez/vertigo-chroma-kspplugin) developped by [sebez](https://github.com/sebez/) enhances Developer Experience.
 
 -----
 #License
