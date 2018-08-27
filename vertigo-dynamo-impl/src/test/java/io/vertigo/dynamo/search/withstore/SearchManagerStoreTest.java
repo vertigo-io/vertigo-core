@@ -69,15 +69,14 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	private long initialDbItemSize = 0;
 
 	@Override
-	protected void doSetUp() throws Exception {
+	protected void doSetUp() throws SQLException {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
 
 		//A chaque test on recrée la table famille
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
-			execCallableStatement(connection, "create table item(ID BIGINT, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50), OPTIONAL_NUMBER BIGINT, OPTIONAL_STRING varchar(50), LAST_MODIFIED timestamp );");
-			execCallableStatement(connection, "create sequence SEQ_ITEM start with 10001 increment by 1");
+		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
+			execCallableStatement(connectionCloseable.getConnection(), "create table item(ID BIGINT, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50), OPTIONAL_NUMBER BIGINT, OPTIONAL_STRING varchar(50), LAST_MODIFIED timestamp );");
+			execCallableStatement(connectionCloseable.getConnection(), "create sequence SEQ_ITEM start with 10001 increment by 1");
 		}
 
 		//On supprime tout
@@ -97,12 +96,10 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 
 	/** {@inheritDoc} */
 	@Override
-	protected void doTearDown() throws Exception {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			//A chaque fin de test on arréte la base.
-			final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
-			execCallableStatement(connection, "shutdown;");
-			transaction.commit();
+	protected void doTearDown() throws SQLException {
+		//A chaque fin de test on arréte la base.
+		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
+			execCallableStatement(connectionCloseable.getConnection(), "shutdown;");
 		}
 	}
 
@@ -233,6 +230,74 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		Assert.assertEquals(0L, resize);
 	}
 
+	/**
+	 * Test de mise à jour de l'index après une creation.
+	 * La création s'effectue dans une seule transaction.
+	 */
+	@Test
+	public void testReIndexAll() {
+		testIndexAllQuery();
+		remove("*:*");
+		long resize = query("*:*");
+		Assert.assertEquals(0L, resize);
+
+		doReindexAll();
+		waitIndexation();
+
+		resize = query("*:*");
+		Assert.assertEquals(initialDbItemSize, resize);
+	}
+
+	/**
+	 * Test de mise à jour de l'index après une creation.
+	 * La création s'effectue dans une seule transaction.
+	 * @throws SQLException if some error in test
+	 */
+	@Test
+	public void testReIndexAllAfterDirectDelete() throws SQLException {
+		testIndexAllQuery();
+		long resize = query("*:*");
+		Assert.assertEquals(initialDbItemSize, resize);
+
+		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
+			execCallableStatement(connectionCloseable.getConnection(), "delete from item where id = 10001");
+			connectionCloseable.commit();
+		}
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			Assert.assertEquals(initialDbItemSize - 1, storeManager.getDataStore().count(itemIndexDefinition.getKeyConceptDtDefinition()));
+		}
+		doReindexAll();
+		waitIndexation();
+
+		resize = query("*:*");
+		Assert.assertEquals(initialDbItemSize - 1, resize);
+	}
+
+	/**
+	 * Test de mise à jour de l'index après une creation.
+	 * La création s'effectue dans une seule transaction.
+	 * @throws SQLException if some error in test
+	 */
+	@Test
+	public void testReIndexAllAfterDirectDeleteAll() throws SQLException {
+		testIndexAllQuery();
+		long resize = query("*:*");
+		Assert.assertEquals(initialDbItemSize, resize);
+
+		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
+			execCallableStatement(connectionCloseable.getConnection(), "delete from item ");
+			connectionCloseable.commit();
+		}
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			Assert.assertEquals(0, storeManager.getDataStore().count(itemIndexDefinition.getKeyConceptDtDefinition()));
+		}
+		doReindexAll();
+		waitIndexation();
+
+		resize = query("*:*");
+		Assert.assertEquals(0, resize);
+	}
+
 	private static Item createNewItem() {
 		final Item item = new Item();
 		item.setId(null);
@@ -276,11 +341,41 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		searchManager.removeAll(itemIndexDefinition, removeQuery);
 	}
 
+	private void doReindexAll() {
+		searchManager.reindexAll(itemIndexDefinition);
+		try {
+			Thread.sleep(5000); //wait reindex job
+		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt(); //si interrupt on relance
+		}
+	}
+
 	private static void waitIndexation() {
 		try {
 			Thread.sleep(1000 + 1500); //wait index was done
 		} catch (final InterruptedException e) {
 			Thread.currentThread().interrupt(); //si interrupt on relance
+		}
+	}
+
+	private class SqlConnectionCloseable implements AutoCloseable {
+		private final SqlConnection connection;
+
+		SqlConnectionCloseable(final SqlDataBaseManager dataBaseManager) {
+			connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
+		}
+
+		SqlConnection getConnection() {
+			return connection;
+		}
+
+		public void commit() throws SQLException {
+			connection.commit();
+		}
+
+		@Override
+		public void close() throws SQLException {
+			connection.release();
 		}
 	}
 
