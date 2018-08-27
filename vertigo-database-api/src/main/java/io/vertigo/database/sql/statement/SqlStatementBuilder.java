@@ -147,6 +147,7 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 					sql.append(SEPARATOR);
 				} else {
 					sqlNamedParams.add(SqlNamedParam.of(token));
+					Assertion.checkArgument(sql.charAt(sql.length() - 1) != '\'', "Param {0} is quoted, it will be ignored by jdbc driver. Query:{1}", token, query);
 					sql.append('?');
 				}
 			} else {
