@@ -243,13 +243,15 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 
 	/** {@inheritDoc} */
 	@Override
-	public void checkFormat(final UiMessageStack uiMessageStack) {
+	public boolean checkFormat(final UiMessageStack uiMessageStack) {
 		//1. check Error => KUserException
 		//on valide les éléments internes
+		boolean isValid = true;
 		for (final UiObject<D> uiObject : bufferUiObjects) {
 			uiObject.setInputKey(findContextKey(uiObject));
-			uiObject.checkFormat(uiMessageStack);
+			isValid = isValid && uiObject.checkFormat(uiMessageStack);
 		}
+		return isValid;
 	}
 
 	/** {@inheritDoc} */

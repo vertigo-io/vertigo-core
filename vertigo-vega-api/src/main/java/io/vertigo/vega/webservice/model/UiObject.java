@@ -75,8 +75,9 @@ public interface UiObject<D extends DtObject> extends Serializable {
 	 * Vérifie les UiObjects de la liste et remplis la pile d'erreur.
 	 * @param validator Validateur à utilisé
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
+	 * @return if the object is valid (no format errors) if it's not valid you must not call mergeAndCheckInput
 	 */
-	void checkFormat(final UiMessageStack uiMessageStack);
+	boolean checkFormat(final UiMessageStack uiMessageStack);
 
 	/**
 	 * Merge et Valide l'objet d'IHM et place les erreurs rencontrées dans la stack.

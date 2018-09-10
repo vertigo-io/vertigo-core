@@ -184,13 +184,15 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	/**
 	 * Vérifie les UiObjects de la liste et remplis la pile d'erreur.
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
+	 * @return if the object is valid (no format errors) if it's not valid you must not call mergeAndCheckInput
 	 */
 	@Override
-	public void checkFormat(final UiMessageStack uiMessageStack) {
+	public boolean checkFormat(final UiMessageStack uiMessageStack) {
 		if (getDtObjectErrors().hasError()) {
 			getDtObjectErrors().flushIntoMessageStack(inputKey, uiMessageStack);
 		}
 		isChecked = true;
+		return !getDtObjectErrors().hasError();
 	}
 
 	/**
@@ -206,6 +208,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		if (!isChecked) {
 			checkFormat(uiMessageStack);
 		}
+		Assertion.checkState(!getDtObjectErrors().hasError(), "Unable to merge input on a object that as format errors : {0}", this);
 		//we update inputBuffer with older datas
 		if (serverSideDto != null) { //If serverSideObject was kept, we merge input with server object
 			mergeInput();

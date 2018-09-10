@@ -56,7 +56,8 @@ public interface UiList<D extends DtObject> extends List<UiObject<D>> {
 	 * Vérifie les UiObjects de la liste et remplis la pile d'erreur.
 	 * @param validator Validateur à utilisé
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
+	 * @return if the object is valid (no format errors) if it's not valid you must not call mergeAndCheckInput
 	 */
-	void checkFormat(UiMessageStack uiMessageStack);
+	boolean checkFormat(UiMessageStack uiMessageStack);
 
 }
