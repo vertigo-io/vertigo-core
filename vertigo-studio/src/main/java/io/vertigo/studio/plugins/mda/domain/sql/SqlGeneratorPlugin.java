@@ -123,18 +123,20 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 				.map(dtDefinition -> new SqlMasterDataDefinitionModel(dtDefinition, masterDataValues.getOrDefault(dtDefinition.getClassCanonicalName(), Collections.emptyMap())))
 				.collect(Collectors.toList());
 
-		final Map<String, Object> model = new MapBuilder<String, Object>()
-				.put("masterdatas", sqlMasterDataDefinitionModels)
-				.build();
+		for (final SqlMasterDataDefinitionModel sqlMasterDataDefinitionModel : sqlMasterDataDefinitionModels) {
+			final Map<String, Object> model = new MapBuilder<String, Object>()
+					.put("masterdata", sqlMasterDataDefinitionModel)
+					.build();
 
-		FileGenerator.builder(fileGeneratorConfig)
-				.withModel(model)
-				.withFileName("init_masterdata.sql")
-				.withGenSubDir(targetSubDir)
-				.withPackageName("")
-				.withTemplateName("domain/sql/template/init_masterdata.ftl")
-				.build()
-				.generateFile(mdaResultBuilder);
+			FileGenerator.builder(fileGeneratorConfig)
+					.withModel(model)
+					.withFileName("init_masterdata_" + sqlMasterDataDefinitionModel.getDefinition().getLocalName().toLowerCase() + ".sql")
+					.withGenSubDir(targetSubDir)
+					.withPackageName("")
+					.withTemplateName("domain/sql/template/init_masterdata.ftl")
+					.build()
+					.generateFile(mdaResultBuilder);
+		}
 
 	}
 
