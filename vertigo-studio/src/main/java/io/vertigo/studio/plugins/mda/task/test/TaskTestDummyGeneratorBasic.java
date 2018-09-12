@@ -89,9 +89,7 @@ public class TaskTestDummyGeneratorBasic implements TaskTestDummyGenerator {
 	 */
 	@Override
 	public <D extends DtObject> DtList<D> dumDtList(final Class<D> dtoClass) {
-		final DtList<D> list = new DtList<>(dtoClass);
-		list.add(dum(dtoClass));
-		return list;
+		return DtList.of(dum(dtoClass));
 	}
 
 	/* (non-Javadoc)

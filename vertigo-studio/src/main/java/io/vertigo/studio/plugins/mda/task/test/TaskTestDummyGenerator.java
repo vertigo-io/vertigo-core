@@ -19,7 +19,7 @@ public interface TaskTestDummyGenerator {
 	 * @param <T> class of the wanted object
 	 * @return dummy value
 	 */
-	public <T> T dum(final Class<T> type);
+	<T> T dum(final Class<T> type);
 
 	/**
 	 * Creates a list of dummy values for the specified type
@@ -27,7 +27,7 @@ public interface TaskTestDummyGenerator {
 	 * @param <T> class of the wanted object
 	 * @return dummy values as List
 	 */
-	public <T> List<T> dumList(final Class<T> clazz);
+	<T> List<T> dumList(final Class<T> clazz);
 
 	/**
 	 * Creates a dtList of dummy values for the specified type
@@ -35,7 +35,7 @@ public interface TaskTestDummyGenerator {
 	 * @param <D> class of the wanted object
 	 * @return dummy values as DtList
 	 */
-	public <D extends DtObject> DtList<D> dumDtList(final Class<D> dtoClass);
+	<D extends DtObject> DtList<D> dumDtList(final Class<D> dtoClass);
 
 	/**
 	 * Creates a dummy dtObject for the specified type as new (no pk)
@@ -43,6 +43,5 @@ public interface TaskTestDummyGenerator {
 	 * @param <D> class of the wanted object
 	 * @return dummy value
 	 */
-	public <D extends DtObject> D dumNew(final Class<D> dtoClass);
-
+	<D extends DtObject> D dumNew(final Class<D> dtoClass);
 }

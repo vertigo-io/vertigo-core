@@ -23,18 +23,18 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 
 /**
- * Objet utilisé par FreeMarker.
+ * Template used by freemarker.
  *
  * @author sezratty
  */
 public final class TemplateAoTaskTest {
 	private final String packageName;
 	private final String className;
-	private final TemplateTaskDefinition taskDefinition;
+	private final TemplateTaskDefinition templateTaskDefinition;
 	private final String daoTestBaseClass;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	TemplateAoTaskTest(final FileGeneratorConfig taskConfiguration, final TaskDefinition taskDefinition, final String packageName, final String className, final String daoTestBaseClass) {
 		Assertion.checkNotNull(taskConfiguration);
@@ -44,7 +44,7 @@ public final class TemplateAoTaskTest {
 		this.packageName = packageName;
 
 		this.className = className;
-		this.taskDefinition = new TemplateTaskDefinition(taskDefinition, packageName, className);
+		this.templateTaskDefinition = new TemplateTaskDefinition(taskDefinition, packageName, className);
 		this.daoTestBaseClass = daoTestBaseClass;
 	}
 
@@ -59,7 +59,7 @@ public final class TemplateAoTaskTest {
 	 * @return Task
 	 */
 	public TemplateTaskDefinition getTaskDefinition() {
-		return taskDefinition;
+		return templateTaskDefinition;
 	}
 
 	/**

@@ -18,11 +18,10 @@
  */
 package io.vertigo.studio.plugins.mda.task.test;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.vertigo.core.definition.DefinitionUtil;
-import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
@@ -34,7 +33,7 @@ import io.vertigo.util.StringUtil;
  */
 public final class TemplateTaskDefinition {
 	private final TaskDefinition taskDefinition;
-	private final List<TemplateTaskAttribute> ins = new ArrayList<>();
+	private final List<TemplateTaskAttribute> templateInTaskAttributes;
 	private final String testPackageName;
 	private final String testClassName;
 	private final String packageName;
@@ -53,11 +52,9 @@ public final class TemplateTaskDefinition {
 		testClassName = StringUtil.first2UpperCase(getMethodName()) + "Test";
 
 		// Paramètres in
-		for (final TaskAttribute attribute : taskDefinition.getInAttributes()) {
-			final TemplateTaskAttribute templateTaskAttribute = new TemplateTaskAttribute(attribute);
-			ins.add(templateTaskAttribute);
-		}
-
+		templateInTaskAttributes = taskDefinition.getInAttributes().stream()
+				.map(taskAttribute -> new TemplateTaskAttribute(taskAttribute))
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -114,7 +111,7 @@ public final class TemplateTaskDefinition {
 	 * @return Liste des attributs en entréee
 	 */
 	public List<TemplateTaskAttribute> getInAttributes() {
-		return ins;
+		return templateInTaskAttributes;
 	}
 
 }

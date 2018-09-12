@@ -30,7 +30,7 @@ public final class TemplateTestClass {
 	private final String className;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
 	TemplateTestClass(final String packageName, final String className) {
 		Assertion.checkNotNull(packageName);
@@ -50,7 +50,7 @@ public final class TemplateTestClass {
 	public String getClassName() {
 		return className;
 	}
-	
+
 	/**
 	 * @return Nom canonique de la classe de test
 	 */
