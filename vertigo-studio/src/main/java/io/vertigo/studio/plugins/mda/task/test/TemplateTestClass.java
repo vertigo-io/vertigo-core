@@ -27,17 +27,17 @@ import io.vertigo.lang.Assertion;
  */
 public final class TemplateTestClass {
 	private final String packageName;
-	private final String className;
+	private final String classSimpleName;
 
 	/**
 	 * Constructor.
 	 */
-	TemplateTestClass(final String packageName, final String className) {
+	TemplateTestClass(final String packageName, final String classSimpleName) {
 		Assertion.checkNotNull(packageName);
-		Assertion.checkNotNull(className);
+		Assertion.checkNotNull(classSimpleName);
 		//-----
 		this.packageName = packageName;
-		this.className = className;
+		this.classSimpleName = classSimpleName;
 	}
 
 	/**
@@ -48,13 +48,13 @@ public final class TemplateTestClass {
 	}
 
 	public String getClassName() {
-		return className;
+		return classSimpleName;
 	}
 
 	/**
 	 * @return Nom canonique de la classe de test
 	 */
 	public String getClassCanonicalName() {
-		return packageName + "." + className;
+		return packageName + "." + classSimpleName;
 	}
 }

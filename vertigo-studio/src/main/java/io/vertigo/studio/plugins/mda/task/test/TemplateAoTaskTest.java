@@ -29,22 +29,27 @@ import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
  */
 public final class TemplateAoTaskTest {
 	private final String packageName;
-	private final String className;
+	private final String classSimpleName;
 	private final TemplateTaskDefinition templateTaskDefinition;
 	private final String daoTestBaseClass;
 
 	/**
 	 * Constructor.
 	 */
-	TemplateAoTaskTest(final FileGeneratorConfig taskConfiguration, final TaskDefinition taskDefinition, final String packageName, final String className, final String daoTestBaseClass) {
+	TemplateAoTaskTest(
+			final FileGeneratorConfig taskConfiguration,
+			final TaskDefinition taskDefinition,
+			final String packageName,
+			final String classSimpleName,
+			final String daoTestBaseClass) {
 		Assertion.checkNotNull(taskConfiguration);
 		Assertion.checkNotNull(taskDefinition);
 		Assertion.checkNotNull(packageName);
 		//-----
 		this.packageName = packageName;
 
-		this.className = className;
-		this.templateTaskDefinition = new TemplateTaskDefinition(taskDefinition, packageName, className);
+		this.classSimpleName = classSimpleName;
+		this.templateTaskDefinition = new TemplateTaskDefinition(taskDefinition, packageName, classSimpleName);
 		this.daoTestBaseClass = daoTestBaseClass;
 	}
 
@@ -52,7 +57,7 @@ public final class TemplateAoTaskTest {
 	 * @return Simple Nom (i.e. sans le package) de la classe de test.
 	 */
 	public String getClassSimpleName() {
-		return className;
+		return classSimpleName;
 	}
 
 	/**

@@ -97,10 +97,10 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 			if (!taskDefinitionCollection.isEmpty()) {
 
 				final String packageName = entry.getKey();
-				final String className = getLastPackagename(packageName) + "PAO";
+				final String classSimpleName = getLastPackageName(packageName) + "PAO";
 
 				generateAo(paosTargetSubDir, fileGeneratorConfig, mdaResultBuilder, taskDefinitionCollection, packageName,
-						className, aoSuites);
+						classSimpleName, aoSuites);
 			}
 		}
 
@@ -154,20 +154,20 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 				final String packageNamePrefix = fileGeneratorConfig.getProjectPackageName() + ".domain";
 				final String packageName = fileGeneratorConfig.getProjectPackageName() + ".dao" + definitionPackageName.substring(packageNamePrefix.length());
 
-				final String className = dtDefinition.getClassSimpleName() + "DAO";
+				final String classSimpleName = dtDefinition.getClassSimpleName() + "DAO";
 
 				generateAo(daosTargetSubDir, fileGeneratorConfig, mdaResultBuilder, entry.getValue(), packageName,
-						className, aoSuites);
+						classSimpleName, aoSuites);
 			}
 		}
 	}
 
 	private void generateAo(final String aoTargetSubDir, final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder, final Collection<TaskDefinition> taskDefinitionCollection,
-			final String packageName, final String className, final List<TemplateTestSuite> paoSuites) {
+			final String packageName, final String classSimpleName, final List<TemplateTestSuite> paoSuites) {
 		final List<TemplateTestClass> testClasses = new ArrayList<>();
 		for (final TaskDefinition taskDefinition : taskDefinitionCollection) {
-			final TemplateAoTaskTest paoModel = new TemplateAoTaskTest(fileGeneratorConfig, taskDefinition, packageName, className, baseTestClass);
+			final TemplateAoTaskTest paoModel = new TemplateAoTaskTest(fileGeneratorConfig, taskDefinition, packageName, classSimpleName, baseTestClass);
 			final TemplateTestClass testClass = new TemplateTestClass(paoModel.getTaskDefinition().getTestPackageName(), paoModel.getTaskDefinition().getTestClassName());
 			testClasses.add(testClass);
 
@@ -190,7 +190,7 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 	 * @param packageName Nom de package
 	 * @return Nom du package feuille à partir d'un nom complet de package
 	 */
-	private static String getLastPackagename(final String packageName) {
+	private static String getLastPackageName(final String packageName) {
 		String lastPackageName = packageName;
 		if (lastPackageName.indexOf('.') != -1) {
 			lastPackageName = lastPackageName.substring(lastPackageName.lastIndexOf('.') + 1);

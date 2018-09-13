@@ -35,21 +35,21 @@ public final class TemplateTaskDefinition {
 	private final TaskDefinition taskDefinition;
 	private final List<TemplateTaskAttribute> templateInTaskAttributes;
 	private final String testPackageName;
-	private final String testClassName;
+	private final String testClassSimpleName;
 	private final String packageName;
-	private final String className;
+	private final String classSimpleName;
 
-	TemplateTaskDefinition(final TaskDefinition taskDefinition, final String packageName, final String className) {
+	TemplateTaskDefinition(final TaskDefinition taskDefinition, final String packageName, final String classSimpleName) {
 		Assertion.checkNotNull(taskDefinition);
 		Assertion.checkNotNull(packageName);
-		Assertion.checkNotNull(className);
+		Assertion.checkNotNull(classSimpleName);
 		//-----
 		this.taskDefinition = taskDefinition;
 		this.packageName = packageName;
-		this.className = className;
+		this.classSimpleName = classSimpleName;
 
-		testPackageName = this.packageName + "." + StringUtil.first2LowerCase(this.className) + "Test";
-		testClassName = StringUtil.first2UpperCase(getMethodName()) + "Test";
+		testPackageName = this.packageName + "." + StringUtil.first2LowerCase(this.classSimpleName) + "Test";
+		testClassSimpleName = StringUtil.first2UpperCase(getMethodName()) + "Test";
 
 		// Paramètres in
 		templateInTaskAttributes = taskDefinition.getInAttributes().stream()
@@ -76,28 +76,28 @@ public final class TemplateTaskDefinition {
 	 * @return Nom simple de la classe de test en PascalCase
 	 */
 	public String getTestClassName() {
-		return testClassName;
+		return testClassSimpleName;
 	}
 
 	/**
 	 * @return Nom canonique de la classe de test
 	 */
 	public String getTestClassCanonicalName() {
-		return testPackageName + "." + testClassName;
+		return testPackageName + "." + testClassSimpleName;
 	}
 
 	/**
 	 * @return Nom cannonique  (i.e. avec le package) de la classe d'implémentation du DAO
 	 */
 	public String getClassName() {
-		return packageName + "." + className;
+		return packageName + "." + classSimpleName;
 	}
 
 	/**
 	 * @return Nom de la variable PAO dans le test.
 	 */
 	public String getDaoVariable() {
-		return StringUtil.first2LowerCase(className);
+		return StringUtil.first2LowerCase(classSimpleName);
 	}
 
 	/**

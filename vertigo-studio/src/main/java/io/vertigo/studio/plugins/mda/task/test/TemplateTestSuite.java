@@ -28,18 +28,18 @@ import io.vertigo.lang.Assertion;
  * @author sezratty
  */
 public final class TemplateTestSuite {
-	private final String packageName;	
-	private final List<TemplateTestClass> testClasses;
+	private final String packageName;
+	private final List<TemplateTestClass> templateTestClasses;
 
 	/**
 	 * Constructeur.
 	 */
-	TemplateTestSuite(final List<TemplateTestClass> testClasses, final String packageName) {
-		Assertion.checkNotNull(testClasses);
+	TemplateTestSuite(final List<TemplateTestClass> templateTestClasses, final String packageName) {
+		Assertion.checkNotNull(templateTestClasses);
 		Assertion.checkNotNull(packageName);
 		//-----
 		this.packageName = packageName;
-		this.testClasses = testClasses;
+		this.templateTestClasses = templateTestClasses;
 	}
 
 	/**
@@ -53,6 +53,6 @@ public final class TemplateTestSuite {
 	 * @return Liste des classes de test.
 	 */
 	public List<TemplateTestClass> getTestClasses() {
-		return testClasses;
+		return templateTestClasses;
 	}
 }
