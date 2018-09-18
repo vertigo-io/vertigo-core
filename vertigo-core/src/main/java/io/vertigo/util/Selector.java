@@ -35,6 +35,7 @@ import org.reflections.scanners.TypeElementsScanner;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Tuples;
 import io.vertigo.lang.Tuples.Tuple2;
+import javassist.Modifier;
 
 /**
  * Selector of classes and methods.
@@ -308,6 +309,16 @@ public final class Selector {
 			Assertion.checkNotNull(clazz);
 			//---
 			return clazz::isAssignableFrom;
+		}
+
+		/**
+		 * Build a predicate to check if the classe is an abstract class. (we consider here that interface class are not abstract classes)
+		 * To filter interface clazz use the interfaces() ClassCondition
+		 * @param clazz the annotation
+		 * @return the predicate
+		 */
+		public static Predicate<Class> isAbstract() {
+			return clazz -> !clazz.isInterface() && Modifier.isAbstract(clazz.getModifiers());
 		}
 
 		/**

@@ -59,6 +59,7 @@ final class ComponentDiscovery {
 		final Collection<Class> components = new Selector()
 				.from(packagePrefix)
 				.filterClasses(ClassConditions.subTypeOf(componentType))
+				.filterClasses(ClassConditions.isAbstract().negate())// we filter abstract classes
 				// we ignore not discoverable classes
 				.filterClasses(ClassConditions.annotatedWith(NotDiscoverable.class).negate())
 				.findClasses();
