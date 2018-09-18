@@ -36,6 +36,7 @@ import io.vertigo.util.Selector.ClassConditions;
 import io.vertigo.util.Selector.FieldConditions;
 import io.vertigo.util.Selector.MethodConditions;
 import io.vertigo.util.data.SA;
+import io.vertigo.util.data.SAbstractD;
 import io.vertigo.util.data.SAnnotationA;
 import io.vertigo.util.data.SB;
 import io.vertigo.util.data.SC;
@@ -67,7 +68,7 @@ public final class SelectorTest {
 	public void testFromPackages() {
 		final Collection<Class> result = new Selector().from(TEST_CLASSES_PACKAGE).findClasses();
 		// ---
-		Assertions.assertEquals(4, result.size());
+		Assertions.assertEquals(5, result.size());
 	}
 
 	@Test
@@ -91,13 +92,19 @@ public final class SelectorTest {
 	}
 
 	@Test
+	public void testFilterAbstract() {
+		final List<Class> classes = new ListBuilder<Class>().add(SAbstractD.class).add(SA.class).add(SB.class).add(SC.class).build();
+		Assertions.assertEquals(1, new Selector().from(classes).filterClasses(ClassConditions.isAbstract()).findClasses().size());
+	}
+
+	@Test
 	public void testFilterBySubtype() {
 		final Collection<Class> result = new Selector()
 				.from(TEST_CLASSES_PACKAGE)
 				.filterClasses(ClassConditions.subTypeOf(Component.class))
 				.findClasses();
 		// ---
-		Assertions.assertEquals(2, result.size());
+		Assertions.assertEquals(3, result.size()); //SA SB SAbstractD
 	}
 
 	@Test
@@ -161,7 +168,7 @@ public final class SelectorTest {
 				.filterClasses(ClassConditions.subTypeOf(Component.class))
 				.findClasses();
 		// ---
-		Assertions.assertEquals(1, result.size());
+		Assertions.assertEquals(1, result.size()); // SA
 	}
 
 	@Test
@@ -171,7 +178,7 @@ public final class SelectorTest {
 				.filterClasses(ClassConditions.interfaces().negate())
 				.findClasses();
 		// ---
-		Assertions.assertEquals(2, result.size());
+		Assertions.assertEquals(3, result.size()); // SA SC an SAbstractC
 	}
 
 	//--- from -> filter -> find
