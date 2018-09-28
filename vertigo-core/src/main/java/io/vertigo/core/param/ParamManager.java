@@ -18,6 +18,7 @@
  */
 package io.vertigo.core.param;
 
+import java.util.Optional;
 import io.vertigo.core.component.Manager;
 
 /**
@@ -55,4 +56,12 @@ public interface ParamManager extends Manager {
 	 * @return the value of the param
 	 */
 	Param getParam(String paramName);
+	
+	/**
+	 * Returns the optional value for a param which may be present / or not, defined by its name.
+	 * 
+	 * @param paramName
+	 * @return the optional value of the param
+	 */
+	Optional<Param> getOptionalParam(String paramName);
 }

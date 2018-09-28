@@ -21,9 +21,9 @@ package io.vertigo.core.param;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import java.util.Optional;
 import javax.inject.Inject;
-
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -77,4 +77,22 @@ public abstract class AbstractParamManagerTest extends AbstractTestCaseJU4 {
 		Assertions.assertThrows(Exception.class,
 				() -> paramManager.getParam("server.port").getValueAsBoolean());
 	}
+	
+	/**
+	 * A non existing param
+	 */
+	@Test
+    public void test8() {
+	    final Optional<Param> optionalParam = paramManager.getOptionalParam("non.existing.param");
+	    Assert.assertFalse(optionalParam.isPresent());
+    }
+	
+	/**
+	 * An existing optional param
+	 */
+	@Test
+    public void test9() {
+	    final Optional<Param> optionalParam = paramManager.getOptionalParam("server.host");
+	    assertEquals("wiki", optionalParam.get().getValueAsString());
+    }
 }
