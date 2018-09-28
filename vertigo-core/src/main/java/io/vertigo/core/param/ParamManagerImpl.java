@@ -49,8 +49,8 @@ public final class ParamManagerImpl implements ParamManager {
 	/** {@inheritDoc} */
 	@Override
 	public Param getParam(final String paramName) {
-	    Optional<Param> optionalParam = getOptionalParam(paramName);
-	    return optionalParam.orElseThrow(() -> new IllegalArgumentException("param '" + paramName + "' not found"));
+	    return getOptionalParam(paramName)
+	         .orElseThrow(() -> new IllegalArgumentException("param '" + paramName + "' not found"));
 	}
 
     @Override
