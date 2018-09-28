@@ -49,19 +49,19 @@ public final class ParamManagerImpl implements ParamManager {
 	/** {@inheritDoc} */
 	@Override
 	public Param getParam(final String paramName) {
-	    return getOptionalParam(paramName)
-	         .orElseThrow(() -> new IllegalArgumentException("param '" + paramName + "' not found"));
+		return getOptionalParam(paramName)
+				.orElseThrow(() -> new IllegalArgumentException("param '" + paramName + "' not found"));
 	}
 
-    @Override
-    public Optional<Param> getOptionalParam(String paramName) {
-      Assertion.checkArgNotEmpty(paramName);
-      //-----
-      return paramPlugins
-              .stream()
-              .map(paramPlugin -> paramPlugin.getParam(paramName))
-              .filter(Optional::isPresent)
-              .map(Optional::get)
-              .findFirst();
-    }
+	@Override
+	public Optional<Param> getOptionalParam(final String paramName) {
+		Assertion.checkArgNotEmpty(paramName);
+		//-----
+		return paramPlugins
+				.stream()
+				.map(paramPlugin -> paramPlugin.getParam(paramName))
+				.filter(Optional::isPresent)
+				.map(Optional::get)
+				.findFirst();
+	}
 }
