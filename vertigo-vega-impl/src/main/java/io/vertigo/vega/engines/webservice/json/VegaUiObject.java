@@ -276,7 +276,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		final Object value = doGetTypedValue(fieldName);
 		final Domain domain = getDtField(fieldName).getDomain();
 		if (domain.getScope().isPrimitive() && !domain.isMultiple()) {
-			return domain.valueToString(value);
+			return domain.valueToString(value);// encodeValue
 		}
 		return null; // only non multiple primitives are supported (from user input)
 	}
@@ -288,7 +288,23 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		Assertion.checkNotNull(stringValue, "formatted value can't be null, but may be empty : {0}", fieldName);
 		//-----
 		final DtField dtField = getDtField(fieldName);
-		inputBuffer.put(fieldName, formatValue(dtField, stringValue));
+		//---
+		isChecked = false;
+		getDtObjectErrors().clearErrors(dtField.getName());
+		String formattedValue;
+		try {
+			final Serializable typedValue = (Serializable) dtField.getDomain().stringToValue(stringValue);// we should use an encoder instead
+			doSetTypedValue(dtField, typedValue);
+			// succesful encoding we can format and put in the inputbuffer
+			formattedValue = dtField.getDomain().valueToString(typedValue);
+		} catch (final FormatterException e) { //We don't log nor rethrow this exception // it should be an encoding exception
+			/** Erreur de typage.	 */
+			//encoding error
+			getDtObjectErrors().addError(StringUtil.constToLowerCamelCase(dtField.getName()), e.getMessageText());
+			formattedValue = stringValue;
+		}
+
+		inputBuffer.put(fieldName, formattedValue);
 
 	}
 
@@ -353,24 +369,10 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 * @param dtField Champs
 	 * @return Si le champs a une erreur de formatage
 	 */
-	boolean hasFormatError(final String fieldName) {
+	protected boolean hasFormatError(final String fieldName) {
 		Assertion.checkArgNotEmpty(fieldName);
 		//-----
 		return isModified(fieldName) && getDtObjectErrors().hasError(fieldName);
-	}
-
-	private String formatValue(final DtField dtField, final String value) {
-		isChecked = false;
-		getDtObjectErrors().clearErrors(dtField.getName());
-		try {
-			final Serializable typedValue = (Serializable) dtField.getDomain().stringToValue(value);
-			doSetTypedValue(dtField, typedValue);
-			return dtField.getDomain().valueToString(typedValue);
-		} catch (final FormatterException e) { //We don't log nor rethrow this exception
-			/** Erreur de typage.	 */
-			getDtObjectErrors().addError(StringUtil.constToLowerCamelCase(dtField.getName()), e.getMessageText());
-			return value;
-		}
 	}
 
 	private void doSetTypedValue(final DtField dtField, final Serializable typedValue) {
