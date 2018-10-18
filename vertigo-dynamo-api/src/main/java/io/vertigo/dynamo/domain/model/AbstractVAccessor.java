@@ -44,7 +44,7 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 	private State status = State.NOT_LOADED;
 	private final DefinitionReference<DtDefinition> targetDtDefinitionRef;
 	private final String role;
-	private URI<E> targetURI;
+	private UID<E> targetUID;
 	private E value;
 
 	/**
@@ -86,22 +86,22 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 	/**
 	 * @return the entity uri
 	 */
-	public final URI<E> getURI() {
-		return targetURI;
+	public final UID<E> getURI() {
+		return targetUID;
 	}
 
 	/**
 	 * @return the entity id
 	 */
 	public final Serializable getId() {
-		return targetURI == null ? null : targetURI.getId();
+		return targetUID == null ? null : targetUID.getId();
 	}
 
 	/**
 	 * Loads the value if needed.
 	 */
 	public void load() {
-		value = targetURI == null ? null : getDataStore().readOne(targetURI);
+		value = targetUID == null ? null : getDataStore().readOne(targetUID);
 		status = State.LOADED;
 	}
 
@@ -113,7 +113,7 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 		Assertion.checkNotNull(entity);
 		//---
 		value = entity;
-		targetURI = entity.getURI();
+		targetUID = entity.getUID();
 		status = State.LOADED;
 	}
 
@@ -126,7 +126,7 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 		//---
 		//If already loaded and same id, we don't touch anything
 		if (!(status == State.LOADED && isSameId(id))) {
-			targetURI = id == null ? null : new URI(targetDtDefinitionRef.get(), id);
+			targetUID = id == null ? null : new UID(targetDtDefinitionRef.get(), id);
 			//we have to reset the value and the state
 			value = null;
 			status = State.NOT_LOADED;
@@ -134,20 +134,20 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 	}
 	
 	private boolean isSameId(final Serializable id) {
-		if (targetURI == null) {
+		if (targetUID == null) {
 			return id == null;
 		}
-		return targetURI.getId().equals(id);
+		return targetUID.getId().equals(id);
 	}
 
 	/**
 	 * Sets the entity uri
 	 * @param uri the entity uri
 	 */
-	public final void setUri(final URI<E> uri) {
+	public final void setUri(final UID<E> uri) {
 		Assertion.checkNotNull(uri);
 		//---
-		targetURI = uri; //maybe null
+		targetUID = uri; //maybe null
 		//we have to reset the value and the state
 		value = null;
 		status = State.NOT_LOADED;

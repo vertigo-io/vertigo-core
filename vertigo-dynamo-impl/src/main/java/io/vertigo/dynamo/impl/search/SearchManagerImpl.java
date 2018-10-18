@@ -47,7 +47,7 @@ import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.dynamo.search.SearchManager;
@@ -68,7 +68,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	private final SearchServicesPlugin searchServicesPlugin;
 
 	private final ScheduledExecutorService executorService; //TODO : replace by WorkManager to make distributed work easier
-	private final Map<String, Set<URI<? extends KeyConcept>>> dirtyElementsPerIndexName = new HashMap<>();
+	private final Map<String, Set<UID<? extends KeyConcept>>> dirtyElementsPerIndexName = new HashMap<>();
 
 	/**
 	 * Constructor.
@@ -98,7 +98,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	@Override
 	public void start() {
 		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
-			final Set<URI<? extends KeyConcept>> dirtyElements = new LinkedHashSet<>();
+			final Set<UID<? extends KeyConcept>> dirtyElements = new LinkedHashSet<>();
 			dirtyElementsPerIndexName.put(indexDefinition.getName(), dirtyElements);
 			executorService.scheduleWithFixedDelay(new ReindexTask(indexDefinition, dirtyElements, this), 1, 1, TimeUnit.SECONDS); //on dépile les dirtyElements toutes les 1 secondes
 		}
@@ -124,7 +124,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 				Thread.currentThread().interrupt(); //si interrupt on relance
 			}
 			remaningDirty = 0;
-			for (final Set<URI<? extends KeyConcept>> dirtyElements : dirtyElementsPerIndexName.values()) {
+			for (final Set<UID<? extends KeyConcept>> dirtyElements : dirtyElementsPerIndexName.values()) {
 				remaningDirty += dirtyElements.size();
 			}
 		} while (remaningDirty > 0 && System.currentTimeMillis() - time < timeoutSeconds * 1000);
@@ -182,7 +182,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final URI<S> uri) {
+	public <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final UID<S> uri) {
 		analyticsManager.trace(
 				CATEGORY,
 				"/remove/" + indexDefinition.getName(),
@@ -235,7 +235,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public void markAsDirty(final List<URI<? extends KeyConcept>> keyConceptUris) {
+	public void markAsDirty(final List<UID<? extends KeyConcept>> keyConceptUris) {
 		Assertion.checkNotNull(keyConceptUris);
 		Assertion.checkArgument(!keyConceptUris.isEmpty(), "dirty keyConceptUris cant be empty");
 		//-----
@@ -244,7 +244,7 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 		Assertion.checkNotNull(!searchIndexDefinitions.isEmpty(), "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptDefinition.getName());
 		//-----
 		for (final SearchIndexDefinition searchIndexDefinition : searchIndexDefinitions) {
-			final Set<URI<? extends KeyConcept>> dirtyElements = dirtyElementsPerIndexName.get(searchIndexDefinition.getName());
+			final Set<UID<? extends KeyConcept>> dirtyElements = dirtyElementsPerIndexName.get(searchIndexDefinition.getName());
 			synchronized (dirtyElements) {
 				dirtyElements.addAll(keyConceptUris);
 			}
@@ -265,11 +265,11 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	 */
 	@EventBusSubscribed
 	public void onEvent(final StoreEvent storeEvent) {
-		final URI uri = storeEvent.getUri();
+		final UID uri = storeEvent.getUri();
 		//On ne traite l'event que si il porte sur un KeyConcept
 		if (uri.getDefinition().getStereotype() == DtStereotype.KeyConcept
 				&& hasIndexDefinitionByKeyConcept(uri.getDefinition())) {
-			final List<URI<? extends KeyConcept>> list = Collections.singletonList(uri);
+			final List<UID<? extends KeyConcept>> list = Collections.singletonList(uri);
 			markAsDirty(list);
 		}
 	}

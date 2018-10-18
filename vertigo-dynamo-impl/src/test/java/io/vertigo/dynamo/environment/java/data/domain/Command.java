@@ -21,7 +21,7 @@ package io.vertigo.dynamo.environment.java.data.domain;
 import io.vertigo.dynamo.domain.model.EnumVAccessor;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.ListVAccessor;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -90,8 +90,8 @@ public final class Command implements KeyConcept {
 	/** {@inheritDoc} */
 	@javax.persistence.Transient
 	@Override
-	public URI<Command> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<Command> getUID() {
+		return DtObjectUtil.createUID(this);
 	}
 
 	/**
@@ -182,7 +182,7 @@ public final class Command implements KeyConcept {
 	 */
 	@Deprecated
 	@javax.persistence.Transient
-	public io.vertigo.dynamo.domain.model.URI<City> getCityURI() {
+	public io.vertigo.dynamo.domain.model.UID<City> getCityURI() {
 		return citIdAccessor.getURI();
 	}
 
@@ -244,7 +244,7 @@ public final class Command implements KeyConcept {
 	 */
 	@Deprecated
 	@javax.persistence.Transient
-	public io.vertigo.dynamo.domain.model.URI<CommandType> getCommandTypeURI() {
+	public io.vertigo.dynamo.domain.model.UID<CommandType> getCommandTypeURI() {
 		return ctyIdAccessor.getURI();
 	}
 

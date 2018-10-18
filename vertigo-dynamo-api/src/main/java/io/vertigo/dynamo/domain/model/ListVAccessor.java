@@ -92,9 +92,9 @@ public final class ListVAccessor<E extends Entity> implements Serializable {
 	public final DtListURIForAssociation getDtListURI() {
 		final AssociationDefinition associationDefinition = associationDefinitionReference.get();
 		if (associationDefinition instanceof AssociationSimpleDefinition) {
-			return new DtListURIForSimpleAssociation((AssociationSimpleDefinition) associationDefinition, entity.getURI(), roleName);
+			return new DtListURIForSimpleAssociation((AssociationSimpleDefinition) associationDefinition, entity.getUID(), roleName);
 		} else if (associationDefinition instanceof AssociationNNDefinition) {
-			return new DtListURIForNNAssociation((AssociationNNDefinition) associationDefinition, entity.getURI(), roleName);
+			return new DtListURIForNNAssociation((AssociationNNDefinition) associationDefinition, entity.getUID(), roleName);
 		}
 		throw new VSystemException("Unhandled type of association. Only Simple and NN Associations are supported");
 	}
@@ -104,7 +104,7 @@ public final class ListVAccessor<E extends Entity> implements Serializable {
 	 */
 	public final void load() {
 		// we are not lazy the uri of the parent might have changed
-		if (entity.getURI() != null) {
+		if (entity.getUID() != null) {
 			value = getDataStore().findAll(getDtListURI());
 		} else {
 			// if the uri is null we return an empty dtList

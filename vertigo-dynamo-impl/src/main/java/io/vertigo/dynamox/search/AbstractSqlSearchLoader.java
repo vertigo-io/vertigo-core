@@ -36,7 +36,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
@@ -82,7 +82,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	/** {@inheritDoc} */
 	@Override
 	@Transactional
-	protected final List<URI<S>> loadNextURI(final P lastId, final DtDefinition dtDefinition) {
+	protected final List<UID<S>> loadNextURI(final P lastId, final DtDefinition dtDefinition) {
 		try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
 			final String tableName = getTableName(dtDefinition);
 			final String taskName = "TK_SELECT_" + tableName + "_NEXT_SEARCH_CHUNK";
@@ -106,9 +106,9 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 					.execute(task)
 					.getResult();
 
-			final List<URI<S>> uris = new ArrayList<>(resultDtc.size());
+			final List<UID<S>> uris = new ArrayList<>(resultDtc.size());
 			for (final S dto : resultDtc) {
-				uris.add(new URI<S>(dtDefinition, DtObjectUtil.getId(dto)));
+				uris.add(new UID<S>(dtDefinition, DtObjectUtil.getId(dto)));
 			}
 			return uris;
 		}

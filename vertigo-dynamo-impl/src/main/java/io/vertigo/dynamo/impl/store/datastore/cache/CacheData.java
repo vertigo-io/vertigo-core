@@ -27,7 +27,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 
@@ -74,7 +74,7 @@ public final class CacheData {
 	 * @return null ou DTO
 	 * @param <E> the type of entity
 	 */
-	<E extends Entity> E getDtObject(final URI<E> uri) {
+	<E extends Entity> E getDtObject(final UID<E> uri) {
 		final DtDefinition dtDefinition = uri.getDefinition();
 		return (E) cacheManager.get(getContext(dtDefinition), uri);
 	}
@@ -88,7 +88,7 @@ public final class CacheData {
 		//-----
 		final String context = getContext(DtObjectUtil.findDtDefinition(entity));
 		//2.On met à jour l'objet
-		cacheManager.put(context, entity.getURI(), entity);
+		cacheManager.put(context, entity.getUID(), entity);
 	}
 
 	/**
@@ -114,7 +114,7 @@ public final class CacheData {
 
 		//1.On met à jour les objets
 		for (final Entity entity : dtc) {
-			cacheManager.put(context, entity.getURI(), entity);
+			cacheManager.put(context, entity.getUID(), entity);
 		}
 		//2.Puis on met à jour la liste racine : pour que la liste ne soit pas evincée par les objets
 		cacheManager.put(context, dtc.getURI(), dtc);

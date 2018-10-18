@@ -39,7 +39,7 @@ import io.vertigo.util.StringUtil;
  * @author  pchretien
  * @param <E> the type of entity
  */
-public final class URI<E extends Entity> implements Serializable {
+public final class UID<E extends Entity> implements Serializable {
 	private static final long serialVersionUID = -1L;
 	private static final char D2A_SEPARATOR = '@';
 
@@ -59,7 +59,7 @@ public final class URI<E extends Entity> implements Serializable {
 	 * @param definition Definition de la ressource
 	 * @param id Clé de la ressource
 	 */
-	public URI(final DtDefinition definition, final Object id) {
+	public UID(final DtDefinition definition, final Object id) {
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(definition);
 		definition.getIdField().get().getDomain().checkValue(id);
@@ -69,7 +69,7 @@ public final class URI<E extends Entity> implements Serializable {
 		//---
 		//Calcul de l'urn
 		urn = toURN(this);
-		Assertion.checkArgument(URI.REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, URI.REGEX_URN);
+		Assertion.checkArgument(UID.REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, UID.REGEX_URN);
 	}
 
 	/**
@@ -110,8 +110,8 @@ public final class URI<E extends Entity> implements Serializable {
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object o) {
-		if (o instanceof URI) {
-			return ((URI) o).urn.equals(this.urn);
+		if (o instanceof UID) {
+			return ((UID) o).urn.equals(this.urn);
 		}
 		return false;
 	}
@@ -132,7 +132,7 @@ public final class URI<E extends Entity> implements Serializable {
 	 * @param urn URN to parse
 	 * @return URI to result
 	 */
-	public static URI<?> fromURN(final String urn) {
+	public static UID<?> fromURN(final String urn) {
 		Assertion.checkNotNull(urn);
 		//-----
 		final int i = urn.indexOf(D2A_SEPARATOR);
@@ -141,10 +141,10 @@ public final class URI<E extends Entity> implements Serializable {
 
 		//On ne type pas, la seule chose que l'on sait est qu'il s'agit d'une définition.
 		final DtDefinition definition = Home.getApp().getDefinitionSpace().resolve(dname, DtDefinition.class);
-		return new URI(definition, id);
+		return new UID(definition, id);
 	}
 
-	private static String toURN(final URI<?> uri) {
+	private static String toURN(final UID<?> uri) {
 		final String idAsText = idToString(uri.getId());
 		return uri.getDefinition().getName() + D2A_SEPARATOR + idAsText;
 	}
@@ -165,7 +165,7 @@ public final class URI<E extends Entity> implements Serializable {
 		} else if (key instanceof Long) {
 			return "l-" + key;
 		}
-		throw new IllegalArgumentException(key.toString() + " not supported by URI");
+		throw new IllegalArgumentException(key.toString() + " not supported by UID");
 	}
 
 	/**
@@ -183,6 +183,6 @@ public final class URI<E extends Entity> implements Serializable {
 		} else if (strValue.startsWith("l-")) {
 			return Long.valueOf(strValue.substring(2));
 		}
-		throw new IllegalArgumentException(strValue + " not supported by URI");
+		throw new IllegalArgumentException(strValue + " not supported by UID");
 	}
 }

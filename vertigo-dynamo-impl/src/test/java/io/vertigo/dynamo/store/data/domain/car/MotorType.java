@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.store.data.domain.car;
 
 import io.vertigo.dynamo.domain.model.DtStaticMasterData;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -40,8 +40,8 @@ public final class MotorType implements DtStaticMasterData {
 	/** {@inheritDoc} */
 	@javax.persistence.Transient
 	@Override
-	public URI<MotorType> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<MotorType> getUID() {
+		return DtObjectUtil.createUID(this);
 	}
 
 	/**

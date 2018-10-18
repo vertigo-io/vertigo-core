@@ -29,5 +29,5 @@ public interface MasterDataEnum<E extends Entity> {
 	 * Return the URI of the target entity represented by the enum value
 	 * @return the target uri
 	 */
-	URI<E> getEntityUri();
+	UID<E> getEntityUri();
 }

@@ -67,7 +67,7 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.ListVAccessor;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.JsonExclude;
@@ -398,18 +398,18 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
-	private static final class URIJsonAdapter implements JsonSerializer<URI>, JsonDeserializer<URI> {
+	private static final class URIJsonAdapter implements JsonSerializer<UID>, JsonDeserializer<UID> {
 
 		/** {@inheritDoc} */
 		@Override
-		public JsonElement serialize(final URI uri, final Type typeOfSrc, final JsonSerializationContext context) {
+		public JsonElement serialize(final UID uri, final Type typeOfSrc, final JsonSerializationContext context) {
 			return new JsonPrimitive(uri.urn());
 		}
 
 		/** {@inheritDoc} */
 		@Override
-		public URI deserialize(final JsonElement json, final Type paramType, final JsonDeserializationContext paramJsonDeserializationContext) {
-			return URI.fromURN(json.getAsString());
+		public UID deserialize(final JsonElement json, final Type paramType, final JsonDeserializationContext paramJsonDeserializationContext) {
+			return UID.fromURN(json.getAsString());
 		}
 	}
 
@@ -511,7 +511,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.registerTypeAdapter(Optional.class, new OptionJsonSerializer())
 					.registerTypeAdapter(VAccessor.class, new VAccessorJsonSerializer())
 					.registerTypeAdapter(Class.class, new ClassJsonSerializer())
-					.registerTypeAdapter(URI.class, new URIJsonAdapter())
+					.registerTypeAdapter(UID.class, new URIJsonAdapter())
 					.addSerializationExclusionStrategy(new JsonExclusionStrategy())
 					.create();
 		} catch (InstantiationException | IllegalAccessException e) {

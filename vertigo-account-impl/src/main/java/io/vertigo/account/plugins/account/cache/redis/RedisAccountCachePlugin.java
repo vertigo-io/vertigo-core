@@ -32,7 +32,7 @@ import io.vertigo.account.impl.account.AccountCachePlugin;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
@@ -91,7 +91,7 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<Account> getAccount(final URI<Account> accountURI) {
+	public Optional<Account> getAccount(final UID<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
@@ -123,7 +123,7 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<AccountGroup> getGroup(final URI<AccountGroup> groupURI) {
+	public Optional<AccountGroup> getGroup(final UID<AccountGroup> groupURI) {
 		Assertion.checkNotNull(groupURI);
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
@@ -164,13 +164,13 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void attach(final Set<URI<Account>> accountsURI, final URI<AccountGroup> groupURI) {
+	public void attach(final Set<UID<Account>> accountsURI, final UID<AccountGroup> groupURI) {
 		Assertion.checkNotNull(accountsURI);
 		Assertion.checkNotNull(groupURI);
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
 			try (final Transaction tx = jedis.multi()) {
-				for (final URI<Account> accountURI : accountsURI) {
+				for (final UID<Account> accountURI : accountsURI) {
 					tx.sadd(SACCOUNTS_BY_GROUP_START_KEY + groupURI.getId(), accountURI.getId().toString());
 					tx.sadd(SGROUPS_BY_ACCOUNT_START_KEY + accountURI.getId(), groupURI.getId().toString());
 				}
@@ -184,13 +184,13 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void attach(final URI<Account> accountURI, final Set<URI<AccountGroup>> groupURIs) {
+	public void attach(final UID<Account> accountURI, final Set<UID<AccountGroup>> groupURIs) {
 		Assertion.checkNotNull(accountURI);
 		Assertion.checkNotNull(groupURIs);
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
 			try (final Transaction tx = jedis.multi()) {
-				for (final URI<AccountGroup> groupURI : groupURIs) {
+				for (final UID<AccountGroup> groupURI : groupURIs) {
 					tx.sadd(SACCOUNTS_BY_GROUP_START_KEY + groupURI.getId(), accountURI.getId().toString());
 					tx.sadd(SGROUPS_BY_ACCOUNT_START_KEY + accountURI.getId(), groupURI.getId().toString());
 				}
@@ -204,15 +204,15 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Set<URI<Account>> getAccountURIs(final URI<AccountGroup> groupURI) {
+	public Set<UID<Account>> getAccountURIs(final UID<AccountGroup> groupURI) {
 		Assertion.checkNotNull(groupURI);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Account.class);
-		final Set<URI<Account>> set = new HashSet<>();
+		final Set<UID<Account>> set = new HashSet<>();
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final Set<String> ids = jedis.smembers(SACCOUNTS_BY_GROUP_START_KEY + groupURI.getId());
 			for (final String id : ids) {
-				set.add(new URI<Account>(dtDefinition, id));
+				set.add(new UID<Account>(dtDefinition, id));
 			}
 			return set;
 		}
@@ -220,15 +220,15 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
+	public Set<UID<AccountGroup>> getGroupURIs(final UID<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(AccountGroup.class);
-		final Set<URI<AccountGroup>> set = new HashSet<>();
+		final Set<UID<AccountGroup>> set = new HashSet<>();
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final Set<String> ids = jedis.smembers(SGROUPS_BY_ACCOUNT_START_KEY + accountURI.getId());
 			for (final String id : ids) {
-				set.add(new URI<AccountGroup>(dtDefinition, id));
+				set.add(new UID<AccountGroup>(dtDefinition, id));
 			}
 			return set;
 		}
@@ -264,7 +264,7 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void setPhoto(final URI<Account> accountURI, final VFile photo) {
+	public void setPhoto(final UID<Account> accountURI, final VFile photo) {
 		Assertion.checkNotNull(accountURI);
 		Assertion.checkNotNull(photo);
 		//-----
@@ -282,7 +282,7 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<VFile> getPhoto(final URI<Account> accountURI) {
+	public Optional<VFile> getPhoto(final UID<Account> accountURI) {
 		final Map<String, String> result;
 		try (final Jedis jedis = redisConnector.getResource()) {
 			result = jedis.hgetAll(HPHOTO_BY_ACCOUNT_START_KEY + accountURI.getId());

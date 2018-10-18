@@ -20,7 +20,7 @@ package io.vertigo.vega.webservice.data.domain;
 
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.ListVAccessor;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -57,8 +57,8 @@ public final class Address implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<Address> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<Address> getUID() {
+		return DtObjectUtil.createUID(this);
 	}
 
 	public Long getAdrId() {

@@ -26,7 +26,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
@@ -66,7 +66,7 @@ public final class ItemSearchLoader extends AbstractSearchLoader<Long, Item, Ite
 		for (final Item item : itemDataBase.getAllItems()) {
 			itemPerId.put(item.getId(), item);
 		}
-		for (final URI<Item> uri : searchChunk.getAllURIs()) {
+		for (final UID<Item> uri : searchChunk.getAllURIs()) {
 			final Item item = itemPerId.get(uri.getId());
 			itemIndexes.add(SearchIndex.createIndex(indexDefinition, uri, item));
 		}
@@ -75,14 +75,14 @@ public final class ItemSearchLoader extends AbstractSearchLoader<Long, Item, Ite
 
 	/** {@inheritDoc} */
 	@Override
-	protected List<URI<Item>> loadNextURI(final Long lastId, final DtDefinition dtDefinition) {
+	protected List<UID<Item>> loadNextURI(final Long lastId, final DtDefinition dtDefinition) {
 		final SearchIndexDefinition indexDefinition = searchManager.findFirstIndexDefinitionByKeyConcept(Item.class);
-		final List<URI<Item>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
+		final List<UID<Item>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
 		//call loader service
 		int i = 0;
 		for (final Item item : itemDataBase.getAllItems()) {
 			if (i > lastId) {
-				uris.add(new URI(indexDefinition.getKeyConceptDtDefinition(), item.getId()));
+				uris.add(new UID(indexDefinition.getKeyConceptDtDefinition(), item.getId()));
 			}
 			if (uris.size() >= SEARCH_CHUNK_SIZE) {
 				break;

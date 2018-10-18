@@ -57,7 +57,7 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociat
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.store.StoreManager;
@@ -140,7 +140,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		return transactionManager.getCurrentTransaction();
 	}
 
-	private <E extends Entity> E loadWithoutClear(final URI<E> uri) {
+	private <E extends Entity> E loadWithoutClear(final UID<E> uri) {
 		final String serviceName = "/read/" + uri.getDefinition().getName();
 		return analyticsManager.traceWithReturn(
 				"jpa",
@@ -149,7 +149,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	}
 
-	private <E extends Entity> E doLoadWithoutClear(final ProcessAnalyticsTracer tracer, final URI<E> uri) {
+	private <E extends Entity> E doLoadWithoutClear(final ProcessAnalyticsTracer tracer, final UID<E> uri) {
 		final Class<E> objectClass = (Class<E>) ClassUtil.classForName(uri.<DtDefinition> getDefinition().getClassCanonicalName());
 		final E result = getEntityManager().find(objectClass, uri.getId());
 		tracer.setMeasure("nbSelectedRow", result != null ? 1 : 0);
@@ -182,7 +182,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final URI<E> uri) {
+	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final UID<E> uri) {
 		final E entity = this.loadWithoutClear(uri);
 		//On détache le DTO du contexte jpa
 		//De cette façon on interdit à jpa d'utiliser son cache
@@ -285,7 +285,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 				.append(" where j.").append(fkFieldName).append(" = :").append(fkFieldName)
 				.toString();
 
-		final URI uri = dtcUri.getSource();
+		final UID uri = dtcUri.getSource();
 
 		final Query q = getEntityManager().createNativeQuery(request, resultClass);
 		q.setParameter(fkFieldName, uri.getId());
@@ -341,7 +341,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final DtDefinition dtDefinition, final URI uri) {
+	public void delete(final DtDefinition dtDefinition, final UID uri) {
 		final String serviceName = "/delete/" + uri.getDefinition().getName();
 		try {
 			analyticsManager.trace(
@@ -354,7 +354,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 		}
 	}
 
-	private void doDelete(final ProcessAnalyticsTracer tracer, final URI uri) {
+	private void doDelete(final ProcessAnalyticsTracer tracer, final UID uri) {
 		final Object dto = loadWithoutClear(uri);
 		if (dto == null) {
 			throw new VSystemException("Aucune ligne supprimée");
@@ -367,7 +367,7 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
+	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final UID<?> uri) {
 		final String serviceName = "/readNullableForUpdate/" + uri.getDefinition().getName();
 
 		return analyticsManager.traceWithReturn(
