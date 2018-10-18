@@ -36,7 +36,7 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_B;
-import static io.vertigo.dynamo.plugins.environment.KspProperty.NOT_NULL;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUIRED;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.PERSISTENT;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_B;
@@ -128,7 +128,7 @@ public final class DomainGrammar implements DslGrammar {
 
 		DT_FIELD_ENTITY = DslEntity.builder("Field")
 				.addRequiredField(LABEL, String)
-				.addRequiredField(NOT_NULL, Boolean)
+				.addRequiredField(REQUIRED, Boolean)
 				.addRequiredField("domain", DOMAIN_ENTITY.getLink())
 				.addOptionalField(EXPRESSION, String)
 				.addOptionalField(PERSISTENT, Boolean)
@@ -153,7 +153,7 @@ public final class DomainGrammar implements DslGrammar {
 
 		final DslEntity fieldAliasEntity = DslEntity.builder("fieldAlias")
 				.addOptionalField(LABEL, String)
-				.addOptionalField(NOT_NULL, Boolean)
+				.addOptionalField(REQUIRED, Boolean)
 				.build();
 
 		FRAGMENT_ENTITY = DslEntity.builder("Fragment")

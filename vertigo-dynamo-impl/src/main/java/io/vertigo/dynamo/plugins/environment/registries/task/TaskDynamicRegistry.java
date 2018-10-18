@@ -76,7 +76,7 @@ public final class TaskDynamicRegistry implements DynamicRegistry {
 			final String domainName = xtaskAttribute.getDefinitionLinkName("domain");
 			final Domain domain = Home.getApp().getDefinitionSpace().resolve(domainName, Domain.class);
 			//-----
-			final boolean required = (Boolean) xtaskAttribute.getPropertyValue(KspProperty.NOT_NULL);
+			final boolean required = (Boolean) xtaskAttribute.getPropertyValue(KspProperty.REQUIRED);
 			if (isInValue((String) xtaskAttribute.getPropertyValue(KspProperty.IN_OUT))) {
 				if (required) {
 					taskDefinitionBuilder.addInRequired(attributeName, domain);

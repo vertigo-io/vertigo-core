@@ -173,7 +173,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 			final DtField aliasDtField = from.getField(alias.getName());
 
 			//--- REQUIRED
-			final Boolean overiddenRequired = (Boolean) alias.getPropertyValue(KspProperty.NOT_NULL);
+			final Boolean overiddenRequired = (Boolean) alias.getPropertyValue(KspProperty.REQUIRED);
 			final boolean required = overiddenRequired != null ? overiddenRequired : aliasDtField.isRequired();
 
 			//--- LABEL
@@ -302,8 +302,8 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 			Assertion.checkArgument(field.getPropertyNames().contains(KspProperty.LABEL), "Label est une propriété obligatoire");
 			final String label = (String) field.getPropertyValue(KspProperty.LABEL);
 			//--
-			final boolean notNull = (Boolean) field.getPropertyValue(KspProperty.NOT_NULL);
-			Assertion.checkArgument(field.getPropertyNames().contains(KspProperty.NOT_NULL), "Not null est une propriété obligatoire.");
+			final boolean notNull = (Boolean) field.getPropertyValue(KspProperty.REQUIRED);
+			Assertion.checkArgument(field.getPropertyNames().contains(KspProperty.REQUIRED), "Not null est une propriété obligatoire.");
 			//--
 			final Boolean tmpPersistent = (Boolean) field.getPropertyValue(KspProperty.PERSISTENT);
 			//Si PERSISTENT est non renseigné on suppose que le champ est à priori persistant .

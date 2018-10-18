@@ -137,7 +137,7 @@ public abstract class AbstractXmlLoader implements Loader {
 		return DslDefinition.builder(attribute.getCode(), dtFieldEntity)
 				.addPropertyValue(KspProperty.LABEL, attribute.getLabel())
 				.addPropertyValue(KspProperty.PERSISTENT, attribute.isPersistent())
-				.addPropertyValue(KspProperty.NOT_NULL, attribute.isNotNull())
+				.addPropertyValue(KspProperty.REQUIRED, attribute.isNotNull())
 				.addDefinitionLink("domain", attribute.getDomain())
 				.build();
 	}

@@ -27,7 +27,7 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_B;
-import static io.vertigo.dynamo.plugins.environment.KspProperty.NOT_NULL;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUIRED;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.PERSISTENT;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_B;
@@ -321,7 +321,7 @@ public final class AnnotationLoader implements Loader {
 		final DslDefinition dtField = DslDefinition.builder(fieldName, DomainGrammar.DT_FIELD_ENTITY)
 				.addDefinitionLink("domain", field.domain())
 				.addPropertyValue(LABEL, field.label())
-				.addPropertyValue(NOT_NULL, field.required())
+				.addPropertyValue(REQUIRED, field.required())
 				.addPropertyValue(PERSISTENT, field.persistent())
 				.build();
 
@@ -330,11 +330,11 @@ public final class AnnotationLoader implements Loader {
 				dtDefinition.addChildDefinition(DomainGrammar.ID, dtField);
 				break;
 			case DATA:
-				dtDefinition.addChildDefinition("field", dtField);
+				dtDefinition.addChildDefinition(DomainGrammar.FIELD, dtField);
 				break;
 			case COMPUTED:
 				//Valeurs renseignées automatiquement parce que l'on est dans le cas d'un champ calculé
-				dtDefinition.addChildDefinition("computed", dtField);
+				dtDefinition.addChildDefinition(DomainGrammar.COMPUTED, dtField);
 				break;
 			case FOREIGN_KEY:
 				//on ne fait rien puisque le champ est défini par une association.
