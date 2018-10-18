@@ -318,7 +318,7 @@ public final class AnnotationLoader implements Loader {
 	private static void parseAnnotation(final String fieldName, final DslDefinitionBuilder dtDefinition, final io.vertigo.dynamo.domain.stereotype.Field field) {
 		//Si on trouve un domaine on est dans un objet dynamo.
 		final FieldType type = FieldType.valueOf(field.type());
-		final DslDefinition dtField = DslDefinition.builder(fieldName, DomainGrammar.DT_FIELD_ENTITY)
+		final DslDefinition dtField = DslDefinition.builder(fieldName, DomainGrammar.DT_DATA_FIELD_ENTITY)
 				.addDefinitionLink("domain", field.domain())
 				.addPropertyValue(LABEL, field.label())
 				.addPropertyValue(REQUIRED, field.required())
@@ -327,14 +327,14 @@ public final class AnnotationLoader implements Loader {
 
 		switch (type) {
 			case ID:
-				dtDefinition.addChildDefinition(DomainGrammar.ID, dtField);
+				dtDefinition.addChildDefinition(DomainGrammar.ID_FIELD, dtField);
 				break;
 			case DATA:
-				dtDefinition.addChildDefinition(DomainGrammar.FIELD, dtField);
+				dtDefinition.addChildDefinition(DomainGrammar.DATA_FIELD, dtField);
 				break;
 			case COMPUTED:
 				//Valeurs renseignées automatiquement parce que l'on est dans le cas d'un champ calculé
-				dtDefinition.addChildDefinition(DomainGrammar.COMPUTED, dtField);
+				dtDefinition.addChildDefinition(DomainGrammar.COMPUTED_FIELD, dtField);
 				break;
 			case FOREIGN_KEY:
 				//on ne fait rien puisque le champ est défini par une association.

@@ -190,11 +190,11 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 
 		//2. adds data and computed fields
 		//Déclaration des champs du DT
-		final List<DslDefinition> fields = xdtDefinition.getChildDefinitions(DomainGrammar.FIELD);
+		final List<DslDefinition> fields = xdtDefinition.getChildDefinitions(DomainGrammar.DATA_FIELD);
 		populateDataDtField(definitionSpace, dtDefinitionBuilder, fields);
 
 		//Déclaration des champs calculés
-		final List<DslDefinition> computedFields = xdtDefinition.getChildDefinitions(DomainGrammar.COMPUTED);
+		final List<DslDefinition> computedFields = xdtDefinition.getChildDefinitions(DomainGrammar.COMPUTED_FIELD);
 		populateComputedDtField(definitionSpace, dtDefinitionBuilder, computedFields);
 
 		final DtDefinition dtDefinition = dtDefinitionBuilder
@@ -250,15 +250,15 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		dtDefinitionBuilders.put(dtDefinitionName, dtDefinitionBuilder);
 
 		//Déclaration de la clé primaire
-		final List<DslDefinition> keys = xdtDefinition.getChildDefinitions(DomainGrammar.ID);
+		final List<DslDefinition> keys = xdtDefinition.getChildDefinitions(DomainGrammar.ID_FIELD);
 		populateIdDtField(definitionSpace, dtDefinitionBuilder, keys);
 
 		//Déclaration des champs du DT
-		final List<DslDefinition> fields = xdtDefinition.getChildDefinitions(DomainGrammar.FIELD);
+		final List<DslDefinition> fields = xdtDefinition.getChildDefinitions(DomainGrammar.DATA_FIELD);
 		populateDataDtField(definitionSpace, dtDefinitionBuilder, fields);
 
 		//Déclaration des champs calculés
-		final List<DslDefinition> computedFields = xdtDefinition.getChildDefinitions(DomainGrammar.COMPUTED);
+		final List<DslDefinition> computedFields = xdtDefinition.getChildDefinitions(DomainGrammar.COMPUTED_FIELD);
 		populateComputedDtField(definitionSpace, dtDefinitionBuilder, computedFields);
 
 		return dtDefinitionBuilder.build();

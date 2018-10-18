@@ -36,8 +36,8 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_B;
-import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUIRED;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.PERSISTENT;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUIRED;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.SORT_FIELD;
@@ -67,15 +67,15 @@ public final class DomainGrammar implements DslGrammar {
 	/**
 	 * Clé des FIELD_DEFINITION de type PK utilisés dans les DT_DEFINITION.
 	 */
-	public static final String ID = "id";
+	public static final String ID_FIELD = "id";
 	/**
 	 * Clé des FIELD_DEFINITION de type FIELD utilisés dans les DT_DEFINITION.
 	 */
-	public static final String FIELD = "field";
+	public static final String DATA_FIELD = "field";
 	/**
 	 * Clé des FIELD_DEFINITION de type COMPUTED utilisés dans les DT_DEFINITION.
 	 */
-	public static final String COMPUTED = "computed";
+	public static final String COMPUTED_FIELD = "computed";
 
 	/**Définition d'une constraint.*/
 	public static final DslEntity CONSTRAINT_ENTITY;
@@ -91,7 +91,8 @@ public final class DomainGrammar implements DslGrammar {
 
 	/**Fields*/
 	public static final DslEntity DT_ID_FIELD_ENTITY;
-	public static final DslEntity DT_FIELD_ENTITY;
+	public static final DslEntity DT_DATA_FIELD_ENTITY;
+	private static final DslEntity DT_COMPUTED_FIELD_ENTITY;
 
 	public static final DslEntity DT_DEFINITION_ENTITY;
 	/**Définition d'une association simple.*/
@@ -129,32 +130,28 @@ public final class DomainGrammar implements DslGrammar {
 
 		DT_ID_FIELD_ENTITY = DslEntity.builder("IdField")
 				.addRequiredField(LABEL, String)
-			//	.addRequiredField(REQUIRED, Boolean)
 				.addRequiredField("domain", DOMAIN_ENTITY.getLink())
-			//	.addOptionalField(EXPRESSION, String)
-			//	.addOptionalField(PERSISTENT, Boolean)
 				.build();
 
-		DT_FIELD_ENTITY = DslEntity.builder("Field")
+		DT_DATA_FIELD_ENTITY = DslEntity.builder("DataField")
 				.addRequiredField(LABEL, String)
 				.addRequiredField(REQUIRED, Boolean)
 				.addRequiredField("domain", DOMAIN_ENTITY.getLink())
-				.addOptionalField(EXPRESSION, String)
 				.addOptionalField(PERSISTENT, Boolean)
 				.build();
 
-		final DslEntity computedFieldEntity = DslEntity.builder("ComputedField")
+		DT_COMPUTED_FIELD_ENTITY = DslEntity.builder("ComputedField")
 				.addRequiredField(LABEL, String)
 				.addRequiredField("domain", DOMAIN_ENTITY.getLink())
-				.addRequiredField(EXPRESSION, String)
+				.addOptionalField(EXPRESSION, String)
 				.build();
 
 		DT_DEFINITION_ENTITY = DslEntity.builder("DtDefinition")
 				.addOptionalField(DISPLAY_FIELD, String)
 				.addOptionalField(SORT_FIELD, String)
-				.addManyFields(FIELD, DT_FIELD_ENTITY)
-				.addManyFields(COMPUTED, computedFieldEntity)
-				.addOptionalField(ID, DT_ID_FIELD_ENTITY)
+				.addManyFields(DATA_FIELD, DT_DATA_FIELD_ENTITY)
+				.addManyFields(COMPUTED_FIELD, DT_COMPUTED_FIELD_ENTITY)
+				.addOptionalField(ID_FIELD, DT_ID_FIELD_ENTITY)
 				.addOptionalField(FRAGMENT_OF, String)
 				.addOptionalField(STEREOTYPE, String)
 				.addOptionalField(DATA_SPACE, String)
@@ -170,8 +167,8 @@ public final class DomainGrammar implements DslGrammar {
 				.addManyFields("alias", fieldAliasEntity) //on peut ajouter des champs
 				.addOptionalField(DISPLAY_FIELD, String)
 				.addOptionalField(SORT_FIELD, String)
-				.addManyFields(FIELD, DT_FIELD_ENTITY) //on peut ajouter des champs
-				.addManyFields(COMPUTED, computedFieldEntity) //et des computed
+				.addManyFields(DATA_FIELD, DT_DATA_FIELD_ENTITY) //on peut ajouter des champs
+				.addManyFields(COMPUTED_FIELD, DT_COMPUTED_FIELD_ENTITY) //et des computed
 				.build();
 
 		ASSOCIATION_ENTITY = DslEntity.builder("Association")

@@ -122,17 +122,17 @@ public abstract class AbstractXmlLoader implements Loader {
 
 		for (final XmlAttribute attribute : clazz.getKeyAttributes()) {
 			final DslDefinition dtField = toDynamicDefinition(attribute);
-			dtDefinitionBuilder.addChildDefinition(DomainGrammar.ID, dtField);
+			dtDefinitionBuilder.addChildDefinition(DomainGrammar.ID_FIELD, dtField);
 		}
 		for (final XmlAttribute tagAttribute : clazz.getFieldAttributes()) {
 			final DslDefinition dtField = toDynamicDefinition(tagAttribute);
-			dtDefinitionBuilder.addChildDefinition(DomainGrammar.FIELD, dtField);
+			dtDefinitionBuilder.addChildDefinition(DomainGrammar.DATA_FIELD, dtField);
 		}
 		return dtDefinitionBuilder.build();
 	}
 
 	private static DslDefinition toDynamicDefinition(final XmlAttribute attribute) {
-		final DslEntity dtFieldEntity = DomainGrammar.DT_FIELD_ENTITY;
+		final DslEntity dtFieldEntity = DomainGrammar.DT_DATA_FIELD_ENTITY;
 
 		return DslDefinition.builder(attribute.getCode(), dtFieldEntity)
 				.addPropertyValue(KspProperty.LABEL, attribute.getLabel())
@@ -199,7 +199,7 @@ public abstract class AbstractXmlLoader implements Loader {
 		final DslDefinition dtDefinitionB = dynamicModelrepository.getDefinition(getDtDefinitionName(association.getCodeB()));
 
 		final DslDefinition foreignDefinition = AssociationUtil.isAPrimaryNode(association.getMultiplicityA(), association.getMultiplicityB()) ? dtDefinitionA : dtDefinitionB;
-		final List<DslDefinition> primaryKeys = foreignDefinition.getChildDefinitions(DomainGrammar.ID);
+		final List<DslDefinition> primaryKeys = foreignDefinition.getChildDefinitions(DomainGrammar.ID_FIELD);
 		if (primaryKeys.isEmpty()) {
 			throw new IllegalArgumentException("Pour l'association '" + association.getCode() + "' aucune clé primaire sur la définition '" + foreignDefinition.getName() + "'");
 		}
