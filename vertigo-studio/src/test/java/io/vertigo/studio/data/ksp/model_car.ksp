@@ -1,20 +1,20 @@
 package io.vertigo.studio.domain.car
 
 create DtDefinition DT_CAR {
-		key ID  			{ domain:DO_ID,			label:"identifiant de la voiture", 	notNull : "true"}
-		field MANUFACTURER  { domain:DO_KEYWORD, 	label:"Constructeur",  				notNull : "true"}
-		field MODEL   		{ domain:DO_FULL_TEXT, 	label:"Modèle",  					notNull : "true"}
-		field DESCRIPTION   { domain:DO_FULL_TEXT, 	label:"Descriptif"  				notNull : "true"}
-		field YEAR   		{ domain:DO_INTEGER, 	label:"Année",  					notNull : "true"}
-		field KILO   		{ domain:DO_INTEGER, 	label:"Kilométrage",  				notNull : "true"}
-		field PRICE   		{ domain:DO_INTEGER, 	label:"Prix",  						notNull : "true"}
-		field CONSOMMATION	{ domain:DO_CONSO, 	    label:"Consommation",  				notNull : "true"}
+		key ID  			{ domain:DO_ID,			label:"identifiant de la voiture", 	required : "true"}
+		field MANUFACTURER  { domain:DO_KEYWORD, 	label:"Constructeur",  				required : "true"}
+		field MODEL   		{ domain:DO_FULL_TEXT, 	label:"Modèle",  					required : "true"}
+		field DESCRIPTION   { domain:DO_FULL_TEXT, 	label:"Descriptif"  				required : "true"}
+		field YEAR   		{ domain:DO_INTEGER, 	label:"Année",  					required : "true"}
+		field KILO   		{ domain:DO_INTEGER, 	label:"Kilométrage",  				required : "true"}
+		field PRICE   		{ domain:DO_INTEGER, 	label:"Prix",  						required : "true"}
+		field CONSOMMATION	{ domain:DO_CONSO, 	    label:"Consommation",  				required : "true"}
 }
 
 create DtDefinition DT_MOTOR_TYPE {
 		stereotype : "StaticMasterData",
-		key MTY_CD 			{ domain:DO_STRING,			label:"id",			notNull : "true"}
-		field LABEL  		{ domain:DO_FULL_TEXT, 		label:"Label",		notNull : "true"}		
+		key MTY_CD 			{ domain:DO_STRING,			label:"id",			required : "true"}
+		field LABEL  		{ domain:DO_FULL_TEXT, 		label:"Label",		required : "true"}		
 }
 
 create Association A_MTY_CAR {
@@ -38,6 +38,6 @@ create Association A_MTY_CAR {
 create Task TK_LIST_CARS {
 	className : "io.vertigo.studio.data.domain.CarEngine"
 	request : "hello"
-    attribute DTO_CAR_IN 	{domain:DO_DT_CAR_DTO, notNull:"true", inOut :"in"}
-    attribute DTO_CAR_OUT 	{domain:DO_DT_CAR_DTO, notNull:"true", inOut :"out"}
+    attribute DTO_CAR_IN 	{domain:DO_DT_CAR_DTO, required:"true", inOut :"in"}
+    attribute DTO_CAR_OUT 	{domain:DO_DT_CAR_DTO, required:"true", inOut :"out"}
 }

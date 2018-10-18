@@ -15,12 +15,12 @@ create Domain DO_STRING {
 }
 
 create DtDefinition DT_TEST_ENTITY {
-	key ID			{domain : DO_ID, 		label :"Id", 					notNull:"true"  }
-	field LABEL   	{domain : DO_STRING, 	label :"label", 				notNull:"false" }
+	key ID			{domain : DO_ID, 		label :"Id", 					required:"true"  }
+	field LABEL   	{domain : DO_STRING, 	label :"label", 				required:"false" }
 }
 
 create DtDefinition DT_TEST_VOBJECT {
-	field LABEL   	{domain : DO_STRING, 	label :"label", 				notNull:"false" }
+	field LABEL   	{domain : DO_STRING, 	label :"label", 				required:"false" }
 }
 
 create Association A_VOB_ENT {

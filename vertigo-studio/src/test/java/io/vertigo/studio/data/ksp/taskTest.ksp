@@ -6,7 +6,7 @@ create Task TK_GET_FIRST_CAR {
 				select * from car
 				limit 1
 			"
-	attribute DTO_CAR {domain : DO_DT_CAR_DTO  notNull:"false" inOut :"out"}
+	attribute DTO_CAR {domain : DO_DT_CAR_DTO  required:"false" inOut :"out"}
 }
 
 
@@ -16,7 +16,7 @@ create Task TK_PING {
     request : "
 				select 1
 			"
-	attribute RESULT {domain : DO_INTEGER  notNull:"false" inOut :"out"}
+	attribute RESULT {domain : DO_INTEGER  required:"false" inOut :"out"}
 }
 
 
@@ -26,8 +26,8 @@ create Task TK_ONE_PARAM_SELECT {
 				select 1 where 1 = #INPUT#
 	
 			"
-	attribute INPUT {domain : DO_INTEGER  notNull:"true" inOut :"in"}
-	attribute RESULT {domain : DO_INTEGER  notNull:"true" inOut :"out"}
+	attribute INPUT {domain : DO_INTEGER  required:"true" inOut :"in"}
+	attribute RESULT {domain : DO_INTEGER  required:"true" inOut :"out"}
 }
 
 create Task TK_ONE_LIST_PARAM_SELECT {
@@ -36,8 +36,8 @@ create Task TK_ONE_LIST_PARAM_SELECT {
 				select 1 where 1 in  (#INPUT.ROWNUM#)
 	
 			"
-	attribute INPUT {domain : DO_INTEGERS  notNull:"true" inOut :"in"}
-	attribute RESULT {domain : DO_INTEGER  notNull:"true" inOut :"out"}
+	attribute INPUT {domain : DO_INTEGERS  required:"true" inOut :"in"}
+	attribute RESULT {domain : DO_INTEGER  required:"true" inOut :"out"}
 }
 
 
@@ -46,6 +46,6 @@ create Task TK_SELECT_CAR_BY_IDS {
     request : "
 				select * from car where id in (#INPUT.ROWNUM.ID#)
 			"
-	attribute INPUT {domain : DO_DT_CAR_DTC  notNull:"true" inOut :"in"}		
-	attribute DTO_CAR {domain : DO_DT_CAR_DTC  notNull:"true" inOut :"out"}
+	attribute INPUT {domain : DO_DT_CAR_DTC  required:"true" inOut :"in"}		
+	attribute DTO_CAR {domain : DO_DT_CAR_DTC  required:"true" inOut :"out"}
 }

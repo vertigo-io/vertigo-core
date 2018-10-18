@@ -3,16 +3,16 @@ package io.vertigo.studio.domain.security
 
 create DtDefinition DT_RECORD {
 	stereotype : "KeyConcept"
-	key	  DOS_ID				{domain: DO_ID 		label: "Id" 				notNull:"true" }
+	key	  DOS_ID				{domain: DO_ID 		label: "Id" 				required:"true" }
 	
-	field REG_ID 				{domain: DO_ID label: "Region" notNull:"false" }
-  	field DEP_ID 				{domain: DO_ID label: "Departement" notNull:"false" }
-  	field COM_ID 				{domain: DO_ID label: "Commune" notNull:"false" }
+	field REG_ID 				{domain: DO_ID label: "Region" required:"false" }
+  	field DEP_ID 				{domain: DO_ID label: "Departement" required:"false" }
+  	field COM_ID 				{domain: DO_ID label: "Commune" required:"false" }
   
-  	field TYP_ID 				{domain: DO_ID label: "Record type" 	notNull:"true"}
-	field TITLE 				{domain: DO_STRING label: "Title" 	notNull:"true"}
-	field AMOUNT 				{domain: DO_CONSO label: "Amount" 	notNull:"true"}
-	field UTI_ID_OWNER 			{domain: DO_ID label: "Owner" notNull:"true" }
+  	field TYP_ID 				{domain: DO_ID label: "Record type" 	required:"true"}
+	field TITLE 				{domain: DO_STRING label: "Title" 	required:"true"}
+	field AMOUNT 				{domain: DO_CONSO label: "Amount" 	required:"true"}
+	field UTI_ID_OWNER 			{domain: DO_ID label: "Owner" required:"true" }
   
-  	field ETA_CD 				{domain: DO_STRING label: "State" 	notNull:"true"}	
+  	field ETA_CD 				{domain: DO_STRING label: "State" 	required:"true"}	
 }

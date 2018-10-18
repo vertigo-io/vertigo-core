@@ -2,19 +2,19 @@ package io.vertigo.studio.domain.stereotype
 
 create DtDefinition DT_COMMAND {
 		stereotype : "KeyConcept"
-		key CMD_ID 			{ domain:DO_ID,label:"id", notNull:"true"}
+		key CMD_ID 			{ domain:DO_ID,label:"id", required:"true"}
 }
 
 create DtDefinition DT_COMMAND_TYPE {
 		stereotype : "StaticMasterData",
-		key CTY_ID 			{ domain:DO_ID,	label:"id",			notNull : "true"}
-		field LABEL  		{ domain:DO_FULL_TEXT, 		label:"Label",		notNull : "true"}		
+		key CTY_ID 			{ domain:DO_ID,	label:"id",			required : "true"}
+		field LABEL  		{ domain:DO_FULL_TEXT, 		label:"Label",		required : "true"}		
 }
 
 create DtDefinition DT_CITY {
-		key CIT_ID 			{ domain:DO_ID,	label:"id",			notNull : "true"}
-		field LABEL  		{ domain:DO_FULL_TEXT, 		label:"Label",		notNull : "true"}	
-		field POSTAL_CODE	{ domain:DO_KEYWORD, 		label:"Postal code",notNull : "true"}			
+		key CIT_ID 			{ domain:DO_ID,	label:"id",			required : "true"}
+		field LABEL  		{ domain:DO_FULL_TEXT, 		label:"Label",		required : "true"}	
+		field POSTAL_CODE	{ domain:DO_KEYWORD, 		label:"Postal code",required : "true"}			
 }
 
 alter  DtDefinition DT_CITY {
@@ -22,13 +22,13 @@ alter  DtDefinition DT_CITY {
 }
 
 create DtDefinition DT_ATTACHMENT {
-		key ATT_ID 			{ domain:DO_ID,	label:"id",			notNull : "true"}
-		field URL  			{ domain:DO_KEYWORD, 		label:"Url",		notNull : "true"}	
+		key ATT_ID 			{ domain:DO_ID,	label:"id",			required : "true"}
+		field URL  			{ domain:DO_KEYWORD, 		label:"Url",		required : "true"}	
 }
 
 create DtDefinition DT_COMMAND_VALIDATION {
-		key CVA_ID 			{ domain:DO_ID,	label:"id",			notNull : "true"}
-		field SIGNER_NAME	{ domain:DO_FULL_TEXT, 		label:"Signer name",notNull : "true"}	
+		key CVA_ID 			{ domain:DO_ID,	label:"id",			required : "true"}
+		field SIGNER_NAME	{ domain:DO_FULL_TEXT, 		label:"Signer name",required : "true"}	
 }
 
 

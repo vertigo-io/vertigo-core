@@ -61,7 +61,7 @@ public final class KspProperty {
 	/**
 	 * Propriété standard : champ obligatoire, valeur Boolean.
 	 */
-	public static final String REQUIRED = "NOT_NULL";
+	public static final String REQUIRED = "REQUIRED";
 
 	/**
 	 * Propriété liée au dataStore : La donnée est-elle gérée en mode write par le dataSore.

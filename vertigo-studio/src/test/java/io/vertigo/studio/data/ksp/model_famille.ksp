@@ -1,8 +1,8 @@
 package io.vertigo.studio.domain.famille
 
 create DtDefinition DT_FAMILLE {
-		key FAM_ID 	{ domain:DO_ID, 	label:"identifiant de la famille",  notNull : "true" }
-		field LIBELLE {domain:DO_STRING, 		label:"Libelle",  					notNull : "false"}
+		key FAM_ID 	{ domain:DO_ID, 	label:"identifiant de la famille",  required : "true" }
+		field LIBELLE {domain:DO_STRING, 		label:"Libelle",  			required : "false"}
 }
 
 alter DtDefinition DT_FAMILLE {
