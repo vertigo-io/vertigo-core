@@ -67,7 +67,7 @@ public final class DomainGrammar implements DslGrammar {
 	/**
 	 * Clé des FIELD_DEFINITION de type PK utilisés dans les DT_DEFINITION.
 	 */
-	public static final String ID = "key";
+	public static final String ID = "id";
 	/**
 	 * Clé des FIELD_DEFINITION de type FIELD utilisés dans les DT_DEFINITION.
 	 */
@@ -89,7 +89,8 @@ public final class DomainGrammar implements DslGrammar {
 			.withProvided()
 			.build();
 
-	/**Field*/
+	/**Fields*/
+	public static final DslEntity DT_ID_FIELD_ENTITY;
 	public static final DslEntity DT_FIELD_ENTITY;
 
 	public static final DslEntity DT_DEFINITION_ENTITY;
@@ -126,6 +127,14 @@ public final class DomainGrammar implements DslGrammar {
 				.addManyFields("constraint", CONSTRAINT_ENTITY.getLink())
 				.build();
 
+		DT_ID_FIELD_ENTITY = DslEntity.builder("IdField")
+				.addRequiredField(LABEL, String)
+			//	.addRequiredField(REQUIRED, Boolean)
+				.addRequiredField("domain", DOMAIN_ENTITY.getLink())
+			//	.addOptionalField(EXPRESSION, String)
+			//	.addOptionalField(PERSISTENT, Boolean)
+				.build();
+
 		DT_FIELD_ENTITY = DslEntity.builder("Field")
 				.addRequiredField(LABEL, String)
 				.addRequiredField(REQUIRED, Boolean)
@@ -145,7 +154,7 @@ public final class DomainGrammar implements DslGrammar {
 				.addOptionalField(SORT_FIELD, String)
 				.addManyFields(FIELD, DT_FIELD_ENTITY)
 				.addManyFields(COMPUTED, computedFieldEntity)
-				.addOptionalField(ID, DT_FIELD_ENTITY)
+				.addOptionalField(ID, DT_ID_FIELD_ENTITY)
 				.addOptionalField(FRAGMENT_OF, String)
 				.addOptionalField(STEREOTYPE, String)
 				.addOptionalField(DATA_SPACE, String)

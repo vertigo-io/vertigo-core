@@ -1,7 +1,7 @@
 package io.vertigo.studio.domain.car
 
 create DtDefinition DT_CAR {
-		key ID  			{ domain:DO_ID,			label:"identifiant de la voiture", 	required : "true"}
+		id  ID  			{ domain:DO_ID,			label:"identifiant de la voiture" }
 		field MANUFACTURER  { domain:DO_KEYWORD, 	label:"Constructeur",  				required : "true"}
 		field MODEL   		{ domain:DO_FULL_TEXT, 	label:"Modèle",  					required : "true"}
 		field DESCRIPTION   { domain:DO_FULL_TEXT, 	label:"Descriptif"  				required : "true"}
@@ -13,7 +13,7 @@ create DtDefinition DT_CAR {
 
 create DtDefinition DT_MOTOR_TYPE {
 		stereotype : "StaticMasterData",
-		key MTY_CD 			{ domain:DO_STRING,			label:"id",			required : "true"}
+		id MTY_CD 			{ domain:DO_STRING,			label:"id"}
 		field LABEL  		{ domain:DO_FULL_TEXT, 		label:"Label",		required : "true"}		
 }
 

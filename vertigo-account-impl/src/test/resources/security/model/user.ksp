@@ -3,6 +3,6 @@ package io.vertigo.account.identityprovider.model
 
 create DtDefinition DT_USER {
 	stereotype : "KeyConcept"
-	key	  USR_ID				{domain: DO_CODE	label: "Id" 	required:"true" }	
-	field FULL_NAME 			{domain: DO_LABEL label: "FullName"	required:"true" }	
+	id	  USR_ID				{domain: DO_CODE	label: "Id" }	
+	field FULL_NAME 			{domain: DO_LABEL 	label: "FullName"	required:"true" }	
 }

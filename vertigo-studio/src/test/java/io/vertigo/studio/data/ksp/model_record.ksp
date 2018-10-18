@@ -3,7 +3,7 @@ package io.vertigo.studio.domain.security
 
 create DtDefinition DT_RECORD {
 	stereotype : "KeyConcept"
-	key	  DOS_ID				{domain: DO_ID 		label: "Id" 				required:"true" }
+	id	  DOS_ID				{domain: DO_ID 		label: "Id"}
 	
 	field REG_ID 				{domain: DO_ID label: "Region" required:"false" }
   	field DEP_ID 				{domain: DO_ID label: "Departement" required:"false" }
