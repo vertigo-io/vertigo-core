@@ -22,7 +22,6 @@ import java.io.Serializable;
 
 import io.vertigo.dynamo.domain.model.MasterDataEnum;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 public enum CommandTypeEnum implements MasterDataEnum<CommandType> {
 
@@ -33,7 +32,7 @@ public enum CommandTypeEnum implements MasterDataEnum<CommandType> {
 	private final URI<CommandType> entityUri;
 
 	private CommandTypeEnum(final Serializable id) {
-		entityUri = DtObjectUtil.createURI(CommandType.class, id);
+		entityUri = URI.of(CommandType.class, id);
 	}
 
 	@Override

@@ -43,7 +43,6 @@ import io.vertigo.commons.transaction.VTransactionResourceId;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 import redis.clients.jedis.Jedis;
@@ -88,11 +87,11 @@ public final class AccountManagerTest {
 	}
 
 	private static URI<Account> createAccountURI(final String id) {
-		return DtObjectUtil.createURI(Account.class, id);
+		return URI.of(Account.class, id);
 	}
 
 	private static URI<AccountGroup> createGroupURI(final String id) {
-		return DtObjectUtil.createURI(AccountGroup.class, id);
+		return URI.of(AccountGroup.class, id);
 	}
 
 	@Before

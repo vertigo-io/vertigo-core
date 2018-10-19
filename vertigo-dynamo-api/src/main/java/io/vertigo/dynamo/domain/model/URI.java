@@ -86,6 +86,18 @@ public final class URI<E extends Entity> implements Serializable {
 	}
 
 	/**
+	 * Creates the uri of the entity
+	 * @param entityClass the class of the entity
+	 * @param uriValue key value
+	 * @param <E> the type of entity
+	 * @return URI du DTO
+	 */
+	public static <E extends Entity> URI<E> of(final Class<E> entityClass, final Object uriValue) {
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
+		return new URI<>(dtDefinition, uriValue);
+	}
+
+	/**
 	 * Il est nécessaire de passer la classe de la définition attendue.
 	 *
 	 * @return Définition de la ressource.
