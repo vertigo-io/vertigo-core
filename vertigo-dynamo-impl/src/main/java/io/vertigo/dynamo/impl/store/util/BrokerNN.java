@@ -21,7 +21,7 @@ package io.vertigo.dynamo.impl.store.util;
 import java.util.List;
 
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 
 /**
  * Gestion des relations NN.
@@ -34,14 +34,14 @@ public interface BrokerNN {
 	 * @param dtListURI DtList de référence
 	 * @param uriToAppend URI de l'objet à ajout à la NN
 	 */
-	void appendNN(final DtListURIForNNAssociation dtListURI, final UID uriToAppend);
+	void appendNN(final DtListURIForNNAssociation dtListURI, final URI uriToAppend);
 
 	/**
 	 * Mise à jour des associations n-n. Annule et remplace.
 	 * @param dtListURI DtList de référence
 	 * @param uriList  uriList
 	 */
-	void updateNN(final DtListURIForNNAssociation dtListURI, final List<UID> uriList);
+	void updateNN(final DtListURIForNNAssociation dtListURI, final List<URI> uriList);
 
 	/**
 	 * Supprime toutes les relations liés à l'objet.
@@ -55,5 +55,5 @@ public interface BrokerNN {
 	 * @param dtListURI DtList de référence
 	 * @param uriToDelete URI de l'objet à supprimer de la NN
 	 */
-	void removeNN(final DtListURIForNNAssociation dtListURI, final UID uriToDelete);
+	void removeNN(final DtListURIForNNAssociation dtListURI, final URI uriToDelete);
 }

@@ -29,7 +29,7 @@ import javax.inject.Inject;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.account.AccountManager;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
@@ -76,7 +76,7 @@ public final class AccountManagerImpl implements AccountManager {
 	//------------------//
 	/** {@inheritDoc} */
 	@Override
-	public Account getAccount(final UID<Account> accountURI) {
+	public Account getAccount(final URI<Account> accountURI) {
 		return loadWithCache(accountURI,
 				() -> accountCachePlugin.get()::getAccount,
 				accountStorePlugin::getAccount,
@@ -85,7 +85,7 @@ public final class AccountManagerImpl implements AccountManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public AccountGroup getGroup(final UID<AccountGroup> groupURI) {
+	public AccountGroup getGroup(final URI<AccountGroup> groupURI) {
 		return loadWithCache(groupURI,
 				() -> accountCachePlugin.get()::getGroup,
 				accountStorePlugin::getGroup,
@@ -94,7 +94,7 @@ public final class AccountManagerImpl implements AccountManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<VFile> getPhoto(final UID<Account> accountURI) {
+	public Optional<VFile> getPhoto(final URI<Account> accountURI) {
 		return loadWithCacheOptionalValue(accountURI,
 				() -> accountCachePlugin.get()::getPhoto,
 				accountStorePlugin::getPhoto,
@@ -103,7 +103,7 @@ public final class AccountManagerImpl implements AccountManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public Set<UID<Account>> getAccountURIs(final UID<AccountGroup> groupURI) {
+	public Set<URI<Account>> getAccountURIs(final URI<AccountGroup> groupURI) {
 		return loadWithCacheSetValue(groupURI,
 				() -> accountCachePlugin.get()::getAccountURIs,
 				accountStorePlugin::getAccountURIs,
@@ -112,7 +112,7 @@ public final class AccountManagerImpl implements AccountManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public Set<UID<AccountGroup>> getGroupURIs(final UID<Account> accountURI) {
+	public Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
 		return loadWithCacheSetValue(accountURI,
 				() -> accountCachePlugin.get()::getGroupURIs,
 				accountStorePlugin::getGroupURIs,

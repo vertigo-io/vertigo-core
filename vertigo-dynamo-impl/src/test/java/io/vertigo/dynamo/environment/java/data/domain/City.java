@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.environment.java.data.domain;
 
 import io.vertigo.dynamo.domain.model.DtMasterData;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -41,8 +41,8 @@ public final class City implements DtMasterData {
 	/** {@inheritDoc} */
 	@javax.persistence.Transient
 	@Override
-	public UID<City> getUID() {
-		return DtObjectUtil.createUID(this);
+	public URI<City> getURI() {
+		return DtObjectUtil.createURI(this);
 	}
 
 	/**

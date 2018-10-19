@@ -67,10 +67,10 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 		final SearchIndexDefinition itemDynIndexDefinition = definitionSpace.resolve(IDX_DYNA_ITEM, SearchIndexDefinition.class);
 
 		for (final Item item : itemDataBase.getAllItems()) {
-			final SearchIndex<Item, Item> index = SearchIndex.createIndex(itemIndexDefinition, item.getUID(), item);
+			final SearchIndex<Item, Item> index = SearchIndex.createIndex(itemIndexDefinition, item.getURI(), item);
 			searchManager.put(itemIndexDefinition, index);
 
-			final SearchIndex<Item, Item> index2 = SearchIndex.createIndex(itemDynIndexDefinition, item.getUID(), item);
+			final SearchIndex<Item, Item> index2 = SearchIndex.createIndex(itemDynIndexDefinition, item.getURI(), item);
 			searchManager.put(itemDynIndexDefinition, index2);
 		}
 		waitIndexation();

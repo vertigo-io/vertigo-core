@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import io.vertigo.core.component.Manager;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.model.VFile;
 
 /**
@@ -43,27 +43,27 @@ public interface AccountManager extends Manager {
 	 * @param accountURI the account defined by its URI
 	 * @return the account
 	 */
-	Account getAccount(UID<Account> accountURI);
+	Account getAccount(URI<Account> accountURI);
 
 	/**
 	 * Gets the group defined by an URI.
 	 * @param groupURI the group URI
 	 * @return the group
 	 */
-	AccountGroup getGroup(UID<AccountGroup> groupURI);
+	AccountGroup getGroup(URI<AccountGroup> groupURI);
 
 	/**
 	 * Lists the accounts for a defined group.
 	 * @param groupURI the group URI
 	 * @return the list of acccounts.
 	 */
-	Set<UID<Account>> getAccountURIs(UID<AccountGroup> groupURI);
+	Set<URI<Account>> getAccountURIs(URI<AccountGroup> groupURI);
 
 	/**
 	 * @param accountURI the account defined by its URI
 	 * @return set of groups of this account
 	 */
-	Set<UID<AccountGroup>> getGroupURIs(UID<Account> accountURI);
+	Set<URI<AccountGroup>> getGroupURIs(URI<Account> accountURI);
 
 	/**
 	 * Gets the photo of an account defined by its URI.
@@ -71,7 +71,7 @@ public interface AccountManager extends Manager {
 	 * @param accountURI the account defined by its URI
 	 * @return the photo as a file
 	 */
-	Optional<VFile> getPhoto(UID<Account> accountURI);
+	Optional<VFile> getPhoto(URI<Account> accountURI);
 
 	/**
 	 * Gets an newly authentified account by his authToken.

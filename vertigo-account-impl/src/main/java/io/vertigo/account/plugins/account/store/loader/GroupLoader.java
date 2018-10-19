@@ -22,7 +22,7 @@ import java.util.Set;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 
 /**
  * @author npiedeloup
@@ -39,19 +39,19 @@ public interface GroupLoader {
 	 * @param groupURI the group URI
 	 * @return the group
 	 */
-	AccountGroup getGroup(UID<AccountGroup> groupURI);
+	AccountGroup getGroup(URI<AccountGroup> groupURI);
 
 	/**
 	 * @param accountURI the account defined by its URI
 	 * @return Set of groups of this account
 	 */
-	Set<UID<AccountGroup>> getGroupURIs(UID<Account> accountURI);
+	Set<URI<AccountGroup>> getGroupURIs(URI<Account> accountURI);
 
 	/**
 	 * Lists the accounts for a defined group.
 	 * @param groupURI the group URI
 	 * @return the list of acccounts.
 	 */
-	Set<UID<Account>> getAccountURIs(UID<AccountGroup> groupURI);
+	Set<URI<Account>> getAccountURIs(URI<AccountGroup> groupURI);
 
 }

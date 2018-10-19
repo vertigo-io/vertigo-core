@@ -47,7 +47,7 @@ import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.impl.account.AccountStorePlugin;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
 import io.vertigo.lang.Assertion;
@@ -127,26 +127,26 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	}
 
 	@Override
-	public Account getAccount(final UID<Account> accountURI) {
+	public Account getAccount(final URI<Account> accountURI) {
 		return accounts.get(accountURI.getId()).getAccount();
 	}
 
 	@Override
-	public Set<UID<AccountGroup>> getGroupURIs(final UID<Account> accountURI) {
+	public Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
 		return groupsPerAccount.get(accountURI.getId()).stream()
-				.map(AccountGroup::getUID)
+				.map(AccountGroup::getURI)
 				.collect(Collectors.toSet());
 	}
 
 	@Override
-	public AccountGroup getGroup(final UID<AccountGroup> groupURI) {
+	public AccountGroup getGroup(final URI<AccountGroup> groupURI) {
 		return groups.get(groupURI.getId());
 	}
 
 	@Override
-	public Set<UID<Account>> getAccountURIs(final UID<AccountGroup> groupURI) {
+	public Set<URI<Account>> getAccountURIs(final URI<AccountGroup> groupURI) {
 		return accountsPerGroup.get(groupURI.getId()).stream()
-				.map(Account::getUID)
+				.map(Account::getURI)
 				.collect(Collectors.toSet());
 	}
 
@@ -161,7 +161,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<VFile> getPhoto(final UID<Account> accountURI) {
+	public Optional<VFile> getPhoto(final URI<Account> accountURI) {
 		final AccountInfo accountInfo = accounts.get(accountURI.getId());
 		Assertion.checkNotNull(accountInfo, "No account found for {0}", accountURI);
 		if (accountInfo.getPhotoUrl() == null || accountInfo.getPhotoUrl().isEmpty()) {
@@ -178,7 +178,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 		return createVFile(accountURI, fileURL, accountInfo.getPhotoUrl());
 	}
 
-	private static Optional<VFile> createVFile(final UID<Account> accountURI, final URL fileURL, final String photoUrl) {
+	private static Optional<VFile> createVFile(final URI<Account> accountURI, final URL fileURL, final String photoUrl) {
 		File photoFile;
 		try {
 			photoFile = new File(fileURL.toURI());

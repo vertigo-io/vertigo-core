@@ -41,7 +41,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.FileInfo;
@@ -378,9 +378,9 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			Assert.assertFalse("La liste des cars est vide", cars.isEmpty());
 
 			//on associe la liste de voiture à la famille en NN
-			final List<UID> carUriList = new ArrayList<>();
+			final List<URI> carUriList = new ArrayList<>();
 			for (final Car car : cars) {
-				carUriList.add(new UID(dtDefinitionCar, car.getId()));
+				carUriList.add(new URI(dtDefinitionCar, car.getId()));
 			}
 			familleDAO.updateNN(createdFamille.getVoituresLocationDtListURI(), carUriList);
 
@@ -398,7 +398,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 			//on recharge la famille et on recharge la liste issus de l'association NN : il doit avoir une voiture de moins qu'au début
 			final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
-			final Famille famille2 = storeManager.getDataStore().readOne(new UID<Famille>(dtFamille, createdFamille.getFamId()));
+			final Famille famille2 = storeManager.getDataStore().readOne(new URI<Famille>(dtFamille, createdFamille.getFamId()));
 			final DtList<Car> secondResult = famille2.getVoituresLocationList();
 			Assert.assertEquals("Test tailles du nombre de voiture dans une NN", firstResult.size() - 1, secondResult.size());
 			transaction.commit();
@@ -448,7 +448,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 			//on recharge la famille et on recharge la liste issus de l'association 1N : il doit avoir une voiture de moins qu'au début
 			final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
-			final Famille famille2 = storeManager.getDataStore().readOne(new UID<Famille>(dtFamille, famille.getFamId()));
+			final Famille famille2 = storeManager.getDataStore().readOne(new URI<Famille>(dtFamille, famille.getFamId()));
 			final DtList<Car> secondResult = famille2.getVoituresFamilleList();
 			Assert.assertEquals("Test tailles du nombre de voiture pour une 1-N", firstResult.size() - 1, secondResult.size());
 			transaction.commit();
@@ -695,7 +695,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			final Car createdCar = storeManager.getDataStore().create(car);
 			//Check cars count
 			checkCrudCarsCount(1);
-			storeManager.getDataStore().delete(createdCar.getUID());
+			storeManager.getDataStore().delete(createdCar.getURI());
 			checkCrudCarsCount(1); //car is cacheable : list was'nt flush here
 			transaction.commit();
 		}
@@ -713,7 +713,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			transaction.commit();
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			storeManager.getDataStore().delete(car.getUID());
+			storeManager.getDataStore().delete(car.getURI());
 			checkCrudCarsCount(0);
 			transaction.commit();
 		}
@@ -726,7 +726,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			final Car createdCar = storeManager.getDataStore().create(car);
 			//Check cars count
 			checkCrudCarsCount(1);
-			storeManager.getDataStore().readOneForUpdate(createdCar.getUID());
+			storeManager.getDataStore().readOneForUpdate(createdCar.getURI());
 			checkCrudCarsCount(1);
 			transaction.commit();
 		}

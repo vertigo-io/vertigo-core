@@ -29,7 +29,7 @@ import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.impl.account.AccountStorePlugin;
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 
@@ -78,20 +78,20 @@ public final class LoaderAccountStorePlugin implements AccountStorePlugin, Activ
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized Account getAccount(final UID<Account> accountURI) {
+	public synchronized Account getAccount(final URI<Account> accountURI) {
 		return accountLoader.getAccount(accountURI);
 	}
 
 	//-----
 	/** {@inheritDoc} */
 	@Override
-	public synchronized AccountGroup getGroup(final UID<AccountGroup> groupURI) {
+	public synchronized AccountGroup getGroup(final URI<AccountGroup> groupURI) {
 		return getGroupLoader().getGroup(groupURI);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized Set<UID<AccountGroup>> getGroupURIs(final UID<Account> accountURI) {
+	public synchronized Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
 		return getGroupLoader().getGroupURIs(accountURI);
 	}
 
@@ -101,13 +101,13 @@ public final class LoaderAccountStorePlugin implements AccountStorePlugin, Activ
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized Set<UID<Account>> getAccountURIs(final UID<AccountGroup> groupURI) {
+	public synchronized Set<URI<Account>> getAccountURIs(final URI<AccountGroup> groupURI) {
 		return getGroupLoader().getAccountURIs(groupURI);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<VFile> getPhoto(final UID<Account> accountURI) {
+	public Optional<VFile> getPhoto(final URI<Account> accountURI) {
 		return accountLoader.getPhoto(accountURI);
 	}
 

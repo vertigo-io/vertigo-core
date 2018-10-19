@@ -34,7 +34,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
@@ -90,7 +90,7 @@ final class ESDocumentCodec {
 		/* On lit du document les données persistantes. */
 		/* 1. URI */
 		final String urn = searchHit.getId();
-		final UID uri = io.vertigo.dynamo.domain.model.UID.fromURN(urn);
+		final URI uri = io.vertigo.dynamo.domain.model.URI.fromURN(urn);
 
 		/* 2 : Result stocké */
 		final I resultDtObjectdtObject;

@@ -32,7 +32,7 @@ import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
@@ -93,7 +93,7 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> Optional<VFile> getPhoto(final UID<E> userURI) {
+	public <E extends Entity> Optional<VFile> getPhoto(final URI<E> userURI) {
 		return Optional.empty();
 	}
 

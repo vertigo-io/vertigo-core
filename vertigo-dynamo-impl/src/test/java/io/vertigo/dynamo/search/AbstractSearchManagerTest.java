@@ -54,7 +54,7 @@ import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.data.domain.Item;
 import io.vertigo.dynamo.search.data.domain.ItemDataBase;
@@ -1125,7 +1125,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		if (all) {
 			final List<SearchIndex<Item, Item>> indexes = itemDataBase.getAllItems()
 					.stream()
-					.map(item -> SearchIndex.createIndex(itemIndexDefinition, item.getUID(), item))
+					.map(item -> SearchIndex.createIndex(itemIndexDefinition, item.getURI(), item))
 					.collect(Collectors.toList());
 			searchManager.putAll(itemIndexDefinition, indexes);
 		} else {
@@ -1133,7 +1133,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 			//Indexation des items de la base
 			itemDataBase.getAllItems().forEach(
 					item -> {
-						final SearchIndex<Item, Item> index = SearchIndex.createIndex(itemIndexDefinition, item.getUID(), item);
+						final SearchIndex<Item, Item> index = SearchIndex.createIndex(itemIndexDefinition, item.getURI(), item);
 						searchManager.put(itemIndexDefinition, index);
 					});
 		}
@@ -1189,8 +1189,8 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		return searchManager.loadList(itemIndexDefinition, searchQuery, null);
 	}
 
-	private static UID<io.vertigo.dynamo.search.data.domain.Item> createURI(final long id) {
-		return new UID<>(DtObjectUtil.findDtDefinition(Item.class), id);
+	private static URI<io.vertigo.dynamo.search.data.domain.Item> createURI(final long id) {
+		return new URI<>(DtObjectUtil.findDtDefinition(Item.class), id);
 	}
 
 	private static void waitIndexation() {

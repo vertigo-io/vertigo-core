@@ -28,7 +28,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.lang.Assertion;
@@ -148,7 +148,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		}
 
 		private Object getSortValue(final Object o) {
-			final UID<Entity> uri = new UID(dtcURIForMasterData.getDtDefinition(), o);
+			final URI<Entity> uri = new URI(dtcURIForMasterData.getDtDefinition(), o);
 			DtObject dto;
 			try {
 				dto = dataStore.readOne(uri);

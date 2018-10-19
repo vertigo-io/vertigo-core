@@ -20,7 +20,7 @@ package io.vertigo.dynamo.search.model;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.lang.Assertion;
@@ -44,7 +44,7 @@ public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
 	private final SearchIndexDefinition indexDefinition;
 
 	/** URI de l'objet indexé : par convention il s'agit de l'uri de K.*/
-	private final UID<K> uri;
+	private final URI<K> uri;
 
 	/** DtObject d'index. */
 	private final I indexDtObject;
@@ -54,7 +54,7 @@ public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
 	 * @param indexDefinition definition de O, I
 	 * @param uri URI de l'objet indexé
 	 */
-	private SearchIndex(final SearchIndexDefinition indexDefinition, final UID<K> uri, final I indexDtObject) {
+	private SearchIndex(final SearchIndexDefinition indexDefinition, final URI<K> uri, final I indexDtObject) {
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkNotNull(indexDtObject);
@@ -83,7 +83,7 @@ public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
 	 *  - Utilisé pour la récupération de highlight.
 	 * @return URI de la ressource indexée.
 	 */
-	public UID<K> getURI() {
+	public URI<K> getURI() {
 		return uri;
 	}
 
@@ -112,7 +112,7 @@ public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
 	 * @param indexDto  DTO représentant l'index
 	 * @return  Objet permettant de créer l'index
 	 */
-	public static <S extends KeyConcept, I extends DtObject> SearchIndex<S, I> createIndex(final SearchIndexDefinition indexDefinition, final UID<S> uri, final I indexDto) {
+	public static <S extends KeyConcept, I extends DtObject> SearchIndex<S, I> createIndex(final SearchIndexDefinition indexDefinition, final URI<S> uri, final I indexDto) {
 		return new SearchIndex<>(indexDefinition, uri, indexDto);
 	}
 

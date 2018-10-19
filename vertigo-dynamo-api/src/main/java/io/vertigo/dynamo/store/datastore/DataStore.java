@@ -23,7 +23,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 
 /**
  * Defines the way to acces and store all the data.
@@ -46,10 +46,10 @@ public interface DataStore {
 	 * L'objet doit exister.
 	 *
 	 * @param <E> the type of entity
-	 * @param uid uid de l'object
+	 * @param uri Uri de l'object
 	 * @return object récupéré NOT NULL
 	 */
-	<E extends Entity> E readOne(final UID<E> uid);
+	<E extends Entity> E readOne(final URI<E> uri);
 
 	/**
 	 * Récupération d'une liste identifiée par son URI.
@@ -64,10 +64,10 @@ public interface DataStore {
 	 * Loads and marks element for update, and ensure non concurrency.
 	 * Fire an update event for this uri on eventbus after commit.
 	 * @param <E> the type of entity
-	 * @param uid UID of object
+	 * @param uri URI of object
 	 * @return object to update
 	 */
-	<E extends Entity> E readOneForUpdate(UID<E> uid);
+	<E extends Entity> E readOneForUpdate(URI<E> uri);
 
 	/**
 	* Create an object.
@@ -90,7 +90,7 @@ public interface DataStore {
 	 *
 	 * @param uri URI de l'objet à supprimer
 	 */
-	void delete(UID<? extends Entity> uri);
+	void delete(URI<? extends Entity> uri);
 
 	/**
 	 * Returns a list identified by criteria

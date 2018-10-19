@@ -31,7 +31,7 @@ import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.data.domain.Item;
@@ -75,7 +75,7 @@ public final class ItemSearchLoader extends AbstractSqlSearchLoader<Long, Item, 
 			final List<SearchIndex<Item, Item>> result = new ArrayList<>();
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Item.class);
 			for (final Item item : loadItems(searchChunk)) {
-				final UID<Item> uri = new UID<>(dtDefinition, item.getId());
+				final URI<Item> uri = new URI<>(dtDefinition, item.getId());
 				result.add(SearchIndex.createIndex(indexDefinition, uri, item));
 			}
 			return result;

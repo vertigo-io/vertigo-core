@@ -26,7 +26,7 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociat
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 
 /**
  * The DataStorePlugin class defines the logical way used to read and write data in a data store.
@@ -68,7 +68,7 @@ public interface DataStorePlugin extends Plugin {
 	 * @param dtDefinition Definition
 	 * @return D correspondant à l'URI fournie.
 	 */
-	<E extends Entity> E readNullable(DtDefinition dtDefinition, UID<E> uri);
+	<E extends Entity> E readNullable(DtDefinition dtDefinition, URI<E> uri);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -129,7 +129,7 @@ public interface DataStorePlugin extends Plugin {
 	 * @param dtDefinition Definition
 	 * @param uri URI
 	 */
-	void delete(DtDefinition dtDefinition, UID<?> uri);
+	void delete(DtDefinition dtDefinition, URI<?> uri);
 
 	/**
 	 * Loads for update.
@@ -139,7 +139,7 @@ public interface DataStorePlugin extends Plugin {
 	 * @param <E> the type of entity
 	 * @return D Object value.
 	 */
-	<E extends Entity> E readNullableForUpdate(DtDefinition dtDefinition, UID<?> uri);
+	<E extends Entity> E readNullableForUpdate(DtDefinition dtDefinition, URI<?> uri);
 
 	/**
 	 * Finds a lists of entities matching a criteria.

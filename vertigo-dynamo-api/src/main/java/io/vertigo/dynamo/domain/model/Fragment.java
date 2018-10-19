@@ -32,5 +32,5 @@ public interface Fragment<E extends Entity> extends DtObject {
 	/**
 	 * @return URI of linked entity
 	 */
-	UID<E> getEntityURI();
+	URI<E> getEntityURI();
 }

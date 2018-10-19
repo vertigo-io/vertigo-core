@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.environment.java.data.domain;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -57,8 +57,8 @@ public final class CommandValidation implements Entity {
 	/** {@inheritDoc} */
 	@javax.persistence.Transient
 	@Override
-	public UID<CommandValidation> getUID() {
-		return DtObjectUtil.createUID(this);
+	public URI<CommandValidation> getURI() {
+		return DtObjectUtil.createURI(this);
 	}
 
 	/**
@@ -149,7 +149,7 @@ public final class CommandValidation implements Entity {
 	 */
 	@Deprecated
 	@javax.persistence.Transient
-	public io.vertigo.dynamo.domain.model.UID<Command> getCommandURI() {
+	public io.vertigo.dynamo.domain.model.URI<Command> getCommandURI() {
 		return cmdIdAccessor.getURI();
 	}
 

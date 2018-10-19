@@ -32,7 +32,7 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociat
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.Fragment;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
@@ -93,9 +93,9 @@ public final class DtObjectUtil {
 	 * @param <E> the type of entity
 	 * @return URI du DTO
 	 */
-	public static <E extends Entity> UID<E> createURI(final Class<E> entityClass, final Object uriValue) {
+	public static <E extends Entity> URI<E> createURI(final Class<E> entityClass, final Object uriValue) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
-		return new UID<>(dtDefinition, uriValue);
+		return new URI<>(dtDefinition, uriValue);
 	}
 
 	/**
@@ -114,7 +114,7 @@ public final class DtObjectUtil {
 	 * @param dtoTargetClass Class of entity of this association
 	 * @return dto du DTO relié via l'association au dto passé en paramètre (Nullable)
 	 */
-	public static <E extends Entity> UID<E> createURI(final DtObject dto, final String associationDefinitionName, final Class<E> dtoTargetClass) {
+	public static <E extends Entity> URI<E> createURI(final DtObject dto, final String associationDefinitionName, final Class<E> dtoTargetClass) {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(dto);
 		Assertion.checkNotNull(dtoTargetClass);
@@ -131,7 +131,7 @@ public final class DtObjectUtil {
 		if (id == null) {
 			return null;
 		}
-		return new UID(dtDefinition, id);
+		return new URI(dtDefinition, id);
 	}
 
 	/**
@@ -147,7 +147,7 @@ public final class DtObjectUtil {
 		Assertion.checkNotNull(entity);
 		//-----
 		final AssociationSimpleDefinition associationDefinition = Home.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationSimpleDefinition.class);
-		return new DtListURIForSimpleAssociation(associationDefinition, entity.getUID(), roleName);
+		return new DtListURIForSimpleAssociation(associationDefinition, entity.getURI(), roleName);
 	}
 
 	/**
@@ -163,7 +163,7 @@ public final class DtObjectUtil {
 		Assertion.checkNotNull(entity);
 		//-----
 		final AssociationNNDefinition associationDefinition = Home.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationNNDefinition.class);
-		return new DtListURIForNNAssociation(associationDefinition, entity.getUID(), roleName);
+		return new DtListURIForNNAssociation(associationDefinition, entity.getURI(), roleName);
 	}
 
 	/**
@@ -171,11 +171,11 @@ public final class DtObjectUtil {
 	 * @param entity Object
 	 * @return this object URI
 	 */
-	public static <E extends Entity> UID<E> createUID(final E entity) {
+	public static <E extends Entity> URI<E> createURI(final E entity) {
 		Assertion.checkNotNull(entity);
 		//-----
 		final DtDefinition dtDefinition = findDtDefinition(entity);
-		return new UID<>(dtDefinition, DtObjectUtil.getId(entity));
+		return new URI<>(dtDefinition, DtObjectUtil.getId(entity));
 	}
 
 	/**
@@ -183,14 +183,14 @@ public final class DtObjectUtil {
 	 * @param fragment fragment
 	 * @return related entity URI
 	 */
-	public static <E extends Entity, F extends Fragment<E>> UID<E> createEntityUID(final F fragment) {
+	public static <E extends Entity, F extends Fragment<E>> URI<E> createEntityURI(final F fragment) {
 		Assertion.checkNotNull(fragment);
 		//-----
 		final DtDefinition dtDefinition = findDtDefinition(fragment);
 		final DtDefinition entityDtDefinition = dtDefinition.getFragment().get();
 		final DtField idField = entityDtDefinition.getIdField().get();
 		final Object idValue = idField.getDataAccessor().getValue(fragment);
-		return new UID<>(entityDtDefinition, idValue);
+		return new URI<>(entityDtDefinition, idValue);
 	}
 
 	/**

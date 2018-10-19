@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -31,12 +31,12 @@ import io.vertigo.lang.Assertion;
  * @param <K> the type of the KeyConcept
  */
 public final class SearchChunk<K extends KeyConcept> {
-	private final List<UID<K>> uris;
+	private final List<URI<K>> uris;
 
 	/**
 	 * @param uris the list of keyConcept uris
 	 */
-	public SearchChunk(final List<UID<K>> uris) {
+	public SearchChunk(final List<URI<K>> uris) {
 		Assertion.checkNotNull(uris);
 		//---
 		this.uris = Collections.unmodifiableList(uris); // pas de clone pour l'instant
@@ -45,11 +45,11 @@ public final class SearchChunk<K extends KeyConcept> {
 	/**
 	 * @return All KeyConcept's uris of this chunk
 	 */
-	public List<UID<K>> getAllURIs() {
+	public List<URI<K>> getAllURIs() {
 		return uris;
 	}
 
-	public UID getLastURI() {
+	public URI getLastURI() {
 		return uris.get(uris.size() - 1);
 	}
 }

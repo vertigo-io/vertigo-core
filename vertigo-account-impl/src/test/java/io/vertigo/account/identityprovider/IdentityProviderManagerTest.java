@@ -69,15 +69,15 @@ public final class IdentityProviderManagerTest extends AbstractTestCaseJU4 {
 	public void testPhoto() {
 		final List<User> users = identityProviderManager.getAllUsers();
 		//Before the photo is the default photo
-		Assert.assertFalse(identityProviderManager.getPhoto(users.get(0).getUID()).isPresent());
-		Assert.assertEquals("defaultPhoto.png", identityProviderManager.getPhoto(users.get(0).getUID()).get().getFileName());
+		Assert.assertFalse(identityProviderManager.getPhoto(users.get(0).getURI()).isPresent());
+		Assert.assertEquals("defaultPhoto.png", identityProviderManager.getPhoto(users.get(0).getURI()).get().getFileName());
 	}
 
 	@Test
 	public void testNoPhoto() {
 		final List<User> users = identityProviderManager.getAllUsers();
 		//Before the photo is the default photo
-		Assert.assertFalse(identityProviderManager.getPhoto(users.get(0).getUID()).isPresent());
+		Assert.assertFalse(identityProviderManager.getPhoto(users.get(0).getURI()).isPresent());
 	}
 
 	@Test

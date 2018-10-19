@@ -46,7 +46,7 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociat
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
@@ -133,21 +133,21 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 
 	/** {@inheritDoc} */
 	@Override
-	public Account getAccount(final UID<Account> accountURI) {
-		final UID<Entity> userURI = new UID(getUserDtDefinition(), accountURI.getId());
+	public Account getAccount(final URI<Account> accountURI) {
+		final URI<Entity> userURI = new URI(getUserDtDefinition(), accountURI.getId());
 		final Entity userEntity = storeManager.getDataStore().readOne(userURI);
 		return userToAccount(userEntity);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Set<UID<AccountGroup>> getGroupURIs(final UID<Account> accountURI) {
+	public Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
 		if (associationUserGroup instanceof AssociationSimpleDefinition) {
 			//case 1 group per user
-			final UID<Entity> userURI = new UID(getUserDtDefinition(), accountURI.getId());
+			final URI<Entity> userURI = new URI(getUserDtDefinition(), accountURI.getId());
 			final Entity userEntity = storeManager.getDataStore().readOne(userURI);
 			final Object fkValue = ((AssociationSimpleDefinition) associationUserGroup).getFKField().getDataAccessor().getValue(userEntity);
-			final UID<AccountGroup> groupURI = new UID(userGroupDtDefinition, fkValue);
+			final URI<AccountGroup> groupURI = new URI(userGroupDtDefinition, fkValue);
 			return Collections.singleton(groupURI);
 		}
 		//case N group per user
@@ -160,21 +160,21 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		final DtList<? extends Entity> result = Home.getApp().getComponentSpace().resolve(StoreManager.class).getDataStore().findAll(groupDtListURI);
 		return result.stream().map(groupEntity ->
 
-		groupToAccount(groupEntity).getUID())
+		groupToAccount(groupEntity).getURI())
 				.collect(Collectors.toSet());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public AccountGroup getGroup(final UID<AccountGroup> accountGroupURI) {
-		final UID<Entity> groupURI = new UID(userGroupDtDefinition, accountGroupURI.getId());
+	public AccountGroup getGroup(final URI<AccountGroup> accountGroupURI) {
+		final URI<Entity> groupURI = new URI(userGroupDtDefinition, accountGroupURI.getId());
 		final Entity groupEntity = storeManager.getDataStore().readOne(groupURI);
 		return groupToAccount(groupEntity);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Set<UID<Account>> getAccountURIs(final UID<AccountGroup> groupURI) {
+	public Set<URI<Account>> getAccountURIs(final URI<AccountGroup> groupURI) {
 		final DtListURI userDtListURI;
 		if (associationUserGroup instanceof AssociationSimpleDefinition) {
 			userDtListURI = new DtListURIForSimpleAssociation((AssociationSimpleDefinition) associationUserGroup, groupURI, associationUserRoleName);
@@ -186,13 +186,13 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		//-----
 		final DtList<? extends Entity> result = Home.getApp().getComponentSpace().resolve(StoreManager.class).getDataStore().findAll(userDtListURI);
 		return result.stream()
-				.map(userEntity -> userToAccount(userEntity).getUID())
+				.map(userEntity -> userToAccount(userEntity).getURI())
 				.collect(Collectors.toSet());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<VFile> getPhoto(final UID<Account> accountURI) {
+	public Optional<VFile> getPhoto(final URI<Account> accountURI) {
 		return Optional.empty(); //TODO
 	}
 

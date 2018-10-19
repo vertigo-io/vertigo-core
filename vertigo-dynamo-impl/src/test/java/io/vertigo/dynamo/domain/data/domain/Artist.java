@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.domain.data.domain;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -35,8 +35,8 @@ public final class Artist implements KeyConcept {
 
 	/** {@inheritDoc} */
 	@Override
-	public UID<Artist> getUID() {
-		return DtObjectUtil.createUID(this);
+	public URI<Artist> getURI() {
+		return DtObjectUtil.createURI(this);
 	}
 
 	@Field(domain = "DO_ID", type = "ID", required = true, label = "id of the artist")

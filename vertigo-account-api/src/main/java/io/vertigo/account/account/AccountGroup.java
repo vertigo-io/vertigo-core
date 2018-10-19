@@ -19,7 +19,7 @@
 package io.vertigo.account.account;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
@@ -50,8 +50,8 @@ public final class AccountGroup implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public UID<AccountGroup> getUID() {
-		return DtObjectUtil.createUID(this);
+	public URI<AccountGroup> getURI() {
+		return DtObjectUtil.createURI(this);
 	}
 
 	/**

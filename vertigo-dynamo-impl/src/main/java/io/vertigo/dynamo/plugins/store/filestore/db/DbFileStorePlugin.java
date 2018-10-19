@@ -30,7 +30,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.FileInfo;
@@ -97,7 +97,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		Assertion.checkNotNull(uri);
 		checkDefinitionStoreBinding(uri.getDefinition());
 		//-----
-		final UID<Entity> dtoUri = new UID<>(storeDtDefinition, uri.getKey());
+		final URI<Entity> dtoUri = new URI<>(storeDtDefinition, uri.getKey());
 		final Entity fileInfoDto = getStoreManager().getDataStore().readOne(dtoUri);
 		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(getValue(fileInfoDto, DtoFields.FILE_DATA, DataStream.class));
 		final String fileName = getValue(fileInfoDto, DtoFields.FILE_NAME, String.class);
@@ -145,7 +145,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
 		checkDefinitionStoreBinding(uri.getDefinition());
 		//-----
-		final UID<Entity> dtoUri = new UID<>(storeDtDefinition, uri.getKey());
+		final URI<Entity> dtoUri = new URI<>(storeDtDefinition, uri.getKey());
 		getStoreManager().getDataStore().delete(dtoUri);
 	}
 

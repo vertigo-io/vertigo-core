@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.store.data.domain.fileinfo;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -45,8 +45,8 @@ public final class VxFileInfo implements Entity {
 	/** {@inheritDoc} */
 	@javax.persistence.Transient
 	@Override
-	public UID<VxFileInfo> getUID() {
-		return DtObjectUtil.createUID(this);
+	public URI<VxFileInfo> getURI() {
+		return DtObjectUtil.createURI(this);
 	}
 
 	/**

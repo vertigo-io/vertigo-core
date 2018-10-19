@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.environment.java.data.domain;
 
 import io.vertigo.dynamo.domain.model.Fragment;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -39,8 +39,8 @@ public final class CityFragment implements Fragment<City> {
 
 	/** {@inheritDoc} */
 	@Override
-	public UID<City> getEntityURI() {
-		return DtObjectUtil.createEntityUID(this);
+	public URI<City> getEntityURI() {
+		return DtObjectUtil.createEntityURI(this);
 	}
 
 	/**

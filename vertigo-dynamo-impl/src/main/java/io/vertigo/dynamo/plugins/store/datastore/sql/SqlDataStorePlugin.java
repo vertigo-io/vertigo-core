@@ -45,7 +45,7 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociat
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
@@ -174,7 +174,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final UID<E> uri) {
+	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final URI<E> uri) {
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_SELECT + "_" + dtDefinition.getLocalName() + "_BY_URI";
 
@@ -243,7 +243,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class))
 				.build();
 
-		final UID uri = dtcUri.getSource();
+		final URI uri = dtcUri.getSource();
 
 		final Task task = Task.builder(taskDefinition)
 				.addValue(fkFieldName, uri.getId())
@@ -429,7 +429,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final DtDefinition dtDefinition, final UID uri) {
+	public void delete(final DtDefinition dtDefinition, final URI uri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(uri);
 		//---
@@ -498,7 +498,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final UID<?> uri) {
+	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_LOCK + "_" + tableName;
 

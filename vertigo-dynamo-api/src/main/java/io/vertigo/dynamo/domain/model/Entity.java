@@ -31,5 +31,5 @@ public interface Entity extends DtObject {
 	/**
 	 * @return URI of this entity
 	 */
-	UID getUID();
+	URI getURI();
 }

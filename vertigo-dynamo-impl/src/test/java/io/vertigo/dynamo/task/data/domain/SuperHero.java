@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.task.data.domain;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -38,8 +38,8 @@ public final class SuperHero implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public UID<SuperHero> getUID() {
-		return DtObjectUtil.createUID(this);
+	public URI<SuperHero> getURI() {
+		return DtObjectUtil.createURI(this);
 	}
 
 	public final Long getId() {

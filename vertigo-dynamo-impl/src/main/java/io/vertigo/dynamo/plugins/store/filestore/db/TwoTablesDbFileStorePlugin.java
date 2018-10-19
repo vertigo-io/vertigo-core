@@ -30,7 +30,7 @@ import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
@@ -86,12 +86,12 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 	public FileInfo read(final FileInfoURI fileInfoUri) {
 		checkDefinitionStoreBinding(fileInfoUri.getDefinition());
 		// Ramène FileMetada
-		final UID<Entity> dtoMetaDataUri = new UID<>(storeMetaDataDtDefinition, fileInfoUri.getKey());
+		final URI<Entity> dtoMetaDataUri = new URI<>(storeMetaDataDtDefinition, fileInfoUri.getKey());
 		final DtObject fileMetadataDto = getStoreManager().getDataStore().readOne(dtoMetaDataUri);
 		final Object fdtId = getValue(fileMetadataDto, DtoFields.FDT_ID, Object.class);
 
 		// Ramène FileData
-		final UID<Entity> dtoDataUri = new UID<>(storeFileDtDefinition, fdtId);
+		final URI<Entity> dtoDataUri = new URI<>(storeFileDtDefinition, fdtId);
 
 		final DtObject fileDataDto = getStoreManager().getDataStore().readOne(dtoDataUri);
 		// Construction du vFile.
@@ -138,7 +138,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		//-----
 		setValue(fileMetadataDto, DtoFields.FMD_ID, fileInfo.getURI().getKey());
 		// Chargement du FDT_ID
-		final UID<Entity> dtoMetaDataUri = new UID<>(storeMetaDataDtDefinition, fileInfo.getURI().getKey());
+		final URI<Entity> dtoMetaDataUri = new URI<>(storeMetaDataDtDefinition, fileInfo.getURI().getKey());
 		final DtObject fileMetadataDtoOld = getStoreManager().getDataStore().readOne(dtoMetaDataUri);
 		final Object fdtId = getValue(fileMetadataDtoOld, DtoFields.FDT_ID, Object.class);
 		setValue(fileMetadataDto, DtoFields.FDT_ID, fdtId);
@@ -157,10 +157,10 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		checkReadonly();
 		checkDefinitionStoreBinding(fileInfoUri.getDefinition());
 		//-----
-		final UID<Entity> dtoMetaDataUri = new UID<>(storeMetaDataDtDefinition, fileInfoUri.getKey());
+		final URI<Entity> dtoMetaDataUri = new URI<>(storeMetaDataDtDefinition, fileInfoUri.getKey());
 		final DtObject fileMetadataDtoOld = getStoreManager().getDataStore().readOne(dtoMetaDataUri);
 		final Object fdtId = getValue(fileMetadataDtoOld, DtoFields.FDT_ID, Object.class);
-		final UID<Entity> dtoDataUri = new UID<>(storeFileDtDefinition, fdtId);
+		final URI<Entity> dtoDataUri = new URI<>(storeFileDtDefinition, fdtId);
 
 		getStoreManager().getDataStore().delete(dtoMetaDataUri);
 		getStoreManager().getDataStore().delete(dtoDataUri);

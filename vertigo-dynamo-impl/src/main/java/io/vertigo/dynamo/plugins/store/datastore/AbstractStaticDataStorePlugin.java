@@ -24,7 +24,7 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociat
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 
 /**
@@ -53,7 +53,7 @@ public abstract class AbstractStaticDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final DtDefinition dtDefinition, final UID uri) {
+	public void delete(final DtDefinition dtDefinition, final URI uri) {
 		throw new UnsupportedOperationException();
 	}
 

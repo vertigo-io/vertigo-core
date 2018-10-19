@@ -21,7 +21,7 @@ package io.vertigo.dynamo.search.data.domain;
 import java.time.Instant;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.VSystemException;
@@ -46,8 +46,8 @@ public final class Item implements KeyConcept {
 
 	/** {@inheritDoc} */
 	@Override
-	public UID<Item> getUID() {
-		return DtObjectUtil.createUID(this);
+	public URI<Item> getURI() {
+		return DtObjectUtil.createURI(this);
 	}
 
 	@Field(domain = "DO_IDENTIFIANT", type = "ID", required = true, label = "identifiant de la voiture")

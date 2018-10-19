@@ -47,7 +47,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
@@ -144,7 +144,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> Optional<VFile> getPhoto(final UID<E> accountURI) {
+	public <E extends Entity> Optional<VFile> getPhoto(final URI<E> accountURI) {
 		final IdentityUserInfo identityAccountInfo = users.get(accountURI.getId());
 		Assertion.checkNotNull(identityAccountInfo, "No account found for {0}", accountURI);
 		if (identityAccountInfo.getPhotoUrl() == null) {

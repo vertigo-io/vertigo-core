@@ -24,7 +24,7 @@ import java.util.Set;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.core.component.Plugin;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.model.VFile;
 
 /**
@@ -36,27 +36,27 @@ public interface AccountStorePlugin extends Plugin {
 	 * @param accountURI the account defined by its URI
 	 * @return the account
 	 */
-	Account getAccount(UID<Account> accountURI);
+	Account getAccount(URI<Account> accountURI);
 
 	/**
 	 * @param accountURI the account defined by its URI
 	 * @return Set of groups of this account
 	 */
-	Set<UID<AccountGroup>> getGroupURIs(UID<Account> accountURI);
+	Set<URI<AccountGroup>> getGroupURIs(URI<Account> accountURI);
 
 	/**
 	 * Gets the group defined by an URI.
 	 * @param groupURI the group URI
 	 * @return the group
 	 */
-	AccountGroup getGroup(UID<AccountGroup> groupURI);
+	AccountGroup getGroup(URI<AccountGroup> groupURI);
 
 	/**
 	 * Lists the accounts for a defined group.
 	 * @param groupURI the group URI
 	 * @return the list of acccounts.
 	 */
-	Set<UID<Account>> getAccountURIs(UID<AccountGroup> groupURI);
+	Set<URI<Account>> getAccountURIs(URI<AccountGroup> groupURI);
 
 	/**
 	 * Gets the photo of an account defined by its URI.
@@ -64,7 +64,7 @@ public interface AccountStorePlugin extends Plugin {
 	 * @param accountURI the account defined by its URI
 	 * @return the photo as a file
 	 */
-	Optional<VFile> getPhoto(UID<Account> accountURI);
+	Optional<VFile> getPhoto(URI<Account> accountURI);
 
 	/**
 	 * Get an newly authentify user by his authToken.
