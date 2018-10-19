@@ -58,7 +58,7 @@ public final class CommandValidation implements Entity {
 	@javax.persistence.Transient
 	@Override
 	public URI<CommandValidation> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	/**

@@ -79,7 +79,7 @@ public final class Famille implements Entity {
 	@javax.persistence.Transient
 	@Override
 	public URI<Famille> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	/**

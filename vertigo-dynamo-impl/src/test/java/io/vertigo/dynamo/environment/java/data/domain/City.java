@@ -42,7 +42,7 @@ public final class City implements DtMasterData {
 	@javax.persistence.Transient
 	@Override
 	public URI<City> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	/**

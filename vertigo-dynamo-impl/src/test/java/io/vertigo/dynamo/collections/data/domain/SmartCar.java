@@ -39,7 +39,7 @@ public final class SmartCar implements KeyConcept {
 	/** {@inheritDoc} */
 	@Override
 	public URI<SmartCar> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	public final Long getId() {

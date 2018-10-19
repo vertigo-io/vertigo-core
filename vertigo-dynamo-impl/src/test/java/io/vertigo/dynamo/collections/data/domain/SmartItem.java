@@ -36,7 +36,7 @@ public final class SmartItem implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public URI<SmartItem> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	public final Long getId() {

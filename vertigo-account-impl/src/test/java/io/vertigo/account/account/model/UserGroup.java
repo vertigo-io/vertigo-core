@@ -37,7 +37,7 @@ public final class UserGroup implements KeyConcept {
 	/** {@inheritDoc} */
 	@Override
 	public URI<UserGroup> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	@Field(domain = "DO_CODE", type = "ID", required = true, label = "Id")

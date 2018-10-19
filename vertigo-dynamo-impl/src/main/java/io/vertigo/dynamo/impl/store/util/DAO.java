@@ -302,7 +302,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 		//-----
 		final List<URI> objectURIs = newDtc
 				.stream()
-				.map(DtObjectUtil::createURI)
+				.map(URI::of)
 				.collect(Collectors.toList());
 		updateNN(dtListURI, objectURIs);
 	}

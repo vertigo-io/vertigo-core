@@ -39,7 +39,7 @@ public final class SuperHero implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public URI<SuperHero> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	public final Long getId() {

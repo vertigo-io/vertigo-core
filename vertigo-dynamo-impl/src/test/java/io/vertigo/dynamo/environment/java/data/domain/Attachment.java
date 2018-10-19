@@ -58,7 +58,7 @@ public final class Attachment implements Entity {
 	@javax.persistence.Transient
 	@Override
 	public URI<Attachment> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	/**

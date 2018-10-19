@@ -41,7 +41,7 @@ public final class CommandType implements DtStaticMasterData {
 	@javax.persistence.Transient
 	@Override
 	public URI<CommandType> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	/**

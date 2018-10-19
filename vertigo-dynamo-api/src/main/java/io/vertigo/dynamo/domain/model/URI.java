@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 import io.vertigo.app.Home;
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -70,6 +71,18 @@ public final class URI<E extends Entity> implements Serializable {
 		//Calcul de l'urn
 		urn = toURN(this);
 		Assertion.checkArgument(URI.REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, URI.REGEX_URN);
+	}
+
+	/**
+	 * Creates an URI from an existing object.
+	 * @param entity Object
+	 * @return this object URI
+	 */
+	public static <E extends Entity> URI<E> of(final E entity) {
+		Assertion.checkNotNull(entity);
+		//-----
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
+		return new URI<>(dtDefinition, DtObjectUtil.getId(entity));
 	}
 
 	/**

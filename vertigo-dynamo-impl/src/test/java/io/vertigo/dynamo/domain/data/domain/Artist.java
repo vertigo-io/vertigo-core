@@ -36,7 +36,7 @@ public final class Artist implements KeyConcept {
 	/** {@inheritDoc} */
 	@Override
 	public URI<Artist> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	@Field(domain = "DO_ID", type = "ID", required = true, label = "id of the artist")

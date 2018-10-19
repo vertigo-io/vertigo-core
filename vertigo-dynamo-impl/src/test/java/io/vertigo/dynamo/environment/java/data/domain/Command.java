@@ -91,7 +91,7 @@ public final class Command implements KeyConcept {
 	@javax.persistence.Transient
 	@Override
 	public URI<Command> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	/**

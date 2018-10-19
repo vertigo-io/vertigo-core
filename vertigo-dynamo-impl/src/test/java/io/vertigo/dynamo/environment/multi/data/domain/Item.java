@@ -37,7 +37,7 @@ public final class Item implements Entity {
 	@Override
 	@javax.persistence.Transient
 	public URI<Item> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	public final Long getId() {

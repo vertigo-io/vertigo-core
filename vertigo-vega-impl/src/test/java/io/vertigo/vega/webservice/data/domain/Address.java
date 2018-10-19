@@ -22,7 +22,6 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.ListVAccessor;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 public final class Address implements Entity {
 	private static final long serialVersionUID = 8922834274442256496L;
@@ -58,7 +57,7 @@ public final class Address implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public URI<Address> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	public Long getAdrId() {

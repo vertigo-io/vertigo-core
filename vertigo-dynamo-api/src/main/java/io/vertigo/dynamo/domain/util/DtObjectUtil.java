@@ -167,18 +167,6 @@ public final class DtObjectUtil {
 	}
 
 	/**
-	 * Creates an URI from an existing object.
-	 * @param entity Object
-	 * @return this object URI
-	 */
-	public static <E extends Entity> URI<E> createURI(final E entity) {
-		Assertion.checkNotNull(entity);
-		//-----
-		final DtDefinition dtDefinition = findDtDefinition(entity);
-		return new URI<>(dtDefinition, DtObjectUtil.getId(entity));
-	}
-
-	/**
 	 * Creates an URI of entity from an existing fragment.
 	 * @param fragment fragment
 	 * @return related entity URI

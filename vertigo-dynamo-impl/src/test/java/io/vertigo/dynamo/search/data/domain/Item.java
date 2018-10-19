@@ -47,7 +47,7 @@ public final class Item implements KeyConcept {
 	/** {@inheritDoc} */
 	@Override
 	public URI<Item> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	@Field(domain = "DO_IDENTIFIANT", type = "ID", required = true, label = "identifiant de la voiture")

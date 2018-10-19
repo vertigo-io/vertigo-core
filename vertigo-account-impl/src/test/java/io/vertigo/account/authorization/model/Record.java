@@ -46,7 +46,7 @@ public final class Record implements KeyConcept {
 	/** {@inheritDoc} */
 	@Override
 	public URI<Record> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	@Field(domain = "DO_ID", type = "ID", required = true, label = "Id")

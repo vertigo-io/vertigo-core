@@ -97,7 +97,7 @@ public final class Car implements Entity {
 	@javax.persistence.Transient
 	@Override
 	public URI<Car> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	/**

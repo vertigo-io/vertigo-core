@@ -41,7 +41,7 @@ public final class MotorType implements DtStaticMasterData {
 	@javax.persistence.Transient
 	@Override
 	public URI<MotorType> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	/**

@@ -46,7 +46,7 @@ public final class VxFileInfo implements Entity {
 	@javax.persistence.Transient
 	@Override
 	public URI<VxFileInfo> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	/**
