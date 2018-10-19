@@ -62,7 +62,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 		</#list>
 	@Override
 	public URI<${dtDefinition.classSimpleName}> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 	</#if>
 	<#if dtDefinition.fragment>
