@@ -28,9 +28,7 @@ import java.util.Set;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.impl.account.AccountCachePlugin;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 
@@ -60,8 +58,7 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 	public synchronized void putAccount(final Account account) {
 		Assertion.checkNotNull(account);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(account);
-		final URI<Account> uri = new URI<>(dtDefinition, account.getId());
+		final URI<Account> uri = account.getURI();
 		//----
 		final Object old = accountByURI.put(uri, account);
 		if (old == null) {
@@ -84,8 +81,7 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 	public synchronized void putGroup(final AccountGroup group) {
 		Assertion.checkNotNull(group);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(group);
-		final URI<AccountGroup> uri = new URI<>(dtDefinition, group.getId());
+		final URI<AccountGroup> uri = group.getURI();
 		//----
 		Assertion.checkArgument(!groupByURI.containsKey(uri), "this group is already registered, you can't create it");
 		//-----
