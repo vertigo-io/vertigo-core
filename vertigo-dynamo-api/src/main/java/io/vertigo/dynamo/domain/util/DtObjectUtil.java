@@ -119,7 +119,7 @@ public final class DtObjectUtil {
 		if (id == null) {
 			return null;
 		}
-		return new URI(dtDefinition, id);
+		return URI.of(dtDefinition, id);
 	}
 
 	/**
@@ -166,7 +166,7 @@ public final class DtObjectUtil {
 		final DtDefinition entityDtDefinition = dtDefinition.getFragment().get();
 		final DtField idField = entityDtDefinition.getIdField().get();
 		final Object idValue = idField.getDataAccessor().getValue(fragment);
-		return new URI<>(entityDtDefinition, idValue);
+		return URI.of(entityDtDefinition, idValue);
 	}
 
 	/**

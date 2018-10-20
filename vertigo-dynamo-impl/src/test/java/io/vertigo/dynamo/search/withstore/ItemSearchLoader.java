@@ -29,10 +29,8 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.data.domain.Item;
 import io.vertigo.dynamo.search.metamodel.SearchChunk;
@@ -73,9 +71,8 @@ public final class ItemSearchLoader extends AbstractSqlSearchLoader<Long, Item, 
 		final SearchIndexDefinition indexDefinition = searchManager.findFirstIndexDefinitionByKeyConcept(Item.class);
 		try (final VTransactionWritable tx = getTransactionManager().createCurrentTransaction()) {
 			final List<SearchIndex<Item, Item>> result = new ArrayList<>();
-			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Item.class);
 			for (final Item item : loadItems(searchChunk)) {
-				final URI<Item> uri = new URI<>(dtDefinition, item.getId());
+				final URI<Item> uri = item.getURI();
 				result.add(SearchIndex.createIndex(indexDefinition, uri, item));
 			}
 			return result;

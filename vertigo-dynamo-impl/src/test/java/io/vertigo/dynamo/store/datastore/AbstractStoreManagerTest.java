@@ -380,7 +380,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			//on associe la liste de voiture à la famille en NN
 			final List<URI> carUriList = new ArrayList<>();
 			for (final Car car : cars) {
-				carUriList.add(new URI(dtDefinitionCar, car.getId()));
+				carUriList.add(car.getURI());
 			}
 			familleDAO.updateNN(createdFamille.getVoituresLocationDtListURI(), carUriList);
 
@@ -397,8 +397,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			Assert.assertEquals("Test tailles du nombre de voiture pour une NN", firstResult.size(), lazyResult.size());
 
 			//on recharge la famille et on recharge la liste issus de l'association NN : il doit avoir une voiture de moins qu'au début
-			final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
-			final Famille famille2 = storeManager.getDataStore().readOne(new URI<Famille>(dtFamille, createdFamille.getFamId()));
+			final Famille famille2 = storeManager.getDataStore().readOne(URI.of(Famille.class, createdFamille.getFamId()));
 			final DtList<Car> secondResult = famille2.getVoituresLocationList();
 			Assert.assertEquals("Test tailles du nombre de voiture dans une NN", firstResult.size() - 1, secondResult.size());
 			transaction.commit();
@@ -447,8 +446,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			Assert.assertEquals("Test tailles du nombre de voiture pour une 1-N", firstResult.size(), lazyResult.size());
 
 			//on recharge la famille et on recharge la liste issus de l'association 1N : il doit avoir une voiture de moins qu'au début
-			final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
-			final Famille famille2 = storeManager.getDataStore().readOne(new URI<Famille>(dtFamille, famille.getFamId()));
+			final Famille famille2 = storeManager.getDataStore().readOne(famille.getURI());
 			final DtList<Car> secondResult = famille2.getVoituresFamilleList();
 			Assert.assertEquals("Test tailles du nombre de voiture pour une 1-N", firstResult.size() - 1, secondResult.size());
 			transaction.commit();

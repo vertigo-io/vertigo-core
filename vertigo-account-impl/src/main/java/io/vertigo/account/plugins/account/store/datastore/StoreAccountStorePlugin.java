@@ -134,7 +134,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	/** {@inheritDoc} */
 	@Override
 	public Account getAccount(final URI<Account> accountURI) {
-		final URI<Entity> userURI = new URI(getUserDtDefinition(), accountURI.getId());
+		final URI<Entity> userURI = URI.of(getUserDtDefinition(), accountURI.getId());
 		final Entity userEntity = storeManager.getDataStore().readOne(userURI);
 		return userToAccount(userEntity);
 	}
@@ -144,10 +144,10 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	public Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
 		if (associationUserGroup instanceof AssociationSimpleDefinition) {
 			//case 1 group per user
-			final URI<Entity> userURI = new URI(getUserDtDefinition(), accountURI.getId());
+			final URI<Entity> userURI = URI.of(getUserDtDefinition(), accountURI.getId());
 			final Entity userEntity = storeManager.getDataStore().readOne(userURI);
 			final Object fkValue = ((AssociationSimpleDefinition) associationUserGroup).getFKField().getDataAccessor().getValue(userEntity);
-			final URI<AccountGroup> groupURI = new URI(userGroupDtDefinition, fkValue);
+			final URI<AccountGroup> groupURI = URI.of(userGroupDtDefinition, fkValue);
 			return Collections.singleton(groupURI);
 		}
 		//case N group per user
@@ -167,7 +167,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	/** {@inheritDoc} */
 	@Override
 	public AccountGroup getGroup(final URI<AccountGroup> accountGroupURI) {
-		final URI<Entity> groupURI = new URI(userGroupDtDefinition, accountGroupURI.getId());
+		final URI<Entity> groupURI = URI.of(userGroupDtDefinition, accountGroupURI.getId());
 		final Entity groupEntity = storeManager.getDataStore().readOne(groupURI);
 		return groupToAccount(groupEntity);
 	}

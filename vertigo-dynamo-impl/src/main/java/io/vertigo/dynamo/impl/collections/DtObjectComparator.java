@@ -148,7 +148,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		}
 
 		private Object getSortValue(final Object o) {
-			final URI<Entity> uri = new URI(dtcURIForMasterData.getDtDefinition(), o);
+			final URI<Entity> uri = URI.of(dtcURIForMasterData.getDtDefinition(), o);
 			DtObject dto;
 			try {
 				dto = dataStore.readOne(uri);

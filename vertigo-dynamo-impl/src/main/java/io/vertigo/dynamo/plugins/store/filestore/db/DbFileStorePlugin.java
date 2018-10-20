@@ -97,7 +97,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		Assertion.checkNotNull(uri);
 		checkDefinitionStoreBinding(uri.getDefinition());
 		//-----
-		final URI<Entity> dtoUri = new URI<>(storeDtDefinition, uri.getKey());
+		final URI<Entity> dtoUri = URI.of(storeDtDefinition, uri.getKey());
 		final Entity fileInfoDto = getStoreManager().getDataStore().readOne(dtoUri);
 		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(getValue(fileInfoDto, DtoFields.FILE_DATA, DataStream.class));
 		final String fileName = getValue(fileInfoDto, DtoFields.FILE_NAME, String.class);
@@ -145,7 +145,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
 		checkDefinitionStoreBinding(uri.getDefinition());
 		//-----
-		final URI<Entity> dtoUri = new URI<>(storeDtDefinition, uri.getKey());
+		final URI<Entity> dtoUri = URI.of(storeDtDefinition, uri.getKey());
 		getStoreManager().getDataStore().delete(dtoUri);
 	}
 

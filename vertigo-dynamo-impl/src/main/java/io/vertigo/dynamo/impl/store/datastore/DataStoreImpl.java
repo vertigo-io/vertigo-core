@@ -109,7 +109,7 @@ public final class DataStoreImpl implements DataStore {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final E createdEntity = getPhysicalStore(dtDefinition).create(dtDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.CREATE, new URI(dtDefinition, DtObjectUtil.getId(createdEntity)));
+		fireAfterCommit(StoreEvent.Type.CREATE, URI.of(dtDefinition, DtObjectUtil.getId(createdEntity)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 		return createdEntity;
 	}
@@ -122,7 +122,7 @@ public final class DataStoreImpl implements DataStore {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		getPhysicalStore(dtDefinition).update(dtDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.UPDATE, new URI(dtDefinition, DtObjectUtil.getId(entity)));
+		fireAfterCommit(StoreEvent.Type.UPDATE, URI.of(dtDefinition, DtObjectUtil.getId(entity)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 	}
 

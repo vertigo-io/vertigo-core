@@ -82,7 +82,7 @@ public final class CarSearchLoader extends AbstractSearchLoader<Long, Car, Car> 
 		int i = 0;
 		for (final Car car : carDataBase.getAllCars()) {
 			if (i > lastId) {
-				uris.add(new URI(indexDefinition.getKeyConceptDtDefinition(), car.getId()));
+				uris.add(URI.of(indexDefinition.getKeyConceptDtDefinition(), car.getId()));
 			}
 			if (uris.size() >= SEARCH_CHUNK_SIZE) {
 				break;

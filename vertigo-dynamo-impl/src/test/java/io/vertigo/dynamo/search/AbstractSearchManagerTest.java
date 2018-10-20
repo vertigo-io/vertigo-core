@@ -55,7 +55,6 @@ import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.data.domain.Item;
 import io.vertigo.dynamo.search.data.domain.ItemDataBase;
 import io.vertigo.dynamo.search.data.domain.ItemSearchLoader;
@@ -1190,7 +1189,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private static URI<io.vertigo.dynamo.search.data.domain.Item> createURI(final long id) {
-		return new URI<>(DtObjectUtil.findDtDefinition(Item.class), id);
+		return URI.of(Item.class, id);
 	}
 
 	private static void waitIndexation() {

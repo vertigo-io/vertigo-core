@@ -60,7 +60,7 @@ public final class URI<E extends Entity> implements Serializable {
 	 * @param definition Definition de la ressource
 	 * @param id Clé de la ressource
 	 */
-	public URI(final DtDefinition definition, final Object id) {
+	private URI(final DtDefinition definition, final Object id) {
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(definition);
 		definition.getIdField().get().getDomain().checkValue(id);
@@ -71,6 +71,10 @@ public final class URI<E extends Entity> implements Serializable {
 		//Calcul de l'urn
 		urn = toURN(this);
 		Assertion.checkArgument(URI.REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, URI.REGEX_URN);
+	}
+
+	public static URI of(final DtDefinition definition, final Object id) {
+		return new URI(definition, id);
 	}
 
 	/**

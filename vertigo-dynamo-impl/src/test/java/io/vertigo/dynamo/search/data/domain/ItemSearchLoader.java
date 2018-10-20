@@ -82,7 +82,7 @@ public final class ItemSearchLoader extends AbstractSearchLoader<Long, Item, Ite
 		int i = 0;
 		for (final Item item : itemDataBase.getAllItems()) {
 			if (i > lastId) {
-				uris.add(new URI(indexDefinition.getKeyConceptDtDefinition(), item.getId()));
+				uris.add(URI.of(indexDefinition.getKeyConceptDtDefinition(), item.getId()));
 			}
 			if (uris.size() >= SEARCH_CHUNK_SIZE) {
 				break;

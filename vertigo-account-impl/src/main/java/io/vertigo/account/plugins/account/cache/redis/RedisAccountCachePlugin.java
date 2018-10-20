@@ -31,9 +31,7 @@ import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.impl.account.AccountCachePlugin;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -207,12 +205,11 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 	public Set<URI<Account>> getAccountURIs(final URI<AccountGroup> groupURI) {
 		Assertion.checkNotNull(groupURI);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Account.class);
 		final Set<URI<Account>> set = new HashSet<>();
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final Set<String> ids = jedis.smembers(SACCOUNTS_BY_GROUP_START_KEY + groupURI.getId());
 			for (final String id : ids) {
-				set.add(new URI<Account>(dtDefinition, id));
+				set.add(URI.of(Account.class, id));
 			}
 			return set;
 		}
@@ -223,12 +220,11 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 	public Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(AccountGroup.class);
 		final Set<URI<AccountGroup>> set = new HashSet<>();
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final Set<String> ids = jedis.smembers(SGROUPS_BY_ACCOUNT_START_KEY + accountURI.getId());
 			for (final String id : ids) {
-				set.add(new URI<AccountGroup>(dtDefinition, id));
+				set.add(URI.of(AccountGroup.class, id));
 			}
 			return set;
 		}

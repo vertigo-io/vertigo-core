@@ -275,7 +275,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
 		//-----
 		// Il doit exister un DtObjet associé, avec la structure attendue.
-		return new URI<>(storeDtDefinition, uri.getKey());
+		return URI.of(storeDtDefinition, uri.getKey());
 	}
 
 	/**

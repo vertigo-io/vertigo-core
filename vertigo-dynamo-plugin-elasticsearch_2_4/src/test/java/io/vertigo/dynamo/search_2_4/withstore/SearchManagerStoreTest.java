@@ -36,10 +36,8 @@ import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchQuery;
@@ -228,8 +226,7 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	}
 
 	private static URI createURI(final long carId) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
-		return new URI(dtDefinition, carId);
+		return URI.of(Car.class, carId);
 	}
 
 	protected void remove(final String query) {

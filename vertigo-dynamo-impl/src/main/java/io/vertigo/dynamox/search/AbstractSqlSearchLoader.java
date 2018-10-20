@@ -108,7 +108,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 
 			final List<URI<S>> uris = new ArrayList<>(resultDtc.size());
 			for (final S dto : resultDtc) {
-				uris.add(new URI<S>(dtDefinition, DtObjectUtil.getId(dto)));
+				uris.add(URI.<S> of(dtDefinition, DtObjectUtil.getId(dto)));
 			}
 			return uris;
 		}

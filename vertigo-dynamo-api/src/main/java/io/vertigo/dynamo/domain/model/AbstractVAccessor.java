@@ -126,13 +126,13 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 		//---
 		//If already loaded and same id, we don't touch anything
 		if (!(status == State.LOADED && isSameId(id))) {
-			targetURI = id == null ? null : new URI(targetDtDefinitionRef.get(), id);
+			targetURI = id == null ? null : URI.of(targetDtDefinitionRef.get(), id);
 			//we have to reset the value and the state
 			value = null;
 			status = State.NOT_LOADED;
 		}
 	}
-	
+
 	private boolean isSameId(final Serializable id) {
 		if (targetURI == null) {
 			return id == null;

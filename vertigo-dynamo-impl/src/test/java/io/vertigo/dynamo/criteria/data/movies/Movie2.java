@@ -69,6 +69,6 @@ public final class Movie2 implements Entity {
 
 	@Override
 	public URI getURI() {
-		return new URI<>(DtObjectUtil.findDtDefinition(Movie2.class), id);
+		return URI.of(Movie2.class, id);
 	}
 }

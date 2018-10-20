@@ -219,7 +219,8 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return D Fragment recherché
 	 */
 	public final <F extends Fragment<E>> F get(final P id, final Class<F> fragmentClass) {
-		return getFragment(new URI<E>(DtObjectUtil.findDtDefinition(fragmentClass).getFragment().get(), id), fragmentClass);
+		URI<E> uri = URI.of(DtObjectUtil.findDtDefinition(fragmentClass).getFragment().get(), id);
+		return getFragment(uri, fragmentClass);
 	}
 
 	/**
@@ -229,7 +230,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return URI recherchée
 	 */
 	protected final URI<E> createDtObjectURI(final P id) {
-		return new URI<>(getDtDefinition(), id);
+		return URI.of(getDtDefinition(), id);
 	}
 
 	/**
