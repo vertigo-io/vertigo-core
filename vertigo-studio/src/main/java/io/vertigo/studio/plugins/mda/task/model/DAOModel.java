@@ -29,6 +29,7 @@ import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
+import io.vertigo.util.StringUtil;
 
 /**
  * Objet utilisé par FreeMarker.
@@ -54,17 +55,23 @@ public final class DAOModel {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(taskDefinitionCollection);
 		final String definitionPackageName = dtDefinition.getPackageName();
-		final String packageNamePrefix = fileGeneratorConfig.getProjectPackageName() + ".domain";
-		//final String packageNameSuffix = ".domain";
-		Assertion.checkArgument(definitionPackageName.contains(packageNamePrefix), "Le nom du package {0}, doit commencer par le prefix normalise: {1}", definitionPackageName, packageNamePrefix);
-		//-----
-		//Assertion.checkArgument(definitionPackageName.startsWith(packageNamePrefix), "Package name {0}, must begin with normalised prefix: {1}", definitionPackageName, packageNamePrefix);
-		//Assertion.checkArgument(definitionPackageName.endsWith(packageNameSuffix), "Package name {0}, must end with normalised suffix : {1}", definitionPackageName, packageNameSuffix);
+		final String packageNamePrefix = fileGeneratorConfig.getProjectPackageName();
+		// ---
+		Assertion.checkArgument(definitionPackageName.startsWith(packageNamePrefix), "Package name {0}, must begin with normalised prefix: {1}", definitionPackageName, packageNamePrefix);
+		Assertion.checkArgument(definitionPackageName.substring(packageNamePrefix.length()).contains(".domain"), "Package name {0}, must contains the modifier .domain", definitionPackageName);
+		// ---
+		//we need to find the featureName, aka between projectpackageName and .domain
+		final String featureName = definitionPackageName.substring(packageNamePrefix.length(), definitionPackageName.indexOf(".domain"));
+		if (!StringUtil.isEmpty(featureName)) {
+			Assertion.checkState(featureName.lastIndexOf('.') == 0, "The feature {0} must not contain any dot", featureName.substring(1));
+		}
+		// the subpackage is what's behind the .domain
+		final String subpackage = definitionPackageName.substring(definitionPackageName.indexOf(".domain") + ".domain".length());
 		// breaking change -> need to redefine what's the desired folder structure in javagen...
 
 		this.dtDefinition = dtDefinition;
-		//On construit le nom du package à partir du package de la DT dans le quel on supprime le début.
-		packageName = fileGeneratorConfig.getProjectPackageName() + ".dao" + definitionPackageName.substring(packageNamePrefix.length());
+		//On construit le nom du package à partir du package de la DT et de la feature.
+		packageName = fileGeneratorConfig.getProjectPackageName() + featureName + ".dao" + subpackage;
 
 		boolean hasOption = false;
 		for (final TaskDefinition taskDefinition : taskDefinitionCollection) {
