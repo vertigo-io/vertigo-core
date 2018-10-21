@@ -19,7 +19,6 @@ import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
@@ -144,7 +143,7 @@ public final class ${dao.classSimpleName} extends DAO<${dao.dtClassSimpleName}, 
 	 * @param entity Key concept
 	 */
 	public void markAsDirty(final ${dao.dtClassSimpleName} entity) {
-		markAsDirty(DtObjectUtil.createURI(entity));
+		markAsDirty(URI.of(entity));
 	}
 	</#if>
 	<#if !dao.taskDefinitions.empty>
