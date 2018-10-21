@@ -161,7 +161,7 @@ public final class URI<E extends Entity> implements Serializable {
 	 * @param urn URN to parse
 	 * @return URI to result
 	 */
-	public static URI<?> fromURN(final String urn) {
+	public static URI<?> of(final String urn) {
 		Assertion.checkNotNull(urn);
 		//-----
 		final int i = urn.indexOf(D2A_SEPARATOR);

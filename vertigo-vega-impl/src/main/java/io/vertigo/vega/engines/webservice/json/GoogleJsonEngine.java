@@ -409,7 +409,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		/** {@inheritDoc} */
 		@Override
 		public URI deserialize(final JsonElement json, final Type paramType, final JsonDeserializationContext paramJsonDeserializationContext) {
-			return URI.fromURN(json.getAsString());
+			return URI.of(json.getAsString());
 		}
 	}
 
