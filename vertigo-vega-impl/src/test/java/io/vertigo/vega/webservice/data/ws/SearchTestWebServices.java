@@ -37,6 +37,8 @@ import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.data.domain.Contact;
 import io.vertigo.vega.webservice.data.domain.ContactDao;
+import io.vertigo.vega.webservice.stereotype.ExcludedFields;
+import io.vertigo.vega.webservice.stereotype.IncludedFields;
 import io.vertigo.vega.webservice.stereotype.POST;
 import io.vertigo.vega.webservice.stereotype.PathPrefix;
 
@@ -66,6 +68,8 @@ public final class SearchTestWebServices implements WebServices {
 	}
 
 	@POST("/facetedResult")
+	@ExcludedFields({ "highlight" })
+	@IncludedFields({ "list.name", "list.conId", "list.firstName" })
 	public FacetedQueryResult<Contact, DtList<Contact>> testFacetedQueryResult(final SelectedFacetValues selectedFacetValues) {
 		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
 		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QRY_CONTACT_FACET", FacetedQueryDefinition.class);

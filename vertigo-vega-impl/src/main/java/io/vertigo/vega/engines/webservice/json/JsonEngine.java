@@ -39,7 +39,7 @@ import io.vertigo.vega.webservice.model.UiObject;
 public interface JsonEngine extends Component {
 
 	/** list value fieldname. */
-	String LIST_VALUE_FIELDNAME = "value";
+	String EXTENDED_VALUE_FIELDNAME = "value";
 	/** server side token fieldname. */
 	String SERVER_SIDE_TOKEN_FIELDNAME = "serverToken";
 

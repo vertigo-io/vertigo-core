@@ -19,6 +19,8 @@
 package io.vertigo.vega.plugins.webservice.handler.converter;
 
 import java.io.Serializable;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,6 +32,7 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.file.model.VFile;
@@ -187,7 +190,7 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 			//si le type interne n'as pas de meta, et que le ExtendedObject contient d'autres metas que le seul serverSideToken, on change le type mime
 			if (!innerEncodedType.hasMeta()
 					&& !(((ExtendedObject) value).isEmpty()
-							|| (((ExtendedObject) value).size() == 1 && ((ExtendedObject) value).containsKey(JsonEngine.SERVER_SIDE_TOKEN_FIELDNAME)))) {
+							|| ((ExtendedObject) value).size() == 1 && ((ExtendedObject) value).containsKey(JsonEngine.SERVER_SIDE_TOKEN_FIELDNAME))) {
 				encodedType = new EncodedType(innerEncodedType.getEncoderType(), true, innerEncodedType.getEntityName());
 			} else {
 				encodedType = innerEncodedType;
@@ -220,12 +223,18 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 	private String writeValue(final Object value, final Response response, final WebServiceDefinition webServiceDefinition) {
 		Assertion.checkNotNull(value);
 		//-----
-		if (value instanceof DtList && hasComplexTypeMeta((DtList) value)) {
+		if (value instanceof String
+				|| value instanceof Date || value instanceof LocalDate || value instanceof Instant
+				|| value instanceof Number
+				|| value instanceof Boolean) {
+			//optim for primitives
+			return jsonWriterEngine.toJson(value);
+		} else if (value instanceof DtList && hasComplexTypeMeta((DtList) value)) {
 			return toJson(value, getListMetas((DtList) value), webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
 		} else if (value instanceof List) {
 			writeListMetaToHeader((List) value, response);
 			return toJson(value, Collections.emptyMap(), webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
-		} else if (value instanceof DtObject) {
+		} else if (value instanceof DtObject || value instanceof FacetedQueryResult<?, ?>) {
 			return toJson(value, Collections.emptyMap(), webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
 		} else if (value instanceof UiContext) {
 			//TODO build json in jsonWriterEngine
@@ -243,6 +252,8 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 			final ExtendedObject<?> extendedObject = (ExtendedObject<?>) value;
 			return toJson(extendedObject.getInnerObject(), extendedObject, webServiceDefinition.getIncludedFields(), webServiceDefinition.getExcludedFields());
 		} else {
+			Assertion.checkArgument(webServiceDefinition.getIncludedFields().isEmpty() && webServiceDefinition.getExcludedFields().isEmpty(),
+					"IncludedFields and ExcludedFields aren't supported for this object type: {0}, on WebService {1}", value.getClass().getSimpleName(), webServiceDefinition.getMethod());
 			return jsonWriterEngine.toJson(value);
 		}
 	}

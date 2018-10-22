@@ -36,11 +36,11 @@ import java.util.Map;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 import io.restassured.filter.session.SessionFilter;
@@ -67,12 +67,12 @@ public final class WebServiceManagerTest {
 		RestAssured.port = MyAppConfig.WS_PORT;
 	}
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() {
 		app = new AutoCloseableApp(MyAppConfig.config());
 	}
 
-	@Before
+	@BeforeEach
 	public void preTestLogin() {
 		RestAssured.registerParser("plain/text", Parser.TEXT);
 		RestAssured.given()
@@ -80,7 +80,7 @@ public final class WebServiceManagerTest {
 				.get("/test/login");
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void tearDown() {
 		if (app != null) {
 			app.close();
@@ -664,7 +664,7 @@ public final class WebServiceManagerTest {
 				.put("/contacts/contactView");
 	}
 
-	@Ignore("Not supported yet")
+	@Disabled("Not supported yet")
 	@Test
 	public void testPutContactViewError() throws ParseException {
 		final Map<String, Object> newContactView = createDefaultContact(100L);
@@ -1928,6 +1928,8 @@ public final class WebServiceManagerTest {
 		final Response getResponse = loggedAndExpect(given().body(emptySelectedFacets))
 				.statusCode(HttpStatus.SC_OK)
 				.body("list", Matchers.hasSize(Matchers.greaterThanOrEqualTo(10)))
+				.body("list.get(0).address", Matchers.nullValue())
+				.body("highlight", Matchers.nullValue())
 				.body("facets.get(1).code", Matchers.equalTo("FCT_BIRTHDAY"))
 				.body("facets.get(1).values.get(0).code", Matchers.equalTo("R1"))
 				.body("facets.get(1).values.get(0).count", Matchers.equalTo(4))
