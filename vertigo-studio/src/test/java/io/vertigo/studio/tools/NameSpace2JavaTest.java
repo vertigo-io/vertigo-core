@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.tools;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.app.App;
 import io.vertigo.app.AutoCloseableApp;
