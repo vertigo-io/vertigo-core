@@ -42,7 +42,7 @@ import io.vertigo.util.StringUtil;
  */
 public final class URI<E extends Entity> implements Serializable {
 	private static final long serialVersionUID = -1L;
-	private static final char D2A_SEPARATOR = '@';
+	private static final char SEPARATOR = '@';
 
 	/**
 	 * Expression réguliére vérifiée par les URN.
@@ -57,8 +57,8 @@ public final class URI<E extends Entity> implements Serializable {
 
 	/**
 	 * Constructor.
-	 * @param definition Definition de la ressource
-	 * @param id Clé de la ressource
+	 * @param definition the entity definition 
+	 * @param id the entity id
 	 */
 	private URI(final DtDefinition definition, final Object id) {
 		Assertion.checkNotNull(id);
@@ -73,14 +73,43 @@ public final class URI<E extends Entity> implements Serializable {
 		Assertion.checkArgument(URI.REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, URI.REGEX_URN);
 	}
 
+	/**
+	 * Parses URI from URN.
+	 * @param urn URN to parse
+	 * @return URI to result
+	 */
+	public static URI<?> of(final String urn) {
+		Assertion.checkNotNull(urn);
+		//-----
+		final int i = urn.indexOf(SEPARATOR);
+		final String dname = urn.substring(0, i);
+		final Object id = stringToId(urn.substring(i + 1));
+
+		//On ne type pas, la seule chose que l'on sait est qu'il s'agit d'une définition.
+		final DtDefinition definition = Home.getApp().getDefinitionSpace().resolve(dname, DtDefinition.class);
+		return new URI(definition, id);
+	}
+
+	/**
+	 * Builds an UID for an entity defined by 
+	 * - an id
+	 * - a definition
+	 * 
+	 * @param definition the entity definition 
+	 * @param id the entity id
+	 * @return the entity UID 
+	 */
 	public static URI of(final DtDefinition definition, final Object id) {
 		return new URI(definition, id);
 	}
 
 	/**
-	 * Creates an URI from an existing object.
-	 * @param entity Object
-	 * @return this object URI
+	 * Builds an UID for an entity defined by 
+	 * - an object
+	
+	 * @param entity the entity
+	 * @param <E> the entity type
+	 * @return the entity UID 
 	 */
 	public static <E extends Entity> URI<E> of(final E entity) {
 		Assertion.checkNotNull(entity);
@@ -90,11 +119,14 @@ public final class URI<E extends Entity> implements Serializable {
 	}
 
 	/**
-	 * Creates the uri of the entity
-	 * @param entityClass the class of the entity
-	 * @param uriValue key value
-	 * @param <E> the type of entity
-	 * @return URI du DTO
+	 * Builds an UID for an entity defined by 
+	 * - a class
+	 * - an id
+	
+	 * @param entityClass the entity class
+	 * @param id the entity id
+	 * @param <E> the entity type
+	 * @return the entity UID 
 	 */
 	public static <E extends Entity> URI<E> of(final Class<E> entityClass, final Object uriValue) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
@@ -123,8 +155,7 @@ public final class URI<E extends Entity> implements Serializable {
 	}
 
 	/**
-	 * @return Clé identifiant la ressource parmi les ressources du méme type.
-	 * Exemple : identifiant numérique d'une commande.
+	 * @return the entity id
 	 */
 	public Serializable getId() {
 		return id;
@@ -156,45 +187,28 @@ public final class URI<E extends Entity> implements Serializable {
 	//=============================STATIC======================================
 	//=========================================================================
 
-	/**
-	 * Parse URI from URN.
-	 * @param urn URN to parse
-	 * @return URI to result
-	 */
-	public static URI<?> of(final String urn) {
-		Assertion.checkNotNull(urn);
-		//-----
-		final int i = urn.indexOf(D2A_SEPARATOR);
-		final String dname = urn.substring(0, i);
-		final Object id = stringToId(urn.substring(i + 1));
-
-		//On ne type pas, la seule chose que l'on sait est qu'il s'agit d'une définition.
-		final DtDefinition definition = Home.getApp().getDefinitionSpace().resolve(dname, DtDefinition.class);
-		return new URI(definition, id);
-	}
-
 	private static String toURN(final URI<?> uri) {
 		final String idAsText = idToString(uri.getId());
-		return uri.getDefinition().getName() + D2A_SEPARATOR + idAsText;
+		return uri.getDefinition().getName() + SEPARATOR + idAsText;
 	}
 
 	/**
 	 * Converti une clé en chaine.
 	 * Une clé vide est considérée comme nulle.
-	 * @param key clé
+	 * @param id the entity id
 	 * @return Chaine représentant la clé
 	 */
-	private static String idToString(final Serializable key) {
-		Assertion.checkNotNull(key);
+	private static String idToString(final Serializable id) {
+		Assertion.checkNotNull(id);
 		//---
-		if (key instanceof String) {
-			return StringUtil.isEmpty((String) key) ? null : "s-" + ((String) key).trim();
-		} else if (key instanceof Integer) {
-			return "i-" + key;
-		} else if (key instanceof Long) {
-			return "l-" + key;
+		if (id instanceof String) {
+			return StringUtil.isEmpty((String) id) ? null : "s-" + ((String) id).trim();
+		} else if (id instanceof Integer) {
+			return "i-" + id;
+		} else if (id instanceof Long) {
+			return "l-" + id;
 		}
-		throw new IllegalArgumentException(key.toString() + " not supported by URI");
+		throw new IllegalArgumentException(id.toString() + " not supported by URI");
 	}
 
 	/**
