@@ -313,7 +313,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 * @return Valeur typée du champs
 	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
 	 */
-	protected <T> T getTypedValue(final String fieldName, final Class<T> type) {
+	public <T> T getTypedValue(final String fieldName, final Class<T> type) {
 		Assertion.checkArgNotEmpty(fieldName);
 		Assertion.checkNotNull(type);
 		//-----
