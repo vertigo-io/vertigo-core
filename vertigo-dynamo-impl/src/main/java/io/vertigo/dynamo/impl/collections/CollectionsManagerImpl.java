@@ -125,9 +125,9 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		final SelectedFacetValues selectedFacetValues = facetedQuery.getSelectedFacetValues();
 		Predicate<D> predicate = list -> true;
 		for (final FacetDefinition facetDefinition : facetedQuery.getDefinition().getFacetDefinitions()) {
-			if (!selectedFacetValues.getFacetValues(facetDefinition).isEmpty()) {
+			if (!selectedFacetValues.getFacetValues(facetDefinition.getName()).isEmpty()) {
 				Predicate<D> predicateValue = list -> false;
-				for (final FacetValue facetValue : selectedFacetValues.getFacetValues(facetDefinition)) {
+				for (final FacetValue facetValue : selectedFacetValues.getFacetValues(facetDefinition.getName())) {
 					predicateValue = predicateValue.or(this.filter(facetValue.getListFilter()));
 				}
 				predicate = predicate.and(predicateValue);

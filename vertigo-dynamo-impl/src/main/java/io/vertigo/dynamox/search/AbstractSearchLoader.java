@@ -79,6 +79,8 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 			case DataStream:
 			case Boolean:
 			case Double:
+			case LocalDate:
+			case Instant:
 			case Date:
 			default:
 				throw new IllegalArgumentException("Type's PK " + idDataType.name() + " of "

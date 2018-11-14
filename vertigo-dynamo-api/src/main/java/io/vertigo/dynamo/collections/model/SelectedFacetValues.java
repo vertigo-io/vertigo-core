@@ -92,8 +92,10 @@ public final class SelectedFacetValues implements Serializable {
 	 * @param facetDefinition Facet
 	 * @return Liste des valeurs de facette selectionnées
 	 */
-	public List<FacetValue> getFacetValues(final FacetDefinition facetDefinition) {
-		return selectedFacetValuesByFacetName.getOrDefault(facetDefinition.getName(), Collections.emptyList());
+	public List<FacetValue> getFacetValues(final String facetDefinitionName) {
+		Assertion.checkArgNotEmpty(facetDefinitionName);
+		//---
+		return selectedFacetValuesByFacetName.getOrDefault(facetDefinitionName, Collections.emptyList());
 	}
 
 }

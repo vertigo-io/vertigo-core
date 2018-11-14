@@ -56,9 +56,9 @@ public final class SearchTestWebServices implements WebServices {
 		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QRY_CONTACT_FACET", FacetedQueryDefinition.class);
 		final UiContext uiContext = new UiContext();
 		for (final FacetDefinition facetDefinition : facetedQueryDefinition.getFacetDefinitions()) {
-			if (!selectedFacetValues.getFacetValues(facetDefinition).isEmpty()) {
+			if (!selectedFacetValues.getFacetValues(facetDefinition.getName()).isEmpty()) {
 				uiContext.put(facetDefinition.getName(),
-						selectedFacetValues.getFacetValues(facetDefinition)
+						selectedFacetValues.getFacetValues(facetDefinition.getName())
 								.stream()
 								.map(FacetValue::getCode)
 								.collect(Collectors.joining(",")));

@@ -34,7 +34,7 @@ import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.collections.model.SelectedFacetValues.SelectedFacetValuesBuilder;
 
-final class SelectedFacetValuesDeserializer implements JsonDeserializer<SelectedFacetValues> {
+public final class SelectedFacetValuesDeserializer implements JsonDeserializer<SelectedFacetValues> {
 
 	@Override
 	public SelectedFacetValues deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
