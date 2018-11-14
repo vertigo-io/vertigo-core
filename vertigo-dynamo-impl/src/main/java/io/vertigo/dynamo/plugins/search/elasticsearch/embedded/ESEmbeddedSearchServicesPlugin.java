@@ -57,6 +57,9 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 	private final URL elasticSearchHomeURL;
 	private Node node;
 
+	private final Integer httpPort;
+	private final Integer transportPort;
+
 	/**
 	 * Constructor.
 	 * @param elasticSearchHome URL du serveur SOLR
@@ -74,12 +77,16 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 			@Named("envIndexIsPrefix") final Optional<Boolean> envIndexIsPrefix,
 			@Named("rowsPerQuery") final int rowsPerQuery,
 			@Named("config.file") final String configFile,
+			@Named("http.port") final Optional<Integer> httpPortOpt,
+			@Named("transport.tcp.port") final Optional<Integer> transportPortOpt,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
 		super(envIndex, envIndexIsPrefix.orElse(false), rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(elasticSearchHome);
 		//-----
 		elasticSearchHomeURL = resourceManager.resolve(elasticSearchHome);
+		httpPort = httpPortOpt.orElse(9200);
+		transportPort = transportPortOpt.orElse(9300);
 	}
 
 	/** {@inheritDoc} */
@@ -104,7 +111,7 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 		}
 	}
 
-	private static Node createNode(final URL esHomeURL) {
+	private Node createNode(final URL esHomeURL) {
 		Assertion.checkNotNull(esHomeURL);
 		//-----
 		final File home;
@@ -124,13 +131,15 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 		}
 	}
 
-	private static Settings buildNodeSettings(final String homePath) {
+	private Settings buildNodeSettings(final String homePath) {
 		//Build settings
 		return Settings.builder()
 				.put("node.name", "es-embedded-node-" + System.currentTimeMillis())
 				.put("transport.type", "netty4")
 				.put("http.type", "netty4")
 				.put("http.enabled", "true")
+				.put("http.port", httpPort)
+				.put("transport.tcp.port", transportPort)
 				.put("path.home", homePath)
 				.build();
 	}
