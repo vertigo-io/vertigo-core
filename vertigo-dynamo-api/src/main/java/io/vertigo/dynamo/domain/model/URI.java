@@ -57,7 +57,7 @@ public final class URI<E extends Entity> implements Serializable {
 
 	/**
 	 * Constructor.
-	 * @param definition the entity definition 
+	 * @param definition the entity definition
 	 * @param id the entity id
 	 */
 	private URI(final DtDefinition definition, final Object id) {
@@ -78,7 +78,7 @@ public final class URI<E extends Entity> implements Serializable {
 	 * @param urn URN to parse
 	 * @return URI to result
 	 */
-	public static URI<?> of(final String urn) {
+	public static <E extends Entity> URI<E> of(final String urn) {
 		Assertion.checkNotNull(urn);
 		//-----
 		final int i = urn.indexOf(SEPARATOR);
@@ -91,25 +91,25 @@ public final class URI<E extends Entity> implements Serializable {
 	}
 
 	/**
-	 * Builds an UID for an entity defined by 
+	 * Builds an UID for an entity defined by
 	 * - an id
 	 * - a definition
-	 * 
-	 * @param definition the entity definition 
+	 *
+	 * @param definition the entity definition
 	 * @param id the entity id
-	 * @return the entity UID 
+	 * @return the entity UID
 	 */
-	public static URI of(final DtDefinition definition, final Object id) {
+	public static <E extends Entity> URI<E> of(final DtDefinition definition, final Object id) {
 		return new URI(definition, id);
 	}
 
 	/**
-	 * Builds an UID for an entity defined by 
+	 * Builds an UID for an entity defined by
 	 * - an object
-	
+
 	 * @param entity the entity
 	 * @param <E> the entity type
-	 * @return the entity UID 
+	 * @return the entity UID
 	 */
 	public static <E extends Entity> URI<E> of(final E entity) {
 		Assertion.checkNotNull(entity);
@@ -119,14 +119,14 @@ public final class URI<E extends Entity> implements Serializable {
 	}
 
 	/**
-	 * Builds an UID for an entity defined by 
+	 * Builds an UID for an entity defined by
 	 * - a class
 	 * - an id
-	
+
 	 * @param entityClass the entity class
 	 * @param id the entity id
 	 * @param <E> the entity type
-	 * @return the entity UID 
+	 * @return the entity UID
 	 */
 	public static <E extends Entity> URI<E> of(final Class<E> entityClass, final Object uriValue) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
