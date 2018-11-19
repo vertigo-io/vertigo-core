@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.impl.store;
 
 import io.vertigo.commons.eventbus.Event;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -41,14 +41,14 @@ public final class StoreEvent implements Event {
 	}
 
 	private final Type type;
-	private final URI uri;
+	private final UID uri;
 
 	/**
 	 * Constructor.
 	 * @param type Store type
 	 * @param uri Uri of stored element
 	 */
-	public StoreEvent(final Type type, final URI uri) {
+	public StoreEvent(final Type type, final UID uri) {
 		Assertion.checkNotNull(type);
 		Assertion.checkNotNull(uri);
 		//-----
@@ -59,7 +59,7 @@ public final class StoreEvent implements Event {
 	/**
 	 * @return Uri of stored element
 	 */
-	public URI getUri() {
+	public UID getUri() {
 		return uri;
 	}
 

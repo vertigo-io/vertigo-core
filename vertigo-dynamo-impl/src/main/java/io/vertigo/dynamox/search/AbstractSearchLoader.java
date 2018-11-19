@@ -28,7 +28,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchLoader;
@@ -49,7 +49,7 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 		return () -> createIterator(keyConceptClass);
 	}
 
-	private List<URI<K>> doLoadNextURI(final P lastId, final DtDefinition dtDefinition) {
+	private List<UID<K>> doLoadNextURI(final P lastId, final DtDefinition dtDefinition) {
 		return loadNextURI(lastId, dtDefinition);
 	}
 
@@ -59,7 +59,7 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 	 * @param dtDefinition KeyConcept definition
 	 * @return Uris of next chunk.
 	 */
-	protected abstract List<URI<K>> loadNextURI(final P lastId, final DtDefinition dtDefinition);
+	protected abstract List<UID<K>> loadNextURI(final P lastId, final DtDefinition dtDefinition);
 
 	private P getLowestIdValue(final DtDefinition dtDefinition) {
 		final DtField idField = dtDefinition.getIdField().get();
@@ -116,17 +116,17 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 			}
 
 			private SearchChunk<K> nextChunk(final SearchChunk<K> previousChunk) {
-				final List<URI<K>> previousUris = previousChunk.getAllURIs();
+				final List<UID<K>> previousUris = previousChunk.getAllURIs();
 				final P lastId = (P) previousUris.get(previousUris.size() - 1).getId();
 				// call loader service
-				final List<URI<K>> uris = doLoadNextURI(lastId, dtDefinition);
+				final List<UID<K>> uris = doLoadNextURI(lastId, dtDefinition);
 				return new SearchChunk<>(uris);
 			}
 
 			private SearchChunk<K> firstChunk() {
 				final P lastId = getLowestIdValue(dtDefinition);
 				// call loader service
-				final List<URI<K>> uris = doLoadNextURI(lastId, dtDefinition);
+				final List<UID<K>> uris = doLoadNextURI(lastId, dtDefinition);
 				return new SearchChunk<>(uris);
 			}
 

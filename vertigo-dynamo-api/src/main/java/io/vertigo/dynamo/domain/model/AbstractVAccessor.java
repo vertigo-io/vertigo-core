@@ -44,7 +44,7 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 	private State status = State.NOT_LOADED;
 	private final DefinitionReference<DtDefinition> targetDtDefinitionRef;
 	private final String role;
-	private URI<E> targetURI;
+	private UID<E> targetURI;
 	private E value;
 
 	/**
@@ -86,7 +86,7 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 	/**
 	 * @return the entity uri
 	 */
-	public final URI<E> getURI() {
+	public final UID<E> getURI() {
 		return targetURI;
 	}
 
@@ -113,7 +113,7 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 		Assertion.checkNotNull(entity);
 		//---
 		value = entity;
-		targetURI = entity.getURI();
+		targetURI = entity.getUID();
 		status = State.LOADED;
 	}
 
@@ -126,7 +126,7 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 		//---
 		//If already loaded and same id, we don't touch anything
 		if (!(status == State.LOADED && isSameId(id))) {
-			targetURI = id == null ? null : URI.of(targetDtDefinitionRef.get(), id);
+			targetURI = id == null ? null : UID.of(targetDtDefinitionRef.get(), id);
 			//we have to reset the value and the state
 			value = null;
 			status = State.NOT_LOADED;
@@ -144,7 +144,7 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 	 * Sets the entity uri
 	 * @param uri the entity uri
 	 */
-	public final void setUri(final URI<E> uri) {
+	public final void setUri(final UID<E> uri) {
 		Assertion.checkNotNull(uri);
 		//---
 		targetURI = uri; //maybe null

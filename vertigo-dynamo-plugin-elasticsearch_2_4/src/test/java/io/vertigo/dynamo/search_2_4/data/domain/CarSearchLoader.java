@@ -26,7 +26,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
@@ -66,7 +66,7 @@ public final class CarSearchLoader extends AbstractSearchLoader<Long, Car, Car> 
 		for (final Car car : carDataBase.getAllCars()) {
 			carPerId.put(car.getId(), car);
 		}
-		for (final URI<Car> uri : searchChunk.getAllURIs()) {
+		for (final UID<Car> uri : searchChunk.getAllURIs()) {
 			final Car car = carPerId.get(uri.getId());
 			carIndexes.add(SearchIndex.createIndex(indexDefinition, uri, car));
 		}
@@ -75,14 +75,14 @@ public final class CarSearchLoader extends AbstractSearchLoader<Long, Car, Car> 
 
 	/** {@inheritDoc} */
 	@Override
-	protected List<URI<Car>> loadNextURI(final Long lastId, final DtDefinition dtDefinition) {
+	protected List<UID<Car>> loadNextURI(final Long lastId, final DtDefinition dtDefinition) {
 		final SearchIndexDefinition indexDefinition = searchManager.findFirstIndexDefinitionByKeyConcept(Car.class);
-		final List<URI<Car>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
+		final List<UID<Car>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
 		//call loader service
 		int i = 0;
 		for (final Car car : carDataBase.getAllCars()) {
 			if (i > lastId) {
-				uris.add(URI.of(indexDefinition.getKeyConceptDtDefinition(), car.getId()));
+				uris.add(UID.of(indexDefinition.getKeyConceptDtDefinition(), car.getId()));
 			}
 			if (uris.size() >= SEARCH_CHUNK_SIZE) {
 				break;

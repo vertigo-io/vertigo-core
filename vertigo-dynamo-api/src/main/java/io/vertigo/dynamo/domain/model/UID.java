@@ -40,7 +40,7 @@ import io.vertigo.util.StringUtil;
  * @author  pchretien
  * @param <E> the type of entity
  */
-public final class URI<E extends Entity> implements Serializable {
+public final class UID<E extends Entity> implements Serializable {
 	private static final long serialVersionUID = -1L;
 	private static final char SEPARATOR = '@';
 
@@ -60,7 +60,7 @@ public final class URI<E extends Entity> implements Serializable {
 	 * @param definition the entity definition
 	 * @param id the entity id
 	 */
-	private URI(final DtDefinition definition, final Object id) {
+	private UID(final DtDefinition definition, final Object id) {
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(definition);
 		definition.getIdField().get().getDomain().checkValue(id);
@@ -70,7 +70,7 @@ public final class URI<E extends Entity> implements Serializable {
 		//---
 		//Calcul de l'urn
 		urn = toURN(this);
-		Assertion.checkArgument(URI.REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, URI.REGEX_URN);
+		Assertion.checkArgument(UID.REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, UID.REGEX_URN);
 	}
 
 	/**
@@ -78,7 +78,7 @@ public final class URI<E extends Entity> implements Serializable {
 	 * @param urn URN to parse
 	 * @return URI to result
 	 */
-	public static <E extends Entity> URI<E> of(final String urn) {
+	public static <E extends Entity> UID<E> of(final String urn) {
 		Assertion.checkNotNull(urn);
 		//-----
 		final int i = urn.indexOf(SEPARATOR);
@@ -87,7 +87,7 @@ public final class URI<E extends Entity> implements Serializable {
 
 		//On ne type pas, la seule chose que l'on sait est qu'il s'agit d'une définition.
 		final DtDefinition definition = Home.getApp().getDefinitionSpace().resolve(dname, DtDefinition.class);
-		return new URI(definition, id);
+		return new UID(definition, id);
 	}
 
 	/**
@@ -99,8 +99,8 @@ public final class URI<E extends Entity> implements Serializable {
 	 * @param id the entity id
 	 * @return the entity UID
 	 */
-	public static <E extends Entity> URI<E> of(final DtDefinition definition, final Object id) {
-		return new URI(definition, id);
+	public static <E extends Entity> UID<E> of(final DtDefinition definition, final Object id) {
+		return new UID(definition, id);
 	}
 
 	/**
@@ -111,11 +111,11 @@ public final class URI<E extends Entity> implements Serializable {
 	 * @param <E> the entity type
 	 * @return the entity UID
 	 */
-	public static <E extends Entity> URI<E> of(final E entity) {
+	public static <E extends Entity> UID<E> of(final E entity) {
 		Assertion.checkNotNull(entity);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
-		return new URI<>(dtDefinition, DtObjectUtil.getId(entity));
+		return new UID<>(dtDefinition, DtObjectUtil.getId(entity));
 	}
 
 	/**
@@ -128,9 +128,9 @@ public final class URI<E extends Entity> implements Serializable {
 	 * @param <E> the entity type
 	 * @return the entity UID
 	 */
-	public static <E extends Entity> URI<E> of(final Class<E> entityClass, final Object uriValue) {
+	public static <E extends Entity> UID<E> of(final Class<E> entityClass, final Object uriValue) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
-		return new URI<>(dtDefinition, uriValue);
+		return new UID<>(dtDefinition, uriValue);
 	}
 
 	/**
@@ -170,8 +170,8 @@ public final class URI<E extends Entity> implements Serializable {
 	/** {@inheritDoc} */
 	@Override
 	public boolean equals(final Object o) {
-		if (o instanceof URI) {
-			return ((URI) o).urn.equals(this.urn);
+		if (o instanceof UID) {
+			return ((UID) o).urn.equals(this.urn);
 		}
 		return false;
 	}
@@ -187,7 +187,7 @@ public final class URI<E extends Entity> implements Serializable {
 	//=============================STATIC======================================
 	//=========================================================================
 
-	private static String toURN(final URI<?> uri) {
+	private static String toURN(final UID<?> uri) {
 		final String idAsText = idToString(uri.getId());
 		return uri.getDefinition().getName() + SEPARATOR + idAsText;
 	}

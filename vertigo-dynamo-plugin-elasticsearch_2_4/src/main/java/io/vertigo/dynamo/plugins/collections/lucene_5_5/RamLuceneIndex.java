@@ -59,7 +59,7 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VUserException;
@@ -219,7 +219,7 @@ final class RamLuceneIndex<D extends DtObject> {
 				//TODO voir pour mise en cache de cette navigation
 				final DtListURIForMasterData mdlUri = getStoreManager().getMasterDataConfig().getDtListURIForMasterData(field.getFkDtDefinition());
 				final DtField displayField = mdlUri.getDtDefinition().getDisplayField().get();
-				final URI<Entity> uri = URI.of(field.getFkDtDefinition(), value);
+				final UID<Entity> uri = UID.of(field.getFkDtDefinition(), value);
 				final DtObject fkDto = getStoreManager().getDataStore().readOne(uri);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
 				stringValue = displayField.getDomain().valueToString(displayValue);

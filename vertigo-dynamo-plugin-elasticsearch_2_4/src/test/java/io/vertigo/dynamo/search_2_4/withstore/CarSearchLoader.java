@@ -30,7 +30,7 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
@@ -72,7 +72,7 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 		try (final VTransactionWritable tx = getTransactionManager().createCurrentTransaction()) {
 			final List<SearchIndex<Car, Car>> result = new ArrayList<>();
 			for (final Car car : loadCarList(searchChunk)) {
-				final URI<Car> uri = car.getURI();
+				final UID<Car> uri = car.getUID();
 				result.add(SearchIndex.createIndex(indexDefinition, uri, car));
 			}
 			return result;

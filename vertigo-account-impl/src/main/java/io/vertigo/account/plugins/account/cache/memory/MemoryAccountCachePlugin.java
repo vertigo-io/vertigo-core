@@ -28,7 +28,7 @@ import java.util.Set;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.impl.account.AccountCachePlugin;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 
@@ -36,18 +36,18 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class MemoryAccountCachePlugin implements AccountCachePlugin {
-	private final Map<URI<Account>, Account> accountByURI = new HashMap<>();
-	private final Map<String, URI<Account>> accountURIByAuthToken = new HashMap<>();
-	private final Map<URI<AccountGroup>, AccountGroup> groupByURI = new HashMap<>();
+	private final Map<UID<Account>, Account> accountByURI = new HashMap<>();
+	private final Map<String, UID<Account>> accountURIByAuthToken = new HashMap<>();
+	private final Map<UID<AccountGroup>, AccountGroup> groupByURI = new HashMap<>();
 	//---
-	private final Map<URI<Account>, Set<URI<AccountGroup>>> groupByAccountURI = new HashMap<>();
-	private final Map<URI<AccountGroup>, Set<URI<Account>>> accountByGroupURI = new HashMap<>();
+	private final Map<UID<Account>, Set<UID<AccountGroup>>> groupByAccountURI = new HashMap<>();
+	private final Map<UID<AccountGroup>, Set<UID<Account>>> accountByGroupURI = new HashMap<>();
 	//---
-	private final Map<URI<Account>, VFile> photoByAccountURI = new HashMap<>();
+	private final Map<UID<Account>, VFile> photoByAccountURI = new HashMap<>();
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized Optional<Account> getAccount(final URI<Account> accountURI) {
+	public synchronized Optional<Account> getAccount(final UID<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
 		//-----
 		return Optional.ofNullable(accountByURI.get(accountURI));
@@ -58,11 +58,11 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 	public synchronized void putAccount(final Account account) {
 		Assertion.checkNotNull(account);
 		//-----
-		final URI<Account> uri = account.getURI();
+		final UID<Account> uri = account.getUID();
 		//----
 		final Object old = accountByURI.put(uri, account);
 		if (old == null) {
-			groupByAccountURI.put(uri, new HashSet<URI<AccountGroup>>());
+			groupByAccountURI.put(uri, new HashSet<UID<AccountGroup>>());
 			accountURIByAuthToken.put(account.getAuthToken(), uri);
 		}
 	}
@@ -70,7 +70,7 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 	//-----
 	/** {@inheritDoc} */
 	@Override
-	public synchronized Optional<AccountGroup> getGroup(final URI<AccountGroup> groupURI) {
+	public synchronized Optional<AccountGroup> getGroup(final UID<AccountGroup> groupURI) {
 		Assertion.checkNotNull(groupURI);
 		//-----
 		return Optional.ofNullable(groupByURI.get(groupURI));
@@ -81,18 +81,18 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 	public synchronized void putGroup(final AccountGroup group) {
 		Assertion.checkNotNull(group);
 		//-----
-		final URI<AccountGroup> uri = group.getURI();
+		final UID<AccountGroup> uri = group.getUID();
 		//----
 		Assertion.checkArgument(!groupByURI.containsKey(uri), "this group is already registered, you can't create it");
 		//-----
-		accountByGroupURI.put(uri, new HashSet<URI<Account>>());
+		accountByGroupURI.put(uri, new HashSet<UID<Account>>());
 		groupByURI.put(uri, group);
 	}
 
 	//-----
 	/** {@inheritDoc} */
 	@Override
-	public synchronized void attach(final Set<URI<Account>> accountsURI, final URI<AccountGroup> groupURI) {
+	public synchronized void attach(final Set<UID<Account>> accountsURI, final UID<AccountGroup> groupURI) {
 		Assertion.checkNotNull(accountsURI);
 		Assertion.checkNotNull(groupURI);
 		//-----
@@ -101,30 +101,30 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized void attach(final URI<Account> accountURI, final Set<URI<AccountGroup>> groupURIs) {
+	public synchronized void attach(final UID<Account> accountURI, final Set<UID<AccountGroup>> groupURIs) {
 		//-----
 		groupURIs.forEach(groupURI -> this.attach(accountURI, groupURI));
 	}
 
-	private synchronized void attach(final URI<Account> accountURI, final URI<AccountGroup> groupURI) {
+	private synchronized void attach(final UID<Account> accountURI, final UID<AccountGroup> groupURI) {
 		Assertion.checkNotNull(accountURI);
 		Assertion.checkNotNull(groupURI);
 		//-----
-		final Set<URI<AccountGroup>> groupURIs = groupByAccountURI.get(accountURI);
+		final Set<UID<AccountGroup>> groupURIs = groupByAccountURI.get(accountURI);
 		Assertion.checkNotNull(groupURIs, "account must be create before this operation");
 		groupURIs.add(groupURI);
 		//-----
-		final Set<URI<Account>> accountURIs = accountByGroupURI.get(groupURI);
+		final Set<UID<Account>> accountURIs = accountByGroupURI.get(groupURI);
 		Assertion.checkNotNull(accountURIs, "group must be create before this operation");
 		accountURIs.add(accountURI);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
+	public synchronized Set<UID<AccountGroup>> getGroupURIs(final UID<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
 		//-----
-		final Set<URI<AccountGroup>> groupURIs = groupByAccountURI.get(accountURI);
+		final Set<UID<AccountGroup>> groupURIs = groupByAccountURI.get(accountURI);
 		if (groupURIs == null) {
 			return Collections.emptySet();
 		}
@@ -133,10 +133,10 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized Set<URI<Account>> getAccountURIs(final URI<AccountGroup> groupURI) {
+	public synchronized Set<UID<Account>> getAccountURIs(final UID<AccountGroup> groupURI) {
 		Assertion.checkNotNull(groupURI);
 		//-----
-		final Set<URI<Account>> accountURIs = accountByGroupURI.get(groupURI);
+		final Set<UID<Account>> accountURIs = accountByGroupURI.get(groupURI);
 		if (accountURIs == null) {
 			return Collections.emptySet();
 		}
@@ -145,7 +145,7 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void setPhoto(final URI<Account> accountURI, final VFile photo) {
+	public void setPhoto(final UID<Account> accountURI, final VFile photo) {
 		Assertion.checkNotNull(accountURI);
 		Assertion.checkNotNull(photo);
 		//-----
@@ -154,7 +154,7 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<VFile> getPhoto(final URI<Account> accountURI) {
+	public Optional<VFile> getPhoto(final UID<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
 		//-----
 		return Optional.ofNullable(photoByAccountURI.get(accountURI));
@@ -173,7 +173,7 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<Account> getAccountByAuthToken(final String userAuthToken) {
-		final URI<Account> accountURI = accountURIByAuthToken.get(userAuthToken);
+		final UID<Account> accountURI = accountURIByAuthToken.get(userAuthToken);
 		if (accountURI != null) {
 			return getAccount(accountURI);
 		}

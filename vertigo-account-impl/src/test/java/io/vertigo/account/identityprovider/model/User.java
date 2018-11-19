@@ -19,7 +19,7 @@
 package io.vertigo.account.identityprovider.model;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -36,8 +36,8 @@ public final class User implements KeyConcept {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<User> getURI() {
-		return URI.of(this);
+	public UID<User> getUID() {
+		return UID.of(this);
 	}
 
 	@Field(domain = "DO_CODE", type = "ID", required = true, label = "Id")

@@ -43,7 +43,7 @@ import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.impl.search.SearchResource;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
@@ -193,7 +193,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	 * Supprime un document.
 	 * @param uri Uri du document à supprimer
 	 */
-	void remove(final URI uri) {
+	void remove(final UID uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		esClient.prepareDelete().setRefresh(DEFAULT_REFRESH)

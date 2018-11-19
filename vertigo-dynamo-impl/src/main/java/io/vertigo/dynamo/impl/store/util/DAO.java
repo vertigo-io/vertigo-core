@@ -36,7 +36,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.Fragment;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.DataStore;
@@ -155,7 +155,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 *
 	 * @param uri URI de l'objet à supprimer
 	 */
-	public final void delete(final URI<E> uri) {
+	public final void delete(final UID<E> uri) {
 		dataStore.delete(uri);
 	}
 
@@ -176,7 +176,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @param uri URI de l'objet à récupérer
 	 * @return D Object recherché
 	 */
-	public final E get(final URI<E> uri) {
+	public final E get(final UID<E> uri) {
 		return dataStore.readOne(uri);
 	}
 
@@ -187,7 +187,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @param fragmentClass Fragment class
 	 * @return F Fragment recherché
 	 */
-	public final <F extends Fragment<E>> F getFragment(final URI<E> uri, final Class<F> fragmentClass) {
+	public final <F extends Fragment<E>> F getFragment(final UID<E> uri, final Class<F> fragmentClass) {
 		final E dto = dataStore.readOne(uri);
 		final DtDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragmentClass);
 		final F fragment = fragmentClass.cast(DtObjectUtil.createDtObject(fragmentDefinition));
@@ -219,7 +219,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return D Fragment recherché
 	 */
 	public final <F extends Fragment<E>> F get(final P id, final Class<F> fragmentClass) {
-		URI<E> uri = URI.of(DtObjectUtil.findDtDefinition(fragmentClass).getFragment().get(), id);
+		UID<E> uri = UID.of(DtObjectUtil.findDtDefinition(fragmentClass).getFragment().get(), id);
 		return getFragment(uri, fragmentClass);
 	}
 
@@ -229,8 +229,8 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @param id identifiant de l'objet persistant recherché
 	 * @return URI recherchée
 	 */
-	protected final URI<E> createDtObjectURI(final P id) {
-		return URI.of(getDtDefinition(), id);
+	protected final UID<E> createDtObjectURI(final P id) {
+		return UID.of(getDtDefinition(), id);
 	}
 
 	/**
@@ -287,7 +287,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 
 	/** {@inheritDoc} */
 	@Override
-	public final void removeNN(final DtListURIForNNAssociation dtListURI, final URI uriToDelete) {
+	public final void removeNN(final DtListURIForNNAssociation dtListURI, final UID uriToDelete) {
 		brokerNN.removeNN(dtListURI, uriToDelete);
 	}
 
@@ -301,22 +301,22 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	public final <FK extends Entity> void updateNN(final DtListURIForNNAssociation dtListURI, final DtList<FK> newDtc) {
 		Assertion.checkNotNull(newDtc);
 		//-----
-		final List<URI> objectURIs = newDtc
+		final List<UID> objectURIs = newDtc
 				.stream()
-				.map(URI::of)
+				.map(UID::of)
 				.collect(Collectors.toList());
 		updateNN(dtListURI, objectURIs);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final void updateNN(final DtListURIForNNAssociation dtListURI, final List<URI> newUriList) {
+	public final void updateNN(final DtListURIForNNAssociation dtListURI, final List<UID> newUriList) {
 		brokerNN.updateNN(dtListURI, newUriList);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final void appendNN(final DtListURIForNNAssociation dtListURI, final URI uriToAppend) {
+	public final void appendNN(final DtListURIForNNAssociation dtListURI, final UID uriToAppend) {
 		brokerNN.appendNN(dtListURI, uriToAppend);
 	}
 
@@ -327,7 +327,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @param entity the entity to append
 	 */
 	public final void appendNN(final DtListURIForNNAssociation dtListURI, final Entity entity) {
-		brokerNN.appendNN(dtListURI, entity.getURI());
+		brokerNN.appendNN(dtListURI, entity.getUID());
 	}
 
 	private DtDefinition getDtDefinition() {

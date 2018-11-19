@@ -21,7 +21,7 @@ package io.vertigo.dynamo.store.data.domain.famille;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.ListVAccessor;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.data.domain.car.Car;
@@ -78,8 +78,8 @@ public final class Famille implements Entity {
 	/** {@inheritDoc} */
 	@javax.persistence.Transient
 	@Override
-	public URI<Famille> getURI() {
-		return URI.of(this);
+	public UID<Famille> getUID() {
+		return UID.of(this);
 	}
 
 	/**

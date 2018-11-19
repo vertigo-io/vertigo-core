@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.domain.metamodel.association;
 
 import io.vertigo.core.definition.DefinitionReference;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 
 /**
  * URI for NN relation list.
@@ -34,7 +34,7 @@ public final class DtListURIForNNAssociation extends DtListURIForAssociation<Ass
 	 * @param source URI source
 	 * @param roleName role of this association
 	 */
-	public DtListURIForNNAssociation(final AssociationNNDefinition associationDefinition, final URI source, final String roleName) {
+	public DtListURIForNNAssociation(final AssociationNNDefinition associationDefinition, final UID source, final String roleName) {
 		super(associationDefinition, source, roleName);
 		associationNNDefinitionRef = new DefinitionReference<>(associationDefinition);
 	}

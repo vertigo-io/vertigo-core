@@ -55,7 +55,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.impl.search.SearchServicesPlugin;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
@@ -236,7 +236,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	/** {@inheritDoc} */
 	@Override
-	public final <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final URI<S> uri) {
+	public final <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final UID<S> uri) {
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(indexDefinition);
 		//-----

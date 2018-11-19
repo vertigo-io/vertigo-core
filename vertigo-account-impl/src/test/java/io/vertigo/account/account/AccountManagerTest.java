@@ -42,7 +42,7 @@ import io.vertigo.commons.transaction.VTransactionResource;
 import io.vertigo.commons.transaction.VTransactionResourceId;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.component.di.injector.DIInjector;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 import redis.clients.jedis.Jedis;
@@ -66,11 +66,11 @@ public final class AccountManagerTest {
 	@Inject
 	private VSecurityManager securityManager;
 
-	private URI<Account> accountURI0;
-	private URI<Account> accountURI1;
-	private URI<Account> accountURI2;
-	private URI<AccountGroup> groupURI;
-	private URI<AccountGroup> groupAllURI;
+	private UID<Account> accountURI0;
+	private UID<Account> accountURI1;
+	private UID<Account> accountURI2;
+	private UID<AccountGroup> groupURI;
+	private UID<AccountGroup> groupAllURI;
 
 	private final boolean redis;
 	private final boolean database;
@@ -86,12 +86,12 @@ public final class AccountManagerTest {
 		this.database = database;
 	}
 
-	private static URI<Account> createAccountURI(final String id) {
-		return URI.of(Account.class, id);
+	private static UID<Account> createAccountURI(final String id) {
+		return UID.of(Account.class, id);
 	}
 
-	private static URI<AccountGroup> createGroupURI(final String id) {
-		return URI.of(AccountGroup.class, id);
+	private static UID<AccountGroup> createGroupURI(final String id) {
+		return UID.of(AccountGroup.class, id);
 	}
 
 	@Before

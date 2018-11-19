@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.environment.multi.data.domain;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -36,8 +36,8 @@ public final class Item implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	@javax.persistence.Transient
-	public URI<Item> getURI() {
-		return URI.of(this);
+	public UID<Item> getUID() {
+		return UID.of(this);
 	}
 
 	public final Long getId() {

@@ -54,7 +54,7 @@ import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
@@ -1016,14 +1016,14 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		if (all) {
 			final List<SearchIndex<Car, Car>> indexes = new ArrayList<>();
 			for (final Car car : carDataBase.getAllCars()) {
-				indexes.add(SearchIndex.createIndex(carIndexDefinition, car.getURI(), car));
+				indexes.add(SearchIndex.createIndex(carIndexDefinition, car.getUID(), car));
 			}
 			searchManager.putAll(carIndexDefinition, indexes);
 		} else {
 			//Indexation unitaire
 			//Indexation des cars de la base
 			for (final Car car : carDataBase.getAllCars()) {
-				final SearchIndex<Car, Car> index = SearchIndex.createIndex(carIndexDefinition, car.getURI(), car);
+				final SearchIndex<Car, Car> index = SearchIndex.createIndex(carIndexDefinition, car.getUID(), car);
 				searchManager.put(carIndexDefinition, index);
 			}
 		}
@@ -1079,8 +1079,8 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU4 {
 		return searchManager.loadList(carIndexDefinition, searchQuery, null);
 	}
 
-	private static URI<io.vertigo.dynamo.search_2_4.data.domain.Car> createURI(final long id) {
-		return URI.of(Car.class, id);
+	private static UID<io.vertigo.dynamo.search_2_4.data.domain.Car> createURI(final long id) {
+		return UID.of(Car.class, id);
 	}
 
 	private static void waitIndexation() {

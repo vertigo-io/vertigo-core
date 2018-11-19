@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.environment.java.data.domain;
 
 import io.vertigo.dynamo.domain.model.DtStaticMasterData;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -40,8 +40,8 @@ public final class CommandType implements DtStaticMasterData {
 	/** {@inheritDoc} */
 	@javax.persistence.Transient
 	@Override
-	public URI<CommandType> getURI() {
-		return URI.of(this);
+	public UID<CommandType> getUID() {
+		return UID.of(this);
 	}
 
 	/**

@@ -29,7 +29,7 @@ package io.vertigo.dynamo.domain.model;
 public interface Entity extends DtObject {
 
 	/**
-	 * @return URI of this entity
+	 * @return UID of this entity
 	 */
-	URI getURI();
+	UID getUID();
 }

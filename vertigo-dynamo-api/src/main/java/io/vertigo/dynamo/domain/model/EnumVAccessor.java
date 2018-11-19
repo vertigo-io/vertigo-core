@@ -54,7 +54,7 @@ public final class EnumVAccessor<E extends Entity, V extends Enum<V> & MasterDat
 	 * @return the enum value representing the distant entity
 	 */
 	public V getEnumValue() {
-		final URI<E> entityUri = getURI();
+		final UID<E> entityUri = getURI();
 		if (entityUri != null) {
 			return Stream.of(enumClass.getEnumConstants())
 					.filter(enumValue -> entityUri.equals(enumValue.getEntityUri()))

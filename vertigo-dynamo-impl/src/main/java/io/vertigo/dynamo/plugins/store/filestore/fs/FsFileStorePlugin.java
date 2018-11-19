@@ -40,7 +40,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
@@ -146,7 +146,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	@Override
 	public FileInfo read(final FileInfoURI uri) {
 		// récupération de l'objet en base
-		final URI<Entity> dtoUri = createDtObjectURI(uri);
+		final UID<Entity> dtoUri = createDtObjectURI(uri);
 		final DtObject fileInfoDto = getStoreManager().getDataStore().readOne(dtoUri);
 
 		// récupération du fichier
@@ -189,7 +189,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 			setIdValue(fileInfoDto, fileInfo.getURI().getKey());
 
 			// récupération de l'objet en base pour récupérer le path du fichier et ne pas modifier la base
-			final URI<Entity> dtoUri = createDtObjectURI(fileInfo.getURI());
+			final UID<Entity> dtoUri = createDtObjectURI(fileInfo.getURI());
 			final DtObject fileInfoDtoBase = getStoreManager().getDataStore().readOne(dtoUri);
 			final String pathToSave = getValue(fileInfoDtoBase, DtoFields.FILE_PATH, String.class);
 			setValue(fileInfoDto, DtoFields.FILE_PATH, pathToSave);
@@ -256,7 +256,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	public void delete(final FileInfoURI uri) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 
-		final URI<Entity> dtoUri = createDtObjectURI(uri);
+		final UID<Entity> dtoUri = createDtObjectURI(uri);
 		//-----suppression du fichier
 		final DtObject fileInfoDto = getStoreManager().getDataStore().readOne(dtoUri);
 		final String path = getValue(fileInfoDto, DtoFields.FILE_PATH, String.class);
@@ -271,11 +271,11 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	 * @param uri URI de FileInfo
 	 * @return URI du DTO utilisé en BDD pour stocker.
 	 */
-	private URI<Entity> createDtObjectURI(final FileInfoURI uri) {
+	private UID<Entity> createDtObjectURI(final FileInfoURI uri) {
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
 		//-----
 		// Il doit exister un DtObjet associé, avec la structure attendue.
-		return URI.of(storeDtDefinition, uri.getKey());
+		return UID.of(storeDtDefinition, uri.getKey());
 	}
 
 	/**

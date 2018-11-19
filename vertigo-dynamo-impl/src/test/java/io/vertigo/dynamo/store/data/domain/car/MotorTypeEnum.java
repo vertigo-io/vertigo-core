@@ -21,21 +21,21 @@ package io.vertigo.dynamo.store.data.domain.car;
 import java.io.Serializable;
 
 import io.vertigo.dynamo.domain.model.MasterDataEnum;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 
 public enum MotorTypeEnum implements MasterDataEnum<MotorType> {
 
 	essence("ESSENCE"), //
 	diesel("DIESEL");
 
-	private final URI<MotorType> entityUri;
+	private final UID<MotorType> entityUri;
 
 	private MotorTypeEnum(final Serializable id) {
-		entityUri = URI.of(MotorType.class, id);
+		entityUri = UID.of(MotorType.class, id);
 	}
 
 	@Override
-	public URI<MotorType> getEntityUri() {
+	public UID<MotorType> getEntityUri() {
 		return entityUri;
 	}
 

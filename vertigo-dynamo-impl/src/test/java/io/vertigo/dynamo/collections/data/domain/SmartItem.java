@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.collections.data.domain;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -35,8 +35,8 @@ public final class SmartItem implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<SmartItem> getURI() {
-		return URI.of(this);
+	public UID<SmartItem> getUID() {
+		return UID.of(this);
 	}
 
 	public final Long getId() {

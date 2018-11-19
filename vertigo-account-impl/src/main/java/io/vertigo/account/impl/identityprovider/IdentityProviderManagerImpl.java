@@ -25,7 +25,7 @@ import javax.inject.Inject;
 
 import io.vertigo.account.identityprovider.IdentityProviderManager;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 
@@ -61,7 +61,7 @@ public final class IdentityProviderManagerImpl implements IdentityProviderManage
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> Optional<VFile> getPhoto(final URI<E> accountURI) {
+	public <E extends Entity> Optional<VFile> getPhoto(final UID<E> accountURI) {
 		return identityProviderPlugin.getPhoto(accountURI);
 	}
 

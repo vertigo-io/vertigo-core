@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.criteria.data.movies;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -68,7 +68,7 @@ public final class Movie2 implements Entity {
 	}
 
 	@Override
-	public URI getURI() {
-		return URI.of(Movie2.class, id);
+	public UID<Movie2> getUID() {
+		return UID.of(Movie2.class, id);
 	}
 }

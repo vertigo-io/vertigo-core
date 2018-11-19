@@ -26,7 +26,7 @@ import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
@@ -80,7 +80,7 @@ public interface SearchServicesPlugin extends Plugin {
 	 * @param indexDefinition Type de l'index
 	 * @param uri URI de la ressource à supprimer
 	 */
-	<K extends KeyConcept> void remove(SearchIndexDefinition indexDefinition, final URI<K> uri);
+	<K extends KeyConcept> void remove(SearchIndexDefinition indexDefinition, final UID<K> uri);
 
 	/**
 	 * Suppression des données correspondant à un filtre.

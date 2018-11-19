@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 
@@ -64,8 +64,8 @@ public final class Contact implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<Contact> getURI() {
-		return URI.of(this);
+	public UID<Contact> getUID() {
+		return UID.of(this);
 	}
 
 	public Long getConId() {

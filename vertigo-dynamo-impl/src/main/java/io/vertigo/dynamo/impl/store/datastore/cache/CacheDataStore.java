@@ -31,7 +31,7 @@ import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreConfigImpl;
@@ -91,7 +91,7 @@ public final class CacheDataStore {
 	 * @param uri Element uri
 	 * @return Element by uri
 	 */
-	public <E extends Entity> E readNullable(final URI<E> uri) {
+	public <E extends Entity> E readNullable(final UID<E> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
@@ -110,7 +110,7 @@ public final class CacheDataStore {
 		return entity;
 	}
 
-	private synchronized <E extends Entity> E loadNullable(final DtDefinition dtDefinition, final URI<E> uri) {
+	private synchronized <E extends Entity> E loadNullable(final DtDefinition dtDefinition, final UID<E> uri) {
 		final E entity;
 		if (cacheDataStoreConfig.isReloadedByList(dtDefinition)) {
 			//On ne charge pas les cache de façon atomique.

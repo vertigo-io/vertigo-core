@@ -21,7 +21,7 @@ package io.vertigo.dynamo.store.data.domain.car;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.EnumVAccessor;
 import io.vertigo.dynamo.domain.model.ListVAccessor;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -96,8 +96,8 @@ public final class Car implements Entity {
 	/** {@inheritDoc} */
 	@javax.persistence.Transient
 	@Override
-	public URI<Car> getURI() {
-		return URI.of(this);
+	public UID<Car> getUID() {
+		return UID.of(this);
 	}
 
 	/**
@@ -337,7 +337,7 @@ public final class Car implements Entity {
 	 */
 	@Deprecated
 	@javax.persistence.Transient
-	public io.vertigo.dynamo.domain.model.URI<MotorType> getMotorTypeURI() {
+	public io.vertigo.dynamo.domain.model.UID<MotorType> getMotorTypeURI() {
 		return mtyCdAccessor.getURI();
 	}
 

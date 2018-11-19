@@ -30,7 +30,7 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.data.domain.Item;
 import io.vertigo.dynamo.search.metamodel.SearchChunk;
@@ -72,7 +72,7 @@ public final class ItemSearchLoader extends AbstractSqlSearchLoader<Long, Item, 
 		try (final VTransactionWritable tx = getTransactionManager().createCurrentTransaction()) {
 			final List<SearchIndex<Item, Item>> result = new ArrayList<>();
 			for (final Item item : loadItems(searchChunk)) {
-				final URI<Item> uri = item.getURI();
+				final UID<Item> uri = item.getUID();
 				result.add(SearchIndex.createIndex(indexDefinition, uri, item));
 			}
 			return result;
