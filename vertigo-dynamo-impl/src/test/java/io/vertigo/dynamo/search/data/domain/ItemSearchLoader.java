@@ -66,7 +66,7 @@ public final class ItemSearchLoader extends AbstractSearchLoader<Long, Item, Ite
 		for (final Item item : itemDataBase.getAllItems()) {
 			itemPerId.put(item.getId(), item);
 		}
-		for (final UID<Item> uri : searchChunk.getAllURIs()) {
+		for (final UID<Item> uri : searchChunk.getAllUIDs()) {
 			final Item item = itemPerId.get(uri.getId());
 			itemIndexes.add(SearchIndex.createIndex(indexDefinition, uri, item));
 		}

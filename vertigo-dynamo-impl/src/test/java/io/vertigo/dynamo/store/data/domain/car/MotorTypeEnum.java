@@ -35,7 +35,7 @@ public enum MotorTypeEnum implements MasterDataEnum<MotorType> {
 	}
 
 	@Override
-	public UID<MotorType> getEntityUri() {
+	public UID<MotorType> getEntityUID() {
 		return entityUri;
 	}
 

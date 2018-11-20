@@ -150,7 +150,7 @@ public final class Attachment implements Entity {
 	@Deprecated
 	@javax.persistence.Transient
 	public io.vertigo.dynamo.domain.model.UID<Command> getCommandURI() {
-		return cmdIdAccessor.getURI();
+		return cmdIdAccessor.getUID();
 	}
 
 	/** {@inheritDoc} */

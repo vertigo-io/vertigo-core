@@ -92,7 +92,7 @@ public final class CarSearchLoader extends AbstractSqlSearchLoader<Long, Car, Ca
 
 	private TaskDefinition getTaskLoadCarList(final SearchChunk<Car> searchChunk) {
 		final Domain doCarList = definitionSpace.resolve("DO_DT_CAR_DTC", Domain.class);
-		final String sql = searchChunk.getAllURIs()
+		final String sql = searchChunk.getAllUIDs()
 				.stream()
 				.map(uri -> uri.getId().toString())
 				.collect(Collectors.joining(", ", "select * from CAR where ID in (", ")"));

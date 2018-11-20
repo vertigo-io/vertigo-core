@@ -183,7 +183,7 @@ public final class Command implements KeyConcept {
 	@Deprecated
 	@javax.persistence.Transient
 	public io.vertigo.dynamo.domain.model.UID<City> getCityURI() {
-		return citIdAccessor.getURI();
+		return citIdAccessor.getUID();
 	}
 
 	/**
@@ -239,13 +239,13 @@ public final class Command implements KeyConcept {
 	}
 
 	/**
-	 * Retourne l'URI: Command type.
-	 * @return URI de l'association
+	 * Retourne l'UID: Command type.
+	 * @return UID de l'association
 	 */
 	@Deprecated
 	@javax.persistence.Transient
 	public io.vertigo.dynamo.domain.model.UID<CommandType> getCommandTypeURI() {
-		return ctyIdAccessor.getURI();
+		return ctyIdAccessor.getUID();
 	}
 
 	/** {@inheritDoc} */

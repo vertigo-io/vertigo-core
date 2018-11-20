@@ -84,9 +84,9 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 	}
 
 	/**
-	 * @return the entity uri
+	 * @return the entity uid
 	 */
-	public final UID<E> getURI() {
+	public final UID<E> getUID() {
 		return targetURI;
 	}
 
@@ -142,12 +142,12 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 
 	/**
 	 * Sets the entity uri
-	 * @param uri the entity uri
+	 * @param uid the entity uri
 	 */
-	public final void setUri(final UID<E> uri) {
-		Assertion.checkNotNull(uri);
+	public final void setUID(final UID<E> uid) {
+		Assertion.checkNotNull(uid);
 		//---
-		targetURI = uri; //maybe null
+		targetURI = uid; //maybe null
 		//we have to reset the value and the state
 		value = null;
 		status = State.NOT_LOADED;

@@ -30,7 +30,7 @@ package io.vertigo.dynamo.domain.model;
 public interface Fragment<E extends Entity> extends DtObject {
 
 	/**
-	 * @return URI of linked entity
+	 * @return UID of linked entity
 	 */
-	UID<E> getEntityURI();
+	UID<E> getEntityUID();
 }

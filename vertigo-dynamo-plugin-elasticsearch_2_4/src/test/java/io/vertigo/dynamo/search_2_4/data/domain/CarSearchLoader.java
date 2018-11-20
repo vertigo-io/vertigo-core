@@ -66,7 +66,7 @@ public final class CarSearchLoader extends AbstractSearchLoader<Long, Car, Car> 
 		for (final Car car : carDataBase.getAllCars()) {
 			carPerId.put(car.getId(), car);
 		}
-		for (final UID<Car> uri : searchChunk.getAllURIs()) {
+		for (final UID<Car> uri : searchChunk.getAllUIDs()) {
 			final Car car = carPerId.get(uri.getId());
 			carIndexes.add(SearchIndex.createIndex(indexDefinition, uri, car));
 		}

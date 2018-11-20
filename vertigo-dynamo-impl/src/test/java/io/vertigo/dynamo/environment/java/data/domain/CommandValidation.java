@@ -144,13 +144,13 @@ public final class CommandValidation implements Entity {
 	}
 
 	/**
-	 * Retourne l'URI: Command.
-	 * @return URI de l'association
+	 * Retourne l'UID: Command.
+	 * @return UID de l'association
 	 */
 	@Deprecated
 	@javax.persistence.Transient
 	public io.vertigo.dynamo.domain.model.UID<Command> getCommandURI() {
-		return cmdIdAccessor.getURI();
+		return cmdIdAccessor.getUID();
 	}
 
 	/** {@inheritDoc} */

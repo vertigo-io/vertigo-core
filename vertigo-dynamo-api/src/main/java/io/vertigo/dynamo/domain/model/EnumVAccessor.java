@@ -54,10 +54,10 @@ public final class EnumVAccessor<E extends Entity, V extends Enum<V> & MasterDat
 	 * @return the enum value representing the distant entity
 	 */
 	public V getEnumValue() {
-		final UID<E> entityUri = getURI();
+		final UID<E> entityUri = getUID();
 		if (entityUri != null) {
 			return Stream.of(enumClass.getEnumConstants())
-					.filter(enumValue -> entityUri.equals(enumValue.getEntityUri()))
+					.filter(enumValue -> entityUri.equals(enumValue.getEntityUID()))
 					.findFirst()
 					.orElseThrow(() -> new VSystemException("Unable to find corresponding enum of type '{0}' with uri '{1}'", enumClass.getName(), entityUri));
 		}
@@ -70,7 +70,7 @@ public final class EnumVAccessor<E extends Entity, V extends Enum<V> & MasterDat
 	 * @param enumValue
 	 */
 	public void setEnumValue(final V enumValue) {
-		setUri(enumValue.getEntityUri());
+		setUID(enumValue.getEntityUID());
 	}
 
 }

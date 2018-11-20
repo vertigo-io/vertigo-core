@@ -52,8 +52,8 @@ class AnnotationWriter {
 	 * @return Liste des lignes de code java à ajouter.
 	 */
 	List<String> writeAnnotations(final String propertyName) {
-		if ("URI".equalsIgnoreCase(propertyName)) {
-			return writeUriAnnotations();
+		if ("UID".equalsIgnoreCase(propertyName)) {
+			return writeUIDAnnotations();
 		}
 		if ("transientField".equalsIgnoreCase(propertyName)) {
 			return writeTransientAnnotations();
@@ -142,7 +142,7 @@ class AnnotationWriter {
 	 * Ectiture des annotations sur le getURI.
 	 * @return Liste des lignes de code java à ajouter.
 	 */
-	List<String> writeUriAnnotations() {
+	List<String> writeUIDAnnotations() {
 		return Collections.emptyList();
 	}
 

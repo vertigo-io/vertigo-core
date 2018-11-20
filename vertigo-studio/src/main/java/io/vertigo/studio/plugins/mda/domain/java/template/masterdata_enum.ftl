@@ -3,7 +3,7 @@ package ${entity.packageName};
 import java.io.Serializable;
 
 import io.vertigo.dynamo.domain.model.MasterDataEnum;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 
 public enum ${entity.classSimpleName}Enum implements MasterDataEnum<${entity.className}> {
 
@@ -18,8 +18,8 @@ public enum ${entity.classSimpleName}Enum implements MasterDataEnum<${entity.cla
 	}
 
 	@Override
-	public URI<${entity.className}> getEntityUri() {
-		return URI.of(${entity.className}.class, entityId);
+	public UID<${entity.className}> getEntityUID() {
+		return UID.of(${entity.className}.class, entityId);
 	}
 
 }

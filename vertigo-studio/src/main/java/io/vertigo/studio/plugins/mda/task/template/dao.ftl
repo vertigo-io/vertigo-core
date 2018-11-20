@@ -33,7 +33,7 @@ import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 </#if>
 <#if dao.keyConcept>
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 </#if>
 import io.vertigo.dynamo.impl.store.util.DAO;
 import io.vertigo.dynamo.store.StoreManager;
@@ -73,14 +73,14 @@ public final class ${dao.classSimpleName} extends DAO<${dao.dtClassSimpleName}, 
 
 	<#if dao.keyConcept>
 	/**
-	 * Indique que le keyConcept associé à cette uri va être modifié.
+	 * Indique que le keyConcept associé à cette UID va être modifié.
 	 * Techniquement cela interdit les opérations d'ecriture en concurrence 
 	 * et envoie un évenement de modification du keyConcept (à la fin de transaction eventuellement) 
-	 * @param uri URI du keyConcept modifié
+	 * @param UID UID du keyConcept modifié
 	 * @return KeyConcept à modifier
 	 */
-	 public ${dao.dtClassSimpleName} readOneForUpdate(final URI<${dao.dtClassSimpleName}> uri) {
-		return dataStore.readOneForUpdate(uri);
+	 public ${dao.dtClassSimpleName} readOneForUpdate(final UID<${dao.dtClassSimpleName}> uid) {
+		return dataStore.readOneForUpdate(uid);
 	}
 
 	/**
@@ -91,7 +91,7 @@ public final class ${dao.classSimpleName} extends DAO<${dao.dtClassSimpleName}, 
 	 * @return KeyConcept à modifier
 	 */
 	 public ${dao.dtClassSimpleName} readOneForUpdate(final ${dao.idFieldType} id) {
-		return readOneForUpdate(createDtObjectURI(id));
+		return readOneForUpdate(createDtObjectUID(id));
 	}
 	</#if>
 	<#if dao.keyConcept && dao.hasSearchBehavior()>
@@ -126,12 +126,12 @@ public final class ${dao.classSimpleName} extends DAO<${dao.dtClassSimpleName}, 
 	 * Mark an entity as dirty. Index of these elements will be reindexed if Tx commited.
 	 * Reindexation isn't synchrone, strategy is dependant of plugin's parameters.
 	 *
-	 * @param entityUri Key concept's uri
+	 * @param entityUID Key concept's UID
 	 */
-	public void markAsDirty(final URI<${dao.dtClassSimpleName}> entityUri) {
+	public void markAsDirty(final UID<${dao.dtClassSimpleName}> entityUID) {
 		transactionManager.getCurrentTransaction().addAfterCompletion((final boolean txCommitted) -> {
 			if (txCommitted) {// reindex only is tx successful
-				searchManager.markAsDirty(Arrays.asList(entityUri));
+				searchManager.markAsDirty(Arrays.asList(entityUID));
 			}
 		});
 	}
@@ -143,7 +143,7 @@ public final class ${dao.classSimpleName} extends DAO<${dao.dtClassSimpleName}, 
 	 * @param entity Key concept
 	 */
 	public void markAsDirty(final ${dao.dtClassSimpleName} entity) {
-		markAsDirty(URI.of(entity));
+		markAsDirty(UID.of(entity));
 	}
 	</#if>
 	<#if !dao.taskDefinitions.empty>

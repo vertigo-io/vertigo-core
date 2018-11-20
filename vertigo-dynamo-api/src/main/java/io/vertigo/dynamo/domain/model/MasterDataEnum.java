@@ -26,8 +26,8 @@ package io.vertigo.dynamo.domain.model;
 public interface MasterDataEnum<E extends Entity> {
 
 	/**
-	 * Return the URI of the target entity represented by the enum value
-	 * @return the target uri
+	 * Return the UID of the target entity represented by the enum value
+	 * @return the target UID
 	 */
-	UID<E> getEntityUri();
+	UID<E> getEntityUID();
 }

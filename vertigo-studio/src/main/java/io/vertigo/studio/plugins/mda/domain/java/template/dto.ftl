@@ -2,7 +2,7 @@ package ${dtDefinition.packageName};
 
 import ${dtDefinition.stereotypePackageName};
 <#if dtDefinition.entity || dtDefinition.fragment>
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 </#if>
 <#if dtDefinition.containsAccessor()>
 import io.vertigo.dynamo.domain.model.VAccessor;
@@ -57,23 +57,23 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	<#if dtDefinition.entity>
 
 	/** {@inheritDoc} */
-		<#list annotations("URI") as annotation>
+		<#list annotations("UID") as annotation>
 	${annotation}
 		</#list>
 	@Override
-	public URI<${dtDefinition.classSimpleName}> getURI() {
-		return URI.of(this);
+	public UID<${dtDefinition.classSimpleName}> getUID() {
+		return UID.of(this);
 	}
 	</#if>
 	<#if dtDefinition.fragment>
 
 	/** {@inheritDoc} */
-		<#list annotations("URI") as annotation>
+		<#list annotations("UID") as annotation>
 	${annotation}
 		</#list>
 	@Override
-	public URI<${dtDefinition.entityClassSimpleName}> getEntityURI() {
-		return DtObjectUtil.createEntityURI(this); 
+	public UID<${dtDefinition.entityClassSimpleName}> getEntityUID() {
+		return DtObjectUtil.createEntityUID(this); 
 	}
 	</#if>
 	<#list dtDefinition.fields as dtField>
@@ -170,15 +170,15 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	}
 
 	/**
-	 * Retourne l'URI: ${association.label}.
-	 * @return URI de l'association
+	 * Retourne l'UID: ${association.label}.
+	 * @return UID de l'association
 	 */
 	@Deprecated
 	<#list annotations('transientField') as annotation>
 	${annotation}
 	</#list>
-	public io.vertigo.dynamo.domain.model.URI<${association.returnType}> get${association.role?cap_first}URI() {
-		return ${association.upperCamelCaseFkFieldName?uncap_first}Accessor.getURI();
+	public io.vertigo.dynamo.domain.model.UID<${association.returnType}> get${association.role?cap_first}UID() {
+		return ${association.upperCamelCaseFkFieldName?uncap_first}Accessor.getUID();
 	}
 				</#if>
 		<#elseif association.navigable ><#-- multiple and navigable -->
@@ -211,8 +211,8 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	}
 
 	/**
-	 * Association URI: ${association.label}.
-	 * @return URI de l'association
+	 * Association UID: ${association.label}.
+	 * @return UID de l'association
 	 */
 	@Deprecated	
 	<#list annotations('transientField') as annotation>

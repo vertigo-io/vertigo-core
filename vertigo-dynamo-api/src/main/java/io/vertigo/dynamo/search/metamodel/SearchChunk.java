@@ -31,25 +31,25 @@ import io.vertigo.lang.Assertion;
  * @param <K> the type of the KeyConcept
  */
 public final class SearchChunk<K extends KeyConcept> {
-	private final List<UID<K>> uris;
+	private final List<UID<K>> uids;
 
 	/**
-	 * @param uris the list of keyConcept uris
+	 * @param uids the list of keyConcept uids
 	 */
-	public SearchChunk(final List<UID<K>> uris) {
-		Assertion.checkNotNull(uris);
+	public SearchChunk(final List<UID<K>> uids) {
+		Assertion.checkNotNull(uids);
 		//---
-		this.uris = Collections.unmodifiableList(uris); // pas de clone pour l'instant
+		this.uids = Collections.unmodifiableList(uids); // pas de clone pour l'instant
 	}
 
 	/**
-	 * @return All KeyConcept's uris of this chunk
+	 * @return All KeyConcept's uids of this chunk
 	 */
-	public List<UID<K>> getAllURIs() {
-		return uris;
+	public List<UID<K>> getAllUIDs() {
+		return uids;
 	}
 
-	public UID getLastURI() {
-		return uris.get(uris.size() - 1);
+	public UID getLastUID() {
+		return uids.get(uids.size() - 1);
 	}
 }

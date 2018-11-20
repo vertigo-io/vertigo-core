@@ -151,12 +151,12 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	}
 
 	/**
-	 * Suppression d'un objet persistant par son URI.
+	 * Suppression d'un objet persistant par son UID.
 	 *
-	 * @param uri URI de l'objet à supprimer
+	 * @param uid URI de l'objet à supprimer
 	 */
-	public final void delete(final UID<E> uri) {
-		dataStore.delete(uri);
+	public final void delete(final UID<E> uid) {
+		dataStore.delete(uid);
 	}
 
 	/**
@@ -167,28 +167,28 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @param id identifiant de l'objet persistant à supprimer
 	 */
 	public final void delete(final P id) {
-		delete(createDtObjectURI(id));
+		delete(createDtObjectUID(id));
 	}
 
 	/**
 	 * Récupération d'un objet persistant par son URI. L'objet doit exister.
 	 *
-	 * @param uri URI de l'objet à récupérer
+	 * @param uid URI de l'objet à récupérer
 	 * @return D Object recherché
 	 */
-	public final E get(final UID<E> uri) {
-		return dataStore.readOne(uri);
+	public final E get(final UID<E> uid) {
+		return dataStore.readOne(uid);
 	}
 
 	/**
 	 * Récupération d'un fragment persistant par son URI. L'objet doit exister.
 	 *
-	 * @param uri URI de l'objet à récupérer
+	 * @param uid UID de l'objet à récupérer
 	 * @param fragmentClass Fragment class
 	 * @return F Fragment recherché
 	 */
-	public final <F extends Fragment<E>> F getFragment(final UID<E> uri, final Class<F> fragmentClass) {
-		final E dto = dataStore.readOne(uri);
+	public final <F extends Fragment<E>> F getFragment(final UID<E> uid, final Class<F> fragmentClass) {
+		final E dto = dataStore.readOne(uid);
 		final DtDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragmentClass);
 		final F fragment = fragmentClass.cast(DtObjectUtil.createDtObject(fragmentDefinition));
 		for (final DtField dtField : fragmentDefinition.getFields()) {
@@ -208,7 +208,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return D Object objet recherché
 	 */
 	public final E get(final P id) {
-		return get(createDtObjectURI(id));
+		return get(createDtObjectUID(id));
 	}
 
 	/**
@@ -219,7 +219,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return D Fragment recherché
 	 */
 	public final <F extends Fragment<E>> F get(final P id, final Class<F> fragmentClass) {
-		UID<E> uri = UID.of(DtObjectUtil.findDtDefinition(fragmentClass).getFragment().get(), id);
+		final UID<E> uri = UID.of(DtObjectUtil.findDtDefinition(fragmentClass).getFragment().get(), id);
 		return getFragment(uri, fragmentClass);
 	}
 
@@ -229,7 +229,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @param id identifiant de l'objet persistant recherché
 	 * @return URI recherchée
 	 */
-	protected final UID<E> createDtObjectURI(final P id) {
+	protected final UID<E> createDtObjectUID(final P id) {
 		return UID.of(getDtDefinition(), id);
 	}
 
@@ -287,8 +287,8 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 
 	/** {@inheritDoc} */
 	@Override
-	public final void removeNN(final DtListURIForNNAssociation dtListURI, final UID uriToDelete) {
-		brokerNN.removeNN(dtListURI, uriToDelete);
+	public final void removeNN(final DtListURIForNNAssociation dtListURI, final UID uidToDelete) {
+		brokerNN.removeNN(dtListURI, uidToDelete);
 	}
 
 	/**
@@ -301,11 +301,11 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	public final <FK extends Entity> void updateNN(final DtListURIForNNAssociation dtListURI, final DtList<FK> newDtc) {
 		Assertion.checkNotNull(newDtc);
 		//-----
-		final List<UID> objectURIs = newDtc
+		final List<UID> objectUIDs = newDtc
 				.stream()
 				.map(UID::of)
 				.collect(Collectors.toList());
-		updateNN(dtListURI, objectURIs);
+		updateNN(dtListURI, objectUIDs);
 	}
 
 	/** {@inheritDoc} */
@@ -316,8 +316,8 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 
 	/** {@inheritDoc} */
 	@Override
-	public final void appendNN(final DtListURIForNNAssociation dtListURI, final UID uriToAppend) {
-		brokerNN.appendNN(dtListURI, uriToAppend);
+	public final void appendNN(final DtListURIForNNAssociation dtListURI, final UID uidToAppend) {
+		brokerNN.appendNN(dtListURI, uidToAppend);
 	}
 
 	/**

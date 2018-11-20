@@ -332,13 +332,13 @@ public final class Car implements Entity {
 	}
 
 	/**
-	 * Retourne l'URI: Motor type.
-	 * @return URI de l'association
+	 * Retourne l'UID: Motor type.
+	 * @return UID de l'association
 	 */
 	@Deprecated
 	@javax.persistence.Transient
 	public io.vertigo.dynamo.domain.model.UID<MotorType> getMotorTypeURI() {
-		return mtyCdAccessor.getURI();
+		return mtyCdAccessor.getUID();
 	}
 
 	/** {@inheritDoc} */

@@ -194,7 +194,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
 			final DtList<Car> dtcEssence = storeManager.getDataStore().find(
 					DtObjectUtil.findDtDefinition(Car.class),
-					Criterions.isEqualTo(CarFields.MTY_CD, MotorTypeEnum.essence.getEntityUri().getId()));
+					Criterions.isEqualTo(CarFields.MTY_CD, MotorTypeEnum.essence.getEntityUID().getId()));
 			//---
 			Assert.assertEquals(1, dtcEssence.size());
 			Assert.assertTrue(dtcEssence.get(0).motorType().getEnumValue() == MotorTypeEnum.essence);

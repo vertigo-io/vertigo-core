@@ -96,13 +96,13 @@ public final class DtObjectUtil {
 	 *  Exemple : Une Commande possède un bénéficiaire.
 	 *  Dans cetexemple on recherche l'URI du bénéficiaire à partir de l'objet commande.
 	 * @param <E>
-	
+
 	 * @param associationDefinitionName Nom de la définition d'une association
 	 * @param dto  Object
 	 * @param dtoTargetClass Class of entity of this association
 	 * @return dto du DTO relié via l'association au dto passé en paramètre (Nullable)
 	 */
-	public static <E extends Entity> UID<E> createURI(final DtObject dto, final String associationDefinitionName, final Class<E> dtoTargetClass) {
+	public static <E extends Entity> UID<E> createUID(final DtObject dto, final String associationDefinitionName, final Class<E> dtoTargetClass) {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(dto);
 		Assertion.checkNotNull(dtoTargetClass);
@@ -155,11 +155,11 @@ public final class DtObjectUtil {
 	}
 
 	/**
-	 * Creates an URI of entity from an existing fragment.
+	 * Creates an UID of entity from an existing fragment.
 	 * @param fragment fragment
-	 * @return related entity URI
+	 * @return related entity UID
 	 */
-	public static <E extends Entity, F extends Fragment<E>> UID<E> createEntityURI(final F fragment) {
+	public static <E extends Entity, F extends Fragment<E>> UID<E> createEntityUID(final F fragment) {
 		Assertion.checkNotNull(fragment);
 		//-----
 		final DtDefinition dtDefinition = findDtDefinition(fragment);

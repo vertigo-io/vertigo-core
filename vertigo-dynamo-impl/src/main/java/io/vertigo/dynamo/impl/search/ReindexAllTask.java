@@ -86,14 +86,14 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 				for (final SearchChunk<S> searchChunk : searchLoader.chunk(keyConceptClass)) {
 					final Collection<SearchIndex<S, DtObject>> searchIndexes = searchLoader.loadData(searchChunk);
 
-					final String maxUri = String.valueOf(searchChunk.getLastURI().toString());
+					final String maxUri = String.valueOf(searchChunk.getLastUID().toString());
 					Assertion.checkState(!maxUri.equals(lastUri), "SearchLoader ({0}) error : return the same uri list", searchIndexDefinition.getSearchLoaderId());
 					searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUri, maxUri));
 					if (!searchIndexes.isEmpty()) {
 						searchManager.putAll(searchIndexDefinition, searchIndexes);
 					}
 					lastUri = maxUri;
-					reindexCount += searchChunk.getAllURIs().size();
+					reindexCount += searchChunk.getAllUIDs().size();
 					updateReindexCount(reindexCount);
 				}
 				//On ne retire pas la fin, il y a un risque de retirer les données ajoutées depuis le démarrage de l'indexation

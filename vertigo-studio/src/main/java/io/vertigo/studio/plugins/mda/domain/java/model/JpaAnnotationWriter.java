@@ -43,7 +43,7 @@ final class JpaAnnotationWriter extends AnnotationWriter {
 	 * @return Liste des lignes de code java à ajouter.
 	 */
 	@Override
-	List<String> writeUriAnnotations() {
+	List<String> writeUIDAnnotations() {
 		return writeTransientAnnotations();
 	}
 

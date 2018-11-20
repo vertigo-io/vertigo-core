@@ -124,8 +124,8 @@ final class ReindexTask implements Runnable {
 	}
 
 	private void removedNotFoundKeyConcept(final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes, final SearchChunk<? extends KeyConcept> searchChunk) {
-		if (searchIndexes.size() < searchChunk.getAllURIs().size()) {
-			final Set<UID<? extends KeyConcept>> notFoundUris = new LinkedHashSet<>(searchChunk.getAllURIs());
+		if (searchIndexes.size() < searchChunk.getAllUIDs().size()) {
+			final Set<UID<? extends KeyConcept>> notFoundUris = new LinkedHashSet<>(searchChunk.getAllUIDs());
 			for (final SearchIndex<KeyConcept, DtObject> searchIndex : searchIndexes) {
 				if (notFoundUris.contains(searchIndex.getURI())) {
 					notFoundUris.remove(searchIndex.getURI());

@@ -39,8 +39,8 @@ public final class CityFragment implements Fragment<City> {
 
 	/** {@inheritDoc} */
 	@Override
-	public UID<City> getEntityURI() {
-		return DtObjectUtil.createEntityURI(this);
+	public UID<City> getEntityUID() {
+		return DtObjectUtil.createEntityUID(this);
 	}
 
 	/**
