@@ -80,19 +80,19 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 			try {
 				final Class<S> keyConceptClass = (Class<S>) ClassUtil.classForName(searchIndexDefinition.getKeyConceptDtDefinition().getClassCanonicalName(), KeyConcept.class);
 				final SearchLoader<S, DtObject> searchLoader = Home.getApp().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
-				String lastUri = null;
+				String lastUID = null;
 				LOGGER.info("Reindexation of " + searchIndexDefinition.getName() + " started");
 
 				for (final SearchChunk<S> searchChunk : searchLoader.chunk(keyConceptClass)) {
 					final Collection<SearchIndex<S, DtObject>> searchIndexes = searchLoader.loadData(searchChunk);
 
-					final String maxUri = String.valueOf(searchChunk.getLastUID().toString());
-					Assertion.checkState(!maxUri.equals(lastUri), "SearchLoader ({0}) error : return the same uri list", searchIndexDefinition.getSearchLoaderId());
-					searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUri, maxUri));
+					final String maxUID = String.valueOf(searchChunk.getLastUID().toString());
+					Assertion.checkState(!maxUID.equals(lastUID), "SearchLoader ({0}) error : return the same uid list", searchIndexDefinition.getSearchLoaderId());
+					searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUID, maxUID));
 					if (!searchIndexes.isEmpty()) {
 						searchManager.putAll(searchIndexDefinition, searchIndexes);
 					}
-					lastUri = maxUri;
+					lastUID = maxUID;
 					reindexCount += searchChunk.getAllUIDs().size();
 					updateReindexCount(reindexCount);
 				}

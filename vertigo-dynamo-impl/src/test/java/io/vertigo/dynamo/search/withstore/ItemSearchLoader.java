@@ -72,8 +72,8 @@ public final class ItemSearchLoader extends AbstractSqlSearchLoader<Long, Item, 
 		try (final VTransactionWritable tx = getTransactionManager().createCurrentTransaction()) {
 			final List<SearchIndex<Item, Item>> result = new ArrayList<>();
 			for (final Item item : loadItems(searchChunk)) {
-				final UID<Item> uri = item.getUID();
-				result.add(SearchIndex.createIndex(indexDefinition, uri, item));
+				final UID<Item> uid = item.getUID();
+				result.add(SearchIndex.createIndex(indexDefinition, uid, item));
 			}
 			return result;
 		}

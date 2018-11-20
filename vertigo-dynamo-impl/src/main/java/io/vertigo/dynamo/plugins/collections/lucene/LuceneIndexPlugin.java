@@ -83,7 +83,7 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 	 */
 	@EventBusSubscribed
 	public void onStoreEvent(final StoreEvent event) {
-		cacheManager.remove(CACHE_LUCENE_INDEX, getIndexCacheContext(event.getUri().getDefinition()));
+		cacheManager.remove(CACHE_LUCENE_INDEX, getIndexCacheContext(event.getUID().getDefinition()));
 	}
 
 	/** {@inheritDoc} */

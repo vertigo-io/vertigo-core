@@ -219,8 +219,8 @@ final class RamLuceneIndex<D extends DtObject> {
 				//TODO voir pour mise en cache de cette navigation
 				final DtListURIForMasterData mdlUri = getStoreManager().getMasterDataConfig().getDtListURIForMasterData(field.getFkDtDefinition());
 				final DtField displayField = mdlUri.getDtDefinition().getDisplayField().get();
-				final UID<Entity> uri = UID.of(field.getFkDtDefinition(), value);
-				final DtObject fkDto = getStoreManager().getDataStore().readOne(uri);
+				final UID<Entity> uid = UID.of(field.getFkDtDefinition(), value);
+				final DtObject fkDto = getStoreManager().getDataStore().readOne(uid);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
 				stringValue = displayField.getDomain().valueToString(displayValue);
 			} else {

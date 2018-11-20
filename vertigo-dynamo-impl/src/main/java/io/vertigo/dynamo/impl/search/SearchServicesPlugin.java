@@ -78,9 +78,9 @@ public interface SearchServicesPlugin extends Plugin {
 	 * Suppression d'une ressource de l'index.
 	 * @param <K> Type du keyConcept métier indexé
 	 * @param indexDefinition Type de l'index
-	 * @param uri URI de la ressource à supprimer
+	 * @param uid UID de la ressource à supprimer
 	 */
-	<K extends KeyConcept> void remove(SearchIndexDefinition indexDefinition, final UID<K> uri);
+	<K extends KeyConcept> void remove(SearchIndexDefinition indexDefinition, final UID<K> uid);
 
 	/**
 	 * Suppression des données correspondant à un filtre.

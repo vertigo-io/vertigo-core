@@ -63,34 +63,34 @@ public interface DataStorePlugin extends Plugin {
 	/**
 	 * Récupération de l'objet correspondant à l'URI fournie.
 	 *
-	 * @param uri URI de l'objet à charger
+	 * @param uid UID de l'objet à charger
 	 * @param <E> the type of entity
 	 * @param dtDefinition Definition
 	 * @return D correspondant à l'URI fournie.
 	 */
-	<E extends Entity> E readNullable(DtDefinition dtDefinition, UID<E> uri);
+	<E extends Entity> E readNullable(DtDefinition dtDefinition, UID<E> uid);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
 	 * NOT NULL
 	 *
-	 * @param uri URI de la collection à charger
+	 * @param uid UID de la collection à charger
 	 * @param dtDefinition Definition
 	 * @return DtList<D> Liste correspondant à l'URI fournie
 	 * @param <E> the type of entity
 	 */
-	<E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri);
+	<E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uid);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
 	 * NOT NULL
 	 *
-	 * @param uri URI de la collection à charger
+	 * @param uid UID de la collection à charger
 	 * @param dtDefinition Definition
 	 * @return DtList<D> Liste correspondant à l'URI fournie
 	 * @param <E> the type of entity
 	 */
-	<E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri);
+	<E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uid);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
@@ -127,19 +127,19 @@ public interface DataStorePlugin extends Plugin {
 	/**
 	 * Deletes an object identified by an uri.
 	 * @param dtDefinition Definition
-	 * @param uri URI
+	 * @param uid UID
 	 */
-	void delete(DtDefinition dtDefinition, UID<?> uri);
+	void delete(DtDefinition dtDefinition, UID<?> uid);
 
 	/**
 	 * Loads for update.
 	 *
 	 * @param dtDefinition Object's definition
-	 * @param uri Object's uri
+	 * @param uid Object's uid
 	 * @param <E> the type of entity
 	 * @return D Object value.
 	 */
-	<E extends Entity> E readNullableForUpdate(DtDefinition dtDefinition, UID<?> uri);
+	<E extends Entity> E readNullableForUpdate(DtDefinition dtDefinition, UID<?> uid);
 
 	/**
 	 * Finds a lists of entities matching a criteria.

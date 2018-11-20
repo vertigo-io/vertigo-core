@@ -243,10 +243,10 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class))
 				.build();
 
-		final UID uri = dtcUri.getSource();
+		final UID uid = dtcUri.getSource();
 
 		final Task task = Task.builder(taskDefinition)
-				.addValue(fkFieldName, uri.getId())
+				.addValue(fkFieldName, uid.getId())
 				.build();
 
 		return taskManager

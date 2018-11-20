@@ -153,7 +153,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	/**
 	 * Suppression d'un objet persistant par son UID.
 	 *
-	 * @param uid URI de l'objet à supprimer
+	 * @param uid UID de l'objet à supprimer
 	 */
 	public final void delete(final UID<E> uid) {
 		dataStore.delete(uid);
@@ -173,7 +173,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	/**
 	 * Récupération d'un objet persistant par son URI. L'objet doit exister.
 	 *
-	 * @param uid URI de l'objet à récupérer
+	 * @param uid UID de l'objet à récupérer
 	 * @return D Object recherché
 	 */
 	public final E get(final UID<E> uid) {
@@ -219,15 +219,15 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return D Fragment recherché
 	 */
 	public final <F extends Fragment<E>> F get(final P id, final Class<F> fragmentClass) {
-		final UID<E> uri = UID.of(DtObjectUtil.findDtDefinition(fragmentClass).getFragment().get(), id);
-		return getFragment(uri, fragmentClass);
+		final UID<E> uid = UID.of(DtObjectUtil.findDtDefinition(fragmentClass).getFragment().get(), id);
+		return getFragment(uid, fragmentClass);
 	}
 
 	/**
-	 * Retourne l'URI de DtObject correspondant à une URN de définition et une valeur d'URI donnés.
+	 * Retourne l'URI de DtObject correspondant à une URN de définition et une valeur d'UID donnés.
 	 *
 	 * @param id identifiant de l'objet persistant recherché
-	 * @return URI recherchée
+	 * @return UID recherchée
 	 */
 	protected final UID<E> createDtObjectUID(final P id) {
 		return UID.of(getDtDefinition(), id);

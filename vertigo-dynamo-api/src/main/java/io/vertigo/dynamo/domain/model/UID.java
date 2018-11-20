@@ -35,7 +35,7 @@ import io.vertigo.util.StringUtil;
  * L'URI peut étre recomposée é partir de cette URN.
  *
  * Le générique utilisé pour caractériser l'URI dépend de la ressource et non de la définition.
- * Cela permet de créer des URI plus intuitive comme URI<Personne> qui est un identifiant de personne.
+ * Cela permet de créer des UID plus intuitive comme UID<Personne> qui est un identifiant de personne.
  *
  * @author  pchretien
  * @param <E> the type of entity
@@ -106,7 +106,7 @@ public final class UID<E extends Entity> implements Serializable {
 	/**
 	 * Builds an UID for an entity defined by
 	 * - an object
-
+	
 	 * @param entity the entity
 	 * @param <E> the entity type
 	 * @return the entity UID
@@ -122,7 +122,7 @@ public final class UID<E extends Entity> implements Serializable {
 	 * Builds an UID for an entity defined by
 	 * - a class
 	 * - an id
-
+	
 	 * @param entityClass the entity class
 	 * @param id the entity id
 	 * @param <E> the entity type
@@ -144,7 +144,7 @@ public final class UID<E extends Entity> implements Serializable {
 
 	/**
 	 * Récupére l'URN é partir de l'URI.
-	 * Une URN est la  représentation unique d'une URI sous forme de chaine de caractéres.
+	 * Une URN est la  représentation unique d'une UID sous forme de chaine de caractéres.
 	 * Cette chaine peut s'insérer telle que dans une URL en tant que paramétre
 	 * et ne contient donc aucun caractére spécial.
 	 * Une URN respecte la regex exprimée ci dessus.

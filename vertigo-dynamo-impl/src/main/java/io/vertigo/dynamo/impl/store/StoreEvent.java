@@ -41,26 +41,26 @@ public final class StoreEvent implements Event {
 	}
 
 	private final Type type;
-	private final UID uri;
+	private final UID uid;
 
 	/**
 	 * Constructor.
 	 * @param type Store type
-	 * @param uri Uri of stored element
+	 * @param uid UID of stored element
 	 */
-	public StoreEvent(final Type type, final UID uri) {
+	public StoreEvent(final Type type, final UID uid) {
 		Assertion.checkNotNull(type);
-		Assertion.checkNotNull(uri);
+		Assertion.checkNotNull(uid);
 		//-----
 		this.type = type;
-		this.uri = uri;
+		this.uid = uid;
 	}
 
 	/**
-	 * @return Uri of stored element
+	 * @return UID of stored element
 	 */
-	public UID getUri() {
-		return uri;
+	public UID getUID() {
+		return uid;
 	}
 
 	/**

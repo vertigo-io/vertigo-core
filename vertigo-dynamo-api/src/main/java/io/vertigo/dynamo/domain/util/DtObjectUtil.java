@@ -87,16 +87,16 @@ public final class DtObjectUtil {
 	}
 
 	/**
-	 * Récupération d'une URI de DTO.
+	 * Récupération d'une UID de DTO.
 	 * On récupère l'URI d'un DTO référencé par une association.
 	 * Il est nécessaire que l'association soit simple.
-	 * Si l'association est multiple on ne récupère pas une URI mais une DtListURI, c'est à dire le pointeur vers une liste.
+	 * Si l'association est multiple on ne récupère pas une UID mais une DtListURI, c'est à dire le pointeur vers une liste.
 	 *
-	 *  On recherche une URI correspondant à une association.
+	 *  On recherche une UID correspondant à une association.
 	 *  Exemple : Une Commande possède un bénéficiaire.
-	 *  Dans cetexemple on recherche l'URI du bénéficiaire à partir de l'objet commande.
+	 *  Dans cetexemple on recherche l'UID du bénéficiaire à partir de l'objet commande.
 	 * @param <E>
-
+	
 	 * @param associationDefinitionName Nom de la définition d'une association
 	 * @param dto  Object
 	 * @param dtoTargetClass Class of entity of this association
@@ -123,11 +123,11 @@ public final class DtObjectUtil {
 	}
 
 	/**
-	 * Récupération d'une URI de Collection à partir d'un dto
+	 * Récupération d'une UID de Collection à partir d'un dto
 	 * @param entity the entity
 	 * @param associationDefinitionName Nom de l'association
 	 * @param roleName Nom du role
-	 * @return URI de la collection référencée.
+	 * @return UID de la collection référencée.
 	 */
 	public static DtListURIForSimpleAssociation createDtListURIForSimpleAssociation(final Entity entity, final String associationDefinitionName, final String roleName) {
 		Assertion.checkNotNull(associationDefinitionName);
@@ -139,11 +139,11 @@ public final class DtObjectUtil {
 	}
 
 	/**
-	 * Récupération d'une URI de Collection à partir d'un dto
+	 * Récupération d'une UID de Collection à partir d'un dto
 	 * @param entity the entity
 	 * @param associationDefinitionName Nom de l'association
 	 * @param roleName Nom du role
-	 * @return URI de la collection référencée.
+	 * @return UID de la collection référencée.
 	 */
 	public static DtListURIForNNAssociation createDtListURIForNNAssociation(final Entity entity, final String associationDefinitionName, final String roleName) {
 		Assertion.checkNotNull(associationDefinitionName);

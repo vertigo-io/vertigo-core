@@ -77,7 +77,7 @@ public final class CacheDataStore {
 		final EventBusSubscriptionDefinition<StoreEvent> eventBusSubscription = new EventBusSubscriptionDefinition<>(
 				"EVT_CLEAR_CACHE",
 				StoreEvent.class,
-				event -> clearCache(event.getUri().getDefinition()));
+				event -> clearCache(event.getUID().getDefinition()));
 		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace())
 				.registerDefinition(eventBusSubscription);
 	}
@@ -88,38 +88,38 @@ public final class CacheDataStore {
 
 	/**
 	 * @param <E> the type of entity
-	 * @param uri Element uri
-	 * @return Element by uri
+	 * @param uid Element uid
+	 * @return Element by uid
 	 */
-	public <E extends Entity> E readNullable(final UID<E> uri) {
-		Assertion.checkNotNull(uri);
+	public <E extends Entity> E readNullable(final UID<E> uid) {
+		Assertion.checkNotNull(uid);
 		//-----
-		final DtDefinition dtDefinition = uri.getDefinition();
+		final DtDefinition dtDefinition = uid.getDefinition();
 		E entity;
 		if (cacheDataStoreConfig.isCacheable(dtDefinition)) {
 			// - Prise en compte du cache
-			entity = cacheDataStoreConfig.getDataCache().getDtObject(uri);
+			entity = cacheDataStoreConfig.getDataCache().getDtObject(uid);
 			// - Prise en compte du cache
 			if (entity == null) {
 				//Cas ou le dto représente un objet non mis en cache
-				entity = this.<E> loadNullable(dtDefinition, uri);
+				entity = this.<E> loadNullable(dtDefinition, uid);
 			}
 		} else {
-			entity = getPhysicalStore(dtDefinition).readNullable(dtDefinition, uri);
+			entity = getPhysicalStore(dtDefinition).readNullable(dtDefinition, uid);
 		}
 		return entity;
 	}
 
-	private synchronized <E extends Entity> E loadNullable(final DtDefinition dtDefinition, final UID<E> uri) {
+	private synchronized <E extends Entity> E loadNullable(final DtDefinition dtDefinition, final UID<E> uid) {
 		final E entity;
 		if (cacheDataStoreConfig.isReloadedByList(dtDefinition)) {
 			//On ne charge pas les cache de façon atomique.
 			final DtListURI dtcURIAll = new DtListURIForCriteria<>(dtDefinition, null, null);
 			loadList(dtcURIAll); //on charge la liste complete (et on remplit les caches)
-			entity = cacheDataStoreConfig.getDataCache().getDtObject(uri);
+			entity = cacheDataStoreConfig.getDataCache().getDtObject(uid);
 		} else {
 			//On charge le cache de façon atomique à partir du dataStore
-			entity = getPhysicalStore(dtDefinition).readNullable(dtDefinition, uri);
+			entity = getPhysicalStore(dtDefinition).readNullable(dtDefinition, uid);
 			if (entity != null) {
 				cacheDataStoreConfig.getDataCache().putDtObject(entity);
 			}

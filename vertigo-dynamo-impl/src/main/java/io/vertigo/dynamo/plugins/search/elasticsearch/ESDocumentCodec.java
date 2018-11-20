@@ -88,9 +88,9 @@ final class ESDocumentCodec {
 	 */
 	<S extends KeyConcept, I extends DtObject> SearchIndex<S, I> searchHit2Index(final SearchIndexDefinition indexDefinition, final SearchHit searchHit) {
 		/* On lit du document les données persistantes. */
-		/* 1. URI */
+		/* 1. UID */
 		final String urn = searchHit.getId();
-		final UID uri = io.vertigo.dynamo.domain.model.UID.of(urn);
+		final UID uid = io.vertigo.dynamo.domain.model.UID.of(urn);
 
 		/* 2 : Result stocké */
 		final I resultDtObjectdtObject;
@@ -100,7 +100,7 @@ final class ESDocumentCodec {
 			resultDtObjectdtObject = decode(searchHit.field(FULL_RESULT).getValue());
 		}
 		//-----
-		return SearchIndex.createIndex(indexDefinition, uri, resultDtObjectdtObject);
+		return SearchIndex.createIndex(indexDefinition, uid, resultDtObjectdtObject);
 	}
 
 	/**
@@ -128,11 +128,11 @@ final class ESDocumentCodec {
 		/* 2: Result stocké */
 		final String result = encode(dtResult);
 
-		/* 1 : URI */
+		/* 1 : UID */
 		try (final XContentBuilder xContentBuilder = XContentFactory.jsonBuilder()) {
 			xContentBuilder.startObject()
 					.field(FULL_RESULT, result)
-					.field("urn", index.getURI().urn());
+					.field("urn", index.getUID().urn());
 
 			/* 3 : Les champs du dto index */
 			final DtObject dtIndex = index.getIndexDtObject();

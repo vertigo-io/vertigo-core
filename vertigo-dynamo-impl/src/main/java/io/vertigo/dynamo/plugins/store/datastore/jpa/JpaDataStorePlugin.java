@@ -285,10 +285,10 @@ public final class JpaDataStorePlugin implements DataStorePlugin {
 				.append(" where j.").append(fkFieldName).append(" = :").append(fkFieldName)
 				.toString();
 
-		final UID uri = dtcUri.getSource();
+		final UID uid = dtcUri.getSource();
 
 		final Query q = getEntityManager().createNativeQuery(request, resultClass);
-		q.setParameter(fkFieldName, uri.getId());
+		q.setParameter(fkFieldName, uid.getId());
 
 		final List<E> results = q.getResultList();
 		final DtList<E> dtc = new DtList<>(dtDefinition);

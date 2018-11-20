@@ -102,11 +102,11 @@ public final class ListVAccessor<E extends Entity> implements Serializable {
 	 * Loads the value if needed.
 	 */
 	public final void load() {
-		// we are not lazy the uri of the parent might have changed
+		// we are not lazy the uid of the parent might have changed
 		if (entity.getUID() != null) {
 			value = getDataStore().findAll(getDtListURI());
 		} else {
-			// if the uri is null we return an empty dtList
+			// if the uid is null we return an empty dtList
 			value = new DtList<>(targetDefinitionReference.get());
 		}
 		status = State.LOADED;

@@ -102,7 +102,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 					bulkRequest.add(esClient.prepareIndex()
 							.setIndex(indexName)
 							.setType(typeName)
-							.setId(index.getURI().urn())
+							.setId(index.getUID().urn())
 							.setSource(xContentBuilder));
 				}
 			}
@@ -128,7 +128,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			esClient.prepareIndex().setRefreshPolicy(DEFAULT_REFRESH)
 					.setIndex(indexName)
 					.setType(typeName)
-					.setId(index.getURI().urn())
+					.setId(index.getUID().urn())
 					.setSource(xContentBuilder)
 					.execute() //execute asynchrone
 					.actionGet(); //get wait exec
@@ -164,15 +164,15 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 
 	/**
 	 * Supprime un document.
-	 * @param uri Uri du document à supprimer
+	 * @param uid UID du document à supprimer
 	 */
-	void remove(final UID uri) {
-		Assertion.checkNotNull(uri);
+	void remove(final UID uid) {
+		Assertion.checkNotNull(uid);
 		//-----
 		esClient.prepareDelete().setRefreshPolicy(DEFAULT_REFRESH)
 				.setIndex(indexName)
 				.setType(typeName)
-				.setId(uri.urn())
+				.setId(uid.urn())
 				.execute()
 				.actionGet();
 	}

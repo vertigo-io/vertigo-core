@@ -105,7 +105,7 @@ public final class AccountManagerImpl implements AccountManager {
 	@Override
 	public Set<UID<Account>> getAccountURIs(final UID<AccountGroup> groupURI) {
 		return loadWithCacheSetValue(groupURI,
-				() -> accountCachePlugin.get()::getAccountURIs,
+				() -> accountCachePlugin.get()::getAccountUIDs,
 				accountStorePlugin::getAccountURIs,
 				() -> accountsURI -> accountCachePlugin.get().attach(accountsURI, groupURI));
 	}
@@ -114,7 +114,7 @@ public final class AccountManagerImpl implements AccountManager {
 	@Override
 	public Set<UID<AccountGroup>> getGroupURIs(final UID<Account> accountURI) {
 		return loadWithCacheSetValue(accountURI,
-				() -> accountCachePlugin.get()::getGroupURIs,
+				() -> accountCachePlugin.get()::getGroupUIDs,
 				accountStorePlugin::getGroupURIs,
 				() -> groupsURI -> accountCachePlugin.get().attach(accountURI, groupsURI));
 	}

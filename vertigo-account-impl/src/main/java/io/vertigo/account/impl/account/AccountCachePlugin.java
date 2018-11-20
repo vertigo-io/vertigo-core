@@ -42,7 +42,7 @@ public interface AccountCachePlugin extends Plugin {
 	 * @param accountURI the account defined by its URI
 	 * @return Set of groups of this account
 	 */
-	Set<UID<AccountGroup>> getGroupURIs(UID<Account> accountURI);
+	Set<UID<AccountGroup>> getGroupUIDs(UID<Account> accountURI);
 
 	/**
 	 * Gets the group defined by an URI.
@@ -56,7 +56,7 @@ public interface AccountCachePlugin extends Plugin {
 	 * @param groupURI the group URI
 	 * @return the list of acccounts.
 	 */
-	Set<UID<Account>> getAccountURIs(UID<AccountGroup> groupURI);
+	Set<UID<Account>> getAccountUIDs(UID<AccountGroup> groupURI);
 
 	/**
 	 * Gets the photo of an account defined by its URI.

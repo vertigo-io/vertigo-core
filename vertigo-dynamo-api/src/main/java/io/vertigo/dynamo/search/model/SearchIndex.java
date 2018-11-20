@@ -43,8 +43,8 @@ public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
 	/** Définition de l'index. */
 	private final SearchIndexDefinition indexDefinition;
 
-	/** URI de l'objet indexé : par convention il s'agit de l'uri de K.*/
-	private final UID<K> uri;
+	/** UID de l'objet indexé : par convention il s'agit de l'uri de K.*/
+	private final UID<K> uid;
 
 	/** DtObject d'index. */
 	private final I indexDtObject;
@@ -52,21 +52,21 @@ public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
 	/**
 	 * Constructor.
 	 * @param indexDefinition definition de O, I
-	 * @param uri URI de l'objet indexé
+	 * @param uid UID de l'objet indexé
 	 */
-	private SearchIndex(final SearchIndexDefinition indexDefinition, final UID<K> uri, final I indexDtObject) {
-		Assertion.checkNotNull(uri);
+	private SearchIndex(final SearchIndexDefinition indexDefinition, final UID<K> uid, final I indexDtObject) {
+		Assertion.checkNotNull(uid);
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkNotNull(indexDtObject);
 		//On vérifie la consistance des données.
 		Assertion.checkArgument(
-				indexDefinition.getKeyConceptDtDefinition().equals(uri.getDefinition()),
-				"Le type de l'URI de l'objet indexé  ({0}) ne correspond pas au KeyConcept de l'index ({1})", uri.toString(), indexDefinition.getKeyConceptDtDefinition().getName());
+				indexDefinition.getKeyConceptDtDefinition().equals(uid.getDefinition()),
+				"Le type de l'URI de l'objet indexé  ({0}) ne correspond pas au KeyConcept de l'index ({1})", uid.toString(), indexDefinition.getKeyConceptDtDefinition().getName());
 		Assertion.checkArgument(
 				indexDefinition.getIndexDtDefinition().equals(DtObjectUtil.findDtDefinition(indexDtObject)),
 				"Le type l'objet indexé ({1}) ne correspond pas à celui de l'index ({1})", DtObjectUtil.findDtDefinition(indexDtObject).getName(), indexDefinition.getIndexDtDefinition().getName());
 		//-----
-		this.uri = uri;
+		this.uid = uid;
 		this.indexDefinition = indexDefinition;
 		this.indexDtObject = indexDtObject;
 	}
@@ -81,10 +81,10 @@ public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
 	/**
 	 * Récupération de l'uri de la ressource indexée.
 	 *  - Utilisé pour la récupération de highlight.
-	 * @return URI de la ressource indexée.
+	 * @return UID de la ressource indexée.
 	 */
-	public UID<K> getURI() {
-		return uri;
+	public UID<K> getUID() {
+		return uid;
 	}
 
 	/**
@@ -107,13 +107,13 @@ public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
 	/**
 	 * Constructeur de l'Objet permettant de créer l'index.
 	 * @param <I> Type de l'objet représentant l'index
-	 * @param uri URI de l'objet indexé
+	 * @param uid UID de l'objet indexé
 	 * @param indexDefinition Définition de l'index de recherche.
 	 * @param indexDto  DTO représentant l'index
 	 * @return  Objet permettant de créer l'index
 	 */
-	public static <S extends KeyConcept, I extends DtObject> SearchIndex<S, I> createIndex(final SearchIndexDefinition indexDefinition, final UID<S> uri, final I indexDto) {
-		return new SearchIndex<>(indexDefinition, uri, indexDto);
+	public static <S extends KeyConcept, I extends DtObject> SearchIndex<S, I> createIndex(final SearchIndexDefinition indexDefinition, final UID<S> uid, final I indexDto) {
+		return new SearchIndex<>(indexDefinition, uid, indexDto);
 	}
 
 }

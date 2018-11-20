@@ -41,33 +41,33 @@ public interface DataStore {
 	int count(final DtDefinition dtDefinition);
 
 	/**
-	 * Récupération d'un objet persistant par son URI.
+	 * Récupération d'un objet persistant par son UID.
 	 * Lorsque l'objet est en lecture seule il est possible d'accéder au objets partagés. (Liste de référence paér ex)
 	 * L'objet doit exister.
 	 *
 	 * @param <E> the type of entity
-	 * @param uri Uri de l'object
+	 * @param uid UID de l'object
 	 * @return object récupéré NOT NULL
 	 */
-	<E extends Entity> E readOne(final UID<E> uri);
+	<E extends Entity> E readOne(final UID<E> uid);
 
 	/**
-	 * Récupération d'une liste identifiée par son URI.
+	 * Récupération d'une liste identifiée par son UID.
 	 *
 	 * @param <E> the type of entity
-	 * @param uri URI de la collection à récupérer
+	 * @param uid UID de la collection à récupérer
 	 * @return DtList DTC
 	 */
-	<E extends Entity> DtList<E> findAll(final DtListURI uri);
+	<E extends Entity> DtList<E> findAll(final DtListURI uid);
 
 	/**
 	 * Loads and marks element for update, and ensure non concurrency.
-	 * Fire an update event for this uri on eventbus after commit.
+	 * Fire an update event for this uid on eventbus after commit.
 	 * @param <E> the type of entity
-	 * @param uri URI of object
+	 * @param uid UID of object
 	 * @return object to update
 	 */
-	<E extends Entity> E readOneForUpdate(UID<E> uri);
+	<E extends Entity> E readOneForUpdate(UID<E> uid);
 
 	/**
 	* Create an object.
@@ -86,11 +86,11 @@ public interface DataStore {
 	void update(Entity entity);
 
 	/**
-	 * Destruction d'un objet persistant par son URI.
+	 * Destruction d'un objet persistant par son UID.
 	 *
-	 * @param uri URI de l'objet à supprimer
+	 * @param uid UID de l'objet à supprimer
 	 */
-	void delete(UID<? extends Entity> uri);
+	void delete(UID<? extends Entity> uid);
 
 	/**
 	 * Returns a list identified by criteria

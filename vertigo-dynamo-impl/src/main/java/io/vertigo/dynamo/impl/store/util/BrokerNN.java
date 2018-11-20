@@ -32,16 +32,16 @@ public interface BrokerNN {
 	/**
 	 * Ajout un objet à la collection existante.
 	 * @param dtListURI DtList de référence
-	 * @param uriToAppend URI de l'objet à ajout à la NN
+	 * @param uidToAppend UID de l'objet à ajout à la NN
 	 */
-	void appendNN(final DtListURIForNNAssociation dtListURI, final UID uriToAppend);
+	void appendNN(final DtListURIForNNAssociation dtListURI, final UID uidToAppend);
 
 	/**
 	 * Mise à jour des associations n-n. Annule et remplace.
 	 * @param dtListURI DtList de référence
-	 * @param uriList  uriList
+	 * @param uidList  uriList
 	 */
-	void updateNN(final DtListURIForNNAssociation dtListURI, final List<UID> uriList);
+	void updateNN(final DtListURIForNNAssociation dtListURI, final List<UID> uidList);
 
 	/**
 	 * Supprime toutes les relations liés à l'objet.
@@ -53,7 +53,7 @@ public interface BrokerNN {
 	 * Supprime la relation liés aux deux objets.
 	 * Lance une erreur si pas de relation
 	 * @param dtListURI DtList de référence
-	 * @param uriToDelete URI de l'objet à supprimer de la NN
+	 * @param uidToDelete URI de l'objet à supprimer de la NN
 	 */
-	void removeNN(final DtListURIForNNAssociation dtListURI, final UID uriToDelete);
+	void removeNN(final DtListURIForNNAssociation dtListURI, final UID uidToDelete);
 }

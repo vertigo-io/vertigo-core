@@ -38,7 +38,7 @@ import io.vertigo.lang.WrappedException;
  * Comparateur des DtObject.
  * S'appuie sur SortState.
  * Si la colonne est un type primitif alors on effectue le tri sur ce type.
- * Si la colonne est une URI on délégue à l'URI.
+ * Si la colonne est une UID on délégue à l'UID.
  * @param <D> Type de l'objet
  *
  * @author pchretien
@@ -148,10 +148,10 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		}
 
 		private Object getSortValue(final Object o) {
-			final UID<Entity> uri = UID.of(dtcURIForMasterData.getDtDefinition(), o);
+			final UID<Entity> uid = UID.of(dtcURIForMasterData.getDtDefinition(), o);
 			DtObject dto;
 			try {
-				dto = dataStore.readOne(uri);
+				dto = dataStore.readOne(uid);
 			} catch (final Exception e) {
 				//Il ne peut pas y avoir d'exception typée dans un comparateur.
 				throw WrappedException.wrap(e);

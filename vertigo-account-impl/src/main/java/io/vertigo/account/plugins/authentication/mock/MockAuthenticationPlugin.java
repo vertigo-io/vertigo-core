@@ -26,7 +26,7 @@ import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
 
 /**
  * A mock implementation of the Realm.
- * It accept all UsernameToken and create a URI based on the username.
+ * It accept all UsernameToken and create a UID based on the username.
  */
 public class MockAuthenticationPlugin implements AuthenticationPlugin {
 

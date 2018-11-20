@@ -265,11 +265,11 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	 */
 	@EventBusSubscribed
 	public void onEvent(final StoreEvent storeEvent) {
-		final UID uri = storeEvent.getUri();
+		final UID uid = storeEvent.getUID();
 		//On ne traite l'event que si il porte sur un KeyConcept
-		if (uri.getDefinition().getStereotype() == DtStereotype.KeyConcept
-				&& hasIndexDefinitionByKeyConcept(uri.getDefinition())) {
-			final List<UID<? extends KeyConcept>> list = Collections.singletonList(uri);
+		if (uid.getDefinition().getStereotype() == DtStereotype.KeyConcept
+				&& hasIndexDefinitionByKeyConcept(uid.getDefinition())) {
+			final List<UID<? extends KeyConcept>> list = Collections.singletonList(uid);
 			markAsDirty(list);
 		}
 	}
