@@ -86,7 +86,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 				for (final SearchChunk<S> searchChunk : searchLoader.chunk(keyConceptClass)) {
 					final Collection<SearchIndex<S, DtObject>> searchIndexes = searchLoader.loadData(searchChunk);
 
-					final String maxUID = String.valueOf(searchChunk.getLastUID().toString());
+					final String maxUID = String.valueOf(searchChunk.getLastUID().urn());
 					Assertion.checkState(!maxUID.equals(lastUID), "SearchLoader ({0}) error : return the same uid list", searchIndexDefinition.getSearchLoaderId());
 					searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUID, maxUID));
 					if (!searchIndexes.isEmpty()) {
@@ -131,9 +131,9 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 	private static ListFilter urisRangeToListFilter(final String firstUri, final String lastUri) {
 		final String filterValue = new StringBuilder()
 				.append("urn").append(":{") //{ for exclude min
-				.append(firstUri != null ? ("\"" + firstUri + "\"") : "*")
+				.append(firstUri != null ? "\"" + firstUri + "\"" : "*")
 				.append(" TO ")
-				.append(lastUri != null ? ("\"" + lastUri + "\"") : "*")
+				.append(lastUri != null ? "\"" + lastUri + "\"" : "*")
 				.append("]")
 				.toString();
 		return ListFilter.of(filterValue);

@@ -131,7 +131,8 @@ final class ESDocumentCodec {
 		/* 1 : UID */
 		try (final XContentBuilder xContentBuilder = XContentFactory.jsonBuilder()) {
 			xContentBuilder.startObject()
-					.field(FULL_RESULT, result);
+					.field(FULL_RESULT, result)
+					.field("urn", index.getUID().urn());
 
 			/* 3 : Les champs du dto index */
 			final DtObject dtIndex = index.getIndexDtObject();
