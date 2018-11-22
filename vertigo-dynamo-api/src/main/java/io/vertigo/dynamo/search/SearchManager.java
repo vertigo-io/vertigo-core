@@ -57,11 +57,11 @@ public interface SearchManager extends Manager {
 	SearchIndexDefinition findIndexDefinitionByKeyConcept(Class<? extends KeyConcept> keyConceptClass);
 
 	/**
-	 * Mark an uri list as dirty. Index of these elements will be reindexed.
+	 * Mark an uid list as dirty. Index of these elements will be reindexed.
 	 * Reindexation isn't synchrone, strategy is dependant of plugin's parameters.
-	 * @param keyConceptUris Uri of keyConcept marked as dirty.
+	 * @param keyConceptUIDs UID of keyConcept marked as dirty.
 	 */
-	void markAsDirty(List<UID<? extends KeyConcept>> keyConceptUris);
+	void markAsDirty(List<UID<? extends KeyConcept>> keyConceptUIDs);
 
 	/**
 	 * Launch a complete reindexation of an index.
@@ -110,9 +110,9 @@ public interface SearchManager extends Manager {
 	 * Suppression d'une ressource de l'index.
 	 * @param <K> Type du keyConcept métier indexé
 	 * @param indexDefinition Type de l'index
-	 * @param uri URI de la ressource à supprimer
+	 * @param uid UID de la ressource à supprimer
 	 */
-	<K extends KeyConcept> void remove(SearchIndexDefinition indexDefinition, final UID<K> uri);
+	<K extends KeyConcept> void remove(SearchIndexDefinition indexDefinition, final UID<K> uid);
 
 	/**
 	 * Suppression des données correspondant à un filtre.
