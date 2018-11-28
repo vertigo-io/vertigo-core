@@ -30,6 +30,14 @@
 			<version>5.2.15.Final</version>
 			<optional>true</optional> <!-- HibernateConnectionProviderPlugin -->
 		</dependency>
+		
+		
+		<dependency>
+			<groupId>org.influxdb</groupId>
+			<artifactId>influxdb-java</artifactId>
+			<version>2.7</version>
+			<optional>true</optional>  <!-- InfluxDbTimeSeriesPlugin -->
+		</dependency>
 
 		<!-- tests -->
 		<dependency>

@@ -22,7 +22,10 @@ import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.database.impl.sql.SqlConnectionProviderPlugin;
 import io.vertigo.database.impl.sql.SqlDataBaseManagerImpl;
+import io.vertigo.database.impl.timeseries.TimeSeriesDataBaseManagerImpl;
+import io.vertigo.database.plugins.timeseries.InfluxDbTimeSeriesPlugin;
 import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.timeseries.TimeSeriesDataBaseManager;
 
 /**
  * Defines database features.
@@ -49,6 +52,20 @@ public final class DatabaseFeatures extends Features {
 	}
 
 	/**
+	 * Add sqlDataBase management to dynamo.
+	 * @return  the feature
+	 */
+	public DatabaseFeatures withInfluxDb(final String host, final String user, final String password) {
+		getModuleConfigBuilder()
+				.addComponent(TimeSeriesDataBaseManager.class, TimeSeriesDataBaseManagerImpl.class)
+				.addPlugin(InfluxDbTimeSeriesPlugin.class,
+						Param.of("host", host),
+						Param.of("user", user),
+						Param.of("password", password));
+		return this;
+	}
+
+	/**
 	 * Add a database connection provider plugin
 	 * @param  connectionProviderPluginClass the plugin to use
 	 * @param params a list plugin's params
@@ -61,7 +78,7 @@ public final class DatabaseFeatures extends Features {
 	}
 
 	/**
-
+	
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
