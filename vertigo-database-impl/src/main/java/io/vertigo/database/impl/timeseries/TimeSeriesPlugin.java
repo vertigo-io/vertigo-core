@@ -23,6 +23,7 @@ import java.util.List;
 import io.vertigo.core.component.Plugin;
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
+import io.vertigo.database.timeseries.Measure;
 import io.vertigo.database.timeseries.TimeFilter;
 import io.vertigo.database.timeseries.TimedDatas;
 
@@ -31,6 +32,10 @@ import io.vertigo.database.timeseries.TimedDatas;
  *
  */
 public interface TimeSeriesPlugin extends Plugin {
+
+	void insertMeasure(
+			String dbName,
+			Measure measure);
 
 	TimedDatas getTimeSeries(
 			final String dbName,
@@ -64,5 +69,7 @@ public interface TimeSeriesPlugin extends Plugin {
 			final String dbName,
 			final String measurement,
 			final String tag);
+
+	void createDatabases(List<String> dbNames);
 
 }

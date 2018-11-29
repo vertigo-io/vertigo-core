@@ -52,16 +52,35 @@ public final class DatabaseFeatures extends Features {
 	}
 
 	/**
-	 * Add sqlDataBase management to dynamo.
+	 * Add InfluxDb timeseries database management to dynamo.
 	 * @return  the feature
 	 */
 	public DatabaseFeatures withInfluxDb(final String host, final String user, final String password) {
+		getModuleConfigBuilder().addPlugin(InfluxDbTimeSeriesPlugin.class,
+				Param.of("host", host),
+				Param.of("user", user),
+				Param.of("password", password));
+		return this;
+	}
+
+	/**
+	 * Add InfluxDb timeseries database.
+	 * @return  the feature
+	 */
+	public DatabaseFeatures withTimeSeriesDataBase(final String dbNames) {
 		getModuleConfigBuilder()
-				.addComponent(TimeSeriesDataBaseManager.class, TimeSeriesDataBaseManagerImpl.class)
-				.addPlugin(InfluxDbTimeSeriesPlugin.class,
-						Param.of("host", host),
-						Param.of("user", user),
-						Param.of("password", password));
+				.addComponent(TimeSeriesDataBaseManager.class, TimeSeriesDataBaseManagerImpl.class,
+						Param.of("dbNames", dbNames));
+		return this;
+	}
+
+	/**
+	 * Add InfluxDb timeseries database.
+	 * @return  the feature
+	 */
+	public DatabaseFeatures withTimeSeriesDataBase() {
+		getModuleConfigBuilder()
+				.addComponent(TimeSeriesDataBaseManager.class, TimeSeriesDataBaseManagerImpl.class);
 		return this;
 	}
 
@@ -78,7 +97,7 @@ public final class DatabaseFeatures extends Features {
 	}
 
 	/**
-	
+
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {

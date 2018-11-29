@@ -28,6 +28,10 @@ import io.vertigo.core.component.Manager;
  */
 public interface TimeSeriesDataBaseManager extends Manager {
 
+	void insertMeasure(
+			final String dbName,
+			final Measure measure);
+
 	TimedDatas getTimeSeries(
 			final String dbName,
 			final List<String> measures,

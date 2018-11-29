@@ -28,6 +28,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,13 +38,16 @@ import javax.inject.Named;
 
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
+import org.influxdb.dto.Point;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 import org.influxdb.dto.QueryResult.Series;
 
+import io.vertigo.core.component.Activeable;
 import io.vertigo.database.impl.timeseries.TimeSeriesPlugin;
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
+import io.vertigo.database.timeseries.Measure;
 import io.vertigo.database.timeseries.TimeFilter;
 import io.vertigo.database.timeseries.TimedDataSerie;
 import io.vertigo.database.timeseries.TimedDatas;
@@ -54,7 +59,7 @@ import io.vertigo.lang.Tuples.Tuple2;
  * @author mlaroche
  *
  */
-public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
+public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activeable {
 
 	private final InfluxDB influxDB;
 
@@ -68,6 +73,32 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 		Assertion.checkArgNotEmpty(password);
 		//---
 		influxDB = InfluxDBFactory.connect(host, user, password);
+		influxDB.enableBatch();
+	}
+
+	@Override
+	public void start() {
+		// nothing
+
+	}
+
+	@Override
+	public void stop() {
+		influxDB.disableBatch();
+	}
+
+	@Override
+	public void insertMeasure(final String dbName, final Measure measure) {
+		Assertion.checkArgNotEmpty(dbName);
+		Assertion.checkNotNull(measure);
+		//---
+		influxDB.setDatabase(dbName);
+		influxDB.write(Point
+				.measurement(measure.getMeasurement())
+				.time(measure.getInstant().toEpochMilli(), TimeUnit.MILLISECONDS)
+				.fields(measure.getFields())
+				.tag(measure.getTags())
+				.build());
 
 	}
 
@@ -350,6 +381,26 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin {
 					.collect(Collectors.toList());
 		}
 		return Collections.emptyList();
+	}
+
+	@Override
+	public void createDatabases(final List<String> dbNames) {
+		final Set<String> existingDatabases = influxDB.query(new Query("SHOW DATABASES", null))
+				.getResults()
+				.get(0)
+				.getSeries()
+				.get(0)
+				.getValues()
+				.stream()
+				.map(values -> (String) values.get(0))
+				.collect(Collectors.toSet());
+
+		for (final String dbName : dbNames) {
+			if (!existingDatabases.contains(dbName)) {
+				influxDB.query(new Query("CREATE DATABASE \"" + dbName + "\"", dbName));
+			}
+		}
+
 	}
 
 }

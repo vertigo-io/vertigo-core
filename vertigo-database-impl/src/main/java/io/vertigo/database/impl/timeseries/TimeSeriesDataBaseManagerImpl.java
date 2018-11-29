@@ -1,5 +1,6 @@
 package io.vertigo.database.impl.timeseries;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import javax.inject.Named;
 
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
+import io.vertigo.database.timeseries.Measure;
 import io.vertigo.database.timeseries.TimeFilter;
 import io.vertigo.database.timeseries.TimeSeriesDataBaseManager;
 import io.vertigo.database.timeseries.TimedDatas;
@@ -24,11 +26,21 @@ public class TimeSeriesDataBaseManagerImpl implements TimeSeriesDataBaseManager 
 
 	@Inject
 	public TimeSeriesDataBaseManagerImpl(
-			@Named("appName") final Optional<String> appNameOpt,
-			final TimeSeriesPlugin timeSeriesPlugin) {
+			final TimeSeriesPlugin timeSeriesPlugin,
+			final @Named("dbNames") Optional<String> dbNamesOpt) {
 		Assertion.checkNotNull(timeSeriesPlugin);
+		Assertion.checkNotNull(dbNamesOpt);
 		//---
 		this.timeSeriesPlugin = timeSeriesPlugin;
+		if (dbNamesOpt.isPresent()) {
+			timeSeriesPlugin.createDatabases(Arrays.asList(dbNamesOpt.get().split(";")));
+		}
+	}
+
+	@Override
+	public void insertMeasure(final String dbName, final Measure measure) {
+		timeSeriesPlugin.insertMeasure(dbName, measure);
+
 	}
 
 	@Override
