@@ -18,6 +18,9 @@
  */
 package io.vertigo.database.timeseries;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 
@@ -28,10 +31,7 @@ import io.vertigo.lang.Builder;
 public final class DataFilterBuilder implements Builder<DataFilter> {
 
 	private final String myMeasurement;
-	private String myLocation;
-	private String myName;
-	private String myModule;
-	private String myFeature;
+	private final Map<String, String> myFilters = new HashMap<>();
 	private String myAdditionalWhereClause;
 
 	DataFilterBuilder(
@@ -41,31 +41,11 @@ public final class DataFilterBuilder implements Builder<DataFilter> {
 		myMeasurement = measurement;
 	}
 
-	public DataFilterBuilder withLocation(final String location) {
-		Assertion.checkArgNotEmpty(location);
+	public DataFilterBuilder addFilter(final String field, final String value) {
+		Assertion.checkArgNotEmpty(field);
+		Assertion.checkNotNull(value);
 		//---
-		myLocation = location;
-		return this;
-	}
-
-	public DataFilterBuilder withName(final String name) {
-		Assertion.checkArgNotEmpty(name);
-		//---
-		myName = name;
-		return this;
-	}
-
-	public DataFilterBuilder withModule(final String module) {
-		Assertion.checkArgNotEmpty(module);
-		//---
-		myModule = module;
-		return this;
-	}
-
-	public DataFilterBuilder withFeature(final String feature) {
-		Assertion.checkArgNotEmpty(feature);
-		//---
-		myFeature = feature;
+		myFilters.put(field, value);
 		return this;
 	}
 
@@ -78,24 +58,9 @@ public final class DataFilterBuilder implements Builder<DataFilter> {
 
 	@Override
 	public DataFilter build() {
-		if (myLocation == null) {
-			myLocation = "*";
-		}
-		if (myName == null) {
-			myName = "*";
-		}
-		if (myModule == null) {
-			myModule = "*";
-		}
-		if (myFeature == null) {
-			myFeature = "*";
-		}
 		return new DataFilter(
 				myMeasurement,
-				myLocation,
-				myName,
-				myModule,
-				myFeature,
+				myFilters,
 				myAdditionalWhereClause);
 	}
 

@@ -303,17 +303,11 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 	private static String buildWhereClause(final DataFilter dataFilter, final TimeFilter timeFilter) {
 		final StringBuilder queryBuilder = new StringBuilder()
 				.append(" where time > ").append(timeFilter.getFrom()).append(" and time <").append(timeFilter.getTo());
-		if (!"*".equals(dataFilter.getName())) {
-			queryBuilder.append(" and \"name\"='").append(dataFilter.getName()).append('\'');
-		}
-		if (!"*".equals(dataFilter.getLocation())) {
-			queryBuilder.append(" and \"location\"='").append(dataFilter.getLocation()).append('\'');
-		}
-		if (!"*".equals(dataFilter.getModule())) {
-			queryBuilder.append(" and \"module\"='").append(dataFilter.getModule()).append('\'');
-		}
-		if (!"*".equals(dataFilter.getFeature())) {
-			queryBuilder.append(" and \"feature\"='").append(dataFilter.getFeature()).append('\'');
+
+		for (final Map.Entry<String, String> filter : dataFilter.getFilters().entrySet()) {
+			if (filter.getValue() != null && !"*".equals(filter.getValue())) {
+				queryBuilder.append(" and \"" + filter.getKey() + "\"='").append(filter.getValue()).append('\'');
+			}
 		}
 		if (dataFilter.getAdditionalWhereClause() != null) {
 			queryBuilder.append(" and ").append(dataFilter.getAdditionalWhereClause());
