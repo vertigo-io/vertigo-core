@@ -27,8 +27,8 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_B;
-import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUIRED;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.PERSISTENT;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUIRED;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.STEREOTYPE;
@@ -318,23 +318,32 @@ public final class AnnotationLoader implements Loader {
 	private static void parseAnnotation(final String fieldName, final DslDefinitionBuilder dtDefinition, final io.vertigo.dynamo.domain.stereotype.Field field) {
 		//Si on trouve un domaine on est dans un objet dynamo.
 		final FieldType type = FieldType.valueOf(field.type());
-		final DslDefinition dtField = DslDefinition.builder(fieldName, DomainGrammar.DT_DATA_FIELD_ENTITY)
-				.addDefinitionLink("domain", field.domain())
-				.addPropertyValue(LABEL, field.label())
-				.addPropertyValue(REQUIRED, field.required())
-				.addPropertyValue(PERSISTENT, field.persistent())
-				.build();
 
 		switch (type) {
 			case ID:
-				dtDefinition.addChildDefinition(DomainGrammar.ID_FIELD, dtField);
+				final DslDefinition idField = DslDefinition.builder(fieldName, DomainGrammar.DT_ID_FIELD_ENTITY)
+						.addDefinitionLink("domain", field.domain())
+						.addPropertyValue(LABEL, field.label())
+						.build();
+				dtDefinition.addChildDefinition(DomainGrammar.ID_FIELD, idField);
 				break;
 			case DATA:
-				dtDefinition.addChildDefinition(DomainGrammar.DATA_FIELD, dtField);
+				final DslDefinition dataField = DslDefinition.builder(fieldName, DomainGrammar.DT_DATA_FIELD_ENTITY)
+						.addDefinitionLink("domain", field.domain())
+						.addPropertyValue(LABEL, field.label())
+						.addPropertyValue(REQUIRED, field.required())
+						.addPropertyValue(PERSISTENT, field.persistent())
+						.build();
+				dtDefinition.addChildDefinition(DomainGrammar.DATA_FIELD, dataField);
 				break;
 			case COMPUTED:
+				final DslDefinition computedField = DslDefinition.builder(fieldName, DomainGrammar.DT_COMPUTED_FIELD_ENTITY)
+						.addDefinitionLink("domain", field.domain())
+						.addPropertyValue(LABEL, field.label())
+						//.addPropertyValue(EXPRESSION, null) no expression on annotation
+						.build();
 				//Valeurs renseignées automatiquement parce que l'on est dans le cas d'un champ calculé
-				dtDefinition.addChildDefinition(DomainGrammar.COMPUTED_FIELD, dtField);
+				dtDefinition.addChildDefinition(DomainGrammar.COMPUTED_FIELD, computedField);
 				break;
 			case FOREIGN_KEY:
 				//on ne fait rien puisque le champ est défini par une association.

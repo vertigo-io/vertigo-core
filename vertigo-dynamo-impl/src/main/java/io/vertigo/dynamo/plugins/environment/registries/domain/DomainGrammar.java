@@ -92,7 +92,7 @@ public final class DomainGrammar implements DslGrammar {
 	/**Fields*/
 	public static final DslEntity DT_ID_FIELD_ENTITY;
 	public static final DslEntity DT_DATA_FIELD_ENTITY;
-	private static final DslEntity DT_COMPUTED_FIELD_ENTITY;
+	public static final DslEntity DT_COMPUTED_FIELD_ENTITY;
 
 	public static final DslEntity DT_DEFINITION_ENTITY;
 	/**Définition d'une association simple.*/
