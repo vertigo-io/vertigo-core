@@ -39,5 +39,5 @@ public @interface Secured {
 	 *
 	 * @return String The secure method attribute
 	 */
-	public String value();
+	String value();
 }
