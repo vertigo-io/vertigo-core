@@ -27,12 +27,17 @@ import io.vertigo.lang.Assertion;
  * @author mlaroche
  *
  */
-public class DataFilter implements Serializable {
+public final class DataFilter implements Serializable {
 
 	private static final long serialVersionUID = -5464636083784385506L;
 
+	public static DataFilterBuilder builder(final String measurement) {
+		return new DataFilterBuilder(measurement);
+	}
+
 	private final String measurement;
 	private final Map<String, String> filters;
+
 	private final String additionalWhereClause;// may be null
 
 	DataFilter(
@@ -47,8 +52,8 @@ public class DataFilter implements Serializable {
 		this.additionalWhereClause = additionalWhereClause;
 	}
 
-	public static DataFilterBuilder builder(final String measurement) {
-		return new DataFilterBuilder(measurement);
+	public String getAdditionalWhereClause() {
+		return additionalWhereClause;
 	}
 
 	public Map<String, String> getFilters() {
@@ -57,10 +62,6 @@ public class DataFilter implements Serializable {
 
 	public String getMeasurement() {
 		return measurement;
-	}
-
-	public String getAdditionalWhereClause() {
-		return additionalWhereClause;
 	}
 
 }

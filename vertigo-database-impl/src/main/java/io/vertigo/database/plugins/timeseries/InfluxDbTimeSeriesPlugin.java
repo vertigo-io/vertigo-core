@@ -61,6 +61,113 @@ import io.vertigo.lang.Tuples.Tuple2;
  */
 public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activeable {
 
+	private static void appendMeasureThreshold(
+			final Integer previousThreshold,
+			final Integer currentThreshold,
+			final String clusteredField,
+			final String clusteredMeasure,
+			final String measurement,
+			final String standardwhereClause,
+			final String timeDimension,
+			final StringBuilder fromClauseBuilder,
+			final int i) {
+		fromClauseBuilder.append("(select ")
+				.append(buildMeasureQuery(clusteredMeasure, clusteredField + "_" + i))
+				.append(" from ").append(measurement)
+				.append(standardwhereClause);
+		if (previousThreshold != null) {
+			fromClauseBuilder.append(" and \"").append(clusteredField).append('"').append(" > ").append(previousThreshold);
+		}
+		if (currentThreshold != null) {
+			fromClauseBuilder.append(" and \"").append(clusteredField).append('"').append(" <= ").append(currentThreshold);
+		}
+		fromClauseBuilder.append(" group by time(").append(timeDimension).append(')');
+		fromClauseBuilder.append(')');
+	}
+
+	private static Map<String, Object> buildMapValue(final List<String> columns, final List<Object> values) {
+		final Map<String, Object> valueMap = new HashMap<>();
+		// we start at 1 because time is always the first row
+		for (int i = 1; i < columns.size(); i++) {
+			valueMap.put(columns.get(i), values.get(i));
+		}
+		return valueMap;
+	}
+
+	private static String buildMeasureQuery(final String measure, final String alias) {
+		Assertion.checkArgNotEmpty(measure);
+		Assertion.checkArgNotEmpty(alias);
+		//----
+		final String[] measureDetails = measure.split(":");
+		final Tuple2<String, List<String>> aggregateFunction = parseAggregateFunction(measureDetails[1]);
+		// append function name
+		final StringBuilder measureQueryBuilder = new java.lang.StringBuilder(aggregateFunction.getVal1()).append("(\"").append(measureDetails[0]).append("\"");
+		// append parameters
+		if (!aggregateFunction.getVal2().isEmpty()) {
+			measureQueryBuilder.append(aggregateFunction.getVal2()
+					.stream()
+					.collect(Collectors.joining(",", ", ", "")));
+		}
+		// end measure and add alias
+		measureQueryBuilder.append(") as \"").append(alias).append('"');
+		return measureQueryBuilder.toString();
+	}
+
+	private static StringBuilder buildQuery(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
+		Assertion.checkNotNull(measures);
+		//---
+		final StringBuilder queryBuilder = new StringBuilder("select ");
+		String separator = "";
+		for (final String measure : measures) {
+			queryBuilder
+					.append(separator)
+					.append(buildMeasureQuery(measure, measure));
+			separator = " ,";
+		}
+		queryBuilder.append(" from ").append(dataFilter.getMeasurement());
+		queryBuilder.append(buildWhereClause(dataFilter, timeFilter));
+		return queryBuilder;
+	}
+
+	private static String buildWhereClause(final DataFilter dataFilter, final TimeFilter timeFilter) {
+		final StringBuilder queryBuilder = new StringBuilder()
+				.append(" where time > ").append(timeFilter.getFrom()).append(" and time <").append(timeFilter.getTo());
+
+		for (final Map.Entry<String, String> filter : dataFilter.getFilters().entrySet()) {
+			if (filter.getValue() != null && !"*".equals(filter.getValue())) {
+				queryBuilder.append(" and \"" + filter.getKey() + "\"='").append(filter.getValue()).append('\'');
+			}
+		}
+		if (dataFilter.getAdditionalWhereClause() != null) {
+			queryBuilder.append(" and ").append(dataFilter.getAdditionalWhereClause());
+		}
+		return queryBuilder.toString();
+	}
+
+	private static String clusterName(
+			final Integer minThreshold,
+			final Integer maxThreshold,
+			final String measure) {
+		if (minThreshold == null) {
+			return measure + '<' + maxThreshold;
+		} else if (maxThreshold == null) {
+			return measure + '>' + minThreshold;
+		} else {
+			return measure + '_' + maxThreshold;
+		}
+	}
+
+	private static Tuple2<String, List<String>> parseAggregateFunction(final String aggregateFunction) {
+		final int firstSeparatorIndex = aggregateFunction.indexOf('_');
+		if (firstSeparatorIndex > -1) {
+			return Tuples.of(
+					aggregateFunction.substring(0, firstSeparatorIndex),
+					Arrays.asList(aggregateFunction.substring(firstSeparatorIndex + 1).split("_")));
+		}
+		return Tuples.of(aggregateFunction, Collections.emptyList());
+
+	}
+
 	private final InfluxDB influxDB;
 
 	@Inject
@@ -77,43 +184,67 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 	}
 
 	@Override
-	public void start() {
-		// nothing
+	public void createDatabases(final List<String> dbNames) {
+		final Set<String> existingDatabases = influxDB.query(new Query("SHOW DATABASES", null))
+				.getResults()
+				.get(0)
+				.getSeries()
+				.get(0)
+				.getValues()
+				.stream()
+				.map(values -> (String) values.get(0))
+				.collect(Collectors.toSet());
+
+		for (final String dbName : dbNames) {
+			if (!existingDatabases.contains(dbName)) {
+				influxDB.query(new Query("CREATE DATABASE \"" + dbName + "\"", dbName));
+			}
+		}
 
 	}
 
-	@Override
-	public void stop() {
-		influxDB.disableBatch();
+	private TimedDatas executeTabularQuery(final String appName, final String queryString, final boolean keepTime) {
+		final Query query = new Query(queryString, appName);
+		final QueryResult queryResult = influxDB.query(query);
+
+		final List<Series> series = queryResult.getResults().get(0).getSeries();
+
+		if (series != null && !series.isEmpty()) {
+			//all columns are the measures
+			final List<String> seriesName = new ArrayList<>();
+			seriesName.addAll(series.get(0).getColumns().subList(1, series.get(0).getColumns().size()));//we remove the first one
+			seriesName.addAll(series.get(0).getTags().keySet());// + all the tags names (the group by)
+
+			final List<TimedDataSerie> dataSeries = series
+					.stream()
+					.map(mySeries -> {
+						final Map<String, Object> mapValues = buildMapValue(mySeries.getColumns(), mySeries.getValues().get(0));
+						mapValues.putAll(mySeries.getTags());
+						return new TimedDataSerie(keepTime ? LocalDateTime.parse(mySeries.getValues().get(0).get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant(ZoneOffset.UTC) : null, mapValues);
+					})
+					.collect(Collectors.toList());
+
+			return new TimedDatas(dataSeries, seriesName);
+		}
+		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
 	}
 
-	@Override
-	public void insertMeasure(final String dbName, final Measure measure) {
-		Assertion.checkArgNotEmpty(dbName);
-		Assertion.checkNotNull(measure);
-		//---
-		influxDB.setDatabase(dbName);
-		influxDB.write(Point
-				.measurement(measure.getMeasurement())
-				.time(measure.getInstant().toEpochMilli(), TimeUnit.MILLISECONDS)
-				.fields(measure.getFields())
-				.tag(measure.getTags())
-				.build());
+	private TimedDatas executeTimedQuery(final String appName, final String q) {
+		final Query query = new Query(q, appName);
+		final QueryResult queryResult = influxDB.query(query);
 
-	}
+		final List<Series> seriesList = queryResult.getResults().get(0).getSeries();
+		if (seriesList != null && !seriesList.isEmpty()) {
 
-	@Override
-	public TimedDatas getTimeSeries(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
-		Assertion.checkNotNull(measures);
-		Assertion.checkNotNull(dataFilter);
-		Assertion.checkNotNull(timeFilter.getDim());// we check dim is not null because we need it
-		//---
-		final String q = buildQuery(measures, dataFilter, timeFilter)
-				.append(" group by time(").append(timeFilter.getDim()).append(')')
-				.toString();
-
-		return executeTimedQuery(appName, q);
-
+			final Series series = seriesList.get(0);
+			final List<TimedDataSerie> dataSeries = series
+					.getValues()
+					.stream()
+					.map(values -> new TimedDataSerie(LocalDateTime.parse(values.get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant(ZoneOffset.UTC), buildMapValue(series.getColumns(), values)))
+					.collect(Collectors.toList());
+			return new TimedDatas(dataSeries, series.getColumns().subList(1, series.getColumns().size()));//we remove the first one
+		}
+		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
 	}
 
 	@Override
@@ -174,61 +305,6 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		return executeTimedQuery(appName, request.toString());
 	}
 
-	private static String clusterName(
-			final Integer minThreshold,
-			final Integer maxThreshold,
-			final String measure) {
-		if (minThreshold == null) {
-			return measure + '<' + maxThreshold;
-		} else if (maxThreshold == null) {
-			return measure + '>' + minThreshold;
-		} else {
-			return measure + '_' + maxThreshold;
-		}
-	}
-
-	private static void appendMeasureThreshold(
-			final Integer previousThreshold,
-			final Integer currentThreshold,
-			final String clusteredField,
-			final String clusteredMeasure,
-			final String measurement,
-			final String standardwhereClause,
-			final String timeDimension,
-			final StringBuilder fromClauseBuilder,
-			final int i) {
-		fromClauseBuilder.append("(select ")
-				.append(buildMeasureQuery(clusteredMeasure, clusteredField + "_" + i))
-				.append(" from ").append(measurement)
-				.append(standardwhereClause);
-		if (previousThreshold != null) {
-			fromClauseBuilder.append(" and \"").append(clusteredField).append('"').append(" > ").append(previousThreshold);
-		}
-		if (currentThreshold != null) {
-			fromClauseBuilder.append(" and \"").append(clusteredField).append('"').append(" <= ").append(currentThreshold);
-		}
-		fromClauseBuilder.append(" group by time(").append(timeDimension).append(')');
-		fromClauseBuilder.append(')');
-	}
-
-	private TimedDatas executeTimedQuery(final String appName, final String q) {
-		final Query query = new Query(q, appName);
-		final QueryResult queryResult = influxDB.query(query);
-
-		final List<Series> seriesList = queryResult.getResults().get(0).getSeries();
-		if (seriesList != null && !seriesList.isEmpty()) {
-
-			final Series series = seriesList.get(0);
-			final List<TimedDataSerie> dataSeries = series
-					.getValues()
-					.stream()
-					.map(values -> new TimedDataSerie(LocalDateTime.parse(values.get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toEpochSecond(ZoneOffset.UTC), buildMapValue(series.getColumns(), values)))
-					.collect(Collectors.toList());
-			return new TimedDatas(dataSeries, series.getColumns().subList(1, series.getColumns().size()));//we remove the first one
-		}
-		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
-	}
-
 	@Override
 	public TimedDatas getTabularData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final boolean keepTime, final String... groupBy) {
 		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter);
@@ -240,118 +316,6 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		final String queryString = queryBuilder.toString();
 
 		return executeTabularQuery(appName, queryString, keepTime);
-	}
-
-	private TimedDatas executeTabularQuery(final String appName, final String queryString, final boolean keepTime) {
-		final Query query = new Query(queryString, appName);
-		final QueryResult queryResult = influxDB.query(query);
-
-		final List<Series> series = queryResult.getResults().get(0).getSeries();
-
-		if (series != null && !series.isEmpty()) {
-			//all columns are the measures
-			final List<String> seriesName = new ArrayList<>();
-			seriesName.addAll(series.get(0).getColumns().subList(1, series.get(0).getColumns().size()));//we remove the first one
-			seriesName.addAll(series.get(0).getTags().keySet());// + all the tags names (the group by)
-
-			final List<TimedDataSerie> dataSeries = series
-					.stream()
-					.map(mySeries -> {
-						final Map<String, Object> mapValues = buildMapValue(mySeries.getColumns(), mySeries.getValues().get(0));
-						mapValues.putAll(mySeries.getTags());
-						return new TimedDataSerie(keepTime ? LocalDateTime.parse(mySeries.getValues().get(0).get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toEpochSecond(ZoneOffset.UTC) : null, mapValues);
-					})
-					.collect(Collectors.toList());
-
-			return new TimedDatas(dataSeries, seriesName);
-		}
-		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
-	}
-
-	@Override
-	public TimedDatas getTops(final String appName, final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
-		final StringBuilder queryBuilder = new StringBuilder();
-
-		final String queryString = queryBuilder
-				.append("select top(").append("\"top_").append(measure).append("\", \"").append(groupBy).append("\", ").append(maxRows).append(") as \"").append(measure).append('"')
-				.append(" from ( select ").append(buildMeasureQuery(measure, "top_" + measure))
-				.append(" from ").append(dataFilter.getMeasurement())
-				.append(buildWhereClause(dataFilter, timeFilter))
-				.append(" group by \"").append(groupBy).append('"')
-				.append(')')
-				.toString();
-
-		return executeTimedQuery(appName, queryString);
-	}
-
-	private static StringBuilder buildQuery(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
-		Assertion.checkNotNull(measures);
-		//---
-		final StringBuilder queryBuilder = new StringBuilder("select ");
-		String separator = "";
-		for (final String measure : measures) {
-			queryBuilder
-					.append(separator)
-					.append(buildMeasureQuery(measure, measure));
-			separator = " ,";
-		}
-		queryBuilder.append(" from ").append(dataFilter.getMeasurement());
-		queryBuilder.append(buildWhereClause(dataFilter, timeFilter));
-		return queryBuilder;
-	}
-
-	private static String buildWhereClause(final DataFilter dataFilter, final TimeFilter timeFilter) {
-		final StringBuilder queryBuilder = new StringBuilder()
-				.append(" where time > ").append(timeFilter.getFrom()).append(" and time <").append(timeFilter.getTo());
-
-		for (final Map.Entry<String, String> filter : dataFilter.getFilters().entrySet()) {
-			if (filter.getValue() != null && !"*".equals(filter.getValue())) {
-				queryBuilder.append(" and \"" + filter.getKey() + "\"='").append(filter.getValue()).append('\'');
-			}
-		}
-		if (dataFilter.getAdditionalWhereClause() != null) {
-			queryBuilder.append(" and ").append(dataFilter.getAdditionalWhereClause());
-		}
-		return queryBuilder.toString();
-	}
-
-	private static String buildMeasureQuery(final String measure, final String alias) {
-		Assertion.checkArgNotEmpty(measure);
-		Assertion.checkArgNotEmpty(alias);
-		//----
-		final String[] measureDetails = measure.split(":");
-		final Tuple2<String, List<String>> aggregateFunction = parseAggregateFunction(measureDetails[1]);
-		// append function name
-		final StringBuilder measureQueryBuilder = new java.lang.StringBuilder(aggregateFunction.getVal1()).append("(\"").append(measureDetails[0]).append("\"");
-		// append parameters
-		if (!aggregateFunction.getVal2().isEmpty()) {
-			measureQueryBuilder.append(aggregateFunction.getVal2()
-					.stream()
-					.collect(Collectors.joining(",", ", ", "")));
-		}
-		// end measure and add alias
-		measureQueryBuilder.append(") as \"").append(alias).append('"');
-		return measureQueryBuilder.toString();
-	}
-
-	private static Tuple2<String, List<String>> parseAggregateFunction(final String aggregateFunction) {
-		final int firstSeparatorIndex = aggregateFunction.indexOf('_');
-		if (firstSeparatorIndex > -1) {
-			return Tuples.of(
-					aggregateFunction.substring(0, firstSeparatorIndex),
-					Arrays.asList(aggregateFunction.substring(firstSeparatorIndex + 1).split("_")));
-		}
-		return Tuples.of(aggregateFunction, Collections.emptyList());
-
-	}
-
-	private static Map<String, Object> buildMapValue(final List<String> columns, final List<Object> values) {
-		final Map<String, Object> valueMap = new HashMap<>();
-		// we start at 1 because time is always the first row
-		for (int i = 1; i < columns.size(); i++) {
-			valueMap.put(columns.get(i), values.get(i));
-		}
-		return valueMap;
 	}
 
 	@Override
@@ -378,23 +342,59 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 	}
 
 	@Override
-	public void createDatabases(final List<String> dbNames) {
-		final Set<String> existingDatabases = influxDB.query(new Query("SHOW DATABASES", null))
-				.getResults()
-				.get(0)
-				.getSeries()
-				.get(0)
-				.getValues()
-				.stream()
-				.map(values -> (String) values.get(0))
-				.collect(Collectors.toSet());
+	public TimedDatas getTimeSeries(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
+		Assertion.checkNotNull(measures);
+		Assertion.checkNotNull(dataFilter);
+		Assertion.checkNotNull(timeFilter.getDim());// we check dim is not null because we need it
+		//---
+		final String q = buildQuery(measures, dataFilter, timeFilter)
+				.append(" group by time(").append(timeFilter.getDim()).append(')')
+				.toString();
 
-		for (final String dbName : dbNames) {
-			if (!existingDatabases.contains(dbName)) {
-				influxDB.query(new Query("CREATE DATABASE \"" + dbName + "\"", dbName));
-			}
-		}
+		return executeTimedQuery(appName, q);
 
+	}
+
+	@Override
+	public TimedDatas getTops(final String appName, final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
+		final StringBuilder queryBuilder = new StringBuilder();
+
+		final String queryString = queryBuilder
+				.append("select top(").append("\"top_").append(measure).append("\", \"").append(groupBy).append("\", ").append(maxRows).append(") as \"").append(measure).append('"')
+				.append(" from ( select ").append(buildMeasureQuery(measure, "top_" + measure))
+				.append(" from ").append(dataFilter.getMeasurement())
+				.append(buildWhereClause(dataFilter, timeFilter))
+				.append(" group by \"").append(groupBy).append('"')
+				.append(')')
+				.toString();
+
+		return executeTimedQuery(appName, queryString);
+	}
+
+	@Override
+	public void insertMeasure(final String dbName, final Measure measure) {
+		Assertion.checkArgNotEmpty(dbName);
+		Assertion.checkNotNull(measure);
+		//---
+		influxDB.setDatabase(dbName);
+		influxDB.write(Point
+				.measurement(measure.getMeasurement())
+				.time(measure.getInstant().toEpochMilli(), TimeUnit.MILLISECONDS)
+				.fields(measure.getFields())
+				.tag(measure.getTags())
+				.build());
+
+	}
+
+	@Override
+	public void start() {
+		// nothing
+
+	}
+
+	@Override
+	public void stop() {
+		influxDB.disableBatch();
 	}
 
 }

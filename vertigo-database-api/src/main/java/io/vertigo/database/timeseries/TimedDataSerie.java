@@ -18,6 +18,7 @@
  */
 package io.vertigo.database.timeseries;
 
+import java.time.Instant;
 import java.util.Map;
 
 import io.vertigo.lang.Assertion;
@@ -27,17 +28,18 @@ import io.vertigo.lang.Assertion;
  * @author pchretien, npiedeloup, mlaroche
  */
 public final class TimedDataSerie {
-	private final Long time;
+	private final Instant time;
 	private final Map<String, Object> values;
 
-	public TimedDataSerie(final Long time, final Map<String, Object> values) {
+	public TimedDataSerie(final Instant time, final Map<String, Object> values) {
+		Assertion.checkNotNull(time);
 		Assertion.checkNotNull(values);
 		//---
 		this.time = time;
 		this.values = values;
 	}
 
-	public Long getTime() {
+	public Instant getTime() {
 		return time;
 	}
 
