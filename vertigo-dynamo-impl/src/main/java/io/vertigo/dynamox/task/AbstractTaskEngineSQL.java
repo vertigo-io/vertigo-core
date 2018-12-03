@@ -192,7 +192,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 **/
 	protected final String preProcessQuery(final String sqlQuery) {
 		final Collection<TaskAttribute> inAttributes = getTaskDefinition().getInAttributes();
-		final Map<TaskAttribute, Object> inTaskAttributes = new HashMap<>(inAttributes.size());
+		final Map<TaskAttribute, Object> inTaskAttributes = new HashMap<>();
 		for (final TaskAttribute taskAttribute : inAttributes) {
 			inTaskAttributes.put(taskAttribute, getValue(taskAttribute.getName()));
 		}

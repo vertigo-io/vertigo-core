@@ -41,6 +41,8 @@ import io.vertigo.util.StringUtil;
  */
 public final class MetricAnalyticsUtil {
 
+	private static final String pluginCounterChar = "#";// char used in plugins for counting them plugin#1, plugin#2
+
 	private MetricAnalyticsUtil() {
 		//private
 	}
@@ -66,7 +68,7 @@ public final class MetricAnalyticsUtil {
 					//-----
 					//2. For each method register a listener
 					// we remove # because it doesn't comply with definition naming rule
-					final String metricDefinitionName = "MET_" + StringUtil.camelToConstCase(componentId.replaceAll("#", "")) + "$" + StringUtil.camelToConstCase(method.getName());
+					final String metricDefinitionName = "MET_" + StringUtil.camelToConstCase(componentId.replaceAll(pluginCounterChar, "")) + "$" + StringUtil.camelToConstCase(method.getName());
 					return new MetricDefinition(
 							metricDefinitionName,
 							() -> (List<Metric>) ClassUtil.invoke(component, method));

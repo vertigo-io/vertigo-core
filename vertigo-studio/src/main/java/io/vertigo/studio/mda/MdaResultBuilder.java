@@ -71,7 +71,7 @@ public final class MdaResultBuilder implements Builder<MdaResult> {
 	 */
 	public void addCreatedFile(final File file) {
 		createdFiles++;
-		LOGGER.trace("file created : " + file.getAbsolutePath());
+		LOGGER.trace("file created : {}", file.getAbsolutePath());
 	}
 
 	/**
@@ -81,7 +81,7 @@ public final class MdaResultBuilder implements Builder<MdaResult> {
 	public void addErrorFile(final File file) {
 		errorFiles++;
 		//Ajout d'un fichier en erreur.
-		LOGGER.trace("file error : " + file.getAbsolutePath());
+		LOGGER.trace("file error : {}", file.getAbsolutePath());
 	}
 
 	/**
@@ -90,7 +90,7 @@ public final class MdaResultBuilder implements Builder<MdaResult> {
 	 */
 	public void addUpdatedFile(final File file) {
 		updatedFiles++;
-		LOGGER.trace("file updated : " + file.getAbsolutePath());
+		LOGGER.trace("file updated : {}", file.getAbsolutePath());
 	}
 
 	/**
@@ -99,6 +99,6 @@ public final class MdaResultBuilder implements Builder<MdaResult> {
 	 */
 	public void addIdenticalFile(final File file) {
 		identicalFiles++;
-		LOGGER.trace("Fichier identique : " + file.getAbsolutePath());
+		LOGGER.trace("Fichier identique : {}", file.getAbsolutePath());
 	}
 }

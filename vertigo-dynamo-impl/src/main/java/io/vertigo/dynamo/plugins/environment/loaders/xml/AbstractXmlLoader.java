@@ -176,9 +176,9 @@ public abstract class AbstractXmlLoader implements Loader {
 			//Dans le cas d'une association NN il faut établir le nom de la table intermédiaire qui porte les relations
 			final String tableName = association.getCode();
 			associationDefinitionBuilder.addPropertyValue(KspProperty.TABLE_NAME, tableName);
-			LOGGER.trace("isAssociationNN:Code=" + association.getCode());
+			LOGGER.trace("isAssociationNN:Code= {}", association.getCode());
 		} else {
-			LOGGER.trace("!isAssociationNN:Code=" + association.getCode());
+			LOGGER.trace("!isAssociationNN:Code= {}", association.getCode());
 			//Dans le cas d'une NN ses deux propriétés sont redondantes ;
 			//elles ne font donc pas partie de la définition d'une association de type NN
 			associationDefinitionBuilder
@@ -233,7 +233,7 @@ public abstract class AbstractXmlLoader implements Loader {
 			}
 
 		}
-		LOGGER.trace(KspProperty.FK_FIELD_NAME + "=" + fkFieldName);
+		LOGGER.trace(KspProperty.FK_FIELD_NAME + "= {}", fkFieldName);
 		//-----
 		Assertion.checkNotNull(fkFieldName, "La clé primaire n''a pas pu être définie pour l'association '{0}'", association.getCode());
 		return fkFieldName;

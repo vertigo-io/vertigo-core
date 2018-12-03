@@ -220,7 +220,7 @@ public final class DomainGrammar implements DslGrammar {
 		//We are listing all primitives types
 		final List<String> types = new ListBuilder()
 				.addAll(Arrays.stream(DataType.values())
-						.map(dataType -> dataType.name())
+						.map(DataType::name)
 						.collect(Collectors.toList()))
 				.add("DtObject")
 				.add("DtList")

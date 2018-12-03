@@ -18,7 +18,8 @@
  */
 package io.vertigo.commons.impl.transaction.listener;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class is the standard implementation.
@@ -26,7 +27,6 @@ import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logge
  * @author pchretien
  */
 public final class VTransactionListenerImpl implements VTransactionListener {
-	private static final String MS = " ms)";
 
 	private static final Logger LOGGER = LogManager.getLogger("transaction");
 
@@ -43,9 +43,9 @@ public final class VTransactionListenerImpl implements VTransactionListener {
 	public void onFinish(final boolean commitSucceeded, final long elapsedTime) {
 		if (LOGGER.isTraceEnabled()) {
 			if (commitSucceeded) {
-				LOGGER.trace(">>Transaction commit ( " + elapsedTime + MS);
+				LOGGER.trace(">>Transaction commit ( {} ms)", elapsedTime);
 			} else {
-				LOGGER.trace(">>Transaction rollback ( " + elapsedTime + MS);
+				LOGGER.trace(">>Transaction rollback ( {} ms)", elapsedTime);
 			}
 		}
 	}

@@ -81,7 +81,7 @@ public final class TSDtDefinitionModel {
 	public boolean isContainsPrimitiveField() {
 		return getFields()
 				.stream()
-				.anyMatch(dtField -> dtField.isPrimitive());
+				.anyMatch(TSDtFieldModel::isPrimitive);
 	}
 
 	/**
@@ -90,7 +90,7 @@ public final class TSDtDefinitionModel {
 	public boolean isContainsListOfObjectField() {
 		return getFields()
 				.stream()
-				.anyMatch(dtField -> dtField.isListOfObject());
+				.anyMatch(TSDtFieldModel::isListOfObject);
 	}
 
 	/**
@@ -99,7 +99,7 @@ public final class TSDtDefinitionModel {
 	public boolean isContainsObjectField() {
 		return getFields()
 				.stream()
-				.anyMatch(dtField -> dtField.isObject());
+				.anyMatch(TSDtFieldModel::isObject);
 	}
 
 	/**

@@ -150,7 +150,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 		final Optional<AccountInfo> accountInfoOpt = accounts.values().stream()
 				.filter(accountInfo -> accountAuthToken.equals(accountInfo.getAccount().getAuthToken()))
 				.findFirst();
-		return accountInfoOpt.map(accountInfo -> accountInfo.getAccount());
+		return accountInfoOpt.map(AccountInfo::getAccount);
 	}
 
 	/** {@inheritDoc} */

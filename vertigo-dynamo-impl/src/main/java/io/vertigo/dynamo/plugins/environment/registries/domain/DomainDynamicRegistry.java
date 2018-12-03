@@ -417,7 +417,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 
 		final DtDefinition fkDefinition = primaryAssociationNode.getDtDefinition();
 
-		LOGGER.trace("" + xassociation.getName() + " : ajout d'une FK [" + fkFieldName + "] sur la table '" + foreignAssociationNode.getDtDefinition().getName() + "'");
+		LOGGER.trace("{} : ajout d'une FK [{}] sur la table '{}'", xassociation.getName(), fkFieldName, foreignAssociationNode.getDtDefinition().getName());
 
 		final String label = primaryAssociationNode.getLabel();
 		dtDefinitionBuilders.get(foreignAssociationNode.getDtDefinition().getName())

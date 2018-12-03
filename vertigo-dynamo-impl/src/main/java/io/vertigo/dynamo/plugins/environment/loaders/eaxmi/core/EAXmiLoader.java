@@ -67,7 +67,7 @@ public final class EAXmiLoader extends AbstractXmlLoader {
 	public List<XmlClass> getClasses() {
 		return map.values()
 				.stream()
-				.peek(obj -> LOG.debug("class : " + obj))
+				.peek(obj -> LOG.debug("class : {}", obj))
 				//On ne conserve que les classes et les domaines
 				.filter(obj -> obj.getType() == EAXmiType.Class)
 				.map(EAXmiLoader::createClass)
@@ -88,7 +88,7 @@ public final class EAXmiLoader extends AbstractXmlLoader {
 	}
 
 	private static XmlClass createClass(final EAXmiObject obj) {
-		LOG.debug("Creation de classe : " + obj.getName());
+		LOG.debug("Creation de classe : {}", obj.getName());
 		//On recherche les attributs (>DtField) de cette classe(>Dt_DEFINITION)
 		final String code = obj.getName().toUpperCase(Locale.ENGLISH);
 		final String packageName = obj.getParent().getPackageName();
@@ -98,7 +98,7 @@ public final class EAXmiLoader extends AbstractXmlLoader {
 		final List<XmlAttribute> fieldAttributes = new ArrayList<>();
 		for (final EAXmiObject child : obj.getChildren()) {
 			if (child.getType() == EAXmiType.Attribute) {
-				LOG.debug("Attribut = " + child.getName() + " isId = " + Boolean.toString(child.getIsId()));
+				LOG.debug("Attribut = {} isId = {}", child.getName(), Boolean.toString(child.getIsId()));
 				if (child.getIsId()) {
 					final XmlAttribute attributeXmi = createAttribute(child, true);
 					keyAttributes.add(attributeXmi);
@@ -133,7 +133,7 @@ public final class EAXmiLoader extends AbstractXmlLoader {
 	 * @return Association
 	 */
 	private XmlAssociation createAssociation(final EAXmiObject obj) {
-		LOG.debug("Créer association :" + obj.getName());
+		LOG.debug("Créer association : {}", obj.getName());
 		//On recherche les objets référencés par l'association.
 		final EAXmiObject objectB = map.get(obj.getClassB());
 		final EAXmiObject objectA = map.get(obj.getClassA());

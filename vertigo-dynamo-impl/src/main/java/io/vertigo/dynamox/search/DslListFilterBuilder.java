@@ -49,6 +49,7 @@ import io.vertigo.dynamox.search.dsl.model.DslTermQuery.EscapeMode;
 import io.vertigo.dynamox.search.dsl.model.DslUserCriteria;
 import io.vertigo.dynamox.search.dsl.rules.DslParserUtil;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.BeanUtil;
 import io.vertigo.util.StringUtil;
@@ -249,6 +250,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			appendRangeQuery(expressionQuery, (DslRangeQuery) dslQuery, expressionDefinition);
 		} else if (dslQuery instanceof DslFixedQuery) {
 			appendFixedQuery(expressionQuery, (DslFixedQuery) dslQuery);
+		} else {
+			throw new VSystemException("dslQuery of type '{0}' is not supported is query", dslQuery.getClass());
 		}
 	}
 

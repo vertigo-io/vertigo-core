@@ -38,7 +38,7 @@ final class AppServletListener {
 	 */
 	public void onServletStart(final String servletName) {
 		if (LOGGER.isInfoEnabled()) {
-			LOGGER.info("Start servlet " + servletName);
+			LOGGER.info("Start servlet {}", servletName);
 		}
 	}
 
@@ -48,7 +48,7 @@ final class AppServletListener {
 	 */
 	public void onServletDestroy(final String servletName) {
 		if (LOGGER.isInfoEnabled()) {
-			LOGGER.info("Destroy servlet " + servletName);
+			LOGGER.info("Destroy servlet {}", servletName);
 		}
 	}
 }

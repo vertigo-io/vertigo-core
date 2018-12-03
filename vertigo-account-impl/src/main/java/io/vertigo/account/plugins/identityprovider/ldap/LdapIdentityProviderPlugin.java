@@ -277,7 +277,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 		try {
 			ldapContext.close();
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("LDAP connection successfully \"" + ldapContext.toString() + "\" ");
+				LOGGER.debug("LDAP connection successfully \"{}\"", ldapContext);
 			}
 		} catch (final NamingException e) {
 			throw WrappedException.wrap(e, "Error when closing LdapContext");

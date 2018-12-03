@@ -99,7 +99,7 @@ final class AppServletStarter {
 			throw WrappedException.wrap(e, "Problème d'initialisation de l'application");
 		} finally {
 			if (LOG.isInfoEnabled()) {
-				LOG.info("Temps d'initialisation du listener " + (System.currentTimeMillis() - start));
+				LOG.info("Temps d'initialisation du listener {}", (System.currentTimeMillis() - start));
 			}
 		}
 	}

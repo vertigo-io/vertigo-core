@@ -183,6 +183,8 @@ public final class FileManagerImpl implements FileManager {
 				if (!succeeded) {
 					subFiles.deleteOnExit();
 				}
+			} else {
+				//keep this file
 			}
 		}
 	}

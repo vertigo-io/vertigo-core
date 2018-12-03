@@ -133,7 +133,7 @@ final class EAXmiObject {
 	}
 
 	EAXmiObject createEAXmiObject(final XmlId newId, final EAXmiType newType, final String leNom) {
-		LOGGER.debug("Le père : " + name + " le fils " + leNom + " Le Type " + newType.name());
+		LOGGER.debug("Le père : {} le fils {} Le Type {}", name, leNom, newType.name());
 		final EAXmiObject created = new EAXmiObject(this, newId, newType);
 		if (leNom != null) {
 			created.setName(leNom);

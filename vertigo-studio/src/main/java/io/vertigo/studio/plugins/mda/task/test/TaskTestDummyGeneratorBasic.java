@@ -21,7 +21,7 @@ package io.vertigo.studio.plugins.mda.task.test;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -80,7 +80,7 @@ public class TaskTestDummyGeneratorBasic implements TaskTestDummyGenerator {
 	 */
 	@Override
 	public <T> List<T> dumList(final Class<T> clazz) {
-		return Arrays.asList(dum(clazz));
+		return Collections.singletonList(dum(clazz));
 
 	}
 

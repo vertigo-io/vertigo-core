@@ -80,7 +80,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		Assertion.checkNotNull(sqlAdapterSupplierPlugins);
 		//-----
 		this.analyticsManager = analyticsManager;
-		connectionProviderPluginMap = new HashMap<>(sqlConnectionProviderPlugins.size());
+		connectionProviderPluginMap = new HashMap<>();
 		for (final SqlConnectionProviderPlugin sqlConnectionProviderPlugin : sqlConnectionProviderPlugins) {
 			final String name = sqlConnectionProviderPlugin.getName();
 			final SqlConnectionProvider previous = connectionProviderPluginMap.put(name, sqlConnectionProviderPlugin);

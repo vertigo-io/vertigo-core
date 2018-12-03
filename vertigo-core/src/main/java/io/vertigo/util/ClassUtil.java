@@ -340,13 +340,9 @@ public final class ClassUtil {
 		final Set<Class<?>> allInterfaces = new HashSet<>();
 		while (root != null) {
 			for (final Class<?> intf : root.getInterfaces()) {
-				if (!allInterfaces.contains(intf)) {
-					allInterfaces.add(intf);
-				}
+				allInterfaces.add(intf);
 				for (final Class<?> iIntf : getAllInterfaces(intf)) {
-					if (!allInterfaces.contains(iIntf)) {
-						allInterfaces.add(iIntf);
-					}
+					allInterfaces.add(iIntf);
 				}
 			}
 			root = root.getSuperclass();
