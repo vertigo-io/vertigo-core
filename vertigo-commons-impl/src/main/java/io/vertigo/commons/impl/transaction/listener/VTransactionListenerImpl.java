@@ -27,7 +27,6 @@ import org.apache.logging.log4j.Logger;
  * @author pchretien
  */
 public final class VTransactionListenerImpl implements VTransactionListener {
-	private static final String MS = " ms)";
 
 	private static final Logger LOGGER = LogManager.getLogger("transaction");
 
