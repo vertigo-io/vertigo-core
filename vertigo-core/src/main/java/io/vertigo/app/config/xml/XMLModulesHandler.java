@@ -217,6 +217,8 @@ final class XMLModulesHandler extends DefaultHandler {
 					componentConfigBuilder.addParam(param);
 				} else if (current == TagName.provider) {
 					definitionProviderConfigBuilder.addParam(param);
+				} else {
+					throw new IllegalArgumentException("param is only allowed on plugins, components and providers, not on tag " + current);
 				}
 				break;
 			case aspect:
