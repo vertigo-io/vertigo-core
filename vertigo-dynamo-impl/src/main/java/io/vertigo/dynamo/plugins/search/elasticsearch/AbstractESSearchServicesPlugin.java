@@ -317,6 +317,11 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					.field("type", "binary")
 					.endObject();
 
+			typeMapping.startObject("urn")
+					.field("type", "keyword")
+					.field("normalizer", "sortable")
+					.endObject();
+
 			/* 3 : Les champs du dto index */
 			final Set<DtField> copyFromFields = indexDefinition.getIndexCopyFromFields();
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
