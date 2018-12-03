@@ -40,13 +40,6 @@ public final class TimeFilterBuilder implements Builder<TimeFilter> {
 		myTo = to;
 	}
 
-	public TimeFilterBuilder withTimeDim(final String dim) {
-		Assertion.checkArgNotEmpty(dim);
-		//---
-		myDim = dim;
-		return this;
-	}
-
 	@Override
 	public TimeFilter build() {
 		return new TimeFilter(
@@ -55,4 +48,10 @@ public final class TimeFilterBuilder implements Builder<TimeFilter> {
 				myDim);
 	}
 
+	public TimeFilterBuilder withTimeDim(final String dim) {
+		Assertion.checkArgNotEmpty(dim);
+		//---
+		myDim = dim;
+		return this;
+	}
 }
