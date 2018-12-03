@@ -77,6 +77,7 @@ public final class DslDefinitionBuilder implements Builder<DslDefinition> {
 			} else if (dslEntityField.getType().isEntity()) {
 				childDefinitionsByFieldName.put(dslEntityField, new ArrayList<>());
 			}
+			// else : nothing for property
 		}
 	}
 
@@ -114,6 +115,7 @@ public final class DslDefinitionBuilder implements Builder<DslDefinition> {
 				// 3. children
 				addAllChildDefinitions(dslEntityField.getName(), dslDefinition.getChildDefinitions(dslEntityField.getName()));
 			}
+			// else : nothing for property (already processed)
 		}
 		return this;
 	}
