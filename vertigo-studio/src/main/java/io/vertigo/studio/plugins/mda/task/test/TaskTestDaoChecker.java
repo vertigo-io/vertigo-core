@@ -48,10 +48,10 @@ public class TaskTestDaoChecker {
 				return;
 			}
 			throw npe;
-		} catch (final Throwable t) {
+		} catch (final Exception e) {
 			// TODO Attraper les erreurs liées aux données.
 			// Autre erreur : on relance pour faire tomber le test en erreur.
-			throw t;
+			throw e;
 		}
 	}
 
