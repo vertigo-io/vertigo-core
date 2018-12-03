@@ -24,6 +24,7 @@ import io.vertigo.core.component.Plugin;
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
 import io.vertigo.database.timeseries.Measure;
+import io.vertigo.database.timeseries.TabularDatas;
 import io.vertigo.database.timeseries.TimeFilter;
 import io.vertigo.database.timeseries.TimedDatas;
 
@@ -49,15 +50,21 @@ public interface TimeSeriesPlugin extends Plugin {
 			final DataFilter dataFilter,
 			final TimeFilter timeFilter);
 
-	TimedDatas getTabularData(
+	TimedDatas getTabularTimedData(
 			final String dbName,
 			final List<String> measures,
 			final DataFilter dataFilter,
 			final TimeFilter timeFilter,
-			final boolean keepTime,
 			final String... groupBy);
 
-	TimedDatas getTops(
+	TabularDatas getTabularData(
+			final String dbName,
+			final List<String> measures,
+			final DataFilter dataFilter,
+			final TimeFilter timeFilter,
+			final String... groupBy);
+
+	TabularDatas getTops(
 			final String dbName,
 			final String measure,
 			final DataFilter dataFilter,

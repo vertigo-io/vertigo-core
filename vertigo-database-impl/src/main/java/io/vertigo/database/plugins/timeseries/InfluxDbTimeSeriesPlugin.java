@@ -48,6 +48,8 @@ import io.vertigo.database.impl.timeseries.TimeSeriesPlugin;
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
 import io.vertigo.database.timeseries.Measure;
+import io.vertigo.database.timeseries.TabularDataSerie;
+import io.vertigo.database.timeseries.TabularDatas;
 import io.vertigo.database.timeseries.TimeFilter;
 import io.vertigo.database.timeseries.TimedDataSerie;
 import io.vertigo.database.timeseries.TimedDatas;
@@ -203,7 +205,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 
 	}
 
-	private TimedDatas executeTabularQuery(final String appName, final String queryString, final boolean keepTime) {
+	private TimedDatas executeTimedTabularQuery(final String appName, final String queryString) {
 		final Query query = new Query(queryString, appName);
 		final QueryResult queryResult = influxDB.query(query);
 
@@ -220,13 +222,43 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 					.map(mySeries -> {
 						final Map<String, Object> mapValues = buildMapValue(mySeries.getColumns(), mySeries.getValues().get(0));
 						mapValues.putAll(mySeries.getTags());
-						return new TimedDataSerie(keepTime ? LocalDateTime.parse(mySeries.getValues().get(0).get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant(ZoneOffset.UTC) : null, mapValues);
+						return new TimedDataSerie(LocalDateTime.parse(mySeries.getValues().get(0).get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant(ZoneOffset.UTC), mapValues);
 					})
 					.collect(Collectors.toList());
 
 			return new TimedDatas(dataSeries, seriesName);
 		}
 		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
+	}
+
+	private TabularDatas executeTabularQuery(final String appName, final String queryString) {
+		final Query query = new Query(queryString, appName);
+		final QueryResult queryResult = influxDB.query(query);
+
+		final List<Series> series = queryResult.getResults().get(0).getSeries();
+
+		if (series != null && !series.isEmpty()) {
+			//all columns are the measures
+			final List<String> seriesName = new ArrayList<>();
+			seriesName.addAll(series.get(0).getColumns().subList(1, series.get(0).getColumns().size()));//we remove the first one
+			if (series.get(0).getTags() != null) {
+				seriesName.addAll(series.get(0).getTags().keySet());// + all the tags names (the group by)
+			}
+
+			final List<TabularDataSerie> dataSeries = series
+					.stream()
+					.map(mySeries -> {
+						final Map<String, Object> mapValues = buildMapValue(mySeries.getColumns(), mySeries.getValues().get(0));
+						if (mySeries.getTags() != null) {
+							mapValues.putAll(mySeries.getTags());
+						}
+						return new TabularDataSerie(mapValues);
+					})
+					.collect(Collectors.toList());
+
+			return new TabularDatas(dataSeries, seriesName);
+		}
+		return new TabularDatas(Collections.emptyList(), Collections.emptyList());
 	}
 
 	private TimedDatas executeTimedQuery(final String appName, final String q) {
@@ -306,7 +338,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 	}
 
 	@Override
-	public TimedDatas getTabularData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final boolean keepTime, final String... groupBy) {
+	public TimedDatas getTabularTimedData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
 		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter);
 
 		final String groupByClause = Stream.of(groupBy)
@@ -315,7 +347,20 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		queryBuilder.append(" group by ").append(groupByClause);
 		final String queryString = queryBuilder.toString();
 
-		return executeTabularQuery(appName, queryString, keepTime);
+		return executeTimedTabularQuery(appName, queryString);
+	}
+
+	@Override
+	public TabularDatas getTabularData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
+		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter);
+
+		final String groupByClause = Stream.of(groupBy)
+				.collect(Collectors.joining("\", \"", "\"", "\""));
+
+		queryBuilder.append(" group by ").append(groupByClause);
+		final String queryString = queryBuilder.toString();
+
+		return executeTabularQuery(appName, queryString);
 	}
 
 	@Override
@@ -356,7 +401,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 	}
 
 	@Override
-	public TimedDatas getTops(final String appName, final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
+	public TabularDatas getTops(final String appName, final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
 		final StringBuilder queryBuilder = new StringBuilder();
 
 		final String queryString = queryBuilder
@@ -368,7 +413,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 				.append(')')
 				.toString();
 
-		return executeTimedQuery(appName, queryString);
+		return executeTabularQuery(appName, queryString);
 	}
 
 	@Override

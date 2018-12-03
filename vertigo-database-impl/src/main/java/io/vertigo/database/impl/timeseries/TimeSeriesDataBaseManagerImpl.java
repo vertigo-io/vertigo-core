@@ -11,6 +11,7 @@ import javax.inject.Named;
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
 import io.vertigo.database.timeseries.Measure;
+import io.vertigo.database.timeseries.TabularDatas;
 import io.vertigo.database.timeseries.TimeFilter;
 import io.vertigo.database.timeseries.TimeSeriesDataBaseManager;
 import io.vertigo.database.timeseries.TimedDatas;
@@ -72,12 +73,17 @@ public class TimeSeriesDataBaseManagerImpl implements TimeSeriesDataBaseManager 
 	}
 
 	@Override
-	public TimedDatas getTabularData(final String dbName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final boolean keepTime, final String... groupBy) {
-		return timeSeriesPlugin.getTabularData(dbName, measures, dataFilter, timeFilter, keepTime, groupBy);
+	public TimedDatas getTabularTimedData(final String dbName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
+		return timeSeriesPlugin.getTabularTimedData(dbName, measures, dataFilter, timeFilter, groupBy);
 	}
 
 	@Override
-	public TimedDatas getTops(final String dbName, final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
+	public TabularDatas getTabularData(final String dbName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
+		return timeSeriesPlugin.getTabularData(dbName, measures, dataFilter, timeFilter, groupBy);
+	}
+
+	@Override
+	public TabularDatas getTops(final String dbName, final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
 		return timeSeriesPlugin.getTops(dbName, measure, dataFilter, timeFilter, groupBy, maxRows);
 	}
 

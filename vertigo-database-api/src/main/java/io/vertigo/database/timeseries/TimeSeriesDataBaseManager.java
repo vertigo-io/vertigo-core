@@ -44,15 +44,21 @@ public interface TimeSeriesDataBaseManager extends Manager {
 			final DataFilter dataFilter,
 			final TimeFilter timeFilter);
 
-	TimedDatas getTabularData(
+	TimedDatas getTabularTimedData(
 			final String dbName,
 			final List<String> measures,
 			final DataFilter dataFilter,
 			final TimeFilter timeFilter,
-			final boolean keepTime,
 			final String... groupBy);
 
-	TimedDatas getTops(
+	TabularDatas getTabularData(
+			final String dbName,
+			final List<String> measures,
+			final DataFilter dataFilter,
+			final TimeFilter timeFilter,
+			final String... groupBy);
+
+	TabularDatas getTops(
 			final String dbName,
 			final String measure,
 			final DataFilter dataFilter,
