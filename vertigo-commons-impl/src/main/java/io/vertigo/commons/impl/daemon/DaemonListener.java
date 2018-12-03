@@ -18,7 +18,8 @@
  */
 package io.vertigo.commons.impl.daemon;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonStat;
@@ -52,7 +53,7 @@ final class DaemonListener {
 	synchronized void onStart() {
 		status = DaemonStat.Status.running;
 		if (verbose) {
-			LOG.info("Start daemon: " + daemonDefinition.getName());
+			LOG.info("Start daemon: {}", daemonDefinition.getName());
 		}
 	}
 
@@ -68,7 +69,7 @@ final class DaemonListener {
 		successes++;
 		lastExecSucceed = true;
 		if (verbose) {
-			LOG.info("Execution succeeded on daemon: " + daemonDefinition.getName());
+			LOG.info("Execution succeeded on daemon: {}", daemonDefinition.getName());
 		}
 	}
 }

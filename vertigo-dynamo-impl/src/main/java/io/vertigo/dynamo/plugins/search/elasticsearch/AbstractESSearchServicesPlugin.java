@@ -201,7 +201,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final String expectedValue = entry.getValue();
 			if (!currentValue.equals(expectedValue)) {
 				indexSettingsDirty = true;
-				LOGGER.warn("[" + myIndexName + "] " + entry.getKey() + ":  current=" + currentValue + ", expected=" + expectedValue);
+				LOGGER.warn("[{}] {} :  current={}, expected= {}", myIndexName, entry.getKey(), currentValue, expectedValue);
 				break;
 			}
 		}
@@ -212,9 +212,9 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		final IndicesAdminClient indicesAdmin = esClient.admin().indices();
 		final ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexMappings = indicesAdmin.prepareGetMappings(myIndexName).get().getMappings();
 		for (final ObjectObjectCursor<String, ImmutableOpenMap<String, MappingMetaData>> indexMapping : indexMappings) {
-			LOGGER.info("Index " + indexMapping.key + " CurrentMapping:");
+			LOGGER.info("Index {} CurrentMapping:", indexMapping.key);
 			for (final ObjectObjectCursor<String, MappingMetaData> dtoMapping : indexMapping.value) {
-				LOGGER.info(dtoMapping.key + " -> " + dtoMapping.value.source());
+				LOGGER.info(" {} -> {}", dtoMapping.key, dtoMapping.value.source());
 			}
 		}
 	}

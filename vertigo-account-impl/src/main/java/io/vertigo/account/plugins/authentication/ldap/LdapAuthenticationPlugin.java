@@ -86,14 +86,14 @@ public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 			final String userProtectedDn = userLoginPrefix + protectLdap(usernamePasswordToken.getPrincipal()) + userLoginSuffix;
 			ldapContext = createLdapContext(userProtectedDn, usernamePasswordToken.getPassword());
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Ouverture de connexion LDAP  '" + ldapContext + "'");
+				LOGGER.debug("Ouverture de connexion LDAP  '{}'", ldapContext);
 			}
 			return Optional.of(token.getPrincipal());
 		} catch (final NamingException e) {
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.info("Can't authenticate user '" + token.getPrincipal() + "'", e);
+				LOGGER.info("Can't authenticate user '{}'", token.getPrincipal(), e);
 			} else {
-				LOGGER.info("Can't authenticate user '" + token.getPrincipal() + "'");
+				LOGGER.info("Can't authenticate user '{}'", token.getPrincipal());
 			}
 			return Optional.empty(); //can't connect user
 		} finally {
@@ -149,7 +149,7 @@ public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 		try {
 			ldapContext.close();
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Fermeture connexion Ldap  \"" + ldapContext.toString() + "\" ");
+				LOGGER.debug("Fermeture connexion Ldap  \" {} \"", ldapContext);
 			}
 		} catch (final NamingException e) {
 			throw WrappedException.wrap(e, "Erreur lors de la fermeture de l'objet LdapContext");

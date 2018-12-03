@@ -86,7 +86,7 @@ final class AnnotationsWebServiceScannerUtil {
 		Assertion.checkNotNull(webServicesClass);
 		//-----
 		return Arrays.stream(webServicesClass.getMethods())
-				.map(method -> buildWebServiceDefinition(method))
+				.map(AnnotationsWebServiceScannerUtil::buildWebServiceDefinition)
 				.filter(webServiceDefinitionOptional -> webServiceDefinitionOptional.isPresent())
 				.map(webServiceDefinitionOptional -> webServiceDefinitionOptional.get())
 				.collect(Collectors.toList());

@@ -175,7 +175,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 				if (bulkResponse.hasFailures()) {
 					throw new VSystemException("Can't removeBQuery {0} into {1} index.\nCause by {3}", typeName, indexName, bulkResponse.buildFailureMessage());
 				}
-				LOGGER.info("Deleted " + searchHits.getHits().length + " elements from index " + indexName);
+				LOGGER.info("Deleted {} elements from index {}", searchHits.getHits().length, indexName);
 				// new scrolling
 				queryResponse = esClient.prepareSearchScroll(scrollid)//
 						.setScroll(DEFAULT_SCROLL_KEEP_ALIVE) //
@@ -219,7 +219,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 				.withSearchQuery(searchQuery)
 				.withListState(listState, defaultMaxRows)
 				.build();
-		LOGGER.info("loadList " + searchRequestBuilder);
+		LOGGER.info("loadList {}", searchRequestBuilder);
 		try {
 			final SearchResponse queryResponse = searchRequestBuilder.execute().actionGet();
 			return new ESFacetedQueryResultBuilder(esDocumentCodec, indexDefinition, queryResponse, searchQuery)

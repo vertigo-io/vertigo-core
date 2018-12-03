@@ -65,16 +65,16 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 
 		// création du fichier temporaire
 		if (!txNewFile.getParentFile().exists() && !txNewFile.getParentFile().mkdirs()) {
-			LOG.error("Can't create temp directories " + txNewFile.getAbsolutePath());
+			LOG.error("Can't create temp directories {}", txNewFile.getAbsolutePath());
 			throw new VSystemException("Can't create temp directories");
 		}
 		try {
 			if (!txNewFile.createNewFile()) {
-				LOG.error("Can't create temp file " + txNewFile.getAbsolutePath());
+				LOG.error("Can't create temp file {}", txNewFile.getAbsolutePath());
 				throw new VSystemException("Can't create temp file.");
 			}
 		} catch (final IOException e) {
-			LOG.error("Can't save temp file " + txNewFile.getAbsolutePath());
+			LOG.error("Can't save temp file {}", txNewFile.getAbsolutePath());
 			throw WrappedException.wrap(e, "Can't save temp file.");
 		}
 
@@ -83,7 +83,7 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 		try {
 			FileUtil.copy(inputStream, txNewFile);
 		} catch (final IOException e) {
-			LOG.error("Can't copy uploaded file to : " + txNewFile.getAbsolutePath());
+			LOG.error("Can't copy uploaded file to : {}", txNewFile.getAbsolutePath());
 			throw WrappedException.wrap(e, "Can't save uploaded file.");
 		}
 	}
@@ -101,13 +101,13 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 	private void doCommit() {
 		// on supprime l'ancien fichier s'il existe
 		if (txPrevFile.exists() && !txPrevFile.delete()) {
-			LOG.fatal("Impossible supprimer l'ancien fichier (" + txPrevFile.getAbsolutePath() + ") lors de la sauvegarde. Le fichier a sauvegarder se trouve dans " + txNewFile.getAbsolutePath());
+			LOG.fatal("Impossible supprimer l'ancien fichier ({}) lors de la sauvegarde. Le fichier a sauvegarder se trouve dans {}", txPrevFile.getAbsolutePath(), txNewFile.getAbsolutePath());
 			throw new VSystemException("Erreur fatale : Impossible de sauvegarder le fichier.");
 		}
 
 		// on met le fichier au bon emplacement
 		if (!txNewFile.renameTo(txPrevFile)) {
-			LOG.fatal("Impossible sauvegarder le fichier. Déplacement impossible de " + txNewFile.getAbsolutePath() + " vers " + txPrevFile.getAbsolutePath());
+			LOG.fatal("Impossible sauvegarder le fichier. Déplacement impossible de {} vers {}", txNewFile.getAbsolutePath(), txPrevFile.getAbsolutePath());
 			throw new VSystemException("Erreur fatale : Impossible de sauvegarder le fichier.");
 		}
 	}
@@ -116,7 +116,7 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 		// on ne fait pas de ménage si on a eu une erreur
 		if (txNewFile.exists()) {
 			if (!txNewFile.delete()) {
-				LOG.error("Can't rollback and delete file : " + txNewFile.getAbsolutePath());
+				LOG.error("Can't rollback and delete file : {}", txNewFile.getAbsolutePath());
 			}
 		}
 	}

@@ -171,7 +171,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 				break;
 			}
 		}
-		LOGGER.info("purge " + checked + " elements");
+		LOGGER.info("purge {} elements", checked);
 	}
 
 	private boolean isTooOld(final DelayedMemoryCacheValue cacheValue) {

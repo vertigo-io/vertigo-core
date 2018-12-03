@@ -245,7 +245,7 @@ final class BerkeleyDatabase {
 			}
 		} finally {
 			transaction.commit();
-			LOGGER.info("Berkeley database (" + database.getDatabaseName() + ") purge " + checked + " elements");
+			LOGGER.info("Berkeley database ({}) purge {} elements", database.getDatabaseName(), checked);
 		}
 	}
 

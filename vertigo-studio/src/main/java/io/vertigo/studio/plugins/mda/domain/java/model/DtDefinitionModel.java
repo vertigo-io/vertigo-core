@@ -226,7 +226,7 @@ public final class DtDefinitionModel {
 		return associationModels
 				.stream()
 				//only multiples
-				.filter(associationModel -> associationModel.isMultiple())
+				.filter(AssociationModel::isMultiple)
 				//simple navigable ou nn
 				.anyMatch(associationModel -> (associationModel.isSimple() && associationModel.isNavigable()) || !associationModel.isSimple());
 

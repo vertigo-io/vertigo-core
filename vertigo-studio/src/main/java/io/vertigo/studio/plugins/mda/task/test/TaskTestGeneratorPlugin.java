@@ -39,6 +39,7 @@ import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
+import io.vertigo.studio.plugins.mda.task.model.TaskAttributeModel;
 import io.vertigo.studio.plugins.mda.task.model.TaskDefinitionModel;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.util.StringUtil;
@@ -280,7 +281,7 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 		//We are searching igf there is an no-ambiguous IN param defined as a DataObject(DTO or DTC)
 		final List<Domain> candidates = templateTaskDefinition.getInAttributes()
 				.stream()
-				.map(taskAtributeModel -> taskAtributeModel.getDomain())
+				.map(TaskAttributeModel::getDomain)
 				.filter(domain -> domain.getScope().isDataObject())
 				.collect(Collectors.toList());
 		//There MUST be only ONE candidate

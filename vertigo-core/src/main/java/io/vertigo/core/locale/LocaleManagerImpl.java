@@ -255,7 +255,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 			final Locale currentLocale = localeProvider.getCurrentLocale();
 			//We have to check if the currentLocale belongs to locales.
 			if (!locales.contains(localeProvider.getCurrentLocale())) {
-				LOG.error("CurrentLocale '" + currentLocale + "' is not allowed, it must be in '" + locales + "'");
+				LOG.error("CurrentLocale '{}' is not allowed, it must be in '{}'", currentLocale, locales);
 				//So, we can pick the default language.
 				return locales.get(0);
 			}
@@ -283,9 +283,9 @@ public final class LocaleManagerImpl implements LocaleManager {
 	 */
 	private static void logResourceNotFound(final String resource, final boolean isMultiLocales) {
 		if (isMultiLocales) {
-			LOG.warn("Resource " + resource + " non trouvée");
+			LOG.warn("Resource {} non trouvée", resource);
 		} else {
-			LOG.info("Resource " + resource + " non trouvée");
+			LOG.info("Resource {} non trouvée", resource);
 		}
 	}
 }

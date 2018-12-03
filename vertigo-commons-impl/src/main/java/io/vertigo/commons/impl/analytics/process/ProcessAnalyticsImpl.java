@@ -61,7 +61,7 @@ public class ProcessAnalyticsImpl {
 
 	public Optional<ProcessAnalyticsTracer> getCurrentTracer() {
 		// When collect feature is enabled
-		return doGetCurrentTracer().map(a -> a); // convert impl to api
+		return doGetCurrentTracer().map(Function.identity()); // convert impl to api
 	}
 
 	private static Optional<ProcessAnalyticsTracerImpl> doGetCurrentTracer() {

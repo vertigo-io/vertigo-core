@@ -81,7 +81,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 				final Class<S> keyConceptClass = (Class<S>) ClassUtil.classForName(searchIndexDefinition.getKeyConceptDtDefinition().getClassCanonicalName(), KeyConcept.class);
 				final SearchLoader<S, DtObject> searchLoader = Home.getApp().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
 				String lastUID = null;
-				LOGGER.info("Reindexation of " + searchIndexDefinition.getName() + " started");
+				LOGGER.info("Reindexation of {} started", searchIndexDefinition.getName());
 
 				for (final SearchChunk<S> searchChunk : searchLoader.chunk(keyConceptClass)) {
 					final Collection<SearchIndex<S, DtObject>> searchIndexes = searchLoader.loadData(searchChunk);
@@ -103,7 +103,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 				reindexFuture.fail(e);
 			} finally {
 				stopReindex();
-				LOGGER.info("Reindexation of " + searchIndexDefinition.getName() + " finished in " + (System.currentTimeMillis() - startTime) + "ms (" + reindexCount + " elements done)");
+				LOGGER.info("Reindexation of {} finished in {} ms ({} elements done)", searchIndexDefinition.getName(), (System.currentTimeMillis() - startTime), reindexCount);
 			}
 		}
 	}

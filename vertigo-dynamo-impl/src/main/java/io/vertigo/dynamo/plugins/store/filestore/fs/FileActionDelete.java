@@ -51,11 +51,11 @@ final class FileActionDelete implements VTransactionAfterCompletionFunction {
 		file = new File(path);
 
 		if (!file.exists()) {
-			LOG.error("Impossible de trouver le fichier pour suppression : " + file.getAbsolutePath());
+			LOG.error("Impossible de trouver le fichier pour suppression : {}", file.getAbsolutePath());
 			throw new VSystemException("Impossible de trouver le fichier à supprimer.");
 		}
 		if (!file.canWrite()) {
-			LOG.error("Impossible de supprimer le fichier : " + file.getAbsolutePath());
+			LOG.error("Impossible de supprimer le fichier : {}", file.getAbsolutePath());
 			throw new VSystemException("Impossible de supprimer le fichier.");
 		}
 	}
@@ -66,7 +66,7 @@ final class FileActionDelete implements VTransactionAfterCompletionFunction {
 		if (txCommited) {
 			// on supprime le fichier
 			if (!file.delete()) {
-				LOG.error("Impossible de supprimer le fichier " + file.getAbsolutePath());
+				LOG.error("Impossible de supprimer le fichier {}", file.getAbsolutePath());
 				throw new VSystemException("Erreur fatale : Impossible de supprimer le fichier.");
 			}
 		}

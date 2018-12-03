@@ -176,7 +176,7 @@ public final class DomainMetricsProvider implements Component {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			return Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)
 					.stream()
-					.filter(dtDefinition -> dtDefinition.isPersistent())
+					.filter(DtDefinition::isPersistent)
 					.map(dtDefinition -> doExecute(dtDefinition))
 					.collect(Collectors.toList());
 		}
