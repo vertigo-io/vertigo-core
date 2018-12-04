@@ -24,10 +24,10 @@ import java.sql.SQLException;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.definition.DefinitionSpace;
@@ -50,7 +50,7 @@ import io.vertigo.dynamo.store.StoreManager;
  *
  * @author npiedeloup
  */
-public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
+public final class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 	@Inject
@@ -116,7 +116,7 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testIndexAllQuery() {
 		final long size = query("*:*");
-		Assert.assertEquals(initialDbCarSize, size);
+		Assertions.assertEquals(initialDbCarSize, size);
 	}
 
 	/**
@@ -133,8 +133,8 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 			transaction.commit();
 		}
 		waitIndexation();
-		Assert.assertEquals(initialDbCarSize + 1, query("*:*"));
-		Assert.assertEquals(1, query("DESCRIPTION:légende"));
+		Assertions.assertEquals(initialDbCarSize + 1, query("*:*"));
+		Assertions.assertEquals(1, query("DESCRIPTION:légende"));
 	}
 
 	/**
@@ -144,15 +144,15 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testIndexDeleteData() {
 		testIndexAllQuery();
-		Assert.assertEquals(1, query("ID:10001"));
+		Assertions.assertEquals(1, query("ID:10001"));
 
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			storeManager.getDataStore().delete(createURI(10001L));
 			transaction.commit();
 		}
 		waitIndexation();
-		Assert.assertEquals(0, query("ID:10001"));
-		Assert.assertEquals(initialDbCarSize - 1, query("*:*"));
+		Assertions.assertEquals(0, query("ID:10001"));
+		Assertions.assertEquals(initialDbCarSize - 1, query("*:*"));
 	}
 
 	/**
@@ -170,8 +170,8 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		}
 
 		waitIndexation();
-		Assert.assertEquals(initialDbCarSize + 1, query("*:*"));
-		Assert.assertEquals(1, query("DESCRIPTION:légende"));
+		Assertions.assertEquals(initialDbCarSize + 1, query("*:*"));
+		Assertions.assertEquals(1, query("DESCRIPTION:légende"));
 
 		car.setDescription("Vendue");
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -180,9 +180,9 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		}
 
 		waitIndexation();
-		Assert.assertEquals(initialDbCarSize + 1, query("*:*"));
-		Assert.assertEquals(0, query("DESCRIPTION:légende"));
-		Assert.assertEquals(1, query("DESCRIPTION:vendue"));
+		Assertions.assertEquals(initialDbCarSize + 1, query("*:*"));
+		Assertions.assertEquals(0, query("DESCRIPTION:légende"));
+		Assertions.assertEquals(1, query("DESCRIPTION:vendue"));
 	}
 
 	/**
@@ -194,7 +194,7 @@ public final class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		//On supprime tout
 		remove("*:*");
 		final long resize = query("*:*");
-		Assert.assertEquals(0L, resize);
+		Assertions.assertEquals(0L, resize);
 	}
 
 	private static Car createNewCar() {
