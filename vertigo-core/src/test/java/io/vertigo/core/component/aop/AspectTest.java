@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.aop.data.MyException;
 import io.vertigo.core.component.aop.data.components.A;
@@ -38,7 +38,7 @@ import io.vertigo.core.component.aop.data.components.Computer;
 import io.vertigo.core.component.aop.data.components.F;
 
 @RunWith(JUnitPlatform.class)
-public final class AspectTest extends AbstractTestCaseJU4 {
+public final class AspectTest extends AbstractTestCaseJU5 {
 	private A a;
 	private B b;
 	private C c;

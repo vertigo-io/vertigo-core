@@ -23,9 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.inject.Inject;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.health.HealthStatus;
@@ -33,7 +33,8 @@ import io.vertigo.commons.analytics.health.HealthStatus;
 /**
  * @author TINGARGIOLA
  */
-public final class DaemonManagerTest extends AbstractTestCaseJU4 {
+public final class DaemonManagerTest extends AbstractTestCaseJU5 {
+
 	@Inject
 	private DaemonManager daemonManager;
 	@Inject

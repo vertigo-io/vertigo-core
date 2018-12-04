@@ -23,46 +23,21 @@ import java.util.Collections;
 
 import javax.inject.Inject;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.Home;
-import io.vertigo.core.component.di.injector.DIInjector;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
+import io.vertigo.database.DatabaseFeatures;
 
 /**
  * Test of the IoT services.
  *
  * @author mlaroche
  */
-public final class TimeSeriesDataBaseTest {
-
-	private static AutoCloseableApp app;
-
-	@BeforeAll
-	public static final void setUp() throws Exception {
-		app = new AutoCloseableApp(TimeSeriesDataBaseTestAppConfig.config());
-	}
-
-	@AfterAll
-	public static final void tearDown() throws Exception {
-		if (app != null) {
-			app.close();
-		}
-	}
-
-	public final void setUpInjection() throws Exception {
-		if (app != null) {
-			DIInjector.injectMembers(this, Home.getApp().getComponentSpace());
-		}
-	}
-
-	@BeforeEach
-	public void doSetUp() throws Exception {
-		setUpInjection();
-	}
+public final class TimeSeriesDataBaseTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private TimeSeriesDataBaseManager timeSeriesDataBaseManager;
@@ -83,4 +58,21 @@ public final class TimeSeriesDataBaseTest {
 				DataFilter.builder("test").build(),
 				TimeFilter.builder("now() - 1h", "now()").withTimeDim("1m").build());
 	}
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder().beginBoot()
+				.withLocales("fr_FR")
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.addPlugin(URLResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.build())
+				.addModule(new DatabaseFeatures()
+						.withTimeSeriesDataBase("vertigo-test")
+						.withInfluxDb("http://analytica.part.klee.lan.net:8086", "analytica", "kleeklee")
+						.build())
+				.build();
+	}
+
 }

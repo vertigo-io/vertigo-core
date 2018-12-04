@@ -18,9 +18,13 @@
  */
 package io.vertigo.database.sql.vendor.h2;
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
+
 import io.vertigo.database.sql.AbstractSqlDataBaseManagerTest;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 
+@RunWith(JUnitPlatform.class)
 public final class H2DataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
 	@Override
 	protected String createTableMovie() {

@@ -26,11 +26,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.core.component.proxy.data.Aggregate;
 
 @RunWith(JUnitPlatform.class)
-public final class ProxyTest extends AbstractTestCaseJU4 {
+public final class ProxyTest extends AbstractTestCaseJU5 {
+
 	@Inject
 	private Aggregate aggregatea;
 

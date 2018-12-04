@@ -16,32 +16,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.peg;
+package io.vertigo;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import io.vertigo.app.App;
+import io.vertigo.app.AutoCloseableApp;
+import io.vertigo.core.component.di.injector.DIInjector;
 
-public final class CalculatorTest {
-	private static final PegRule<Integer> MAIN = new CalculatorRule();
+/**
+ * Classe parente de tous les TNR associés à vertigo.
+ *
+ * @author jmforhan
+ */
+public class VertigoJunitExtension implements TestInstancePostProcessor {
 
-	private static int eval(final String s) throws PegNoMatchFoundException {
-		return MAIN.parse(s, 0).getValue().intValue();
+	@Override
+	public void postProcessTestInstance(final Object testInstance, final ExtensionContext context) throws Exception {
+		final App app = new AutoCloseableApp(((AbstractTestCaseJU5) testInstance).buildAppConfig());
+		DIInjector.injectMembers(testInstance, app.getComponentSpace());
+
 	}
 
-	@Test
-	public void test() throws PegNoMatchFoundException {
-		assertEquals(6, eval("2*3"));
-		//--
-		assertEquals(5, eval("2 + 3"));
-		//--
-		assertEquals(11, eval("121 /11"));
-	}
-
-	@Test
-	public void testFail() {
-		Assertions.assertThrows(PegNoMatchFoundException.class, () -> eval("2 $ 3"));
-		//l'opérateur  $ n'existe pas
-	}
 }

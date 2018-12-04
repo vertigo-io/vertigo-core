@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.Home;
 import io.vertigo.app.config.discovery.data.DiscoveryA;
 import io.vertigo.app.config.discovery.data.DiscoveryB;
@@ -36,7 +36,7 @@ import io.vertigo.core.component.ComponentSpace;
 * @author pchretien
 */
 @RunWith(JUnitPlatform.class)
-public final class DiscoveryTest extends AbstractTestCaseJU4 {
+public final class DiscoveryTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testComponentSpace() {

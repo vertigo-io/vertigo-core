@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.analytics.AnalyticsManager;
@@ -41,7 +41,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 
 @RunWith(JUnitPlatform.class)
-public class HealthAnalyticsTest extends AbstractTestCaseJU4 {
+public class HealthAnalyticsTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private AnalyticsManager analyticsManager;

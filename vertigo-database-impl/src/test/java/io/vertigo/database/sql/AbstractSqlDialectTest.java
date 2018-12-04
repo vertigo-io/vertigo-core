@@ -21,8 +21,8 @@ package io.vertigo.database.sql;
 import java.util.Collections;
 import java.util.Optional;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.database.sql.vendor.SqlDialect;
 
@@ -37,19 +37,19 @@ public abstract class AbstractSqlDialectTest {
 
 		final SqlDialect sqlDialect = getDialect();
 		final String insertQuery = sqlDialect.createInsertQuery("ID", Collections.singletonList("TITLE"), "SEQ_", "MOVIE");
-		Assert.assertEquals(getExpectedInsertQuery(), insertQuery);
+		Assertions.assertEquals(getExpectedInsertQuery(), insertQuery);
 	}
 
 	@Test
 	public void testSelectForUpdateWildcardQuery() {
 		final String selectForUpdateQuery = getDialect().createSelectForUpdateQuery("MOVIE", "*", "ID");
-		Assert.assertEquals(getExpectedSelectForUpdateWildCardQuery(), selectForUpdateQuery);
+		Assertions.assertEquals(getExpectedSelectForUpdateWildCardQuery(), selectForUpdateQuery);
 	}
 
 	@Test
 	public void testSelectForUpdateFieldsQuery() {
 		final String selectForUpdateQuery = getDialect().createSelectForUpdateQuery("MOVIE", "ID, TITLE", "ID");
-		Assert.assertEquals(getExpectedSelectForUpdateFieldsQuery(), selectForUpdateQuery);
+		Assertions.assertEquals(getExpectedSelectForUpdateFieldsQuery(), selectForUpdateQuery);
 	}
 
 	@Test
@@ -57,7 +57,7 @@ public abstract class AbstractSqlDialectTest {
 		final StringBuilder stringBuilder = new StringBuilder("select * from MOVIE");
 		getDialect().appendMaxRows(stringBuilder, 100);
 		final String query = stringBuilder.toString();
-		Assert.assertEquals(getExpectedAppendMaxRowsQuery(), query);
+		Assertions.assertEquals(getExpectedAppendMaxRowsQuery(), query);
 	}
 
 	public abstract SqlDialect getDialect();

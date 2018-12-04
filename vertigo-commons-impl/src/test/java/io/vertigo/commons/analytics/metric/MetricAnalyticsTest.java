@@ -22,10 +22,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.analytics.AnalyticsManager;
@@ -35,7 +37,8 @@ import io.vertigo.commons.impl.analytics.AnalyticsManagerImpl;
 /**
  * @author mlaroche
  */
-public final class MetricAnalyticsTest extends AbstractTestCaseJU4 {
+@RunWith(JUnitPlatform.class)
+public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
 
 	@Override
 	protected AppConfig buildAppConfig() {
@@ -54,6 +57,6 @@ public final class MetricAnalyticsTest extends AbstractTestCaseJU4 {
 	public void testAnalyze() {
 		final List<Metric> metrics = analyticsManager.getMetrics();
 		//---
-		Assert.assertEquals(1, metrics.size());
+		Assertions.assertEquals(1, metrics.size());
 	}
 }

@@ -20,12 +20,10 @@ package io.vertigo.commons.transaction;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.commons.transaction.data.SampleDataBase;
 import io.vertigo.commons.transaction.data.SampleDataBaseConnection;
 import io.vertigo.commons.transaction.data.SampleTransactionResource;
@@ -35,7 +33,7 @@ import io.vertigo.commons.transaction.data.SampleTransactionResource;
  * @author dchallas
  *
  */
-public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
+public final class VTransactionManagerTest extends AbstractTestCaseJU5 {
 	private static int count;
 
 	@Inject
@@ -44,9 +42,6 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private VTransactionManager transactionManager;
 	private SampleDataBase dataBase;
-
-	@Rule
-	public final ExpectedException expectedEx = ExpectedException.none();
 
 	private static String createData() {
 		count++;
@@ -60,7 +55,7 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 
 	@Override
 	protected void doTearDown() {
-		Assert.assertFalse("transaction must be closed", transactionManager.hasCurrentTransaction());
+		Assertions.assertFalse(transactionManager.hasCurrentTransaction(), "transaction must be closed");
 	}
 
 	/**
@@ -71,7 +66,7 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 			transactionManager.createCurrentTransaction();
 		} catch (final IllegalStateException e) {
-			Assert.assertEquals("current transaction already created", e.getMessage());
+			Assertions.assertEquals("current transaction already created", e.getMessage());
 		}
 	}
 
@@ -81,7 +76,7 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testGetCurrentTransaction() {
 		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
-			Assert.assertEquals(currentTransaction, transactionManager.getCurrentTransaction());
+			Assertions.assertEquals(currentTransaction, transactionManager.getCurrentTransaction());
 			currentTransaction.rollback();
 		}
 	}
@@ -98,10 +93,10 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 			// --- modification de la bdd
 			final String value = createData();
 			connection.setData(value);
-			Assert.assertEquals(value, connection.getData());
+			Assertions.assertEquals(value, connection.getData());
 			currentTransaction.commit();
 			//On vérifie que la bdd est mise à jour.
-			Assert.assertEquals(value, dataBase.getData());
+			Assertions.assertEquals(value, dataBase.getData());
 		}
 	}
 
@@ -118,9 +113,9 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 			final String oldValue = dataBase.getData();
 			final String value = createData();
 			connection.setData(value);
-			Assert.assertEquals(value, connection.getData());
+			Assertions.assertEquals(value, connection.getData());
 			currentTransaction.rollback();
-			Assert.assertEquals(oldValue, dataBase.getData());
+			Assertions.assertEquals(oldValue, dataBase.getData());
 		}
 	}
 
@@ -128,28 +123,32 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 	 * Verifier la gestion du commit.
 	 * Impossibilité de commiter deux fois.
 	 */
-	@Test(expected = Exception.class)
+	@Test
 	public void testCommitCommit() {
-		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
-			currentTransaction.commit();
+		Assertions.assertThrows(Exception.class, () -> {
+			try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+				currentTransaction.commit();
 
-			//L'appel au second commit doit déclencher une exception
-			currentTransaction.commit();
-		}
+				//L'appel au second commit doit déclencher une exception
+				currentTransaction.commit();
+			}
+		});
 	}
 
 	/**
 	 * Verifier la gestion du commit.
 	 * Impossibilité de commiter après un rollback.
 	 */
-	@Test(expected = Exception.class)
+	@Test
 	public void testRollbackCommit() {
-		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
-			currentTransaction.rollback();
+		Assertions.assertThrows(Exception.class, () -> {
+			try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+				currentTransaction.rollback();
 
-			//L'appel au commit après un rollback doit déclencher une exception
-			currentTransaction.commit();
-		}
+				//L'appel au commit après un rollback doit déclencher une exception
+				currentTransaction.commit();
+			}
+		});
 	}
 
 	/**
@@ -181,72 +180,76 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testCreateAutonomousTransaction() {
-		Assert.assertFalse(transactionManager.hasCurrentTransaction());
+		Assertions.assertFalse(transactionManager.hasCurrentTransaction());
 		try (final VTransactionWritable rootTransaction = transactionManager.createCurrentTransaction()) {
 			final SampleDataBaseConnection rootConnection = obtainDataBaseConnection(dataBase, "test-memory-1");
 
-			Assert.assertEquals(rootTransaction, transactionManager.getCurrentTransaction());
+			Assertions.assertEquals(rootTransaction, transactionManager.getCurrentTransaction());
 			// --- modification de la bdd sur la transaction principale.
 			final String rootValue = createData();
 			rootConnection.setData(rootValue);
-			Assert.assertEquals(rootValue, rootConnection.getData());
+			Assertions.assertEquals(rootValue, rootConnection.getData());
 
 			final String value = createData();
 			try (final VTransactionWritable autonomousTransaction = transactionManager.createAutonomousTransaction()) {
-				Assert.assertEquals(autonomousTransaction, transactionManager.getCurrentTransaction());
+				Assertions.assertEquals(autonomousTransaction, transactionManager.getCurrentTransaction());
 				final SampleDataBaseConnection connection = obtainDataBaseConnection(dataBase, "test-memory-2");
 				// --- modification de la bdd sur la transaction autonome.
 				connection.setData(value);
-				Assert.assertEquals(value, connection.getData());
+				Assertions.assertEquals(value, connection.getData());
 				autonomousTransaction.commit();
 
-				Assert.assertNotSame(rootTransaction, autonomousTransaction);
+				Assertions.assertNotSame(rootTransaction, autonomousTransaction);
 			}
-			Assert.assertEquals(rootTransaction, transactionManager.getCurrentTransaction());
+			Assertions.assertEquals(rootTransaction, transactionManager.getCurrentTransaction());
 
 			//On vérifie que la bdd est mise à jour.
-			Assert.assertEquals(value, dataBase.getData());
-			Assert.assertEquals(rootValue, rootConnection.getData());
+			Assertions.assertEquals(value, dataBase.getData());
+			Assertions.assertEquals(rootValue, rootConnection.getData());
 			rootTransaction.commit();
 			//On vérifie que la bdd est mise à jour.
-			Assert.assertEquals(rootValue, dataBase.getData());
+			Assertions.assertEquals(rootValue, dataBase.getData());
 		}
-		Assert.assertFalse(transactionManager.hasCurrentTransaction());
+		Assertions.assertFalse(transactionManager.hasCurrentTransaction());
 	}
 
 	/**
 	 * Création d'une transaction automome à l'intérieur d'une transaction.
 	 */
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testCreateAutonomousTransactionForgetToClose() {
-		try (final VTransactionWritable rootTransaction = transactionManager.createCurrentTransaction()) {
-			final SampleDataBaseConnection rootConnection = obtainDataBaseConnection(dataBase, "test-memory-1");
-			// --- modification de la bdd sur la transaction principale.
-			final String rootValue = createData();
-			rootConnection.setData(rootValue);
-			Assert.assertEquals(rootValue, rootConnection.getData());
+		Assertions.assertThrows(IllegalStateException.class, () -> {
+			try (final VTransactionWritable rootTransaction = transactionManager.createCurrentTransaction()) {
+				final SampleDataBaseConnection rootConnection = obtainDataBaseConnection(dataBase, "test-memory-1");
+				// --- modification de la bdd sur la transaction principale.
+				final String rootValue = createData();
+				rootConnection.setData(rootValue);
+				Assertions.assertEquals(rootValue, rootConnection.getData());
 
-			try (final VTransactionWritable autonomousTransaction = transactionManager.createAutonomousTransaction()) {
-				final SampleDataBaseConnection connection = obtainDataBaseConnection(dataBase, "test-memory-2");
-				// --- modification de la bdd sur la transaction autonome.
-				final String value = createData();
-				connection.setData(value);
-				Assert.assertEquals(value, connection.getData());
-				rootTransaction.commit();
-				//commit sur la transaction parent avant d'avoir fermer l'inner transaction lance une exception
+				try (final VTransactionWritable autonomousTransaction = transactionManager.createAutonomousTransaction()) {
+					final SampleDataBaseConnection connection = obtainDataBaseConnection(dataBase, "test-memory-2");
+					// --- modification de la bdd sur la transaction autonome.
+					final String value = createData();
+					connection.setData(value);
+					Assertions.assertEquals(value, connection.getData());
+					rootTransaction.commit();
+					//commit sur la transaction parent avant d'avoir fermer l'inner transaction lance une exception
+				}
 			}
-		}
+		});
 	}
 
 	/**
 	 * Création d'une transaction automome à l'intérieur d'une transaction.
 	 * Quand la transaction n'existe pas.
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testFailCreateAutonomousTransaction() {
-		try (final VTransactionWritable autonomousTransaction = transactionManager.createAutonomousTransaction()) {
-			nop(autonomousTransaction);
-		}
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			try (final VTransactionWritable autonomousTransaction = transactionManager.createAutonomousTransaction()) {
+				nop(autonomousTransaction);
+			}
+		});
 	}
 
 	//Utilitaire
@@ -274,13 +277,13 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 			// --- modification des deux bdd
 			final String value1 = createData();
 			sampleDataBaseConnection1.setData(value1);
-			Assert.assertEquals(value1, sampleDataBaseConnection1.getData());
+			Assertions.assertEquals(value1, sampleDataBaseConnection1.getData());
 
 			sampleDataBaseTransactionResource.commit();
 
 			// --- test du commit
 			currentTransaction.commit();
-			Assert.assertEquals(value1, dataBase.getData());
+			Assertions.assertEquals(value1, dataBase.getData());
 		}
 	}
 
@@ -300,16 +303,16 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 			// --- modification des deux bdd
 			final String value1 = createData();
 			sampleDataBaseConnection1.setData(value1);
-			Assert.assertEquals(value1, sampleDataBaseConnection1.getData());
+			Assertions.assertEquals(value1, sampleDataBaseConnection1.getData());
 
 			final String value2 = createData();
 			sampleDataBaseConnection2.setData(value2);
-			Assert.assertEquals(value2, sampleDataBaseConnection2.getData());
+			Assertions.assertEquals(value2, sampleDataBaseConnection2.getData());
 
 			// --- test du commit
 			currentTransaction.commit();
-			Assert.assertEquals(value1, dataBase.getData());
-			Assert.assertEquals(value2, secondDataBase.getData());
+			Assertions.assertEquals(value1, dataBase.getData());
+			Assertions.assertEquals(value2, secondDataBase.getData());
 		}
 	}
 
@@ -332,16 +335,16 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 			// --- modification des deux bdd
 			final String value1 = createData();
 			sampleDataBaseConnection1.setData(value1);
-			Assert.assertEquals(value1, sampleDataBaseConnection1.getData());
+			Assertions.assertEquals(value1, sampleDataBaseConnection1.getData());
 
 			final String value2 = createData();
 			sampleDataBaseConnection2.setData(value2);
-			Assert.assertEquals(value2, sampleDataBaseConnection2.getData());
+			Assertions.assertEquals(value2, sampleDataBaseConnection2.getData());
 
 			currentTransaction.rollback();
 			// --- test du rollback
-			Assert.assertEquals(oldValue1, dataBase.getData());
-			Assert.assertEquals(oldValue2, secondDataBase.getData());
+			Assertions.assertEquals(oldValue1, dataBase.getData());
+			Assertions.assertEquals(oldValue2, secondDataBase.getData());
 		}
 	}
 
@@ -351,24 +354,23 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testResourcesExceptionInCommit() throws Throwable {
-		expectedEx.expect(Error.class);
-		expectedEx.expectMessage("SpecificException on commit");
-
-		final ErronousTransactionResource sampleTransactionResource = new ErronousTransactionResource(new Error("SpecificException on commit"), null, null);
-		try {
-			try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
-				// --- resource 1
-				final VTransactionResourceId<VTransactionResource> transactionResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Ressource-commit-exception");
-				transactionManager.getCurrentTransaction().addResource(transactionResourceId, sampleTransactionResource);
-				currentTransaction.commit();
+		Assertions.assertThrows(Error.class, () -> {
+			final ErronousTransactionResource sampleTransactionResource = new ErronousTransactionResource(new Error("SpecificException on commit"), null, null);
+			try {
+				try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+					// --- resource 1
+					final VTransactionResourceId<VTransactionResource> transactionResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Ressource-commit-exception");
+					transactionManager.getCurrentTransaction().addResource(transactionResourceId, sampleTransactionResource);
+					currentTransaction.commit();
+				}
+			} catch (final RuntimeException e) {
+				throw e.getCause(); //we unwrapp RuntimeException
+			} finally {
+				Assertions.assertTrue(sampleTransactionResource.commitCalled, "Commit resource must be called");
+				Assertions.assertFalse(sampleTransactionResource.rollbackCalled, "Rollback resource should not be called");
+				Assertions.assertTrue(sampleTransactionResource.releaseCalled, "Release resource must be called");
 			}
-		} catch (final RuntimeException e) {
-			throw e.getCause(); //we unwrapp RuntimeException
-		} finally {
-			Assert.assertTrue("Commit resource must be called", sampleTransactionResource.commitCalled);
-			Assert.assertFalse("Rollback resource should not be called", sampleTransactionResource.rollbackCalled);
-			Assert.assertTrue("Release resource must be called", sampleTransactionResource.releaseCalled);
-		}
+		}, "SpecificException on commit");
 	}
 
 	/**
@@ -377,24 +379,24 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testResourcesErrorInCommitAndRelease() throws Throwable {
-		expectedEx.expect(Error.class);
-		expectedEx.expectMessage("SpecificException on commit");
-		final ErronousTransactionResource sampleTransactionResource = new ErronousTransactionResource(new Error("SpecificException on commit"), null, new Error("SpecificException on release"));
-		try {
-			try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
-				// --- resource 1
-				final VTransactionResourceId<VTransactionResource> transactionResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Ressource-commit-exception");
-				transactionManager.getCurrentTransaction().addResource(transactionResourceId, sampleTransactionResource);
+		Assertions.assertThrows(Error.class, () -> {
+			final ErronousTransactionResource sampleTransactionResource = new ErronousTransactionResource(new Error("SpecificException on commit"), null, new Error("SpecificException on release"));
+			try {
+				try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+					// --- resource 1
+					final VTransactionResourceId<VTransactionResource> transactionResourceId = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Ressource-commit-exception");
+					transactionManager.getCurrentTransaction().addResource(transactionResourceId, sampleTransactionResource);
 
-				currentTransaction.commit();
+					currentTransaction.commit();
+				}
+			} catch (final RuntimeException e) {
+				throw e.getCause(); //we unwrapp RuntimeException
+			} finally {
+				Assertions.assertTrue(sampleTransactionResource.commitCalled, "Commit resource must be called");
+				Assertions.assertFalse(sampleTransactionResource.rollbackCalled, "Rollback resource should not be called");
+				Assertions.assertTrue(sampleTransactionResource.releaseCalled, "Release resource must be called");
 			}
-		} catch (final RuntimeException e) {
-			throw e.getCause(); //we unwrapp RuntimeException
-		} finally {
-			Assert.assertTrue("Commit resource must be called", sampleTransactionResource.commitCalled);
-			Assert.assertFalse("Rollback resource should not be called", sampleTransactionResource.rollbackCalled);
-			Assert.assertTrue("Release resource must be called", sampleTransactionResource.releaseCalled);
-		}
+		}, "SpecificException on commit");
 	}
 
 	/**
@@ -402,34 +404,34 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU4 {
 	 * @throws Throwable Exception
 	 */
 	@Test
-	public void testTwoResourcesErrorInCommitAndRelease() throws Throwable {
-		expectedEx.expect(Error.class);
-		expectedEx.expectMessage("SpecificException on commit 1");
-		final ErronousTransactionResource sampleTransactionResource1 = new ErronousTransactionResource(new Error("SpecificException on commit 1"), null, new Error("SpecificException on release 1"));
-		final ErronousTransactionResource sampleTransactionResource2 = new ErronousTransactionResource(new Error("SpecificException on commit 2"), null, new Error("SpecificException on release 2"));
-		try {
-			try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
-				// --- resource 1
-				final VTransactionResourceId<VTransactionResource> transactionResource1Id = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Ressource1-commit-exception");
-				transactionManager.getCurrentTransaction().addResource(transactionResource1Id, sampleTransactionResource1);
+	public void testTwoResourcesErrorInCommitAndRelease() {
+		Assertions.assertThrows(Error.class, () -> {
+			final ErronousTransactionResource sampleTransactionResource1 = new ErronousTransactionResource(new Error("SpecificException on commit 1"), null, new Error("SpecificException on release 1"));
+			final ErronousTransactionResource sampleTransactionResource2 = new ErronousTransactionResource(new Error("SpecificException on commit 2"), null, new Error("SpecificException on release 2"));
+			try {
+				try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+					// --- resource 1
+					final VTransactionResourceId<VTransactionResource> transactionResource1Id = new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Ressource1-commit-exception");
+					transactionManager.getCurrentTransaction().addResource(transactionResource1Id, sampleTransactionResource1);
 
-				// --- resource 2
-				final VTransactionResourceId<VTransactionResource> transactionResource2Id = new VTransactionResourceId<>(VTransactionResourceId.Priority.NORMAL, "Ressource2-commit-exception");
-				transactionManager.getCurrentTransaction().addResource(transactionResource2Id, sampleTransactionResource2);
+					// --- resource 2
+					final VTransactionResourceId<VTransactionResource> transactionResource2Id = new VTransactionResourceId<>(VTransactionResourceId.Priority.NORMAL, "Ressource2-commit-exception");
+					transactionManager.getCurrentTransaction().addResource(transactionResource2Id, sampleTransactionResource2);
 
-				currentTransaction.commit();
+					currentTransaction.commit();
+				}
+			} catch (final RuntimeException e) {
+				throw e.getCause(); //we unwrapp RuntimeException
+			} finally {
+				Assertions.assertTrue(sampleTransactionResource1.commitCalled, "Commit resource1 must be called");
+				Assertions.assertFalse(sampleTransactionResource1.rollbackCalled, "Rollback resource1 should not be called");
+				Assertions.assertTrue(sampleTransactionResource1.releaseCalled, "Release resource1 must be called");
+
+				Assertions.assertFalse(sampleTransactionResource2.commitCalled, "Commit resource2 should not be called");
+				Assertions.assertTrue(sampleTransactionResource2.rollbackCalled, "Rollback resource2 must be called");
+				Assertions.assertTrue(sampleTransactionResource2.releaseCalled, "Release resource2 must be called");
 			}
-		} catch (final RuntimeException e) {
-			throw e.getCause(); //we unwrapp RuntimeException
-		} finally {
-			Assert.assertTrue("Commit resource1 must be called", sampleTransactionResource1.commitCalled);
-			Assert.assertFalse("Rollback resource1 should not be called", sampleTransactionResource1.rollbackCalled);
-			Assert.assertTrue("Release resource1 must be called", sampleTransactionResource1.releaseCalled);
-
-			Assert.assertFalse("Commit resource2 should not be called", sampleTransactionResource2.commitCalled);
-			Assert.assertTrue("Rollback resource2 must be called", sampleTransactionResource2.rollbackCalled);
-			Assert.assertTrue("Release resource2 must be called", sampleTransactionResource2.releaseCalled);
-		}
+		}, "SpecificException on commit 1");
 	}
 
 	/**

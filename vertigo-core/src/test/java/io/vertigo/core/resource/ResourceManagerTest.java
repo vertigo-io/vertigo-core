@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 
@@ -37,7 +37,7 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
  * @author pchretien
  */
 @RunWith(JUnitPlatform.class)
-public final class ResourceManagerTest extends AbstractTestCaseJU4 {
+public final class ResourceManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private ResourceManager resourceManager;
 	final String locales = "fr_FR";
