@@ -20,6 +20,9 @@ package io.vertigo.database.sql.vendor.h2;
 
 import java.util.Optional;
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
+
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.sql.AbstractSqlDialectTest;
 import io.vertigo.database.sql.vendor.SqlDialect;
@@ -28,6 +31,7 @@ import io.vertigo.database.sql.vendor.SqlDialect;
  *
  * @author mlaroche
  */
+@RunWith(JUnitPlatform.class)
 public final class H2SqlDialectTest extends AbstractSqlDialectTest {
 
 	@Override

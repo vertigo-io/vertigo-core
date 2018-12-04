@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
@@ -32,7 +32,7 @@ import io.vertigo.commons.impl.codec.CodecManagerImpl;
  * @param <S> Type Source à encoder
  * @param <T> Type cible, résultat de l'encodage
  */
-public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends AbstractTestCaseJU4 {
+public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends AbstractTestCaseJU5 {
 	protected static final String TEXT = "Les sanglots longs des violons de l'automne blessent mon coeur d'une langueur monotone.";
 	protected C codec;
 

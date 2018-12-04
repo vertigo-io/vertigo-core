@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.environment.multi;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
@@ -57,7 +57,7 @@ public final class MultiResourcesEnvironmentManagerTest {
 
 		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
-			Assert.assertNotNull(doString);
+			Assertions.assertNotNull(doString);
 		}
 	}
 
@@ -73,9 +73,9 @@ public final class MultiResourcesEnvironmentManagerTest {
 
 		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
-			Assert.assertNotNull(doString);
+			Assertions.assertNotNull(doString);
 			final DtDefinition dtItem = app.getDefinitionSpace().resolve("DT_ITEM", DtDefinition.class);
-			Assert.assertNotNull(dtItem);
+			Assertions.assertNotNull(dtItem);
 		}
 	}
 
@@ -92,9 +92,9 @@ public final class MultiResourcesEnvironmentManagerTest {
 
 		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
-			Assert.assertNotNull(doString);
+			Assertions.assertNotNull(doString);
 			final DtDefinition dtItem = app.getDefinitionSpace().resolve("DT_ITEM", DtDefinition.class);
-			Assert.assertNotNull(dtItem);
+			Assertions.assertNotNull(dtItem);
 		}
 	}
 

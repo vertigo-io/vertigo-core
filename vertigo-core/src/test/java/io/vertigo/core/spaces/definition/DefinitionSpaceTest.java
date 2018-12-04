@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.LogConfig;
@@ -46,7 +46,7 @@ import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.core.param.Param;
 
 @RunWith(JUnitPlatform.class)
-public final class DefinitionSpaceTest extends AbstractTestCaseJU4 {
+public final class DefinitionSpaceTest extends AbstractTestCaseJU5 {
 
 	@Override
 	protected AppConfig buildAppConfig() {

@@ -319,7 +319,6 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 			typeMapping.startObject("urn")
 					.field("type", "keyword")
-					.field("normalizer", "sortable")
 					.endObject();
 
 			/* 3 : Les champs du dto index */

@@ -30,12 +30,12 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 
 /**
  * @author pchretien
  */
-public abstract class AbstractParamManagerTest extends AbstractTestCaseJU4 {
+public abstract class AbstractParamManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private ParamManager paramManager;
 

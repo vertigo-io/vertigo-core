@@ -18,14 +18,14 @@
  */
 package io.vertigo.dynamo.domain.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.dynamo.domain.data.domain.Artist;
 import io.vertigo.dynamo.domain.model.DtList;
 
@@ -34,7 +34,7 @@ import io.vertigo.dynamo.domain.model.DtList;
  * @author xdurand
  *
  */
-public class VCollectorsTest extends AbstractTestCaseJU4 {
+public class VCollectorsTest extends AbstractTestCaseJU5 {
 
 	/**
 	 * Test du VCollectors.toDtList sur une liste vide
@@ -96,7 +96,7 @@ public class VCollectorsTest extends AbstractTestCaseJU4 {
 											.collect(VCollectors.toDtList(Artist.class));
 		// @formatter:on
 		assertNotNull(listCollected);
-		Assert.assertFalse(listCollected.isEmpty());
+		Assertions.assertFalse(listCollected.isEmpty());
 		assertEquals(1, listCollected.size());
 		assertEquals(listCollected.get(0), m2);
 		assertEquals(3, dtList.size());

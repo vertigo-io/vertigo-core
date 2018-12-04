@@ -22,9 +22,11 @@ import java.sql.SQLException;
 
 import javax.inject.Inject;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.database.sql.SqlDataBaseManager;
@@ -32,7 +34,8 @@ import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.statement.SqlStatement;
 
-public final class HibernateConnectionProviderTest extends AbstractTestCaseJU4 {
+@RunWith(JUnitPlatform.class)
+public final class HibernateConnectionProviderTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private SqlDataBaseManager sqlDataBaseManager;

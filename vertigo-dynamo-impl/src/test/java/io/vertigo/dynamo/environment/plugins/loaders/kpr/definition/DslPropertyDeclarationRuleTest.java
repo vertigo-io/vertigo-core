@@ -21,8 +21,8 @@ package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.commons.peg.PegResult;
@@ -47,9 +47,9 @@ public final class DslPropertyDeclarationRuleTest {
 		final PegResult<DslPropertyEntry> cursor = MAIN
 				.parse(text, 0);
 		final DslPropertyEntry propertyEntry = cursor.getValue();
-		Assert.assertEquals(LABEL, propertyEntry.getPropertyName());
-		Assert.assertEquals("BLeU", propertyEntry.getPropertyValueAsString());
-		Assert.assertEquals(text.length() - " non reconnu".length(), cursor.getIndex()); //On vérfifie que le pointeur a avancé jusqu'à 'non reconnu'
+		Assertions.assertEquals(LABEL, propertyEntry.getPropertyName());
+		Assertions.assertEquals("BLeU", propertyEntry.getPropertyValueAsString());
+		Assertions.assertEquals(text.length() - " non reconnu".length(), cursor.getIndex()); //On vérfifie que le pointeur a avancé jusqu'à 'non reconnu'
 
 	}
 
@@ -60,9 +60,9 @@ public final class DslPropertyDeclarationRuleTest {
 				.parse(text, 0);
 		//On ne met pas de séparateur final et on met un espace
 		final DslPropertyEntry propertyEntry = cursor.getValue();
-		Assert.assertEquals(LABEL, propertyEntry.getPropertyName());
-		Assert.assertEquals(" vert ", propertyEntry.getPropertyValueAsString()); //l'espace doit être conservé
-		Assert.assertEquals(text.length(), cursor.getIndex());
+		Assertions.assertEquals(LABEL, propertyEntry.getPropertyName());
+		Assertions.assertEquals(" vert ", propertyEntry.getPropertyValueAsString()); //l'espace doit être conservé
+		Assertions.assertEquals(text.length(), cursor.getIndex());
 	}
 
 	@Test
@@ -72,22 +72,26 @@ public final class DslPropertyDeclarationRuleTest {
 				.parse(text, 0);
 
 		final DslPropertyEntry propertyEntry = cursor.getValue();
-		Assert.assertEquals(SIZE, propertyEntry.getPropertyName());
-		Assert.assertEquals("54", propertyEntry.getPropertyValueAsString());
-		Assert.assertEquals(text.length(), cursor.getIndex());
+		Assertions.assertEquals(SIZE, propertyEntry.getPropertyName());
+		Assertions.assertEquals("54", propertyEntry.getPropertyValueAsString());
+		Assertions.assertEquals(text.length(), cursor.getIndex());
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
-	public void testFail() throws PegNoMatchFoundException {
-		final String text = "maxlength   : \"54\";";
-		//La propriété maxlength n'est pas enregistrée
-		MAIN.parse(text, 0);
+	@Test
+	public void testFail() {
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
+			final String text = "maxlength   : \"54\";";
+			//La propriété maxlength n'est pas enregistrée
+			MAIN.parse(text, 0);
+		});
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
-	public void testFail2() throws PegNoMatchFoundException {
-		final String text = "label  :    vert \"";
-		MAIN.parse(text, 0); //On omet la quote de début
+	@Test
+	public void testFail2() {
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
+			final String text = "label  :    vert \"";
+			MAIN.parse(text, 0); //On omet la quote de début
+		});
 	}
 
 }

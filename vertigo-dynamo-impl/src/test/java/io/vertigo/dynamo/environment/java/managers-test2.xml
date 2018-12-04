@@ -8,7 +8,7 @@
 		<definitions>
 			<provider class="io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider" >
 				<resource type="kpr" path="io/vertigo/dynamo/environment/java/data/execution.kpr" />
-				<resource type="module" path="io.vertigo.dynamo.environment.java.data.domain" />
+				<resource type="classes" path="io.vertigo.dynamo.environment.java.data.domain.*" />
 			</provider>
 		</definitions>
 	</module>

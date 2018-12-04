@@ -22,11 +22,11 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.node.Node;
@@ -41,17 +41,17 @@ public final class DistantAppTest {
 	@Inject
 	private NodeManager nodeManager;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() {
 		app = new AutoCloseableApp(MyAppConfig.config());
 	}
 
-	@Before
+	@BeforeEach
 	public void doBefore() {
 		DIInjector.injectMembers(this, app.getComponentSpace());
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void tearDown() {
 		if (app != null) {
 			app.close();
@@ -63,9 +63,9 @@ public final class DistantAppTest {
 
 		final String currentNodeId = nodeManager.getCurrentNode().getId();
 		final Optional<Node> appNode = nodeManager.find(currentNodeId);
-		Assert.assertTrue(appNode.isPresent());
+		Assertions.assertTrue(appNode.isPresent());
 
-		Assert.assertTrue(nodeManager.getConfig().containsKey(currentNodeId));
+		Assertions.assertTrue(nodeManager.getConfig().containsKey(currentNodeId));
 	}
 
 	@Test
@@ -73,9 +73,9 @@ public final class DistantAppTest {
 
 		final String currentNodeId = nodeManager.getCurrentNode().getId();
 		final Optional<Node> appNode = nodeManager.find(currentNodeId);
-		Assert.assertTrue(appNode.isPresent());
+		Assertions.assertTrue(appNode.isPresent());
 
-		Assert.assertTrue(nodeManager.getStatus().containsKey(currentNodeId));
+		Assertions.assertTrue(nodeManager.getStatus().containsKey(currentNodeId));
 	}
 
 }

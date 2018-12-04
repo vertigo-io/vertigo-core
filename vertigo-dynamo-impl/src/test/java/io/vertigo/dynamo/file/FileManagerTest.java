@@ -26,10 +26,10 @@ import java.time.Instant;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
@@ -40,7 +40,7 @@ import io.vertigo.lang.WrappedException;
  *
  * @author dchallas
  */
-public final class FileManagerTest extends AbstractTestCaseJU4 {
+public final class FileManagerTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private FileManager fileManager;
@@ -100,12 +100,12 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private static void checkVFile(final VFile vFile, final String fileName, final Instant lastModified, final String mimeType, final Long length) {
-		Assert.assertEquals(fileName, vFile.getFileName());
+		Assertions.assertEquals(fileName, vFile.getFileName());
 		if (lastModified != null) { //le lastModified peut être inconnu du test
-			Assert.assertEquals(lastModified, vFile.getLastModified());
+			Assertions.assertEquals(lastModified, vFile.getLastModified());
 		}
-		Assert.assertEquals(mimeType, vFile.getMimeType());
-		Assert.assertEquals(length, vFile.getLength(), length * 0.1); //+ or - 10%
+		Assertions.assertEquals(mimeType, vFile.getMimeType());
+		Assertions.assertEquals(length, vFile.getLength(), length * 0.1); //+ or - 10%
 
 		try {
 			nop(vFile.createInputStream());
@@ -115,6 +115,6 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private static void checVFile(final File outFile, final File inFile) {
-		Assert.assertEquals(inFile.getAbsolutePath(), outFile.getAbsolutePath());
+		Assertions.assertEquals(inFile.getAbsolutePath(), outFile.getAbsolutePath());
 	}
 }

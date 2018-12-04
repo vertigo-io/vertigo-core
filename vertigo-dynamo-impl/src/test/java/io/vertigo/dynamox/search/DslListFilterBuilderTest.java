@@ -21,8 +21,8 @@ package io.vertigo.dynamox.search;
 import java.time.Instant;
 import java.util.Date;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
@@ -432,7 +432,7 @@ public final class DslListFilterBuilderTest {
 					.build();
 			final String result = listFilter.getFilterValue();
 			final String expectedResult = testParam[Math.min(getPreferedResult(), testParam.length - 1)];
-			Assert.assertEquals("Built query #" + i + " incorrect", expectedResult, result);
+			Assertions.assertEquals(expectedResult, result, "Built query #" + i + " incorrect");
 			i++;
 		}
 	}
@@ -446,7 +446,7 @@ public final class DslListFilterBuilderTest {
 					.build();
 			final String result = listFilter.getFilterValue();
 			final Object expectedResult = testParam[Math.min(getPreferedResult(), testParam.length - 1)];
-			Assert.assertEquals("Built query #" + i + " incorrect", expectedResult, result);
+			Assertions.assertEquals(expectedResult, result, "Built query #" + i + " incorrect");
 			i++;
 		}
 	}

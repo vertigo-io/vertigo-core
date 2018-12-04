@@ -20,8 +20,8 @@ package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslWordsRule;
@@ -34,7 +34,7 @@ public final class DslWordListRuleTest {
 		final List<String> list = wordListRule
 				.parse("[ ]", 0)
 				.getValue();
-		Assert.assertEquals(0, list.size());
+		Assertions.assertEquals(0, list.size());
 	}
 
 	@Test
@@ -42,10 +42,10 @@ public final class DslWordListRuleTest {
 		final List<String> list = wordListRule
 				.parse("[BLEU, VerT, ROUGE ]", 0)
 				.getValue();
-		Assert.assertEquals(3, list.size());
-		Assert.assertTrue(list.contains("BLEU"));
-		Assert.assertTrue(list.contains("VerT"));
-		Assert.assertTrue(list.contains("ROUGE"));
+		Assertions.assertEquals(3, list.size());
+		Assertions.assertTrue(list.contains("BLEU"));
+		Assertions.assertTrue(list.contains("VerT"));
+		Assertions.assertTrue(list.contains("ROUGE"));
 	}
 
 	@Test
@@ -53,26 +53,30 @@ public final class DslWordListRuleTest {
 		final List<String> list = wordListRule
 				.parse("[BLEU, VERT, ROUGE ]", 0)
 				.getValue();
-		Assert.assertEquals(3, list.size());
-		Assert.assertTrue(list.contains("BLEU"));
-		Assert.assertTrue(list.contains("VERT"));
-		Assert.assertTrue(list.contains("ROUGE"));
+		Assertions.assertEquals(3, list.size());
+		Assertions.assertTrue(list.contains("BLEU"));
+		Assertions.assertTrue(list.contains("VERT"));
+		Assertions.assertTrue(list.contains("ROUGE"));
 	}
 
-	@Test(expected = Exception.class)
-	public void testList3() throws PegNoMatchFoundException {
-		final List<String> list = wordListRule
-				.parse(" [BLEU  ,	VERT,   ROUGE ,  Orange,] ", 0)
-				.getValue();
-		Assert.fail("liste :" + list);
+	@Test
+	public void testList3() {
+		Assertions.assertThrows(Exception.class, () -> {
+			final List<String> list = wordListRule
+					.parse(" [BLEU  ,	VERT,   ROUGE ,  Orange,] ", 0)
+					.getValue();
+			Assertions.fail("liste :" + list);
+		});
 	}
 
-	@Test(expected = Exception.class)
-	public void testList4() throws PegNoMatchFoundException {
-		final List<String> list = wordListRule
-				.parse(" [ , BLEU,VERT,   ROUGE ,  Violet] ", 0)
-				.getValue();
-		Assert.fail("liste :" + list);
+	@Test
+	public void testList4() {
+		Assertions.assertThrows(Exception.class, () -> {
+			final List<String> list = wordListRule
+					.parse(" [ , BLEU,VERT,   ROUGE ,  Violet] ", 0)
+					.getValue();
+			Assertions.fail("liste :" + list);
+		});
 	}
 
 	@Test
@@ -80,7 +84,7 @@ public final class DslWordListRuleTest {
 		final List<String> list = wordListRule
 				.parse("[BLEU ]", 0)
 				.getValue();
-		Assert.assertEquals(1, list.size());
-		Assert.assertTrue(list.contains("BLEU"));
+		Assertions.assertEquals(1, list.size());
+		Assertions.assertTrue(list.contains("BLEU"));
 	}
 }

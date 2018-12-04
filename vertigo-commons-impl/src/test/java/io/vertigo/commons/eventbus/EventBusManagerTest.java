@@ -23,9 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.commons.eventbus.data.BlueColorEvent;
 import io.vertigo.commons.eventbus.data.DummyEvent;
 import io.vertigo.commons.eventbus.data.MySubscriber;
@@ -36,7 +36,7 @@ import io.vertigo.commons.eventbus.data.aspects.FlipAspect;
 /**
  * @author pchretien
  */
-public final class EventBusManagerTest extends AbstractTestCaseJU4 {
+public final class EventBusManagerTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private EventBusManager eventBusManager;

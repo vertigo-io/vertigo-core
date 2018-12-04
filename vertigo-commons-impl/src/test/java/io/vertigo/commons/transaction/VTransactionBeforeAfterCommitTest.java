@@ -22,10 +22,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.commons.transaction.data.SampleDataBase;
 import io.vertigo.commons.transaction.data.SampleDataBaseConnection;
 import io.vertigo.commons.transaction.data.SampleTransactionResource;
@@ -33,7 +33,7 @@ import io.vertigo.commons.transaction.data.SampleTransactionResource;
 /**
  * @author npiedeloup
  */
-public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4 {
+public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU5 {
 
 	private final AtomicBoolean run1BeforeCommit = new AtomicBoolean(false);
 	private final AtomicBoolean run2BeforeCommit = new AtomicBoolean(false);
@@ -75,56 +75,59 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4
 			final boolean afterCommitError = false;
 			registerBeforeAfterCommit(currentTransaction, new ErronousTransactionResource(null, null, null), beforeCommitError, afterCommitError);
 
-			Assert.assertNull(dataBase.getData());
+			Assertions.assertNull(dataBase.getData());
 
 			currentTransaction.commit();
 		} finally {
 			//resource was committed
-			Assert.assertEquals("TEST-SYNCHRONIZATION-COMMIT", dataBase.getData());
+			Assertions.assertEquals("TEST-SYNCHRONIZATION-COMMIT", dataBase.getData());
 
 			//all beforeCommit was proceeded
-			Assert.assertTrue(run1BeforeCommit.get());
-			Assert.assertTrue(run2BeforeCommit.get());
-			Assert.assertTrue(run3BeforeCommit.get());
+			Assertions.assertTrue(run1BeforeCommit.get());
+			Assertions.assertTrue(run2BeforeCommit.get());
+			Assertions.assertTrue(run3BeforeCommit.get());
 
 			//all afterCommit was proceeded
-			Assert.assertTrue(run1AfterCommit.get());
-			Assert.assertTrue(run2AfterCommit.get());
-			Assert.assertTrue(run3AfterCommit.get());
+			Assertions.assertTrue(run1AfterCommit.get());
+			Assertions.assertTrue(run2AfterCommit.get());
+			Assertions.assertTrue(run3AfterCommit.get());
 		}
 	}
 
 	/**
 	 * Test error while proceeding beforeCommit.
 	 */
-	@Test(expected = ArithmeticException.class)
+	@Test
 	public void testBeforeCommitErrors() {
-		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+		Assertions.assertThrows(ArithmeticException.class, () -> {
+			try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 
-			final SampleDataBaseConnection sampleDataBaseConnection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
-			sampleDataBaseConnection1.setData("TEST-SYNCHRONIZATION-COMMIT");
+				final SampleDataBaseConnection sampleDataBaseConnection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
+				sampleDataBaseConnection1.setData("TEST-SYNCHRONIZATION-COMMIT");
 
-			final boolean beforeCommitError = true;
-			final boolean afterCommitError = false;
-			registerBeforeAfterCommit(currentTransaction, new ErronousTransactionResource(null, null, null), beforeCommitError, afterCommitError);
+				final boolean beforeCommitError = true;
+				final boolean afterCommitError = false;
+				registerBeforeAfterCommit(currentTransaction, new ErronousTransactionResource(null, null, null), beforeCommitError, afterCommitError);
 
-			Assert.assertNull(dataBase.getData());
+				Assertions.assertNull(dataBase.getData());
 
-			currentTransaction.commit();
-		} finally {
-			//not committed
-			Assert.assertNull(dataBase.getData());
+				currentTransaction.commit();
+			} finally {
+				//not committed
+				Assertions.assertNull(dataBase.getData());
 
-			//only beforeCommit before error was proceeded
-			Assert.assertTrue(run1BeforeCommit.get());
-			Assert.assertTrue(run2BeforeCommit.get());
-			Assert.assertFalse(run3BeforeCommit.get());
+				//only beforeCommit before error was proceeded
+				Assertions.assertTrue(run1BeforeCommit.get());
+				Assertions.assertTrue(run2BeforeCommit.get());
+				Assertions.assertFalse(run3BeforeCommit.get());
 
-			//none afterCommit was proceeded
-			Assert.assertFalse(run1AfterCommit.get());
-			Assert.assertFalse(run2AfterCommit.get());
-			Assert.assertFalse(run3AfterCommit.get());
-		}
+				//none afterCommit was proceeded
+				Assertions.assertFalse(run1AfterCommit.get());
+				Assertions.assertFalse(run2AfterCommit.get());
+				Assertions.assertFalse(run3AfterCommit.get());
+			}
+		});
+
 	}
 
 	/**
@@ -142,91 +145,94 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4
 			final boolean afterCommitError = false;
 			registerBeforeAfterCommit(currentTransaction, new ErronousTransactionResource(null, null, null), beforeCommitError, afterCommitError);
 
-			Assert.assertNull(dataBase.getData());
+			Assertions.assertNull(dataBase.getData());
 
 			currentTransaction.commit();
 
 			//No exception expected
 		} finally {
-			Assert.assertEquals("TEST-SYNCHRONIZATION-COMMIT", dataBase.getData()); //resource was committed
+			Assertions.assertEquals("TEST-SYNCHRONIZATION-COMMIT", dataBase.getData()); //resource was committed
 
 			//all beforeCommit was proceeded
-			Assert.assertTrue(run1BeforeCommit.get());
-			Assert.assertTrue(run2BeforeCommit.get());
-			Assert.assertTrue(run3BeforeCommit.get());
+			Assertions.assertTrue(run1BeforeCommit.get());
+			Assertions.assertTrue(run2BeforeCommit.get());
+			Assertions.assertTrue(run3BeforeCommit.get());
 			//all afterCommit was proceeded
-			Assert.assertTrue(run1AfterCommit.get());
-			Assert.assertTrue(run2AfterCommit.get());
-			Assert.assertTrue(run3AfterCommit.get());
+			Assertions.assertTrue(run1AfterCommit.get());
+			Assertions.assertTrue(run2AfterCommit.get());
+			Assertions.assertTrue(run3AfterCommit.get());
 		}
 	}
 
 	/**
 	 * Test errors while proceeding beforeCommit and afterCommit.
 	 */
-	@Test(expected = ArithmeticException.class)
+	@Test
 	public void testBeforeAfterCommitErrors() {
-		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+		Assertions.assertThrows(ArithmeticException.class, () -> {
+			try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 
-			final SampleDataBaseConnection sampleDataBaseConnection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
-			sampleDataBaseConnection1.setData("TEST-SYNCHRONIZATION-COMMIT");
+				final SampleDataBaseConnection sampleDataBaseConnection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
+				sampleDataBaseConnection1.setData("TEST-SYNCHRONIZATION-COMMIT");
 
-			final boolean beforeCommitError = true;
-			final boolean afterCommitError = true;
-			registerBeforeAfterCommit(currentTransaction, new ErronousTransactionResource(null, null, null), beforeCommitError, afterCommitError);
+				final boolean beforeCommitError = true;
+				final boolean afterCommitError = true;
+				registerBeforeAfterCommit(currentTransaction, new ErronousTransactionResource(null, null, null), beforeCommitError, afterCommitError);
 
-			Assert.assertNull(dataBase.getData());
+				Assertions.assertNull(dataBase.getData());
 
-			currentTransaction.commit();
-		} finally {
-			//not committed
-			Assert.assertNull(dataBase.getData());
+				currentTransaction.commit();
+			} finally {
+				//not committed
+				Assertions.assertNull(dataBase.getData());
 
-			//only beforeCommit before error was proceeded
-			Assert.assertTrue(run1BeforeCommit.get());
-			Assert.assertTrue(run2BeforeCommit.get());
-			Assert.assertFalse(run3BeforeCommit.get());
+				//only beforeCommit before error was proceeded
+				Assertions.assertTrue(run1BeforeCommit.get());
+				Assertions.assertTrue(run2BeforeCommit.get());
+				Assertions.assertFalse(run3BeforeCommit.get());
 
-			//none afterCommit was proceeded
-			Assert.assertFalse(run1AfterCommit.get());
-			Assert.assertFalse(run2AfterCommit.get());
-			Assert.assertFalse(run3AfterCommit.get());
-		}
+				//none afterCommit was proceeded
+				Assertions.assertFalse(run1AfterCommit.get());
+				Assertions.assertFalse(run2AfterCommit.get());
+				Assertions.assertFalse(run3AfterCommit.get());
+			}
+		});
 	}
 
 	/**
 	 * Test beforeCommit and afterCommit functions.
 	 * With error on commit resource.
 	 */
-	@Test(expected = Error.class)
+	@Test
 	public void testBeforeAfterCommitWithErrorOnCommitResource() {
-		try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
+		Assertions.assertThrows(Error.class, () -> {
+			try (final VTransactionWritable currentTransaction = transactionManager.createCurrentTransaction()) {
 
-			final SampleDataBaseConnection sampleDataBaseConnection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
-			sampleDataBaseConnection1.setData("TEST-SYNCHRONIZATION-COMMIT");
+				final SampleDataBaseConnection sampleDataBaseConnection1 = obtainDataBaseConnection(dataBase, "test-memory-1");
+				sampleDataBaseConnection1.setData("TEST-SYNCHRONIZATION-COMMIT");
 
-			final boolean beforeCommitError = false;
-			final boolean afterCommitError = false;
-			registerBeforeAfterCommit(currentTransaction, new ErronousTransactionResource(new Error("SpecificException on commit"), null, null), beforeCommitError, afterCommitError);
+				final boolean beforeCommitError = false;
+				final boolean afterCommitError = false;
+				registerBeforeAfterCommit(currentTransaction, new ErronousTransactionResource(new Error("SpecificException on commit"), null, null), beforeCommitError, afterCommitError);
 
-			Assert.assertNull(dataBase.getData());
+				Assertions.assertNull(dataBase.getData());
 
-			currentTransaction.commit();
-		} finally {
-			//not committed
-			Assert.assertNull(dataBase.getData());
+				currentTransaction.commit();
+			} finally {
+				//not committed
+				Assertions.assertNull(dataBase.getData());
 
-			//all beforeCommit was proceeded
-			Assert.assertTrue(run1BeforeCommit.get());
-			Assert.assertTrue(run2BeforeCommit.get());
-			Assert.assertTrue(run3BeforeCommit.get());
+				//all beforeCommit was proceeded
+				Assertions.assertTrue(run1BeforeCommit.get());
+				Assertions.assertTrue(run2BeforeCommit.get());
+				Assertions.assertTrue(run3BeforeCommit.get());
 
-			//none afterCommit was proceeded
-			Assert.assertFalse(run1AfterCommit.get());
-			Assert.assertFalse(run2AfterCommit.get());
-			Assert.assertFalse(run3AfterCommit.get());
-		}
-		Assert.fail();
+				//none afterCommit was proceeded
+				Assertions.assertFalse(run1AfterCommit.get());
+				Assertions.assertFalse(run2AfterCommit.get());
+				Assertions.assertFalse(run3AfterCommit.get());
+			}
+		});
 	}
 
 	private void registerBeforeAfterCommit(final VTransaction currentTransaction, final ErronousTransactionResource transactionResource, final boolean beforeCommitError, final boolean afterCommitError) {
@@ -235,7 +241,7 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4
 		transactionManager.getCurrentTransaction().addResource(transactionResourceId, transactionResource);
 
 		currentTransaction.addBeforeCommit(() -> {
-			Assert.assertNull(dataBase.getData());
+			Assertions.assertNull(dataBase.getData());
 			run1BeforeCommit.set(true);
 		});
 
@@ -253,7 +259,7 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU4
 			@Override
 			public void afterCompletion(final boolean txCommited) {
 				run1AfterCommit.set(txCommited);
-				Assert.assertEquals("TEST-SYNCHRONIZATION-COMMIT", dataBase.getData());
+				Assertions.assertEquals("TEST-SYNCHRONIZATION-COMMIT", dataBase.getData());
 			}
 		});
 

@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.core.locale.data.CityGuide;
 
@@ -39,7 +39,7 @@ import io.vertigo.core.locale.data.CityGuide;
  * @author pchretien
  */
 @RunWith(JUnitPlatform.class)
-public final class LocaleManagerTest extends AbstractTestCaseJU4 {
+public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private LocaleManager localeManager;
 

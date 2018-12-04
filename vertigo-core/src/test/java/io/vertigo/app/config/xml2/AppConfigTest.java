@@ -39,6 +39,7 @@ import io.vertigo.core.spaces.component.data.MathPlugin;
 
 @RunWith(JUnitPlatform.class)
 public final class AppConfigTest {
+
 	@Test
 	public void HomeTest() {
 		final String locales = "fr_FR";

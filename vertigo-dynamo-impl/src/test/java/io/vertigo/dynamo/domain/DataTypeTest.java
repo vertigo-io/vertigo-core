@@ -21,8 +21,8 @@ package io.vertigo.dynamo.domain;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
 
@@ -35,7 +35,7 @@ public final class DataTypeTest {
 	public void testDataTypes() {
 		Arrays.stream(DataType.values())
 				.forEach(dataType -> {
-					Assert.assertEquals(Optional.of(dataType), DataType.of(dataType.getJavaClass()));
+					Assertions.assertEquals(Optional.of(dataType), DataType.of(dataType.getJavaClass()));
 				});
 
 	}

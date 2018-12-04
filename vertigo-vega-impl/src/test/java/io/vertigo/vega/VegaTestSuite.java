@@ -18,9 +18,9 @@
  */
 package io.vertigo.vega;
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 import io.vertigo.vega.impl.servlet.filter.AbstractFilterTest;
 import io.vertigo.vega.webservice.WebServiceManagerTest;
@@ -30,8 +30,8 @@ import io.vertigo.vega.webservice.WebServiceManagerTest;
  *
  * @author pchretien
  */
-@RunWith(Suite.class)
-@SuiteClasses({ WebServiceManagerTest.class, AbstractFilterTest.class })
+@RunWith(JUnitPlatform.class)
+@SelectClasses({ WebServiceManagerTest.class, AbstractFilterTest.class })
 public final class VegaTestSuite {
 	//
 }

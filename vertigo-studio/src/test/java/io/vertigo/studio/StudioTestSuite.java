@@ -18,9 +18,9 @@
  */
 package io.vertigo.studio;
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 import io.vertigo.studio.tools.NameSpace2JavaTest;
 
@@ -29,8 +29,8 @@ import io.vertigo.studio.tools.NameSpace2JavaTest;
  *
  * @author pchretien
  */
-@RunWith(Suite.class)
-@SuiteClasses({
+@RunWith(JUnitPlatform.class)
+@SelectClasses({
 		NameSpace2JavaTest.class
 })
 public final class StudioTestSuite {

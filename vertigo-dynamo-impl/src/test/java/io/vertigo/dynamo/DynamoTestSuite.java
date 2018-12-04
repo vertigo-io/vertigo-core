@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo;
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 import io.vertigo.dynamo.collections.CollectionsManagerTest;
 import io.vertigo.dynamo.collections.FacetManagerTest;
@@ -75,8 +75,8 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
  *
  * @author pchretien
  */
-@RunWith(Suite.class)
-@SuiteClasses({
+@RunWith(JUnitPlatform.class)
+@SelectClasses({
 		//--collections
 		CollectionsManagerTest.class,
 		FacetManagerTest.class,

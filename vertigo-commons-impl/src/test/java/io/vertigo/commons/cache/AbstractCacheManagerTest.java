@@ -29,16 +29,16 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.lang.Assertion;
 
 /**
  *
  * @author dchallas
  */
-public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
+public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU5 {
 	private static final String KEY = "ma clé";
 	private static final String CONTEXT_EDITABLE = CacheManagerInitializer.CONTEXT_EDITABLE;
 	private static final String CONTEXT_READONLY = CacheManagerInitializer.CONTEXT_READONLY;

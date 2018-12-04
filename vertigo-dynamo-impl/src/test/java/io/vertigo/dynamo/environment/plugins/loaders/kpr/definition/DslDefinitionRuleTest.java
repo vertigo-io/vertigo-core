@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
@@ -35,7 +35,7 @@ public class DslDefinitionRuleTest {
 				.parse("create Formatter FMT_TEST { args : \"UPPER\" }", 0)
 				.getValue();
 
-		Assert.assertNotNull(dslDefinition);
+		Assertions.assertNotNull(dslDefinition);
 	}
 
 	//Exemple de test sur la déclaration d'un Domain
@@ -49,7 +49,7 @@ public class DslDefinitionRuleTest {
 		final DslDefinition dslDefinition = new DslDynamicDefinitionRule("create", dslDefinitionRepository.getGrammar())
 				.parse("create Domain DO_CODE_POSTAL { dataType : String ,  formatter:FMT_DEFAULT, constraint : [ CK_CODE_POSTAL ]   } ", 0)
 				.getValue();
-		Assert.assertNotNull(dslDefinition);
+		Assertions.assertNotNull(dslDefinition);
 	}
 
 	@Test

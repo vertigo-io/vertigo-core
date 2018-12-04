@@ -22,8 +22,8 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.dynamo.TestUtil;
@@ -110,14 +110,14 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 			//on vérifie que le contenu des fichiers est identique.
 			//assertEquals("toto", "toto");
 			//assertEquals("toto", "ti");
-			Assert.assertEquals(source, read);
-			Assert.assertTrue("Test contenu du fichier", read.startsWith("Chant I"));
-			Assert.assertTrue("Test contenu du fichier : " + secureSubString(read, 16711, "ses notes langoureuses,"), read.indexOf("ses notes langoureuses,") > 0);
-			Assert.assertTrue("Test contenu du fichier : " + secureSubString(read, 11004, "mal : \"Adolescent,"), read.indexOf("mal : \"Adolescent,") > 0);
+			Assertions.assertEquals(source, read);
+			Assertions.assertTrue(read.startsWith("Chant I"), "Test contenu du fichier");
+			Assertions.assertTrue(read.indexOf("ses notes langoureuses,") > 0, "Test contenu du fichier : " + secureSubString(read, 16711, "ses notes langoureuses,"));
+			Assertions.assertTrue(read.indexOf("mal : \"Adolescent,") > 0, "Test contenu du fichier : " + secureSubString(read, 11004, "mal : \"Adolescent,"));
 
 			//On désactive pour l'instant
 			//Ne marche pas sur la PIC pour cause de charset sur le àé
-			//Assert.assertTrue("Test contenu du fichier : " + secureSubString(read, 15579, "adieu !à ;"), read.indexOf("adieu !à ;") > 0);
+			//Assertions.assertTrue("Test contenu du fichier : " + secureSubString(read, 15579, "adieu !à ;"), read.indexOf("adieu !à ;") > 0);
 		}
 	}
 }

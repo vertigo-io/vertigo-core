@@ -27,10 +27,10 @@ import java.util.function.UnaryOperator;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.dynamo.collections.data.DtDefinitions;
 import io.vertigo.dynamo.collections.data.domain.SmartItem;
 import io.vertigo.dynamo.criteria.Criterions;
@@ -45,7 +45,7 @@ import io.vertigo.dynamo.domain.util.VCollectors;
  * @author pchretien
  */
 //non final, to be overrided for previous lib version
-public class CollectionsManagerTest extends AbstractTestCaseJU4 {
+public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 	private static final String Ba_aa = "Ba aa";
 	private static final String aaa_ba = "aaa ba";
 	private static final String bb_aa = "bb aa";
@@ -128,7 +128,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 				.stream()
 				.filter(Criterions.isEqualTo(DtDefinitions.Fields.LABEL, aaa_ba).toPredicate())
 				.collect(VCollectors.toDtList(SmartItem.class));
-		Assert.assertEquals(1, result.size());
+		Assertions.assertEquals(1, result.size());
 	}
 
 	@Test
@@ -140,7 +140,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 				.stream()
 				.filter(filterA.and(filterB))
 				.collect(VCollectors.toDtList(SmartItem.class));
-		Assert.assertEquals(1, result.size());
+		Assertions.assertEquals(1, result.size());
 	}
 
 	@Test
@@ -149,7 +149,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 				.filter("aa", 1000, dtDefinitionItem.getFields())
 				.build()
 				.apply(createItems());
-		Assert.assertEquals(3, result.size(), 0);
+		Assertions.assertEquals(3, result.size());
 
 	}
 
@@ -167,12 +167,12 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		mock2.setLabel("Hôpital et autres accents çava où ãpied");
 		dtc.add(mock2);
 
-		Assert.assertTrue("La recherche n'est pas case insensitive", filter(dtc, "agence", 1000, searchedDtFields).size() == 1);//majuscule/minuscule
-		Assert.assertTrue("La recherche n'est pas plain text", filter(dtc, "l'ouest", 1000, searchedDtFields).size() == 1);//tokenizer
-		Assert.assertTrue("La recherche ne supporte pas les accents", filter(dtc, "hopital", 1000, searchedDtFields).size() == 1);//accents
-		Assert.assertTrue("La recherche ne supporte pas les caractères spéciaux fr (ç)", filter(dtc, "cava", 1000, searchedDtFields).size() == 1); //accents fr (ç)
-		Assert.assertTrue("La recherche ne supporte pas les caractères spéciaux latin1 (ã)", filter(dtc, "apied", 1000, searchedDtFields).size() == 1); //accents autre (ã)
-		Assert.assertTrue("La recherche ne supporte pas la recherche par préfix", filter(dtc, "apie", 1000, searchedDtFields).size() == 1);//prefix
+		Assertions.assertTrue(filter(dtc, "agence", 1000, searchedDtFields).size() == 1, "La recherche n'est pas case insensitive");//majuscule/minuscule
+		Assertions.assertTrue(filter(dtc, "l'ouest", 1000, searchedDtFields).size() == 1, "La recherche n'est pas plain text");//tokenizer
+		Assertions.assertTrue(filter(dtc, "hopital", 1000, searchedDtFields).size() == 1, "La recherche ne supporte pas les accents");//accents
+		Assertions.assertTrue(filter(dtc, "cava", 1000, searchedDtFields).size() == 1, "La recherche ne supporte pas les caractères spéciaux fr (ç)"); //accents fr (ç)
+		Assertions.assertTrue(filter(dtc, "apied", 1000, searchedDtFields).size() == 1, "La recherche ne supporte pas les caractères spéciaux latin1 (ã)"); //accents autre (ã)
+		Assertions.assertTrue(filter(dtc, "apie", 1000, searchedDtFields).size() == 1, "La recherche ne supporte pas la recherche par préfix");//prefix
 	}
 
 	private List<SmartItem> filter(final DtList<SmartItem> dtc, final String query, final int nbRows, final Collection<DtField> searchedDtFields) {
@@ -197,7 +197,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		mock2.setLabel("Hôpital et autres accents çava où àpied");
 		dtc.add(mock2);
 
-		Assert.assertTrue("La recherche ne supporte pas l'elision", filter(dtc, "ouest", 1000, searchedDtFields).size() == 1);
+		Assertions.assertTrue(filter(dtc, "ouest", 1000, searchedDtFields).size() == 1, "La recherche ne supporte pas l'elision");
 	}
 
 	@Test
@@ -215,10 +215,10 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		mock2.setLabel("Hôpital et autres accents çava où ãpied");
 		dtc.add(mock2);
 
-		Assert.assertTrue("La recherche ne supporte pas l'espace", filter(dtc, "agence de", 1000, searchedDtFields).size() == 1);//mots proches
-		Assert.assertTrue("La recherche ne supporte pas l'utilisation de plusieurs mots", filter(dtc, "hopital accent", 1000, searchedDtFields).size() == 1);//mots séparés
-		Assert.assertTrue("La recherche ne supporte pas l'inversion des mots", filter(dtc, "accent hopital", 1000, searchedDtFields).size() == 1);//inversés
-		Assert.assertTrue("Les mots clés ne sont pas en 'ET'", filter(dtc, "agence hopital", 1000, searchedDtFields).size() == 0);//multi doc
+		Assertions.assertTrue(filter(dtc, "agence de", 1000, searchedDtFields).size() == 1, "La recherche ne supporte pas l'espace");//mots proches
+		Assertions.assertTrue(filter(dtc, "hopital accent", 1000, searchedDtFields).size() == 1, "La recherche ne supporte pas l'utilisation de plusieurs mots");//mots séparés
+		Assertions.assertTrue(filter(dtc, "accent hopital", 1000, searchedDtFields).size() == 1, "La recherche ne supporte pas l'inversion des mots");//inversés
+		Assertions.assertTrue(filter(dtc, "agence hopital", 1000, searchedDtFields).size() == 0, "Les mots clés ne sont pas en 'ET'");//multi doc
 	}
 
 	/**
@@ -230,7 +230,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 		final UnaryOperator<DtList<SmartItem>> filterFunction = collectionsManager.<SmartItem> createIndexDtListFunctionBuilder()
 				.filter("a", 2000, dtDefinitionItem.getFields())
 				.build();
-		Assert.assertNotNull(filterFunction);
+		Assertions.assertNotNull(filterFunction);
 		final DtList<SmartItem> bigFamillyList = new DtList<>(SmartItem.class);
 		for (int i = 0; i < 50000; i++) {
 			final SmartItem mocka = new SmartItem();
@@ -239,7 +239,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 			bigFamillyList.add(mocka);
 		}
 		final DtList<SmartItem> result = filterFunction.apply(bigFamillyList);
-		Assert.assertEquals(2000, result.size(), 0);
+		Assertions.assertEquals(2000, result.size());
 	}
 
 	@Test
@@ -300,14 +300,14 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	public void testSubListWithIndex() {
 		// on test une implémentation de référence ArrayList
 		final List<String> list = Arrays.asList("a", "b");
-		Assert.assertEquals(0, list.subList(0, 0).size());
-		Assert.assertEquals(2, list.subList(0, 2).size()); // >0, 1
-		Assert.assertEquals(1, list.subList(1, 2).size()); // >1
-		Assert.assertEquals(0, list.subList(2, 2).size());
+		Assertions.assertEquals(0, list.subList(0, 0).size());
+		Assertions.assertEquals(2, list.subList(0, 2).size()); // >0, 1
+		Assertions.assertEquals(1, list.subList(1, 2).size()); // >1
+		Assertions.assertEquals(0, list.subList(2, 2).size());
 		// on teste notre implémentation
 		//can't test subList(0,0) : illegal argument
-		Assert.assertEquals(2, subListWithIndex(createItems(), 0, 2).size());
-		Assert.assertEquals(1, subListWithIndex(createItems(), 1, 2).size());
+		Assertions.assertEquals(2, subListWithIndex(createItems(), 0, 2).size());
+		Assertions.assertEquals(1, subListWithIndex(createItems(), 1, 2).size());
 		//can't test subList(2,2) : illegal argument
 	}
 
@@ -322,15 +322,15 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	public void testSubList() {
 		// on test une implémentation de référence ArrayList
 		final List<String> list = Arrays.asList("a", "b");
-		Assert.assertEquals(0, list.subList(0, 0).size());
-		Assert.assertEquals(2, list.subList(0, 2).size()); // >0, 1
-		Assert.assertEquals(1, list.subList(1, 2).size()); // >1
-		Assert.assertEquals(0, list.subList(2, 2).size());
+		Assertions.assertEquals(0, list.subList(0, 0).size());
+		Assertions.assertEquals(2, list.subList(0, 2).size()); // >0, 1
+		Assertions.assertEquals(1, list.subList(1, 2).size()); // >1
+		Assertions.assertEquals(0, list.subList(2, 2).size());
 		// on teste notre implémentation
-		Assert.assertEquals(0, subList(createItems(), 0, 0).size());
-		Assert.assertEquals(2, subList(createItems(), 0, 2).size());
-		Assert.assertEquals(1, subList(createItems(), 1, 2).size());
-		Assert.assertEquals(0, subList(createItems(), 2, 2).size());
+		Assertions.assertEquals(0, subList(createItems(), 0, 0).size());
+		Assertions.assertEquals(2, subList(createItems(), 0, 2).size());
+		Assertions.assertEquals(1, subList(createItems(), 1, 2).size());
+		Assertions.assertEquals(0, subList(createItems(), 2, 2).size());
 	}
 
 	private DtList<SmartItem> subList(final DtList<SmartItem> dtc, final int start, final int end) {
@@ -404,7 +404,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	public void testCreateFilterForValue() {
 		final Predicate predicate = collectionsManager
 				.filter(ListFilter.of("LABEL" + ":\"aaa\""));
-		Assert.assertNotNull(predicate);
+		Assertions.assertNotNull(predicate);
 	}
 
 	@Test
@@ -423,7 +423,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testCreateFilter() {
 		final Predicate<DtObject> predicate = collectionsManager.filter(ListFilter.of("LABEL" + ":[a TO b]"));
-		Assert.assertNotNull(predicate);
+		Assertions.assertNotNull(predicate);
 	}
 
 	@Test
@@ -457,15 +457,15 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 				.filter(collectionsManager.filter(ListFilter.of(filterString)))
 				.collect(VCollectors.toDtList(SmartItem.class));
 
-		Assert.assertEquals(countEspected, result.size());
+		Assertions.assertEquals(countEspected, result.size());
 	}
 
 	private void testRangeFilter(final String filterString, final int countEspected) {
 		final Predicate<SmartItem> predicate = collectionsManager
 				.filter(ListFilter.of(filterString));
-		Assert.assertNotNull(predicate);
+		Assertions.assertNotNull(predicate);
 		final DtList<SmartItem> result = createItemsForRangeTest().stream().filter(predicate).collect(VCollectors.toDtList(SmartItem.class));
-		Assert.assertEquals(countEspected, result.size());
+		Assertions.assertEquals(countEspected, result.size());
 	}
 
 	private static DtList<SmartItem> createItemsForRangeTest() {
@@ -509,7 +509,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU4 {
 	 *
 	 */
 	private static void assertEquals(final String[] expected, final String[] actual) {
-		Assert.assertEquals(Arrays.toString(expected), Arrays.toString(actual));
+		Assertions.assertEquals(Arrays.toString(expected), Arrays.toString(actual));
 	}
 
 	private static String[] extractLabels(final DtList<SmartItem> dtc) {

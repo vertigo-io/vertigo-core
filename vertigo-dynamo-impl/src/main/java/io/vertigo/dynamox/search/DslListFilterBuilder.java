@@ -191,8 +191,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private static void flushSubQueryToQuery(final StringBuilder query, final String preExpression, final String postExpression, final boolean useBlock, final StringBuilder subQuery) {
 		if (subQuery.length() > 0) {
 			final String[] trimedQuery = splitTrimedSubQueryToQuery(subQuery.toString());
-			final boolean isAlreadyBlock = (preExpression.endsWith("\"") && postExpression.startsWith("\""))
-					|| (preExpression.endsWith("(") && postExpression.startsWith(")"));
+			final boolean isAlreadyBlock = preExpression.endsWith("\"") && postExpression.startsWith("\"")
+					|| preExpression.endsWith("(") && postExpression.startsWith(")");
 			query.append(trimedQuery[0]) //[0] contient les caractères du trim : on les place avant
 					.append(preExpression)
 					.append(!isAlreadyBlock && useBlock ? "(" : "")
@@ -331,12 +331,16 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			appendTermQuery(startRangeQuery, (DslTermQuery) startQueryDefinition, expressionDefinition, null); //null because, can't use upper output
 		} else if (startQueryDefinition instanceof DslFixedQuery) {
 			appendFixedQuery(startRangeQuery, (DslFixedQuery) startQueryDefinition);
+		} else {
+			throw new IllegalArgumentException("can't parse query \\\"\"+startQueryDefinition+\"\\\" of type " + startQueryDefinition.getClass().getSimpleName() + " (expected DslTermQuery or DslFixedQuery)");
 		}
 		final StringBuilder endRangeQuery = new StringBuilder();
 		if (endQueryDefinition instanceof DslTermQuery) {
 			appendTermQuery(endRangeQuery, (DslTermQuery) endQueryDefinition, expressionDefinition, null); //null because, can't use upper output
 		} else if (endQueryDefinition instanceof DslFixedQuery) {
 			appendFixedQuery(endRangeQuery, (DslFixedQuery) endQueryDefinition);
+		} else {
+			throw new IllegalArgumentException("can't parse query \"" + endQueryDefinition + "\" of type " + endQueryDefinition.getClass().getSimpleName() + " (expected DslTermQuery or DslFixedQuery)");
 		}
 
 		//flush Range Query

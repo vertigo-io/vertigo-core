@@ -23,7 +23,7 @@ import java.math.BigDecimal;
 import org.junit.Assert;
 import org.junit.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
@@ -35,7 +35,7 @@ import io.vertigo.dynamox.domain.formatter.FormatterNumberLocalized;
  *
  * @author pchretien
  */
-public class NumberFormatterTest extends AbstractTestCaseJU4 {
+public class NumberFormatterTest extends AbstractTestCaseJU5 {
 
 	/**
 	 * Test du formatter de nombre.

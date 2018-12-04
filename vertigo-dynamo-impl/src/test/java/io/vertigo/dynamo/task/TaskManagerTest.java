@@ -27,10 +27,10 @@ import java.util.Arrays;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
@@ -39,7 +39,7 @@ import io.vertigo.dynamo.task.model.Task;
  * This class tests the usage of a task from its registration to its execution.
  * @author dchallas
  */
-public final class TaskManagerTest extends AbstractTestCaseJU4 {
+public final class TaskManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private TaskManager taskManager;
 
@@ -54,18 +54,20 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testRegistry() {
 		final TaskDefinition taskDefinition = getTaskDefinition(TaskDefinitionProvider.TK_ADDITION);
-		Assert.assertNotNull(taskDefinition);
+		Assertions.assertNotNull(taskDefinition);
 	}
 
 	/**
 	 * Checks when the task-definition is not registered (an exception must be thrown).
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testRegistryWithNull() {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		//L'appel à la résolution doit remonter une assertion
-		final TaskDefinition taskDefinition = definitionSpace.resolve(null, TaskDefinition.class);
-		nop(taskDefinition);
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+			//L'appel à la résolution doit remonter une assertion
+			final TaskDefinition taskDefinition = definitionSpace.resolve(null, TaskDefinition.class);
+			nop(taskDefinition);
+		});
 	}
 
 	/***
@@ -74,7 +76,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExecuteAdd() {
 		final TaskDefinition taskDefinition = getTaskDefinition(TaskDefinitionProvider.TK_ADDITION);
-		Assert.assertEquals(Integer.valueOf(10), executeTask(taskDefinition, 5, 2, 3));
+		Assertions.assertEquals(Integer.valueOf(10), executeTask(taskDefinition, 5, 2, 3));
 	}
 
 	/***
@@ -83,18 +85,20 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExecuteMulti() {
 		final TaskDefinition taskDefinition = getTaskDefinition(TaskDefinitionProvider.TK_MULTIPLICATION);
-		Assert.assertEquals(Integer.valueOf(30), executeTask(taskDefinition, 5, 2, 3));
+		Assertions.assertEquals(Integer.valueOf(30), executeTask(taskDefinition, 5, 2, 3));
 	}
 
 	/**
 	 * Checks that an exception is thrown
 	 * when a null is given to a required task
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testExecuteNull() {
-		final TaskDefinition taskDefinition = getTaskDefinition(TaskDefinitionProvider.TK_MULTIPLICATION);
-		//on vérifie que le passage d'un paramètre null déclenche une assertion
-		executeTask(taskDefinition, null, 2, 3);
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			final TaskDefinition taskDefinition = getTaskDefinition(TaskDefinitionProvider.TK_MULTIPLICATION);
+			//on vérifie que le passage d'un paramètre null déclenche une assertion
+			executeTask(taskDefinition, null, 2, 3);
+		});
 	}
 
 	/**
@@ -115,13 +119,13 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 				.execute(task)
 				.getResult();
 
-		Assert.assertEquals(Integer.valueOf(16), result1);
+		Assertions.assertEquals(Integer.valueOf(16), result1);
 
 		final Integer result2 = taskManager
 				.execute(task)
 				.getResult();
 
-		Assert.assertEquals(Integer.valueOf(16), result2);
+		Assertions.assertEquals(Integer.valueOf(16), result2);
 	}
 
 	/**
@@ -149,7 +153,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExecuteAdd2() {
 		final TaskDefinition taskDefinition = getTaskDefinition(TaskDefinitionProvider.TK_ADDITION_2);
-		Assert.assertEquals(Integer.valueOf(10), executeTask2(taskDefinition, 5, 2, 3));
+		Assertions.assertEquals(Integer.valueOf(10), executeTask2(taskDefinition, 5, 2, 3));
 	}
 
 	/***
@@ -159,7 +163,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testExecuteMulti2() {
 		final TaskDefinition taskDefinition = getTaskDefinition(TaskDefinitionProvider.TK_MULTIPLICATION_2);
-		Assert.assertEquals(Integer.valueOf(30), executeTask2(taskDefinition, 5, 2, 3));
+		Assertions.assertEquals(Integer.valueOf(30), executeTask2(taskDefinition, 5, 2, 3));
 	}
 
 	private Integer executeTask2(final TaskDefinition taskDefinition, final Integer... values) {

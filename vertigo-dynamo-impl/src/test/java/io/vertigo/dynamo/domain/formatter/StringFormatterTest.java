@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.domain.formatter;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
@@ -35,6 +35,6 @@ public class StringFormatterTest {
 
 	@Test
 	public void testUpper() {
-		Assert.assertEquals("AA", formatterString.valueToString("aa", DataType.String));
+		Assertions.assertEquals("AA", formatterString.valueToString("aa", DataType.String));
 	}
 }

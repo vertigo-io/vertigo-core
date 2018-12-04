@@ -19,6 +19,8 @@
 package io.vertigo.dynamox.metric.task;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -68,34 +70,7 @@ public final class TaskPopulator {
 		final Object value;
 		switch (attribute.getDomain().getScope()) {
 			case PRIMITIVE:
-				Object item;
-				switch (attribute.getDomain().getDataType()) {
-					case Boolean:
-						item = Boolean.TRUE;
-						break;
-					case String:
-						item = "Test";
-						break;
-					case Date:
-						item = new Date();
-						break;
-					case Double:
-						item = Double.valueOf(1);
-						break;
-					case Integer:
-						item = Integer.valueOf(1);
-						break;
-					case BigDecimal:
-						item = BigDecimal.valueOf(1);
-						break;
-					case Long:
-						item = Long.valueOf(1);
-						break;
-					case DataStream:
-					default:
-						//we do nothing
-						item = null;
-				}
+				final Object item = getDefaultPrimitiveValue(attribute);
 				if (attribute.getDomain().isMultiple()) {
 					final List list = new ArrayList();
 					list.add(item);
@@ -125,5 +100,43 @@ public final class TaskPopulator {
 				throw new IllegalStateException();
 		}
 		taskBuilder.addValue(attributeName, value);
+	}
+
+	private Object getDefaultPrimitiveValue(final TaskAttribute attribute) {
+		Object item;
+		switch (attribute.getDomain().getDataType()) {
+			case Boolean:
+				item = Boolean.TRUE;
+				break;
+			case String:
+				item = "Test";
+				break;
+			case Date:
+				item = new Date();
+				break;
+			case LocalDate:
+				item = LocalDate.now();
+				break;
+			case Instant:
+				item = Instant.now();
+				break;
+			case Double:
+				item = Double.valueOf(1);
+				break;
+			case Integer:
+				item = Integer.valueOf(1);
+				break;
+			case BigDecimal:
+				item = BigDecimal.valueOf(1);
+				break;
+			case Long:
+				item = Long.valueOf(1);
+				break;
+			case DataStream:
+			default:
+				//we do nothing
+				item = null;
+		}
+		return item;
 	}
 }

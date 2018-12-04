@@ -22,7 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.codec.AbstractCodecTest;
 
@@ -61,10 +62,12 @@ public abstract class AbstractCryptoCodecTest extends AbstractCodecTest<byte[], 
 
 	/** {@inheritDoc} */
 	@Override
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testFailDecode() {
-		// object ne correspondant pas à une classe;
-		final byte[] s = "qdfsdf".getBytes();
-		codec.decode(s);
+		Assertions.assertThrows(RuntimeException.class, () -> {
+			// object ne correspondant pas à une classe;
+			final byte[] s = "qdfsdf".getBytes();
+			codec.decode(s);
+		});
 	}
 }

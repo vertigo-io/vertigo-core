@@ -24,7 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.io.Serializable;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.codec.AbstractCodecTest;
 import io.vertigo.commons.codec.Codec;
@@ -74,11 +75,13 @@ public final class SerializationCodecTest extends AbstractCodecTest<Serializable
 
 	/** {@inheritDoc} */
 	@Override
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testFailDecode() {
 		// object ne correspondant pas à une classe;
-		final byte[] s = "qdfsdf".getBytes();
-		codec.decode(s);
+		Assertions.assertThrows(RuntimeException.class, () -> {
+			final byte[] s = "qdfsdf".getBytes();
+			codec.decode(s);
+		});
 	}
 
 	// ===========================================================================
