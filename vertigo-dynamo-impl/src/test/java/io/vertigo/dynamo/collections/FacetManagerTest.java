@@ -23,10 +23,10 @@ import java.util.Map.Entry;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.collections.data.domain.SmartCar;
 import io.vertigo.dynamo.collections.data.domain.SmartCarDataBase;
@@ -42,7 +42,7 @@ import io.vertigo.dynamo.domain.model.DtList;
  * @author  npiedeloup
  */
 //non final, to be overrided for previous lib version
-public class FacetManagerTest extends AbstractTestCaseJU4 {
+public class FacetManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private CollectionsManager collectionsManager;
 	private FacetedQueryDefinition carFacetQueryDefinition;
@@ -58,36 +58,36 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private void testFacetResultByRange(final FacetedQueryResult<SmartCar, ?> result) {
-		Assert.assertEquals(smartCarDataBase.size(), result.getCount());
+		Assertions.assertEquals(smartCarDataBase.size(), result.getCount());
 
 		//On vérifie qu'il y a le bon nombre de facettes.
-		Assert.assertEquals(3, result.getFacets().size());
+		Assertions.assertEquals(3, result.getFacets().size());
 
 		//On recherche la facette date
 		final Facet yearFacet = getFacetByName(result, "FCT_YEAR_CAR");
-		Assert.assertTrue(yearFacet.getDefinition().isRangeFacet());
+		Assertions.assertTrue(yearFacet.getDefinition().isRangeFacet());
 
 		boolean found = false;
 		for (final Entry<FacetValue, Long> entry : yearFacet.getFacetValues().entrySet()) {
 			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).contains("avant")) {
 				found = true;
-				Assert.assertEquals(smartCarDataBase.getCarsBefore(2000), entry.getValue().longValue());
+				Assertions.assertEquals(smartCarDataBase.getCarsBefore(2000), entry.getValue().longValue());
 			}
 		}
-		Assert.assertTrue(found);
+		Assertions.assertTrue(found);
 	}
 
 	private void testFacetResultByTerm(final FacetedQueryResult<SmartCar, ?> result) {
-		Assert.assertEquals(smartCarDataBase.size(), result.getCount());
+		Assertions.assertEquals(smartCarDataBase.size(), result.getCount());
 
 		//On vérifie qu'il y a le bon nombre de facettes.
-		Assert.assertEquals(3, result.getFacets().size());
+		Assertions.assertEquals(3, result.getFacets().size());
 
 		//On recherche la facette constructeur
 		final Facet manufacturerFacet = getFacetByName(result, "FCT_MANUFACTURER_CAR");
 		//On vérifie que l'on est sur le champ Make
-		Assert.assertEquals("MANUFACTURER", manufacturerFacet.getDefinition().getDtField().getName());
-		Assert.assertFalse(manufacturerFacet.getDefinition().isRangeFacet());
+		Assertions.assertEquals("MANUFACTURER", manufacturerFacet.getDefinition().getDtField().getName());
+		Assertions.assertFalse(manufacturerFacet.getDefinition().isRangeFacet());
 
 		//On vérifie qu'il existe une valeur pour peugeot et que le nombre d'occurrences est correct
 		boolean found = false;
@@ -96,10 +96,10 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).equals(manufacturer)) {
 				found = true;
 				//System.out.println("manufacturer" + entry.getKey().getLabel().getDisplay());
-				Assert.assertEquals(smartCarDataBase.getCarsByManufacturer(manufacturer).size(), entry.getValue().intValue());
+				Assertions.assertEquals(smartCarDataBase.getCarsByManufacturer(manufacturer).size(), entry.getValue().intValue());
 			}
 		}
-		Assert.assertTrue(found);
+		Assertions.assertTrue(found);
 	}
 
 	private static Facet getFacetByName(final FacetedQueryResult<SmartCar, ?> result, final String facetName) {
@@ -133,11 +133,11 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 		//on applique une facette
 		final FacetedQuery query = addFacetQuery("FCT_YEAR_CAR", "avant", result);
 		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered = collectionsManager.facetList(result.getSource(), query);
-		Assert.assertEquals(smartCarDataBase.getCarsBefore(2000), resultFiltered.getCount());
+		Assertions.assertEquals(smartCarDataBase.getCarsBefore(2000), resultFiltered.getCount());
 	}
 
 	private static FacetedQuery addFacetQuery(final String facetName, final String facetValueLabel, final FacetedQueryResult<SmartCar, ?> result) {
-		FacetValue facetFilter = null; //pb d'initialisation, et assert.notNull ne suffit pas
+		FacetValue facetFilter = null; //pb d'initialisation, et Assertions.notNull ne suffit pas
 		final Facet yearFacet = getFacetByName(result, facetName);
 		for (final Entry<FacetValue, Long> entry : yearFacet.getFacetValues().entrySet()) {
 			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).contains(facetValueLabel)) {
@@ -179,7 +179,7 @@ public class FacetManagerTest extends AbstractTestCaseJU4 {
 		//on applique une facette
 		final FacetedQuery query = addFacetQuery("FCT_MANUFACTURER_CAR", "peugeot", result);
 		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered = collectionsManager.facetList(result.getSource(), query);
-		Assert.assertEquals(smartCarDataBase.getCarsByManufacturer("peugeot").size(), (int) resultFiltered.getCount());
+		Assertions.assertEquals(smartCarDataBase.getCarsByManufacturer("peugeot").size(), (int) resultFiltered.getCount());
 	}
 
 }

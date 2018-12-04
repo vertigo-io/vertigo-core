@@ -23,10 +23,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -42,7 +42,7 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
  *
  * @author npiedeloup
  */
-public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
+public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU5 {
 	private static final String DTC_SUPER_HERO_IN = "DTC_SUPER_HERO_IN";
 	private static final String SUPER_HERO_ID_LIST = "SUPER_HERO_ID_LIST";
 	private static final String DO_INTEGER = "DO_INTEGER";
@@ -85,7 +85,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(10, resultList.size());
+			Assertions.assertEquals(10, resultList.size());
 		}
 	}
 
@@ -109,8 +109,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(1, resultList.size());
-			Assert.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
+			Assertions.assertEquals(1, resultList.size());
+			Assertions.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
 		}
 	}
 
@@ -133,9 +133,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(2, resultList.size());
-			Assert.assertEquals(10002L, resultList.get(0).getId().longValue());
-			Assert.assertEquals(10002L + 3, resultList.get(1).getId().longValue());
+			Assertions.assertEquals(2, resultList.size());
+			Assertions.assertEquals(10002L, resultList.get(0).getId().longValue());
+			Assertions.assertEquals(10002L + 3, resultList.get(1).getId().longValue());
 		}
 	}
 
@@ -158,7 +158,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(10, resultList.size());
+			Assertions.assertEquals(10, resultList.size());
 		}
 	}
 
@@ -182,7 +182,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			final DtList<SuperHero> resultList = taskManager
 					.execute(task)
 					.getResult();
-			Assert.assertEquals(10, resultList.size());
+			Assertions.assertEquals(10, resultList.size());
 		}
 	}
 
@@ -205,9 +205,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(2, resultList.size());
-			Assert.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
-			Assert.assertEquals(10001L + 3, resultList.get(1).getId().longValue());
+			Assertions.assertEquals(2, resultList.size());
+			Assertions.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
+			Assertions.assertEquals(10001L + 3, resultList.get(1).getId().longValue());
 		}
 	}
 
@@ -230,9 +230,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(2, resultList.size());
-			Assert.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
-			Assert.assertEquals(10001L + 3, resultList.get(1).getId().longValue());
+			Assertions.assertEquals(2, resultList.size());
+			Assertions.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
+			Assertions.assertEquals(10001L + 3, resultList.get(1).getId().longValue());
 		}
 	}
 
@@ -255,9 +255,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(2, resultList.size());
-			Assert.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
-			Assert.assertEquals(10001L + 3, resultList.get(1).getId().longValue());
+			Assertions.assertEquals(2, resultList.size());
+			Assertions.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
+			Assertions.assertEquals(10001L + 3, resultList.get(1).getId().longValue());
 		}
 	}
 
@@ -280,9 +280,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(2, resultList.size());
-			Assert.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
-			Assert.assertEquals(10001L + 3, resultList.get(1).getId().longValue());
+			Assertions.assertEquals(2, resultList.size());
+			Assertions.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
+			Assertions.assertEquals(10001L + 3, resultList.get(1).getId().longValue());
 		}
 	}
 
@@ -305,7 +305,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(0, resultList.size());
+			Assertions.assertEquals(0, resultList.size());
 		}
 	}
 
@@ -334,11 +334,11 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(4, resultList.size());
-			Assert.assertEquals(10001L + 0, resultList.get(0).getId().longValue());
-			Assert.assertEquals(10001L + 2, resultList.get(1).getId().longValue());
-			Assert.assertEquals(10001L + 4, resultList.get(2).getId().longValue());
-			Assert.assertEquals(10001L + 9, resultList.get(3).getId().longValue());
+			Assertions.assertEquals(4, resultList.size());
+			Assertions.assertEquals(10001L + 0, resultList.get(0).getId().longValue());
+			Assertions.assertEquals(10001L + 2, resultList.get(1).getId().longValue());
+			Assertions.assertEquals(10001L + 4, resultList.get(2).getId().longValue());
+			Assertions.assertEquals(10001L + 9, resultList.get(3).getId().longValue());
 		}
 	}
 
@@ -360,7 +360,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(10, resultList.size());
+			Assertions.assertEquals(10, resultList.size());
 		}
 	}
 
@@ -389,7 +389,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(2200, resultList.size());
+			Assertions.assertEquals(2200, resultList.size());
 		}
 	}
 
@@ -418,7 +418,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(10 + 4500 - 2200, resultList.size());
+			Assertions.assertEquals(10 + 4500 - 2200, resultList.size());
 		}
 	}
 

@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.environment.eaxmi;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 
 /**
@@ -29,7 +29,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
  *
  * @author npiedeloup
  */
-public final class EAXmiTestParserIdentifiers extends AbstractTestCaseJU4 {
+public final class EAXmiTestParserIdentifiers extends AbstractTestCaseJU5 {
 	@Override
 	protected String[] getManagersXmlFileName() {
 		return new String[] { "managers-test.xml", "resources-test.xml" };
@@ -43,6 +43,6 @@ public final class EAXmiTestParserIdentifiers extends AbstractTestCaseJU4 {
 	@Test
 	public void testIdentifiersVsPrimaryKey() {
 		final DtDefinition loginDefinition = getDtDefinition("DT_LOGIN");
-		Assert.assertTrue(loginDefinition.getIdField().isPresent());
+		Assertions.assertTrue(loginDefinition.getIdField().isPresent());
 	}
 }

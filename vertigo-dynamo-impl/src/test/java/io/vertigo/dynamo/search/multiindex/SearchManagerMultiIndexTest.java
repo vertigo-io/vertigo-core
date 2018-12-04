@@ -20,10 +20,10 @@ package io.vertigo.dynamo.search.multiindex;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
@@ -38,7 +38,7 @@ import io.vertigo.dynamo.search.model.SearchQuery;
 /**
  * @author  npiedeloup
  */
-public class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
+public class SearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 	//Index
 	private static final String IDX_DYNA_ITEM = "IDX_DYNA_ITEM";
 	private static final String IDX_ITEM = "IDX_ITEM";
@@ -76,10 +76,10 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 		waitIndexation();
 
 		final long size = query("*:*", itemIndexDefinition);
-		Assert.assertEquals(itemDataBase.size(), size);
+		Assertions.assertEquals(itemDataBase.size(), size);
 
 		final long sizeDyn = query("*:*", itemDynIndexDefinition);
-		Assert.assertEquals(itemDataBase.size(), sizeDyn);
+		Assertions.assertEquals(itemDataBase.size(), sizeDyn);
 	}
 
 	/**
@@ -97,10 +97,10 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU4 {
 		waitIndexation();
 
 		final long size = query("*:*", itemIndexDefinition);
-		Assert.assertEquals(0, size);
+		Assertions.assertEquals(0, size);
 
 		final long sizeDyn = query("*:*", itemDynIndexDefinition);
-		Assert.assertEquals(0, sizeDyn);
+		Assertions.assertEquals(0, sizeDyn);
 	}
 
 	private long query(final String query, final SearchIndexDefinition indexDefinition) {

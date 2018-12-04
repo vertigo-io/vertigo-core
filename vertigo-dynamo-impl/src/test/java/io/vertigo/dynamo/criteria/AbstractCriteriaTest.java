@@ -23,11 +23,11 @@ import static io.vertigo.dynamo.criteria.CriterionLimit.ofIncluded;
 
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.dynamo.criteria.data.movies.Movie2;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 
-public abstract class AbstractCriteriaTest extends AbstractTestCaseJU4 {
+public abstract class AbstractCriteriaTest extends AbstractTestCaseJU5 {
 	private static final DtFieldName<Movie2> YEAR = () -> "YEAR";
 	private static final DtFieldName<Movie2> TITLE = () -> "TITLE";
 

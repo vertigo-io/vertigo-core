@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.environment.oom;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 
@@ -30,7 +30,7 @@ import io.vertigo.dynamo.domain.metamodel.DtStereotype;
  *
  * @author npiedeloup
  */
-public final class OOMParserStereotypesTest extends AbstractTestCaseJU4 {
+public final class OOMParserStereotypesTest extends AbstractTestCaseJU5 {
 	@Override
 	protected String[] getManagersXmlFileName() {
 		return new String[] { "managers-test.xml", "resources-test-stereotypes.xml" };
@@ -46,12 +46,12 @@ public final class OOMParserStereotypesTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testStereotypeMasterData() {
 		final DtDefinition dtDefinitionCity = getDtDefinition("DT_CITY");
-		Assert.assertNotNull(dtDefinitionCity);
-		Assert.assertEquals(DtStereotype.MasterData, dtDefinitionCity.getStereotype());
+		Assertions.assertNotNull(dtDefinitionCity);
+		Assertions.assertEquals(DtStereotype.MasterData, dtDefinitionCity.getStereotype());
 
 		final DtDefinition dtDefinitionCommandType = getDtDefinition("DT_COMMAND_TYPE");
-		Assert.assertNotNull(dtDefinitionCommandType);
-		Assert.assertEquals(DtStereotype.StaticMasterData, dtDefinitionCommandType.getStereotype());
+		Assertions.assertNotNull(dtDefinitionCommandType);
+		Assertions.assertEquals(DtStereotype.StaticMasterData, dtDefinitionCommandType.getStereotype());
 	}
 
 	/**
@@ -60,8 +60,8 @@ public final class OOMParserStereotypesTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testStereotypeKeyConcept() {
 		final DtDefinition dtDefinitionCommand = getDtDefinition("DT_COMMAND");
-		Assert.assertNotNull(dtDefinitionCommand);
-		Assert.assertEquals(DtStereotype.KeyConcept, dtDefinitionCommand.getStereotype());
+		Assertions.assertNotNull(dtDefinitionCommand);
+		Assertions.assertEquals(DtStereotype.KeyConcept, dtDefinitionCommand.getStereotype());
 
 	}
 
@@ -71,11 +71,11 @@ public final class OOMParserStereotypesTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testStereotypeData() {
 		final DtDefinition dtDefinitionAttachment = getDtDefinition("DT_ATTACHMENT");
-		Assert.assertNotNull(dtDefinitionAttachment);
-		Assert.assertEquals(DtStereotype.Entity, dtDefinitionAttachment.getStereotype());
+		Assertions.assertNotNull(dtDefinitionAttachment);
+		Assertions.assertEquals(DtStereotype.Entity, dtDefinitionAttachment.getStereotype());
 
 		final DtDefinition dtDefinitionCommandValidation = getDtDefinition("DT_COMMAND_VALIDATION");
-		Assert.assertNotNull(dtDefinitionCommandValidation);
-		Assert.assertEquals(DtStereotype.Entity, dtDefinitionCommandValidation.getStereotype());
+		Assertions.assertNotNull(dtDefinitionCommandValidation);
+		Assertions.assertEquals(DtStereotype.Entity, dtDefinitionCommandValidation.getStereotype());
 	}
 }

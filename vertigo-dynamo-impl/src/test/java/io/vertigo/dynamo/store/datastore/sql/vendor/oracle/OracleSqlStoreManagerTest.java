@@ -20,7 +20,7 @@ package io.vertigo.dynamo.store.datastore.sql.vendor.oracle;
 
 import java.util.List;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.core.definition.DefinitionSpace;
@@ -41,7 +41,7 @@ import io.vertigo.util.ListBuilder;
  * @author mlaroche
  *
  */
-@Ignore
+@Disabled
 public final class OracleSqlStoreManagerTest extends AbstractSqlStoreManagerTest {
 
 	@Override

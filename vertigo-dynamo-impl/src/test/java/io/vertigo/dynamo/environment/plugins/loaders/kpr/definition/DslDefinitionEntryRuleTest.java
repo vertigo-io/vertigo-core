@@ -20,8 +20,8 @@ package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 
 import java.util.Arrays;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.commons.peg.PegResult;
@@ -37,10 +37,10 @@ public final class DslDefinitionEntryRuleTest {
 		final PegResult<DslDefinitionEntry> cursor = MAIN
 				.parse(text, 0);
 		final DslDefinitionEntry xDefinitionEntry = cursor.getValue();
-		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
-		Assert.assertEquals(1, xDefinitionEntry.getDefinitionNames().size());
-		Assert.assertTrue(xDefinitionEntry.getDefinitionNames().contains("BLEU"));
-		Assert.assertEquals(text.length() - " non reconnu".length(), cursor.getIndex());
+		Assertions.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
+		Assertions.assertEquals(1, xDefinitionEntry.getDefinitionNames().size());
+		Assertions.assertTrue(xDefinitionEntry.getDefinitionNames().contains("BLEU"));
+		Assertions.assertEquals(text.length() - " non reconnu".length(), cursor.getIndex());
 	}
 
 	@Test
@@ -49,10 +49,10 @@ public final class DslDefinitionEntryRuleTest {
 		final PegResult<DslDefinitionEntry> cursor = MAIN
 				.parse(text, 0);
 		final DslDefinitionEntry xDefinitionEntry = cursor.getValue();
-		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
-		Assert.assertEquals(4, xDefinitionEntry.getDefinitionNames().size());
-		Assert.assertTrue(xDefinitionEntry.getDefinitionNames().contains("VerT"));
-		Assert.assertEquals(text.length() - " non reconnu".length(), cursor.getIndex());
+		Assertions.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
+		Assertions.assertEquals(4, xDefinitionEntry.getDefinitionNames().size());
+		Assertions.assertTrue(xDefinitionEntry.getDefinitionNames().contains("VerT"));
+		Assertions.assertEquals(text.length() - " non reconnu".length(), cursor.getIndex());
 
 	}
 
@@ -63,9 +63,9 @@ public final class DslDefinitionEntryRuleTest {
 				.parse(text, 0);
 
 		final DslDefinitionEntry xDefinitionEntry = cursor.getValue();
-		Assert.assertEquals("myLastProperty", xDefinitionEntry.getFieldName());
-		Assert.assertEquals(0, xDefinitionEntry.getDefinitionNames().size());
-		Assert.assertEquals(text.length(), cursor.getIndex());
+		Assertions.assertEquals("myLastProperty", xDefinitionEntry.getFieldName());
+		Assertions.assertEquals(0, xDefinitionEntry.getDefinitionNames().size());
+		Assertions.assertEquals(text.length(), cursor.getIndex());
 	}
 
 	@Test
@@ -74,10 +74,10 @@ public final class DslDefinitionEntryRuleTest {
 		final PegResult<DslDefinitionEntry> cursor = MAIN
 				.parse(text, 0);
 		final DslDefinitionEntry xDefinitionEntry = cursor.getValue();
-		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
-		Assert.assertEquals(3, xDefinitionEntry.getDefinitionNames().size());
-		Assert.assertTrue(xDefinitionEntry.getDefinitionNames().contains("VerT"));
-		Assert.assertEquals(text.length(), cursor.getIndex());
+		Assertions.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
+		Assertions.assertEquals(3, xDefinitionEntry.getDefinitionNames().size());
+		Assertions.assertTrue(xDefinitionEntry.getDefinitionNames().contains("VerT"));
+		Assertions.assertEquals(text.length(), cursor.getIndex());
 	}
 
 	@Test
@@ -86,25 +86,29 @@ public final class DslDefinitionEntryRuleTest {
 		final PegResult<DslDefinitionEntry> cursor = MAIN
 				.parse(text, 0);
 		final DslDefinitionEntry xDefinitionEntry = cursor.getValue();
-		Assert.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
-		Assert.assertEquals(1, xDefinitionEntry.getDefinitionNames().size());
-		Assert.assertTrue(xDefinitionEntry.getDefinitionNames().contains("BLEU"));
-		Assert.assertEquals(text.length(), cursor.getIndex());
+		Assertions.assertEquals("myFirstProperty", xDefinitionEntry.getFieldName());
+		Assertions.assertEquals(1, xDefinitionEntry.getDefinitionNames().size());
+		Assertions.assertTrue(xDefinitionEntry.getDefinitionNames().contains("BLEU"));
+		Assertions.assertEquals(text.length(), cursor.getIndex());
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
-	public void testFail1() throws PegNoMatchFoundException {
-		final String text = "myLastProperty : [BLEU;";
-		//on ne ferme pas l'accolade
-		final PegResult<DslDefinitionEntry> cursor = MAIN
-				.parse(text, 0); //<-- an exception is expected here
-		Assert.assertNotNull(cursor);
+	@Test
+	public void testFail1() {
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
+			final String text = "myLastProperty : [BLEU;";
+			//on ne ferme pas l'accolade
+			final PegResult<DslDefinitionEntry> cursor = MAIN
+					.parse(text, 0); //<-- an exception is expected here
+			Assertions.assertNotNull(cursor);
+		});
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
-	public void testFail2() throws PegNoMatchFoundException {
-		final String text = "myUnknownProperty : BLEU";
-		//on positionne un nom erroné de propriété
-		MAIN.parse(text, 0);
+	@Test
+	public void testFail2() {
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
+			final String text = "myUnknownProperty : BLEU";
+			//on positionne un nom erroné de propriété
+			MAIN.parse(text, 0);
+		});
 	}
 }

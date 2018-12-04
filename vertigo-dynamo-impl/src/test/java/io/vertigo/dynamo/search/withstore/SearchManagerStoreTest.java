@@ -24,10 +24,10 @@ import java.sql.SQLException;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.definition.DefinitionSpace;
@@ -50,7 +50,7 @@ import io.vertigo.dynamo.store.StoreManager;
  *
  * @author npiedeloup
  */
-public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
+public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 	@Inject
@@ -114,7 +114,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testIndexAllQuery() {
 		final long size = query("*:*");
-		Assert.assertEquals(initialDbItemSize, size);
+		Assertions.assertEquals(initialDbItemSize, size);
 	}
 
 	/**
@@ -131,8 +131,8 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 			transaction.commit();
 		}
 		waitIndexation();
-		Assert.assertEquals(initialDbItemSize + 1, query("*:*"));
-		Assert.assertEquals(1, query("DESCRIPTION:légende"));
+		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
+		Assertions.assertEquals(1, query("DESCRIPTION:légende"));
 	}
 
 	/**
@@ -142,15 +142,15 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testIndexDeleteData() {
 		testIndexAllQuery();
-		Assert.assertEquals(1, query("ID:10001"));
+		Assertions.assertEquals(1, query("ID:10001"));
 
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			storeManager.getDataStore().delete(createURI(10001L));
 			transaction.commit();
 		}
 		waitIndexation();
-		Assert.assertEquals(0, query("ID:10001"));
-		Assert.assertEquals(initialDbItemSize - 1, query("*:*"));
+		Assertions.assertEquals(0, query("ID:10001"));
+		Assertions.assertEquals(initialDbItemSize - 1, query("*:*"));
 	}
 
 	/**
@@ -168,8 +168,8 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		}
 
 		waitIndexation();
-		Assert.assertEquals(initialDbItemSize + 1, query("*:*"));
-		Assert.assertEquals(1, query("DESCRIPTION:légende"));
+		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
+		Assertions.assertEquals(1, query("DESCRIPTION:légende"));
 
 		item.setDescription("Vendue");
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -178,9 +178,9 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		}
 
 		waitIndexation();
-		Assert.assertEquals(initialDbItemSize + 1, query("*:*"));
-		Assert.assertEquals(0, query("DESCRIPTION:légende"));
-		Assert.assertEquals(1, query("DESCRIPTION:vendue"));
+		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
+		Assertions.assertEquals(0, query("DESCRIPTION:légende"));
+		Assertions.assertEquals(1, query("DESCRIPTION:vendue"));
 	}
 
 	/**
@@ -198,8 +198,8 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		}
 
 		waitIndexation();
-		Assert.assertEquals(initialDbItemSize + 1, query("*:*"));
-		Assert.assertEquals(1, query("DESCRIPTION:légende"));
+		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
+		Assertions.assertEquals(1, query("DESCRIPTION:légende"));
 
 		item.setDescription("Vendue");
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -211,9 +211,9 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		}
 
 		waitIndexation();
-		Assert.assertEquals(initialDbItemSize + 1, query("*:*"));
-		Assert.assertEquals(0, query("DESCRIPTION:légende"));
-		Assert.assertEquals(1, query("DESCRIPTION:vendue"));
+		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
+		Assertions.assertEquals(0, query("DESCRIPTION:légende"));
+		Assertions.assertEquals(1, query("DESCRIPTION:vendue"));
 	}
 
 	/**
@@ -225,7 +225,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		//On supprime tout
 		remove("*:*");
 		final long resize = query("*:*");
-		Assert.assertEquals(0L, resize);
+		Assertions.assertEquals(0L, resize);
 	}
 
 	/**
@@ -237,13 +237,13 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		testIndexAllQuery();
 		remove("*:*");
 		long resize = query("*:*");
-		Assert.assertEquals(0L, resize);
+		Assertions.assertEquals(0L, resize);
 
 		doReindexAll();
 		waitIndexation();
 
 		resize = query("*:*");
-		Assert.assertEquals(initialDbItemSize, resize);
+		Assertions.assertEquals(initialDbItemSize, resize);
 	}
 
 	/**
@@ -255,20 +255,20 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	public void testReIndexAllAfterDirectDelete() throws SQLException {
 		testIndexAllQuery();
 		long resize = query("*:*");
-		Assert.assertEquals(initialDbItemSize, resize);
+		Assertions.assertEquals(initialDbItemSize, resize);
 
 		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
 			execCallableStatement(connectionCloseable.getConnection(), "delete from item where id = 10001");
 			connectionCloseable.commit();
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			Assert.assertEquals(initialDbItemSize - 1, storeManager.getDataStore().count(itemIndexDefinition.getKeyConceptDtDefinition()));
+			Assertions.assertEquals(initialDbItemSize - 1, storeManager.getDataStore().count(itemIndexDefinition.getKeyConceptDtDefinition()));
 		}
 		doReindexAll();
 		waitIndexation();
 
 		resize = query("*:*");
-		Assert.assertEquals(initialDbItemSize - 1, resize);
+		Assertions.assertEquals(initialDbItemSize - 1, resize);
 	}
 
 	/**
@@ -280,20 +280,20 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	public void testReIndexAllAfterDirectDeleteAll() throws SQLException {
 		testIndexAllQuery();
 		long resize = query("*:*");
-		Assert.assertEquals(initialDbItemSize, resize);
+		Assertions.assertEquals(initialDbItemSize, resize);
 
 		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
 			execCallableStatement(connectionCloseable.getConnection(), "delete from item ");
 			connectionCloseable.commit();
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			Assert.assertEquals(0, storeManager.getDataStore().count(itemIndexDefinition.getKeyConceptDtDefinition()));
+			Assertions.assertEquals(0, storeManager.getDataStore().count(itemIndexDefinition.getKeyConceptDtDefinition()));
 		}
 		doReindexAll();
 		waitIndexation();
 
 		resize = query("*:*");
-		Assert.assertEquals(0, resize);
+		Assertions.assertEquals(0, resize);
 	}
 
 	private static Item createNewItem() {

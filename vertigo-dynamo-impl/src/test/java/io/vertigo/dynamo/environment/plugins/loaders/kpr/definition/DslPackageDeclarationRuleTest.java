@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.commons.peg.PegResult;
@@ -32,21 +32,25 @@ public final class DslPackageDeclarationRuleTest {
 	public void testExpression() throws PegNoMatchFoundException {
 		final PegResult<String> result = PACKAGE_DECLARATION_RULE
 				.parse("package io.vertigo  xxxx", 0);
-		Assert.assertEquals("io.vertigo", result.getValue());
-		Assert.assertEquals("package io.vertigo".length(), result.getIndex());
+		Assertions.assertEquals("io.vertigo", result.getValue());
+		Assertions.assertEquals("package io.vertigo".length(), result.getIndex());
 	}
 
-	@Test(expected = Exception.class)
-	public void testMalFormedExpression() throws PegNoMatchFoundException {
-		final PegResult<String> result = PACKAGE_DECLARATION_RULE
-				.parse("packageio.vertigo", 0);//<-- en exception is excpected here
-		Assert.assertNotNull(result);
+	@Test
+	public void testMalFormedExpression() {
+		Assertions.assertThrows(Exception.class, () -> {
+			final PegResult<String> result = PACKAGE_DECLARATION_RULE
+					.parse("packageio.vertigo", 0);//<-- en exception is excpected here
+			Assertions.assertNotNull(result);
+		});
 	}
 
-	@Test(expected = Exception.class)
-	public void testMalFormedExpression2() throws PegNoMatchFoundException {
-		final PegResult<String> cursor = PACKAGE_DECLARATION_RULE
-				.parse("  packageio.vertigo", 0);//<-- en exception is excpected here
-		Assert.assertNotNull(cursor);
+	@Test
+	public void testMalFormedExpression2() {
+		Assertions.assertThrows(Exception.class, () -> {
+			final PegResult<String> cursor = PACKAGE_DECLARATION_RULE
+					.parse("  packageio.vertigo", 0);//<-- en exception is excpected here
+			Assertions.assertNotNull(cursor);
+		});
 	}
 }

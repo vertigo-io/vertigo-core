@@ -26,10 +26,10 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.definition.DefinitionSpace;
@@ -69,7 +69,7 @@ import io.vertigo.util.ListBuilder;
  *
  * @author pchretien
  */
-public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
+public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	protected StoreManager storeManager;
 	@Inject
@@ -181,11 +181,11 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
 			final DtListURI someCars = new DtListURIForCriteria<>(dtDefinitionCar, null, 3);
 			final DtList<Car> dtc1 = storeManager.getDataStore().findAll(someCars);
-			Assert.assertEquals(3, dtc1.size());
+			Assertions.assertEquals(3, dtc1.size());
 			//-----
 			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
 			final DtList<Car> dtc = storeManager.getDataStore().findAll(allCars);
-			Assert.assertEquals(9, dtc.size());
+			Assertions.assertEquals(9, dtc.size());
 		}
 	}
 
@@ -196,8 +196,8 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 					DtObjectUtil.findDtDefinition(Car.class),
 					Criterions.isEqualTo(CarFields.MTY_CD, MotorTypeEnum.essence.getEntityUID().getId()));
 			//---
-			Assert.assertEquals(1, dtcEssence.size());
-			Assert.assertTrue(dtcEssence.get(0).motorType().getEnumValue() == MotorTypeEnum.essence);
+			Assertions.assertEquals(1, dtcEssence.size());
+			Assertions.assertTrue(dtcEssence.get(0).motorType().getEnumValue() == MotorTypeEnum.essence);
 		}
 	}
 
@@ -215,7 +215,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 			//-----
-			Assert.assertEquals(9, count);
+			Assertions.assertEquals(9, count);
 		}
 	}
 
@@ -265,8 +265,8 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
 			final DtList<Famille> dtc = storeManager.getDataStore().findAll(allFamilles);
-			Assert.assertNotNull(dtc);
-			Assert.assertTrue("La liste des famille est vide", dtc.isEmpty());
+			Assertions.assertNotNull(dtc);
+			Assertions.assertTrue(dtc.isEmpty(), "La liste des famille est vide");
 			transaction.commit();
 		}
 	}
@@ -279,16 +279,16 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
 			DtList<Famille> dtc = storeManager.getDataStore().findAll(allFamilles);
-			Assert.assertEquals(0, dtc.size());
+			Assertions.assertEquals(0, dtc.size());
 			//-----
 			final Famille famille = new Famille();
 			famille.setLibelle("encore un");
 			final Famille createdFamille = storeManager.getDataStore().create(famille);
 			// on attend un objet avec un ID non null ?
-			Assert.assertNotNull(createdFamille.getFamId());
+			Assertions.assertNotNull(createdFamille.getFamId());
 			//-----
 			dtc = storeManager.getDataStore().findAll(allFamilles);
-			Assert.assertEquals(1, dtc.size());
+			Assertions.assertEquals(1, dtc.size());
 			transaction.commit();
 		}
 	}
@@ -296,22 +296,24 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 	/**
 	 * on vérifier l'exception levée si une contrainte bdd n'est pas respecté.
 	 */
-	@Test(expected = Exception.class)
+	@Test
 	public void testCreateFamilleFail() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final DecimalFormat df = new DecimalFormat("000000000:");
-			//-----
-			final Famille famille = new Famille();
-			final StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < 4000; i++) {
-				sb.append(df.format(i));
+		Assertions.assertThrows(Exception.class, () -> {
+			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+				final DecimalFormat df = new DecimalFormat("000000000:");
+				//-----
+				final Famille famille = new Famille();
+				final StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < 4000; i++) {
+					sb.append(df.format(i));
+				}
+				// libelle
+				famille.setLibelle(sb.toString());
+				//On doit échouer car le libellé est trop long
+				storeManager.getDataStore().create(famille);
+				Assertions.fail();
 			}
-			// libelle
-			famille.setLibelle(sb.toString());
-			//On doit échouer car le libellé est trop long
-			storeManager.getDataStore().create(famille);
-			Assert.fail();
-		}
+		});
 	}
 
 	@Test
@@ -343,13 +345,13 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 			//on vérifie que le contenu des fichiers est identique.
 			//assertEquals("toto", "toto");
 			//assertEquals("toto", "ti");
-			Assert.assertEquals(source, read);
-			Assert.assertTrue("Test contenu du fichier", read.startsWith("Chant I"));
-			Assert.assertTrue("Test contenu du fichier : " + secureSubString(read, 16711, "ses notes langoureuses,"), read.indexOf("ses notes langoureuses,") > 0);
-			Assert.assertTrue("Test contenu du fichier : " + secureSubString(read, 11004, "mal : \"Adolescent,"), read.indexOf("mal : \"Adolescent,") > 0);
+			Assertions.assertEquals(source, read);
+			Assertions.assertTrue(read.startsWith("Chant I"), "Test contenu du fichier");
+			Assertions.assertTrue(read.indexOf("ses notes langoureuses,") > 0, "Test contenu du fichier : " + secureSubString(read, 16711, "ses notes langoureuses,"));
+			Assertions.assertTrue(read.indexOf("mal : \"Adolescent,") > 0, "Test contenu du fichier : " + secureSubString(read, 11004, "mal : \"Adolescent,"));
 
 			//On désactive pour l'instant
-			//Ne marche pas sur la PIC pour cause de charset sur le àé			//Assert.assertTrue("Test contenu du fichier : " + secureSubString(read, 15579, "adieu !à ;"), read.indexOf("adieu !à ;") > 0);
+			//Ne marche pas sur la PIC pour cause de charset sur le àé			//Assertions.assertTrue("Test contenu du fichier : " + secureSubString(read, 15579, "adieu !à ;"), read.indexOf("adieu !à ;") > 0);
 		}
 	}
 
@@ -374,8 +376,8 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 			//on récupère la liste des voitures
 			final DtList<Car> cars = storeManager.getDataStore().findAll(allCarsUri);
-			Assert.assertNotNull(cars);
-			Assert.assertFalse("La liste des cars est vide", cars.isEmpty());
+			Assertions.assertNotNull(cars);
+			Assertions.assertFalse(cars.isEmpty(), "La liste des cars est vide");
 
 			//on associe la liste de voiture à la famille en NN
 			final List<UID> carUriList = new ArrayList<>();
@@ -386,7 +388,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 			//On garde le résultat de l'association NN
 			final DtList<Car> firstResult = createdFamille.getVoituresLocationList();
-			Assert.assertEquals("Test tailles du nombre de voiture dans une NN", cars.size(), firstResult.size());
+			Assertions.assertEquals(cars.size(), firstResult.size(), "Test tailles du nombre de voiture dans une NN");
 
 			//On met à jour l'association en retirant le premier élément
 			carUriList.remove(0);
@@ -394,12 +396,12 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 			//on garde le résultat en lazy : il doit avoir le meme nombre de voiture qu'au début
 			final DtList<Car> lazyResult = createdFamille.getVoituresLocationList();
-			Assert.assertEquals("Test tailles du nombre de voiture pour une NN", firstResult.size(), lazyResult.size());
+			Assertions.assertEquals(firstResult.size(), lazyResult.size(), "Test tailles du nombre de voiture pour une NN");
 
 			//on recharge la famille et on recharge la liste issus de l'association NN : il doit avoir une voiture de moins qu'au début
 			final Famille famille2 = storeManager.getDataStore().readOne(UID.of(Famille.class, createdFamille.getFamId()));
 			final DtList<Car> secondResult = famille2.getVoituresLocationList();
-			Assert.assertEquals("Test tailles du nombre de voiture dans une NN", firstResult.size() - 1, secondResult.size());
+			Assertions.assertEquals(firstResult.size() - 1, secondResult.size(), "Test tailles du nombre de voiture dans une NN");
 			transaction.commit();
 		}
 	}
@@ -420,8 +422,8 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 			//on récupère la liste des voitures
 			final DtList<Car> cars = storeManager.getDataStore().findAll(allCarsUri);
-			Assert.assertNotNull(cars);
-			Assert.assertFalse("La liste des cars est vide", cars.isEmpty());
+			Assertions.assertNotNull(cars);
+			Assertions.assertFalse(cars.isEmpty(), "La liste des cars est vide");
 
 			//on associe la liste de voiture à la famille en 1N
 			for (final Car car : cars) {
@@ -443,12 +445,12 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 			//on garde le résultat en lazy : il doit avoir le meme nombre de voiture qu'au début
 			final DtList<Car> lazyResult = famille.getVoituresFamilleList();
-			Assert.assertEquals("Test tailles du nombre de voiture pour une 1-N", firstResult.size(), lazyResult.size());
+			Assertions.assertEquals(firstResult.size(), lazyResult.size(), "Test tailles du nombre de voiture pour une 1-N");
 
 			//on recharge la famille et on recharge la liste issus de l'association 1N : il doit avoir une voiture de moins qu'au début
 			final Famille famille2 = storeManager.getDataStore().readOne(famille.getUID());
 			final DtList<Car> secondResult = famille2.getVoituresFamilleList();
-			Assert.assertEquals("Test tailles du nombre de voiture pour une 1-N", firstResult.size() - 1, secondResult.size());
+			Assertions.assertEquals(firstResult.size() - 1, secondResult.size(), "Test tailles du nombre de voiture pour une 1-N");
 			transaction.commit();
 		}
 	}
@@ -569,14 +571,16 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testTxCrudInsertTwoCommit() {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Car car = createNewCar();
-			storeManager.getDataStore().create(car);
-			transaction.commit();
-			transaction.commit();
-		}
+		Assertions.assertThrows(IllegalStateException.class, () -> {
+			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+				final Car car = createNewCar();
+				storeManager.getDataStore().create(car);
+				transaction.commit();
+				transaction.commit();
+			}
+		});
 	}
 
 	@Test
@@ -631,26 +635,30 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testCrudInsertNoTx() {
-		final Car car = createNewCar();
-		storeManager.getDataStore().create(car);
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			final Car car = createNewCar();
+			storeManager.getDataStore().create(car);
+		});
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testNativeInsertNoTx() {
-		final Car car = createNewCar();
-		nativeInsertCar(car);
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			final Car car = createNewCar();
+			nativeInsertCar(car);
+		});
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testCrudSelectNoTx() {
-		checkCrudCarsCount(0);
+		Assertions.assertThrows(NullPointerException.class, () -> checkCrudCarsCount(0));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testNativeSelectNoTx() {
-		checkNativeCarsCount(0);
+		Assertions.assertThrows(NullPointerException.class, () -> checkNativeCarsCount(0));
 	}
 
 	@Test
@@ -682,7 +690,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
 			final long count = storeManager.getDataStore().count(dtDefinitionCar);
 			//-----
-			Assert.assertEquals(9, count);
+			Assertions.assertEquals(9, count);
 		}
 	}
 
@@ -732,14 +740,14 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU4 {
 
 	private void checkNativeCarsCount(final int deltaCount) {
 		final DtList<Car> cars = nativeLoadCarList();
-		Assert.assertNotNull(cars);
-		Assert.assertEquals("Test du nombre de voiture", carDataBase.size() + deltaCount, cars.size());
+		Assertions.assertNotNull(cars);
+		Assertions.assertEquals(carDataBase.size() + deltaCount, cars.size(), "Test du nombre de voiture");
 	}
 
 	private void checkCrudCarsCount(final int deltaCount) {
 		final DtList<Car> cars = storeManager.getDataStore().findAll(allCarsUri);
-		Assert.assertNotNull(cars);
-		Assert.assertEquals("Test du nombre de voiture", carDataBase.size() + deltaCount, cars.size());
+		Assertions.assertNotNull(cars);
+		Assertions.assertEquals(carDataBase.size() + deltaCount, cars.size(), "Test du nombre de voiture");
 	}
 
 	private static Car createNewCar() {

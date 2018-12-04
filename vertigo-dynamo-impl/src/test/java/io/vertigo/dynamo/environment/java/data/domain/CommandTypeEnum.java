@@ -29,15 +29,15 @@ public enum CommandTypeEnum implements MasterDataEnum<CommandType> {
 	optionelle("2"), //
 	provisoire("3");
 
-	private final UID<CommandType> entityUID;
+	private final Serializable id;
 
 	private CommandTypeEnum(final Serializable id) {
-		entityUID = UID.of(CommandType.class, id);
+		this.id = id;
 	}
 
 	@Override
 	public UID<CommandType> getEntityUID() {
-		return entityUID;
+		return UID.of(CommandType.class, id);
 	}
 
 }

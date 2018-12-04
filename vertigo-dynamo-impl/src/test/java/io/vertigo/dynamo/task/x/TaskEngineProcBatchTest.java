@@ -23,10 +23,10 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -43,7 +43,7 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
  *
  * @author dszniten
  */
-public final class TaskEngineProcBatchTest extends AbstractTestCaseJU4 {
+public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 	private static final String DTC_SUPER_HERO_IN = "DTC_SUPER_HERO_IN";
 	private static final String SUPER_HERO_ID_LIST_IN = "SUPER_HERO_ID_LIST_IN";
 	private static final String DTC_SUPER_HERO_OUT = "DTC_SUPER_HERO_OUT";
@@ -91,7 +91,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU4 {
 			transaction.commit();
 		}
 
-		Assert.assertEquals(superHeroes.size(), selectHeroes().size());
+		Assertions.assertEquals(superHeroes.size(), selectHeroes().size());
 
 	}
 
@@ -123,7 +123,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU4 {
 			transaction.commit();
 		}
 
-		Assert.assertEquals(superHeroes.size(), selectHeroes().size());
+		Assertions.assertEquals(superHeroes.size(), selectHeroes().size());
 
 	}
 
@@ -152,7 +152,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU4 {
 			transaction.commit();
 		}
 
-		Assert.assertEquals(superHeroesIds.size(), selectHeroes().size());
+		Assertions.assertEquals(superHeroesIds.size(), selectHeroes().size());
 
 	}
 
