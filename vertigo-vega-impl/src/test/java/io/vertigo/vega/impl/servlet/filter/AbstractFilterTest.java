@@ -21,8 +21,8 @@ package io.vertigo.vega.impl.servlet.filter;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author npiedeloup
@@ -32,113 +32,113 @@ public class AbstractFilterTest {
 	@Test
 	public final void testExactMatch() {
 		final Optional<Pattern> pattern = AbstractFilter.parsePattern("/myExactMatchTest.html");
-		Assert.assertTrue(pattern.isPresent());
+		Assertions.assertTrue(pattern.isPresent());
 
 		final String uri = "http://localhost:8080/testFilter/myExactMatchTest.html";
 		final boolean result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
+		Assertions.assertTrue(result, uri + " doesn't match " + pattern.get());
 	}
 
 	@Test
 	public final void testMiddleStar() {
 		final Optional<Pattern> pattern = AbstractFilter.parsePattern("/my*MatchTest.html");
-		Assert.assertTrue(pattern.isPresent());
+		Assertions.assertTrue(pattern.isPresent());
 
 		String uri = "http://localhost:8080/testFilter/myNotSeparatedStarMatchTest.html";
 		boolean result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
+		Assertions.assertTrue(result, uri + " doesn't match " + pattern.get());
 
 		uri = "http://localhost:8080/testFilter/mySeparated/StarMatchTest.html";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertFalse(uri + " match " + pattern.get(), result);
+		Assertions.assertFalse(result, uri + " match " + pattern.get());
 	}
 
 	@Test
 	public final void testTwoMiddleStar() {
 		final Optional<Pattern> pattern = AbstractFilter.parsePattern("/first*Match1Test.html;/other*Match2Test.html");
-		Assert.assertTrue(pattern.isPresent());
+		Assertions.assertTrue(pattern.isPresent());
 
 		String uri = "http://localhost:8080/testFilter/firstNotSeparatedStarMatch1Test.html";
 		boolean result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
+		Assertions.assertTrue(result, uri + " doesn't match " + pattern.get());
 
 		uri = "http://localhost:8080/testFilter/otherNotSeparatedStarMatch2Test.html";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
+		Assertions.assertTrue(result, uri + " doesn't match " + pattern.get());
 
 		uri = "http://localhost:8080/testFilter/firstNotSeparatedStarMatch2Test.html";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertFalse(uri + " match " + pattern.get(), result);
+		Assertions.assertFalse(result, uri + " match " + pattern.get());
 
 		uri = "http://localhost:8080/testFilter/otherNotSeparatedStarMatch1Test.html";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertFalse(uri + " match " + pattern.get(), result);
+		Assertions.assertFalse(result, uri + " match " + pattern.get());
 	}
 
 	@Test
 	public final void testEndStar() {
 		final Optional<Pattern> pattern = AbstractFilter.parsePattern("/myEndMatchTest.*");
-		Assert.assertTrue(pattern.isPresent());
+		Assertions.assertTrue(pattern.isPresent());
 
 		String uri = "http://localhost:8080/testFilter/myEndMatchTest.html";
 		boolean result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
+		Assertions.assertTrue(result, uri + " doesn't match " + pattern.get());
 
 		uri = "http://localhost:8080/testFilter/myEndMatchTest.xhtml";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
+		Assertions.assertTrue(result, uri + " doesn't match " + pattern.get());
 
 		uri = "http://localhost:8080/testFilter/myEndMatchTest.do";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
+		Assertions.assertTrue(result, uri + " doesn't match " + pattern.get());
 
 		uri = "http://localhost:8080/testFilter/myEndMatchTest.middle/orOtherpath";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
+		Assertions.assertTrue(result, uri + " doesn't match " + pattern.get());
 	}
 
 	@Test
 	public final void testTwoEndStar() {
 		final Optional<Pattern> pattern = AbstractFilter.parsePattern("/myEndMatchTest.*;/myPathMatchTest/*");
-		Assert.assertTrue(pattern.isPresent());
+		Assertions.assertTrue(pattern.isPresent());
 
 		String uri = "http://localhost:8080/testFilter/myEndMatchTest.html";
 		boolean result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
+		Assertions.assertTrue(result, uri + " doesn't match " + pattern.get());
 
 		uri = "http://localhost:8080/testFilter/myEndMatchTest.do";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
+		Assertions.assertTrue(result, uri + " doesn't match " + pattern.get());
 
 		uri = "http://localhost:8080/testFilter/myPathMatchTest/andTheEnd.html";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
+		Assertions.assertTrue(result, uri + " doesn't match " + pattern.get());
 
 		uri = "http://localhost:8080/testFilter/myPathMatchTest/otherPath/andAtLast.html";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
+		Assertions.assertTrue(result, uri + " doesn't match " + pattern.get());
 
 		uri = "http://localhost:8080/testFilter/myPathMatchTestCompleted/andEndIt.html";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertFalse(uri + " match " + pattern.get(), result);
+		Assertions.assertFalse(result, uri + " match " + pattern.get());
 
 	}
 
 	@Test
 	public final void testPathMatch() {
 		final Optional<Pattern> pattern = AbstractFilter.parsePattern("/myPathMatchTest*");
-		Assert.assertTrue(pattern.isPresent());
+		Assertions.assertTrue(pattern.isPresent());
 
 		String uri = "http://localhost:8080/testFilter/myPathMatchTest/andTheEnd.html";
 		boolean result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
+		Assertions.assertTrue(result, uri + " doesn't match " + pattern.get());
 
 		uri = "http://localhost:8080/testFilter/myPathMatchTest/otherPath/andAtLast.html";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
+		Assertions.assertTrue(result, uri + " doesn't match " + pattern.get());
 
 		uri = "http://localhost:8080/testFilter/myPathMatchTestCompleted/andEndIt.html";
 		result = AbstractFilter.isUrlMatch("testFilter", uri, pattern.get());
-		Assert.assertTrue(uri + " doesn't match " + pattern.get(), result);
+		Assertions.assertTrue(result, uri + " doesn't match " + pattern.get());
 	}
 }

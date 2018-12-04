@@ -21,8 +21,8 @@ package io.vertigo.dynamo.kvstore.berkeley;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Ignore;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.transaction.VTransactionWritable;
@@ -122,7 +122,7 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testPurgeTooOldElements() {
 		int flowerId = 1;
 		for (int i = 0; i < 40; i++) {
