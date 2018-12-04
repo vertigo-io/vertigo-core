@@ -505,34 +505,38 @@ public final class GoogleJsonEngine implements JsonEngine {
 				filterFields(jsonSubElement, includedAllFields, excludedAllFields);
 			}
 		} else if (jsonElement.isJsonObject()) {
-			final Map<String, Tuple2<Set<String>, Set<String>>> filteredSubFields = parseSubFieldName(includedAllFields, excludedAllFields);
-			final Set<String> includedFields = filteredSubFields.containsKey(FIRST_LEVEL_KEY) ? filteredSubFields.get(FIRST_LEVEL_KEY).getVal1() : Collections.emptySet();
-			final Set<String> excludedFields = filteredSubFields.containsKey(FIRST_LEVEL_KEY) ? filteredSubFields.get(FIRST_LEVEL_KEY).getVal2() : Collections.emptySet();
-
-			final JsonObject jsonObject = jsonElement.getAsJsonObject();
-			for (final String excludedField : excludedFields) {
-				jsonObject.remove(excludedField);
-			}
-
-			if (!includedFields.isEmpty()) {
-				final Set<String> notIncludedFields = new HashSet<>();
-				for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
-					if (!includedFields.contains(entry.getKey())) {
-						notIncludedFields.add(entry.getKey());
-					}
-				}
-				for (final String notIncludedField : notIncludedFields) {
-					jsonObject.remove(notIncludedField);
-				}
-			}
-
-			for (final Map.Entry<String, Tuple2<Set<String>, Set<String>>> filteredField : filteredSubFields.entrySet()) {
-				if (filteredField.getValue() != null) {
-					filterFields(jsonObject.get(filteredField.getKey()), filteredField.getValue().getVal1(), filteredField.getValue().getVal2());
-				}
-			}
+			filterObjectFields(jsonElement, includedAllFields, excludedAllFields);
 		}
 		//else Primitive : no exclude
+	}
+
+	private void filterObjectFields(final JsonElement jsonElement, final Set<String> includedAllFields, final Set<String> excludedAllFields) {
+		final Map<String, Tuple2<Set<String>, Set<String>>> filteredSubFields = parseSubFieldName(includedAllFields, excludedAllFields);
+		final Set<String> includedFields = filteredSubFields.containsKey(FIRST_LEVEL_KEY) ? filteredSubFields.get(FIRST_LEVEL_KEY).getVal1() : Collections.emptySet();
+		final Set<String> excludedFields = filteredSubFields.containsKey(FIRST_LEVEL_KEY) ? filteredSubFields.get(FIRST_LEVEL_KEY).getVal2() : Collections.emptySet();
+
+		final JsonObject jsonObject = jsonElement.getAsJsonObject();
+		for (final String excludedField : excludedFields) {
+			jsonObject.remove(excludedField);
+		}
+
+		if (!includedFields.isEmpty()) {
+			final Set<String> notIncludedFields = new HashSet<>();
+			for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+				if (!includedFields.contains(entry.getKey())) {
+					notIncludedFields.add(entry.getKey());
+				}
+			}
+			for (final String notIncludedField : notIncludedFields) {
+				jsonObject.remove(notIncludedField);
+			}
+		}
+
+		for (final Map.Entry<String, Tuple2<Set<String>, Set<String>>> filteredField : filteredSubFields.entrySet()) {
+			if (filteredField.getValue() != null) {
+				filterFields(jsonObject.get(filteredField.getKey()), filteredField.getValue().getVal1(), filteredField.getValue().getVal2());
+			}
+		}
 	}
 
 	private Map<String, Tuple2<Set<String>, Set<String>>> parseSubFieldName(final Set<String> includedFields, final Set<String> excludedFields) {
