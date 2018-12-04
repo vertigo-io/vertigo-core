@@ -20,8 +20,8 @@ package io.vertigo.account.authorization.dsl;
 
 import java.util.Collections;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.account.impl.authorization.dsl.translator.SearchSecurityRuleTranslator;
 import io.vertigo.account.impl.authorization.dsl.translator.SqlSecurityRuleTranslator;
@@ -75,7 +75,7 @@ public final class DslSecurityRulesBuilderTest {
 				.withCriteria(Collections.singletonMap("query", Collections.singletonList(testParam[1])));
 		final String result = securityRuleTranslator.toSql();
 		final String expectedResult = testParam[Math.min(getSqlResult(), testParam.length - 1)];
-		Assert.assertEquals("Built sql query #" + i + " incorrect", expectedResult, result);
+		Assertions.assertEquals(expectedResult, result, "Built sql query #" + i + " incorrect");
 	}
 
 	private void testSearchQuery(final String[] testParam, final int i) {
@@ -84,7 +84,7 @@ public final class DslSecurityRulesBuilderTest {
 				.withCriteria(Collections.singletonMap("query", Collections.singletonList(testParam[1])));
 		final String result = securityRuleTranslator.toSearchQuery();
 		final String expectedResult = testParam[Math.min(getSearchResult(), testParam.length - 1)];
-		Assert.assertEquals("Built search query #" + i + " incorrect", expectedResult, result);
+		Assertions.assertEquals(expectedResult, result, "Built search query #" + i + " incorrect");
 	}
 
 }

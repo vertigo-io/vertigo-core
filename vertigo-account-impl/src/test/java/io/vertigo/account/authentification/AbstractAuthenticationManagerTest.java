@@ -18,26 +18,18 @@
  */
 package io.vertigo.account.authentification;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Optional;
 
 import javax.inject.Inject;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.authentication.AuthenticationToken;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
-import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 
@@ -46,60 +38,32 @@ import io.vertigo.persona.security.VSecurityManager;
  *
  * @author npiedeloup
  */
-@RunWith(Parameterized.class)
-public final class AuthenticationManagerTest {
-	private AutoCloseableApp app;
+abstract class AbstractAuthenticationManagerTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private VSecurityManager securityManager;
-
 	@Inject
 	private AuthenticationManager authenticationManager;
 
-	@Parameters
-	public static Collection<Object[]> params() {
-		return Arrays.asList(
-				//redis
-				new Object[] { true },
-				//memory (redis= false)
-				new Object[] { false });
-	}
-
-	final boolean redis;
-
-	/**
-	 * Constructor
-	 * @param redis use redis or memory
-	 */
-	public AuthenticationManagerTest(final boolean redis) {
-		//params are automatically injected
-		this.redis = redis;
-	}
-
-	@Before
-	public void setUp() {
-		app = new AutoCloseableApp(MyAppConfig.config(redis));
-		DIInjector.injectMembers(this, app.getComponentSpace());
+	@Override
+	public void doSetUp() {
 		securityManager.startCurrentUserSession(securityManager.createUserSession());
 	}
 
-	@After
-	public void tearDown() {
-		if (app != null) {
-			securityManager.stopCurrentUserSession();
-			app.close();
-		}
+	@Override
+	public void doTearDown() {
+		securityManager.stopCurrentUserSession();
 	}
 
 	@Test
 	public void testLoginFail() {
 		final AuthenticationToken token = new UsernamePasswordAuthenticationToken("badUserName", "badPassword");
 		final Optional<Account> account = authenticationManager.login(token);
-		Assert.assertFalse("Shouldn't found any account with a bad login", account.isPresent());
+		Assertions.assertFalse(account.isPresent(), "Shouldn't found any account with a bad login");
 
 		final Optional<UserSession> userSession = securityManager.getCurrentUserSession();
-		Assert.assertTrue("No UserSession", userSession.isPresent());
-		Assert.assertFalse("Badly authenticated", userSession.get().isAuthenticated());
+		Assertions.assertTrue(userSession.isPresent(), "No UserSession");
+		Assertions.assertFalse(userSession.get().isAuthenticated(), "Badly authenticated");
 	}
 
 	@Test
@@ -110,11 +74,11 @@ public final class AuthenticationManagerTest {
 	private Optional<Account> loginSuccess() {
 		final AuthenticationToken token = new UsernamePasswordAuthenticationToken("admin", "v3rt1g0");
 		final Optional<Account> account = authenticationManager.login(token);
-		Assert.assertTrue("Authent fail", account.isPresent());
+		Assertions.assertTrue(account.isPresent(), "Authent fail");
 
 		final Optional<UserSession> userSession = securityManager.getCurrentUserSession();
-		Assert.assertTrue("No UserSession", userSession.isPresent());
-		Assert.assertTrue("Not authenticated", userSession.get().isAuthenticated());
+		Assertions.assertTrue(userSession.isPresent(), "No UserSession");
+		Assertions.assertTrue(userSession.get().isAuthenticated(), "Not authenticated");
 		return account;
 	}
 
@@ -123,7 +87,7 @@ public final class AuthenticationManagerTest {
 		final Optional<Account> accountOpt = loginSuccess();
 		final Optional<Account> loggedAccountOpt = authenticationManager.getLoggedAccount();
 
-		Assert.assertEquals(accountOpt, loggedAccountOpt);
+		Assertions.assertEquals(accountOpt, loggedAccountOpt);
 	}
 
 	@Test
@@ -131,11 +95,11 @@ public final class AuthenticationManagerTest {
 		loginSuccess();
 		//		final Optional<Account> account = authenticateSuccess();
 		final Optional<UserSession> userSession = securityManager.getCurrentUserSession();
-		Assert.assertTrue("No UserSession", userSession.isPresent());
-		Assert.assertTrue("Not authenticated", userSession.get().isAuthenticated());
+		Assertions.assertTrue(userSession.isPresent(), "No UserSession");
+		Assertions.assertTrue(userSession.get().isAuthenticated(), "Not authenticated");
 
 		authenticationManager.logout();
 
-		Assert.assertFalse("Badly authenticated", userSession.get().isAuthenticated());
+		Assertions.assertFalse(userSession.get().isAuthenticated(), "Badly authenticated");
 	}
 }

@@ -22,11 +22,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.account.identityprovider.model.User;
 import io.vertigo.persona.security.VSecurityManager;
 
@@ -35,7 +35,7 @@ import io.vertigo.persona.security.VSecurityManager;
  *
  * @author npiedeloup
  */
-public final class IdentityProviderManagerTest extends AbstractTestCaseJU4 {
+public final class IdentityProviderManagerTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private VSecurityManager securityManager;
@@ -53,37 +53,37 @@ public final class IdentityProviderManagerTest extends AbstractTestCaseJU4 {
 		securityManager.stopCurrentUserSession();
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testUsersCount() {
-		Assert.assertEquals(1, identityProviderManager.getUsersCount());
+		Assertions.assertEquals(1, identityProviderManager.getUsersCount());
 	}
 
 	@Test
 	public void testAllUsers() {
-		Assert.assertEquals(1, identityProviderManager.getAllUsers().size());
+		Assertions.assertEquals(1, identityProviderManager.getAllUsers().size());
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testPhoto() {
 		final List<User> users = identityProviderManager.getAllUsers();
 		//Before the photo is the default photo
-		Assert.assertFalse(identityProviderManager.getPhoto(users.get(0).getUID()).isPresent());
-		Assert.assertEquals("defaultPhoto.png", identityProviderManager.getPhoto(users.get(0).getUID()).get().getFileName());
+		Assertions.assertFalse(identityProviderManager.getPhoto(users.get(0).getUID()).isPresent());
+		Assertions.assertEquals("defaultPhoto.png", identityProviderManager.getPhoto(users.get(0).getUID()).get().getFileName());
 	}
 
 	@Test
 	public void testNoPhoto() {
 		final List<User> users = identityProviderManager.getAllUsers();
 		//Before the photo is the default photo
-		Assert.assertFalse(identityProviderManager.getPhoto(users.get(0).getUID()).isPresent());
+		Assertions.assertFalse(identityProviderManager.getPhoto(users.get(0).getUID()).isPresent());
 	}
 
 	@Test
 	public void testUserByAuthToken() {
 		final User user = identityProviderManager.getUserByAuthToken("admin");
-		Assert.assertNotNull("Can't find user by login ", user);
+		Assertions.assertNotNull(user, "Can't find user by login ");
 	}
 
 }

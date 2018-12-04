@@ -22,8 +22,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import io.vertigo.account.account.AccountManagerTest;
-import io.vertigo.account.authentification.AuthenticationManagerTest;
+import io.vertigo.account.account.DatabaseAccountManagerTest;
+import io.vertigo.account.account.MemoryAccountManagerTest;
+import io.vertigo.account.account.RedisAccountManagerTest;
+import io.vertigo.account.authentification.NoCacheAuthenticationManagerTest;
+import io.vertigo.account.authentification.RedisCacheAuthenticationManagerTest;
 import io.vertigo.account.authorization.VSecurityManagerTest;
 import io.vertigo.account.authorization.dsl.DslSecurityRulesBuilderTest;
 import io.vertigo.account.identityprovider.IdentityProviderManagerTest;
@@ -35,8 +38,11 @@ import io.vertigo.account.identityprovider.IdentityProviderManagerTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-		AccountManagerTest.class,
-		AuthenticationManagerTest.class,
+		RedisAccountManagerTest.class,
+		DatabaseAccountManagerTest.class,
+		MemoryAccountManagerTest.class,
+		RedisCacheAuthenticationManagerTest.class,
+		NoCacheAuthenticationManagerTest.class,
 		VSecurityManagerTest.class,
 		IdentityProviderManagerTest.class,
 		DslSecurityRulesBuilderTest.class
