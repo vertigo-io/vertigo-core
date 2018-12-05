@@ -61,7 +61,7 @@ public final class LoaderAccountStorePlugin implements AccountStorePlugin, Activ
 
 	/** {@inheritDoc} */
 	@Override
-	public final void start() {
+	public void start() {
 		accountLoader = Home.getApp().getComponentSpace().resolve(accountLoaderName, AccountLoader.class);
 		if (groupLoaderName.isPresent()) {
 			groupLoader = Optional.of(Home.getApp().getComponentSpace().resolve(groupLoaderName.get(), GroupLoader.class));

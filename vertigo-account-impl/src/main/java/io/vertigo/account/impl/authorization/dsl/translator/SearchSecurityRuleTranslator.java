@@ -119,7 +119,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		}
 	}
 
-	private String toOperator(final ValueOperator operator) {
+	private static String toOperator(final ValueOperator operator) {
 		switch (operator) {
 			case GT:
 				return ">";
