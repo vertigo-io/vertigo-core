@@ -19,13 +19,14 @@
 package io.vertigo.account.plugins.identityprovider.text;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -131,8 +132,8 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> List<E> getAllUsers() {
-		return users.values().stream()
-				.map(accountInfo -> (E) accountInfo.getUser())
+		return (List<E>) users.values().stream()
+				.map(IdentityUserInfo::getUser)
 				.collect(Collectors.toList());
 	}
 
@@ -150,12 +151,12 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		if (identityAccountInfo.getPhotoUrl() == null) {
 			return Optional.empty();
 		}
-		final File photoFile = new File(identityAccountInfo.getPhotoUrl());
-		if (!photoFile.exists()) {
+		final Path photoFile = Paths.get(identityAccountInfo.getPhotoUrl());
+		if (!Files.exists(photoFile)) {
 			return Optional.empty();
 		}
 		try {
-			final String contentType = Files.probeContentType(photoFile.toPath());
+			final String contentType = Files.probeContentType(photoFile);
 			return Optional.of(new FSFile("photoOf" + accountURI.getId(), contentType, photoFile));
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);

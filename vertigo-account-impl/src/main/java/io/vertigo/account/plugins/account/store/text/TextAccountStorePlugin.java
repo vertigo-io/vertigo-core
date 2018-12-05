@@ -26,6 +26,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -173,17 +175,17 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	}
 
 	private static Optional<VFile> createVFile(final UID<Account> accountURI, final URL fileURL, final String photoUrl) {
-		File photoFile;
+		Path photoFile;
 		try {
-			photoFile = new File(fileURL.toURI());
+			photoFile = Paths.get(fileURL.toURI());
 		} catch (final URISyntaxException e) {
 			return Optional.empty();
 		}
-		Assertion.checkArgument(photoFile.exists(), "Account {0} photo {1} not found", accountURI, photoUrl);
-		Assertion.checkArgument(photoFile.isFile(), "Account {0} photo {1} must be a file", accountURI, photoUrl);
+		Assertion.checkArgument(Files.exists(photoFile), "Account {0} photo {1} not found", accountURI, photoUrl);
+		Assertion.checkArgument(Files.isRegularFile(photoFile), "Account {0} photo {1} must be a file", accountURI, photoUrl);
 		try {
-			final String contentType = Files.probeContentType(photoFile.toPath());
-			return Optional.of(new FSFile(photoFile.getName(), contentType, photoFile));
+			final String contentType = Files.probeContentType(photoFile);
+			return Optional.of(new FSFile(photoFile.getFileName().toString(), contentType, photoFile));
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}
