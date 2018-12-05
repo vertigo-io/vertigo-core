@@ -36,7 +36,7 @@ import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 
-public class AbstractAccountManagerTest extends AbstractTestCaseJU5 {
+public abstract class AbstractAccountManagerTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private AccountManager accountManager;

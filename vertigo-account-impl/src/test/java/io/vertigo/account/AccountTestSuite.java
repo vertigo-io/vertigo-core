@@ -18,9 +18,9 @@
  */
 package io.vertigo.account;
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 import io.vertigo.account.account.DatabaseAccountManagerTest;
 import io.vertigo.account.account.MemoryAccountManagerTest;
@@ -36,8 +36,8 @@ import io.vertigo.account.identityprovider.IdentityProviderManagerTest;
  *
  * @author pchretien
  */
-@RunWith(Suite.class)
-@SuiteClasses({
+@RunWith(JUnitPlatform.class)
+@SelectClasses({
 		RedisAccountManagerTest.class,
 		DatabaseAccountManagerTest.class,
 		MemoryAccountManagerTest.class,
