@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.file.model;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -30,7 +31,7 @@ import java.nio.file.Path;
  */
 public final class FSFile extends AbstractVFile {
 	private static final long serialVersionUID = 1L;
-	private final Path file;
+	private final File file; //Need File in order to kept the Serializable interface (noi.Path isn't Serializable)
 
 	/**
 	 * Constructor.
@@ -43,19 +44,19 @@ public final class FSFile extends AbstractVFile {
 	public FSFile(final String fileName, final String mimeType, final Path file) throws IOException {
 		super(fileName, mimeType, Files.getLastModifiedTime(file).toInstant(), Files.size(file));
 		//-----
-		this.file = file;
+		this.file = file.toFile();
 	}
 
 	/**
 	 * @return Fichier en lui même	 */
 	public Path getFile() {
-		return file;
+		return file.toPath();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public InputStream createInputStream() throws IOException {
-		return Files.newInputStream(file);
+		return Files.newInputStream(file.toPath());
 		//Exemple de code où on recrée à chaque fois le inputStream
 		//return Files.newInputStream(file);
 
