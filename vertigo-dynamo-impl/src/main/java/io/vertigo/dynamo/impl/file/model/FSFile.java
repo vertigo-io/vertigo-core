@@ -18,10 +18,10 @@
  */
 package io.vertigo.dynamo.impl.file.model;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.Instant;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Représentation d'un fichier créé à partir d'un FileSystem.
@@ -30,7 +30,7 @@ import java.time.Instant;
  */
 public final class FSFile extends AbstractVFile {
 	private static final long serialVersionUID = 1L;
-	private final File file;
+	private final Path file;
 
 	/**
 	 * Constructor.
@@ -38,25 +38,26 @@ public final class FSFile extends AbstractVFile {
 	 * @param fileName Nom d'origine du fichier
 	 * @param mimeType Type mime du fichier
 	 * @param file Fichier en lui même (non null)
+	 * @throws IOException Erreur d'entrée/sortie
 	 */
-	public FSFile(final String fileName, final String mimeType, final File file) {
-		super(fileName, mimeType, Instant.ofEpochMilli(file.lastModified()), file.length());
+	public FSFile(final String fileName, final String mimeType, final Path file) throws IOException {
+		super(fileName, mimeType, Files.getLastModifiedTime(file).toInstant(), Files.size(file));
 		//-----
 		this.file = file;
 	}
 
 	/**
 	 * @return Fichier en lui même	 */
-	public File getFile() {
+	public Path getFile() {
 		return file;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public InputStream createInputStream() throws IOException {
-		return new java.io.FileInputStream(file);
+		return Files.newInputStream(file);
 		//Exemple de code où on recrée à chaque fois le inputStream
-		//return new java.io.FileInputStream(file);
+		//return Files.newInputStream(file);
 
 		//Exemple de code où on bufferise la première fois puis on le reset.
 		//		if (inputStream == null) {

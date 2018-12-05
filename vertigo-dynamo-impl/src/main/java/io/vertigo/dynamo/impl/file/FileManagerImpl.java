@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
@@ -67,19 +69,53 @@ public final class FileManagerImpl implements FileManager {
 	/** {@inheritDoc} */
 	@Override
 	public File obtainReadOnlyFile(final VFile file) {
-		return doObtainReadOnlyFile(file);
+		return doObtainReadOnlyPath(file).toFile();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Path obtainReadOnlyPath(final VFile file) {
+		return doObtainReadOnlyPath(file);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public VFile createFile(final String fileName, final String typeMime, final File file) {
-		return new FSFile(fileName, typeMime, file);
+		try {
+			return new FSFile(fileName, typeMime, file.toPath());
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e);
+		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
+	public VFile createFile(final String fileName, final String typeMime, final Path file) {
+		try {
+			return new FSFile(fileName, typeMime, file);
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e);
+		}
+	}
+
+	/** {@inheritDoc}  */
+	@Override
 	public VFile createFile(final File file) {
-		return new FSFile(file.getName(), new MimetypesFileTypeMap().getContentType(file), file);
+		try {
+			return new FSFile(file.getName(), new MimetypesFileTypeMap().getContentType(file), file.toPath());
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e);
+		}
+	}
+
+	/** {@inheritDoc}*/
+	@Override
+	public VFile createFile(final Path file) {
+		try {
+			return new FSFile(file.getFileName().toString(), Files.probeContentType(file), file);
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e);
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -133,20 +169,20 @@ public final class FileManagerImpl implements FileManager {
 	 * @param vFile FileInfo à utiliser
 	 * @return Fichier temporaire.
 	 */
-	private static File createTempFile(final VFile vFile) {
+	private static Path createTempFile(final VFile vFile) {
 		// TODO voir a ajouter une WeakRef sur FileInfo pour vérifier la suppression des fichiers temp après usage
 		try {
-			return doCreateTempFile(vFile);
+			return doCreateTempPath(vFile);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Can't create temp file for FileInfo " + vFile.getFileName());
 		}
 	}
 
-	private static File doCreateTempFile(final VFile fileInfo) throws IOException {
+	private static Path doCreateTempPath(final VFile fileInfo) throws IOException {
 		final File tmpFile = new TempFile("fileInfo", '.' + FileUtil.getFileExtension(fileInfo.getFileName()));
 		try (final InputStream inputStream = fileInfo.createInputStream()) {
 			FileUtil.copy(inputStream, tmpFile);
-			return tmpFile;
+			return tmpFile.toPath();
 		}
 	}
 
@@ -154,8 +190,8 @@ public final class FileManagerImpl implements FileManager {
 	 * @param vFile FileInfo à lire
 	 * @return Fichier physique readOnly (pour lecture d'un FileInfo)
 	 */
-	private static File doObtainReadOnlyFile(final VFile vFile) {
-		final File inputFile;
+	private static Path doObtainReadOnlyPath(final VFile vFile) {
+		final Path inputFile;
 		if (vFile instanceof FSFile) {
 			inputFile = ((FSFile) vFile).getFile();
 		} else {

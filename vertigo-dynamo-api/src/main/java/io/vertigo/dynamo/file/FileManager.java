@@ -19,7 +19,9 @@
 package io.vertigo.dynamo.file;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Date;
 
@@ -36,8 +38,16 @@ public interface FileManager extends Manager {
 	/**
 	 * @param vFile VFile à lire
 	 * @return Fichier physique readOnly (pour lecture d'un FileInfo)
+	 * @Deprecated Use obtainReadOnlyFile with nio.Path api instead
 	 */
+	@Deprecated
 	File obtainReadOnlyFile(final VFile vFile);
+
+	/**
+	 * @param vFile VFile à lire
+	 * @return Fichier physique readOnly (pour lecture d'un FileInfo) (nio api)
+	 */
+	Path obtainReadOnlyPath(final VFile vFile);
 
 	/**
 	 * Crée un VFile à partir d'un fichier physique.
@@ -46,16 +56,39 @@ public interface FileManager extends Manager {
 	 * @param typeMime Type mime
 	 * @param file Fichier physique
 	 * @return VFile crée
+	 * @Deprecated Use createFile with nio.Path api instead
 	 */
+	@Deprecated
 	VFile createFile(final String fileName, final String typeMime, final File file);
+
+	/**
+	 * Crée un VFile à partir d'un fichier physique.
+	 * Charge au developpeur d'assurer sa persistence si nécessaire
+	 * @param fileName Nom du fichier
+	 * @param typeMime Type mime
+	 * @param file Fichier physique (nio api)
+	 * @return VFile crée
+	 */
+	VFile createFile(final String fileName, final String typeMime, final Path file);
 
 	/**
 	 * Crée un VFile à partir d'un fichier physique.
 	 * Charge au developpeur d'assurer sa persistence si nécessaire
 	 * @param file Fichier physique
 	 * @return VFile crée
+	 * @Deprecated Use createFile with nio.Path api instead
 	 */
+	@Deprecated
 	VFile createFile(final File file);
+
+	/**
+	 * Crée un VFile à partir d'un fichier physique.
+	 * Charge au developpeur d'assurer sa persistence si nécessaire
+	 * @param file Fichier physique (nio api)
+	 * @return VFile crée
+	 * @throws IOException Erreur I/O
+	 */
+	VFile createFile(final Path file) throws IOException;
 
 	/**
 	 * Crée un VFile à partir d'une URL.
