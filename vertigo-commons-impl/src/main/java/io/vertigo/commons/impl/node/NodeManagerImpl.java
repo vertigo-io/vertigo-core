@@ -60,7 +60,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 			final List<NodeInfosPlugin> nodeInfosPlugins) {
 		Assertion.checkNotNull(nodeRegistryPluginOpt);
 		// ---
-		nodeRegistryPlugin = nodeRegistryPluginOpt.orElse(new SingleNodeRegistryPlugin());
+		nodeRegistryPlugin = nodeRegistryPluginOpt.orElseGet(() -> new SingleNodeRegistryPlugin());
 		nodeInfosPlugins
 				.forEach(plugin -> {
 					Assertion.checkState(!nodeInfosPluginMap.containsKey(plugin.getProtocol()), "A plugin for the protocol {0} is already registered", plugin.getProtocol());
