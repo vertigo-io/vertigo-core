@@ -83,7 +83,7 @@ public final class EAXmiHandler extends DefaultHandler {
 			final EAXmiObject eaXmiObject = map.get(eaXmiId);
 			if (eaXmiObject != null) {
 				currentObject = eaXmiObject;
-				LOG.debug("Current Object : {0}", currentObject.getName());
+				LOG.debug("Current Object : {}", currentObject.getName());
 			}
 			// On ne gère que les éléments objets qui nous intéressent
 		} else if (EAXmiType.isObjet(typeElement, name)) {

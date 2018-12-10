@@ -133,7 +133,7 @@ public final class AppConfig {
 		boolean first = true;
 		for (final ComponentConfig componentConfig : componentConfigs) {
 			final String componentClassName = componentConfig.getApiClass()
-					.orElseGet(() -> componentConfig.getImplClass())
+					.orElseGet(componentConfig::getImplClass)
 					.getSimpleName();
 			printComponent(out, first ? moduleName : null, componentClassName, null);
 			first = false;

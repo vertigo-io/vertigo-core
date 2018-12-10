@@ -31,7 +31,7 @@ import io.vertigo.lang.Builder;
  * @author pchretien
  */
 public final class MdaResultBuilder implements Builder<MdaResult> {
-	private static final Logger LOGGER = LogManager.getLogger(MdaResult.class);
+	private static final Logger LOGGER = LogManager.getLogger(MdaResultBuilder.class);
 
 	/** Nombre de fichiers écrits . */
 	private int updatedFiles;

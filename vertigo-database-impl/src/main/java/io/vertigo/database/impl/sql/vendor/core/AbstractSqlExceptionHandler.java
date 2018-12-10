@@ -49,7 +49,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	 * Crée une nouvelle instance de AbstractSqlExceptionHandler.
 	 */
 	public AbstractSqlExceptionHandler() {
-		LOGGER.info(String.format("Use %s as SqlExceptionHandler", this.getClass().getName()));
+		LOGGER.info("Use {} as SqlExceptionHandler", this.getClass().getName());
 	}
 
 	/**

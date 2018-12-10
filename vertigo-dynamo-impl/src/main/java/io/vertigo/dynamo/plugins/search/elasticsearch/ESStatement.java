@@ -154,7 +154,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 					.setTypes(typeName);
 			final BulkByScrollResponse response = deleteByQueryAction.get();
 			final long deleted = response.getDeleted();
-			LOGGER.debug("Removed {0} elements", deleted);
+			LOGGER.debug("Removed {} elements", deleted);
 		} catch (final SearchPhaseExecutionException e) {
 			final VUserException vue = new VUserException(SearchResource.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR);
 			vue.initCause(e);

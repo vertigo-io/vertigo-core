@@ -137,7 +137,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 
 		for (final Map.Entry<String, String> filter : dataFilter.getFilters().entrySet()) {
 			if (filter.getValue() != null && !"*".equals(filter.getValue())) {
-				queryBuilder.append(" and \"" + filter.getKey() + "\"='").append(filter.getValue()).append('\'');
+				queryBuilder.append(" and \"").append(filter.getKey()).append("\"='").append(filter.getValue()).append('\'');
 			}
 		}
 		if (dataFilter.getAdditionalWhereClause() != null) {
