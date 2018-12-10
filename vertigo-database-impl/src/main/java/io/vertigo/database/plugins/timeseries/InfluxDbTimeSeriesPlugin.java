@@ -63,113 +63,6 @@ import io.vertigo.lang.Tuples.Tuple2;
  */
 public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activeable {
 
-	private static void appendMeasureThreshold(
-			final Integer previousThreshold,
-			final Integer currentThreshold,
-			final String clusteredField,
-			final String clusteredMeasure,
-			final String measurement,
-			final String standardwhereClause,
-			final String timeDimension,
-			final StringBuilder fromClauseBuilder,
-			final int i) {
-		fromClauseBuilder.append("(select ")
-				.append(buildMeasureQuery(clusteredMeasure, clusteredField + "_" + i))
-				.append(" from ").append(measurement)
-				.append(standardwhereClause);
-		if (previousThreshold != null) {
-			fromClauseBuilder.append(" and \"").append(clusteredField).append('"').append(" > ").append(previousThreshold);
-		}
-		if (currentThreshold != null) {
-			fromClauseBuilder.append(" and \"").append(clusteredField).append('"').append(" <= ").append(currentThreshold);
-		}
-		fromClauseBuilder.append(" group by time(").append(timeDimension).append(')');
-		fromClauseBuilder.append(')');
-	}
-
-	private static Map<String, Object> buildMapValue(final List<String> columns, final List<Object> values) {
-		final Map<String, Object> valueMap = new HashMap<>();
-		// we start at 1 because time is always the first row
-		for (int i = 1; i < columns.size(); i++) {
-			valueMap.put(columns.get(i), values.get(i));
-		}
-		return valueMap;
-	}
-
-	private static String buildMeasureQuery(final String measure, final String alias) {
-		Assertion.checkArgNotEmpty(measure);
-		Assertion.checkArgNotEmpty(alias);
-		//----
-		final String[] measureDetails = measure.split(":");
-		final Tuple2<String, List<String>> aggregateFunction = parseAggregateFunction(measureDetails[1]);
-		// append function name
-		final StringBuilder measureQueryBuilder = new java.lang.StringBuilder(aggregateFunction.getVal1()).append("(\"").append(measureDetails[0]).append("\"");
-		// append parameters
-		if (!aggregateFunction.getVal2().isEmpty()) {
-			measureQueryBuilder.append(aggregateFunction.getVal2()
-					.stream()
-					.collect(Collectors.joining(",", ", ", "")));
-		}
-		// end measure and add alias
-		measureQueryBuilder.append(") as \"").append(alias).append('"');
-		return measureQueryBuilder.toString();
-	}
-
-	private static StringBuilder buildQuery(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
-		Assertion.checkNotNull(measures);
-		//---
-		final StringBuilder queryBuilder = new StringBuilder("select ");
-		String separator = "";
-		for (final String measure : measures) {
-			queryBuilder
-					.append(separator)
-					.append(buildMeasureQuery(measure, measure));
-			separator = " ,";
-		}
-		queryBuilder.append(" from ").append(dataFilter.getMeasurement());
-		queryBuilder.append(buildWhereClause(dataFilter, timeFilter));
-		return queryBuilder;
-	}
-
-	private static String buildWhereClause(final DataFilter dataFilter, final TimeFilter timeFilter) {
-		final StringBuilder queryBuilder = new StringBuilder()
-				.append(" where time > ").append(timeFilter.getFrom()).append(" and time <").append(timeFilter.getTo());
-
-		for (final Map.Entry<String, String> filter : dataFilter.getFilters().entrySet()) {
-			if (filter.getValue() != null && !"*".equals(filter.getValue())) {
-				queryBuilder.append(" and \"").append(filter.getKey()).append("\"='").append(filter.getValue()).append('\'');
-			}
-		}
-		if (dataFilter.getAdditionalWhereClause() != null) {
-			queryBuilder.append(" and ").append(dataFilter.getAdditionalWhereClause());
-		}
-		return queryBuilder.toString();
-	}
-
-	private static String clusterName(
-			final Integer minThreshold,
-			final Integer maxThreshold,
-			final String measure) {
-		if (minThreshold == null) {
-			return measure + '<' + maxThreshold;
-		} else if (maxThreshold == null) {
-			return measure + '>' + minThreshold;
-		} else {
-			return measure + '_' + maxThreshold;
-		}
-	}
-
-	private static Tuple2<String, List<String>> parseAggregateFunction(final String aggregateFunction) {
-		final int firstSeparatorIndex = aggregateFunction.indexOf('_');
-		if (firstSeparatorIndex > -1) {
-			return Tuples.of(
-					aggregateFunction.substring(0, firstSeparatorIndex),
-					Arrays.asList(aggregateFunction.substring(firstSeparatorIndex + 1).split("_")));
-		}
-		return Tuples.of(aggregateFunction, Collections.emptyList());
-
-	}
-
 	private final InfluxDB influxDB;
 
 	@Inject
@@ -183,6 +76,17 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		//---
 		influxDB = InfluxDBFactory.connect(host, user, password);
 		influxDB.enableBatch();
+	}
+
+	@Override
+	public void start() {
+		// nothing
+
+	}
+
+	@Override
+	public void stop() {
+		influxDB.disableBatch();
 	}
 
 	@Override
@@ -431,15 +335,111 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 
 	}
 
-	@Override
-	public void start() {
-		// nothing
-
+	private static void appendMeasureThreshold(
+			final Integer previousThreshold,
+			final Integer currentThreshold,
+			final String clusteredField,
+			final String clusteredMeasure,
+			final String measurement,
+			final String standardwhereClause,
+			final String timeDimension,
+			final StringBuilder fromClauseBuilder,
+			final int i) {
+		fromClauseBuilder.append("(select ")
+				.append(buildMeasureQuery(clusteredMeasure, clusteredField + "_" + i))
+				.append(" from ").append(measurement)
+				.append(standardwhereClause);
+		if (previousThreshold != null) {
+			fromClauseBuilder.append(" and \"").append(clusteredField).append('"').append(" > ").append(previousThreshold);
+		}
+		if (currentThreshold != null) {
+			fromClauseBuilder.append(" and \"").append(clusteredField).append('"').append(" <= ").append(currentThreshold);
+		}
+		fromClauseBuilder.append(" group by time(").append(timeDimension).append(')');
+		fromClauseBuilder.append(')');
 	}
 
-	@Override
-	public void stop() {
-		influxDB.disableBatch();
+	private static Map<String, Object> buildMapValue(final List<String> columns, final List<Object> values) {
+		final Map<String, Object> valueMap = new HashMap<>();
+		// we start at 1 because time is always the first row
+		for (int i = 1; i < columns.size(); i++) {
+			valueMap.put(columns.get(i), values.get(i));
+		}
+		return valueMap;
+	}
+
+	private static String buildMeasureQuery(final String measure, final String alias) {
+		Assertion.checkArgNotEmpty(measure);
+		Assertion.checkArgNotEmpty(alias);
+		//----
+		final String[] measureDetails = measure.split(":");
+		final Tuple2<String, List<String>> aggregateFunction = parseAggregateFunction(measureDetails[1]);
+		// append function name
+		final StringBuilder measureQueryBuilder = new java.lang.StringBuilder(aggregateFunction.getVal1()).append("(\"").append(measureDetails[0]).append("\"");
+		// append parameters
+		if (!aggregateFunction.getVal2().isEmpty()) {
+			measureQueryBuilder.append(aggregateFunction.getVal2()
+					.stream()
+					.collect(Collectors.joining(",", ", ", "")));
+		}
+		// end measure and add alias
+		measureQueryBuilder.append(") as \"").append(alias).append('"');
+		return measureQueryBuilder.toString();
+	}
+
+	private static StringBuilder buildQuery(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
+		Assertion.checkNotNull(measures);
+		//---
+		final StringBuilder queryBuilder = new StringBuilder("select ");
+		String separator = "";
+		for (final String measure : measures) {
+			queryBuilder
+					.append(separator)
+					.append(buildMeasureQuery(measure, measure));
+			separator = " ,";
+		}
+		queryBuilder.append(" from ").append(dataFilter.getMeasurement());
+		queryBuilder.append(buildWhereClause(dataFilter, timeFilter));
+		return queryBuilder;
+	}
+
+	private static String buildWhereClause(final DataFilter dataFilter, final TimeFilter timeFilter) {
+		final StringBuilder queryBuilder = new StringBuilder()
+				.append(" where time > ").append(timeFilter.getFrom()).append(" and time <").append(timeFilter.getTo());
+
+		for (final Map.Entry<String, String> filter : dataFilter.getFilters().entrySet()) {
+			if (filter.getValue() != null && !"*".equals(filter.getValue())) {
+				queryBuilder.append(" and \"").append(filter.getKey()).append("\"='").append(filter.getValue()).append('\'');
+			}
+		}
+		if (dataFilter.getAdditionalWhereClause() != null) {
+			queryBuilder.append(" and ").append(dataFilter.getAdditionalWhereClause());
+		}
+		return queryBuilder.toString();
+	}
+
+	private static String clusterName(
+			final Integer minThreshold,
+			final Integer maxThreshold,
+			final String measure) {
+		if (minThreshold == null) {
+			return measure + '<' + maxThreshold;
+		} else if (maxThreshold == null) {
+			return measure + '>' + minThreshold;
+		} else {
+			return measure + '_' + maxThreshold;
+		}
+	}
+
+	private static Tuple2<String, List<String>> parseAggregateFunction(final String aggregateFunction) {
+		final int firstSeparatorIndex = aggregateFunction.indexOf('_');
+		if (firstSeparatorIndex > -1) {
+			return Tuples.of(
+					aggregateFunction.substring(0, firstSeparatorIndex),
+					Arrays.asList(aggregateFunction.substring(firstSeparatorIndex + 1).split("_")));
+		}
+		return Tuples.of(aggregateFunction, Collections.emptyList());
+
 	}
 
 }
