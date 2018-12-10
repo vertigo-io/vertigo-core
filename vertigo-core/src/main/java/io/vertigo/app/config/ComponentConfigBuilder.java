@@ -130,7 +130,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 			} else {
 				//if no proxy then implClass is required
 				//By convention the component id is the simpleName of the api or the impl
-				myId = DIAnnotationUtil.buildId(apiClassOpt.orElse(implClassOpt.get()));
+				myId = DIAnnotationUtil.buildId(apiClassOpt.orElseGet(() -> implClassOpt.get()));
 			}
 		}
 		return new ComponentConfig(myId, proxy, apiClassOpt, implClassOpt, myParams);
