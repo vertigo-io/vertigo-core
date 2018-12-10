@@ -127,9 +127,10 @@ public final class ComponentLoader {
 		final ComponentUnusedKeysContainer componentProxyContainer = new ComponentUnusedKeysContainer(componentSpace);
 
 		for (final String id : ids) {
-			if (componentConfigById.containsKey(id)) {
+			final ComponentConfig componentConfig = componentConfigById.get(id);
+			if (componentConfig != null) {
 				//Si il s'agit d'un composant (y compris plugin)
-				final ComponentConfig componentConfig = componentConfigById.get(id);
+
 				// 2.a On crée le composant avec AOP et autres options (elastic)
 				final Component component = createComponentWithOptions(paramManagerOpt, componentProxyContainer, componentConfig);
 				// 2.b. On enregistre le composant
