@@ -81,7 +81,7 @@ final class ComponentProxyFactory {
 			Assertion.checkNotNull(method);
 			//---
 			return new MyMethodInvocation(method,
-					aspectsByMethod.containsKey(method) ? aspectsByMethod.get(method) : Collections.emptyList(),
+					aspectsByMethod.getOrDefault(method, Collections.emptyList()),
 					proxyMethodsByMethod.get(method))
 							.proceed(args);
 		}
