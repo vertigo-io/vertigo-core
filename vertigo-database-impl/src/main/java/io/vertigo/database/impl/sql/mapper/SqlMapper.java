@@ -26,6 +26,29 @@ import io.vertigo.database.sql.mapper.SqlAdapter;
 import io.vertigo.lang.Assertion;
 
 public final class SqlMapper {
+	private static final SqlAdapter<Object, Object> IDENTITY = new SqlAdapter<Object, Object>() {
+
+		@Override
+		public Object toJava(final Object sqlValue) {
+			return sqlValue;
+		}
+
+		@Override
+		public Object toSql(final Object javaValue) {
+			return javaValue;
+		}
+
+		@Override
+		public Class getJavaDataType() {
+			throw new UnsupportedOperationException("Can't use getJavaDataType");
+		}
+
+		@Override
+		public Class getSqlDataType() {
+			throw new UnsupportedOperationException("Can't use getSqlDataType");
+		}
+
+	};
 	private final Map<Class, SqlAdapter> adaptersByJavaType;
 
 	public SqlMapper(final List<SqlAdapter> adapters) {
@@ -42,13 +65,13 @@ public final class SqlMapper {
 
 	// mail from ResultSet contains a String, dataType=Mail
 	public <J> J toJava(final Class<J> javaType, final Object sqlValue) {
-		return (J) (adaptersByJavaType.containsKey(javaType) ? adaptersByJavaType.get(javaType).toJava(sqlValue) : sqlValue);
+		return (J) adaptersByJavaType.getOrDefault(javaType, IDENTITY).toJava(sqlValue);
 	}
 
 	// javaValue =Mail
 	//-> String
 	public Object toSql(final Class javaType, final Object javaValue) {
-		return adaptersByJavaType.containsKey(javaType) ? adaptersByJavaType.get(javaType).toSql(javaValue) : javaValue;
+		return adaptersByJavaType.getOrDefault(javaType, IDENTITY).toSql(javaValue);
 	}
 
 }

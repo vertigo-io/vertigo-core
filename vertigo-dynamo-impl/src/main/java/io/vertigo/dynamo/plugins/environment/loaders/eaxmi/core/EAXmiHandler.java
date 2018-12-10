@@ -80,8 +80,9 @@ public final class EAXmiHandler extends DefaultHandler {
 			LOG.debug("On est dans la référence {} ref : {}", name, ref);
 			// Si le tag courant est associé à un objet alors on ajoute à cet objet la référence.
 			final XmlId eaXmiId = new XmlId(ref);
-			if (map.containsKey(eaXmiId)) {
-				currentObject = map.get(eaXmiId);
+			final EAXmiObject eaXmiObject = map.get(eaXmiId);
+			if (eaXmiObject != null) {
+				currentObject = eaXmiObject;
 				LOG.debug("Current Object : {0}", currentObject.getName());
 			}
 			// On ne gère que les éléments objets qui nous intéressent
