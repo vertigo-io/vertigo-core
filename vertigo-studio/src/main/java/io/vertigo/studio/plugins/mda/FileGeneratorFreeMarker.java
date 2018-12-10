@@ -21,13 +21,14 @@ package io.vertigo.studio.plugins.mda;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.file.Files;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -167,7 +168,7 @@ final class FileGeneratorFreeMarker implements FileGenerator {
 	 * @return Si l'écriture s'est bien passée
 	 */
 	private static boolean writeFile(final File file, final String content, final String encoding) {
-		try (final FileOutputStream fos = new FileOutputStream(file);
+		try (final OutputStream fos = Files.newOutputStream(file.toPath());
 				final OutputStreamWriter osw = new OutputStreamWriter(fos, encoding);
 				final Writer writer = new BufferedWriter(osw)) {
 			writer.write(content);
@@ -191,7 +192,7 @@ final class FileGeneratorFreeMarker implements FileGenerator {
 			return null;
 		}
 		final StringBuilder currentContent = new StringBuilder();
-		try (final FileInputStream fis = new FileInputStream(file);
+		try (final InputStream fis = Files.newInputStream(file.toPath());
 				final InputStreamReader isr = new InputStreamReader(fis, encoding);
 				final BufferedReader myReader = new BufferedReader(isr)) {
 			String line = myReader.readLine();

@@ -18,9 +18,10 @@
  */
 package io.vertigo.vega.impl.webservice.servlet;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -99,7 +100,7 @@ final class AppServletStarter {
 			throw WrappedException.wrap(e, "Problème d'initialisation de l'application");
 		} finally {
 			if (LOG.isInfoEnabled()) {
-				LOG.info("Temps d'initialisation du listener {}", (System.currentTimeMillis() - start));
+				LOG.info("Temps d'initialisation du listener {}", System.currentTimeMillis() - start);
 			}
 		}
 	}
@@ -181,7 +182,7 @@ final class AppServletStarter {
 
 	private static void readFile(final Properties servletParams, final String externalPropertiesFileName) throws IOException {
 		if (externalPropertiesFileName != null) {
-			try (final InputStream inputStream = new FileInputStream(externalPropertiesFileName)) {
+			try (final InputStream inputStream = Files.newInputStream(Paths.get(externalPropertiesFileName))) {
 				servletParams.load(inputStream);
 			}
 		}

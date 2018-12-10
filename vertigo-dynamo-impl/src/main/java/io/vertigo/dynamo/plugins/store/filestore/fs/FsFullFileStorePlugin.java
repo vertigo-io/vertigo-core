@@ -20,7 +20,6 @@ package io.vertigo.dynamo.plugins.store.filestore.fs;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -243,7 +242,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		/** {@inheritDoc} */
 		@Override
 		public InputStream createInputStream() throws IOException {
-			return new FileInputStream(file);
+			return Files.newInputStream(file.toPath());
 		}
 	}
 

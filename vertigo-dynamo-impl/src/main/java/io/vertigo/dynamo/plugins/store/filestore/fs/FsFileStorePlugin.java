@@ -19,9 +19,9 @@
 package io.vertigo.dynamo.plugins.store.filestore.fs;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
@@ -332,7 +332,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		/** {@inheritDoc} */
 		@Override
 		public InputStream createInputStream() throws IOException {
-			return new FileInputStream(file);
+			return Files.newInputStream(file.toPath());
 		}
 	}
 

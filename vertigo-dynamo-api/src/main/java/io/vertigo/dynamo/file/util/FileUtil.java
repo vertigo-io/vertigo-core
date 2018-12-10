@@ -20,10 +20,10 @@ package io.vertigo.dynamo.file.util;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Locale;
 
 import io.vertigo.lang.Assertion;
@@ -73,7 +73,7 @@ public final class FileUtil {
 	 * @throws IOException Erreur d'entrée/sortie
 	 */
 	public static void copy(final InputStream in, final File file) throws IOException {
-		try (final OutputStream out = new BufferedOutputStream(new FileOutputStream(file))) {
+		try (final OutputStream out = new BufferedOutputStream(Files.newOutputStream(file.toPath()))) {
 			FileUtil.copy(in, out);
 		}
 	}
