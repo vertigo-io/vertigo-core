@@ -55,7 +55,7 @@ import io.vertigo.lang.WrappedException;
  */
 public class TextAuthenticationPlugin implements AuthenticationPlugin, Activeable {
 	//	accountKey  |  login  |  password
-	private static final String FILE_PATTERN_STR = "^(\\S+)\\s+(\\S+)\\s+(\\S+)\\s*$";
+	private static final String FILE_PATTERN_STR = "^(\\S+)\\s+(\\S+)\\s+(\\S+).*$";
 	private static final Pattern FILE_PATTERN = Pattern.compile(FILE_PATTERN_STR);
 
 	private final Map<String, AuthenticationAccountInfo> users; //username-to-SimpleAccount
