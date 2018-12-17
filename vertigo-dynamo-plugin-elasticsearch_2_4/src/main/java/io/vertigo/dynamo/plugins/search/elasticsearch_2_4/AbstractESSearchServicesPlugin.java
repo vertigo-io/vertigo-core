@@ -50,6 +50,8 @@ import io.vertigo.core.component.Activeable;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtListState;
@@ -294,10 +296,16 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					.startObject(ESDocumentCodec.FULL_RESULT)
 					.field("type", "binary")
 					.endObject();
-			typeMapping.startObject("urn")
-					.field("type", "string")
-					.field("index", "not_analyzed")
-					.endObject();
+			final Domain pkDomain = indexDefinition.getKeyConceptDtDefinition().getIdField().get().getDomain();
+			typeMapping.startObject("doc_id");
+			if (pkDomain.getDataType() == DataType.String) {
+				typeMapping
+						.field("type", "string")
+						.field("index", "not_analyzed");
+			} else {
+				typeMapping.field("type", pkDomain.getDataType().name().toLowerCase(Locale.ROOT));
+			}
+			typeMapping.endObject();
 			/* 3 : Les champs du dto index */
 			final Set<DtField> copyFromFields = indexDefinition.getIndexCopyFromFields();
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();

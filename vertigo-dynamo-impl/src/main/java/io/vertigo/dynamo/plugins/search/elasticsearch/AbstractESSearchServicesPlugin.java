@@ -54,6 +54,7 @@ import io.vertigo.core.component.Activeable;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtListState;
@@ -303,6 +304,27 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), indexDefinition.getName().toLowerCase(Locale.ROOT), esClient);
 	}
 
+	private static String obtainPkIndexDataType(final Domain domain) {
+		// On peut préciser pour chaque domaine le type d'indexation
+		// Calcul automatique  par default.
+		switch (domain.getDataType()) {
+			case Boolean:
+			case Double:
+			case Integer:
+			case Long:
+				return domain.getDataType().name().toLowerCase(Locale.ROOT);
+			case String:
+				return "keyword";
+			case Date:
+			case LocalDate:
+			case Instant:
+			case BigDecimal:
+			case DataStream:
+			default:
+				throw new IllegalArgumentException("Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + domain + "].");
+		}
+	}
+
 	/**
 	 * Update template definition of this type.
 	 * @param indexDefinition Index concerné
@@ -317,8 +339,8 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					.field("type", "binary")
 					.endObject();
 
-			typeMapping.startObject("urn")
-					.field("type", "keyword")
+			typeMapping.startObject("doc_id")
+					.field("type", obtainPkIndexDataType(indexDefinition.getKeyConceptDtDefinition().getIdField().get().getDomain()))
 					.endObject();
 
 			/* 3 : Les champs du dto index */

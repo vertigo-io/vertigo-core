@@ -79,15 +79,13 @@ public final class ItemSearchLoader extends AbstractSearchLoader<Long, Item, Ite
 		final SearchIndexDefinition indexDefinition = searchManager.findFirstIndexDefinitionByKeyConcept(Item.class);
 		final List<UID<Item>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
 		//call loader service
-		int i = 0;
 		for (final Item item : itemDataBase.getAllItems()) {
-			if (i > lastId) {
+			if (item.getId() > lastId) {
 				uris.add(UID.of(indexDefinition.getKeyConceptDtDefinition(), item.getId()));
 			}
 			if (uris.size() >= SEARCH_CHUNK_SIZE) {
 				break;
 			}
-			i++;
 		}
 		return uris;
 	}

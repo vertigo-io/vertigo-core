@@ -132,7 +132,7 @@ final class ESDocumentCodec {
 		try (final XContentBuilder xContentBuilder = XContentFactory.jsonBuilder()) {
 			xContentBuilder.startObject()
 					.field(FULL_RESULT, result)
-					.field("urn", index.getUID().urn());
+					.field("doc_id", index.getUID().getId());
 
 			/* 3 : Les champs du dto index */
 			final DtObject dtIndex = index.getIndexDtObject();
