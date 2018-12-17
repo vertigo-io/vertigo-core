@@ -113,7 +113,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		Assertion.checkNotNull(builderWebServiceDefinitions, "webServiceDefinitions must be set");
 		//-----
 		final SwaggerApi swagger = new SwaggerApi();
-		swagger.put("swagger", 2.0);
+		swagger.put("swagger", "2.0");
 		swagger.put("info", createInfoObject());
 		swagger.put("basePath", builderContextPath);
 
