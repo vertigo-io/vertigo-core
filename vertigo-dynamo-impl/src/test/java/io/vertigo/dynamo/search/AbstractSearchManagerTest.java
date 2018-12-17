@@ -1142,8 +1142,9 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 
 	private void doRemove(final int count) {
 		//Suppression de n voitures
-		for (long id = 0; id < count; id++) {
-			searchManager.remove(itemIndexDefinition, createURI(id));
+		final List<Long> ids = itemDataBase.getAllIds();
+		for (int i = 0; i < count; i++) {
+			searchManager.remove(itemIndexDefinition, createURI(ids.get(i)));
 		}
 	}
 
