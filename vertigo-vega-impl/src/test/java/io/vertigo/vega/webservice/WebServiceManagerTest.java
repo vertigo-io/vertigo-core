@@ -101,7 +101,7 @@ public final class WebServiceManagerTest {
 	public void testSwaggerApi() {
 		RestAssured.given()
 				.expect()
-				.body("swagger", Matchers.equalTo(2.0f))
+				.body("swagger", Matchers.equalTo("2.0"))
 				.body("info", Matchers.notNullValue())
 				.body("info.size()", Matchers.equalTo(3))
 				.body("basePath", Matchers.anything()) //can be null
