@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.store.cache;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -45,19 +45,19 @@ public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
 			final DtList<Famille> dtc = storeManager.getDataStore().findAll(allFamilles);
-			Assert.assertEquals(0, dtc.size());
+			Assertions.assertEquals(0, dtc.size());
 			//-----
 			final Famille famille = new Famille();
 			famille.setLibelle("encore un");
 			final Famille createdFamille = storeManager.getDataStore().create(famille);
 			// on attend un objet avec un ID non null ?
-			Assert.assertNotNull(createdFamille.getFamId());
+			Assertions.assertNotNull(createdFamille.getFamId());
 			transaction.commit();
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
 			final DtList<Famille> dtc = storeManager.getDataStore().findAll(allFamilles);
-			Assert.assertEquals(1, dtc.size());
+			Assertions.assertEquals(1, dtc.size());
 
 		}
 	}
