@@ -268,7 +268,7 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU5
 			public void afterCompletion(final boolean txCommited) {
 				run2AfterCommit.set(txCommited);
 				if (afterCommitError) {
-					throw new ArithmeticException("Can't proceed this code");
+					throw new ArithmeticException("ExpectedException : Can't proceed this code");
 				}
 			}
 		});
