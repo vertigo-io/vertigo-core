@@ -71,7 +71,7 @@ public abstract class AssociationDefinition implements Definition {
 		checkNavigability(associationNodeB, name);
 	}
 
-	private static final void checkNavigability(final AssociationNode associationNode, final String associationName) {
+	private static void checkNavigability(final AssociationNode associationNode, final String associationName) {
 		//-----
 		Assertion.when(associationNode.isNavigable())
 				.check(() -> associationNode.getDtDefinition().getStereotype().isPersistent(), "assocation : {0}. you cannot navigate towards an object that is not an entity ", associationName);
