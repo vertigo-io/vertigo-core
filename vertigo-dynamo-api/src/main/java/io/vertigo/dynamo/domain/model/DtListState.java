@@ -34,32 +34,30 @@ public final class DtListState {
 	private final int skipRows;
 	private final Optional<Integer> maxRows;
 
-	
-
 	/**
 	 * @param maxRows max returning elements (null if not use)
 	 * @param skipRows elements to skip (mandatory, 0 by default)
 	 */
-	public static DtListState of (
+	public static DtListState of(
 			final Integer maxRows,
 			final int skipRows) {
-		return new DtListState (maxRows, skipRows, null, null);
+		return new DtListState(maxRows, skipRows, null, null);
 	}
-	
+
 	/**
 	 * @param maxRows max returning elements (null if not use)
 	 * @param skipRows elements to skip (mandatory, 0 by default)
 	 * @param sortFieldName sort fieldName (null if not use)
 	 * @param sortDesc desc or asc order (null if not use)
 	 */
-	public static DtListState of (
+	public static DtListState of(
 			final Integer maxRows,
 			final int skipRows,
 			final String sortFieldName,
 			final Boolean sortDesc) {
-		return new DtListState (maxRows, skipRows, sortFieldName, sortDesc);
+		return new DtListState(maxRows, skipRows, sortFieldName, sortDesc);
 	}
-	
+
 	/**
 	 * @param maxRows max returning elements (null if not use)
 	 * @param skipRows elements to skip (mandatory, 0 by default)
@@ -71,7 +69,8 @@ public final class DtListState {
 			final int skipRows,
 			final String sortFieldName,
 			final Boolean sortDesc) {
-		Assertion.checkArgument(maxRows!=Integer.MAX_VALUE, " maxRows should be null");
+		Assertion.when(maxRows != null)
+				.check(() -> maxRows != Integer.MAX_VALUE, " maxRows should be null");
 		Assertion.when(maxRows != null)
 				.check(() -> maxRows > 0, "maxRows must be positive ({0})", maxRows);
 		Assertion.checkArgument(skipRows >= 0, "SkipRows must be positive ({0})", skipRows);
