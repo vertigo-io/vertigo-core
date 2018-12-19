@@ -108,7 +108,7 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 
 	private static DtListState checkAndEnsureDefaultValue(final DtListState parsedDtListState) {
 		if (!parsedDtListState.getMaxRows().isPresent()) {//check if parsedDtListState is just not initalized
-			return new DtListState(DEFAULT_RESULT_PER_PAGE, parsedDtListState.getSkipRows(), parsedDtListState.getSortFieldName().orElse(null), parsedDtListState.isSortDesc().orElse(null));
+			return DtListState.of(DEFAULT_RESULT_PER_PAGE, parsedDtListState.getSkipRows(), parsedDtListState.getSortFieldName().orElse(null), parsedDtListState.isSortDesc().orElse(null));
 		}
 		return parsedDtListState;
 	}

@@ -378,7 +378,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		firstItem = doQueryAndGetFirst("*:*", "YEAR", true);
 		Assertions.assertEquals(2010, firstItem.getYear().intValue());
 
-		final DtListState listState = new DtListState(null, 0, itemIndexDefinition.getIndexDtDefinition().getField("MODEL").getName(), true);
+		final DtListState listState = DtListState.of(null, 0, itemIndexDefinition.getIndexDtDefinition().getField("MODEL").getName(), true);
 		final DtList<Item> dtList = doQuery(SearchQuery.builder(ListFilter.of("*:*"))
 				.build(), listState).getDtList();
 
@@ -429,9 +429,9 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		index(false);
 		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*")).build();
 		final DtList<Item> dtListFull = doQuery(searchQuery, null).getDtList();
-		final DtList<Item> dtList1 = doQuery(searchQuery, new DtListState(4, 0, null, null)).getDtList();
-		final DtList<Item> dtList2 = doQuery(searchQuery, new DtListState(4, 4, null, null)).getDtList();
-		final DtList<Item> dtList3 = doQuery(searchQuery, new DtListState(4, 2 * 4, null, null)).getDtList();
+		final DtList<Item> dtList1 = doQuery(searchQuery, DtListState.of(4, 0)).getDtList();
+		final DtList<Item> dtList2 = doQuery(searchQuery, DtListState.of(4, 4)).getDtList();
+		final DtList<Item> dtList3 = doQuery(searchQuery, DtListState.of(4, 2 * 4)).getDtList();
 
 		Assertions.assertEquals(4, dtList1.size());
 		Assertions.assertEquals(4, dtList2.size());
@@ -1028,7 +1028,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 				.withFacetClustering(manufacturerFacetDefinition)
 				.build();
 
-		final DtListState listState = new DtListState(null, 0, itemIndexDefinition.getIndexDtDefinition().getField("YEAR").getName(), true);
+		final DtListState listState = DtListState.of(null, 0, itemIndexDefinition.getIndexDtDefinition().getField("YEAR").getName(), true);
 		final FacetedQueryResult<Item, SearchQuery> result = searchManager.loadList(itemIndexDefinition, searchQuery, listState);
 
 		//On vérifie qu'il existe une valeur pour chaque marques et que la première est bien la plus ancienne
@@ -1059,7 +1059,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacetClustering(yearFacetDefinition) // "avant 2000", "2000-2005", "après 2005"
 				.build();
-		final FacetedQueryResult<Item, SearchQuery> result = searchManager.loadList(itemIndexDefinition, searchQuery, new DtListState(1, 0, null, null));
+		final FacetedQueryResult<Item, SearchQuery> result = searchManager.loadList(itemIndexDefinition, searchQuery, DtListState.of(1, 0));
 
 		//On vérifie qu'il existe une valeur pour chaque marques et que le nombre d'occurrences est correct
 		final Map<String, List<Item>> databaseCluster = new HashMap<>();
@@ -1174,7 +1174,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		//recherche
 		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of(query))
 				.build();
-		final DtListState listState = new DtListState(null, 0, itemIndexDefinition.getIndexDtDefinition().getField(sortField).getName(), sortDesc);
+		final DtListState listState =  DtListState.of(null, 0, itemIndexDefinition.getIndexDtDefinition().getField(sortField).getName(), sortDesc);
 		final DtList<Item> dtList = doQuery(searchQuery, listState).getDtList();
 		Assertions.assertFalse(dtList.isEmpty(), "Result list was empty");
 		return dtList.get(0);

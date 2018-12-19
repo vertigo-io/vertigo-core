@@ -96,10 +96,6 @@ public final class UiListState implements Serializable {
 	 * @return Extract DtListState from this UiListState
 	 */
 	public DtListState toDtListState() {
-		//on recheck car la deserialization json n'est pas passé par le constructeur.
-		Assertion.checkArgument(top > 0, "Top must be positive ({0})", top);
-		Assertion.checkArgument(skip >= 0, "Skip must be positive ({0})", skip);
-		//-----
-		return new DtListState(top, skip, sortFieldName, sortDesc);
+		return DtListState.of(top, skip, sortFieldName, sortDesc);
 	}
 }

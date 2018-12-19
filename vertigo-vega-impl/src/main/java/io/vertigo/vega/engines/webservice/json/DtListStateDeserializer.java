@@ -39,6 +39,6 @@ final class DtListStateDeserializer implements JsonDeserializer<DtListState> {
 		final String sortFieldName = jsonObject.has("sortFieldName") ? jsonObject.get("sortFieldName").getAsString() : null;
 		final Boolean sortDesc = jsonObject.has("sortDesc") ? jsonObject.get("sortDesc").getAsBoolean() : null;
 
-		return new DtListState(top, skip, sortFieldName, sortDesc);
+		return DtListState.of(top, skip, sortFieldName, sortDesc);
 	}
 }

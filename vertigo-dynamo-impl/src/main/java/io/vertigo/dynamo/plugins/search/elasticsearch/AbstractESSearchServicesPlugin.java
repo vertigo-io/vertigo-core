@@ -112,7 +112,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.when(!indexNameIsPrefix).check(() -> !indexNameOrPrefix.endsWith("_"), "When envIndex isn't declared as prefix, it can't ends with _ (current : {0})", indexNameOrPrefix);
 		//-----
 		this.defaultMaxRows = defaultMaxRows;
-		defaultListState = new DtListState(defaultMaxRows, 0, null, null);
+		defaultListState = DtListState.of(defaultMaxRows, 0);
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
 		//------
 		this.indexNameOrPrefix = indexNameOrPrefix.toLowerCase(Locale.ROOT).trim();
