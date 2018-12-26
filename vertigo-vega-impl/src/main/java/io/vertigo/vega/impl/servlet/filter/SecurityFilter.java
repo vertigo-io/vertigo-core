@@ -93,7 +93,7 @@ public final class SecurityFilter extends AbstractFilter {
 				/*
 				 * Lance des exceptions - si la session a expiré - ou si aucune session utilisateur n'existe.
 				 */
-				httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
+				httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 				//il ne faut pas continuer
 				if (!hasSession) {
 					//Par défaut on considère que la session a expirée
