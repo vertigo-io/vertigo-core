@@ -24,6 +24,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -527,8 +529,10 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			return new String[] { "number", "float" };
 		} else if (double.class.isAssignableFrom(paramClass) || Double.class.isAssignableFrom(paramClass)) {
 			return new String[] { "number", "double" };
-		} else if (Date.class.isAssignableFrom(paramClass)) {
+		} else if (Date.class.isAssignableFrom(paramClass) || Instant.class.isAssignableFrom(paramClass)) {
 			return new String[] { "string", "date-time" };
+		} else if (LocalDate.class.isAssignableFrom(paramClass)) {
+			return new String[] { "string", "date" };
 		} else if (VFile.class.isAssignableFrom(paramClass)) {
 			return new String[] { "file", null };
 		} else if (Collection.class.isAssignableFrom(paramClass)) {
