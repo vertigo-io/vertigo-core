@@ -27,8 +27,8 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.DataStream;
 
 /**
- * Primitives types.
- *
+ * Primitive types.
+ * This class defines the primitive types.
  * @author  pchretien
  */
 public enum DataType {
@@ -55,7 +55,7 @@ public enum DataType {
 	DataStream(DataStream.class);
 
 	/**
-	 * Classe java que le Type encapsule.
+	 * The java class wrapped by this dataType.
 	 */
 	private final Class<?> javaClass;
 
@@ -102,7 +102,7 @@ public enum DataType {
 	}
 
 	/**
-	 * @return Classe java encapsulé/wrappée par le type
+	 * @return the native java class wrapped by this dataType
 	 */
 	public Class<?> getJavaClass() {
 		return javaClass;

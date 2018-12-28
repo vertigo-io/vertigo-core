@@ -50,7 +50,7 @@ public final class DomainBuilder implements Builder<Domain> {
 	/**
 	 * Constructor.
 	 * @param name the name of the domain
-	 * @param dataType the dataType lof the domain
+	 * @param dataType the dataType of the domain
 	 */
 	DomainBuilder(final String name, final DataType dataType, final boolean multiple) {
 		Assertion.checkArgNotEmpty(name);
