@@ -63,7 +63,7 @@ public final class KprLoader implements Loader {
 		Assertion.checkNotNull(encoding);
 		//-----
 		this.resourceManager = resourceManager;
-		charset = Charset.forName(encoding.orElse("ISO-8859-1"));
+		charset = Charset.forName(encoding.orElse("utf-8"));
 	}
 
 	/** {@inheritDoc} */
