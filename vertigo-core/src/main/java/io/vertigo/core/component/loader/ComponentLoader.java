@@ -74,11 +74,11 @@ public final class ComponentLoader {
 	 * @param paramManagerOpt optional paramManager
 	 * @param moduleConfigs the config of the module to add.
 	 */
-	public void registerAllComponentsAndAspects(final Optional<ParamManager> paramManagerOpt, final List<ModuleConfig> moduleConfigs) {
+	public void registerAllComponentsAndAspects(final ParamManager paramManager, final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
-			registerComponents(paramManagerOpt,
+			registerComponents(Optional.of(paramManager),
 					moduleConfig.getName(),
 					moduleConfig.getComponentConfigs());
 			registerAspects(moduleConfig.getAspectConfigs());

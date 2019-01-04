@@ -100,7 +100,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 					appConfig.getBootConfig().getComponentConfigs());
 
 			//-----1. Loads all components (and aspects).
-			componentLoader.registerAllComponentsAndAspects(Optional.of(componentSpaceWritable.resolve(ParamManager.class)), appConfig.getModuleConfigs());
+			componentLoader.registerAllComponentsAndAspects(componentSpaceWritable.resolve(ParamManager.class), appConfig.getModuleConfigs());
 			//-----2. Print components
 			if (appConfig.getBootConfig().isVerbose()) {
 				Logo.printCredits(System.out);
