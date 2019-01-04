@@ -5,6 +5,7 @@
 	</boot>
 
 	<module name="vertigo-studio">
+		<component  api="MasterDataManager" class="io.vertigo.studio.impl.masterdata.MasterDataManagerImpl"/>
 		<component api="MdaManager" class="io.vertigo.studio.impl.mda.MdaManagerImpl">
 			<param name="projectPackageName" value="io.vertigo.studio" />
 			<param name="targetGenDir" value="target/" />

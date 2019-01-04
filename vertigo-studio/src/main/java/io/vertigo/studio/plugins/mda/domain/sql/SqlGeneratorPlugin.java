@@ -66,7 +66,7 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 	private final Optional<String> tableSpaceIndexOpt;
 	private final boolean generateMasterData;
 
-	private final Optional<MasterDataManager> masterDataManagerOpt;
+	private final MasterDataManager masterDataManager;
 
 	/**
 	 * Constructeur.
@@ -85,7 +85,7 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 			@Named("generateMasterData") final Optional<Boolean> generateMasterDataOpt,
 			@Named("tableSpaceData") final Optional<String> tableSpaceData,
 			@Named("tableSpaceIndex") final Optional<String> tableSpaceIndex,
-			final Optional<MasterDataManager> masterDataManagerOpt) {
+			final MasterDataManager masterDataManager) {
 		//-----
 		this.targetSubDir = targetSubDir;
 		this.generateDrop = generateDrop;
@@ -93,7 +93,7 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 		tableSpaceDataOpt = tableSpaceData;
 		tableSpaceIndexOpt = tableSpaceIndex;
 		generateMasterData = generateMasterDataOpt.orElse(false);
-		this.masterDataManagerOpt = masterDataManagerOpt;
+		this.masterDataManager = masterDataManager;
 	}
 
 	/** {@inheritDoc} */
@@ -115,7 +115,7 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 			final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder) {
 
-		final MasterDataValues masterDataValues = masterDataManagerOpt.isPresent() ? masterDataManagerOpt.get().getValues() : new MasterDataValues();
+		final MasterDataValues masterDataValues = masterDataManager.getValues();
 
 		final List<SqlMasterDataDefinitionModel> sqlMasterDataDefinitionModels = Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)
 				.stream()

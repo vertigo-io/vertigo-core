@@ -59,7 +59,7 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 	private final boolean shouldGenerateDtObject;
 	private final String dictionaryClassName;
 
-	private final Optional<MasterDataManager> masterDataManagerOpt;
+	private final MasterDataManager masterDataManager;
 
 	/**
 	 * Constructeur.
@@ -77,7 +77,7 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 			@Named("generateDtDefinitions") final boolean generateDtDefinitions,
 			@Named("dictionaryClassName") final Optional<String> dictionaryClassNameOption,
 			@Named("generateDtObject") final boolean generateDtObject,
-			final Optional<MasterDataManager> masterDataManagerOpt) {
+			final MasterDataManager masterDataManager) {
 		//-----
 		this.targetSubDir = targetSubDir;
 		shouldGenerateDtResources = generateDtResources;
@@ -86,7 +86,7 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 		dictionaryClassName = dictionaryClassNameOption.orElse("DtDefinitions");
 		shouldGenerateDtObject = generateDtObject;
 		//---
-		this.masterDataManagerOpt = masterDataManagerOpt;
+		this.masterDataManager = masterDataManager;
 	}
 
 	/** {@inheritDoc} */
@@ -221,7 +221,7 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 	private void generateJavaEnums(
 			final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder) {
-		final MasterDataValues masterDataValues = masterDataManagerOpt.isPresent() ? masterDataManagerOpt.get().getValues() : new MasterDataValues();
+		final MasterDataValues masterDataValues = masterDataManager.getValues();
 
 		Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)
 				.stream()

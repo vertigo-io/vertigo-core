@@ -14,6 +14,7 @@
 				<param name="targetSubDir" value="tsgen" />
 			</plugin>
 		</component>
+		<component api="MasterDataManager" class="io.vertigo.studio.impl.masterdata.MasterDataManagerImpl"/>
 	</module>
 
 	<module name="myApp">

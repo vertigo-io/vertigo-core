@@ -46,6 +46,7 @@
 				<param name="baseTestClass" value="io.vertigo.studio.data.tasktest.DaoTestClass" />
 			</plugin>
 		</component>
+		<component api="MasterDataManager" class="io.vertigo.studio.impl.masterdata.MasterDataManagerImpl"/>
 	</module>
 
 	<module name="myApp">

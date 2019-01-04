@@ -55,7 +55,7 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 	private final boolean shouldGenerateDtResourcesTS;
 	private final boolean shouldGenerateTsDtDefinitions;
 	private final boolean shouldGenerateTsMasterData;
-	private final Optional<MasterDataManager> masterDataManagerOpt;
+	private final MasterDataManager masterDataManager;
 
 	/**
 	 * Constructeur.
@@ -69,13 +69,13 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 			@Named("generateDtResourcesTS") final boolean generateDtResourcesTS,
 			@Named("generateTsDtDefinitions") final boolean generateTsDtDefinitions,
 			@Named("generateTsMasterData") final Optional<Boolean> generateTsMasterDataOpt,
-			final Optional<MasterDataManager> masterDataManagerOpt) {
+			final MasterDataManager masterDataManager) {
 		//-----
 		this.targetSubDir = targetSubDir;
 		shouldGenerateDtResourcesTS = generateDtResourcesTS;
 		shouldGenerateTsDtDefinitions = generateTsDtDefinitions;
 		shouldGenerateTsMasterData = generateTsMasterDataOpt.orElse(false);
-		this.masterDataManagerOpt = masterDataManagerOpt;
+		this.masterDataManager = masterDataManager;
 	}
 
 	/** {@inheritDoc} */
@@ -113,7 +113,7 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 	private void generateTsMasterData(final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder) {
 
-		final MasterDataValues masterDataValues = masterDataManagerOpt.isPresent() ? masterDataManagerOpt.get().getValues() : new MasterDataValues();
+		final MasterDataValues masterDataValues = masterDataManager.getValues();
 
 		final List<TSMasterDataDefinitionModel> tsMasterDataDefinitionModels = Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)
 				.stream()

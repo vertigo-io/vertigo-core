@@ -47,6 +47,7 @@
 				<param name="targetSubDir" value="javagen" />
 			</plugin>
 		</component>
+		<component api="MasterDataManager" class="io.vertigo.studio.impl.masterdata.MasterDataManagerImpl"/>
 	</module>
 
 	<module name="myApp">
