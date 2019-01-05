@@ -16,31 +16,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.app.config;
+package io.vertigo.app.config.json;
 
-import io.vertigo.lang.Builder;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
- * Defines a module by its features.
- * @author pchretien
+ * For declaring a feature by it's name in the manifest
+ * @author mlaroche
+ *
  */
-public abstract class Features implements Builder<ModuleConfig> {
-	private final ModuleConfigBuilder moduleConfigBuilder;
+@Retention(RUNTIME)
+@Target(METHOD)
+public @interface Feature {
 
-	protected Features(final String name) {
-		moduleConfigBuilder = ModuleConfig.builder(name);
-	}
-
-	protected abstract void buildFeatures();
-
-	public final ModuleConfigBuilder getModuleConfigBuilder() {
-		return moduleConfigBuilder;
-	}
-
-	@Override
-	public final ModuleConfig build() {
-		buildFeatures();
-		return moduleConfigBuilder.build();
-	}
-
+	String value();
 }

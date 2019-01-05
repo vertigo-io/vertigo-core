@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.app.config.xml;
+package io.vertigo.app.config.json;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,42 +24,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 import io.vertigo.core.spaces.component.data.BioManager;
 
-@RunWith(JUnitPlatform.class)
-public final class AppConfig2Test {
+public final class JsonAppConfigTest {
 	@Test
 	public void HomeTest() {
 
-		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(), "bio.xml")
-				.build();
-
-		testBioManager(appConfig);
-	}
-
-	@Test
-	public void FeatureTest() {
-
-		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(), "bio-features.xml")
-				.build();
-
-		testBioManager(appConfig);
-
-	}
-
-	@Test
-	public void nodeTest() {
-
-		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(), "bio-node.xml")
+		final AppConfig appConfig = new JsonAppConfigBuilder()
+				.withFiles(getClass(), new Properties(), "bio.json")
 				.build();
 
 		testBioManager(appConfig);
