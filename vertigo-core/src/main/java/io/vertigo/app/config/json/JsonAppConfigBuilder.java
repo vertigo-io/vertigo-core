@@ -32,7 +32,7 @@ import io.vertigo.util.ClassUtil;
 import io.vertigo.util.Selector;
 import io.vertigo.util.Selector.MethodConditions;
 
-public class JsonAppConfigBuilder implements Builder<AppConfig> {
+public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 
 	private final AppConfigBuilder appConfigBuilder = AppConfig.builder();
 
@@ -50,7 +50,7 @@ public class JsonAppConfigBuilder implements Builder<AppConfig> {
 	* Append Config of a set of modules.
 	 * @param relativeRootClass Class used to access files in a relative way.
 	* @param params properties used to configure the app
-	* @param xmlModulesFileNames fileNames of the different xml files
+	* @param jsonFileNames fileNames of the different json files
 	*
 	* @return this builder
 	*/

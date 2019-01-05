@@ -5,7 +5,7 @@ import java.util.List;
 
 import io.vertigo.app.config.json.JsonAppConfig.JsonModuleConfig;
 
-public class JsonAppConfig extends HashMap<String, JsonModuleConfig> {
+public final class JsonAppConfig extends HashMap<String, JsonModuleConfig> {
 
 	private static final long serialVersionUID = 8170148586508859017L;
 
