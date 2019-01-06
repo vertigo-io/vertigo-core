@@ -23,7 +23,7 @@ import io.vertigo.core.param.Param;
 import io.vertigo.database.impl.sql.SqlConnectionProviderPlugin;
 import io.vertigo.database.impl.sql.SqlDataBaseManagerImpl;
 import io.vertigo.database.impl.timeseries.TimeSeriesDataBaseManagerImpl;
-import io.vertigo.database.plugins.timeseries.InfluxDbTimeSeriesPlugin;
+import io.vertigo.database.plugins.timeseries.influxdb.InfluxDbTimeSeriesPlugin;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.timeseries.TimeSeriesDataBaseManager;
 

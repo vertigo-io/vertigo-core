@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.database.plugins.timeseries;
+package io.vertigo.database.plugins.timeseries.influxdb;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -232,13 +232,14 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		}
 
 		// the global query
-		final StringBuilder request = new StringBuilder()
+		final String request = new StringBuilder()
 				.append("select ").append(selectClause)
 				.append(" from ").append(fromClause)
 				.append(" where time > ").append(timeFilter.getFrom()).append(" and time <").append(timeFilter.getTo())
-				.append(" group by time(").append(timeFilter.getDim()).append(')');
+				.append(" group by time(").append(timeFilter.getDim()).append(')')
+				.toString();
 
-		return executeTimedQuery(appName, request.toString());
+		return executeTimedQuery(appName, request);
 	}
 
 	@Override
@@ -306,9 +307,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 
 	@Override
 	public TabularDatas getTops(final String appName, final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
-		final StringBuilder queryBuilder = new StringBuilder();
-
-		final String queryString = queryBuilder
+		final String queryString = new StringBuilder()
 				.append("select top(").append("\"top_").append(measure).append("\", \"").append(groupBy).append("\", ").append(maxRows).append(") as \"").append(measure).append('"')
 				.append(" from ( select ").append(buildMeasureQuery(measure, "top_" + measure))
 				.append(" from ").append(dataFilter.getMeasurement())
