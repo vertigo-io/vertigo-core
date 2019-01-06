@@ -28,9 +28,11 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
+import io.vertigo.database.plugins.timeseries.influxdb.InfluxDbTimeSeriesPlugin;
 
 /**
  * Test of the IoT services.
@@ -69,8 +71,12 @@ public final class TimeSeriesDataBaseTest extends AbstractTestCaseJU5 {
 				.addModule(new CommonsFeatures()
 						.build())
 				.addModule(new DatabaseFeatures()
-						.withTimeSeriesDataBase("vertigo-test")
-						.withInfluxDb("http://analytica.part.klee.lan.net:8086", "analytica", "kleeklee")
+						.withTimeSeriesDataBase()
+						.addPlugin(InfluxDbTimeSeriesPlugin.class,
+								Param.of("host", "http://analytica.part.klee.lan.net:8086"),
+								Param.of("user", "analytica"),
+								Param.of("password", "kleeklee"),
+								Param.of("dbNames", "vertigo-test"))
 						.build())
 				.build();
 	}

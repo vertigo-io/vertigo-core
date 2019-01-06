@@ -1,12 +1,12 @@
 package io.vertigo.database.impl.timeseries;
 
-import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
@@ -23,24 +23,30 @@ import io.vertigo.lang.Assertion;
  */
 public class TimeSeriesDataBaseManagerImpl implements TimeSeriesDataBaseManager {
 
-	private final TimeSeriesPlugin timeSeriesPlugin;
+	public static final String WILDCARD_PLUGIN = "*";
+	private final Map<String, TimeSeriesPlugin> timeSeriesPluginByDb = new HashMap<>();
+	private final Optional<TimeSeriesPlugin> wildcardPluginOpt;
 
 	@Inject
 	public TimeSeriesDataBaseManagerImpl(
-			final TimeSeriesPlugin timeSeriesPlugin,
-			final @Named("dbNames") Optional<String> dbNamesOpt) {
-		Assertion.checkNotNull(timeSeriesPlugin);
-		Assertion.checkNotNull(dbNamesOpt);
+			final List<TimeSeriesPlugin> timeSeriesPlugins) {
+		Assertion.checkNotNull(timeSeriesPlugins);
 		//---
-		this.timeSeriesPlugin = timeSeriesPlugin;
-		if (dbNamesOpt.isPresent()) {
-			timeSeriesPlugin.createDatabases(Arrays.asList(dbNamesOpt.get().split(";")));
-		}
+		timeSeriesPlugins.forEach(
+				plugin -> plugin.getDbNames()
+						.forEach(dbName -> {
+							Assertion.checkState(!timeSeriesPluginByDb.containsKey(dbName), "Db '{0}' already registered ", dbName);
+							//---
+							timeSeriesPluginByDb.put(dbName, plugin);
+
+						}));
+		//--- we try to find a wildcard plugins if any
+		wildcardPluginOpt = Optional.ofNullable(timeSeriesPluginByDb.get(WILDCARD_PLUGIN));
 	}
 
 	@Override
 	public void insertMeasure(final String dbName, final Measure measure) {
-		timeSeriesPlugin.insertMeasure(dbName, measure);
+		getPluginByDb(dbName).insertMeasure(dbName, measure);
 
 	}
 
@@ -51,7 +57,7 @@ public class TimeSeriesDataBaseManagerImpl implements TimeSeriesDataBaseManager 
 		Assertion.checkNotNull(dataFilter);
 		Assertion.checkNotNull(timeFilter.getDim());// we check dim is not null because we need it
 		//---
-		return timeSeriesPlugin.getTimeSeries(dbName, measures, dataFilter, timeFilter);
+		return getPluginByDb(dbName).getTimeSeries(dbName, measures, dataFilter, timeFilter);
 
 	}
 
@@ -69,27 +75,37 @@ public class TimeSeriesDataBaseManagerImpl implements TimeSeriesDataBaseManager 
 		//we use the natural order
 		clusteredMeasure.getThresholds().sort(Comparator.naturalOrder());
 		//---
-		return timeSeriesPlugin.getClusteredTimeSeries(dbName, clusteredMeasure, dataFilter, timeFilter);
+		return getPluginByDb(dbName).getClusteredTimeSeries(dbName, clusteredMeasure, dataFilter, timeFilter);
 	}
 
 	@Override
 	public TimedDatas getTabularTimedData(final String dbName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
-		return timeSeriesPlugin.getTabularTimedData(dbName, measures, dataFilter, timeFilter, groupBy);
+		return getPluginByDb(dbName).getTabularTimedData(dbName, measures, dataFilter, timeFilter, groupBy);
 	}
 
 	@Override
 	public TabularDatas getTabularData(final String dbName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
-		return timeSeriesPlugin.getTabularData(dbName, measures, dataFilter, timeFilter, groupBy);
+		return getPluginByDb(dbName).getTabularData(dbName, measures, dataFilter, timeFilter, groupBy);
 	}
 
 	@Override
 	public TabularDatas getTops(final String dbName, final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
-		return timeSeriesPlugin.getTops(dbName, measure, dataFilter, timeFilter, groupBy, maxRows);
+		return getPluginByDb(dbName).getTops(dbName, measure, dataFilter, timeFilter, groupBy, maxRows);
 	}
 
 	@Override
 	public List<String> getTagValues(final String dbName, final String measurement, final String tag) {
-		return timeSeriesPlugin.getTagValues(dbName, measurement, tag);
+		return getPluginByDb(dbName).getTagValues(dbName, measurement, tag);
+	}
+
+	private TimeSeriesPlugin getPluginByDb(final String dbName) {
+		Assertion.checkArgNotEmpty(dbName);
+		// ---
+		final TimeSeriesPlugin adequatePlugin = timeSeriesPluginByDb.get(dbName);
+		if (adequatePlugin != null) {
+			return adequatePlugin;
+		}
+		return wildcardPluginOpt.orElseThrow(() -> new IllegalArgumentException("No timeseries plugin found for db : '" + dbName + "'"));
 	}
 
 }

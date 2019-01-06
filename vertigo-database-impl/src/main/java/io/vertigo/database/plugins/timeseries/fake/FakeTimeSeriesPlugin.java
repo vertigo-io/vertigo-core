@@ -21,6 +21,7 @@ package io.vertigo.database.plugins.timeseries.fake;
 import java.util.Collections;
 import java.util.List;
 
+import io.vertigo.database.impl.timeseries.TimeSeriesDataBaseManagerImpl;
 import io.vertigo.database.impl.timeseries.TimeSeriesPlugin;
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
@@ -34,11 +35,6 @@ import io.vertigo.database.timeseries.TimedDatas;
  *
  */
 public final class FakeTimeSeriesPlugin implements TimeSeriesPlugin {
-
-	@Override
-	public void createDatabases(final List<String> dbNames) {
-		// nothing to do
-	}
 
 	@Override
 	public TimedDatas getClusteredTimeSeries(final String appName, final ClusteredMeasure clusteredMeasure, final DataFilter dataFilter, final TimeFilter timeFilter) {
@@ -73,5 +69,10 @@ public final class FakeTimeSeriesPlugin implements TimeSeriesPlugin {
 	@Override
 	public void insertMeasure(final String dbName, final Measure measure) {
 		// do nothing
+	}
+
+	@Override
+	public List<String> getDbNames() {
+		return Collections.singletonList(TimeSeriesDataBaseManagerImpl.WILDCARD_PLUGIN);
 	}
 }

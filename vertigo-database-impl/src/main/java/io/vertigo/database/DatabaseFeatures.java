@@ -18,15 +18,12 @@
  */
 package io.vertigo.database;
 
-import javax.inject.Named;
-
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.json.Feature;
 import io.vertigo.core.param.Param;
 import io.vertigo.database.impl.sql.SqlConnectionProviderPlugin;
 import io.vertigo.database.impl.sql.SqlDataBaseManagerImpl;
 import io.vertigo.database.impl.timeseries.TimeSeriesDataBaseManagerImpl;
-import io.vertigo.database.plugins.timeseries.influxdb.InfluxDbTimeSeriesPlugin;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.timeseries.TimeSeriesDataBaseManager;
 
@@ -35,7 +32,7 @@ import io.vertigo.database.timeseries.TimeSeriesDataBaseManager;
  *
  * @author mlaroche
  */
-public final class DatabaseFeatures extends Features {
+public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 
 	/**
 	 * Constructor.
@@ -56,33 +53,10 @@ public final class DatabaseFeatures extends Features {
 	}
 
 	/**
-	 * Add InfluxDb timeseries database management to dynamo.
-	 * @return  the feature
-	 */
-	public DatabaseFeatures withInfluxDb(final String host, final String user, final String password) {
-		getModuleConfigBuilder().addPlugin(InfluxDbTimeSeriesPlugin.class,
-				Param.of("host", host),
-				Param.of("user", user),
-				Param.of("password", password));
-		return this;
-	}
-
-	/**
 	 * Add InfluxDb timeseries database.
 	 * @return  the feature
 	 */
 	@Feature("timeseries")
-	public DatabaseFeatures withTimeSeriesDataBase(final @Named("dbNames") String dbNames) {
-		getModuleConfigBuilder()
-				.addComponent(TimeSeriesDataBaseManager.class, TimeSeriesDataBaseManagerImpl.class,
-						Param.of("dbNames", dbNames));
-		return this;
-	}
-
-	/**
-	 * Add InfluxDb timeseries database.
-	 * @return  the feature
-	 */
 	public DatabaseFeatures withTimeSeriesDataBase() {
 		getModuleConfigBuilder()
 				.addComponent(TimeSeriesDataBaseManager.class, TimeSeriesDataBaseManagerImpl.class);

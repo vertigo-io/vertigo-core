@@ -77,6 +77,6 @@ public interface TimeSeriesPlugin extends Plugin {
 			final String measurement,
 			final String tag);
 
-	void createDatabases(List<String> dbNames);
+	List<String> getDbNames();
 
 }

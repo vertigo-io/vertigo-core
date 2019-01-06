@@ -28,6 +28,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -44,6 +45,7 @@ import org.influxdb.dto.QueryResult;
 import org.influxdb.dto.QueryResult.Series;
 
 import io.vertigo.core.component.Activeable;
+import io.vertigo.database.impl.timeseries.TimeSeriesDataBaseManagerImpl;
 import io.vertigo.database.impl.timeseries.TimeSeriesPlugin;
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
@@ -64,18 +66,27 @@ import io.vertigo.lang.Tuples.Tuple2;
 public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activeable {
 
 	private final InfluxDB influxDB;
+	private List<String> dbNames;
 
 	@Inject
 	public InfluxDbTimeSeriesPlugin(
 			@Named("host") final String host,
 			@Named("user") final String user,
-			@Named("password") final String password) {
+			@Named("password") final String password,
+			@Named("dbNames") final Optional<String> dbNamesOpt) {
 		Assertion.checkArgNotEmpty(host);
 		Assertion.checkArgNotEmpty(user);
 		Assertion.checkArgNotEmpty(password);
 		//---
 		influxDB = InfluxDBFactory.connect(host, user, password);
 		influxDB.enableBatch();
+		if (dbNamesOpt.isPresent()) {
+			dbNames = Arrays.asList(dbNamesOpt.get().split(";"));
+			createDatabases();
+		} else {
+			dbNames = Collections.singletonList(TimeSeriesDataBaseManagerImpl.WILDCARD_PLUGIN);
+			// we do not create databases because we are the wildcard one...
+		}
 	}
 
 	@Override
@@ -89,8 +100,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		influxDB.disableBatch();
 	}
 
-	@Override
-	public void createDatabases(final List<String> dbNames) {
+	public void createDatabases() {
 		final Set<String> existingDatabases = influxDB.query(new Query("SHOW DATABASES", null))
 				.getResults()
 				.get(0)
@@ -102,7 +112,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 				.collect(Collectors.toSet());
 
 		for (final String dbName : dbNames) {
-			if (!existingDatabases.contains(dbName)) {
+			if (TimeSeriesDataBaseManagerImpl.WILDCARD_PLUGIN != dbName && !existingDatabases.contains(dbName)) {
 				influxDB.query(new Query("CREATE DATABASE \"" + dbName + "\"", dbName));
 			}
 		}
@@ -439,6 +449,11 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		}
 		return Tuples.of(aggregateFunction, Collections.emptyList());
 
+	}
+
+	@Override
+	public List<String> getDbNames() {
+		return dbNames;
 	}
 
 }
