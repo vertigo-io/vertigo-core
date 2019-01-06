@@ -16,23 +16,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.node;
+package io.vertigo.vega.impl.webservice.servlet;
 
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.commons.CommonsFeatures;
+/**
+ * Classe d'initialisation.
+ *
+ * @author pforhan
+ */
+public class AppServletContextListener2 implements ServletContextListener {
 
-@RunWith(JUnitPlatform.class)
-public class SingleNodeRegistryPluginTest extends AbstractNodeManagerTest {
+	/** Servlet listener */
+	private final AppServletStarter2 appServletStarter = new AppServletStarter2();
 
+	/** {@inheritDoc} */
 	@Override
-	protected AppConfig buildAppConfig() {
-		return buildRootAppConfig()
-				.addModule(new CommonsFeatures()
-						.build())
-				.build();
+	public final void contextInitialized(final ServletContextEvent servletContextEvent) {
+		appServletStarter.contextInitialized(servletContextEvent.getServletContext());
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public final void contextDestroyed(final ServletContextEvent servletContextEvent) {
+		appServletStarter.contextDestroyed(servletContextEvent.getServletContext());
+	}
 }

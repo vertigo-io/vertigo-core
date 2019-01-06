@@ -18,13 +18,15 @@
  */
 package io.vertigo.app.config;
 
+import io.vertigo.core.component.Plugin;
+import io.vertigo.core.param.Param;
 import io.vertigo.lang.Builder;
 
 /**
  * Defines a module by its features.
  * @author pchretien
  */
-public abstract class Features implements Builder<ModuleConfig> {
+public abstract class Features<F> implements Builder<ModuleConfig> {
 	private final ModuleConfigBuilder moduleConfigBuilder;
 
 	protected Features(final String name) {
@@ -33,8 +35,13 @@ public abstract class Features implements Builder<ModuleConfig> {
 
 	protected abstract void buildFeatures();
 
-	public final ModuleConfigBuilder getModuleConfigBuilder() {
+	protected final ModuleConfigBuilder getModuleConfigBuilder() {
 		return moduleConfigBuilder;
+	}
+
+	public F addPlugin(final Class<? extends Plugin> pluginImplClass, final Param... params) {
+		moduleConfigBuilder.addPlugin(pluginImplClass, params);
+		return (F) this;
 	}
 
 	@Override

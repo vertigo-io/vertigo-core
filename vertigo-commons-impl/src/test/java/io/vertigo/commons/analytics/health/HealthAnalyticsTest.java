@@ -32,11 +32,11 @@ import org.junit.runner.RunWith;
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.health.data.FailedComponentChecker;
 import io.vertigo.commons.analytics.health.data.RedisHealthChecker;
 import io.vertigo.commons.analytics.health.data.SuccessComponentChecker;
-import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 

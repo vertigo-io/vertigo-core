@@ -16,13 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.impl;
+package io.vertigo.commons;
 
 import java.util.Optional;
+
+import javax.inject.Named;
 
 import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.app.config.ComponentConfigBuilder;
 import io.vertigo.app.config.Features;
+import io.vertigo.app.config.json.Feature;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.codec.CodecManager;
@@ -39,7 +42,6 @@ import io.vertigo.commons.impl.eventbus.EventBusManagerImpl;
 import io.vertigo.commons.impl.node.NodeInfosPlugin;
 import io.vertigo.commons.impl.node.NodeManagerImpl;
 import io.vertigo.commons.impl.node.NodeRegistryPlugin;
-import io.vertigo.commons.impl.script.ExpressionEvaluatorPlugin;
 import io.vertigo.commons.impl.script.ScriptManagerImpl;
 import io.vertigo.commons.impl.transaction.VTransactionAspect;
 import io.vertigo.commons.impl.transaction.VTransactionManagerImpl;
@@ -53,7 +55,7 @@ import io.vertigo.core.param.Param;
  * Defines commons module.
  * @author pchretien
  */
-public final class CommonsFeatures extends Features {
+public final class CommonsFeatures extends Features<CommonsFeatures> {
 
 	/**
 	 * Constructor.
@@ -67,6 +69,7 @@ public final class CommonsFeatures extends Features {
 	 *
 	 * @return these features
 	 */
+	@Feature("script")
 	public CommonsFeatures withScript() {
 		getModuleConfigBuilder()
 				.addComponent(ScriptManager.class, ScriptManagerImpl.class)
@@ -75,26 +78,16 @@ public final class CommonsFeatures extends Features {
 	}
 
 	/**
-	 * Activates script with a defined plugin.
-
-	 * @param expressionEvaluatorPluginClass the type of plugin to use
-	 * @param params the params
+	 * Activates caches.
 	 * @return these features
 	 */
-	public CommonsFeatures withScript(final Class<? extends ExpressionEvaluatorPlugin> expressionEvaluatorPluginClass, final Param... params) {
+	@Feature("cache")
+	public CommonsFeatures withCache() {
 		getModuleConfigBuilder()
-				.addComponent(ScriptManager.class, ScriptManagerImpl.class)
-				.addPlugin(expressionEvaluatorPluginClass, params);
+				.addComponent(CacheManager.class, CacheManagerImpl.class);
 		return this;
 	}
 
-	/**
-	 * Activates caches.
-	 *
-	 * @param cachePluginClass the cache plugin to use
-	 * @param params the params
-	 * @return these features
-	 */
 	public CommonsFeatures withCache(final Class<? extends CachePlugin> cachePluginClass, final Param... params) {
 		getModuleConfigBuilder()
 				.addComponent(CacheManager.class, CacheManagerImpl.class)
@@ -110,13 +103,14 @@ public final class CommonsFeatures extends Features {
 	 * @param database the index of the REDIS database
 	 * @return these features
 	 */
-	public CommonsFeatures withRedisConnector(final String host, final int port, final int database, final Optional<String> passwordOpt) {
+	@Feature("redis")
+	public CommonsFeatures withRedisConnector(final @Named("host") String host, final @Named("port") String port, final @Named("database") String database, @Named("password") final Optional<String> passwordOpt) {
 		final ComponentConfigBuilder componentConfigBuilder = ComponentConfig
 				.builder()
 				.withImpl(RedisConnector.class)
 				.addParam(Param.of("host", host))
-				.addParam(Param.of("port", Integer.toString(port)))
-				.addParam(Param.of("database", Integer.toString(database)));
+				.addParam(Param.of("port", port))
+				.addParam(Param.of("database", database));
 		if (passwordOpt.isPresent()) {
 			componentConfigBuilder
 					.addParam(Param.of("password", passwordOpt.get()));
@@ -124,6 +118,21 @@ public final class CommonsFeatures extends Features {
 		getModuleConfigBuilder()
 				.addComponent(componentConfigBuilder.build());
 		return this;
+
+	}
+
+	/**
+	
+	/**
+	 * Adds a REDIS connector.
+	 * @param host the REDIS host
+	 * @param port the REDIS port
+	 * @param passwordOpt the REDIS password
+	 * @param database the index of the REDIS database
+	 * @return these features
+	 */
+	public CommonsFeatures withRedisConnector(final String host, final int port, final int database, final Optional<String> passwordOpt) {
+		return withRedisConnector(host, Integer.toString(port), Integer.toString(database), passwordOpt);
 
 	}
 

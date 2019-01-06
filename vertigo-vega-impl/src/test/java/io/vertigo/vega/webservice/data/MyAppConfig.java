@@ -26,12 +26,12 @@ import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
-import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.commons.plugins.node.infos.http.HttpNodeInfosPlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.impl.DynamoFeatures;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
 import io.vertigo.vega.VegaFeatures;
@@ -84,13 +84,13 @@ public final class MyAppConfig {
 								Param.of("timeToLiveSeconds", "120"))
 						.build())
 				.addModule(new AccountFeatures()
-						.withUserSession(TestUserSession.class)
+						.withSecurity(TestUserSession.class.getName())
 						.build())
 				.addModule(new VegaFeatures()
 						.withTokens("tokens")
 						.withSecurity()
-						.withMisc()
-						.withEmbeddedServer(WS_PORT)
+						.withRateLimiting()
+						.withEmbeddedServer(Integer.toString(WS_PORT))
 						.build())
 				//-----
 				.addModule(ModuleConfig.builder("dao-app")

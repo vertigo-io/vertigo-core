@@ -18,9 +18,12 @@
  */
 package io.vertigo.vega;
 
+import javax.inject.Named;
+
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.PluginConfig;
 import io.vertigo.app.config.PluginConfigBuilder;
+import io.vertigo.app.config.json.Feature;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ListBuilder;
@@ -45,6 +48,7 @@ import io.vertigo.vega.plugins.webservice.handler.SessionWebServiceHandlerPlugin
 import io.vertigo.vega.plugins.webservice.handler.ValidatorWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.scanner.annotations.AnnotationsWebServiceScannerPlugin;
 import io.vertigo.vega.plugins.webservice.webserver.sparkjava.SparkJavaEmbeddedWebServerPlugin;
+import io.vertigo.vega.plugins.webservice.webserver.sparkjava.SparkJavaServletFilterWebServerPlugin;
 import io.vertigo.vega.token.TokenManager;
 import io.vertigo.vega.webservice.WebServiceManager;
 
@@ -52,22 +56,23 @@ import io.vertigo.vega.webservice.WebServiceManager;
  * Defines module Vega.
  * @author pchretien
  */
-public final class VegaFeatures extends Features {
+public final class VegaFeatures extends Features<VegaFeatures> {
 
 	private boolean tokensEnabled;
 	private String myTokens;
 	private String mySearchApiVersion;
-	private boolean miscEnabled;
+	private boolean rateLimitingEnabled;
 	private boolean securityEnabled;
 	private String myApiPrefix;
-	private Integer myPort;
+	private String myPort;
 	private String myOriginCORSFilter;
 
 	public VegaFeatures() {
 		super("vega");
 	}
 
-	public VegaFeatures withTokens(final String tokens) {
+	@Feature("token")
+	public VegaFeatures withTokens(final @Named("tokens") String tokens) {
 		Assertion.checkArgNotEmpty(tokens);
 		//-----
 		tokensEnabled = true;
@@ -75,32 +80,38 @@ public final class VegaFeatures extends Features {
 		return this;
 	}
 
-	public VegaFeatures withMisc() {
-		miscEnabled = true;
+	@Feature("rateLimiting")
+	public VegaFeatures withRateLimiting() {
+		rateLimitingEnabled = true;
 		return this;
 	}
 
+	@Feature("security")
 	public VegaFeatures withSecurity() {
 		securityEnabled = true;
 		return this;
 	}
 
-	public VegaFeatures withApiPrefix(final String apiPrefix) {
+	@Feature("apiPrefix")
+	public VegaFeatures withApiPrefix(final @Named("apiPrefix") String apiPrefix) {
 		myApiPrefix = apiPrefix;
 		return this;
 	}
 
-	public VegaFeatures withSearchApiVersion(final String searchApiVersion) {
+	@Feature("searchApiVersion")
+	public VegaFeatures withSearchApiVersion(final @Named("searchApiVersion") String searchApiVersion) {
 		mySearchApiVersion = searchApiVersion;
 		return this;
 	}
 
-	public VegaFeatures withEmbeddedServer(final int port) {
+	@Feature("embeddedServer")
+	public VegaFeatures withEmbeddedServer(final @Named("port") String port) {
 		myPort = port;
 		return this;
 	}
 
-	public VegaFeatures withOriginCORSFilter(final String originCORSFilter) {
+	@Feature("cors")
+	public VegaFeatures withOriginCORSFilter(final @Named("originCORSFilter") String originCORSFilter) {
 		myOriginCORSFilter = originCORSFilter;
 		return this;
 	}
@@ -148,18 +159,23 @@ public final class VegaFeatures extends Features {
 					.addComponent(TokenManager.class, TokenManagerImpl.class,
 							Param.of("collection", myTokens));
 		}
-		if (miscEnabled) {
+		if (rateLimitingEnabled) {
 			getModuleConfigBuilder()
 					.addPlugin(RateLimitingWebServiceHandlerPlugin.class);
 		}
 		if (myPort != null) {
 			final ListBuilder<Param> params = new ListBuilder()
-					.add(Param.of("port", Integer.toString(myPort)));
+					.add(Param.of("port", myPort));
 			if (myApiPrefix != null) {
 				params.add(Param.of("apiPrefix", myApiPrefix));
 			}
 			getModuleConfigBuilder().addPlugin(new PluginConfig(SparkJavaEmbeddedWebServerPlugin.class, params.build()));
-
+		} else {
+			final ListBuilder<Param> params = new ListBuilder<>();
+			if (myApiPrefix != null) {
+				params.add(Param.of("apiPrefix", myApiPrefix));
+			}
+			getModuleConfigBuilder().addPlugin(new PluginConfig(SparkJavaServletFilterWebServerPlugin.class, params.build()));
 		}
 
 		getModuleConfigBuilder().addPlugin(ValidatorWebServiceHandlerPlugin.class)

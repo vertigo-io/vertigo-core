@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,6 +24,7 @@ import io.vertigo.app.config.Features;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.json.JsonAppConfig.JsonModuleConfig;
 import io.vertigo.app.config.json.JsonAppConfig.JsonParamsConfig;
+import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.core.component.Plugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
@@ -67,8 +69,44 @@ public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 
 	private void handleJsonFileConfig(final URL jsonConfigURL) {
 		final JsonAppConfig jsonAppConfig = gson.fromJson(parseFile(jsonConfigURL), JsonAppConfig.class);
-		jsonAppConfig.entrySet().stream()
+		//--- boot
+		handleBoot(jsonAppConfig);
+		//--- modules
+		jsonAppConfig.modules.entrySet().stream()
 				.forEach(entry -> handleJsonModuleConfig(entry.getKey(), entry.getValue()));
+		//--- initializers
+		jsonAppConfig.initializers
+				.forEach(initializer -> appConfigBuilder.addInitializer(ClassUtil.classForName(initializer, ComponentInitializer.class)));
+	}
+
+	private void handleBoot(final JsonAppConfig jsonAppConfig) {
+		if (jsonAppConfig.boot != null) {
+			final String locales = jsonAppConfig.boot.params.get("locales");
+			final String defaultZoneId = jsonAppConfig.boot.params.get("defaultZoneId");
+			if (locales != null) {
+				if (defaultZoneId == null) {
+					appConfigBuilder
+							.beginBoot()
+							.withLocales(locales);
+				} else {
+					appConfigBuilder
+							.beginBoot()
+							.withLocalesAndDefaultZoneId(locales, defaultZoneId);
+				}
+			}
+			jsonAppConfig.boot.plugins.forEach(
+					plugin -> {
+						Assertion.checkState(plugin.size() == 1, "a plugin is defined by it's class");
+						// ---
+						final String pluginClassName = plugin.keySet().iterator().next();
+						appConfigBuilder.beginBoot()
+								.addPlugin(
+										ClassUtil.classForName(pluginClassName, Plugin.class),
+										plugin.get(pluginClassName).entrySet().stream()
+												.map(entry -> Param.of(entry.getKey(), entry.getValue()))
+												.toArray(Param[]::new));
+					});
+		}
 	}
 
 	private void handleJsonModuleConfig(final String featuresClassName, final JsonModuleConfig jsonModuleConfig) {
@@ -80,20 +118,27 @@ public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 				.map(classAndMethod -> classAndMethod.getVal2())
 				.collect(Collectors.toMap(method -> method.getAnnotation(Feature.class).value(), method -> method));
 
-		jsonModuleConfig.features.entrySet()
-				.forEach(entry -> {
-					final Method methodForFeature = featureMethods.get(entry.getKey());
-					Assertion.checkNotNull(methodForFeature);
-					ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findmethodParameters(entry.getValue(), methodForFeature, entry.getKey(), featuresClassName));
-				});
+		if (jsonModuleConfig.features != null) {
+			jsonModuleConfig.features.entrySet()
+					.forEach(entry -> {
+						final Method methodForFeature = featureMethods.get(entry.getKey());
+						Assertion.checkNotNull(methodForFeature);
+						ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findmethodParameters(entry.getValue(), methodForFeature, entry.getKey(), featuresClassName));
+					});
+		}
 
 		jsonModuleConfig.plugins.forEach(
-				plugin -> moduleConfigByFeatures.getModuleConfigBuilder()
-						.addPlugin(
-								ClassUtil.classForName(plugin.className, Plugin.class),
-								plugin.params.entrySet().stream()
-										.map(entry -> Param.of(entry.getKey(), entry.getValue()))
-										.toArray(Param[]::new)));
+				plugin -> {
+					Assertion.checkState(plugin.size() == 1, "a plugin is defined by it's class");
+					// ---
+					final String pluginClassName = plugin.keySet().iterator().next();
+					moduleConfigByFeatures
+							.addPlugin(
+									ClassUtil.classForName(pluginClassName, Plugin.class),
+									plugin.get(pluginClassName).entrySet().stream()
+											.map(entry -> Param.of(entry.getKey(), entry.getValue()))
+											.toArray(Param[]::new));
+				});
 		appConfigBuilder.addModule(moduleConfigByFeatures.build());
 	}
 
@@ -104,9 +149,19 @@ public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 					// ---
 					final String paramName = parameter.getAnnotation(Named.class).value();
 					final Class paramType = parameter.getType();
-					Assertion.checkState(paramType.isAssignableFrom(String.class), "Param '{0}' of a feature '{1}' must be Strings", paramName, featureName);
+					final Class trueParamType;
+					final boolean isParamOptional = paramType.isAssignableFrom(Optional.class);
+					if (isParamOptional) {
+						trueParamType = ClassUtil.getGeneric(parameter.getParameterizedType(), () -> new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur le constructeur "));
+					} else {
+						trueParamType = paramType;
+					}
+					Assertion.checkState(trueParamType.isAssignableFrom(String.class), "Param '{0}' of a feature '{1}' must be String or Optional<String>", paramName, featureName);
 					// ---
 					final String paramValue = jsonParamsConfig.get(paramName);
+					if (isParamOptional) {
+						return Optional.ofNullable(paramValue);
+					}
 					Assertion.checkNotNull(paramValue, "No value provided for param '{0}' on feature '{1}' in the module '{2}'", paramName, featureName, featuresClassName);
 					return paramValue;
 				})

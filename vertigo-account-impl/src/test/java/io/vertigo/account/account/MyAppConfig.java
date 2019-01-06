@@ -24,19 +24,20 @@ import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.account.model.DtDefinitions;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.plugins.account.cache.memory.MemoryAccountCachePlugin;
+import io.vertigo.account.plugins.account.cache.redis.RedisAccountCachePlugin;
 import io.vertigo.account.plugins.account.store.datastore.StoreAccountStorePlugin;
 import io.vertigo.account.plugins.account.store.text.TextAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
-import io.vertigo.dynamo.impl.DynamoFeatures;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 
@@ -48,11 +49,12 @@ public final class MyAppConfig {
 	public static AppConfig config(final boolean redis, final boolean database) {
 		final CommonsFeatures commonsFeatures = new CommonsFeatures()
 				.withScript()
-				.withCache(MemoryCachePlugin.class);
+				.withCache()
+				.addPlugin(MemoryCachePlugin.class);
 		final DatabaseFeatures databaseFeatures = new DatabaseFeatures();
 		final DynamoFeatures dynamoFeatures = new DynamoFeatures();
 		final AccountFeatures accountFeatures = new AccountFeatures()
-				.withUserSession(TestUserSession.class);
+				.withSecurity(TestUserSession.class.getName());
 
 		if (database) {
 			databaseFeatures
@@ -66,14 +68,14 @@ public final class MyAppConfig {
 					.withStore()
 					.addDataStorePlugin(SqlDataStorePlugin.class);
 
-			accountFeatures.withAccountStorePlugin(StoreAccountStorePlugin.class,
+			accountFeatures.addPlugin(StoreAccountStorePlugin.class,
 					Param.of("userIdentityEntity", "DT_USER"),
 					Param.of("groupIdentityEntity", "DT_USER_GROUP"),
 					Param.of("userAuthField", "EMAIL"),
 					Param.of("userToAccountMapping", "id:USR_ID, displayName:FULL_NAME, email:EMAIL, authToken:EMAIL"),
 					Param.of("groupToGroupAccountMapping", "id:GRP_ID, displayName:NAME"));
 		} else {
-			accountFeatures.withAccountStorePlugin(TextAccountStorePlugin.class,
+			accountFeatures.addPlugin(TextAccountStorePlugin.class,
 					Param.of("accountFilePath", "io/vertigo/account/data/identities.txt"),
 					Param.of("accountFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<email>(?<authToken>[^;@]+)@[^;]+);(?<photoUrl>.*)$"),
 					Param.of("groupFilePath", "io/vertigo/account/data/groups.txt"),
@@ -82,10 +84,10 @@ public final class MyAppConfig {
 
 		if (redis) {
 			commonsFeatures.withRedisConnector(REDIS_HOST, REDIS_PORT, REDIS_DATABASE, Optional.empty());
-			accountFeatures.withRedisAccountCachePlugin();
+			accountFeatures.addPlugin(RedisAccountCachePlugin.class);
 		} else {
 			//else we use memory
-			accountFeatures.withAccountCachePlugin(MemoryAccountCachePlugin.class);
+			accountFeatures.addPlugin(MemoryAccountCachePlugin.class);
 
 		}
 		return AppConfig.builder()

@@ -16,9 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl;
+package io.vertigo.dynamo;
 
 import io.vertigo.app.config.Features;
+import io.vertigo.app.config.json.Feature;
 import io.vertigo.core.param.Param;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.file.FileManager;
@@ -27,7 +28,6 @@ import io.vertigo.dynamo.impl.file.FileManagerImpl;
 import io.vertigo.dynamo.impl.kvstore.KVStoreManagerImpl;
 import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
 import io.vertigo.dynamo.impl.search.SearchManagerImpl;
-import io.vertigo.dynamo.impl.search.SearchServicesPlugin;
 import io.vertigo.dynamo.impl.store.StoreManagerImpl;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
@@ -42,7 +42,7 @@ import io.vertigo.dynamo.task.TaskManager;
  *
  * @author pchretien
  */
-public final class DynamoFeatures extends Features {
+public final class DynamoFeatures extends Features<DynamoFeatures> {
 
 	/**
 	 * Constructor.
@@ -53,14 +53,12 @@ public final class DynamoFeatures extends Features {
 
 	/**
 	 * Add search to dynamo
-	 * @param searchServicesPluginClass the plugin to use
-	 * @param params a list plugin's params
 	 * @return the feature
 	 */
-	public DynamoFeatures withSearch(final Class<? extends SearchServicesPlugin> searchServicesPluginClass, final Param... params) {
+	@Feature("search")
+	public DynamoFeatures withSearch() {
 		getModuleConfigBuilder()
-				.addComponent(SearchManager.class, SearchManagerImpl.class)
-				.addPlugin(searchServicesPluginClass, params);
+				.addComponent(SearchManager.class, SearchManagerImpl.class);
 		return this;
 	}
 
@@ -68,6 +66,7 @@ public final class DynamoFeatures extends Features {
 	 * Add store to dynamo
 	 * @return  the feature
 	 */
+	@Feature("store")
 	public DynamoFeatures withStore() {
 		getModuleConfigBuilder()
 				.addComponent(StoreManager.class, StoreManagerImpl.class);
@@ -90,6 +89,7 @@ public final class DynamoFeatures extends Features {
 	 * Add key/value store to dynamo
 	 * @return  the feature
 	 */
+	@Feature("kvStore")
 	public DynamoFeatures withKVStore() {
 		getModuleConfigBuilder()
 				.addComponent(KVStoreManager.class, KVStoreManagerImpl.class);

@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;

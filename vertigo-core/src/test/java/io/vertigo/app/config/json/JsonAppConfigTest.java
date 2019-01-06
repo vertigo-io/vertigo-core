@@ -40,6 +40,15 @@ public final class JsonAppConfigTest {
 		testBioManager(appConfig);
 	}
 
+	@Test
+	public void testBoot() {
+		final AppConfig appConfig = new JsonAppConfigBuilder()
+				.withFiles(getClass(), new Properties(), "bio-boot.json")
+				.build();
+
+		testBioManager(appConfig);
+	}
+
 	private void testBioManager(final AppConfig appConfig) {
 		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			assertEquals(app, app);

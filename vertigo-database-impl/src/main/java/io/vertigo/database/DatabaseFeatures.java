@@ -18,7 +18,10 @@
  */
 package io.vertigo.database;
 
+import javax.inject.Named;
+
 import io.vertigo.app.config.Features;
+import io.vertigo.app.config.json.Feature;
 import io.vertigo.core.param.Param;
 import io.vertigo.database.impl.sql.SqlConnectionProviderPlugin;
 import io.vertigo.database.impl.sql.SqlDataBaseManagerImpl;
@@ -45,6 +48,7 @@ public final class DatabaseFeatures extends Features {
 	 * Add sqlDataBase management to dynamo.
 	 * @return  the feature
 	 */
+	@Feature("sql")
 	public DatabaseFeatures withSqlDataBase() {
 		getModuleConfigBuilder()
 				.addComponent(SqlDataBaseManager.class, SqlDataBaseManagerImpl.class);
@@ -67,7 +71,8 @@ public final class DatabaseFeatures extends Features {
 	 * Add InfluxDb timeseries database.
 	 * @return  the feature
 	 */
-	public DatabaseFeatures withTimeSeriesDataBase(final String dbNames) {
+	@Feature("timeseries")
+	public DatabaseFeatures withTimeSeriesDataBase(final @Named("dbNames") String dbNames) {
 		getModuleConfigBuilder()
 				.addComponent(TimeSeriesDataBaseManager.class, TimeSeriesDataBaseManagerImpl.class,
 						Param.of("dbNames", dbNames));
@@ -97,7 +102,7 @@ public final class DatabaseFeatures extends Features {
 	}
 
 	/**
-
+	
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {

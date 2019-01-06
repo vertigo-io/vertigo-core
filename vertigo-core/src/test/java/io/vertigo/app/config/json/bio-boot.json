@@ -1,8 +1,15 @@
 {
+	"boot": {
+		"params": {
+			"locales": "fr_FR"
+		}
+	},
 	"modules": {
 		"io.vertigo.app.config.json.JsonBioFeatures": {
 			"features": {
-				"bio": {},
+				"bio": {
+					
+				},
 				"math": {
 					"start": "100"
 				}

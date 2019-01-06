@@ -22,13 +22,14 @@ import java.util.Optional;
 
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.data.TestUserSession;
+import io.vertigo.account.plugins.account.cache.redis.RedisAccountCachePlugin;
 import io.vertigo.account.plugins.account.store.text.TextAccountStorePlugin;
 import io.vertigo.account.plugins.authentication.ldap.LdapAuthenticationPlugin;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.impl.DynamoFeatures;
+import io.vertigo.dynamo.DynamoFeatures;
 
 public final class MyAppConfig {
 	private static final String REDIS_HOST = "redis-pic.part.klee.lan.net";
@@ -38,21 +39,22 @@ public final class MyAppConfig {
 	public static AppConfig config(final boolean redis) {
 		final CommonsFeatures commonsFeatures = new CommonsFeatures();
 		final AccountFeatures accountFeatures = new AccountFeatures()
-				.withUserSession(TestUserSession.class);
+				.withSecurity(TestUserSession.class.getName())
+				.withAuthentication();
 
 		if (redis) {
 			commonsFeatures
 					.withRedisConnector(REDIS_HOST, REDIS_PORT, REDIS_DATABASE, Optional.empty());
 			accountFeatures
-					.withRedisAccountCachePlugin();
+					.addPlugin(RedisAccountCachePlugin.class);
 		}
 		accountFeatures
-				.withAccountStorePlugin(TextAccountStorePlugin.class,
+				.addPlugin(TextAccountStorePlugin.class,
 						Param.of("accountFilePath", "io/vertigo/account/data/identities.txt"),
 						Param.of("accountFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<email>(?<authToken>[^;@]+)@[^;]+);(?<photoUrl>.*)$"),
 						Param.of("groupFilePath", "io/vertigo/account/data/groups.txt"),
 						Param.of("groupFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<accountIds>.*)$"))
-				.withAuthentication(LdapAuthenticationPlugin.class,
+				.addPlugin(LdapAuthenticationPlugin.class,
 						Param.of("userLoginTemplate", "cn={0},dc=vertigo,dc=io"),
 						Param.of("ldapServerHost", "docker-vertigo.part.klee.lan.net"),
 						Param.of("ldapServerPort", "389"));

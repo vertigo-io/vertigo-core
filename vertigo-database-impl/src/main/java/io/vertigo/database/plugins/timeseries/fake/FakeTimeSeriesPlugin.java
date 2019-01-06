@@ -37,18 +37,7 @@ public final class FakeTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	@Override
 	public void createDatabases(final List<String> dbNames) {
-	}
-
-	private TimedDatas executeTimedTabularQuery(final String appName, final String queryString) {
-		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
-	}
-
-	private TabularDatas executeTabularQuery(final String appName, final String queryString) {
-		return new TabularDatas(Collections.emptyList(), Collections.emptyList());
-	}
-
-	private TimedDatas executeTimedQuery(final String appName, final String q) {
-		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
+		// nothing to do
 	}
 
 	@Override
@@ -83,5 +72,6 @@ public final class FakeTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	@Override
 	public void insertMeasure(final String dbName, final Measure measure) {
+		// do nothing
 	}
 }

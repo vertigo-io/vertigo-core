@@ -18,74 +18,66 @@
  */
 package io.vertigo.account;
 
+import javax.inject.Named;
+
 import io.vertigo.account.account.AccountManager;
 import io.vertigo.account.authentication.AuthenticationManager;
-import io.vertigo.account.impl.account.AccountCachePlugin;
+import io.vertigo.account.authorization.AuthorizationManager;
 import io.vertigo.account.impl.account.AccountDefinitionProvider;
-import io.vertigo.account.impl.account.AccountStorePlugin;
 import io.vertigo.account.impl.account.AccountManagerImpl;
 import io.vertigo.account.impl.authentication.AuthenticationManagerImpl;
-import io.vertigo.account.impl.authentication.AuthenticationPlugin;
+import io.vertigo.account.impl.authorization.AuthorizationManagerImpl;
 import io.vertigo.account.impl.security.VSecurityManagerImpl;
-import io.vertigo.account.plugins.account.cache.redis.RedisAccountCachePlugin;
 import io.vertigo.app.config.Features;
+import io.vertigo.app.config.json.Feature;
 import io.vertigo.core.param.Param;
-import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 
 /**
  * Defines the 'account' extension
  * @author pchretien
  */
-public final class AccountFeatures extends Features {
+public final class AccountFeatures extends Features<AccountFeatures> {
 
 	/**
 	 * Constructor.
 	 */
 	public AccountFeatures() {
-		super("x-account");
+		super("account");
 	}
 
 	/**
 	 * Activates user session.
-	 * @param userSessionClass the user session class
+	 * @param userSessionClass the user session class name
 	 * @return these features
 	 */
-	public AccountFeatures withUserSession(final Class<? extends UserSession> userSessionClass) {
+	@Feature("security")
+	public AccountFeatures withSecurity(final @Named("userSessionClassName") String userSessionClass) {
 		getModuleConfigBuilder()
 				.addComponent(VSecurityManager.class, VSecurityManagerImpl.class,
-						Param.of("userSessionClassName", userSessionClass.getName()));
+						Param.of("userSessionClassName", userSessionClass));
 		return this;
 	}
 
 	/**
-	 * Defines REDIS as the database to store the accounts
-	 * @return the features
+	 * Activates authentication.
+	 * @return these features
 	 */
-	public AccountFeatures withRedisAccountCachePlugin() {
-		return withAccountCachePlugin(RedisAccountCachePlugin.class);
-	}
-
-	/**
-	 * Defines a Authenticating realm.
-	 * @param authenticatingRealmPluginClass
-	 * @param params
-	 * @return the features
-	 */
-	public AccountFeatures withAuthentication(final Class<? extends AuthenticationPlugin> authenticatingRealmPluginClass, final Param... params) {
+	@Feature("authentication")
+	public AccountFeatures withAuthentication() {
 		getModuleConfigBuilder()
-				.addPlugin(authenticatingRealmPluginClass, params);
+				.addComponent(AuthenticationManager.class, AuthenticationManagerImpl.class);
 		return this;
 	}
 
 	/**
-	 * @param accountCachePluginClass
-	 * @param params
-	 * @return the features
+	 * Activates authorization.
+	 * @return these features
 	 */
-	public AccountFeatures withAccountCachePlugin(final Class<? extends AccountCachePlugin> accountCachePluginClass, final Param... params) {
+	@Feature("authorization")
+	public AccountFeatures withAuthorization() {
 		getModuleConfigBuilder()
-				.addPlugin(accountCachePluginClass, params);
+				.addComponent(AuthorizationManager.class, AuthorizationManagerImpl.class);
 		return this;
 	}
 
@@ -93,20 +85,8 @@ public final class AccountFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.addDefinitionProvider(AccountDefinitionProvider.class);
-	}
-
-	/**
-	 * @param accountStorePluginClass
-	 * @param params
-	 * @return the features
-	 */
-	public AccountFeatures withAccountStorePlugin(final Class<? extends AccountStorePlugin> accountStorePluginClass, final Param... params) {
-		getModuleConfigBuilder()
-				.addComponent(AuthenticationManager.class, AuthenticationManagerImpl.class)
 				.addComponent(AccountManager.class, AccountManagerImpl.class)
-				.addPlugin(accountStorePluginClass, params);
-		return this;
+				.addDefinitionProvider(AccountDefinitionProvider.class);
 	}
 
 }
