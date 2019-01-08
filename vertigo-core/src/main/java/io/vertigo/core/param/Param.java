@@ -147,4 +147,5 @@ public final class Param {
 		}
 		return Boolean.parseBoolean(paramValue);
 	}
+
 }

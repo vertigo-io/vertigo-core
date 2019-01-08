@@ -26,13 +26,19 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.impl.collections.CollectionsManagerImpl;
 import io.vertigo.dynamo.impl.file.FileManagerImpl;
 import io.vertigo.dynamo.impl.kvstore.KVStoreManagerImpl;
-import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
 import io.vertigo.dynamo.impl.search.SearchManagerImpl;
 import io.vertigo.dynamo.impl.store.StoreManagerImpl;
-import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
-import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.dynamo.impl.task.TaskManagerImpl;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
+import io.vertigo.dynamo.plugins.collections.lucene.LuceneIndexPlugin;
+import io.vertigo.dynamo.plugins.kvstore.berkeley.BerkeleyKVStorePlugin;
+import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
+import io.vertigo.dynamo.plugins.search.elasticsearch.embedded.ESEmbeddedSearchServicesPlugin;
+import io.vertigo.dynamo.plugins.search.elasticsearch.transport.ESTransportSearchServicesPlugin;
+import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
+import io.vertigo.dynamo.plugins.store.filestore.db.DbFileStorePlugin;
+import io.vertigo.dynamo.plugins.store.filestore.fs.FsFileStorePlugin;
+import io.vertigo.dynamo.plugins.store.filestore.fs.FsFullFileStorePlugin;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.TaskManager;
@@ -74,18 +80,6 @@ public final class DynamoFeatures extends Features<DynamoFeatures> {
 	}
 
 	/**
-	 * Add a store plugin
-	 * @param dataStorePlugin the plugin to use
-	 * @param params a list plugin's params
-	 * @return the feature
-	 */
-	public DynamoFeatures addDataStorePlugin(final Class<? extends DataStorePlugin> dataStorePlugin, final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(dataStorePlugin, params);
-		return this;
-	}
-
-	/**
 	 * Add key/value store to dynamo
 	 * @return  the feature
 	 */
@@ -96,27 +90,66 @@ public final class DynamoFeatures extends Features<DynamoFeatures> {
 		return this;
 	}
 
-	/**
-	 * Add a key/value store plugin
-	 * @param  kvStorePlugin the plugin to use
-	 * @param params a list plugin's params
-	 * @return the feature
-	 */
-	public DynamoFeatures addKVStorePlugin(final Class<? extends KVStorePlugin> kvStorePlugin, final Param... params) {
+	@Feature("sqlStore")
+	public DynamoFeatures withSqlStore(final Param... params) {
 		getModuleConfigBuilder()
-				.addPlugin(kvStorePlugin, params);
+				.addPlugin(SqlDataStorePlugin.class, params);
 		return this;
 	}
 
-	/**
-	 * Add a plugin to store files
-	 * @param  fileStorePluginClass the plugin to use
-	 * @param params a list plugin's params
-	 * @return the feature
-	 */
-	public DynamoFeatures addFileStorePlugin(final Class<? extends FileStorePlugin> fileStorePluginClass, final Param... params) {
+	@Feature("esEmbedded")
+	public DynamoFeatures withESEmbedded(final Param... params) {
 		getModuleConfigBuilder()
-				.addPlugin(fileStorePluginClass, params);
+				.addPlugin(ESEmbeddedSearchServicesPlugin.class, params);
+		return this;
+	}
+
+	@Feature("esTransport")
+	public DynamoFeatures withESTransport(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(ESTransportSearchServicesPlugin.class, params);
+		return this;
+	}
+
+	@Feature("berkeleyKV")
+	public DynamoFeatures withBerkleyKV(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(BerkeleyKVStorePlugin.class, params);
+		return this;
+	}
+
+	@Feature("delayedMemoryKV")
+	public DynamoFeatures withDelayedMemoryKV(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(DelayedMemoryKVStorePlugin.class, params);
+		return this;
+	}
+
+	@Feature("fsFile")
+	public DynamoFeatures withFsFileStore(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(FsFileStorePlugin.class, params);
+		return this;
+	}
+
+	@Feature("dbFile")
+	public DynamoFeatures withDbFileStore(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(DbFileStorePlugin.class, params);
+		return this;
+	}
+
+	@Feature("fsFullFile")
+	public DynamoFeatures withFsFullFileStore(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(FsFullFileStorePlugin.class, params);
+		return this;
+	}
+
+	@Feature("luceneIndex")
+	public DynamoFeatures withLuceneIndex(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(LuceneIndexPlugin.class, params);
 		return this;
 	}
 

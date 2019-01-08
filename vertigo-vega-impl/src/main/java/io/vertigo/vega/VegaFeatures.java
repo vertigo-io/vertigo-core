@@ -18,8 +18,6 @@
  */
 package io.vertigo.vega;
 
-import javax.inject.Named;
-
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.PluginConfig;
 import io.vertigo.app.config.PluginConfigBuilder;
@@ -72,11 +70,12 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 	}
 
 	@Feature("token")
-	public VegaFeatures withTokens(final @Named("tokens") String tokens) {
-		Assertion.checkArgNotEmpty(tokens);
+	public VegaFeatures withTokens(final Param... params) {
 		//-----
+		Assertion.checkState(params.length == 1 && "tokens".equals(params[0].getName()), "tokens param should be provided ");
+		myTokens = params[0].getValue();
+		Assertion.checkArgNotEmpty(myTokens);
 		tokensEnabled = true;
-		myTokens = tokens;
 		return this;
 	}
 
@@ -93,26 +92,30 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 	}
 
 	@Feature("apiPrefix")
-	public VegaFeatures withApiPrefix(final @Named("apiPrefix") String apiPrefix) {
-		myApiPrefix = apiPrefix;
+	public VegaFeatures withApiPrefix(final Param... params) {
+		Assertion.checkState(params.length == 1 && "apiPrefix".equals(params[0].getName()), "apiPrefix param should be provided ");
+		myApiPrefix = params[0].getValue();
 		return this;
 	}
 
 	@Feature("searchApiVersion")
-	public VegaFeatures withSearchApiVersion(final @Named("searchApiVersion") String searchApiVersion) {
-		mySearchApiVersion = searchApiVersion;
+	public VegaFeatures withSearchApiVersion(final Param... params) {
+		Assertion.checkState(params.length == 1 && "searchApiVersion".equals(params[0].getName()), "searchApiVersion param should be provided ");
+		mySearchApiVersion = params[0].getValue();
 		return this;
 	}
 
 	@Feature("embeddedServer")
-	public VegaFeatures withEmbeddedServer(final @Named("port") String port) {
-		myPort = port;
+	public VegaFeatures withEmbeddedServer(final Param... params) {
+		Assertion.checkState(params.length == 1 && "port".equals(params[0].getName()), "port param should be provided ");
+		myPort = params[0].getValue();
 		return this;
 	}
 
 	@Feature("cors")
-	public VegaFeatures withOriginCORSFilter(final @Named("originCORSFilter") String originCORSFilter) {
-		myOriginCORSFilter = originCORSFilter;
+	public VegaFeatures withOriginCORSFilter(final Param... params) {
+		Assertion.checkState(params.length == 1 && "originCORSFilter".equals(params[0].getName()), "originCORSFilter param should be provided ");
+		myOriginCORSFilter = params[0].getValue();
 		return this;
 	}
 

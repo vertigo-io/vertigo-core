@@ -21,9 +21,12 @@ package io.vertigo.database;
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.json.Feature;
 import io.vertigo.core.param.Param;
-import io.vertigo.database.impl.sql.SqlConnectionProviderPlugin;
 import io.vertigo.database.impl.sql.SqlDataBaseManagerImpl;
 import io.vertigo.database.impl.timeseries.TimeSeriesDataBaseManagerImpl;
+import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
+import io.vertigo.database.plugins.sql.connection.datasource.DataSourceConnectionProviderPlugin;
+import io.vertigo.database.plugins.timeseries.fake.FakeTimeSeriesPlugin;
+import io.vertigo.database.plugins.timeseries.influxdb.InfluxDbTimeSeriesPlugin;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.timeseries.TimeSeriesDataBaseManager;
 
@@ -64,19 +67,51 @@ public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 	}
 
 	/**
-	 * Add a database connection provider plugin
-	 * @param  connectionProviderPluginClass the plugin to use
-	 * @param params a list plugin's params
-	 * @return the feature
+	 * Add InfluxDb timeseries database.
+	 * @return  the feature
 	 */
-	public DatabaseFeatures addSqlConnectionProviderPlugin(final Class<? extends SqlConnectionProviderPlugin> connectionProviderPluginClass, final Param... params) {
+	@Feature("influxdb")
+	public DatabaseFeatures withInfluxDb(final Param... params) {
 		getModuleConfigBuilder()
-				.addPlugin(connectionProviderPluginClass, params);
+				.addPlugin(InfluxDbTimeSeriesPlugin.class, params);
 		return this;
 	}
 
 	/**
-	
+	 * Add InfluxDb timeseries database.
+	 * @return  the feature
+	 */
+	@Feature("fakeTimeseries")
+	public DatabaseFeatures withFakeTimeseries() {
+		getModuleConfigBuilder()
+				.addPlugin(FakeTimeSeriesPlugin.class);
+		return this;
+	}
+
+	/**
+	 * Add InfluxDb timeseries database.
+	 * @return  the feature
+	 */
+	@Feature("datasource")
+	public DatabaseFeatures withDatasource(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(DataSourceConnectionProviderPlugin.class, params);
+		return this;
+	}
+
+	/**
+	 * Add InfluxDb timeseries database.
+	 * @return  the feature
+	 */
+	@Feature("c3p0")
+	public DatabaseFeatures withC3p0(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(C3p0ConnectionProviderPlugin.class, params);
+		return this;
+	}
+
+	/**
+
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {

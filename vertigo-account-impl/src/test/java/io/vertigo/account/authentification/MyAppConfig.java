@@ -18,8 +18,6 @@
  */
 package io.vertigo.account.authentification;
 
-import java.util.Optional;
-
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.plugins.account.cache.redis.RedisAccountCachePlugin;
@@ -39,12 +37,12 @@ public final class MyAppConfig {
 	public static AppConfig config(final boolean redis) {
 		final CommonsFeatures commonsFeatures = new CommonsFeatures();
 		final AccountFeatures accountFeatures = new AccountFeatures()
-				.withSecurity(TestUserSession.class.getName())
+				.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
 				.withAuthentication();
 
 		if (redis) {
 			commonsFeatures
-					.withRedisConnector(REDIS_HOST, REDIS_PORT, REDIS_DATABASE, Optional.empty());
+					.withRedisConnector(Param.of("host", REDIS_HOST), Param.of("port", Integer.toString(REDIS_PORT)), Param.of("database", Integer.toString(REDIS_DATABASE)));
 			accountFeatures
 					.addPlugin(RedisAccountCachePlugin.class);
 		}

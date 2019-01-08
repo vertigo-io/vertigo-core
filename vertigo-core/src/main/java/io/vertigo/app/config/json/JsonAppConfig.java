@@ -26,7 +26,7 @@ public final class JsonAppConfig {
 		public List<JsonPluginConfig> plugins = new ArrayList<>();
 	}
 
-	public static class JsonFeaturesConfig extends LinkedHashMap<String, JsonParamsConfig> {
+	public static class JsonFeaturesConfig extends LinkedHashMap<String, List<JsonParamsConfig>> {
 		private static final long serialVersionUID = 1L;
 		//nothing more
 	}

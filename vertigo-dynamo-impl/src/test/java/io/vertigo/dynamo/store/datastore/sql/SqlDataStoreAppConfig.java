@@ -48,19 +48,19 @@ public class SqlDataStoreAppConfig {
 				.endBoot()
 				.addModule(new CommonsFeatures()
 						.withScript()
-						.withCache(MemoryCachePlugin.class)
+						.addPlugin(MemoryCachePlugin.class)
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()
-						.addSqlConnectionProviderPlugin(C3p0ConnectionProviderPlugin.class,
+						.addPlugin(C3p0ConnectionProviderPlugin.class,
 								Param.of("dataBaseClass", dataBaseClass),
 								Param.of("jdbcDriver", jdbcDriver),
 								Param.of("jdbcUrl", jdbcUrl))
 						.build())
 				.addModule(new DynamoFeatures()
 						.withStore()
-						.addDataStorePlugin(SqlDataStorePlugin.class)
-						.addFileStorePlugin(DbFileStorePlugin.class,
+						.addPlugin(SqlDataStorePlugin.class)
+						.addPlugin(DbFileStorePlugin.class,
 								Param.of("storeDtName", "DT_VX_FILE_INFO"))
 						.build())
 				.addModule(ModuleConfig.builder("definition")

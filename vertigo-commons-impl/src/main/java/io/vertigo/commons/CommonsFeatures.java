@@ -18,12 +18,6 @@
  */
 package io.vertigo.commons;
 
-import java.util.Optional;
-
-import javax.inject.Named;
-
-import io.vertigo.app.config.ComponentConfig;
-import io.vertigo.app.config.ComponentConfigBuilder;
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.json.Feature;
 import io.vertigo.commons.analytics.AnalyticsManager;
@@ -34,7 +28,6 @@ import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.commons.impl.analytics.AnalyticsManagerImpl;
 import io.vertigo.commons.impl.cache.CacheManagerImpl;
-import io.vertigo.commons.impl.cache.CachePlugin;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.commons.impl.daemon.DaemonManagerImpl;
@@ -46,6 +39,8 @@ import io.vertigo.commons.impl.script.ScriptManagerImpl;
 import io.vertigo.commons.impl.transaction.VTransactionAspect;
 import io.vertigo.commons.impl.transaction.VTransactionManagerImpl;
 import io.vertigo.commons.node.NodeManager;
+import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
+import io.vertigo.commons.plugins.cache.redis.RedisCachePlugin;
 import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.transaction.VTransactionManager;
@@ -88,10 +83,25 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 		return this;
 	}
 
-	public CommonsFeatures withCache(final Class<? extends CachePlugin> cachePluginClass, final Param... params) {
+	/**
+	 * Activates caches.
+	 * @return these features
+	 */
+	@Feature("redisCache")
+	public CommonsFeatures withRedisCache() {
 		getModuleConfigBuilder()
-				.addComponent(CacheManager.class, CacheManagerImpl.class)
-				.addPlugin(cachePluginClass, params);
+				.addPlugin(RedisCachePlugin.class);
+		return this;
+	}
+
+	/**
+	 * Activates caches.
+	 * @return these features
+	 */
+	@Feature("memoryCache")
+	public CommonsFeatures withMemoryCache() {
+		getModuleConfigBuilder()
+				.addPlugin(MemoryCachePlugin.class);
 		return this;
 	}
 
@@ -104,38 +114,16 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 	 * @return these features
 	 */
 	@Feature("redis")
-	public CommonsFeatures withRedisConnector(final @Named("host") String host, final @Named("port") String port, final @Named("database") String database, @Named("password") final Optional<String> passwordOpt) {
-		final ComponentConfigBuilder componentConfigBuilder = ComponentConfig
-				.builder()
-				.withImpl(RedisConnector.class)
-				.addParam(Param.of("host", host))
-				.addParam(Param.of("port", port))
-				.addParam(Param.of("database", database));
-		if (passwordOpt.isPresent()) {
-			componentConfigBuilder
-					.addParam(Param.of("password", passwordOpt.get()));
-		}
+	public CommonsFeatures withRedisConnector(final Param... params) {
 		getModuleConfigBuilder()
-				.addComponent(componentConfigBuilder.build());
+				.addComponent(RedisConnector.class, params);
 		return this;
 
 	}
 
 	/**
 	
-	/**
-	 * Adds a REDIS connector.
-	 * @param host the REDIS host
-	 * @param port the REDIS port
-	 * @param passwordOpt the REDIS password
-	 * @param database the index of the REDIS database
-	 * @return these features
-	 */
-	public CommonsFeatures withRedisConnector(final String host, final int port, final int database, final Optional<String> passwordOpt) {
-		return withRedisConnector(host, Integer.toString(port), Integer.toString(database), passwordOpt);
-
-	}
-
+	
 	/**
 	 * Adds a NodeRegistryPlugin
 	 * @param nodeRegistryPluginClass the plugin to use

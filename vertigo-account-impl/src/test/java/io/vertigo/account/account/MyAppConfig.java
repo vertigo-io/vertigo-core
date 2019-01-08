@@ -18,8 +18,6 @@
  */
 package io.vertigo.account.account;
 
-import java.util.Optional;
-
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.account.model.DtDefinitions;
 import io.vertigo.account.data.TestUserSession;
@@ -54,19 +52,19 @@ public final class MyAppConfig {
 		final DatabaseFeatures databaseFeatures = new DatabaseFeatures();
 		final DynamoFeatures dynamoFeatures = new DynamoFeatures();
 		final AccountFeatures accountFeatures = new AccountFeatures()
-				.withSecurity(TestUserSession.class.getName());
+				.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()));
 
 		if (database) {
 			databaseFeatures
 					.withSqlDataBase()
-					.addSqlConnectionProviderPlugin(C3p0ConnectionProviderPlugin.class,
+					.addPlugin(C3p0ConnectionProviderPlugin.class,
 							Param.of("dataBaseClass", H2DataBase.class.getName()),
 							Param.of("jdbcDriver", "org.h2.Driver"),
 							Param.of("jdbcUrl", "jdbc:h2:mem:database"));
 
 			dynamoFeatures
 					.withStore()
-					.addDataStorePlugin(SqlDataStorePlugin.class);
+					.addPlugin(SqlDataStorePlugin.class);
 
 			accountFeatures.addPlugin(StoreAccountStorePlugin.class,
 					Param.of("userIdentityEntity", "DT_USER"),
@@ -83,7 +81,7 @@ public final class MyAppConfig {
 		}
 
 		if (redis) {
-			commonsFeatures.withRedisConnector(REDIS_HOST, REDIS_PORT, REDIS_DATABASE, Optional.empty());
+			commonsFeatures.withRedisConnector(Param.of("host", REDIS_HOST), Param.of("port", Integer.toString(REDIS_PORT)), Param.of("database", Integer.toString(REDIS_DATABASE)));
 			accountFeatures.addPlugin(RedisAccountCachePlugin.class);
 		} else {
 			//else we use memory

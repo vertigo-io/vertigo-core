@@ -40,18 +40,18 @@ public final class SqlTestConfigurator {
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
 				.addModule(new CommonsFeatures()
-						.withCache(MemoryCachePlugin.class)
+						.addPlugin(MemoryCachePlugin.class)
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()
-						.addSqlConnectionProviderPlugin(C3p0ConnectionProviderPlugin.class,
+						.addPlugin(C3p0ConnectionProviderPlugin.class,
 								Param.of("dataBaseClass", "io.vertigo.database.impl.sql.vendor.h2.H2DataBase"),
 								Param.of("jdbcDriver", "org.h2.Driver"),
 								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
 						.build())
 				.addModule(new DynamoFeatures()
 						.withStore()
-						.addDataStorePlugin(SqlDataStorePlugin.class,
+						.addPlugin(SqlDataStorePlugin.class,
 								Param.of("sequencePrefix", "SEQ_"))
 						.build())
 				.build();
