@@ -33,38 +33,38 @@ import io.vertigo.dynamo.file.model.VFile;
 public interface AccountStorePlugin extends Plugin {
 
 	/**
-	 * @param accountURI the account defined by its URI
+	 * @param accountUID the account defined by its UID
 	 * @return the account
 	 */
-	Account getAccount(UID<Account> accountURI);
+	Account getAccount(UID<Account> accountUID);
 
 	/**
-	 * @param accountURI the account defined by its URI
+	 * @param accountUID the account defined by its UID
 	 * @return Set of groups of this account
 	 */
-	Set<UID<AccountGroup>> getGroupURIs(UID<Account> accountURI);
+	Set<UID<AccountGroup>> getGroupUIDs(UID<Account> accountUID);
 
 	/**
-	 * Gets the group defined by an URI.
-	 * @param groupURI the group URI
+	 * Gets the group defined by an UID.
+	 * @param groupUID the group UID
 	 * @return the group
 	 */
-	AccountGroup getGroup(UID<AccountGroup> groupURI);
+	AccountGroup getGroup(UID<AccountGroup> groupUID);
 
 	/**
 	 * Lists the accounts for a defined group.
-	 * @param groupURI the group URI
+	 * @param groupUID the group UID
 	 * @return the list of acccounts.
 	 */
-	Set<UID<Account>> getAccountURIs(UID<AccountGroup> groupURI);
+	Set<UID<Account>> getAccountUIDs(UID<AccountGroup> groupUID);
 
 	/**
-	 * Gets the photo of an account defined by its URI.
+	 * Gets the photo of an account defined by its UID.
 	 *
-	 * @param accountURI the account defined by its URI
+	 * @param accountUID the account defined by its UID
 	 * @return the photo as a file
 	 */
-	Optional<VFile> getPhoto(UID<Account> accountURI);
+	Optional<VFile> getPhoto(UID<Account> accountUID);
 
 	/**
 	 * Get an newly authentify user by his authToken.

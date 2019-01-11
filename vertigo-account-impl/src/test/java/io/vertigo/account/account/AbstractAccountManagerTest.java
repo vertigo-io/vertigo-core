@@ -43,13 +43,13 @@ public abstract class AbstractAccountManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private VSecurityManager securityManager;
 
-	protected UID<Account> accountURI0;
-	protected UID<Account> accountURI1;
-	protected UID<Account> accountURI2;
+	protected UID<Account> accountUID0;
+	protected UID<Account> accountUID1;
+	protected UID<Account> accountUID2;
 	protected UID<AccountGroup> groupURI;
 	protected UID<AccountGroup> groupAllURI;
 
-	private static UID<Account> createAccountURI(final String id) {
+	private static UID<Account> createAccountUID(final String id) {
 		return UID.of(Account.class, id);
 	}
 
@@ -60,9 +60,9 @@ public abstract class AbstractAccountManagerTest extends AbstractTestCaseJU5 {
 	@Override
 	@BeforeEach
 	public void setUp() {
-		accountURI0 = createAccountURI("0");
-		accountURI1 = createAccountURI("1");
-		accountURI2 = createAccountURI("2");
+		accountUID0 = createAccountUID("0");
+		accountUID1 = createAccountUID("1");
+		accountUID2 = createAccountUID("2");
 		groupURI = createGroupURI("100");
 		groupAllURI = createGroupURI("ALL");
 	}
@@ -77,15 +77,15 @@ public abstract class AbstractAccountManagerTest extends AbstractTestCaseJU5 {
 				return null;
 			}
 		});
-		//identityManager.login(accountURI1);
-		//Assertions.assertEquals(accountURI1, identityManager.getLoggedAccount());
+		//identityManager.login(accountUID1);
+		//Assertions.assertEquals(accountUID1, identityManager.getLoggedAccount());
 		securityManager.stopCurrentUserSession();
 	}
 
 	@Test
 	public void testAccounts() {
 		try (VTransactionWritable tx = obtainTx()) {
-			Assertions.assertEquals("Palmer Luckey", accountManager.getAccount(accountURI1).getDisplayName());
+			Assertions.assertEquals("Palmer Luckey", accountManager.getAccount(accountUID1).getDisplayName());
 			//Assertions.assertEquals(10 + 4, identityManager.getAccountsCount());
 		}
 	}

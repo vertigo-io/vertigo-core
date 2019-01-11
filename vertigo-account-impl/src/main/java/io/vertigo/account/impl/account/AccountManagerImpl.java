@@ -76,8 +76,8 @@ public final class AccountManagerImpl implements AccountManager {
 	//------------------//
 	/** {@inheritDoc} */
 	@Override
-	public Account getAccount(final UID<Account> accountURI) {
-		return loadWithCache(accountURI,
+	public Account getAccount(final UID<Account> accountUID) {
+		return loadWithCache(accountUID,
 				() -> accountCachePlugin.get()::getAccount,
 				accountStorePlugin::getAccount,
 				() -> accountCachePlugin.get()::putAccount);
@@ -85,8 +85,8 @@ public final class AccountManagerImpl implements AccountManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public AccountGroup getGroup(final UID<AccountGroup> groupURI) {
-		return loadWithCache(groupURI,
+	public AccountGroup getGroup(final UID<AccountGroup> groupUID) {
+		return loadWithCache(groupUID,
 				() -> accountCachePlugin.get()::getGroup,
 				accountStorePlugin::getGroup,
 				() -> accountCachePlugin.get()::putGroup);
@@ -94,29 +94,29 @@ public final class AccountManagerImpl implements AccountManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<VFile> getPhoto(final UID<Account> accountURI) {
-		return loadWithCacheOptionalValue(accountURI,
+	public Optional<VFile> getPhoto(final UID<Account> accountUID) {
+		return loadWithCacheOptionalValue(accountUID,
 				() -> accountCachePlugin.get()::getPhoto,
 				accountStorePlugin::getPhoto,
-				() -> photo -> accountCachePlugin.get().setPhoto(accountURI, photo));
+				() -> photo -> accountCachePlugin.get().setPhoto(accountUID, photo));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Set<UID<Account>> getAccountURIs(final UID<AccountGroup> groupURI) {
-		return loadWithCacheSetValue(groupURI,
+	public Set<UID<Account>> getAccountUIDs(final UID<AccountGroup> groupUID) {
+		return loadWithCacheSetValue(groupUID,
 				() -> accountCachePlugin.get()::getAccountUIDs,
-				accountStorePlugin::getAccountURIs,
-				() -> accountsURI -> accountCachePlugin.get().attach(accountsURI, groupURI));
+				accountStorePlugin::getAccountUIDs,
+				() -> accountsUID -> accountCachePlugin.get().attach(accountsUID, groupUID));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Set<UID<AccountGroup>> getGroupURIs(final UID<Account> accountURI) {
-		return loadWithCacheSetValue(accountURI,
+	public Set<UID<AccountGroup>> getGroupUIDs(final UID<Account> accountUID) {
+		return loadWithCacheSetValue(accountUID,
 				() -> accountCachePlugin.get()::getGroupUIDs,
-				accountStorePlugin::getGroupURIs,
-				() -> groupsURI -> accountCachePlugin.get().attach(accountURI, groupsURI));
+				accountStorePlugin::getGroupUIDs,
+				() -> groupsUID -> accountCachePlugin.get().attach(accountUID, groupsUID));
 	}
 
 	/** {@inheritDoc} */
@@ -129,56 +129,56 @@ public final class AccountManagerImpl implements AccountManager {
 	}
 
 	private <O extends Object, U extends Object> Optional<O> loadWithCacheOptionalValue(
-			final U uri,
+			final U uid,
 			final Supplier<Function<U, Optional<O>>> cacheSupplier,
 			final Function<U, Optional<O>> storeSupplier,
 			final Supplier<Consumer<O>> cacheRegister) {
 		if (accountCachePlugin.isPresent()) {
-			final Optional<O> resultOpt = cacheSupplier.get().apply(uri);
+			final Optional<O> resultOpt = cacheSupplier.get().apply(uid);
 			if (!resultOpt.isPresent()) {
-				final Optional<O> result = storeSupplier.apply(uri);
+				final Optional<O> result = storeSupplier.apply(uid);
 				if (result.isPresent()) {
 					cacheRegister.get().accept(result.get());
 				}
 				return result;
 			}
 		}
-		return storeSupplier.apply(uri);
+		return storeSupplier.apply(uid);
 
 	}
 
 	private <O extends Object, U extends Object> Set<O> loadWithCacheSetValue(
-			final U uri,
+			final U uid,
 			final Supplier<Function<U, Set<O>>> cacheSupplier,
 			final Function<U, Set<O>> storeSupplier,
 			final Supplier<Consumer<Set<O>>> cacheRegister) {
 		if (accountCachePlugin.isPresent()) {
-			final Set<O> resultOpt = cacheSupplier.get().apply(uri);
+			final Set<O> resultOpt = cacheSupplier.get().apply(uid);
 			if (!resultOpt.isEmpty()) {
-				final Set<O> result = storeSupplier.apply(uri);
+				final Set<O> result = storeSupplier.apply(uid);
 				if (!result.isEmpty()) {
 					cacheRegister.get().accept(result);
 				}
 				return result;
 			}
 		}
-		return storeSupplier.apply(uri);
+		return storeSupplier.apply(uid);
 
 	}
 
 	private <O extends Object, U extends Object> O loadWithCache(
-			final U uri,
+			final U uid,
 			final Supplier<Function<U, Optional<O>>> cacheSupplier,
 			final Function<U, O> storeSupplier,
 			final Supplier<Consumer<O>> cacheRegister) {
 		if (accountCachePlugin.isPresent()) {
-			final Optional<O> resultOpt = cacheSupplier.get().apply(uri);
+			final Optional<O> resultOpt = cacheSupplier.get().apply(uid);
 			if (!resultOpt.isPresent()) {
-				final O result = storeSupplier.apply(uri);
+				final O result = storeSupplier.apply(uid);
 				cacheRegister.get().accept(result);
 				return result;
 			}
 		}
-		return storeSupplier.apply(uri);
+		return storeSupplier.apply(uid);
 	}
 }

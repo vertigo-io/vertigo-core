@@ -141,10 +141,10 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 
 	/** {@inheritDoc} */
 	@Override
-	public Set<UID<AccountGroup>> getGroupURIs(final UID<Account> accountURI) {
+	public Set<UID<AccountGroup>> getGroupUIDs(final UID<Account> accountUID) {
 		if (associationUserGroup instanceof AssociationSimpleDefinition) {
 			//case 1 group per user
-			final UID<Entity> userURI = UID.of(getUserDtDefinition(), accountURI.getId());
+			final UID<Entity> userURI = UID.of(getUserDtDefinition(), accountUID.getId());
 			final Entity userEntity = storeManager.getDataStore().readOne(userURI);
 			final Object fkValue = ((AssociationSimpleDefinition) associationUserGroup).getFKField().getDataAccessor().getValue(userEntity);
 			final UID<AccountGroup> groupURI = UID.of(userGroupDtDefinition, fkValue);
@@ -154,7 +154,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		//other case checked in postStart by assertions
 		Assertion.checkArgument(associationUserGroup instanceof AssociationNNDefinition,
 				"Association ({0}) between User and Group must be an AssociationSimpleDefinition or an AssociationNNDefinition", associationUserGroup.getName());
-		final DtListURI groupDtListURI = new DtListURIForNNAssociation((AssociationNNDefinition) associationUserGroup, accountURI, associationGroupRoleName);
+		final DtListURI groupDtListURI = new DtListURIForNNAssociation((AssociationNNDefinition) associationUserGroup, accountUID, associationGroupRoleName);
 
 		//-----
 		final DtList<? extends Entity> result = Home.getApp().getComponentSpace().resolve(StoreManager.class).getDataStore().findAll(groupDtListURI);
@@ -166,22 +166,23 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 
 	/** {@inheritDoc} */
 	@Override
-	public AccountGroup getGroup(final UID<AccountGroup> accountGroupURI) {
-		final UID<Entity> groupURI = UID.of(userGroupDtDefinition, accountGroupURI.getId());
-		final Entity groupEntity = storeManager.getDataStore().readOne(groupURI);
+	public AccountGroup getGroup(final UID<AccountGroup> accountGroupUID) {
+		final UID<Entity> groupUID = UID.of(userGroupDtDefinition, accountGroupUID.getId());
+		final Entity groupEntity = storeManager.getDataStore().readOne(groupUID);
 		return groupToAccount(groupEntity);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Set<UID<Account>> getAccountURIs(final UID<AccountGroup> groupURI) {
+	public Set<UID<Account>> getAccountUIDs(final UID<AccountGroup> groupUID) {
 		final DtListURI userDtListURI;
 		if (associationUserGroup instanceof AssociationSimpleDefinition) {
-			userDtListURI = new DtListURIForSimpleAssociation((AssociationSimpleDefinition) associationUserGroup, groupURI, associationUserRoleName);
+			userDtListURI = new DtListURIForSimpleAssociation((AssociationSimpleDefinition) associationUserGroup, groupUID, associationUserRoleName);
 		} else { //autres cas éliminés par assertion dans le postStart
 			Assertion.checkArgument(associationUserGroup instanceof AssociationNNDefinition,
+
 					"Association ({0}) between User and Group must be an AssociationSimpleDefinition or an AssociationNNDefinition", associationUserGroup.getName());
-			userDtListURI = new DtListURIForNNAssociation((AssociationNNDefinition) associationUserGroup, groupURI, associationUserRoleName);
+			userDtListURI = new DtListURIForNNAssociation((AssociationNNDefinition) associationUserGroup, groupUID, associationUserRoleName);
 		}
 		//-----
 		final DtList<? extends Entity> result = Home.getApp().getComponentSpace().resolve(StoreManager.class).getDataStore().findAll(userDtListURI);

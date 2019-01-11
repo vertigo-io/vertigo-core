@@ -33,38 +33,38 @@ import io.vertigo.dynamo.file.model.VFile;
 public interface AccountCachePlugin extends Plugin {
 
 	/**
-	 * @param accountURI the account defined by its URI
+	 * @param accountUID the account defined by its UID
 	 * @return the account
 	 */
-	Optional<Account> getAccount(UID<Account> accountURI);
+	Optional<Account> getAccount(UID<Account> accountUID);
 
 	/**
-	 * @param accountURI the account defined by its URI
+	 * @param accountUID the account defined by its UID
 	 * @return Set of groups of this account
 	 */
-	Set<UID<AccountGroup>> getGroupUIDs(UID<Account> accountURI);
+	Set<UID<AccountGroup>> getGroupUIDs(UID<Account> accountUID);
 
 	/**
-	 * Gets the group defined by an URI.
-	 * @param groupURI the group URI
+	 * Gets the group defined by an UID.
+	 * @param groupUID the group UID
 	 * @return the group
 	 */
-	Optional<AccountGroup> getGroup(UID<AccountGroup> groupURI);
+	Optional<AccountGroup> getGroup(UID<AccountGroup> groupUID);
 
 	/**
 	 * Lists the accounts for a defined group.
-	 * @param groupURI the group URI
+	 * @param groupUID the group UID
 	 * @return the list of acccounts.
 	 */
-	Set<UID<Account>> getAccountUIDs(UID<AccountGroup> groupURI);
+	Set<UID<Account>> getAccountUIDs(UID<AccountGroup> groupUID);
 
 	/**
-	 * Gets the photo of an account defined by its URI.
+	 * Gets the photo of an account defined by its UID.
 	 *
-	 * @param accountURI the account defined by its URI
+	 * @param accountUID the account defined by its UID
 	 * @return the photo as a file
 	 */
-	Optional<VFile> getPhoto(UID<Account> accountURI);
+	Optional<VFile> getPhoto(UID<Account> accountUID);
 
 	/**
 	 * Saves an account.
@@ -81,17 +81,17 @@ public interface AccountCachePlugin extends Plugin {
 
 	/**
 	 * Attaches an account to a group.
-	 * @param accountURI the account defined by its URI
-	 * @param groupURI the group
+	 * @param accountUID the account defined by its UID
+	 * @param groupUID the group
 	 */
-	void attach(UID<Account> accountURI, Set<UID<AccountGroup>> groupURI);
+	void attach(UID<Account> accountUID, Set<UID<AccountGroup>> groupUID);
 
 	/**
 	 * Attaches an account to a group.
-	 * @param accountsURI the accounts defined by their URI
-	 * @param groupURI the group
+	 * @param accountsUID the accounts defined by their UID
+	 * @param groupUID the group
 	 */
-	void attach(Set<UID<Account>> accountsURI, UID<AccountGroup> groupURI);
+	void attach(Set<UID<Account>> accountsUID, UID<AccountGroup> groupUID);
 
 	/**
 	 * Reset:
@@ -105,10 +105,10 @@ public interface AccountCachePlugin extends Plugin {
 	/**
 	 * Defines a photo to an account.
 	 *
-	 * @param accountURI the account defined by its URI
+	 * @param accountUID the account defined by its UID
 	 * @param photo the photo
 	 */
-	void setPhoto(UID<Account> accountURI, VFile photo);
+	void setPhoto(UID<Account> accountUID, VFile photo);
 
 	/**
 	 * Get an newly authentify user by his authToken.

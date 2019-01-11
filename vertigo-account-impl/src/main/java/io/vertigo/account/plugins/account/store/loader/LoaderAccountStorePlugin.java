@@ -91,8 +91,8 @@ public final class LoaderAccountStorePlugin implements AccountStorePlugin, Activ
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized Set<UID<AccountGroup>> getGroupURIs(final UID<Account> accountURI) {
-		return getGroupLoader().getGroupURIs(accountURI);
+	public synchronized Set<UID<AccountGroup>> getGroupUIDs(final UID<Account> accountUID) {
+		return getGroupLoader().getGroupURIs(accountUID);
 	}
 
 	private GroupLoader getGroupLoader() {
@@ -101,14 +101,14 @@ public final class LoaderAccountStorePlugin implements AccountStorePlugin, Activ
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized Set<UID<Account>> getAccountURIs(final UID<AccountGroup> groupURI) {
-		return getGroupLoader().getAccountURIs(groupURI);
+	public synchronized Set<UID<Account>> getAccountUIDs(final UID<AccountGroup> groupUID) {
+		return getGroupLoader().getAccountURIs(groupUID);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<VFile> getPhoto(final UID<Account> accountURI) {
-		return accountLoader.getPhoto(accountURI);
+	public Optional<VFile> getPhoto(final UID<Account> accountUID) {
+		return accountLoader.getPhoto(accountUID);
 	}
 
 	/** {@inheritDoc} */

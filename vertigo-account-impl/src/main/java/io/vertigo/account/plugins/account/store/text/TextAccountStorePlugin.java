@@ -128,8 +128,8 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	}
 
 	@Override
-	public Set<UID<AccountGroup>> getGroupURIs(final UID<Account> accountURI) {
-		return groupsPerAccount.get(accountURI.getId()).stream()
+	public Set<UID<AccountGroup>> getGroupUIDs(final UID<Account> accountUID) {
+		return groupsPerAccount.get(accountUID.getId()).stream()
 				.map(AccountGroup::getUID)
 				.collect(Collectors.toSet());
 	}
@@ -140,7 +140,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	}
 
 	@Override
-	public Set<UID<Account>> getAccountURIs(final UID<AccountGroup> groupURI) {
+	public Set<UID<Account>> getAccountUIDs(final UID<AccountGroup> groupURI) {
 		return accountsPerGroup.get(groupURI.getId()).stream()
 				.map(Account::getUID)
 				.collect(Collectors.toSet());

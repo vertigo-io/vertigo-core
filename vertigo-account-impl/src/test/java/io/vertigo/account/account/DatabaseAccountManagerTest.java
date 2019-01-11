@@ -53,13 +53,13 @@ public final class DatabaseAccountManagerTest extends AbstractAccountManagerTest
 	@Test
 	public void testPhotoDb() {
 		//Before the photo is the default photo
-		Assertions.assertFalse(accountManager.getPhoto(accountURI0).isPresent());
+		Assertions.assertFalse(accountManager.getPhoto(accountUID0).isPresent());
 		Assertions.assertEquals("defaultPhoto.png", accountManager.getDefaultPhoto().getFileName());
 		//-----
 		//	final VFile photo = fileManager.createFile(new File(this.getClass().getResource("../data/marianne.png").toURI()));
-		//	identityManager.setPhoto(accountURI0, photo);
+		//	identityManager.setPhoto(accountUID0, photo);
 		//-----
-		Assertions.assertFalse(accountManager.getPhoto(accountURI1).isPresent());
+		Assertions.assertFalse(accountManager.getPhoto(accountUID1).isPresent());
 	}
 
 	@Test
@@ -67,14 +67,14 @@ public final class DatabaseAccountManagerTest extends AbstractAccountManagerTest
 		try (VTransactionWritable tx = obtainTx()) {
 			//Assertions.assertEquals(2, identityManager.getGroupsCount());
 			//----
-			Assertions.assertEquals(1, accountManager.getGroupURIs(accountURI0).size());
-			Assertions.assertEquals(2, accountManager.getAccountURIs(groupURI).size());
-			Assertions.assertEquals(8, accountManager.getAccountURIs(groupAllURI).size());
+			Assertions.assertEquals(1, accountManager.getGroupUIDs(accountUID0).size());
+			Assertions.assertEquals(2, accountManager.getAccountUIDs(groupURI).size());
+			Assertions.assertEquals(8, accountManager.getAccountUIDs(groupAllURI).size());
 			//---
-			/*identityManager.attach(accountURI0, groupURI);
-			Assertions.assertEquals(2, identityManager.getGroupURIs(accountURI0).size());
-			Assertions.assertEquals(2, identityManager.getGroupURIs(accountURI1).size());
-			Assertions.assertEquals(2, identityManager.getGroupURIs(accountURI2).size());
+			/*identityManager.attach(accountUID0, groupURI);
+			Assertions.assertEquals(2, identityManager.getGroupURIs(accountUID0).size());
+			Assertions.assertEquals(2, identityManager.getGroupURIs(accountUID1).size());
+			Assertions.assertEquals(2, identityManager.getGroupURIs(accountUID2).size());
 			Assertions.assertEquals(3, identityManager.getAccountURIs(groupURI).size());
 			Assertions.assertEquals(10 + 3, identityManager.getAccountURIs(groupAllURI).size());*/
 		}
