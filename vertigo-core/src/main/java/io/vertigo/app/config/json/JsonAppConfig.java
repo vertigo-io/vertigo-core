@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.google.gson.JsonObject;
+
 public final class JsonAppConfig {
 
 	public JsonBootConfig boot;
@@ -26,12 +28,12 @@ public final class JsonAppConfig {
 		public List<JsonPluginConfig> plugins = new ArrayList<>();
 	}
 
-	public static class JsonFeaturesConfig extends LinkedHashMap<String, List<JsonParamsConfig>> {
+	public static class JsonFeaturesConfig extends LinkedHashMap<String, List<JsonObject>> {
 		private static final long serialVersionUID = 1L;
 		//nothing more
 	}
 
-	public static class JsonPluginConfig extends LinkedHashMap<String, JsonParamsConfig> {
+	public static class JsonPluginConfig extends LinkedHashMap<String, JsonObject> {
 		private static final long serialVersionUID = 1L;
 		//nothing more
 	}

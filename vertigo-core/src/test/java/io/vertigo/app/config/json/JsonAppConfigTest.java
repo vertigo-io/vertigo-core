@@ -33,8 +33,8 @@ public final class JsonAppConfigTest {
 	@Test
 	public void HomeTest() {
 
-		final AppConfig appConfig = new JsonAppConfigBuilder()
-				.withFiles(getClass(), new Properties(), "bio.json")
+		final AppConfig appConfig = new JsonAppConfigBuilder(new Properties())
+				.withFiles(getClass(), "bio.json")
 				.build();
 
 		testBioManager(appConfig);
@@ -42,8 +42,8 @@ public final class JsonAppConfigTest {
 
 	@Test
 	public void testBoot() {
-		final AppConfig appConfig = new JsonAppConfigBuilder()
-				.withFiles(getClass(), new Properties(), "bio-boot.json")
+		final AppConfig appConfig = new JsonAppConfigBuilder(new Properties())
+				.withFiles(getClass(), "bio-boot.json")
 				.build();
 
 		testBioManager(appConfig);

@@ -8,14 +8,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
@@ -30,7 +33,6 @@ import io.vertigo.app.config.BootConfigBuilder;
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.json.JsonAppConfig.JsonModuleConfig;
-import io.vertigo.app.config.json.JsonAppConfig.JsonParamsConfig;
 import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.core.component.Plugin;
 import io.vertigo.core.param.Param;
@@ -45,8 +47,18 @@ import io.vertigo.util.Selector.MethodConditions;
 public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 
 	private final AppConfigBuilder appConfigBuilder = AppConfig.builder();
+	private final Properties params;
 
 	private final Gson gson = new GsonBuilder().registerTypeAdapterFactory(new MyTypeAdapterFactory()).create();
+	private final List<String> activeFlags;
+
+	public JsonAppConfigBuilder(final Properties params) {
+		Assertion.checkNotNull(params);
+		//---
+		this.params = params;
+		activeFlags = Arrays.asList(params.getProperty("boot.activeFlags").split(";"));
+		params.remove("boot.activeFlags");
+	}
 
 	/**
 	 * Begin the boot config of the app.
@@ -64,11 +76,10 @@ public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 	*
 	* @return this builder
 	*/
-	public JsonAppConfigBuilder withFiles(final Class relativeRootClass, final Properties params, final String... jsonFileNames) {
+	public JsonAppConfigBuilder withFiles(final Class relativeRootClass, final String... jsonFileNames) {
 		Assertion.checkNotNull(relativeRootClass);
-		Assertion.checkNotNull(params);
 		Assertion.checkNotNull(jsonFileNames);
-		//-----
+		//---
 		Stream.of(jsonFileNames)
 				.map(xmlModulesFileName -> createURL(xmlModulesFileName, relativeRootClass))
 				.forEach(jsonConfigUrl -> handleJsonFileConfig(jsonConfigUrl));
@@ -107,12 +118,15 @@ public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 						Assertion.checkState(plugin.size() == 1, "a plugin is defined by it's class");
 						// ---
 						final String pluginClassName = plugin.keySet().iterator().next();
-						appConfigBuilder.beginBoot()
-								.addPlugin(
-										ClassUtil.classForName(pluginClassName, Plugin.class),
-										plugin.get(pluginClassName).entrySet().stream()
-												.map(entry -> Param.of(entry.getKey(), entry.getValue()))
-												.toArray(Param[]::new));
+						if (isEnabledByFlag(plugin.get(pluginClassName))) {
+							appConfigBuilder.beginBoot()
+									.addPlugin(
+											ClassUtil.classForName(pluginClassName, Plugin.class),
+											plugin.get(pluginClassName).entrySet().stream()
+													.filter(entry -> !"__flags__".equals(entry.getKey()))
+													.map(entry -> Param.of(entry.getKey(), entry.getValue().getAsString()))
+													.toArray(Param[]::new));
+						}
 					});
 		}
 	}
@@ -128,11 +142,15 @@ public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 
 		if (jsonModuleConfig.features != null) {
 			jsonModuleConfig.features.entrySet()
+					.stream()
 					.forEach(entry -> {
 						final Method methodForFeature = featureMethods.get(entry.getKey());
 						Assertion.checkNotNull(methodForFeature);
-						entry.getValue().forEach(
-								jsonParamsConfig -> ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findmethodParameters(jsonParamsConfig, methodForFeature, entry.getKey(), featuresClassName)));
+						entry.getValue()
+								.stream()
+								.filter(jsonObject -> isEnabledByFlag(jsonObject))
+								.forEach(
+										jsonParamsConfig -> ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findmethodParameters(jsonParamsConfig, methodForFeature, entry.getKey(), featuresClassName)));
 					});
 		}
 
@@ -141,22 +159,34 @@ public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 					Assertion.checkState(plugin.size() == 1, "a plugin is defined by it's class");
 					// ---
 					final String pluginClassName = plugin.keySet().iterator().next();
-					moduleConfigByFeatures
-							.addPlugin(
-									ClassUtil.classForName(pluginClassName, Plugin.class),
-									plugin.get(pluginClassName).entrySet().stream()
-											.map(entry -> Param.of(entry.getKey(), entry.getValue()))
-											.toArray(Param[]::new));
+					if (isEnabledByFlag(plugin.get(pluginClassName))) {
+						moduleConfigByFeatures
+								.addPlugin(
+										ClassUtil.classForName(pluginClassName, Plugin.class),
+										plugin.get(pluginClassName).entrySet().stream()
+												.filter(entry -> !"__flags__".equals(entry.getKey()))
+												.map(entry -> Param.of(entry.getKey(), entry.getValue().getAsString()))
+												.toArray(Param[]::new));
+					}
 				});
 		appConfigBuilder.addModule(moduleConfigByFeatures.build());
 	}
 
-	private static Object[] findmethodParameters(final JsonParamsConfig jsonParamsConfig, final Method method, final String featureName, final String featuresClassName) {
+	private final boolean isEnabledByFlag(final JsonObject jsonObject) {
+		if (!jsonObject.has("__flags__")) {
+			return true;// no flags declared means always
+		}
+		return StreamSupport.stream(jsonObject.getAsJsonArray("__flags__").spliterator(), false)
+				.anyMatch(flag -> activeFlags.contains(flag.getAsString()));
+	}
+
+	private static Object[] findmethodParameters(final JsonObject jsonParamsConfig, final Method method, final String featureName, final String featuresClassName) {
 		Assertion.checkState(method.getParameterCount() <= 1, "A feature method can have 0 parameter or a single Param... parameter");
 		if (method.getParameterCount() == 1) {
 			final Param[] params = jsonParamsConfig.entrySet()
 					.stream()
-					.map(paramEntry -> Param.of(paramEntry.getKey(), paramEntry.getValue()))
+					.filter(jsonEntry -> !"__flags__".equals(jsonEntry.getKey()))
+					.map(paramEntry -> Param.of(paramEntry.getKey(), paramEntry.getValue().getAsString()))
 					.toArray(Param[]::new);
 			return new Object[] { params };
 		}

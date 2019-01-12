@@ -74,7 +74,7 @@ final class AppServletStarter2 {
 			final Properties bootConf = createBootProperties(servletContext);
 			Assertion.checkArgument(bootConf.containsKey("boot.applicationConfiguration"), "Param \"boot.applicationConfiguration\" is mandatory, check your .properties or web.xml.");
 
-			final JsonAppConfigBuilder appConfigBuilder = new JsonAppConfigBuilder();
+			final JsonAppConfigBuilder appConfigBuilder = new JsonAppConfigBuilder(bootConf);
 			appConfigBuilder.beginBoot();
 
 			//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
@@ -89,7 +89,7 @@ final class AppServletStarter2 {
 			final String[] jsonConfigFileNamesSplit = jsonConfigFileNames.split(";");
 			bootConf.remove("boot.applicationConfiguration");
 			//-----
-			appConfigBuilder.withFiles(getClass(), bootConf, jsonConfigFileNamesSplit);
+			appConfigBuilder.withFiles(getClass(), jsonConfigFileNamesSplit);
 
 			// Initialisation de l'état de l'application
 			app = new AutoCloseableApp(appConfigBuilder.build());

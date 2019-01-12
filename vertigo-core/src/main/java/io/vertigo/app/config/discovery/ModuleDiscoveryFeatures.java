@@ -31,7 +31,7 @@ import io.vertigo.core.component.Component;
  * @author mlaroche
  *
  */
-public abstract class ModuleDiscoveryFeatures extends Features {
+public abstract class ModuleDiscoveryFeatures<F> extends Features<F> {
 
 	protected ModuleDiscoveryFeatures(final String name) {
 		super(name);
