@@ -89,6 +89,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	private final FileManager fileManager;
 	private final String name;
 	private final String documentRoot;
+	private DtField storeIdField;
 	private DtDefinition storeDtDefinition;
 	private final String storeDtDefinitionName;
 	private final VTransactionManager transactionManager;
@@ -126,6 +127,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	@Override
 	public void start() {
 		storeDtDefinition = Home.getApp().getDefinitionSpace().resolve(storeDtDefinitionName, DtDefinition.class);
+		storeIdField = storeDtDefinition.getIdField().get();
 	}
 
 	/* (non-Javadoc)
@@ -186,7 +188,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 			setValue(fileInfoDto, DtoFields.FILE_PATH, "/dev/null");
 		} else {
 			// cas de l'update
-			setIdValue(fileInfoDto, fileInfo.getURI().getKey());
+			setIdValue(fileInfoDto, fileInfo.getURI());
 
 			// récupération de l'objet en base pour récupérer le path du fichier et ne pas modifier la base
 			final UID<Entity> dtoUri = createDtObjectURI(fileInfo.getURI());
@@ -275,7 +277,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
 		//-----
 		// Il doit exister un DtObjet associé, avec la structure attendue.
-		return UID.of(storeDtDefinition, uri.getKey());
+		return UID.of(storeDtDefinition, uri.getKeyAs(storeIdField.getDomain().getDataType()));
 	}
 
 	/**
@@ -316,9 +318,9 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		dtField.getDataAccessor().setValue(dto, value);
 	}
 
-	private static void setIdValue(final DtObject dto, final Object value) {
+	private static void setIdValue(final DtObject dto, final FileInfoURI uri) {
 		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getIdField().get();
-		dtField.getDataAccessor().setValue(dto, value);
+		dtField.getDataAccessor().setValue(dto, uri.getKeyAs(dtField.getDomain().getDataType()));
 	}
 
 	private static final class FileInputStreamBuilder implements InputStreamBuilder {

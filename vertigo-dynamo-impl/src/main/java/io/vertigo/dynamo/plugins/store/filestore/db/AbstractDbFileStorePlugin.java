@@ -29,6 +29,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
@@ -119,10 +120,10 @@ abstract class AbstractDbFileStorePlugin {
 	 * @param dto DtObject
 	 * @param value Pk value
 	 */
-	protected static void setIdValue(final DtObject dto, final Object value) {
+	protected static void setIdValue(final DtObject dto, final FileInfoURI uri) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final DtField idField = dtDefinition.getIdField().get();
-		idField.getDataAccessor().setValue(dto, value);
+		idField.getDataAccessor().setValue(dto, uri.getKeyAs(idField.getDomain().getDataType()));
 	}
 
 	/**

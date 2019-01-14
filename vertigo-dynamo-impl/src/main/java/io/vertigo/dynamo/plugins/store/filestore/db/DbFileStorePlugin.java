@@ -27,6 +27,7 @@ import javax.inject.Named;
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
@@ -54,11 +55,12 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	 * @author npiedeloup
 	 */
 	private enum DtoFields implements DtFieldName {
-		FILE_NAME, MIME_TYPE, LAST_MODIFIED, LENGTH, FILE_DATA
+	FILE_NAME, MIME_TYPE, LAST_MODIFIED, LENGTH, FILE_DATA
 	}
 
 	private final FileManager fileManager;
 	private final String storeDtDefinitionName;
+	private DtField storeIdField;
 	private DtDefinition storeDtDefinition;
 
 	/**
@@ -83,6 +85,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	@Override
 	public void start() {
 		storeDtDefinition = Home.getApp().getDefinitionSpace().resolve(storeDtDefinitionName, DtDefinition.class);
+		storeIdField = storeDtDefinition.getIdField().get();
 	}
 
 	@Override
@@ -97,7 +100,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		Assertion.checkNotNull(uri);
 		checkDefinitionStoreBinding(uri.getDefinition());
 		//-----
-		final UID<Entity> dtoUri = UID.of(storeDtDefinition, uri.getKey());
+		final UID<Entity> dtoUri = UID.of(storeDtDefinition, uri.getKeyAs(storeIdField.getDomain().getDataType()));
 		final Entity fileInfoDto = getStoreManager().getDataStore().readOne(dtoUri);
 		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(getValue(fileInfoDto, DtoFields.FILE_DATA, DataStream.class));
 		final String fileName = getValue(fileInfoDto, DtoFields.FILE_NAME, String.class);
@@ -145,7 +148,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
 		checkDefinitionStoreBinding(uri.getDefinition());
 		//-----
-		final UID<Entity> dtoUri = UID.of(storeDtDefinition, uri.getKey());
+		final UID<Entity> dtoUri = UID.of(storeDtDefinition, uri.getKeyAs(storeIdField.getDomain().getDataType()));
 		getStoreManager().getDataStore().delete(dtoUri);
 	}
 
@@ -162,7 +165,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		setValue(fileInfoDto, DtoFields.FILE_DATA, new VFileDataStream(vFile));
 
 		if (fileInfo.getURI() != null) {
-			setIdValue(fileInfoDto, fileInfo.getURI().getKey());
+			setIdValue(fileInfoDto, fileInfo.getURI());
 		}
 		return fileInfoDto;
 	}

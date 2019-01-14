@@ -26,6 +26,7 @@ import javax.inject.Named;
 
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
@@ -53,11 +54,12 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 	 * Ces champs sont obligatoire sur les Dt associés aux fileInfoDefinitions
 	 */
 	private enum DtoFields implements DtFieldName {
-		FILE_NAME, MIME_TYPE, LAST_MODIFIED, LENGTH, FILE_DATA, FMD_ID, FDT_ID
+	FILE_NAME, MIME_TYPE, LAST_MODIFIED, LENGTH, FILE_DATA, FMD_ID, FDT_ID
 	}
 
 	private final FileManager fileManager;
 	private final DtDefinition storeMetaDataDtDefinition;
+	private final DtField storeMetaDataIdField;
 	private final DtDefinition storeFileDtDefinition;
 
 	/**
@@ -79,6 +81,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		this.fileManager = fileManager;
 		storeMetaDataDtDefinition = Home.getApp().getDefinitionSpace().resolve(storeMetaDataDtDefinitionName, DtDefinition.class);
 		storeFileDtDefinition = Home.getApp().getDefinitionSpace().resolve(storeFileDtDefinitionName, DtDefinition.class);
+		storeMetaDataIdField = storeMetaDataDtDefinition.getIdField().get();
 	}
 
 	/** {@inheritDoc} */
@@ -86,7 +89,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 	public FileInfo read(final FileInfoURI fileInfoUri) {
 		checkDefinitionStoreBinding(fileInfoUri.getDefinition());
 		// Ramène FileMetada
-		final UID<Entity> dtoMetaDataUri = UID.of(storeMetaDataDtDefinition, fileInfoUri.getKey());
+		final UID<Entity> dtoMetaDataUri = UID.of(storeMetaDataDtDefinition, fileInfoUri.getKeyAs(storeMetaDataIdField.getDomain().getDataType()));
 		final DtObject fileMetadataDto = getStoreManager().getDataStore().readOne(dtoMetaDataUri);
 		final Object fdtId = getValue(fileMetadataDto, DtoFields.FDT_ID, Object.class);
 
@@ -136,9 +139,9 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		final Entity fileMetadataDto = createMetaDataEntity(fileInfo);
 		final Entity fileDataDto = createFileEntity(fileInfo);
 		//-----
-		setValue(fileMetadataDto, DtoFields.FMD_ID, fileInfo.getURI().getKey());
+		setIdValue(fileMetadataDto, fileInfo.getURI());
 		// Chargement du FDT_ID
-		final UID<Entity> dtoMetaDataUri = UID.of(storeMetaDataDtDefinition, fileInfo.getURI().getKey());
+		final UID<Entity> dtoMetaDataUri = UID.of(storeMetaDataDtDefinition, fileInfo.getURI().getKeyAs(storeMetaDataIdField.getDomain().getDataType()));
 		final DtObject fileMetadataDtoOld = getStoreManager().getDataStore().readOne(dtoMetaDataUri);
 		final Object fdtId = getValue(fileMetadataDtoOld, DtoFields.FDT_ID, Object.class);
 		setValue(fileMetadataDto, DtoFields.FDT_ID, fdtId);
@@ -157,7 +160,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		checkReadonly();
 		checkDefinitionStoreBinding(fileInfoUri.getDefinition());
 		//-----
-		final UID<Entity> dtoMetaDataUri = UID.of(storeMetaDataDtDefinition, fileInfoUri.getKey());
+		final UID<Entity> dtoMetaDataUri = UID.of(storeMetaDataDtDefinition, fileInfoUri.getKeyAs(storeMetaDataIdField.getDomain().getDataType()));
 		final DtObject fileMetadataDtoOld = getStoreManager().getDataStore().readOne(dtoMetaDataUri);
 		final Object fdtId = getValue(fileMetadataDtoOld, DtoFields.FDT_ID, Object.class);
 		final UID<Entity> dtoDataUri = UID.of(storeFileDtDefinition, fdtId);
