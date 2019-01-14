@@ -91,13 +91,16 @@ public final class SecurityFilter extends AbstractFilter {
 			// 2. Vérification que l'utilisateur est authentifié si l'adresse demandée l'exige
 			if (needsAuthentification && !user.isAuthenticated()) {
 				/*
-				 * Lance des exceptions - si la session a expiré - ou si aucune session utilisateur n'existe.
+				 * il ne faut pas continuer
+				 * - si la session a expiré
+				 * - ou si aucune session utilisateur n'existe.
 				 */
-				httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-				//il ne faut pas continuer
 				if (!hasSession) {
-					//Par défaut on considère que la session a expirée
-					throw new ServletException(new SessionException("Session expirée"));
+					httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Session Expired"); //No session found
+					httpRequest.setAttribute("SessionExpired", true);
+					throw new ServletException(new SessionException("Session Expired"));//will override the 401 error code and send a 500
+				} else {
+					httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED); //User not authenticated
 				}
 			} else if (checkRequestAccess && needsAuthentification && !securityManager.isAuthorized("HttpServletRequest", httpRequest, "OP_READ")) {
 				httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);

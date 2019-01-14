@@ -76,7 +76,7 @@ public final class SessionWebServiceHandlerPlugin implements WebServiceHandlerPl
 				//If a new session is badly use, we invalid it (light protection against DDOS)
 				session.invalidate();
 				//If session was just created, we translate securityException as a Session expiration.
-				throw (SessionException) new SessionException("Session has expired").initCause(e);
+				throw (SessionException) new SessionException("Session Expired").initCause(e);
 			} else if (!user.isAuthenticated()) {
 				//If user isn't authenticated, it need a authentication (http 401) like a session expiration
 				throw (SessionException) new SessionException("Authentication mandatory").initCause(e);
