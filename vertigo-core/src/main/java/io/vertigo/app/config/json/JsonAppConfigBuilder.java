@@ -47,7 +47,6 @@ import io.vertigo.util.Selector.MethodConditions;
 public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 
 	private final AppConfigBuilder appConfigBuilder = AppConfig.builder();
-	private final Properties params;
 
 	private final Gson gson = new GsonBuilder().registerTypeAdapterFactory(new MyTypeAdapterFactory()).create();
 	private final List<String> activeFlags;
@@ -55,7 +54,6 @@ public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 	public JsonAppConfigBuilder(final Properties params) {
 		Assertion.checkNotNull(params);
 		//---
-		this.params = params;
 		activeFlags = Arrays.asList(params.getProperty("boot.activeFlags").split(";"));
 		params.remove("boot.activeFlags");
 	}
@@ -172,7 +170,7 @@ public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 		appConfigBuilder.addModule(moduleConfigByFeatures.build());
 	}
 
-	private final boolean isEnabledByFlag(final JsonObject jsonObject) {
+	private boolean isEnabledByFlag(final JsonObject jsonObject) {
 		if (!jsonObject.has("__flags__")) {
 			return true;// no flags declared means always
 		}
@@ -281,7 +279,6 @@ public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 					@Override
 					public void write(final JsonWriter out, final T value) throws IOException {
 						//nothing
-
 					}
 
 					@Override
