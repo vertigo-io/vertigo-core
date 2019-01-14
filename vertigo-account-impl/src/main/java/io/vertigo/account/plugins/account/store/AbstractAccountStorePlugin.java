@@ -90,10 +90,12 @@ public abstract class AbstractAccountStorePlugin implements Activeable {
 		final String authToken = parseAttribute(AccountProperty.authToken, userEntity);
 		final String displayName = parseAttribute(AccountProperty.displayName, userEntity);
 		final String email = parseOptionalAttribute(AccountProperty.email, userEntity);
+		final String photo = parseOptionalAttribute(AccountProperty.photo, userEntity);
 		return Account.builder(accountId)
 				.withAuthToken(authToken)
 				.withDisplayName(displayName)
 				.withEmail(email)
+				.withPhoto(photo)
 				.build();
 	}
 

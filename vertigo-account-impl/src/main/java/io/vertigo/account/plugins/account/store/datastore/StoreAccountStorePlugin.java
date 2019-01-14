@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -33,6 +34,8 @@ import io.vertigo.account.impl.account.AccountMapperHelper;
 import io.vertigo.account.impl.account.AccountStorePlugin;
 import io.vertigo.account.plugins.account.store.AbstractAccountStorePlugin;
 import io.vertigo.app.Home;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -46,7 +49,9 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociat
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
@@ -58,11 +63,16 @@ import io.vertigo.lang.WrappedException;
  */
 public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin implements AccountStorePlugin {
 
+	private final VTransactionManager transactionManager;
 	private final StoreManager storeManager;
 
+	private DtField userIdField;
 	private final String groupIdentityEntity;
 	private final String userAuthField;
+	private final Optional<String> photoFileInfo;
+	private Optional<FileInfoDefinition> photoFileInfoDefinition = Optional.empty();
 	private DtDefinition userGroupDtDefinition;
+	private DtField groupIdField;
 	private final String groupToGroupAccountMappingStr;
 	private AssociationDefinition associationUserGroup;
 	private String associationGroupRoleName;
@@ -88,31 +98,43 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 			@Named("userIdentityEntity") final String userIdentityEntity,
 			@Named("groupIdentityEntity") final String groupIdentityEntity,
 			@Named("userAuthField") final String userAuthField,
+			@Named("photoFileInfo") final Optional<String> photoFileInfo,
 			@Named("userToAccountMapping") final String userToAccountMappingStr,
 			@Named("groupToGroupAccountMapping") final String groupToGroupAccountMappingStr,
-			final StoreManager storeManager) {
+			final StoreManager storeManager,
+			final VTransactionManager transactionManager) {
 		super(userIdentityEntity, userToAccountMappingStr);
 		Assertion.checkArgNotEmpty(userIdentityEntity);
 		Assertion.checkArgNotEmpty(userAuthField);
 		Assertion.checkNotNull(storeManager);
 		Assertion.checkArgNotEmpty(groupToGroupAccountMappingStr);
+
 		this.groupIdentityEntity = groupIdentityEntity;
 		this.userAuthField = userAuthField;
+		this.photoFileInfo = photoFileInfo;
 		this.storeManager = storeManager;
+		this.transactionManager = transactionManager;
 		this.groupToGroupAccountMappingStr = groupToGroupAccountMappingStr;
 	}
 
 	@Override
 	protected void postStart() {
+		userIdField = getUserDtDefinition().getIdField().get(); //Entity with Id mandatory
+
+		if (photoFileInfo.isPresent()) {
+			photoFileInfoDefinition = Optional.of(Home.getApp().getDefinitionSpace().resolve(photoFileInfo.get(), FileInfoDefinition.class));
+		}
+
 		userGroupDtDefinition = Home.getApp().getDefinitionSpace().resolve(groupIdentityEntity, DtDefinition.class);
+		groupIdField = userGroupDtDefinition.getIdField().get(); //Entity with Id mandatory
 		mapperHelper = new AccountMapperHelper(userGroupDtDefinition, GroupProperty.class, groupToGroupAccountMappingStr)
 				.withMandatoryDestField(GroupProperty.id)
 				.withMandatoryDestField(GroupProperty.displayName)
 				.parseAttributeMapping();
 
 		for (final AssociationDefinition association : Home.getApp().getDefinitionSpace().getAll(AssociationDefinition.class)) {
-			if ((userGroupDtDefinition.equals(association.getAssociationNodeA().getDtDefinition())
-					&& getUserDtDefinition().equals(association.getAssociationNodeB().getDtDefinition()))) {
+			if (userGroupDtDefinition.equals(association.getAssociationNodeA().getDtDefinition())
+					&& getUserDtDefinition().equals(association.getAssociationNodeB().getDtDefinition())) {
 				associationUserGroup = association;
 				associationUserRoleName = association.getAssociationNodeB().getRole();
 				associationGroupRoleName = association.getAssociationNodeA().getRole();
@@ -134,8 +156,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	/** {@inheritDoc} */
 	@Override
 	public Account getAccount(final UID<Account> accountURI) {
-		final UID<Entity> userURI = UID.of(getUserDtDefinition(), accountURI.getId());
-		final Entity userEntity = storeManager.getDataStore().readOne(userURI);
+		final Entity userEntity = readUserEntity(accountURI);
 		return userToAccount(userEntity);
 	}
 
@@ -144,8 +165,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	public Set<UID<AccountGroup>> getGroupUIDs(final UID<Account> accountUID) {
 		if (associationUserGroup instanceof AssociationSimpleDefinition) {
 			//case 1 group per user
-			final UID<Entity> userURI = UID.of(getUserDtDefinition(), accountUID.getId());
-			final Entity userEntity = storeManager.getDataStore().readOne(userURI);
+			final Entity userEntity = readUserEntity(accountUID);
 			final Object fkValue = ((AssociationSimpleDefinition) associationUserGroup).getFKField().getDataAccessor().getValue(userEntity);
 			final UID<AccountGroup> groupURI = UID.of(userGroupDtDefinition, fkValue);
 			return Collections.singleton(groupURI);
@@ -167,8 +187,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	/** {@inheritDoc} */
 	@Override
 	public AccountGroup getGroup(final UID<AccountGroup> accountGroupUID) {
-		final UID<Entity> groupUID = UID.of(userGroupDtDefinition, accountGroupUID.getId());
-		final Entity groupEntity = storeManager.getDataStore().readOne(groupUID);
+		final Entity groupEntity = readGroupEntity(accountGroupUID);
 		return groupToAccount(groupEntity);
 	}
 
@@ -194,7 +213,15 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	/** {@inheritDoc} */
 	@Override
 	public Optional<VFile> getPhoto(final UID<Account> accountURI) {
-		return Optional.empty(); //TODO
+		final Account account = getAccount(accountURI);
+		final String photoId = account.getPhoto();
+		if (photoId != null && photoFileInfoDefinition.isPresent()) {
+			return executeInTransaction(() -> {
+				final FileInfoURI photoUri = new FileInfoURI(photoFileInfoDefinition.get(), photoId);
+				return Optional.of(storeManager.getFileStore().read(photoUri).getVFile());
+			});
+		}
+		return Optional.empty();
 	}
 
 	/** {@inheritDoc} */
@@ -208,12 +235,14 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 			throw WrappedException.wrap(e);
 		}
 		final Criteria<Entity> criteriaByAuthToken = Criterions.isEqualTo(() -> userAuthField, userAuthTokenValue);
-		final DtList<Entity> results = storeManager.getDataStore().find(getUserDtDefinition(), criteriaByAuthToken);
-		Assertion.checkState(results.size() <= 1, "Too many matching for authToken {0}", userAuthToken);
-		if (!results.isEmpty()) {
-			return Optional.of(userToAccount(results.get(0)));
-		}
-		return Optional.empty();
+		return executeInTransaction(() -> {
+			final DtList<Entity> results = storeManager.getDataStore().find(getUserDtDefinition(), criteriaByAuthToken);
+			Assertion.checkState(results.size() <= 1, "Too many matching for authToken {0}", userAuthToken);
+			if (!results.isEmpty()) {
+				return Optional.of(userToAccount(results.get(0)));
+			}
+			return Optional.empty();
+		});
 	}
 
 	private AccountGroup groupToAccount(final Entity groupEntity) {
@@ -225,5 +254,39 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	private String parseAttribute(final GroupProperty accountProperty, final Entity userEntity) {
 		final DtField attributeField = mapperHelper.getSourceAttribute(accountProperty);
 		return String.valueOf(attributeField.getDataAccessor().getValue(userEntity));
+	}
+
+	private Entity readUserEntity(final UID<Account> accountURI) {
+		return executeInTransaction(() -> {
+			try {
+				final Serializable typedId = (Serializable) userIdField.getDomain().stringToValue((String) accountURI.getId()); //account id IS always a String
+				final UID<Entity> userURI = UID.of(getUserDtDefinition(), typedId);
+				return storeManager.getDataStore().readOne(userURI);
+			} catch (final FormatterException e) {
+				throw WrappedException.wrap(e, "Can't get UserEntity from Store");
+			}
+		});
+	}
+
+	private Entity readGroupEntity(final UID<AccountGroup> accountGroupURI) {
+		return executeInTransaction(() -> {
+			try {
+				final Serializable typedId = (Serializable) groupIdField.getDomain().stringToValue((String) accountGroupURI.getId()); //accountGroup id IS always a String
+				final UID<Entity> groupURI = UID.of(userGroupDtDefinition, typedId);
+				return storeManager.getDataStore().readOne(groupURI);
+			} catch (final FormatterException e) {
+				throw WrappedException.wrap(e, "Can't get UserGroupEntity from Store");
+			}
+		});
+	}
+
+	private <O extends Object> O executeInTransaction(final Supplier<O> supplier) {
+		if (transactionManager.hasCurrentTransaction()) {
+			return supplier.get();
+		}
+		//Dans le cas ou il n'existe pas de transaction on en crée une.
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			return supplier.get();
+		}
 	}
 }

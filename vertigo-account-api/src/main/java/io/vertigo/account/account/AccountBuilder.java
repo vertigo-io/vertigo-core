@@ -28,6 +28,7 @@ public final class AccountBuilder implements Builder<Account> {
 	private final String myId;
 	private String myDisplayName;
 	private String myEmail;
+	private String myPhoto;
 	private String myAuthToken;
 
 	/**
@@ -67,6 +68,19 @@ public final class AccountBuilder implements Builder<Account> {
 	}
 
 	/**
+	 * Adds an photo
+	 * @param photo the photo
+	 * @return this builder
+	 */
+	public AccountBuilder withPhoto(final String photo) {
+		Assertion.checkArgument(myPhoto == null, "photo already set");
+		//photo is nullable, we accept null value in case this builder is use by deserializer
+		//-----
+		myPhoto = photo;
+		return this;
+	}
+
+	/**
 	 * Adds an authToken
 	 * @param authToken the authToken
 	 * @return this builder
@@ -82,6 +96,6 @@ public final class AccountBuilder implements Builder<Account> {
 	/** {@inheritDoc} */
 	@Override
 	public Account build() {
-		return new Account(myId, myDisplayName, myEmail, myAuthToken != null ? myAuthToken : myEmail);
+		return new Account(myId, myDisplayName, myEmail, myPhoto, myAuthToken != null ? myAuthToken : myEmail);
 	}
 }
