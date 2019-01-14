@@ -64,6 +64,7 @@ import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
+import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -380,12 +381,27 @@ public final class GoogleJsonEngine implements JsonEngine {
 		/** {@inheritDoc} */
 		@Override
 		public JsonElement serialize(final UID uri, final Type typeOfSrc, final JsonSerializationContext context) {
+			if (typeOfSrc instanceof ParameterizedType) {
+				return new JsonPrimitive(String.valueOf(uri.getId()));
+			}
 			return new JsonPrimitive(uri.urn());
+
 		}
 
 		/** {@inheritDoc} */
 		@Override
 		public UID deserialize(final JsonElement json, final Type paramType, final JsonDeserializationContext paramJsonDeserializationContext) {
+			if (paramType instanceof ParameterizedType) {
+				final Class<Entity> entityClass = (Class<Entity>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that UID has one parameterized type
+				final DtDefinition entityDefinition = DtObjectUtil.findDtDefinition(entityClass);
+				Object entityId;
+				try {
+					entityId = entityDefinition.getIdField().get().getDomain().stringToValue(json.getAsString());
+				} catch (final FormatterException e) {
+					throw new JsonParseException("Unsupported UID format " + json.getAsString());
+				}
+				return UID.of(entityClass, entityId);
+			}
 			return UID.of(json.getAsString());
 		}
 	}
