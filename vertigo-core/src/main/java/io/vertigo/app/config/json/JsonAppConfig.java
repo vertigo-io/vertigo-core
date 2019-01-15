@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 
 public final class JsonAppConfig {
 
@@ -25,6 +26,8 @@ public final class JsonAppConfig {
 
 	public static class JsonModuleConfig {
 		public JsonFeaturesConfig features;
+		@SerializedName("__flags__")
+		public List<String> flags = new ArrayList<>();
 		public List<JsonPluginConfig> plugins = new ArrayList<>();
 	}
 

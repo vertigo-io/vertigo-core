@@ -9,6 +9,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -116,7 +117,7 @@ public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 						Assertion.checkState(plugin.size() == 1, "a plugin is defined by it's class");
 						// ---
 						final String pluginClassName = plugin.keySet().iterator().next();
-						if (isEnabledByFlag(plugin.get(pluginClassName))) {
+						if (isEnabledByFlag(getFlagsOfJsonObject(plugin.get(pluginClassName)))) {
 							appConfigBuilder.beginBoot()
 									.addPlugin(
 											ClassUtil.classForName(pluginClassName, Plugin.class),
@@ -130,52 +131,65 @@ public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 	}
 
 	private void handleJsonModuleConfig(final String featuresClassName, final JsonModuleConfig jsonModuleConfig) {
-		final Features moduleConfigByFeatures = ClassUtil.newInstance(featuresClassName, Features.class);
-		final Map<String, Method> featureMethods = new Selector().from(moduleConfigByFeatures.getClass())
-				.filterMethods(MethodConditions.annotatedWith(Feature.class))
-				.findMethods()
-				.stream()
-				.map(classAndMethod -> classAndMethod.getVal2())
-				.collect(Collectors.toMap(method -> method.getAnnotation(Feature.class).value(), method -> method));
-
-		if (jsonModuleConfig.features != null) {
-			jsonModuleConfig.features.entrySet()
+		if (isEnabledByFlag(jsonModuleConfig.flags)) {
+			final Features moduleConfigByFeatures = ClassUtil.newInstance(featuresClassName, Features.class);
+			final Map<String, Method> featureMethods = new Selector().from(moduleConfigByFeatures.getClass())
+					.filterMethods(MethodConditions.annotatedWith(Feature.class))
+					.findMethods()
 					.stream()
-					.forEach(entry -> {
-						final Method methodForFeature = featureMethods.get(entry.getKey());
-						Assertion.checkNotNull(methodForFeature);
-						entry.getValue()
-								.stream()
-								.filter(jsonObject -> isEnabledByFlag(jsonObject))
-								.forEach(
-										jsonParamsConfig -> ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findmethodParameters(jsonParamsConfig, methodForFeature, entry.getKey(), featuresClassName)));
-					});
-		}
+					.map(classAndMethod -> classAndMethod.getVal2())
+					.collect(Collectors.toMap(method -> method.getAnnotation(Feature.class).value(), method -> method));
 
-		jsonModuleConfig.plugins.forEach(
-				plugin -> {
-					Assertion.checkState(plugin.size() == 1, "a plugin is defined by it's class");
-					// ---
-					final String pluginClassName = plugin.keySet().iterator().next();
-					if (isEnabledByFlag(plugin.get(pluginClassName))) {
-						moduleConfigByFeatures
-								.addPlugin(
-										ClassUtil.classForName(pluginClassName, Plugin.class),
-										plugin.get(pluginClassName).entrySet().stream()
-												.filter(entry -> !"__flags__".equals(entry.getKey()))
-												.map(entry -> Param.of(entry.getKey(), entry.getValue().getAsString()))
-												.toArray(Param[]::new));
-					}
-				});
-		appConfigBuilder.addModule(moduleConfigByFeatures.build());
+			if (jsonModuleConfig.features != null) {
+				jsonModuleConfig.features.entrySet()
+						.stream()
+						.forEach(entry -> {
+							final Method methodForFeature = featureMethods.get(entry.getKey());
+							Assertion.checkNotNull(methodForFeature);
+							entry.getValue()
+									.stream()
+									.filter(jsonObject -> isEnabledByFlag(getFlagsOfJsonObject(jsonObject)))
+									.forEach(
+											jsonParamsConfig -> ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findmethodParameters(jsonParamsConfig, methodForFeature, entry.getKey(), featuresClassName)));
+						});
+			}
+
+			jsonModuleConfig.plugins.forEach(
+					plugin -> {
+						Assertion.checkState(plugin.size() == 1, "a plugin is defined by it's class");
+						// ---
+						final String pluginClassName = plugin.keySet().iterator().next();
+						if (isEnabledByFlag(getFlagsOfJsonObject(plugin.get(pluginClassName)))) {
+							moduleConfigByFeatures
+									.addPlugin(
+											ClassUtil.classForName(pluginClassName, Plugin.class),
+											plugin.get(pluginClassName).entrySet().stream()
+													.filter(entry -> !"__flags__".equals(entry.getKey()))
+													.map(entry -> Param.of(entry.getKey(), entry.getValue().getAsString()))
+													.toArray(Param[]::new));
+						}
+					});
+			appConfigBuilder.addModule(moduleConfigByFeatures.build());
+		}
 	}
 
-	private boolean isEnabledByFlag(final JsonObject jsonObject) {
+	private static List<String> getFlagsOfJsonObject(final JsonObject jsonObject) {
 		if (!jsonObject.has("__flags__")) {
-			return true;// no flags declared means always
+			return Collections.emptyList();
 		}
 		return StreamSupport.stream(jsonObject.getAsJsonArray("__flags__").spliterator(), false)
-				.anyMatch(flag -> activeFlags.contains(flag.getAsString()));
+				.map(flag -> flag.getAsString())
+				.collect(Collectors.toList());
+	}
+
+	private boolean isEnabledByFlag(final List<String> flags) {
+		Assertion.checkNotNull(flags);
+		//---
+		if (flags.isEmpty()) {
+			return true;// no flags declared means always
+		}
+		return flags.stream()
+				.anyMatch(flag -> activeFlags.contains(flag));
 	}
 
 	private static Object[] findmethodParameters(final JsonObject jsonParamsConfig, final Method method, final String featureName, final String featuresClassName) {
