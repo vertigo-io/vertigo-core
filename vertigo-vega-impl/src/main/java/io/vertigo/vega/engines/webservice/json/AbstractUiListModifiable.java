@@ -327,7 +327,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 
 	/** innerclass, volontairement non static */
 	class UiListModifiableIterator implements Iterator<UiObject<D>> {
-		private final int expectedSize;
+		private int expectedSize; //count removed elements
 		private int currentIndex; //init a 0
 
 		/**
@@ -360,6 +360,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		@Override
 		public void remove() {
 			AbstractUiListModifiable.this.remove(get(currentIndex - 1));
+			expectedSize--;
 		}
 
 		private void checkForComodification() {
