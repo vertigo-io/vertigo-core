@@ -26,6 +26,8 @@ import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
+import io.vertigo.dynamox.domain.formatter.FormatterString;
 import io.vertigo.util.ListBuilder;
 
 /**
@@ -42,7 +44,8 @@ public final class AccountDefinitionProvider implements SimpleDefinitionProvider
 	/** {@inheritDoc} */
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		final Domain domainAccountId = Domain.builder("DO_X_ACCOUNT_ID", DataType.String).build();
+		final FormatterDefinition formatterDefinition = new FormatterDefinition("FMT_X_ACCOUNT_ID", FormatterString.class.getName(), null);
+		final Domain domainAccountId = Domain.builder("DO_X_ACCOUNT_ID", DataType.String).withFormatter(formatterDefinition).build();
 		final Domain domainAccountName = Domain.builder("DO_X_ACCOUNT_NAME", DataType.String).build();
 		final Domain domainAccountEmail = Domain.builder("DO_X_ACCOUNT_EMAIL", DataType.String).build();
 		final Domain domainAccountPhoto = Domain.builder("DO_X_ACCOUNT_PHOTO", DataType.String).build();
