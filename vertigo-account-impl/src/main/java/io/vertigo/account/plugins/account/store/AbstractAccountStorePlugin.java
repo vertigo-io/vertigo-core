@@ -101,13 +101,15 @@ public abstract class AbstractAccountStorePlugin implements Activeable {
 
 	private String parseAttribute(final AccountProperty accountProperty, final Entity userEntity) {
 		final DtField attributeField = mapperHelper.getSourceAttribute(accountProperty);
-		return String.valueOf(attributeField.getDataAccessor().getValue(userEntity));
+		final Object value = attributeField.getDataAccessor().getValue(userEntity);
+		return value != null ? String.valueOf(value) : null;
 	}
 
 	private String parseOptionalAttribute(final AccountProperty accountProperty, final Entity userEntity) {
 		final DtField attributeField = mapperHelper.getSourceAttribute(accountProperty);
 		if (attributeField != null) {
-			return String.valueOf(attributeField.getDataAccessor().getValue(userEntity));
+			final Object value = attributeField.getDataAccessor().getValue(userEntity);
+			return value != null ? String.valueOf(value) : null;
 		}
 		return null;
 	}
