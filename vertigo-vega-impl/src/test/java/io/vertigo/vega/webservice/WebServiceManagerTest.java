@@ -460,7 +460,7 @@ public final class WebServiceManagerTest {
 		given().header(HEADER_ACCESS_TOKEN, headerAccessToken)
 				.filter(anonymousSessionFilter)
 				.expect().log().ifValidationFails()
-				.statusCode(HttpStatus.SC_FORBIDDEN)
+				.statusCode(HttpStatus.SC_UNAUTHORIZED) //401 : Unauthorized means unauthenticated
 				.when()
 				.get("/anonymous/test/oneTimeAccess/1");
 	}
