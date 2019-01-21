@@ -39,6 +39,7 @@ import io.vertigo.commons.impl.script.ScriptManagerImpl;
 import io.vertigo.commons.impl.transaction.VTransactionAspect;
 import io.vertigo.commons.impl.transaction.VTransactionManagerImpl;
 import io.vertigo.commons.node.NodeManager;
+import io.vertigo.commons.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.commons.plugins.cache.redis.RedisCachePlugin;
 import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
@@ -121,9 +122,17 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 
 	}
 
+	@Feature("socketLoggerAnalyticsConnector")
+	public CommonsFeatures withSocketLoggerAnalyticsConnector(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(SocketLoggerAnalyticsConnectorPlugin.class, params);
+		return this;
+
+	}
+
 	/**
-	
-	
+
+
 	/**
 	 * Adds a NodeRegistryPlugin
 	 * @param nodeRegistryPluginClass the plugin to use
