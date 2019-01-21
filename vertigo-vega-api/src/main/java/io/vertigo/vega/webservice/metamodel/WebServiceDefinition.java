@@ -44,11 +44,7 @@ public final class WebServiceDefinition implements Definition {
 	 * HTTP Verb supported.
 	 */
 	public enum Verb {
-		GET,
-		POST,
-		PUT,
-		PATCH,
-		DELETE,
+	GET, POST, PUT, PATCH, DELETE,
 	}
 
 	private final String name;
@@ -73,6 +69,7 @@ public final class WebServiceDefinition implements Definition {
 	private final List<WebServiceParam> webServiceParams;
 	private final String doc;
 	private final boolean corsProtected;
+	private final boolean fileAttachment;
 
 	/**
 	 * Constructor.
@@ -95,7 +92,8 @@ public final class WebServiceDefinition implements Definition {
 			final Set<String> excludedFields,
 			final List<WebServiceParam> webServiceParams,
 			final String doc,
-			final boolean corsProtected) {
+			final boolean corsProtected,
+			final boolean fileAttachment) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(verb);
 		Assertion.checkArgNotEmpty(path);
@@ -136,6 +134,7 @@ public final class WebServiceDefinition implements Definition {
 
 		this.doc = doc;
 		this.corsProtected = corsProtected;
+		this.fileAttachment = fileAttachment;
 	}
 
 	/**
@@ -296,4 +295,10 @@ public final class WebServiceDefinition implements Definition {
 		return corsProtected;
 	}
 
+	/**
+	 * @return fileAttachment
+	 */
+	public boolean isFileAttachment() {
+		return fileAttachment;
+	}
 }

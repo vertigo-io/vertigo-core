@@ -1726,6 +1726,17 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
+	public void testDownloadNotAttachmentFile() {
+		loggedAndExpect(given().queryParam("id", 10))
+				.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
+				.header("Content-Disposition", Matchers.equalToIgnoringCase("filename=\"image10.png\";filename*=UTF-8''image10.png"))
+				.header("Content-Length", Matchers.equalTo("27039"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/downloadEmbeddedFile");
+	}
+
+	@Test
 	public void testDownloadNotModifiedFile() throws ParseException {
 		final DateFormat httpDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
 		//Sans préciser le if-Modified-Since, le serveur retourne le fichier

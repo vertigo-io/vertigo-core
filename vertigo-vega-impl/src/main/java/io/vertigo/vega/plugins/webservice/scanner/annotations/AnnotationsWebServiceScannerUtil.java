@@ -47,6 +47,7 @@ import io.vertigo.vega.webservice.stereotype.AutoSortAndPagination;
 import io.vertigo.vega.webservice.stereotype.DELETE;
 import io.vertigo.vega.webservice.stereotype.Doc;
 import io.vertigo.vega.webservice.stereotype.ExcludedFields;
+import io.vertigo.vega.webservice.stereotype.FileAttachment;
 import io.vertigo.vega.webservice.stereotype.GET;
 import io.vertigo.vega.webservice.stereotype.HeaderParam;
 import io.vertigo.vega.webservice.stereotype.IncludedFields;
@@ -132,6 +133,8 @@ final class AnnotationsWebServiceScannerUtil {
 				builder.withAutoSortAndPagination(true);
 			} else if (annotation instanceof Doc) {
 				builder.withDoc(((Doc) annotation).value());
+			} else if (annotation instanceof FileAttachment) {
+				builder.withFileAttachment(((FileAttachment) annotation).value());
 			}
 		}
 		if (builder.hasVerb()) {

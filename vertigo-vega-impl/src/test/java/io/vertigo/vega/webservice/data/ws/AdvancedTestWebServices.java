@@ -22,18 +22,14 @@ import java.io.File;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
@@ -300,35 +296,6 @@ public final class AdvancedTestWebServices implements WebServices {
 	@POST("/uploadFileFocus")
 	public Integer testUploadFile(final @QueryParam("upfile") VFile inputFile) {
 		return 1337;
-	}
-
-	@GET("/downloadFile")
-	public VFile testDownloadFile(final @QueryParam("id") Integer id) {
-		final URL imageUrl = resourcetManager.resolve("npi2loup.png");
-		final File imageFile = asFile(imageUrl);
-		final VFile imageVFile = fileManager.createFile("image" + id + ".png", "image/png", imageFile);
-		return imageVFile;
-	}
-
-	@GET("/downloadNotModifiedFile")
-	public VFile testDownloadNotModifiedFile(final @QueryParam("id") Integer id, final @HeaderParam("If-Modified-Since") Optional<Date> ifModifiedSince, final HttpServletResponse response) {
-		final VFile imageFile = testDownloadFile(id);
-		if (ifModifiedSince.isPresent() && imageFile.getLastModified().compareTo(Instant.ofEpochMilli(ifModifiedSince.get().getTime())) <= 0) {
-			response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-			return null;
-			//this service must declared VFile as return type because it should return VFile when file was modified
-		}
-		return imageFile;
-	}
-
-	private static File asFile(final URL url) {
-		File f;
-		try {
-			f = new File(url.toURI());
-		} catch (final URISyntaxException e) {
-			f = new File(url.getPath());
-		}
-		return f;
 	}
 
 	@GET("/headerParams")

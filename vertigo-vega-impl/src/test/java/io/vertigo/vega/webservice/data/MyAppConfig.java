@@ -73,6 +73,7 @@ public final class MyAppConfig {
 						.withEndPoint("http://localhost:" + WS_PORT)
 						.build())
 				.addModule(new CommonsFeatures()
+						.withCache()
 						.addPlugin(MemoryCachePlugin.class)
 						.withNodeInfosPlugin(HttpNodeInfosPlugin.class)
 						.build())

@@ -56,6 +56,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	private boolean myAutoSortAndPagination;
 	private String myDoc = "";
 	private boolean myCorsProtected = true; //true by default
+	private boolean myFileAttachment = true; //true by default
 	private final List<WebServiceParam> myWebServiceParams = new ArrayList<>();
 
 	/**
@@ -93,7 +94,8 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 				myExcludedFields,
 				myWebServiceParams,
 				myDoc,
-				myCorsProtected);
+				myCorsProtected,
+				myFileAttachment);
 	}
 
 	private static String normalizePath(final String servicePath) {
@@ -267,6 +269,15 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	 */
 	public WebServiceDefinitionBuilder withCorsProtected(final boolean corsProtected) {
 		myCorsProtected = corsProtected;
+		return this;
+	}
+
+	/**
+	 * @param fileAttachment fileAttachment
+	 * @return this builder
+	 */
+	public WebServiceDefinitionBuilder withFileAttachment(final boolean fileAttachment) {
+		myFileAttachment = fileAttachment;
 		return this;
 	}
 

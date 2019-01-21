@@ -56,7 +56,7 @@ public final class VFileJsonConverter implements JsonConverter, JsonSerializer {
 	/** {@inheritDoc} */
 	@Override
 	public String toJson(final Object result, final Response response, final WebServiceDefinition webServiceDefinition) {
-		VFileUtil.sendVFile(result, response);
+		VFileUtil.sendVFile(result, webServiceDefinition.isFileAttachment(), response);
 		return ""; // response already send but can't send null : javaspark understand it as : not consumed here
 	}
 
