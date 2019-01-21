@@ -48,6 +48,7 @@ import io.vertigo.persona.security.VSecurityManager;
  * @author pchretien
  */
 public final class AccountFeatures extends Features<AccountFeatures> {
+	private boolean withAccountManager = false;
 
 	/**
 	 * Constructor.
@@ -76,6 +77,7 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	public AccountFeatures withAuthentication() {
 		getModuleConfigBuilder()
 				.addComponent(AuthenticationManager.class, AuthenticationManagerImpl.class);
+		withAccountManager = true;
 		return this;
 	}
 
@@ -87,6 +89,7 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	public AccountFeatures withTextAuthentication(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(TextAuthenticationPlugin.class, params);
+		withAccountManager = true;
 		return this;
 	}
 
@@ -98,6 +101,7 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	public AccountFeatures withStoreAuthentication(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(StoreAuthenticationPlugin.class, params);
+		withAccountManager = true;
 		return this;
 	}
 
@@ -109,6 +113,7 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	public AccountFeatures withLdapAuthentication(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(LdapAuthenticationPlugin.class, params);
+		withAccountManager = true;
 		return this;
 	}
 
@@ -120,6 +125,7 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	public AccountFeatures withMockAuthentication(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(MockAuthenticationPlugin.class, params);
+		withAccountManager = true;
 		return this;
 	}
 
@@ -131,6 +137,7 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	public AccountFeatures withStoreAccount(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(StoreAccountStorePlugin.class, params);
+		withAccountManager = true;
 		return this;
 	}
 
@@ -170,6 +177,7 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	public AccountFeatures withStoreIdentity(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(StoreIdentityProviderPlugin.class, params);
+		withAccountManager = true;
 		return this;
 	}
 
@@ -184,6 +192,7 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	public AccountFeatures withTextIdentity(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(TextIdentityProviderPlugin.class, params);
+		withAccountManager = true;
 		return this;
 	}
 
@@ -195,15 +204,18 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	public AccountFeatures withAuthorization() {
 		getModuleConfigBuilder()
 				.addComponent(AuthorizationManager.class, AuthorizationManagerImpl.class);
+		withAccountManager = true;
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
-		getModuleConfigBuilder()
-				.addComponent(AccountManager.class, AccountManagerImpl.class)
-				.addDefinitionProvider(AccountDefinitionProvider.class);
+		if (withAccountManager) {
+			getModuleConfigBuilder()
+					.addComponent(AccountManager.class, AccountManagerImpl.class)
+					.addDefinitionProvider(AccountDefinitionProvider.class);
+		}
 	}
 
 }
