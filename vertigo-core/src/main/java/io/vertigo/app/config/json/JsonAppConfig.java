@@ -11,7 +11,7 @@ public final class JsonAppConfig {
 
 	public JsonBootConfig boot;
 	public JsonModulesConfig modules;
-	public List<String> initializers = new ArrayList<>();
+	public JsonInitializersConfig initializers;
 
 	public static final class JsonBootConfig {
 		public JsonParamsConfig params;
@@ -42,6 +42,11 @@ public final class JsonAppConfig {
 	}
 
 	public static class JsonParamsConfig extends LinkedHashMap<String, String> {
+		private static final long serialVersionUID = 1L;
+		// nothing more
+	}
+
+	public static class JsonInitializersConfig extends LinkedHashMap<String, JsonObject> {
 		private static final long serialVersionUID = 1L;
 		// nothing more
 	}

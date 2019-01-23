@@ -96,7 +96,10 @@ public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 				.forEach(entry -> handleJsonModuleConfig(entry.getKey(), entry.getValue()));
 		//--- initializers
 		jsonAppConfig.initializers
-				.forEach(initializer -> appConfigBuilder.addInitializer(ClassUtil.classForName(initializer, ComponentInitializer.class)));
+				.entrySet()
+				.stream()
+				.filter(entry -> isEnabledByFlag(getFlagsOfJsonObject(entry.getValue()))) // filter activated initializers only
+				.forEach(entry -> appConfigBuilder.addInitializer(ClassUtil.classForName(entry.getKey(), ComponentInitializer.class)));
 	}
 
 	private void handleBoot(final JsonAppConfig jsonAppConfig) {
