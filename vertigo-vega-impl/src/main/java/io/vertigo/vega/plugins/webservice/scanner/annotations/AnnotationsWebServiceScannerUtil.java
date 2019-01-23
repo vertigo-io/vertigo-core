@@ -135,6 +135,8 @@ final class AnnotationsWebServiceScannerUtil {
 				builder.withDoc(((Doc) annotation).value());
 			} else if (annotation instanceof FileAttachment) {
 				builder.withFileAttachment(((FileAttachment) annotation).value());
+			} else {
+				//other annotations was accepted obviously
 			}
 		}
 		if (builder.hasVerb()) {

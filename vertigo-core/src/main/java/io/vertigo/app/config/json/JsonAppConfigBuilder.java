@@ -47,6 +47,8 @@ import io.vertigo.util.Selector.MethodConditions;
 
 public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 
+	private static final Object[] EMPTY_ARRAY = new Object[0];
+
 	private final AppConfigBuilder appConfigBuilder = AppConfig.builder();
 
 	private final Gson gson = new GsonBuilder().registerTypeAdapterFactory(new MyTypeAdapterFactory()).create();
@@ -202,7 +204,7 @@ public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 					.toArray(Param[]::new);
 			return new Object[] { params };
 		}
-		return null;
+		return EMPTY_ARRAY;
 
 		//		return Stream.of(method.getParameters())
 		//				.map(parameter -> {
