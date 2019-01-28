@@ -74,6 +74,7 @@ import io.vertigo.lang.WrappedException;
  */
 public abstract class AbstractESSearchServicesPlugin implements SearchServicesPlugin, Activeable {
 	private static final int DEFAULT_SCALING_FACTOR = 1000;
+	private static final String DEFAULT_DATE_FORMAT = "dd/MM/yyyy||strict_date_optional_time||epoch_second";
 	private static final int OPTIMIZE_MAX_NUM_SEGMENT = 32;
 	/** field suffix for keyword fields added by this plugin. */
 	public static final String SUFFIX_SORT_FIELD = ".keyword";
@@ -402,6 +403,9 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		}
 		if ("scaled_float".equals(indexType.getIndexDataType())) {
 			typeMapping.field("scaling_factor", DEFAULT_SCALING_FACTOR);
+		}
+		if ("date".equals(indexType.getIndexDataType())) {
+			typeMapping.field("format", DEFAULT_DATE_FORMAT);
 		}
 	}
 
