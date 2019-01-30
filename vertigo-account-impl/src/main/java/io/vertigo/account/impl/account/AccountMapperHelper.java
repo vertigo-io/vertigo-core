@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
@@ -35,6 +36,8 @@ import io.vertigo.lang.Assertion;
  * @param <D> Destination type
  */
 public final class AccountMapperHelper<S, D> {
+	private static final Pattern ATTRIBUTES_PATTERN = Pattern.compile("\\s*,\\s*");
+	private static final Pattern ATTRIBUTE_VALUE_PATTERN = Pattern.compile("\\s*:\\s*");
 
 	private final Optional<DtDefinition> sourceDtDefinition;
 	private final Optional<Class<? extends Enum>> destEnum;
@@ -87,8 +90,8 @@ public final class AccountMapperHelper<S, D> {
 	}
 
 	public AccountMapperHelper<S, D> parseAttributeMapping() {
-		for (final String mapping : sourceToDestMappingStr.split("\\s*,\\s*")) {
-			final String[] splitedMapping = mapping.split("\\s*:\\s*");
+		for (final String mapping : ATTRIBUTES_PATTERN.split(sourceToDestMappingStr)) {
+			final String[] splitedMapping = ATTRIBUTE_VALUE_PATTERN.split(mapping);
 			Assertion.checkArgument(splitedMapping.length == 2,
 					"Mapping should respect the pattern sourceFields:destFields :(like sourceAttr1:destAttr1, sourceAttr2:destAttr2, ... (check : {0})", sourceToDestMappingStr);
 			Assertion.when(sourceDtDefinition.isPresent())
