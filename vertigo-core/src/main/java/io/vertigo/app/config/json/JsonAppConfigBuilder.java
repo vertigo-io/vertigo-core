@@ -53,12 +53,14 @@ public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 
 	private final Gson gson = new GsonBuilder().registerTypeAdapterFactory(new MyTypeAdapterFactory()).create();
 	private final List<String> activeFlags;
+	private final JsonConfigParams params;
 
 	public JsonAppConfigBuilder(final Properties params) {
 		Assertion.checkNotNull(params);
 		//---
 		activeFlags = Arrays.asList(params.getProperty("boot.activeFlags").split(";"));
 		params.remove("boot.activeFlags");
+		this.params = new JsonConfigParams(params);
 	}
 
 	/**
@@ -128,7 +130,7 @@ public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 											ClassUtil.classForName(pluginClassName, Plugin.class),
 											plugin.get(pluginClassName).entrySet().stream()
 													.filter(entry -> !"__flags__".equals(entry.getKey()))
-													.map(entry -> Param.of(entry.getKey(), entry.getValue().getAsString()))
+													.map(entry -> Param.of(entry.getKey(), evalParamValue(entry.getValue().getAsString())))
 													.toArray(Param[]::new));
 						}
 					});
@@ -341,6 +343,14 @@ public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 			return null;
 		}
 
+	}
+
+	private String evalParamValue(final String paramValue) {
+		if (paramValue.startsWith("${boot.") && paramValue.endsWith("}")) {
+			final String property = paramValue.substring("${".length(), paramValue.length() - "}".length());
+			return params.getParam(property);
+		}
+		return paramValue;
 	}
 
 }
