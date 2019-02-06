@@ -18,10 +18,10 @@
  */
 package io.vertigo.vega;
 
+import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.PluginConfig;
 import io.vertigo.app.config.PluginConfigBuilder;
-import io.vertigo.app.config.json.Feature;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ListBuilder;
@@ -66,7 +66,7 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 	private String myOriginCORSFilter;
 
 	public VegaFeatures() {
-		super("vega");
+		super("vertigo-vega");
 	}
 
 	@Feature("token")

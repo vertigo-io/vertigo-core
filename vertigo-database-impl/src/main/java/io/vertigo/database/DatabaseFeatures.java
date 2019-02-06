@@ -18,8 +18,8 @@
  */
 package io.vertigo.database;
 
+import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
-import io.vertigo.app.config.json.Feature;
 import io.vertigo.core.param.Param;
 import io.vertigo.database.impl.sql.SqlDataBaseManagerImpl;
 import io.vertigo.database.impl.timeseries.TimeSeriesDataBaseManagerImpl;
@@ -41,7 +41,7 @@ public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 	 * Constructor.
 	 */
 	public DatabaseFeatures() {
-		super("database");
+		super("vertigo-database");
 	}
 
 	/**
@@ -111,7 +111,7 @@ public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 	}
 
 	/**
-
+	
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {

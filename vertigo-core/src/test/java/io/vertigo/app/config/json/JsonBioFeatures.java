@@ -20,6 +20,7 @@ package io.vertigo.app.config.json;
 
 import javax.inject.Named;
 
+import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.spaces.component.data.BioManager;

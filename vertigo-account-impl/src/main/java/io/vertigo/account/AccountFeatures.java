@@ -38,8 +38,8 @@ import io.vertigo.account.plugins.authentication.text.TextAuthenticationPlugin;
 import io.vertigo.account.plugins.identityprovider.ldap.LdapIdentityProviderPlugin;
 import io.vertigo.account.plugins.identityprovider.store.StoreIdentityProviderPlugin;
 import io.vertigo.account.plugins.identityprovider.text.TextIdentityProviderPlugin;
+import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
-import io.vertigo.app.config.json.Feature;
 import io.vertigo.core.param.Param;
 import io.vertigo.persona.security.VSecurityManager;
 

@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo;
 
+import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
-import io.vertigo.app.config.json.Feature;
 import io.vertigo.core.param.Param;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.file.FileManager;
@@ -54,7 +54,7 @@ public final class DynamoFeatures extends Features<DynamoFeatures> {
 	 * Constructor.
 	 */
 	public DynamoFeatures() {
-		super("dynamo");
+		super("vertigo-dynamo");
 	}
 
 	/**

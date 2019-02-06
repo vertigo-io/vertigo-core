@@ -18,8 +18,8 @@
  */
 package io.vertigo.commons;
 
+import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
-import io.vertigo.app.config.json.Feature;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.codec.CodecManager;
@@ -57,7 +57,7 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 	 * Constructor.
 	 */
 	public CommonsFeatures() {
-		super("commons");
+		super("vertigo-commons");
 	}
 
 	/**
@@ -131,8 +131,8 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 	}
 
 	/**
-
-
+	
+	
 	/**
 	 * Adds a NodeRegistryPlugin
 	 * @param nodeRegistryPluginClass the plugin to use

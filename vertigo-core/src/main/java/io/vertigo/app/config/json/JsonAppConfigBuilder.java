@@ -31,6 +31,7 @@ import com.google.gson.stream.MalformedJsonException;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.BootConfigBuilder;
+import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.json.JsonAppConfig.JsonModuleConfig;
