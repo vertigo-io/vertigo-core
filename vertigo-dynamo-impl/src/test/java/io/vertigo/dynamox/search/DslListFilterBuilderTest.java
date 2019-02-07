@@ -71,15 +71,15 @@ public final class DslListFilterBuilderTest {
 	public void testStringAdvancedQuery() {
 		final String[][] testQueries = new String[][] {
 				//QueryPattern, UserQuery, EspectedResult
-				{ "ALL:#query#", "Test or test2", "ALL:(Test OR test2)" }, //0
-				{ "ALL:#query#", "Test and test2", "ALL:(Test AND test2)" }, //1
+				{ "ALL:#query#", "Test or test2", "ALL:(Test or test2)" }, //0
+				{ "ALL:#query#", "Test and test2", "ALL:(Test and test2)" }, //1
 				{ "ALL:#query#", "Test OR test2", "ALL:(Test OR test2)" }, //2
 				{ "ALL:#query#", "Test AND test2", "ALL:(Test AND test2)" }, //3
-				{ "ALL:#query#", "Test AND (test2 OR test3)", "ALL:(Test AND (test2 OR test3))" }, //4
+				{ "ALL:#query#", "Test AND ( test2 OR test3 )", "ALL:(Test AND ( test2 OR test3 ))" }, //4
 				{ "ALL:#query*#", "Test AND test2", "ALL:(Test* AND test2*)" }, //5
 				{ "ALL:#query*#", "Test AND (test2 OR test3)", "ALL:(Test* AND (test2* OR test3*))" }, //6
 				{ "ALL:#+query*#", "Test AND (test2 OR test3)", "ALL:(+Test* AND (+test2* OR +test3*))" }, //7
-				{ "+ALL:#query#", "Test or test2", "+ALL:(Test OR test2)" }, //8
+				{ "+ALL:#query#", "Test or test2", "+ALL:(Test or test2)" }, //8
 				{ "ALL:#+query~#", "Test AND (test2 OR test3)", "ALL:(+Test~ AND (+test2~ OR +test3~))" }, //9
 				{ "ALL:#+query~1#", "Test AND (test2 OR test3)", "ALL:(+Test~1 AND (+test2~1 OR +test3~1))" }, //10
 				{ "ALL:#+query#", "Test AND (test2^2 OR test3)", "ALL:(+Test AND (+test2^2 OR +test3))" }, //11
@@ -103,10 +103,10 @@ public final class DslListFilterBuilderTest {
 		final String[][] testQueries = new String[][] {
 
 				//QueryPattern, UserQuery, EspectedResult
-				{ "ALL:#query#", "Test or test2", "ALL:(Test OR test2)" }, //0
-				{ "ALL:#query#", "Test and test2", "ALL:(Test AND test2)" }, //1
-				{ "ALL:#query#", "Test Or test2", "ALL:(Test OR test2)" }, //2
-				{ "ALL:#query#", "Test And test2", "ALL:(Test AND test2)" }, //3
+				{ "ALL:#query#", "Test or test2", "ALL:(Test or test2)" }, //0
+				{ "ALL:#query#", "Test and test2", "ALL:(Test and test2)" }, //1
+				{ "ALL:#query#", "Test Or test2", "ALL:(Test Or test2)" }, //2
+				{ "ALL:#query#", "Test And test2", "ALL:(Test And test2)" }, //3
 				{ "ALL:#query#", "Test OR test2", "ALL:(Test OR test2)" }, //4
 				{ "ALL:#query#", "Test AND test2", "ALL:(Test AND test2)" }, //5
 				{ "ALL:#query#?(escapeReserved)", "Test or test2", "ALL:(Test \\or test2)" }, //6
@@ -185,6 +185,50 @@ public final class DslListFilterBuilderTest {
 				{ "F1:#query# AND F2:#query#", "Test", "F1:Test AND F2:Test" }, //3
 				{ "F1:#query# AND (F2:#query# OR F3:#query#)", "Test", "F1:Test AND (F2:Test OR F3:Test)" }, //4
 				{ "(F1:#query# OR F2:#query#) AND (F3:#query# OR F4:#query#)", "Test", "(F1:Test OR F2:Test) AND (F3:Test OR F4:Test)" }, //5
+		};
+		testStringFixedQuery(testQueries);
+	}
+
+	@Test
+	public void testStringBadBooleanQuery() {
+		final String[][] testQueries = new String[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "ALL:#query#", "Test or ", "ALL:(Test \\or )" }, //0
+				{ "ALL:#query#", "Test and ", "ALL:(Test \\and )" }, //1
+				{ "ALL:#query#", "Test OR ", "ALL:(Test \\OR )" }, //2
+				{ "ALL:#query#", "Test AND ", "ALL:(Test \\AND )" }, //3
+				{ "ALL:#query#", "Test AND (test2 OR )", "ALL:(Test AND (test2 \\OR ))" }, //4
+				{ "ALL:#query#", "Test AND (test2 OR test3", "ALL:(Test AND \\(test2 OR test3)" }, //5
+				{ "ALL:#query*#", "Test AND ", "ALL:(Test* \\AND* )" }, //6
+				{ "ALL:#query*#", "Test AND (test2 OR )", "ALL:(Test* AND (test2* \\OR* ))" }, //7
+				{ "ALL:#+query*#", "Test AND (test2 OR )", "ALL:(+Test* AND (+test2* +\\OR* ))" }, //8
+				{ "+ALL:#query#", "Test or ", "+ALL:(Test \\or )" }, //9
+				{ "ALL:#+query~#", "Test AND (test2 OR ", "ALL:(+Test~ AND +\\(test2~ +\\OR~ )" }, //10
+				{ "ALL:#+query~1#", "Test AND (test2 OR ", "ALL:(+Test~1 AND +\\(test2~1 +\\OR~1 )" }, //11
+				{ "ALL:#+query#", "Test AND (test2^2 OR )", "ALL:(+Test AND (+test2^2 +\\OR ))" }, //12
+				{ "ALL:#+query#", "Test AND (test2^2 OR ", "ALL:(+Test AND +\\(test2^2 +\\OR )" }, //13
+				{ "ALL:#+query^2#", "Test AND (test2 OR )", "ALL:(+Test^2 AND (+test2^2 +\\OR^2 ))" }, //14
+				{ "ALL:#+query#^2", "Test AND (test2 OR )", "ALL:(+Test AND (+test2 +\\OR ))^2" }, //15
+				{ "ALL:#+query^2#", "Test AND (test2 OR ", "ALL:(+Test^2 AND +\\(test2^2 +\\OR^2 )" }, //16
+				{ "ALL:#+query#^2", "Test AND (test2 OR ", "ALL:(+Test AND +\\(test2 +\\OR )^2" }, //17
+				{ "ALL:#+query*#", "Test, test2, test3", "ALL:(+Test*, +test2*, +test3*)" }, //18
+				{ "ALL:#query# +YEAR:[2000 to 2005]", "Test AND (test2 OR ", "ALL:(Test AND \\(test2 \\OR ) +YEAR:[2000 TO 2005]" }, //19
+
+				{ "ALL:#query#", " or test2", "ALL:(\\or test2)" }, //20
+				{ "ALL:#query#", " and test2", "ALL:(\\and test2)" }, //21
+				{ "ALL:#query#", " OR test2", "ALL:(\\OR test2)" }, //22
+				{ "ALL:#query#", " AND test2", "ALL:(\\AND test2)" }, //23
+				{ "ALL:#query#", " AND ( OR test3)", "ALL:(\\AND ( \\OR test3))" }, //24
+				{ "ALL:#query*#", " AND test2", "ALL:(\\AND* test2*)" }, //25
+				{ "ALL:#query*#", " AND ( OR test3)", "ALL:(\\AND* ( \\OR* test3*))" }, //26
+				{ "ALL:#+query*#", " AND OR test3)", "ALL:(+\\AND* OR +test3\\)*)" }, //27
+				{ "+ALL:#query#", " or test2", "+ALL:(\\or test2)" }, //28
+				{ "ALL:#+query~#", " AND ( OR test3)", "ALL:(+\\AND~ ( +\\OR~ +test3~))" }, //29
+				{ "ALL:#+query~1#", " AND OR test3)", "ALL:(+\\AND~1 OR +test3\\)~1)" }, //30
+				{ "ALL:#+query#", " AND ( OR test3)", "ALL:(+\\AND ( +\\OR +test3))" }, //31
+				{ "ALL:#+query^2#", " AND ( OR test3)", "ALL:(+\\AND^2 ( +\\OR^2 +test3^2))" }, //32
+				{ "ALL:#+query#^2", " AND OR test3)", "ALL:(+\\AND OR +test3\\))^2" }, //33
+				{ "ALL:#query# +YEAR:[2000 to 2005]", "Test AND test2 OR test3)", "ALL:(Test AND test2 OR test3\\)) +YEAR:[2000 TO 2005]" }, //34
 		};
 		testStringFixedQuery(testQueries);
 	}
@@ -306,8 +350,8 @@ public final class DslListFilterBuilderTest {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#query# +security:fixedValue", "Test OR 1=1", "ALL:(Test OR 1=1) +security:fixedValue" },
 				{ "ALL:#query# +security:\"fixedValue\"", "Test OR 1=1", "ALL:(Test OR 1=1) +security:\"fixedValue\"" },
-				{ "ALL:#query# +security:fixedValue", "Test) OR (1=1", "ALL:(Test) OR (1=1) +security:fixedValue" }, //don't affect security
-				{ "ALL:#query# +security:fixedValue", "*) OR ", "ALL:(*) OR ) +security:fixedValue", "ALL:(*) OR) +security:fixedValue" },
+				{ "ALL:#query# +security:fixedValue", "Test) OR (1=1", "ALL:(Test\\) OR \\(1=1) +security:fixedValue" }, //don't affect security
+				{ "ALL:#query# +security:fixedValue", "*) OR ", "ALL:(*\\) \\OR ) +security:fixedValue" },
 		};
 		testStringFixedQuery(testQueries);
 	}

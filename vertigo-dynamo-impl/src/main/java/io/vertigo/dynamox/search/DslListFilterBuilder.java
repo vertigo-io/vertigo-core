@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
@@ -83,12 +84,23 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 	private static final String USER_QUERY_KEYWORD = "query";
 
-	private static final Set<String> RESERVED_QUERY_KEYWORDS = new HashSet<>(Arrays.asList(new String[] { "AND", "OR", "and", "or", "And", "Or", "*" }));
-	private static final String QUERY_RESERVERD_PATTERN = "(?i)([\\+\\-\\=\\&\\&\\|\\|\\>\\<\\!\\(\\)\\{\\}\\[\\]\\^\"\\~\\*\\?\\:\\\\\\/])|((?<=\\s|^)(or|and)(?=\\s|$))";
-	private static final String NEED_BLOCK_PATTERN = "(?i)([\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<\\s]|or|and)";
-
+	private static final Set<String> RESERVED_QUERY_KEYWORDS = new HashSet<>(Arrays.asList(new String[] { "AND", "OR", "*" }));
+	private static final String QUERY_RESERVERD_PATTERN_STR = "(?i)([\\+\\-\\=\\&\\|\\>\\<\\!\\(\\)\\{\\}\\[\\]\\^\"\\~\\*\\?\\:\\\\\\/])|((?<=\\s|^)(OR|AND)(?=\\s|$))";
+	private static final Pattern QUERY_RESERVERD_PATTERN = Pattern.compile(QUERY_RESERVERD_PATTERN_STR);
+	private static final String QUERY_INCOMPLETE_GRAMMAR_PATTERN_STR = "(?i)"
+			+ buildIncompletePatternStr('(', ')', 250) //cherche les ( mal fermées et les ) mal ouvertes (1 seul niveau d'imbrication maximum)
+			+ "|" + buildIncompletePatternStr('{', '}', 250)
+			+ "|" + buildIncompletePatternStr('[', ']', 250)
+			+ "|(?<![\\w\\)\\}\\]]\\s{0,250})(?<=[^\\w\\\\\\)\\}\\]]|^)(OR|AND)(?=\\W|$)|(?<=[^\\\\\\w]|^)(OR|AND)(?=[^\\w\\(\\{\\[]|$)(?!\\s*[\\w\\(\\{\\[])";
+	private static final Pattern QUERY_INCOMPLETE_GRAMMAR_PATTERN = Pattern.compile(QUERY_INCOMPLETE_GRAMMAR_PATTERN_STR);
+	private static final String NEED_BLOCK_PATTERN_STR = "(?i)([\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<\\s]|OR|AND)";
+	private static final Pattern NEED_BLOCK_PATTERN = Pattern.compile(NEED_BLOCK_PATTERN_STR);
 	private List<DslMultiExpression> myBuildQuery;
 	private C myCriteria;
+
+	private static String buildIncompletePatternStr(final char openChar, final char closeChar, final int maxLookBehind) {
+		return "(\\" + openChar + ")(?![^\\" + openChar + "]*\\" + closeChar + "|[^\\" + openChar + "]*\\" + openChar + "[^\\" + openChar + "]*\\" + closeChar + "[^\\" + openChar + "]*\\" + closeChar + ")|(?<!\\" + openChar + "[^\\" + closeChar + "]{0," + maxLookBehind + "}|\\" + openChar + "[^\\" + closeChar + "]{0," + maxLookBehind + "}\\" + openChar + "[^\\" + closeChar + "]{0," + maxLookBehind + "}\\" + closeChar + "[^\\" + closeChar + "]{0," + maxLookBehind + "})(\\" + closeChar + ")";
+	}
 
 	/**
 	 * Fix query pattern.
@@ -290,10 +302,12 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			if (((String) value).trim().isEmpty()) { //so not null too
 				return (O) "*";
 			} else if (escapeMode == EscapeMode.escape) {
-				return (O) ((String) value).replaceAll(QUERY_RESERVERD_PATTERN, "\\\\$0");
+				return (O) QUERY_RESERVERD_PATTERN.matcher((String) value).replaceAll("\\\\$0");
 			} else if (escapeMode == EscapeMode.remove) {
-				return (O) ((String) value).replaceAll(QUERY_RESERVERD_PATTERN, ""); //par on retire le deuxième espace
+				return (O) QUERY_RESERVERD_PATTERN.matcher((String) value).replaceAll(""); //par on retire le deuxième espace
 			}
+			//replace standard invalid syntax to escape this one
+			return (O) QUERY_INCOMPLETE_GRAMMAR_PATTERN.matcher((String) value).replaceAll("\\\\$0");
 		}
 		return value;
 	}
