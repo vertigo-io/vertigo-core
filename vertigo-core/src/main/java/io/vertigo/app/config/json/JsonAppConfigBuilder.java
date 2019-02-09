@@ -59,8 +59,12 @@ public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 	public JsonAppConfigBuilder(final Properties params) {
 		Assertion.checkNotNull(params);
 		//---
-		activeFlags = Arrays.asList(params.getProperty("boot.activeFlags").split(";"));
-		params.remove("boot.activeFlags");
+		if (params.containsKey("boot.activeFlags")) {
+			activeFlags = Arrays.asList(params.getProperty("boot.activeFlags").split(";"));
+			params.remove("boot.activeFlags");
+		} else {
+			activeFlags = Collections.emptyList();
+		}
 		this.params = new JsonConfigParams(params);
 	}
 
