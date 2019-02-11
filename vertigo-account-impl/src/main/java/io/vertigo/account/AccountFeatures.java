@@ -149,6 +149,7 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	public AccountFeatures withTextAccount(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(TextAccountStorePlugin.class, params);
+		withAccountManager = true;
 		return this;
 	}
 

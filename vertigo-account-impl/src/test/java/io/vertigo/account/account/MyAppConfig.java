@@ -21,10 +21,6 @@ package io.vertigo.account.account;
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.account.model.DtDefinitions;
 import io.vertigo.account.data.TestUserSession;
-import io.vertigo.account.plugins.account.cache.memory.MemoryAccountCachePlugin;
-import io.vertigo.account.plugins.account.cache.redis.RedisAccountCachePlugin;
-import io.vertigo.account.plugins.account.store.datastore.StoreAccountStorePlugin;
-import io.vertigo.account.plugins.account.store.text.TextAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
@@ -66,14 +62,14 @@ public final class MyAppConfig {
 					.withStore()
 					.addPlugin(SqlDataStorePlugin.class);
 
-			accountFeatures.addPlugin(StoreAccountStorePlugin.class,
+			accountFeatures.withStoreAccount(
 					Param.of("userIdentityEntity", "DT_USER"),
 					Param.of("groupIdentityEntity", "DT_USER_GROUP"),
 					Param.of("userAuthField", "EMAIL"),
 					Param.of("userToAccountMapping", "id:USR_ID, displayName:FULL_NAME, email:EMAIL, authToken:EMAIL"),
 					Param.of("groupToGroupAccountMapping", "id:GRP_ID, displayName:NAME"));
 		} else {
-			accountFeatures.addPlugin(TextAccountStorePlugin.class,
+			accountFeatures.withTextAccount(
 					Param.of("accountFilePath", "io/vertigo/account/data/identities.txt"),
 					Param.of("accountFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<email>(?<authToken>[^;@]+)@[^;]+);(?<photoUrl>.*)$"),
 					Param.of("groupFilePath", "io/vertigo/account/data/groups.txt"),
@@ -82,10 +78,10 @@ public final class MyAppConfig {
 
 		if (redis) {
 			commonsFeatures.withRedisConnector(Param.of("host", REDIS_HOST), Param.of("port", Integer.toString(REDIS_PORT)), Param.of("database", Integer.toString(REDIS_DATABASE)));
-			accountFeatures.addPlugin(RedisAccountCachePlugin.class);
+			accountFeatures.withRedisAccountCache();
 		} else {
 			//else we use memory
-			accountFeatures.addPlugin(MemoryAccountCachePlugin.class);
+			accountFeatures.withMemoryAccountCache();
 
 		}
 		return AppConfig.builder()
