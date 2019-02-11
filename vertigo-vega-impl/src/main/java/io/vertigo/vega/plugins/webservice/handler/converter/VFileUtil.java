@@ -146,6 +146,7 @@ final class VFileUtil {
 				encodeFileNameToContentDisposition(vFile.getFileName(), isAttachment));
 		response.raw().addDateHeader("Last-Modified", vFile.getLastModified().toEpochMilli());
 		response.type(vFile.getMimeType());
+		response.header("Cache-Control", "private");
 
 		try (final InputStream input = vFile.createInputStream()) {
 			try (final OutputStream output = response.raw().getOutputStream()) {

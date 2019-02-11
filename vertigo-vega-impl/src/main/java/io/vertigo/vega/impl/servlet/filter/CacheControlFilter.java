@@ -22,7 +22,9 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -41,6 +43,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public final class CacheControlFilter extends AbstractFilter {
 
+	private static final String FORCE_OVERRIDE = "force-override";
+	private boolean forceOverride = false;
 	private Map<String, String> headers;
 
 	/** {@inheritDoc} */
@@ -53,7 +57,9 @@ public final class CacheControlFilter extends AbstractFilter {
 			String value;
 			for (final Enumeration en = filterConfig.getInitParameterNames(); en.hasMoreElements();) {
 				name = (String) en.nextElement();
-				if (!EXCLUDE_PATTERN_PARAM_NAME.equals(name)) {
+				if (FORCE_OVERRIDE.equals(name)) {
+					forceOverride = Boolean.parseBoolean(filterConfig.getInitParameter(name));
+				} else if (!EXCLUDE_PATTERN_PARAM_NAME.equals(name)) {
 					value = filterConfig.getInitParameter(name);
 					tmp.put(name, value);
 				}
@@ -81,16 +87,18 @@ public final class CacheControlFilter extends AbstractFilter {
 	 */
 	@Override
 	public void doMyFilter(final ServletRequest req, final ServletResponse res, final FilterChain chain) throws IOException, ServletException {
-		if (!(req instanceof HttpServletRequest) || !(res instanceof HttpServletResponse) || headers.isEmpty() || "POST".equals(((HttpServletRequest) req).getMethod())) {
+		if (!(req instanceof HttpServletRequest) || !(res instanceof HttpServletResponse) || headers.isEmpty()
+				|| "POST".equals(((HttpServletRequest) req).getMethod())) {
 			chain.doFilter(req, res);
 			return;
 		}
 
 		final HttpServletRequest httpRequest = (HttpServletRequest) req;
 		final HttpServletResponse httpResponse = (HttpServletResponse) res;
-
-		headers.forEach((k, v) -> httpResponse.setHeader(k, v));
-
+		final Set<String> alreadySetHeaders = new HashSet<>(Collections.list(httpRequest.getHeaderNames()));
+		if (forceOverride || !alreadySetHeaders.contains("Cache-Control")) {
+			headers.forEach((k, v) -> httpResponse.setHeader(k, v));
+		}
 		chain.doFilter(httpRequest, httpResponse);
 	}
 }
