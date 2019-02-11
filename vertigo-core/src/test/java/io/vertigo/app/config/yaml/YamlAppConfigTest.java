@@ -21,21 +21,12 @@ package io.vertigo.app.config.yaml;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.yaml.YamlAppConfig.YamlBootConfig;
-import io.vertigo.app.config.yaml.YamlAppConfig.YamlFeatureConfig;
-import io.vertigo.app.config.yaml.YamlAppConfig.YamlModuleConfig;
-import io.vertigo.app.config.yaml.YamlAppConfig.YamlParamsConfig;
-import io.vertigo.app.config.yaml.YamlAppConfig.YamlPluginConfig;
 import io.vertigo.core.spaces.component.data.BioManager;
 
 public final class YamlAppConfigTest {
