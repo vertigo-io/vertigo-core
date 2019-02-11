@@ -40,6 +40,7 @@ public final class SqlTestConfigurator {
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
 				.addModule(new CommonsFeatures()
+						.withCache()
 						.addPlugin(MemoryCachePlugin.class)
 						.build())
 				.addModule(new DatabaseFeatures()
