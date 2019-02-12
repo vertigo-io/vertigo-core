@@ -157,6 +157,7 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	public AccountFeatures withLoaderAccount(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(LoaderAccountStorePlugin.class, params);
+		withAccountManager = true;
 		return this;
 	}
 
