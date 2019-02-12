@@ -102,11 +102,13 @@ public final class JsonAppConfigBuilder implements Builder<AppConfig> {
 		jsonAppConfig.modules.entrySet().stream()
 				.forEach(entry -> handleJsonModuleConfig(entry.getKey(), entry.getValue()));
 		//--- initializers
-		jsonAppConfig.initializers
-				.entrySet()
-				.stream()
-				.filter(entry -> isEnabledByFlag(getFlagsOfJsonObject(entry.getValue()))) // filter activated initializers only
-				.forEach(entry -> appConfigBuilder.addInitializer(ClassUtil.classForName(entry.getKey(), ComponentInitializer.class)));
+		if (jsonAppConfig.initializers != null) {
+			jsonAppConfig.initializers
+					.entrySet()
+					.stream()
+					.filter(entry -> isEnabledByFlag(getFlagsOfJsonObject(entry.getValue()))) // filter activated initializers only
+					.forEach(entry -> appConfigBuilder.addInitializer(ClassUtil.classForName(entry.getKey(), ComponentInitializer.class)));
+		}
 	}
 
 	private void handleBoot(final JsonAppConfig jsonAppConfig) {

@@ -18,8 +18,6 @@
  */
 package io.vertigo.app.config.json;
 
-import javax.inject.Named;
-
 import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
@@ -47,9 +45,9 @@ public class JsonBioFeatures extends Features {
 	}
 
 	@Feature("math")
-	public JsonBioFeatures withMath(final @Named("start") String start) {
+	public JsonBioFeatures withMath(final Param... params) {
 		getModuleConfigBuilder()
-				.addComponent(MathManager.class, MathManagerImpl.class, Param.of("start", start));
+				.addComponent(MathManager.class, MathManagerImpl.class, params);
 		return this;
 	}
 
