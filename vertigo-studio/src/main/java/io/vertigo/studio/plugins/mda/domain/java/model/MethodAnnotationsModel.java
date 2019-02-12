@@ -47,14 +47,9 @@ public final class MethodAnnotationsModel implements TemplateMethodModelEx {
 
 	/**
 	 * Constructeur.
-	 * @param generateJpaAnnotations Indique s'il on génère les annotations Jpa
 	 */
-	public MethodAnnotationsModel(final boolean generateJpaAnnotations) {
-		if (!generateJpaAnnotations) {
-			annotationWriter = new AnnotationWriter();
-		} else {
-			annotationWriter = new JpaAnnotationWriter();
-		}
+	public MethodAnnotationsModel() {
+		annotationWriter = new AnnotationWriter();
 	}
 
 	/** {@inheritDoc}*/

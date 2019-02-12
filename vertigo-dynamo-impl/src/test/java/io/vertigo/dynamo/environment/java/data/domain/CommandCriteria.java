@@ -59,7 +59,6 @@ public final class CommandCriteria implements DtObject {
 	 * Récupère la valeur de la propriété 'Command type'.
 	 * @return Long ctyId
 	 */
-	@javax.persistence.Column(name = "CTY_ID")
 	@Field(domain = "DO_IDENTIFIANT", type = "FOREIGN_KEY", label = "Command type")
 	public Long getCtyId() {
 		return ctyId;
@@ -79,7 +78,6 @@ public final class CommandCriteria implements DtObject {
 	 * Récupère la valeur de la propriété 'City'.
 	 * @return Long citId
 	 */
-	@javax.persistence.Column(name = "CIT_ID")
 	@Field(domain = "DO_IDENTIFIANT", type = "FOREIGN_KEY", label = "City")
 	public Long getCitId() {
 		return citId;

@@ -54,7 +54,6 @@ import io.vertigo.util.MapBuilder;
 public final class DomainGeneratorPlugin implements GeneratorPlugin {
 	private final String targetSubDir;
 	private final boolean shouldGenerateDtResources;
-	private final boolean shouldGenerateJpaAnnotations;
 	private final boolean shouldGenerateDtDefinitions;
 	private final boolean shouldGenerateDtObject;
 	private final String dictionaryClassName;
@@ -65,7 +64,6 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 	 * Constructeur.
 	 * @param targetSubDir Repertoire de generation des fichiers de ce plugin
 	 * @param generateDtResources Si on génère les fichiers i18n pour MessageText des labels des champs
-	 * @param generateJpaAnnotations Si on ajoute les annotations JPA
 	 * @param generateDtDefinitions Si on génère le fichier fournissant la liste des classes de Dt
 	 * @param generateDtObject Si on génère les classes des Dt
 	 */
@@ -73,7 +71,6 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 	public DomainGeneratorPlugin(
 			@Named("targetSubDir") final String targetSubDir,
 			@Named("generateDtResources") final boolean generateDtResources,
-			@Named("generateJpaAnnotations") final boolean generateJpaAnnotations,
 			@Named("generateDtDefinitions") final boolean generateDtDefinitions,
 			@Named("dictionaryClassName") final Optional<String> dictionaryClassNameOption,
 			@Named("generateDtObject") final boolean generateDtObject,
@@ -81,7 +78,6 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 		//-----
 		this.targetSubDir = targetSubDir;
 		shouldGenerateDtResources = generateDtResources;
-		shouldGenerateJpaAnnotations = generateJpaAnnotations;
 		shouldGenerateDtDefinitions = generateDtDefinitions;
 		dictionaryClassName = dictionaryClassNameOption.orElse("DtDefinitions");
 		shouldGenerateDtObject = generateDtObject;
@@ -154,7 +150,7 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 
 		final Map<String, Object> model = new MapBuilder<String, Object>()
 				.put("dtDefinition", dtDefinitionModel)
-				.put("annotations", new MethodAnnotationsModel(shouldGenerateJpaAnnotations))
+				.put("annotations", new MethodAnnotationsModel())
 				.build();
 
 		FileGenerator.builder(fileGeneratorConfig)

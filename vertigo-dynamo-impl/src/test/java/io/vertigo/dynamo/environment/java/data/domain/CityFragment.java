@@ -67,7 +67,6 @@ public final class CityFragment implements Fragment<City> {
 	 * Récupère la valeur de la propriété 'Label'.
 	 * @return String label <b>Obligatoire</b>
 	 */
-	@javax.persistence.Column(name = "LABEL")
 	@Field(domain = "DO_FULL_TEXT", required = true, label = "Label")
 	public String getLabel() {
 		return label;
@@ -87,7 +86,6 @@ public final class CityFragment implements Fragment<City> {
 	 * Récupère la valeur de la propriété 'Postal code'.
 	 * @return String postalCode <b>Obligatoire</b>
 	 */
-	@javax.persistence.Column(name = "POSTAL_CODE")
 	@Field(domain = "DO_KEYWORD", required = true, label = "Postal code")
 	public String getPostalCode() {
 		return postalCode;

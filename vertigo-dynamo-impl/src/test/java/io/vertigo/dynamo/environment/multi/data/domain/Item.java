@@ -35,7 +35,6 @@ public final class Item implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	@javax.persistence.Transient
 	public UID<Item> getUID() {
 		return UID.of(this);
 	}

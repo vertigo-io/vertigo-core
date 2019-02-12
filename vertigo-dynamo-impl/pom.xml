@@ -85,26 +85,6 @@
 			<optional>true</optional>
 		</dependency>
 
-		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId><!-- no official version, but Hibernate publish 
-				this jar which contains only the API -->
-			<artifactId>hibernate-jpa-2.1-api</artifactId>
-			<version>1.0.0.Final</version>
-			<optional>true</optional> <!-- HibernateStorePlugin -->
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>5.2.15.Final</version>
-			<optional>true</optional> <!-- HibernateConnectionProviderPlugin -->
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>5.2.15.Final</version>
-			<scope>test</scope>
-		</dependency>
-
 		<!-- Search -->
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
