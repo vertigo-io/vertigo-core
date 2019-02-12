@@ -391,18 +391,20 @@ public final class GoogleJsonEngine implements JsonEngine {
 		/** {@inheritDoc} */
 		@Override
 		public UID deserialize(final JsonElement json, final Type paramType, final JsonDeserializationContext paramJsonDeserializationContext) {
-			if (paramType instanceof ParameterizedType) {
+			final String uidJsonValue = json.getAsString();
+			if (paramType instanceof ParameterizedType
+					&& uidJsonValue != null && uidJsonValue.indexOf('@') == -1) { //Temporaly we accecpt two UID patterns : key only or urn
 				final Class<Entity> entityClass = (Class<Entity>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that UID has one parameterized type
 				final DtDefinition entityDefinition = DtObjectUtil.findDtDefinition(entityClass);
 				Object entityId;
 				try {
-					entityId = entityDefinition.getIdField().get().getDomain().stringToValue(json.getAsString());
+					entityId = entityDefinition.getIdField().get().getDomain().stringToValue(uidJsonValue);
 				} catch (final FormatterException e) {
-					throw new JsonParseException("Unsupported UID format " + json.getAsString());
+					throw new JsonParseException("Unsupported UID format " + uidJsonValue);
 				}
 				return UID.of(entityClass, entityId);
 			}
-			return UID.of(json.getAsString());
+			return UID.of(uidJsonValue);
 		}
 	}
 
