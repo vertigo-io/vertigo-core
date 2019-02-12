@@ -1,17 +1,17 @@
 package ${dtDefinition.packageName};
 
 import ${dtDefinition.stereotypePackageName};
-<#if dtDefinition.entity || dtDefinition.fragment>
-import io.vertigo.dynamo.domain.model.UID;
-</#if>
-<#if dtDefinition.containsAccessor()>
-import io.vertigo.dynamo.domain.model.VAccessor;
-</#if>	
 <#if dtDefinition.containsEnumAccessor()>
 import io.vertigo.dynamo.domain.model.EnumVAccessor;
 </#if>
 <#if dtDefinition.containsListAccessor()>
 import io.vertigo.dynamo.domain.model.ListVAccessor;
+</#if>
+<#if dtDefinition.entity || dtDefinition.fragment>
+import io.vertigo.dynamo.domain.model.UID;
+</#if>
+<#if dtDefinition.containsAccessor()>
+import io.vertigo.dynamo.domain.model.VAccessor;
 </#if>	
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -88,7 +88,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	${annotation}
 		</#list>
 	public ${dtField.javaType} get${dtField.upperCamelCaseName}() {
-		return (${dtField.javaType})  ${dtField.upperCamelCaseName?uncap_first}Accessor.getId();
+		return (${dtField.javaType}) ${dtField.upperCamelCaseName?uncap_first}Accessor.getId();
 	}
 
 	/**
@@ -145,9 +145,6 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	 * Association : ${association.label}.
 	 * @return l'accesseur vers la propriété '${association.label}'
 	 */
-	<#list annotations('transientField') as annotation>
-	${annotation}
-	</#list>
 		<#if association.targetStaticMasterData>
 	public EnumVAccessor<${association.returnType}, ${association.returnType}Enum> ${association.role?uncap_first}() {
 		<#else>
@@ -155,71 +152,14 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 		</#if>
 		return ${association.upperCamelCaseFkFieldName?uncap_first}Accessor;
 	}
-				<#if association.navigable>
-	
-	@Deprecated
-	<#list annotations('transientField') as annotation>
-	${annotation}
-	</#list>
-	public ${association.returnType} get${association.role?cap_first}() {
-		// we keep the lazyness
-		if (!${association.upperCamelCaseFkFieldName?uncap_first}Accessor.isLoaded()) {
-			${association.upperCamelCaseFkFieldName?uncap_first}Accessor.load();
-		}
-		return ${association.upperCamelCaseFkFieldName?uncap_first}Accessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: ${association.label}.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	<#list annotations('transientField') as annotation>
-	${annotation}
-	</#list>
-	public io.vertigo.dynamo.domain.model.UID<${association.returnType}> get${association.role?cap_first}UID() {
-		return ${association.upperCamelCaseFkFieldName?uncap_first}Accessor.getUID();
-	}
-				</#if>
 		<#elseif association.navigable ><#-- multiple and navigable -->
 
 	/**
 	 * Association : ${association.label}.
 	 * @return l'accesseur vers la propriété '${association.label}'
 	 */
-	<#list annotations('transientField') as annotation>
-	${annotation}
-	</#list>
 	public ListVAccessor<${association.returnType}> ${association.role?uncap_first}() {
 		return ${association.role?uncap_first}Accessor;
-	}
-	
-	/**
-	 * Association : ${association.label}.
-	 * @return DtList de ${association.returnType}
-	 */
-	@Deprecated
-	<#list annotations('transientField') as annotation>
-	${annotation}
-	</#list>
-	public io.vertigo.dynamo.domain.model.DtList<${association.returnType}> get${association.role?cap_first}List() {
-		// we keep the lazyness
-		if (!${association.role?uncap_first}Accessor.isLoaded()) {
-			${association.role?uncap_first}Accessor.load();
-		}
-		return ${association.role?uncap_first}Accessor.get();
-	}
-
-	/**
-	 * Association UID: ${association.label}.
-	 * @return UID de l'association
-	 */
-	@Deprecated	
-	<#list annotations('transientField') as annotation>
-	${annotation}
-	</#list>		
-	public io.vertigo.dynamo.domain.metamodel.association.DtListURIFor<#if association.simple>Simple<#else>NN</#if>Association get${association.role?cap_first}DtListURI() {
-		return (io.vertigo.dynamo.domain.metamodel.association.DtListURIFor<#if association.simple>Simple<#else>NN</#if>Association) ${association.role?uncap_first}Accessor.getDtListURI();
 	}
 			</#if>
 		</#list>

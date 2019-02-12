@@ -55,9 +55,6 @@ class AnnotationWriter {
 		if ("UID".equalsIgnoreCase(propertyName)) {
 			return writeUIDAnnotations();
 		}
-		if ("transientField".equalsIgnoreCase(propertyName)) {
-			return writeTransientAnnotations();
-		}
 		throw new UnsupportedOperationException("This property (" + propertyName + ") is not supported on domain MDA");
 	}
 
