@@ -15,7 +15,7 @@ create Domain DO_LABEL {
 }
 
 create Domain DO_INSTANT {
-	dataType : Date
+	dataType : Instant
 	formatter : FMT_DATE
 }
 

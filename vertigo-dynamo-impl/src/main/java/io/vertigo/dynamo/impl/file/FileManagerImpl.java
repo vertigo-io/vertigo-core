@@ -132,12 +132,6 @@ public final class FileManagerImpl implements FileManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public VFile createFile(final String fileName, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
-		return createFile(fileName, lastModified.toInstant(), length, inputStreamBuilder);
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public VFile createFile(final String fileName, final String typeMime, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
 		return createFile(fileName, typeMime, lastModified.toInstant(), length, inputStreamBuilder);
 	}

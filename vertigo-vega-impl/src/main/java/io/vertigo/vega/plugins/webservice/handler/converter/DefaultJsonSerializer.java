@@ -212,7 +212,9 @@ public final class DefaultJsonSerializer implements JsonSerializer {
 						|| Long.class.isAssignableFrom(metaClass)
 						|| Float.class.isAssignableFrom(metaClass)
 						|| Double.class.isAssignableFrom(metaClass)
-						|| Date.class.isAssignableFrom(metaClass))) {
+						|| Date.class.isAssignableFrom(metaClass)
+						|| LocalDate.class.isAssignableFrom(metaClass)
+						|| Instant.class.isAssignableFrom(metaClass))) {
 					return true;
 				}
 			}

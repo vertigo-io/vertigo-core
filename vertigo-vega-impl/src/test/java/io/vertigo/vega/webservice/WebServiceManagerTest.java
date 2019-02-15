@@ -23,12 +23,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -49,7 +47,6 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.util.DateBuilder;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.vega.webservice.data.MyAppConfig;
@@ -466,11 +463,11 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPostContact() throws ParseException {
+	public void testPostContact() {
 		doCreateContact();
 	}
 
-	private Map<String, Object> doCreateContact() throws ParseException {
+	private Map<String, Object> doCreateContact() {
 		final Map<String, Object> newContact = createDefaultContact(null);
 
 		final Long conId = loggedAndExpect(given().body(newContact))
@@ -484,7 +481,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPostContactValidatorError() throws ParseException {
+	public void testPostContactValidatorError() {
 		final Map<String, Object> newContact = createDefaultContact(100L);
 
 		loggedAndExpect(given().body(newContact))
@@ -494,7 +491,7 @@ public final class WebServiceManagerTest {
 				.post("/test/contact");
 
 		final Map<String, Object> new2Contact = createDefaultContact(null);
-		new2Contact.put("birthday", convertDate("24/10/2012"));
+		new2Contact.put("birthday", "2012-10-24");
 
 		loggedAndExpect(given().body(new2Contact))
 				.body("fieldErrors.birthday", Matchers.contains("You can't add contact younger than 16"))
@@ -504,7 +501,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPostContactUserException() throws ParseException {
+	public void testPostContactUserException() {
 		final Map<String, Object> newContact = createDefaultContact(null);
 		newContact.put("name", null);
 
@@ -560,7 +557,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContact() throws ParseException {
+	public void testPutContact() {
 		final Map<String, Object> newContact = createDefaultContact(100L);
 
 		loggedAndExpect(given().body(newContact))
@@ -576,7 +573,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactVAccessor() throws ParseException {
+	public void testPutContactVAccessor() {
 		final Map<String, Object> newContact = createDefaultContact(100L);
 		newContact.put("adrId", 200);
 
@@ -594,7 +591,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactEmptyField() throws ParseException {
+	public void testPutContactEmptyField() {
 		final Map<String, Object> newContact = createDefaultContact(100L);
 		newContact.put("name", "");
 
@@ -640,7 +637,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactView() throws ParseException {
+	public void testPutContactView() {
 		final Map<String, Object> newContactView = createDefaultContact(100L);
 
 		final List<Map<String, Object>> addresses = new ListBuilder<Map<String, Object>>()
@@ -666,7 +663,7 @@ public final class WebServiceManagerTest {
 
 	@Disabled("Not supported yet")
 	@Test
-	public void testPutContactViewError() throws ParseException {
+	public void testPutContactViewError() {
 		final Map<String, Object> newContactView = createDefaultContact(100L);
 		final List<Map<String, Object>> addresses = new ListBuilder<Map<String, Object>>()
 				.add(createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"))
@@ -686,7 +683,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactByPath() throws ParseException {
+	public void testPutContactByPath() {
 		final Map<String, Object> newContact = createDefaultContact(null);
 
 		loggedAndExpect(given().body(newContact))
@@ -702,7 +699,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactValidatorError() throws ParseException {
+	public void testPutContactValidatorError() {
 		final Map<String, Object> newContact = createDefaultContact(null);
 
 		loggedAndExpect(given().body(newContact))
@@ -712,7 +709,7 @@ public final class WebServiceManagerTest {
 				.put("/test/contact");
 
 		final Map<String, Object> new2Contact = createDefaultContact(100L);
-		new2Contact.put("birthday", convertDate("24/10/2012"));
+		new2Contact.put("birthday", "2012-10-24");
 
 		loggedAndExpect(given().body(new2Contact))
 				.body("fieldErrors.birthday", Matchers.contains("You can't add contact younger than 16"))
@@ -722,9 +719,9 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactByPathValidatorError() throws ParseException {
+	public void testPutContactByPathValidatorError() {
 		final Map<String, Object> new2Contact = createDefaultContact(null);
-		new2Contact.put("birthday", convertDate("24/10/2012"));
+		new2Contact.put("birthday", "2012-10-24");
 
 		loggedAndExpect(given().body(new2Contact))
 				.body("fieldErrors.birthday", Matchers.contains("You can't add contact younger than 16"))
@@ -734,7 +731,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactUserException() throws ParseException {
+	public void testPutContactUserException() {
 		final Map<String, Object> newContact = createDefaultContact(100L);
 		newContact.remove("name");
 
@@ -746,7 +743,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactByPathUserException() throws ParseException {
+	public void testPutContactByPathUserException() {
 		final Map<String, Object> newContact = createDefaultContact(null);
 		newContact.remove("name");
 
@@ -758,7 +755,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testDeleteContact() throws ParseException {
+	public void testDeleteContact() {
 		final Map<String, Object> newContact = createDefaultContact(null);
 		loggedAndExpect(given().body(newContact))
 				.statusCode(HttpStatus.SC_OK)
@@ -772,7 +769,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testDeleteContactErrors() throws ParseException {
+	public void testDeleteContactErrors() {
 		final Map<String, Object> newContact = createDefaultContact(null);
 		loggedAndExpect(given().body(newContact))
 				.statusCode(HttpStatus.SC_OK)
@@ -894,7 +891,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPostInnerBodyValidationErrors() throws ParseException {
+	public void testPostInnerBodyValidationErrors() {
 		final Map<String, Object> contactFrom = createDefaultContact(140L);
 		final Map<String, Object> contactTo = createDefaultContact(141L);
 
@@ -969,7 +966,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testFilteredUpdateByExclude() throws ParseException {
+	public void testFilteredUpdateByExclude() {
 		final Map<String, Object> contact = doGetServerSideObject();
 
 		final Long oldConId = (Long) contact.get("conId");
@@ -999,7 +996,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testFilteredUpdateByExcludeErrors() throws ParseException {
+	public void testFilteredUpdateByExcludeErrors() {
 		final Map<String, Object> contact = doGetServerSideObject();
 		final Long oldConId = (Long) contact.get("conId");
 
@@ -1033,7 +1030,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testFilteredUpdateByInclude() throws ParseException {
+	public void testFilteredUpdateByInclude() {
 		final Map<String, Object> contact = doGetServerSideObject();
 
 		final Long oldConId = (Long) contact.get("conId");
@@ -1066,7 +1063,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testFilteredUpdateByIncludeErrors() throws ParseException {
+	public void testFilteredUpdateByIncludeErrors() {
 		final Map<String, Object> contact = doGetServerSideObject();
 		final Long oldConId = (Long) contact.get("conId");
 
@@ -1114,7 +1111,7 @@ public final class WebServiceManagerTest {
 				.put("/test/filteredInclude/" + oldConId);
 
 		contact.remove("honorificCode"); //can't modify honorificCode
-		contact.put("birthday", convertDate("24/10/1985")); //can't modify birthday
+		contact.put("birthday", "1985-10-24"); //can't modify birthday
 		loggedAndExpect(given().body(contact))
 				.statusCode(HttpStatus.SC_FORBIDDEN)
 				.when()
@@ -1128,7 +1125,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testFilteredUpdateServerTokenErrors() throws ParseException {
+	public void testFilteredUpdateServerTokenErrors() {
 		final Map<String, Object> contact = doGetServerSideObject();
 		final Long oldConId = (Long) contact.get("conId");
 
@@ -1149,7 +1146,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactTooLongField() throws ParseException {
+	public void testPutContactTooLongField() {
 		final Map<String, Object> newContact = createDefaultContact(null);
 		final String newNameValue = "Here i am !!";
 		newContact.put("itsatoolongaliasforfieldcontactname", newNameValue);
@@ -1175,7 +1172,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactExtended() throws ParseException {
+	public void testPutContactExtended() {
 		final Map<String, Object> newContact = createDefaultContact(103L);
 		newContact.remove("conId");
 		newContact.put("vanillaUnsupportedMultipleIds", new int[] { 3, 4, 5 });
@@ -1190,7 +1187,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactExtendedValidator() throws ParseException {
+	public void testPutContactExtendedValidator() {
 		final Map<String, Object> newContact = createDefaultContact(104L);
 		newContact.put("vanillaUnsupportedMultipleIds", new int[] { 3, 4, 5 });
 
@@ -1201,7 +1198,7 @@ public final class WebServiceManagerTest {
 				.put("/test/contactExtended/104");
 
 		newContact.remove("conId");
-		newContact.put("birthday", convertDate("24/10/2012"));
+		newContact.put("birthday", "2012-10-24");
 		loggedAndExpect(given().body(newContact))
 				.body("fieldErrors.birthday", Matchers.contains("You can't add contact younger than 16"))
 				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
@@ -1315,19 +1312,19 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSearchQueryPagined() throws ParseException {
+	public void testSearchQueryPagined() {
 		doTestSearchPagined(false);
 	}
 
 	@Test
-	public void testSearchAutoPagined() throws ParseException {
+	public void testSearchAutoPagined() {
 		doTestSearchPagined(true);
 	}
 
-	private void doTestSearchPagined(final boolean isAuto) throws ParseException {
+	private void doTestSearchPagined(final boolean isAuto) {
 		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
-				.put("birthdayMin", convertDate("19/05/1978"))
-				.put("birthdayMax", convertDate("19/05/1985"))
+				.put("birthdayMin", "1978-05-19")
+				.put("birthdayMax", "1985-05-19")
 				.build();
 
 		final String serverSideToken;
@@ -1338,19 +1335,19 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSearchQueryPaginedSortName() throws ParseException {
+	public void testSearchQueryPaginedSortName() {
 		doTestSearchPaginedSortName(false);
 	}
 
 	@Test
-	public void testSearchAutoPaginedSortName() throws ParseException {
+	public void testSearchAutoPaginedSortName() {
 		doTestSearchPaginedSortName(true);
 	}
 
-	private void doTestSearchPaginedSortName(final boolean isAuto) throws ParseException {
+	private void doTestSearchPaginedSortName(final boolean isAuto) {
 		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
-				.put("birthdayMin", convertDate("19/05/1978"))
-				.put("birthdayMax", convertDate("19/05/1985"))
+				.put("birthdayMin", "1978-05-19")
+				.put("birthdayMax", "1985-05-19")
 				.build();
 		//gets : "Dubois","Durant","Garcia","Martin","Moreau","Petit"
 
@@ -1364,19 +1361,19 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSearchQueryPaginedSortDate() throws ParseException {
+	public void testSearchQueryPaginedSortDate() {
 		doTestSearchPaginedSortDate(false);
 	}
 
 	@Test
-	public void testSearchAutoPaginedSortDate() throws ParseException {
+	public void testSearchAutoPaginedSortDate() {
 		doTestSearchPaginedSortDate(true);
 	}
 
-	private void doTestSearchPaginedSortDate(final boolean isAuto) throws ParseException {
+	private void doTestSearchPaginedSortDate(final boolean isAuto) {
 		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
-				.put("birthdayMin", convertDate("19/05/1978"))
-				.put("birthdayMax", convertDate("19/05/1985"))
+				.put("birthdayMin", "1978-05-19")
+				.put("birthdayMax", "1985-05-19")
 				.build();
 
 		final String serverSideToken;
@@ -1387,19 +1384,19 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSearchQueryPaginedMissing() throws ParseException {
+	public void testSearchQueryPaginedMissing() {
 		doTestSearchPaginedMissing(false);
 	}
 
 	@Test
-	public void testSearchAutoPaginedMissing() throws ParseException {
+	public void testSearchAutoPaginedMissing() {
 		doTestSearchPaginedMissing(true);
 	}
 
-	private void doTestSearchPaginedMissing(final boolean isAuto) throws ParseException {
+	private void doTestSearchPaginedMissing(final boolean isAuto) {
 		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
-				.put("birthdayMin", convertDate("19/05/1978"))
-				.put("birthdayMax", convertDate("19/05/1985"))
+				.put("birthdayMin", "1978-05-19")
+				.put("birthdayMax", "1985-05-19")
 				.build();
 
 		String serverSideToken;
@@ -1497,7 +1494,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSaveListDelta() throws ParseException {
+	public void testSaveListDelta() {
 		final Map<String, Object> dtListDelta = new LinkedHashMap<>();
 		final Map<String, Map<String, Object>> collCreates = new LinkedHashMap<>();
 		final Map<String, Map<String, Object>> collUpdates = new LinkedHashMap<>();
@@ -1520,7 +1517,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSaveListDeltaValdationError() throws ParseException {
+	public void testSaveListDeltaValdationError() {
 		final Map<String, Object> dtListDelta = new LinkedHashMap<>();
 		final Map<String, Map<String, Object>> collCreates = new LinkedHashMap<>();
 		final Map<String, Map<String, Object>> collUpdates = new LinkedHashMap<>();
@@ -1533,7 +1530,7 @@ public final class WebServiceManagerTest {
 		collCreates.put("c110", createDefaultContact(110L));
 		collCreates.put("c111", createDefaultContact(111L));
 		final Map<String, Object> newContact = createDefaultContact(100L);
-		newContact.put("birthday", convertDate("24/10/2012"));
+		newContact.put("birthday", "2012-10-24");
 		collUpdates.put("c100", newContact);
 		collUpdates.put("c101", createDefaultContact(101L));
 		collUpdates.put("c102", createDefaultContact(102L));
@@ -1547,7 +1544,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSaveDtListContact() throws ParseException {
+	public void testSaveDtListContact() {
 		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
 				.add(createDefaultContact(120L))
 				.add(createDefaultContact(121L))
@@ -1565,7 +1562,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSaveDtListContactValidationError() throws ParseException {
+	public void testSaveDtListContactValidationError() {
 		final Map<String, Object> newContact = createDefaultContact(123L);
 		newContact.remove("name");
 
@@ -1585,7 +1582,7 @@ public final class WebServiceManagerTest {
 				.post("/test/saveDtListContact");
 
 		final Map<String, Object> new2Contact = createDefaultContact(127L);
-		new2Contact.put("birthday", convertDate("24/10/2012"));
+		new2Contact.put("birthday", "2012-10-24");
 		dtList.add(new2Contact);
 		loggedAndExpect(given().body(dtList))
 				.body("objectFieldErrors.idx6.birthday", Matchers.contains("You can't add contact younger than 16"))
@@ -1595,7 +1592,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSaveListContact() throws ParseException {
+	public void testSaveListContact() {
 		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
 				.add(createDefaultContact(130L))
 				.add(createDefaultContact(131L))
@@ -1612,9 +1609,9 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSaveDtListContactValidationError2() throws ParseException {
+	public void testSaveDtListContactValidationError2() {
 		final Map<String, Object> newContact = createDefaultContact(123L);
-		newContact.put("birthday", convertDate("24/10/2012"));
+		newContact.put("birthday", "2012-10-24");
 
 		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
 				.add(createDefaultContact(120L))
@@ -1737,8 +1734,10 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testDownloadNotModifiedFile() throws ParseException {
-		final DateFormat httpDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
+	public void testDownloadNotModifiedFile() {
+		final DateTimeFormatter httpDateFormat = DateTimeFormatter
+				.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz")
+				.withLocale(Locale.US);
 		//Sans préciser le if-Modified-Since, le serveur retourne le fichier
 		final Response response = loggedAndExpect(given().queryParam("id", 10))
 				.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
@@ -1747,9 +1746,10 @@ public final class WebServiceManagerTest {
 				.statusCode(HttpStatus.SC_OK)
 				.when()
 				.get("/test/downloadNotModifiedFile");
+
 		final String lastModified = response.getHeader("Last-Modified");
-		final Date lastModifiedDate = httpDateFormat.parse(lastModified);
-		final String now = httpDateFormat.format(new Date());
+		final ZonedDateTime lastModifiedDate = ZonedDateTime.from(httpDateFormat.parse(lastModified));
+		final String now = httpDateFormat.format(ZonedDateTime.now());
 
 		//On test avec le if-Modified-Since now : le server test mais ne retourne pas le fichier
 		loggedAndExpect(given().queryParam("id", 10).header("if-Modified-Since", now))
@@ -1758,7 +1758,7 @@ public final class WebServiceManagerTest {
 				.get("/test/downloadNotModifiedFile");
 
 		//On test avec le if-Modified-Since 10 min avant le lastModified : le server test et retourne le fichier
-		final String beforeLastModified = httpDateFormat.format(new DateBuilder(lastModifiedDate).addMinutes(-10).build());
+		final String beforeLastModified = httpDateFormat.format(lastModifiedDate.minusMinutes(10));
 		loggedAndExpect(given().queryParam("id", 10).header("if-Modified-Since", beforeLastModified))
 				.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
 				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=\"image10.png\";filename*=UTF-8''image10.png"))
@@ -1856,7 +1856,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testOptionalQueryParam() throws ParseException {
+	public void testOptionalQueryParam() {
 		final Map<String, Object> newContact = createDefaultContact(null);
 		loggedAndExpect(given().body(newContact)
 				.queryParam("token", "TestedToken"))
@@ -2029,7 +2029,7 @@ public final class WebServiceManagerTest {
 				.expect().log().ifValidationFails();
 	}
 
-	private Map<String, Object> doGetServerSideObject() throws ParseException {
+	private Map<String, Object> doGetServerSideObject() {
 		final Map<String, Object> contact = doCreateContact();
 		final Long oldConId = (Long) contact.get("conId");
 
@@ -2042,15 +2042,8 @@ public final class WebServiceManagerTest {
 		return contact;
 	}
 
-	private static String convertDate(final String dateStr) throws ParseException {
-		final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		final Date date = dateFormat.parse(dateStr);
-		final DateFormat dateFormatUtc = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		return dateFormatUtc.format(date);
-	}
-
-	private static Map<String, Object> createDefaultContact(final Long conId) throws ParseException {
-		final Map<String, Object> newContact = createContact2(conId, "MRS", "Fournier", "Catherine", convertDate("24/10/1985"),
+	private static Map<String, Object> createDefaultContact(final Long conId) {
+		final Map<String, Object> newContact = createContact2(conId, "MRS", "Fournier", "Catherine", "1985-10-24",
 				createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"),
 				"catherine.fournier@gmail.com", "01 91 92 93 94");
 		return newContact;

@@ -113,20 +113,6 @@ public interface FileManager extends Manager {
 
 	/**
 	 * Crée un VFile temporaire à partir d'un Builder du flux des données.
-	 * Le typeMime sera déterminé à partir du fileName.
-	 *
-	 * @param fileName Nom du fichier
-	 * @param lastModified Date de dernière modification
-	 * @param length Taille du fichier
-	 * @param inputStreamBuilder Builder du flux des données
-	 * @return VFile crée	 *
-	 * @Deprecated Use createFile with Instant lastModified instead
-	 */
-	@Deprecated
-	VFile createFile(final String fileName, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder);
-
-	/**
-	 * Crée un VFile temporaire à partir d'un Builder du flux des données.
 	 * @param fileName Nom du fichier
 	 * @param typeMime Type mime
 	 * @param lastModified Date de dernière modification

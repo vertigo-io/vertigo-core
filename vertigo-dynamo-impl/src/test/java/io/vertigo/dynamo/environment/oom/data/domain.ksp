@@ -30,7 +30,7 @@ create Domain DO_CODE_POSTAL {
 }
 
 create Domain DO_DATE {
-    dataType : Date
+    dataType : LocalDate
     formatter : FMT_DATE
 }
 
@@ -38,7 +38,7 @@ create Domain DO_DATE {
 TODO Analyser l'intérêt d'un formatter spécifique pour les durées
 */
 create Domain DO_DUREE {
-    dataType : Date
+    dataType : String
     formatter : FMT_DEFAULT
     constraint : [CK_DUREE]
 }

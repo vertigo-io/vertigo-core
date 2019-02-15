@@ -24,7 +24,6 @@ package io.vertigo.dynamo.plugins.store.filestore.fs;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,7 +60,7 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 		Assertion.checkNotNull(path);
 		//-----
 		txPrevFile = new File(path);
-		txNewFile = new File(path + EXT_SEPARATOR + new Date().getTime() + EXT_SEPARATOR + EXT_NEW);
+		txNewFile = new File(path + EXT_SEPARATOR + System.currentTimeMillis() + EXT_SEPARATOR + EXT_NEW);
 
 		// création du fichier temporaire
 		if (!txNewFile.getParentFile().exists() && !txNewFile.getParentFile().mkdirs()) {

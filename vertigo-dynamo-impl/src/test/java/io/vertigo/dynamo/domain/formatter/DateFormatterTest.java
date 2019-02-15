@@ -22,9 +22,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -44,13 +41,6 @@ public class DateFormatterTest extends AbstractTestCaseJU5 {
 	private final FormatterDate formatterDateTime = new FormatterDate("yyyy-MM-dd' 'HH:mm:ss");
 
 	@Test
-	public void testFormatter() throws FormatterException {
-		final Date date = new GregorianCalendar(2003, Calendar.SEPTEMBER, 15).getTime();
-		Assertions.assertEquals("2003-09-15", formatterDate.valueToString(date, DataType.Date));
-		Assertions.assertEquals(date, formatterDate.stringToValue("2003-09-15", DataType.Date));
-	}
-
-	@Test
 	public void testLocalDateFormatter() throws FormatterException {
 		final LocalDate localDate = LocalDate.of(2000, 12, 25);
 		Assertions.assertEquals("2000-12-25", formatterDate.valueToString(localDate, DataType.LocalDate));
@@ -62,14 +52,6 @@ public class DateFormatterTest extends AbstractTestCaseJU5 {
 		final Instant instant = LocalDateTime.of(2009, 2, 23, 16, 30).toInstant(ZoneOffset.UTC);
 		Assertions.assertEquals("2009-02-23 16:30:00", formatterDateTime.valueToString(instant, DataType.Instant));
 		Assertions.assertEquals(instant, formatterDateTime.stringToValue("2009-02-23 16:30:00", DataType.Instant));
-	}
-
-	@Test
-	public void testFormatterErrorDate() {
-		Assertions.assertThrows(FormatterException.class, () -> {
-			final Date date = new GregorianCalendar(2003, Calendar.SEPTEMBER, 15).getTime();
-			Assertions.assertEquals(date, formatterDate.stringToValue("2003/09/15", DataType.Date));
-		});
 	}
 
 	@Test

@@ -316,7 +316,6 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 				return domain.getDataType().name().toLowerCase(Locale.ROOT);
 			case String:
 				return "keyword";
-			case Date:
 			case LocalDate:
 			case Instant:
 			case BigDecimal:

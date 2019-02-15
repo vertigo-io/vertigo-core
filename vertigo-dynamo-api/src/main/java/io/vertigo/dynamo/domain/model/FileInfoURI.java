@@ -125,7 +125,6 @@ public final class FileInfoURI implements Serializable {
 			case BigDecimal:
 			case Boolean:
 			case DataStream:
-			case Date:
 			case Double:
 			case Instant:
 			case LocalDate:

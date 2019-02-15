@@ -20,7 +20,6 @@ package io.vertigo.dynamo.domain.metamodel;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Optional;
 
 import io.vertigo.lang.Assertion;
@@ -40,9 +39,6 @@ public enum DataType {
 	Boolean(Boolean.class),
 	/** String. */
 	String(String.class),
-	/** Date. */
-	@Deprecated
-	Date(Date.class),
 	/** LocalDate. */
 	LocalDate(LocalDate.class),
 	/** Instant. */
@@ -86,8 +82,7 @@ public enum DataType {
 	 * @return if the dataType talks about a date
 	 */
 	public boolean isAboutDate() {
-		return this == DataType.Date
-				|| this == DataType.LocalDate
+		return this == DataType.LocalDate
 				|| this == DataType.Instant;
 	}
 
@@ -125,8 +120,6 @@ public enum DataType {
 			dataType = DataType.Boolean;
 		} else if (String.class.equals(type)) {
 			dataType = DataType.String;
-		} else if (Date.class.equals(type)) {
-			dataType = DataType.Date;
 		} else if (LocalDate.class.equals(type)) {
 			dataType = DataType.LocalDate;
 		} else if (Instant.class.equals(type)) {

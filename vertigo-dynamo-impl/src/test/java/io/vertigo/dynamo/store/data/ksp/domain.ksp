@@ -25,7 +25,7 @@ create Domain DO_INTEGER {
 }
 
 create Domain DO_DATE {
-	dataType :Date
+	dataType : LocalDate
 	formatter : FMT_DEFAULT
 }
 

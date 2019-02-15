@@ -20,8 +20,6 @@ package io.vertigo.dynamo.impl.collections.functions.filter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.ZoneId;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -41,7 +39,7 @@ import io.vertigo.util.DateUtil;
  * Parser des filtres utilisant une syntaxe définie.
  */
 public final class DtListPatternFilterUtil {
-	private static final String DATE_PATTERN = "dd/MM/yy";
+	private static final String DATE_PATTERN = "dd/MM/yyyy";
 
 	/**
 	 * Pattern types : Range or Term.
@@ -161,11 +159,8 @@ public final class DtListPatternFilterUtil {
 				return new BigDecimal(stringValue);
 			case Double:
 				return Double.valueOf(stringValue);
-			case Date:
-				return DateUtil.parseToDate(stringValue, DATE_PATTERN);
 			case LocalDate:
-				final Instant instant = DateUtil.parseToInstant(stringValue, DATE_PATTERN);
-				return instant.atZone(ZoneId.of("UTC")).toLocalDate();
+				return DateUtil.parseToLocalDate(stringValue, DATE_PATTERN);
 			case Instant:
 				return DateUtil.parseToInstant(stringValue, DATE_PATTERN);
 			case String:

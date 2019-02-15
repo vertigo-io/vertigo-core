@@ -18,19 +18,16 @@
  */
 package io.vertigo.dynamox.search;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -324,8 +321,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			useBlock = appendUserStringCriteria(queryPart, dslQuery, expressionDefinition, (String) value, outExpressionQuery);
 		} else if (value instanceof Instant) { //so not null too
 			useBlock = appendSimpleCriteria(queryPart, dslQuery, formatInstant((Instant) value));
-		} else if (value instanceof Date) { //so not null too
-			useBlock = appendSimpleCriteria(queryPart, dslQuery, formatDate((Date) value));
+		} else if (value instanceof LocalDate) { //so not null too
+			useBlock = appendSimpleCriteria(queryPart, dslQuery, formatDate((LocalDate) value));
 		} else if (value != null) {
 			useBlock = appendSimpleCriteria(queryPart, dslQuery, value.toString());
 		} else if (dslQuery.getDefaultValue().isPresent()) { //if value null => defaultValue
@@ -482,11 +479,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	 * @param date la date.
 	 * @return la chaine de caractere formattée.
 	 */
-	private static String formatDate(final Date date) {
-		final DateFormat formatter = new SimpleDateFormat("\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\"", Locale.getDefault());
-		final TimeZone tz = TimeZone.getTimeZone("UTC");
-		formatter.setTimeZone(tz);
-		return formatter.format(date);
+	private static String formatDate(final LocalDate date) {
+		return new StringBuilder("\"").append(date.toString()).append("\"").toString();
 	}
 
 	/**

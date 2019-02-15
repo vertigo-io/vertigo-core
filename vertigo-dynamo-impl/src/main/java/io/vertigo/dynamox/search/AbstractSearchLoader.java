@@ -81,7 +81,6 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 			case Double:
 			case LocalDate:
 			case Instant:
-			case Date:
 			default:
 				throw new IllegalArgumentException("Type's PK " + idDataType.name() + " of "
 						+ dtDefinition.getClassSimpleName() + " is not supported, prefer int, long or String ID.");

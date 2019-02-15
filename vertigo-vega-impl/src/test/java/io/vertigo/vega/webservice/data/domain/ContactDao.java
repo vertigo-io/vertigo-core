@@ -18,11 +18,10 @@
  */
 package io.vertigo.vega.webservice.data.domain;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,12 +30,11 @@ import java.util.UUID;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
 
 public class ContactDao implements Activeable, StoreServices {
 	private final Map<Long, Contact> contacts = new HashMap<>();
 
-	private void appendContact(final Honorific honorific, final String name, final String firstName, final Date birthday, final Address address, final String email, final String... tels) {
+	private void appendContact(final Honorific honorific, final String name, final String firstName, final LocalDate birthday, final Address address, final String email, final String... tels) {
 		final long conId = contacts.size() + 1;
 		final Contact contact = new Contact();
 		contact.setConId(conId);
@@ -50,12 +48,9 @@ public class ContactDao implements Activeable, StoreServices {
 		contacts.put(conId, contact);
 	}
 
-	private static Date parseDate(final String dateStr) {
-		try {
-			return new SimpleDateFormat("dd/MM/yyyy").parse(dateStr);
-		} catch (final ParseException e) {
-			throw WrappedException.wrap(e);
-		}
+	private static LocalDate parseDate(final String dateStr) {
+		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		return LocalDate.parse(dateStr, dateTimeFormatter);
 	}
 
 	private static Address createAddress(final Long adrId, final String street1, final String street2, final String city, final String postalCode, final String country) {

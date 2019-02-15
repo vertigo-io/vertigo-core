@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import io.vertigo.dynamo.domain.model.DtList;
@@ -110,9 +109,6 @@ public final class TaskPopulator {
 				break;
 			case String:
 				item = "Test";
-				break;
-			case Date:
-				item = new Date();
 				break;
 			case LocalDate:
 				item = LocalDate.now();

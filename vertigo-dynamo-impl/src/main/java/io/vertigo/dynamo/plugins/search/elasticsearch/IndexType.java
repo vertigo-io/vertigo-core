@@ -116,7 +116,6 @@ final class IndexType {
 				return domain.getDataType().name().toLowerCase(Locale.ROOT);
 			case String:
 				return "text";
-			case Date:
 			case LocalDate:
 			case Instant:
 				return "date";
@@ -133,7 +132,6 @@ final class IndexType {
 		// Calcul automatique  par default.
 		switch (domain.getDataType()) {
 			case Boolean:
-			case Date:
 			case LocalDate:
 			case Instant:
 			case Double:

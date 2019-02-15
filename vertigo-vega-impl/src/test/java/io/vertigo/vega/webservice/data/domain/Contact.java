@@ -18,9 +18,9 @@
  */
 package io.vertigo.vega.webservice.data.domain;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import io.vertigo.dynamo.domain.model.Entity;
@@ -40,8 +40,8 @@ public final class Contact implements Entity {
 	private String name;
 	@Field(domain = "DO_TEXTE_50", label = "Firstname")
 	private String firstName;
-	@Field(domain = "DO_DATE", label = "Birthday")
-	private Date birthday;
+	@Field(domain = "DO_LOCAL_DATE", label = "Birthday")
+	private LocalDate birthday;
 	@Field(domain = "DO_EMAIL", label = "Email")
 	private String email;
 
@@ -100,11 +100,11 @@ public final class Contact implements Entity {
 		this.firstName = firstName;
 	}
 
-	public Date getBirthday() {
+	public LocalDate getBirthday() {
 		return birthday;
 	}
 
-	public void setBirthday(final Date birthday) {
+	public void setBirthday(final LocalDate birthday) {
 		this.birthday = birthday;
 	}
 

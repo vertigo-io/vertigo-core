@@ -26,8 +26,13 @@ create Domain DO_EMAIL {
 	constraint : [CK_EMAIL]
 }
 
-create Domain DO_DATE {
-	dataType :Date,
+create Domain DO_INSTANT {
+	dataType : Instant,
+	formatter : FMT_DEFAULT,
+}
+
+create Domain DO_LOCAL_DATE {
+	dataType : LocalDate,
 	formatter : FMT_DEFAULT,
 }
 

@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.webservice.data.domain;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -32,10 +32,10 @@ public final class ContactCriteria implements DtObject {
 	private String name;
 	@Field(domain = "DO_TEXTE_50", label = "Firstname")
 	private String firstName;
-	@Field(domain = "DO_DATE", label = "Birthday min")
-	private Date birthdayMin;
-	@Field(domain = "DO_DATE", label = "Birthday max")
-	private Date birthdayMax;
+	@Field(domain = "DO_LOCAL_DATE", label = "Birthday min")
+	private LocalDate birthdayMin;
+	@Field(domain = "DO_LOCAL_DATE", label = "Birthday max")
+	private LocalDate birthdayMax;
 
 	public String getName() {
 		return name;
@@ -53,19 +53,19 @@ public final class ContactCriteria implements DtObject {
 		this.firstName = firstName;
 	}
 
-	public Date getBirthdayMin() {
+	public LocalDate getBirthdayMin() {
 		return birthdayMin;
 	}
 
-	public void setBirthdayMin(final Date birthdayMin) {
+	public void setBirthdayMin(final LocalDate birthdayMin) {
 		this.birthdayMin = birthdayMin;
 	}
 
-	public Date getBirthdayMax() {
+	public LocalDate getBirthdayMax() {
 		return birthdayMax;
 	}
 
-	public void setBirthdayMax(final Date birthdayMax) {
+	public void setBirthdayMax(final LocalDate birthdayMax) {
 		this.birthdayMax = birthdayMax;
 	}
 

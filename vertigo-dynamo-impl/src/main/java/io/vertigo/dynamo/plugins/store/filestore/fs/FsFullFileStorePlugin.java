@@ -29,6 +29,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
@@ -53,7 +54,6 @@ import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-import io.vertigo.util.DateUtil;
 
 /**
  * Permet de gérer les accès atomiques à n'importe quel type de stockage SQL/
@@ -130,7 +130,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			// récupération des infos
 			final String fileName = infos.get(0);
 			final String mimeType = infos.get(1);
-			final Instant lastModified = DateUtil.parseToInstant(infos.get(2), INFOS_DATE_PATTERN);
+			final Instant lastModified = Instant.from(DateTimeFormatter.ofPattern(INFOS_DATE_PATTERN).withZone(ZoneOffset.UTC).parse(infos.get(2)));
 			final Long length = Long.valueOf(infos.get(3));
 
 			final InputStreamBuilder inputStreamBuilder = new FileInputStreamBuilder(new File(obtainFullFilePath(uri)));

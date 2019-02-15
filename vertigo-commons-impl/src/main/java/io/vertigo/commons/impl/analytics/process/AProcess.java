@@ -38,7 +38,7 @@ import io.vertigo.lang.Assertion;
  *	 - where, ou s'est passe l'evenement  ? sur quel serveur ?
  *
  *	[what]
- * - category (examples : sql, jpa, tasks)
+ * - category (examples : sql, tasks)
  * - name (examples : /create/movies)
 
  * 	[when]
