@@ -34,7 +34,7 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.LogConfig;
-import io.vertigo.app.config.json.JsonAppConfigBuilder;
+import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -74,7 +74,7 @@ final class AppServletStarter2 {
 			final Properties bootConf = createBootProperties(servletContext);
 			Assertion.checkArgument(bootConf.containsKey("boot.applicationConfiguration"), "Param \"boot.applicationConfiguration\" is mandatory, check your .properties or web.xml.");
 
-			final JsonAppConfigBuilder appConfigBuilder = new JsonAppConfigBuilder(bootConf);
+			final XMLAppConfigBuilder appConfigBuilder = new XMLAppConfigBuilder();
 			appConfigBuilder.beginBoot();
 
 			//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
@@ -85,11 +85,11 @@ final class AppServletStarter2 {
 				appConfigBuilder.withLogConfig(new LogConfig(logFileName));
 			}
 
-			final String jsonConfigFileNames = bootConf.getProperty("boot.applicationConfiguration");
-			final String[] jsonConfigFileNamesSplit = jsonConfigFileNames.split(";");
+			final String xmlModulesFileNames = bootConf.getProperty("boot.applicationConfiguration");
+			final String[] xmlFileNamesSplit = xmlModulesFileNames.split(";");
 			bootConf.remove("boot.applicationConfiguration");
 			//-----
-			appConfigBuilder.withFiles(getClass(), jsonConfigFileNamesSplit);
+			appConfigBuilder.withModules(getClass(), bootConf, xmlFileNamesSplit);
 
 			// Initialisation de l'état de l'application
 			app = new AutoCloseableApp(appConfigBuilder.build());
