@@ -58,6 +58,45 @@ public final class DynamoFeatures extends Features<DynamoFeatures> {
 	}
 
 	/**
+	 * Add store to dynamo
+	 * @return  the feature
+	 */
+	@Feature("store")
+	public DynamoFeatures withStore() {
+		getModuleConfigBuilder()
+				.addComponent(StoreManager.class, StoreManagerImpl.class);
+		return this;
+	}
+
+	@Feature("store.data.sql")
+	public DynamoFeatures withSqlStore(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(SqlDataStorePlugin.class, params);
+		return this;
+	}
+
+	@Feature("store.file.filesystem")
+	public DynamoFeatures withFsFileStore(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(FsFileStorePlugin.class, params);
+		return this;
+	}
+
+	@Feature("store.file.db")
+	public DynamoFeatures withDbFileStore(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(DbFileStorePlugin.class, params);
+		return this;
+	}
+
+	@Feature("store.file.fullFilesystem")
+	public DynamoFeatures withFsFullFileStore(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(FsFullFileStorePlugin.class, params);
+		return this;
+	}
+
+	/**
 	 * Add search to dynamo
 	 * @return the feature
 	 */
@@ -68,14 +107,17 @@ public final class DynamoFeatures extends Features<DynamoFeatures> {
 		return this;
 	}
 
-	/**
-	 * Add store to dynamo
-	 * @return  the feature
-	 */
-	@Feature("store")
-	public DynamoFeatures withStore() {
+	@Feature("search.elasticsearchEmbedded")
+	public DynamoFeatures withESEmbedded(final Param... params) {
 		getModuleConfigBuilder()
-				.addComponent(StoreManager.class, StoreManagerImpl.class);
+				.addPlugin(ESEmbeddedSearchServicesPlugin.class, params);
+		return this;
+	}
+
+	@Feature("search.elasticsearchTransport")
+	public DynamoFeatures withESTransport(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(ESTransportSearchServicesPlugin.class, params);
 		return this;
 	}
 
@@ -90,63 +132,21 @@ public final class DynamoFeatures extends Features<DynamoFeatures> {
 		return this;
 	}
 
-	@Feature("sqlStore")
-	public DynamoFeatures withSqlStore(final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(SqlDataStorePlugin.class, params);
-		return this;
-	}
-
-	@Feature("esEmbedded")
-	public DynamoFeatures withESEmbedded(final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(ESEmbeddedSearchServicesPlugin.class, params);
-		return this;
-	}
-
-	@Feature("esTransport")
-	public DynamoFeatures withESTransport(final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(ESTransportSearchServicesPlugin.class, params);
-		return this;
-	}
-
-	@Feature("berkeleyKV")
+	@Feature("kvStore.berkeley")
 	public DynamoFeatures withBerkleyKV(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(BerkeleyKVStorePlugin.class, params);
 		return this;
 	}
 
-	@Feature("delayedMemoryKV")
+	@Feature("kvStore.delayedMemory")
 	public DynamoFeatures withDelayedMemoryKV(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(DelayedMemoryKVStorePlugin.class, params);
 		return this;
 	}
 
-	@Feature("fsFile")
-	public DynamoFeatures withFsFileStore(final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(FsFileStorePlugin.class, params);
-		return this;
-	}
-
-	@Feature("dbFile")
-	public DynamoFeatures withDbFileStore(final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(DbFileStorePlugin.class, params);
-		return this;
-	}
-
-	@Feature("fsFullFile")
-	public DynamoFeatures withFsFullFileStore(final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(FsFullFileStorePlugin.class, params);
-		return this;
-	}
-
-	@Feature("luceneIndex")
+	@Feature("collections.luceneIndex")
 	public DynamoFeatures withLuceneIndex(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(LuceneIndexPlugin.class, params);

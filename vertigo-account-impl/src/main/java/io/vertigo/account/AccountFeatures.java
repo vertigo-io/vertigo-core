@@ -21,10 +21,12 @@ package io.vertigo.account;
 import io.vertigo.account.account.AccountManager;
 import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.authorization.AuthorizationManager;
+import io.vertigo.account.identityprovider.IdentityProviderManager;
 import io.vertigo.account.impl.account.AccountDefinitionProvider;
 import io.vertigo.account.impl.account.AccountManagerImpl;
 import io.vertigo.account.impl.authentication.AuthenticationManagerImpl;
 import io.vertigo.account.impl.authorization.AuthorizationManagerImpl;
+import io.vertigo.account.impl.identityprovider.IdentityProviderManagerImpl;
 import io.vertigo.account.impl.security.VSecurityManagerImpl;
 import io.vertigo.account.plugins.account.cache.memory.MemoryAccountCachePlugin;
 import io.vertigo.account.plugins.account.cache.redis.RedisAccountCachePlugin;
@@ -48,7 +50,6 @@ import io.vertigo.persona.security.VSecurityManager;
  * @author pchretien
  */
 public final class AccountFeatures extends Features<AccountFeatures> {
-	private boolean withAccountManager = false;
 
 	/**
 	 * Constructor.
@@ -77,7 +78,6 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	public AccountFeatures withAuthentication() {
 		getModuleConfigBuilder()
 				.addComponent(AuthenticationManager.class, AuthenticationManagerImpl.class);
-		withAccountManager = true;
 		return this;
 	}
 
@@ -85,11 +85,10 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	 * Activates text authentication.
 	 * @return these features
 	 */
-	@Feature("textAuthentication")
+	@Feature("authentication.text")
 	public AccountFeatures withTextAuthentication(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(TextAuthenticationPlugin.class, params);
-		withAccountManager = true;
 		return this;
 	}
 
@@ -97,11 +96,10 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	 * Activates store authentication.
 	 * @return these features
 	 */
-	@Feature("storeAuthentication")
+	@Feature("authentication.store")
 	public AccountFeatures withStoreAuthentication(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(StoreAuthenticationPlugin.class, params);
-		withAccountManager = true;
 		return this;
 	}
 
@@ -109,11 +107,10 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	 * Activates ldap authentication.
 	 * @return these features
 	 */
-	@Feature("ldapAuthentication")
+	@Feature("authentication.ldap")
 	public AccountFeatures withLdapAuthentication(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(LdapAuthenticationPlugin.class, params);
-		withAccountManager = true;
 		return this;
 	}
 
@@ -121,11 +118,18 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	 * Activates mock authentication.
 	 * @return these features
 	 */
-	@Feature("mockAuthentication")
+	@Feature("authentication.mock")
 	public AccountFeatures withMockAuthentication(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(MockAuthenticationPlugin.class, params);
-		withAccountManager = true;
+		return this;
+	}
+
+	@Feature("account")
+	public AccountFeatures withAccount() {
+		getModuleConfigBuilder()
+				.addComponent(AccountManager.class, AccountManagerImpl.class)
+				.addDefinitionProvider(AccountDefinitionProvider.class);
 		return this;
 	}
 
@@ -133,11 +137,10 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	 * Activates text authentication.
 	 * @return these features
 	 */
-	@Feature("storeAccount")
+	@Feature("account.store.store")
 	public AccountFeatures withStoreAccount(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(StoreAccountStorePlugin.class, params);
-		withAccountManager = true;
 		return this;
 	}
 
@@ -145,56 +148,59 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	 * Activates text authentication.
 	 * @return these features
 	 */
-	@Feature("textAccount")
+	@Feature("account.store.text")
 	public AccountFeatures withTextAccount(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(TextAccountStorePlugin.class, params);
-		withAccountManager = true;
 		return this;
 	}
 
-	@Feature("loaderAccount")
+	@Feature("account.store.loader")
 	public AccountFeatures withLoaderAccount(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(LoaderAccountStorePlugin.class, params);
-		withAccountManager = true;
 		return this;
 	}
 
-	@Feature("memoryAccountCache")
+	@Feature("account.cache.memory")
 	public AccountFeatures withMemoryAccountCache(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(MemoryAccountCachePlugin.class, params);
 		return this;
 	}
 
-	@Feature("redisAccountCache")
+	@Feature("account.cache.redis")
 	public AccountFeatures withRedisAccountCache(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(RedisAccountCachePlugin.class, params);
 		return this;
 	}
 
-	@Feature("storeIdentity")
-	public AccountFeatures withStoreIdentity(final Param... params) {
+	@Feature("identityProvider")
+	public AccountFeatures withIdentityProvider() {
 		getModuleConfigBuilder()
-				.addPlugin(StoreIdentityProviderPlugin.class, params);
-		withAccountManager = true;
+				.addComponent(IdentityProviderManager.class, IdentityProviderManagerImpl.class);
 		return this;
 	}
 
-	@Feature("ldapIdentity")
-	public AccountFeatures withLdapIdentity(final Param... params) {
+	@Feature("identityProvider.store")
+	public AccountFeatures withStoreIdentityProvider(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(StoreIdentityProviderPlugin.class, params);
+		return this;
+	}
+
+	@Feature("identityProvider.ldap")
+	public AccountFeatures withLdapIdentityProvider(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(LdapIdentityProviderPlugin.class, params);
 		return this;
 	}
 
-	@Feature("textIdentity")
-	public AccountFeatures withTextIdentity(final Param... params) {
+	@Feature("identityProvider.text")
+	public AccountFeatures withTextIdentityProvider(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(TextIdentityProviderPlugin.class, params);
-		withAccountManager = true;
 		return this;
 	}
 
@@ -206,18 +212,13 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	public AccountFeatures withAuthorization() {
 		getModuleConfigBuilder()
 				.addComponent(AuthorizationManager.class, AuthorizationManagerImpl.class);
-		withAccountManager = true;
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
-		if (withAccountManager) {
-			getModuleConfigBuilder()
-					.addComponent(AccountManager.class, AccountManagerImpl.class)
-					.addDefinitionProvider(AccountDefinitionProvider.class);
-		}
+		//
 	}
 
 }

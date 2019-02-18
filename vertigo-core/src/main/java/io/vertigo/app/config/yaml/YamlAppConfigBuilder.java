@@ -160,7 +160,21 @@ public final class YamlAppConfigBuilder implements Builder<AppConfig> {
 								Assertion.checkState(featureConfig.size() == 1, "a feature is designed by it's class");
 								final String featureName = featureConfig.keySet().iterator().next();
 								final Method methodForFeature = featureMethods.get(featureName);
-								Assertion.checkNotNull(methodForFeature);
+								Assertion.checkNotNull(methodForFeature, "Unable to find method for feature '{0}' in feature class '{1}'", featureName, featuresClassName);
+								final Map<String, Object> paramsMap = featureConfig.get(featureName);
+								if (isEnabledByFlag(getFlagsOfMapParams(paramsMap))) {
+									ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findmethodParameters(paramsMap, methodForFeature, featureName, featuresClassName));
+								}
+							});
+				}
+
+				if (yamlModuleConfig.featuresConfig != null) {
+					yamlModuleConfig.featuresConfig
+							.forEach(featureConfig -> {
+								Assertion.checkState(featureConfig.size() == 1, "a feature is designed by it's class");
+								final String featureName = featureConfig.keySet().iterator().next();
+								final Method methodForFeature = featureMethods.get(featureName);
+								Assertion.checkNotNull(methodForFeature, "Unable to find method for feature '{0}' in feature class '{1}'", featureName, featuresClassName);
 								final Map<String, Object> paramsMap = featureConfig.get(featureName);
 								if (isEnabledByFlag(getFlagsOfMapParams(paramsMap))) {
 									ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findmethodParameters(paramsMap, methodForFeature, featureName, featuresClassName));

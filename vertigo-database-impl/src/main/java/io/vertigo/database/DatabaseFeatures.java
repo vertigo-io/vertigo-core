@@ -70,7 +70,7 @@ public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 	 * Add InfluxDb timeseries database.
 	 * @return  the feature
 	 */
-	@Feature("influxdb")
+	@Feature("timeseries.influxdb")
 	public DatabaseFeatures withInfluxDb(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(InfluxDbTimeSeriesPlugin.class, params);
@@ -81,7 +81,7 @@ public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 	 * Add InfluxDb timeseries database.
 	 * @return  the feature
 	 */
-	@Feature("fakeTimeseries")
+	@Feature("timeseries.fake")
 	public DatabaseFeatures withFakeTimeseries() {
 		getModuleConfigBuilder()
 				.addPlugin(FakeTimeSeriesPlugin.class);
@@ -92,7 +92,7 @@ public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 	 * Add InfluxDb timeseries database.
 	 * @return  the feature
 	 */
-	@Feature("datasource")
+	@Feature("sql.datasource")
 	public DatabaseFeatures withDatasource(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(DataSourceConnectionProviderPlugin.class, params);
@@ -103,7 +103,7 @@ public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 	 * Add InfluxDb timeseries database.
 	 * @return  the feature
 	 */
-	@Feature("c3p0")
+	@Feature("sql.c3p0")
 	public DatabaseFeatures withC3p0(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(C3p0ConnectionProviderPlugin.class, params);

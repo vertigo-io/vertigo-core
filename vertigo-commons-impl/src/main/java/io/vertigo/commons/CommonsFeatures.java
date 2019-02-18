@@ -39,6 +39,7 @@ import io.vertigo.commons.impl.script.ScriptManagerImpl;
 import io.vertigo.commons.impl.transaction.VTransactionAspect;
 import io.vertigo.commons.impl.transaction.VTransactionManagerImpl;
 import io.vertigo.commons.node.NodeManager;
+import io.vertigo.commons.plugins.analytics.log.SmartLoggerAnalyticsConnectorPlugin;
 import io.vertigo.commons.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.commons.plugins.cache.redis.RedisCachePlugin;
@@ -68,7 +69,18 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 	@Feature("script")
 	public CommonsFeatures withScript() {
 		getModuleConfigBuilder()
-				.addComponent(ScriptManager.class, ScriptManagerImpl.class)
+				.addComponent(ScriptManager.class, ScriptManagerImpl.class);
+		return this;
+	}
+
+	/**
+	 * Activates script with a default plugin.
+	 *
+	 * @return these features
+	 */
+	@Feature("script.janino")
+	public CommonsFeatures withDefaultScript() {
+		getModuleConfigBuilder()
 				.addPlugin(JaninoExpressionEvaluatorPlugin.class);
 		return this;
 	}
@@ -88,7 +100,7 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 	 * Activates caches.
 	 * @return these features
 	 */
-	@Feature("redisCache")
+	@Feature("cache.redis")
 	public CommonsFeatures withRedisCache() {
 		getModuleConfigBuilder()
 				.addPlugin(RedisCachePlugin.class);
@@ -99,7 +111,7 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 	 * Activates caches.
 	 * @return these features
 	 */
-	@Feature("memoryCache")
+	@Feature("cache.memory")
 	public CommonsFeatures withMemoryCache() {
 		getModuleConfigBuilder()
 				.addPlugin(MemoryCachePlugin.class);
@@ -122,7 +134,7 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 
 	}
 
-	@Feature("socketLoggerAnalyticsConnector")
+	@Feature("analytics.socketLoggerConnector")
 	public CommonsFeatures withSocketLoggerAnalyticsConnector(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(SocketLoggerAnalyticsConnectorPlugin.class, params);
@@ -130,9 +142,14 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 
 	}
 
-	/**
-	
-	
+	@Feature("analytics.smartLoggerConnector")
+	public CommonsFeatures withSmartLoggerAnalyticsConnector(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(SmartLoggerAnalyticsConnectorPlugin.class, params);
+		return this;
+
+	}
+
 	/**
 	 * Adds a NodeRegistryPlugin
 	 * @param nodeRegistryPluginClass the plugin to use

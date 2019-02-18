@@ -56,6 +56,8 @@ import io.vertigo.vega.webservice.WebServiceManager;
  */
 public final class VegaFeatures extends Features<VegaFeatures> {
 
+	private boolean webservicesEnabled;
+
 	private boolean tokensEnabled;
 	private String myTokens;
 	private String mySearchApiVersion;
@@ -69,8 +71,14 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 		super("vertigo-vega");
 	}
 
-	@Feature("token")
-	public VegaFeatures withTokens(final Param... params) {
+	@Feature("webservices")
+	public VegaFeatures withWebServices() {
+		webservicesEnabled = true;
+		return this;
+	}
+
+	@Feature("webservices.token")
+	public VegaFeatures withWebServicesTokens(final Param... params) {
 		//-----
 		Assertion.checkState(params.length == 1 && "tokens".equals(params[0].getName()), "tokens param should be provided ");
 		myTokens = params[0].getValue();
@@ -79,41 +87,41 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 		return this;
 	}
 
-	@Feature("rateLimiting")
-	public VegaFeatures withRateLimiting() {
+	@Feature("webservices.rateLimiting")
+	public VegaFeatures withWebServicesRateLimiting() {
 		rateLimitingEnabled = true;
 		return this;
 	}
 
-	@Feature("security")
-	public VegaFeatures withSecurity() {
+	@Feature("webservices.security")
+	public VegaFeatures withWebServicesSecurity() {
 		securityEnabled = true;
 		return this;
 	}
 
-	@Feature("apiPrefix")
-	public VegaFeatures withApiPrefix(final Param... params) {
+	@Feature("webservices.apiPrefix")
+	public VegaFeatures withWebServicesApiPrefix(final Param... params) {
 		Assertion.checkState(params.length == 1 && "apiPrefix".equals(params[0].getName()), "apiPrefix param should be provided ");
 		myApiPrefix = params[0].getValue();
 		return this;
 	}
 
-	@Feature("searchApiVersion")
-	public VegaFeatures withSearchApiVersion(final Param... params) {
+	@Feature("webservices.searchApiVersion")
+	public VegaFeatures withWebServicesSearchApiVersion(final Param... params) {
 		Assertion.checkState(params.length == 1 && "searchApiVersion".equals(params[0].getName()), "searchApiVersion param should be provided ");
 		mySearchApiVersion = params[0].getValue();
 		return this;
 	}
 
-	@Feature("embeddedServer")
-	public VegaFeatures withEmbeddedServer(final Param... params) {
+	@Feature("webservices.embeddedServer")
+	public VegaFeatures withWebServicesEmbeddedServer(final Param... params) {
 		Assertion.checkState(params.length == 1 && "port".equals(params[0].getName()), "port param should be provided ");
 		myPort = params[0].getValue();
 		return this;
 	}
 
-	@Feature("cors")
-	public VegaFeatures withOriginCORSFilter(final Param... params) {
+	@Feature("webservices.cors")
+	public VegaFeatures withWebServicesOriginCORSFilter(final Param... params) {
 		Assertion.checkState(params.length == 1 && "originCORSFilter".equals(params[0].getName()), "originCORSFilter param should be provided ");
 		myOriginCORSFilter = params[0].getValue();
 		return this;
@@ -122,66 +130,67 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
-
-		final PluginConfigBuilder corsAllowerPluginConfigBuilder = PluginConfig.builder(CorsAllowerWebServiceHandlerPlugin.class);
-		if (myOriginCORSFilter != null) {
-			corsAllowerPluginConfigBuilder.addParam(Param.of("originCORSFilter", myOriginCORSFilter));
-		}
-
-		getModuleConfigBuilder()
-				.addComponent(WebServiceManager.class, WebServiceManagerImpl.class)
-				.addPlugin(AnnotationsWebServiceScannerPlugin.class)
-				.addComponent(SwaggerWebServices.class)
-				.addComponent(CatalogWebServices.class)
-
-				//-- Handlers plugins
-				.addPlugin(ExceptionWebServiceHandlerPlugin.class)
-				.addPlugin(corsAllowerPluginConfigBuilder.build())
-				.addPlugin(AnalyticsWebServiceHandlerPlugin.class)
-				.addPlugin(JsonConverterWebServiceHandlerPlugin.class);
-		if (mySearchApiVersion != null) {
-			getModuleConfigBuilder()
-					.addComponent(JsonEngine.class, GoogleJsonEngine.class,
-							Param.of("searchApiVersion", mySearchApiVersion));
-		} else {
-			getModuleConfigBuilder()
-					.addComponent(JsonEngine.class, GoogleJsonEngine.class);
-		}
-
-		if (securityEnabled) {
-			getModuleConfigBuilder()
-					.addPlugin(SessionInvalidateWebServiceHandlerPlugin.class)
-					.addPlugin(SessionWebServiceHandlerPlugin.class)
-					.addPlugin(SecurityWebServiceHandlerPlugin.class);
-		}
-		if (tokensEnabled) {
-			getModuleConfigBuilder()
-					.addPlugin(ServerSideStateWebServiceHandlerPlugin.class)
-					.addPlugin(AccessTokenWebServiceHandlerPlugin.class)
-					.addPlugin(PaginatorAndSortWebServiceHandlerPlugin.class)
-					.addComponent(TokenManager.class, TokenManagerImpl.class,
-							Param.of("collection", myTokens));
-		}
-		if (rateLimitingEnabled) {
-			getModuleConfigBuilder()
-					.addPlugin(RateLimitingWebServiceHandlerPlugin.class);
-		}
-		if (myPort != null) {
-			final ListBuilder<Param> params = new ListBuilder()
-					.add(Param.of("port", myPort));
-			if (myApiPrefix != null) {
-				params.add(Param.of("apiPrefix", myApiPrefix));
+		if (webservicesEnabled) {
+			final PluginConfigBuilder corsAllowerPluginConfigBuilder = PluginConfig.builder(CorsAllowerWebServiceHandlerPlugin.class);
+			if (myOriginCORSFilter != null) {
+				corsAllowerPluginConfigBuilder.addParam(Param.of("originCORSFilter", myOriginCORSFilter));
 			}
-			getModuleConfigBuilder().addPlugin(new PluginConfig(SparkJavaEmbeddedWebServerPlugin.class, params.build()));
-		} else {
-			final ListBuilder<Param> params = new ListBuilder<>();
-			if (myApiPrefix != null) {
-				params.add(Param.of("apiPrefix", myApiPrefix));
-			}
-			getModuleConfigBuilder().addPlugin(new PluginConfig(SparkJavaServletFilterWebServerPlugin.class, params.build()));
-		}
 
-		getModuleConfigBuilder().addPlugin(ValidatorWebServiceHandlerPlugin.class)
-				.addPlugin(RestfulServiceWebServiceHandlerPlugin.class);
+			getModuleConfigBuilder()
+					.addComponent(WebServiceManager.class, WebServiceManagerImpl.class)
+					.addPlugin(AnnotationsWebServiceScannerPlugin.class)
+					.addComponent(SwaggerWebServices.class)
+					.addComponent(CatalogWebServices.class)
+
+					//-- Handlers plugins
+					.addPlugin(ExceptionWebServiceHandlerPlugin.class)
+					.addPlugin(corsAllowerPluginConfigBuilder.build())
+					.addPlugin(AnalyticsWebServiceHandlerPlugin.class)
+					.addPlugin(JsonConverterWebServiceHandlerPlugin.class);
+			if (mySearchApiVersion != null) {
+				getModuleConfigBuilder()
+						.addComponent(JsonEngine.class, GoogleJsonEngine.class,
+								Param.of("searchApiVersion", mySearchApiVersion));
+			} else {
+				getModuleConfigBuilder()
+						.addComponent(JsonEngine.class, GoogleJsonEngine.class);
+			}
+
+			if (securityEnabled) {
+				getModuleConfigBuilder()
+						.addPlugin(SessionInvalidateWebServiceHandlerPlugin.class)
+						.addPlugin(SessionWebServiceHandlerPlugin.class)
+						.addPlugin(SecurityWebServiceHandlerPlugin.class);
+			}
+			if (tokensEnabled) {
+				getModuleConfigBuilder()
+						.addPlugin(ServerSideStateWebServiceHandlerPlugin.class)
+						.addPlugin(AccessTokenWebServiceHandlerPlugin.class)
+						.addPlugin(PaginatorAndSortWebServiceHandlerPlugin.class)
+						.addComponent(TokenManager.class, TokenManagerImpl.class,
+								Param.of("collection", myTokens));
+			}
+			if (rateLimitingEnabled) {
+				getModuleConfigBuilder()
+						.addPlugin(RateLimitingWebServiceHandlerPlugin.class);
+			}
+			if (myPort != null) {
+				final ListBuilder<Param> params = new ListBuilder()
+						.add(Param.of("port", myPort));
+				if (myApiPrefix != null) {
+					params.add(Param.of("apiPrefix", myApiPrefix));
+				}
+				getModuleConfigBuilder().addPlugin(new PluginConfig(SparkJavaEmbeddedWebServerPlugin.class, params.build()));
+			} else {
+				final ListBuilder<Param> params = new ListBuilder<>();
+				if (myApiPrefix != null) {
+					params.add(Param.of("apiPrefix", myApiPrefix));
+				}
+				getModuleConfigBuilder().addPlugin(new PluginConfig(SparkJavaServletFilterWebServerPlugin.class, params.build()));
+			}
+
+			getModuleConfigBuilder().addPlugin(ValidatorWebServiceHandlerPlugin.class)
+					.addPlugin(RestfulServiceWebServiceHandlerPlugin.class);
+		}
 	}
 }

@@ -19,6 +19,7 @@ public final class YamlAppConfig {
 
 	public static class YamlModuleConfig {
 		public List<YamlFeatureConfig> features;
+		public List<YamlFeatureConfig> featuresConfig;
 		public List<String> __flags__ = new ArrayList<>();
 		public List<YamlPluginConfig> plugins = new ArrayList<>();
 	}
