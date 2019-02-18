@@ -1,0 +1,34 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<config>
+	<boot locales="fr_FR">
+		<plugin class="io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin" />
+	</boot>
+
+	<module name="vertigo-commons">
+		<component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
+		<component api="CacheManager" class="io.vertigo.commons.impl.cache.CacheManagerImpl">
+			<plugin class="io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin" />
+		</component>
+		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
+		<component api="VTransactionManager" class="io.vertigo.commons.impl.transaction.VTransactionManagerImpl"/>
+	</module>
+
+	<module name="vertigo-dynamo">
+		<component api="CollectionsManager" class="io.vertigo.dynamo.impl.collections.CollectionsManagerImpl">
+			<plugin class="io.vertigo.dynamo.plugins.collections.lucene_6_6.LuceneIndexPlugin" />
+		</component>
+		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
+
+		<component api="EventBusManager" class="io.vertigo.commons.impl.eventbus.EventBusManagerImpl" />
+		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl" />
+ 	</module>
+
+	<module name="myApp">
+		<definitions>
+			<provider class="io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider">
+				<resource type="kpr" path="io/vertigo/dynamo/collections/data/execution.kpr" />
+				<resource type="classes" path="io.vertigo.dynamo.collections.data.DtDefinitions" />
+			</provider>
+		</definitions>
+	</module>
+</config>
