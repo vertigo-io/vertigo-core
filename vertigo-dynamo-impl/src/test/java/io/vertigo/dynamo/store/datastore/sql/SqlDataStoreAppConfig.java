@@ -48,6 +48,7 @@ public class SqlDataStoreAppConfig {
 				.endBoot()
 				.addModule(new CommonsFeatures()
 						.withScript()
+						.withJaninoScript()
 						.withCache()
 						.addPlugin(MemoryCachePlugin.class)
 						.build())

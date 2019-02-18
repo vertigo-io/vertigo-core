@@ -20,9 +20,6 @@ package io.vertigo.account.authentification;
 
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.data.TestUserSession;
-import io.vertigo.account.plugins.account.cache.redis.RedisAccountCachePlugin;
-import io.vertigo.account.plugins.account.store.text.TextAccountStorePlugin;
-import io.vertigo.account.plugins.authentication.ldap.LdapAuthenticationPlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
@@ -38,21 +35,22 @@ public final class MyAppConfig {
 		final CommonsFeatures commonsFeatures = new CommonsFeatures();
 		final AccountFeatures accountFeatures = new AccountFeatures()
 				.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
+				.withAccount()
 				.withAuthentication();
 
 		if (redis) {
 			commonsFeatures
 					.withRedisConnector(Param.of("host", REDIS_HOST), Param.of("port", Integer.toString(REDIS_PORT)), Param.of("database", Integer.toString(REDIS_DATABASE)));
 			accountFeatures
-					.addPlugin(RedisAccountCachePlugin.class);
+					.withRedisAccountCache();
 		}
 		accountFeatures
-				.addPlugin(TextAccountStorePlugin.class,
+				.withTextAccount(
 						Param.of("accountFilePath", "io/vertigo/account/data/identities.txt"),
 						Param.of("accountFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<email>(?<authToken>[^;@]+)@[^;]+);(?<photoUrl>.*)$"),
 						Param.of("groupFilePath", "io/vertigo/account/data/groups.txt"),
 						Param.of("groupFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<accountIds>.*)$"))
-				.addPlugin(LdapAuthenticationPlugin.class,
+				.withLdapAuthentication(
 						Param.of("userLoginTemplate", "cn={0},dc=vertigo,dc=io"),
 						Param.of("ldapServerHost", "docker-vertigo.part.klee.lan.net"),
 						Param.of("ldapServerPort", "389"));

@@ -30,7 +30,6 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
-import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
@@ -43,17 +42,19 @@ public final class MyAppConfig {
 	public static AppConfig config(final boolean redis, final boolean database) {
 		final CommonsFeatures commonsFeatures = new CommonsFeatures()
 				.withScript()
+				.withJaninoScript()
 				.withCache()
 				.addPlugin(MemoryCachePlugin.class);
 		final DatabaseFeatures databaseFeatures = new DatabaseFeatures();
 		final DynamoFeatures dynamoFeatures = new DynamoFeatures();
 		final AccountFeatures accountFeatures = new AccountFeatures()
-				.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()));
+				.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
+				.withAccount();
 
 		if (database) {
 			databaseFeatures
 					.withSqlDataBase()
-					.addPlugin(C3p0ConnectionProviderPlugin.class,
+					.withC3p0(
 							Param.of("dataBaseClass", H2DataBase.class.getName()),
 							Param.of("jdbcDriver", "org.h2.Driver"),
 							Param.of("jdbcUrl", "jdbc:h2:mem:database"));

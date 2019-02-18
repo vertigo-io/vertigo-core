@@ -48,6 +48,7 @@ public class DaoTestClass extends AbstractTestCaseJU4 {
 				.addModule(new CommonsFeatures()
 						.addPlugin(MemoryCachePlugin.class)
 						.withScript()
+						.withJaninoScript()
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()

@@ -79,7 +79,7 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 	 * @return these features
 	 */
 	@Feature("script.janino")
-	public CommonsFeatures withDefaultScript() {
+	public CommonsFeatures withJaninoScript() {
 		getModuleConfigBuilder()
 				.addPlugin(JaninoExpressionEvaluatorPlugin.class);
 		return this;

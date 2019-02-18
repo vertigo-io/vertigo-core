@@ -170,9 +170,9 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	}
 
 	@Feature("account.cache.redis")
-	public AccountFeatures withRedisAccountCache(final Param... params) {
+	public AccountFeatures withRedisAccountCache() {
 		getModuleConfigBuilder()
-				.addPlugin(RedisAccountCachePlugin.class, params);
+				.addPlugin(RedisAccountCachePlugin.class);
 		return this;
 	}
 
