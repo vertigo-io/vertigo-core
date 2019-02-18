@@ -62,6 +62,8 @@ public final class CacheControlFilter extends AbstractFilter {
 				} else if (!EXCLUDE_PATTERN_PARAM_NAME.equals(name)) {
 					value = filterConfig.getInitParameter(name);
 					tmp.put(name, value);
+				} else {
+					//EXCLUDE_PATTERN_PARAM already process by AbstractFilter
 				}
 			}
 			headers = Collections.unmodifiableMap(tmp);

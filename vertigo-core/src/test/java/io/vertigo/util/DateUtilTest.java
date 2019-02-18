@@ -49,15 +49,6 @@ public final class DateUtilTest {
 		assertEquals(date, Instant.now());
 	}
 
-	private static void assertEqualsWithChgtHeure(final long expected, final long actual) {
-		long gap = expected - actual;
-		if (gap != 0) {
-			gap = Math.abs(gap) - 3600 * 1000;
-		}
-		assertEquals(0L, gap);
-
-	}
-
 	@Test
 	public void testDaysBetween() {
 		final LocalDate today = LocalDate.now();
@@ -80,10 +71,6 @@ public final class DateUtilTest {
 		final LocalDate date2 = startDate.plusDays(48);
 		final long days = DateUtil.daysBetween(startDate, date2);
 		assertEquals(48L, days);
-	}
-
-	private static void nop(final int days) {
-		//rien
 	}
 
 	@Test
