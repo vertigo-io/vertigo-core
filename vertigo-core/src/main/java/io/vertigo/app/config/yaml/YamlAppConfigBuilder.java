@@ -30,6 +30,7 @@ import io.vertigo.core.component.Plugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
+import io.vertigo.lang.Tuples.Tuple2;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.Selector;
@@ -98,9 +99,9 @@ public final class YamlAppConfigBuilder implements Builder<AppConfig> {
 				.forEach(initializerConfig -> {
 					Assertion.checkState(initializerConfig.size() == 1, "an initializer is defined by it's class");
 					// ---
-					final String initializerClassName = initializerConfig.keySet().iterator().next();
-					if (isEnabledByFlag(getFlagsOfMapParams(initializerConfig.get(initializerClassName)))) {
-						appConfigBuilder.addInitializer(ClassUtil.classForName(initializerClassName, ComponentInitializer.class));
+					final Map.Entry<String, Map<String, Object>> initializerEntry = initializerConfig.entrySet().iterator().next();
+					if (isEnabledByFlag(getFlagsOfMapParams(initializerEntry.getValue()))) {
+						appConfigBuilder.addInitializer(ClassUtil.classForName(initializerEntry.getKey(), ComponentInitializer.class));
 					}
 				});
 	}
@@ -124,12 +125,12 @@ public final class YamlAppConfigBuilder implements Builder<AppConfig> {
 					plugin -> {
 						Assertion.checkState(plugin.size() == 1, "a plugin is defined by it's class");
 						// ---
-						final String pluginClassName = plugin.keySet().iterator().next();
-						if (isEnabledByFlag(getFlagsOfMapParams(plugin.get(pluginClassName)))) {
+						final Map.Entry<String, Map<String, Object>> pluginEntry = plugin.entrySet().iterator().next();
+						if (isEnabledByFlag(getFlagsOfMapParams(pluginEntry.getValue()))) {
 							appConfigBuilder.beginBoot()
 									.addPlugin(
-											ClassUtil.classForName(pluginClassName, Plugin.class),
-											plugin.get(pluginClassName).entrySet().stream()
+											ClassUtil.classForName(pluginEntry.getKey(), Plugin.class),
+											pluginEntry.getValue().entrySet().stream()
 													.filter(entry -> !"__flags__".equals(entry.getKey()))
 													.map(entry -> Param.of(entry.getKey(), evalParamValue(String.valueOf(entry.getValue()))))
 													.toArray(Param[]::new));
@@ -151,19 +152,20 @@ public final class YamlAppConfigBuilder implements Builder<AppConfig> {
 						.filterMethods(MethodConditions.annotatedWith(Feature.class))
 						.findMethods()
 						.stream()
-						.map(classAndMethod -> classAndMethod.getVal2())
+						.map(Tuple2::getVal2)
 						.collect(Collectors.toMap(method -> method.getAnnotation(Feature.class).value(), method -> method));
 
 				if (yamlModuleConfig.features != null) {
 					yamlModuleConfig.features
 							.forEach(featureConfig -> {
 								Assertion.checkState(featureConfig.size() == 1, "a feature is designed by it's class");
-								final String featureName = featureConfig.keySet().iterator().next();
-								final Method methodForFeature = featureMethods.get(featureName);
-								Assertion.checkNotNull(methodForFeature, "Unable to find method for feature '{0}' in feature class '{1}'", featureName, featuresClassName);
-								final Map<String, Object> paramsMap = featureConfig.get(featureName);
+								final Map.Entry<String, Map<String, Object>> featureEntry = featureConfig.entrySet().iterator().next();
+								final String featureClassName = featureEntry.getKey();
+								final Method methodForFeature = featureMethods.get(featureClassName);
+								Assertion.checkNotNull(methodForFeature, "Unable to find method for feature '{0}' in feature class '{1}'", featureClassName, featuresClassName);
+								final Map<String, Object> paramsMap = featureEntry.getValue();
 								if (isEnabledByFlag(getFlagsOfMapParams(paramsMap))) {
-									ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findmethodParameters(paramsMap, methodForFeature, featureName, featuresClassName));
+									ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findmethodParameters(paramsMap, methodForFeature, featureClassName, featuresClassName));
 								}
 							});
 				}
@@ -172,12 +174,13 @@ public final class YamlAppConfigBuilder implements Builder<AppConfig> {
 					yamlModuleConfig.featuresConfig
 							.forEach(featureConfig -> {
 								Assertion.checkState(featureConfig.size() == 1, "a feature is designed by it's class");
-								final String featureName = featureConfig.keySet().iterator().next();
-								final Method methodForFeature = featureMethods.get(featureName);
-								Assertion.checkNotNull(methodForFeature, "Unable to find method for feature '{0}' in feature class '{1}'", featureName, featuresClassName);
-								final Map<String, Object> paramsMap = featureConfig.get(featureName);
+								final Map.Entry<String, Map<String, Object>> featureEntry = featureConfig.entrySet().iterator().next();
+								final String featureClassName = featureEntry.getKey();
+								final Method methodForFeature = featureMethods.get(featureClassName);
+								Assertion.checkNotNull(methodForFeature, "Unable to find method for feature '{0}' in feature class '{1}'", featureClassName, featuresClassName);
+								final Map<String, Object> paramsMap = featureEntry.getValue();
 								if (isEnabledByFlag(getFlagsOfMapParams(paramsMap))) {
-									ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findmethodParameters(paramsMap, methodForFeature, featureName, featuresClassName));
+									ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findmethodParameters(paramsMap, methodForFeature, featureClassName, featuresClassName));
 								}
 							});
 				}
@@ -186,8 +189,9 @@ public final class YamlAppConfigBuilder implements Builder<AppConfig> {
 						plugin -> {
 							Assertion.checkState(plugin.size() == 1, "a plugin is defined by it's class");
 							// ---
-							final String pluginClassName = plugin.keySet().iterator().next();
-							final Map<String, Object> paramsMap = plugin.get(pluginClassName);
+							final Map.Entry<String, Map<String, Object>> pluginEntry = plugin.entrySet().iterator().next();
+							final String pluginClassName = pluginEntry.getKey();
+							final Map<String, Object> paramsMap = pluginEntry.getValue();
 							if (isEnabledByFlag(getFlagsOfMapParams(paramsMap))) {
 								moduleConfigByFeatures
 										.addPlugin(

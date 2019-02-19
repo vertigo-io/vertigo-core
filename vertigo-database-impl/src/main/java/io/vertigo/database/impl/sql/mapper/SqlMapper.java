@@ -20,6 +20,7 @@ package io.vertigo.database.impl.sql.mapper;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.database.sql.mapper.SqlAdapter;
@@ -56,7 +57,7 @@ public final class SqlMapper {
 		//---
 		adaptersByJavaType = adapters
 				.stream()
-				.collect(Collectors.toMap(SqlAdapter::getJavaDataType, i -> i));
+				.collect(Collectors.toMap(SqlAdapter::getJavaDataType, Function.identity()));
 	}
 
 	public Class getSqlType(final Class javaType) {

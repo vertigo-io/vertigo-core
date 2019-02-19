@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.component.Component;
@@ -67,7 +68,7 @@ final class ComponentProxyFactory {
 			Assertion.checkNotNull(proxyMethods);
 			//---
 			proxyMethodsByMethod = Arrays.stream(intf.getDeclaredMethods())
-					.collect(Collectors.toMap(method -> method,
+					.collect(Collectors.toMap(Function.identity(),
 							method -> findProxyMethod(method, proxyMethods)));
 			this.aspectsByMethod = aspectsByMethod;
 		}
