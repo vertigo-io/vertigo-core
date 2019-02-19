@@ -19,15 +19,20 @@
 package io.vertigo.dynamo.plugins.search.elasticsearch.commonshttp;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.logging.LogConfigurator;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.node.InternalSettingsPreparer;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeValidationException;
+import org.elasticsearch.plugins.Plugin;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.resource.ResourceManager;
@@ -75,7 +80,7 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 			@Named("node.name") final Optional<String> nodeNameOpt,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
-		super(envIndex, envIndexIsPrefix.orElse(false), rowsPerQuery, configFile, codecManager, resourceManager);
+		super(envIndex, envIndexIsPrefix.orElse(true), rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(serversNamesStr,
 				"Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
 		Assertion.checkArgument(!serversNamesStr.contains(";"),
@@ -91,13 +96,24 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 	/** {@inheritDoc} */
 	@Override
 	protected Client createClient() {
-		node = new Node(buildNodeSettings());
+		node = new MyNode(buildNodeSettings(), Collections.emptyList());
 		try {
 			node.start();
 		} catch (final NodeValidationException e) {
 			throw WrappedException.wrap(e, "Error at ElasticSearch node start");
 		}
 		return node.client();
+	}
+
+	private static class MyNode extends Node {
+		public MyNode(final Settings preparedSettings, final Collection<Class<? extends Plugin>> classpathPlugins) {
+			super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, null), classpathPlugins, true);
+		}
+
+		@Override
+		protected void registerDerivedNodeNameWithLogger(final String nodeName) {
+			LogConfigurator.setNodeName(nodeName);
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -115,15 +131,10 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 		return Settings.builder().put("node.name", nodeName)
 				.put("node.data", false)
 				.put("node.master", false)
-				// .put("discovery.zen.fd.ping_timeout", "30s")
-				// .put("discovery.zen.minimum_master_nodes", 2)
-				.put("discovery.zen.ping.multicast.enabled", false)
-				.putArray("discovery.zen.ping.unicast.hosts", serversNames)
+				.put("node.ingest", false)
+				.put("cluster.remote.connect", false)
+				.putList("discovery.zen.ping.unicast.hosts", serversNames)
 				.put("cluster.name", clusterName)
-				// .put("index.store.type", "memory")
-				// .put("index.store.fs.memory.enabled", "true")
-				// .put("gateway.type", "none")
-
 				.build();
 	}
 }

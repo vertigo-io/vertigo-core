@@ -31,8 +31,11 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.elasticsearch.analysis.common.CommonAnalysisPlugin;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.logging.LogConfigurator;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.index.mapper.MapperExtrasPlugin;
 import org.elasticsearch.index.reindex.ReindexPlugin;
 import org.elasticsearch.node.InternalSettingsPreparer;
 import org.elasticsearch.node.Node;
@@ -81,7 +84,7 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 			@Named("transport.tcp.port") final Optional<Integer> transportPortOpt,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
-		super(envIndex, envIndexIsPrefix.orElse(false), rowsPerQuery, configFile, codecManager, resourceManager);
+		super(envIndex, envIndexIsPrefix.orElse(true), rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(elasticSearchHome);
 		//-----
 		elasticSearchHomeURL = resourceManager.resolve(elasticSearchHome);
@@ -122,12 +125,17 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 		}
 		Assertion.checkArgument(home.exists() && home.isDirectory(), "Le ElasticSearchHome : {0} n''existe pas, ou n''est pas un répertoire.", home.getAbsolutePath());
 		Assertion.checkArgument(home.canWrite(), "L''application n''a pas les droits d''écriture sur le ElasticSearchHome : {0}", home.getAbsolutePath());
-		return new MyNode(buildNodeSettings(home.getAbsolutePath()), Arrays.asList(Netty4Plugin.class, ReindexPlugin.class));
+		return new MyNode(buildNodeSettings(home.getAbsolutePath()), Arrays.asList(Netty4Plugin.class, ReindexPlugin.class, CommonAnalysisPlugin.class, MapperExtrasPlugin.class));
 	}
 
 	private static class MyNode extends Node {
 		public MyNode(final Settings preparedSettings, final Collection<Class<? extends Plugin>> classpathPlugins) {
-			super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, null), classpathPlugins);
+			super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, null), classpathPlugins, true);
+		}
+
+		@Override
+		protected void registerDerivedNodeNameWithLogger(final String nodeName) {
+			LogConfigurator.setNodeName(nodeName);
 		}
 	}
 

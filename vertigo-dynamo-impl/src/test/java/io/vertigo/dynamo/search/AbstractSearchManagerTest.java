@@ -274,8 +274,9 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		size = query("*:*");
 		Assertions.assertEquals(itemDataBase.size(), size);
 
-		size = query("_all:(+peugeot +diesel)");
-		Assertions.assertEquals(3L, size);
+		/* _all deprecated in 6.x
+		 * size = query("_all:(+peugeot +diesel)");
+		 * Assertions.assertEquals(3L, size); */
 
 		size = query("ALL_TEXT:(+peugeot +diesel)");
 		Assertions.assertEquals(3L, size);
@@ -1174,7 +1175,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		//recherche
 		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of(query))
 				.build();
-		final DtListState listState =  DtListState.of(null, 0, itemIndexDefinition.getIndexDtDefinition().getField(sortField).getName(), sortDesc);
+		final DtListState listState = DtListState.of(null, 0, itemIndexDefinition.getIndexDtDefinition().getField(sortField).getName(), sortDesc);
 		final DtList<Item> dtList = doQuery(searchQuery, listState).getDtList();
 		Assertions.assertFalse(dtList.isEmpty(), "Result list was empty");
 		return dtList.get(0);

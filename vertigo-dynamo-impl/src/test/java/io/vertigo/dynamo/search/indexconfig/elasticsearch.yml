@@ -14,11 +14,9 @@ index :
                 tokenizer : standard
                 filter : [standard, lowercase, snowball, elision]
         tokenizer :
-            keyword :
-                type : keyword
             piped_keywords :
                 type : pattern
-                pattern : '([|])'
+                pattern : '|'
         filter :
             snowball:
                 type : snowball

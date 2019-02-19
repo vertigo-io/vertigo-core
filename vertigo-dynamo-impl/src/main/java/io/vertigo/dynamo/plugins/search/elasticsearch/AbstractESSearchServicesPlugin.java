@@ -25,8 +25,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +32,7 @@ import org.apache.logging.log4j.Logger;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthAction;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
@@ -168,14 +166,14 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					esClient.admin().indices().prepareCreate(myIndexName).get();
 				} else {
 					try (InputStream is = configFileUrl.openStream()) {
-						final Settings settings = Settings.builder().loadFromStream(configFileUrl.getFile(), is).build();
+						final Settings settings = Settings.builder().loadFromStream(configFileUrl.getFile(), is, false).build();
 						esClient.admin().indices().prepareCreate(myIndexName).setSettings(settings).get();
 					}
 				}
 			} else if (configFileUrl != null) {
 				// If we use local config file, we check config against ES server
 				try (InputStream is = configFileUrl.openStream()) {
-					final Settings settings = Settings.builder().loadFromStream(configFileUrl.getFile(), is).build();
+					final Settings settings = Settings.builder().loadFromStream(configFileUrl.getFile(), is, false).build();
 					indexSettingsValid = indexSettingsValid && !isIndexSettingsDirty(myIndexName, settings);
 				}
 			}
@@ -193,17 +191,17 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 				.getSettings()
 				.get(myIndexName);
 		boolean indexSettingsDirty = false;
-		final Map<String, String> settingsMap = settings.getAsMap();
-		for (final Entry<String, String> entry : settingsMap.entrySet()) {
-			final String currentValue = currentSettings.get(entry.getKey());
+		final Set<String> settingsNames = settings.keySet();
+		for (final String settingsName : settingsNames) {
+			final String currentValue = currentSettings.get(settingsName);
 			if (currentValue == null) {
 				indexSettingsDirty = true;
 				break;
 			}
-			final String expectedValue = entry.getValue();
+			final Object expectedValue = settings.get(settingsName);
 			if (!currentValue.equals(expectedValue)) {
 				indexSettingsDirty = true;
-				LOGGER.warn("[{}] {} :  current={}, expected= {}", myIndexName, entry.getKey(), currentValue, expectedValue);
+				LOGGER.warn("[{}] {} :  current={}, expected= {}", myIndexName, settingsName, currentValue, expectedValue);
 				break;
 			}
 		}
@@ -370,7 +368,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			}
 			typeMapping.endObject().endObject(); //end properties
 
-			final PutMappingResponse putMappingResponse = esClient.admin()
+			final AcknowledgedResponse putMappingResponse = esClient.admin()
 					.indices()
 					.preparePutMapping(obtainIndexName(indexDefinition))
 					.setType(indexDefinition.getName().toLowerCase(Locale.ROOT))

@@ -33,11 +33,10 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.functionscore.ExponentialDecayFunctionBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.filters.FiltersAggregator.KeyedFilter;
+import org.elasticsearch.search.aggregations.BucketOrder;
+import org.elasticsearch.search.aggregations.bucket.filter.FiltersAggregator.KeyedFilter;
+import org.elasticsearch.search.aggregations.bucket.range.DateRangeAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.range.RangeAggregationBuilder;
-import org.elasticsearch.search.aggregations.bucket.range.date.DateRangeAggregationBuilder;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms.Order;
 import org.elasticsearch.search.aggregations.metrics.tophits.TopHitsAggregationBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
@@ -316,13 +315,13 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 
 	private static AggregationBuilder termFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
 		//facette par field
-		final Order facetOrder;
+		final BucketOrder facetOrder;
 		switch (facetDefinition.getOrder()) {
 			case alpha:
-				facetOrder = Terms.Order.term(true);
+				facetOrder = BucketOrder.key(true);
 				break;
 			case count:
-				facetOrder = Terms.Order.count(false);
+				facetOrder = BucketOrder.count(false);
 				break;
 			case definition:
 				facetOrder = null; //ES accept null for no sorting

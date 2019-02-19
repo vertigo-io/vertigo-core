@@ -35,7 +35,7 @@
 			<plugin class="io.vertigo.dynamo.plugins.search.elasticsearch.embedded.ESEmbeddedSearchServicesPlugin">
 				<param name="home" value="io/vertigo/dynamo/search/indexconfig" />
 				<param name="config.file" value="io/vertigo/dynamo/search/indexconfig/elasticsearch.yml" />
-				<param name="envIndex" value="TU_TEST" />
+				<param name="envIndex" value="TU_TEST_" />
 				<param name="rowsPerQuery" value="50" />
 			</plugin>
 		</component>

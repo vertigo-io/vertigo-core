@@ -95,7 +95,7 @@ final class ESDocumentCodec {
 		/* 2 : Result stocké */
 		final I resultDtObjectdtObject;
 		if (searchHit.field(FULL_RESULT) == null) {
-			resultDtObjectdtObject = decode((String) searchHit.getSource().get(FULL_RESULT));
+			resultDtObjectdtObject = decode((String) searchHit.getSourceAsMap().get(FULL_RESULT));
 		} else {
 			resultDtObjectdtObject = decode(searchHit.field(FULL_RESULT).getValue());
 		}
