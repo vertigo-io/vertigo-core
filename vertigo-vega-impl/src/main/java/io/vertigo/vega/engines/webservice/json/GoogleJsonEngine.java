@@ -400,7 +400,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 				try {
 					entityId = entityDefinition.getIdField().get().getDomain().stringToValue(uidJsonValue);
 				} catch (final FormatterException e) {
-					throw new JsonParseException("Unsupported UID format " + uidJsonValue);
+					throw new JsonParseException("Unsupported UID format " + uidJsonValue, e);
 				}
 				return UID.of(entityClass, entityId);
 			}
@@ -530,8 +530,16 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 	private void filterObjectFields(final JsonElement jsonElement, final Set<String> includedAllFields, final Set<String> excludedAllFields) {
 		final Map<String, Tuple2<Set<String>, Set<String>>> filteredSubFields = parseSubFieldName(includedAllFields, excludedAllFields);
-		final Set<String> includedFields = filteredSubFields.containsKey(FIRST_LEVEL_KEY) ? filteredSubFields.get(FIRST_LEVEL_KEY).getVal1() : Collections.emptySet();
-		final Set<String> excludedFields = filteredSubFields.containsKey(FIRST_LEVEL_KEY) ? filteredSubFields.get(FIRST_LEVEL_KEY).getVal2() : Collections.emptySet();
+		final Tuple2<Set<String>, Set<String>> firstLevel = filteredSubFields.get(FIRST_LEVEL_KEY);
+		final Set<String> includedFields;
+		final Set<String> excludedFields;
+		if (firstLevel != null) { //Sonar préfère à contains
+			includedFields = filteredSubFields.get(FIRST_LEVEL_KEY).getVal1();
+			excludedFields = filteredSubFields.get(FIRST_LEVEL_KEY).getVal2();
+		} else {
+			includedFields = Collections.emptySet();
+			excludedFields = Collections.emptySet();
+		}
 
 		final JsonObject jsonObject = jsonElement.getAsJsonObject();
 		for (final String excludedField : excludedFields) {

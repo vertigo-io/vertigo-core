@@ -29,7 +29,7 @@ import javax.servlet.ServletContextListener;
 public class AppServletContextListener implements ServletContextListener {
 
 	/** Servlet listener */
-	private final AppServletStarter2 appServletStarter = new AppServletStarter2();
+	private final AppServletStarter appServletStarter = new AppServletStarter();
 
 	/** {@inheritDoc} */
 	@Override
