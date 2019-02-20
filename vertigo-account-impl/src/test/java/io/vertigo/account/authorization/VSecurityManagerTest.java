@@ -18,6 +18,7 @@
  */
 package io.vertigo.account.authorization;
 
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -83,6 +84,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 		}
 	}
 
+	@Test
 	public void testAuthenticate() {
 		final UserSession userSession = securityManager.createUserSession();
 		Assertions.assertFalse(userSession.isAuthenticated());
@@ -194,6 +196,11 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.READ));
 			Assertions.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.READ));
 
+			Assertions.assertFalse(Arrays.asList("READ", "READ2", "READ3").retainAll(authorizationManager.getAuthorizedOperations(record)));
+			Assertions.assertFalse(Arrays.asList("READ", "READ2", "READ3").retainAll(authorizationManager.getAuthorizedOperations(recordTooExpensive)));
+			Assertions.assertFalse(Arrays.asList("READ", "READ2", "READ3").retainAll(authorizationManager.getAuthorizedOperations(recordOtherUser)));
+			Assertions.assertFalse(Arrays.asList("READ", "READ2", "READ3").retainAll(authorizationManager.getAuthorizedOperations(recordOtherUserAndTooExpensive)));
+
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}
@@ -221,7 +228,11 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 			authorizationManager.obtainUserAuthorizations().withSecurityKeys("utiId", DEFAULT_UTI_ID)
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
-					.addAuthorization(recordRead);
+					.addAuthorization(recordRead).addAuthorization(recordRead)
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$READ4))
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$WRITE))
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$CREATE))
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$DELETE));
 
 			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
 			Assertions.assertTrue(canReadRecord);
@@ -232,6 +243,19 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 			Assertions.assertTrue(readRecordPredicate.test(recordTooExpensive));
 			Assertions.assertTrue(readRecordPredicate.test(recordOtherUser));
 			Assertions.assertFalse(readRecordPredicate.test(recordOtherUserAndTooExpensive));
+
+			Assertions.assertEquals("(AMOUNT <= #AMOUNT_0# OR UTI_ID_OWNER = #UTI_ID_OWNER_1#)", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ).toString());
+			Assertions.assertEquals("(AMOUNT <= #AMOUNT_0# OR UTI_ID_OWNER = #UTI_ID_OWNER_1#)", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ2).toString());
+			Assertions.assertEquals("((AMOUNT <= #AMOUNT_0# AND (UTI_ID_OWNER is null or UTI_ID_OWNER != #UTI_ID_OWNER_1# )) OR (AMOUNT > #AMOUNT_2# AND UTI_ID_OWNER = #UTI_ID_OWNER_3#))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ3).toString());
+			Assertions.assertEquals("(((UTI_ID_OWNER is null or UTI_ID_OWNER != #UTI_ID_OWNER_0# ) AND (AMOUNT < #AMOUNT_1# OR AMOUNT = #AMOUNT_2# OR AMOUNT <= #AMOUNT_3#)) OR (UTI_ID_OWNER = #UTI_ID_OWNER_4# AND (AMOUNT > #AMOUNT_5# OR AMOUNT = #AMOUNT_6# OR AMOUNT >= #AMOUNT_7#)))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ4).toString());
+			Assertions.assertEquals("false", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ_HP).toString());
+			Assertions.assertEquals("((UTI_ID_OWNER = #UTI_ID_OWNER_0# AND ETA_CD in ('CRE', 'VAL', 'PUB', 'NOT', 'REA')) OR (TYP_ID = #TYP_ID_1# AND AMOUNT > #AMOUNT_2# AND AMOUNT <= #AMOUNT_3# AND ETA_CD in ('CRE', 'VAL', 'PUB', 'NOT', 'REA')))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.WRITE).toString());
+			Assertions.assertEquals("(TYP_ID = #TYP_ID_0# AND AMOUNT <= #AMOUNT_1#)", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.CREATE).toString());
+			Assertions.assertEquals("(TYP_ID = #TYP_ID_0# OR (UTI_ID_OWNER = #UTI_ID_OWNER_1# AND ETA_CD in ('CRE', 'VAL')))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.DELETE).toString());
+
+			final boolean canReadNotify = authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$NOTIFY);
+			Assertions.assertFalse(canReadNotify);
+			Assertions.assertEquals("false", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.NOTIFY).toString());
 
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -258,7 +282,11 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 			authorizationManager.obtainUserAuthorizations().withSecurityKeys("utiId", DEFAULT_UTI_ID)
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
-					.addAuthorization(recordRead);
+					.addAuthorization(recordRead).addAuthorization(recordRead)
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$READ4))
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$WRITE))
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$CREATE))
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$DELETE));
 
 			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
 			Assertions.assertTrue(canReadRecord);
@@ -266,9 +294,22 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 			final SqlDialect sqlDialect = new PostgreSqlDataBase().getSqlDialect();
 			final Tuple2<String, CriteriaCtx> readRecordSql = authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ).toSql(sqlDialect);
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
-			Assertions.assertEquals("( AMOUNT <= #AMOUNT_0# OR UTI_ID_OWNER = #UTI_ID_OWNER_1# ) ", readRecordSql.getVal1());
+			Assertions.assertEquals("(AMOUNT <= #AMOUNT_0# OR UTI_ID_OWNER = #UTI_ID_OWNER_1#)", readRecordSql.getVal1());
 			Assertions.assertEquals(100.0, readRecordSql.getVal2().getAttributeValue("AMOUNT_0"));
 			Assertions.assertEquals(1000L, readRecordSql.getVal2().getAttributeValue("UTI_ID_OWNER_1"));
+
+			Assertions.assertEquals("(AMOUNT <= #AMOUNT_0# OR UTI_ID_OWNER = #UTI_ID_OWNER_1#)", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ).toSql(sqlDialect).getVal1());
+			Assertions.assertEquals("(AMOUNT <= #AMOUNT_0# OR UTI_ID_OWNER = #UTI_ID_OWNER_1#)", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ2).toSql(sqlDialect).getVal1());
+			Assertions.assertEquals("((AMOUNT <= #AMOUNT_0# AND (UTI_ID_OWNER is null or UTI_ID_OWNER != #UTI_ID_OWNER_1# )) OR (AMOUNT > #AMOUNT_2# AND UTI_ID_OWNER = #UTI_ID_OWNER_3#))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ3).toSql(sqlDialect).getVal1());
+			Assertions.assertEquals("(((UTI_ID_OWNER is null or UTI_ID_OWNER != #UTI_ID_OWNER_0# ) AND (AMOUNT < #AMOUNT_1# OR AMOUNT = #AMOUNT_2# OR AMOUNT <= #AMOUNT_3#)) OR (UTI_ID_OWNER = #UTI_ID_OWNER_4# AND (AMOUNT > #AMOUNT_5# OR AMOUNT = #AMOUNT_6# OR AMOUNT >= #AMOUNT_7#)))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ4).toSql(sqlDialect).getVal1());
+			Assertions.assertEquals("0=1", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ_HP).toSql(sqlDialect).getVal1());
+			Assertions.assertEquals("((UTI_ID_OWNER = #UTI_ID_OWNER_0# AND ETA_CD in ('CRE', 'VAL', 'PUB', 'NOT', 'REA')) OR (TYP_ID = #TYP_ID_1# AND AMOUNT > #AMOUNT_2# AND AMOUNT <= #AMOUNT_3# AND ETA_CD in ('CRE', 'VAL', 'PUB', 'NOT', 'REA')))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.WRITE).toSql(sqlDialect).getVal1());
+			Assertions.assertEquals("(TYP_ID = #TYP_ID_0# AND AMOUNT <= #AMOUNT_1#)", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.CREATE).toSql(sqlDialect).getVal1());
+			Assertions.assertEquals("(TYP_ID = #TYP_ID_0# OR (UTI_ID_OWNER = #UTI_ID_OWNER_1# AND ETA_CD in ('CRE', 'VAL')))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.DELETE).toSql(sqlDialect).getVal1());
+
+			final boolean canReadNotify = authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$NOTIFY);
+			Assertions.assertFalse(canReadNotify);
+			Assertions.assertEquals("0=1", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.NOTIFY).toSql(sqlDialect).getVal1());
 
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -296,6 +337,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
 					.addAuthorization(recordRead)
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$READ4))
 					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$READ_HP))
 					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$WRITE))
 					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$CREATE))
@@ -307,8 +349,10 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
 			Assertions.assertEquals("(+AMOUNT:<=100.0) (+UTI_ID_OWNER:1000)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.READ));
 			Assertions.assertEquals("(AMOUNT:<=100.0 UTI_ID_OWNER:1000)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.READ2));
+			Assertions.assertEquals("((+AMOUNT:<=100.0 -UTI_ID_OWNER:1000) (+AMOUNT:>100.0 +UTI_ID_OWNER:1000))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.READ3));
+			Assertions.assertEquals("((-UTI_ID_OWNER:1000 +(AMOUNT:<100.0 AMOUNT:100.0 AMOUNT:<=100.0)) (+UTI_ID_OWNER:1000 +(AMOUNT:>100.0 AMOUNT:100.0 AMOUNT:>=100.0)))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.READ4));
 			Assertions.assertEquals("(*:*)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.READ_HP));
-			Assertions.assertEquals("(+UTI_ID_OWNER:1000 +ETA_CD:<ARC) (+TYP_ID:10 +AMOUNT:<=100.0 +ETA_CD:<ARC)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.WRITE));
+			Assertions.assertEquals("(+UTI_ID_OWNER:1000 +ETA_CD:<ARC) (+TYP_ID:10 +AMOUNT:>0 +AMOUNT:<=100.0 +ETA_CD:<ARC)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.WRITE));
 			Assertions.assertEquals("(+TYP_ID:10 +AMOUNT:<=100.0)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.CREATE));
 			Assertions.assertEquals("(+TYP_ID:10) (+UTI_ID_OWNER:1000 +ETA_CD:<PUB)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.DELETE));
 

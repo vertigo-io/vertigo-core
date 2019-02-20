@@ -71,7 +71,10 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		}
 
 		for (final RuleExpression expression : multiExpressionDefinition.getExpressions()) {
-			query.append(sep).append(boolSep);
+			query.append(sep);
+			if (expression.getOperator() != ValueOperator.NEQ) {
+				query.append(boolSep);
+			}
 			appendExpression(query, expression);
 			sep = " ";
 		}

@@ -67,9 +67,9 @@ public final class DatabaseAccountManagerTest extends AbstractAccountManagerTest
 		try (VTransactionWritable tx = obtainTx()) {
 			//Assertions.assertEquals(2, identityManager.getGroupsCount());
 			//----
-			Assertions.assertEquals(1, accountManager.getGroupUIDs(accountUID0).size());
 			Assertions.assertEquals(2, accountManager.getAccountUIDs(groupURI).size());
 			Assertions.assertEquals(8, accountManager.getAccountUIDs(groupAllURI).size());
+			Assertions.assertEquals(1, accountManager.getGroupUIDs(accountUID0).size());
 			//---
 			/*identityManager.attach(accountUID0, groupURI);
 			Assertions.assertEquals(2, identityManager.getGroupURIs(accountUID0).size());

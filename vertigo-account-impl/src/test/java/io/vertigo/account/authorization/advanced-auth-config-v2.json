@@ -18,41 +18,53 @@
 				"name": "GEO", "type": "TREE", "fields": [ "REG_ID", "DEP_ID", "COM_ID" ]
 			}
 		],
-		"operations": [{
-			"__comment": "VisibilitÈ attribuable avec un montant maximum, et visibilitÈ pour l'utilisateur crÈateur.",
-			"name": "READ2",	"label" : "Lecture",
+		"operations": [  {
+			"__comment": "Visibilit√© attribuable avec un montant maximum, et visibilit√© pour l'utilisateur cr√©ateur.",
+			"name": "READ2", "label" : "Lecture",
 			"rules": [
 				"AMOUNT<=${montantMax} or UTI_ID_OWNER=${utiId}"
 			]
 		}, {
-			"__comment": "VisibilitÈ attribuable avec un montant maximum, et visibilitÈ pour l'utilisateur crÈateur.",
-			"name": "READ",	"grants": ["READ2"], "label" : "Lecture",
+			"__comment": "Visibilit√© attribuable avec un montant maximum, et visibilit√© pour l'utilisateur cr√©ateur.",
+			"name": "READ3", "label" : "Lecture",
+			"rules": [
+				"(AMOUNT<=${montantMax} AND UTI_ID_OWNER!=${utiId}) or (AMOUNT>${montantMax} AND UTI_ID_OWNER=${utiId})"
+			]
+		},{
+			"__comment": "Visibilit√© attribuable avec un montant maximum, et visibilit√© pour l'utilisateur cr√©ateur.",
+			"name": "READ4", "label" : "Lecture",
+			"rules": [
+				"((AMOUNT<${montantMax} OR AMOUNT=${montantMax} OR AMOUNT<=${montantMax}) AND UTI_ID_OWNER!=${utiId}) or ((AMOUNT>${montantMax} OR AMOUNT=${montantMax} OR AMOUNT>=${montantMax}) AND UTI_ID_OWNER=${utiId})"
+			]
+		}, {
+			"__comment": "Visibilit√© attribuable avec un montant maximum, et visibilit√© pour l'utilisateur cr√©ateur.",
+			"name": "READ",	 "grants": ["READ2", "READ3"] , "label" : "Lecture",
 			"rules": [
 				"AMOUNT<=${montantMax}",
 				"UTI_ID_OWNER=${utiId}"
 			]
 		}, {
-			"__comment": "VisibilitÈ globale attribuÈe avec une opÈration transverser Hors PÈrimËtre. Sans rËgles = toujours ok.",
-			"name": "READ_HP", "label" : "Lecture hors pÈrimËtre",
+			"__comment": "Visibilit√© globale attribu√©e avec une op√©ration transverser Hors P√©rim√©tre. Sans r√©gles = toujours ok.",
+			"name": "READ_HP", "label" : "Lecture hors p√©rim√©tre",
 			"overrides": ["READ"],
 			"rules": ["true"]
 		}, {
-			"__comment": "Ecriture possible par l'utilisateur crÈateur avant que le marchÈ ne soit ArchivÈ, ou avec un montant max avant ArchivÈ.",
+			"__comment": "Ecriture possible par l'utilisateur cr√©ateur avant que le march√© ne soit Archiv√©, ou avec un montant max avant Archiv√©.",
 			"name": "WRITE", "label" : "Edition",
 			"grants": ["READ"],
 			"rules": [
 				"UTI_ID_OWNER=${utiId} and ETA_CD<ARC",
-				"TYP_ID=${typId} and AMOUNT<=${montantMax} and ETA_CD<ARC"
+				"TYP_ID=${typId} and AMOUNT>0 and AMOUNT<=${montantMax} and ETA_CD<ARC"
 			]
 		}, {
-			"__comment": "CrÈation attribuable par type et par montant maximum.",
+			"__comment": "Cr√©ation attribuable par type et par montant maximum.",
 			"name": "CREATE", "label" : "Creation",
 			"grants": ["READ"],
 			"rules": [
 				"TYP_ID=${typId} and AMOUNT<=${montantMax}"
 			]
 		}, {
-			"__comment": "Suppression attribuable par type de marchÈ ou pour le crÈateur tant que non PubliÈ (AttribuÈ sans type = rËgle non vÈrifiÈe).",
+			"__comment": "Suppression attribuable par type de march√© ou pour le cr√©ateur tant que non Publi√© (Attribu√© sans type = r√©gle non v√©rifi√©e).",
 			"name": "DELETE", "label" : "Suppression",
 			"grants": ["READ", "WRITE"],
 			"rules": [
@@ -60,7 +72,7 @@
 				"UTI_ID_OWNER=${utiId} and ETA_CD<PUB"
 			]
 		}, {
-			"__comment": "Notification par type de marchÈ et dans le respect de la hierachy geographique. Overrides WRITE : donne l'opÈration WRITE en conservant le pÈrimËtre de l'opÈration NOTIFY",
+			"__comment": "Notification par type de march√© et dans le respect de la hierachy geographique. Overrides WRITE : donne l'op√©ration WRITE en conservant le p√©rim√®tre de l'op√©ration NOTIFY",
 			"name": "NOTIFY", "label" : "Notification",
 			"grants": ["READ"],
 			"overrides": ["WRITE"], 

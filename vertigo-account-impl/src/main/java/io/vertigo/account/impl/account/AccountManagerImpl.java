@@ -154,7 +154,7 @@ public final class AccountManagerImpl implements AccountManager {
 			final Supplier<Consumer<Set<O>>> cacheRegister) {
 		if (accountCachePlugin.isPresent()) {
 			final Set<O> resultOpt = cacheSupplier.get().apply(uid);
-			if (!resultOpt.isEmpty()) {
+			if (resultOpt.isEmpty()) {
 				final Set<O> result = storeSupplier.apply(uid);
 				if (!result.isEmpty()) {
 					cacheRegister.get().accept(result);

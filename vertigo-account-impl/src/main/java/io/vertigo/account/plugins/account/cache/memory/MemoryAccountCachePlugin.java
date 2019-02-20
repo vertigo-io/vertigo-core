@@ -110,12 +110,10 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 		Assertion.checkNotNull(accountUID);
 		Assertion.checkNotNull(groupUID);
 		//-----
-		final Set<UID<AccountGroup>> groupUIDs = groupByAccountUID.get(accountUID);
-		Assertion.checkNotNull(groupUIDs, "account must be create before this operation");
+		final Set<UID<AccountGroup>> groupUIDs = groupByAccountUID.computeIfAbsent(accountUID, key -> new HashSet<>());
 		groupUIDs.add(groupUID);
 		//-----
-		final Set<UID<Account>> accountUIDs = accountByGroupUID.get(groupUID);
-		Assertion.checkNotNull(accountUIDs, "group must be create before this operation");
+		final Set<UID<Account>> accountUIDs = accountByGroupUID.computeIfAbsent(groupUID, key -> new HashSet<>());
 		accountUIDs.add(accountUID);
 	}
 

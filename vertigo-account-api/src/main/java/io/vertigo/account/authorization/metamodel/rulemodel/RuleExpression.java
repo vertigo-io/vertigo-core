@@ -28,20 +28,22 @@ import io.vertigo.lang.Assertion;
 public final class RuleExpression {
 	/**
 	 * All authorized operators.
+	 * Should be ordered for parsing.
 	 */
 	public enum ValueOperator implements RuleOperator {
-		/** Equals. */
-		EQ("="),
-		/** Lesser Than. */
-		LT("<"),
-		/** Lesser Than or Equals. */
-		LTE("<="),
-		/** Greater Than. */
-		GT(">"),
-		/** Greater Than or Equals. */
-		GTE(">="),
-		/** Not Equals. */
-		NEQ("!=");
+	/** Lesser Than or Equals. */
+	LTE("<="),
+	/** Greater Than or Equals. */
+	GTE(">="),
+	/** Not Equals. */
+	NEQ("!="),
+	/** Equals. */
+	EQ("="),
+	/** Lesser Than. */
+	LT("<"),
+	/** Greater Than. */
+	GT(">");
+
 		private final String[] asString;
 
 		ValueOperator(final String... asString) {

@@ -19,7 +19,7 @@
 package io.vertigo.account.impl.authorization.dsl.rules;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +54,7 @@ final class DslOperatorRule<O extends RuleOperator> extends AbstractRule<O, List
 	}
 
 	private static Map<String, RuleOperator> getOperatorIndex(final RuleOperator[] operators) {
-		final Map<String, RuleOperator> operatorIndex = new HashMap<>();
+		final Map<String, RuleOperator> operatorIndex = new LinkedHashMap<>();
 		for (final RuleOperator operator : operators) {
 			for (final String authorizedString : operator.authorizedString()) {
 				operatorIndex.put(authorizedString, operator);

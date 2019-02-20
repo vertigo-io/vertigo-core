@@ -86,7 +86,20 @@ public abstract class AbstractAccountManagerTest extends AbstractTestCaseJU5 {
 	public void testAccounts() {
 		try (VTransactionWritable tx = obtainTx()) {
 			Assertions.assertEquals("Palmer Luckey", accountManager.getAccount(accountUID1).getDisplayName());
+
+			//use cache
+			Assertions.assertEquals("Palmer Luckey", accountManager.getAccount(accountUID1).getDisplayName());
 			//Assertions.assertEquals(10 + 4, identityManager.getAccountsCount());
+		}
+	}
+
+	@Test
+	public void testGetGroups() {
+		try (VTransactionWritable tx = obtainTx()) {
+			Assertions.assertEquals("Everyone", accountManager.getGroup(groupAllURI).getDisplayName());
+
+			//use cache
+			Assertions.assertEquals("Everyone", accountManager.getGroup(groupAllURI).getDisplayName());
 		}
 	}
 

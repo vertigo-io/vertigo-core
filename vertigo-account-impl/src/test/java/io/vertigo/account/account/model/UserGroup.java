@@ -32,7 +32,7 @@ public final class UserGroup implements KeyConcept {
 
 	private String grpId;
 	private String name;
-	private String otherProperty;
+	private String comment;
 
 	/** {@inheritDoc} */
 	@Override
@@ -41,30 +41,30 @@ public final class UserGroup implements KeyConcept {
 	}
 
 	@Field(domain = "DO_CODE", type = "ID", required = true, label = "Id")
-	public final String getGrpId() {
+	public String getGrpId() {
 		return grpId;
 	}
 
-	public final void setGrpId(final String grpId) {
+	public void setGrpId(final String grpId) {
 		this.grpId = grpId;
 	}
 
 	@Field(domain = "DO_LABEL", required = true, label = "Name")
-	public final String getName() {
+	public String getName() {
 		return name;
 	}
 
-	public final void setName(final String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
-	@Field(domain = "DO_LABEL", required = true, label = "otherProperty")
-	public final String getOtherProperty() {
-		return otherProperty;
+	@Field(domain = "DO_LABEL", required = true, label = "comment")
+	public String getComment() {
+		return comment;
 	}
 
-	public final void setOtherProperty(final String otherProperty) {
-		this.otherProperty = otherProperty;
+	public void setComment(final String comment) {
+		this.comment = comment;
 	}
 
 	/** {@inheritDoc} */
