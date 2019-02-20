@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.criteria;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -26,11 +27,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.vertigo.database.sql.vendor.SqlDialect;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.DateUtil;
 
 final class Criterion<E extends Entity> extends Criteria<E> {
 	private static final long serialVersionUID = -7797854063455062775L;
@@ -100,7 +104,7 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 			case IN:
 				return Stream.of(values)
 						.map(Criterion::prepareSqlInArgument)
-						.collect(Collectors.joining(", ", dtFieldName.name() + " in(", ")"));
+						.collect(Collectors.joining(", ", dtFieldName.name() + " in (", ")"));
 			default:
 				throw new IllegalAccessError();
 		}
@@ -129,7 +133,18 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 
 	private boolean test(final E entity) {
 		final DtDefinition entitytDefinition = DtObjectUtil.findDtDefinition(entity.getClass());
-		final Object value = entitytDefinition.getField(dtFieldName).getDataAccessor().getValue(entity);
+		final DtField dtField = entitytDefinition.getField(dtFieldName);
+
+		final Object value = dtField.getDataAccessor().getValue(entity);
+		final Serializable[] criterionValues = new Serializable[values.length];
+		for (int i = 0; i < values.length; i++) {
+			final Serializable criterionValue = values[i];
+			if (criterionValue instanceof String) {
+				criterionValues[i] = valueOf(dtField.getDomain().getDataType(), (String) criterionValue);
+			} else {
+				criterionValues[i] = criterionValue;
+			}
+		}
 
 		switch (criterionOperator) {
 			case IS_NOT_NULL:
@@ -137,36 +152,36 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 			case IS_NULL:
 				return value == null;
 			case EQ:
-				return Objects.equals(value, values[0]);
+				return Objects.equals(value, criterionValues[0]);
 			case NEQ:
-				return !Objects.equals(value, values[0]);
+				return !Objects.equals(value, criterionValues[0]);
 			//with Comparable(s)
 			case GT:
 				if (values[0] == null || value == null) {
 					return false;
 				}
-				return ((Comparable) values[0]).compareTo(value) < 0;
+				return ((Comparable) criterionValues[0]).compareTo(value) < 0;
 			case GTE:
 				if (values[0] == null || value == null) {
 					return false;
 				}
-				return ((Comparable) values[0]).compareTo(value) <= 0;
+				return ((Comparable) criterionValues[0]).compareTo(value) <= 0;
 			case LT:
 				if (values[0] == null || value == null) {
 					return false;
 				}
-				return ((Comparable) values[0]).compareTo(value) > 0;
+				return ((Comparable) criterionValues[0]).compareTo(value) > 0;
 			case LTE:
 				if (values[0] == null || value == null) {
 					return false;
 				}
-				return ((Comparable) values[0]).compareTo(value) >= 0;
+				return ((Comparable) criterionValues[0]).compareTo(value) >= 0;
 			case BETWEEN:
 				if (value == null) {
 					return false;
 				}
-				final CriterionLimit min = CriterionLimit.class.cast(values[0]);
-				final CriterionLimit max = CriterionLimit.class.cast(values[1]);
+				final CriterionLimit min = CriterionLimit.class.cast(criterionValues[0]);
+				final CriterionLimit max = CriterionLimit.class.cast(criterionValues[1]);
 				if (!min.isDefined() && !max.isDefined()) {
 					return true;//there is no limit
 				}
@@ -194,9 +209,37 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 				return String.class.cast(value).startsWith((String) values[0]);
 			//with list of comparables
 			case IN:
-				return Arrays.asList(values).contains(value);
+				return Arrays.asList(criterionValues).contains(value);
 			default:
 				throw new IllegalAccessError();
+		}
+	}
+
+	private static final String DATE_PATTERN = "dd/MM/yyyy";
+	private static final String INSTANT_PATTERN = "dd/MM/yyyy HH:mm:ss";
+
+	/**same as DtListPatternFilterUtil*/
+	private static Serializable valueOf(final DataType dataType, final String stringValue) {
+		switch (dataType) {
+			case Integer:
+				return Integer.valueOf(stringValue);
+			case Long:
+				return Long.valueOf(stringValue);
+			case BigDecimal:
+				return new BigDecimal(stringValue);
+			case Double:
+				return Double.valueOf(stringValue);
+			case LocalDate:
+				return DateUtil.parseToLocalDate(stringValue, DATE_PATTERN);
+			case Instant:
+				return DateUtil.parseToInstant(stringValue, INSTANT_PATTERN);
+			case Boolean:
+				return Boolean.valueOf(stringValue);
+			case String:
+				return stringValue;
+			case DataStream:
+			default:
+				throw new IllegalArgumentException("Type de données non comparable : " + dataType.name());
 		}
 	}
 }

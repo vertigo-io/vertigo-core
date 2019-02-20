@@ -149,6 +149,7 @@ public final class DtListPatternFilterUtil {
 		return valueOf(dataType, stringValue);
 	}
 
+	/** Same as Criterion. */
 	private static Serializable valueOf(final DataType dataType, final String stringValue) {
 		switch (dataType) {
 			case Integer:
