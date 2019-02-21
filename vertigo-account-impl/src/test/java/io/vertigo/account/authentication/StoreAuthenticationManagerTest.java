@@ -16,18 +16,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.authentification;
+package io.vertigo.account.authentication;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
+import io.vertigo.account.authentication.MyAppConfig.AuthentPlugin;
+import io.vertigo.app.Home;
 import io.vertigo.app.config.AppConfig;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
 
 /**
  * Implementation standard de la gestion centralisee des droits d'acces.
  *
  * @author npiedeloup
  */
-public final class RedisCacheAuthenticationManagerTest extends AbstractAuthenticationManagerTest {
+public final class StoreAuthenticationManagerTest extends AbstractAuthenticationManagerTest {
+	private VTransactionWritable tx;
+
 	@Override
 	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config(false);
+		return MyAppConfig.config(AuthentPlugin.store, false);
 	}
+
+	@BeforeEach
+	public void initDb() {
+		CreateTestDataBase.initMainStore();
+	}
+
+	@BeforeEach
+	public void createTx() throws Exception {
+		tx = obtainTx();
+	}
+
+	@AfterEach
+	public void finishTx() throws Exception {
+		if (tx != null) {
+			tx.close();
+		}
+	}
+
+	protected VTransactionWritable obtainTx() {
+		return Home.getApp().getComponentSpace().resolve(VTransactionManager.class).createCurrentTransaction();
+	}
+
 }

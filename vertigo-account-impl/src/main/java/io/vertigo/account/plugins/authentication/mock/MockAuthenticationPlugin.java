@@ -23,6 +23,7 @@ import java.util.Optional;
 import io.vertigo.account.authentication.AuthenticationToken;
 import io.vertigo.account.impl.authentication.AuthenticationPlugin;
 import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
+import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 
 /**
  * A mock implementation of the Realm.
@@ -33,7 +34,7 @@ public class MockAuthenticationPlugin implements AuthenticationPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public boolean supports(final AuthenticationToken token) {
-		return token instanceof UsernameAuthenticationToken;
+		return token instanceof UsernameAuthenticationToken || token instanceof UsernamePasswordAuthenticationToken;
 	}
 
 	/** {@inheritDoc} */

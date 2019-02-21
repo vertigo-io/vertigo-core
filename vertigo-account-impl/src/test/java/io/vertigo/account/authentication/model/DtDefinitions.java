@@ -16,20 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.authentification;
+package io.vertigo.account.authentication.model;
 
-import io.vertigo.app.config.AppConfig;
+import java.util.Arrays;
+import java.util.Iterator;
 
-/**
- * Implementation standard de la gestion centralisee des droits d'acces.
- *
- * @author npiedeloup
- */
-public final class NoCacheAuthenticationManagerTest extends AbstractAuthenticationManagerTest {
-
+public final class DtDefinitions implements Iterable<Class<?>> {
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config(false);
+	public Iterator<Class<?>> iterator() {
+		return Arrays.asList(new Class<?>[] {
+				UserCredential.class
+		}).iterator();
 	}
-
 }

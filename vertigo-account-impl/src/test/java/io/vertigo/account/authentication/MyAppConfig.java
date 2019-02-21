@@ -16,10 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.account;
+package io.vertigo.account.authentication;
 
 import io.vertigo.account.AccountFeatures;
-import io.vertigo.account.account.model.DtDefinitions;
+import io.vertigo.account.authentication.model.DtDefinitions;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
@@ -31,13 +31,18 @@ import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 
 public final class MyAppConfig {
 	private static final String REDIS_HOST = "redis-pic.part.klee.lan.net";
 	private static final int REDIS_PORT = 6379;
 	private static final int REDIS_DATABASE = 15;
 
-	public static AppConfig config(final boolean redis, final boolean database) {
+	enum AuthentPlugin {
+		ldap, text, store, mock
+	}
+
+	public static AppConfig config(final AuthentPlugin authentPlugin, final boolean redis) {
 		final CommonsFeatures commonsFeatures = new CommonsFeatures()
 				.withScript()
 				.withJaninoScript()
@@ -48,41 +53,48 @@ public final class MyAppConfig {
 		final DynamoFeatures dynamoFeatures = new DynamoFeatures();
 		final AccountFeatures accountFeatures = new AccountFeatures()
 				.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
-				.withAccount();
+				.withAccount()
+				.withAuthentication();
 
-		if (database) {
+		if (redis) {
+			commonsFeatures
+					.withRedisConnector(Param.of("host", REDIS_HOST), Param.of("port", Integer.toString(REDIS_PORT)), Param.of("database", Integer.toString(REDIS_DATABASE)));
+			accountFeatures
+					.withRedisAccountCache();
+		}
+		accountFeatures
+				.withTextAccount(
+						Param.of("accountFilePath", "io/vertigo/account/data/identities.txt"),
+						Param.of("accountFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<email>(?<authToken>[^;@]+)@[^;]+);(?<photoUrl>.*)$"),
+						Param.of("groupFilePath", "io/vertigo/account/data/groups.txt"),
+						Param.of("groupFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<accountIds>.*)$"));
+
+		if (authentPlugin == AuthentPlugin.ldap) {
+			accountFeatures.withLdapAuthentication(
+					Param.of("userLoginTemplate", "cn={0},dc=vertigo,dc=io"),
+					Param.of("ldapServerHost", "docker-vertigo.part.klee.lan.net"),
+					Param.of("ldapServerPort", "389"));
+		} else if (authentPlugin == AuthentPlugin.text) {
+			accountFeatures.withTextAuthentication(Param.of("filePath", "io/vertigo/account/data/userAccounts.txt"));
+		} else if (authentPlugin == AuthentPlugin.store) {
 			databaseFeatures
 					.withSqlDataBase()
 					.withC3p0(
 							Param.of("dataBaseClass", H2DataBase.class.getName()),
 							Param.of("jdbcDriver", "org.h2.Driver"),
 							Param.of("jdbcUrl", "jdbc:h2:mem:database"));
-
 			dynamoFeatures
 					.withStore()
-					.withSqlStore();
-
-			accountFeatures.withStoreAccount(
-					Param.of("userIdentityEntity", "DT_USER"),
-					Param.of("groupIdentityEntity", "DT_USER_GROUP"),
-					Param.of("userAuthField", "EMAIL"),
-					Param.of("userToAccountMapping", "id:USR_ID, displayName:FULL_NAME, email:EMAIL, authToken:EMAIL"),
-					Param.of("groupToGroupAccountMapping", "id:GRP_ID, displayName:NAME"));
-		} else {
-			accountFeatures.withTextAccount(
-					Param.of("accountFilePath", "io/vertigo/account/data/identities.txt"),
-					Param.of("accountFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<email>(?<authToken>[^;@]+)@[^;]+);(?<photoUrl>.*)$"),
-					Param.of("groupFilePath", "io/vertigo/account/data/groups.txt"),
-					Param.of("groupFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<accountIds>.*)$"));
+					.addPlugin(SqlDataStorePlugin.class);
+			accountFeatures.withStoreAuthentication(
+					Param.of("userCredentialEntity", "DT_USER_CREDENTIAL"),
+					Param.of("userLoginField", "LOGIN"),
+					Param.of("userPasswordField", "PASSWORD"),
+					Param.of("userTokenIdField", "LOGIN"));
+		} else if (authentPlugin == AuthentPlugin.mock) {
+			accountFeatures.withMockAuthentication();
 		}
 
-		if (redis) {
-			commonsFeatures.withRedisConnector(Param.of("host", REDIS_HOST), Param.of("port", Integer.toString(REDIS_PORT)), Param.of("database", Integer.toString(REDIS_DATABASE)));
-			accountFeatures.withRedisAccountCache();
-		} else {
-			//else we use memory
-			accountFeatures.withMemoryAccountCache();
-		}
 		return AppConfig.builder()
 				.beginBoot()
 				.withLocales("fr")
@@ -101,5 +113,4 @@ public final class MyAppConfig {
 						.build())
 				.build();
 	}
-
 }

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.authentification;
+package io.vertigo.account.authentication;
 
 import java.util.Optional;
 
@@ -27,8 +27,6 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.account.account.Account;
-import io.vertigo.account.authentication.AuthenticationManager;
-import io.vertigo.account.authentication.AuthenticationToken;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
