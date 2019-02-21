@@ -56,10 +56,10 @@ public final class SecurityDimension {
 		Assertion.checkNotNull(fields);
 		Assertion.checkNotNull(values);
 		Assertion
-				.when(SecurityDimensionType.ENUM.equals(type))
+				.when(SecurityDimensionType.ENUM == type) // == because enum
 				.check(() -> fields.isEmpty() && values.size() > 1, "SecurityDimension of type ENUM ({0}) needs the ordered list of values and no field (name is use)", name);
 		Assertion
-				.when(SecurityDimensionType.TREE.equals(type))
+				.when(SecurityDimensionType.TREE == type) // == because enum
 				.check(() -> fields.size() > 1 && values.isEmpty(), "SecurityDimension of type TREE ({0}) needs more than on fields and the no values", name);
 		//----
 		this.name = name;
