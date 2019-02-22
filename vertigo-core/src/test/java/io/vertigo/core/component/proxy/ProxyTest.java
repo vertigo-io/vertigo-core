@@ -27,13 +27,28 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.component.proxy.data.Aggregate;
+import io.vertigo.core.component.proxy.data.AggregatorProxyMethod;
 
 @RunWith(JUnitPlatform.class)
 public final class ProxyTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private Aggregate aggregatea;
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.addModule(ModuleConfig.builder("proxies")
+						.addProxyMethod(AggregatorProxyMethod.class)
+						.build())
+				.addModule(ModuleConfig.builder("components")
+						.addProxy(Aggregate.class)
+						.build())
+				.build();
+	}
 
 	@Test
 	public final void testMin() {
