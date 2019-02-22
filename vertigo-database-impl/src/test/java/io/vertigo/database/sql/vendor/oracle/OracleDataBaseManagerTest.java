@@ -20,11 +20,43 @@ package io.vertigo.database.sql.vendor.oracle;
 
 import org.junit.jupiter.api.Disabled;
 
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.param.Param;
+import io.vertigo.database.DatabaseFeatures;
+import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
+import io.vertigo.database.impl.sql.vendor.oracle.OracleDataBase;
 import io.vertigo.database.sql.AbstractSqlDataBaseManagerTest;
+import io.vertigo.database.sql.mapper.MailAdapterSupplierPlugin;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 
 @Disabled
 public final class OracleDataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.withLocales("fr_FR")
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.build())
+				.addModule(new DatabaseFeatures()
+						.withSqlDataBase()
+						.withC3p0(
+								Param.of("dataBaseClass", OracleDataBase.class.getName()),
+								Param.of("jdbcDriver", "oracle.jdbc.OracleDriver"),
+								Param.of("jdbcUrl", "jdbc:oracle:thin:DT_VERTIGO/DT_VERTIGO@selma.dev.klee.lan.net:1521/O11UTF8"))
+						.withC3p0(
+								Param.of("name", "secondary"),
+								Param.of("dataBaseClass", H2DataBase.class.getName()),
+								Param.of("jdbcDriver", "org.h2.Driver"),
+								Param.of("jdbcUrl", "jdbc:h2:mem:secondaryDatabase"))
+						.addPlugin(MailAdapterSupplierPlugin.class)
+						.build())
+				.build();
+	}
+
 	@Override
 	protected String createTableMovie() {
 		return "CREATE TABLE movie ( "

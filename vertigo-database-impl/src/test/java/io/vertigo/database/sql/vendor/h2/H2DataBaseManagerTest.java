@@ -21,11 +21,42 @@ package io.vertigo.database.sql.vendor.h2;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.param.Param;
+import io.vertigo.database.DatabaseFeatures;
+import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.sql.AbstractSqlDataBaseManagerTest;
+import io.vertigo.database.sql.mapper.MailAdapterSupplierPlugin;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 
 @RunWith(JUnitPlatform.class)
 public final class H2DataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.withLocales("fr_FR")
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.build())
+				.addModule(new DatabaseFeatures()
+						.withSqlDataBase()
+						.withC3p0(
+								Param.of("dataBaseClass", H2DataBase.class.getName()),
+								Param.of("jdbcDriver", "org.h2.Driver"),
+								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
+						.withC3p0(
+								Param.of("name", "secondary"),
+								Param.of("dataBaseClass", H2DataBase.class.getName()),
+								Param.of("jdbcDriver", "org.h2.Driver"),
+								Param.of("jdbcUrl", "jdbc:h2:mem:secondaryDatabase"))
+						.addPlugin(MailAdapterSupplierPlugin.class)
+						.build())
+				.build();
+	}
+
 	@Override
 	protected String createTableMovie() {
 		return "CREATE TABLE movie ( "

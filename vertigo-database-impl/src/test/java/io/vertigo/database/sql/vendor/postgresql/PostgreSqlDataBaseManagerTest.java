@@ -18,10 +18,42 @@
  */
 package io.vertigo.database.sql.vendor.postgresql;
 
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.param.Param;
+import io.vertigo.database.DatabaseFeatures;
+import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
+import io.vertigo.database.impl.sql.vendor.postgresql.PostgreSqlDataBase;
 import io.vertigo.database.sql.AbstractSqlDataBaseManagerTest;
+import io.vertigo.database.sql.mapper.MailAdapterSupplierPlugin;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 
 public final class PostgreSqlDataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.withLocales("fr_FR")
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.build())
+				.addModule(new DatabaseFeatures()
+						.withSqlDataBase()
+						.withC3p0(
+								Param.of("dataBaseClass", PostgreSqlDataBase.class.getName()),
+								Param.of("jdbcDriver", "org.postgresql.Driver"),
+								Param.of("jdbcUrl", "jdbc:postgresql://docker-vertigo.part.klee.lan.net:5432/postgres?user=postgres&amp;password=postgres"))
+						.withC3p0(
+								Param.of("name", "secondary"),
+								Param.of("dataBaseClass", H2DataBase.class.getName()),
+								Param.of("jdbcDriver", "org.h2.Driver"),
+								Param.of("jdbcUrl", "jdbc:h2:mem:secondaryDatabase"))
+						.addPlugin(MailAdapterSupplierPlugin.class)
+						.build())
+				.build();
+	}
+
 	@Override
 	protected String createTableMovie() {
 		final String myString = "CREATE TABLE movie ( "
