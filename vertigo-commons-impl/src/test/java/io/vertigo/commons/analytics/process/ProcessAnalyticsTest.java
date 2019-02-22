@@ -26,9 +26,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.process.data.TestAProcessConnectorPlugin;
 import io.vertigo.commons.analytics.process.data.TestAnalyticsAspectServices;
+import io.vertigo.commons.impl.analytics.AnalyticsManagerImpl;
+import io.vertigo.commons.impl.analytics.process.AnalyticsAspect;
+import io.vertigo.commons.plugins.analytics.log.LoggerAnalyticsConnectorPlugin;
+import io.vertigo.commons.plugins.analytics.log.SmartLoggerAnalyticsConnectorPlugin;
+import io.vertigo.core.param.Param;
 
 /**
  * Cas de Test JUNIT de l'API Analytics.
@@ -51,6 +58,23 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private TestAnalyticsAspectServices analyticsAspectServices;
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.addModule(ModuleConfig.builder("vertigo-commons")
+						.addComponent(AnalyticsManager.class, AnalyticsManagerImpl.class)
+						.addPlugin(SmartLoggerAnalyticsConnectorPlugin.class, Param.of("aggregatedBy", "test"))
+						.addPlugin(TestAProcessConnectorPlugin.class)
+						.addPlugin(LoggerAnalyticsConnectorPlugin.class)
+						.addAspect(AnalyticsAspect.class)
+						.build())
+				.addModule(ModuleConfig.builder("vertigo-commons-2")
+						.addComponent(TestAnalyticsAspectServices.class)
+						.build())
+				.build();
+
+	}
 
 	/**
 	 * Test simple avec deux compteurs.

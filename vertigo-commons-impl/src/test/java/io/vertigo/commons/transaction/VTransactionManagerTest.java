@@ -24,6 +24,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.data.SampleDataBase;
 import io.vertigo.commons.transaction.data.SampleDataBaseConnection;
 import io.vertigo.commons.transaction.data.SampleTransactionResource;
@@ -46,6 +49,19 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU5 {
 	private static String createData() {
 		count++;
 		return "data - [" + count + "]" + String.valueOf(System.currentTimeMillis());
+	}
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addComponent(SampleServices.class)
+						.build())
+				.build();
 	}
 
 	@Override

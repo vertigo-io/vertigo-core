@@ -41,6 +41,7 @@ import io.vertigo.commons.impl.transaction.VTransactionManagerImpl;
 import io.vertigo.commons.node.NodeManager;
 import io.vertigo.commons.plugins.analytics.log.SmartLoggerAnalyticsConnectorPlugin;
 import io.vertigo.commons.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin;
+import io.vertigo.commons.plugins.cache.ehcache.EhCachePlugin;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.commons.plugins.cache.redis.RedisCachePlugin;
 import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
@@ -115,6 +116,17 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 	public CommonsFeatures withMemoryCache() {
 		getModuleConfigBuilder()
 				.addPlugin(MemoryCachePlugin.class);
+		return this;
+	}
+
+	/**
+	 * Activates caches.
+	 * @return these features
+	 */
+	@Feature("cache.eh")
+	public CommonsFeatures withEhCache() {
+		getModuleConfigBuilder()
+				.addPlugin(EhCachePlugin.class);
 		return this;
 	}
 

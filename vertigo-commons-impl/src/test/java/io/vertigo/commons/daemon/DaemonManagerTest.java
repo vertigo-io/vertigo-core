@@ -26,6 +26,9 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.health.HealthStatus;
@@ -41,6 +44,22 @@ public final class DaemonManagerTest extends AbstractTestCaseJU5 {
 	private AnalyticsManager analyticsManager;
 	@Inject
 	private FakeComponent fakeComponent;
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.build())
+				.addModule(ModuleConfig.builder("myAspects")
+						.addAspect(DaemonFakeAspect.class)
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addComponent(FakeComponent.class)
+						.build())
+				.build();
+	}
 
 	@Test
 	public void testSimple() throws Exception {

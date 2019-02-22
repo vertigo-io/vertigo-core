@@ -26,6 +26,9 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.eventbus.data.BlueColorEvent;
 import io.vertigo.commons.eventbus.data.DummyEvent;
 import io.vertigo.commons.eventbus.data.MySubscriber;
@@ -44,6 +47,22 @@ public final class EventBusManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private MySubscriber mySubscriber;
 	private int deadEvents = 0;
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.build())
+				.addModule(ModuleConfig.builder("myAspects")
+						.addAspect(FlipAspect.class)
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addComponent(MySubscriber.class)
+						.build())
+				.build();
+	}
 
 	@Override
 	protected void doSetUp() {

@@ -29,6 +29,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.util.ListBuilder;
@@ -49,6 +51,18 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 				.add(new ExpressionParameter("nom", String.class, "Duraton"))
 				.add(new ExpressionParameter("prenom", String.class, "jean paul"))
 				.add(new ExpressionParameter("age", Integer.class, 54))
+				.build();
+	}
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.withScript()
+						.withJaninoScript()
+						.build())
 				.build();
 	}
 
