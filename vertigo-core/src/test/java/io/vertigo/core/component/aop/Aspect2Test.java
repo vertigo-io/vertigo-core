@@ -18,8 +18,6 @@
  */
 package io.vertigo.core.component.aop;
 
-import java.util.Properties;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
@@ -27,10 +25,25 @@ import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.xml.XMLAppConfigBuilder;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.core.component.aop.data.aspects.OneMoreAspect;
+import io.vertigo.core.component.aop.data.components.ComputerImpl;
 
 @RunWith(JUnitPlatform.class)
 public final class Aspect2Test {
+
+	protected static AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(ModuleConfig.builder("aspects")
+						.addAspect(OneMoreAspect.class)
+						.build())
+				.addModule(ModuleConfig.builder("components")
+						.addComponent(ComputerImpl.class)
+						.build())
+				.build();
+	}
 
 	@Test
 	public final void testLoadComponentsWithoutDeclaredAspects() {
@@ -40,17 +53,6 @@ public final class Aspect2Test {
 						//nop
 					}
 				});
-	}
-
-	private AppConfig buildAppConfig() {
-		//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
-		return new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(), getManagersXmlFileName())
-				.build();
-	}
-
-	private static String[] getManagersXmlFileName() {
-		return new String[] { "./managers-without-aspects-test.xml", };
 	}
 
 }

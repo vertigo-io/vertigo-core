@@ -27,9 +27,12 @@ import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.Home;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.discovery.data.DiscoveryA;
 import io.vertigo.app.config.discovery.data.DiscoveryB;
 import io.vertigo.app.config.discovery.data.DiscoveryD;
+import io.vertigo.app.config.discovery.data.TrueProxyMethod;
 import io.vertigo.core.component.ComponentSpace;
 
 /**
@@ -37,6 +40,19 @@ import io.vertigo.core.component.ComponentSpace;
 */
 @RunWith(JUnitPlatform.class)
 public final class DiscoveryTest extends AbstractTestCaseJU5 {
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.verbose()
+				.endBoot()
+				.addModule(ModuleConfig.builder("proxyMethod")
+						.addProxyMethod(TrueProxyMethod.class)
+						.build())
+				.addModule(new TestModuleDiscoveryFeatures().build())
+				.build();
+	}
 
 	@Test
 	public void testComponentSpace() {

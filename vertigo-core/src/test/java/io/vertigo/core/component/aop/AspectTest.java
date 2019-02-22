@@ -29,12 +29,18 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.aop.data.MyException;
+import io.vertigo.core.component.aop.data.aspects.OneMoreAspect;
+import io.vertigo.core.component.aop.data.aspects.TenMoreAspect;
 import io.vertigo.core.component.aop.data.components.A;
 import io.vertigo.core.component.aop.data.components.B;
+import io.vertigo.core.component.aop.data.components.BImpl;
 import io.vertigo.core.component.aop.data.components.C;
 import io.vertigo.core.component.aop.data.components.Computer;
+import io.vertigo.core.component.aop.data.components.ComputerImpl;
 import io.vertigo.core.component.aop.data.components.F;
 
 @RunWith(JUnitPlatform.class)
@@ -42,6 +48,25 @@ public final class AspectTest extends AbstractTestCaseJU5 {
 	private A a;
 	private B b;
 	private C c;
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(ModuleConfig.builder("aspects")
+						.addAspect(OneMoreAspect.class)
+						.addAspect(TenMoreAspect.class)
+						.build())
+				.addModule(ModuleConfig.builder("components")
+						.addComponent(ComputerImpl.class)
+						.addComponent(A.class)
+						.addComponent(BImpl.class)
+						.addComponent(C.class)
+						.addComponent(F.class)
+						.build())
+				.build();
+	}
 
 	@Test
 	public final void testNo() {
