@@ -27,7 +27,16 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.account.AccountFeatures;
+import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.identityprovider.model.User;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.persona.security.VSecurityManager;
 
 /**
@@ -42,6 +51,37 @@ public final class IdentityProviderManagerTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private IdentityProviderManager identityProviderManager;
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.withLocales("fr_FR")
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(new CommonsFeatures().build())
+				.addModule(new AccountFeatures()
+						.withSecurity(
+								Param.of("userSessionClassName", TestUserSession.class.getName()))
+						.withIdentityProvider()
+						.withLdapIdentityProvider(
+								Param.of("ldapServerHost", "docker-vertigo.part.klee.lan.net"),
+								Param.of("ldapServerPort", "389"),
+								Param.of("ldapAccountBaseDn", "dc=vertigo,dc=io"),
+								Param.of("ldapReaderLogin", "cn=admin,dc=vertigo,dc=io"),
+								Param.of("ldapReaderPassword", "v3rt1g0"),
+								Param.of("ldapUserAuthAttribute", "cn"),
+								Param.of("userDtDefinitionName", "DT_USER"),
+								Param.of("ldapUserAttributeMapping", "USR_ID:cn, FULL_NAME:description"))
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addAllParams(Param.of("encoding", "utf-8"))
+								.addDefinitionResource("kpr", "security/generation.kpr")
+								.build())
+						.build())
+				.build();
+	}
 
 	@Override
 	public void doSetUp() {
