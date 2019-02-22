@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
 import io.vertigo.dynamox.domain.constraint.ConstraintBigDecimal;
 import io.vertigo.dynamox.domain.constraint.ConstraintBigDecimalLength;
 import io.vertigo.dynamox.domain.constraint.ConstraintDoubleLength;
@@ -49,6 +50,15 @@ public final class ConstraintTest extends AbstractTestCaseJU5 {
 	private ConstraintStringLength constraintStringLength;
 
 	private ConstraintRegex constraintRegex;
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.withLocales("fr_FR")
+				.endBoot()
+				.build();
+	}
 
 	/** {@inheritDoc} */
 	@Override

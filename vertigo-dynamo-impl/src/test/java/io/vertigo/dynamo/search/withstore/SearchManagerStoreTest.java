@@ -28,17 +28,28 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.database.DatabaseFeatures;
+import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.search.SearchManager;
+import io.vertigo.dynamo.search.StoreManagerInitializer;
 import io.vertigo.dynamo.search.data.domain.Item;
 import io.vertigo.dynamo.search.data.domain.ItemDataBase;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
@@ -65,6 +76,47 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 	private SearchIndexDefinition itemIndexDefinition;
 
 	private long initialDbItemSize = 0;
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.withLocales("fr_FR")
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.withCache()
+						.withScript()
+						.withMemoryCache()
+						.withJaninoScript()
+						.build())
+				.addModule(new DatabaseFeatures()
+						.withSqlDataBase()
+						.withC3p0(
+								Param.of("dataBaseClass", H2DataBase.class.getName()),
+								Param.of("jdbcDriver", "org.h2.Driver"),
+								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
+						.build())
+				.addModule(new DynamoFeatures()
+						.withStore()
+						.withSearch()
+						.withSqlStore()
+						.withESEmbedded(
+								Param.of("home", "io/vertigo/dynamo/search/indexconfig"),
+								Param.of("config.file", "io/vertigo/dynamo/search/indexconfig/elasticsearch.yml"),
+								Param.of("envIndex", "TU_TEST_"),
+								Param.of("rowsPerQuery", "50"))
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/search/data/execution.kpr")
+								.addDefinitionResource("classes", "io.vertigo.dynamo.search.data.DtDefinitions")
+								.build())
+						.addComponent(io.vertigo.dynamo.search.withstore.ItemSearchLoader.class)
+						.build())
+				.addInitializer(StoreManagerInitializer.class)
+				.build();
+	}
 
 	@Override
 	protected void doSetUp() throws SQLException {

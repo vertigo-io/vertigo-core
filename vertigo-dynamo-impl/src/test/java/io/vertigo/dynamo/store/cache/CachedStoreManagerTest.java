@@ -21,10 +21,20 @@ package io.vertigo.dynamo.store.cache;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.database.DatabaseFeatures;
+import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.store.data.domain.famille.Famille;
 import io.vertigo.dynamo.store.datastore.AbstractStoreManagerTest;
 
@@ -34,6 +44,41 @@ import io.vertigo.dynamo.store.datastore.AbstractStoreManagerTest;
  * @author pchretien
  */
 public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.withLocales("fr_FR")
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.withCache()
+						.withScript()
+						.withMemoryCache()
+						.withJaninoScript()
+						.build())
+				.addModule(new DatabaseFeatures()
+						.withSqlDataBase()
+						.withC3p0(
+								Param.of("dataBaseClass", H2DataBase.class.getName()),
+								Param.of("jdbcDriver", "org.h2.Driver"),
+								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
+						.build())
+				.addModule(new DynamoFeatures()
+						.withStore()
+						.withSqlStore()
+						.withDbFileStore(Param.of("storeDtName", "DT_VX_FILE_INFO"))
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/store/data/executionWfileinfo.kpr")
+								.addDefinitionResource("classes", "io.vertigo.dynamo.store.data.DtDefinitions")
+								.build())
+						.build())
+				.addInitializer(CacheStoreManagerInitializer.class)
+				.build();
+	}
 
 	/**
 	 * On charge une liste, ajoute un element et recharge la liste pour verifier l'ajout.

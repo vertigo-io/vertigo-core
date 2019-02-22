@@ -26,16 +26,37 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.criteria.AbstractCriteriaTest;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.data.movies.Movie2;
 import io.vertigo.dynamo.criteria.data.movies.Movie2DataBase;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 
 /**
  *
  */
 @RunWith(JUnitPlatform.class)
 public final class PredicateCriteriaTest extends AbstractCriteriaTest {
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/criteria/data/execution.kpr")
+								.addDefinitionResource("classes", "io.vertigo.dynamo.criteria.data.DtDefinitions")
+								.build())
+						.build())
+				.build();
+	}
+
 	private final Movie2DataBase movie2DataBase = new Movie2DataBase();
 
 	private static Predicate<Movie2> predicate(final Criteria<Movie2> criteria) {

@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
@@ -36,6 +37,15 @@ import io.vertigo.dynamox.domain.formatter.FormatterNumberLocalized;
  * @author pchretien
  */
 public class NumberFormatterTest extends AbstractTestCaseJU5 {
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.withLocalesAndDefaultZoneId("fr_FR", "UTC")
+				.endBoot()
+				.build();
+	}
 
 	/**
 	 * Test du formatter de nombre.

@@ -31,7 +31,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.dynamo.DynamoFeatures;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 
@@ -40,8 +47,30 @@ import io.vertigo.dynamo.task.model.Task;
  * @author dchallas
  */
 public final class TaskManagerTest extends AbstractTestCaseJU5 {
+
 	@Inject
 	private TaskManager taskManager;
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.withLocales("fr_FR")
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.build())
+				.addModule(new DynamoFeatures()
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/task/data/execution.kpr")
+								.addDefinitionResource("classes", "io.vertigo.dynamo.task.data.DtDefinitions")
+								.build())
+						.addDefinitionProvider(TaskDefinitionProvider.class)
+						.build())
+				.build();
+	}
 
 	private TaskDefinition getTaskDefinition(final String taskDefinitionName) {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();

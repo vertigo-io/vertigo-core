@@ -18,11 +18,33 @@
  */
 package io.vertigo.dynamo.kvstore.delayedmemory;
 
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.kvstore.AbstractKVStoreManagerTest;
 
 /**
  * @author pchretien
  */
 public final class DelayedMemoryKVStoreManagerTest extends AbstractKVStoreManagerTest {
-	// nothing
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.withCache()
+						.withMemoryCache()
+						.build())
+				.addModule(new DynamoFeatures()
+						.withKVStore()
+						.withDelayedMemoryKV(
+								Param.of("collections", "flowers"),
+								Param.of("timeToLiveSeconds", "5"))
+						.build())
+				.build();
+	}
 }

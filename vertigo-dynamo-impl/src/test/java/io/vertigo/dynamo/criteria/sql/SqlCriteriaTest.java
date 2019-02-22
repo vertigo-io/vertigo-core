@@ -27,8 +27,17 @@ import org.junit.Assert;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.database.DatabaseFeatures;
+import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.criteria.AbstractCriteriaTest;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.data.movies.Movie2;
@@ -36,6 +45,7 @@ import io.vertigo.dynamo.criteria.data.movies.Movie2DataBase;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.SqlUtil;
 import io.vertigo.dynamo.task.TaskManager;
@@ -56,6 +66,39 @@ public final class SqlCriteriaTest extends AbstractCriteriaTest {
 	protected TaskManager taskManager;
 
 	private DtDefinition dtDefinitionMovie;
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.withLocales("fr_FR")
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.withScript()
+						.withJaninoScript()
+						.withCache()
+						.withMemoryCache()
+						.build())
+				.addModule(new DatabaseFeatures()
+						.withSqlDataBase()
+						.withC3p0(
+								Param.of("dataBaseClass", H2DataBase.class.getName()),
+								Param.of("jdbcDriver", "org.h2.Driver"),
+								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
+						.build())
+				.addModule(new DynamoFeatures()
+						.withStore()
+						.withSqlStore()
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/criteria/data/execution.kpr")
+								.addDefinitionResource("classes", "io.vertigo.dynamo.criteria.data.DtDefinitions")
+								.build())
+						.build())
+				.build();
+	}
 
 	@Override
 	protected void doSetUp() throws Exception {

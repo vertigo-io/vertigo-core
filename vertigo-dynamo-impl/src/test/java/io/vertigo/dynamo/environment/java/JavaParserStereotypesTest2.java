@@ -22,9 +22,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 
 /**
  * Test de lecture de class Java.
@@ -33,14 +38,19 @@ import io.vertigo.dynamo.domain.metamodel.DtStereotype;
  */
 public final class JavaParserStereotypesTest2 extends AbstractTestCaseJU5 {
 
-	/**
-	 * Tableau des fichiers managers.xml a prendre en compte.
-	 *
-	 * @return fichier managers.xml (par defaut managers-test.xml)
-	 */
 	@Override
-	protected String[] getManagersXmlFileName() {
-		return new String[] { "./managers-test2.xml", };
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/java/data/execution.kpr")
+								.addDefinitionResource("classes", "io.vertigo.dynamo.environment.java.data.domain.*")
+								.build())
+						.build())
+				.build();
 	}
 
 	private DtDefinition getDtDefinition(final String urn) {

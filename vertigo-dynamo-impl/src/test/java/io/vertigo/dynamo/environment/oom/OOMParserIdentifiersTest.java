@@ -22,7 +22,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 
 /**
  * Test de lecture d'un OOM.
@@ -31,8 +36,18 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
  */
 public final class OOMParserIdentifiersTest extends AbstractTestCaseJU5 {
 	@Override
-	protected String[] getManagersXmlFileName() {
-		return new String[] { "managers-test.xml", "resources-test.xml" };
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/oom/data/domain.kpr")
+								.addDefinitionResource("oom", "io/vertigo/dynamo/environment/oom/data/demo.oom")
+								.build())
+						.build())
+				.build();
 	}
 
 	private DtDefinition getDtDefinition(final String urn) {

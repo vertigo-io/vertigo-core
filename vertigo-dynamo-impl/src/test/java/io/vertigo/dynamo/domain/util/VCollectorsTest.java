@@ -26,8 +26,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.domain.data.domain.Artist;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 
 /**
  *
@@ -35,6 +40,22 @@ import io.vertigo.dynamo.domain.model.DtList;
  *
  */
 public class VCollectorsTest extends AbstractTestCaseJU5 {
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.withLocales("fr_FR")
+				.endBoot()
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/domain/data/execution.kpr")
+								.addDefinitionResource("classes", "io.vertigo.dynamo.domain.data.DtDefinitions")
+								.build())
+						.build())
+				.build();
+	}
 
 	/**
 	 * Test du VCollectors.toDtList sur une liste vide

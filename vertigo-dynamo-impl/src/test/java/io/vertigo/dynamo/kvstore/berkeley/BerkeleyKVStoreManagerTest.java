@@ -25,7 +25,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.kvstore.AbstractKVStoreManagerTest;
 import io.vertigo.dynamo.kvstore.data.Flower;
 import io.vertigo.lang.VSystemException;
@@ -35,6 +40,25 @@ import io.vertigo.util.ListBuilder;
  * @author pchretien
  */
 public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest {
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.withCache()
+						.withMemoryCache()
+						.build())
+				.addModule(new DynamoFeatures()
+						.withKVStore()
+						.withBerkleyKV(
+								Param.of("collections", "flowers;TTL=10, trees;inMemory"),
+								Param.of("dbFilePath", "d:/dynamo-tmp"))
+						.build())
+				.build();
+	}
 
 	/** {@inheritDoc} */
 	@Override

@@ -25,11 +25,22 @@ import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.database.DatabaseFeatures;
+import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.dynamo.store.StoreManagerInitializer;
 import io.vertigo.dynamo.store.data.fileinfo.FileInfoTemp;
 import io.vertigo.dynamo.store.datastore.AbstractStoreManagerTest;
 import io.vertigo.dynamo.store.datastore.SqlUtil;
@@ -41,6 +52,52 @@ import io.vertigo.util.ListBuilder;
  * @author pchretien
  */
 public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.withLocales("fr_FR")
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.withCache()
+						.withScript()
+						.withMemoryCache()
+						.withJaninoScript()
+						.build())
+				.addModule(new DatabaseFeatures()
+						.withSqlDataBase()
+						.withC3p0(
+								Param.of("dataBaseClass", H2DataBase.class.getName()),
+								Param.of("jdbcDriver", "org.h2.Driver"),
+								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
+						.withC3p0(
+								Param.of("name", "otherBase"),
+								Param.of("dataBaseClass", H2DataBase.class.getName()),
+								Param.of("jdbcDriver", "org.h2.Driver"),
+								Param.of("jdbcUrl", "jdbc:h2:mem:database2"))
+						.build())
+				.addModule(new DynamoFeatures()
+						.withStore()
+						.withSqlStore()
+						.withSqlStore(
+								Param.of("dataSpace", "otherStore"),
+								Param.of("connectionName", "otherBase"))
+						.withDbFileStore(Param.of("storeDtName", "DT_VX_FILE_INFO"))
+						.withFsFullFileStore(
+								Param.of("name", "temp"),
+								Param.of("path", "${java.io.tmpdir}/testVertigo/"))
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/store/data/executionOtherStore.kpr")
+								.addDefinitionResource("classes", "io.vertigo.dynamo.store.data.DtDefinitions")
+								.build())
+						.build())
+				.addInitializer(StoreManagerInitializer.class)
+				.build();
+	}
 
 	@Override
 	protected void doSetUp() throws Exception {

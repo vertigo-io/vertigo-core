@@ -29,6 +29,7 @@ import io.vertigo.dynamo.impl.kvstore.KVStoreManagerImpl;
 import io.vertigo.dynamo.impl.search.SearchManagerImpl;
 import io.vertigo.dynamo.impl.store.StoreManagerImpl;
 import io.vertigo.dynamo.impl.task.TaskManagerImpl;
+import io.vertigo.dynamo.impl.task.proxy.TaskProxyMethod;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.dynamo.plugins.collections.lucene.LuceneIndexPlugin;
 import io.vertigo.dynamo.plugins.kvstore.berkeley.BerkeleyKVStorePlugin;
@@ -147,9 +148,16 @@ public final class DynamoFeatures extends Features<DynamoFeatures> {
 	}
 
 	@Feature("collections.luceneIndex")
-	public DynamoFeatures withLuceneIndex(final Param... params) {
+	public DynamoFeatures withLuceneIndex() {
 		getModuleConfigBuilder()
-				.addPlugin(LuceneIndexPlugin.class, params);
+				.addPlugin(LuceneIndexPlugin.class);
+		return this;
+	}
+
+	@Feature("taskProxyMethod")
+	public DynamoFeatures withTaskProxyMethod() {
+		getModuleConfigBuilder()
+				.addProxyMethod(TaskProxyMethod.class);
 		return this;
 	}
 
