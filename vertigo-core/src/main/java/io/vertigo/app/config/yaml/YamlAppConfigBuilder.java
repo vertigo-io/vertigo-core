@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -153,7 +154,7 @@ public final class YamlAppConfigBuilder implements Builder<AppConfig> {
 						.findMethods()
 						.stream()
 						.map(Tuple2::getVal2)
-						.collect(Collectors.toMap(method -> method.getAnnotation(Feature.class).value(), method -> method));
+						.collect(Collectors.toMap(method -> method.getAnnotation(Feature.class).value(), Function.identity()));
 
 				if (yamlModuleConfig.features != null) {
 					yamlModuleConfig.features
