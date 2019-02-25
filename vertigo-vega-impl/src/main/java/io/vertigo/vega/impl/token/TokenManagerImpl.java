@@ -25,10 +25,10 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.vertigo.account.security.UserSession;
+import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.persona.security.UserSession;
-import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.token.TokenManager;
 
 /**

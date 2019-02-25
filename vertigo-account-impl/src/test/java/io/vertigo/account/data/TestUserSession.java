@@ -20,7 +20,7 @@ package io.vertigo.account.data;
 
 import java.util.Locale;
 
-import io.vertigo.persona.security.UserSession;
+import io.vertigo.account.security.UserSession;
 
 public final class TestUserSession extends UserSession {
 	private static final long serialVersionUID = 1L;

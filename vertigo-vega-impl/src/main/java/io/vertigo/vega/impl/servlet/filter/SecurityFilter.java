@@ -30,9 +30,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import io.vertigo.account.security.UserSession;
+import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.app.Home;
-import io.vertigo.persona.security.UserSession;
-import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.webservice.exception.SessionException;
 
 /**
@@ -102,7 +102,7 @@ public final class SecurityFilter extends AbstractFilter {
 				} else {
 					httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED); //User not authenticated
 				}
-			} else if (checkRequestAccess && needsAuthentification && !securityManager.isAuthorized("HttpServletRequest", httpRequest, "OP_READ")) {
+			} else if (checkRequestAccess && needsAuthentification && false) { //TODO
 				httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
 			} else {
 				chain.doFilter(httpRequest, httpResponse);

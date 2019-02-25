@@ -20,7 +20,7 @@ package io.vertigo.vega.webservice.data.ws;
 
 import javax.inject.Inject;
 
-import io.vertigo.persona.security.VSecurityManager;
+import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.GET;

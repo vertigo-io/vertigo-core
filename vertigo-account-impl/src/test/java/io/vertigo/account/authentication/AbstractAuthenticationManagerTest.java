@@ -28,8 +28,8 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
-import io.vertigo.persona.security.UserSession;
-import io.vertigo.persona.security.VSecurityManager;
+import io.vertigo.account.security.UserSession;
+import io.vertigo.account.security.VSecurityManager;
 
 /**
  * Implementation standard de la gestion centralisee des droits d'acces.

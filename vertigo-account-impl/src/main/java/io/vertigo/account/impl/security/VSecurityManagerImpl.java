@@ -20,20 +20,17 @@ package io.vertigo.account.impl.security;
 
 import java.time.ZoneId;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Supplier;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.vertigo.account.security.UserSession;
+import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleProvider;
 import io.vertigo.lang.Assertion;
-import io.vertigo.persona.security.ResourceNameFactory;
-import io.vertigo.persona.security.UserSession;
-import io.vertigo.persona.security.VSecurityManager;
-import io.vertigo.persona.security.metamodel.Role;
 import io.vertigo.util.ClassUtil;
 
 /**
@@ -121,30 +118,6 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	public <U extends UserSession> Optional<U> getCurrentUserSession() {
 		final U userSession = (U) USER_SESSION_THREAD_LOCAL.get();
 		return Optional.ofNullable(userSession);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean hasRole(final Set<Role> authorizedRoleSet) {
-		throw new UnsupportedOperationException("Deprecated");
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean isAuthorized(final String resource, final String operation) {
-		throw new UnsupportedOperationException("Deprecated");
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean isAuthorized(final String resourceType, final Object resource, final String operation) {
-		throw new UnsupportedOperationException("Deprecated");
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void registerResourceNameFactory(final String resourceType, final ResourceNameFactory resourceNameFactory) {
-		throw new UnsupportedOperationException("Deprecated");
 	}
 
 }

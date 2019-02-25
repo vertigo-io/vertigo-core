@@ -27,8 +27,8 @@ import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountManager;
 import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.authentication.AuthenticationToken;
+import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.persona.security.VSecurityManager;
 
 /**
  * Main authentication manager implementation.
