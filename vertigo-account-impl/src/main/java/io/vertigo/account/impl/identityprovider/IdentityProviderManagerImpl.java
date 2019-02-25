@@ -61,8 +61,8 @@ public final class IdentityProviderManagerImpl implements IdentityProviderManage
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> Optional<VFile> getPhoto(final UID<E> accountURI) {
-		return identityProviderPlugin.getPhoto(accountURI);
+	public <E extends Entity> Optional<VFile> getPhoto(final UID<E> userURI) {
+		return identityProviderPlugin.getPhoto(userURI);
 	}
 
 	/** {@inheritDoc} */

@@ -52,14 +52,14 @@ public final class RedisAccountManagerTest extends AbstractAccountManagerTest {
 	@Test
 	public void testPhoto() {
 		//Before the photo is the default photo
-		Assertions.assertFalse(accountManager.getPhoto(accountUID0).isPresent());
+		Assertions.assertFalse(accountManager.getPhoto(accountUID1).isPresent());
 		Assertions.assertEquals("defaultPhoto.png", accountManager.getDefaultPhoto().getFileName());
 		//-----
 		//	final VFile photo = fileManager.createFile(new File(this.getClass().getResource("../data/marianne.png").toURI()));
 		//	identityManager.setPhoto(accountUID0, photo);
 		//-----
-		Assertions.assertTrue(accountManager.getPhoto(accountUID1).isPresent());
-		Assertions.assertEquals("marianne.png", accountManager.getPhoto(accountUID1).get().getFileName());
+		Assertions.assertTrue(accountManager.getPhoto(accountUID0).isPresent());
+		Assertions.assertEquals("photo-jdoe.jpg", accountManager.getPhoto(accountUID0).get().getFileName());
 	}
 
 	@Test

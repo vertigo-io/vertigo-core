@@ -85,7 +85,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 
 	private final String ldapUserAuthAttribute;
 
-	private final String userDtDefinitionName;
+	private final String userIdentityEntity;
 	private final String ldapUserAttributeMappingStr;
 	private AccountMapperHelper<String, DtField> mapperHelper;
 
@@ -97,7 +97,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	 * @param ldapReaderLogin Login du reader LDAP
 	 * @param ldapReaderPassword Password du reader LDAP
 	 * @param ldapUserAuthAttribute Ldap attribute use to find user by it's authToken
-	 * @param userDtDefinitionName DtDefinition used for User
+	 * @param userIdentityEntity DtDefinition used for User
 	 * @param ldapUserAttributeMappingStr Mapping from LDAP to Account
 	 * @param codecManager Codec Manager
 	 */
@@ -109,7 +109,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 			@Named("ldapReaderLogin") final String ldapReaderLogin,
 			@Named("ldapReaderPassword") final String ldapReaderPassword,
 			@Named("ldapUserAuthAttribute") final String ldapUserAuthAttribute,
-			@Named("userDtDefinitionName") final String userDtDefinitionName,
+			@Named("userIdentityEntity") final String userIdentityEntity,
 			@Named("ldapUserAttributeMapping") final String ldapUserAttributeMappingStr,
 			final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(ldapServerHost);
@@ -118,7 +118,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 		Assertion.checkArgNotEmpty(ldapReaderLogin);
 		Assertion.checkNotNull(ldapReaderPassword);
 		Assertion.checkArgNotEmpty(ldapUserAuthAttribute);
-		Assertion.checkArgNotEmpty(userDtDefinitionName);
+		Assertion.checkArgNotEmpty(userIdentityEntity);
 		Assertion.checkArgNotEmpty(ldapUserAttributeMappingStr);
 		Assertion.checkNotNull(codecManager);
 		ldapServer = ldapServerHost + ":" + ldapServerPort;
@@ -126,7 +126,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 		this.ldapReaderLogin = ldapReaderLogin;
 		this.ldapReaderPassword = ldapReaderPassword;
 		this.ldapUserAuthAttribute = ldapUserAuthAttribute;
-		this.userDtDefinitionName = userDtDefinitionName;
+		this.userIdentityEntity = userIdentityEntity;
 		this.ldapUserAttributeMappingStr = ldapUserAttributeMappingStr;
 		this.codecManager = codecManager;
 	}
@@ -134,7 +134,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		final DtDefinition userDtDefinition = Home.getApp().getDefinitionSpace().resolve(userDtDefinitionName, DtDefinition.class);
+		final DtDefinition userDtDefinition = Home.getApp().getDefinitionSpace().resolve(userIdentityEntity, DtDefinition.class);
 		mapperHelper = new AccountMapperHelper(userDtDefinition, ldapUserAttributeMappingStr)
 				.withReservedDestField(PHOTO_RESERVED_FIELD)
 				.parseAttributeMapping();
@@ -168,7 +168,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	public <E extends Entity> List<E> getAllUsers() {
 		final LdapContext ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
 		try {
-			return searchUser("(cn=*)", MAX_ROWS, ldapContext);
+			return searchUser("(" + ldapUserAuthAttribute + "=*)", MAX_ROWS, ldapContext);
 		} finally {
 			closeLdapContext(ldapContext);
 		}
@@ -179,8 +179,9 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	public <E extends Entity> Optional<VFile> getPhoto(final UID<E> accountURI) {
 		final LdapContext ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
 		try {
+			final String displayName = "photo-" + accountURI.getId() + ".jpg";
 			final String photoAttributeName = mapperHelper.getReservedSourceAttribute(PHOTO_RESERVED_FIELD);
-			return parseOptionalVFile(getLdapAttributes(accountURI.getId(), Collections.singleton(photoAttributeName), ldapContext));
+			return parseOptionalVFile(displayName, getLdapAttributes(accountURI.getId(), Collections.singleton(photoAttributeName), ldapContext));
 		} finally {
 			closeLdapContext(ldapContext);
 		}
@@ -208,20 +209,18 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 		return result.get(0);
 	}
 
-	private Optional<VFile> parseOptionalVFile(final Attributes attrs) {
-		final String base64Content = parseNullableAttribute(mapperHelper.getReservedSourceAttribute(PHOTO_RESERVED_FIELD), attrs);
-		if (base64Content == null) {
+	private Optional<VFile> parseOptionalVFile(final String displayName, final Attributes attrs) {
+		final Object rawData = parseRawAttribute(mapperHelper.getReservedSourceAttribute(PHOTO_RESERVED_FIELD), attrs);
+		if (rawData == null) {
 			return Optional.empty();
 		}
-		final String displayName = "photo-" + parseAttribute(mapperHelper.getSourceIdField(), attrs);
-		return Optional.of(base64toVFile(displayName, base64Content));
-	}
-
-	private static String parseAttribute(final String attributeName, final Attributes attrs) {
-		try {
-			return String.valueOf((attrs.get(attributeName).get()));
-		} catch (final NamingException e) {
-			throw WrappedException.wrap(e, "Ldap attribute {0} not found or empty", attributeName);
+		if (rawData instanceof String) {
+			//si string alors base64
+			return Optional.of(base64toVFile(displayName, (String) rawData));
+		} else if (rawData instanceof byte[]) {
+			return Optional.of(byteArrayToVFile(displayName, (byte[]) rawData));
+		} else {
+			throw new IllegalArgumentException("Can't get photo " + mapperHelper.getReservedSourceAttribute(PHOTO_RESERVED_FIELD) + " from LDAP, format not supported " + rawData.getClass());
 		}
 	}
 
@@ -241,8 +240,28 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 		return null;
 	}
 
+	private static Object parseRawAttribute(final String attributeName, final Attributes attrs) {
+		if (attributeName != null) {
+			final Attribute attribute = attrs.get(attributeName);
+			if (attribute != null) {
+				try {
+					final Object value = attribute.get();
+					Assertion.checkNotNull(value);
+					return value;
+				} catch (final NamingException e) {
+					throw WrappedException.wrap(e, "Ldap attribute {0} found, but is empty", attributeName);
+				}
+			}
+		}
+		return null;
+	}
+
 	private VFile base64toVFile(final String displayName, final String base64Content) {
 		final byte[] photo = codecManager.getBase64Codec().decode(base64Content);
+		return byteArrayToVFile(displayName, photo);
+	}
+
+	private VFile byteArrayToVFile(final String displayName, final byte[] photo) {
 		return new StreamFile(displayName, LDAP_PHOTO_MIME_TYPE, Instant.now(), photo.length, () -> new ByteArrayInputStream(photo));
 	}
 

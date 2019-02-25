@@ -25,11 +25,12 @@ import org.junit.runner.RunWith;
 import io.vertigo.account.account.DatabaseAccountManagerTest;
 import io.vertigo.account.account.MemoryAccountManagerTest;
 import io.vertigo.account.account.RedisAccountManagerTest;
+import io.vertigo.account.authentication.RedisCacheMockAuthenticationManagerTest;
 import io.vertigo.account.authentication.TextAuthenticationManagerTest;
-import io.vertigo.account.authentication.RedisCacheAuthenticationManagerTest;
 import io.vertigo.account.authorization.VSecurityManagerTest;
 import io.vertigo.account.authorization.dsl.DslSecurityRulesBuilderTest;
-import io.vertigo.account.identityprovider.IdentityProviderManagerTest;
+import io.vertigo.account.identityprovider.LdapIdentityManagerTest;
+import io.vertigo.account.identityprovider.TextIdentityManagerTest;
 
 /**
  * Test de l'implementation standard.
@@ -41,10 +42,11 @@ import io.vertigo.account.identityprovider.IdentityProviderManagerTest;
 		RedisAccountManagerTest.class,
 		DatabaseAccountManagerTest.class,
 		MemoryAccountManagerTest.class,
-		RedisCacheAuthenticationManagerTest.class,
+		RedisCacheMockAuthenticationManagerTest.class,
 		TextAuthenticationManagerTest.class,
 		VSecurityManagerTest.class,
-		IdentityProviderManagerTest.class,
+		LdapIdentityManagerTest.class,
+		TextIdentityManagerTest.class,
 		DslSecurityRulesBuilderTest.class
 })
 

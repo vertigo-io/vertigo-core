@@ -19,32 +19,33 @@
 package io.vertigo.account.identityprovider;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.identityprovider.model.User;
+import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
-import io.vertigo.persona.security.VSecurityManager;
 
 /**
  * Implementation standard de la gestion centralisee des droits d'acces.
  *
  * @author npiedeloup
  */
-public final class IdentityProviderManagerTest extends AbstractTestCaseJU5 {
+abstract class AbstractIdentityProviderManagerTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private VSecurityManager securityManager;
@@ -93,24 +94,24 @@ public final class IdentityProviderManagerTest extends AbstractTestCaseJU5 {
 		securityManager.stopCurrentUserSession();
 	}
 
-	@Disabled
 	@Test
 	public void testUsersCount() {
-		Assertions.assertEquals(1, identityProviderManager.getUsersCount());
+		Assertions.assertEquals(userCountForTest(), identityProviderManager.getUsersCount());
 	}
 
 	@Test
 	public void testAllUsers() {
-		Assertions.assertEquals(1, identityProviderManager.getAllUsers().size());
+		Assertions.assertEquals(userCountForTest(), identityProviderManager.getAllUsers().size());
 	}
 
-	@Disabled
 	@Test
 	public void testPhoto() {
 		final List<User> users = identityProviderManager.getAllUsers();
 		//Before the photo is the default photo
-		Assertions.assertFalse(identityProviderManager.getPhoto(users.get(0).getUID()).isPresent());
-		Assertions.assertEquals("defaultPhoto.png", identityProviderManager.getPhoto(users.get(0).getUID()).get().getFileName());
+		final Optional<VFile> photo = identityProviderManager.getPhoto(users.get(1).getUID());
+		Assertions.assertTrue(photo.isPresent());
+		Assertions.assertEquals("photo-jdoe.jpg", photo.get().getFileName());
+		Assertions.assertEquals(Long.valueOf(23112L), photo.get().getLength());
 	}
 
 	@Test
@@ -122,8 +123,14 @@ public final class IdentityProviderManagerTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testUserByAuthToken() {
-		final User user = identityProviderManager.getUserByAuthToken("admin");
+		final User user = identityProviderManager.getUserByAuthToken(adminAuthToken());
 		Assertions.assertNotNull(user, "Can't find user by login ");
+	}
+
+	protected abstract int userCountForTest();
+
+	protected String adminAuthToken() {
+		return "admin@yopmail.com";
 	}
 
 }

@@ -32,7 +32,9 @@ import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
@@ -48,6 +50,9 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 	private final String userIdentityEntity;
 	private final String userAuthField;
 	private DtDefinition userIdentityDefinition;
+	private final Optional<String> photoIdField;
+	private final Optional<String> photoFileInfo;
+	private Optional<FileInfoDefinition> photoFileInfoDefinition = Optional.empty();
 
 	/**
 	 * Constructor.
@@ -59,12 +64,16 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 	public StoreIdentityProviderPlugin(
 			@Named("userIdentityEntity") final String userIdentityEntity,
 			@Named("userAuthField") final String userAuthField,
+			@Named("photoIdField") final Optional<String> photoIdField,
+			@Named("photoFileInfo") final Optional<String> photoFileInfo,
 			final StoreManager storeManager) {
 		Assertion.checkArgNotEmpty(userIdentityEntity);
 		Assertion.checkArgNotEmpty(userAuthField);
 		Assertion.checkNotNull(storeManager);
 		this.userIdentityEntity = userIdentityEntity;
 		this.userAuthField = userAuthField;
+		this.photoIdField = photoIdField;
+		this.photoFileInfo = photoFileInfo;
 		this.storeManager = storeManager;
 	}
 
@@ -94,6 +103,14 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> Optional<VFile> getPhoto(final UID<E> userURI) {
+		if (photoFileInfoDefinition.isPresent()) {
+			final E entity = storeManager.getDataStore().readOne(userURI);
+			final Object photoId = userIdentityDefinition.getField(photoIdField.get()).getDataAccessor().getValue(entity);
+			if (photoId != null) {
+				final FileInfoURI photoUri = new FileInfoURI(photoFileInfoDefinition.get(), photoId);
+				return Optional.of(storeManager.getFileStore().read(photoUri).getVFile());
+			}
+		}
 		return Optional.empty();
 	}
 
@@ -101,6 +118,9 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 	@Override
 	public void start() {
 		userIdentityDefinition = Home.getApp().getDefinitionSpace().resolve(userIdentityEntity, DtDefinition.class);
+		if (photoFileInfo.isPresent()) {
+			photoFileInfoDefinition = Optional.of(Home.getApp().getDefinitionSpace().resolve(photoFileInfo.get(), FileInfoDefinition.class));
+		}
 	}
 
 	/** {@inheritDoc} */

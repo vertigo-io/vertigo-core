@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.authentication;
+package io.vertigo.account.identityprovider;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,24 +48,24 @@ final class CreateTestDataBase {
 
 	private static List<String> getCreateMainStoreRequests() {
 		return new ListBuilder<String>()
-				.addAll(getCreateUserCredentialRequests())
+				.addAll(getCreateUserRequests())
 				.build();
 	}
 
-	private static List<String> getCreateUserCredentialRequests() {
+	private static List<String> getCreateUserRequests() {
 		return new ListBuilder<String>()
-				.add(" create table USER_CREDENTIAL(UCR_ID varchar(50), LOGIN varchar(100), PASSWORD varchar(100), MAIL varchar(100))")
-				.add(" create sequence SEQ_USER_CREDENTIAL start with 10001 increment by 1")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (0, 'admin', '5vIy0buT0cyhh7ODeWKEv5fvaWN1mdoNE_rmkCkjvhN8u05S_Et_Q=', 'admin@yopmail.com')")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (1, 'jdoe', '', 'john.doe@yopmail.com')")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (2, 'pluckey', '', 'palmer.luckey@yopmail.com')")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (3, 'bclinton', '', 'bill.clinton@yopmail.com')")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (4, 'pmormon', '', 'phil.mormon@yopmail.com')")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (5, 'npi', '', 'npi@vertigo.io')")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (10, 'bdufour', '', 'bdufour@yopmail.com')")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (11, 'nlegendre', '', 'nicolas.legendre@yopmail.com')")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (12, 'mgarnier', '', 'marie.garnier@yopmail.com')")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (13, 'hbertrand', '', 'hb@yopmail.com')")
+				.add(" create table USER(USR_ID varchar(50), FULL_NAME varchar(100), EMAIL varchar(100))")
+				.add(" create sequence SEQ_USER start with 10001 increment by 1")
+				.add("insert into user(USR_ID, FULL_NAME, EMAIL) values (0, 'John Doe', 'john.doe@yopmail.com')")
+				.add("insert into user(USR_ID, FULL_NAME, EMAIL) values (1, 'Palmer Luckey', 'palmer.luckey@yopmail.com')")
+				.add("insert into user(USR_ID, FULL_NAME, EMAIL) values (2, 'Bill Clinton', 'bill.clinton@yopmail.com')")
+				.add("insert into user(USR_ID, FULL_NAME, EMAIL) values (3, 'Phil Mormon', 'phil.mormon@yopmail.com')")
+				.add("insert into user(USR_ID, FULL_NAME, EMAIL) values (4, 'Npi', 'npi@vertigo.io')")
+				.add("insert into user(USR_ID, FULL_NAME, EMAIL) values (10, 'Bernard Dufour', 'bdufour@yopmail.com')")
+				.add("insert into user(USR_ID, FULL_NAME, EMAIL) values (11, 'Nicolas Legendre', 'nicolas.legendre@yopmail.com')")
+				.add("insert into user(USR_ID, FULL_NAME, EMAIL) values (12, 'Marie Garnier', 'marie.garnier@yopmail.com')")
+				.add("insert into user(USR_ID, FULL_NAME, EMAIL) values (13, 'Hugo Bertrand', 'hb@yopmail.com')")
+				.add("insert into user(USR_ID, FULL_NAME, EMAIL) values (14, 'Super Admin', 'admin@yopmail.com')")
 				.build();
 	}
 

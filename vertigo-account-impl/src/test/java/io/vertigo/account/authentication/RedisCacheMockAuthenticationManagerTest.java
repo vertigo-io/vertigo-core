@@ -26,7 +26,7 @@ import io.vertigo.app.config.AppConfig;
  *
  * @author npiedeloup
  */
-public final class RedisCacheAuthenticationManagerTest extends AbstractAuthenticationManagerTest {
+public final class RedisCacheMockAuthenticationManagerTest extends AbstractAuthenticationManagerTest {
 	@Override
 	protected AppConfig buildAppConfig() {
 		return MyAppConfig.config(AuthentPlugin.mock, true);
