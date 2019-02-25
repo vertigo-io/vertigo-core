@@ -24,9 +24,6 @@
 				<resource type="kpr" path="${boot.kpr}" />
 				<resource type="classes" path="io.vertigo.studio.data.DtDefinitions" />
 			</provider>	
-			<provider class="io.vertigo.persona.plugins.security.loaders.SecurityDefinitionProvider" >
-				<resource type="security" path="META-INF/security/basic-auth-config.xml" />
-			</provider>
 			
 		</definitions>
 	</module>

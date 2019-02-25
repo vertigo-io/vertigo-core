@@ -38,9 +38,6 @@
 			<plugin class="io.vertigo.studio.plugins.mda.file.FileInfoGeneratorPlugin">
 				<param name="targetSubDir" value="javagen" />
 			</plugin>
-			<plugin class="io.vertigo.studio.plugins.mda.security.SecurityGeneratorPlugin">
-				<param name="targetSubDir" value="javagen" />
-			</plugin>
 		</component>
 		<component  api="MasterDataManager" class="io.vertigo.studio.impl.masterdata.MasterDataManagerImpl">
 			<plugin class="io.vertigo.studio.plugins.masterdata.json.JsonMasterDataValueProvider">
@@ -56,9 +53,6 @@
 		<definitions>	
 			<provider class="io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider" >
 				<resource type="kpr" path="${boot.kpr}" />
-			</provider>
-			<provider class="io.vertigo.persona.plugins.security.loaders.SecurityDefinitionProvider" >
-				<resource type="security" path="META-INF/security/basic-auth-config.xml" />
 			</provider>
 		</definitions>
 	</module>
