@@ -69,10 +69,10 @@ public final class WrappedException extends RuntimeException {
 			t = th;
 		}
 
-		if (t instanceof RuntimeException) {
+		if (t instanceof RuntimeException && msg == null) {
 			throw (RuntimeException) t;
 		}
-		if (t instanceof Error) {
+		if (t instanceof Error && msg == null) {
 			throw (Error) t;
 		}
 		final String message = msg != null ? StringUtil.format(msg, params) : null;
