@@ -97,16 +97,17 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 		return (S) this;
 	}
 
-	protected final SecuredEntity getSecuredEntity() {
-		return mySecuredEntity;
-	}
-
 	protected final boolean isSimpleSecurityField(final String fieldName) {
+		if (mySecuredEntity == null) {
+			return true; //if no SecuredEntity (ie juste a translator in test), we use only simple field query
+		}
 		return mySecuredEntity.getSecurityFields().stream()
 				.anyMatch(field -> fieldName.equals(field.getName()));
 	}
 
 	protected final SecurityDimension getSecurityDimension(final String fieldName) {
+		Assertion.checkNotNull(mySecuredEntity, "Can't use SecurityDimension when no SecuredEntity definition was set");
+		//-----
 		return mySecuredEntity.getSecurityDimensions().stream()
 				.filter(securityDimension -> fieldName.equals(securityDimension.getName()))
 				.findFirst()//findFirst car pas le moment de vérifier qu'il y en qu'un seul
