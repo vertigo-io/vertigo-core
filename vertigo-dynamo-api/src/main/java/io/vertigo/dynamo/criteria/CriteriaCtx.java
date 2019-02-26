@@ -31,14 +31,20 @@ import io.vertigo.dynamo.domain.metamodel.DtFieldName;
  */
 public final class CriteriaCtx {
 	private int i;
+	private final Map<String, String> fieldValueNames = new HashMap<>();
 	private final Map<String, Object> attributeValues = new HashMap<>();
 	private final Map<String, DtFieldName> attributeNames = new HashMap<>();
 
 	String attributeName(final DtFieldName dtFieldName, final Object value) {
-		final String attributeName = dtFieldName.name() + '_' + i;
-		i++;
-		attributeValues.put(attributeName, value);
-		attributeNames.put(attributeName, dtFieldName);
+		final String attributeValueName = dtFieldName.name() + "_" + String.valueOf(value);
+		String attributeName = fieldValueNames.get(attributeValueName);
+		if (attributeName == null) {
+			attributeName = dtFieldName.name() + '_' + i;
+			i++;
+			fieldValueNames.put(attributeValueName, attributeName);
+			attributeValues.put(attributeName, value);
+			attributeNames.put(attributeName, dtFieldName);
+		}
 		return attributeName;
 	}
 
