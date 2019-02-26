@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.account.account.Account;
+import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
@@ -67,6 +68,17 @@ abstract class AbstractAuthenticationManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testLoginSuccess() {
 		loginSuccess();
+	}
+
+	@Test
+	public void testLoginUsername() {
+		final AuthenticationToken token = new UsernameAuthenticationToken("admin");
+		final Optional<Account> account = authenticationManager.login(token);
+		Assertions.assertTrue(account.isPresent(), "Authent fail");
+
+		final Optional<UserSession> userSession = securityManager.getCurrentUserSession();
+		Assertions.assertTrue(userSession.isPresent(), "No UserSession");
+		Assertions.assertTrue(userSession.get().isAuthenticated(), "Not authenticated");
 	}
 
 	private Optional<Account> loginSuccess() {

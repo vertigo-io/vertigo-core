@@ -155,7 +155,7 @@ public final class UserAuthorizations implements Serializable {
 		Assertion.checkNotNull(authorizationNames);
 		//-----
 		return Arrays.stream(authorizationNames)
-				.anyMatch((authorizationName) -> authorizationRefs.containsKey(authorizationName.name()));
+				.anyMatch(authorizationName -> authorizationRefs.containsKey(authorizationName.name()));
 	}
 
 	/**
