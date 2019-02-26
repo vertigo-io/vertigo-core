@@ -181,11 +181,15 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return ""; //Attention : pas de *:*
 		}
-		final UserAuthorizations userPermissions = userPermissionsOpt.get();
-		final SearchSecurityRuleTranslator securityRuleTranslator = new SearchSecurityRuleTranslator();
-		securityRuleTranslator.withCriteria(userPermissions.getSecurityKeys());
 
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConceptClass);
+		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
+
+		final UserAuthorizations userPermissions = userPermissionsOpt.get();
+		final SearchSecurityRuleTranslator securityRuleTranslator = new SearchSecurityRuleTranslator()
+				.on(securedEntity)
+				.withCriteria(userPermissions.getSecurityKeys());
+
 		final List<Authorization> permissions = userPermissions.getEntityAuthorizations(dtDefinition).stream()
 				.filter(permission -> permission.getOperation().get().equals(operationName.name()))
 				.collect(Collectors.toList());

@@ -18,6 +18,9 @@
  */
 package io.vertigo.account.authentication;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import io.vertigo.account.authentication.MyAppConfig.AuthentPlugin;
 import io.vertigo.app.config.AppConfig;
 
@@ -33,4 +36,10 @@ public final class LdapAuthenticationManagerTest extends AbstractAuthenticationM
 		return MyAppConfig.config(AuthentPlugin.ldap, false);
 	}
 
+	@Override
+	@Disabled
+	@Test
+	public void testLoginUsername() {
+		//
+	}
 }

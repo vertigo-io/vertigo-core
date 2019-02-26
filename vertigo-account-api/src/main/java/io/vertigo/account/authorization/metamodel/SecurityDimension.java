@@ -21,6 +21,7 @@
  */
 package io.vertigo.account.authorization.metamodel;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -64,8 +65,8 @@ public final class SecurityDimension {
 		//----
 		this.name = name;
 		this.type = type;
-		this.fields = fields;
-		this.values = values;
+		this.fields = Collections.unmodifiableList(fields);
+		this.values = Collections.unmodifiableList(values);
 	}
 
 	/**

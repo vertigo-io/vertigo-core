@@ -234,8 +234,11 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 			authorizationManager.obtainUserAuthorizations().withSecurityKeys("utiId", DEFAULT_UTI_ID)
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
+					.withSecurityKeys("geo", new Long[] { DEFAULT_REG_ID, DEFAULT_DEP_ID, null }) //droit sur tout un département
 					.addAuthorization(recordRead).addAuthorization(recordRead)
-					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$READ4))
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$TEST))
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$TEST2))
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$TEST3))
 					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$WRITE))
 					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$CREATE))
 					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$DELETE));
@@ -252,12 +255,15 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 
 			Assertions.assertEquals("(AMOUNT <= #AMOUNT_0# OR UTI_ID_OWNER = #UTI_ID_OWNER_1#)", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ).toString());
 			Assertions.assertEquals("(AMOUNT <= #AMOUNT_0# OR UTI_ID_OWNER = #UTI_ID_OWNER_1#)", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ2).toString());
-			Assertions.assertEquals("((AMOUNT <= #AMOUNT_0# AND (UTI_ID_OWNER is null or UTI_ID_OWNER != #UTI_ID_OWNER_1# )) OR (AMOUNT > #AMOUNT_2# AND UTI_ID_OWNER = #UTI_ID_OWNER_3#))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ3).toString());
-			Assertions.assertEquals("(((UTI_ID_OWNER is null or UTI_ID_OWNER != #UTI_ID_OWNER_0# ) AND (AMOUNT < #AMOUNT_1# OR AMOUNT = #AMOUNT_2# OR AMOUNT <= #AMOUNT_3#)) OR (UTI_ID_OWNER = #UTI_ID_OWNER_4# AND (AMOUNT > #AMOUNT_5# OR AMOUNT = #AMOUNT_6# OR AMOUNT >= #AMOUNT_7#)))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ4).toString());
+			Assertions.assertEquals("((AMOUNT <= #AMOUNT_0# AND (UTI_ID_OWNER is null or UTI_ID_OWNER != #UTI_ID_OWNER_1# )) OR (AMOUNT > #AMOUNT_0# AND UTI_ID_OWNER = #UTI_ID_OWNER_1#))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ3).toString());
 			Assertions.assertEquals("false", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ_HP).toString());
 			Assertions.assertEquals("((UTI_ID_OWNER = #UTI_ID_OWNER_0# AND ETA_CD in ('CRE', 'VAL', 'PUB', 'NOT', 'REA')) OR (TYP_ID = #TYP_ID_1# AND AMOUNT > #AMOUNT_2# AND AMOUNT <= #AMOUNT_3# AND ETA_CD in ('CRE', 'VAL', 'PUB', 'NOT', 'REA')))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.WRITE).toString());
 			Assertions.assertEquals("(TYP_ID = #TYP_ID_0# AND AMOUNT <= #AMOUNT_1#)", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.CREATE).toString());
 			Assertions.assertEquals("(TYP_ID = #TYP_ID_0# OR (UTI_ID_OWNER = #UTI_ID_OWNER_1# AND ETA_CD in ('CRE', 'VAL')))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.DELETE).toString());
+
+			Assertions.assertEquals("(((UTI_ID_OWNER is null or UTI_ID_OWNER != #UTI_ID_OWNER_0# ) AND (AMOUNT < #AMOUNT_1# OR AMOUNT = #AMOUNT_1# OR AMOUNT <= #AMOUNT_1#)) OR (UTI_ID_OWNER = #UTI_ID_OWNER_0# AND (AMOUNT > #AMOUNT_1# OR AMOUNT = #AMOUNT_1# OR AMOUNT >= #AMOUNT_1#)))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.TEST).toString());
+			Assertions.assertEquals("(ETA_CD in ('CRE', 'VAL', 'PUB') OR ETA_CD in ('CRE', 'VAL', 'PUB') OR ETA_CD = #ETA_CD_0# OR (ETA_CD is null or ETA_CD != #ETA_CD_0# ) OR ETA_CD in ('PUB', 'NOT', 'REA', 'ARC') OR ETA_CD in ('PUB', 'NOT', 'REA', 'ARC'))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.TEST2).toString());
+			Assertions.assertEquals("((((((REG_ID = #REG_ID_0# AND DEP_ID = #DEP_ID_1# AND COM_ID is not null) OR (REG_ID = #REG_ID_0# AND DEP_ID = #DEP_ID_1#)) OR (REG_ID = #REG_ID_0# AND DEP_ID = #DEP_ID_1# AND COM_ID is null )) OR ((REG_ID is null or REG_ID != #REG_ID_0# ) AND (DEP_ID is null or DEP_ID != #DEP_ID_1# ) AND COM_ID is not null )) OR (REG_ID = #REG_ID_0# AND DEP_ID is null AND COM_ID is null)) OR (REG_ID = #REG_ID_0# AND (DEP_ID is null OR DEP_ID = #DEP_ID_1#) AND COM_ID is null))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.TEST3).toString());
 
 			final boolean canReadNotify = authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$NOTIFY);
 			Assertions.assertFalse(canReadNotify);
@@ -288,8 +294,11 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 			authorizationManager.obtainUserAuthorizations().withSecurityKeys("utiId", DEFAULT_UTI_ID)
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
+					.withSecurityKeys("geo", new Long[] { DEFAULT_REG_ID, DEFAULT_DEP_ID, null }) //droit sur tout un département
 					.addAuthorization(recordRead).addAuthorization(recordRead)
-					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$READ4))
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$TEST))
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$TEST2))
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$TEST3))
 					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$WRITE))
 					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$CREATE))
 					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$DELETE));
@@ -306,12 +315,16 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 
 			Assertions.assertEquals("(AMOUNT <= #AMOUNT_0# OR UTI_ID_OWNER = #UTI_ID_OWNER_1#)", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ).toSql(sqlDialect).getVal1());
 			Assertions.assertEquals("(AMOUNT <= #AMOUNT_0# OR UTI_ID_OWNER = #UTI_ID_OWNER_1#)", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ2).toSql(sqlDialect).getVal1());
-			Assertions.assertEquals("((AMOUNT <= #AMOUNT_0# AND (UTI_ID_OWNER is null or UTI_ID_OWNER != #UTI_ID_OWNER_1# )) OR (AMOUNT > #AMOUNT_2# AND UTI_ID_OWNER = #UTI_ID_OWNER_3#))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ3).toSql(sqlDialect).getVal1());
-			Assertions.assertEquals("(((UTI_ID_OWNER is null or UTI_ID_OWNER != #UTI_ID_OWNER_0# ) AND (AMOUNT < #AMOUNT_1# OR AMOUNT = #AMOUNT_2# OR AMOUNT <= #AMOUNT_3#)) OR (UTI_ID_OWNER = #UTI_ID_OWNER_4# AND (AMOUNT > #AMOUNT_5# OR AMOUNT = #AMOUNT_6# OR AMOUNT >= #AMOUNT_7#)))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ4).toSql(sqlDialect).getVal1());
+			Assertions.assertEquals("((AMOUNT <= #AMOUNT_0# AND (UTI_ID_OWNER is null or UTI_ID_OWNER != #UTI_ID_OWNER_1# )) OR (AMOUNT > #AMOUNT_0# AND UTI_ID_OWNER = #UTI_ID_OWNER_1#))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ3).toSql(sqlDialect).getVal1());
 			Assertions.assertEquals("0=1", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ_HP).toSql(sqlDialect).getVal1());
 			Assertions.assertEquals("((UTI_ID_OWNER = #UTI_ID_OWNER_0# AND ETA_CD in ('CRE', 'VAL', 'PUB', 'NOT', 'REA')) OR (TYP_ID = #TYP_ID_1# AND AMOUNT > #AMOUNT_2# AND AMOUNT <= #AMOUNT_3# AND ETA_CD in ('CRE', 'VAL', 'PUB', 'NOT', 'REA')))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.WRITE).toSql(sqlDialect).getVal1());
 			Assertions.assertEquals("(TYP_ID = #TYP_ID_0# AND AMOUNT <= #AMOUNT_1#)", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.CREATE).toSql(sqlDialect).getVal1());
 			Assertions.assertEquals("(TYP_ID = #TYP_ID_0# OR (UTI_ID_OWNER = #UTI_ID_OWNER_1# AND ETA_CD in ('CRE', 'VAL')))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.DELETE).toSql(sqlDialect).getVal1());
+
+			Assertions.assertEquals("(((UTI_ID_OWNER is null or UTI_ID_OWNER != #UTI_ID_OWNER_0# ) AND (AMOUNT < #AMOUNT_1# OR AMOUNT = #AMOUNT_1# OR AMOUNT <= #AMOUNT_1#)) OR (UTI_ID_OWNER = #UTI_ID_OWNER_0# AND (AMOUNT > #AMOUNT_1# OR AMOUNT = #AMOUNT_1# OR AMOUNT >= #AMOUNT_1#)))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.TEST).toSql(sqlDialect).getVal1());
+			Assertions.assertEquals("(ETA_CD in ('CRE', 'VAL', 'PUB') OR ETA_CD in ('CRE', 'VAL', 'PUB') OR ETA_CD = #ETA_CD_0# OR (ETA_CD is null or ETA_CD != #ETA_CD_0# ) OR ETA_CD in ('PUB', 'NOT', 'REA', 'ARC') OR ETA_CD in ('PUB', 'NOT', 'REA', 'ARC'))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.TEST2).toSql(sqlDialect).getVal1());
+			//TODO
+			Assertions.assertEquals("((((((REG_ID = #REG_ID_0# AND DEP_ID = #DEP_ID_1# AND COM_ID is not null) OR (REG_ID = #REG_ID_0# AND DEP_ID = #DEP_ID_1#)) OR (REG_ID = #REG_ID_0# AND DEP_ID = #DEP_ID_1# AND COM_ID is null )) OR ((REG_ID is null or REG_ID != #REG_ID_0# ) AND (DEP_ID is null or DEP_ID != #DEP_ID_1# ) AND COM_ID is not null )) OR (REG_ID = #REG_ID_0# AND DEP_ID is null AND COM_ID is null)) OR (REG_ID = #REG_ID_0# AND (DEP_ID is null OR DEP_ID = #DEP_ID_1#) AND COM_ID is null))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.TEST3).toSql(sqlDialect).getVal1());
 
 			final boolean canReadNotify = authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$NOTIFY);
 			Assertions.assertFalse(canReadNotify);
@@ -342,8 +355,11 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 			authorizationManager.obtainUserAuthorizations().withSecurityKeys("utiId", DEFAULT_UTI_ID)
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
+					.withSecurityKeys("geo", new Long[] { DEFAULT_REG_ID, DEFAULT_DEP_ID, null }) //droit sur tout un département
 					.addAuthorization(recordRead)
-					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$READ4))
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$TEST))
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$TEST2))
+					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$TEST3))
 					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$READ_HP))
 					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$WRITE))
 					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$CREATE))
@@ -356,11 +372,15 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 			Assertions.assertEquals("(+AMOUNT:<=100.0) (+UTI_ID_OWNER:1000)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.READ));
 			Assertions.assertEquals("(AMOUNT:<=100.0 UTI_ID_OWNER:1000)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.READ2));
 			Assertions.assertEquals("((+AMOUNT:<=100.0 -UTI_ID_OWNER:1000) (+AMOUNT:>100.0 +UTI_ID_OWNER:1000))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.READ3));
-			Assertions.assertEquals("((-UTI_ID_OWNER:1000 +(AMOUNT:<100.0 AMOUNT:100.0 AMOUNT:<=100.0)) (+UTI_ID_OWNER:1000 +(AMOUNT:>100.0 AMOUNT:100.0 AMOUNT:>=100.0)))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.READ4));
 			Assertions.assertEquals("(*:*)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.READ_HP));
-			Assertions.assertEquals("(+UTI_ID_OWNER:1000 +ETA_CD:<ARC) (+TYP_ID:10 +AMOUNT:>0 +AMOUNT:<=100.0 +ETA_CD:<ARC)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.WRITE));
+			Assertions.assertEquals("(+UTI_ID_OWNER:1000 +ETA_CD:('CRE' 'VAL' 'PUB' 'NOT' 'REA')) (+TYP_ID:10 +AMOUNT:>0 +AMOUNT:<=100.0 +ETA_CD:('CRE' 'VAL' 'PUB' 'NOT' 'REA'))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.WRITE));
 			Assertions.assertEquals("(+TYP_ID:10 +AMOUNT:<=100.0)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.CREATE));
-			Assertions.assertEquals("(+TYP_ID:10) (+UTI_ID_OWNER:1000 +ETA_CD:<PUB)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.DELETE));
+			Assertions.assertEquals("(+TYP_ID:10) (+UTI_ID_OWNER:1000 +ETA_CD:('CRE' 'VAL'))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.DELETE));
+
+			Assertions.assertEquals("((-UTI_ID_OWNER:1000 +(AMOUNT:<100.0 AMOUNT:100.0 AMOUNT:<=100.0)) (+UTI_ID_OWNER:1000 +(AMOUNT:>100.0 AMOUNT:100.0 AMOUNT:>=100.0)))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.TEST));
+			Assertions.assertEquals("(ETA_CD:('CRE' 'VAL' 'PUB') ETA_CD:('CRE' 'VAL' 'PUB') ETA_CD:'PUB' -ETA_CD:'PUB' ETA_CD:('PUB' 'NOT' 'REA' 'ARC') ETA_CD:('PUB' 'NOT' 'REA' 'ARC'))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.TEST2));
+			//GEO<${geo} OR GEO<=${geo} OR GEO=${geo} OR GEO!=${geo} OR GEO>${geo} OR GEO>=${geo}
+			Assertions.assertEquals("((+REG_ID:1 +DEP_ID:2 +_exists_:COM_ID) (+REG_ID:1 +DEP_ID:2) (+REG_ID:1 +DEP_ID:2 -_exists_:COM_ID) (-REG_ID:1 -DEP_ID:2 _exists_:COM_ID) (+REG_ID:1 -_exists_:DEP_ID -_exists_:COM_ID) (+REG_ID:1 +(DEP_ID:2 -_exists_:DEP_ID) -_exists_:COM_ID))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.TEST3));
 
 			final boolean canReadNotify = authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$NOTIFY);
 			Assertions.assertFalse(canReadNotify);

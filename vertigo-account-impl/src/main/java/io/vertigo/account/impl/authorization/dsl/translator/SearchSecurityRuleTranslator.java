@@ -20,13 +20,18 @@ package io.vertigo.account.impl.authorization.dsl.translator;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import io.vertigo.account.authorization.metamodel.SecurityDimension;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression.ValueOperator;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleFixedValue;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression.BoolOperator;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleUserPropertyValue;
+import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 /**
  *
@@ -87,39 +92,249 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 	}
 
 	private void appendExpression(final StringBuilder query, final RuleExpression expressionDefinition) {
-		if (expressionDefinition.getOperator() == ValueOperator.NEQ) {
-			query.append('-');
-		}
 		if (expressionDefinition.getValue() instanceof RuleUserPropertyValue) {
 			final RuleUserPropertyValue userPropertyValue = (RuleUserPropertyValue) expressionDefinition.getValue();
 			final List<Serializable> userValues = getUserCriteria(userPropertyValue.getUserProperty());
-			final boolean useParenthesisAroundValue = userValues.size() > 1;
 			if (!userValues.isEmpty()) {
-				query.append(expressionDefinition.getFieldName())
-						.append(':')
-						.append(toOperator(expressionDefinition.getOperator()));
-				if (useParenthesisAroundValue) {
-					query.append('(');
-				}
-
-				String inSep = "";
+				final boolean useParenthesisAroundValue = userValues.size() > 1;
+				String sep = "";
 				for (final Serializable userValue : userValues) {
-					query.append(inSep)
-							.append(userValue);
-					inSep = " ";
+					Assertion.checkNotNull(userValue);
+					Assertion.when(!userValue.getClass().isArray())
+							.check(() -> userValue instanceof Comparable,
+									"Security keys must be serializable AND comparable (here : {0})", userValues.getClass().getSimpleName());
+					Assertion.when(userValue.getClass().isArray())
+							.check(() -> Comparable.class.isAssignableFrom(userValue.getClass().getComponentType()),
+									"Security keys must be serializable AND comparable (here : {0})", userValue.getClass().getComponentType());
+					//----
+					query.append(sep);
+					appendExpression(query, expressionDefinition.getFieldName(), expressionDefinition.getOperator(), userValue);
+					sep = " ";
 				}
-				if (useParenthesisAroundValue) {
-					query.append(')');
-				}
+				query.append(useParenthesisAroundValue ? ")" : "");
+			} else {
+				//always false
+				query.append("_exists_:always_false");
 			}
+			//always false
 		} else if (expressionDefinition.getValue() instanceof RuleFixedValue) {
-			query.append(expressionDefinition.getFieldName())
-					.append(':')
-					.append(toOperator(expressionDefinition.getOperator()))
-					.append(((RuleFixedValue) expressionDefinition.getValue()).getFixedValue());
+			appendExpression(query, expressionDefinition.getFieldName(), expressionDefinition.getOperator(), ((RuleFixedValue) expressionDefinition.getValue()).getFixedValue());
 		} else {
 			throw new IllegalArgumentException("value type not supported " + expressionDefinition.getValue().getClass().getName());
 		}
+	}
+
+	private void appendSimpleExpression(final StringBuilder query, final String fieldName, final ValueOperator operator, final Serializable userValue, final boolean strict) {
+		if (userValue != null && !StringUtil.isEmpty(String.valueOf(userValue))) {
+			if (operator == ValueOperator.NEQ) {
+				query.append('-');
+			}
+			query.append(fieldName)
+					.append(':')
+					.append(toOperator(operator))
+					.append(strict ? "'" : "")
+					.append(userValue)
+					.append(strict ? "'" : "");
+		}
+	}
+
+	private void appendSimpleExpression(final StringBuilder query, final String fieldName, final ValueOperator operator, final List<Serializable> userValues, final boolean strict) {
+		final boolean useParenthesisAroundValue = userValues.size() > 1;
+		if (!userValues.isEmpty()) {
+			if (operator == ValueOperator.NEQ) {
+				query.append('-');
+			}
+			query.append(fieldName)
+					.append(':')
+					.append(toOperator(operator));
+			if (useParenthesisAroundValue) {
+				query.append('(');
+			}
+			String inSep = "";
+			for (final Serializable userValue : userValues) {
+				query.append(inSep)
+						.append(strict ? "'" : "")
+						.append(userValue)
+						.append(strict ? "'" : "");
+				inSep = " ";
+			}
+			if (useParenthesisAroundValue) {
+				query.append(')');
+			}
+		}
+	}
+
+	private void appendExpression(final StringBuilder query, final String fieldName, final ValueOperator operator, final Serializable value) {
+		if (isSimpleSecurityField(fieldName)) {
+			appendSimpleExpression(query, fieldName, operator, value, false);
+		} else {
+			final SecurityDimension securityDimension = getSecurityDimension(fieldName);
+			switch (securityDimension.getType()) {
+				case SIMPLE: //TODO not use yet ?
+					appendSimpleExpression(query, fieldName, operator, value, false);
+					break;
+				case ENUM:
+					Assertion.checkArgument(value instanceof String, "Enum criteria must be a code String ({0})", value);
+					//----
+					appendEnumExpression(query, securityDimension, operator, String.class.cast(value));
+					break;
+				case TREE:
+					appendTreeExpression(query, securityDimension, operator, value);
+					break;
+				default:
+					throw new IllegalArgumentException("securityDimensionType not supported " + securityDimension.getType());
+			}
+		}
+	}
+
+	private void appendEnumExpression(final StringBuilder query, final SecurityDimension securityDimension, final ValueOperator operator, final String value) {
+		final String fieldName = securityDimension.getName();
+		switch (operator) {
+			case EQ:
+			case NEQ:
+				appendSimpleExpression(query, fieldName, operator, value, true);
+				break;
+			case GT:
+				appendSimpleExpression(query, fieldName, ValueOperator.EQ, subValues(securityDimension.getValues(), false, value, false), true);
+				break;
+			case GTE:
+				appendSimpleExpression(query, fieldName, ValueOperator.EQ, subValues(securityDimension.getValues(), false, value, true), true);
+				break;
+			case LT:
+				appendSimpleExpression(query, fieldName, ValueOperator.EQ, subValues(securityDimension.getValues(), true, value, false), true);
+				break;
+			case LTE:
+				appendSimpleExpression(query, fieldName, ValueOperator.EQ, subValues(securityDimension.getValues(), true, value, true), true);
+				break;
+
+			default:
+				throw new IllegalArgumentException("Operator not supported " + operator.name());
+		}
+	}
+
+	private void appendTreeExpression(final StringBuilder query, final SecurityDimension securityDimension, final ValueOperator operator, final Serializable value) {
+		Assertion.checkArgument(value instanceof String[]
+				|| value instanceof Integer[]
+				|| value instanceof Long[], "Security TREE axe ({0}) must be set in UserSession as Arrays (current:{1})", securityDimension.getName(), value.getClass().getName());
+		if (value instanceof String[]) {
+			appendTreeExpression(query, securityDimension, operator, (String[]) value);
+		} else if (value instanceof Integer[]) {
+			appendTreeExpression(query, securityDimension, operator, (Integer[]) value);
+		} else {
+			appendTreeExpression(query, securityDimension, operator, (Long[]) value);
+		}
+	}
+
+	private <K extends Serializable> void appendTreeExpression(final StringBuilder query, final SecurityDimension securityDimension, final ValueOperator operator, final K[] treeKeys) {
+		//on vérifie qu'on a bien toutes les clées.
+		final List<String> strDimensionfields = securityDimension.getFields().stream()
+				.map(DtField::getName)
+				.collect(Collectors.toList());
+		Assertion.checkArgument(strDimensionfields.size() == treeKeys.length, "User securityKey for tree axes must match declared fields: ({0})", strDimensionfields);
+		query.append('(');
+		String inSep = "";
+		//cas particuliers du == et du !=
+		if (operator == ValueOperator.EQ) {
+			for (int i = 0; i < strDimensionfields.size(); i++) {
+				if (treeKeys[i] != null) {
+					query.append(inSep).append('+');
+					appendSimpleExpression(query, strDimensionfields.get(i), ValueOperator.EQ, treeKeys[i], false);
+					inSep = " ";
+				} else {
+					query.append(inSep);
+					appendSimpleExpression(query, "_exists_", ValueOperator.NEQ, strDimensionfields.get(i), false);
+					inSep = " ";
+				}
+			}
+		} else if (operator == ValueOperator.NEQ) {
+			for (int i = 0; i < strDimensionfields.size(); i++) {
+				if (treeKeys[i] != null) {
+					query.append(inSep);
+					appendSimpleExpression(query, strDimensionfields.get(i), ValueOperator.NEQ, treeKeys[i], false);
+					inSep = " ";
+				} else {
+					query.append(inSep);
+					appendSimpleExpression(query, "_exists_", ValueOperator.EQ, strDimensionfields.get(i), false);
+					inSep = " ";
+				}
+			}
+		} else { //cas des < , <= , > et >=
+			//le < signifie au-dessus dans la hierachie et > en-dessous
+
+			//on détermine le dernier field non null du user, les règles pivotent sur ce point là
+			final int lastIndexNotNull = lastIndexNotNull(treeKeys);
+
+			//1- règles avant le point de pivot : 'Eq' pout tous les opérateurs
+			for (int i = 0; i < lastIndexNotNull; i++) {
+				query.append(inSep).append('+');
+				appendSimpleExpression(query, strDimensionfields.get(i), ValueOperator.EQ, treeKeys[i], false);
+				inSep = " ";
+			}
+
+			//2- règles pour le point de pivot
+			if (lastIndexNotNull >= 0) {
+				final String fieldName = strDimensionfields.get(lastIndexNotNull);
+				switch (operator) {
+					case GT:
+						//pour > : doit être null (car non inclus)
+						query.append(inSep);
+						appendSimpleExpression(query, "_exists_", ValueOperator.NEQ, fieldName, false);
+						inSep = " ";
+						break;
+					case GTE:
+						//pour >= : doit être égale à la clé du user ou null (supérieur)
+						query.append(inSep).append("+(");
+						appendSimpleExpression(query, fieldName, ValueOperator.EQ, treeKeys[lastIndexNotNull], false);
+						//just append ' ' -> OR
+						query.append(' ');
+						appendSimpleExpression(query, "_exists_", ValueOperator.NEQ, fieldName, false);
+						query.append(')');
+						inSep = " ";
+						break;
+					case LT:
+					case LTE:
+						//pour < et <= on test l'égalité
+						query.append(inSep).append('+');
+						appendSimpleExpression(query, fieldName, ValueOperator.EQ, treeKeys[lastIndexNotNull], false);
+						inSep = " ";
+						break;
+					case EQ:
+					case NEQ:
+					default:
+						throw new IllegalArgumentException("Operator not supported " + operator.name());
+				}
+			}
+
+			//3- règles après le point de pivot (les null du user donc)
+			for (int i = lastIndexNotNull + 1; i < strDimensionfields.size(); i++) {
+				final String fieldName = strDimensionfields.get(i);
+				switch (operator) {
+					case GT:
+					case GTE:
+						//pour > et >= on test l'égalité (isNull donc)
+						query.append(inSep);
+						appendSimpleExpression(query, "_exists_", ValueOperator.NEQ, fieldName, false);
+						inSep = " ";
+						break;
+					case LT:
+						//pout < : le premier non null, puis pas de filtre : on accepte toutes valeurs
+						if (i == lastIndexNotNull + 1) {
+							query.append(inSep).append('+');
+							appendSimpleExpression(query, "_exists_", ValueOperator.EQ, fieldName, false);
+							inSep = " ";
+						}
+						break;
+					case LTE:
+						//pour <= : pas de filtre on accepte toutes valeurs
+						break;
+					case EQ:
+					case NEQ:
+					default:
+						throw new IllegalArgumentException("Operator not supported " + operator.name());
+				}
+			}
+		}
+		query.append(')');
 	}
 
 	private static String toOperator(final ValueOperator operator) {

@@ -124,4 +124,22 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 		//----
 		return myUserCriteria.getOrDefault(userProperty, Collections.emptyList());
 	}
+
+	protected static List<Serializable> subValues(final List<String> values, final boolean includeHead, final String value, final boolean valueIncluded) {
+		final int indexof = values.indexOf(value);
+		Assertion.checkArgument(indexof >= 0, "Current value ({0}) of security axe {1} not found in authorized values", value);
+		//----
+		final int offsetEdge = valueIncluded == includeHead ? 1 : 0; //add +1 to indexOf if valueInclude XOR includeHead
+		final List<? extends Serializable> subValues = includeHead ? values.subList(0, indexof + offsetEdge) : values.subList(indexof + offsetEdge, values.size() - 1);
+		return (List<Serializable>) subValues;
+	}
+
+	protected static <K> int lastIndexNotNull(final K[] value) {
+		for (int i = value.length - 1; i >= 0; i--) {
+			if (value[i] != null) {
+				return i;
+			}
+		}
+		return -1;
+	}
 }

@@ -155,18 +155,22 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			case EQ:
 				return Criterions.isEqualTo(fieldName, value);
 			case GT:
-				return Criterions.in(fieldName, subValues(securityDimension.getValues(), false, value, false));
+				return Criterions.in(fieldName, toStringArray(subValues(securityDimension.getValues(), false, value, false)));
 			case GTE:
-				return Criterions.in(fieldName, subValues(securityDimension.getValues(), false, value, true));
+				return Criterions.in(fieldName, toStringArray(subValues(securityDimension.getValues(), false, value, true)));
 			case LT:
-				return Criterions.in(fieldName, subValues(securityDimension.getValues(), true, value, false));
+				return Criterions.in(fieldName, toStringArray(subValues(securityDimension.getValues(), true, value, false)));
 			case LTE:
-				return Criterions.in(fieldName, subValues(securityDimension.getValues(), true, value, true));
+				return Criterions.in(fieldName, toStringArray(subValues(securityDimension.getValues(), true, value, true)));
 			case NEQ:
 				return Criterions.isNotEqualTo(fieldName, value);
 			default:
 				throw new IllegalArgumentException("Operator not supported " + operator.name());
 		}
+	}
+
+	private Serializable[] toStringArray(final List<Serializable> subValues) {
+		return subValues.toArray(new String[subValues.size()]);
 	}
 
 	private Criteria<E> treeToCriteria(final SecurityDimension securityDimension, final ValueOperator operator, final Serializable value) {
@@ -282,25 +286,4 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		}
 		return oldCriteria.or(newCriteria);
 	}
-
-	private static <K> int lastIndexNotNull(final K[] value) {
-		for (int i = value.length - 1; i >= 0; i--) {
-			if (value[i] != null) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	private static Serializable[] subValues(final List<String> values, final boolean includeHead, final String value, final boolean valueIncluded) {
-		final int indexof = values.indexOf(value);
-		Assertion.checkArgument(indexof >= 0, "Current value ({0}) of security axe {1} not found in authorized values", value);
-		//----
-		final List<String> subValues = includeHead ? values.subList(0, indexof) : values.subList(indexof + 1, values.size() - 1);
-		if (valueIncluded) {
-			subValues.add(value);
-		}
-		return subValues.toArray(new String[subValues.size()]);
-	}
-
 }

@@ -31,10 +31,22 @@
 				"(AMOUNT<=${montantMax} AND UTI_ID_OWNER!=${utiId}) or (AMOUNT>${montantMax} AND UTI_ID_OWNER=${utiId})"
 			]
 		},{
-			"__comment": "Visibilité attribuable avec un montant maximum, et visibilité pour l'utilisateur créateur.",
-			"name": "READ4", "label" : "Lecture",
+			"__comment": "Tests uniquement",
+			"name": "TEST", "label" : "Test",
 			"rules": [
 				"((AMOUNT<${montantMax} OR AMOUNT=${montantMax} OR AMOUNT<=${montantMax}) AND UTI_ID_OWNER!=${utiId}) or ((AMOUNT>${montantMax} OR AMOUNT=${montantMax} OR AMOUNT>=${montantMax}) AND UTI_ID_OWNER=${utiId})"
+			]
+		},{
+			"__comment": "Tests uniquement",
+			"name": "TEST2", "label" : "Test Enum",
+			"rules": [
+				"ETA_CD<NOT OR ETA_CD<=PUB OR ETA_CD=PUB OR ETA_CD!=PUB OR ETA_CD>VAL OR ETA_CD>=PUB"				
+			]
+		},{
+			"__comment": "Tests uniquement",
+			"name": "TEST3", "label" : "Test Tree",
+			"rules": [
+				"GEO<${geo} OR GEO<=${geo} OR GEO=${geo} OR GEO!=${geo} OR GEO>${geo} OR GEO>=${geo}"				
 			]
 		}, {
 			"__comment": "Visibilité attribuable avec un montant maximum, et visibilité pour l'utilisateur créateur.",

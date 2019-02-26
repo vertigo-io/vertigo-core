@@ -18,6 +18,9 @@
  */
 package io.vertigo.account.authentication;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import io.vertigo.account.authentication.MyAppConfig.AuthentPlugin;
 import io.vertigo.app.config.AppConfig;
 
@@ -31,6 +34,13 @@ public final class TextAuthenticationManagerTest extends AbstractAuthenticationM
 	@Override
 	protected AppConfig buildAppConfig() {
 		return MyAppConfig.config(AuthentPlugin.text, false);
+	}
+
+	@Override
+	@Disabled
+	@Test
+	public void testLoginUsername() {
+		//
 	}
 
 }
