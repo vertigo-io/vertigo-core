@@ -18,7 +18,15 @@
  */
 package io.vertigo.account.authentication;
 
+import java.util.Optional;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import io.vertigo.account.account.Account;
 import io.vertigo.account.authentication.MyAppConfig.AuthentPlugin;
+import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
+import io.vertigo.account.security.UserSession;
 import io.vertigo.app.config.AppConfig;
 
 /**
@@ -31,4 +39,17 @@ public final class RedisCacheMockAuthenticationManagerTest extends AbstractAuthe
 	protected AppConfig buildAppConfig() {
 		return MyAppConfig.config(AuthentPlugin.mock, true);
 	}
+
+	@Test
+	public Optional<Account> loginMockSuccess() {
+		final AuthenticationToken token = new UsernameAuthenticationToken("admin");
+		final Optional<Account> account = authenticationManager.login(token);
+		Assertions.assertTrue(account.isPresent(), "Authent fail");
+
+		final Optional<UserSession> userSession = securityManager.getCurrentUserSession();
+		Assertions.assertTrue(userSession.isPresent(), "No UserSession");
+		Assertions.assertTrue(userSession.get().isAuthenticated(), "Not authenticated");
+		return account;
+	}
+
 }

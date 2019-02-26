@@ -50,7 +50,7 @@ public interface AuthorizationManager extends Manager {
 	 * @param authorizationName authorization. (not null)
 	 * @return if user has this authorization.
 	 */
-	boolean hasAuthorization(AuthorizationName authorizationName);
+	boolean hasAuthorization(AuthorizationName... authorizationName);
 
 	/**
 	 * Check if current user can do this operation on this keyConcept.

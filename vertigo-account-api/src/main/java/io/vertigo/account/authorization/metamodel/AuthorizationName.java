@@ -24,6 +24,7 @@ import java.io.Serializable;
  * Authorization name (mark).
  * @author jgarnier, npiedeloup
  */
+@FunctionalInterface
 public interface AuthorizationName extends Serializable {
 
 	/** @return Authorization name (const case) */

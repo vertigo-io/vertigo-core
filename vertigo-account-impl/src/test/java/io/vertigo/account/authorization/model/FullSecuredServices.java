@@ -16,28 +16,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.account.authorization.annotations;
+package io.vertigo.account.authorization.model;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import io.vertigo.core.component.aop.AspectAnnotation;
+import io.vertigo.account.authorization.annotations.Secured;
+import io.vertigo.account.authorization.annotations.SecuredOperation;
+import io.vertigo.core.component.Component;
 
 /**
- * This annotation must be inserted on methods and classes that need a secure check by AuthorizationName.
  * @author npiedeloup
  */
-@Target({ ElementType.METHOD, ElementType.TYPE })
-@Retention(RetentionPolicy.RUNTIME)
-@AspectAnnotation
-public @interface Secured {
+@Secured({ "ATZ_ADMUSR", "ATZ_ADMPRO" })
+public class FullSecuredServices implements Component {
 
-	/**
-	 * Returns the security configuration attributes (e.g. ROLE_USER, ROLE_ADMIN).
-	 *
-	 * @return String The secure method attribute
-	 */
-	String[] value();
+	public int fackService1() {
+		return 1;
+	}
+
+	public int fackService2() {
+		return 2;
+	}
+
+	public int fackService3(@SecuredOperation("READ") final Record record) {
+		return 3;
+	}
+
+	public int fackService4(@SecuredOperation("WRITE") final Record record) {
+		return 4;
+	}
+
 }

@@ -20,6 +20,7 @@ package io.vertigo.account.authorization;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -147,13 +148,14 @@ public final class UserAuthorizations implements Serializable {
 	}
 
 	/**
-	 * @param authorizationName Authorization
+	 * @param authorizationNamse Authorization
 	 * @return true if user has this authorization
 	 */
-	public boolean hasAuthorization(final AuthorizationName authorizationName) {
-		Assertion.checkNotNull(authorizationName);
+	public boolean hasAuthorization(final AuthorizationName... authorizationNames) {
+		Assertion.checkNotNull(authorizationNames);
 		//-----
-		return authorizationRefs.containsKey(authorizationName.name());
+		return Arrays.stream(authorizationNames)
+				.anyMatch((authorizationName) -> authorizationRefs.containsKey(authorizationName.name()));
 	}
 
 	/**

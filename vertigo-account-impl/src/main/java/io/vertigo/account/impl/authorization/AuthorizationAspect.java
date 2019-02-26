@@ -19,6 +19,7 @@
 package io.vertigo.account.impl.authorization;
 
 import java.lang.reflect.Parameter;
+import java.util.Arrays;
 
 import javax.inject.Inject;
 
@@ -26,6 +27,7 @@ import io.vertigo.account.authorization.AuthorizationManager;
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.account.authorization.annotations.Secured;
 import io.vertigo.account.authorization.annotations.SecuredOperation;
+import io.vertigo.account.authorization.metamodel.AuthorizationName;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.aop.AspectMethodInvocation;
 import io.vertigo.core.locale.MessageText;
@@ -52,12 +54,13 @@ public final class AuthorizationAspect implements Aspect {
 
 	@Override
 	public Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation) {
-		final Secured secured = methodInvocation.getMethod().getAnnotation(Secured.class) != null
+		final Secured secured = methodInvocation.getMethod().getAnnotation(Secured.class) == null
 				? methodInvocation.getMethod().getDeclaringClass().getAnnotation(Secured.class)
 				: methodInvocation.getMethod().getAnnotation(Secured.class);
 
 		Assertion.checkNotNull(secured, "No Aspect if not @Secured (on {0})", methodInvocation.getMethod());
-		if (!authorizationManager.hasAuthorization(secured::value)) {
+		final AuthorizationName[] authorizationNames = Arrays.stream(secured.value()).map(value -> (AuthorizationName) value::toString).toArray(AuthorizationName[]::new);
+		if (!authorizationManager.hasAuthorization(authorizationNames)) {
 			throw new VSecurityException(MessageText.of("Not enought authorizations"));//no too sharp info here : may use log
 		}
 		final Parameter[] parameters = methodInvocation.getMethod().getParameters();

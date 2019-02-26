@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.authorization.SecurityNames.GlobalAuthorizations;
 import io.vertigo.account.authorization.SecurityNames.RecordAuthorizations;
 import io.vertigo.account.authorization.SecurityNames.RecordOperations;
@@ -38,19 +37,13 @@ import io.vertigo.account.authorization.metamodel.AuthorizationName;
 import io.vertigo.account.authorization.metamodel.Role;
 import io.vertigo.account.authorization.model.Record;
 import io.vertigo.account.data.TestUserSession;
-import io.vertigo.account.plugins.authorization.loaders.JsonSecurityDefinitionProvider;
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.DefinitionProviderConfig;
-import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.param.Param;
-import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.impl.sql.vendor.postgresql.PostgreSqlDataBase;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.dynamo.criteria.CriteriaCtx;
-import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.lang.Tuples.Tuple2;
 
 /**
@@ -75,27 +68,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 
 	@Override
 	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
-				.beginBoot()
-				.withLocales("fr_FR")
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.endBoot()
-				.addModule(new AccountFeatures()
-						.withSecurity(
-								Param.of("userSessionClassName", TestUserSession.class.getName()))
-						.withAuthorization()
-						.build())
-				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
-								.addAllParams(Param.of("encoding", "utf-8"))
-								.addDefinitionResource("kpr", "security/generation.kpr")
-								.build())
-						.addDefinitionProvider(DefinitionProviderConfig.builder(JsonSecurityDefinitionProvider.class)
-								.addDefinitionResource("security", "io/vertigo/account/authorization/advanced-auth-config-v2.json")
-								.build())
-						.addDefinitionProvider(TestSecurityDefinitionProvider.class)
-						.build())
-				.build();
+		return MyAppConfig.config();
 	}
 
 	@Test

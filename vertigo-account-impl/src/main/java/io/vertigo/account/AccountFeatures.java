@@ -25,6 +25,7 @@ import io.vertigo.account.identityprovider.IdentityProviderManager;
 import io.vertigo.account.impl.account.AccountDefinitionProvider;
 import io.vertigo.account.impl.account.AccountManagerImpl;
 import io.vertigo.account.impl.authentication.AuthenticationManagerImpl;
+import io.vertigo.account.impl.authorization.AuthorizationAspect;
 import io.vertigo.account.impl.authorization.AuthorizationManagerImpl;
 import io.vertigo.account.impl.identityprovider.IdentityProviderManagerImpl;
 import io.vertigo.account.impl.security.VSecurityManagerImpl;
@@ -211,7 +212,8 @@ public final class AccountFeatures extends Features<AccountFeatures> {
 	@Feature("authorization")
 	public AccountFeatures withAuthorization() {
 		getModuleConfigBuilder()
-				.addComponent(AuthorizationManager.class, AuthorizationManagerImpl.class);
+				.addComponent(AuthorizationManager.class, AuthorizationManagerImpl.class)
+				.addAspect(AuthorizationAspect.class);
 		return this;
 	}
 

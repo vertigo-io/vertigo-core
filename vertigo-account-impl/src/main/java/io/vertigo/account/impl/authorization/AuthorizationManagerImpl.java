@@ -89,11 +89,11 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean hasAuthorization(final AuthorizationName permissionName) {
-		Assertion.checkNotNull(permissionName);
+	public boolean hasAuthorization(final AuthorizationName... permissionNames) {
+		Assertion.checkNotNull(permissionNames);
 		//---
 		return getUserPermissionsOpt()
-				.map(userPermissions -> userPermissions.hasAuthorization(permissionName))
+				.map(userPermissions -> userPermissions.hasAuthorization(permissionNames))
 				// Si il n'y a pas de userPermissions alors pas d'autorisation.
 				.orElse(false);
 

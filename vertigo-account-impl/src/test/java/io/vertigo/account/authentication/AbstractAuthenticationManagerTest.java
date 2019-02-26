@@ -39,9 +39,9 @@ import io.vertigo.account.security.VSecurityManager;
 abstract class AbstractAuthenticationManagerTest extends AbstractTestCaseJU5 {
 
 	@Inject
-	private VSecurityManager securityManager;
+	protected VSecurityManager securityManager;
 	@Inject
-	private AuthenticationManager authenticationManager;
+	protected AuthenticationManager authenticationManager;
 
 	@Override
 	public void doSetUp() {
