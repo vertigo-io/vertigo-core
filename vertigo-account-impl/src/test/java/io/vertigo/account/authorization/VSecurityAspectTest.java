@@ -84,15 +84,15 @@ public final class VSecurityAspectTest extends AbstractTestCaseJU5 {
 					.addAuthorization(admPro)
 					.addAuthorization(recordWrite);
 
-			Assertions.assertEquals(1, fullSecuredServices.fackService1());
-			Assertions.assertEquals(2, fullSecuredServices.fackService2());
-			Assertions.assertEquals(3, fullSecuredServices.fackService3(record));
-			Assertions.assertEquals(4, fullSecuredServices.fackService4(record));
+			Assertions.assertEquals(1, fullSecuredServices.fakeService1());
+			Assertions.assertEquals(2, fullSecuredServices.fakeService2());
+			Assertions.assertEquals(3, fullSecuredServices.fakeService3(record));
+			Assertions.assertEquals(4, fullSecuredServices.fakeService4(record));
 
-			Assertions.assertEquals(1, partialSecuredServices.fackService1());
-			Assertions.assertEquals(2, partialSecuredServices.fackService2());
-			Assertions.assertEquals(3, partialSecuredServices.fackService3(record));
-			Assertions.assertEquals(4, partialSecuredServices.fackService4(record));
+			Assertions.assertEquals(1, partialSecuredServices.fakeService1());
+			Assertions.assertEquals(2, partialSecuredServices.fakeService2());
+			Assertions.assertEquals(3, partialSecuredServices.fakeService3(record));
+			Assertions.assertEquals(4, partialSecuredServices.fakeService4(record));
 
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -114,15 +114,15 @@ public final class VSecurityAspectTest extends AbstractTestCaseJU5 {
 					.addAuthorization(admPro)
 					.addAuthorization(recordRead);
 
-			Assertions.assertEquals(1, fullSecuredServices.fackService1());
-			Assertions.assertEquals(2, fullSecuredServices.fackService2());
-			Assertions.assertEquals(3, fullSecuredServices.fackService3(record));
-			Assertions.assertThrows(VSecurityException.class, () -> fullSecuredServices.fackService4(record));
+			Assertions.assertEquals(1, fullSecuredServices.fakeService1());
+			Assertions.assertEquals(2, fullSecuredServices.fakeService2());
+			Assertions.assertEquals(3, fullSecuredServices.fakeService3(record));
+			Assertions.assertThrows(VSecurityException.class, () -> fullSecuredServices.fakeService4(record));
 
-			Assertions.assertEquals(1, partialSecuredServices.fackService1());
-			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fackService2());
-			Assertions.assertEquals(3, partialSecuredServices.fackService3(record));
-			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fackService4(record));
+			Assertions.assertEquals(1, partialSecuredServices.fakeService1());
+			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fakeService2());
+			Assertions.assertEquals(3, partialSecuredServices.fakeService3(record));
+			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fakeService4(record));
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}
@@ -155,33 +155,33 @@ public final class VSecurityAspectTest extends AbstractTestCaseJU5 {
 					.addAuthorization(admPro)
 					.addAuthorization(recordWrite);
 
-			Assertions.assertEquals(1, fullSecuredServices.fackService1());
-			Assertions.assertEquals(2, fullSecuredServices.fackService2());
-			Assertions.assertEquals(3, fullSecuredServices.fackService3(record));
-			Assertions.assertEquals(4, fullSecuredServices.fackService4(record));
+			Assertions.assertEquals(1, fullSecuredServices.fakeService1());
+			Assertions.assertEquals(2, fullSecuredServices.fakeService2());
+			Assertions.assertEquals(3, fullSecuredServices.fakeService3(record));
+			Assertions.assertEquals(4, fullSecuredServices.fakeService4(record));
 
-			Assertions.assertEquals(3, fullSecuredServices.fackService3(recordTooExpensive));
-			Assertions.assertEquals(4, fullSecuredServices.fackService4(recordTooExpensive));
+			Assertions.assertEquals(3, fullSecuredServices.fakeService3(recordTooExpensive));
+			Assertions.assertEquals(4, fullSecuredServices.fakeService4(recordTooExpensive));
 
-			Assertions.assertEquals(3, fullSecuredServices.fackService3(recordOtherUser));
-			Assertions.assertEquals(4, fullSecuredServices.fackService4(recordOtherUser));
+			Assertions.assertEquals(3, fullSecuredServices.fakeService3(recordOtherUser));
+			Assertions.assertEquals(4, fullSecuredServices.fakeService4(recordOtherUser));
 
-			Assertions.assertThrows(VSecurityException.class, () -> fullSecuredServices.fackService3(recordOtherUserAndTooExpensive));
-			Assertions.assertThrows(VSecurityException.class, () -> fullSecuredServices.fackService4(recordOtherUserAndTooExpensive));
+			Assertions.assertThrows(VSecurityException.class, () -> fullSecuredServices.fakeService3(recordOtherUserAndTooExpensive));
+			Assertions.assertThrows(VSecurityException.class, () -> fullSecuredServices.fakeService4(recordOtherUserAndTooExpensive));
 
-			Assertions.assertEquals(1, partialSecuredServices.fackService1());
-			Assertions.assertEquals(2, partialSecuredServices.fackService2());
-			Assertions.assertEquals(3, partialSecuredServices.fackService3(record));
-			Assertions.assertEquals(4, partialSecuredServices.fackService4(record));
+			Assertions.assertEquals(1, partialSecuredServices.fakeService1());
+			Assertions.assertEquals(2, partialSecuredServices.fakeService2());
+			Assertions.assertEquals(3, partialSecuredServices.fakeService3(record));
+			Assertions.assertEquals(4, partialSecuredServices.fakeService4(record));
 
-			Assertions.assertEquals(3, partialSecuredServices.fackService3(recordTooExpensive));
-			Assertions.assertEquals(4, partialSecuredServices.fackService4(recordTooExpensive));
+			Assertions.assertEquals(3, partialSecuredServices.fakeService3(recordTooExpensive));
+			Assertions.assertEquals(4, partialSecuredServices.fakeService4(recordTooExpensive));
 
-			Assertions.assertEquals(3, partialSecuredServices.fackService3(recordOtherUser));
-			Assertions.assertEquals(4, partialSecuredServices.fackService4(recordOtherUser));
+			Assertions.assertEquals(3, partialSecuredServices.fakeService3(recordOtherUser));
+			Assertions.assertEquals(4, partialSecuredServices.fakeService4(recordOtherUser));
 
-			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fackService3(recordOtherUserAndTooExpensive));
-			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fackService4(recordOtherUserAndTooExpensive));
+			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fakeService3(recordOtherUserAndTooExpensive));
+			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fakeService4(recordOtherUserAndTooExpensive));
 
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -213,33 +213,33 @@ public final class VSecurityAspectTest extends AbstractTestCaseJU5 {
 					.addAuthorization(admPro)
 					.addAuthorization(recordRead);
 
-			Assertions.assertEquals(1, fullSecuredServices.fackService1());
-			Assertions.assertEquals(2, fullSecuredServices.fackService2());
-			Assertions.assertEquals(3, fullSecuredServices.fackService3(record));
-			Assertions.assertThrows(VSecurityException.class, () -> fullSecuredServices.fackService4(record));
+			Assertions.assertEquals(1, fullSecuredServices.fakeService1());
+			Assertions.assertEquals(2, fullSecuredServices.fakeService2());
+			Assertions.assertEquals(3, fullSecuredServices.fakeService3(record));
+			Assertions.assertThrows(VSecurityException.class, () -> fullSecuredServices.fakeService4(record));
 
-			Assertions.assertEquals(3, fullSecuredServices.fackService3(recordTooExpensive));
-			Assertions.assertThrows(VSecurityException.class, () -> fullSecuredServices.fackService4(recordTooExpensive));
+			Assertions.assertEquals(3, fullSecuredServices.fakeService3(recordTooExpensive));
+			Assertions.assertThrows(VSecurityException.class, () -> fullSecuredServices.fakeService4(recordTooExpensive));
 
-			Assertions.assertEquals(3, fullSecuredServices.fackService3(recordOtherUser));
-			Assertions.assertThrows(VSecurityException.class, () -> fullSecuredServices.fackService4(recordOtherUser));
+			Assertions.assertEquals(3, fullSecuredServices.fakeService3(recordOtherUser));
+			Assertions.assertThrows(VSecurityException.class, () -> fullSecuredServices.fakeService4(recordOtherUser));
 
-			Assertions.assertThrows(VSecurityException.class, () -> fullSecuredServices.fackService3(recordOtherUserAndTooExpensive));
-			Assertions.assertThrows(VSecurityException.class, () -> fullSecuredServices.fackService4(recordOtherUserAndTooExpensive));
+			Assertions.assertThrows(VSecurityException.class, () -> fullSecuredServices.fakeService3(recordOtherUserAndTooExpensive));
+			Assertions.assertThrows(VSecurityException.class, () -> fullSecuredServices.fakeService4(recordOtherUserAndTooExpensive));
 
-			Assertions.assertEquals(1, partialSecuredServices.fackService1());
-			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fackService2());
-			Assertions.assertEquals(3, partialSecuredServices.fackService3(record));
-			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fackService4(record));
+			Assertions.assertEquals(1, partialSecuredServices.fakeService1());
+			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fakeService2());
+			Assertions.assertEquals(3, partialSecuredServices.fakeService3(record));
+			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fakeService4(record));
 
-			Assertions.assertEquals(3, partialSecuredServices.fackService3(recordTooExpensive));
-			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fackService4(recordTooExpensive));
+			Assertions.assertEquals(3, partialSecuredServices.fakeService3(recordTooExpensive));
+			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fakeService4(recordTooExpensive));
 
-			Assertions.assertEquals(3, partialSecuredServices.fackService3(recordOtherUser));
-			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fackService4(recordOtherUser));
+			Assertions.assertEquals(3, partialSecuredServices.fakeService3(recordOtherUser));
+			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fakeService4(recordOtherUser));
 
-			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fackService3(recordOtherUserAndTooExpensive));
-			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fackService4(recordOtherUserAndTooExpensive));
+			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fakeService3(recordOtherUserAndTooExpensive));
+			Assertions.assertThrows(VSecurityException.class, () -> partialSecuredServices.fakeService4(recordOtherUserAndTooExpensive));
 
 		} finally {
 			securityManager.stopCurrentUserSession();

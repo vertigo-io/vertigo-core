@@ -27,22 +27,22 @@ import io.vertigo.core.component.Component;
  */
 public class PartialSecuredServices implements Component {
 
-	public int fackService1() {
+	public int fakeService1() {
 		return 1;
 	}
 
 	@Secured("ATZ_ADMUSR")
-	public int fackService2() {
+	public int fakeService2() {
 		return 2;
 	}
 
 	@Secured("ATZ_ADMPRO")
-	public int fackService3(@SecuredOperation("READ") final Record record) {
+	public int fakeService3(@SecuredOperation("READ") final Record record) {
 		return 3;
 	}
 
 	@Secured("ATZ_ADMPRO")
-	public int fackService4(@SecuredOperation("WRITE") final Record record) {
+	public int fakeService4(@SecuredOperation("WRITE") final Record record) {
 		return 4;
 	}
 

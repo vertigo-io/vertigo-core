@@ -28,19 +28,19 @@ import io.vertigo.core.component.Component;
 @Secured({ "ATZ_ADMUSR", "ATZ_ADMPRO" })
 public class FullSecuredServices implements Component {
 
-	public int fackService1() {
+	public int fakeService1() {
 		return 1;
 	}
 
-	public int fackService2() {
+	public int fakeService2() {
 		return 2;
 	}
 
-	public int fackService3(@SecuredOperation("READ") final Record record) {
+	public int fakeService3(@SecuredOperation("READ") final Record record) {
 		return 3;
 	}
 
-	public int fackService4(@SecuredOperation("WRITE") final Record record) {
+	public int fakeService4(@SecuredOperation("WRITE") final Record record) {
 		return 4;
 	}
 
