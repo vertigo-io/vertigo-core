@@ -81,6 +81,17 @@ abstract class AbstractAuthenticationManagerTest extends AbstractTestCaseJU5 {
 		Assertions.assertTrue(userSession.get().isAuthenticated(), "Not authenticated");
 	}
 
+	@Test
+	public void testLoginUsernameFail() {
+		final AuthenticationToken token = new UsernameAuthenticationToken("badUserName");
+		final Optional<Account> account = authenticationManager.login(token);
+		Assertions.assertFalse(account.isPresent(), "Shouldn't found any account with a bad login");
+
+		final Optional<UserSession> userSession = securityManager.getCurrentUserSession();
+		Assertions.assertTrue(userSession.isPresent(), "No UserSession");
+		Assertions.assertFalse(userSession.get().isAuthenticated(), "Badly authenticated");
+	}
+
 	private Optional<Account> loginSuccess() {
 		final AuthenticationToken token = new UsernamePasswordAuthenticationToken("admin", "v3rt1g0");
 		final Optional<Account> account = authenticationManager.login(token);

@@ -42,4 +42,11 @@ public final class LdapAuthenticationManagerTest extends AbstractAuthenticationM
 	public void testLoginUsername() {
 		//
 	}
+
+	@Override
+	@Disabled
+	@Test
+	public void testLoginUsernameFail() {
+		//
+	}
 }
