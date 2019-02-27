@@ -20,6 +20,7 @@ package io.vertigo.dynamo.collections;
 
 import java.util.Locale;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -27,6 +28,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.Home;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
@@ -36,6 +38,7 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.collections.data.domain.SmartCar;
 import io.vertigo.dynamo.collections.data.domain.SmartCarDataBase;
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.model.Facet;
 import io.vertigo.dynamo.collections.model.FacetValue;
@@ -133,6 +136,41 @@ public class FacetManagerTest extends AbstractTestCaseJU5 {
 		Assertions.assertTrue(found);
 	}
 
+	private void testClusterResultByRange(final FacetedQueryResult<SmartCar, ?> result) {
+		Assertions.assertEquals(smartCarDataBase.size(), result.getCount());
+
+		//On vérifie qu'il y a le bon nombre de facettes.
+		Assertions.assertEquals(3, result.getClusters().size());
+
+		//On vérifie qu'il existe une valeur pour avant 2000 et que le nombre d'occurrences est correct
+		boolean found = false;
+		for (final Entry<FacetValue, DtList<SmartCar>> entry : result.getClusters().entrySet()) {
+			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).contains("avant")) {
+				found = true;
+				Assertions.assertEquals(smartCarDataBase.getCarsBefore(2000), entry.getValue().size());
+			}
+		}
+		Assertions.assertTrue(found);
+	}
+
+	private void testClusterResultByTerm(final FacetedQueryResult<SmartCar, ?> result) {
+		Assertions.assertEquals(smartCarDataBase.size(), result.getCount());
+
+		//On vérifie qu'il y a le bon nombre de cluster (nombre de manufacturer).
+		Assertions.assertEquals(5, result.getClusters().size());
+
+		//On vérifie qu'il existe une valeur pour peugeot et que le nombre d'occurrences est correct
+		boolean found = false;
+		final String manufacturer = "peugeot";
+		for (final Entry<FacetValue, DtList<SmartCar>> entry : result.getClusters().entrySet()) {
+			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).equals(manufacturer)) {
+				found = true;
+				Assertions.assertEquals(smartCarDataBase.getCarsByManufacturer(manufacturer).size(), entry.getValue().size());
+			}
+		}
+		Assertions.assertTrue(found);
+	}
+
 	private static Facet getFacetByName(final FacetedQueryResult<SmartCar, ?> result, final String facetName) {
 		return result.getFacets()
 				.stream()
@@ -148,7 +186,7 @@ public class FacetManagerTest extends AbstractTestCaseJU5 {
 	public void testFacetListByRange() {
 		final DtList<SmartCar> cars = smartCarDataBase.getAllCars();
 		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, SelectedFacetValues.empty().build());
-		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery, Optional.empty());
 		testFacetResultByRange(result);
 	}
 
@@ -160,10 +198,10 @@ public class FacetManagerTest extends AbstractTestCaseJU5 {
 	public void testFilterFacetListByRange() {
 		final DtList<SmartCar> cars = smartCarDataBase.getAllCars();
 		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, SelectedFacetValues.empty().build());
-		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery, Optional.empty());
 		//on applique une facette
 		final FacetedQuery query = addFacetQuery("FCT_YEAR_CAR", "avant", result);
-		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered = collectionsManager.facetList(result.getSource(), query);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered = collectionsManager.facetList(result.getSource(), query, Optional.empty());
 		Assertions.assertEquals(smartCarDataBase.getCarsBefore(2000), resultFiltered.getCount());
 	}
 
@@ -194,8 +232,32 @@ public class FacetManagerTest extends AbstractTestCaseJU5 {
 	public void testFacetListByTerm() {
 		final DtList<SmartCar> cars = smartCarDataBase.getAllCars();
 		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, SelectedFacetValues.empty().build());
-		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery, Optional.empty());
 		testFacetResultByTerm(result);
+	}
+
+	/**
+	 * Test le cluster par term d'une liste.
+	 */
+	@Test
+	public void testFacetClusterByTerm() {
+		final DtList<SmartCar> cars = smartCarDataBase.getAllCars();
+		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, SelectedFacetValues.empty().build());
+		final FacetDefinition clusterDefinition = obtainFacetDefinition("FCT_MANUFACTURER_CAR");
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery, Optional.of(clusterDefinition));
+		testClusterResultByTerm(result);
+	}
+
+	/**
+	 * Test le cluster par range d'une liste.
+	 */
+	@Test
+	public void testFacetClusterByRange() {
+		final DtList<SmartCar> cars = smartCarDataBase.getAllCars();
+		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, SelectedFacetValues.empty().build());
+		final FacetDefinition clusterDefinition = obtainFacetDefinition("FCT_YEAR_CAR");
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery, Optional.of(clusterDefinition));
+		testClusterResultByRange(result);
 	}
 
 	/**
@@ -206,11 +268,15 @@ public class FacetManagerTest extends AbstractTestCaseJU5 {
 	public void testFilterFacetListByTerm() {
 		final DtList<SmartCar> cars = smartCarDataBase.getAllCars();
 		final FacetedQuery facetedQuery = new FacetedQuery(carFacetQueryDefinition, SelectedFacetValues.empty().build());
-		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> result = collectionsManager.facetList(cars, facetedQuery, Optional.empty());
 		//on applique une facette
 		final FacetedQuery query = addFacetQuery("FCT_MANUFACTURER_CAR", "peugeot", result);
-		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered = collectionsManager.facetList(result.getSource(), query);
+		final FacetedQueryResult<SmartCar, DtList<SmartCar>> resultFiltered = collectionsManager.facetList(result.getSource(), query, Optional.empty());
 		Assertions.assertEquals(smartCarDataBase.getCarsByManufacturer("peugeot").size(), (int) resultFiltered.getCount());
+	}
+
+	private FacetDefinition obtainFacetDefinition(final String facetName) {
+		return Home.getApp().getDefinitionSpace().resolve(facetName, FacetDefinition.class);
 	}
 
 }

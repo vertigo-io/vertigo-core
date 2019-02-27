@@ -18,9 +18,11 @@
  */
 package io.vertigo.dynamo.collections;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import io.vertigo.core.component.Manager;
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -65,8 +67,9 @@ public interface CollectionsManager extends Manager {
 	 *  - Facettage proprement dit
 	 * @param dtList Liste à facetter
 	 * @param facetedQuery Requete à appliquer (filtrage)
+	 * @param clusterFacetDefinition Facet de groupement à appliquer (clustering)
 	 * @return Résultat correspondant à la requête
 	 * @param <R> Type de l'objet de la liste
 	 */
-	<R extends DtObject> FacetedQueryResult<R, DtList<R>> facetList(final DtList<R> dtList, final FacetedQuery facetedQuery);
+	<R extends DtObject> FacetedQueryResult<R, DtList<R>> facetList(final DtList<R> dtList, final FacetedQuery facetedQuery, final Optional<FacetDefinition> clusterFacetDefinition);
 }
