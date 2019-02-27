@@ -71,14 +71,14 @@ public final class ValidatorWebServiceHandlerPlugin implements WebServiceHandler
 
 	private static void validateParam(final Object value, final UiMessageStack uiMessageStack, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
 		final Map<String, DtObject> contextKeyMap = new HashMap<>();
-		if (value instanceof UiObject) {
+		if (value instanceof UiObject && DtObject.class.isAssignableFrom(webServiceParam.getType())) {
 			final UiObject<DtObject> uiObject = (UiObject<DtObject>) value;
 			final List<DtObjectValidator<DtObject>> dtObjectValidators = obtainDtObjectValidators(webServiceParam);
 			//Only authorized fields have already been checked (JsonConverterHandler)
 			final DtObject updatedDto = uiObject.mergeAndCheckInput(dtObjectValidators, uiMessageStack);
 			contextKeyMap.put(uiObject.getInputKey(), updatedDto);
 			routeContext.registerUpdatedDtObjects(webServiceParam, updatedDto, contextKeyMap);
-		} else if (value instanceof UiListDelta) {
+		} else if (value instanceof UiListDelta && DtListDelta.class.isAssignableFrom(webServiceParam.getType())) {
 			final UiListDelta<DtObject> uiListDelta = (UiListDelta<DtObject>) value;
 			final List<DtObjectValidator<DtObject>> dtObjectValidators = obtainDtObjectValidators(webServiceParam);
 
@@ -88,7 +88,7 @@ public final class ValidatorWebServiceHandlerPlugin implements WebServiceHandler
 			final DtList<DtObject> dtListDeletes = mergeAndCheckInput(uiListDelta.getObjectType(), uiListDelta.getDeletesMap(), dtObjectValidators, uiMessageStack, contextKeyMap);
 			final DtListDelta<DtObject> dtListDelta = new DtListDelta<>(dtListCreates, dtListUpdates, dtListDeletes);
 			routeContext.registerUpdatedDtObjects(webServiceParam, dtListDelta, contextKeyMap);
-		} else if (value instanceof UiListModifiable) {
+		} else if (value instanceof UiListModifiable && DtList.class.isAssignableFrom(webServiceParam.getType())) {
 			final UiListModifiable<DtObject> uiList = (UiListModifiable<DtObject>) value;
 			final List<DtObjectValidator<DtObject>> dtObjectValidators = obtainDtObjectValidators(webServiceParam);
 

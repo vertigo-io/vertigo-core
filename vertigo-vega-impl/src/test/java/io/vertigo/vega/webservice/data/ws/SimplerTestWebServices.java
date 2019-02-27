@@ -47,6 +47,8 @@ import io.vertigo.vega.webservice.data.domain.ContactValidator;
 import io.vertigo.vega.webservice.data.domain.EmptyPkValidator;
 import io.vertigo.vega.webservice.data.domain.MandatoryPkValidator;
 import io.vertigo.vega.webservice.model.DtListDelta;
+import io.vertigo.vega.webservice.model.UiList;
+import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.DELETE;
 import io.vertigo.vega.webservice.stereotype.Doc;
@@ -291,6 +293,18 @@ public final class SimplerTestWebServices implements WebServices {
 	public String saveDtListContact(final @Validate({ ContactValidator.class }) DtList<Contact> myList) {
 		for (final Contact contact : myList) {
 			if (contact.getName() == null || contact.getName().isEmpty()) {
+				//400
+				throw new VUserException("Name is mandatory");
+			}
+		}
+		return "OK : received " + myList.size() + " contacts";
+	}
+
+	@POST("/saveUiListContact")
+	public String saveUiListContact(final UiList<Contact> myList, final UiMessageStack uiMessageStack) {
+		myList.mergeAndCheckInput(Collections.singletonList(new ContactValidator()), uiMessageStack);
+		for (final UiObject<Contact> contact : myList) {
+			if (contact.getString("name") == null || contact.getString("name").isEmpty()) {
 				//400
 				throw new VUserException("Name is mandatory");
 			}

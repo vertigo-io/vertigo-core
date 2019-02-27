@@ -32,6 +32,7 @@ import io.vertigo.vega.engines.webservice.json.UiListDelta;
 import io.vertigo.vega.engines.webservice.json.UiListModifiable;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
+import io.vertigo.vega.webservice.model.UiList;
 
 public final class DtListJsonConverter implements JsonConverter {
 
@@ -58,8 +59,8 @@ public final class DtListJsonConverter implements JsonConverter {
 	public void populateWebServiceCallContext(final Object input, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
 		final Class<?> paramClass = webServiceParam.getType();
 		Assertion.checkArgument(
-				DtList.class.isAssignableFrom(paramClass),
-				"This JsonConverter can't read the asked type {0}. Only {1} is supported", paramClass.getSimpleName(), DtList.class.getSimpleName());
+				DtList.class.isAssignableFrom(paramClass) || UiList.class.isAssignableFrom(paramClass),
+				"This JsonConverter can't read the asked type {0}. Only {1} or {2} was supported", paramClass.getSimpleName(), DtList.class.getSimpleName(), UiList.class.getSimpleName());
 		Assertion.checkArgument(
 				getSupportedInputs()[0].isInstance(input) || getSupportedInputs()[1].isInstance(input),
 				"This JsonConverter doesn't support this input type {0}. Only {1} is supported", input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));

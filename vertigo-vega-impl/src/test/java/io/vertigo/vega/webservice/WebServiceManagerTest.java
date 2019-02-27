@@ -1592,6 +1592,53 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
+	public void testSaveUiListContact() {
+		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
+				.add(createDefaultContact(130L))
+				.add(createDefaultContact(131L))
+				.add(createDefaultContact(133L))
+				.add(createDefaultContact(134L))
+				.add(createDefaultContact(135L))
+				.build();
+
+		loggedAndExpect(given().body(dtList))
+				.body(Matchers.equalTo("OK : received 5 contacts"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/saveUiListContact");
+	}
+
+	@Test
+	public void testSaveUiListContactValidationError() {
+		final Map<String, Object> newContact = createDefaultContact(123L);
+		newContact.remove("name");
+
+		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
+				.add(createDefaultContact(120L))
+				.add(createDefaultContact(121L))
+				.add(newContact)
+				.add(createDefaultContact(124L))
+				.add(createDefaultContact(125L))
+				.add(createDefaultContact(126L))
+				.build();
+
+		loggedAndExpect(given().body(dtList))
+				.body("globalErrors", Matchers.contains("Name is mandatory"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.post("/test/saveUiListContact");
+
+		final Map<String, Object> new2Contact = createDefaultContact(127L);
+		new2Contact.put("birthday", "2012-10-24");
+		dtList.add(new2Contact);
+		loggedAndExpect(given().body(dtList))
+				.body("objectFieldErrors.idx6.birthday", Matchers.contains("You can't add contact younger than 16"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.post("/test/saveUiListContact");
+	}
+
+	@Test
 	public void testSaveListContact() {
 		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
 				.add(createDefaultContact(130L))

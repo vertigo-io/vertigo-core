@@ -81,6 +81,7 @@ import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.model.DtListDelta;
+import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 
 /**
@@ -495,7 +496,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.registerTypeAdapter(String.class, new EmptyStringAsNull())// add "" <=> null
 					.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())
 					.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())
-					.registerTypeAdapter(UiListModifiable.class, new UiListDeserializer<>())
+					.registerTypeHierarchyAdapter(UiList.class, new UiListDeserializer<>())
 					.registerTypeAdapter(DtList.class, new DtListDeserializer<>())
 					.registerTypeAdapter(DtListState.class, new DtListStateDeserializer())
 					.registerTypeAdapter(FacetedQueryResult.class, searchApiVersion.getJsonSerializerClass().newInstance())

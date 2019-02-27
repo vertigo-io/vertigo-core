@@ -65,7 +65,7 @@ public final class DefaultJsonConverter implements JsonConverter {
 		final Class<?> paramClass = webServiceParam.getType();
 		final Object value;
 		if (input instanceof String) {
-			value = jsonReaderEngine.fromJson((String) input, webServiceParam.getType());
+			value = jsonReaderEngine.fromJson((String) input, webServiceParam.getGenericType());
 		} else if (input instanceof UiContext) {
 			value = ((UiContext) input).get(webServiceParam.getName());
 		} else {
