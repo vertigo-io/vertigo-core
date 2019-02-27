@@ -27,8 +27,8 @@ import io.vertigo.studio.mda.MdaManager;
  *
  * @author dchallas, pchretien
  */
-public final class NameSpace2Java {
-	private NameSpace2Java() {
+public final class NameSpace2JavaOld {
+	private NameSpace2JavaOld() {
 		super();
 	}
 
@@ -37,7 +37,8 @@ public final class NameSpace2Java {
 	 * à partir des déclarations (ksp, oom..)
 	 * @param args Le premier argument [0] précise le nom du fichier properties de paramétrage
 	 */
-	public static void main(final AppConfig appConfig) {
+	public static void main(final String[] args) {
+		final AppConfig appConfig = new SmartAppConfigBuilder(args).build();
 		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			app.getComponentSpace().resolve(MdaManager.class).generate().displayResultMessage(System.out);
 		}

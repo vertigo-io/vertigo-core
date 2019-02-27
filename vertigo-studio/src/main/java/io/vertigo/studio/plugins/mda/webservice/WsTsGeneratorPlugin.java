@@ -18,12 +18,14 @@
  */
 package io.vertigo.studio.plugins.mda.webservice;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -35,6 +37,7 @@ import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
+import io.vertigo.studio.plugins.mda.util.MdaUtil;
 import io.vertigo.studio.plugins.mda.webservice.model.WebServiceDefinitionModelTs;
 import io.vertigo.studio.plugins.mda.webservice.model.WebServiceInitializerModelTs;
 import io.vertigo.util.MapBuilder;
@@ -50,12 +53,12 @@ public final class WsTsGeneratorPlugin implements GeneratorPlugin {
 
 	/**
 	 * Constructeur.
-	 * @param targetSubDir Repertoire de generation des fichiers de ce plugin
+	 * @param targetSubDirOpt Repertoire de generation des fichiers de ce plugin
 	 */
 	@Inject
-	public WsTsGeneratorPlugin(@Named("targetSubDir") final String targetSubDir) {
+	public WsTsGeneratorPlugin(@Named("targetSubDir") final Optional<String> targetSubDirOpt) {
 		//-----
-		this.targetSubDir = targetSubDir;
+		targetSubDir = targetSubDirOpt.orElse("tsgen");
 	}
 
 	/** {@inheritDoc} */
@@ -141,5 +144,10 @@ public final class WsTsGeneratorPlugin implements GeneratorPlugin {
 						.generateFile(mdaResultBuilder);
 			}
 		}
+	}
+
+	@Override
+	public void clean(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+		MdaUtil.deleteFiles(new File(fileGeneratorConfig.getTargetGenDir() + targetSubDir), mdaResultBuilder);
 	}
 }

@@ -18,6 +18,7 @@
  */
 package io.vertigo.studio.plugins.mda.domain.ts;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,6 +44,7 @@ import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 import io.vertigo.studio.plugins.mda.domain.ts.model.TSDtDefinitionModel;
 import io.vertigo.studio.plugins.mda.domain.ts.model.TSMasterDataDefinitionModel;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
+import io.vertigo.studio.plugins.mda.util.MdaUtil;
 import io.vertigo.util.MapBuilder;
 
 /**
@@ -59,21 +61,21 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 
 	/**
 	 * Constructeur.
-	 * @param targetSubDir Repertoire de generation des fichiers de ce plugin
-	 * @param generateDtResourcesTS Si on génère les fichiers i18n pour les labels des champs en TS
-	 * @param generateTsDtDefinitions Si on génère les classes JS.
+	 * @param targetSubDirOpt Repertoire de generation des fichiers de ce plugin
+	 * @param generateDtResourcesTSOpt Si on génère les fichiers i18n pour les labels des champs en TS
+	 * @param generateTsDtDefinitionsOpt Si on génère les classes JS.
 	 */
 	@Inject
 	public TSGeneratorPlugin(
-			@Named("targetSubDir") final String targetSubDir,
-			@Named("generateDtResourcesTS") final boolean generateDtResourcesTS,
-			@Named("generateTsDtDefinitions") final boolean generateTsDtDefinitions,
+			@Named("targetSubDir") final Optional<String> targetSubDirOpt,
+			@Named("generateDtResourcesTS") final Optional<Boolean> generateDtResourcesTSOpt,
+			@Named("generateTsDtDefinitions") final Optional<Boolean> generateTsDtDefinitionsOpt,
 			@Named("generateTsMasterData") final Optional<Boolean> generateTsMasterDataOpt,
 			final MasterDataManager masterDataManager) {
 		//-----
-		this.targetSubDir = targetSubDir;
-		shouldGenerateDtResourcesTS = generateDtResourcesTS;
-		shouldGenerateTsDtDefinitions = generateTsDtDefinitions;
+		targetSubDir = targetSubDirOpt.orElse("tsgen");
+		shouldGenerateDtResourcesTS = generateDtResourcesTSOpt.orElse(true); //true by default
+		shouldGenerateTsDtDefinitions = generateTsDtDefinitionsOpt.orElse(true); //true by default
 		shouldGenerateTsMasterData = generateTsMasterDataOpt.orElse(false);
 		this.masterDataManager = masterDataManager;
 	}
@@ -186,6 +188,11 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 					.build()
 					.generateFile(mdaResultBuilder);
 		}
+	}
+
+	@Override
+	public void clean(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+		MdaUtil.deleteFiles(new File(fileGeneratorConfig.getTargetGenDir() + targetSubDir), mdaResultBuilder);
 	}
 
 }

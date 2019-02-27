@@ -20,6 +20,7 @@ package io.vertigo.studio.impl.mda;
 
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -42,22 +43,22 @@ public final class MdaManagerImpl implements MdaManager {
 	/**
 	 * Constructor.
 	 * @param generatorPlugins
-	 * @param targetGenDir Répertoire des fichiers TOUJOURS générés
+	 * @param targetGenDirOpt Répertoire des fichiers TOUJOURS générés
 	 * @param projectPackageName Racine du projet.
-	 * @param encoding Encoding des fichiers générés.
+	 * @param encodingOpt Encoding des fichiers générés.
 	 */
 	@Inject
 	public MdaManagerImpl(
 			final List<GeneratorPlugin> generatorPlugins,
-			@Named("targetGenDir") final String targetGenDir,
+			@Named("targetGenDir") final Optional<String> targetGenDirOpt,
 			@Named("projectPackageName") final String projectPackageName,
-			@Named("encoding") final String encoding) {
+			@Named("encoding") final Optional<String> encodingOpt) {
 		Assertion.checkNotNull(generatorPlugins);
-		Assertion.checkArgNotEmpty(targetGenDir);
 		Assertion.checkArgNotEmpty(projectPackageName);
-		Assertion.checkArgNotEmpty(encoding);
 		//-----
 		this.generatorPlugins = java.util.Collections.unmodifiableList(generatorPlugins);
+		final String targetGenDir = targetGenDirOpt.orElse("src/main/");
+		final String encoding = encodingOpt.orElse("UTF-8");
 		fileGeneratorConfig = new FileGeneratorConfig(targetGenDir, projectPackageName, encoding);
 	}
 
@@ -81,23 +82,10 @@ public final class MdaManagerImpl implements MdaManager {
 		//---
 		// We want to final clean the directory
 		final MdaResultBuilder mdaResultBuilder = MdaResult.builder();
-		deleteFiles(directory, mdaResultBuilder);
+		for (final GeneratorPlugin generatorPlugin : generatorPlugins) {
+			generatorPlugin.clean(fileGeneratorConfig, mdaResultBuilder);
+		}
 		return mdaResultBuilder.build();
 	}
 
-	private static boolean deleteDirectory(final File directory, final MdaResultBuilder mdaResultBuilder) {
-		deleteFiles(directory, mdaResultBuilder);
-		return (directory.delete());
-	}
-
-	private static void deleteFiles(final File directory, final MdaResultBuilder mdaResultBuilder) {
-		for (final File file : directory.listFiles()) {
-			if (file.isDirectory()) {
-				deleteDirectory(file, mdaResultBuilder);
-			} else {
-				file.delete(); // we don't care about real deletion of the file
-				mdaResultBuilder.incFileDeleted();
-			}
-		}
-	}
 }

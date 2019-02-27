@@ -16,43 +16,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.tools;
+package io.vertigo.studio.mda;
+
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.LogConfig;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.core.plugins.resource.local.LocalResourceResolverPlugin;
-import io.vertigo.database.DatabaseFeatures;
-import io.vertigo.dynamo.DynamoFeatures;
-import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.studio.StudioFeatures;
+import io.vertigo.studio.tools.NameSpace2Java;
 
-public final class SqlTestConfigurator {
-	public static AppConfig config() {
+/**
+ * Test la génération à partir des oom et ksp.
+ * @author dchallas
+ */
+public class FileGeneratorTest {
+
+	protected AppConfig buildAppConfig() {
 		return AppConfig.builder()
 				.beginBoot()
-				.withLocales("fr")
+				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.addPlugin(LocalResourceResolverPlugin.class)
-				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
-				.addModule(new CommonsFeatures()
-						.withCache()
-						.withMemoryCache()
+				.addModule(new CommonsFeatures().build())
+				.addModule(new StudioFeatures()
+						.withMasterData()
+						.withMda(
+								Param.of("projectPackageName", "io.vertigo.studio"),
+								Param.of("targetGenDir", "target/"))
+						.withFileGenerator()
 						.build())
-				.addModule(new DatabaseFeatures()
-						.withSqlDataBase()
-						.withC3p0(
-								Param.of("dataBaseClass", "io.vertigo.database.impl.sql.vendor.h2.H2DataBase"),
-								Param.of("jdbcDriver", "org.h2.Driver"),
-								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
-						.build())
-				.addModule(new DynamoFeatures()
-						.withStore()
-						.addPlugin(SqlDataStorePlugin.class,
-								Param.of("sequencePrefix", "SEQ_"))
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/studio/data/executionWfileinfo.kpr")
+								.build())
 						.build())
 				.build();
 	}
+
+	/**
+	 * Lancement du test.
+	 */
+	@Test
+	public void testGenerate() {
+		NameSpace2Java.main(buildAppConfig());
+	}
+
 }

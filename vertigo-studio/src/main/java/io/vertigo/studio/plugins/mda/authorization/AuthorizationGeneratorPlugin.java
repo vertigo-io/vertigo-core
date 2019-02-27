@@ -18,10 +18,12 @@
  */
 package io.vertigo.studio.plugins.mda.authorization;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -37,6 +39,7 @@ import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 import io.vertigo.studio.plugins.mda.authorization.model.SecuredEntityModel;
+import io.vertigo.studio.plugins.mda.util.MdaUtil;
 import io.vertigo.util.MapBuilder;
 
 /**
@@ -50,12 +53,12 @@ public final class AuthorizationGeneratorPlugin implements GeneratorPlugin {
 
 	/**
 	 * Constructeur.
-	 * @param targetSubDir Repertoire de generation des fichiers de ce plugin
+	 * @param targetSubDirOpt Repertoire de generation des fichiers de ce plugin
 	 */
 	@Inject
-	public AuthorizationGeneratorPlugin(@Named("targetSubDir") final String targetSubDir) {
+	public AuthorizationGeneratorPlugin(@Named("targetSubDir") final Optional<String> targetSubDirOpt) {
 		//-----
-		this.targetSubDir = targetSubDir;
+		targetSubDir = targetSubDirOpt.orElse("javagen");
 	}
 
 	/** {@inheritDoc} */
@@ -130,5 +133,10 @@ public final class AuthorizationGeneratorPlugin implements GeneratorPlugin {
 					.generateFile(mdaResultBuilder);
 
 		}
+	}
+
+	@Override
+	public void clean(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+		MdaUtil.deleteFiles(new File(fileGeneratorConfig.getTargetGenDir() + targetSubDir), mdaResultBuilder);
 	}
 }

@@ -19,13 +19,14 @@
 /**
  *
  */
-package io.vertigo.studio.tools;
+package io.vertigo.studio.mda;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
 
+import io.vertigo.app.App;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
@@ -68,5 +69,13 @@ public final class DataBaseScriptUtil {
 		} catch (final SQLException e) {
 			throw WrappedException.wrap(e, "Can't exec command {0}", sql);
 		}
+	}
+
+	public static void execSqlScript(final String sqlScript, final App app) {
+		final ResourceManager resourceManager = app.getComponentSpace().resolve(ResourceManager.class);
+		final SqlDataBaseManager sqlDataBaseManager = app.getComponentSpace().resolve(SqlDataBaseManager.class);
+
+		final SqlConnection connection = sqlDataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
+		DataBaseScriptUtil.execSqlScript(connection, sqlScript, resourceManager, sqlDataBaseManager);
 	}
 }

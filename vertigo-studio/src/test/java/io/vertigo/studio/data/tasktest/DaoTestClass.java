@@ -24,10 +24,10 @@ import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
+import io.vertigo.studio.mda.DataBaseScriptUtil;
 import io.vertigo.studio.plugins.mda.task.test.TaskTestDaoChecker;
 import io.vertigo.studio.plugins.mda.task.test.TaskTestDummyGenerator;
 import io.vertigo.studio.plugins.mda.task.test.TaskTestDummyGeneratorBasic;
-import io.vertigo.studio.tools.DataBaseScriptUtil;
 
 public class DaoTestClass extends AbstractTestCaseJU4 {
 

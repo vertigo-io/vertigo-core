@@ -18,6 +18,7 @@
  */
 package io.vertigo.studio.plugins.mda.domain.sql;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,6 +48,7 @@ import io.vertigo.studio.plugins.mda.domain.sql.model.SqlDtDefinitionModel;
 import io.vertigo.studio.plugins.mda.domain.sql.model.SqlMasterDataDefinitionModel;
 import io.vertigo.studio.plugins.mda.domain.sql.model.SqlMethodModel;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
+import io.vertigo.studio.plugins.mda.util.MdaUtil;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.util.StringUtil;
 
@@ -71,7 +73,7 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 	/**
 	 * Constructeur.
 	 *
-	 * @param targetSubDir Repertoire de generation des fichiers de ce plugin
+	 * @param targetSubDirOpt Repertoire de generation des fichiers de ce plugin
 	 * @param generateDrop Si on génère les Drop table dans le fichier SQL
 	 * @param baseCible Type de base de données ciblé.
 	 * @param tableSpaceData Nom du tableSpace des données
@@ -79,7 +81,7 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 	 */
 	@Inject
 	public SqlGeneratorPlugin(
-			@Named("targetSubDir") final String targetSubDir,
+			@Named("targetSubDir") final Optional<String> targetSubDirOpt,
 			@Named("generateDrop") final boolean generateDrop,
 			@Named("baseCible") final String baseCible,
 			@Named("generateMasterData") final Optional<Boolean> generateMasterDataOpt,
@@ -87,7 +89,7 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 			@Named("tableSpaceIndex") final Optional<String> tableSpaceIndex,
 			final MasterDataManager masterDataManager) {
 		//-----
-		this.targetSubDir = targetSubDir;
+		targetSubDir = targetSubDirOpt.orElse("sqlgen");
 		this.generateDrop = generateDrop;
 		this.baseCible = baseCible;
 		tableSpaceDataOpt = tableSpaceData;
@@ -252,6 +254,11 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 
 	private boolean isSqlServer() {
 		return "sqlserver".equalsIgnoreCase(baseCible) || "sql server".equalsIgnoreCase(baseCible);
+	}
+
+	@Override
+	public void clean(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+		MdaUtil.deleteFiles(new File(fileGeneratorConfig.getTargetGenDir() + targetSubDir), mdaResultBuilder);
 	}
 
 }

@@ -16,7 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.search_5_6.standard;
+package io.vertigo.studio.mda;
+
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
@@ -24,50 +26,49 @@ import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
-import io.vertigo.dynamo.plugins.search.elasticsearch_5_6.embedded.ESEmbeddedSearchServicesPlugin;
-import io.vertigo.dynamo.search.data.domain.ItemSearchLoader;
-import io.vertigo.dynamo.search_5_6.AbstractSearchManagerTest;
+import io.vertigo.studio.StudioFeatures;
+import io.vertigo.studio.tools.NameSpace2Java;
+import io.vertigo.vega.plugins.webservice.scanner.annotations.WebServiceDefinitionProvider;
 
 /**
- * @author  npiedeloup
+ * Test la génération à partir des oom et ksp.
+ * @author dchallas
  */
-public class SearchManagerTest extends AbstractSearchManagerTest {
-	//Index
-	private static final String IDX_ITEM = "IDX_ITEM";
+public class WebServicesGeneratorTest {
 
-	@Override
 	protected AppConfig buildAppConfig() {
 		return AppConfig.builder()
 				.beginBoot()
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
-				.addModule(new CommonsFeatures()
-						.build())
-				.addModule(new DynamoFeatures()
-						.withSearch()
-						.addPlugin(ESEmbeddedSearchServicesPlugin.class,
-								Param.of("home", "io/vertigo/dynamo/search_5_6/indexconfig"),
-								Param.of("config.file", "io/vertigo/dynamo/search_5_6/indexconfig/elasticsearch.yml"),
-								Param.of("envIndex", "TU_TEST"),
-								Param.of("rowsPerQuery", "50"))
+				.addModule(new CommonsFeatures().build())
+				.addModule(new StudioFeatures()
+						.withMasterData()
+						.withMda(
+								Param.of("projectPackageName", "io.vertigo.studio"),
+								Param.of("targetGenDir", "target/"))
+						.withTsWebServicesGenerator()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/dynamo/search/data/execution.kpr")
-								.addDefinitionResource("classes", "io.vertigo.dynamo.search.data.DtDefinitions")
+								.addDefinitionResource("kpr", "io/vertigo/studio/data/generationWTask.kpr")
 								.build())
-						.addComponent(ItemSearchLoader.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(WebServiceDefinitionProvider.class)
+								.addDefinitionResource("webservice", "io.vertigo.vega.impl.webservice.catalog.SwaggerWebServices")
+								.addDefinitionResource("webservice", "io.vertigo.studio.data.webservices.*")
+								.build())
 						.build())
 				.build();
 	}
 
-	/**{@inheritDoc}*/
-	@Override
-	protected void doSetUp() {
-		init(IDX_ITEM);
+	/**
+	 * Lancement du test.
+	 */
+	@Test
+	public void testGenerate() {
+		NameSpace2Java.main(buildAppConfig());
 	}
 
 }

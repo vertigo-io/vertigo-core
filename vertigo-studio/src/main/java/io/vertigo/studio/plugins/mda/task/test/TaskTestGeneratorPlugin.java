@@ -41,6 +41,7 @@ import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 import io.vertigo.studio.plugins.mda.task.model.TaskAttributeModel;
 import io.vertigo.studio.plugins.mda.task.model.TaskDefinitionModel;
+import io.vertigo.studio.plugins.mda.util.MdaUtil;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.util.StringUtil;
 
@@ -339,5 +340,10 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 		}
 		return taskDefinitionsMap;
 
+	}
+
+	@Override
+	public void clean(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+		MdaUtil.deleteFiles(new File(fileGeneratorConfig.getTargetGenDir() + targetSubDir), mdaResultBuilder);
 	}
 }

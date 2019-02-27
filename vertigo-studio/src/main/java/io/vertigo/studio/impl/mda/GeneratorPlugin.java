@@ -34,4 +34,7 @@ public interface GeneratorPlugin extends Plugin {
 	 * @param mdaResultBuilder Builder
 	 */
 	void generate(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder);
+
+	void clean(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder);
+
 }

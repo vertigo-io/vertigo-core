@@ -18,8 +18,10 @@
  */
 package io.vertigo.studio.plugins.mda.domain.js;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -32,6 +34,7 @@ import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 import io.vertigo.studio.plugins.mda.domain.js.model.JSDtDefinitionModel;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
+import io.vertigo.studio.plugins.mda.util.MdaUtil;
 import io.vertigo.util.MapBuilder;
 
 /**
@@ -46,19 +49,19 @@ public final class JSGeneratorPlugin implements GeneratorPlugin {
 
 	/**
 	 * Constructeur.
-	 * @param targetSubDir Repertoire de generation des fichiers de ce plugin
-	 * @param generateDtResourcesJS Si on génère les fichiers i18n pour les labels des champs en JS
-	 * @param generateJsDtDefinitions Si on génère les classes JS.
+	 * @param targetSubDirOpt Repertoire de generation des fichiers de ce plugin
+	 * @param generateDtResourcesJSOpt Si on génère les fichiers i18n pour les labels des champs en JS
+	 * @param generateJsDtDefinitionsOpt Si on génère les classes JS.
 	 */
 	@Inject
 	public JSGeneratorPlugin(
-			@Named("targetSubDir") final String targetSubDir,
-			@Named("generateDtResourcesJS") final boolean generateDtResourcesJS,
-			@Named("generateJsDtDefinitions") final boolean generateJsDtDefinitions) {
+			@Named("targetSubDir") final Optional<String> targetSubDirOpt,
+			@Named("generateDtResourcesJS") final Optional<Boolean> generateDtResourcesJSOpt,
+			@Named("generateJsDtDefinitions") final Optional<Boolean> generateJsDtDefinitionsOpt) {
 		//-----
-		this.targetSubDir = targetSubDir;
-		shouldGenerateDtResourcesJS = generateDtResourcesJS;
-		shouldGenerateJsDtDefinitions = generateJsDtDefinitions;
+		targetSubDir = targetSubDirOpt.orElse("jsgen");
+		shouldGenerateDtResourcesJS = generateDtResourcesJSOpt.orElse(true); //true by default
+		shouldGenerateJsDtDefinitions = generateJsDtDefinitionsOpt.orElse(true);//true by default
 	}
 
 	/** {@inheritDoc} */
@@ -129,6 +132,11 @@ public final class JSGeneratorPlugin implements GeneratorPlugin {
 				.withTemplateName("domain/js/template/propertiesJS.ftl")
 				.build()
 				.generateFile(mdaResultBuilder);
+	}
+
+	@Override
+	public void clean(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+		MdaUtil.deleteFiles(new File(fileGeneratorConfig.getTargetGenDir() + targetSubDir), mdaResultBuilder);
 	}
 
 }

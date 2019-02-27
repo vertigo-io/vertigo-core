@@ -18,12 +18,14 @@
  */
 package io.vertigo.studio.plugins.mda.task;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -42,6 +44,7 @@ import io.vertigo.studio.plugins.mda.task.model.DAOModel;
 import io.vertigo.studio.plugins.mda.task.model.PAOModel;
 import io.vertigo.studio.plugins.mda.task.model.TaskAttributeModel;
 import io.vertigo.studio.plugins.mda.task.model.TaskDefinitionModel;
+import io.vertigo.studio.plugins.mda.util.MdaUtil;
 import io.vertigo.util.MapBuilder;
 
 /**
@@ -55,12 +58,12 @@ public final class TaskGeneratorPlugin implements GeneratorPlugin {
 
 	/**
 	 * Constructeur.
-	 * @param targetSubDir Repertoire de generation des fichiers de ce plugin
+	 * @param targetSubDirOpt Repertoire de generation des fichiers de ce plugin
 	 */
 	@Inject
-	public TaskGeneratorPlugin(@Named("targetSubDir") final String targetSubDir) {
+	public TaskGeneratorPlugin(@Named("targetSubDir") final Optional<String> targetSubDirOpt) {
 		//-----
-		this.targetSubDir = targetSubDir;
+		targetSubDir = targetSubDirOpt.orElse("javagen");
 	}
 
 	/** {@inheritDoc} */
@@ -233,5 +236,10 @@ public final class TaskGeneratorPlugin implements GeneratorPlugin {
 		}
 		return taskDefinitionsMap;
 
+	}
+
+	@Override
+	public void clean(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+		MdaUtil.deleteFiles(new File(fileGeneratorConfig.getTargetGenDir() + targetSubDir), mdaResultBuilder);
 	}
 }
