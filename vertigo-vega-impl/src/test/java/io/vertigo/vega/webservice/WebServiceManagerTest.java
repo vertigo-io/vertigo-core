@@ -952,9 +952,9 @@ public final class WebServiceManagerTest {
 				.build();
 
 		loggedAndExpect(given().body(fullBody))
-				.body("contactFrom.name", Matchers.equalTo("Moreau"))
+				.body("contactFrom.name", Matchers.equalTo("Leroy"))
 				.body("contactFrom.serverToken", Matchers.notNullValue())
-				.body("contactTo.name", Matchers.equalTo("Lefebvre"))
+				.body("contactTo.name", Matchers.equalTo("Moreau"))
 				.body("contactTo.serverToken", Matchers.notNullValue())
 				.body("testLong", Matchers.equalTo(12))
 				.body("testString", Matchers.equalTo("the String test"))
@@ -1943,7 +1943,7 @@ public final class WebServiceManagerTest {
 				.body("highlight", Matchers.nullValue())
 				.body("facets.get(1).code", Matchers.equalTo("FCT_BIRTHDAY"))
 				.body("facets.get(1).values.get(0).code", Matchers.equalTo("R1"))
-				.body("facets.get(1).values.get(0).count", Matchers.equalTo(4))
+				.body("facets.get(1).values.get(0).count", Matchers.equalTo(5))
 				.body("facets.get(1).values.get(1).code", Matchers.equalTo("R2"))
 				.body("facets.get(1).values.get(1).count", Matchers.greaterThanOrEqualTo(6))
 				.body("totalCount", Matchers.greaterThanOrEqualTo(10))
@@ -1957,8 +1957,8 @@ public final class WebServiceManagerTest {
 				.build();
 		loggedAndExpect(given().body(selectedFacetsMono))
 				.statusCode(HttpStatus.SC_OK)
-				.body("list", Matchers.hasSize(1))
-				.body("totalCount", Matchers.equalTo(1))
+				.body("list", Matchers.hasSize(2))
+				.body("totalCount", Matchers.equalTo(2))
 				.body("facets.get(0).values", Matchers.hasSize(1))
 				.when()
 				.post("/search/facetedResult");
@@ -2008,7 +2008,74 @@ public final class WebServiceManagerTest {
 				.body("facets.get(0).values", Matchers.hasSize(2))
 				.when()
 				.post("/search/facetedResult");
+	}
 
+	@Test
+	public void testFacetedClusteredSearchResult() {
+		final Map<String, Object> emptySelectedFacets = new MapBuilder<String, Object>()
+				.build();
+		final Response getResponse = loggedAndExpect(given().body(emptySelectedFacets))
+				.statusCode(HttpStatus.SC_OK)
+				.body("list", Matchers.nullValue())
+				.body("groups", Matchers.hasSize(Matchers.greaterThanOrEqualTo(10)))
+				.body("groups.get(0).list", Matchers.hasSize(Matchers.greaterThanOrEqualTo(1)))
+				.body("groups.get(0).list.get(0).address", Matchers.nullValue())
+				.body("highlight", Matchers.nullValue())
+				.body("facets.get(1).code", Matchers.equalTo("FCT_BIRTHDAY"))
+				.body("facets.get(1).values.get(0).code", Matchers.equalTo("R1"))
+				.body("facets.get(1).values.get(0).count", Matchers.equalTo(5))
+				.body("facets.get(1).values.get(1).code", Matchers.equalTo("R2"))
+				.body("facets.get(1).values.get(1).count", Matchers.greaterThanOrEqualTo(6))
+				.body("totalCount", Matchers.greaterThanOrEqualTo(10))
+				.when()
+				.post("/search/facetedClusteredResult");
+		final int fctBirthDayR1 = getResponse.body().path("facets.get(1).values.get(0).count");
+		final int fctBirthDayR2 = getResponse.body().path("facets.get(1).values.get(1).count");
+
+		final Map<String, Object> selectedFacetsMono = new MapBuilder<String, Object>()
+				.put("FCT_HONORIFIC_CODE", "MR_")
+				.build();
+		loggedAndExpect(given().body(selectedFacetsMono))
+				.statusCode(HttpStatus.SC_OK)
+				.body("groups", Matchers.hasSize(1))
+				.body("totalCount", Matchers.equalTo(2))
+				.body("groups.get(0).list", Matchers.hasSize(2))
+				.when()
+				.post("/search/facetedClusteredResult");
+
+		final Map<String, Object> selectedFacetsByCode = new MapBuilder<String, Object>()
+				.put("FCT_BIRTHDAY", "R1")
+				.build();
+		loggedAndExpect(given().body(selectedFacetsByCode))
+				.statusCode(HttpStatus.SC_OK)
+				.body("groups", Matchers.hasSize(fctBirthDayR1))
+				.body("totalCount", Matchers.equalTo(fctBirthDayR1))
+				.body("facets.get(0).values", Matchers.hasSize(fctBirthDayR1))
+				.when()
+				.post("/search/facetedClusteredResult");
+
+		final Map<String, Object> selectedFacetsByLabel = new MapBuilder<String, Object>()
+				.put("FCT_BIRTHDAY", "1980-1990")
+				.build();
+		loggedAndExpect(given().body(selectedFacetsByLabel))
+				.statusCode(HttpStatus.SC_OK)
+				.body("groups", Matchers.hasSize(6))
+				.body("totalCount", Matchers.equalTo(fctBirthDayR2))
+				.body("facets.get(0).values", Matchers.hasSize(6))
+				.when()
+				.post("/search/facetedClusteredResult");
+
+		final Map<String, Object> selectedFacetsMultiple = new MapBuilder<String, Object>()
+				.put("FCT_HONORIFIC_CODE", new String[] { "MR_", "MS_" })
+				.put("FCT_BIRTHDAY", "R2")
+				.build();
+		loggedAndExpect(given().body(selectedFacetsMultiple))
+				.statusCode(HttpStatus.SC_OK)
+				.body("groups", Matchers.hasSize(2))
+				.body("totalCount", Matchers.equalTo(2))
+				.body("facets.get(0).values", Matchers.hasSize(2))
+				.when()
+				.post("/search/facetedClusteredResult");
 	}
 
 	//=========================================================================

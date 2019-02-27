@@ -109,6 +109,9 @@ public class ContactDao implements Activeable, StoreServices {
 		appendContact(Honorific.Mr, "Martin", "Jean", parseDate("19/05/1980"),
 				createAddress(1L, "1, rue de Rivoli", "", "Paris", "75001", "France"),
 				"jean.martin@gmail.com", "01 02 03 04 05");
+		appendContact(Honorific.Mr, "Martin", "Romain", parseDate("19/05/1977"),
+				createAddress(1L, "1, rue de Rivoli", "", "Paris", "75001", "France"),
+				"romain.martin@gmail.com", "01 02 03 04 06");
 		appendContact(Honorific.Miss, "Dubois", "Marie", parseDate("20/06/1981"),
 				createAddress(2L, "2, rue Beauregard", "", "Paris", "75002", "France"),
 				"marie.dubois@gmail.com", "01 13 14 15 16");

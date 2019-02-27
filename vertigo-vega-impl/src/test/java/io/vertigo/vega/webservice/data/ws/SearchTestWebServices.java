@@ -19,6 +19,7 @@
 package io.vertigo.vega.webservice.data.ws;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -74,7 +75,21 @@ public final class SearchTestWebServices implements WebServices {
 		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
 		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QRY_CONTACT_FACET", FacetedQueryDefinition.class);
 		final FacetedQuery facetedQuery = new FacetedQuery(facetedQueryDefinition, selectedFacetValues);
-		return collectionsManager.facetList(allContacts, facetedQuery);
+		return collectionsManager.facetList(allContacts, facetedQuery, Optional.empty());
+	}
+
+	@POST("/facetedClusteredResult")
+	@ExcludedFields({ "highlight" })
+	@IncludedFields({ "list.name", "list.conId", "list.firstName" })
+	public FacetedQueryResult<Contact, DtList<Contact>> testFacetedClusterQueryResult(final SelectedFacetValues selectedFacetValues) {
+		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
+		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QRY_CONTACT_FACET", FacetedQueryDefinition.class);
+		final FacetedQuery facetedQuery = new FacetedQuery(facetedQueryDefinition, selectedFacetValues);
+		return collectionsManager.facetList(allContacts, facetedQuery, Optional.of(obtainFacetDefinition("FCT_HONORIFIC_CODE")));
+	}
+
+	private static FacetDefinition obtainFacetDefinition(final String facetName) {
+		return Home.getApp().getDefinitionSpace().resolve(facetName, FacetDefinition.class);
 	}
 
 	private static <D extends DtObject> DtList<D> asDtList(final Collection<D> values, final Class<D> dtObjectClass) {
