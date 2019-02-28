@@ -40,6 +40,7 @@ import io.vertigo.util.StringUtil;
  */
 public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTranslator<SearchSecurityRuleTranslator> {
 
+	private static final String ES_EXISTS_CRITERIA = "_exists_";
 	private static final String DEFAULT_BOOL_SEP = " ";
 
 	/**
@@ -124,7 +125,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		}
 	}
 
-	private void appendSimpleExpression(final StringBuilder query, final String fieldName, final ValueOperator operator, final Serializable userValue, final boolean strict) {
+	private static void appendSimpleExpression(final StringBuilder query, final String fieldName, final ValueOperator operator, final Serializable userValue, final boolean strict) {
 		if (userValue != null && !StringUtil.isEmpty(String.valueOf(userValue))) {
 			if (operator == ValueOperator.NEQ) {
 				query.append('-');
@@ -138,7 +139,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		}
 	}
 
-	private void appendSimpleExpression(final StringBuilder query, final String fieldName, final ValueOperator operator, final List<Serializable> userValues, final boolean strict) {
+	private static void appendSimpleExpression(final StringBuilder query, final String fieldName, final ValueOperator operator, final List<Serializable> userValues, final boolean strict) {
 		final boolean useParenthesisAroundValue = userValues.size() > 1;
 		if (!userValues.isEmpty()) {
 			if (operator == ValueOperator.NEQ) {
@@ -242,7 +243,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 					inSep = " ";
 				} else {
 					query.append(inSep);
-					appendSimpleExpression(query, "_exists_", ValueOperator.NEQ, strDimensionfields.get(i), false);
+					appendSimpleExpression(query, ES_EXISTS_CRITERIA, ValueOperator.NEQ, strDimensionfields.get(i), false);
 					inSep = " ";
 				}
 			}
@@ -254,7 +255,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 					inSep = " ";
 				} else {
 					query.append(inSep);
-					appendSimpleExpression(query, "_exists_", ValueOperator.EQ, strDimensionfields.get(i), false);
+					appendSimpleExpression(query, ES_EXISTS_CRITERIA, ValueOperator.EQ, strDimensionfields.get(i), false);
 					inSep = " ";
 				}
 			}
@@ -297,7 +298,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		switch (operator) {
 			case GT:
 				//pour > : doit être null (car non inclus)
-				appendSimpleExpression(query, "_exists_", ValueOperator.NEQ, fieldName, false);
+				appendSimpleExpression(query, ES_EXISTS_CRITERIA, ValueOperator.NEQ, fieldName, false);
 				break;
 			case GTE:
 				//pour >= : doit être égale à la clé du user ou null (supérieur)
@@ -305,7 +306,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 				appendSimpleExpression(query, fieldName, ValueOperator.EQ, treeKey, false);
 				//just append ' ' -> OR
 				query.append(' ');
-				appendSimpleExpression(query, "_exists_", ValueOperator.NEQ, fieldName, false);
+				appendSimpleExpression(query, ES_EXISTS_CRITERIA, ValueOperator.NEQ, fieldName, false);
 				query.append(')');
 				break;
 			case LT:
@@ -327,14 +328,14 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 			case GTE:
 				//pour > et >= on test l'égalité (isNull donc)
 				query.append(inSep);
-				appendSimpleExpression(query, "_exists_", ValueOperator.NEQ, fieldName, false);
+				appendSimpleExpression(query, ES_EXISTS_CRITERIA, ValueOperator.NEQ, fieldName, false);
 				inSep = " ";
 				break;
 			case LT:
 				//pout < : le premier non null, puis pas de filtre : on accepte toutes valeurs
 				if (i == lastIndexNotNull + 1) {
 					query.append(inSep).append('+');
-					appendSimpleExpression(query, "_exists_", ValueOperator.EQ, fieldName, false);
+					appendSimpleExpression(query, ES_EXISTS_CRITERIA, ValueOperator.EQ, fieldName, false);
 					inSep = " ";
 				}
 				break;

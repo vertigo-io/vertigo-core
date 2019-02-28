@@ -261,7 +261,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 		return byteArrayToVFile(displayName, photo);
 	}
 
-	private VFile byteArrayToVFile(final String displayName, final byte[] photo) {
+	private static VFile byteArrayToVFile(final String displayName, final byte[] photo) {
 		return new StreamFile(displayName, LDAP_PHOTO_MIME_TYPE, Instant.now(), photo.length, () -> new ByteArrayInputStream(photo));
 	}
 

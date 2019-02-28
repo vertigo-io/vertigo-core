@@ -70,6 +70,7 @@ import io.vertigo.util.StringUtil;
  */
 public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activeable {
 	private static final String PHOTO_URL_RESERVED_FIELD = "photoUrl";
+	private static final Pattern PATTERN_FIELD_PARSER = Pattern.compile("\\(?<([^>]+)>[^)]*\\)");
 	private final Pattern filePattern;
 	private final List<String> filePatternFieldsOrdered;
 
@@ -119,8 +120,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 
 	private static List<String> parsePatternFields(final String filePatternStr) {
 		final List<String> fields = new ArrayList<>();
-		final Pattern pattern = Pattern.compile("\\(?<([^>]+)>[^)]*\\)");
-		final Matcher matcher = pattern.matcher(filePatternStr);
+		final Matcher matcher = PATTERN_FIELD_PARSER.matcher(filePatternStr);
 		while (matcher.find()) {
 			fields.add(matcher.group(1));
 		}
@@ -174,8 +174,8 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		} catch (final URISyntaxException e) {
 			return Optional.empty();
 		}
-		Assertion.checkArgument(Files.exists(photoFile), "Identity {0} photo {1} not found", accountURI, photoUrl);
-		Assertion.checkArgument(Files.isRegularFile(photoFile), "Identity {0} photo {1} must be a file", accountURI, photoUrl);
+		Assertion.checkArgument(photoFile.toFile().exists(), "Identity {0} photo {1} not found", accountURI, photoUrl);
+		Assertion.checkArgument(photoFile.toFile().isFile(), "Identity {0} photo {1} must be a file", accountURI, photoUrl);
 		try {
 			final String contentType = Files.probeContentType(photoFile);
 			return Optional.of(new FSFile(photoFile.getFileName().toString(), contentType, photoFile));

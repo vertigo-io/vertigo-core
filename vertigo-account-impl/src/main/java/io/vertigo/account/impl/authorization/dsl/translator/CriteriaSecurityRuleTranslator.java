@@ -169,7 +169,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		}
 	}
 
-	private Serializable[] toStringArray(final List<Serializable> subValues) {
+	private static Serializable[] toStringArray(final List<Serializable> subValues) {
 		return subValues.toArray(new String[subValues.size()]);
 	}
 
