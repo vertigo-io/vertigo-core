@@ -265,76 +265,88 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 			final int lastIndexNotNull = lastIndexNotNull(treeKeys);
 
 			//1- règles avant le point de pivot : 'Eq' pout tous les opérateurs
-			for (int i = 0; i < lastIndexNotNull; i++) {
-				query.append(inSep).append('+');
-				appendSimpleExpression(query, strDimensionfields.get(i), ValueOperator.EQ, treeKeys[i], false);
-				inSep = " ";
-			}
+			inSep = appendBeforePivotPoint(query, treeKeys, strDimensionfields, inSep, lastIndexNotNull);
 
 			//2- règles pour le point de pivot
 			if (lastIndexNotNull >= 0) {
+				query.append(inSep);
 				final String fieldName = strDimensionfields.get(lastIndexNotNull);
-				switch (operator) {
-					case GT:
-						//pour > : doit être null (car non inclus)
-						query.append(inSep);
-						appendSimpleExpression(query, "_exists_", ValueOperator.NEQ, fieldName, false);
-						inSep = " ";
-						break;
-					case GTE:
-						//pour >= : doit être égale à la clé du user ou null (supérieur)
-						query.append(inSep).append("+(");
-						appendSimpleExpression(query, fieldName, ValueOperator.EQ, treeKeys[lastIndexNotNull], false);
-						//just append ' ' -> OR
-						query.append(' ');
-						appendSimpleExpression(query, "_exists_", ValueOperator.NEQ, fieldName, false);
-						query.append(')');
-						inSep = " ";
-						break;
-					case LT:
-					case LTE:
-						//pour < et <= on test l'égalité
-						query.append(inSep).append('+');
-						appendSimpleExpression(query, fieldName, ValueOperator.EQ, treeKeys[lastIndexNotNull], false);
-						inSep = " ";
-						break;
-					case EQ:
-					case NEQ:
-					default:
-						throw new IllegalArgumentException("Operator not supported " + operator.name());
-				}
+				appendPivotPoint(query, operator, treeKeys[lastIndexNotNull], fieldName);
+				inSep = " ";
 			}
 
 			//3- règles après le point de pivot (les null du user donc)
 			for (int i = lastIndexNotNull + 1; i < strDimensionfields.size(); i++) {
 				final String fieldName = strDimensionfields.get(i);
-				switch (operator) {
-					case GT:
-					case GTE:
-						//pour > et >= on test l'égalité (isNull donc)
-						query.append(inSep);
-						appendSimpleExpression(query, "_exists_", ValueOperator.NEQ, fieldName, false);
-						inSep = " ";
-						break;
-					case LT:
-						//pout < : le premier non null, puis pas de filtre : on accepte toutes valeurs
-						if (i == lastIndexNotNull + 1) {
-							query.append(inSep).append('+');
-							appendSimpleExpression(query, "_exists_", ValueOperator.EQ, fieldName, false);
-							inSep = " ";
-						}
-						break;
-					case LTE:
-						//pour <= : pas de filtre on accepte toutes valeurs
-						break;
-					case EQ:
-					case NEQ:
-					default:
-						throw new IllegalArgumentException("Operator not supported " + operator.name());
-				}
+				inSep = appendAfterPivotPoint(query, operator, inSep, lastIndexNotNull, i, fieldName);
 			}
 		}
 		query.append(')');
+	}
+
+	private <K extends Serializable> String appendBeforePivotPoint(final StringBuilder query, final K[] treeKeys, final List<String> strDimensionfields, String inSep, final int lastIndexNotNull) {
+		for (int i = 0; i < lastIndexNotNull; i++) {
+			query.append(inSep).append('+');
+			appendSimpleExpression(query, strDimensionfields.get(i), ValueOperator.EQ, treeKeys[i], false);
+			inSep = " ";
+		}
+		return inSep;
+	}
+
+	private <K extends Serializable> void appendPivotPoint(final StringBuilder query, final ValueOperator operator, final K treeKey, final String fieldName) {
+		switch (operator) {
+			case GT:
+				//pour > : doit être null (car non inclus)
+				appendSimpleExpression(query, "_exists_", ValueOperator.NEQ, fieldName, false);
+				break;
+			case GTE:
+				//pour >= : doit être égale à la clé du user ou null (supérieur)
+				query.append("+(");
+				appendSimpleExpression(query, fieldName, ValueOperator.EQ, treeKey, false);
+				//just append ' ' -> OR
+				query.append(' ');
+				appendSimpleExpression(query, "_exists_", ValueOperator.NEQ, fieldName, false);
+				query.append(')');
+				break;
+			case LT:
+			case LTE:
+				//pour < et <= on test l'égalité
+				query.append('+');
+				appendSimpleExpression(query, fieldName, ValueOperator.EQ, treeKey, false);
+				break;
+			case EQ:
+			case NEQ:
+			default:
+				throw new IllegalArgumentException("Operator not supported " + operator.name());
+		}
+	}
+
+	private String appendAfterPivotPoint(final StringBuilder query, final ValueOperator operator, String inSep, final int lastIndexNotNull, final int i, final String fieldName) {
+		switch (operator) {
+			case GT:
+			case GTE:
+				//pour > et >= on test l'égalité (isNull donc)
+				query.append(inSep);
+				appendSimpleExpression(query, "_exists_", ValueOperator.NEQ, fieldName, false);
+				inSep = " ";
+				break;
+			case LT:
+				//pout < : le premier non null, puis pas de filtre : on accepte toutes valeurs
+				if (i == lastIndexNotNull + 1) {
+					query.append(inSep).append('+');
+					appendSimpleExpression(query, "_exists_", ValueOperator.EQ, fieldName, false);
+					inSep = " ";
+				}
+				break;
+			case LTE:
+				//pour <= : pas de filtre on accepte toutes valeurs
+				break;
+			case EQ:
+			case NEQ:
+			default:
+				throw new IllegalArgumentException("Operator not supported " + operator.name());
+		}
+		return inSep;
 	}
 
 	private static String toOperator(final ValueOperator operator) {
