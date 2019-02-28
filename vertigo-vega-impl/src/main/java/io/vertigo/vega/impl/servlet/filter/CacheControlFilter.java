@@ -44,7 +44,7 @@ import javax.servlet.http.HttpServletResponse;
 public final class CacheControlFilter extends AbstractFilter {
 
 	private static final String FORCE_OVERRIDE = "force-override";
-	private boolean forceOverride = false;
+	private boolean forceOverride; //false by default
 	private Map<String, String> headers;
 
 	/** {@inheritDoc} */

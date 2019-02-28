@@ -576,7 +576,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		return subFields;
 	}
 
-	private void parseSubFieldName(final Set<String> filteredFields, final Map<String, Tuple2<Set<String>, Set<String>>> subFields, final Function<Tuple2<Set<String>, Set<String>>, Set<String>> getter) {
+	private static void parseSubFieldName(final Set<String> filteredFields, final Map<String, Tuple2<Set<String>, Set<String>>> subFields, final Function<Tuple2<Set<String>, Set<String>>, Set<String>> getter) {
 		for (final String filteredField : filteredFields) {
 			final int commaIdx = filteredField.indexOf('.');
 			final String key;
