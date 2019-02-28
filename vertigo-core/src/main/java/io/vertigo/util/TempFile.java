@@ -61,12 +61,8 @@ public final class TempFile extends File {
 		deleteOnExit();
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected void finalize() throws Throwable {
-		if (exists() && !delete()) {
-			deleteOnExit();
-		}
-		super.finalize();
-	}
+	/**
+	 * We can't use finalize anymore, because we keep a nio.Path reference, so this TempFile ref will be GC anyway we use it in a VFile.
+	 * Purge is done by a fileManager's deamon.
+	 */
 }
