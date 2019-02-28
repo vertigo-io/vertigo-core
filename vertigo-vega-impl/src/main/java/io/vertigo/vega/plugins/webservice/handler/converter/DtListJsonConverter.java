@@ -51,7 +51,7 @@ public final class DtListJsonConverter implements JsonConverter {
 	/** {@inheritDoc} */
 	@Override
 	public boolean canHandle(final Class<?> paramClass) {
-		return DtList.class.isAssignableFrom(paramClass);
+		return DtList.class.isAssignableFrom(paramClass) || UiList.class.isAssignableFrom(paramClass);
 	}
 
 	/** {@inheritDoc}*/

@@ -351,10 +351,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 			//Si le tableaux des valeurs formatées n'a pas été créé la valeur est null.
 			return dtField.getDataAccessor().getValue(inputDto);
 		}
-		if (serverSideDto != null) {
-			return dtField.getDataAccessor().getValue(serverSideDto);
-		}
-		return null;
+		return dtField.getDataAccessor().getValue(serverSideDto != null ? serverSideDto : inputDto);
 	}
 
 	/**
