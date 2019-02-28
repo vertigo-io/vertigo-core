@@ -101,13 +101,17 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 			final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkArgNotEmpty(accountFilePatternStr);
-		Assertion.checkArgument(accountFilePatternStr.contains("(?<"), "accountFilePattern should be a regexp of named group for each Account's fields (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<email>)(?<authToken>[^\\s;]+);(?<photoUrl>[^\\s;]+)' )");
-		Assertion.checkArgument(groupFilePatternStr.contains("(?<"), "groupFilePattern should be a regexp of named group for each group's fields (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>([^\\s;]+(;[^\\s;]+)*)' )");
+		Assertion.checkArgument(accountFilePatternStr.contains("(?<"),
+				"accountFilePattern should be a regexp of named group for each Account's fields (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<email>)(?<authToken>[^\\s;]+);(?<photoUrl>[^\\s;]+)' )");
+		Assertion.checkArgument(groupFilePatternStr.contains("(?<"),
+				"groupFilePattern should be a regexp of named group for each group's fields (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>([^\\s;]+(;[^\\s;]+)*)' )");
 		for (final AccountProperty accountProperty : AccountProperty.values()) {
-			Assertion.checkArgument(accountFilePatternStr.contains("(?<" + accountProperty.name() + ">"), "filePattern should be a regexp of named group for each Account fields (missing {0} field) (like : '(?<id>\\S+);(?<displayName>\\S+);(?<email>)(?<authToken>\\S+);(?<photoUrl>\\S+)' )", accountProperty.name());
+			Assertion.checkArgument(accountFilePatternStr.contains("(?<" + accountProperty.name() + ">"),
+					"filePattern should be a regexp of named group for each Account fields (missing {0} field) (like : '(?<id>\\S+);(?<displayName>\\S+);(?<email>)(?<authToken>\\S+);(?<photoUrl>\\S+)' )", accountProperty.name());
 		}
 		for (final GroupProperty groupProperty : GroupProperty.values()) {
-			Assertion.checkArgument(groupFilePatternStr.contains("(?<" + groupProperty.name() + ">"), "filePattern should be a regexp of named group for each Group fields (missing {0} field) (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>([^\\s;]+(;[^\\s;]+)*)' )", groupProperty.name());
+			Assertion.checkArgument(groupFilePatternStr.contains("(?<" + groupProperty.name() + ">"),
+					"filePattern should be a regexp of named group for each Group fields (missing {0} field) (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>([^\\s;]+(;[^\\s;]+)*)' )", groupProperty.name());
 		}
 		// -----
 		this.resourceManager = resourceManager;
@@ -181,8 +185,8 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 		} catch (final URISyntaxException e) {
 			return Optional.empty();
 		}
-		Assertion.checkArgument(Files.exists(photoFile), "Account {0} photo {1} not found", accountURI, photoUrl);
-		Assertion.checkArgument(Files.isRegularFile(photoFile), "Account {0} photo {1} must be a file", accountURI, photoUrl);
+		Assertion.checkArgument(photoFile.toFile().exists(), "Account {0} photo {1} not found", accountURI, photoUrl);
+		Assertion.checkArgument(photoFile.toFile().isFile(), "Account {0} photo {1} must be a file", accountURI, photoUrl);
 		try {
 			final String contentType = Files.probeContentType(photoFile);
 			return Optional.of(new FSFile(photoFile.getFileName().toString(), contentType, photoFile));
