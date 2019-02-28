@@ -32,7 +32,7 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
+import io.vertigo.dynamo.plugins.search.elasticsearch_5_6.AbstractESSearchServicesPlugin;
 import io.vertigo.lang.Assertion;
 
 /**
