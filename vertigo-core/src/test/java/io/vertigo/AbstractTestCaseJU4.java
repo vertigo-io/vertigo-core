@@ -36,6 +36,7 @@ import io.vertigo.core.component.di.injector.DIInjector;
  *
  * @author jmforhan
  */
+@Deprecated
 public abstract class AbstractTestCaseJU4 {
 	private AutoCloseableApp app;
 

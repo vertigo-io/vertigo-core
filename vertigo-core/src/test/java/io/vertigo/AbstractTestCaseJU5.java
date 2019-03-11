@@ -18,8 +18,6 @@
  */
 package io.vertigo;
 
-import java.util.Properties;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +26,6 @@ import io.vertigo.app.App;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.Home;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 
 /**
  * Classe parente de tous les TNR associés à vertigo.
@@ -37,15 +34,6 @@ import io.vertigo.app.config.xml.XMLAppConfigBuilder;
  */
 @ExtendWith(VertigoJunitExtension.class)
 public abstract class AbstractTestCaseJU5 {
-
-	/**
-	 * Tableau des fichiers managers.xml a prendre en compte.
-	 *
-	 * @return fichier managers.xml (par defaut managers-test.xml)
-	 */
-	protected String[] getManagersXmlFileName() {
-		return new String[] { "./managers-test.xml", };
-	}
 
 	protected final App getApp() {
 		return Home.getApp();
@@ -106,11 +94,6 @@ public abstract class AbstractTestCaseJU5 {
 	 * Configuration des tests.
 	 * @return App config
 	 */
-	protected AppConfig buildAppConfig() {
-		//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
-		return new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(), getManagersXmlFileName())
-				.build();
-	}
+	protected abstract AppConfig buildAppConfig();
 
 }
