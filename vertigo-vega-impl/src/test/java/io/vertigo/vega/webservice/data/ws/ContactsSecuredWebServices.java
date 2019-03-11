@@ -22,6 +22,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.vertigo.account.authorization.annotations.Secured;
+import io.vertigo.account.authorization.annotations.SecuredOperation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.lang.VUserException;
 import io.vertigo.vega.webservice.WebServices;
@@ -32,24 +34,24 @@ import io.vertigo.vega.webservice.data.domain.ContactDao;
 import io.vertigo.vega.webservice.data.domain.ContactValidator;
 import io.vertigo.vega.webservice.data.domain.ContactView;
 import io.vertigo.vega.webservice.data.domain.MandatoryPkValidator;
-import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.DELETE;
 import io.vertigo.vega.webservice.stereotype.GET;
 import io.vertigo.vega.webservice.stereotype.POST;
 import io.vertigo.vega.webservice.stereotype.PUT;
 import io.vertigo.vega.webservice.stereotype.PathParam;
 import io.vertigo.vega.webservice.stereotype.PathPrefix;
-import io.vertigo.vega.webservice.stereotype.SessionLess;
 import io.vertigo.vega.webservice.stereotype.Validate;
 
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 
-@PathPrefix("/contacts")
-public final class ContactsWebServices implements WebServices {
+@Secured("SECURED_USER")
+@PathPrefix("/secured/contacts")
+public class ContactsSecuredWebServices implements WebServices {
 
 	@Inject
 	private ContactDao contactDao;
 
+	@Secured("CONTACT$READ")
 	@POST("/search()")
 	public List<Contact> readList(final ContactCriteria listCriteria) {
 		//offset + range ?
@@ -57,15 +59,7 @@ public final class ContactsWebServices implements WebServices {
 		return contactDao.getList();
 	}
 
-	@SessionLess
-	@AnonymousAccessAllowed
-	@GET("")
-	public List<Contact> readAllList() {
-		//offset + range ?
-		//code 200
-		return contactDao.getList();
-	}
-
+	@Secured("CONTACT$READ")
 	@GET("/{conId}")
 	public Contact read(@PathParam("conId") final long conId) {
 		final Contact contact = contactDao.get(conId);
@@ -77,6 +71,7 @@ public final class ContactsWebServices implements WebServices {
 		return contact;
 	}
 
+	@Secured("CONTACT$READ")
 	@GET("/contactView/{conId}")
 	public ContactView readContactView(@PathParam("conId") final long conId) {
 		final Contact contact = contactDao.get(conId);
@@ -100,14 +95,14 @@ public final class ContactsWebServices implements WebServices {
 
 	//PUT is indempotent : ID obligatoire
 	@PUT("/contactView")
-	public ContactView updateContactView(final ContactView contactView) {
+	public ContactView updateContactView(@SecuredOperation("WRITE") final ContactView contactView) {
 		//200
 		return contactView;
 	}
 
 	//@POST is non-indempotent
 	@POST("")
-	public Contact create(final Contact contact) {
+	public Contact create(@SecuredOperation("WRITE") final Contact contact) {
 		if (contact.getConId() != null) {
 			throw new VUserException("Contact #" + contact.getConId() + " already exist");
 		}
@@ -122,7 +117,7 @@ public final class ContactsWebServices implements WebServices {
 	//PUT is indempotent : ID obligatoire
 	@PUT("/*")
 	public Contact update(//
-			@Validate({ ContactValidator.class, MandatoryPkValidator.class }) final Contact contact) {
+			@Validate({ ContactValidator.class, MandatoryPkValidator.class }) @SecuredOperation("WRITE") final Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
 			throw new VUserException("Name is mandatory");
@@ -135,6 +130,7 @@ public final class ContactsWebServices implements WebServices {
 		return contact;
 	}
 
+	@Secured("CONTACT$DELETE")
 	@DELETE("/{conId}")
 	public void delete(@PathParam("conId") final long conId) {
 		if (!contactDao.containsKey(conId)) {

@@ -1,0 +1,33 @@
+{
+	"globalAuthorizations": [{
+		"name": "SECURED_USER",
+		"label": "security.authorization.user.secured"
+	}, {
+		"name": "UNSECURED_USER",
+		"label": "security.authorization.user.unsecured"
+	}],
+	"securedEntities": [{
+		"entity": "CONTACT",
+		"securityFields" : ["HONORIFIC_CODE", "NAME"],
+		"securityDimensions": [],
+		"operations": [  {
+			"__comment": "Test de lecture",
+			"name": "READ", "label" : "Lecture",
+			"rules": [ "true" ]
+		}, {
+			"__comment": "Test d'ecriture",
+			"name": "WRITE", "label" : "Ecriture",
+			"grants": ["READ"],
+			"rules": [
+				"HONORIFIC_CODE=${honorificCode} OR NAME=${name}"
+			]
+		}, {
+			"__comment": "Test de suppression",
+			"name": "DELETE", "label" : "Suppression",
+			"grants": ["READ", "WRITE"],
+			"rules": [
+				"NAME=${name}"
+			]
+		}]
+	}]
+}

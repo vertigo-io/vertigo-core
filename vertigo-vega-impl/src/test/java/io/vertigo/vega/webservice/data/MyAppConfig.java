@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import io.vertigo.account.AccountFeatures;
+import io.vertigo.account.plugins.authorization.loaders.JsonSecurityDefinitionProvider;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
@@ -45,8 +46,10 @@ import io.vertigo.vega.webservice.data.user.TestUserSession;
 import io.vertigo.vega.webservice.data.ws.AdvancedTestWebServices;
 import io.vertigo.vega.webservice.data.ws.AnonymousTestWebServices;
 import io.vertigo.vega.webservice.data.ws.CommonWebServices;
+import io.vertigo.vega.webservice.data.ws.ContactsSecuredWebServices;
 import io.vertigo.vega.webservice.data.ws.ContactsWebServices;
 import io.vertigo.vega.webservice.data.ws.FileDownloadWebServices;
+import io.vertigo.vega.webservice.data.ws.LoginSecuredWebServices;
 import io.vertigo.vega.webservice.data.ws.SearchTestWebServices;
 import io.vertigo.vega.webservice.data.ws.SimplerTestWebServices;
 
@@ -86,6 +89,7 @@ public final class MyAppConfig {
 						.build())
 				.addModule(new AccountFeatures()
 						.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
+						.withAuthorization()
 						.build())
 				.addModule(new VegaFeatures()
 						.withWebServices()
@@ -102,6 +106,8 @@ public final class MyAppConfig {
 						.addComponent(ComponentCmdWebServices.class)
 						.addComponent(CommonWebServices.class)
 						.addComponent(ContactsWebServices.class)
+						.addComponent(ContactsSecuredWebServices.class)
+						.addComponent(LoginSecuredWebServices.class)
 						.addComponent(SimplerTestWebServices.class)
 						.addComponent(AdvancedTestWebServices.class)
 						.addComponent(AnonymousTestWebServices.class)
@@ -112,6 +118,9 @@ public final class MyAppConfig {
 						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
 								.addDefinitionResource("classes", DtDefinitions.class.getName())
 								.addDefinitionResource("kpr", "io/vertigo/vega/webservice/data/execution.kpr")
+								.build())
+						.addDefinitionProvider(DefinitionProviderConfig.builder(JsonSecurityDefinitionProvider.class)
+								.addDefinitionResource("security", "io/vertigo/vega/webservice/data/ws-auth-config.json")
 								.build())
 						.build())
 				.build();
