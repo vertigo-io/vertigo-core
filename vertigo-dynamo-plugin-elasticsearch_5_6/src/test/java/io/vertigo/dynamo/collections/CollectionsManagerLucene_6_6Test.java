@@ -18,14 +18,40 @@
  */
 package io.vertigo.dynamo.collections;
 
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.dynamo.DynamoFeatures;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+
 /**
  * @author npiedeloup
  */
 public class CollectionsManagerLucene_6_6Test extends CollectionsManagerTest {
 
-	/** {@inheritDoc} */
 	@Override
-	protected String[] getManagersXmlFileName() {
-		return new String[] { "./managers-lucene_6_6-test.xml", };
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.withLocales("fr_FR")
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.withCache()
+						.withMemoryCache()
+						.build())
+				.addModule(new DynamoFeatures()
+						.withStore()
+						.addPlugin(io.vertigo.dynamo.plugins.collections.lucene_6_6.LuceneIndexPlugin.class)
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/collections/data/execution.kpr")
+								.addDefinitionResource("classes", "io.vertigo.dynamo.collections.data.DtDefinitions")
+								.build())
+						.build())
+				.build();
 	}
 }
