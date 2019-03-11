@@ -31,17 +31,17 @@ public class PartialSecuredServices implements Component {
 		return 1;
 	}
 
-	@Secured("ATZ_ADMUSR")
+	@Secured("ADMUSR")
 	public int fakeService2() {
 		return 2;
 	}
 
-	@Secured("ATZ_ADMPRO")
+	@Secured("ADMPRO")
 	public int fakeService3(@SecuredOperation("READ") final Record record) {
 		return 3;
 	}
 
-	@Secured("ATZ_ADMPRO")
+	@Secured("ADMPRO")
 	public int fakeService4(@SecuredOperation("WRITE") final Record record) {
 		return 4;
 	}

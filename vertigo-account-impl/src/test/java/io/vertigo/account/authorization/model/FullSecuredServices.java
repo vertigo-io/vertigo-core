@@ -25,7 +25,7 @@ import io.vertigo.core.component.Component;
 /**
  * @author npiedeloup
  */
-@Secured({ "ATZ_ADMUSR", "ATZ_ADMPRO" })
+@Secured({ "ADMUSR", "ADMPRO" })
 public class FullSecuredServices implements Component {
 
 	public int fakeService1() {
