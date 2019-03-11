@@ -49,8 +49,6 @@ public final class SecurityFilter extends AbstractFilter {
 
 	private static final String NO_AUTHENTIFICATION_PATTERN_PARAM_NAME = "url-no-authentification";
 
-	private static final String CHECK_REQUEST_ACCESS_PARAM_NAME = "check-request-access";
-
 	/**
 	 * Le gestionnaire de sécurité
 	 */
@@ -58,14 +56,11 @@ public final class SecurityFilter extends AbstractFilter {
 
 	private Optional<Pattern> noAuthentificationPattern;
 
-	private boolean checkRequestAccess;
-
 	/** {@inheritDoc} */
 	@Override
 	public void doInit() {
 		securityManager = Home.getApp().getComponentSpace().resolve(VSecurityManager.class);
 		noAuthentificationPattern = parsePattern(getFilterConfig().getInitParameter(NO_AUTHENTIFICATION_PATTERN_PARAM_NAME));
-		checkRequestAccess = Boolean.parseBoolean(getFilterConfig().getInitParameter(CHECK_REQUEST_ACCESS_PARAM_NAME));
 	}
 
 	/** {@inheritDoc} */
