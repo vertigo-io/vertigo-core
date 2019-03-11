@@ -102,8 +102,8 @@ public final class SecurityFilter extends AbstractFilter {
 				} else {
 					httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED); //User not authenticated
 				}
-			} else if (checkRequestAccess && needsAuthentification && false) { //TODO
-				httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
+				//} else if (checkRequestAccess && needsAuthentification && false) { //TODO
+				//	httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
 			} else {
 				chain.doFilter(httpRequest, httpResponse);
 			}

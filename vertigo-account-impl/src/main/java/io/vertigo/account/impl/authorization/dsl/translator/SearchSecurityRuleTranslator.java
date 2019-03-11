@@ -233,9 +233,10 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 				.collect(Collectors.toList());
 		Assertion.checkArgument(strDimensionfields.size() == treeKeys.length, "User securityKey for tree axes must match declared fields: ({0})", strDimensionfields);
 		query.append('(');
-		String inSep = "";
+
 		//cas particuliers du == et du !=
 		if (operator == ValueOperator.EQ) {
+			String inSep = "";
 			for (int i = 0; i < strDimensionfields.size(); i++) {
 				if (treeKeys[i] != null) {
 					query.append(inSep).append('+');
@@ -248,6 +249,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 				}
 			}
 		} else if (operator == ValueOperator.NEQ) {
+			String inSep = "";
 			for (int i = 0; i < strDimensionfields.size(); i++) {
 				if (treeKeys[i] != null) {
 					query.append(inSep);
@@ -266,8 +268,9 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 			final int lastIndexNotNull = lastIndexNotNull(treeKeys);
 
 			//1- règles avant le point de pivot : 'Eq' pout tous les opérateurs
-			inSep = appendBeforePivotPoint(query, treeKeys, strDimensionfields, inSep, lastIndexNotNull);
+			appendBeforePivotPoint(query, treeKeys, strDimensionfields, lastIndexNotNull);
 
+			String inSep = lastIndexNotNull > 0 ? " " : "";
 			//2- règles pour le point de pivot
 			if (lastIndexNotNull >= 0) {
 				query.append(inSep);
@@ -279,19 +282,19 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 			//3- règles après le point de pivot (les null du user donc)
 			for (int i = lastIndexNotNull + 1; i < strDimensionfields.size(); i++) {
 				final String fieldName = strDimensionfields.get(i);
-				inSep = appendAfterPivotPoint(query, operator, inSep, lastIndexNotNull, i, fieldName);
+				appendAfterPivotPoint(query, operator, inSep, lastIndexNotNull, i, fieldName);
 			}
 		}
 		query.append(')');
 	}
 
-	private <K extends Serializable> String appendBeforePivotPoint(final StringBuilder query, final K[] treeKeys, final List<String> strDimensionfields, String inSep, final int lastIndexNotNull) {
+	private <K extends Serializable> void appendBeforePivotPoint(final StringBuilder query, final K[] treeKeys, final List<String> strDimensionfields, final int lastIndexNotNull) {
+		String inSep = "";
 		for (int i = 0; i < lastIndexNotNull; i++) {
 			query.append(inSep).append('+');
 			appendSimpleExpression(query, strDimensionfields.get(i), ValueOperator.EQ, treeKeys[i], false);
 			inSep = " ";
 		}
-		return inSep;
 	}
 
 	private <K extends Serializable> void appendPivotPoint(final StringBuilder query, final ValueOperator operator, final K treeKey, final String fieldName) {
@@ -322,7 +325,8 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		}
 	}
 
-	private String appendAfterPivotPoint(final StringBuilder query, final ValueOperator operator, String inSep, final int lastIndexNotNull, final int i, final String fieldName) {
+	private void appendAfterPivotPoint(final StringBuilder query, final ValueOperator operator, final String firstInSep, final int lastIndexNotNull, final int i, final String fieldName) {
+		String inSep = firstInSep;
 		switch (operator) {
 			case GT:
 			case GTE:
@@ -347,7 +351,6 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 			default:
 				throw new IllegalArgumentException("Operator not supported " + operator.name());
 		}
-		return inSep;
 	}
 
 	private static String toOperator(final ValueOperator operator) {
