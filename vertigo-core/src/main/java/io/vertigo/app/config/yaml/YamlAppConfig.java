@@ -7,9 +7,16 @@ import java.util.Map;
 
 public final class YamlAppConfig {
 
+	public YamlNodeConfig node;
 	public YamlBootConfig boot;
 	public LinkedHashMap<String, YamlModuleConfig> modules = new LinkedHashMap<>();
 	public List<YamlInitializerConfig> initializers = new ArrayList<>();
+
+	public static final class YamlNodeConfig {
+		public String appName;
+		public String nodeId;
+		public String endPoint;
+	}
 
 	public static final class YamlBootConfig {
 		public YamlParamsConfig params;

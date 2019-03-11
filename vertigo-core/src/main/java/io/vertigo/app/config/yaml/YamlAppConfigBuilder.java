@@ -25,6 +25,8 @@ import io.vertigo.app.config.BootConfigBuilder;
 import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.LogConfig;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.app.config.NodeConfigBuilder;
 import io.vertigo.app.config.yaml.YamlAppConfig.YamlModuleConfig;
 import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.core.component.Plugin;
@@ -88,6 +90,8 @@ public final class YamlAppConfigBuilder implements Builder<AppConfig> {
 
 		final Yaml yaml = new Yaml(new Constructor(YamlAppConfig.class));
 		final YamlAppConfig yamlAppConfig = yaml.loadAs(parseFile(yamlConfigURL), YamlAppConfig.class);
+		//--- node
+		handleNodeConfig(yamlAppConfig);
 		//--- boot
 		handleBoot(yamlAppConfig);
 		//--- modules
@@ -105,6 +109,25 @@ public final class YamlAppConfigBuilder implements Builder<AppConfig> {
 						appConfigBuilder.addInitializer(ClassUtil.classForName(initializerEntry.getKey(), ComponentInitializer.class));
 					}
 				});
+	}
+
+	private void handleNodeConfig(final YamlAppConfig yamlAppConfig) {
+		if (yamlAppConfig.node != null) {
+			final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder();
+			final String appName = yamlAppConfig.node.appName;
+			final String nodeId = yamlAppConfig.node.nodeId;
+			final String endPoint = yamlAppConfig.node.endPoint;
+			if (appName != null) {
+				nodeConfigBuilder.withAppName(evalParamValue(appName));
+			}
+			if (nodeId != null) {
+				nodeConfigBuilder.withNodeId(evalParamValue(nodeId));
+			}
+			if (endPoint != null) {
+				nodeConfigBuilder.withEndPoint(evalParamValue(endPoint));
+			}
+			appConfigBuilder.withNodeConfig(nodeConfigBuilder.build());
+		}
 	}
 
 	private void handleBoot(final YamlAppConfig yamlAppConfig) {

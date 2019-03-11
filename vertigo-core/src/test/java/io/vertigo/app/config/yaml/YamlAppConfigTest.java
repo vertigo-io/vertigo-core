@@ -51,6 +51,20 @@ public final class YamlAppConfigTest {
 		testBioManager(appConfig);
 	}
 
+	@Test
+	public void testNodeConfig() {
+
+		final AppConfig appConfig = new YamlAppConfigBuilder(new Properties())
+				.withFiles(getClass(), "bio-node.yaml")
+				.build();
+
+		testBioManager(appConfig);
+
+		assertEquals("bio", appConfig.getNodeConfig().getAppName());
+		assertEquals("myFirstNodeId", appConfig.getNodeConfig().getNodeId());
+		assertEquals("http://localhost/", appConfig.getNodeConfig().getEndPoint().get());
+	}
+
 	private void testBioManager(final AppConfig appConfig) {
 		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
 			assertEquals(app, app);
