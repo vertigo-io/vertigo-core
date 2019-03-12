@@ -51,7 +51,6 @@ import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
-import io.vertigo.vega.webservice.model.UiListState;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
@@ -426,8 +425,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	private static List<WebServiceParam> createPseudoWebServiceParams(final WebServiceParam webServiceParam) {
 		final List<WebServiceParam> pseudoWebServiceParams = new ArrayList<>();
 		final String prefix = !webServiceParam.getName().isEmpty() ? webServiceParam.getName() + "." : "";
-		if (DtListState.class.isAssignableFrom(webServiceParam.getType())
-				|| UiListState.class.isAssignableFrom(webServiceParam.getType())) {
+		if (DtListState.class.isAssignableFrom(webServiceParam.getType())) {
 			pseudoWebServiceParams.add(WebServiceParam.builder(int.class)
 					.with(webServiceParam.getParamType(), prefix + "top").build());
 			pseudoWebServiceParams.add(WebServiceParam.builder(int.class)
@@ -453,7 +451,6 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		final Class<?> paramClass = webServiceParam.getType();
 		return webServiceParam.getParamType() == WebServiceParamType.Query &&
 				(DtListState.class.isAssignableFrom(paramClass)
-						|| UiListState.class.isAssignableFrom(paramClass)
 						|| DtObject.class.isAssignableFrom(paramClass));
 	}
 
