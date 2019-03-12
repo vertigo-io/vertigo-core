@@ -90,8 +90,13 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			+ "|" + buildIncompletePatternStr('[', ']', 250)
 			+ "|(?<![\\w\\)\\}\\]]\\s{0,250})(?<=[^\\w\\\\\\)\\}\\]]|^)(OR|AND)(?=\\W|$)|(?<=[^\\\\\\w]|^)(OR|AND)(?=[^\\w\\(\\{\\[]|$)(?!\\s*[\\w\\(\\{\\[])";
 	private static final Pattern QUERY_INCOMPLETE_GRAMMAR_PATTERN = Pattern.compile(QUERY_INCOMPLETE_GRAMMAR_PATTERN_STR);
+
 	private static final String NEED_BLOCK_PATTERN_STR = "(?i)([\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<\\s]|OR|AND)";
-	private static final Pattern NEED_BLOCK_PATTERN = Pattern.compile(NEED_BLOCK_PATTERN_STR);
+	private static final Pattern MAY_USE_BLOCK_1_PATTERN = Pattern.compile("((\\(.*\\))|([\\[\\{].*[\\]\\}])|(\\\".*\\\")|\\*)(\\^[0-9]+)?");
+	private static final Pattern MAY_USE_BLOCK_2_PATTERN = Pattern.compile(NEED_BLOCK_PATTERN_STR);
+
+	private static final Pattern BEGIN_LINE_TRIM_PATTERN = Pattern.compile("^\\s+");
+
 	private List<DslMultiExpression> myBuildQuery;
 	private C myCriteria;
 
@@ -143,15 +148,23 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		return ListFilter.of(query);
 	}
 
+	private static final Pattern BEGINNING_LINE_PATTERN = Pattern.compile("^\\s+");
+	private static final Pattern END_LINE_PATTERN = Pattern.compile("\\s+$");
+	private static final Pattern MULTIPLE_WHITESPACE_PATTERN = Pattern.compile("\\s+");
+
 	private String buildQueryString() {
 		final StringBuilder query = new StringBuilder();
 		for (final DslMultiExpression multiExpressionDefinition : myBuildQuery) {
 			appendMultiExpression(query, multiExpressionDefinition);
 		}
-		return query.toString()
-				.replaceAll("^\\s+", "") //replace whitespaces at beginning of a line
-				.replaceAll("\\s+$", "") //replace whitespaces at end of a line
-				.replaceAll("\\s+", " "); // replace multiple whitespaces by space
+		return cleanQuery(query.toString());
+	}
+
+	protected static String cleanQuery(final String query) {
+		String queryString = BEGINNING_LINE_PATTERN.matcher(query).replaceAll("");//replace whitespaces at beginning of a line
+		queryString = END_LINE_PATTERN.matcher(queryString).replaceAll("");//replace whitespaces at end of a line
+		queryString = MULTIPLE_WHITESPACE_PATTERN.matcher(queryString).replaceAll(" ");// replace multiple whitespaces by space
+		return queryString;
 	}
 
 	private void appendMultiExpression(final StringBuilder query, final DslMultiExpression multiExpressionDefinition) {
@@ -192,8 +205,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 	private static boolean mayUseBlock(final String trimedExpression) {
 		//on place des parenthèses s'il n'y a pas encore de block, ou des caractères interdits
-		return !trimedExpression.matches("((\\(.*\\))|([\\[\\{].*[\\]\\}])|(\\\".*\\\")|\\*)(\\^[0-9]+)?")//not : (...) or [...] or "..." but may finished by ^2
-				&& trimedExpression.matches(".*" + NEED_BLOCK_PATTERN + ".*"); //contains any reserved char +-!*?~^=>< or any spaces
+		return !MAY_USE_BLOCK_1_PATTERN.matcher(trimedExpression).matches()//not : (...) or [...] or "..." but may finished by ^2
+				&& MAY_USE_BLOCK_2_PATTERN.matcher(trimedExpression).find();//contains any reserved char +-!*?~^=>< or any spaces
 
 	}
 
@@ -215,7 +228,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private static String[] splitTrimedSubQueryToQuery(final String subQueryStr) {
 		final String[] result = new String[2];
 		if (!subQueryStr.isEmpty()) {
-			final String trimSubQueryStr = subQueryStr.replaceFirst("^\\s*", "");
+			final String trimSubQueryStr = BEGIN_LINE_TRIM_PATTERN.matcher(subQueryStr).replaceFirst("");
 			final String preTrimSubQueryStr = subQueryStr.substring(0, subQueryStr.length() - trimSubQueryStr.length());
 			result[0] = preTrimSubQueryStr;
 			result[1] = trimSubQueryStr;

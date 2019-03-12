@@ -35,8 +35,15 @@ import javax.servlet.http.HttpServletRequest;
  * @author npiedeloup
  */
 public abstract class AbstractFilter implements Filter {
+
+	private static final Pattern EXCLUDE_1_PATTERN = Pattern.compile("\\.");
+	private static final Pattern EXCLUDE_2_PATTERN = Pattern.compile("\\*([^;])");
+	private static final Pattern EXCLUDE_3_PATTERN = Pattern.compile("\\*(;|$)");
+	private static final Pattern EXCLUDE_4_PATTERN = Pattern.compile(";");
+
 	/** Filter parameter name for exclude some url. */
 	protected static final String EXCLUDE_PATTERN_PARAM_NAME = "url-exclude-pattern";
+
 	private FilterConfig config;
 	private Optional<Pattern> pattern;
 
@@ -64,10 +71,10 @@ public abstract class AbstractFilter implements Filter {
 	 */
 	protected static final Optional<Pattern> parsePattern(final String urlExcludePattern) {
 		if (urlExcludePattern != null) {
-			String urlExcludePatternParamNormalized = urlExcludePattern.replaceAll("\\.", "\\\\."); // . devient \\. (pour matcher un .)
-			urlExcludePatternParamNormalized = urlExcludePatternParamNormalized.replaceAll("\\*([^;])", "[^\\/]*$1"); //* en milieu de pattern devient tous char sauf /
-			urlExcludePatternParamNormalized = urlExcludePatternParamNormalized.replaceAll("\\*(;|$)", ".*$1"); //* en fin de pattern devient tous char
-			urlExcludePatternParamNormalized = urlExcludePatternParamNormalized.replaceAll(";", ")|(^"); //; devient un OR
+			String urlExcludePatternParamNormalized = EXCLUDE_1_PATTERN.matcher(urlExcludePattern).replaceAll("\\\\."); // . devient \\. (pour matcher un .)
+			urlExcludePatternParamNormalized = EXCLUDE_2_PATTERN.matcher(urlExcludePattern).replaceAll("[^\\/]*$1"); //* en milieu de pattern devient tous char sauf /
+			urlExcludePatternParamNormalized = EXCLUDE_3_PATTERN.matcher(urlExcludePattern).replaceAll(".*$1"); //* en fin de pattern devient tous char
+			urlExcludePatternParamNormalized = EXCLUDE_4_PATTERN.matcher(urlExcludePattern).replaceAll(")|(^"); //; devient un OR
 			urlExcludePatternParamNormalized = "(^" + urlExcludePatternParamNormalized + ")";
 			return Optional.of(Pattern.compile(urlExcludePatternParamNormalized));
 		}

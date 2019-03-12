@@ -59,12 +59,9 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 			query.append(')');
 			sep = DEFAULT_BOOL_SEP;
 		}
-		return query.toString()
-				.replaceAll("^\\s+", "") //replace whitespaces at beginning of a line
-				.replaceAll("\\s+$", "") //replace whitespaces at end of a line
-				.replaceAll("\\s+", " ") // replace multiple whitespaces by space
-				.replaceAll("^\\(\\)$", "(*:*)") // replace empty query to all
-		;
+		String queryString = cleanQuery(query.toString());
+		queryString = EMPTY_QUERY_PATTERN.matcher(queryString).replaceAll("(*:*)");// replace empty query to all
+		return queryString;
 	}
 
 	private void appendMultiExpression(final StringBuilder query, final RuleMultiExpression multiExpressionDefinition) {

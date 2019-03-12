@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import io.vertigo.account.authorization.metamodel.SecuredEntity;
 import io.vertigo.account.authorization.metamodel.SecurityDimension;
@@ -34,6 +35,10 @@ import io.vertigo.lang.WrappedException;
 import io.vertigo.util.StringUtil;
 
 abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTranslator<S>> {
+	private static final Pattern BEGIN_LINE_TRIM_PATTERN = Pattern.compile("^\\s+");
+	private static final Pattern END_LINE_TRIM_PATTERN = Pattern.compile("\\s+$");
+	private static final Pattern MULTIPLE_WHITESPACE_PATTERN = Pattern.compile("\\s+");
+	protected static final Pattern EMPTY_QUERY_PATTERN = Pattern.compile("^\\(\\)$");
 
 	private SecuredEntity mySecuredEntity;
 	private final List<RuleMultiExpression> myMultiExpressions = new ArrayList<>();
@@ -142,5 +147,12 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 			}
 		}
 		return -1;
+	}
+
+	protected static String cleanQuery(final String query) {
+		String queryString = BEGIN_LINE_TRIM_PATTERN.matcher(query).replaceAll("");//replace whitespaces at beginning of a line
+		queryString = END_LINE_TRIM_PATTERN.matcher(queryString).replaceAll("");//replace whitespaces at end of a line
+		queryString = MULTIPLE_WHITESPACE_PATTERN.matcher(queryString).replaceAll(" ");// replace multiple whitespaces by space
+		return queryString;
 	}
 }
