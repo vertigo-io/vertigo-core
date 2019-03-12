@@ -91,9 +91,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			+ "|(?<![\\w\\)\\}\\]]\\s{0,250})(?<=[^\\w\\\\\\)\\}\\]]|^)(OR|AND)(?=\\W|$)|(?<=[^\\\\\\w]|^)(OR|AND)(?=[^\\w\\(\\{\\[]|$)(?!\\s*[\\w\\(\\{\\[])";
 	private static final Pattern QUERY_INCOMPLETE_GRAMMAR_PATTERN = Pattern.compile(QUERY_INCOMPLETE_GRAMMAR_PATTERN_STR);
 
-	private static final String NEED_BLOCK_PATTERN_STR = "(?i)([\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<\\s]|OR|AND)";
 	private static final Pattern MAY_USE_BLOCK_1_PATTERN = Pattern.compile("((\\(.*\\))|([\\[\\{].*[\\]\\}])|(\\\".*\\\")|\\*)(\\^[0-9]+)?");
-	private static final Pattern MAY_USE_BLOCK_2_PATTERN = Pattern.compile(NEED_BLOCK_PATTERN_STR);
+	private static final Pattern MAY_USE_BLOCK_2_PATTERN = Pattern.compile("(?i)([\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<\\s]|OR|AND)");
 
 	private static final Pattern BEGIN_LINE_TRIM_PATTERN = Pattern.compile("^\\s+");
 
