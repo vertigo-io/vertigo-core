@@ -72,9 +72,9 @@ public abstract class AbstractFilter implements Filter {
 	protected static final Optional<Pattern> parsePattern(final String urlExcludePattern) {
 		if (urlExcludePattern != null) {
 			String urlExcludePatternParamNormalized = EXCLUDE_1_PATTERN.matcher(urlExcludePattern).replaceAll("\\\\."); // . devient \\. (pour matcher un .)
-			urlExcludePatternParamNormalized = EXCLUDE_2_PATTERN.matcher(urlExcludePattern).replaceAll("[^\\/]*$1"); //* en milieu de pattern devient tous char sauf /
-			urlExcludePatternParamNormalized = EXCLUDE_3_PATTERN.matcher(urlExcludePattern).replaceAll(".*$1"); //* en fin de pattern devient tous char
-			urlExcludePatternParamNormalized = EXCLUDE_4_PATTERN.matcher(urlExcludePattern).replaceAll(")|(^"); //; devient un OR
+			urlExcludePatternParamNormalized = EXCLUDE_2_PATTERN.matcher(urlExcludePatternParamNormalized).replaceAll("[^\\/]*$1"); //* en milieu de pattern devient tous char sauf /
+			urlExcludePatternParamNormalized = EXCLUDE_3_PATTERN.matcher(urlExcludePatternParamNormalized).replaceAll(".*$1"); //* en fin de pattern devient tous char
+			urlExcludePatternParamNormalized = EXCLUDE_4_PATTERN.matcher(urlExcludePatternParamNormalized).replaceAll(")|(^"); //; devient un OR
 			urlExcludePatternParamNormalized = "(^" + urlExcludePatternParamNormalized + ")";
 			return Optional.of(Pattern.compile(urlExcludePatternParamNormalized));
 		}
