@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.4.196</version>
+			<version>1.4.199</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -68,7 +68,7 @@
 		<dependency>
 			<groupId>com.sleepycat</groupId>
 			<artifactId>je</artifactId>
-			<version>7.5.11</version><!-- this version need Oracle repo. For maven central could be downgraded to 5.0.84, conf and usage fully compatible -->
+			<version>18.3.12</version>
 		</dependency>
 
 		<!-- CollectionsManager/LuceneIndexPlugin -->
@@ -110,19 +110,12 @@
 		    <version>6.6.0</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
 	        <optional>true</optional>
 		</dependency>
-	    
-	    <!-- ES requires 2.11.2 -->
-	    <dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-api</artifactId>
-		    <version>2.11.2</version>
-		</dependency>
 		
 		<!-- Connections Pool -->
 		<dependency>
 			<groupId>com.mchange</groupId>
 			<artifactId>c3p0</artifactId>
-			<version>0.9.5.2</version>
+			<version>0.9.5.3</version>
 			<optional>true</optional><!-- C3p0DataSourceProviderPlugin -->
 		</dependency>
 
@@ -152,13 +145,4 @@
 			<artifactId>odfdom-java</artifactId> <version>0.8.7</version> <optional>true</optional> </dependency -->
 		<!--/exporter -->
 	</dependencies>
-
-	<!-- repo pour com.sleepycat.je:7.5.11 -->
-	<repositories>
-		<repository>
-			<id>Oracle Download</id>
-			<name>Oracle Download</name>
-			<url>http://download.oracle.com/maven/</url>
-		</repository>
-	</repositories>
 </project>

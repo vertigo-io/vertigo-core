@@ -18,10 +18,11 @@
  */
 package io.vertigo.vega.impl.webservice.filter;
 
+import java.io.IOException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.jetty.util.MultiException;
-import org.eclipse.jetty.util.MultiPartInputStreamParser;
+import org.eclipse.jetty.server.MultiParts;
 
 import spark.Filter;
 import spark.Request;
@@ -32,20 +33,20 @@ import spark.Response;
  * @author npiedeloup
  */
 public final class JettyMultipartCleaner implements Filter {
-	private static final String JETTY_MULTIPART_INPUT_STREAM = org.eclipse.jetty.server.Request.__MULTIPART_INPUT_STREAM;//"org.eclipse.multipartConfig";
+	private static final String JETTY_MULTIPARTS = org.eclipse.jetty.server.Request.__MULTIPARTS;//"org.eclipse.multipartConfig";
 	private static final Logger LOG = LogManager.getLogger(JettyMultipartCleaner.class);
 
 	/** {@inheritDoc} */
 	@Override
 	public void handle(final Request request, final Response response) {
-		final MultiPartInputStreamParser multipartInputStream = (MultiPartInputStreamParser) request.raw()
-				.getAttribute(JETTY_MULTIPART_INPUT_STREAM);
-		if (multipartInputStream != null) {
+		final MultiParts multiParts = (MultiParts) request.raw()
+				.getAttribute(JETTY_MULTIPARTS);
+		if (multiParts != null && !multiParts.isEmpty()) {
 			try {
 				// a multipart request to a servlet will have the parts cleaned up correctly, but
 				// the repeated call to deleteParts() here will safely do nothing.
-				multipartInputStream.deleteParts();
-			} catch (final MultiException e) {
+				multiParts.close();
+			} catch (final IOException e) {
 				LOG.warn("Error while deleting multipart request parts", e);
 			}
 		}
