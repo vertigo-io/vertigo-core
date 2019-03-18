@@ -335,28 +335,18 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		Assertion.checkNotNull(measure);
 		//---
 		influxDB.setDatabase(dbName);
-		influxDB.write(measureToPoint(measure));
+		influxDB.write(Point.measurement(measure.getMeasurement())
+				.time(measure.getInstant().toEpochMilli(), TimeUnit.MILLISECONDS)
+				.fields(measure.getFields())
+				.tag(measure.getTags())
+				.build());
 
 	}
 
 	@Override
 	public void insertMeasures(final String dbName, final List<Measure> measures) {
-		Assertion.checkArgNotEmpty(dbName);
-		Assertion.checkNotNull(measures);
-		//---
-		influxDB.setDatabase(dbName);
-		influxDB.enableBatch();
-		measures.forEach(measure -> influxDB.write(measureToPoint(measure)));
-		influxDB.disableBatch();
-
-	}
-
-	private static Point measureToPoint(final Measure measure) {
-		return Point.measurement(measure.getMeasurement())
-				.time(measure.getInstant().toEpochMilli(), TimeUnit.MILLISECONDS)
-				.fields(measure.getFields())
-				.tag(measure.getTags())
-				.build();
+		// with influxdb we make the choice to always be in batch mode for performance so we can safely iterate.
+		measures.forEach(measure -> insertMeasure(dbName, measure));
 	}
 
 	private static void appendMeasureThreshold(

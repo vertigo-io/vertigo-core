@@ -19,6 +19,7 @@
 package io.vertigo.database.timeseries;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Collections;
 
 import javax.inject.Inject;
@@ -44,12 +45,26 @@ public final class TimeSeriesDataBaseTest extends AbstractTestCaseJU5 {
 	@Inject
 	private TimeSeriesDataBaseManager timeSeriesDataBaseManager;
 
+	@Test
 	public void testInsertMeasure() {
 		final Measure measure = Measure.builder("test")
 				.time(Instant.now())
 				.addField("temp", 12)
 				.build();
 		timeSeriesDataBaseManager.insertMeasure("vertigo-test", measure);
+	}
+
+	@Test
+	public void testInsertMeasureBatch() {
+		final Measure measure1 = Measure.builder("test")
+				.time(Instant.now())
+				.addField("temp", 11)
+				.build();
+		final Measure measure2 = Measure.builder("test")
+				.time(Instant.now())
+				.addField("temp", 12)
+				.build();
+		timeSeriesDataBaseManager.insertMeasures("vertigo-test", Arrays.asList(measure1, measure2));
 	}
 
 	@Test
