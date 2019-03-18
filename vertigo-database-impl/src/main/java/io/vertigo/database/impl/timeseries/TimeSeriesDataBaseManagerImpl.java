@@ -51,6 +51,12 @@ public class TimeSeriesDataBaseManagerImpl implements TimeSeriesDataBaseManager 
 	}
 
 	@Override
+	public void insertMeasures(final String dbName, final List<Measure> measures) {
+		getPluginByDb(dbName).insertMeasures(dbName, measures);
+
+	}
+
+	@Override
 	public TimedDatas getTimeSeries(final String dbName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
 		Assertion.checkArgNotEmpty(dbName);
 		Assertion.checkNotNull(measures);

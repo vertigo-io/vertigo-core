@@ -72,6 +72,11 @@ public final class FakeTimeSeriesPlugin implements TimeSeriesPlugin {
 	}
 
 	@Override
+	public void insertMeasures(final String dbName, final List<Measure> measures) {
+		// do nothing
+	}
+
+	@Override
 	public List<String> getDbNames() {
 		return Collections.singletonList(TimeSeriesDataBaseManagerImpl.WILDCARD_PLUGIN);
 	}

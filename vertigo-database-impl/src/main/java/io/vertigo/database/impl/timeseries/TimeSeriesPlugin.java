@@ -38,6 +38,10 @@ public interface TimeSeriesPlugin extends Plugin {
 			String dbName,
 			Measure measure);
 
+	void insertMeasures(
+			String dbName,
+			List<Measure> measures);
+
 	TimedDatas getTimeSeries(
 			final String dbName,
 			final List<String> measures,

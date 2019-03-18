@@ -32,6 +32,10 @@ public interface TimeSeriesDataBaseManager extends Manager {
 			final String dbName,
 			final Measure measure);
 
+	void insertMeasures(
+			final String dbName,
+			final List<Measure> measures);
+
 	TimedDatas getTimeSeries(
 			final String dbName,
 			final List<String> measures,
