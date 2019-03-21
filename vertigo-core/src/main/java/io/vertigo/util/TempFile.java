@@ -33,7 +33,7 @@ public final class TempFile extends File {
 	 */
 	public static final String VERTIGO_TMP_DIR_PATH;
 	static {
-		final File vertigoTmpDir = new File(System.getProperty("java.io.tmpdir"), "vertigo");
+		final File vertigoTmpDir = new File(System.getProperty("java.io.tmpdir"), "vertigo/tempFiles");
 		vertigoTmpDir.mkdirs();
 		VERTIGO_TMP_DIR_PATH = vertigoTmpDir.getAbsolutePath();
 	}
