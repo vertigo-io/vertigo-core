@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo</artifactId>
-		<version>1.1.3-SNAPSHOT</version>
+		<version>1.1.2</version>
 	</parent>
 
-	<artifactId>vertigo-account-api</artifactId>
+	<artifactId>vertigo-vega-api</artifactId>
 	<packaging>jar</packaging>
-	<name>vertigo-account-api</name>
+	<name>vertigo-vega-api</name>
 
 	<dependencies>
 		<dependency>
@@ -17,12 +18,22 @@
 			<artifactId>vertigo-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-dynamo-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-	</dependencies>
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-account-api</artifactId><!-- for UserSession and VSecurityException-->
+			<version>${project.version}</version>
+		</dependency>
 
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
 </project>

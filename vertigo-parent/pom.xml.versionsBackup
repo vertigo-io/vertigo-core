@@ -4,7 +4,7 @@
 
 	<groupId>io.vertigo</groupId>
 	<artifactId>vertigo-parent</artifactId>
-	<version>1.1.3-SNAPSHOT</version>
+	<version>1.1.2</version>
 	<packaging>pom</packaging>
 	<name>vertigo-parent</name>
 	<description>Vertigo is a simple java project starter</description>
