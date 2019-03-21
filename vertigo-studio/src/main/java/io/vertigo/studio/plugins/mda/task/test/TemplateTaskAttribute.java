@@ -31,7 +31,6 @@ import io.vertigo.studio.plugins.mda.util.DomainUtil;
  */
 public final class TemplateTaskAttribute {
 	private final TaskAttribute taskAttribute;
-	private final TaskDefinition taskDefinition;
 	private final DumExpression value;
 
 	TemplateTaskAttribute(final TaskDefinition taskDefinition, final TaskAttribute taskAttribute) {
@@ -39,8 +38,7 @@ public final class TemplateTaskAttribute {
 		Assertion.checkNotNull(taskAttribute);
 		//-----
 		this.taskAttribute = taskAttribute;
-		this.taskDefinition = taskDefinition;
-		this.value = DumExpression.create(this.taskAttribute.getDomain(), this.taskAttribute.isRequired());
+		value = DumExpression.create(this.taskAttribute.getDomain(), this.taskAttribute.isRequired());
 	}
 
 	/**
@@ -56,7 +54,7 @@ public final class TemplateTaskAttribute {
 	public String getDataType() {
 		return String.valueOf(DomainUtil.buildJavaType(taskAttribute.getDomain()));
 	}
-	
+
 	/**
 	 * @return L'expression de la valeur factice.
 	 */
