@@ -25,25 +25,25 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.BootConfigBuilder;
 import io.vertigo.app.config.LogConfig;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.app.config.NodeConfigBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 
 /**
  * @author npiedeloup, pchretien
  */
-public final class XMLAppConfigBuilder implements Builder<AppConfig> {
-	private final AppConfigBuilder appConfigBuilder = AppConfig.builder();
+public final class XMLAppConfigBuilder implements Builder<NodeConfig> {
+	private final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder();
 
 	/**
 	 * Begin the boot config of the app.
 	 * @return the bootConfig builder
 	 */
 	public BootConfigBuilder beginBoot() {
-		return appConfigBuilder.beginBoot();
+		return nodeConfigBuilder.beginBoot();
 	}
 
 	/**
@@ -63,7 +63,7 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 				.map(xmlModulesFileName -> createURL(xmlModulesFileName, relativeRootClass))
 				.collect(Collectors.toList());
 
-		XMLModulesParser.parseAll(appConfigBuilder, xmlModulesParams, xmlModulesAsUrls);
+		XMLModulesParser.parseAll(nodeConfigBuilder, xmlModulesParams, xmlModulesAsUrls);
 		return this;
 	}
 
@@ -74,14 +74,14 @@ public final class XMLAppConfigBuilder implements Builder<AppConfig> {
 	public XMLAppConfigBuilder withLogConfig(final LogConfig logConfig) {
 		Assertion.checkNotNull(logConfig);
 		//-----
-		appConfigBuilder.beginBoot().withLogConfig(logConfig).endBoot();
+		nodeConfigBuilder.beginBoot().withLogConfig(logConfig).endBoot();
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public AppConfig build() {
-		return appConfigBuilder.build();
+	public NodeConfig build() {
+		return nodeConfigBuilder.build();
 	}
 
 	/**

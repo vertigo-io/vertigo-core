@@ -31,7 +31,7 @@ import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.identityprovider.model.User;
 import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
@@ -54,8 +54,8 @@ abstract class AbstractIdentityProviderManagerTest extends AbstractTestCaseJU5 {
 	private IdentityProviderManager identityProviderManager;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)

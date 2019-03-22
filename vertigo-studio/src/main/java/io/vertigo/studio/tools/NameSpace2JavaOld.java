@@ -19,7 +19,7 @@
 package io.vertigo.studio.tools;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.studio.mda.MdaManager;
 
 /**
@@ -38,8 +38,8 @@ public final class NameSpace2JavaOld {
 	 * @param args Le premier argument [0] précise le nom du fichier properties de paramétrage
 	 */
 	public static void main(final String[] args) {
-		final AppConfig appConfig = new SmartAppConfigBuilder(args).build();
-		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+		final NodeConfig nodeConfig = new SmartAppConfigBuilder(args).build();
+		try (final AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			app.getComponentSpace().resolve(MdaManager.class).generate().displayResultMessage(System.out);
 		}
 	}

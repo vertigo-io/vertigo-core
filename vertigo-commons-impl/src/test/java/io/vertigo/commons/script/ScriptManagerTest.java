@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
@@ -55,8 +55,8 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
 				.addModule(new CommonsFeatures()

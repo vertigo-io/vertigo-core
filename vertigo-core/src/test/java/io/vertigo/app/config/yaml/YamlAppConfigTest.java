@@ -26,7 +26,7 @@ import java.util.Properties;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.spaces.component.data.BioManager;
 
 public final class YamlAppConfigTest {
@@ -34,39 +34,39 @@ public final class YamlAppConfigTest {
 	@Test
 	public void testBoot() {
 
-		final AppConfig appConfig = new YamlAppConfigBuilder(new Properties())
+		final NodeConfig nodeConfig = new YamlAppConfigBuilder(new Properties())
 				.withFiles(getClass(), "bio-boot.yaml")
 				.build();
 
-		testBioManager(appConfig);
+		testBioManager(nodeConfig);
 	}
 
 	@Test
 	public void testNoBoot() {
 
-		final AppConfig appConfig = new YamlAppConfigBuilder(new Properties())
+		final NodeConfig nodeConfig = new YamlAppConfigBuilder(new Properties())
 				.withFiles(getClass(), "bio.yaml")
 				.build();
 
-		testBioManager(appConfig);
+		testBioManager(nodeConfig);
 	}
 
 	@Test
 	public void testNodeConfig() {
 
-		final AppConfig appConfig = new YamlAppConfigBuilder(new Properties())
+		final NodeConfig nodeConfig = new YamlAppConfigBuilder(new Properties())
 				.withFiles(getClass(), "bio-node.yaml")
 				.build();
 
-		testBioManager(appConfig);
+		testBioManager(nodeConfig);
 
-		assertEquals("bio", appConfig.getNodeConfig().getAppName());
-		assertEquals("myFirstNodeId", appConfig.getNodeConfig().getNodeId());
-		assertEquals("http://localhost/", appConfig.getNodeConfig().getEndPoint().get());
+		assertEquals("bio", nodeConfig.getAppName());
+		assertEquals("myFirstNodeId", nodeConfig.getNodeId());
+		assertEquals("http://localhost/", nodeConfig.getEndPoint().get());
 	}
 
-	private void testBioManager(final AppConfig appConfig) {
-		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+	private void testBioManager(final NodeConfig nodeConfig) {
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			assertEquals(app, app);
 			assertTrue(app.getComponentSpace().contains("bioManager"));
 			final BioManager bioManager = app.getComponentSpace().resolve(BioManager.class);

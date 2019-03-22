@@ -23,17 +23,17 @@ import io.vertigo.account.authorization.model.FullSecuredServices;
 import io.vertigo.account.authorization.model.PartialSecuredServices;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.plugins.authorization.loaders.JsonSecurityDefinitionProvider;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 
-public final class MyAppConfig {
+public final class MyNodeConfig {
 
-	public static AppConfig config() {
-		return AppConfig.builder()
+	public static NodeConfig config() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)

@@ -5,7 +5,7 @@ import javax.inject.Inject;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.App;
 import io.vertigo.app.Home;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfig;
@@ -37,8 +37,8 @@ public class DaoTestClass extends AbstractTestCaseJU4 {
 	private VTransactionWritable currentTransaction;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)

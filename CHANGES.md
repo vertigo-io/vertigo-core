@@ -465,7 +465,7 @@ __In Bold__ : Potential compatibility problems
 * [All] Changed private methods that can be static to static
 * [All] Refactored enties and dsl
 * [All] Refactor java.lang.Timer to DeamonManager
-* [All] Added Features to make AppConfig simpler
+* [All] Added Features to make NodeConfig simpler
 * [Core] Added putNullable on MapBuilder
 * [Core] Param was nullable in builder and checked when injected
 * [Core] Removed injection JSR250 support. Use Activeable interface exclusively
@@ -520,7 +520,7 @@ Release 0.8.1 - 2015/07/31
 * [Core] Renamed io.vertigo.core.Home.App to io.vertigo.core.App
 * [Core] Renamed io.vertigo.core.boot to io.vertigo.core.config
 * [Core] Renamed io.vertigo.core.di to io.vertigo.core.component.di
-* [Core] Refactor XMLAppConfigBuilder 
+* [Core] Refactor XMLNodeConfigBuilder 
 * [Core] Refactor modules order/priority in managers.xml. Loading order are more predictible now : 
  1. boot module
  2. definitions
@@ -541,7 +541,7 @@ Release 0.8.0 - 2015/07/02
 [Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-075-to-080)
 * [All] Fixed some code style and some refactor to simpler code
 * [All] Renamed prefix in Builder with ==> add
-* [Core] split BootConfig from AppConfig
+* [Core] split BootConfig from NodeConfig
 * [Core] Refactoring DI
 * [Core] Added better error message for missing definition while solving
 * [Commons] Added daemonManager
@@ -666,8 +666,8 @@ Release 0.7.3 - 2015/02/02
 * [Vega] Changed RateLimiting window from 15mn to 5min
 * [Vega] Fixed paginator
 * [Vega] Splitted fieldErrors and objectFieldErrors for easier managment client side
-* [Core] Renamed XMLAppConfigBuilder to XMLModulesBuilder
-* [Core] Refactored AppConfig, simpler external LogConfig
+* [Core] Renamed XMLNodeConfigBuilder to XMLModulesBuilder
+* [Core] Refactored NodeConfig, simpler external LogConfig
 * [Core] Merged App and Home
 * [Studio,Core] Refactored Env parameters
 * [Core] Fixed aspect bug
@@ -704,7 +704,7 @@ A big version :)
 * [Core] Managers.xml syntax changed : Renamed &lt;modules&gt; to &lt;config&gt; (tag module doesn't change)
 * [Core] Renamed two packages : io.vertigo.core.util, io.vertigo.core.lang
 * [Core] Moved some classes : VUserException, DefinitionSpace, Engine
-* [Core] Renamed ComponentSpaceConfigBuilder to AppConfigBuilder
+* [Core] Renamed ComponentSpaceConfigBuilder to NodeConfigBuilder
 * [Core] Injector static instead of instance
 * [Core] Renamed @PreFixed to @DefinitionPreFixed and Manager to Component
 * [Commons] Added CacheConfig

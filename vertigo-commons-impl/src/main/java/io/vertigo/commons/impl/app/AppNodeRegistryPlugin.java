@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.impl.node;
+package io.vertigo.commons.impl.app;
 
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.commons.node.Node;
+import io.vertigo.commons.app.Node;
 import io.vertigo.core.component.Plugin;
 
 /**
@@ -29,7 +29,7 @@ import io.vertigo.core.component.Plugin;
  * @author mlaroche
  *
  */
-public interface NodeRegistryPlugin extends Plugin {
+public interface AppNodeRegistryPlugin extends Plugin {
 
 	/**
 	 * Register a node

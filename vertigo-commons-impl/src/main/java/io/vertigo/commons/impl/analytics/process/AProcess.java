@@ -116,7 +116,7 @@ public final class AProcess {
 	}
 
 	/**
-	 * Static method factory for AppConfigBuilder
+	 * Static method factory for NodeConfigBuilder
 	 * @param category Categorie
 	 * @param name Name
 	 * @return AProcessBuilder

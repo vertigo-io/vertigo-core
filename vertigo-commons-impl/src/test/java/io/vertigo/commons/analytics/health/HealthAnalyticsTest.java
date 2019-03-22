@@ -29,7 +29,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.analytics.AnalyticsManager;
@@ -47,12 +47,12 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU5 {
 	private AnalyticsManager analyticsManager;
 
 	@Override
-	protected AppConfig buildAppConfig() {
+	protected NodeConfig buildNodeConfig() {
 		final String redisHost = "redis-pic.part.klee.lan.net";
 		final int redisPort = 6379;
 		final int redisDatabase = 15;
 
-		return AppConfig.builder()
+		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
 				.addModule(new CommonsFeatures()

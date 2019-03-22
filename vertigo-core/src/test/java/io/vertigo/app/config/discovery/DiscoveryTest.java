@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.Home;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.discovery.data.DiscoveryA;
 import io.vertigo.app.config.discovery.data.DiscoveryB;
@@ -42,8 +42,8 @@ import io.vertigo.core.component.ComponentSpace;
 public final class DiscoveryTest extends AbstractTestCaseJU5 {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.verbose()
 				.endBoot()

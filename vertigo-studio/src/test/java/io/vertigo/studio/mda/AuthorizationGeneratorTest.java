@@ -21,7 +21,7 @@ package io.vertigo.studio.mda;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.account.plugins.authorization.loaders.JsonSecurityDefinitionProvider;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
@@ -37,8 +37,8 @@ import io.vertigo.studio.tools.NameSpace2Java;
  */
 public class AuthorizationGeneratorTest {
 
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -67,7 +67,7 @@ public class AuthorizationGeneratorTest {
 	 */
 	@Test
 	public void testGenerate() {
-		NameSpace2Java.main(buildAppConfig());
+		NameSpace2Java.main(buildNodeConfig());
 	}
 
 }

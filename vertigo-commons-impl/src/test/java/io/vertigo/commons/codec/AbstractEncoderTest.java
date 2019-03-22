@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import javax.inject.Inject;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
 
@@ -40,8 +40,8 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends
 	private CodecManager codecManager;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.addModule(ModuleConfig.builder("commons")
 						.addComponent(CodecManager.class, CodecManagerImpl.class)
 						.build())

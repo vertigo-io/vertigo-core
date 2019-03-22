@@ -23,13 +23,12 @@ import java.util.Iterator;
 
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.plugins.authorization.loaders.JsonSecurityDefinitionProvider;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.commons.plugins.app.infos.http.HttpAppNodeInfosPlugin;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
-import io.vertigo.commons.plugins.node.infos.http.HttpNodeInfosPlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.DynamoFeatures;
@@ -53,7 +52,7 @@ import io.vertigo.vega.webservice.data.ws.LoginSecuredWebServices;
 import io.vertigo.vega.webservice.data.ws.SearchTestWebServices;
 import io.vertigo.vega.webservice.data.ws.SimplerTestWebServices;
 
-public final class MyAppConfig {
+public final class MyNodeConfig {
 	public static final int WS_PORT = 8088;
 
 	public static final class DtDefinitions implements Iterable<Class<?>> {
@@ -66,19 +65,17 @@ public final class MyAppConfig {
 		}
 	}
 
-	public static AppConfig config() {
-		return AppConfig.builder()
+	public static NodeConfig config() {
+		return NodeConfig.builder()
+				.withEndPoint("http://localhost:" + WS_PORT)
 				.beginBoot()
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
-				.withNodeConfig(NodeConfig.builder()
-						.withEndPoint("http://localhost:" + WS_PORT)
-						.build())
 				.addModule(new CommonsFeatures()
 						.withCache()
 						.addPlugin(MemoryCachePlugin.class)
-						.withNodeInfosPlugin(HttpNodeInfosPlugin.class)
+						.withNodeInfosPlugin(HttpAppNodeInfosPlugin.class)
 						.build())
 				.addModule(new DynamoFeatures()
 						.withStore()

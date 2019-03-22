@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.node;
+package io.vertigo.commons.app;
 
 import java.time.Instant;
 import java.util.List;

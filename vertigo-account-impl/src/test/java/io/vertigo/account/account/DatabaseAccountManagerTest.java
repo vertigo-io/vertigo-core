@@ -25,7 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.app.Home;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 
@@ -35,8 +35,8 @@ public final class DatabaseAccountManagerTest extends AbstractAccountManagerTest
 	private AccountManager accountManager;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config(false, true);
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config(false, true);
 	}
 
 	@BeforeEach

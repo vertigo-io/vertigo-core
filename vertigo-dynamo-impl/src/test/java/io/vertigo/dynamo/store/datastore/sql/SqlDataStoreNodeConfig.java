@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.store.datastore.sql;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
@@ -34,14 +34,14 @@ import io.vertigo.dynamo.plugins.store.filestore.db.DbFileStorePlugin;
 import io.vertigo.dynamo.store.StoreManagerInitializer;
 
 /**
- * AppConfig builder for SqlStore tests. (Params for db specificities)
+ * NodeConfig builder for SqlStore tests. (Params for db specificities)
  * @author mlaroche
  *
  */
-public class SqlDataStoreAppConfig {
+public class SqlDataStoreNodeConfig {
 
-	public static AppConfig build(final String dataBaseClass, final String jdbcDriver, final String jdbcUrl) {
-		return AppConfig.builder()
+	public static NodeConfig build(final String dataBaseClass, final String jdbcDriver, final String jdbcUrl) {
+		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)

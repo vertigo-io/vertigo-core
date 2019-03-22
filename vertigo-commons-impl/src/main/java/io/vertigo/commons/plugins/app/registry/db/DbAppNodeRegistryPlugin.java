@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.plugins.node.registry.db;
+package io.vertigo.commons.plugins.app.registry.db;
 
 import java.beans.PropertyVetoException;
 import java.lang.reflect.Type;
@@ -40,8 +40,8 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
-import io.vertigo.commons.impl.node.NodeRegistryPlugin;
-import io.vertigo.commons.node.Node;
+import io.vertigo.commons.app.Node;
+import io.vertigo.commons.impl.app.AppNodeRegistryPlugin;
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
@@ -52,7 +52,7 @@ import io.vertigo.lang.WrappedException;
  * @author mlaroche
  *
  */
-public final class DbNodeRegistryPlugin implements NodeRegistryPlugin {
+public final class DbAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 
 	private final ComboPooledDataSource pooledDataSource = new ComboPooledDataSource();
 	private final Gson gson;
@@ -63,7 +63,7 @@ public final class DbNodeRegistryPlugin implements NodeRegistryPlugin {
 	 * @param jdbcUrl the jdbc url connection
 	 */
 	@Inject
-	public DbNodeRegistryPlugin(
+	public DbAppNodeRegistryPlugin(
 			@Named("driverClassName") final String driverClassName,
 			@Named("jdbcUrl") final String jdbcUrl) {
 		Assertion.checkArgNotEmpty(driverClassName);

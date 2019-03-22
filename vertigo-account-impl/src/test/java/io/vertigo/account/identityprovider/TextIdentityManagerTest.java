@@ -18,14 +18,14 @@
  */
 package io.vertigo.account.identityprovider;
 
-import io.vertigo.account.identityprovider.MyAppConfig.IdpPlugin;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.account.identityprovider.MyNodeConfig.IdpPlugin;
+import io.vertigo.app.config.NodeConfig;
 
 public final class TextIdentityManagerTest extends AbstractIdentityProviderManagerTest {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config(IdpPlugin.text, false);
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config(IdpPlugin.text, false);
 	}
 
 	@Override

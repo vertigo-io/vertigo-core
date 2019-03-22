@@ -27,7 +27,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import io.vertigo.app.App;
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 import io.vertigo.core.component.di.injector.DIInjector;
 
@@ -48,7 +48,7 @@ public abstract class AbstractTestCaseJU4 {
 	@BeforeEach
 	@Before
 	public final void setUp() throws Exception {
-		app = new AutoCloseableApp(buildAppConfig());
+		app = new AutoCloseableApp(buildNodeConfig());
 		// On injecte les comosants sur la classe de test.
 		DIInjector.injectMembers(this, app.getComponentSpace());
 		doSetUp();
@@ -125,7 +125,7 @@ public abstract class AbstractTestCaseJU4 {
 	 * Configuration des tests.
 	 * @return App config
 	 */
-	protected AppConfig buildAppConfig() {
+	protected NodeConfig buildNodeConfig() {
 		//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
 		return new XMLAppConfigBuilder()
 				.withModules(getClass(), new Properties(), getManagersXmlFileName())

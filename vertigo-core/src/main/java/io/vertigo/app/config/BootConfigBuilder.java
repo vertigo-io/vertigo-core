@@ -44,24 +44,24 @@ import io.vertigo.lang.Builder;
  */
 public final class BootConfigBuilder implements Builder<BootConfig> {
 	private Optional<LogConfig> myLogConfigOpt = Optional.empty(); //par défaut
-	private final AppConfigBuilder appConfigBuilder;
+	private final NodeConfigBuilder nodeConfigBuilder;
 	private boolean myVerbose;
 	private AopPlugin myAopPlugin = new CGLIBAopPlugin(); //By default
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
 	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
 
 	/**
-	 * @param appConfigBuilder Parent AppConfig builder
+	 * @param nodeConfigBuilder Parent NodeConfig builder
 	 */
-	BootConfigBuilder(final AppConfigBuilder appConfigBuilder) {
-		Assertion.checkNotNull(appConfigBuilder);
+	BootConfigBuilder(final NodeConfigBuilder nodeConfigBuilder) {
+		Assertion.checkNotNull(nodeConfigBuilder);
 		//-----
-		this.appConfigBuilder = appConfigBuilder;
+		this.nodeConfigBuilder = nodeConfigBuilder;
 	}
 
 	/**
 	 * Opens the boot module.
-	 * There is exactly one BootConfig per AppConfig.
+	 * There is exactly one BootConfig per NodeConfig.
 	 *
 	 * @param locales a string which contains all the locales separated with a simple comma : ',' .
 	 * @return this builder
@@ -76,7 +76,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 
 	/**
 	 * Opens the boot module.
-	 * There is exactly one BootConfig per AppConfig.
+	 * There is exactly one BootConfig per NodeConfig.
 	 * With a default ZoneId for DateTime formatter.
 	 *
 	 * @param locales a string which contains all the locales separated with a simple comma : ',' .
@@ -124,10 +124,10 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	}
 
 	/**
-	 * @return AppConfig builder
+	 * @return NodeConfig builder
 	 */
-	public AppConfigBuilder endBoot() {
-		return appConfigBuilder;
+	public NodeConfigBuilder endBoot() {
+		return nodeConfigBuilder;
 	}
 
 	/**

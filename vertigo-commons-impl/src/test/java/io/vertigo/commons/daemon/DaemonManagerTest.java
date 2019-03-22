@@ -26,7 +26,7 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.analytics.AnalyticsManager;
@@ -46,8 +46,8 @@ public final class DaemonManagerTest extends AbstractTestCaseJU5 {
 	private FakeComponent fakeComponent;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
 				.addModule(new CommonsFeatures()

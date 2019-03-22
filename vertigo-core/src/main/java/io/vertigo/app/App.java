@@ -20,7 +20,7 @@ package io.vertigo.app;
 
 import java.time.Instant;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.core.definition.DefinitionSpace;
 
@@ -60,7 +60,7 @@ public interface App {
 	/**
 	 * @return Application configuration
 	 */
-	AppConfig getConfig();
+	NodeConfig getNodeConfig();
 
 	/**
 	 * Returns the space where all the definitions are stored.

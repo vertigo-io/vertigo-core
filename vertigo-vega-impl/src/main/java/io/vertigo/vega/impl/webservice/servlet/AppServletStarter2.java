@@ -74,25 +74,25 @@ final class AppServletStarter2 {
 			final Properties bootConf = createBootProperties(servletContext);
 			Assertion.checkArgument(bootConf.containsKey("boot.applicationConfiguration"), "Param \"boot.applicationConfiguration\" is mandatory, check your .properties or web.xml.");
 
-			final XMLAppConfigBuilder appConfigBuilder = new XMLAppConfigBuilder();
-			appConfigBuilder.beginBoot();
+			final XMLAppConfigBuilder nodeConfigBuilder = new XMLAppConfigBuilder();
+			nodeConfigBuilder.beginBoot();
 
 			//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
 			if (bootConf.containsKey(LOG4J_CONFIGURATION_PARAM_NAME)) {
 				final String logFileName = bootConf.getProperty(LOG4J_CONFIGURATION_PARAM_NAME);
 				bootConf.remove(LOG4J_CONFIGURATION_PARAM_NAME);
 				//-----
-				appConfigBuilder.withLogConfig(new LogConfig(logFileName));
+				nodeConfigBuilder.withLogConfig(new LogConfig(logFileName));
 			}
 
 			final String xmlModulesFileNames = bootConf.getProperty("boot.applicationConfiguration");
 			final String[] xmlFileNamesSplit = xmlModulesFileNames.split(";");
 			bootConf.remove("boot.applicationConfiguration");
 			//-----
-			appConfigBuilder.withModules(getClass(), bootConf, xmlFileNamesSplit);
+			nodeConfigBuilder.withModules(getClass(), bootConf, xmlFileNamesSplit);
 
 			// Initialisation de l'état de l'application
-			app = new AutoCloseableApp(appConfigBuilder.build());
+			app = new AutoCloseableApp(nodeConfigBuilder.build());
 
 			appServletListener.onServletStart(getClass().getName());
 		} catch (final Exception e) {

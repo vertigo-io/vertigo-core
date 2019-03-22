@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.node;
+package io.vertigo.commons.app;
 
 import java.util.List;
 import java.util.Map;
@@ -30,7 +30,7 @@ import io.vertigo.core.component.Manager;
  * @author mlaroche
  *
  */
-public interface NodeManager extends Manager {
+public interface AppManager extends Manager {
 
 	/**
 	 * Find a node by an id

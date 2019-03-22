@@ -21,25 +21,25 @@ package io.vertigo.commons.node;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.commons.plugins.node.registry.redis.RedisNodeRegistryPlugin;
+import io.vertigo.commons.plugins.app.registry.redis.RedisAppNodeRegistryPlugin;
 import io.vertigo.core.param.Param;
 
 @RunWith(JUnitPlatform.class)
 public class RedisNodeRegistryPluginTest extends AbstractNodeManagerTest {
 
 	@Override
-	protected AppConfig buildAppConfig() {
+	protected NodeConfig buildNodeConfig() {
 
 		final String redisHost = "redis-pic.part.klee.lan.net";
 		final int redisPort = 6379;
 		final int redisDatabase = 11;
 
-		return buildRootAppConfig()
+		return buildRootNodeConfig()
 				.addModule(new CommonsFeatures()
 						.withRedisConnector(Param.of("host", redisHost), Param.of("port", Integer.toString(redisPort)), Param.of("database", Integer.toString(redisDatabase)))
-						.withNodeRegistryPlugin(RedisNodeRegistryPlugin.class)
+						.withNodeRegistryPlugin(RedisAppNodeRegistryPlugin.class)
 						.build())
 				.build();
 	}

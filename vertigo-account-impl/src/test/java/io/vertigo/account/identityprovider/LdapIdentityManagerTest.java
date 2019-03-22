@@ -21,14 +21,14 @@ package io.vertigo.account.identityprovider;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.account.identityprovider.MyAppConfig.IdpPlugin;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.account.identityprovider.MyNodeConfig.IdpPlugin;
+import io.vertigo.app.config.NodeConfig;
 
 public final class LdapIdentityManagerTest extends AbstractIdentityProviderManagerTest {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config(IdpPlugin.ldap, false);
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config(IdpPlugin.ldap, false);
 	}
 
 	@Override

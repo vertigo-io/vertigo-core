@@ -25,7 +25,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import io.vertigo.app.App;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.Home;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 
 /**
  * Classe parente de tous les TNR associés à vertigo.
@@ -94,6 +94,6 @@ public abstract class AbstractTestCaseJU5 {
 	 * Configuration des tests.
 	 * @return App config
 	 */
-	protected abstract AppConfig buildAppConfig();
+	protected abstract NodeConfig buildNodeConfig();
 
 }

@@ -21,8 +21,8 @@ package io.vertigo.account.authentication;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.account.authentication.MyAppConfig.AuthentPlugin;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.account.authentication.MyNodeConfig.AuthentPlugin;
+import io.vertigo.app.config.NodeConfig;
 
 /**
  * Implementation standard de la gestion centralisee des droits d'acces.
@@ -32,8 +32,8 @@ import io.vertigo.app.config.AppConfig;
 public final class LdapAuthenticationManagerTest extends AbstractAuthenticationManagerTest {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config(AuthentPlugin.ldap, false);
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config(AuthentPlugin.ldap, false);
 	}
 
 	@Override

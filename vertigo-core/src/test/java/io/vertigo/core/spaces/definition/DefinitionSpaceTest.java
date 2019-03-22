@@ -34,7 +34,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfig;
@@ -49,8 +49,8 @@ import io.vertigo.core.param.Param;
 public final class DefinitionSpaceTest extends AbstractTestCaseJU5 {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()

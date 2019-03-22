@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.NodeConfigBuilder;
 import io.vertigo.app.config.BootConfigBuilder;
 import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.app.config.ComponentConfigBuilder;
@@ -33,7 +33,6 @@ import io.vertigo.app.config.DefinitionProviderConfigBuilder;
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.ModuleConfigBuilder;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.PluginConfig;
 import io.vertigo.app.config.PluginConfigBuilder;
 import io.vertigo.core.component.Component;
@@ -49,7 +48,7 @@ import io.vertigo.util.ClassUtil;
  * @author npiedeloup, pchretien
  */
 final class XMLModulesHandler extends DefaultHandler {
-	private final AppConfigBuilder appConfigBuilder;
+	private final NodeConfigBuilder nodeConfigBuilder;
 	//Global Params
 	private final XMLModulesParams params;
 
@@ -60,11 +59,11 @@ final class XMLModulesHandler extends DefaultHandler {
 	private DefinitionProviderConfigBuilder definitionProviderConfigBuilder;
 	private TagName current;
 
-	XMLModulesHandler(final AppConfigBuilder appConfigBuilder, final XMLModulesParams params) {
-		Assertion.checkNotNull(appConfigBuilder);
+	XMLModulesHandler(final NodeConfigBuilder nodeConfigBuilder, final XMLModulesParams params) {
+		Assertion.checkNotNull(nodeConfigBuilder);
 		Assertion.checkNotNull(params);
 		//-----
-		this.appConfigBuilder = appConfigBuilder;
+		this.nodeConfigBuilder = nodeConfigBuilder;
 		this.params = params;
 	}
 
@@ -101,7 +100,7 @@ final class XMLModulesHandler extends DefaultHandler {
 				bootConfigBuilder = null;
 				break;
 			case module:
-				appConfigBuilder.addModule(moduleConfigBuilder.build());
+				nodeConfigBuilder.addModule(moduleConfigBuilder.build());
 				moduleConfigBuilder = null;
 				break;
 			case component:
@@ -142,22 +141,22 @@ final class XMLModulesHandler extends DefaultHandler {
 				final String appName = attrs.getValue("name");
 				final String nodeId = attrs.getValue("nodeId");
 				final String endPoint = attrs.getValue("endPoint");
-				appConfigBuilder.withNodeConfig(NodeConfig.builder()
+				nodeConfigBuilder
 						.withAppName(appName)
 						.withNodeId(nodeId)
 						.withEndPoint(endPoint)
-						.build());
+						.build();
 				break;
 			case boot:
 				current = TagName.boot;
 				final String locales = attrs.getValue("locales");
 				final String defaultZoneId = attrs.getValue("defaultZoneId");
 				if (defaultZoneId == null) {
-					bootConfigBuilder = appConfigBuilder
+					bootConfigBuilder = nodeConfigBuilder
 							.beginBoot()
 							.withLocales(locales);
 				} else {
-					bootConfigBuilder = appConfigBuilder
+					bootConfigBuilder = nodeConfigBuilder
 							.beginBoot()
 							.withLocalesAndDefaultZoneId(locales, defaultZoneId);
 				}
@@ -184,7 +183,7 @@ final class XMLModulesHandler extends DefaultHandler {
 				final String initClass = attrs.getValue("class");
 				if (initClass != null) {
 					final Class componentInitialierClass = ClassUtil.classForName(initClass);
-					appConfigBuilder.addInitializer(componentInitialierClass);
+					nodeConfigBuilder.addInitializer(componentInitialierClass);
 				}
 				break;
 			case plugin:
@@ -234,7 +233,7 @@ final class XMLModulesHandler extends DefaultHandler {
 			case feature:
 				final String featureClassStr = attrs.getValue("class");
 				final ModuleConfig moduleConfigByFeatures = ClassUtil.newInstance(featureClassStr, Features.class).build();
-				appConfigBuilder.addModule(moduleConfigByFeatures);
+				nodeConfigBuilder.addModule(moduleConfigByFeatures);
 				break;
 			case definitions:
 			case config:

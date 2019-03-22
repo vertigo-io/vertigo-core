@@ -29,7 +29,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import io.vertigo.app.Home;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.core.definition.Definition;
@@ -63,8 +63,8 @@ public final class ComponentCmdWebServices implements WebServices {
 
 	@AnonymousAccessAllowed
 	@GET("/vertigo/components")
-	public AppConfig getAppConfig() {
-		return Home.getApp().getConfig();
+	public NodeConfig getNodeConfig() {
+		return Home.getApp().getNodeConfig();
 	}
 
 	@AnonymousAccessAllowed
@@ -94,7 +94,7 @@ public final class ComponentCmdWebServices implements WebServices {
 	}
 
 	private JsonArray doGetModuleConfigs() {
-		final String json = jsonEngine.toJson(Home.getApp().getConfig());
+		final String json = jsonEngine.toJson(Home.getApp().getNodeConfig());
 		final JsonParser parser = new JsonParser();
 		final JsonObject jsonObject = (JsonObject) parser.parse(json);
 		final JsonArray jsonModuleConfigs = jsonObject.get("moduleConfigs").getAsJsonArray();

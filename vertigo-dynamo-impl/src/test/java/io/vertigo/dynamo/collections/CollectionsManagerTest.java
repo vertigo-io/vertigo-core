@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
@@ -61,8 +61,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 	private CollectionsManager collectionsManager;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.withLocales("fr_FR")

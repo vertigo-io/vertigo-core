@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.cache.ehcache;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.cache.AbstractCacheManagerTest;
 import io.vertigo.commons.cache.CacheManagerInitializer;
@@ -32,8 +32,8 @@ public class EhCacheManagerTest extends AbstractCacheManagerTest {
 	// Unit tests use abstract class methods
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
 				.addModule(new CommonsFeatures()

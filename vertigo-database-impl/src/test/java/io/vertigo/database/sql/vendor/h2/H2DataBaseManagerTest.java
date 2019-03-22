@@ -21,7 +21,7 @@ package io.vertigo.database.sql.vendor.h2;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.database.DatabaseFeatures;
@@ -34,8 +34,8 @@ import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 public final class H2DataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr_FR")
 				.endBoot()

@@ -22,8 +22,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.app.config.NodeConfigBuilder;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfig;
@@ -47,7 +47,7 @@ public final class MultiResourcesEnvironmentManagerTest {
 
 	@Test
 	public void testFirst() {
-		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
+		final NodeConfig nodeConfig = prepareDefaultNodeConfigBuilder()
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
@@ -55,7 +55,7 @@ public final class MultiResourcesEnvironmentManagerTest {
 						.build())
 				.build();
 
-		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+		try (final AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
 			Assertions.assertNotNull(doString);
 		}
@@ -63,7 +63,7 @@ public final class MultiResourcesEnvironmentManagerTest {
 
 	@Test
 	public void testMergedResources() {
-		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
+		final NodeConfig nodeConfig = prepareDefaultNodeConfigBuilder()
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
@@ -71,7 +71,7 @@ public final class MultiResourcesEnvironmentManagerTest {
 						.build())
 				.build();
 
-		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+		try (final AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
 			Assertions.assertNotNull(doString);
 			final DtDefinition dtItem = app.getDefinitionSpace().resolve("DT_ITEM", DtDefinition.class);
@@ -81,7 +81,7 @@ public final class MultiResourcesEnvironmentManagerTest {
 
 	@Test
 	public void testSplittedModules() {
-		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
+		final NodeConfig nodeConfig = prepareDefaultNodeConfigBuilder()
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
@@ -90,7 +90,7 @@ public final class MultiResourcesEnvironmentManagerTest {
 						.build())
 				.build();
 
-		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+		try (final AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
 			Assertions.assertNotNull(doString);
 			final DtDefinition dtItem = app.getDefinitionSpace().resolve("DT_ITEM", DtDefinition.class);
@@ -98,10 +98,10 @@ public final class MultiResourcesEnvironmentManagerTest {
 		}
 	}
 
-	private static AppConfigBuilder prepareDefaultAppConfigBuilder() {
+	private static NodeConfigBuilder prepareDefaultNodeConfigBuilder() {
 		// @formatter:off
 		return
-			AppConfig.builder()
+			NodeConfig.builder()
 			.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.withLocales("fr")

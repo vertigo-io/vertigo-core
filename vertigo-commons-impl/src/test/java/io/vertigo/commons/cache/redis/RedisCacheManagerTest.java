@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.cache.redis;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.cache.AbstractCacheManagerTest;
 import io.vertigo.commons.cache.CacheManagerInitializer;
@@ -41,8 +41,8 @@ public class RedisCacheManagerTest extends AbstractCacheManagerTest {
 	}
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
 				.addModule(new CommonsFeatures()

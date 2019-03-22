@@ -39,7 +39,7 @@ import io.vertigo.account.authorization.model.Record;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.database.impl.sql.vendor.postgresql.PostgreSqlDataBase;
 import io.vertigo.database.sql.vendor.SqlDialect;
@@ -67,8 +67,8 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 	private AuthorizationManager authorizationManager;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config();
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config();
 	}
 
 	@Test

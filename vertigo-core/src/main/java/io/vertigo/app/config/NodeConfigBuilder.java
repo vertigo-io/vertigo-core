@@ -21,18 +21,42 @@ package io.vertigo.app.config;
 import java.util.Optional;
 import java.util.UUID;
 
+import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
+import io.vertigo.util.ListBuilder;
 
 /**
- * The NodeConfigBuilder builder allows you to create an NodeConfig using a fluent, simple style.
+ * The NodeConfigBuilder builder allows you to create an NodeConfig using a fluent, simple style .
  *
- * @author mlaroche
+ * @author npiedeloup, pchretien
  */
 public final class NodeConfigBuilder implements Builder<NodeConfig> {
+
 	private String myAppName;
 	private String myNodeId;
 	private String myEndPoint;
+	//---
+	private final ListBuilder<ModuleConfig> myModuleConfigsBuilder = new ListBuilder<>();
+	private final BootConfigBuilder myBootConfigBuilder;
+	private final ListBuilder<ComponentInitializerConfig> myComponentInitializerConfigsBuilder = new ListBuilder<>();
+
+	/**
+	 * Constructor.
+	 */
+	NodeConfigBuilder() {
+		myBootConfigBuilder = BootConfig.builder(this);
+
+	}
+
+	/**
+	 * Opens the bootConfigBuilder.
+	 * There is exactly one BootConfig per NodeConfig.
+	 * @return this builder
+	 */
+	public BootConfigBuilder beginBoot() {
+		return myBootConfigBuilder;
+	}
 
 	/**
 	 * Associate a common name that define the application as a whole. (ex: Facebook, Pharos...) (myApp by default)
@@ -77,21 +101,47 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	}
 
 	/**
-	 * Builds the appConfig.
-	 * @return appConfig.
+	 * Adds an initializer to the current config.
+	 * @param componentInitializerClass Class of the initializer
+	 * @return this builder
+	 */
+	public NodeConfigBuilder addInitializer(final Class<? extends ComponentInitializer> componentInitializerClass) {
+		myComponentInitializerConfigsBuilder.add(new ComponentInitializerConfig(componentInitializerClass));
+		return this;
+	}
+
+	/**
+	 * Adds a a moduleConfig.
+	 * @param moduleConfig the moduleConfig
+	 * @return this builder
+	 */
+	public NodeConfigBuilder addModule(final ModuleConfig moduleConfig) {
+		Assertion.checkNotNull(moduleConfig);
+		//-----
+		myModuleConfigsBuilder.add(moduleConfig);
+		return this;
+	}
+
+	/**
+	 * Builds the nodeConfig.
+	 * @return nodeConfig.
 	 */
 	@Override
 	public NodeConfig build() {
 		if (myAppName == null) {
 			myAppName = "myApp";
 		}
-
 		if (myNodeId == null) {
 			myNodeId = UUID.randomUUID().toString();
 		}
+		//---
 		return new NodeConfig(
 				myAppName,
 				myNodeId,
-				Optional.ofNullable(myEndPoint));
+				Optional.ofNullable(myEndPoint),
+				myBootConfigBuilder.build(),
+				myModuleConfigsBuilder.unmodifiable().build(),
+				myComponentInitializerConfigsBuilder.unmodifiable().build());
 	}
+
 }

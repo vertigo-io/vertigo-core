@@ -34,7 +34,7 @@ import io.vertigo.account.authorization.model.Record;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.definition.DefinitionSpace;
 
 /**
@@ -63,8 +63,8 @@ public final class VSecurityAspectTest extends AbstractTestCaseJU5 {
 	private PartialSecuredServices partialSecuredServices;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config();
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config();
 	}
 
 	@Test

@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.param.Param;
@@ -42,8 +42,8 @@ import io.vertigo.util.ListBuilder;
 public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()

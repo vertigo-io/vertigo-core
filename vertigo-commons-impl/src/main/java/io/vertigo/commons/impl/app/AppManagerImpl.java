@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.impl.node;
+package io.vertigo.commons.impl.app;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -34,10 +34,10 @@ import io.vertigo.app.App;
 import io.vertigo.app.Home;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.analytics.health.HealthCheck;
+import io.vertigo.commons.app.AppManager;
+import io.vertigo.commons.app.Node;
 import io.vertigo.commons.daemon.DaemonScheduled;
-import io.vertigo.commons.node.Node;
-import io.vertigo.commons.node.NodeManager;
-import io.vertigo.commons.plugins.node.registry.single.SingleNodeRegistryPlugin;
+import io.vertigo.commons.plugins.app.registry.single.SingleAppNodeRegistryPlugin;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
@@ -47,20 +47,20 @@ import io.vertigo.lang.VSystemException;
  * @author mlaroche
  *
  */
-public final class NodeManagerImpl implements NodeManager, Activeable {
+public final class AppManagerImpl implements AppManager, Activeable {
 
 	private static final int HEART_BEAT_SECONDS = 60;
 
-	private final NodeRegistryPlugin nodeRegistryPlugin;
-	private final Map<String, NodeInfosPlugin> nodeInfosPluginMap = new HashMap<>();
+	private final AppNodeRegistryPlugin nodeRegistryPlugin;
+	private final Map<String, AppNodeInfosPlugin> nodeInfosPluginMap = new HashMap<>();
 
 	@Inject
-	public NodeManagerImpl(
-			final Optional<NodeRegistryPlugin> nodeRegistryPluginOpt,
-			final List<NodeInfosPlugin> nodeInfosPlugins) {
+	public AppManagerImpl(
+			final Optional<AppNodeRegistryPlugin> nodeRegistryPluginOpt,
+			final List<AppNodeInfosPlugin> nodeInfosPlugins) {
 		Assertion.checkNotNull(nodeRegistryPluginOpt);
 		// ---
-		nodeRegistryPlugin = nodeRegistryPluginOpt.orElseGet(() -> new SingleNodeRegistryPlugin());
+		nodeRegistryPlugin = nodeRegistryPluginOpt.orElseGet(() -> new SingleAppNodeRegistryPlugin());
 		nodeInfosPlugins
 				.forEach(plugin -> {
 					Assertion.checkState(!nodeInfosPluginMap.containsKey(plugin.getProtocol()), "A plugin for the protocol {0} is already registered", plugin.getProtocol());
@@ -106,7 +106,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 
 	@Override
 	public Node getCurrentNode() {
-		final String currentNodeId = Home.getApp().getConfig().getNodeConfig().getNodeId();
+		final String currentNodeId = Home.getApp().getNodeConfig().getNodeId();
 		return find(currentNodeId)
 				.orElseThrow(() -> new VSystemException("Current node with '{0}' cannot be found in the registry", currentNodeId));
 	}
@@ -145,7 +145,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 
 	}
 
-	private NodeInfosPlugin getInfosPlugin(final Node app) {
+	private AppNodeInfosPlugin getInfosPlugin(final Node app) {
 		Assertion.checkState(nodeInfosPluginMap.containsKey(app.getProtocol()), "No status plugin found for the protocol {0} when reach attempt on {1} ", app.getProtocol(), app.getEndPoint());
 		//---
 		return nodeInfosPluginMap.get(app.getProtocol());
@@ -153,17 +153,17 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 
 	private static Node toAppNode(final App app) {
 		return new Node(
-				app.getConfig().getNodeConfig().getNodeId(),
-				app.getConfig().getNodeConfig().getAppName(),
+				app.getNodeConfig().getNodeId(),
+				app.getNodeConfig().getAppName(),
 				NodeStatus.UP.name(),
 				Instant.now(),
 				app.getStart(),
-				app.getConfig().getNodeConfig().getEndPoint(),
+				app.getNodeConfig().getEndPoint(),
 				getSkills(app));
 	}
 
 	private static List<String> getSkills(final App app) {
-		return app.getConfig().getModuleConfigs().stream()
+		return app.getNodeConfig().getModuleConfigs().stream()
 				.map(ModuleConfig::getName)
 				.collect(Collectors.toList());
 	}

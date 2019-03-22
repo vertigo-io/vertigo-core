@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.collections;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
@@ -32,8 +32,8 @@ import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 public final class FacetManagerLucene_6_6Test extends FacetManagerTest {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.withLocales("fr_FR")

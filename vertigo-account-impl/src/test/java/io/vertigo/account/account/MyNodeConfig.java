@@ -21,7 +21,7 @@ package io.vertigo.account.account;
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.account.model.DtDefinitions;
 import io.vertigo.account.data.TestUserSession;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
@@ -32,12 +32,12 @@ import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 
-public final class MyAppConfig {
+public final class MyNodeConfig {
 	private static final String REDIS_HOST = "redis-pic.part.klee.lan.net";
 	private static final int REDIS_PORT = 6379;
 	private static final int REDIS_DATABASE = 15;
 
-	public static AppConfig config(final boolean redis, final boolean database) {
+	public static NodeConfig config(final boolean redis, final boolean database) {
 		final CommonsFeatures commonsFeatures = new CommonsFeatures()
 				.withScript()
 				.withJaninoScript()
@@ -83,7 +83,7 @@ public final class MyAppConfig {
 			//else we use memory
 			accountFeatures.withMemoryAccountCache();
 		}
-		return AppConfig.builder()
+		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)

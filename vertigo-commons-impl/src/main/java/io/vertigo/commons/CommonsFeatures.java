@@ -21,26 +21,29 @@ package io.vertigo.commons;
 import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
 import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.app.AppManager;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.commons.impl.analytics.AnalyticsManagerImpl;
+import io.vertigo.commons.impl.app.AppManagerImpl;
+import io.vertigo.commons.impl.app.AppNodeInfosPlugin;
+import io.vertigo.commons.impl.app.AppNodeRegistryPlugin;
 import io.vertigo.commons.impl.cache.CacheManagerImpl;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.commons.impl.daemon.DaemonManagerImpl;
 import io.vertigo.commons.impl.eventbus.EventBusManagerImpl;
-import io.vertigo.commons.impl.node.NodeInfosPlugin;
-import io.vertigo.commons.impl.node.NodeManagerImpl;
-import io.vertigo.commons.impl.node.NodeRegistryPlugin;
 import io.vertigo.commons.impl.script.ScriptManagerImpl;
 import io.vertigo.commons.impl.transaction.VTransactionAspect;
 import io.vertigo.commons.impl.transaction.VTransactionManagerImpl;
-import io.vertigo.commons.node.NodeManager;
 import io.vertigo.commons.plugins.analytics.log.SmartLoggerAnalyticsConnectorPlugin;
 import io.vertigo.commons.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin;
+import io.vertigo.commons.plugins.app.infos.http.HttpAppNodeInfosPlugin;
+import io.vertigo.commons.plugins.app.registry.db.DbAppNodeRegistryPlugin;
+import io.vertigo.commons.plugins.app.registry.redis.RedisAppNodeRegistryPlugin;
 import io.vertigo.commons.plugins.cache.ehcache.EhCachePlugin;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.commons.plugins.cache.redis.RedisCachePlugin;
@@ -162,13 +165,37 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 
 	}
 
+	@Feature("app.dbRegistry")
+	public CommonsFeatures withDbAppNodeRegistryPlugin(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(DbAppNodeRegistryPlugin.class, params);
+		return this;
+
+	}
+
+	@Feature("app.redisRegistry")
+	public CommonsFeatures withRedisAppNodeRegistryPlugin() {
+		getModuleConfigBuilder()
+				.addPlugin(RedisAppNodeRegistryPlugin.class);
+		return this;
+
+	}
+
+	@Feature("app.httpInfos")
+	public CommonsFeatures withHttpAppNodeInfosPlugin() {
+		getModuleConfigBuilder()
+				.addPlugin(HttpAppNodeInfosPlugin.class);
+		return this;
+
+	}
+
 	/**
 	 * Adds a NodeRegistryPlugin
 	 * @param nodeRegistryPluginClass the plugin to use
 	 * @param params the params
 	 * @return these features
 	 */
-	public CommonsFeatures withNodeRegistryPlugin(final Class<? extends NodeRegistryPlugin> nodeRegistryPluginClass, final Param... params) {
+	public CommonsFeatures withNodeRegistryPlugin(final Class<? extends AppNodeRegistryPlugin> nodeRegistryPluginClass, final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(nodeRegistryPluginClass, params);
 		return this;
@@ -181,7 +208,7 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 	 * @param params the params
 	 * @return these features
 	 */
-	public CommonsFeatures withNodeInfosPlugin(final Class<? extends NodeInfosPlugin> nodeInfosPluginClass, final Param... params) {
+	public CommonsFeatures withNodeInfosPlugin(final Class<? extends AppNodeInfosPlugin> nodeInfosPluginClass, final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(nodeInfosPluginClass, params);
 		return this;
@@ -209,7 +236,7 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 				.addComponent(CodecManager.class, CodecManagerImpl.class)
 				.addComponent(DaemonManager.class, DaemonManagerImpl.class)
 				.addComponent(EventBusManager.class, EventBusManagerImpl.class)
-				.addComponent(NodeManager.class, NodeManagerImpl.class)
+				.addComponent(AppManager.class, AppManagerImpl.class)
 				.addComponent(VTransactionManager.class, VTransactionManagerImpl.class)
 				.addAspect(VTransactionAspect.class);
 	}

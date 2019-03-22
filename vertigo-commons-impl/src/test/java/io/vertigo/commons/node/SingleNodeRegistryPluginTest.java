@@ -21,15 +21,15 @@ package io.vertigo.commons.node;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 
 @RunWith(JUnitPlatform.class)
 public class SingleNodeRegistryPluginTest extends AbstractNodeManagerTest {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return buildRootAppConfig()
+	protected NodeConfig buildNodeConfig() {
+		return buildRootNodeConfig()
 				.addModule(new CommonsFeatures()
 						.build())
 				.build();

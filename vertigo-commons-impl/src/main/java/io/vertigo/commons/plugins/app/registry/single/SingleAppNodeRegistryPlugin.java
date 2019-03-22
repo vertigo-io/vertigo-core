@@ -16,15 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.plugins.node.registry.single;
+package io.vertigo.commons.plugins.app.registry.single;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.app.Home;
-import io.vertigo.commons.impl.node.NodeRegistryPlugin;
-import io.vertigo.commons.node.Node;
+import io.vertigo.commons.app.Node;
+import io.vertigo.commons.impl.app.AppNodeRegistryPlugin;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -32,7 +32,7 @@ import io.vertigo.lang.Assertion;
  * @author mlaroche
  *
  */
-public final class SingleNodeRegistryPlugin implements NodeRegistryPlugin {
+public final class SingleAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 
 	private Node localNode;
 
@@ -53,7 +53,7 @@ public final class SingleNodeRegistryPlugin implements NodeRegistryPlugin {
 
 	@Override
 	public Optional<Node> find(final String nodeId) {
-		if (Home.getApp().getConfig().getNodeConfig().getNodeId().equals(nodeId)) {
+		if (Home.getApp().getNodeConfig().getNodeId().equals(nodeId)) {
 			return Optional.of(localNode);
 		}
 		return Optional.empty();

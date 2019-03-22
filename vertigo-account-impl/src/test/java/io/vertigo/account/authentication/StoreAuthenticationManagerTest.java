@@ -21,9 +21,9 @@ package io.vertigo.account.authentication;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-import io.vertigo.account.authentication.MyAppConfig.AuthentPlugin;
+import io.vertigo.account.authentication.MyNodeConfig.AuthentPlugin;
 import io.vertigo.app.Home;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 
@@ -36,8 +36,8 @@ public final class StoreAuthenticationManagerTest extends AbstractAuthentication
 	private VTransactionWritable tx;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config(AuthentPlugin.store, false);
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config(AuthentPlugin.store, false);
 	}
 
 	@BeforeEach

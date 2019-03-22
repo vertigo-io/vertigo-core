@@ -49,7 +49,7 @@ import io.restassured.specification.ResponseSpecification;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.util.MapBuilder;
-import io.vertigo.vega.webservice.data.MyAppConfig;
+import io.vertigo.vega.webservice.data.MyNodeConfig;
 
 public final class WebServiceManagerTest {
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
@@ -61,12 +61,12 @@ public final class WebServiceManagerTest {
 
 	static {
 		//RestAsssured init
-		RestAssured.port = MyAppConfig.WS_PORT;
+		RestAssured.port = MyNodeConfig.WS_PORT;
 	}
 
 	@BeforeAll
 	public static void setUp() {
-		app = new AutoCloseableApp(MyAppConfig.config());
+		app = new AutoCloseableApp(MyNodeConfig.config());
 	}
 
 	@BeforeEach

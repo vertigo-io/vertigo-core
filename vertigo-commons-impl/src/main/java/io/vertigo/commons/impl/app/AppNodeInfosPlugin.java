@@ -16,13 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.impl.node;
+package io.vertigo.commons.impl.app;
 
 import java.util.List;
 import java.util.Map;
 
 import io.vertigo.commons.analytics.health.HealthCheck;
-import io.vertigo.commons.node.Node;
+import io.vertigo.commons.app.Node;
 import io.vertigo.core.component.Plugin;
 
 /**
@@ -30,9 +30,9 @@ import io.vertigo.core.component.Plugin;
  * @author mlaroche
  *
  */
-public interface NodeInfosPlugin extends Plugin {
+public interface AppNodeInfosPlugin extends Plugin {
 
-	// TODO : à terme AppConfig
+	// TODO : à terme NodeConfig
 	String getConfig(Node node);
 
 	List<HealthCheck> getStatus(Node node);

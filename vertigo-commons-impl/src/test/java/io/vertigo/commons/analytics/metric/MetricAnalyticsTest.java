@@ -28,7 +28,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.metric.data.DummyMetricsProvider;
@@ -41,8 +41,8 @@ import io.vertigo.commons.impl.analytics.AnalyticsManagerImpl;
 public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.addModule(ModuleConfig.builder("test-metric")
 						.addComponent(AnalyticsManager.class, AnalyticsManagerImpl.class)
 						.addComponent(DummyMetricsProvider.class)

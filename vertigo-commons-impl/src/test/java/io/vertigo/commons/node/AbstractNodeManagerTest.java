@@ -27,28 +27,25 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.Home;
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
+import io.vertigo.app.config.NodeConfigBuilder;
+import io.vertigo.commons.app.AppManager;
+import io.vertigo.commons.app.Node;
+import io.vertigo.app.config.ModuleConfig;
 
 public abstract class AbstractNodeManagerTest extends AbstractTestCaseJU5 {
 
-	protected AppConfigBuilder buildRootAppConfig() {
-		return AppConfig.builder()
-				.beginBoot()
-				.endBoot()
-				.withNodeConfig(NodeConfig.builder()
-						.withAppName("nodeTestApp")
-						.withNodeId("nodeTest1")
-						.build())
+	protected NodeConfigBuilder buildRootNodeConfig() {
+		return NodeConfig.builder()
+				.withAppName("nodeTestApp")
+				.withNodeId("nodeTest1")
 				.addModule(ModuleConfig.builder("db")
 						.build());
 	}
 
 	@Test
 	void testRegisterNode() {
-		final NodeManager nodeManager = Home.getApp().getComponentSpace().resolve(NodeManager.class);
+		final AppManager nodeManager = Home.getApp().getComponentSpace().resolve(AppManager.class);
 
 		final List<Node> nodesWithDbSkill = nodeManager.locateSkills("db");
 		final List<Node> nodesWithOtherSkill = nodeManager.locateSkills("other");
@@ -61,7 +58,7 @@ public abstract class AbstractNodeManagerTest extends AbstractTestCaseJU5 {
 
 	@Disabled // ignored for now we need heartbeat of node update to be parametized for shorter tests
 	void testUpdate() throws InterruptedException {
-		final NodeManager nodeManager = Home.getApp().getComponentSpace().resolve(NodeManager.class);
+		final AppManager nodeManager = Home.getApp().getComponentSpace().resolve(AppManager.class);
 		// ---
 		final Instant firstTouch = nodeManager.find("nodeTest1").get().getLastTouch();
 		Thread.sleep(7 * 1000L);

@@ -22,20 +22,20 @@ import org.h2.Driver;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.commons.plugins.node.registry.db.DbNodeRegistryPlugin;
+import io.vertigo.commons.plugins.app.registry.db.DbAppNodeRegistryPlugin;
 import io.vertigo.core.param.Param;
 
 @RunWith(JUnitPlatform.class)
 public class DbNodeRegistryPluginTest extends AbstractNodeManagerTest {
 
 	@Override
-	protected AppConfig buildAppConfig() {
+	protected NodeConfig buildNodeConfig() {
 
-		return buildRootAppConfig()
+		return buildRootNodeConfig()
 				.addModule(new CommonsFeatures()
-						.withNodeRegistryPlugin(DbNodeRegistryPlugin.class,
+						.withNodeRegistryPlugin(DbAppNodeRegistryPlugin.class,
 								Param.of("driverClassName", Driver.class.getName()),
 								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
 						.build())

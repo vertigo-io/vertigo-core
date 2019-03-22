@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.plugins.node.infos.http;
+package io.vertigo.commons.plugins.app.infos.http;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -41,8 +41,8 @@ import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
 import io.vertigo.commons.analytics.health.HealthCheck;
-import io.vertigo.commons.impl.node.NodeInfosPlugin;
-import io.vertigo.commons.node.Node;
+import io.vertigo.commons.app.Node;
+import io.vertigo.commons.impl.app.AppNodeInfosPlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
@@ -51,7 +51,7 @@ import io.vertigo.lang.WrappedException;
  * @author mlaroche
  *
  */
-public final class HttpNodeInfosPlugin implements NodeInfosPlugin {
+public final class HttpAppNodeInfosPlugin implements AppNodeInfosPlugin {
 
 	private static class InstantAdapter implements JsonSerializer<Instant>, JsonDeserializer<Instant> {
 

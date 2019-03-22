@@ -35,7 +35,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
@@ -44,8 +44,8 @@ import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository
 @RunWith(JUnitPlatform.class)
 public final class EnvironmentManagerTest extends AbstractTestCaseJU5 {
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot().withLogConfig(new LogConfig("/log4j.xml")).endBoot()
 				.build();
 	}

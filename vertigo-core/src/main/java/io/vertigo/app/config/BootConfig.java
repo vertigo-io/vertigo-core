@@ -64,12 +64,12 @@ public final class BootConfig {
 	}
 
 	/**
-	 * Static method factory for AppConfigBuilder
-	 * @param appConfigBuilder Parent AppConfig builder
-	 * @return AppConfigBuilder
+	 * Static method factory for NodeConfigBuilder
+	 * @param nodeConfigBuilder Parent NodeConfig builder
+	 * @return NodeConfigBuilder
 	 */
-	public static BootConfigBuilder builder(final AppConfigBuilder appConfigBuilder) {
-		return new BootConfigBuilder(appConfigBuilder);
+	public static BootConfigBuilder builder(final NodeConfigBuilder nodeConfigBuilder) {
+		return new BootConfigBuilder(nodeConfigBuilder);
 	}
 
 	/**

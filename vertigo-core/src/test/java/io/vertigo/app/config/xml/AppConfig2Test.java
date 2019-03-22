@@ -28,8 +28,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.xml.XMLAppConfigBuilder;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.spaces.component.data.BioManager;
 
 @RunWith(JUnitPlatform.class)
@@ -37,36 +36,36 @@ public final class AppConfig2Test {
 	@Test
 	public void HomeTest() {
 
-		final AppConfig appConfig = new XMLAppConfigBuilder()
+		final NodeConfig nodeConfig = new XMLAppConfigBuilder()
 				.withModules(getClass(), new Properties(), "bio.xml")
 				.build();
 
-		testBioManager(appConfig);
+		testBioManager(nodeConfig);
 	}
 
 	@Test
 	public void FeatureTest() {
 
-		final AppConfig appConfig = new XMLAppConfigBuilder()
+		final NodeConfig nodeConfig = new XMLAppConfigBuilder()
 				.withModules(getClass(), new Properties(), "bio-features.xml")
 				.build();
 
-		testBioManager(appConfig);
+		testBioManager(nodeConfig);
 
 	}
 
 	@Test
 	public void nodeTest() {
 
-		final AppConfig appConfig = new XMLAppConfigBuilder()
+		final NodeConfig nodeConfig = new XMLAppConfigBuilder()
 				.withModules(getClass(), new Properties(), "bio-node.xml")
 				.build();
 
-		testBioManager(appConfig);
+		testBioManager(nodeConfig);
 	}
 
-	private void testBioManager(final AppConfig appConfig) {
-		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+	private void testBioManager(final NodeConfig nodeConfig) {
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			assertEquals(app, app);
 			assertTrue(app.getComponentSpace().contains("bioManager"));
 			final BioManager bioManager = app.getComponentSpace().resolve(BioManager.class);

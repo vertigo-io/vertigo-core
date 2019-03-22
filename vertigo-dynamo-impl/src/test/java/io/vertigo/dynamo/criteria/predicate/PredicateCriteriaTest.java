@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -43,8 +43,8 @@ import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 public final class PredicateCriteriaTest extends AbstractCriteriaTest {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()

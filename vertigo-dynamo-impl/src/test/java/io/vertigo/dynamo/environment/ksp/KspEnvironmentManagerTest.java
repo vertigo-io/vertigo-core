@@ -22,8 +22,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.app.config.NodeConfigBuilder;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -39,8 +39,8 @@ public final class KspEnvironmentManagerTest {
 
 	@Test
 	public void testDomain() {
-		final AppConfigBuilder appConfigBuilder = createAppConfigBuilder("io/vertigo/dynamo/environment/ksp/data/execution.kpr");
-		try (final AutoCloseableApp app = new AutoCloseableApp(appConfigBuilder.build())) {
+		final NodeConfigBuilder nodeConfigBuilder = createNodeConfigBuilder("io/vertigo/dynamo/environment/ksp/data/execution.kpr");
+		try (final AutoCloseableApp app = new AutoCloseableApp(nodeConfigBuilder.build())) {
 			//nothing (if it's boot it's ok)
 
 		}
@@ -49,8 +49,8 @@ public final class KspEnvironmentManagerTest {
 	@Test
 	public void testWrongNavigability() {
 		Assertions.assertThrows(IllegalStateException.class, () -> {
-			final AppConfigBuilder appConfigBuilder = createAppConfigBuilder("io/vertigo/dynamo/environment/ksp/data/execution-forbidden.kpr");
-			try (final AutoCloseableApp app = new AutoCloseableApp(appConfigBuilder.build())) {
+			final NodeConfigBuilder nodeConfigBuilder = createNodeConfigBuilder("io/vertigo/dynamo/environment/ksp/data/execution-forbidden.kpr");
+			try (final AutoCloseableApp app = new AutoCloseableApp(nodeConfigBuilder.build())) {
 				//nothing (exception is ok)
 
 			}
@@ -60,18 +60,18 @@ public final class KspEnvironmentManagerTest {
 	@Test
 	public void testNonPossibleAssociation() {
 		Assertions.assertThrows(IllegalStateException.class, () -> {
-			final AppConfigBuilder appConfigBuilder = createAppConfigBuilder("io/vertigo/dynamo/environment/ksp/data/execution-forbidden2.kpr");
-			try (final AutoCloseableApp app = new AutoCloseableApp(appConfigBuilder.build())) {
+			final NodeConfigBuilder nodeConfigBuilder = createNodeConfigBuilder("io/vertigo/dynamo/environment/ksp/data/execution-forbidden2.kpr");
+			try (final AutoCloseableApp app = new AutoCloseableApp(nodeConfigBuilder.build())) {
 				//nothing (exception is ok)
 
 			}
 		});
 	}
 
-	private static AppConfigBuilder createAppConfigBuilder(final String kprPath) {
+	private static NodeConfigBuilder createNodeConfigBuilder(final String kprPath) {
 		Assertion.checkArgNotEmpty(kprPath);
 		//---
-		return AppConfig.builder()
+		return NodeConfig.builder()
 				.beginBoot()
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()

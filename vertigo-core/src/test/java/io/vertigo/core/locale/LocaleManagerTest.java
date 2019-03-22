@@ -32,7 +32,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.locale.data.CityGuide;
 
 /**
@@ -44,10 +44,10 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 	private LocaleManager localeManager;
 
 	@Override
-	protected AppConfig buildAppConfig() {
+	protected NodeConfig buildNodeConfig() {
 		//les locales doivent être séparées par des virgules
 		final String locales = "fr_FR, en , de_DE";
-		return AppConfig.builder()
+		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales(locales)
 				.endBoot()

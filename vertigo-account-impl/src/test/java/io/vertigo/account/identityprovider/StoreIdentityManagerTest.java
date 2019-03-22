@@ -23,9 +23,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.account.identityprovider.MyAppConfig.IdpPlugin;
+import io.vertigo.account.identityprovider.MyNodeConfig.IdpPlugin;
 import io.vertigo.app.Home;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 
@@ -33,8 +33,8 @@ public final class StoreIdentityManagerTest extends AbstractIdentityProviderMana
 	private VTransactionWritable tx;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config(IdpPlugin.store, false);
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config(IdpPlugin.store, false);
 	}
 
 	@Override

@@ -29,21 +29,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.commons.node.Node;
-import io.vertigo.commons.node.NodeManager;
+import io.vertigo.commons.app.AppManager;
+import io.vertigo.commons.app.Node;
 import io.vertigo.core.component.di.injector.DIInjector;
-import io.vertigo.vega.webservice.data.MyAppConfig;
+import io.vertigo.vega.webservice.data.MyNodeConfig;
 
 public final class DistantAppTest {
 
 	private static AutoCloseableApp app;
 
 	@Inject
-	private NodeManager nodeManager;
+	private AppManager nodeManager;
 
 	@BeforeAll
 	public static void setUp() {
-		app = new AutoCloseableApp(MyAppConfig.config());
+		app = new AutoCloseableApp(MyNodeConfig.config());
 	}
 
 	@BeforeEach
@@ -59,7 +59,7 @@ public final class DistantAppTest {
 	}
 
 	@Test
-	public void testDistantAppConfig() {
+	public void testDistantNodeConfig() {
 
 		final String currentNodeId = nodeManager.getCurrentNode().getId();
 		final Optional<Node> appNode = nodeManager.find(currentNodeId);

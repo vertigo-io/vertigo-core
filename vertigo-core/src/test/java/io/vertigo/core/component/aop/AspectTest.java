@@ -29,7 +29,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.aop.data.MyException;
@@ -50,8 +50,8 @@ public final class AspectTest extends AbstractTestCaseJU5 {
 	private C c;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
 				.addModule(ModuleConfig.builder("aspects")
@@ -100,7 +100,7 @@ public final class AspectTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public final void testUnwrapp() {
-		final AopPlugin aopPlugin = getApp().getConfig().getBootConfig().getAopPlugin();
+		final AopPlugin aopPlugin = getApp().getNodeConfig().getBootConfig().getAopPlugin();
 		final F f = getApp().getComponentSpace().resolve(F.class);
 		// Il y a des aspects sur la classe donc elle doit être dewrappable
 		assertNotEquals(F.class.getName(), f.getClass().getName());

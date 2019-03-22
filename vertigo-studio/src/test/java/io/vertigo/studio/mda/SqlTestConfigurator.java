@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.mda;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
@@ -29,8 +29,8 @@ import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 
 public final class SqlTestConfigurator {
-	public static AppConfig config() {
-		return AppConfig.builder()
+	public static NodeConfig config() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)

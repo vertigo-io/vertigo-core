@@ -19,8 +19,6 @@ import java.util.stream.Stream;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.BootConfigBuilder;
 import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
@@ -39,11 +37,11 @@ import io.vertigo.util.ClassUtil;
 import io.vertigo.util.Selector;
 import io.vertigo.util.Selector.MethodConditions;
 
-public final class YamlAppConfigBuilder implements Builder<AppConfig> {
+public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 
 	private static final Object[] EMPTY_ARRAY = new Object[0];
 
-	private final AppConfigBuilder appConfigBuilder = AppConfig.builder();
+	private final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder();
 
 	private final List<String> activeFlags;
 	private final YamlConfigParams params;
@@ -65,7 +63,7 @@ public final class YamlAppConfigBuilder implements Builder<AppConfig> {
 	 * @return the bootConfig builder
 	 */
 	public BootConfigBuilder beginBoot() {
-		return appConfigBuilder.beginBoot();
+		return nodeConfigBuilder.beginBoot();
 	}
 
 	/**
@@ -89,31 +87,30 @@ public final class YamlAppConfigBuilder implements Builder<AppConfig> {
 	private void handleJsonFileConfig(final URL yamlConfigURL) {
 
 		final Yaml yaml = new Yaml(new Constructor(YamlAppConfig.class));
-		final YamlAppConfig yamlAppConfig = yaml.loadAs(parseFile(yamlConfigURL), YamlAppConfig.class);
+		final YamlAppConfig yamlNodeConfig = yaml.loadAs(parseFile(yamlConfigURL), YamlAppConfig.class);
 		//--- node
-		handleNodeConfig(yamlAppConfig);
+		handleNodeConfig(yamlNodeConfig);
 		//--- boot
-		handleBoot(yamlAppConfig);
+		handleBoot(yamlNodeConfig);
 		//--- modules
-		yamlAppConfig.modules
+		yamlNodeConfig.modules
 				.entrySet()
 				.stream()
 				.forEach(entry -> handleJsonModuleConfig(entry.getKey(), entry.getValue()));
 		//--- initializers
-		yamlAppConfig.initializers
+		yamlNodeConfig.initializers
 				.forEach(initializerConfig -> {
 					Assertion.checkState(initializerConfig.size() == 1, "an initializer is defined by it's class");
 					// ---
 					final Map.Entry<String, Map<String, Object>> initializerEntry = initializerConfig.entrySet().iterator().next();
 					if (isEnabledByFlag(getFlagsOfMapParams(initializerEntry.getValue()))) {
-						appConfigBuilder.addInitializer(ClassUtil.classForName(initializerEntry.getKey(), ComponentInitializer.class));
+						nodeConfigBuilder.addInitializer(ClassUtil.classForName(initializerEntry.getKey(), ComponentInitializer.class));
 					}
 				});
 	}
 
 	private void handleNodeConfig(final YamlAppConfig yamlAppConfig) {
 		if (yamlAppConfig.node != null) {
-			final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder();
 			final String appName = yamlAppConfig.node.appName;
 			final String nodeId = yamlAppConfig.node.nodeId;
 			final String endPoint = yamlAppConfig.node.endPoint;
@@ -126,7 +123,6 @@ public final class YamlAppConfigBuilder implements Builder<AppConfig> {
 			if (endPoint != null) {
 				nodeConfigBuilder.withEndPoint(evalParamValue(endPoint));
 			}
-			appConfigBuilder.withNodeConfig(nodeConfigBuilder.build());
 		}
 	}
 
@@ -136,11 +132,11 @@ public final class YamlAppConfigBuilder implements Builder<AppConfig> {
 			final String defaultZoneId = yamlAppConfig.boot.params.get("defaultZoneId");
 			if (locales != null) {
 				if (defaultZoneId == null) {
-					appConfigBuilder
+					nodeConfigBuilder
 							.beginBoot()
 							.withLocales(locales);
 				} else {
-					appConfigBuilder
+					nodeConfigBuilder
 							.beginBoot()
 							.withLocalesAndDefaultZoneId(locales, defaultZoneId);
 				}
@@ -151,7 +147,7 @@ public final class YamlAppConfigBuilder implements Builder<AppConfig> {
 						// ---
 						final Map.Entry<String, Map<String, Object>> pluginEntry = plugin.entrySet().iterator().next();
 						if (isEnabledByFlag(getFlagsOfMapParams(pluginEntry.getValue()))) {
-							appConfigBuilder.beginBoot()
+							nodeConfigBuilder.beginBoot()
 									.addPlugin(
 											ClassUtil.classForName(pluginEntry.getKey(), Plugin.class),
 											pluginEntry.getValue().entrySet().stream()
@@ -167,7 +163,7 @@ public final class YamlAppConfigBuilder implements Builder<AppConfig> {
 		if (yamlModuleConfig == null) {
 			// we have no params so no flag
 			// just a simple module
-			appConfigBuilder.addModule(ClassUtil.newInstance(featuresClassName, Features.class).build());
+			nodeConfigBuilder.addModule(ClassUtil.newInstance(featuresClassName, Features.class).build());
 		} else {
 			// more complexe module with flags and flipped features
 			if (isEnabledByFlag(yamlModuleConfig.__flags__)) {
@@ -226,7 +222,7 @@ public final class YamlAppConfigBuilder implements Builder<AppConfig> {
 														.toArray(Param[]::new));
 							}
 						});
-				appConfigBuilder.addModule(moduleConfigByFeatures.build());
+				nodeConfigBuilder.addModule(moduleConfigByFeatures.build());
 			}
 		}
 	}
@@ -274,14 +270,14 @@ public final class YamlAppConfigBuilder implements Builder<AppConfig> {
 	public YamlAppConfigBuilder withLogConfig(final LogConfig logConfig) {
 		Assertion.checkNotNull(logConfig);
 		//-----
-		appConfigBuilder.beginBoot().withLogConfig(logConfig).endBoot();
+		nodeConfigBuilder.beginBoot().withLogConfig(logConfig).endBoot();
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public AppConfig build() {
-		return appConfigBuilder.build();
+	public NodeConfig build() {
+		return nodeConfigBuilder.build();
 	}
 
 	/**

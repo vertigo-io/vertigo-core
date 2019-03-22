@@ -65,7 +65,7 @@ public final class HealthAnalyticsUtil {
 
 		//-- we construct a map of feature by componentId
 		final Map<String, String> featureByComponentId = new HashMap<>();
-		Home.getApp().getConfig().getModuleConfigs()
+		Home.getApp().getNodeConfig().getModuleConfigs()
 				.forEach(moduleConfig -> moduleConfig.getComponentConfigs()
 						.forEach(componentConfig -> featureByComponentId.put(componentConfig.getId(), moduleConfig.getName())));
 		//-----

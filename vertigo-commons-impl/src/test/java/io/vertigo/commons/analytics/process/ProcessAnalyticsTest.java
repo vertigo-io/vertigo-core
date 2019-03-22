@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.process.data.TestAProcessConnectorPlugin;
@@ -60,8 +60,8 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU5 {
 	private TestAnalyticsAspectServices analyticsAspectServices;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.addModule(ModuleConfig.builder("vertigo-commons")
 						.addComponent(AnalyticsManager.class, AnalyticsManagerImpl.class)
 						.addPlugin(SmartLoggerAnalyticsConnectorPlugin.class, Param.of("aggregatedBy", "test"))

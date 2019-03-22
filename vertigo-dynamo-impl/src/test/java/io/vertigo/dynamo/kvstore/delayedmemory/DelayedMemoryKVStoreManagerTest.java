@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.kvstore.delayedmemory;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -30,8 +30,8 @@ import io.vertigo.dynamo.kvstore.AbstractKVStoreManagerTest;
  */
 public final class DelayedMemoryKVStoreManagerTest extends AbstractKVStoreManagerTest {
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()

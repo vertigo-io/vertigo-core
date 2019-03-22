@@ -18,8 +18,8 @@
  */
 package io.vertigo.account.authentication;
 
-import io.vertigo.account.authentication.MyAppConfig.AuthentPlugin;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.account.authentication.MyNodeConfig.AuthentPlugin;
+import io.vertigo.app.config.NodeConfig;
 
 /**
  * Implementation standard de la gestion centralisee des droits d'acces.
@@ -28,8 +28,8 @@ import io.vertigo.app.config.AppConfig;
  */
 public final class RedisCacheMockAuthenticationManagerTest extends AbstractAuthenticationManagerTest {
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config(AuthentPlugin.mock, true);
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config(AuthentPlugin.mock, true);
 	}
 
 }

@@ -27,7 +27,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.component.proxy.data.Aggregate;
 import io.vertigo.core.component.proxy.data.AggregatorProxyMethod;
@@ -39,8 +39,8 @@ public final class ProxyTest extends AbstractTestCaseJU5 {
 	private Aggregate aggregatea;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.addModule(ModuleConfig.builder("proxies")
 						.addProxyMethod(AggregatorProxyMethod.class)
 						.build())

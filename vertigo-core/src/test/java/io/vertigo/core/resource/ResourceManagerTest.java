@@ -30,7 +30,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 
 /**
@@ -43,9 +43,9 @@ public final class ResourceManagerTest extends AbstractTestCaseJU5 {
 	final String locales = "fr_FR";
 
 	@Override
-	protected AppConfig buildAppConfig() {
+	protected NodeConfig buildNodeConfig() {
 		//@formatter:off
-		return AppConfig.builder()
+		return NodeConfig.builder()
 			.beginBoot()
 				.withLocales(locales)
 				.addPlugin(ClassPathResourceResolverPlugin.class)

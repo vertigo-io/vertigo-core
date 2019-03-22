@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.transaction.VTransactionWritable;
 
 public final class MemoryAccountManagerTest extends AbstractAccountManagerTest {
@@ -32,8 +32,8 @@ public final class MemoryAccountManagerTest extends AbstractAccountManagerTest {
 	private AccountManager accountManager;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config(false, false);
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config(false, false);
 	}
 
 	@Test

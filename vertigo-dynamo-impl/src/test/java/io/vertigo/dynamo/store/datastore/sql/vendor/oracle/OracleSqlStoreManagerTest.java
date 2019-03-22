@@ -22,13 +22,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.Disabled;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.database.impl.sql.vendor.oracle.OracleDataBase;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.store.data.domain.car.Car;
 import io.vertigo.dynamo.store.datastore.sql.AbstractSqlStoreManagerTest;
-import io.vertigo.dynamo.store.datastore.sql.SqlDataStoreAppConfig;
+import io.vertigo.dynamo.store.datastore.sql.SqlDataStoreNodeConfig;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskResult;
@@ -45,8 +45,8 @@ import io.vertigo.util.ListBuilder;
 public final class OracleSqlStoreManagerTest extends AbstractSqlStoreManagerTest {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return SqlDataStoreAppConfig.build(
+	protected NodeConfig buildNodeConfig() {
+		return SqlDataStoreNodeConfig.build(
 				OracleDataBase.class.getCanonicalName(),
 				"oracle.jdbc.OracleDriver",
 				"jdbc:oracle:thin:DT_VERTIGO/DT_VERTIGO@selma.dev.klee.lan.net:1521/O11UTF8");

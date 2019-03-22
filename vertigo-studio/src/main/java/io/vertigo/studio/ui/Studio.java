@@ -30,7 +30,7 @@ import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.Template;
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.peg.PegRulesHtmlRenderer;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -77,8 +77,8 @@ public final class Studio {
 		configuration.setClassForTemplateLoading(Studio.class, "");
 		configuration.setObjectWrapper(ObjectWrapper.BEANS_WRAPPER);
 		Spark.setPort(port);
-		final AppConfig appConfig = new SmartAppConfigBuilder(args).build();
-		app = new AutoCloseableApp(appConfig);
+		final NodeConfig nodeConfig = new SmartAppConfigBuilder(args).build();
+		app = new AutoCloseableApp(nodeConfig);
 
 	}
 

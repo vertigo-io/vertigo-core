@@ -26,8 +26,8 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -44,7 +44,7 @@ public final class AppConfigTest {
 	public void HomeTest() {
 		final String locales = "fr_FR";
 
-		final AppConfig appConfig = AppConfig.builder()
+		final NodeConfig nodeConfig = NodeConfig.builder()
 				.beginBoot()
 				.withLocales(locales)
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -61,7 +61,7 @@ public final class AppConfigTest {
 						.build())
 				.build();
 
-		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			assertEquals(app, app);
 			assertTrue(app.getComponentSpace().contains("bioManager"));
 			final BioManager bioManager = app.getComponentSpace().resolve(BioManager.class);

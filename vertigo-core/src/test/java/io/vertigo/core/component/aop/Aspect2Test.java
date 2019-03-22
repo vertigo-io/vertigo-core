@@ -24,7 +24,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.component.aop.data.aspects.OneMoreAspect;
 import io.vertigo.core.component.aop.data.components.ComputerImpl;
@@ -32,8 +32,8 @@ import io.vertigo.core.component.aop.data.components.ComputerImpl;
 @RunWith(JUnitPlatform.class)
 public final class Aspect2Test {
 
-	protected static AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected static NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
 				.addModule(ModuleConfig.builder("aspects")
@@ -49,7 +49,7 @@ public final class Aspect2Test {
 	public final void testLoadComponentsWithoutDeclaredAspects() {
 		Assertions.assertThrows(IllegalStateException.class,
 				() -> {
-					try (final AutoCloseableApp app = new AutoCloseableApp(buildAppConfig())) {
+					try (final AutoCloseableApp app = new AutoCloseableApp(buildNodeConfig())) {
 						//nop
 					}
 				});

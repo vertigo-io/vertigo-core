@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.plugins.node.registry.redis;
+package io.vertigo.commons.plugins.app.registry.redis;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -34,9 +34,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+import io.vertigo.commons.app.Node;
+import io.vertigo.commons.impl.app.AppNodeRegistryPlugin;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
-import io.vertigo.commons.impl.node.NodeRegistryPlugin;
-import io.vertigo.commons.node.Node;
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
@@ -49,7 +49,7 @@ import redis.clients.jedis.Transaction;
  * @author mlaroche
  *
  */
-public final class RedisNodeRegistryPlugin implements NodeRegistryPlugin {
+public final class RedisAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 
 	private static final String VERTIGO_NODE = "vertigo:node:";
 	private static final String VERTIGO_NODES = "vertigo:nodes";
@@ -61,7 +61,7 @@ public final class RedisNodeRegistryPlugin implements NodeRegistryPlugin {
 	 * @param redisConnector the redisConnector
 	 */
 	@Inject
-	public RedisNodeRegistryPlugin(final RedisConnector redisConnector) {
+	public RedisAppNodeRegistryPlugin(final RedisConnector redisConnector) {
 		Assertion.checkNotNull(redisConnector);
 		//---
 		this.redisConnector = redisConnector;

@@ -27,7 +27,7 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -77,8 +77,8 @@ public final class TimeSeriesDataBaseTest extends AbstractTestCaseJU5 {
 	}
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder().beginBoot()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder().beginBoot()
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.addPlugin(URLResourceResolverPlugin.class)

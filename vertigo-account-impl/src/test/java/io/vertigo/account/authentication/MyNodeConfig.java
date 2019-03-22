@@ -21,7 +21,7 @@ package io.vertigo.account.authentication;
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.authentication.model.DtDefinitions;
 import io.vertigo.account.data.TestUserSession;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
@@ -33,7 +33,7 @@ import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 
-public final class MyAppConfig {
+public final class MyNodeConfig {
 	private static final String REDIS_HOST = "redis-pic.part.klee.lan.net";
 	private static final int REDIS_PORT = 6379;
 	private static final int REDIS_DATABASE = 15;
@@ -42,7 +42,7 @@ public final class MyAppConfig {
 		ldap, text, store, mock
 	}
 
-	public static AppConfig config(final AuthentPlugin authentPlugin, final boolean redis) {
+	public static NodeConfig config(final AuthentPlugin authentPlugin, final boolean redis) {
 		final CommonsFeatures commonsFeatures = new CommonsFeatures()
 				.withScript()
 				.withJaninoScript()
@@ -95,7 +95,7 @@ public final class MyAppConfig {
 			accountFeatures.withMockAuthentication();
 		}
 
-		return AppConfig.builder()
+		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)

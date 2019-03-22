@@ -34,7 +34,7 @@ public class VertigoJunitExtension implements TestInstancePostProcessor {
 
 	@Override
 	public void postProcessTestInstance(final Object testInstance, final ExtensionContext context) throws Exception {
-		final App app = new AutoCloseableApp(((AbstractTestCaseJU5) testInstance).buildAppConfig());
+		final App app = new AutoCloseableApp(((AbstractTestCaseJU5) testInstance).buildNodeConfig());
 		DIInjector.injectMembers(testInstance, app.getComponentSpace());
 
 	}

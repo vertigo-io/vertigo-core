@@ -20,7 +20,7 @@ package io.vertigo.studio.mda;
 
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
@@ -37,8 +37,8 @@ import io.vertigo.vega.plugins.webservice.scanner.annotations.WebServiceDefiniti
  */
 public class WebServicesGeneratorTest {
 
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -68,7 +68,7 @@ public class WebServicesGeneratorTest {
 	 */
 	@Test
 	public void testGenerate() {
-		NameSpace2Java.main(buildAppConfig());
+		NameSpace2Java.main(buildNodeConfig());
 	}
 
 }

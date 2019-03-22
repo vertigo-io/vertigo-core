@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.search_5_6.dynamic;
 
-import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -37,8 +37,8 @@ public class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest {
 	private static final String IDX_DYNA_ITEM = "IDX_DYNA_ITEM";
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)

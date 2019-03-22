@@ -23,7 +23,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -34,8 +34,8 @@ import io.vertigo.lang.WrappedException;
  *
  * @author dchallas, pchretien
  */
-public final class SmartAppConfigBuilder implements Builder<AppConfig> {
-	private final AppConfig appConfig;
+public final class SmartAppConfigBuilder implements Builder<NodeConfig> {
+	private final NodeConfig nodeConfig;
 
 	public SmartAppConfigBuilder(final String[] args) {
 		//---
@@ -45,27 +45,27 @@ public final class SmartAppConfigBuilder implements Builder<AppConfig> {
 	private SmartAppConfigBuilder(final Properties conf) {
 		Assertion.checkNotNull(conf);
 		//---
-		appConfig = buildAppConfig(conf);
+		nodeConfig = buildNodeConfig(conf);
 	}
 
-	private static AppConfig buildAppConfig(final Properties conf) {
+	private static NodeConfig buildNodeConfig(final Properties conf) {
 		// Initialisation de l'état de l'application
-		final XMLAppConfigBuilder appConfigBuilder = new XMLAppConfigBuilder();
+		final XMLAppConfigBuilder nodeConfigBuilder = new XMLAppConfigBuilder();
 		if (conf.containsKey("boot.applicationConfiguration")) {
 			final String xmlModulesFileNames = conf.getProperty("boot.applicationConfiguration");
 			final String[] xmlFileNamesSplit = xmlModulesFileNames.split(";");
 			conf.remove("boot.applicationConfiguration");
 			//-----
-			appConfigBuilder.withModules(SmartAppConfigBuilder.class, conf, xmlFileNamesSplit);
+			nodeConfigBuilder.withModules(SmartAppConfigBuilder.class, conf, xmlFileNamesSplit);
 		}
 
-		return appConfigBuilder
+		return nodeConfigBuilder
 				.build();
 	}
 
 	@Override
-	public AppConfig build() {
-		return appConfig;
+	public NodeConfig build() {
+		return nodeConfig;
 	}
 
 	private static Properties loadProperties(final String[] args, final Class<?> relativeRootClass) {
