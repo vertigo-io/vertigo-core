@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-import io.vertigo.app.config.NodeConfigBuilder;
 import io.vertigo.app.config.BootConfigBuilder;
 import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.app.config.ComponentConfigBuilder;
@@ -33,6 +32,7 @@ import io.vertigo.app.config.DefinitionProviderConfigBuilder;
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.NodeConfigBuilder;
 import io.vertigo.app.config.PluginConfig;
 import io.vertigo.app.config.PluginConfigBuilder;
 import io.vertigo.core.component.Component;
@@ -144,8 +144,7 @@ final class XMLModulesHandler extends DefaultHandler {
 				nodeConfigBuilder
 						.withAppName(appName)
 						.withNodeId(nodeId)
-						.withEndPoint(endPoint)
-						.build();
+						.withEndPoint(endPoint);
 				break;
 			case boot:
 				current = TagName.boot;
