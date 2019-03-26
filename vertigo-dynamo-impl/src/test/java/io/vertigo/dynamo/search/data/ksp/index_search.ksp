@@ -20,6 +20,12 @@ create FacetDefinition FCT_DESCRIPTION_ITEM {
 	label : "Description"
 }
 
+create FacetDefinition FCT_OPTIONAL_STRING_ITEM {
+	dtDefinition : DT_ITEM 
+	fieldName : "OPTIONAL_STRING" 
+	label : "optionalString"
+}
+
 create FacetDefinition FCT_MANUFACTURER_ITEM {
 	dtDefinition : DT_ITEM 
 	fieldName : "MANUFACTURER"
@@ -53,6 +59,14 @@ create FacetDefinition FCT_YEAR_ITEM {
 create FacetedQueryDefinition QRY_ITEM_FACET {
     keyConcept : DT_ITEM
     facets : [ FCT_DESCRIPTION_ITEM, FCT_MANUFACTURER_ITEM, FCT_MANUFACTURER_ITEM_ALPHA, FCT_YEAR_ITEM]
+    domainCriteria : DO_STRING
+    listFilterBuilderClass : "io.vertigo.dynamox.search.DslListFilterBuilder"  
+    listFilterBuilderQuery : "#CRITERIA#"    
+}
+
+create FacetedQueryDefinition QRY_ITEM_OPTIONAL_FACET {
+    keyConcept : DT_ITEM
+    facets : [ FCT_OPTIONAL_STRING_ITEM]
     domainCriteria : DO_STRING
     listFilterBuilderClass : "io.vertigo.dynamox.search.DslListFilterBuilder"  
     listFilterBuilderQuery : "#CRITERIA#"    

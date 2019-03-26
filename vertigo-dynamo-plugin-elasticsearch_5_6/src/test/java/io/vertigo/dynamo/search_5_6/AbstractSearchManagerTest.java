@@ -80,6 +80,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	/** IndexDefinition. */
 	private SearchIndexDefinition itemIndexDefinition;
 	private FacetedQueryDefinition itemFacetQueryDefinition;
+	private FacetedQueryDefinition itemFacetOptionalQueryDefinition;
 	private FacetedQueryDefinition itemFacetMultiQueryDefinition;
 	private FacetDefinition manufacturerFacetDefinition;
 	private FacetDefinition yearFacetDefinition;
@@ -100,6 +101,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		yearFacetDefinition = definitionSpace.resolve("FCT_YEAR_ITEM", FacetDefinition.class);
 		itemIndexDefinition = definitionSpace.resolve(indexName, SearchIndexDefinition.class);
 		itemFacetQueryDefinition = definitionSpace.resolve("QRY_ITEM_FACET", FacetedQueryDefinition.class);
+		itemFacetOptionalQueryDefinition = definitionSpace.resolve("QRY_ITEM_OPTIONAL_FACET", FacetedQueryDefinition.class);
 		itemFacetMultiQueryDefinition = definitionSpace.resolve("QRY_ITEM_FACET_MULTI", FacetedQueryDefinition.class);
 		clean(itemIndexDefinition);
 	}
@@ -507,6 +509,39 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		index(false);
 		final FacetedQueryResult<Item, SearchQuery> result = facetQuery("*:*");
 		testFacetResultByTerm(result);
+	}
+
+	@Test
+	public void testFacetOptionalFieldByTerm() {
+		index(false);
+		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
+				.withFacetStrategy(itemFacetOptionalQueryDefinition, EMPTY_SELECTED_FACET_VALUES)
+				.build();
+		final FacetedQueryResult<Item, SearchQuery> result = searchManager.loadList(itemIndexDefinition, searchQuery, null);
+
+		Assertions.assertEquals(itemDataBase.size(), result.getCount());
+
+		//On vérifie qu'il y a le bon nombre de facettes.
+		Assertions.assertEquals(1, result.getFacets().size());
+
+		//On recherche la facette constructeur
+		final Facet optionalStringFacet = getFacetByName(result, "FCT_OPTIONAL_STRING_ITEM");
+		//On vérifie que l'on est sur le champ Manufacturer
+		Assertions.assertEquals("OPTIONAL_STRING", optionalStringFacet.getDefinition().getDtField().getName());
+		Assertions.assertFalse(optionalStringFacet.getDefinition().isRangeFacet());
+
+		//On vérifie qu'il existe une valeur pour empty et que le nombre d'occurrences est correct
+		boolean found = false;
+		final String value = "[[empty]]";
+		for (final Entry<FacetValue, Long> entry : optionalStringFacet.getFacetValues().entrySet()) {
+			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).equals(value)) {
+				found = true;
+				Assertions.assertEquals(1, entry.getValue().intValue()); //only one empty string (other are null)
+			}
+		}
+		Assertions.assertTrue(found);
+
+		checkOrderByCount(optionalStringFacet);
 	}
 
 	private void testFacetResultByTerm(final FacetedQueryResult<Item, ?> result) {

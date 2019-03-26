@@ -54,6 +54,7 @@ import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.VSystemException;
+import io.vertigo.util.StringUtil;
 
 //vérifier
 /**
@@ -65,6 +66,8 @@ import io.vertigo.lang.VSystemException;
 final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<FacetedQueryResult<I, SearchQuery>> {
 
 	private static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
+
+	private static final String EMPTY_TERM = "[[empty]]";
 
 	private final ESDocumentCodec esDocumentCodec;
 	private final SearchIndexDefinition indexDefinition;
@@ -147,10 +150,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 			final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) facetAggregation;
 			FacetValue facetValue;
 			for (final Bucket bucket : multiBuckets.getBuckets()) {
-				final String term = bucket.getKeyAsString();
-				final String query = facetDefinition.getDtField().getName() + ":\"" + term + "\"";
-				final MessageText label = MessageText.of(term);
-				facetValue = new FacetValue(term, ListFilter.of(query), label);
+				facetValue = createFacetTermValue(bucket, facetDefinition);
 				populateCluster(bucket, facetValue, resultCluster, dtcIndex, resultHighlights);
 			}
 		}
@@ -240,15 +240,31 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 	private static Facet createTermFacet(final FacetDefinition facetDefinition, final MultiBucketsAggregation multiBuckets) {
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
 		FacetValue facetValue;
-		for (final Bucket value : multiBuckets.getBuckets()) {
-			final String term = value.getKeyAsString();
-			final MessageText label = MessageText.of(term);
-			final String query = facetDefinition.getDtField().getName() + ":\"" + term + "\"";
-			facetValue = new FacetValue(term, ListFilter.of(query), label);
-			facetValues.put(facetValue, value.getDocCount());
+		for (final Bucket bucket : multiBuckets.getBuckets()) {
+			facetValue = createFacetTermValue(bucket, facetDefinition);
+			facetValues.put(facetValue, bucket.getDocCount());
 		}
 
 		return new Facet(facetDefinition, facetValues);
+	}
+
+	private static FacetValue createFacetTermValue(final Bucket value, final FacetDefinition facetDefinition) {
+		final String valueAsString = value.getKeyAsString();
+		final String term;
+		final String query;
+		if (!StringUtil.isEmpty(valueAsString)) {
+			term = valueAsString;
+		} else {
+			term = EMPTY_TERM;
+		}
+		if (valueAsString != null) {
+			query = facetDefinition.getDtField().getName() + ":\"" + valueAsString + "\"";
+		} else {
+			query = "!_exists_:" + facetDefinition.getDtField().getName(); //only for null value, empty ones use FIELD:""
+		}
+
+		return new FacetValue(term, ListFilter.of(query), MessageText.of(term));
+
 	}
 
 	private static Facet createFacetRange(final FacetDefinition facetDefinition, final MultiBucketsAggregation rangeBuckets) {

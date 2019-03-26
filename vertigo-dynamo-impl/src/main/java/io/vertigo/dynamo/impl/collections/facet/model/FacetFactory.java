@@ -155,7 +155,7 @@ public final class FacetFactory {
 				final String valueAsString = dtField.getDomain().valueToString(value);
 				final String label;
 				if (StringUtil.isEmpty(valueAsString)) {
-					label = "<==no label==>";
+					label = "[[empty]]";
 				} else {
 					label = valueAsString;
 				}
