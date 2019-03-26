@@ -67,7 +67,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 
 	private static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
 
-	private static final String EMPTY_TERM = "[[empty]]";
+	private static final String EMPTY_TERM = "_empty_";
 
 	private final ESDocumentCodec esDocumentCodec;
 	private final SearchIndexDefinition indexDefinition;
@@ -250,12 +250,12 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 
 	private static FacetValue createFacetTermValue(final Bucket value, final FacetDefinition facetDefinition) {
 		final String valueAsString = value.getKeyAsString();
-		final String term;
+		final String label;
 		final String query;
 		if (!StringUtil.isEmpty(valueAsString)) {
-			term = valueAsString;
+			label = valueAsString;
 		} else {
-			term = EMPTY_TERM;
+			label = EMPTY_TERM;
 		}
 		if (valueAsString != null) {
 			query = facetDefinition.getDtField().getName() + ":\"" + valueAsString + "\"";
@@ -263,7 +263,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 			query = "!_exists_:" + facetDefinition.getDtField().getName(); //only for null value, empty ones use FIELD:""
 		}
 
-		return new FacetValue(term, ListFilter.of(query), MessageText.of(term));
+		return new FacetValue(label, ListFilter.of(query), MessageText.of(label));
 
 	}
 

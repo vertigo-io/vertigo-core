@@ -35,6 +35,7 @@ import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.collections.model.SelectedFacetValues.SelectedFacetValuesBuilder;
 
 public final class SelectedFacetValuesDeserializer implements JsonDeserializer<SelectedFacetValues> {
+	private static final String EMPTY_TERM = "__empty__";
 
 	@Override
 	public SelectedFacetValues deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
@@ -83,10 +84,20 @@ public final class SelectedFacetValuesDeserializer implements JsonDeserializer<S
 	}
 
 	private static void appendTermFacetValue(final JsonElement value, final FacetDefinition facetDefinition, final SelectedFacetValuesBuilder selectedFacetValuesBuilder) {
-		final String term = value.getAsString();
-		final MessageText label = MessageText.of(term);
-		final String query = facetDefinition.getDtField().getName() + ":\"" + term + "\"";
-		final FacetValue facetValue = new FacetValue(term, ListFilter.of(query), label);
+		final String code = value.getAsString();
+		final String valueAsString;
+		final String query;
+		if (EMPTY_TERM.equals(code)) {
+			valueAsString = code;
+		} else {
+			valueAsString = "";
+		}
+		if (valueAsString != null) {
+			query = facetDefinition.getDtField().getName() + ":\"" + valueAsString + "\"";
+		} else {
+			query = "!_exists_:" + facetDefinition.getDtField().getName(); //only for null value, empty ones use FIELD:""
+		}
+		final FacetValue facetValue = new FacetValue(code, ListFilter.of(query), MessageText.of(code));
 		selectedFacetValuesBuilder.add(facetDefinition, facetValue);
 	}
 }

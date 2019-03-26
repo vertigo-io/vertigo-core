@@ -66,7 +66,7 @@ import io.vertigo.util.StringUtil;
 final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<FacetedQueryResult<I, SearchQuery>> {
 
 	private static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
-	private static final String EMPTY_TERM = "[[empty]]";
+	private static final String EMPTY_TERM = "_empty_";
 
 	private final ESDocumentCodec esDocumentCodec;
 	private final SearchIndexDefinition indexDefinition;

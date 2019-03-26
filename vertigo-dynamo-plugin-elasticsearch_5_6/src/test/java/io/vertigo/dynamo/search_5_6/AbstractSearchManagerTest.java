@@ -358,6 +358,15 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		size = query("DESCRIPTION:Sieg*");
 		Assertions.assertEquals(databaseResult, size);
 
+		//y compris en wildcard mandatory
+		size = query("DESCRIPTION:(+sièg*)");
+		Assertions.assertEquals(databaseResult, size);
+		size = query("DESCRIPTION:(+Sièg*)");
+		Assertions.assertEquals(databaseResult, size);
+		size = query("DESCRIPTION:(+sieg*)");
+		Assertions.assertEquals(databaseResult, size);
+		size = query("DESCRIPTION:(+Sieg*)");
+		Assertions.assertEquals(databaseResult, size);
 	}
 
 	/**
@@ -532,7 +541,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 
 		//On vérifie qu'il existe une valeur pour empty et que le nombre d'occurrences est correct
 		boolean found = false;
-		final String value = "[[empty]]";
+		final String value = "_empty_";
 		for (final Entry<FacetValue, Long> entry : optionalStringFacet.getFacetValues().entrySet()) {
 			if (entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH).equals(value)) {
 				found = true;
