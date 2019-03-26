@@ -4,9 +4,110 @@ Version history
 Running 2.0.0-SNAPSHOT
 ----------------------
 
-* [all] Code cleaning, refactoring and documenting 
-
 more to come :)
+
+Release 2.0.0 - 2019/04/XX
+----------------------
+This version is a major release with a lots of breaks. It should be use for projets in early stages of development.
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-113-to-200)
+
+* [all] Code cleaning, refactoring and documenting 
+* __[database,dynamo,studio] remove hibernate support__
+* __[core] refactored AppConfig -> Renamed in NodeConfig__
+* [core] added conditions to filter abstract classes with discovery
+* [core] Possibility to have an optional parameter in the configuration
+* [core] tests in junit 5 (AbstractTestCaseJU4 is now deprecated use AbstractTestCaseJU5)
+* __[core] add yaml configuration with flippable features__
+* [core] remove deprecated Date DataType + remove all use of java.util.Date
+* [core] More specific temp dir for TempFiles
+* [database] add timeseries in database module
+* [dynamo] key is replaced by id in ksp
+* [dynamo] URI is replaced by UID
+* [dynamo] Made FacetedQueryResult serializable
+* [dynamo] Modified date pattern for es query (breaking change)
+* [dynamo] localdate support in query
+* [dynamo] es : added optional param for embeded
+* [dynamo] Fixed reindexall task when removed old elements
+* [dynamo] Fixed index urn type (bug on removeAll)
+* [dynamo] From io.File to nio.Path
+* [dynamo] DtListState.of
+* [dynamo] Changed default charset ok Ksp loader from iso-8859-1 to utf-8
+* [dynamo] Fixed Search user DSL to escape bad syntax instead of VUser
+* [dynamo] remove es 2.4 plugin
+* [dynamo] Added ElasticSearch plugin for v5.6
+* [dynamo] Upgraded ES version from 5.6.8 to 6.6.0, and Lucene from 6.6.1 to 7.6.0
+* [dynamo] Added clustering to CollectionsManager
+* [account] allow comments in textauthentication plugin
+* [account] Fixed account store plugin and null value
+* [account] Need a formatter on ID for convertion
+* [account] Removed deprecated persona VSecurityManager
+* [account] Removed definition prefix from authorization aspect
+* [vega] Added support of '.' in exclude and include fieldname
+* [vega] Added Instant and LocalDate support to SwaggerApi
+* [vega] UID Json encoding now send only key part, and use generics for found entity class
+* [vega] Set attribute 'SessionExpired' true in case of session expiration
+* [vega] Fixed iterator of uiListModifiable : remove change the expected count
+* [vega] Inactive CacheControlFilter when Cache-Control header is already set
+* [vega] Removed securityCheck of URL : may use @secured on WS
+* [vega] Removed deprecated UiListState
+* [studio] multi file for sql init of staticmasterdatas 
+* [studio] dt objects can be splitted by feature
+* [all] update dependencies
+log4j2 2.11.0 -> 2.11.2 ; cglib-nodep 3.2.6 -> 3.2.10 ; gson 2.8.2 -> 2.8.5 ; c3p0 0.9.5.2 -> 0.9.5.3 ; janino	3.0.8 -> 3.0.12 ; ehcache 2.10.4 -> 2.10.6  ; berkleydb sleepycat je 7.5.11 -> 18.3.12 ; rest-assured 3.0.7 -> 3.3.0 ; freemarker 2.3.23 -> 2.3.28 ; javax-mail 1.6.0 -> 1.6.2 ; h2 1.4.196 -> 1.4.199 ; struts2 2.5.16 -> 2.5.20 ; fr.opensagres.xdocreport.converter.odt.odfdom 2.0.1 -> 2.0.2 ; fr.opensagres.xdocreport.converter.docx.xwpf 2.0.1 -> 2.0.2 ; org.apache.poi 3.16 -> 4.0.1
+
+Release 1.1.3 - 2019/03/21
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-112-to-113)
+* [Studio] unused attribute
+* [Core] More specific temp dir for TempFiles
+* [Database] add check for quoted bound param
+* [Core] added conditions to filter abstract classes
+* [Core] Possibility to have an optional parameter in the configuration
+
+Release 1.1.2 - 2018/06/28
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-111-to-112)
+* [Vega] Moved VSecurityException to Account
+* [Account] Added AuthorizationAspect : Warning reentrance not supported
+* [Dynamo] Fixed defaut index data type when analyser is set
+* [Dynamo] Added berkley database name in logs and fix some purge parameter
+* [Account] Changed deprecated use className
+* [Core] Fix for java 9+ compatibility in XMLModuleParams.
+* [Dynamo] Fixing bug on index name not lowered when a prefix is used
+* [vega] fix swaggerUi
+
+Release 1.1.1 - 2018/04/27
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-110-to-111)
+* [Dynamo] Fixed IndexType parsing
+* [Dynamo] Fixed collections facets
+* [Dynamo] Fixed search.sortable fields with specific filter (lowercase, acsiifolding)
+* [dynamo] additional params for batch tasks
+* [Dynamo] Changed berkeley usage for compatibility 5.x to 7.x
+* [Dynamo] Added maven repo for berkeleyDb
+* [Dynamo] Fixed #115 use Set for dirtyElements
+* [Vega] Fixed selectedFacet by label or by code
+* [Vega] Fixed bad contextPath of spark
+* [Vega] Fixed accept UiListState (deprecated)
+* [Vega] Fixed swaggerUi
+* [Vega] Added tests for search json serialisation
+* [Vega] Updated swaggerUi version from 2.2.10 to 3.9.2
+* [Vega] Fixed check of requests access
+* [account] fix bug in textAuthenticationPlugin
+* [Account] Fixed when AuthToken isn't a String
+* [studio] fix security generator
+* [Studio] Fixed TS mda
+* [Studio] Fixed computed fields for properties and enum
+* [Commons] Add specific base64 to base64url tests
+* [core] fix discovery of proxies + added test
+* [all] update dependencies 
+ * com.h2database/h2 : 1.4.196 -> 1.4.197
+ * org.codehaus.janino/janino : 3.0.7 -> 3.0.8
+ * org.apache.logging.log4j/log4j-core : 2.9.1 -> 2.11.0
+ * cglib/cglib-nodep : 3.2.5 -> 3.2.6
+ * org.hibernate/hibernate-core : 5.2.11.Final -> 5.2.15.Final
+ * org.elasticsearch/elasticsearch : 5.6.2 -> 5.6.8
+ * org.elasticsearch/elasticsearch : 2.4.5 -> 2.4.6
 
 Release 1.1.0 - 2017/12/07
 ----------------------
