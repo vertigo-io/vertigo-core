@@ -35,7 +35,7 @@ import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.collections.model.SelectedFacetValues.SelectedFacetValuesBuilder;
 
 public final class SelectedFacetValuesDeserializer implements JsonDeserializer<SelectedFacetValues> {
-	private static final String EMPTY_TERM = "__empty__";
+	private static final String EMPTY_TERM = "_empty_";
 
 	@Override
 	public SelectedFacetValues deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
