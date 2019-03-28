@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.store.util;
+package io.vertigo.dynamo.impl.store.datastore;
 
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +30,7 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
+import io.vertigo.dynamo.store.datastore.BrokerNN;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
@@ -45,6 +46,7 @@ import io.vertigo.util.StringUtil;
  * Gestion des tables de relations NN.
  * @author dchallas
  */
+@Deprecated
 final class BrokerNNImpl implements BrokerNN {
 	private final Domain integerDomain;
 	private final TaskManager taskManager;

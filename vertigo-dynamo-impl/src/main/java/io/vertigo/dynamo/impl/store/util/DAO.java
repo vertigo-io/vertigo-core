@@ -31,7 +31,6 @@ import io.vertigo.dynamo.domain.metamodel.DataAccessor;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
-import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
@@ -50,13 +49,11 @@ import io.vertigo.lang.Assertion;
  * @param <E> the type of entity
  * @param <P> Type de la clef primaire.
  */
-public class DAO<E extends Entity, P> implements BrokerNN {
+public class DAO<E extends Entity, P> {
 
 	/** DT de l'objet dont on gére le CRUD. */
 	private final Class<? extends Entity> entityClass;
 	protected final DataStore dataStore;
-	private final BrokerNN brokerNN;
-	private final BrokerBatch<E, P> brokerBatch;
 	private final TaskManager taskManager;
 
 	/**
@@ -74,16 +71,10 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 		this.entityClass = entityClass;
 		dataStore = storeManager.getDataStore();
 		this.taskManager = taskManager;
-		brokerNN = new BrokerNNImpl(taskManager);
-		brokerBatch = new BrokerBatchImpl<>(taskManager);
 	}
 
 	protected final TaskManager getTaskManager() {
 		return taskManager;
-	}
-
-	public final BrokerBatch<E, P> getBatch() {
-		return brokerBatch;
 	}
 
 	/**
@@ -277,57 +268,6 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 */
 	public final DtList<E> findAll(final Criteria<E> criteria, final int maxRows) {
 		return dataStore.findAll(new DtListURIForCriteria<>(getDtDefinition(), criteria, maxRows));
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public final void removeAllNN(final DtListURIForNNAssociation dtListURI) {
-		brokerNN.removeAllNN(dtListURI);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public final void removeNN(final DtListURIForNNAssociation dtListURI, final UID uidToDelete) {
-		brokerNN.removeNN(dtListURI, uidToDelete);
-	}
-
-	/**
-	 * Mise à jour des associations n-n.
-	 *
-	 * @param <FK> <FK extends DtObject>
-	 * @param dtListURI DtList de référence
-	 * @param newDtc DtList modifiée
-	 */
-	public final <FK extends Entity> void updateNN(final DtListURIForNNAssociation dtListURI, final DtList<FK> newDtc) {
-		Assertion.checkNotNull(newDtc);
-		//-----
-		final List<UID> objectUIDs = newDtc
-				.stream()
-				.map(UID::of)
-				.collect(Collectors.toList());
-		updateNN(dtListURI, objectUIDs);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public final void updateNN(final DtListURIForNNAssociation dtListURI, final List<UID> newUriList) {
-		brokerNN.updateNN(dtListURI, newUriList);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public final void appendNN(final DtListURIForNNAssociation dtListURI, final UID uidToAppend) {
-		brokerNN.appendNN(dtListURI, uidToAppend);
-	}
-
-	/**
-	 * Ajout un objet à la collection existante.
-	 *
-	 * @param dtListURI DtList de référence
-	 * @param entity the entity to append
-	 */
-	public final void appendNN(final DtListURIForNNAssociation dtListURI, final Entity entity) {
-		brokerNN.appendNN(dtListURI, entity.getUID());
 	}
 
 	private DtDefinition getDtDefinition() {

@@ -38,6 +38,7 @@ import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
 import io.vertigo.dynamo.store.filestore.FileStore;
+import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -69,18 +70,20 @@ public final class StoreManagerImpl implements StoreManager {
 			final CollectionsManager collectionsManager,
 			final List<FileStorePlugin> fileStorePlugins,
 			final List<DataStorePlugin> dataStorePlugins,
-			final EventBusManager eventBusManager) {
+			final EventBusManager eventBusManager,
+			final TaskManager taskManager) {
 		Assertion.checkNotNull(cacheManager);
 		Assertion.checkNotNull(collectionsManager);
 		Assertion.checkNotNull(dataStorePlugins);
 		Assertion.checkNotNull(fileStorePlugins);
 		Assertion.checkNotNull(eventBusManager);
+		Assertion.checkNotNull(taskManager);
 		//-----
 		masterDataConfig = new MasterDataConfigImpl();
 		//---
 		//On enregistre le plugin principal du broker
 		dataStoreConfig = new DataStoreConfigImpl(dataStorePlugins, cacheManager);
-		dataStore = new DataStoreImpl(collectionsManager, this, transactionManager, eventBusManager, dataStoreConfig);
+		dataStore = new DataStoreImpl(collectionsManager, this, transactionManager, eventBusManager, taskManager, dataStoreConfig);
 		//-----
 		final FileStoreConfig fileStoreConfig = new FileStoreConfig(fileStorePlugins);
 		fileStore = new FileStoreImpl(fileStoreConfig);

@@ -100,4 +100,10 @@ public interface DataStore {
 	 */
 	<E extends Entity> DtList<E> find(final DtDefinition dtDefinition, Criteria<E> criteria);
 
+	/**
+	 * Return the a dedicated object that handles NN associations
+	 * @return the handler for NN Associations
+	 */
+	BrokerNN getBrokerNN();
+
 }

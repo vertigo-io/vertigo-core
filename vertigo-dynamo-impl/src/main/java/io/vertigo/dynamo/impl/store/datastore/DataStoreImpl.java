@@ -32,7 +32,9 @@ import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.dynamo.impl.store.datastore.cache.CacheDataStore;
 import io.vertigo.dynamo.impl.store.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.dynamo.store.datastore.BrokerNN;
 import io.vertigo.dynamo.store.datastore.DataStore;
+import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -45,6 +47,8 @@ public final class DataStoreImpl implements DataStore {
 	private final LogicalDataStoreConfig logicalStoreConfig;
 	private final EventBusManager eventBusManager;
 	private final VTransactionManager transactionManager;
+
+	private final BrokerNNImpl brokerNN;
 
 	/**
 	 * Constructor
@@ -59,17 +63,20 @@ public final class DataStoreImpl implements DataStore {
 			final StoreManager storeManager,
 			final VTransactionManager transactionManager,
 			final EventBusManager eventBusManager,
+			final TaskManager taskManager,
 			final DataStoreConfigImpl dataStoreConfig) {
 		Assertion.checkNotNull(collectionsManager);
 		Assertion.checkNotNull(storeManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(eventBusManager);
+		Assertion.checkNotNull(taskManager);
 		Assertion.checkNotNull(dataStoreConfig);
 		//-----
 		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
 		cacheDataStore = new CacheDataStore(collectionsManager, storeManager, eventBusManager, dataStoreConfig);
 		this.eventBusManager = eventBusManager;
 		this.transactionManager = transactionManager;
+		brokerNN = new BrokerNNImpl(taskManager);
 	}
 
 	private DataStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {
@@ -169,6 +176,14 @@ public final class DataStoreImpl implements DataStore {
 	@Override
 	public <E extends Entity> DtList<E> find(final DtDefinition dtDefinition, final Criteria<E> criteria) {
 		return getPhysicalStore(dtDefinition).findByCriteria(dtDefinition, criteria, null);
+	}
+
+	//------
+
+	/** {@inheritDoc} */
+	@Override
+	public BrokerNN getBrokerNN() {
+		return brokerNN;
 	}
 
 }

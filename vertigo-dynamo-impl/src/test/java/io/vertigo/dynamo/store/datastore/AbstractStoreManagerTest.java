@@ -47,7 +47,6 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.dynamo.impl.store.util.DAO;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.data.domain.car.Car;
 import io.vertigo.dynamo.store.data.domain.car.CarDataBase;
@@ -83,14 +82,12 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 	private DtDefinition dtDefinitionCar;
 	private DtListURI allCarsUri;
 
-	private DAO<Famille, Integer> familleDAO;
 	private CarDataBase carDataBase;
 
 	@Override
 	protected void doSetUp() throws Exception {
 		carDataBase = new CarDataBase();
 		dtDefinitionFamille = DtObjectUtil.findDtDefinition(Famille.class);
-		familleDAO = new DAO<>(Famille.class, storeManager, taskManager);
 
 		dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
 		allCarsUri = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
@@ -384,7 +381,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 			for (final Car car : cars) {
 				carUriList.add(car.getUID());
 			}
-			familleDAO.updateNN(createdFamille.getVoituresLocationDtListURI(), carUriList);
+			storeManager.getDataStore().getBrokerNN().updateNN(createdFamille.getVoituresLocationDtListURI(), carUriList);
 
 			//On garde le résultat de l'association NN
 			final DtList<Car> firstResult = createdFamille.getVoituresLocationList();
@@ -392,7 +389,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 
 			//On met à jour l'association en retirant le premier élément
 			carUriList.remove(0);
-			familleDAO.updateNN(createdFamille.getVoituresLocationDtListURI(), carUriList);
+			storeManager.getDataStore().getBrokerNN().updateNN(createdFamille.getVoituresLocationDtListURI(), carUriList);
 
 			//on garde le résultat en lazy : il doit avoir le meme nombre de voiture qu'au début
 			final DtList<Car> lazyResult = createdFamille.getVoituresLocationList();
