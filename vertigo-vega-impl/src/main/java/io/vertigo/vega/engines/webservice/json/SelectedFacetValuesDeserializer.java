@@ -88,9 +88,9 @@ public final class SelectedFacetValuesDeserializer implements JsonDeserializer<S
 		final String valueAsString;
 		final String query;
 		if (EMPTY_TERM.equals(code)) {
-			valueAsString = code;
-		} else {
 			valueAsString = "";
+		} else {
+			valueAsString = code;
 		}
 		if (valueAsString != null) {
 			query = facetDefinition.getDtField().getName() + ":\"" + valueAsString + "\"";
