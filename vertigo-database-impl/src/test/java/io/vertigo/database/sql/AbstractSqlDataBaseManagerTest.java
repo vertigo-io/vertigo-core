@@ -337,6 +337,29 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 		});
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testQuotedParam() throws Exception {
+		//On crée les données
+		createDatas();
+		//----
+		final SqlConnection connection = obtainMainConnection();
+		final List<Movie> movies;
+		try {
+			movies = dataBaseManager.executeQuery(SqlStatement
+					.builder("select * from movie where movie.title = '#title#' ")
+					.bind("title", String.class, Movies.TITLE_MOVIE_1)
+					.build(),
+					Movie.class,
+					1,
+					connection);
+
+		} finally {
+			connection.release();
+		}
+		Assert.assertEquals(1, movies.size());
+		Assert.assertEquals(Movies.TITLE_MOVIE_1, movies.get(0).getTitle());
+	}
+
 	@Test
 	public void testBatchInserts() throws Exception {
 		final SqlConnectionProvider sqlConnectionProvider = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
