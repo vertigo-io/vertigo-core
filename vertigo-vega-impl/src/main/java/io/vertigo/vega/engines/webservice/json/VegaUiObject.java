@@ -20,11 +20,13 @@ package io.vertigo.vega.engines.webservice.json;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -53,6 +55,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 
 	/** Référence vers la définition. */
 	private final DefinitionReference<DtDefinition> dtDefinitionRef;
+	protected final Set<String> fieldIndex;
 
 	private String inputKey;
 	private D inputDto;
@@ -82,6 +85,9 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		//-----
 		this.inputDto = inputDto;
 		this.dtDefinitionRef = new DefinitionReference<>(DtObjectUtil.findDtDefinition(inputDto));
+		fieldIndex = Collections.unmodifiableSet(getDtDefinition().getFields().stream()
+				.map(DtField::getName)
+				.collect(Collectors.toSet()));
 
 		for (final String field : modifiedFields) {
 			setTypedValue(field, (Serializable) getDtField(field).getDataAccessor().getValue(inputDto));
