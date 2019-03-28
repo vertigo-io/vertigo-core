@@ -91,7 +91,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * Dans le cas des Batchs ce nombre correspond à la somme de toutes les lignes affectées par le batch.
 	 */
 	//Qui utilise ça ?? // peut on revenir à une forme explicite
-	public static final String SQL_ROWCOUNT = "INT_SQL_ROWCOUNT";
+	public static final String SQL_ROWCOUNT = "intSqlRowcount";
 
 	private final ScriptManager scriptManager;
 	private final VTransactionManager transactionManager;

@@ -41,7 +41,6 @@ import freemarker.template.TemplateException;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.studio.mda.MdaResultBuilder;
-import io.vertigo.studio.plugins.mda.util.TemplateMethodStringUtil;
 
 /**
  * Génération des fichiers avec FreeMarker.
@@ -91,7 +90,6 @@ final class FileGeneratorFreeMarker implements FileGenerator {
 	 */
 	private static Configuration initConfiguration(final Class<?> referenceClass) {
 		final Configuration config = new Configuration();
-		config.setSharedVariable("constToCamelCase", new TemplateMethodStringUtil());
 		setTemplateLoading(config, referenceClass);
 		config.setObjectWrapper(ObjectWrapper.BEANS_WRAPPER);
 		return config;

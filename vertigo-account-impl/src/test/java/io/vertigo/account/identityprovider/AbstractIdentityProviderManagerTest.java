@@ -31,9 +31,9 @@ import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.identityprovider.model.User;
 import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -73,7 +73,7 @@ abstract class AbstractIdentityProviderManagerTest extends AbstractTestCaseJU5 {
 								Param.of("ldapReaderPassword", "v3rt1g0"),
 								Param.of("ldapUserAuthAttribute", "cn"),
 								Param.of("userDtDefinitionName", "DT_USER"),
-								Param.of("ldapUserAttributeMapping", "USR_ID:cn, FULL_NAME:description"))
+								Param.of("ldapUserAttributeMapping", "usrId:cn, fullName:description"))
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)

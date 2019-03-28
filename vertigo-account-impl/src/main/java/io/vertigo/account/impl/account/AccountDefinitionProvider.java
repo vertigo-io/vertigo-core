@@ -36,10 +36,10 @@ import io.vertigo.util.ListBuilder;
  */
 public final class AccountDefinitionProvider implements SimpleDefinitionProvider {
 
-	private static final String PHOTO = "PHOTO";
-	private static final String EMAIL = "EMAIL";
-	private static final String ID = "ID";
-	private static final String DISPLAY_NAME = "DISPLAY_NAME";
+	private static final String PHOTO = "photo";
+	private static final String EMAIL = "email";
+	private static final String ID = "id";
+	private static final String DISPLAY_NAME = "displayName";
 
 	/** {@inheritDoc} */
 	@Override

@@ -21,9 +21,9 @@ package io.vertigo.account.identityprovider;
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.identityprovider.model.DtDefinitions;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -77,7 +77,7 @@ public final class MyNodeConfig {
 					Param.of("ldapReaderPassword", "v3rt1g0"),
 					Param.of("ldapUserAuthAttribute", "cn"),
 					Param.of("userIdentityEntity", "DT_USER"),
-					Param.of("ldapUserAttributeMapping", "USR_ID:cn, FULL_NAME:description, photo:jpegPhoto"));
+					Param.of("ldapUserAttributeMapping", "usrId:cn, fullName:description, photo:jpegPhoto"));
 		} else if (idpPlugin == IdpPlugin.text) {
 			accountFeatures.withTextIdentityProvider(
 					Param.of("identityFilePath", "io/vertigo/account/data/identities.txt"),
@@ -96,7 +96,7 @@ public final class MyNodeConfig {
 					.withSqlStore();
 			accountFeatures.withStoreIdentityProvider(
 					Param.of("userIdentityEntity", "DT_USER"),
-					Param.of("userAuthField", "EMAIL"));
+					Param.of("userAuthField", "email"));
 		}
 
 		return NodeConfig.builder()

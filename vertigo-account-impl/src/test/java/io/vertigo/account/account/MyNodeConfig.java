@@ -21,9 +21,9 @@ package io.vertigo.account.account;
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.account.model.DtDefinitions;
 import io.vertigo.account.data.TestUserSession;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -65,9 +65,9 @@ public final class MyNodeConfig {
 			accountFeatures.withStoreAccount(
 					Param.of("userIdentityEntity", "DT_USER"),
 					Param.of("groupIdentityEntity", "DT_USER_GROUP"),
-					Param.of("userAuthField", "EMAIL"),
-					Param.of("userToAccountMapping", "id:USR_ID, displayName:FULL_NAME, email:EMAIL, authToken:EMAIL"),
-					Param.of("groupToGroupAccountMapping", "id:GRP_ID, displayName:NAME"));
+					Param.of("userAuthField", "email"),
+					Param.of("userToAccountMapping", "id:usrId, displayName:fullName, email:email, authToken:email"),
+					Param.of("groupToGroupAccountMapping", "id:grpId, displayName:name"));
 		} else {
 			accountFeatures.withTextAccount(
 					Param.of("accountFilePath", "io/vertigo/account/data/identities.txt"),

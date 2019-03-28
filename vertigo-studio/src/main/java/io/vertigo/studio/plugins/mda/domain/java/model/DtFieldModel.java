@@ -25,7 +25,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
-import io.vertigo.util.StringUtil;
 
 /**
  * Model used to define a DtField.
@@ -49,8 +48,9 @@ public final class DtFieldModel {
 	}
 
 	/**
-	 * Nom du champ en majuscules séparés par des _.
-	 * @return UN_NOM
+	 * Nom du champ en camelCase.
+	 * En freemarker pour upperCamelCase : myString?cap_first
+	 * @return unNom
 	 */
 	public String getName() {
 		return dtField.getName();
@@ -69,16 +69,6 @@ public final class DtFieldModel {
 
 	public String getLabel() {
 		return dtField.getLabel().getDisplay();
-	}
-
-	/**
-	 * Nom du champ en CamelCase.
-	 * La premiére lettre est en majuscule
-	 * si besoin la première lettre en miniscule avec FreeMarker : ${dtField.nameLowerCase?uncap_first}
-	 * @return UnNom
-	 */
-	public String getUpperCamelCaseName() {
-		return StringUtil.constToUpperCamelCase(dtField.getName());
 	}
 
 	/**

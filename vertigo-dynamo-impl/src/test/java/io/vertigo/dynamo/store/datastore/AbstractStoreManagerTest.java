@@ -126,14 +126,14 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 
 	protected List<String> getCreateFamilleRequests() {
 		return new ListBuilder<String>()
-				.add(" create table famille(fam_id BIGINT , LIBELLE varchar(255))")
+				.add(" create table famille(FAM_ID BIGINT , LIBELLE varchar(255))")
 				.add(" create sequence SEQ_FAMILLE start with 10001 increment by 1")
 				.build();
 	}
 
 	protected List<String> getCreateCarRequests() {
 		return new ListBuilder<String>()
-				.add(" create table fam_car_location(fam_id BIGINT , ID BIGINT)")
+				.add(" create table fam_car_location(FAM_ID BIGINT, ID BIGINT)")
 				.add(" create table motor_type(MTY_CD varchar(50) , LABEL varchar(255))")
 				.add("insert into motor_type(MTY_CD, LABEL) values ('ESSENCE', 'Essence')")
 				.add("insert into motor_type(MTY_CD, LABEL) values ('DIESEL', 'Diesel')")
@@ -194,7 +194,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
 			final DtList<Car> dtcEssence = storeManager.getDataStore().find(
 					DtObjectUtil.findDtDefinition(Car.class),
-					Criterions.isEqualTo(CarFields.MTY_CD, MotorTypeEnum.essence.getEntityUID().getId()));
+					Criterions.isEqualTo(CarFields.mtyCd, MotorTypeEnum.essence.getEntityUID().getId()));
 			//---
 			Assertions.assertEquals(1, dtcEssence.size());
 			Assertions.assertTrue(dtcEssence.get(0).motorType().getEnumValue() == MotorTypeEnum.essence);
@@ -228,12 +228,12 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_INSERT_CAR")
 				.withEngine(TaskEngineProc.class)
 				.withRequest("insert into CAR (ID, FAM_ID,MANUFACTURER, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MTY_CD) values "
-						+ "(NEXT VALUE FOR SEQ_CAR, #DTO_CAR.FAM_ID#, #DTO_CAR.MANUFACTURER#, #DTO_CAR.MODEL#, #DTO_CAR.DESCRIPTION#, #DTO_CAR.YEAR#, #DTO_CAR.KILO#, #DTO_CAR.PRICE#, #DTO_CAR.MTY_CD#)")
-				.addInRequired("DTO_CAR", doCar)
+						+ "(NEXT VALUE FOR SEQ_CAR, #dtoCar.famId#, #dtoCar.manufacturer#, #dtoCar.model#, #dtoCar.description#, #dtoCar.year#, #dtoCar.kilo#, #dtoCar.price#, #dtoCar.mtyCd#)")
+				.addInRequired("dtoCar", doCar)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
-				.addValue("DTO_CAR", car)
+				.addValue("dtoCar", car)
 				.build();
 		final TaskResult taskResult = taskManager
 				.execute(task);
@@ -284,7 +284,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 			final Famille famille = new Famille();
 			famille.setLibelle("encore un");
 			final Famille createdFamille = storeManager.getDataStore().create(famille);
-			// on attend un objet avec un ID non null ?
+			// on attend un objet avec un id non null ?
 			Assertions.assertNotNull(createdFamille.getFamId());
 			//-----
 			dtc = storeManager.getDataStore().findAll(allFamilles);

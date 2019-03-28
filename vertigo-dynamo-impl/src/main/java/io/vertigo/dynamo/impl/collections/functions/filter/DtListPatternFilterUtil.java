@@ -46,9 +46,9 @@ public final class DtListPatternFilterUtil {
 	 */
 	public enum FilterPattern {
 		/** range. */
-		Range("([A-Z_0-9]+):([\\[\\{\\]])(.*) TO (.*)([\\]\\}\\[])"), //[] : include, ][ or {} : exclude
+		Range("([a-z][a-zA-Z0-9]*):([\\[\\{\\]])(.*) TO (.*)([\\]\\}\\[])"), //[] : include, ][ or {} : exclude
 		/** term. */
-		Term("([A-Z_0-9]+):\"(.*)\"");
+		Term("([a-z][a-zA-Z0-9]*):\"(.*)\"");
 
 		private final Pattern pattern;
 

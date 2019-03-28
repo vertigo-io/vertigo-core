@@ -41,7 +41,7 @@ public final class Address implements Entity {
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_CON_ADR",
-			fkFieldName = "ADR_ID",
+			fkFieldName = "adrId",
 			primaryDtDefinitionName = "DT_ADDRESS",
 			primaryIsNavigable = true,
 			primaryRole = "Address",

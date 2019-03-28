@@ -23,7 +23,6 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * Objet utilisé par FreeMarker.
@@ -117,9 +116,9 @@ public final class AssociationModel {
 	}
 
 	/**
-	 * @return Nom du champ fk en CamelCase.
+	 * @return Nom du champ fk en camelCase.
 	 */
-	public String getUpperCamelCaseFkFieldName() {
-		return StringUtil.constToUpperCamelCase(((AssociationSimpleDefinition) associationDefinition).getFKField().getName());
+	public String getFkFieldName() {
+		return ((AssociationSimpleDefinition) associationDefinition).getFKField().getName();
 	}
 }

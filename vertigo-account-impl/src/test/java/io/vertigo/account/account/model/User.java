@@ -35,7 +35,7 @@ public final class User implements KeyConcept {
 	private String fullName;
 	private String email;
 
-	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_GRP_USR", fkFieldName = "GRP_ID", primaryDtDefinitionName = "DT_USER_GROUP", primaryIsNavigable = true, primaryRole = "Group", primaryLabel = "Group", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DT_USER", foreignIsNavigable = false, foreignRole = "User", foreignLabel = "User", foreignMultiplicity = "0..*")
+	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_GRP_USR", fkFieldName = "grpId", primaryDtDefinitionName = "DT_USER_GROUP", primaryIsNavigable = true, primaryRole = "Group", primaryLabel = "Group", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DT_USER", foreignIsNavigable = false, foreignRole = "User", foreignLabel = "User", foreignMultiplicity = "0..*")
 	private final VAccessor<UserGroup> grpIdAccessor = new VAccessor<>(UserGroup.class, "Group");
 
 	/** {@inheritDoc} */
@@ -45,29 +45,29 @@ public final class User implements KeyConcept {
 	}
 
 	@Field(domain = "DO_CODE", type = "ID", required = true, label = "Id")
-	public final String getUsrId() {
+	public String getUsrId() {
 		return usrId;
 	}
 
-	public final void setUsrId(final String usrId) {
+	public void setUsrId(final String usrId) {
 		this.usrId = usrId;
 	}
 
 	@Field(domain = "DO_LABEL", required = true, label = "FullName")
-	public final String getFullName() {
+	public String getFullName() {
 		return fullName;
 	}
 
-	public final void setFullName(final String fullName) {
+	public void setFullName(final String fullName) {
 		this.fullName = fullName;
 	}
 
 	@Field(domain = "DO_LABEL", required = true, label = "Email")
-	public final String getEmail() {
+	public String getEmail() {
 		return email;
 	}
 
-	public final void setEmail(final String email) {
+	public void setEmail(final String email) {
 		this.email = email;
 	}
 

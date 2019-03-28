@@ -55,7 +55,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 	private static final String DROP_TABLE_MOVIE = "DROP TABLE movie";
 	private static final String DROP_SEQUENCE_MOVIE = "DROP SEQUENCE seq_movie";
 
-	private static final String INSERT_INTO_MOVIE_VALUES = "insert into movie values (#movie.id#, #movie.title#, #movie.mail#, #movie.fps#, #movie.income#, #movie.color#, #movie.release_date#, #movie.release_local_date#, #movie.release_instant#, #movie.icon#)";
+	private static final String INSERT_INTO_MOVIE_VALUES = "insert into movie values (#movie.id#, #movie.title#, #movie.mail#, #movie.fps#, #movie.income#, #movie.color#, #movie.releaseDate#, #movie.releaseLocalDate#, #movie.releaseInstant#, #movie.icon#)";
 	private static final String CREATE_TABLE_MOVIE = "create table movie ("
 			+ "id bigint , "
 			+ "title varchar(255) , "
@@ -442,8 +442,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 	public final void testInsert() throws Exception {
 		final String insertWithgeneratedKey = obtainMainConnection().getDataBase().getSqlDialect()
 				.createInsertQuery(
-						"ID",
-						Arrays.asList("TITLE"),
+						"id",
+						Arrays.asList("title"),
 						"seq_",
 						"movie");
 
@@ -458,9 +458,9 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 			movie.setTitle("frankenstein");
 			generatedKey = dataBaseManager
 					.executeUpdateWithGeneratedKey(
-							SqlStatement.builder(insertWithgeneratedKey).bind("DTO", Movie.class, movie).build(),
+							SqlStatement.builder(insertWithgeneratedKey).bind("dto", Movie.class, movie).build(),
 							generationMode,
-							"ID",
+							"id",
 							Long.class,
 							connection)
 					.getVal2();

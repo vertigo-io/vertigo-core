@@ -38,17 +38,17 @@ public final class SqlServerDialectTest extends AbstractSqlDialectTest {
 
 	@Override
 	public String getExpectedInsertQuery() {
-		return "insert into MOVIE ( TITLE) values (  #DTO.TITLE#) ";
+		return "insert into MOVIE ( TITLE) values (  #dto.title#) ";
 	}
 
 	@Override
 	public String getExpectedSelectForUpdateWildCardQuery() {
-		return " select * from MOVIE WITH (UPDLOCK, INDEX(PK_MOVIE))  where ID = #ID#";
+		return " select * from MOVIE WITH (UPDLOCK, INDEX(PK_MOVIE))  where ID = #id#";
 	}
 
 	@Override
 	public String getExpectedSelectForUpdateFieldsQuery() {
-		return " select ID, TITLE from MOVIE WITH (UPDLOCK, INDEX(PK_MOVIE))  where ID = #ID#";
+		return " select ID, TITLE from MOVIE WITH (UPDLOCK, INDEX(PK_MOVIE))  where ID = #id#";
 	}
 
 	@Override

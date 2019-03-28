@@ -63,6 +63,7 @@ import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Tuples;
 import io.vertigo.lang.VSystemException;
+import io.vertigo.util.StringUtil;
 
 /**
  * This class is the basic implementation of the dataStore in the sql way.
@@ -144,11 +145,12 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		return dtDefinition.getFragment().orElse(dtDefinition).getLocalName();
 	}
 
-	private static String getRequestedFields(final DtDefinition dtDefinition) {
+	private static String getRequestedCols(final DtDefinition dtDefinition) {
 		if (dtDefinition.getFragment().isPresent()) {
 			return dtDefinition.getFields()
 					.stream()
 					.map(DtField::getName)
+					.map(StringUtil::camelToConstCase)
 					.collect(Collectors.joining(", "));
 		}
 		return "*"; //all fields
@@ -178,13 +180,13 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_SELECT + "_" + dtDefinition.getLocalName() + "_BY_URI";
 
-		final String requestedFields = getRequestedFields(dtDefinition);
+		final String requestedCols = getRequestedCols(dtDefinition);
 		final DtField idField = getIdField(dtDefinition);
 		final String idFieldName = idField.getName();
 		final String request = new StringBuilder()
-				.append(" select ").append(requestedFields)
+				.append(" select ").append(requestedCols)
 				.append(" from ").append(tableName)
-				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
+				.append(" where ").append(StringUtil.camelToConstCase(idFieldName)).append(" = #").append(idFieldName).append('#')
 				.toString();
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
@@ -215,12 +217,12 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		final String taskName = TASK.TK_SELECT + "_N_N_LIST_" + tableName + "_BY_URI";
 
 		//PK de la DtList recherchée
-		final String idFieldName = getIdField(dtDefinition).getName();
+		final String idFieldName = StringUtil.camelToConstCase(getIdField(dtDefinition).getName());
 		//FK dans la table nn correspondant à la collection recherchée. (clé de jointure ).
 		final AssociationNNDefinition associationNNDefinition = dtcUri.getAssociationDefinition();
 		final String joinTableName = associationNNDefinition.getTableName();
 		final DtDefinition joinDtDefinition = AssociationUtil.getAssociationNode(associationNNDefinition, dtcUri.getRoleName()).getDtDefinition();
-		final DtField joinDtField = getIdField(joinDtDefinition);
+		final String joinDtFieldName = StringUtil.camelToConstCase(getIdField(joinDtDefinition).getName());
 
 		//La condition s'applique sur l'autre noeud de la relation (par rapport à la collection attendue)
 		final AssociationNode associationNode = AssociationUtil.getAssociationNodeTarget(associationNNDefinition, dtcUri.getRoleName());
@@ -230,9 +232,9 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		final String request = new StringBuilder(" select t.* from ")
 				.append(tableName).append(" t")
 				//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
-				.append(" join ").append(joinTableName).append(" j on j.").append(joinDtField.getName()).append(" = t.").append(idFieldName)
+				.append(" join ").append(joinTableName).append(" j on j.").append(joinDtFieldName).append(" = t.").append(idFieldName)
 				//Condition de la recherche
-				.append(" where j.").append(fkFieldName).append(" = #").append(fkFieldName).append('#')
+				.append(" where j.").append(StringUtil.camelToConstCase(fkFieldName)).append(" = #").append(fkFieldName).append('#')
 				.toString();
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
@@ -286,11 +288,11 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(criteria);
 		//---
 		final String tableName = getTableName(dtDefinition);
-		final String requestedFields = getRequestedFields(dtDefinition);
+		final String requestedCols = getRequestedCols(dtDefinition);
 		final String taskName = getListTaskName(tableName);
 		final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(sqlDialect);
 		final String where = tuple.getVal1();
-		final String request = createLoadAllLikeQuery(tableName, requestedFields, where, maxRows);
+		final String request = createLoadAllLikeQuery(tableName, requestedCols, where, maxRows);
 		final TaskDefinitionBuilder taskDefinitionBuilder = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
@@ -365,10 +367,10 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.append(dtDefinition.getFields()
 						.stream()
 						.filter(dtField -> dtField.isPersistent() && !dtField.getType().isId())
-						.map(dtField -> dtField.getName() + " =#DTO." + dtField.getName() + '#')
+						.map(dtField -> StringUtil.camelToConstCase(dtField.getName()) + " =#dto." + dtField.getName() + '#')
 						.collect(Collectors.joining(", ")))
 				.append(" where ")
-				.append(idField.getName()).append(" = #DTO.").append(idField.getName()).append('#')
+				.append(StringUtil.camelToConstCase(idField.getName())).append(" = #dto.").append(idField.getName()).append('#')
 				.toString();
 	}
 
@@ -398,12 +400,12 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(getTaskEngineClass(insert))
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInRequired("DTO", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTO", Domain.class))
+				.addInRequired("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTO", Domain.class))
 				.withOutRequired(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
-				.addValue("DTO", entity)
+				.addValue("dto", entity)
 				.build();
 
 		final int sqlRowCount = taskManager
@@ -502,10 +504,10 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		final String tableName = getTableName(dtDefinition);
 		final String taskName = TASK.TK_LOCK + "_" + tableName;
 
-		final String requestedFields = getRequestedFields(dtDefinition);
+		final String requestedCols = getRequestedCols(dtDefinition);
 		final DtField idField = getIdField(dtDefinition);
 		final String idFieldName = idField.getName();
-		final String request = sqlDialect.createSelectForUpdateQuery(tableName, requestedFields, idFieldName);
+		final String request = sqlDialect.createSelectForUpdateQuery(tableName, requestedCols, idFieldName);
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)

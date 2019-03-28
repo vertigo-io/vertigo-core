@@ -35,7 +35,7 @@ import io.vertigo.lang.Generated;
 public final class Famille implements Entity {
 
 	public enum CarFields implements DtFieldName<Car> {
-		ID, MANUFACTURER, MODEL, DESCRIPTION, YEAR, KILO, PRICE, CONSOMMATION, MTY_CD, FAM_ID
+		id, manufacturer, model, description, year, kilo, price, consomation, mtyCd, famId
 	}
 
 	private static final long serialVersionUID = 1L;
@@ -45,7 +45,7 @@ public final class Famille implements Entity {
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_FAM_CAR_FAMILLE",
-			fkFieldName = "FAM_ID",
+			fkFieldName = "famId",
 			primaryDtDefinitionName = "DT_FAMILLE",
 			primaryIsNavigable = false,
 			primaryRole = "Famille",
@@ -78,7 +78,7 @@ public final class Famille implements Entity {
 	}
 
 	/**
-	 * Champ : ID.
+	 * Champ : id.
 	 * Récupère la valeur de la propriété 'identifiant de la famille'.
 	 * @return Long famId <b>Obligatoire</b>
 	 */
@@ -88,7 +88,7 @@ public final class Famille implements Entity {
 	}
 
 	/**
-	 * Champ : ID.
+	 * Champ : id.
 	 * Définit la valeur de la propriété 'identifiant de la famille'.
 	 * @param famId Long <b>Obligatoire</b>
 	 */

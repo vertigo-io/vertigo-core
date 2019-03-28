@@ -21,9 +21,9 @@ package io.vertigo.account.authentication;
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.authentication.model.DtDefinitions;
 import io.vertigo.account.data.TestUserSession;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -88,9 +88,9 @@ public final class MyNodeConfig {
 					.addPlugin(SqlDataStorePlugin.class);
 			accountFeatures.withStoreAuthentication(
 					Param.of("userCredentialEntity", "DT_USER_CREDENTIAL"),
-					Param.of("userLoginField", "LOGIN"),
-					Param.of("userPasswordField", "PASSWORD"),
-					Param.of("userTokenIdField", "LOGIN"));
+					Param.of("userLoginField", "login"),
+					Param.of("userPasswordField", "password"),
+					Param.of("userTokenIdField", "login"));
 		} else if (authentPlugin == AuthentPlugin.mock) {
 			accountFeatures.withMockAuthentication();
 		}

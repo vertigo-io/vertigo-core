@@ -35,10 +35,10 @@ public class ContactValidator extends AbstractDtObjectValidator<Contact> {
 	/** {@inheritDoc} */
 	@Override
 	protected void checkMonoFieldConstraints(final Contact dtObject, final DtField dtField, final DtObjectErrors dtObjectErrors) {
-		final String camelCaseFieldName = getCamelCaseFieldName(dtField);
+		final String camelCaseFieldName = dtField.getName();
 		if ("birthday".equals(camelCaseFieldName) && !dtObjectErrors.hasError(camelCaseFieldName)) {
 			final LocalDate birthday = dtObject.getBirthday();
-			if (DateUtil.daysBetween(birthday, LocalDate.now()) < (16 * 365)) { //if less than 16
+			if (DateUtil.daysBetween(birthday, LocalDate.now()) < 16 * 365) { //if less than 16
 				dtObjectErrors.addError(camelCaseFieldName, MessageText.of("You can't add contact younger than 16"));
 			}
 		}

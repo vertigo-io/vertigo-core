@@ -22,9 +22,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -91,7 +91,7 @@ public final class JavaEnvironmentManagerTest extends AbstractTestCaseJU5 {
 		Assertions.assertEquals("io.vertigo.dynamo.environment.java.data.domain.CityFragment", dtDefinition.getClassCanonicalName());
 		Assertions.assertEquals("io.vertigo.dynamo.environment.java.data.domain", dtDefinition.getPackageName());
 		Assertions.assertEquals("CityFragment", dtDefinition.getClassSimpleName());
-		Assertions.assertTrue("City".equals(dtDefinition.getField("CIT_ID").getFkDtDefinition().getClassSimpleName()));
+		Assertions.assertTrue("City".equals(dtDefinition.getField("citId").getFkDtDefinition().getClassSimpleName()));
 	}
 
 	//	@Test

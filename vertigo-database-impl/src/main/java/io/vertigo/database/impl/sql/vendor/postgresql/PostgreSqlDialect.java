@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 final class PostgreSqlDialect implements SqlDialect {
 
@@ -36,15 +37,16 @@ final class PostgreSqlDialect implements SqlDialect {
 		//---
 		return new StringBuilder()
 				.append("insert into ").append(tableName).append(" (")
-				.append(idFieldName).append(", ")
+				.append(StringUtil.camelToConstCase(idFieldName)).append(", ")
 				.append(dataFieldsName
 						.stream()
+						.map(StringUtil::camelToConstCase)
 						.collect(Collectors.joining(", ")))
 				.append(") values (")
 				.append("nextval('").append(sequencePrefix).append(tableName).append("'), ")
 				.append(dataFieldsName
 						.stream()
-						.map(fieldName -> " #DTO." + fieldName + '#')
+						.map(fieldName -> " #dto." + fieldName + '#')
 						.collect(Collectors.joining(", ")))
 				.append(");")
 				.toString();

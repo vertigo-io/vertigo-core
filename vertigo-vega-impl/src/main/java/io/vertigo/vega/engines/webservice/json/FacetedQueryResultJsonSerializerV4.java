@@ -19,7 +19,6 @@
 package io.vertigo.vega.engines.webservice.json;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -37,7 +36,6 @@ import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.util.StringUtil;
 
 /**
  * JsonSerializer of FacetedQueryResult.
@@ -155,21 +153,15 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 
 	private static JsonArray serializeHighLight(final DtList<?> dtList, final FacetedQueryResult<DtObject, ?> facetedQueryResult) {
 		final JsonArray jsonHighlightList = new JsonArray();
-		final Map<DtField, String> ccFieldNames = new HashMap<>();
 		for (final DtObject document : dtList) {
-			final Map<DtField, String> highlights = (facetedQueryResult).getHighlights(document);
+			final Map<DtField, String> highlights = facetedQueryResult.getHighlights(document);
 			final JsonObject jsonHighlight = new JsonObject();
 			for (final Map.Entry<DtField, String> entry : highlights.entrySet()) {
-				final String ccFieldName = obtainCcFieldName(entry.getKey(), ccFieldNames);
-				jsonHighlight.addProperty(ccFieldName, entry.getValue());
+				jsonHighlight.addProperty(entry.getKey().getName(), entry.getValue());
 			}
 			jsonHighlightList.add(jsonHighlight);
 		}
 		return jsonHighlightList;
 	}
 
-	private static String obtainCcFieldName(final DtField dtField, final Map<DtField, String> ccFieldNames) {
-		return ccFieldNames.computeIfAbsent(dtField,
-				f -> StringUtil.constToLowerCamelCase(f.getName()));
-	}
 }

@@ -22,6 +22,7 @@ import io.vertigo.dynamo.domain.metamodel.ConstraintException;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
+import io.vertigo.util.StringUtil;
 
 /**
  * Attribut d'une tache.
@@ -54,6 +55,7 @@ public final class TaskAttribute {
 	 */
 	TaskAttribute(final String attributeName, final Domain domain, final boolean required) {
 		Assertion.checkNotNull(attributeName);
+		Assertion.checkArgument(StringUtil.isLowerCamelCase(attributeName), "the name of the attribute {0} must be in lowerCamelCase", attributeName);
 		Assertion.checkNotNull(domain);
 		Assertion.when(!required).check(() -> !domain.isDtList(), "A list in never optional. Check attribute '{0}'", attributeName);
 		//-----

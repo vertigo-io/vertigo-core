@@ -18,13 +18,12 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
-import java.util.Locale;
-
 import io.vertigo.app.Home;
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
+import io.vertigo.util.StringUtil;
 
 /**
  * This class defines the structure of a field.
@@ -46,7 +45,7 @@ public final class DtField {
 
 	private static final int FIELD_NAME_MAX_LENGTH = 30;
 	/** Field definition Prefix. */
-	public static final String PREFIX = "FLD_";
+	public static final String PREFIX = "fld";
 
 	/**
 	 * This enum lists all types that can be used by a field.
@@ -135,7 +134,7 @@ public final class DtField {
 		//-----
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkArgument(fieldName.length() <= FIELD_NAME_MAX_LENGTH, "the name of the field {0} has a limit size of {1}", fieldName, FIELD_NAME_MAX_LENGTH);
-		Assertion.checkArgument(fieldName.toUpperCase(Locale.ENGLISH).equals(fieldName), "the name of the field {0} must be in upperCase", fieldName);
+		Assertion.checkArgument(StringUtil.isLowerCamelCase(fieldName), "the name of the field {0} must be in lowerCamelCase", fieldName);
 		name = fieldName;
 		//-----
 		Assertion.checkNotNull(label);

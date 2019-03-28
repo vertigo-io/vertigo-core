@@ -69,7 +69,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	private static final int TOPHITS_SUBAGGREGATION_SIZE = 10; //max 10 documents per cluster when clusterization is used
 	private static final String TOPHITS_SUBAGGREGATION_NAME = "top";
 	private static final String DATE_PATTERN = "dd/MM/yyyy";
-	private static final Pattern RANGE_PATTERN = Pattern.compile("([A-Z_0-9]+):([\\[\\{])(.*) TO (.*)([\\}\\]])");
+	private static final Pattern RANGE_PATTERN = Pattern.compile("([a-z][a-zA-Z0-9]*):([\\[\\{])(.*) TO (.*)([\\}\\]])");
 
 	private final SearchRequestBuilder searchRequestBuilder;
 	private SearchIndexDefinition myIndexDefinition;

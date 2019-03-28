@@ -29,7 +29,6 @@ import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * Simule le mécanisme JSP sur un fichier texte quelconque.
@@ -70,7 +69,7 @@ final class ScriptPreProcessor {
 		for (final Entry<TaskAttribute, Object> entry : inTaskAttributes.entrySet()) {
 			final TaskAttribute taskAttribute = entry.getKey();
 			final Class<?> clazz = taskAttribute.getDomain().getTargetJavaClass();
-			scriptEvaluatorParameter = new ExpressionParameter(StringUtil.constToLowerCamelCase(taskAttribute.getName()), clazz, entry.getValue());
+			scriptEvaluatorParameter = new ExpressionParameter(taskAttribute.getName(), clazz, entry.getValue());
 			tmpParameters.add(scriptEvaluatorParameter);
 		}
 		return tmpParameters;

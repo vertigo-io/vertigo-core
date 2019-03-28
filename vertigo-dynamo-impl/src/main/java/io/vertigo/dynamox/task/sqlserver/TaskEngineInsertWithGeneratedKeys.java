@@ -73,7 +73,7 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 		final GenerationMode generationMode = connection.getDataBase().getSqlDialect().getGenerationMode();
 
 		// gestion de generatedKey
-		final Entity entity = getValue("DTO");
+		final Entity entity = getValue("dto");
 
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final DtField idField = dtDefinition.getIdField().get();

@@ -27,9 +27,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
@@ -54,10 +54,10 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
  * @author dszniten
  */
 public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
-	private static final String DTC_SUPER_HERO_IN = "DTC_SUPER_HERO_IN";
-	private static final String SUPER_HERO_ID_LIST_IN = "SUPER_HERO_ID_LIST_IN";
-	private static final String DTC_SUPER_HERO_OUT = "DTC_SUPER_HERO_OUT";
-	private static final String OTHER_PARAM_IN = "OTHER_PARAM";
+	private static final String DTC_SUPER_HERO_IN = "dtcSuperHeroIn";
+	private static final String SUPER_HERO_ID_LIST_IN = "superHeroIdListIn";
+	private static final String DTC_SUPER_HERO_OUT = "dtcSuperHeroOut";
+	private static final String OTHER_PARAM_IN = "otherParam";
 	private static final String DO_DT_SUPER_HERO_DTC = "DO_DT_SUPER_HERO_DTC";
 	private static final String DO_LONGS = "DO_LONGS";
 	private static final String DO_STRING = "DO_STRING";
@@ -113,9 +113,9 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testInsertBatch() {
-		final String request = new StringBuilder("insert into SUPER_HERO(ID, NAME) values (")
-				.append("#").append(DTC_SUPER_HERO_IN + ".ID").append("# , ")
-				.append("#").append(DTC_SUPER_HERO_IN + ".NAME").append("# ) ")
+		final String request = new StringBuilder("insert into SUPER_HERO(id, NAME) values (")
+				.append("#").append(DTC_SUPER_HERO_IN + ".id").append("# , ")
+				.append("#").append(DTC_SUPER_HERO_IN + ".name").append("# ) ")
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_TEST_INSERT_BATCH")
 				.withEngine(TaskEngineProcBatch.class)
@@ -143,8 +143,8 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testInsertBatchWithAdditionalParam() {
-		final String request = new StringBuilder("insert into SUPER_HERO(ID, NAME) values (")
-				.append("#").append(DTC_SUPER_HERO_IN + ".ID").append("# , ")
+		final String request = new StringBuilder("insert into SUPER_HERO(id, NAME) values (")
+				.append("#").append(DTC_SUPER_HERO_IN + ".id").append("# , ")
 				.append("#").append(OTHER_PARAM_IN).append("# ) ")
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_TEST_INSERT_BATCH")
@@ -175,7 +175,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testInsertBatchPrimitive() {
-		final String request = new StringBuilder("insert into SUPER_HERO(ID, NAME) values (")
+		final String request = new StringBuilder("insert into SUPER_HERO(id, NAME) values (")
 				.append("#").append(SUPER_HERO_ID_LIST_IN).append("# , 'test' ").append(" )")
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_TEST_INSERT_BATCH")

@@ -29,9 +29,9 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.Home;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -120,7 +120,7 @@ public class FacetManagerTest extends AbstractTestCaseJU5 {
 		//On recherche la facette constructeur
 		final Facet manufacturerFacet = getFacetByName(result, "FCT_MANUFACTURER_CAR");
 		//On vérifie que l'on est sur le champ Make
-		Assertions.assertEquals("MANUFACTURER", manufacturerFacet.getDefinition().getDtField().getName());
+		Assertions.assertEquals("manufacturer", manufacturerFacet.getDefinition().getDtField().getName());
 		Assertions.assertFalse(manufacturerFacet.getDefinition().isRangeFacet());
 
 		//On vérifie qu'il existe une valeur pour peugeot et que le nombre d'occurrences est correct

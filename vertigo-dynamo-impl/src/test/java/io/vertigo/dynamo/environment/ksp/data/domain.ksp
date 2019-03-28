@@ -15,16 +15,16 @@ create Domain DO_STRING {
 }
 
 create DtDefinition DT_TEST_ENTITY {
-	id 		ID			{domain : DO_ID			label :"Id"}
-	field 	LABEL   	{domain : DO_STRING 	label :"label"	required:"false" }
+	id 		id			{domain : DO_ID			label :"Id"}
+	field 	label   	{domain : DO_STRING 	label :"label"	required:"false" }
 }
 
 create DtDefinition DT_TEST_VOBJECT {
-	field LABEL   	{domain : DO_STRING, 	label :"label", required:"false" }
+	field label   	{domain : DO_STRING, 	label :"label", required:"false" }
 }
 
 create Association A_VOB_ENT {
- 	fkFieldName : "ID"
+ 	fkFieldName : "id"
     
  	dtDefinitionA : DT_TEST_VOBJECT
 	dtDefinitionB : DT_TEST_ENTITY

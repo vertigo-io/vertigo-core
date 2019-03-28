@@ -36,19 +36,19 @@ public abstract class AbstractSqlDialectTest {
 	public void testInsertQuery() {
 
 		final SqlDialect sqlDialect = getDialect();
-		final String insertQuery = sqlDialect.createInsertQuery("ID", Collections.singletonList("TITLE"), "SEQ_", "MOVIE");
+		final String insertQuery = sqlDialect.createInsertQuery("id", Collections.singletonList("title"), "SEQ_", "MOVIE");
 		Assertions.assertEquals(getExpectedInsertQuery(), insertQuery);
 	}
 
 	@Test
 	public void testSelectForUpdateWildcardQuery() {
-		final String selectForUpdateQuery = getDialect().createSelectForUpdateQuery("MOVIE", "*", "ID");
+		final String selectForUpdateQuery = getDialect().createSelectForUpdateQuery("MOVIE", "*", "id");
 		Assertions.assertEquals(getExpectedSelectForUpdateWildCardQuery(), selectForUpdateQuery);
 	}
 
 	@Test
 	public void testSelectForUpdateFieldsQuery() {
-		final String selectForUpdateQuery = getDialect().createSelectForUpdateQuery("MOVIE", "ID, TITLE", "ID");
+		final String selectForUpdateQuery = getDialect().createSelectForUpdateQuery("MOVIE", "ID, TITLE", "id");
 		Assertions.assertEquals(getExpectedSelectForUpdateFieldsQuery(), selectForUpdateQuery);
 	}
 

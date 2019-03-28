@@ -21,7 +21,9 @@ package io.vertigo.dynamo.plugins.environment.loaders.poweramc.core;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.xml.sax.helpers.DefaultHandler;
@@ -41,14 +43,16 @@ import io.vertigo.util.StringUtil;
  * @author pchretien
  */
 public final class OOMLoader extends AbstractXmlLoader {
+	private static final Pattern CODE_PATTERN = Pattern.compile("[a-zA-Z0-9_]+");
 	private final Map<XmlId, OOMObject> map = new LinkedHashMap<>();
 
 	/**
 	 * Constructor.
+	 * @param constFieldNameInSource FieldName in file is in CONST_CASE instead of camelCase
 	 * @param resourceManager the vertigo resourceManager
 	 */
-	public OOMLoader(final ResourceManager resourceManager) {
-		super(resourceManager);
+	public OOMLoader(final boolean constFieldNameInSource, final ResourceManager resourceManager) {
+		super(constFieldNameInSource, resourceManager);
 	}
 
 	@Override
@@ -108,6 +112,8 @@ public final class OOMLoader extends AbstractXmlLoader {
 
 	private XmlAttribute createAttribute(final OOMObject obj, final boolean isPK) {
 		final String code = obj.getCode();
+		Assertion.checkArgument(CODE_PATTERN.matcher(code).matches(), "Code {0} must use a simple charset a-z A-Z 0-9 or _", code);
+		final String fieldName = isConstFieldNameInSource() ? StringUtil.constToLowerCamelCase(code.toUpperCase(Locale.ENGLISH)) : code;
 		final String label = obj.getLabel();
 		final boolean persistent = !"0".equals(obj.getPersistent());
 
@@ -128,7 +134,7 @@ public final class OOMLoader extends AbstractXmlLoader {
 				domain = childRef.getCode();
 			}
 		}
-		return new XmlAttribute(code, label, persistent, notNull, domain);
+		return new XmlAttribute(fieldName, label, persistent, notNull, domain);
 	}
 
 	/**

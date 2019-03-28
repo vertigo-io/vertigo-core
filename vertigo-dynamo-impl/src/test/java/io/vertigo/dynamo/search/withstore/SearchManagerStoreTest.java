@@ -28,9 +28,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
@@ -184,7 +184,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 		}
 		waitIndexation();
 		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
-		Assertions.assertEquals(1, query("DESCRIPTION:légende"));
+		Assertions.assertEquals(1, query("description:légende"));
 	}
 
 	/**
@@ -194,14 +194,14 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testIndexDeleteData() {
 		testIndexAllQuery();
-		Assertions.assertEquals(1, query("ID:10001"));
+		Assertions.assertEquals(1, query("id:10001"));
 
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			storeManager.getDataStore().delete(createURI(10001L));
 			transaction.commit();
 		}
 		waitIndexation();
-		Assertions.assertEquals(0, query("ID:10001"));
+		Assertions.assertEquals(0, query("id:10001"));
 		Assertions.assertEquals(initialDbItemSize - 1, query("*:*"));
 	}
 
@@ -221,7 +221,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 
 		waitIndexation();
 		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
-		Assertions.assertEquals(1, query("DESCRIPTION:légende"));
+		Assertions.assertEquals(1, query("description:légende"));
 
 		item.setDescription("Vendue");
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -231,8 +231,8 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 
 		waitIndexation();
 		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
-		Assertions.assertEquals(0, query("DESCRIPTION:légende"));
-		Assertions.assertEquals(1, query("DESCRIPTION:vendue"));
+		Assertions.assertEquals(0, query("description:légende"));
+		Assertions.assertEquals(1, query("description:vendue"));
 	}
 
 	/**
@@ -251,7 +251,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 
 		waitIndexation();
 		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
-		Assertions.assertEquals(1, query("DESCRIPTION:légende"));
+		Assertions.assertEquals(1, query("description:légende"));
 
 		item.setDescription("Vendue");
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -264,8 +264,8 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 
 		waitIndexation();
 		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
-		Assertions.assertEquals(0, query("DESCRIPTION:légende"));
-		Assertions.assertEquals(1, query("DESCRIPTION:vendue"));
+		Assertions.assertEquals(0, query("description:légende"));
+		Assertions.assertEquals(1, query("description:vendue"));
 	}
 
 	/**

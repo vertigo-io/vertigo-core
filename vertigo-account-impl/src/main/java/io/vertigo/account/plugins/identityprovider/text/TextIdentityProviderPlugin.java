@@ -55,7 +55,6 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-import io.vertigo.util.StringUtil;
 
 /**
  * A simple implementation of the Realm interface that
@@ -188,8 +187,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 	@Override
 	public void start() {
 		final DtDefinition userDtDefinition = Home.getApp().getDefinitionSpace().resolve(userIdentityEntity, DtDefinition.class);
-		final String userAuthFieldName = StringUtil.camelToConstCase(userAuthField);
-		Assertion.checkState(userDtDefinition.contains(userAuthFieldName), "User definition ({0}) should contains the userAuthField ({1})", userIdentityEntity, userAuthFieldName);
+		Assertion.checkState(userDtDefinition.contains(userAuthField), "User definition ({0}) should contains the userAuthField ({1})", userIdentityEntity, userAuthField);
 
 		final URL realmURL = resourceManager.resolve(filePath);
 		int lineNumber = -1;
@@ -218,14 +216,13 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		String userAuthToken = null;
 
 		final Entity user = Entity.class.cast(DtObjectUtil.createDtObject(userDtDefinition));
-		for (final String propertyName : filePatternFieldsOrdered) {
-			final String fieldName = StringUtil.camelToConstCase(propertyName);
-			final String valueStr = matcher.group(propertyName);
-			if (PHOTO_URL_RESERVED_FIELD.equals(propertyName)) {
+		for (final String fieldName : filePatternFieldsOrdered) {
+			final String valueStr = matcher.group(fieldName);
+			if (PHOTO_URL_RESERVED_FIELD.equals(fieldName)) {
 				photoUrl = valueStr;
 			} else {
 				setTypedValue(userDtDefinition, user, fieldName, valueStr);
-				if (userAuthField.equals(propertyName)) {
+				if (userAuthField.equals(fieldName)) {
 					userAuthToken = valueStr;
 				}
 			}

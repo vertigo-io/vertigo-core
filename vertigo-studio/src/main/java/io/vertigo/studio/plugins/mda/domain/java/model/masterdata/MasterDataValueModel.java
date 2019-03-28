@@ -22,7 +22,6 @@ import java.util.Map;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * Model Sql des materdata.
@@ -40,7 +39,7 @@ public final class MasterDataValueModel {
 		//-----
 		this.enumNameValue = enumNameValue;
 		this.allFieldValues = allFieldValues;
-		final String idFieldName = StringUtil.constToLowerCamelCase(dtDefinition.getIdField().get().getName());
+		final String idFieldName = dtDefinition.getIdField().get().getName();
 		//--
 		Assertion.checkState(allFieldValues.containsKey(idFieldName), "The id value is not present for the masterdata '{0}' of type {1}", allFieldValues, dtDefinition.getLocalName());
 		//---

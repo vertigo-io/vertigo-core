@@ -38,7 +38,7 @@ public final class CommandValidation implements Entity {
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_CMD_CVA",
-			fkFieldName = "CMD_ID",
+			fkFieldName = "cmdId",
 			primaryDtDefinitionName = "DT_COMMAND",
 			primaryIsNavigable = true,
 			primaryRole = "Command",
@@ -58,7 +58,7 @@ public final class CommandValidation implements Entity {
 	}
 
 	/**
-	 * Champ : ID.
+	 * Champ : id.
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long cvaId <b>Obligatoire</b>
 	 */
@@ -68,7 +68,7 @@ public final class CommandValidation implements Entity {
 	}
 
 	/**
-	 * Champ : ID.
+	 * Champ : id.
 	 * Définit la valeur de la propriété 'id'.
 	 * @param cvaId Long <b>Obligatoire</b>
 	 */

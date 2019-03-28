@@ -35,7 +35,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	}
 
 	public enum Fields implements DtFieldName<SmartItem> {
-		ID,
-		LABEL
+		id,
+		label
 	}
 }

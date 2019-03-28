@@ -2,23 +2,23 @@ package io.vertigo.dynamo.collections.data.domain
 
 create FacetDefinition FCT_DESCRIPTION_CAR {
 	dtDefinition : DT_SMART_CAR
-	fieldName : "DESCRIPTION"
+	fieldName : "description"
 	label : "Par description"
 }
 
 create FacetDefinition FCT_MANUFACTURER_CAR {
 	dtDefinition : DT_SMART_CAR
-	fieldName : "MANUFACTURER"
+	fieldName : "manufacturer"
 	label : "Par constructeur"
 }
 
 create FacetDefinition FCT_YEAR_CAR {
 	dtDefinition : DT_SMART_CAR
-	fieldName : "YEAR"
+	fieldName : "year"
 	label : "Par année"
- 	range R1 { filter: "YEAR:[* TO 2000]" 		label: "avant 2000" }
-	range R2 { filter: "YEAR:[2000 TO 2005]" 	label: "2000-2005"  }
-	range R3 { filter: "YEAR:[2005 TO *]" 		label: "après 2005" }
+ 	range R1 { filter: "year:[* TO 2000]" 		label: "avant 2000" }
+	range R2 { filter: "year:[2000 TO 2005]" 	label: "2000-2005"  }
+	range R3 { filter: "year:[2005 TO *]" 		label: "après 2005" }
 }
 
 create FacetedQueryDefinition QRY_CAR_FACET {

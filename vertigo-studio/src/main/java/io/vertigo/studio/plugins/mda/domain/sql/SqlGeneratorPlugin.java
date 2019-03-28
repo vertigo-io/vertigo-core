@@ -44,6 +44,8 @@ import io.vertigo.studio.masterdata.MasterDataValues;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
+import io.vertigo.studio.plugins.mda.domain.sql.model.SqlAssociationNNModel;
+import io.vertigo.studio.plugins.mda.domain.sql.model.SqlAssociationSimpleModel;
 import io.vertigo.studio.plugins.mda.domain.sql.model.SqlDtDefinitionModel;
 import io.vertigo.studio.plugins.mda.domain.sql.model.SqlMasterDataDefinitionModel;
 import io.vertigo.studio.plugins.mda.domain.sql.model.SqlMethodModel;
@@ -161,8 +163,8 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 		//
 		for (final Entry<String, List<SqlDtDefinitionModel>> entry : mapListDtDef.entrySet()) {
 			final String dataSpace = entry.getKey();
-			final Collection<AssociationSimpleDefinition> associationSimpleDefinitions = filterAssociationSimple(collectionSimpleAll, dataSpace);
-			final Collection<AssociationNNDefinition> associationNNDefinitions = filterAssociationNN(collectionNNAll, dataSpace);
+			final Collection<SqlAssociationSimpleModel> associationSimpleDefinitions = filterAssociationSimple(collectionSimpleAll, dataSpace);
+			final Collection<SqlAssociationNNModel> associationNNDefinitions = filterAssociationNN(collectionNNAll, dataSpace);
 
 			generateSqlByDataSpace(
 					fileGeneratorConfig,
@@ -177,8 +179,8 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 	private void generateSqlByDataSpace(
 			final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder,
-			final Collection<AssociationSimpleDefinition> asssociationSimpleDefinitions,
-			final Collection<AssociationNNDefinition> associationNNDefinitions,
+			final Collection<SqlAssociationSimpleModel> associationSimpleDefinitions,
+			final Collection<SqlAssociationNNModel> associationNNDefinitions,
 			final String dataSpace,
 			final List<SqlDtDefinitionModel> dtDefinitions) {
 		final StringBuilder filename = new StringBuilder()
@@ -191,7 +193,7 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 				fileGeneratorConfig,
 				mdaResultBuilder,
 				dtDefinitions,
-				asssociationSimpleDefinitions,
+				associationSimpleDefinitions,
 				associationNNDefinitions,
 				filename.toString());
 	}
@@ -200,19 +202,23 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 		return mapListDtDef.computeIfAbsent(dataSpace, k -> new ArrayList<>());
 	}
 
-	private static Collection<AssociationSimpleDefinition> filterAssociationSimple(
+	private static Collection<SqlAssociationSimpleModel> filterAssociationSimple(
 			final Collection<AssociationSimpleDefinition> collectionSimpleAll,
 			final String dataSpace) {
 		return collectionSimpleAll.stream()
 				.filter(a -> dataSpace.equals(a.getAssociationNodeA().getDtDefinition().getDataSpace()))
+				.filter(a -> a.getAssociationNodeA().getDtDefinition().isPersistent() && a.getAssociationNodeB().getDtDefinition().isPersistent())
+				.map(a -> new SqlAssociationSimpleModel(a))
 				.collect(Collectors.toList());
 	}
 
-	private static Collection<AssociationNNDefinition> filterAssociationNN(
+	private static Collection<SqlAssociationNNModel> filterAssociationNN(
 			final Collection<AssociationNNDefinition> collectionNNAll,
 			final String dataSpace) {
 		return collectionNNAll.stream()
 				.filter(a -> dataSpace.equals(a.getAssociationNodeA().getDtDefinition().getDataSpace()))
+				.filter(a -> a.getAssociationNodeA().getDtDefinition().isPersistent() && a.getAssociationNodeB().getDtDefinition().isPersistent())
+				.map(a -> new SqlAssociationNNModel(a))
 				.collect(Collectors.toList());
 	}
 
@@ -220,14 +226,14 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 			final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder,
 			final List<SqlDtDefinitionModel> dtDefinitionModels,
-			final Collection<AssociationSimpleDefinition> associationSimpleDefinitions,
-			final Collection<AssociationNNDefinition> collectionNN,
+			final Collection<SqlAssociationSimpleModel> associationSimpleDefinitions,
+			final Collection<SqlAssociationNNModel> associationNNDefinitions,
 			final String fileName) {
 		final MapBuilder<String, Object> modelBuilder = new MapBuilder<String, Object>()
 				.put("sql", new SqlMethodModel())
 				.put("dtDefinitions", dtDefinitionModels)
 				.put("simpleAssociations", associationSimpleDefinitions)
-				.put("nnAssociations", collectionNN)
+				.put("nnAssociations", associationNNDefinitions)
 				.put("drop", generateDrop)
 				// Ne sert actuellement à rien, le sql généré étant le même. Prévu pour le futur
 				.put("basecible", baseCible)

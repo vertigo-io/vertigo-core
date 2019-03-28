@@ -219,7 +219,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 
 		// cas de la création
 		final Object fileInfoDtoId = DtObjectUtil.getId(fileInfoDto);
-		Assertion.checkNotNull(fileInfoDtoId, "ID  du fichier doit être renseignée.");
+		Assertion.checkNotNull(fileInfoDtoId, "File's id must be set.");
 		final FileInfoURI uri = createURI(fileInfo.getDefinition(), fileInfoDtoId);
 		fileInfo.setURIStored(uri);
 

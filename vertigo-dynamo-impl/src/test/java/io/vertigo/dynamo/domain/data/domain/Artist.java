@@ -40,20 +40,20 @@ public final class Artist implements KeyConcept {
 	}
 
 	@Field(domain = "DO_ID", type = "ID", required = true, label = "id of the artist")
-	public final Long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public final void setId(final Long id) {
+	public void setId(final Long id) {
 		this.id = id;
 	}
 
 	@Field(domain = "DO_STRING", label = "name")
-	public final String getName() {
+	public String getName() {
 		return name;
 	}
 
-	public final void setName(final String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 

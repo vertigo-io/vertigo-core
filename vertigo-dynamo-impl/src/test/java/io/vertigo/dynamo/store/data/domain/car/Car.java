@@ -47,7 +47,7 @@ public final class Car implements Entity {
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_MTY_CAR",
-			fkFieldName = "MTY_CD",
+			fkFieldName = "mtyCd",
 			primaryDtDefinitionName = "DT_MOTOR_TYPE",
 			primaryIsNavigable = true,
 			primaryRole = "MotorType",
@@ -62,7 +62,7 @@ public final class Car implements Entity {
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_FAM_CAR_FAMILLE",
-			fkFieldName = "FAM_ID",
+			fkFieldName = "famId",
 			primaryDtDefinitionName = "DT_FAMILLE",
 			primaryIsNavigable = false,
 			primaryRole = "Famille",
@@ -95,7 +95,7 @@ public final class Car implements Entity {
 	}
 
 	/**
-	 * Champ : ID.
+	 * Champ : id.
 	 * Récupère la valeur de la propriété 'identifiant de la voiture'.
 	 * @return Long id <b>Obligatoire</b>
 	 */
@@ -105,7 +105,7 @@ public final class Car implements Entity {
 	}
 
 	/**
-	 * Champ : ID.
+	 * Champ : id.
 	 * Définit la valeur de la propriété 'identifiant de la voiture'.
 	 * @param id Long <b>Obligatoire</b>
 	 */

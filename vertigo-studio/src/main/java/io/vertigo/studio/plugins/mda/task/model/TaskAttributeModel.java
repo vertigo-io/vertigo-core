@@ -22,7 +22,6 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
-import io.vertigo.util.StringUtil;
 
 /**
  * Génération des classes/méthodes des taches de type DAO.
@@ -49,7 +48,7 @@ public final class TaskAttributeModel {
 	 * @return Nom de la variable
 	 */
 	public String getVariableName() {
-		return StringUtil.constToLowerCamelCase(taskAttribute.getName());
+		return taskAttribute.getName();
 	}
 
 	/**

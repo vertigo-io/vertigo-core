@@ -66,11 +66,11 @@ public class DynamoDefinitionProvider implements DefinitionProvider {
 	 * @param encoding the encoding to use for reading ksp files
 	 */
 	@Inject
-	public DynamoDefinitionProvider(final ResourceManager resourceManager, @Named("encoding") final Optional<String> encoding) {
+	public DynamoDefinitionProvider(final ResourceManager resourceManager, @Named("encoding") final Optional<String> encoding, @Named("constFieldName") final Optional<Boolean> constFieldName) {
 		loadersByType = new MapBuilder<String, Loader>()
 				.put("kpr", new KprLoader(resourceManager, encoding))
-				.put("oom", new OOMLoader(resourceManager))
-				.put("xmi", new EAXmiLoader(resourceManager))
+				.put("oom", new OOMLoader(constFieldName.orElse(true), resourceManager))
+				.put("xmi", new EAXmiLoader(constFieldName.orElse(true), resourceManager))
 				.put("classes", new AnnotationLoader())
 				.unmodifiable()
 				.build();

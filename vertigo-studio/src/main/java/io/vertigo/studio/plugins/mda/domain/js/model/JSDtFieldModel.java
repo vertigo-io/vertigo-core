@@ -20,7 +20,6 @@ package io.vertigo.studio.plugins.mda.domain.js.model;
 
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * Model used to define a DtField.
@@ -41,7 +40,7 @@ public final class JSDtFieldModel {
 	}
 
 	public String getCamelCaseName() {
-		return StringUtil.constToLowerCamelCase(dtField.getName());
+		return dtField.getName();
 	}
 
 	/**

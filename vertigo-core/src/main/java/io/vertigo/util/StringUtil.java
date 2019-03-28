@@ -19,6 +19,7 @@
 package io.vertigo.util;
 
 import java.text.MessageFormat;
+import java.util.regex.Pattern;
 
 import io.vertigo.lang.Assertion;
 
@@ -28,6 +29,9 @@ import io.vertigo.lang.Assertion;
  * @author  pchretien
  */
 public final class StringUtil {
+	private static Pattern UPPER_CAMEL_CASE_PATTERN = Pattern.compile("[A-Z][a-zA-Z0-9]*");
+	private static Pattern LOWER_CAMEL_CASE_PATTERN = Pattern.compile("[a-z][a-zA-Z0-9]*");
+
 	/**
 	 * Constructor
 	 */
@@ -193,6 +197,24 @@ public final class StringUtil {
 			result.append(Character.toUpperCase(c));
 		}
 		return result.toString();
+	}
+
+	/**
+	 * Teste si une chaine est en camelCase avec la première lettre en majuscule.
+	 * @param testString chaine a tester
+	 * @return boolean
+	 */
+	public static boolean isUpperCamelCase(final String testString) {
+		return UPPER_CAMEL_CASE_PATTERN.matcher(testString).matches();
+	}
+
+	/**
+	 * Teste si une chaine est en camelCase avec la première lettre en minuscule.
+	 * @param testString chaine a tester
+	 * @return boolean
+	 */
+	public static boolean isLowerCamelCase(final String testString) {
+		return LOWER_CAMEL_CASE_PATTERN.matcher(testString).matches();
 	}
 
 	/**

@@ -21,7 +21,6 @@ package io.vertigo.vega.engines.webservice.json;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,6 @@ import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.validation.DtObjectErrors;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
@@ -52,12 +50,6 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  */
 public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webservice.model.UiObject<D> {
 	private static final long serialVersionUID = -4639050257543017072L;
-
-	/**
-	 * Index de transformation des propriétés CamelCase en champs du Dt en const
-	 */
-	protected final Map<String, String> camel2ConstIndex = new HashMap<>();
-	private final Map<String, String> const2CamelIndex = new HashMap<>();
 
 	/** Référence vers la définition. */
 	private final DefinitionReference<DtDefinition> dtDefinitionRef;
@@ -90,10 +82,6 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		//-----
 		this.inputDto = inputDto;
 		this.dtDefinitionRef = new DefinitionReference<>(DtObjectUtil.findDtDefinition(inputDto));
-		for (final DtField dtField : dtDefinitionRef.get().getFields()) {
-			camel2ConstIndex.put(StringUtil.constToLowerCamelCase(dtField.getName()), dtField.getName());
-			const2CamelIndex.put(dtField.getName(), StringUtil.constToLowerCamelCase(dtField.getName()));
-		}
 
 		for (final String field : modifiedFields) {
 			setTypedValue(field, (Serializable) getDtField(field).getDataAccessor().getValue(inputDto));
@@ -175,7 +163,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		Assertion.checkNotNull(inputDto, "inputDto is mandatory");
 		//-----
 		for (final DtField dtField : getDtDefinition().getFields()) {
-			if (isModified(const2CamelIndex.get(dtField.getName()))) {
+			if (isModified(dtField.getName())) {
 				dtField.getDataAccessor().setValue(serverSideDto, dtField.getDataAccessor().getValue(inputDto));
 			}
 		}
@@ -197,7 +185,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 
 	/**
 	 * Merge et Valide l'objet d'IHM et place les erreurs rencontrées dans la stack.
-	 * @param dtObjectValidators Validateurs à utiliser, peut-Ãªtre spécifique Ã  l'objet.
+	 * @param dtObjectValidators Validateurs à utiliser, peut-être spécifique à l'objet.
 	 * @param uiMessageStack Pile des messages qui sera mise Ã  jour
 	 * @return Objet métier mis Ã  jour
 	 */
@@ -231,7 +219,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	}
 
 	protected final DtField getDtField(final String camelField) {
-		return getDtDefinition().getField(camel2ConstIndex.get(camelField));
+		return getDtDefinition().getField(camelField);
 	}
 
 	/**
@@ -300,7 +288,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		} catch (final FormatterException e) { //We don't log nor rethrow this exception // it should be an encoding exception
 			/** Erreur de typage.	 */
 			//encoding error
-			getDtObjectErrors().addError(StringUtil.constToLowerCamelCase(dtField.getName()), e.getMessageText());
+			getDtObjectErrors().addError(dtField.getName(), e.getMessageText());
 			formattedValue = stringValue;
 		}
 
@@ -378,39 +366,32 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 
 	@Override
 	public Integer getInteger(final String fieldName) {
-		return getTypedValue(getCamelCase(fieldName), Integer.class);
+		return getTypedValue(fieldName, Integer.class);
 	}
 
 	@Override
 	public Long getLong(final String fieldName) {
-		return getTypedValue(getCamelCase(fieldName), Long.class);
+		return getTypedValue(fieldName, Long.class);
 	}
 
 	@Override
 	public String getString(final String fieldName) {
-		return getTypedValue(getCamelCase(fieldName), String.class);
+		return getTypedValue(fieldName, String.class);
 	}
 
 	@Override
 	public Boolean getBoolean(final String fieldName) {
-		return getTypedValue(getCamelCase(fieldName), Boolean.class);
+		return getTypedValue(fieldName, Boolean.class);
 	}
 
 	@Override
 	public Date getDate(final String fieldName) {
-		return getTypedValue(getCamelCase(fieldName), Date.class);
+		return getTypedValue(fieldName, Date.class);
 	}
 
 	@Override
 	public BigDecimal getBigDecimal(final String fieldName) {
-		return getTypedValue(getCamelCase(fieldName), BigDecimal.class);
-	}
-
-	private static String getCamelCase(final String fieldName) {
-		if (Character.isLowerCase(fieldName.charAt(0)) && !fieldName.contains("_")) {
-			return fieldName;
-		}
-		return StringUtil.constToLowerCamelCase(fieldName);
+		return getTypedValue(fieldName, BigDecimal.class);
 	}
 
 }

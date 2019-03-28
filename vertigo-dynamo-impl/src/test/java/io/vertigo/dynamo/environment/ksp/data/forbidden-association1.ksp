@@ -2,7 +2,7 @@ package io.vertigo.dynamock.domain
 
 /* wrong way!! */
 create Association A_ENT_VOB {
- 	fkFieldName : "VOB_ID"
+ 	fkFieldName : "vobId"
     
  	dtDefinitionA : DT_TEST_ENTITY
 	dtDefinitionB : DT_TEST_VOBJECT

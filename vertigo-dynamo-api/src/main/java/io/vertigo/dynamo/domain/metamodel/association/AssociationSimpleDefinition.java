@@ -22,6 +22,7 @@ import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 /**
  * This class defines a simple association : 1-1 or 1-n.
@@ -37,7 +38,7 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 
 	/**
 	 * Constructor.
-	
+
 	 * @param name the name of the association
 	 * @param fkFieldName the fieldname that represents the foreign key
 	 * @param associationNodeA the A node for this assocation
@@ -53,6 +54,7 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 		//We check that this assocation is not multiple
 		Assertion.checkArgument(!(associationNodeA.isMultiple() && associationNodeB.isMultiple()), "assocation : {0}. n-n assocation is prohibited in a simple assocation", name);
 		Assertion.checkNotNull(fkFieldName);
+		Assertion.checkArgument(StringUtil.isLowerCamelCase(fkFieldName), "the name of the field {0} must be in lowerCamelCase", fkFieldName);
 		//-----
 		// Which node is the key node (the primary key)
 		final boolean isAPrimaryNode = AssociationUtil.isAPrimaryNode(

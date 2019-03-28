@@ -86,10 +86,10 @@ public final class TaskProxyMethod implements ProxyMethod {
 		if (hasOut(method)) {
 			final Domain outDomain = findOutDomain(method);
 			if (isOutOptional(method)) {
-				taskDefinitionBuilder.withOutOptional("OUT", outDomain);
+				taskDefinitionBuilder.withOutOptional("out", outDomain);
 
 			} else {
-				taskDefinitionBuilder.withOutRequired("OUT", outDomain);
+				taskDefinitionBuilder.withOutRequired("out", outDomain);
 			}
 		}
 		for (final Parameter parameter : method.getParameters()) {
@@ -121,7 +121,7 @@ public final class TaskProxyMethod implements ProxyMethod {
 
 			final Object arg;
 			if (optional) {
-				arg = ((Optional) (args[i])).orElse(null);
+				arg = ((Optional) args[i]).orElse(null);
 			} else {
 				arg = args[i];
 			}

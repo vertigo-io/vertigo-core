@@ -76,7 +76,6 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 		final String normalizedPath = normalizePath(usedPath);
 		final String acceptedType = computeAcceptedType();
 		return new WebServiceDefinition(
-				//"WS_" + StringUtil.camelToConstCase(restFullServiceClass.getSimpleName()) + "_" + StringUtil.camelToConstCase(method.getName()),
 				"WS_" + myVerb + "_" + normalizedPath.toUpperCase(Locale.ENGLISH),
 				myVerb,
 				usedPath,

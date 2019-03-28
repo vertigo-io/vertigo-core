@@ -234,34 +234,34 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		size = query("*:*");
 		Assertions.assertEquals(itemDataBase.size(), size);
 
-		size = query("MANUFACTURER:Peugeot"); //Les constructeur sont des mots clés donc sensible à la casse
+		size = query("manufacturer:Peugeot"); //Les constructeur sont des mots clés donc sensible à la casse
 		Assertions.assertEquals(itemDataBase.getItemsByManufacturer("peugeot").size(), (int) size);
 
-		size = query("MANUFACTURER:peugeot"); //Les constructeur sont des mots clés donc sensible à la casse
+		size = query("manufacturer:peugeot"); //Les constructeur sont des mots clés donc sensible à la casse
 		Assertions.assertEquals(0L, size);
 
-		size = query("MANUFACTURER:Vol*"); //On compte les volkswagen
+		size = query("manufacturer:Vol*"); //On compte les volkswagen
 		Assertions.assertEquals(itemDataBase.getItemsByManufacturer("volkswagen").size(), (int) size);
 
-		size = query("MANUFACTURER:vol*"); //On compte les volkswagen
+		size = query("manufacturer:vol*"); //On compte les volkswagen
 		Assertions.assertEquals(0L, (int) size); //Les constructeur sont des mots clés donc sensible à la casse (y compris en wildcard)
 
-		size = query("YEAR:[* TO 2005]"); //On compte les véhicules avant 2005
+		size = query("year:[* TO 2005]"); //On compte les véhicules avant 2005
 		Assertions.assertEquals(itemDataBase.before(2005), size);
 
-		size = query("DESCRIPTION:panoRAmique");//La description est un text insenssible à la casse
+		size = query("description:panoRAmique");//La description est un text insenssible à la casse
 		Assertions.assertEquals(itemDataBase.containsDescription("panoramique"), size);
 
-		size = query("DESCRIPTION:panoRAmi*");//La description est un text insenssible à la casse (y compris en wildcard)
+		size = query("description:panoRAmi*");//La description est un text insenssible à la casse (y compris en wildcard)
 		Assertions.assertEquals(itemDataBase.containsDescription("panoramique"), size);
 
-		size = query("DESCRIPTION:clim");
+		size = query("description:clim");
 		Assertions.assertEquals(itemDataBase.containsDescription("clim"), size);
 
-		size = query("DESCRIPTION:avenir");
+		size = query("description:avenir");
 		Assertions.assertEquals(itemDataBase.containsDescription("avenir"), size);
 
-		size = query("DESCRIPTION:l'avenir");
+		size = query("description:l'avenir");
 		Assertions.assertEquals(itemDataBase.containsDescription("l'avenir"), size);
 	}
 
@@ -280,16 +280,16 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		 * size = query("_all:(+peugeot +diesel)");
 		 * Assertions.assertEquals(3L, size); */
 
-		size = query("ALL_TEXT:(+peugeot +diesel)");
+		size = query("allText:(+peugeot +diesel)");
 		Assertions.assertEquals(3L, size);
 
-		size = query("MODEL.keyword:(806)");//MODEL est tokenize, MODEL_SORT ne l'est pas (ici on test le match avec le model : "806 final ST PACK")
+		size = query("model.keyword:(806)");//MODEL est tokenize, MODEL_SORT ne l'est pas (ici on test le match avec le model : "806 final ST PACK")
 		Assertions.assertEquals(0L, size);
 
-		size = query("MODEL.keyword:(806*)");
+		size = query("model.keyword:(806*)");
 		Assertions.assertEquals(1L, size);
 
-		size = query("ALL_TEXT:(+peugeot +diesel +2001)"); //2001 est l'année en number
+		size = query("allText:(+peugeot +diesel +2001)"); //2001 est l'année en number
 		Assertions.assertEquals(1L, size);
 	}
 
@@ -339,33 +339,64 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 
 		final long databaseResult = itemDataBase.containsDescription("sieges") + itemDataBase.containsDescription("sièges");
 		long size;
-		size = query("DESCRIPTION:sieges");
+		size = query("description:sieges");
 		Assertions.assertEquals(databaseResult, size);
-		size = query("DESCRIPTION:Sieges");
+		size = query("description:Sieges");
 		Assertions.assertEquals(databaseResult, size);
-		size = query("DESCRIPTION:sièges");
+		size = query("description:sièges");
 		Assertions.assertEquals(databaseResult, size);
-		size = query("DESCRIPTION:Sièges");
+		size = query("description:Sièges");
 		Assertions.assertEquals(databaseResult, size);
 
 		//y compris en wildcard
-		size = query("DESCRIPTION:sièg*");
+		size = query("description:sièg*"); //attention snowball retire la terminaison, ca fausse cette requete prefix
 		Assertions.assertEquals(databaseResult, size);
-		size = query("DESCRIPTION:Sièg*");
+		size = query("description:Sièg*");
 		Assertions.assertEquals(databaseResult, size);
-		size = query("DESCRIPTION:sieg*");
+		size = query("description:sieg*");
 		Assertions.assertEquals(databaseResult, size);
-		size = query("DESCRIPTION:Sieg*");
+		size = query("description:Sieg*");
 		Assertions.assertEquals(databaseResult, size);
 
 		//y compris en wildcard mandatory
-		size = query("DESCRIPTION:(+sièg*)");
+		size = query("description:(+sièg*)");
 		Assertions.assertEquals(databaseResult, size);
-		size = query("DESCRIPTION:(+Sièg*)");
+		size = query("description:(+Sièg*)");
 		Assertions.assertEquals(databaseResult, size);
-		size = query("DESCRIPTION:(+sieg*)");
+		size = query("description:(+sieg*)");
 		Assertions.assertEquals(databaseResult, size);
-		size = query("DESCRIPTION:(+Sieg*)");
+		size = query("description:(+Sieg*)");
+		Assertions.assertEquals(databaseResult, size);
+
+	}
+
+	/**
+	 * Test de requétage de l'index description : insenssible à la casse et aux accents.
+	 */
+	@Test
+	public void testInsensitivity2Query() {
+		index(false);
+
+		final long databaseResult = itemDataBase.containsDescription("sieges") + itemDataBase.containsDescription("sièges");
+		long size;
+		//y compris en wildcard
+		size = query("description:siè*");
+		Assertions.assertEquals(databaseResult, size);
+		size = query("description:Siè*");
+		Assertions.assertEquals(databaseResult, size);
+		size = query("description:sie*");
+		Assertions.assertEquals(databaseResult, size);
+		size = query("description:Sie*");
+		Assertions.assertEquals(databaseResult, size);
+
+		//y compris en wildcard mandatory
+		size = query("description:(+siè*)");
+		Assertions.assertEquals(databaseResult, size);
+		size = query("description:(+Siè*)");
+		Assertions.assertEquals(databaseResult, size);
+		size = query("description:(+sie*)");
+		Assertions.assertEquals(databaseResult, size);
+		size = query("description:(+Sie*)");
 		Assertions.assertEquals(databaseResult, size);
 
 	}
@@ -379,19 +410,19 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		index(false);
 		Item firstItem;
 
-		firstItem = doQueryAndGetFirst("*:*", "MANUFACTURER", false);
+		firstItem = doQueryAndGetFirst("*:*", "manufacturer", false);
 		Assertions.assertEquals("Audi", firstItem.getManufacturer());
 
-		firstItem = doQueryAndGetFirst("*:*", "MANUFACTURER", true);
+		firstItem = doQueryAndGetFirst("*:*", "manufacturer", true);
 		Assertions.assertEquals("Volkswagen", firstItem.getManufacturer());
 
-		firstItem = doQueryAndGetFirst("*:*", "YEAR", false);
+		firstItem = doQueryAndGetFirst("*:*", "year", false);
 		Assertions.assertEquals(1998, firstItem.getYear().intValue());
 
-		firstItem = doQueryAndGetFirst("*:*", "YEAR", true);
+		firstItem = doQueryAndGetFirst("*:*", "year", true);
 		Assertions.assertEquals(2010, firstItem.getYear().intValue());
 
-		final DtListState listState = DtListState.of(null, 0, itemIndexDefinition.getIndexDtDefinition().getField("MODEL").getName(), true);
+		final DtListState listState = DtListState.of(null, 0, itemIndexDefinition.getIndexDtDefinition().getField("model").getName(), true);
 		final DtList<Item> dtList = doQuery(SearchQuery.builder(ListFilter.of("*:*"))
 				.build(), listState).getDtList();
 
@@ -399,7 +430,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		Assertions.assertEquals("passat", dtList.get(1).getModel());
 		Assertions.assertEquals("Eos TDI 140 CARAT DSG", dtList.get(2).getModel());
 
-		firstItem = doQueryAndGetFirst("*:*", "MODEL", true);
+		firstItem = doQueryAndGetFirst("*:*", "model", true);
 		Assertions.assertEquals("Tucson 2.0 CRDi Pack Luxe BA", firstItem.getModel());
 	}
 
@@ -412,10 +443,10 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		index(false);
 		Item firstItem;
 
-		firstItem = doQueryAndGetFirst("*:*", "OPTIONAL_NUMBER", false);
+		firstItem = doQueryAndGetFirst("*:*", "optionalNumber", false);
 		Assertions.assertEquals("Audi", firstItem.getManufacturer());
 
-		firstItem = doQueryAndGetFirst("*:*", "OPTIONAL_STRING", false);
+		firstItem = doQueryAndGetFirst("*:*", "optionalString", false);
 		Assertions.assertEquals("Peugeot", firstItem.getManufacturer());
 	}
 
@@ -428,7 +459,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		Assertions.assertThrows(NullPointerException.class, () -> {
 			index(false);
 
-			doQueryAndGetFirst("*:*", "UNKNOWN_FIELD", false);
+			doQueryAndGetFirst("*:*", "unknownField", false);
 			Assertions.fail();
 		});
 	}
@@ -537,7 +568,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		//On recherche la facette constructeur
 		final Facet optionalStringFacet = getFacetByName(result, "FCT_OPTIONAL_STRING_ITEM");
 		//On vérifie que l'on est sur le champ Manufacturer
-		Assertions.assertEquals("OPTIONAL_STRING", optionalStringFacet.getDefinition().getDtField().getName());
+		Assertions.assertEquals("optionalString", optionalStringFacet.getDefinition().getDtField().getName());
 		Assertions.assertFalse(optionalStringFacet.getDefinition().isRangeFacet());
 
 		//On vérifie qu'il existe une valeur pour empty et que le nombre d'occurrences est correct
@@ -563,7 +594,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		//On recherche la facette constructeur
 		final Facet manufacturerFacet = getFacetByName(result, "FCT_MANUFACTURER_ITEM");
 		//On vérifie que l'on est sur le champ Manufacturer
-		Assertions.assertEquals("MANUFACTURER", manufacturerFacet.getDefinition().getDtField().getName());
+		Assertions.assertEquals("manufacturer", manufacturerFacet.getDefinition().getDtField().getName());
 		Assertions.assertFalse(manufacturerFacet.getDefinition().isRangeFacet());
 
 		//On vérifie qu'il existe une valeur pour peugeot et que le nombre d'occurrences est correct
@@ -609,19 +640,19 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	public void testSecurityQuery() {
 		index(false);
 		long size;
-		size = query("*:*", "+YEAR:[ 2005 TO * ]");
+		size = query("*:*", "+year:[ 2005 TO * ]");
 		Assertions.assertEquals(itemDataBase.size() - itemDataBase.before(2005), size);
 
-		size = query("MANUFACTURER:Peugeot", "+YEAR:[2005 TO * ]"); //Les constructeur sont des mots clés donc sensible à la casse
+		size = query("manufacturer:Peugeot", "+year:[2005 TO * ]"); //Les constructeur sont des mots clés donc sensible à la casse
 		Assertions.assertEquals(0L, (int) size);
 
-		size = query("MANUFACTURER:Vol*", "+YEAR:[2005 TO *]"); //On compte les volkswagen
+		size = query("manufacturer:Vol*", "+year:[2005 TO *]"); //On compte les volkswagen
 		Assertions.assertEquals(itemDataBase.getItemsByManufacturer("volkswagen").size(), (int) size);
 
-		size = query("YEAR:[* TO 2005]", "+YEAR:[2005 TO *]"); //On compte les véhicules avant 2005
+		size = query("year:[* TO 2005]", "+year:[2005 TO *]"); //On compte les véhicules avant 2005
 		Assertions.assertEquals(0L, size);
 
-		size = query("DESCRIPTION:siège", "+YEAR:[2005 TO *]");//La description est un text insenssible à la casse
+		size = query("description:siège", "+year:[2005 TO *]");//La description est un text insenssible à la casse
 		Assertions.assertEquals(2L, size);
 
 	}
@@ -661,7 +692,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		//on compte les Peugeots
 		final int nbPeugeot = itemDataBase.getItemsByManufacturer("Peugeot").size();
 		//On supprime toute les Peugeots
-		remove("MANUFACTURER:Peugeot");
+		remove("manufacturer:Peugeot");
 		final long resize = query("*:*");
 		Assertions.assertEquals(itemDataBase.size() - nbPeugeot, resize);
 	}
@@ -1074,7 +1105,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 				.withFacetClustering(manufacturerFacetDefinition)
 				.build();
 
-		final DtListState listState = DtListState.of(null, 0, itemIndexDefinition.getIndexDtDefinition().getField("YEAR").getName(), true);
+		final DtListState listState = DtListState.of(null, 0, itemIndexDefinition.getIndexDtDefinition().getField("year").getName(), true);
 		final FacetedQueryResult<Item, SearchQuery> result = searchManager.loadList(itemIndexDefinition, searchQuery, listState);
 
 		//On vérifie qu'il existe une valeur pour chaque marques et que la première est bien la plus ancienne

@@ -30,7 +30,6 @@ import io.vertigo.lang.Builder;
 import io.vertigo.lang.Tuples;
 import io.vertigo.lang.Tuples.Tuple2;
 import io.vertigo.util.BeanUtil;
-import io.vertigo.util.StringUtil;
 
 /**
  * SqlStatementBuilder.
@@ -105,7 +104,7 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 				if (namedParam.isPrimitive()) {
 					return SqlParameter.of((Class) valueHolder.getClass(), valueHolder);
 				}
-				final String fieldName = StringUtil.constToLowerCamelCase(namedParam.getFieldName());
+				final String fieldName = namedParam.getFieldName();
 				final Class valueHolderClass = valueHolder.getClass();
 				final PropertyDescriptor propertyDescriptor = BeanUtil.getPropertyDescriptor(fieldName, valueHolderClass);
 				return SqlParameter.of((Class) propertyDescriptor.getPropertyType(), BeanUtil.getValue(valueHolder, fieldName));

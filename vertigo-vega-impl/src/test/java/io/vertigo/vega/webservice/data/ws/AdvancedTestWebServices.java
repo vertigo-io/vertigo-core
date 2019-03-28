@@ -47,7 +47,6 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.VUserException;
 import io.vertigo.util.DateUtil;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.data.domain.Contact;
@@ -340,7 +339,7 @@ public final class AdvancedTestWebServices implements WebServices {
 	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
 		final DtList<D> sortedList;
 		if (dtListState.getSortFieldName().isPresent()) {
-			sortedList = collectionsManager.sort(unFilteredList, StringUtil.camelToConstCase(dtListState.getSortFieldName().get()), dtListState.isSortDesc().get());
+			sortedList = collectionsManager.sort(unFilteredList, dtListState.getSortFieldName().get(), dtListState.isSortDesc().get());
 		} else {
 			sortedList = unFilteredList;
 		}
@@ -364,11 +363,11 @@ public final class AdvancedTestWebServices implements WebServices {
 			if (!alreadyAddedField.contains(fieldName)) { //when we consume two fields at once (min;max)
 				final Object value = field.getDataAccessor().getValue(criteria);
 				if (value != null) {
-					if (fieldName.endsWith("_MIN") || fieldName.endsWith("_MAX")) {
-						final String filteredField = fieldName.substring(0, fieldName.length() - "_MIN".length());
+					if (fieldName.endsWith("Min") || fieldName.endsWith("Max")) {
+						final String filteredField = fieldName.substring(0, fieldName.length() - "Min".length());
 						final DtField resultDtField = resultDefinition.getField(filteredField);
-						final DtField minField = fieldName.endsWith("_MIN") ? field : criteriaDefinition.getField(filteredField + "_MIN");
-						final DtField maxField = fieldName.endsWith("_MAX") ? field : criteriaDefinition.getField(filteredField + "_MAX");
+						final DtField minField = fieldName.endsWith("Min") ? field : criteriaDefinition.getField(filteredField + "Min");
+						final DtField maxField = fieldName.endsWith("Max") ? field : criteriaDefinition.getField(filteredField + "Max");
 						final Serializable minValue = (Serializable) minField.getDataAccessor().getValue(criteria);
 						final Serializable maxValue = (Serializable) maxField.getDataAccessor().getValue(criteria);
 						filter = filter.and(Criterions.isBetween(() -> resultDtField.getName(),

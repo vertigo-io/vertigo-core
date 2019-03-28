@@ -1328,7 +1328,7 @@ public final class WebServiceManagerTest {
 				.build();
 
 		final String serverSideToken;
-		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia", isAuto);
+		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia", isAuto); //if Fournier : dateCriteria not applied
 		doPaginedSearch(criteriaContact, 3, 2, "name", false, serverSideToken, 3, "Garcia", "Moreau", isAuto);
 		doPaginedSearch(criteriaContact, 3, 5, "name", false, serverSideToken, 1, "Petit", "Petit", isAuto);
 		doPaginedSearch(criteriaContact, 10, 10, "name", false, serverSideToken, 0, "Petit", "Petit", isAuto);
@@ -1435,7 +1435,7 @@ public final class WebServiceManagerTest {
 			given.queryParam("listServerToken", listServerToken);
 		}
 		ResponseSpecification responseSpecification = given.body(criteriaContact)
-				.expect()
+				.expect().log().ifValidationFails()
 				.body("size()", Matchers.equalTo(expectedSize));
 		if (expectedSize > 0) {
 			responseSpecification = responseSpecification.body("get(0).name", Matchers.equalTo(firstContactName))

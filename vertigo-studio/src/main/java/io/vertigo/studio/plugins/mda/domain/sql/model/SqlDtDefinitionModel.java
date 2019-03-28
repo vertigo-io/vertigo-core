@@ -47,7 +47,6 @@ public final class SqlDtDefinitionModel {
 				.filter(dtField -> FieldType.COMPUTED != dtField.getType())
 				.map(SqlDtFieldModel::new)
 				.collect(Collectors.toList());
-
 	}
 
 	public String getLocalName() {

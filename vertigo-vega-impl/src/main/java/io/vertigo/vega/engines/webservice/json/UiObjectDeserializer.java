@@ -34,7 +34,6 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.model.UiObject;
 
 /**
@@ -77,7 +76,7 @@ final class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer
 	private static Set<String> getFieldNames(final DtDefinition dtDefinition) {
 		final Set<String> dtFieldNames = new HashSet<>();
 		for (final DtField dtField : dtDefinition.getFields()) {
-			dtFieldNames.add(StringUtil.constToLowerCamelCase(dtField.getName()));
+			dtFieldNames.add(dtField.getName());
 		}
 		return dtFieldNames;
 	}

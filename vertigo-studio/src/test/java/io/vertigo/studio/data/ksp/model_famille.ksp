@@ -1,12 +1,12 @@
 package io.vertigo.studio.domain.famille
 
 create DtDefinition DT_FAMILLE {
-		id FAM_ID 	{ domain:DO_ID, 	label:"identifiant de la famille"}
-		field LIBELLE {domain:DO_STRING, 		label:"Libelle",  			required : "false"}
+		id famId 	{ domain:DO_ID, 	label:"identifiant de la famille"}
+		field libelle {domain:DO_STRING, 		label:"Libelle",  			required : "false"}
 }
 
 alter DtDefinition DT_FAMILLE {
-    computed DESCRIPTION {domain : DO_LIBELLE_LONG, label:"Libelle"
+    computed description {domain : DO_LIBELLE_LONG, label:"Libelle"
         expression:"final StringBuilder builder = new StringBuilder();
         builder.append(getLibelle());
         builder.append('[');
@@ -20,7 +20,7 @@ create Association A_FAM_CAR_FAMILLE {
 	dtDefinitionA : DT_FAMILLE
 	dtDefinitionB : DT_CAR
 
-	fkFieldName : "FAM_ID"
+	fkFieldName : "famId"
 
 	navigabilityA : "false"
 	navigabilityB : "true"

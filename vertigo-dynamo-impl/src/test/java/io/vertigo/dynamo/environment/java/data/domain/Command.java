@@ -39,7 +39,7 @@ public final class Command implements KeyConcept {
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_CTY_CMD",
-			fkFieldName = "CTY_ID",
+			fkFieldName = "ctyId",
 			primaryDtDefinitionName = "DT_COMMAND_TYPE",
 			primaryIsNavigable = true,
 			primaryRole = "CommandType",
@@ -54,7 +54,7 @@ public final class Command implements KeyConcept {
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_CIT_CMD",
-			fkFieldName = "CIT_ID",
+			fkFieldName = "citId",
 			primaryDtDefinitionName = "DT_CITY",
 			primaryIsNavigable = true,
 			primaryRole = "City",
@@ -69,7 +69,7 @@ public final class Command implements KeyConcept {
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_CMD_ATT",
-			fkFieldName = "CMD_ID",
+			fkFieldName = "cmdId",
 			primaryDtDefinitionName = "DT_COMMAND",
 			primaryIsNavigable = true,
 			primaryRole = "Command",
@@ -89,7 +89,7 @@ public final class Command implements KeyConcept {
 	}
 
 	/**
-	 * Champ : ID.
+	 * Champ : id.
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long cmdId <b>Obligatoire</b>
 	 */
@@ -99,7 +99,7 @@ public final class Command implements KeyConcept {
 	}
 
 	/**
-	 * Champ : ID.
+	 * Champ : id.
 	 * Définit la valeur de la propriété 'id'.
 	 * @param cmdId Long <b>Obligatoire</b>
 	 */

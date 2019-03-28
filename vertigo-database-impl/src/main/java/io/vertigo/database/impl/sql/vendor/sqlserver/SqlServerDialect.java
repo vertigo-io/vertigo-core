@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 final class SqlServerDialect implements SqlDialect {
 
@@ -42,11 +43,12 @@ final class SqlServerDialect implements SqlDialect {
 				.append("insert into ").append(tableName).append(" ( ")
 				.append(dataFieldsName
 						.stream()
+						.map(StringUtil::camelToConstCase)
 						.collect(Collectors.joining(", ")))
 				.append(") values ( ")
 				.append(dataFieldsName
 						.stream()
-						.map(fieldName -> " #DTO." + fieldName + '#')
+						.map(fieldName -> " #dto." + fieldName + '#')
 						.collect(Collectors.joining(", ")))
 				.append(") ")
 				.toString();
@@ -62,12 +64,12 @@ final class SqlServerDialect implements SqlDialect {
 
 	/** {@inheritDoc} */
 	@Override
-	public String createSelectForUpdateQuery(final String tableName, final String requestedFields, final String idFieldName) {
+	public String createSelectForUpdateQuery(final String tableName, final String requestedCols, final String idFieldName) {
 		return new StringBuilder()
-				.append(" select ").append(requestedFields).append(" from ")
+				.append(" select ").append(requestedCols).append(" from ")
 				.append(tableName)
 				.append(" WITH (UPDLOCK, INDEX(PK_").append(tableName).append(")) ")
-				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
+				.append(" where ").append(StringUtil.camelToConstCase(idFieldName)).append(" = #").append(idFieldName).append('#')
 				.toString();
 	}
 

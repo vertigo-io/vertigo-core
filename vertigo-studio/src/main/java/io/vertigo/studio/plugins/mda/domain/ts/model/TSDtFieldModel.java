@@ -22,7 +22,6 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * Model used to define a DtField.
@@ -43,7 +42,7 @@ public final class TSDtFieldModel {
 	}
 
 	public String getCamelCaseName() {
-		return StringUtil.constToLowerCamelCase(dtField.getName());
+		return dtField.getName();
 	}
 
 	/**
@@ -128,6 +127,6 @@ public final class TSDtFieldModel {
 		} else {
 			typescriptType = domain.getJavaClass().getSimpleName();
 		}
-		return typescriptType + ((domain.isMultiple() && withArray) ? "[]" : "");
+		return typescriptType + (domain.isMultiple() && withArray ? "[]" : "");
 	}
 }

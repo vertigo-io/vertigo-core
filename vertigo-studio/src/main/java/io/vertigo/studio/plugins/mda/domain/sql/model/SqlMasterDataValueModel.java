@@ -23,7 +23,6 @@ import java.util.Map;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * Model Sql des materdata.
@@ -43,16 +42,16 @@ public final class SqlMasterDataValueModel {
 		this.allFieldValues = allFieldValues;
 	}
 
-	public String getFieldValue(final String fieldName) {
+	public String getFieldValue(final SqlDtFieldModel field) {
+		final String fieldName = field.getName();
 		final DtField dtField = dtDefinition.getField(fieldName);
-		final String camelCaseFieldName = StringUtil.constToLowerCamelCase(fieldName);
 		//---
 		Assertion.when(dtField.isRequired())
-				.check(() -> allFieldValues.containsKey(camelCaseFieldName),
+				.check(() -> allFieldValues.containsKey(fieldName),
 						"Field '{0}' is required on '{1}' and no value was provided. Provided values '{2}'",
 						fieldName, dtDefinition.getName(), allFieldValues);
 		//---
-		return allFieldValues.getOrDefault(camelCaseFieldName, "null");
+		return allFieldValues.getOrDefault(fieldName, "null");
 	}
 
 }

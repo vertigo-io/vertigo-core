@@ -45,6 +45,7 @@ import io.vertigo.dynamo.plugins.environment.loaders.Loader;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
+import io.vertigo.util.StringUtil;
 
 /**
  * Parser d'un fichier powerAMC/OOM ou EA/XMI.
@@ -59,15 +60,18 @@ public abstract class AbstractXmlLoader implements Loader {
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
 	private static final char SEPARATOR = Definition.SEPARATOR;
 	private final ResourceManager resourceManager;
+	private final boolean constFieldNameInSource;
 
 	/**
 	 * Constructor.
+	 * @param constFieldNameInSource FieldName in file is in CONST_CASE instead of camelCase
 	 * @param resourceManager the vertigo resourceManager
 	 */
-	public AbstractXmlLoader(final ResourceManager resourceManager) {
+	public AbstractXmlLoader(final boolean constFieldNameInSource, final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
 		//-----
 		this.resourceManager = resourceManager;
+		this.constFieldNameInSource = constFieldNameInSource;
 	}
 
 	/** {@inheritDoc} */
@@ -95,7 +99,7 @@ public abstract class AbstractXmlLoader implements Loader {
 		}
 
 		for (final XmlAssociation association : getAssociations()) {
-			dslDefinitionRepository.addDefinition(toDynamicDefinition(association, dslDefinitionRepository));
+			dslDefinitionRepository.addDefinition(toDynamicDefinition(association, dslDefinitionRepository, constFieldNameInSource));
 		}
 	}
 
@@ -112,6 +116,10 @@ public abstract class AbstractXmlLoader implements Loader {
 	 * @return Liste des associations
 	 */
 	protected abstract List<XmlAssociation> getAssociations();
+
+	protected final boolean isConstFieldNameInSource() {
+		return constFieldNameInSource;
+	}
 
 	private static DslDefinition toDynamicDefinition(final XmlClass clazz) {
 		final DslEntity dtDefinitionEntity = DomainGrammar.DT_DEFINITION_ENTITY;
@@ -142,7 +150,7 @@ public abstract class AbstractXmlLoader implements Loader {
 				.build();
 	}
 
-	private static DslDefinition toDynamicDefinition(final XmlAssociation association, final DslDefinitionRepository dynamicModelrepository) {
+	private static DslDefinition toDynamicDefinition(final XmlAssociation association, final DslDefinitionRepository dynamicModelrepository, final boolean constFieldNameInSource) {
 		final DslEntity associationEntity = DomainGrammar.ASSOCIATION_ENTITY;
 		final DslEntity associationNNEntity = DomainGrammar.ASSOCIATION_NN_ENTITY;
 
@@ -184,13 +192,13 @@ public abstract class AbstractXmlLoader implements Loader {
 			associationDefinitionBuilder
 					.addPropertyValue(KspProperty.MULTIPLICITY_A, association.getMultiplicityA())
 					.addPropertyValue(KspProperty.MULTIPLICITY_B, association.getMultiplicityB())
-					.addPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(association, dynamicModelrepository));
+					.addPropertyValue(KspProperty.FK_FIELD_NAME, buildFkFieldName(association, dynamicModelrepository, constFieldNameInSource));
 
 		}
 		return associationDefinitionBuilder.build();
 	}
 
-	private static String buildFkFieldName(final XmlAssociation association, final DslDefinitionRepository dynamicModelrepository) {
+	private static String buildFkFieldName(final XmlAssociation association, final DslDefinitionRepository dynamicModelrepository, final boolean constFieldNameInSource) {
 		// Dans le cas d'une association simple, on recherche le nom de la FK
 		// recherche de code de contrainte destiné à renommer la fk selon convention du vbsript PowerAMC
 		// Cas de la relation 1-n : où le nom de la FK est redéfini.
@@ -222,7 +230,11 @@ public abstract class AbstractXmlLoader implements Loader {
 		//Si l'association possède une nom défini par l'utilisateur, alors on l'ajoute à la FK avec un séparateur.
 		if (association.getCodeName() != null) {
 			//On construit le nom de la clé étrangère.
-			fkFieldName = fkFieldName + '_' + association.getCodeName();
+			if (constFieldNameInSource) {
+				fkFieldName = fkFieldName + StringUtil.constToUpperCamelCase(association.getCodeName());
+			} else {
+				fkFieldName = fkFieldName + StringUtil.first2UpperCase(association.getCodeName());
+			}
 		}
 
 		//On raccourci le nom de la clé étrangère.

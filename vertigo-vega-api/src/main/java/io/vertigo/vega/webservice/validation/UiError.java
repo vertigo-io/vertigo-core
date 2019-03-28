@@ -22,7 +22,6 @@ import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * Message d'IHM.
@@ -82,6 +81,6 @@ public final class UiError {
 	 * @return Nom du champ
 	 */
 	public String getFieldName() {
-		return StringUtil.constToLowerCamelCase(dtField.getName());
+		return dtField.getName();
 	}
 }

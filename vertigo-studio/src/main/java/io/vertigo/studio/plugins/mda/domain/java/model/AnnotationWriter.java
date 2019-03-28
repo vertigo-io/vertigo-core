@@ -31,9 +31,7 @@ import io.vertigo.dynamo.domain.stereotype.Association;
 import io.vertigo.dynamo.domain.stereotype.AssociationNN;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.lang.Assertion;
 import io.vertigo.util.ListBuilder;
-import io.vertigo.util.StringUtil;
 
 /**
  * Gestion centralisée des annotations sur les objets générés.
@@ -106,7 +104,6 @@ class AnnotationWriter {
 	 */
 	List<String> writeAnnotations(final DtField dtField) {
 		final List<String> lines = new ArrayList<>();
-		final String fieldName = dtField.getName();
 		// Générations des annotations Dynamo
 		// if (!isComputed) {
 		final StringBuilder buffer = new StringBuilder("@Field(")
@@ -124,8 +121,6 @@ class AnnotationWriter {
 			// On ne précise la persistance que si elle n'est pas gérée
 			buffer.append("persistent = false, ");
 		}
-		// On vérifie que le nom du champ (constante) est transformable en nom de méthode et réciproquement.
-		Assertion.checkArgument(fieldName.equals(StringUtil.camelToConstCase(StringUtil.constToUpperCamelCase(fieldName))), "le nom {0} n''est pas transformable en nom de méthode", fieldName);
 		buffer.append("label = \"")
 				.append(dtField.getLabel().getDisplay())
 				.append('\"')

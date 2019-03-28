@@ -2,19 +2,19 @@ package io.vertigo.studio.domain.stereotype
 
 create DtDefinition DT_COMMAND {
 		stereotype : "KeyConcept"
-		id CMD_ID 			{ domain:DO_ID,label:"id" }
+		id cmdId 			{ domain:DO_ID,label:"id" }
 }
 
 create DtDefinition DT_COMMAND_TYPE {
 		stereotype : "StaticMasterData",
-		id CTY_ID 			{ domain:DO_ID,	label:"id"}
-		field LABEL  		{ domain:DO_FULL_TEXT, 		label:"Label",		required : "true"}		
+		id ctyId 			{ domain:DO_ID,	label:"id"}
+		field label  		{ domain:DO_FULL_TEXT, 		label:"Label",		required : "true"}		
 }
 
 create DtDefinition DT_CITY {
-		id CIT_ID 			{ domain:DO_ID,	label:"id"}
-		field LABEL  		{ domain:DO_FULL_TEXT, 		label:"Label",		required : "true"}	
-		field POSTAL_CODE	{ domain:DO_KEYWORD, 		label:"Postal code",required : "true"}			
+		id citId 			{ domain:DO_ID,	label:"id"}
+		field label  		{ domain:DO_FULL_TEXT, 		label:"Label",		required : "true"}	
+		field postalCode	{ domain:DO_KEYWORD, 		label:"Postal code",required : "true"}			
 }
 
 alter  DtDefinition DT_CITY {
@@ -22,18 +22,18 @@ alter  DtDefinition DT_CITY {
 }
 
 create DtDefinition DT_ATTACHMENT {
-		id 		ATT_ID 		{ domain:DO_ID,	label:"id" }
-		field 	URL  		{ domain:DO_KEYWORD, 		label:"Url",		required : "true"}	
+		id 		attId 		{ domain:DO_ID,	label:"id" }
+		field 	url  		{ domain:DO_KEYWORD, 		label:"Url",		required : "true"}	
 }
 
 create DtDefinition DT_COMMAND_VALIDATION {
-		id CVA_ID 			{ domain:DO_ID,	label:"id"}
-		field SIGNER_NAME	{ domain:DO_FULL_TEXT, 		label:"Signer name",required : "true"}	
+		id cvaId 			{ domain:DO_ID,	label:"id"}
+		field signerName	{ domain:DO_FULL_TEXT, 		label:"Signer name",required : "true"}	
 }
 
 
 create Association A_CMD_ATT {
-  	fkFieldName : "CMD_ID"
+  	fkFieldName : "cmdId"
     
   	dtDefinitionA : DT_ATTACHMENT
 	dtDefinitionB : DT_COMMAND
@@ -53,7 +53,7 @@ create Association A_CMD_ATT {
 
 
 create Association A_CMD_CVA {
-  	fkFieldName : "CMD_ID"
+  	fkFieldName : "cmdId"
     
   	dtDefinitionA : DT_COMMAND_VALIDATION
 	dtDefinitionB : DT_COMMAND
@@ -71,7 +71,7 @@ create Association A_CMD_CVA {
 },
 
 create Association A_CTY_CMD {
-  	fkFieldName : "CTY_ID"
+  	fkFieldName : "ctyId"
     
   	dtDefinitionA : DT_COMMAND,
 	dtDefinitionB : DT_COMMAND_TYPE
@@ -90,7 +90,7 @@ create Association A_CTY_CMD {
 
 
 create Association A_CIT_CMD {
-  	fkFieldName : "CIT_ID"
+  	fkFieldName : "citId"
     
   	dtDefinitionA : DT_COMMAND
 	dtDefinitionB : DT_CITY

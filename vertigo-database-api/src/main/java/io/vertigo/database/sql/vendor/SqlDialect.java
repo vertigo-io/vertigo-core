@@ -20,6 +20,8 @@ package io.vertigo.database.sql.vendor;
 
 import java.util.List;
 
+import io.vertigo.util.StringUtil;
+
 /**
  * The database dialect.
  * Provides all the vendor's specific SQL
@@ -33,8 +35,8 @@ public interface SqlDialect {
 	 *
 	 */
 	public enum GenerationMode {
-		GENERATED_KEYS, // H2, SQLServer, PostgreSQL...
-		GENERATED_COLUMNS, //Oracle...
+	GENERATED_KEYS, // H2, SQLServer, PostgreSQL...
+	GENERATED_COLUMNS, //Oracle...
 	}
 
 	/**
@@ -77,7 +79,7 @@ public interface SqlDialect {
 		return new StringBuilder()
 				.append(" select ").append(requestedFields)
 				.append(" from ").append(tableName)
-				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
+				.append(" where ").append(StringUtil.camelToConstCase(idFieldName)).append(" = #").append(idFieldName).append('#')
 				.append(" for update ")
 				.toString();
 	}

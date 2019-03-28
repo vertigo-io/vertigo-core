@@ -39,6 +39,7 @@ import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
+import io.vertigo.util.StringUtil;
 
 /**
  * Gestion des tables de relations NN.
@@ -132,9 +133,10 @@ final class BrokerNNImpl implements BrokerNN {
 	private void removeNN(final DescriptionNN nn) {
 		//FieldName
 		final String sourceFieldName = nn.sourceField.getName();
+		final String sourceColName = StringUtil.camelToConstCase(sourceFieldName);
 
 		final String taskName = "TK_DELETE_" + nn.tableName;
-		final String request = String.format("delete from %s where %s = #%s#", nn.tableName, sourceFieldName, sourceFieldName);
+		final String request = String.format("delete from %s where %s = #%s#", nn.tableName, sourceColName, sourceFieldName);
 
 		processNN(taskName, request, nn.dataSpace, nn.sourceField, nn.sourceValue, null, null);
 	}
@@ -147,10 +149,12 @@ final class BrokerNNImpl implements BrokerNN {
 	private void appendNN(final DescriptionNN nn, final Object targetValue) {
 		//FieldName
 		final String sourceFieldName = nn.sourceField.getName();
+		final String sourceColName = StringUtil.camelToConstCase(sourceFieldName);
 		final String targetFieldName = nn.targetField.getName();
+		final String targetColName = StringUtil.camelToConstCase(targetFieldName);
 		final String taskName = "TK_INSERT_" + nn.tableName;
 
-		final String request = String.format("insert into %s (%s, %s) values (#%s#, #%s#)", nn.tableName, sourceFieldName, targetFieldName, sourceFieldName, targetFieldName);
+		final String request = String.format("insert into %s (%s, %s) values (#%s#, #%s#)", nn.tableName, sourceColName, targetColName, sourceFieldName, targetFieldName);
 		final int sqlRowCount = processNN(taskName, request, nn.dataSpace, nn.sourceField, nn.sourceValue, nn.targetField, targetValue);
 		if (sqlRowCount > 1) {
 			throw new VSystemException("More than one row inserted");
@@ -167,11 +171,13 @@ final class BrokerNNImpl implements BrokerNN {
 	private void removeNN(final DescriptionNN nn, final Object targetValue) {
 		//FieldName
 		final String sourceFieldName = nn.sourceField.getName();
+		final String sourceColName = StringUtil.camelToConstCase(sourceFieldName);
 		final String targetFieldName = nn.targetField.getName();
+		final String targetColName = StringUtil.camelToConstCase(targetFieldName);
 		final String taskName = "TK_DELETE_" + nn.tableName;
 
 		final String request = String.format("delete from %s where %s = #%s# and %s = #%s#",
-				nn.tableName, sourceFieldName, sourceFieldName, targetFieldName, targetFieldName);
+				nn.tableName, sourceColName, sourceFieldName, targetColName, targetFieldName);
 		final int sqlRowCount = processNN(taskName, request, nn.dataSpace, nn.sourceField, nn.sourceValue, nn.targetField, targetValue);
 		if (sqlRowCount > 1) {
 			throw new VSystemException("More than one row removed");

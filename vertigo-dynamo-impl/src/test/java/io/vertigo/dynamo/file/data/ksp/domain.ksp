@@ -5,9 +5,9 @@ create FileInfo FI_FILE_INFO_STD {
 }
 
 create DtDefinition DT_VX_FILE_INFO {
-	 id  FIL_ID 			{domain : DO_URI 	label : "Identifiant" }
-	 field FILE_NAME 		{domain : DO_LABEL 	label : "Nom" 					required : "true" }
- 	 field LENGTH 			{domain : DO_SIZE 	label : "Taille" 				required : "true" }
-	 field LAST_MODIFIED 	{domain : DO_INSTANT	label : "Date de modification" 	required : "true" }
-	 field FILE_DATA 		{domain : DO_LABEL	label : "data" 					required : "false", persistent:"false" }	 
+	 id  filId 			{domain : DO_URI 	label : "Identifiant" }
+	 field fileName 		{domain : DO_LABEL 	label : "Nom" 					required : "true" }
+ 	 field length 			{domain : DO_SIZE 	label : "Taille" 				required : "true" }
+	 field lastModified 	{domain : DO_INSTANT	label : "Date de modification" 	required : "true" }
+	 field fileData 		{domain : DO_LABEL	label : "data" 					required : "false", persistent:"false" }	 
 }

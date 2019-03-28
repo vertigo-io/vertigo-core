@@ -46,7 +46,6 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.VSystemException;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
@@ -293,7 +292,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		final List<String> required = new ArrayList<>(); //mandatory fields
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(objectClass);
 		for (final DtField dtField : dtDefinition.getFields()) {
-			final String fieldName = StringUtil.constToLowerCamelCase(dtField.getName());
+			final String fieldName = dtField.getName();
 			final Type fieldType = getFieldType(dtField);
 			final Map<String, Object> fieldSchema = createSchemaObject(fieldType); //not Nullable
 			fieldSchema.put("title", dtField.getLabel().getDisplay());
@@ -438,7 +437,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			final Class<? extends DtObject> paramClass = (Class<? extends DtObject>) webServiceParam.getType();
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(paramClass);
 			for (final DtField dtField : dtDefinition.getFields()) {
-				final String fieldName = StringUtil.constToLowerCamelCase(dtField.getName());
+				final String fieldName = dtField.getName();
 				pseudoWebServiceParams.add(WebServiceParam.builder(dtField.getDomain().getJavaClass())
 						.with(webServiceParam.getParamType(), prefix + fieldName)
 						.build());

@@ -101,7 +101,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 			dtc.add(mocka);
 		}
 
-		final DtList<SmartItem> sortedDtc = collectionsManager.sort(dtc, "LABEL", false);
+		final DtList<SmartItem> sortedDtc = collectionsManager.sort(dtc, "label", false);
 
 		nop(sortedDtc);
 
@@ -117,7 +117,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 		// ======================== Ascendant
 		// =================================== nullLast
 		// ================================================ ignoreCase
-		sortDtc = collectionsManager.sort(dtc, "LABEL", false);
+		sortDtc = collectionsManager.sort(dtc, "label", false);
 
 		assertEquals(indexDtc, extractLabels(dtc));
 		assertEquals(new String[] { aaa_ba, Ba_aa, bb_aa, null }, extractLabels(sortDtc));
@@ -125,7 +125,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 		// ======================== Descendant
 		// =================================== not nullLast
 		// ================================================ ignoreCase
-		sortDtc = collectionsManager.sort(dtc, "LABEL", true);
+		sortDtc = collectionsManager.sort(dtc, "label", true);
 		assertEquals(indexDtc, extractLabels(dtc));
 		assertEquals(new String[] { null, bb_aa, Ba_aa, aaa_ba }, extractLabels(sortDtc));
 	}
@@ -140,7 +140,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 		// ======================== Ascendant
 		// =================================== nullLast
 		// ================================================ ignoreCase
-		sortDtc = collectionsManager.sort(dtc, "ID", false);
+		sortDtc = collectionsManager.sort(dtc, "id", false);
 
 		assertEquals(indexDtc, extractLabels(dtc));
 		assertEquals(new String[] { Ba_aa, null, aaa_ba, bb_aa }, extractLabels(sortDtc));
@@ -148,7 +148,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 		// ======================== Descendant
 		// =================================== not nullLast
 		// ================================================ ignoreCase
-		sortDtc = collectionsManager.sort(dtc, "ID", true);
+		sortDtc = collectionsManager.sort(dtc, "id", true);
 		assertEquals(indexDtc, extractLabels(dtc));
 		assertEquals(new String[] { bb_aa, aaa_ba, null, Ba_aa }, extractLabels(sortDtc));
 	}
@@ -157,15 +157,15 @@ public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 	public void testFilter() {
 		final DtList<SmartItem> result = createItems()
 				.stream()
-				.filter(Criterions.isEqualTo(DtDefinitions.Fields.LABEL, aaa_ba).toPredicate())
+				.filter(Criterions.isEqualTo(DtDefinitions.Fields.label, aaa_ba).toPredicate())
 				.collect(VCollectors.toDtList(SmartItem.class));
 		Assertions.assertEquals(1, result.size());
 	}
 
 	@Test
 	public void testFilterTwoValues() {
-		final Predicate<SmartItem> filterA = Criterions.isEqualTo(DtDefinitions.Fields.LABEL, "aaa").toPredicate();
-		final Predicate<SmartItem> filterB = Criterions.isEqualTo(DtDefinitions.Fields.ID, 13L).toPredicate();
+		final Predicate<SmartItem> filterA = Criterions.isEqualTo(DtDefinitions.Fields.label, "aaa").toPredicate();
+		final Predicate<SmartItem> filterB = Criterions.isEqualTo(DtDefinitions.Fields.id, 13L).toPredicate();
 
 		final DtList<SmartItem> result = createItemsForRangeTest()
 				.stream()
@@ -282,7 +282,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 		// Cas de base.
 		// ======================== Ascendant
 		sortDtc = collectionsManager.<SmartItem> createIndexDtListFunctionBuilder()
-				.sort("LABEL", false)
+				.sort("label", false)
 				.build()
 				.apply(dtc);
 
@@ -291,7 +291,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 
 		// ======================== Descendant
 		sortDtc = collectionsManager.<SmartItem> createIndexDtListFunctionBuilder()
-				.sort("LABEL", true)
+				.sort("label", true)
 				.build()
 				.apply(dtc);
 		assertEquals(indexDtc, extractLabels(dtc));
@@ -309,7 +309,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 		// =================================== nullLast
 		// ================================================ ignoreCase
 		sortDtc = collectionsManager.<SmartItem> createIndexDtListFunctionBuilder()
-				.sort("ID", false)
+				.sort("id", false)
 				.build()
 				.apply(dtc);
 
@@ -320,7 +320,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 		// =================================== not nullLast
 		// ================================================ ignoreCase
 		sortDtc = collectionsManager.<SmartItem> createIndexDtListFunctionBuilder()
-				.sort("ID", true)
+				.sort("id", true)
 				.build()
 				.apply(dtc);
 		assertEquals(indexDtc, extractLabels(dtc));
@@ -382,8 +382,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 		final DtList<SmartItem> dtc = createItems();
 		final String[] indexDtc = extractLabels(dtc);
 
-		final Predicate<SmartItem> predicate = Criterions.isEqualTo(DtDefinitions.Fields.LABEL, aaa_ba).toPredicate();
-		final Function<DtList<SmartItem>, DtList<SmartItem>> sort = (list) -> collectionsManager.sort(list, "LABEL", false);
+		final Predicate<SmartItem> predicate = Criterions.isEqualTo(DtDefinitions.Fields.label, aaa_ba).toPredicate();
+		final Function<DtList<SmartItem>, DtList<SmartItem>> sort = (list) -> collectionsManager.sort(list, "label", false);
 
 		final int sizeDtc = dtc.size();
 
@@ -434,52 +434,52 @@ public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testCreateFilterForValue() {
 		final Predicate predicate = collectionsManager
-				.filter(ListFilter.of("LABEL" + ":\"aaa\""));
+				.filter(ListFilter.of("label" + ":\"aaa\""));
 		Assertions.assertNotNull(predicate);
 	}
 
 	@Test
 	public void testTermFilterString() {
-		testTermFilter("LABEL:\"aaa\"", 2);
-		testTermFilter("LABEL:\"aaab\"", 1);
+		testTermFilter("label:\"aaa\"", 2);
+		testTermFilter("label:\"aaab\"", 1);
 	}
 
 	@Test
 	public void testTermFilterLong() {
-		testTermFilter("ID:\"1\"", 1);
-		testTermFilter("ID:\"11\"", 1);
-		testTermFilter("ID:\"2\"", 0);
+		testTermFilter("id:\"1\"", 1);
+		testTermFilter("id:\"11\"", 1);
+		testTermFilter("id:\"2\"", 0);
 	}
 
 	@Test
 	public void testCreateFilter() {
-		final Predicate<DtObject> predicate = collectionsManager.filter(ListFilter.of("LABEL" + ":[a TO b]"));
+		final Predicate<DtObject> predicate = collectionsManager.filter(ListFilter.of("label" + ":[a TO b]"));
 		Assertions.assertNotNull(predicate);
 	}
 
 	@Test
 	public void testRangeFilter() {
-		testRangeFilter("LABEL" + ":[a TO b]", 5);
+		testRangeFilter("label" + ":[a TO b]", 5);
 	}
 
 	@Test
 	public void testRangeFilterLong() {
-		testRangeFilter("ID:[1 TO 10]", 3);
-		testRangeFilter("ID:[1 TO 10[", 2);
-		testRangeFilter("ID:]1 TO 10]", 2);
-		testRangeFilter("ID:]1 TO 10[", 1);
-		testRangeFilter("ID:]1 TO *[", 9);
-		testRangeFilter("ID:[* TO *[", 10);
+		testRangeFilter("id:[1 TO 10]", 3);
+		testRangeFilter("id:[1 TO 10[", 2);
+		testRangeFilter("id:]1 TO 10]", 2);
+		testRangeFilter("id:]1 TO 10[", 1);
+		testRangeFilter("id:]1 TO *[", 9);
+		testRangeFilter("id:[* TO *[", 10);
 	}
 
 	@Test
 	public void testRangeFilterString() {
-		testRangeFilter("LABEL:[a TO b]", 5);
-		testRangeFilter("LABEL:[* TO c[", 7);
-		testRangeFilter("LABEL:[* TO c]", 8);
-		testRangeFilter("LABEL:[* TO cb]", 9);
-		testRangeFilter("LABEL:[aaab TO aaac]", 2);
-		testRangeFilter("LABEL:[aaab TO aaac[", 1);
+		testRangeFilter("label:[a TO b]", 5);
+		testRangeFilter("label:[* TO c[", 7);
+		testRangeFilter("label:[* TO c]", 8);
+		testRangeFilter("label:[* TO cb]", 9);
+		testRangeFilter("label:[aaab TO aaac]", 2);
+		testRangeFilter("label:[aaab TO aaac[", 1);
 	}
 
 	private void testTermFilter(final String filterString, final int countEspected) {

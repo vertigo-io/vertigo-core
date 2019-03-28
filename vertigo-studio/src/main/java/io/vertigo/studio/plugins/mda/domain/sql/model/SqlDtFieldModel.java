@@ -21,6 +21,7 @@ package io.vertigo.studio.plugins.mda.domain.sql.model;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
+import io.vertigo.util.StringUtil;
 
 /**
  * Model used to define a DtField.
@@ -41,11 +42,19 @@ public final class SqlDtFieldModel {
 	}
 
 	/**
-	 * Nom du champ en majuscules séparés par des _.
-	 * @return UN_NOM
+	 * Nom du champ en camelCase
+	 * @return unNom
 	 */
 	public String getName() {
 		return dtField.getName();
+	}
+
+	/**
+	 * Nom du champ en majuscules séparés par des _.
+	 * @return UN_NOM
+	 */
+	public String getConstName() {
+		return StringUtil.camelToConstCase(dtField.getName());
 	}
 
 	public boolean isId() {

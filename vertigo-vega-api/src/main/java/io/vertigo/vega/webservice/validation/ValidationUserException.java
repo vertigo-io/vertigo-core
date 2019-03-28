@@ -29,7 +29,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VUserException;
-import io.vertigo.util.StringUtil;
 
 /**
  * Validation exception on a object's field.
@@ -75,7 +74,7 @@ public final class ValidationUserException extends VUserException {
 	 * @param fieldName fieldName in CamelCase
 	 */
 	public ValidationUserException(final MessageText messageText, final DtObject dto, final String fieldName) {
-		this(messageText, StringUtil.camelToConstCase(fieldName), dto);
+		this(messageText, fieldName, dto);
 	}
 
 	private ValidationUserException(final MessageText messageText, final String constFieldName, final DtObject dto) {

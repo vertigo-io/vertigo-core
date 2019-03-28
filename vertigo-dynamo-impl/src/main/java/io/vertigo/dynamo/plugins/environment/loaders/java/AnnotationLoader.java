@@ -361,8 +361,8 @@ public final class AnnotationLoader implements Loader {
 	private static String createFieldName(final Field field) {
 		Assertion.checkNotNull(field);
 		//-----
-		final String fieldName = StringUtil.camelToConstCase(field.getName());
-		if (StringUtil.constToLowerCamelCase(fieldName).equals(field.getName())) {
+		final String fieldName = field.getName();
+		if (StringUtil.isLowerCamelCase(fieldName)) {
 			return fieldName;
 		}
 		throw new IllegalArgumentException(field.getName() + " ne permet pas de donner un nom unique de propriété ");
@@ -378,9 +378,8 @@ public final class AnnotationLoader implements Loader {
 		//-----
 		if (method.getName().startsWith("get")) {
 			final String propertyName = method.getName().substring("get".length());
-			final String fieldName = StringUtil.camelToConstCase(propertyName);
-			if (StringUtil.constToUpperCamelCase(fieldName).equals(propertyName)) {
-				//Si on a une bijection alors OK
+			final String fieldName = StringUtil.first2LowerCase(propertyName);
+			if (StringUtil.isLowerCamelCase(fieldName)) {
 				return fieldName;
 			}
 		}

@@ -3,45 +3,45 @@ package io.vertigo.dynamo.search.data.domain
 create IndexDefinition IDX_ITEM {
     keyConcept : DT_ITEM
     dtIndex : DT_ITEM
-    indexCopyTo ALL_TEXT 	{ from: "MANUFACTURER,MODEL,DESCRIPTION,YEAR,KILO,PRICE,MOTOR_TYPE" }
+    indexCopyTo allText 	{ from: "manufacturer,model,description,year,kilo,price,motorType" }
     loaderId : "ItemSearchLoader"
 }
 
 create IndexDefinition IDX_DYNA_ITEM {
     keyConcept : DT_ITEM
     dtIndex : DT_ITEM
-    indexCopyTo ALL_TEXT 	{ from: "MANUFACTURER,MODEL,DESCRIPTION,YEAR,KILO,PRICE,MOTOR_TYPE" }
+    indexCopyTo allText 	{ from: "manufacturer,model,description,year,kilo,price,motorType" }
     loaderId : "ItemSearchLoader"
 }
 
 create FacetDefinition FCT_DESCRIPTION_ITEM {
 	dtDefinition : DT_ITEM 
-	fieldName : "DESCRIPTION" 
+	fieldName : "description" 
 	label : "Description"
 }
 
 create FacetDefinition FCT_OPTIONAL_STRING_ITEM {
 	dtDefinition : DT_ITEM 
-	fieldName : "OPTIONAL_STRING" 
+	fieldName : "optionalString" 
 	label : "optionalString"
 }
 
 create FacetDefinition FCT_MANUFACTURER_ITEM {
 	dtDefinition : DT_ITEM 
-	fieldName : "MANUFACTURER"
+	fieldName : "manufacturer"
 	label : "Par constructeur"
 }
 
 create FacetDefinition FCT_MANUFACTURER_ITEM_ALPHA {
 	dtDefinition : DT_ITEM 
-	fieldName : "MANUFACTURER"
+	fieldName : "manufacturer"
 	label : "Par constructeur", order : "alpha"
 }
 
 
 create FacetDefinition FCT_MANUFACTURER_ITEM_MULTI {
 	dtDefinition : DT_ITEM 
-	fieldName : "MANUFACTURER"
+	fieldName : "manufacturer"
 	label : "Par constructeur", 
 	order : "alpha",
 	multiselectable : "true"
@@ -49,11 +49,11 @@ create FacetDefinition FCT_MANUFACTURER_ITEM_MULTI {
 
 create FacetDefinition FCT_YEAR_ITEM {
 	dtDefinition : DT_ITEM 
-	fieldName : "YEAR" 
+	fieldName : "year" 
 	label : "Par date"
-	range R1 { filter : "YEAR:[* TO 2000]" 		label : "avant 2000" }
-	range R2 { filter : "YEAR:[2000 TO 2005]" 	label : "2000-2005"  }
-	range R3 { filter : "YEAR:[2005 TO *]" 		label : "apres 2005" }
+	range R1 { filter : "year:[* TO 2000]" 		label : "avant 2000" }
+	range R2 { filter : "year:[2000 TO 2005]" 	label : "2000-2005"  }
+	range R3 { filter : "year:[2005 TO *]" 		label : "apres 2005" }
 }
 
 create FacetedQueryDefinition QRY_ITEM_FACET {
@@ -61,7 +61,7 @@ create FacetedQueryDefinition QRY_ITEM_FACET {
     facets : [ FCT_DESCRIPTION_ITEM, FCT_MANUFACTURER_ITEM, FCT_MANUFACTURER_ITEM_ALPHA, FCT_YEAR_ITEM]
     domainCriteria : DO_STRING
     listFilterBuilderClass : "io.vertigo.dynamox.search.DslListFilterBuilder"  
-    listFilterBuilderQuery : "#CRITERIA#"    
+    listFilterBuilderQuery : "#criteria#"    
 }
 
 create FacetedQueryDefinition QRY_ITEM_OPTIONAL_FACET {
@@ -69,7 +69,7 @@ create FacetedQueryDefinition QRY_ITEM_OPTIONAL_FACET {
     facets : [ FCT_OPTIONAL_STRING_ITEM]
     domainCriteria : DO_STRING
     listFilterBuilderClass : "io.vertigo.dynamox.search.DslListFilterBuilder"  
-    listFilterBuilderQuery : "#CRITERIA#"    
+    listFilterBuilderQuery : "#criteria#"    
 }
 
 create FacetedQueryDefinition QRY_ITEM_FACET_MULTI {
@@ -77,5 +77,5 @@ create FacetedQueryDefinition QRY_ITEM_FACET_MULTI {
     facets : [ FCT_DESCRIPTION_ITEM, FCT_MANUFACTURER_ITEM_MULTI, FCT_YEAR_ITEM]
     domainCriteria : DO_STRING
     listFilterBuilderClass : "io.vertigo.dynamox.search.DslListFilterBuilder"  
-    listFilterBuilderQuery : "#CRITERIA#"    
+    listFilterBuilderQuery : "#criteria#"    
 }

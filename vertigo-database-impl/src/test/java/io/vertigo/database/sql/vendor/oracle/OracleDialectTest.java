@@ -38,17 +38,17 @@ public final class OracleDialectTest extends AbstractSqlDialectTest {
 
 	@Override
 	public String getExpectedInsertQuery() {
-		return "insert into MOVIE (ID, TITLE) values (SEQ_MOVIE.nextval ,  #DTO.TITLE#)";
+		return "insert into MOVIE (ID, TITLE) values (SEQ_MOVIE.nextval ,  #dto.title#)";
 	}
 
 	@Override
 	public String getExpectedSelectForUpdateWildCardQuery() {
-		return " select * from MOVIE where ID = #ID# for update ";
+		return " select * from MOVIE where ID = #id# for update ";
 	}
 
 	@Override
 	public String getExpectedSelectForUpdateFieldsQuery() {
-		return " select ID, TITLE from MOVIE where ID = #ID# for update ";
+		return " select ID, TITLE from MOVIE where ID = #id# for update ";
 	}
 
 	@Override

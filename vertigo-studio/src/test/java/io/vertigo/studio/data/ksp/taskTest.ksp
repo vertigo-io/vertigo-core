@@ -6,7 +6,7 @@ create Task TK_GET_FIRST_CAR {
 				select * from car
 				limit 1
 			"
-	attribute DTO_CAR {domain : DO_DT_CAR_DTO  required:"false" inOut :"out"}
+	attribute dtoCar {domain : DO_DT_CAR_DTO  required:"false" inOut :"out"}
 }
 
 
@@ -16,36 +16,36 @@ create Task TK_PING {
     request : "
 				select 1
 			"
-	attribute RESULT {domain : DO_INTEGER  required:"false" inOut :"out"}
+	attribute result {domain : DO_INTEGER  required:"false" inOut :"out"}
 }
 
 
 create Task TK_ONE_PARAM_SELECT {
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
     request : "
-				select 1 where 1 = #INPUT#
+				select 1 where 1 = #input#
 	
 			"
-	attribute INPUT {domain : DO_INTEGER  required:"true" inOut :"in"}
-	attribute RESULT {domain : DO_INTEGER  required:"true" inOut :"out"}
+	attribute input {domain : DO_INTEGER  required:"true" inOut :"in"}
+	attribute result {domain : DO_INTEGER  required:"true" inOut :"out"}
 }
 
 create Task TK_ONE_LIST_PARAM_SELECT {
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
     request : "
-				select 1 where 1 in  (#INPUT.ROWNUM#)
+				select 1 where 1 in  (#input.ROWNUM#)
 	
 			"
-	attribute INPUT {domain : DO_INTEGERS  required:"true" inOut :"in"}
-	attribute RESULT {domain : DO_INTEGER  required:"true" inOut :"out"}
+	attribute input {domain : DO_INTEGERS  required:"true" inOut :"in"}
+	attribute result {domain : DO_INTEGER  required:"true" inOut :"out"}
 }
 
 
 create Task TK_SELECT_CAR_BY_IDS {
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
     request : "
-				select * from car where id in (#INPUT.ROWNUM.ID#)
+				select * from car where id in (#input.ROWNUM.ID#)
 			"
-	attribute INPUT {domain : DO_DT_CAR_DTC  required:"true" inOut :"in"}		
-	attribute DTO_CAR {domain : DO_DT_CAR_DTC  required:"true" inOut :"out"}
+	attribute input {domain : DO_DT_CAR_DTC  required:"true" inOut :"in"}		
+	attribute dtoCar {domain : DO_DT_CAR_DTC  required:"true" inOut :"out"}
 }

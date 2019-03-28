@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 final class OracleDialect implements SqlDialect {
 	/**
@@ -44,15 +45,16 @@ final class OracleDialect implements SqlDialect {
 		//---
 		return new StringBuilder()
 				.append("insert into ").append(tableName).append(" (")
-				.append(idFieldName).append(", ")
+				.append(StringUtil.camelToConstCase(idFieldName)).append(", ")
 				.append(dataFieldsName
 						.stream()
+						.map(StringUtil::camelToConstCase)
 						.collect(Collectors.joining(", ")))
 				.append(") values (")
 				.append(getSequenceName(sequencePrefix, tableName)).append(".nextval , ")
 				.append(dataFieldsName
 						.stream()
-						.map(fieldName -> " #DTO." + fieldName + '#')
+						.map(fieldName -> " #dto." + fieldName + '#')
 						.collect(Collectors.joining(", ")))
 				.append(")")
 				.toString();

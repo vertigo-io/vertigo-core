@@ -35,10 +35,12 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.DateUtil;
+import io.vertigo.util.StringUtil;
 
 final class Criterion<E extends Entity> extends Criteria<E> {
 	private static final long serialVersionUID = -7797854063455062775L;
 	private final DtFieldName dtFieldName;
+	private final String sqlFieldName;
 	private final CriterionOperator criterionOperator;
 	private final Serializable[] values;
 
@@ -53,6 +55,7 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 		//---
 		this.criterionOperator = criterionOperator;
 		this.dtFieldName = dtFieldName;
+		this.sqlFieldName = StringUtil.camelToConstCase(dtFieldName.name());
 		this.values = values;
 	}
 
@@ -60,33 +63,33 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 	String toSql(final CriteriaCtx ctx, final SqlDialect sqlDialect) {
 		switch (criterionOperator) {
 			case IS_NOT_NULL:
-				return dtFieldName.name() + " is not null";
+				return sqlFieldName + " is not null";
 			case IS_NULL:
-				return dtFieldName.name() + " is null";
+				return sqlFieldName + " is null";
 			case EQ:
 				if (values[0] == null) {
-					return dtFieldName.name() + " is null ";
+					return sqlFieldName + " is null ";
 				}
-				return dtFieldName.name() + " = #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+				return sqlFieldName + " = #" + ctx.attributeName(dtFieldName, values[0]) + "#";
 			case NEQ:
 				if (values[0] == null) {
-					return dtFieldName.name() + " is not null ";
+					return sqlFieldName + " is not null ";
 				}
-				return "(" + dtFieldName.name() + " is null or " + dtFieldName.name() + " != #" + ctx.attributeName(dtFieldName, values[0]) + "# )";
+				return "(" + sqlFieldName + " is null or " + sqlFieldName + " != #" + ctx.attributeName(dtFieldName, values[0]) + "# )";
 			case GT:
-				return dtFieldName.name() + " > #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+				return sqlFieldName + " > #" + ctx.attributeName(dtFieldName, values[0]) + "#";
 			case GTE:
-				return dtFieldName.name() + " >= #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+				return sqlFieldName + " >= #" + ctx.attributeName(dtFieldName, values[0]) + "#";
 			case LT:
-				return dtFieldName.name() + " < #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+				return sqlFieldName + " < #" + ctx.attributeName(dtFieldName, values[0]) + "#";
 			case LTE:
-				return dtFieldName.name() + " <= #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+				return sqlFieldName + " <= #" + ctx.attributeName(dtFieldName, values[0]) + "#";
 			case BETWEEN:
 				final CriterionLimit min = CriterionLimit.class.cast(values[0]);
 				final CriterionLimit max = CriterionLimit.class.cast(values[1]);
 				final StringBuilder sql = new StringBuilder();
 				if (min.isDefined()) {
-					sql.append(dtFieldName.name())
+					sql.append(sqlFieldName)
 							.append(min.isIncluded() ? " >= " : " > ")
 							.append('#').append(ctx.attributeName(dtFieldName, min.getValue())).append('#');
 				}
@@ -94,17 +97,17 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 					if (sql.length() > 0) {
 						sql.append(" and ");
 					}
-					sql.append(dtFieldName.name())
+					sql.append(sqlFieldName)
 							.append(max.isIncluded() ? " <= " : " < ")
 							.append('#').append(ctx.attributeName(dtFieldName, max.getValue())).append('#');
 				}
 				return "( " + sql.toString() + " )";
 			case STARTS_WITH:
-				return dtFieldName.name() + " like  #" + ctx.attributeName(dtFieldName, values[0]) + "#" + sqlDialect.getConcatOperator() + "'%%'";
+				return sqlFieldName + " like  #" + ctx.attributeName(dtFieldName, values[0]) + "#" + sqlDialect.getConcatOperator() + "'%%'";
 			case IN:
 				return Stream.of(values)
 						.map(Criterion::prepareSqlInArgument)
-						.collect(Collectors.joining(", ", dtFieldName.name() + " in (", ")"));
+						.collect(Collectors.joining(", ", sqlFieldName + " in (", ")"));
 			default:
 				throw new IllegalAccessError();
 		}

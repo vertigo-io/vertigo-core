@@ -42,13 +42,13 @@ create table ${dtDefinition.localName}
 (
 	<#list dtDefinition.fields as field>
 	<#if field.persistent>
-    ${field.name?right_pad(12)}${"\t"} ${sql(field)?right_pad(12)}${"\t"}<#if field.required>not null</#if>,
+    ${field.constName?right_pad(12)}${"\t"} ${sql(field)?right_pad(12)}${"\t"}<#if field.required>not null</#if>,
     </#if><#-- field.persistent -->
     </#list><#-- fieldCollection -->
     <#list dtDefinition.fields as field>
     <#if field.persistent>
     <#if field.id >
-    constraint PK_${dtDefinition.localName} primary key (${field.name})<#if tableSpaceIndex?has_content> USING INDEX TABLESPACE :TABLESPACE_NAME_INDEX</#if>
+    constraint PK_${dtDefinition.localName} primary key (${field.constName})<#if tableSpaceIndex?has_content> USING INDEX TABLESPACE :TABLESPACE_NAME_INDEX</#if>
     </#if><#-- field.type -->
     </#if><#-- field.persistent -->
     </#list>
@@ -58,7 +58,7 @@ TABLESPACE :TABLESPACE_NAME_DATA</#if>;
 <#list dtDefinition.fields as field>
 <#if field.persistent>
 <#if field.display?has_content>
-comment on column ${dtDefinition.localName}.${field.name} is
+comment on column ${dtDefinition.localName}.${field.constName} is
 '${field.display?replace("'","''")}';
 
 </#if>
@@ -66,42 +66,37 @@ comment on column ${dtDefinition.localName}.${field.name} is
 </#list>
 </#list>
 
-
 <#list simpleAssociations as associationDefinition>
-<#if associationDefinition.getAssociationNodeA().getDtDefinition().isPersistent() && associationDefinition.getAssociationNodeB().getDtDefinition().isPersistent()>
 <#assign associationLocalName = associationDefinition.getName()?substring(2)> 
-alter table ${associationDefinition.getForeignAssociationNode().getDtDefinition().localName}
-	add constraint FK_${associationLocalName}_${associationDefinition.getPrimaryAssociationNode().getDtDefinition().localName} foreign key (${associationDefinition.getFKField().getName()})
-	references ${associationDefinition.getPrimaryAssociationNode().getDtDefinition().localName} (${associationDefinition.getPrimaryAssociationNode().getDtDefinition().getIdField().get().getName()});
+alter table ${associationDefinition.foreignTable}
+	add constraint FK_${associationLocalName}_${associationDefinition.primaryTable} foreign key (${associationDefinition.foreignColumn})
+	references ${associationDefinition.primaryTable} (${associationDefinition.primaryIdColumn});
 
-create index ${associationLocalName}_${associationDefinition.getPrimaryAssociationNode().getDtDefinition().localName}_FK on ${associationDefinition.getForeignAssociationNode().getDtDefinition().localName} (${associationDefinition.getFKField().getName()} asc)<#if tableSpaceIndex?has_content>
+create index ${associationLocalName}_${associationDefinition.primaryTable}_FK on ${associationDefinition.foreignTable} (${associationDefinition.foreignColumn} asc)<#if tableSpaceIndex?has_content>
 TABLESPACE :TABLESPACE_NAME_INDEX</#if>;
 
-</#if>
 </#list>
 
 <#list nnAssociations as associationDefinition>
-<#if associationDefinition.getAssociationNodeA().getDtDefinition().isPersistent() && associationDefinition.getAssociationNodeB().getDtDefinition().isPersistent()>
 <#assign associationLocalName = associationDefinition.getName()?substring(4)> 
-create table ${associationDefinition.getTableName()}
+create table ${associationDefinition.tableName}
 (
-	${associationDefinition.getAssociationNodeA().getDtDefinition().getIdField().get().getName()?right_pad(12)}${"\t"} ${sql(associationDefinition.getAssociationNodeA().getDtDefinition().getIdField().get().domain)?right_pad(12)}${"\t"} not null,
-	${associationDefinition.getAssociationNodeB().getDtDefinition().getIdField().get().getName()?right_pad(12)}${"\t"} ${sql(associationDefinition.getAssociationNodeB().getDtDefinition().getIdField().get().domain)?right_pad(12)}${"\t"} not null,
-	constraint PK_${associationDefinition.getTableName()} primary key (${associationDefinition.getAssociationNodeA().getDtDefinition().getIdField().get().getName()}, ${associationDefinition.getAssociationNodeB().getDtDefinition().getIdField().get().getName()})<#if tableSpaceIndex?has_content> USING INDEX TABLESPACE :TABLESPACE_NAME_INDEX</#if>,
-	constraint FK_${associationLocalName}_${associationDefinition.getAssociationNodeA().getDtDefinition().localName} 
-		foreign key(${associationDefinition.getAssociationNodeA().getDtDefinition().getIdField().get().getName()})
-		references ${associationDefinition.getAssociationNodeA().getDtDefinition().localName} (${associationDefinition.getAssociationNodeA().getDtDefinition().getIdField().get().getName()}),
-	constraint FK_${associationLocalName}_${associationDefinition.getAssociationNodeB().getDtDefinition().localName} 
-		foreign key(${associationDefinition.getAssociationNodeB().getDtDefinition().getIdField().get().getName()})
-		references ${associationDefinition.getAssociationNodeB().getDtDefinition().localName} (${associationDefinition.getAssociationNodeB().getDtDefinition().getIdField().get().getName()})
+	${associationDefinition.nodeAPKName?right_pad(12)}${"\t"} ${sql(associationDefinition.nodeAPKDomain)?right_pad(12)}${"\t"} not null,
+	${associationDefinition.nodeBPKName?right_pad(12)}${"\t"} ${sql(associationDefinition.nodeBPKDomain)?right_pad(12)}${"\t"} not null,
+	constraint PK_${associationDefinition.getTableName()} primary key (${associationDefinition.nodeAPKName}, ${associationDefinition.nodeBPKName})<#if tableSpaceIndex?has_content> USING INDEX TABLESPACE :TABLESPACE_NAME_INDEX</#if>,
+	constraint FK_${associationLocalName}_${associationDefinition.nodeATableName} 
+		foreign key(${associationDefinition.nodeAPKName})
+		references ${associationDefinition.nodeATableName} (${associationDefinition.nodeAPKName}),
+	constraint FK_${associationLocalName}_${associationDefinition.nodeBTableName} 
+		foreign key(${associationDefinition.nodeBPKName})
+		references ${associationDefinition.nodeBTableName} (${associationDefinition.nodeBPKName})
 )<#if tableSpaceData?has_content>
 TABLESPACE :TABLESPACE_NAME_DATA</#if>;
 
-create index ${associationLocalName}_${associationDefinition.getAssociationNodeA().getDtDefinition().localName}_FK on ${associationDefinition.getTableName()} (${associationDefinition.getAssociationNodeA().getDtDefinition().getIdField().get().getName()} asc)<#if tableSpaceIndex?has_content>
+create index ${associationLocalName}_${associationDefinition.nodeATableName}_FK on ${associationDefinition.tableName} (${associationDefinition.nodeAPKName} asc)<#if tableSpaceIndex?has_content>
 TABLESPACE :TABLESPACE_NAME_INDEX</#if>;
 
-create index ${associationLocalName}_${associationDefinition.getAssociationNodeB().getDtDefinition().localName}_FK on ${associationDefinition.getTableName()} (${associationDefinition.getAssociationNodeB().getDtDefinition().getIdField().get().getName()} asc)<#if tableSpaceIndex?has_content>
+create index ${associationLocalName}_${associationDefinition.nodeBTableName}_FK on ${associationDefinition.tableName} (${associationDefinition.nodeBPKName} asc)<#if tableSpaceIndex?has_content>
 TABLESPACE :TABLESPACE_NAME_INDEX</#if>;
 
-</#if>
 </#list>

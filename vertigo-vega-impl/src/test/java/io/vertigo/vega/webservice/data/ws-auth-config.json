@@ -8,7 +8,7 @@
 	}],
 	"securedEntities": [{
 		"entity": "CONTACT",
-		"securityFields" : ["HONORIFIC_CODE", "NAME"],
+		"securityFields" : ["honorificCode", "name"],
 		"securityDimensions": [],
 		"operations": [  {
 			"__comment": "Test de lecture",
@@ -19,14 +19,14 @@
 			"name": "WRITE", "label" : "Ecriture",
 			"grants": ["READ"],
 			"rules": [
-				"HONORIFIC_CODE=${honorificCode} OR NAME=${name}"
+				"honorificCode=${honorificCode} OR name=${name}"
 			]
 		}, {
 			"__comment": "Test de suppression",
 			"name": "DELETE", "label" : "Suppression",
 			"grants": ["READ", "WRITE"],
 			"rules": [
-				"NAME=${name}"
+				"name=${name}"
 			]
 		}]
 	}]
