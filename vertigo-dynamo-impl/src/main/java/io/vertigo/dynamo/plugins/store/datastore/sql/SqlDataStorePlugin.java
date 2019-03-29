@@ -443,7 +443,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 		final String request = new StringBuilder()
 				.append("delete from ").append(tableName)
-				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
+				.append(" where ").append(StringUtil.camelToConstCase(idFieldName)).append(" = #").append(idFieldName).append('#')
 				.toString();
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
