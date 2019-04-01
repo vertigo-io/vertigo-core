@@ -7,10 +7,58 @@
 	<!-- =================================================================== -->
 	<!-- Proprietes                                                          -->
 	<!-- =================================================================== -->
-
 	<property name="src.encoding" value="utf8" />
 	<property name="src.path" value="." />
 	
+		
+	<target name="CONST KSP to CamelCase ksp" description="Replace old ksp definitions to CamelCase definition new in vertigo 2.0">
+		<copy todir="${src.path}\generated-ksp" encoding="${src.encoding}">
+			<fileset dir="${src.path}">
+				<include name="**/*.ksp" />
+			</fileset>
+			<filterchain>
+			 	<tokenfilter>
+			 		<scriptfilter language="javascript">
+						function upperCamelCase(str) {
+						  return str.replace(/((?:\W|^)\w)|_+(\w)|\w/g, function(match, p1, p2, index) {
+						   if (p1) { return p1.toUpperCase();} 
+						   if (p2) { return p2.toUpperCase();} 
+						   return match.toLowerCase();
+						  });
+						}
+			 			function lowerCamelCase(str) {
+						  return str.replace(/((?:\W|^)\w)|_+(\w)|\w/g, function(match, p1, p2, index) {
+						   if (p1) { return p1.toLowerCase();} 
+						   if (p2) { return p2.toUpperCase();} 
+						   return match.toLowerCase();
+						  });
+						}
+			 			//replace definitions
+						var result = self.getToken().replace(/(\W|^(?:create|alter)\s+)([A-Z][a-zA-Z]+\s+)([A-Z0-9_]+)(\s*\{)/g, function(match, verb, p1, p2, after, index) {
+						   return verb+p1+upperCamelCase(p2)+after;
+						});
+			 			//replace fields
+			 			result = result.replace(/(\W(?:id|field|range|indexCopyTo)\s+)([A-Z0-9_]+)(\s*\{)/g, function(match, p1, p2, after, index) {
+						   return p1+lowerCamelCase(p2)+after;
+						});
+			 			//replace attributes
+			 			result = result.replace(/(\W(?:formatter|dtDefinition|keyConcept|dtIndex|domain|domainCriteria|dtDefinitionA|dtDefinitionB))(\s*:\s*)([A-Z0-9_]+\W*)/g, function(match, attr, p1, p2, index) {
+			 			   return attr+p1+upperCamelCase(p2);
+			 			});
+			 			//replace lower attributes
+			 			result = result.replace(/(\W(?:fkFieldName|fieldName))(\s*:\s*)([\"A-Z0-9_]+\W*)/g, function(match, attr, p1, p2, index) {
+			 			   return attr+p1+lowerCamelCase(p2);
+			 			});
+			 			//replace multiple attributes
+			 			result = result.replace(/(\W(?:facets|constraint|from))(\s*:\s*)([\[\]\s,A-Z0-9_]+\W*)/g, function(match, attr, p1, p2, index) {
+			 			   return attr+p1+upperCamelCase(p2);
+			 			});
+					    self.setToken(result);
+					</scriptfilter>
+				</tokenfilter>
+			</filterchain>
+		</copy> 
+	</target>
 	
 	<!-- ====================================================================== -->
 	<!-- Replace quarto's ksp definitions by a Java definition provider         -->
