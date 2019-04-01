@@ -5,18 +5,18 @@ index :
                 type : custom
             sortable :
                 type : custom
-                filter : ["lowercase", "asciifolding"]  
+                filter : [lowercase, asciifolding]  
         analyzer :
             multiple_code :
                 tokenizer : piped_keywords
                 filter : [standard]
             text_fr :
                 tokenizer : standard
-                filter : [standard, lowercase, snowball, elision]
+                filter : [standard, lowercase, asciifolding, snowball, elision]
         tokenizer :
             piped_keywords :
                 type : pattern
-                pattern : '|'
+                pattern : '([|,] *)'
         filter :
             snowball:
                 type : snowball
