@@ -22,9 +22,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
@@ -70,7 +70,7 @@ public class OOMParserTest extends AbstractTestCaseJU5 {
 	*/
 	@Test
 	public void testAssoctationA1Bnv() {
-		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_1");
+		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("AChaChi1");
 		Assertions.assertNotNull(association);
 		/* "0..1" */
 		Assertions.assertFalse(association.getAssociationNodeA().isMultiple());
@@ -92,7 +92,7 @@ public class OOMParserTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAssoctationA1vBnv() {
-		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_2");
+		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("AChaChi2");
 		/* "0..1" */
 		Assertions.assertFalse(association.getAssociationNodeA().isMultiple());
 		Assertions.assertFalse(association.getAssociationNodeA().isNotNull());
@@ -112,7 +112,7 @@ public class OOMParserTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAssoctationA1vBn() {
-		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_3");
+		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("AChaChi3");
 		/* "0..1" */
 		Assertions.assertFalse(association.getAssociationNodeA().isMultiple());
 		Assertions.assertFalse(association.getAssociationNodeA().isNotNull());
@@ -132,7 +132,7 @@ public class OOMParserTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAssoctationAnB1v() {
-		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_4");
+		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("AChaChi4");
 		/* "0..*" */
 		Assertions.assertTrue(association.getAssociationNodeA().isMultiple());
 		Assertions.assertFalse(association.getAssociationNodeA().isNotNull());
@@ -152,7 +152,7 @@ public class OOMParserTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAssoctationAnvB1() {
-		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_5");
+		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("AChaChi5");
 		/* "0..*" */
 		Assertions.assertTrue(association.getAssociationNodeA().isMultiple());
 		Assertions.assertFalse(association.getAssociationNodeA().isNotNull());
@@ -172,7 +172,7 @@ public class OOMParserTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAssoctationAnvB1v() {
-		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("A_CHA_CHI_6");
+		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("AChaChi6");
 		/* "0..*" */
 		Assertions.assertTrue(association.getAssociationNodeA().isMultiple());
 		Assertions.assertFalse(association.getAssociationNodeA().isNotNull());
@@ -192,7 +192,7 @@ public class OOMParserTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAssoctationAnBnv() {
-		final AssociationNNDefinition association = getAssociationNNDefinition("ANN_CHA_CHI_7");
+		final AssociationNNDefinition association = getAssociationNNDefinition("AnnChaChi7");
 		/* "0..*" */
 		Assertions.assertTrue(association.getAssociationNodeA().isMultiple());
 		Assertions.assertFalse(association.getAssociationNodeA().isNotNull());
@@ -212,7 +212,7 @@ public class OOMParserTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAssoctationAnvBnv() {
-		final AssociationNNDefinition association = getAssociationNNDefinition("ANN_CHA_CHI_8");
+		final AssociationNNDefinition association = getAssociationNNDefinition("AnnChaChi8");
 		/* "0..*" */
 		Assertions.assertTrue(association.getAssociationNodeA().isMultiple());
 		Assertions.assertFalse(association.getAssociationNodeA().isNotNull());
@@ -232,7 +232,7 @@ public class OOMParserTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAssoctationAnBn() {
-		final AssociationNNDefinition association = getAssociationNNDefinition("ANN_CHA_CHI_9");
+		final AssociationNNDefinition association = getAssociationNNDefinition("AnnChaChi9");
 		/* "0..*" */
 		Assertions.assertTrue(association.getAssociationNodeA().isMultiple());
 		Assertions.assertFalse(association.getAssociationNodeA().isNotNull());
@@ -252,7 +252,7 @@ public class OOMParserTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAssoctationAnvBn() {
-		final AssociationNNDefinition association = getAssociationNNDefinition("ANN_CHA_CHI_10");
+		final AssociationNNDefinition association = getAssociationNNDefinition("AnnChaChi10");
 		/* "0..*" */
 		Assertions.assertTrue(association.getAssociationNodeA().isMultiple());
 		Assertions.assertFalse(association.getAssociationNodeA().isNotNull());

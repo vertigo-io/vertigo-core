@@ -38,14 +38,14 @@ public final class Command implements KeyConcept {
 	private Long cmdId;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_CTY_CMD",
+			name = "ACtyCmd",
 			fkFieldName = "ctyId",
-			primaryDtDefinitionName = "DT_COMMAND_TYPE",
+			primaryDtDefinitionName = "DtCommandType",
 			primaryIsNavigable = true,
 			primaryRole = "CommandType",
 			primaryLabel = "Command type",
 			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_COMMAND",
+			foreignDtDefinitionName = "DtCommand",
 			foreignIsNavigable = false,
 			foreignRole = "Command",
 			foreignLabel = "Command",
@@ -53,14 +53,14 @@ public final class Command implements KeyConcept {
 	private final EnumVAccessor<CommandType, CommandTypeEnum> ctyIdAccessor = new EnumVAccessor<>(CommandType.class, "CommandType", CommandTypeEnum.class);
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_CIT_CMD",
+			name = "ACitCmd",
 			fkFieldName = "citId",
-			primaryDtDefinitionName = "DT_CITY",
+			primaryDtDefinitionName = "DtCity",
 			primaryIsNavigable = true,
 			primaryRole = "City",
 			primaryLabel = "City",
 			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_COMMAND",
+			foreignDtDefinitionName = "DtCommand",
 			foreignIsNavigable = false,
 			foreignRole = "Command",
 			foreignLabel = "Command",
@@ -68,19 +68,19 @@ public final class Command implements KeyConcept {
 	private final VAccessor<City> citIdAccessor = new VAccessor<>(City.class, "City");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_CMD_ATT",
+			name = "ACmdAtt",
 			fkFieldName = "cmdId",
-			primaryDtDefinitionName = "DT_COMMAND",
+			primaryDtDefinitionName = "DtCommand",
 			primaryIsNavigable = true,
 			primaryRole = "Command",
 			primaryLabel = "Command",
 			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_ATTACHMENT",
+			foreignDtDefinitionName = "DtAttachment",
 			foreignIsNavigable = true,
 			foreignRole = "Attachment",
 			foreignLabel = "Attachment",
 			foreignMultiplicity = "0..*")
-	private final ListVAccessor<Attachment> attachmentAccessor = new ListVAccessor<>(this, "A_CMD_ATT", "Attachment");
+	private final ListVAccessor<Attachment> attachmentAccessor = new ListVAccessor<>(this, "ACmdAtt", "Attachment");
 
 	/** {@inheritDoc} */
 	@Override
@@ -93,7 +93,7 @@ public final class Command implements KeyConcept {
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long cmdId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "id")
+	@Field(domain = "DoId", type = "ID", required = true, label = "id")
 	public Long getCmdId() {
 		return cmdId;
 	}
@@ -112,7 +112,7 @@ public final class Command implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Command type'.
 	 * @return Long ctyId
 	 */
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", label = "Command type")
+	@Field(domain = "DoId", type = "FOREIGN_KEY", label = "Command type")
 	public Long getCtyId() {
 		return (Long) ctyIdAccessor.getId();
 	}
@@ -131,7 +131,7 @@ public final class Command implements KeyConcept {
 	 * Récupère la valeur de la propriété 'City'.
 	 * @return Long citId
 	 */
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", label = "City")
+	@Field(domain = "DoId", type = "FOREIGN_KEY", label = "City")
 	public Long getCitId() {
 		return (Long) citIdAccessor.getId();
 	}

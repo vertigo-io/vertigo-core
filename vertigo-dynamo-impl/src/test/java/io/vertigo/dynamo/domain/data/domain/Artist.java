@@ -39,7 +39,7 @@ public final class Artist implements KeyConcept {
 		return UID.of(this);
 	}
 
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "id of the artist")
+	@Field(domain = "DoId", type = "ID", required = true, label = "id of the artist")
 	public Long getId() {
 		return id;
 	}
@@ -48,7 +48,7 @@ public final class Artist implements KeyConcept {
 		this.id = id;
 	}
 
-	@Field(domain = "DO_STRING", label = "name")
+	@Field(domain = "DoDtring", label = "name")
 	public String getName() {
 		return name;
 	}

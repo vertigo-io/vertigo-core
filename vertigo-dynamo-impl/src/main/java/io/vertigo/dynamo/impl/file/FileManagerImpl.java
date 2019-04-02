@@ -197,7 +197,7 @@ public final class FileManagerImpl implements FileManager {
 	/**
 	 * Daemon for deleting old files.
 	 */
-	@DaemonScheduled(name = "DMN_PRUGE_TEMP_FILE", periodInSeconds = 5 * 60)
+	@DaemonScheduled(name = "DmnPurgeTempFile", periodInSeconds = 5 * 60)
 	public void deleteOldFiles() {
 		final File documentRootFile = new File(TempFile.VERTIGO_TMP_DIR_PATH);
 		final long maxTime = System.currentTimeMillis() - purgeDelayMinutesOpt.orElse(60) * 60L * 1000L;

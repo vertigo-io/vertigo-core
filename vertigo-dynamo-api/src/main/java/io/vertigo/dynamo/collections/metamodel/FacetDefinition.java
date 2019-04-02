@@ -50,7 +50,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-@DefinitionPrefix("FCT")
+@DefinitionPrefix("Fct")
 public final class FacetDefinition implements Definition {
 	private final String name;
 	private final DtField dtField;

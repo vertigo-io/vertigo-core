@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 /**
  * Model used by FreeMarker.
@@ -50,7 +51,7 @@ public final class SqlDtDefinitionModel {
 	}
 
 	public String getLocalName() {
-		return dtDefinition.getLocalName();
+		return StringUtil.camelToConstCase(dtDefinition.getLocalName());
 	}
 
 	/**

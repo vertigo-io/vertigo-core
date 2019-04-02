@@ -81,7 +81,7 @@ public final class HealthAnalyticsUtil {
 					//-----
 					//2. For each method register a listener
 					// we remove # because it doesn't comply with definition naming rule
-					final String healthCheckDefinitionName = "HCHK_" + StringUtil.camelToConstCase(componentId.replaceAll(pluginCounterChar, "")) + "$" + StringUtil.camelToConstCase(method.getName());
+					final String healthCheckDefinitionName = "Hchk" + StringUtil.first2UpperCase(componentId.replaceAll(pluginCounterChar, "")) + "$" + method.getName();
 					return new HealthCheckDefinition(
 							healthCheckDefinitionName,
 							healthChecked.name(),

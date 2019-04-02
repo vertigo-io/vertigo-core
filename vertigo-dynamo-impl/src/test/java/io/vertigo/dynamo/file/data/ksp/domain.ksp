@@ -1,13 +1,13 @@
 package io.vertigo.dynamo.file.data.domain
 
-create FileInfo FI_FILE_INFO_STD {
+create FileInfo FiFileInfoStd {
 	storeName : "main"
 }
 
-create DtDefinition DT_VX_FILE_INFO {
-	 id  filId 			{domain : DO_URI 	label : "Identifiant" }
-	 field fileName 		{domain : DO_LABEL 	label : "Nom" 					required : "true" }
- 	 field length 			{domain : DO_SIZE 	label : "Taille" 				required : "true" }
-	 field lastModified 	{domain : DO_INSTANT	label : "Date de modification" 	required : "true" }
-	 field fileData 		{domain : DO_LABEL	label : "data" 					required : "false", persistent:"false" }	 
+create DtDefinition DtVxFileInfo {
+	 id  filId 				{domain : DoUri 	label : "Identifiant" }
+	 field fileName 		{domain : DoLabel 	label : "Nom" 					required : "true" }
+ 	 field length 			{domain : DoSize 	label : "Taille" 				required : "true" }
+	 field lastModified 	{domain : DoInstant	label : "Date de modification" 	required : "true" }
+	 field fileData 		{domain : DoLabel	label : "data" 					required : "false", persistent:"false" }	 
 }

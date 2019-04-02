@@ -34,10 +34,10 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.core.definition.DefinitionReference;
@@ -69,11 +69,11 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU5 {
 		assertEquals(1L, definitionSpace.getAllTypes().size(), "definitionSpace must contain one element ");
 		assertEquals(1L, definitionSpace.getAll(SampleDefinition.class).size(), "definitionSpace[SampleDefinition.class] must contain one element ");
 
-		final SampleDefinition sampleDefinition = definitionSpace.resolve("SAMPLE_THE_DEFINITION", SampleDefinition.class);
+		final SampleDefinition sampleDefinition = definitionSpace.resolve("SampleTheDefinition", SampleDefinition.class);
 		assertNotNull(sampleDefinition);
-		assertEquals("THE_DEFINITION", DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class), "localName must be THE_DEFINITION");
-		assertEquals(sampleDefinition.getName(), DefinitionUtil.getPrefix(SampleDefinition.class) + "_" + DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class),
-				"localName must be THE_DEFINITION");
+		assertEquals("TheDefinition", DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class), "localName must be TheDefinition");
+		assertEquals(sampleDefinition.getName(), DefinitionUtil.getPrefix(SampleDefinition.class) + DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class),
+				"globalName must be SampleTheDefinition");
 
 		final DefinitionReference<SampleDefinition> sampleDefinitionRef = new DefinitionReference<>(sampleDefinition);
 
@@ -94,12 +94,12 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU5 {
 		assertSame(sampleDefinition, definitionReference.get(), "Definitions must be strictly equals");
 	}
 
-	@DefinitionPrefix("SAMPLE")
+	@DefinitionPrefix("Sample")
 	public static class SampleDefinition implements Definition {
 
 		@Override
 		public String getName() {
-			return "SAMPLE_THE_DEFINITION";
+			return "SampleTheDefinition";
 		}
 	}
 }

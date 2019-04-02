@@ -1,10 +1,10 @@
 package io.vertigo.studio.domain.fileinfo
 
-create DtDefinition DT_VX_FILE_INFO {
-	 id 	filId 		{domain:DO_ID	 	label:"Identifiant" }
-	 field 	fileName 	{domain:DO_STRING	label:"Nom"	 				required: "true"}
-	 field 	mimeType 	{domain:DO_STRING	label:"Type mime" 				required: "true"}
-	 field 	length 		{domain:DO_LONG 	label:"Taille"					required:"true"}
-	 field 	lastModified {domain:DO_INSTANT label:"Date de dernière modification" 	required:"true"}
-	 field 	fileData 	{domain:DO_STREAM   label:"data"  	required:"false"  persistent:" true"} /* persistent si en BDD, false si en FS*/ 
+create DtDefinition DtVxFileInfo {
+	 id 	filId 		{domain: DoId	 	label:"Identifiant" }
+	 field 	fileName 	{domain: DoString	label:"Nom"	 				required: "true"}
+	 field 	mimeType 	{domain: DoString	label:"Type mime" 				required: "true"}
+	 field 	length 		{domain: DoLong 	label:"Taille"					required:"true"}
+	 field 	lastModified {domain: DoInstant label:"Date de dernière modification" 	required:"true"}
+	 field 	fileData 	{domain: DoStream   label:"data"  	required:"false"  persistent:" true"} /* persistent si en BDD, false si en FS*/ 
 }

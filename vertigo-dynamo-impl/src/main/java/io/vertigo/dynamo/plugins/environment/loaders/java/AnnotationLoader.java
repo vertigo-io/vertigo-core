@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
@@ -75,7 +74,6 @@ import io.vertigo.util.StringUtil;
  */
 public final class AnnotationLoader implements Loader {
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
-	private static final char SEPARATOR = Definition.SEPARATOR;
 
 	/**
 	 * @return Liste des fichiers Java représentant des objets métiers.
@@ -116,7 +114,7 @@ public final class AnnotationLoader implements Loader {
 		//-----
 		final String simpleName = clazz.getSimpleName();
 		final String packageName = clazz.getPackage().getName();
-		final String dtDefinitionName = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(simpleName);
+		final String dtDefinitionName = DT_DEFINITION_PREFIX + simpleName;
 
 		String fragmentOf = null;
 		if (Fragment.class.isAssignableFrom(clazz)) {

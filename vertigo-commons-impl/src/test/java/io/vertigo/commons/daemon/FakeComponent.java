@@ -23,7 +23,7 @@ import io.vertigo.core.component.Component;
 @DaemonFakeAspectAnnotation
 public class FakeComponent implements Component {
 
-	static final String SIMPLE_DAEMON_NAME = "DMN_SIMPLE";
+	static final String SIMPLE_DAEMON_NAME = "DmnSimple";
 	private int executions = 0;
 
 	public int getExecutionCount() {

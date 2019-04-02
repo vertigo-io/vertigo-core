@@ -27,9 +27,9 @@ import org.junit.Assert;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
@@ -112,7 +112,7 @@ public final class SqlCriteriaTest extends AbstractCriteriaTest {
 				transactionManager,
 				taskManager,
 				getCreateMovies(),
-				"TK_INIT_MAIN",
+				"TkInitMain",
 				Optional.empty());
 
 		final Movie2DataBase movie2DataBase = new Movie2DataBase();

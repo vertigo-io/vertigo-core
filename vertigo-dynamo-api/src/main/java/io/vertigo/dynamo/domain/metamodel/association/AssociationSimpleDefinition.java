@@ -38,7 +38,7 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 
 	/**
 	 * Constructor.
-
+	
 	 * @param name the name of the association
 	 * @param fkFieldName the fieldname that represents the foreign key
 	 * @param associationNodeA the A node for this assocation

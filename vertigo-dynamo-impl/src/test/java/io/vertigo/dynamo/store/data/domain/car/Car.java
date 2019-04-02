@@ -46,14 +46,14 @@ public final class Car implements Entity {
 	private java.math.BigDecimal consommation;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_MTY_CAR",
+			name = "AMtyCar",
 			fkFieldName = "mtyCd",
-			primaryDtDefinitionName = "DT_MOTOR_TYPE",
+			primaryDtDefinitionName = "DtMotorType",
 			primaryIsNavigable = true,
 			primaryRole = "MotorType",
 			primaryLabel = "Motor type",
 			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_CAR",
+			foreignDtDefinitionName = "DtCar",
 			foreignIsNavigable = false,
 			foreignRole = "Car",
 			foreignLabel = "Car",
@@ -61,14 +61,14 @@ public final class Car implements Entity {
 	private final EnumVAccessor<MotorType, MotorTypeEnum> mtyCdAccessor = new EnumVAccessor<>(MotorType.class, "MotorType", MotorTypeEnum.class);
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_FAM_CAR_FAMILLE",
+			name = "AFamCarFamille",
 			fkFieldName = "famId",
-			primaryDtDefinitionName = "DT_FAMILLE",
+			primaryDtDefinitionName = "DtFamille",
 			primaryIsNavigable = false,
 			primaryRole = "Famille",
 			primaryLabel = "Famille",
 			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DT_CAR",
+			foreignDtDefinitionName = "DtCar",
 			foreignIsNavigable = true,
 			foreignRole = "VoituresFamille",
 			foreignLabel = "Voitures de la famille",
@@ -76,17 +76,17 @@ public final class Car implements Entity {
 	private final VAccessor<Famille> famIdAccessor = new VAccessor<>(Famille.class, "Famille");
 
 	@io.vertigo.dynamo.domain.stereotype.AssociationNN(
-			name = "ANN_FAM_CAR_LOCATION",
+			name = "AnnFamCarLocation",
 			tableName = "FAM_CAR_LOCATION",
-			dtDefinitionA = "DT_FAMILLE",
-			dtDefinitionB = "DT_CAR",
+			dtDefinitionA = "DtFamille",
+			dtDefinitionB = "DtCar",
 			navigabilityA = false,
 			navigabilityB = true,
 			roleA = "Famille",
 			roleB = "VoituresLocation",
 			labelA = "Famille",
 			labelB = "Voitures de location")
-	private final ListVAccessor<Famille> familleAccessor = new ListVAccessor<>(this, "ANN_FAM_CAR_LOCATION", "Famille");
+	private final ListVAccessor<Famille> familleAccessor = new ListVAccessor<>(this, "AnnFamCarLocation", "Famille");
 
 	/** {@inheritDoc} */
 	@Override
@@ -99,7 +99,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'identifiant de la voiture'.
 	 * @return Long id <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "identifiant de la voiture")
+	@Field(domain = "DoId", type = "ID", required = true, label = "identifiant de la voiture")
 	public Long getId() {
 		return id;
 	}
@@ -118,7 +118,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Constructeur'.
 	 * @return String manufacturer <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_KEYWORD", required = true, label = "Constructeur")
+	@Field(domain = "DoKeyword", required = true, label = "Constructeur")
 	public String getManufacturer() {
 		return manufacturer;
 	}
@@ -137,7 +137,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'ModÃ¨le'.
 	 * @return String model <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_FULL_TEXT", required = true, label = "ModÃ¨le")
+	@Field(domain = "DoFullText", required = true, label = "ModÃ¨le")
 	public String getModel() {
 		return model;
 	}
@@ -156,7 +156,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Descriptif'.
 	 * @return String description <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_FULL_TEXT", required = true, label = "Descriptif")
+	@Field(domain = "DoFullText", required = true, label = "Descriptif")
 	public String getDescription() {
 		return description;
 	}
@@ -175,7 +175,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'AnnÃ©e'.
 	 * @return Integer year <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_INTEGER", required = true, label = "AnnÃ©e")
+	@Field(domain = "DoInteger", required = true, label = "AnnÃ©e")
 	public Integer getYear() {
 		return year;
 	}
@@ -194,7 +194,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'KilomÃ©trage'.
 	 * @return Integer kilo <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_INTEGER", required = true, label = "KilomÃ©trage")
+	@Field(domain = "DoInteger", required = true, label = "KilomÃ©trage")
 	public Integer getKilo() {
 		return kilo;
 	}
@@ -213,7 +213,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Prix'.
 	 * @return Integer price <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_INTEGER", required = true, label = "Prix")
+	@Field(domain = "DoInteger", required = true, label = "Prix")
 	public Integer getPrice() {
 		return price;
 	}
@@ -232,7 +232,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Consommation'.
 	 * @return BigDecimal consommation <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_CONSO", required = true, label = "Consommation")
+	@Field(domain = "DoConso", required = true, label = "Consommation")
 	public java.math.BigDecimal getConsommation() {
 		return consommation;
 	}
@@ -251,7 +251,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Motor type'.
 	 * @return String mtyCd
 	 */
-	@Field(domain = "DO_STRING", type = "FOREIGN_KEY", label = "Motor type")
+	@Field(domain = "DoString", type = "FOREIGN_KEY", label = "Motor type")
 	public String getMtyCd() {
 		return (String) mtyCdAccessor.getId();
 	}
@@ -270,7 +270,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Famille'.
 	 * @return Long famId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", required = true, label = "Famille")
+	@Field(domain = "DoId", type = "FOREIGN_KEY", required = true, label = "Famille")
 	public Long getFamId() {
 		return (Long) famIdAccessor.getId();
 	}

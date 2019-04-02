@@ -65,7 +65,7 @@ public final class CacheData {
 	}
 
 	private static String getContext(final DtDefinition dtDefinition) {
-		return "CACHE_DATA_" + dtDefinition.getName();
+		return "CacheData" + dtDefinition.getName();
 	}
 
 	/**

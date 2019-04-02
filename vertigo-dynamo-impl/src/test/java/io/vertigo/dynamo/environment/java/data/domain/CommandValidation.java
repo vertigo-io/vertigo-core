@@ -37,14 +37,14 @@ public final class CommandValidation implements Entity {
 	private String signerName;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_CMD_CVA",
+			name = "ACmdCva",
 			fkFieldName = "cmdId",
-			primaryDtDefinitionName = "DT_COMMAND",
+			primaryDtDefinitionName = "DtCommand",
 			primaryIsNavigable = true,
 			primaryRole = "Command",
 			primaryLabel = "Command",
 			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_COMMAND_VALIDATION",
+			foreignDtDefinitionName = "DtCommandValidation",
 			foreignIsNavigable = false,
 			foreignRole = "CommandValidation",
 			foreignLabel = "Command validation",
@@ -62,7 +62,7 @@ public final class CommandValidation implements Entity {
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long cvaId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "id")
+	@Field(domain = "DoId", type = "ID", required = true, label = "id")
 	public Long getCvaId() {
 		return cvaId;
 	}
@@ -81,7 +81,7 @@ public final class CommandValidation implements Entity {
 	 * Récupère la valeur de la propriété 'Signer name'.
 	 * @return String signerName <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_FULL_TEXT", required = true, label = "Signer name")
+	@Field(domain = "DoFullText", required = true, label = "Signer name")
 	public String getSignerName() {
 		return signerName;
 	}
@@ -100,7 +100,7 @@ public final class CommandValidation implements Entity {
 	 * Récupère la valeur de la propriété 'Command'.
 	 * @return Long cmdId
 	 */
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", label = "Command")
+	@Field(domain = "DoId", type = "FOREIGN_KEY", label = "Command")
 	public Long getCmdId() {
 		return (Long) cmdIdAccessor.getId();
 	}

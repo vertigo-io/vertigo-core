@@ -44,13 +44,13 @@ public final class AccountDefinitionProvider implements SimpleDefinitionProvider
 	/** {@inheritDoc} */
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		final FormatterDefinition formatterDefinition = new FormatterDefinition("FMT_X_ACCOUNT_ID", FormatterString.class.getName(), null);
-		final Domain domainAccountId = Domain.builder("DO_X_ACCOUNT_ID", DataType.String).withFormatter(formatterDefinition).build();
-		final Domain domainAccountName = Domain.builder("DO_X_ACCOUNT_NAME", DataType.String).build();
-		final Domain domainAccountEmail = Domain.builder("DO_X_ACCOUNT_EMAIL", DataType.String).build();
-		final Domain domainAccountPhoto = Domain.builder("DO_X_ACCOUNT_PHOTO", DataType.String).build();
+		final FormatterDefinition formatterDefinition = new FormatterDefinition("FmtXAccountId", FormatterString.class.getName(), null);
+		final Domain domainAccountId = Domain.builder("DoXAccountId", DataType.String).withFormatter(formatterDefinition).build();
+		final Domain domainAccountName = Domain.builder("DoXAccountName", DataType.String).build();
+		final Domain domainAccountEmail = Domain.builder("DoXAccountEmail", DataType.String).build();
+		final Domain domainAccountPhoto = Domain.builder("DoXAccountPhoto", DataType.String).build();
 
-		final DtDefinition accountDtDefinition = DtDefinition.builder("DT_ACCOUNT")
+		final DtDefinition accountDtDefinition = DtDefinition.builder("DtAccount")
 				.addIdField(ID, "id", domainAccountId)
 				.addDataField(DISPLAY_NAME, "displayName", domainAccountName, false, true)
 				.addDataField(EMAIL, "email", domainAccountEmail, false, true)
@@ -59,7 +59,7 @@ public final class AccountDefinitionProvider implements SimpleDefinitionProvider
 				.withDisplayField(DISPLAY_NAME)
 				.build();
 
-		final DtDefinition accountGroupDtDefinition = DtDefinition.builder("DT_ACCOUNT_GROUP")
+		final DtDefinition accountGroupDtDefinition = DtDefinition.builder("DtAccountGroup")
 				.addIdField(ID, "id", domainAccountId)
 				.addDataField(DISPLAY_NAME, "displayName", domainAccountName, false, true)
 				.withSortField(DISPLAY_NAME)

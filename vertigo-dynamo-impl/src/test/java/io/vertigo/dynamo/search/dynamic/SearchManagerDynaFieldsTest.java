@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.search.dynamic;
 
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -34,7 +34,7 @@ import io.vertigo.dynamo.search.data.domain.ItemSearchLoader;
  */
 public class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest {
 	//Index
-	private static final String IDX_DYNA_ITEM = "IDX_DYNA_ITEM";
+	private static final String IDX_DYNA_ITEM = "IdxDynaItem";
 
 	/**{@inheritDoc}*/
 	@Override
@@ -57,7 +57,7 @@ public class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest {
 						.withESEmbedded(
 								Param.of("home", "io/vertigo/dynamo/search/indexconfig"),
 								Param.of("config.file", "io/vertigo/dynamo/search/indexconfig/elasticsearch.yml"),
-								Param.of("envIndex", "TU_TEST_"),
+								Param.of("envIndex", "TuTest"),
 								Param.of("rowsPerQuery", "50"))
 						.build())
 				.addModule(ModuleConfig.builder("myApp")

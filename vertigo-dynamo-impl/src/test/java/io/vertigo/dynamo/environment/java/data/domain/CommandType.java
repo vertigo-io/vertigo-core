@@ -46,7 +46,7 @@ public final class CommandType implements DtStaticMasterData {
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long ctyId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "id")
+	@Field(domain = "DoId", type = "ID", required = true, label = "id")
 	public Long getCtyId() {
 		return ctyId;
 	}
@@ -65,7 +65,7 @@ public final class CommandType implements DtStaticMasterData {
 	 * Récupère la valeur de la propriété 'Label'.
 	 * @return String label <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_FULL_TEXT", required = true, label = "Label")
+	@Field(domain = "DoFullText", required = true, label = "Label")
 	public String getLabel() {
 		return label;
 	}

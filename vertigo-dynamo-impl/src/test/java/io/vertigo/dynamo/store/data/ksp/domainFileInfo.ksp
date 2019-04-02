@@ -1,9 +1,9 @@
 package io.vertigo.dynamo.store.data.fileinfo
 
-create FileInfo FI_FILE_INFO_STD {
+create FileInfo FiFileInfoStd {
 	storeName : "main"
 }
 
-create FileInfo FI_FILE_INFO_TEMP {
+create FileInfo FiFileInfoTemp {
 	storeName : "temp"
 }

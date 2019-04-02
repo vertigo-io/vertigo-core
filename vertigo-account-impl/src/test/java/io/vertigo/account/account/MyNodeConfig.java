@@ -63,8 +63,8 @@ public final class MyNodeConfig {
 					.withSqlStore();
 
 			accountFeatures.withStoreAccount(
-					Param.of("userIdentityEntity", "DT_USER"),
-					Param.of("groupIdentityEntity", "DT_USER_GROUP"),
+					Param.of("userIdentityEntity", "DtUser"),
+					Param.of("groupIdentityEntity", "DtUserGroup"),
 					Param.of("userAuthField", "email"),
 					Param.of("userToAccountMapping", "id:usrId, displayName:fullName, email:email, authToken:email"),
 					Param.of("groupToGroupAccountMapping", "id:grpId, displayName:name"));

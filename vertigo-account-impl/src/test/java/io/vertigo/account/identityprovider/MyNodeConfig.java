@@ -76,14 +76,14 @@ public final class MyNodeConfig {
 					Param.of("ldapReaderLogin", "cn=admin,dc=vertigo,dc=io"),
 					Param.of("ldapReaderPassword", "v3rt1g0"),
 					Param.of("ldapUserAuthAttribute", "cn"),
-					Param.of("userIdentityEntity", "DT_USER"),
+					Param.of("userIdentityEntity", "DtUser"),
 					Param.of("ldapUserAttributeMapping", "usrId:cn, fullName:description, photo:jpegPhoto"));
 		} else if (idpPlugin == IdpPlugin.text) {
 			accountFeatures.withTextIdentityProvider(
 					Param.of("identityFilePath", "io/vertigo/account/data/identities.txt"),
 					Param.of("identityFilePattern", "^(?<usrId>[^;]+);(?<fullName>[^;]+);(?<email>(?<authToken>[^;@]+)@[^;]+);(?<photoUrl>.*)$"),
 					Param.of("userAuthField", "email"),
-					Param.of("userIdentityEntity", "DT_USER"));
+					Param.of("userIdentityEntity", "DtUser"));
 		} else if (idpPlugin == IdpPlugin.store) {
 			databaseFeatures
 					.withSqlDataBase()
@@ -95,7 +95,7 @@ public final class MyNodeConfig {
 					.withStore()
 					.withSqlStore();
 			accountFeatures.withStoreIdentityProvider(
-					Param.of("userIdentityEntity", "DT_USER"),
+					Param.of("userIdentityEntity", "DtUser"),
 					Param.of("userAuthField", "email"));
 		}
 

@@ -40,7 +40,7 @@ public final class User implements KeyConcept {
 		return UID.of(this);
 	}
 
-	@Field(domain = "DO_CODE", type = "ID", required = true, label = "Id")
+	@Field(domain = "DoCode", type = "ID", required = true, label = "Id")
 	public final String getUsrId() {
 		return usrId;
 	}
@@ -49,7 +49,7 @@ public final class User implements KeyConcept {
 		this.usrId = usrId;
 	}
 
-	@Field(domain = "DO_LABEL", required = true, label = "FullName")
+	@Field(domain = "DoLabel", required = true, label = "FullName")
 	public final String getFullName() {
 		return fullName;
 	}
@@ -58,7 +58,7 @@ public final class User implements KeyConcept {
 		this.fullName = fullName;
 	}
 
-	@Field(domain = "DO_LABEL", required = true, label = "Email")
+	@Field(domain = "DoLabel", required = true, label = "Email")
 	public final String getEmail() {
 		return email;
 	}

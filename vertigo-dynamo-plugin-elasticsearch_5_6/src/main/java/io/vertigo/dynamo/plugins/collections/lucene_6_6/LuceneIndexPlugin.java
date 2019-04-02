@@ -57,7 +57,7 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 
 	private final CacheManager cacheManager;
 
-	private static final String CACHE_LUCENE_INDEX = "CACHE_LUCENE_INDEX";
+	private static final String CACHE_LUCENE_INDEX = "CacheLuceneIndex";
 
 	/**
 	 * Constructor.

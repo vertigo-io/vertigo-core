@@ -92,7 +92,7 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return Collections.singletonList(new DaemonDefinition("DMN_RATE_LIMIT_WINDOW_RESET", () -> () -> resetRateLimitWindow(), windowSeconds));
+		return Collections.singletonList(new DaemonDefinition("DmnRateLimitWindowReset", () -> () -> resetRateLimitWindow(), windowSeconds));
 	}
 
 	/** {@inheritDoc} */

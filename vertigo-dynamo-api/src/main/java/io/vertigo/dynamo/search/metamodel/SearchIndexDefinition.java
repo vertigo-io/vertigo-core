@@ -48,7 +48,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author dchallas, npiedeloup
  */
-@DefinitionPrefix("IDX")
+@DefinitionPrefix("Idx")
 public final class SearchIndexDefinition implements Definition {
 
 	/** Nom de l'index. */

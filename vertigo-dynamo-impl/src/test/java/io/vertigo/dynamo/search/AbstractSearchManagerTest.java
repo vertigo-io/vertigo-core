@@ -96,12 +96,12 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		final ItemSearchLoader itemSearchLoader = getApp().getComponentSpace().resolve(ItemSearchLoader.class);
 		itemSearchLoader.bindDataBase(itemDataBase);
 
-		manufacturerFacetDefinition = definitionSpace.resolve("FCT_MANUFACTURER_ITEM", FacetDefinition.class);
-		yearFacetDefinition = definitionSpace.resolve("FCT_YEAR_ITEM", FacetDefinition.class);
+		manufacturerFacetDefinition = definitionSpace.resolve("FctManufacturerItem", FacetDefinition.class);
+		yearFacetDefinition = definitionSpace.resolve("FctYearItem", FacetDefinition.class);
 		itemIndexDefinition = definitionSpace.resolve(indexName, SearchIndexDefinition.class);
-		itemFacetQueryDefinition = definitionSpace.resolve("QRY_ITEM_FACET", FacetedQueryDefinition.class);
-		itemFacetOptionalQueryDefinition = definitionSpace.resolve("QRY_ITEM_OPTIONAL_FACET", FacetedQueryDefinition.class);
-		itemFacetMultiQueryDefinition = definitionSpace.resolve("QRY_ITEM_FACET_MULTI", FacetedQueryDefinition.class);
+		itemFacetQueryDefinition = definitionSpace.resolve("QryItemFacet", FacetedQueryDefinition.class);
+		itemFacetOptionalQueryDefinition = definitionSpace.resolve("QryItemOptionalFacet", FacetedQueryDefinition.class);
+		itemFacetMultiQueryDefinition = definitionSpace.resolve("QryItemFacetMulti", FacetedQueryDefinition.class);
 		clean(itemIndexDefinition);
 	}
 
@@ -523,7 +523,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		Assertions.assertEquals(4, result.getFacets().size());
 
 		//On recherche la facette date
-		final Facet yearFacet = getFacetByName(result, "FCT_YEAR_ITEM");
+		final Facet yearFacet = getFacetByName(result, "FctYearItem");
 		Assertions.assertTrue(yearFacet.getDefinition().isRangeFacet());
 
 		boolean found = false;
@@ -566,7 +566,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		Assertions.assertEquals(1, result.getFacets().size());
 
 		//On recherche la facette constructeur
-		final Facet optionalStringFacet = getFacetByName(result, "FCT_OPTIONAL_STRING_ITEM");
+		final Facet optionalStringFacet = getFacetByName(result, "FctOptionalStringItem");
 		//On vérifie que l'on est sur le champ Manufacturer
 		Assertions.assertEquals("optionalString", optionalStringFacet.getDefinition().getDtField().getName());
 		Assertions.assertFalse(optionalStringFacet.getDefinition().isRangeFacet());
@@ -592,7 +592,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		Assertions.assertEquals(4, result.getFacets().size());
 
 		//On recherche la facette constructeur
-		final Facet manufacturerFacet = getFacetByName(result, "FCT_MANUFACTURER_ITEM");
+		final Facet manufacturerFacet = getFacetByName(result, "FctManufacturerItem");
 		//On vérifie que l'on est sur le champ Manufacturer
 		Assertions.assertEquals("manufacturer", manufacturerFacet.getDefinition().getDtField().getName());
 		Assertions.assertFalse(manufacturerFacet.getDefinition().isRangeFacet());
@@ -609,8 +609,8 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		Assertions.assertTrue(found);
 
 		checkOrderByCount(manufacturerFacet);
-		checkOrderByAlpha(getFacetByName(result, "FCT_MANUFACTURER_ITEM_ALPHA"));
-		checkOrderByCount(getFacetByName(result, "FCT_DESCRIPTION_ITEM"));
+		checkOrderByAlpha(getFacetByName(result, "FctManufacturerItemAlpha"));
+		checkOrderByCount(getFacetByName(result, "FctDescriptionItem"));
 	}
 
 	private void checkOrderByCount(final Facet facet) {
@@ -739,7 +739,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 
 		//on applique une facette
 		final SearchQuery searchQuery2 = SearchQuery.builder(ListFilter.of("*:*"))
-				.withFacetStrategy(createFacetQuery("FCT_YEAR_ITEM", "avant", result))
+				.withFacetStrategy(createFacetQuery("FctYearItem", "avant", result))
 				.build();
 		final FacetedQueryResult<Item, SearchQuery> resultFiltered = searchManager.loadList(itemIndexDefinition, searchQuery2, null);
 		Assertions.assertEquals(itemDataBase.before(2000), resultFiltered.getCount());
@@ -799,10 +799,10 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 				.withFacetStrategy(itemFacetQueryDefinition, EMPTY_SELECTED_FACET_VALUES)
 				.build();
 		final FacetedQueryResult<Item, SearchQuery> result = searchManager.loadList(itemIndexDefinition, searchQuery, null);
-		Assertions.assertEquals(itemDataBase.getItemsByManufacturer("peugeot").size(), getFacetValueCount("FCT_MANUFACTURER_ITEM", "peugeot", result));
+		Assertions.assertEquals(itemDataBase.getItemsByManufacturer("peugeot").size(), getFacetValueCount("FctManufacturerItem", "peugeot", result));
 		//on applique une facette
 		final SearchQuery searchQuery2 = SearchQuery.builder(ListFilter.of("*:*"))
-				.withFacetStrategy(createFacetQuery("FCT_MANUFACTURER_ITEM", "peugeot", result))
+				.withFacetStrategy(createFacetQuery("FctManufacturerItem", "peugeot", result))
 				.build();
 		final FacetedQueryResult<Item, SearchQuery> resultFiltered = searchManager.loadList(itemIndexDefinition, searchQuery2, null);
 		Assertions.assertEquals(itemDataBase.getItemsByManufacturer("peugeot").size(), (int) resultFiltered.getCount());
@@ -824,17 +824,17 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		final FacetedQueryResult<Item, SearchQuery> result = searchManager.loadList(itemIndexDefinition, searchQuery, null);
 		//logResult(result);
 		//on applique une facette
-		Assertions.assertEquals(peugeotItems.size(), getFacetValueCount("FCT_MANUFACTURER_ITEM", "peugeot", result));
+		Assertions.assertEquals(peugeotItems.size(), getFacetValueCount("FctManufacturerItem", "peugeot", result));
 		final SearchQuery searchQuery2 = SearchQuery.builder(ListFilter.of("*:*"))
-				.withFacetStrategy(createFacetQuery("FCT_MANUFACTURER_ITEM", "peugeot", result))
+				.withFacetStrategy(createFacetQuery("FctManufacturerItem", "peugeot", result))
 				.build();
 		final FacetedQueryResult<Item, SearchQuery> result1 = searchManager.loadList(itemIndexDefinition, searchQuery2, null);
 		Assertions.assertEquals(peugeotItems.size(), (int) result1.getCount());
 		logResult(result1);
 		//on applique une autre facette
-		Assertions.assertEquals(peugeotContainsCuirCount, getFacetValueCount("FCT_DESCRIPTION_ITEM", "cuir", result1));
+		Assertions.assertEquals(peugeotContainsCuirCount, getFacetValueCount("FctDescriptionItem", "cuir", result1));
 		final SearchQuery searchQuery3 = SearchQuery.builder(ListFilter.of("*:*"))
-				.withFacetStrategy(createFacetQuery("FCT_DESCRIPTION_ITEM", "cuir", result1))
+				.withFacetStrategy(createFacetQuery("FctDescriptionItem", "cuir", result1))
 				.build();
 		final FacetedQueryResult<Item, SearchQuery> result2 = searchManager.loadList(itemIndexDefinition, searchQuery3, null);
 		Assertions.assertEquals(peugeotContainsCuirCount, (int) result2.getCount());
@@ -863,24 +863,24 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		final FacetedQueryResult<Item, SearchQuery> result = searchManager.loadList(itemIndexDefinition, searchQuery, null);
 		//logResult(result);
 		//on applique une facette
-		Assertions.assertEquals(peugeotItems.size(), getFacetValueCount("FCT_MANUFACTURER_ITEM_MULTI", "peugeot", result));
+		Assertions.assertEquals(peugeotItems.size(), getFacetValueCount("FctManufacturerItemMulti", "peugeot", result));
 		final SearchQuery searchQuery2 = SearchQuery.builder(ListFilter.of("*:*"))
-				.withFacetStrategy(createFacetQuery("FCT_MANUFACTURER_ITEM_MULTI", "peugeot", result))
+				.withFacetStrategy(createFacetQuery("FctManufacturerItemMulti", "peugeot", result))
 				.build();
 		final FacetedQueryResult<Item, SearchQuery> result1 = searchManager.loadList(itemIndexDefinition, searchQuery2, null);
 		logResult(result1);
 		//on vérifie qu'il y a bien que des Peugeots
 		Assertions.assertEquals(peugeotItems.size(), (int) result1.getCount());
 		//on vérifie qu'il y a bien que la facette Manufacturer_ITEM à bien les autres constructeurs
-		Assertions.assertEquals(peugeotItems.size(), getFacetValueCount("FCT_MANUFACTURER_ITEM_MULTI", "peugeot", result1));
-		Assertions.assertEquals(volkswagenItems.size(), getFacetValueCount("FCT_MANUFACTURER_ITEM_MULTI", "volkswagen", result1));
-		Assertions.assertEquals(audiItemsSize, getFacetValueCount("FCT_MANUFACTURER_ITEM_MULTI", "Audi", result1));
+		Assertions.assertEquals(peugeotItems.size(), getFacetValueCount("FctManufacturerItemMulti", "peugeot", result1));
+		Assertions.assertEquals(volkswagenItems.size(), getFacetValueCount("FctManufacturerItemMulti", "volkswagen", result1));
+		Assertions.assertEquals(audiItemsSize, getFacetValueCount("FctManufacturerItemMulti", "Audi", result1));
 		//on vérifie que les autres facettes ont bien que des Peugeots
-		Assertions.assertEquals(peugeot2000To2005Count, getFacetValueCount("FCT_YEAR_ITEM", "2000-2005", result1));
+		Assertions.assertEquals(peugeot2000To2005Count, getFacetValueCount("FctYearItem", "2000-2005", result1));
 
 		//on applique une autre facette
 		final SearchQuery searchQuery3 = SearchQuery.builder(ListFilter.of("*:*"))
-				.withFacetStrategy(createFacetQuery("FCT_MANUFACTURER_ITEM_MULTI", "volkswagen", result1)) //on ajoute cette selection facette (l'ancienne est reprise)
+				.withFacetStrategy(createFacetQuery("FctManufacturerItemMulti", "volkswagen", result1)) //on ajoute cette selection facette (l'ancienne est reprise)
 				.build();
 		final FacetedQueryResult<Item, SearchQuery> result2 = searchManager.loadList(itemIndexDefinition, searchQuery3, null);
 		logResult(result2);
@@ -888,11 +888,11 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		//on vérifie qu'il y a bien des Peugeots et des Volkswagens
 		Assertions.assertEquals(peugeotItems.size() + volkswagenItems.size(), (int) result2.getCount());
 		//on vérifie qu'il y a bien que la facette Manufacturer_ITEM à bien les autres constructeurs
-		Assertions.assertEquals(peugeotItems.size(), getFacetValueCount("FCT_MANUFACTURER_ITEM_MULTI", "peugeot", result2));
-		Assertions.assertEquals(volkswagenItems.size(), getFacetValueCount("FCT_MANUFACTURER_ITEM_MULTI", "volkswagen", result2));
-		Assertions.assertEquals(audiItemsSize, getFacetValueCount("FCT_MANUFACTURER_ITEM_MULTI", "Audi", result2));
+		Assertions.assertEquals(peugeotItems.size(), getFacetValueCount("FctManufacturerItemMulti", "peugeot", result2));
+		Assertions.assertEquals(volkswagenItems.size(), getFacetValueCount("FctManufacturerItemMulti", "volkswagen", result2));
+		Assertions.assertEquals(audiItemsSize, getFacetValueCount("FctManufacturerItemMulti", "Audi", result2));
 		//on vérifie que les autres facettes ont bien que des Peugeots et des Volkswagens
-		Assertions.assertEquals(peugeotVolkswagen2000To2005Count, getFacetValueCount("FCT_YEAR_ITEM", "2000-2005", result2));
+		Assertions.assertEquals(peugeotVolkswagen2000To2005Count, getFacetValueCount("FctYearItem", "2000-2005", result2));
 	}
 
 	/**
@@ -920,24 +920,24 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		final FacetedQueryResult<Item, SearchQuery> result1 = searchManager.loadList(itemIndexDefinition, searchQuery, null);
 		//logResult(result);
 		//on applique une facette
-		Assertions.assertEquals(peugeotItems.size(), getFacetValueCount("FCT_MANUFACTURER_ITEM_MULTI", "peugeot", result1));
+		Assertions.assertEquals(peugeotItems.size(), getFacetValueCount("FctManufacturerItemMulti", "peugeot", result1));
 		final SearchQuery searchQuery2 = SearchQuery.builder(ListFilter.of("*:*"))
-				.withFacetStrategy(createFacetQuery("FCT_MANUFACTURER_ITEM_MULTI", "peugeot", result1))
+				.withFacetStrategy(createFacetQuery("FctManufacturerItemMulti", "peugeot", result1))
 				.build();
 		final FacetedQueryResult<Item, SearchQuery> result2 = searchManager.loadList(itemIndexDefinition, searchQuery2, null);
 		logResult(result2);
 		//on vérifie qu'il y a bien que des Peugeots
 		Assertions.assertEquals(peugeotItems.size(), (int) result2.getCount());
 		//on vérifie qu'il y a bien que la facette Manufacturer_ITEM à bien les autres constructeurs
-		Assertions.assertEquals(peugeotItems.size(), getFacetValueCount("FCT_MANUFACTURER_ITEM_MULTI", "peugeot", result2));
-		Assertions.assertEquals(volkswagenItems.size(), getFacetValueCount("FCT_MANUFACTURER_ITEM_MULTI", "volkswagen", result2));
-		Assertions.assertEquals(audiItemsSize, getFacetValueCount("FCT_MANUFACTURER_ITEM_MULTI", "Audi", result2));
+		Assertions.assertEquals(peugeotItems.size(), getFacetValueCount("FctManufacturerItemMulti", "peugeot", result2));
+		Assertions.assertEquals(volkswagenItems.size(), getFacetValueCount("FctManufacturerItemMulti", "volkswagen", result2));
+		Assertions.assertEquals(audiItemsSize, getFacetValueCount("FctManufacturerItemMulti", "Audi", result2));
 		//on vérifie que les autres facettes ont bien que des Peugeots
-		Assertions.assertEquals(peugeot2000To2005Count, getFacetValueCount("FCT_YEAR_ITEM", "2000-2005", result2));
+		Assertions.assertEquals(peugeot2000To2005Count, getFacetValueCount("FctYearItem", "2000-2005", result2));
 
 		//on applique une autre facette
 		final SearchQuery searchQuery3 = SearchQuery.builder(ListFilter.of("*:*"))
-				.withFacetStrategy(createFacetQuery("FCT_MANUFACTURER_ITEM_MULTI", "volkswagen", result2)) //on ajoute cette selection facette (l'ancienne est reprise)
+				.withFacetStrategy(createFacetQuery("FctManufacturerItemMulti", "volkswagen", result2)) //on ajoute cette selection facette (l'ancienne est reprise)
 				.build();
 		final FacetedQueryResult<Item, SearchQuery> result3 = searchManager.loadList(itemIndexDefinition, searchQuery3, null);
 		logResult(result3);
@@ -945,15 +945,15 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		//on vérifie qu'il y a bien des Peugeots et des Volkswagens
 		Assertions.assertEquals(peugeotItems.size() + volkswagenItems.size(), (int) result3.getCount());
 		//on vérifie qu'il y a bien que la facette Manufacturer_ITEM à bien les autres constructeurs
-		Assertions.assertEquals(peugeotItems.size(), getFacetValueCount("FCT_MANUFACTURER_ITEM_MULTI", "peugeot", result3));
-		Assertions.assertEquals(volkswagenItems.size(), getFacetValueCount("FCT_MANUFACTURER_ITEM_MULTI", "volkswagen", result3));
-		Assertions.assertEquals(audiItemsSize, getFacetValueCount("FCT_MANUFACTURER_ITEM_MULTI", "Audi", result3));
+		Assertions.assertEquals(peugeotItems.size(), getFacetValueCount("FctManufacturerItemMulti", "peugeot", result3));
+		Assertions.assertEquals(volkswagenItems.size(), getFacetValueCount("FctManufacturerItemMulti", "volkswagen", result3));
+		Assertions.assertEquals(audiItemsSize, getFacetValueCount("FctManufacturerItemMulti", "Audi", result3));
 		//on vérifie que les autres facettes ont bien que des Peugeots et des Volkswagens
-		Assertions.assertEquals(peugeotVolkswagen2000To2005Count, getFacetValueCount("FCT_YEAR_ITEM", "2000-2005", result3));
+		Assertions.assertEquals(peugeotVolkswagen2000To2005Count, getFacetValueCount("FctYearItem", "2000-2005", result3));
 
 		//on applique une facette sur le range de date
 		final SearchQuery searchQuery4 = SearchQuery.builder(ListFilter.of("*:*"))
-				.withFacetStrategy(createFacetQuery("FCT_YEAR_ITEM", "2000-2005", result3))
+				.withFacetStrategy(createFacetQuery("FctYearItem", "2000-2005", result3))
 				.build();
 		final FacetedQueryResult<Item, SearchQuery> result4 = searchManager.loadList(itemIndexDefinition, searchQuery4, null);
 		logResult(result4);
@@ -961,11 +961,11 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		//on vérifie qu'il y a bien des Peugeots et des Volkswagens
 		Assertions.assertEquals(peugeotVolkswagen2000To2005Count, (int) result4.getCount());
 		//on vérifie qu'il y a bien que la facette MANUFACTURER_ITEM à bien les autres constructeurs
-		Assertions.assertEquals(peugeot2000To2005Count, getFacetValueCount("FCT_MANUFACTURER_ITEM_MULTI", "peugeot", result4));
-		Assertions.assertEquals(volkswagen2000To2005Count, getFacetValueCount("FCT_MANUFACTURER_ITEM_MULTI", "volkswagen", result4));
-		Assertions.assertEquals(audi2000To2005Count, getFacetValueCount("FCT_MANUFACTURER_ITEM_MULTI", "Audi", result4));
+		Assertions.assertEquals(peugeot2000To2005Count, getFacetValueCount("FctManufacturerItemMulti", "peugeot", result4));
+		Assertions.assertEquals(volkswagen2000To2005Count, getFacetValueCount("FctManufacturerItemMulti", "volkswagen", result4));
+		Assertions.assertEquals(audi2000To2005Count, getFacetValueCount("FctManufacturerItemMulti", "Audi", result4));
 		//on vérifie que les autres facettes ont bien que des Peugeots et des Volkswagens
-		Assertions.assertEquals(peugeotVolkswagen2000To2005Count, getFacetValueCount("FCT_YEAR_ITEM", "2000-2005", result4));
+		Assertions.assertEquals(peugeotVolkswagen2000To2005Count, getFacetValueCount("FctYearItem", "2000-2005", result4));
 	}
 
 	/**
@@ -985,20 +985,20 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		final FacetedQueryResult<Item, SearchQuery> result = searchManager.loadList(itemIndexDefinition, searchQuery, null);
 		logResult(result);
 		//on applique une facette
-		Assertions.assertEquals(item2000To2005Count, getFacetValueCount("FCT_YEAR_ITEM", "2000-2005", result));
+		Assertions.assertEquals(item2000To2005Count, getFacetValueCount("FctYearItem", "2000-2005", result));
 
 		final SearchQuery searchQuery2 = SearchQuery.builder(ListFilter.of("*:*"))
-				.withFacetStrategy(createFacetQuery("FCT_YEAR_ITEM", "2000-2005", result))
+				.withFacetStrategy(createFacetQuery("FctYearItem", "2000-2005", result))
 				.build();
 		final FacetedQueryResult<Item, SearchQuery> result2 = searchManager.loadList(itemIndexDefinition, searchQuery2, null);
 
 		Assertions.assertEquals(item2000To2005Count, result2.getCount());
 		logResult(result2);
 		//on applique une autre facette
-		Assertions.assertEquals(peugeot2000To2005Count, getFacetValueCount("FCT_MANUFACTURER_ITEM", "peugeot", result2));
+		Assertions.assertEquals(peugeot2000To2005Count, getFacetValueCount("FctManufacturerItem", "peugeot", result2));
 
 		final SearchQuery searchQuery3 = SearchQuery.builder(ListFilter.of("*:*"))
-				.withFacetStrategy(createFacetQuery("FCT_MANUFACTURER_ITEM", "peugeot", result2))
+				.withFacetStrategy(createFacetQuery("FctManufacturerItem", "peugeot", result2))
 				.build();
 		final FacetedQueryResult<Item, SearchQuery> result1 = searchManager.loadList(itemIndexDefinition, searchQuery3, null);
 		Assertions.assertEquals(peugeot2000To2005Count, (int) result1.getCount());

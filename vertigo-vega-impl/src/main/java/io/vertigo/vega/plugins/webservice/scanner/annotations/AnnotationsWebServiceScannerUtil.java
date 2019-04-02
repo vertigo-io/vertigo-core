@@ -100,15 +100,15 @@ final class AnnotationsWebServiceScannerUtil {
 		}
 		for (final Annotation annotation : method.getAnnotations()) {
 			if (annotation instanceof GET) {
-				builder.with(Verb.GET, ((GET) annotation).value());
+				builder.with(Verb.Get, ((GET) annotation).value());
 			} else if (annotation instanceof POST) {
-				builder.with(Verb.POST, ((POST) annotation).value());
+				builder.with(Verb.Post, ((POST) annotation).value());
 			} else if (annotation instanceof PUT) {
-				builder.with(Verb.PUT, ((PUT) annotation).value());
+				builder.with(Verb.Put, ((PUT) annotation).value());
 			} else if (annotation instanceof PATCH) {
-				builder.with(Verb.PATCH, ((PATCH) annotation).value());
+				builder.with(Verb.Patch, ((PATCH) annotation).value());
 			} else if (annotation instanceof DELETE) {
-				builder.with(Verb.DELETE, ((DELETE) annotation).value());
+				builder.with(Verb.Delete, ((DELETE) annotation).value());
 			} else if (annotation instanceof AnonymousAccessAllowed) {
 				builder.withNeedAuthentication(false);
 			} else if (annotation instanceof SessionLess) {

@@ -101,7 +101,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 				transactionManager,
 				taskManager,
 				getCreateMainStoreRequests(),
-				"TK_INIT_MAIN",
+				"TkInitMain",
 				Optional.empty());
 
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -169,7 +169,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 				transactionManager,
 				taskManager,
 				getDropRequests(),
-				"TK_SHUT_DOWN",
+				"TkShutDown",
 				Optional.empty());
 	}
 
@@ -200,10 +200,10 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testSelectCountCars() {
-		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_COUNT_CARS")
+		final TaskDefinition taskDefinition = TaskDefinition.builder("TkCountCars")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select count(*) from CAR")
-				.withOutRequired("count", Domain.builder("DO_COUNT", DataType.Long).build())
+				.withOutRequired("count", Domain.builder("DoCount", DataType.Long).build())
 				.build();
 
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
@@ -220,9 +220,9 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
 		//-----
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final Domain doCar = definitionSpace.resolve("DO_DT_CAR_DTO", Domain.class);
+		final Domain doCar = definitionSpace.resolve("DoDtCarDto", Domain.class);
 
-		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_INSERT_CAR")
+		final TaskDefinition taskDefinition = TaskDefinition.builder("TkInsertCar")
 				.withEngine(TaskEngineProc.class)
 				.withRequest("insert into CAR (ID, FAM_ID,MANUFACTURER, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MTY_CD) values "
 						+ "(NEXT VALUE FOR SEQ_CAR, #dtoCar.famId#, #dtoCar.manufacturer#, #dtoCar.model#, #dtoCar.description#, #dtoCar.year#, #dtoCar.kilo#, #dtoCar.price#, #dtoCar.mtyCd#)")
@@ -239,9 +239,9 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 
 	protected final DtList<Car> nativeLoadCarList() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final Domain doCarList = definitionSpace.resolve("DO_DT_CAR_DTC", Domain.class);
+		final Domain doCarList = definitionSpace.resolve("DoDtCarDtc", Domain.class);
 
-		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_LOAD_ALL_CARS")
+		final TaskDefinition taskDefinition = TaskDefinition.builder("TkLoadAllCars")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from CAR")
 				.withOutRequired("dtc", doCarList)

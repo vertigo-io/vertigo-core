@@ -25,7 +25,7 @@ import io.vertigo.core.component.Component;
 /**
  * @author npiedeloup
  */
-@Secured({ "ADMUSR", "ADMPRO" })
+@Secured({ "Admusr", "Admpro" })
 public class FullSecuredServices implements Component {
 
 	public int fakeService1() {
@@ -36,11 +36,11 @@ public class FullSecuredServices implements Component {
 		return 2;
 	}
 
-	public int fakeService3(@SecuredOperation("READ") final Record record) {
+	public int fakeService3(@SecuredOperation("read") final Record record) {
 		return 3;
 	}
 
-	public int fakeService4(@SecuredOperation("WRITE") final Record record) {
+	public int fakeService4(@SecuredOperation("write") final Record record) {
 		return 4;
 	}
 

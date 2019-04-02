@@ -50,7 +50,7 @@ final class SuperHeroDataBase {
 	}
 
 	private void execStatement(final String request) {
-		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_INIT")
+		final TaskDefinition taskDefinition = TaskDefinition.builder("TkInit")
 				.withEngine(TaskEngineProc.class)
 				.withRequest(request)
 				.build();

@@ -29,8 +29,8 @@ import io.vertigo.core.definition.DefinitionSpaceWritable;
 public final class CacheManagerInitializer implements ComponentInitializer {
 
 	/** Cache context */
-	public static final String CONTEXT_EDITABLE = "CACHE_EDITABLE_ELEMENTS";
-	public static final String CONTEXT_READONLY = "CACHE_READ_ONLY_ELEMENTS";
+	public static final String CONTEXT_EDITABLE = "CacheEditableElements";
+	public static final String CONTEXT_READONLY = "CacheReadOnlyElements";
 
 	/** {@inheritDoc} */
 	@Override

@@ -31,31 +31,31 @@ import io.vertigo.dynamo.domain.stereotype.Field;
 public final class Contact implements KeyConcept {
 	private static final long serialVersionUID = 2074906343392206381L;
 
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "Contact Id")
+	@Field(domain = "DoId", type = "ID", required = true, label = "Contact Id")
 	private Long conId;
-	@Field(domain = "DO_CODE", label = "Honorific title")
+	@Field(domain = "DoCode", label = "Honorific title")
 	private String honorificCode;
 	//mandatory
-	@Field(domain = "DO_TEXTE_50", required = true, label = "Name")
+	@Field(domain = "DoTexte50", required = true, label = "Name")
 	private String name;
-	@Field(domain = "DO_TEXTE_50", label = "Firstname")
+	@Field(domain = "DoTexte50", label = "Firstname")
 	private String firstName;
-	@Field(domain = "DO_LOCAL_DATE", label = "Birthday")
+	@Field(domain = "DoLocalDate", label = "Birthday")
 	private LocalDate birthday;
-	@Field(domain = "DO_EMAIL", label = "Email")
+	@Field(domain = "DoEmail", label = "Email")
 	private String email;
 
 	private List<String> tels;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_CON_ADR",
+			name = "AConAdr",
 			fkFieldName = "adrId",
-			primaryDtDefinitionName = "DT_ADDRESS",
+			primaryDtDefinitionName = "DtAddress",
 			primaryIsNavigable = true,
 			primaryRole = "Address",
 			primaryLabel = "Address",
 			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DT_CONTACT",
+			foreignDtDefinitionName = "DtContact",
 			foreignIsNavigable = false,
 			foreignRole = "Contact",
 			foreignLabel = "Contact",

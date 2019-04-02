@@ -33,7 +33,7 @@ import io.vertigo.lang.Assertion;
  *
  * @param <E> type of event
  */
-@DefinitionPrefix("EVT")
+@DefinitionPrefix("Evt")
 public final class EventBusSubscriptionDefinition<E extends Event> implements Definition {
 
 	private final String name;

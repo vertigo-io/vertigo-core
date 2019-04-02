@@ -52,7 +52,7 @@ import io.vertigo.core.definition.DefinitionUtil;
  *
  * @author pchretien
  */
-@DefinitionPrefix("CACHE")
+@DefinitionPrefix("Cache")
 public final class CacheDefinition implements Definition {
 	private final String name;
 	private final boolean serializeElements;

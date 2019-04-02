@@ -84,7 +84,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		final int purgePeriod = Math.min(1 * 60, timeToLiveSeconds);
-		return Collections.singletonList(new DaemonDefinition("DMN_KV_DATA_STORE_CACHE", () -> new RemoveTooOldElementsDaemon(this), purgePeriod));
+		return Collections.singletonList(new DaemonDefinition("DmnKvDataStoreCache", () -> new RemoveTooOldElementsDaemon(this), purgePeriod));
 	}
 
 	/** {@inheritDoc} */

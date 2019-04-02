@@ -1,19 +1,19 @@
 package io.vertigo.dynamo.collections.data.domain
 
-create FacetDefinition FCT_DESCRIPTION_CAR {
-	dtDefinition : DT_SMART_CAR
+create FacetDefinition FctDescriptionCar {
+	dtDefinition : DtSmartCar
 	fieldName : "description"
 	label : "Par description"
 }
 
-create FacetDefinition FCT_MANUFACTURER_CAR {
-	dtDefinition : DT_SMART_CAR
+create FacetDefinition FctManufacturerCar {
+	dtDefinition : DtSmartCar
 	fieldName : "manufacturer"
 	label : "Par constructeur"
 }
 
-create FacetDefinition FCT_YEAR_CAR {
-	dtDefinition : DT_SMART_CAR
+create FacetDefinition FctYearCar {
+	dtDefinition : DtSmartCar
 	fieldName : "year"
 	label : "Par année"
  	range R1 { filter: "year:[* TO 2000]" 		label: "avant 2000" }
@@ -21,10 +21,10 @@ create FacetDefinition FCT_YEAR_CAR {
 	range R3 { filter: "year:[2005 TO *]" 		label: "après 2005" }
 }
 
-create FacetedQueryDefinition QRY_CAR_FACET {
-	keyConcept : DT_SMART_CAR
-	domainCriteria : DO_TEXT
+create FacetedQueryDefinition QryCarFacet {
+	keyConcept : DtSmartCar
+	domainCriteria : DoText
 	listFilterBuilderQuery : "#query#"
 	listFilterBuilderClass : "io.vertigo.dynamox.search.DslListFilterBuilder"
-	facets : [FCT_YEAR_CAR, FCT_MANUFACTURER_CAR, FCT_DESCRIPTION_CAR]
+	facets : [FctYearCar, FctManufacturerCar, FctDescriptionCar]
 }

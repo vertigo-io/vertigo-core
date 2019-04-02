@@ -74,9 +74,9 @@ public final class TaskDefinitionModel {
 	 * @return Nom de la méthode en CamelCase
 	 */
 	public String getMethodName() {
-		// Nom de la définition sans prefix (XXX_YYYY).
+		// Nom de la définition sans prefix (XxxYyyy).
 		final String localName = DefinitionUtil.getLocalName(taskDefinition.getName(), TaskDefinition.class);
-		return StringUtil.constToLowerCamelCase(localName);
+		return StringUtil.first2LowerCase(localName);
 	}
 
 	/**

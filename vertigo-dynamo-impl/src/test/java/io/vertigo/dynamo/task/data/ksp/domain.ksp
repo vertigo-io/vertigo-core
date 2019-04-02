@@ -1,40 +1,40 @@
 package io.vertigo.dynamo.task.data.domain
 
-create Formatter FMT_DEFAULT{
+create Formatter FmtDefault{
 	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"
 }
 
-create Domain DO_STRING {
+create Domain DoString {
 	dataType : String
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 }
 
-create Domain DO_STRINGS {
+create Domain DoStrings {
 	dataType : String
 	multiple : "true"
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 }
 
-create Domain DO_ID {
+create Domain DoId {
 	dataType : Long
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 }
 
 
 /* DO_INTEGER is used to count */ 
-create Domain DO_INTEGER {
+create Domain DoInteger {
 	dataType : Integer
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 }
 
-create Domain DO_INTEGERS {
+create Domain DoIntegers {
 	dataType : Integer
 	multiple : "true"
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 }
 
-create Domain DO_LONGS {
+create Domain DoLongs {
 	dataType : Long
 	multiple : "true"
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 }

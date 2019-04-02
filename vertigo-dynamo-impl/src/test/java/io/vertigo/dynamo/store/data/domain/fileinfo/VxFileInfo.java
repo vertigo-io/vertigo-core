@@ -50,7 +50,7 @@ public final class VxFileInfo implements Entity {
 	 * Récupère la valeur de la propriété 'Identifiant'.
 	 * @return Long filId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "Identifiant")
+	@Field(domain = "DoId", type = "ID", required = true, label = "Identifiant")
 	public Long getFilId() {
 		return filId;
 	}
@@ -69,7 +69,7 @@ public final class VxFileInfo implements Entity {
 	 * Récupère la valeur de la propriété 'Nom'.
 	 * @return String fileName <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_STRING", required = true, label = "Nom")
+	@Field(domain = "DoString", required = true, label = "Nom")
 	public String getFileName() {
 		return fileName;
 	}
@@ -88,7 +88,7 @@ public final class VxFileInfo implements Entity {
 	 * Récupère la valeur de la propriété 'Type mime'.
 	 * @return String mimeType <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_STRING", required = true, label = "Type mime")
+	@Field(domain = "DoString", required = true, label = "Type mime")
 	public String getMimeType() {
 		return mimeType;
 	}
@@ -107,7 +107,7 @@ public final class VxFileInfo implements Entity {
 	 * Récupère la valeur de la propriété 'Taille'.
 	 * @return Long length <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_LONG", required = true, label = "Taille")
+	@Field(domain = "DoLong", required = true, label = "Taille")
 	public Long getLength() {
 		return length;
 	}
@@ -126,7 +126,7 @@ public final class VxFileInfo implements Entity {
 	 * Récupère la valeur de la propriété 'Date de derniÃ¨re modification'.
 	 * @return java.time.Instant lastModified <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_INSTANT", required = true, label = "Date de derniÃ¨re modification")
+	@Field(domain = "DoInstant", required = true, label = "Date de derniÃ¨re modification")
 	public java.time.Instant getLastModified() {
 		return lastModified;
 	}
@@ -145,7 +145,7 @@ public final class VxFileInfo implements Entity {
 	 * Récupère la valeur de la propriété 'data'.
 	 * @return io.vertigo.lang.DataStream fileData
 	 */
-	@Field(domain = "DO_STREAM", label = "data")
+	@Field(domain = "DoStream", label = "data")
 	public io.vertigo.lang.DataStream getFileData() {
 		return fileData;
 	}

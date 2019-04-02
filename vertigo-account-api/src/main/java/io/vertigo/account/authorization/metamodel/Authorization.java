@@ -39,9 +39,9 @@ import io.vertigo.lang.Assertion;
  *
  * @author prahmoune, npiedeloup
  */
-@DefinitionPrefix("ATZ_")
+@DefinitionPrefix("Atz")
 public final class Authorization implements Definition {
-	public static final String PREFIX = "ATZ_";
+	public static final String PREFIX = "Atz";
 	//soit authorization globale (sans règle)
 	//soit authorization = une opération sur une entity
 	private final Optional<String> comment;

@@ -31,7 +31,7 @@ import io.vertigo.lang.Assertion;
  * 			- a way to get a list of metrics
  * @author mlaroche, pchretien
  */
-@DefinitionPrefix("MET")
+@DefinitionPrefix("Met")
 public final class MetricDefinition implements Definition {
 
 	private final String definitionName;

@@ -31,7 +31,7 @@ import io.vertigo.util.ClassUtil;
  *
  * @author pchretien
  */
-@DefinitionPrefix("CK")
+@DefinitionPrefix("Ck")
 public final class ConstraintDefinition implements Constraint, Definition {
 	/**
 	 * Nom de la contrainte.

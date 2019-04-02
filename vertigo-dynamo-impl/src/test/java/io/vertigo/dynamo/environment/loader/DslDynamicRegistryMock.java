@@ -54,7 +54,7 @@ public final class DslDynamicRegistryMock implements DynamicRegistry {
 		return (definitionSpace) -> new FakeDefinition(definition.getName());
 	}
 
-	@DefinitionPrefix("MOCK_")
+	@DefinitionPrefix("Mock")
 	public final static class FakeDefinition implements Definition {
 		private final String name;
 

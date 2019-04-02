@@ -59,7 +59,7 @@ public final class SqlAssociationNNModel {
 	 * @return Association nodeA table
 	 */
 	public String getNodeATableName() {
-		return associationDefinition.getAssociationNodeA().getDtDefinition().getLocalName();
+		return StringUtil.camelToConstCase(associationDefinition.getAssociationNodeA().getDtDefinition().getLocalName());
 	}
 
 	/**
@@ -80,7 +80,7 @@ public final class SqlAssociationNNModel {
 	 * @return Association nodeB table
 	 */
 	public String getNodeBTableName() {
-		return associationDefinition.getAssociationNodeB().getDtDefinition().getLocalName();
+		return StringUtil.camelToConstCase(associationDefinition.getAssociationNodeB().getDtDefinition().getLocalName());
 	}
 
 	/**

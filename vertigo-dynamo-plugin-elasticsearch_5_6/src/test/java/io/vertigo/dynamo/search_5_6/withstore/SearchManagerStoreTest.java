@@ -69,7 +69,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 	@Inject
 	private SearchManager searchManager;
 	//Index
-	private static final String IDX_ITEM = "IDX_ITEM";
+	private static final String IDX_ITEM = "IdxItem";
 
 	private SearchIndexDefinition itemIndexDefinition;
 
@@ -102,7 +102,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 						.addPlugin(io.vertigo.dynamo.plugins.search.elasticsearch_5_6.embedded.ESEmbeddedSearchServicesPlugin.class,
 								Param.of("home", "io/vertigo/dynamo/search_5_6/indexconfig"),
 								Param.of("config.file", "io/vertigo/dynamo/search_5_6/indexconfig/elasticsearch.yml"),
-								Param.of("envIndex", "TU_TEST"),
+								Param.of("envIndex", "TuTest"),
 								Param.of("rowsPerQuery", "50"))
 						.build())
 				.addModule(ModuleConfig.builder("myApp")

@@ -58,9 +58,9 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 	private static final String SUPER_HERO_ID_LIST_IN = "superHeroIdListIn";
 	private static final String DTC_SUPER_HERO_OUT = "dtcSuperHeroOut";
 	private static final String OTHER_PARAM_IN = "otherParam";
-	private static final String DO_DT_SUPER_HERO_DTC = "DO_DT_SUPER_HERO_DTC";
-	private static final String DO_LONGS = "DO_LONGS";
-	private static final String DO_STRING = "DO_STRING";
+	private static final String DO_DT_SUPER_HERO_DTC = "DoDtSuperHeroDtc";
+	private static final String DO_LONGS = "DoLongs";
+	private static final String DO_STRING = "DoString";
 
 	@Inject
 	private TaskManager taskManager;
@@ -117,7 +117,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 				.append("#").append(DTC_SUPER_HERO_IN + ".id").append("# , ")
 				.append("#").append(DTC_SUPER_HERO_IN + ".name").append("# ) ")
 				.toString();
-		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_TEST_INSERT_BATCH")
+		final TaskDefinition taskDefinition = TaskDefinition.builder("TkTestInsertBatch")
 				.withEngine(TaskEngineProcBatch.class)
 				.addInRequired(DTC_SUPER_HERO_IN, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class))
 				.withRequest(request)
@@ -147,7 +147,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 				.append("#").append(DTC_SUPER_HERO_IN + ".id").append("# , ")
 				.append("#").append(OTHER_PARAM_IN).append("# ) ")
 				.toString();
-		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_TEST_INSERT_BATCH")
+		final TaskDefinition taskDefinition = TaskDefinition.builder("TkTestInsertBatch")
 				.withEngine(TaskEngineProcBatch.class)
 				.addInRequired(DTC_SUPER_HERO_IN, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class))
 				.addInRequired(OTHER_PARAM_IN, getApp().getDefinitionSpace().resolve(DO_STRING, Domain.class))
@@ -178,7 +178,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 		final String request = new StringBuilder("insert into SUPER_HERO(id, NAME) values (")
 				.append("#").append(SUPER_HERO_ID_LIST_IN).append("# , 'test' ").append(" )")
 				.toString();
-		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_TEST_INSERT_BATCH")
+		final TaskDefinition taskDefinition = TaskDefinition.builder("TkTestInsertBatch")
 				.withEngine(TaskEngineProcBatch.class)
 				.addInRequired(SUPER_HERO_ID_LIST_IN, getApp().getDefinitionSpace().resolve(DO_LONGS, Domain.class))
 				.withRequest(request)
@@ -200,7 +200,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 	}
 
 	private DtList<SuperHero> selectHeroes() {
-		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_SELECT_HEROES")
+		final TaskDefinition taskDefinition = TaskDefinition.builder("TkSelectHeroes")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from SUPER_HERO")
 				.withOutRequired(DTC_SUPER_HERO_OUT, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class))

@@ -27,13 +27,13 @@ public final class SmartCar implements KeyConcept {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "identifiant de la voiture")
+	@Field(domain = "DoId", type = "ID", required = true, label = "identifiant de la voiture")
 	private Long id;
-	@Field(domain = "DO_KEYWORD", required = true, label = "Constructeur")
+	@Field(domain = "DoKeyword", required = true, label = "Constructeur")
 	private String manufacturer;
-	@Field(domain = "DO_INTEGER", required = true, label = "Année")
+	@Field(domain = "DoInteger", required = true, label = "Année")
 	private Integer year;
-	@Field(domain = "DO_TEXT", required = true, label = "Descriptif")
+	@Field(domain = "DoText", required = true, label = "Descriptif")
 	private String description;
 
 	/** {@inheritDoc} */

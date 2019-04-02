@@ -81,7 +81,7 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 					//-----
 					//2. For each method register a listener
 					final Class<? extends Event> eventType = (Class<? extends Event>) method.getParameterTypes()[0];
-					final String subscriptionName = "EVT_" + StringUtil.camelToConstCase(componentId) + "$" + StringUtil.camelToConstCase(eventType.getSimpleName());
+					final String subscriptionName = "Evt" + StringUtil.first2UpperCase(componentId) + "$" + StringUtil.first2LowerCase(eventType.getSimpleName());
 					return new EventBusSubscriptionDefinition<>(subscriptionName, eventType, event -> ClassUtil.invoke(subscriberInstance, method, event));
 				})
 				.collect(Collectors.toList());

@@ -87,7 +87,7 @@ public final class MyNodeConfig {
 					.withStore()
 					.addPlugin(SqlDataStorePlugin.class);
 			accountFeatures.withStoreAuthentication(
-					Param.of("userCredentialEntity", "DT_USER_CREDENTIAL"),
+					Param.of("userCredentialEntity", "DtUserCredential"),
 					Param.of("userLoginField", "login"),
 					Param.of("userPasswordField", "password"),
 					Param.of("userTokenIdField", "login"));

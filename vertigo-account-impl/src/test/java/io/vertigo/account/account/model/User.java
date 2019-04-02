@@ -35,7 +35,7 @@ public final class User implements KeyConcept {
 	private String fullName;
 	private String email;
 
-	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_GRP_USR", fkFieldName = "grpId", primaryDtDefinitionName = "DT_USER_GROUP", primaryIsNavigable = true, primaryRole = "Group", primaryLabel = "Group", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DT_USER", foreignIsNavigable = false, foreignRole = "User", foreignLabel = "User", foreignMultiplicity = "0..*")
+	@io.vertigo.dynamo.domain.stereotype.Association(name = "AGrpUsr", fkFieldName = "grpId", primaryDtDefinitionName = "DtUserGroup", primaryIsNavigable = true, primaryRole = "Group", primaryLabel = "Group", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DtUser", foreignIsNavigable = false, foreignRole = "User", foreignLabel = "User", foreignMultiplicity = "0..*")
 	private final VAccessor<UserGroup> grpIdAccessor = new VAccessor<>(UserGroup.class, "Group");
 
 	/** {@inheritDoc} */
@@ -44,7 +44,7 @@ public final class User implements KeyConcept {
 		return UID.of(this);
 	}
 
-	@Field(domain = "DO_CODE", type = "ID", required = true, label = "Id")
+	@Field(domain = "DoCode", type = "ID", required = true, label = "Id")
 	public String getUsrId() {
 		return usrId;
 	}
@@ -53,7 +53,7 @@ public final class User implements KeyConcept {
 		this.usrId = usrId;
 	}
 
-	@Field(domain = "DO_LABEL", required = true, label = "FullName")
+	@Field(domain = "DoLabel", required = true, label = "FullName")
 	public String getFullName() {
 		return fullName;
 	}
@@ -62,7 +62,7 @@ public final class User implements KeyConcept {
 		this.fullName = fullName;
 	}
 
-	@Field(domain = "DO_LABEL", required = true, label = "Email")
+	@Field(domain = "DoLabel", required = true, label = "Email")
 	public String getEmail() {
 		return email;
 	}
@@ -76,7 +76,7 @@ public final class User implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Group'.
 	 * @return String grpId
 	 */
-	@Field(domain = "DO_CODE", type = "FOREIGN_KEY", label = "Group")
+	@Field(domain = "DoCode", type = "FOREIGN_KEY", label = "Group")
 	public String getGrpId() {
 		return (String) grpIdAccessor.getId();
 	}

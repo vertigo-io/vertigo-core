@@ -51,9 +51,9 @@ public final class CacheManagerImpl implements CacheManager, SimpleDefinitionPro
 	}
 
 	@Override
-	public List<? extends Definition> provideDefinitions(DefinitionSpace definitionSpace) {
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		return Collections.singletonList(new CacheDefinition(
-				"CACHE_HEALTH_VERTIGO",
+				"CacheHealthVertigo",
 				false,
 				10,
 				60,

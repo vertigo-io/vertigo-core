@@ -31,18 +31,18 @@ public class PartialSecuredServices implements Component {
 		return 1;
 	}
 
-	@Secured("ADMUSR")
+	@Secured("Admusr")
 	public int fakeService2() {
 		return 2;
 	}
 
-	@Secured("ADMPRO")
-	public int fakeService3(@SecuredOperation("READ") final Record record) {
+	@Secured("Admpro")
+	public int fakeService3(@SecuredOperation("read") final Record record) {
 		return 3;
 	}
 
-	@Secured("ADMPRO")
-	public int fakeService4(@SecuredOperation("WRITE") final Record record) {
+	@Secured("Admpro")
+	public int fakeService4(@SecuredOperation("write") final Record record) {
 		return 4;
 	}
 

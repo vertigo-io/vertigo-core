@@ -41,24 +41,24 @@ public final class SqlAssociationSimpleModel {
 	}
 
 	/**
-	 * @return Association name
+	 * @return Association name in CONST_CASE
 	 */
 	public String getName() {
-		return associationDefinition.getName();
+		return StringUtil.camelToConstCase(associationDefinition.getName());
 	}
 
 	/**
 	 * @return Association foreign table
 	 */
 	public String getForeignTable() {
-		return associationDefinition.getForeignAssociationNode().getDtDefinition().getLocalName();
+		return StringUtil.camelToConstCase(associationDefinition.getForeignAssociationNode().getDtDefinition().getLocalName());
 	}
 
 	/**
 	 * @return Association primary table
 	 */
 	public String getPrimaryTable() {
-		return associationDefinition.getPrimaryAssociationNode().getDtDefinition().getLocalName();
+		return StringUtil.camelToConstCase(associationDefinition.getPrimaryAssociationNode().getDtDefinition().getLocalName());
 	}
 
 	/**

@@ -65,7 +65,7 @@ public class DslDefinitionBodyRuleTest {
 		final DslEntity entity = find(entities, "Domain");
 
 		final DslDefinitionBody definitionBody = new DslDefinitionBodyRule(entity)
-				.parse("{ dataType : String ,  formatter : FMT_DEFAULT,  constraint : [ CK_CODE_POSTAL ]    } ", 0)
+				.parse("{ dataType : String ,  formatter : FmtDefault,  constraint : [ CkCodePostal ]    } ", 0)
 				.getValue();
 
 		Assertions.assertNotNull(definitionBody);
@@ -75,7 +75,7 @@ public class DslDefinitionBodyRuleTest {
 	public void testError() {
 		final List<DslEntity> entities = dslDefinitionRepository.getGrammar().getEntities();
 		final DslEntity entity = find(entities, "Domain");
-		final String testValue = "{ dataType : String ,  formatter : FMT_DEFAULT,  constraint : [ CK_CODE_POSTAL ] , maxLengh:\"true\"   } ";
+		final String testValue = "{ dataType : String ,  formatter : FmtDefault,  constraint : [ CkCodePostal ] , maxLengh:\"true\"   } ";
 		try {
 			new DslDefinitionBodyRule(entity)
 					.parse(testValue, 0);

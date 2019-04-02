@@ -91,13 +91,13 @@ public final class ItemSearchLoader extends AbstractSqlSearchLoader<Long, Item, 
 	}
 
 	private TaskDefinition getTaskDefinition(final SearchChunk<Item> searchChunk) {
-		final Domain doItems = definitionSpace.resolve("DO_DT_ITEM_DTC", Domain.class);
+		final Domain doItems = definitionSpace.resolve("DoDtItemDtc", Domain.class);
 		final String sql = searchChunk.getAllUIDs()
 				.stream()
 				.map(uri -> uri.getId().toString())
 				.collect(Collectors.joining(", ", "select * from ITEM where ID in (", ")"));
 
-		return TaskDefinition.builder("TK_LOAD_ALL_ITEMS")
+		return TaskDefinition.builder("TkLoadAllItems")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(sql)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())

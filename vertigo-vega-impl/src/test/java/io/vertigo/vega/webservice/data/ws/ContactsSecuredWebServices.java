@@ -44,14 +44,14 @@ import io.vertigo.vega.webservice.stereotype.Validate;
 
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 
-@Secured("SECURED_USER")
+@Secured("SecuredUser")
 @PathPrefix("/secured/contacts")
 public class ContactsSecuredWebServices implements WebServices {
 
 	@Inject
 	private ContactDao contactDao;
 
-	@Secured("CONTACT$READ")
+	@Secured("Contact$read")
 	@POST("/search()")
 	public List<Contact> readList(final ContactCriteria listCriteria) {
 		//offset + range ?
@@ -59,7 +59,7 @@ public class ContactsSecuredWebServices implements WebServices {
 		return contactDao.getList();
 	}
 
-	@Secured("CONTACT$READ")
+	@Secured("Contact$read")
 	@GET("/{conId}")
 	public Contact read(@PathParam("conId") final long conId) {
 		final Contact contact = contactDao.get(conId);
@@ -71,7 +71,7 @@ public class ContactsSecuredWebServices implements WebServices {
 		return contact;
 	}
 
-	@Secured("CONTACT$READ")
+	@Secured("Contact$read")
 	@GET("/contactView/{conId}")
 	public ContactView readContactView(@PathParam("conId") final long conId) {
 		final Contact contact = contactDao.get(conId);
@@ -95,14 +95,14 @@ public class ContactsSecuredWebServices implements WebServices {
 
 	//PUT is indempotent : ID obligatoire
 	@PUT("/contactView")
-	public ContactView updateContactView(@SecuredOperation("WRITE") final ContactView contactView) {
+	public ContactView updateContactView(@SecuredOperation("write") final ContactView contactView) {
 		//200
 		return contactView;
 	}
 
 	//@POST is non-indempotent
 	@POST("")
-	public Contact create(@SecuredOperation("WRITE") final Contact contact) {
+	public Contact create(@SecuredOperation("write") final Contact contact) {
 		if (contact.getConId() != null) {
 			throw new VUserException("Contact #" + contact.getConId() + " already exist");
 		}
@@ -117,7 +117,7 @@ public class ContactsSecuredWebServices implements WebServices {
 	//PUT is indempotent : ID obligatoire
 	@PUT("/*")
 	public Contact update(//
-			@Validate({ ContactValidator.class, MandatoryPkValidator.class }) @SecuredOperation("WRITE") final Contact contact) {
+			@Validate({ ContactValidator.class, MandatoryPkValidator.class }) @SecuredOperation("write") final Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
 			throw new VUserException("Name is mandatory");
@@ -130,7 +130,7 @@ public class ContactsSecuredWebServices implements WebServices {
 		return contact;
 	}
 
-	@Secured("CONTACT$DELETE")
+	@Secured("Contact$delete")
 	@DELETE("/{conId}")
 	public void delete(@PathParam("conId") final long conId) {
 		if (!contactDao.containsKey(conId)) {

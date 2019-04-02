@@ -34,7 +34,7 @@ import io.vertigo.dynamo.search_5_6.AbstractSearchManagerTest;
  */
 public class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest {
 	//Index
-	private static final String IDX_DYNA_ITEM = "IDX_DYNA_ITEM";
+	private static final String IDX_DYNA_ITEM = "IdxDynaItem";
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
@@ -50,7 +50,7 @@ public class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest {
 						.addPlugin(io.vertigo.dynamo.plugins.search.elasticsearch_5_6.embedded.ESEmbeddedSearchServicesPlugin.class,
 								Param.of("home", "io/vertigo/dynamo/search_5_6/indexconfig"),
 								Param.of("config.file", "io/vertigo/dynamo/search_5_6/indexconfig/elasticsearch.yml"),
-								Param.of("envIndex", "TU_TEST"),
+								Param.of("envIndex", "TuTest"),
 								Param.of("rowsPerQuery", "50"))
 						.build())
 				.addModule(ModuleConfig.builder("myApp")

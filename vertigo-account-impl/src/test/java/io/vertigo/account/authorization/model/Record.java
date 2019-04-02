@@ -49,7 +49,7 @@ public final class Record implements KeyConcept {
 		return UID.of(this);
 	}
 
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "Id")
+	@Field(domain = "DoId", type = "ID", required = true, label = "Id")
 	public final Long getDosId() {
 		return dosId;
 	}
@@ -58,7 +58,7 @@ public final class Record implements KeyConcept {
 		this.dosId = dosId;
 	}
 
-	@Field(domain = "DO_ID", label = "Region")
+	@Field(domain = "DoId", label = "Region")
 	public final Long getRegId() {
 		return regId;
 	}
@@ -67,7 +67,7 @@ public final class Record implements KeyConcept {
 		this.regId = regId;
 	}
 
-	@Field(domain = "DO_ID", label = "Département")
+	@Field(domain = "DoId", label = "Département")
 	public final Long getDepId() {
 		return depId;
 	}
@@ -76,7 +76,7 @@ public final class Record implements KeyConcept {
 		this.depId = depId;
 	}
 
-	@Field(domain = "DO_ID", label = "Commune")
+	@Field(domain = "DoId", label = "Commune")
 	public final Long getComId() {
 		return comId;
 	}
@@ -85,7 +85,7 @@ public final class Record implements KeyConcept {
 		this.comId = comId;
 	}
 
-	@Field(domain = "DO_ID", required = true, label = "Type dossier")
+	@Field(domain = "DoId", required = true, label = "Type dossier")
 	public final Long getTypId() {
 		return typId;
 	}
@@ -94,7 +94,7 @@ public final class Record implements KeyConcept {
 		this.typId = typId;
 	}
 
-	@Field(domain = "DO_LABEL", required = true, label = "Title")
+	@Field(domain = "DoLabel", required = true, label = "Title")
 	public final String getTitle() {
 		return title;
 	}
@@ -103,7 +103,7 @@ public final class Record implements KeyConcept {
 		this.title = title;
 	}
 
-	@Field(domain = "DO_MONTANT", required = true, label = "Amount")
+	@Field(domain = "DoMontant", required = true, label = "Amount")
 	public final Double getAmount() {
 		return amount;
 	}
@@ -112,7 +112,7 @@ public final class Record implements KeyConcept {
 		this.amount = amount;
 	}
 
-	@Field(domain = "DO_ID", required = true, label = "Créateur")
+	@Field(domain = "DoId", required = true, label = "Créateur")
 	public final Long getUtiIdOwner() {
 		return utiIdOwner;
 	}
@@ -121,7 +121,7 @@ public final class Record implements KeyConcept {
 		this.utiIdOwner = utiIdOwner;
 	}
 
-	@Field(domain = "DO_CODE", required = true, label = "Etat dossier")
+	@Field(domain = "DoCode", required = true, label = "Etat dossier")
 	public final String getEtaCd() {
 		return etaCd;
 	}

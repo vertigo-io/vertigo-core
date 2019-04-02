@@ -28,7 +28,6 @@ import io.vertigo.app.Home;
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -43,6 +42,7 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 /**
  * Default SearchLoader for Database datasource.
@@ -54,7 +54,6 @@ import io.vertigo.lang.Assertion;
 public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends KeyConcept, I extends DtObject> extends AbstractSearchLoader<P, S, I> {
 
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
-	private static final char SEPARATOR = Definition.SEPARATOR;
 	private static final int SEARCH_CHUNK_SIZE = 500;
 	private final TaskManager taskManager;
 	private final VTransactionManager transactionManager;
@@ -84,8 +83,9 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	@Transactional
 	protected final List<UID<S>> loadNextURI(final P lastId, final DtDefinition dtDefinition) {
 		try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
-			final String tableName = getTableName(dtDefinition);
-			final String taskName = "TK_SELECT_" + tableName + "_NEXT_SEARCH_CHUNK";
+			final String entityName = getEntityName(dtDefinition);
+			final String tableName = StringUtil.camelToConstCase(entityName);
+			final String taskName = "TkSelect" + entityName + "NextSearchChunk";
 			final DtField idField = dtDefinition.getIdField().get();
 			final String idFieldName = idField.getName();
 			final String request = getNextIdsSqlQuery(tableName, idFieldName);
@@ -95,7 +95,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 					.withDataSpace(dtDefinition.getDataSpace())
 					.withRequest(request)
 					.addInRequired(idFieldName, idField.getDomain())
-					.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class))
+					.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName() + "Dtc", Domain.class))
 					.build();
 
 			final Task task = Task.builder(taskDefinition)
@@ -170,7 +170,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	 * @param dtDefinition Définition du DT mappé
 	 * @return Nom de la table
 	 */
-	protected static final String getTableName(final DtDefinition dtDefinition) {
+	protected static final String getEntityName(final DtDefinition dtDefinition) {
 		return dtDefinition.getFragment().orElse(dtDefinition).getLocalName();
 	}
 

@@ -48,7 +48,8 @@ import io.vertigo.lang.Assertion;
  */
 final class ESDocumentCodec {
 	/** FieldName containing Full result object. */
-	static final String FULL_RESULT = "FULL_RESULT";
+	static final String FULL_RESULT = "fullResult";
+	static final String DOC_ID = "docId";
 
 	//-----
 	private final CodecManager codecManager;
@@ -132,7 +133,7 @@ final class ESDocumentCodec {
 		try (final XContentBuilder xContentBuilder = XContentFactory.jsonBuilder()) {
 			xContentBuilder.startObject()
 					.field(FULL_RESULT, result)
-					.field("doc_id", index.getUID().getId());
+					.field(DOC_ID, index.getUID().getId());
 
 			/* 3 : Les champs du dto index */
 			final DtObject dtIndex = index.getIndexDtObject();

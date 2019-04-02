@@ -48,7 +48,7 @@ import io.vertigo.util.ClassUtil;
  *
  * @author pchretien
  */
-@DefinitionPrefix("DO")
+@DefinitionPrefix("Do")
 public final class Domain implements Definition {
 	public enum Scope {
 		PRIMITIVE,

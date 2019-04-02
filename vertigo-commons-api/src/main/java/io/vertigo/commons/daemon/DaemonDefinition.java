@@ -30,7 +30,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author TINGARGIOLA
  */
-@DefinitionPrefix("DMN")
+@DefinitionPrefix("Dmn")
 public final class DaemonDefinition implements Definition {
 
 	/** Name of the daemon. */

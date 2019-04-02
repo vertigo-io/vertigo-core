@@ -37,14 +37,14 @@ public final class Attachment implements Entity {
 	private String url;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_CMD_ATT",
+			name = "ACmdAtt",
 			fkFieldName = "cmdId",
-			primaryDtDefinitionName = "DT_COMMAND",
+			primaryDtDefinitionName = "DtCommand",
 			primaryIsNavigable = true,
 			primaryRole = "Command",
 			primaryLabel = "Command",
 			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_ATTACHMENT",
+			foreignDtDefinitionName = "DtAttachment",
 			foreignIsNavigable = true,
 			foreignRole = "Attachment",
 			foreignLabel = "Attachment",
@@ -62,7 +62,7 @@ public final class Attachment implements Entity {
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long attId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "id")
+	@Field(domain = "DoId", type = "ID", required = true, label = "id")
 	public Long getAttId() {
 		return attId;
 	}
@@ -81,7 +81,7 @@ public final class Attachment implements Entity {
 	 * Récupère la valeur de la propriété 'Url'.
 	 * @return String url <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_KEYWORD", required = true, label = "Url")
+	@Field(domain = "DoKeyword", required = true, label = "Url")
 	public String getUrl() {
 		return url;
 	}
@@ -100,7 +100,7 @@ public final class Attachment implements Entity {
 	 * Récupère la valeur de la propriété 'Command'.
 	 * @return Long cmdId
 	 */
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", label = "Command")
+	@Field(domain = "DoId", type = "FOREIGN_KEY", label = "Command")
 	public Long getCmdId() {
 		return (Long) cmdIdAccessor.getId();
 	}

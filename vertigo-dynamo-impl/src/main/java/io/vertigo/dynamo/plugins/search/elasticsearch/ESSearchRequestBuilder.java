@@ -295,7 +295,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 					}
 				}
 				if (aggsFilterBoolQueryBuilder.hasClauses()) {
-					final AggregationBuilder filterAggregationBuilder = AggregationBuilders.filter(facetDefinition.getName() + "_FILTER", aggsFilterBoolQueryBuilder);
+					final AggregationBuilder filterAggregationBuilder = AggregationBuilders.filter(facetDefinition.getName() + "Filter", aggsFilterBoolQueryBuilder);
 					filterAggregationBuilder.subAggregation(aggregationBuilder);
 					searchRequestBuilder.addAggregation(filterAggregationBuilder);
 				} else {

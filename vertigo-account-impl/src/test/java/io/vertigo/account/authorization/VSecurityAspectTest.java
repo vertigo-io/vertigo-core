@@ -69,9 +69,9 @@ public final class VSecurityAspectTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testAuthorized() {
-		final Authorization admUsr = getAuthorization(GlobalAuthorizations.ATZ_ADMUSR);
-		final Authorization admPro = getAuthorization(GlobalAuthorizations.ATZ_ADMPRO);
-		final Authorization recordWrite = getAuthorization(RecordAuthorizations.ATZ_RECORD$WRITE);
+		final Authorization admUsr = getAuthorization(GlobalAuthorizations.AtzAdmusr);
+		final Authorization admPro = getAuthorization(GlobalAuthorizations.AtzAdmpro);
+		final Authorization recordWrite = getAuthorization(RecordAuthorizations.AtzRecord$write);
 		final Record record = createRecord();
 
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
@@ -101,8 +101,8 @@ public final class VSecurityAspectTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testUnauthorized() {
-		final Authorization admPro = getAuthorization(GlobalAuthorizations.ATZ_ADMPRO);
-		final Authorization recordRead = getAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
+		final Authorization admPro = getAuthorization(GlobalAuthorizations.AtzAdmpro);
+		final Authorization recordRead = getAuthorization(RecordAuthorizations.AtzRecord$read);
 		final Record record = createRecord();
 
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
@@ -142,9 +142,9 @@ public final class VSecurityAspectTest extends AbstractTestCaseJU5 {
 		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
 		recordOtherUserAndTooExpensive.setAmount(10000d);
 
-		final Authorization admUsr = getAuthorization(GlobalAuthorizations.ATZ_ADMUSR);
-		final Authorization admPro = getAuthorization(GlobalAuthorizations.ATZ_ADMPRO);
-		final Authorization recordWrite = getAuthorization(RecordAuthorizations.ATZ_RECORD$WRITE);
+		final Authorization admUsr = getAuthorization(GlobalAuthorizations.AtzAdmusr);
+		final Authorization admPro = getAuthorization(GlobalAuthorizations.AtzAdmpro);
+		final Authorization recordWrite = getAuthorization(RecordAuthorizations.AtzRecord$write);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -202,8 +202,8 @@ public final class VSecurityAspectTest extends AbstractTestCaseJU5 {
 		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
 		recordOtherUserAndTooExpensive.setAmount(10000d);
 
-		final Authorization admPro = getAuthorization(GlobalAuthorizations.ATZ_ADMPRO);
-		final Authorization recordRead = getAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
+		final Authorization admPro = getAuthorization(GlobalAuthorizations.AtzAdmpro);
+		final Authorization recordRead = getAuthorization(RecordAuthorizations.AtzRecord$read);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);

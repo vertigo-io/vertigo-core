@@ -37,7 +37,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author jgarnier, npiedeloup
  */
-@DefinitionPrefix("SEC_")
+@DefinitionPrefix("Sec")
 public final class SecuredEntity implements Definition {
 	private final String name;
 	private final DtDefinition entityDefinition;
@@ -63,7 +63,7 @@ public final class SecuredEntity implements Definition {
 		Assertion.checkNotNull(advancedDimensions);
 		Assertion.checkNotNull(operations);
 		//---
-		name = "SEC_" + entityDefinition.getName();
+		name = "Sec" + entityDefinition.getName();
 		this.entityDefinition = entityDefinition;
 		this.securityFields = securityFields;
 		this.advancedDimensions = advancedDimensions;

@@ -27,10 +27,10 @@ public final class Item implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@Field(domain = "DO_LONG", type = "ID", required = true, label = "id")
+	@Field(domain = "DoLong", type = "ID", required = true, label = "id")
 	private Long id;
 
-	@Field(domain = "DO_STRING", label = "label")
+	@Field(domain = "DoString", label = "label")
 	private String label;
 
 	/** {@inheritDoc} */

@@ -54,7 +54,7 @@ public final class SearchTestWebServices implements WebServices {
 
 	@POST("/selectedFacetValues")
 	public UiContext testSelectedFacetValues(final SelectedFacetValues selectedFacetValues) {
-		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QRY_CONTACT_FACET", FacetedQueryDefinition.class);
+		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryContactFacet", FacetedQueryDefinition.class);
 		final UiContext uiContext = new UiContext();
 		for (final FacetDefinition facetDefinition : facetedQueryDefinition.getFacetDefinitions()) {
 			if (!selectedFacetValues.getFacetValues(facetDefinition.getName()).isEmpty()) {
@@ -73,7 +73,7 @@ public final class SearchTestWebServices implements WebServices {
 	@IncludedFields({ "list.name", "list.conId", "list.firstName" })
 	public FacetedQueryResult<Contact, DtList<Contact>> testFacetedQueryResult(final SelectedFacetValues selectedFacetValues) {
 		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
-		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QRY_CONTACT_FACET", FacetedQueryDefinition.class);
+		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryContactFacet", FacetedQueryDefinition.class);
 		final FacetedQuery facetedQuery = new FacetedQuery(facetedQueryDefinition, selectedFacetValues);
 		return collectionsManager.facetList(allContacts, facetedQuery, Optional.empty());
 	}
@@ -83,9 +83,9 @@ public final class SearchTestWebServices implements WebServices {
 	@IncludedFields({ "list.name", "list.conId", "list.firstName" })
 	public FacetedQueryResult<Contact, DtList<Contact>> testFacetedClusterQueryResult(final SelectedFacetValues selectedFacetValues) {
 		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
-		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QRY_CONTACT_FACET", FacetedQueryDefinition.class);
+		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryContactFacet", FacetedQueryDefinition.class);
 		final FacetedQuery facetedQuery = new FacetedQuery(facetedQueryDefinition, selectedFacetValues);
-		return collectionsManager.facetList(allContacts, facetedQuery, Optional.of(obtainFacetDefinition("FCT_HONORIFIC_CODE")));
+		return collectionsManager.facetList(allContacts, facetedQuery, Optional.of(obtainFacetDefinition("FctHonorificCode")));
 	}
 
 	private static FacetDefinition obtainFacetDefinition(final String facetName) {

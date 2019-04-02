@@ -36,15 +36,14 @@ import java.util.regex.Pattern;
  * @author  pchretien
  */
 public interface Definition {
-	char SEPARATOR = '_';
 	/**
 	 * Expression réguliére vérifiée par les noms des définitions.
 	 * 2 exemples acceptés :
-	 * TO_TO
+	 * ToTo
 	 * ou
-	 * TO_TO$TI_TI
+	 * ToTo$tiTi
 	 */
-	Pattern REGEX_DEFINITION_URN = Pattern.compile("[A-Z0-9_]{3,60}([$][A-Z0-9_]{3,60})?");
+	Pattern REGEX_DEFINITION_URN = Pattern.compile("[A-Z][a-zA-Z0-9]{2,60}([$][a-z][a-zA-Z0-9]{2,60})?");
 
 	/**
 	 * @return Nom de la définition.

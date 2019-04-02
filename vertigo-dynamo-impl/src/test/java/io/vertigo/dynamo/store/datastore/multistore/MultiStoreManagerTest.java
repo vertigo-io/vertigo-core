@@ -25,9 +25,9 @@ import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.param.Param;
@@ -84,7 +84,7 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 						.withSqlStore(
 								Param.of("dataSpace", "otherStore"),
 								Param.of("connectionName", "otherBase"))
-						.withDbFileStore(Param.of("storeDtName", "DT_VX_FILE_INFO"))
+						.withDbFileStore(Param.of("storeDtName", "DtVxFileInfo"))
 						.withFsFullFileStore(
 								Param.of("name", "temp"),
 								Param.of("path", "${java.io.tmpdir}/testVertigo/"))
@@ -111,7 +111,7 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 				transactionManager,
 				taskManager,
 				getCreateOtherStoreRequests(),
-				"TK_INIT_OTHER",
+				"TkInitOther",
 				Optional.of("otherStore"));
 	}
 

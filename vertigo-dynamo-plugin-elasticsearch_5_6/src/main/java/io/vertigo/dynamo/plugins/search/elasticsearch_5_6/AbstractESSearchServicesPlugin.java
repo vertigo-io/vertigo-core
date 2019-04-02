@@ -136,7 +136,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 			updateTypeMapping(indexDefinition, hasSortableNormalizer(myIndexName));
 			logMappings(myIndexName);
-			types.add(indexDefinition.getName().toLowerCase(Locale.ROOT));
+			types.add(indexDefinition.getName());
 		}
 
 		waitForYellowStatus();
@@ -158,7 +158,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	}
 
 	private String obtainIndexName(final SearchIndexDefinition indexDefinition) {
-		return indexNameIsPrefix ? indexNameOrPrefix + indexDefinition.getName().toLowerCase(Locale.ROOT).trim() : indexNameOrPrefix;
+		return indexNameIsPrefix ? indexNameOrPrefix + indexDefinition.getName().trim() : indexNameOrPrefix;
 	}
 
 	private void createIndex(final String myIndexName) {
@@ -300,9 +300,9 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.checkArgument(indexSettingsValid,
 				"Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
 		Assertion.checkNotNull(indexDefinition);
-		Assertion.checkArgument(types.contains(indexDefinition.getName().toLowerCase(Locale.ROOT)), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
+		Assertion.checkArgument(types.contains(indexDefinition.getName()), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
 		//-----
-		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), indexDefinition.getName().toLowerCase(Locale.ROOT), esClient);
+		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), indexDefinition.getName(), esClient);
 	}
 
 	private static String obtainPkIndexDataType(final Domain domain) {
@@ -339,7 +339,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					.field("type", "binary")
 					.endObject();
 
-			typeMapping.startObject("doc_id")
+			typeMapping.startObject(ESDocumentCodec.DOC_ID)
 					.field("type", obtainPkIndexDataType(indexDefinition.getKeyConceptDtDefinition().getIdField().get().getDomain()))
 					.endObject();
 
@@ -373,7 +373,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final PutMappingResponse putMappingResponse = esClient.admin()
 					.indices()
 					.preparePutMapping(obtainIndexName(indexDefinition))
-					.setType(indexDefinition.getName().toLowerCase(Locale.ROOT))
+					.setType(indexDefinition.getName())
 					.setSource(typeMapping)
 					.get();
 			putMappingResponse.isAcknowledged();

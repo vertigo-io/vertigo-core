@@ -34,11 +34,11 @@ import io.vertigo.lang.Assertion;
  * @author pchretien, npiedeloup
  */
 public final class FormatterDefault implements Formatter {
-	private static final String FMT_STRING_DEFAULT = "FMT_STRING_DEFAULT";
-	private static final String FMT_LOCAL_DATE_DEFAULT = "FMT_LOCAL_DATE_DEFAULT";
-	private static final String FMT_INSTANT_DEFAULT = "FMT_INSTANT_DEFAULT";
-	private static final String FMT_BOOLEAN_DEFAULT = "FMT_BOOLEAN_DEFAULT";
-	private static final String FMT_NUMBER_DEFAULT = "FMT_NUMBER_DEFAULT";
+	private static final String FMT_STRING_DEFAULT = "FmtStringDefault";
+	private static final String FMT_LOCAL_DATE_DEFAULT = "FmtLocalDateDefault";
+	private static final String FMT_INSTANT_DEFAULT = "FmtInstantDefault";
+	private static final String FMT_BOOLEAN_DEFAULT = "FmtBooleanDefault";
+	private static final String FMT_NUMBER_DEFAULT = "FmtNumberDefault";
 
 	private final Formatter booleanFormatter;
 	private final Formatter numberformatter;

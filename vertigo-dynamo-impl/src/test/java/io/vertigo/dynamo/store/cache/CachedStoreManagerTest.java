@@ -21,9 +21,9 @@ package io.vertigo.dynamo.store.cache;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.param.Param;
@@ -68,7 +68,7 @@ public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
 				.addModule(new DynamoFeatures()
 						.withStore()
 						.withSqlStore()
-						.withDbFileStore(Param.of("storeDtName", "DT_VX_FILE_INFO"))
+						.withDbFileStore(Param.of("storeDtName", "DtVxFileInfo"))
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)

@@ -75,7 +75,7 @@ public final class CacheDataStore {
 
 		//TODO : A revoir plus tard
 		final EventBusSubscriptionDefinition<StoreEvent> eventBusSubscription = new EventBusSubscriptionDefinition<>(
-				"EVT_CLEAR_CACHE",
+				"EvtClearCache",
 				StoreEvent.class,
 				event -> clearCache(event.getUID().getDefinition()));
 		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace())

@@ -72,7 +72,7 @@ abstract class AbstractIdentityProviderManagerTest extends AbstractTestCaseJU5 {
 								Param.of("ldapReaderLogin", "cn=admin,dc=vertigo,dc=io"),
 								Param.of("ldapReaderPassword", "v3rt1g0"),
 								Param.of("ldapUserAuthAttribute", "cn"),
-								Param.of("userDtDefinitionName", "DT_USER"),
+								Param.of("userDtDefinitionName", "DtUser"),
 								Param.of("ldapUserAttributeMapping", "usrId:cn, fullName:description"))
 						.build())
 				.addModule(ModuleConfig.builder("myApp")

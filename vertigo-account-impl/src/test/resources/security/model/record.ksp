@@ -1,18 +1,18 @@
 package io.vertigo.account.authorization.model
 
 
-create DtDefinition DT_RECORD {
+create DtDefinition DtRecord {
 	stereotype : "KeyConcept"
-	id	  dosId				{domain: DO_ID 		label: "Id" }
+	id	  dosId				{domain: DoId 		label: "Id" }
 	
-	field regId 				{domain: DO_ID label: "Region" 		required:"false" }
-  	field depId 				{domain: DO_ID label: "Departement" required:"false" }
-  	field comId 				{domain: DO_ID label: "Commune" 	required:"false" }
+	field regId 				{domain: DoId label: "Region" 		required:"false" }
+  	field depId 				{domain: DoId label: "Departement" required:"false" }
+  	field comId 				{domain: DoId label: "Commune" 	required:"false" }
   
-  	field typId 				{domain: DO_ID label: "Record type" required:"true"}
-	field title 				{domain: DO_LABEL label: "Title" 	required:"true"}
-	field amount 				{domain: DO_MONTANT label: "Amount" required:"true"}
-	field utiIdOwner 			{domain: DO_ID label: "Owner" 		required:"true" }
+  	field typId 				{domain: DoId label: "Record type" required:"true"}
+	field title 				{domain: DoLabel label: "Title" 	required:"true"}
+	field amount 				{domain: DoMontant label: "Amount" required:"true"}
+	field utiIdOwner 			{domain: DoId label: "Owner" 		required:"true" }
   
-  	field etaCd 				{domain: DO_CODE label: "State" 	required:"true"}	
+  	field etaCd 				{domain: DoCode label: "State" 	required:"true"}	
 }

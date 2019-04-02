@@ -41,7 +41,7 @@ public final class UserCredential implements KeyConcept {
 		return UID.of(this);
 	}
 
-	@Field(domain = "DO_CODE", type = "ID", required = true, label = "Id")
+	@Field(domain = "DoCode", type = "ID", required = true, label = "Id")
 	public String getUcrId() {
 		return ucrId;
 	}
@@ -50,7 +50,7 @@ public final class UserCredential implements KeyConcept {
 		this.ucrId = ucrId;
 	}
 
-	@Field(domain = "DO_LABEL", required = true, label = "login")
+	@Field(domain = "DoLabel", required = true, label = "login")
 	public String getLogin() {
 		return login;
 	}
@@ -59,7 +59,7 @@ public final class UserCredential implements KeyConcept {
 		this.login = login;
 	}
 
-	@Field(domain = "DO_LABEL", required = true, label = "password")
+	@Field(domain = "DoLabel", required = true, label = "password")
 	public String getPassword() {
 		return password;
 	}
@@ -68,7 +68,7 @@ public final class UserCredential implements KeyConcept {
 		this.password = password;
 	}
 
-	@Field(domain = "DO_LABEL", required = true, label = "mail")
+	@Field(domain = "DoLabel", required = true, label = "mail")
 	public String getMail() {
 		return mail;
 	}

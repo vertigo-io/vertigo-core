@@ -172,6 +172,25 @@ public final class StringUtil {
 	 * @return Passage en constante d'une chaîne de caractères (Fonction inverse de caseTransform)
 	 */
 	public static String camelToConstCase(final String str) {
+		return camelToConstCase(str, false);
+	}
+
+	/**
+	 * Les chiffres sont assimilés à des lettres en majuscules
+	 * XxxYyyZzz ou xxxYyyZzz -> xxx_yyy_zzz
+	 * XxxYZzz ou xxxYZzz -> xxx_y_zzz
+	 * Xxx123 -->xxx_123
+	 * XxxYzw123 --> (interdit)
+	 * Xxx123Y --> xxx_123_y.
+	 * Xxx123y --> xxx_123y.
+	 * @param str la chaine de caratéres sur laquelle s'appliquent les transformation
+	 * @return Passage en constante d'une chaîne de caractères (Fonction inverse de caseTransform)
+	 */
+	public static String camelToSnakeCase(final String str) {
+		return camelToConstCase(str, true);
+	}
+
+	private static String camelToConstCase(final String str, final boolean lowerCase) {
 		Assertion.checkNotNull(str);
 		Assertion.checkArgument(str.length() > 0, "Chaine à modifier invalide");
 		//-----
@@ -194,7 +213,7 @@ public final class StringUtil {
 			} else {
 				isDigit = false;
 			}
-			result.append(Character.toUpperCase(c));
+			result.append(lowerCase ? Character.toLowerCase(c) : Character.toUpperCase(c));
 		}
 		return result.toString();
 	}

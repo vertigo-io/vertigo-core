@@ -46,7 +46,7 @@ public final class MotorType implements DtStaticMasterData {
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return String mtyCd <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_STRING", type = "ID", required = true, label = "id")
+	@Field(domain = "DoString", type = "ID", required = true, label = "id")
 	public String getMtyCd() {
 		return mtyCd;
 	}
@@ -65,7 +65,7 @@ public final class MotorType implements DtStaticMasterData {
 	 * Récupère la valeur de la propriété 'Label'.
 	 * @return String label <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_FULL_TEXT", required = true, label = "Label")
+	@Field(domain = "DoFullText", required = true, label = "Label")
 	public String getLabel() {
 		return label;
 	}

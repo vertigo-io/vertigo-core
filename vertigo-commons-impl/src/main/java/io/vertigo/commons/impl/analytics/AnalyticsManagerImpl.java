@@ -123,7 +123,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 	/**
 	 * Daemon to retrieve healthChecks and add them to the connectors
 	 */
-	@DaemonScheduled(name = "DMN_ANALYTICS_HEALTH", periodInSeconds = 60 * 60) //every hour
+	@DaemonScheduled(name = "DmnAnalyticsHealth", periodInSeconds = 60 * 60) //every hour
 	public void sendHealthChecks() {
 		if (enabled) {
 			final List<HealthCheck> healthChecks = getHealthChecks();
@@ -147,7 +147,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 	/**
 	 * Daemon to retrieve metrics and add them to the connectors
 	 */
-	@DaemonScheduled(name = "DMN_ANALYTICS_METRIC", periodInSeconds = 60 * 60) //every hour
+	@DaemonScheduled(name = "DmnAnalyticsMetric", periodInSeconds = 60 * 60) //every hour
 	public void sendMetrics() {
 		if (enabled) {
 			final List<Metric> metrics = getMetrics();

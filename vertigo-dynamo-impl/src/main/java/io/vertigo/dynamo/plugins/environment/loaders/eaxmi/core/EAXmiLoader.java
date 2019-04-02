@@ -117,6 +117,7 @@ public final class EAXmiLoader extends AbstractXmlLoader {
 		final String code = obj.getName();
 		Assertion.checkArgument(CODE_PATTERN.matcher(code).matches(), "Code {0} must use a simple charset a-z A-Z 0-9 or _", code);
 		final String fieldName = constFieldNameInSource ? StringUtil.constToLowerCamelCase(code.toUpperCase(Locale.ENGLISH)) : code;
+		final String domainName = constFieldNameInSource ? StringUtil.constToUpperCamelCase(obj.getDomain().toUpperCase(Locale.ENGLISH)) : obj.getDomain();
 		final String label = obj.getLabel();
 		final boolean persistent = true;
 
@@ -129,7 +130,7 @@ public final class EAXmiLoader extends AbstractXmlLoader {
 		}
 
 		// L'information de persistence ne peut pas être déduite du Xmi, tous les champs sont déclarés persistent de facto
-		return new XmlAttribute(fieldName, label, persistent, notNull, obj.getDomain());
+		return new XmlAttribute(fieldName, label, persistent, notNull, domainName);
 	}
 
 	/**

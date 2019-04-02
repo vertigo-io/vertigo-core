@@ -50,7 +50,7 @@ public final class Item implements KeyConcept {
 		return UID.of(this);
 	}
 
-	@Field(domain = "DO_IDENTIFIANT", type = "ID", required = true, label = "identifiant de la voiture")
+	@Field(domain = "DoIdentifiant", type = "ID", required = true, label = "identifiant de la voiture")
 	public final Long getId() {
 		return id;
 	}
@@ -59,7 +59,7 @@ public final class Item implements KeyConcept {
 		this.id = id;
 	}
 
-	@Field(domain = "DO_KEYWORD", required = true, label = "Constructeur")
+	@Field(domain = "DoKeyword", required = true, label = "Constructeur")
 	public final String getManufacturer() {
 		return manufacturer;
 	}
@@ -68,7 +68,7 @@ public final class Item implements KeyConcept {
 		this.manufacturer = manufacturer;
 	}
 
-	@Field(domain = "DO_STRING", required = true, label = "Modéle")
+	@Field(domain = "DoString", required = true, label = "Modéle")
 	public final String getModel() {
 		return model;
 	}
@@ -77,7 +77,7 @@ public final class Item implements KeyConcept {
 		this.model = model;
 	}
 
-	@Field(domain = "DO_FULL_TEXT", required = true, label = "Descriptif")
+	@Field(domain = "DoFullText", required = true, label = "Descriptif")
 	public final String getDescription() {
 		return description;
 	}
@@ -86,7 +86,7 @@ public final class Item implements KeyConcept {
 		this.description = description;
 	}
 
-	@Field(domain = "DO_INTEGER", required = true, label = "Année")
+	@Field(domain = "DoInteger", required = true, label = "Année")
 	public final Integer getYear() {
 		return year;
 	}
@@ -95,7 +95,7 @@ public final class Item implements KeyConcept {
 		this.year = year;
 	}
 
-	@Field(domain = "DO_INTEGER", required = true, label = "Kilométrage")
+	@Field(domain = "DoInteger", required = true, label = "Kilométrage")
 	public final Integer getKilo() {
 		return kilo;
 	}
@@ -104,7 +104,7 @@ public final class Item implements KeyConcept {
 		this.kilo = kilo;
 	}
 
-	@Field(domain = "DO_INTEGER", required = true, label = "Prix")
+	@Field(domain = "DoInteger", required = true, label = "Prix")
 	public final Integer getPrice() {
 		return price;
 	}
@@ -113,7 +113,7 @@ public final class Item implements KeyConcept {
 		this.price = price;
 	}
 
-	@Field(domain = "DO_CONSO", required = true, label = "Consomation")
+	@Field(domain = "DoConso", required = true, label = "Consomation")
 	public java.math.BigDecimal getConsommation() {
 		return consommation;
 	}
@@ -122,7 +122,7 @@ public final class Item implements KeyConcept {
 		this.consommation = consommation;
 	}
 
-	@Field(domain = "DO_KEYWORD", required = true, label = "Type de moteur")
+	@Field(domain = "DoKeyword", required = true, label = "Type de moteur")
 	public final String getMotorType() {
 		return motorType;
 	}
@@ -131,7 +131,7 @@ public final class Item implements KeyConcept {
 		this.motorType = motorType;
 	}
 
-	@Field(domain = "DO_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Famille")
+	@Field(domain = "DoIdentifiant", type = "FOREIGN_KEY", required = true, label = "Famille")
 	public final Long getFamId() {
 		return famId;
 	}
@@ -140,7 +140,7 @@ public final class Item implements KeyConcept {
 		this.famId = famId;
 	}
 
-	@Field(domain = "DO_IDENTIFIANT", label = "OptionalNumber")
+	@Field(domain = "DoIdentifiant", label = "OptionalNumber")
 	public final Long getOptionalNumber() {
 		return optionalNumber;
 	}
@@ -149,7 +149,7 @@ public final class Item implements KeyConcept {
 		this.optionalNumber = optionalNumber;
 	}
 
-	@Field(domain = "DO_KEYWORD", label = "OptionalString")
+	@Field(domain = "DoKeyword", label = "OptionalString")
 	public final String getOptionalString() {
 		return optionalString;
 	}
@@ -158,7 +158,7 @@ public final class Item implements KeyConcept {
 		this.optionalString = optionalString;
 	}
 
-	@Field(domain = "DO_DATE_TIME", label = "LastModified")
+	@Field(domain = "DoDateTime", label = "LastModified")
 	public final Instant getLastModified() {
 		return lastModified;
 	}
@@ -172,7 +172,7 @@ public final class Item implements KeyConcept {
 		throw new VSystemException("Can't use index copyTo field");
 	}*/
 
-	@Field(domain = "DO_FULL_TEXT", type = "COMPUTED", persistent = false, label = "index all")
+	@Field(domain = "DoFullText", type = "COMPUTED", persistent = false, label = "index all")
 	public String getAllText() {
 		throw new VSystemException("Can't use index copyTo field");
 	}

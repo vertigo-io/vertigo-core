@@ -22,9 +22,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
@@ -57,7 +57,7 @@ public final class EAXmiTestParserIdentifiers extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testIdentifiersVsPrimaryKey() {
-		final DtDefinition loginDefinition = getDtDefinition("DT_LOGIN");
+		final DtDefinition loginDefinition = getDtDefinition("DtLogin");
 		Assertions.assertTrue(loginDefinition.getIdField().isPresent());
 	}
 }

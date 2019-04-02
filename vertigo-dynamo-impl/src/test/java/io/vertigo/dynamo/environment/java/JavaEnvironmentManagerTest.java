@@ -59,14 +59,14 @@ public final class JavaEnvironmentManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testDefaultFormatter() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final FormatterDefinition formatter = definitionSpace.resolve("FMT_DEFAULT", FormatterDefinition.class);
+		final FormatterDefinition formatter = definitionSpace.resolve("FmtDefault", FormatterDefinition.class);
 		Assertions.assertEquals(FormatterDefault.class.getName(), formatter.getFormatterClassName());
 	}
 
 	@Test
 	public void testDomain() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final io.vertigo.dynamo.domain.metamodel.Domain domain = definitionSpace.resolve("DO_ID", Domain.class);
+		final io.vertigo.dynamo.domain.metamodel.Domain domain = definitionSpace.resolve("DoId", Domain.class);
 		Assertions.assertEquals(DataType.Long, domain.getDataType());
 		Assertions.assertEquals(FormatterDefault.class.getName(), domain.getFormatterClassName());
 	}
@@ -74,7 +74,7 @@ public final class JavaEnvironmentManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testCommand() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final DtDefinition dtDefinition = definitionSpace.resolve("DT_COMMAND", DtDefinition.class);
+		final DtDefinition dtDefinition = definitionSpace.resolve("DtCommand", DtDefinition.class);
 		Assertions.assertTrue(dtDefinition.isPersistent());
 		Assertions.assertEquals("io.vertigo.dynamo.environment.java.data.domain.Command", dtDefinition.getClassCanonicalName());
 		Assertions.assertEquals("io.vertigo.dynamo.environment.java.data.domain", dtDefinition.getPackageName());
@@ -84,7 +84,7 @@ public final class JavaEnvironmentManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testCityFragment() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final DtDefinition dtDefinition = definitionSpace.resolve("DT_CITY_FRAGMENT", DtDefinition.class);
+		final DtDefinition dtDefinition = definitionSpace.resolve("DtCityFragment", DtDefinition.class);
 		Assertions.assertFalse(dtDefinition.isPersistent());
 		Assertions.assertTrue(dtDefinition.getFragment().isPresent());
 		Assertions.assertTrue("City".equals(dtDefinition.getFragment().get().getClassSimpleName()));

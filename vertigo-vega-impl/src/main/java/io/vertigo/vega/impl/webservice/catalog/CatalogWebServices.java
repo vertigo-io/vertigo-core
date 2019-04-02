@@ -22,6 +22,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import io.vertigo.app.Home;
@@ -42,7 +44,8 @@ public final class CatalogWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	@GET("/catalog")
 	public List<String> publishCatalog() {
-		final Collection<WebServiceDefinition> webServiceDefinitions = Home.getApp().getDefinitionSpace().getAll(WebServiceDefinition.class);
+		final List<WebServiceDefinition> webServiceDefinitions = new ArrayList<>(Home.getApp().getDefinitionSpace().getAll(WebServiceDefinition.class));
+		Collections.sort(webServiceDefinitions, Comparator.comparing(WebServiceDefinition::getSortPath));
 		return publishCatalog(webServiceDefinitions);
 	}
 

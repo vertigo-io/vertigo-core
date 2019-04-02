@@ -31,19 +31,19 @@ import io.vertigo.lang.Assertion;
 public final class Account implements Entity {
 	private static final long serialVersionUID = 7509030642946579907L;
 
-	@Field(type = "ID", domain = "DO_X_ACCOUNT_ID", required = true, label = "id")
+	@Field(type = "ID", domain = "DoXAccountId", required = true, label = "id")
 	private final String id;
 
-	@Field(domain = "DO_X_ACCOUNT_NAME", label = "displayName")
+	@Field(domain = "DoXAccountName", label = "displayName")
 	private final String displayName;
 
-	@Field(domain = "DO_X_ACCOUNT_EMAIL", label = "email")
+	@Field(domain = "DoXAccountEmail", label = "email")
 	private final String email;
 
-	@Field(domain = "DO_X_ACCOUNT_PHOTO", label = "photo")
+	@Field(domain = "DoXAccountPhoto", label = "photo")
 	private final String photo;
 
-	@Field(domain = "DO_X_ACCOUNT_AUTH_TOKEN", label = "authToken")
+	@Field(domain = "DoXAccountAuthToken", label = "authToken")
 	private final String authToken;
 
 	Account(final String id, final String displayName, final String email, final String photo, final String authToken) {

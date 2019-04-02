@@ -30,18 +30,18 @@ import io.vertigo.dynamo.domain.stereotype.Field;
 public final class ContactView implements DtObject {
 	private static final long serialVersionUID = 2074906343392206381L;
 
-	@Field(domain = "DO_CODE", label = "Honorific title")
+	@Field(domain = "DoCode", label = "Honorific title")
 	private String honorificCode;
 	//mandatory
-	@Field(domain = "DO_TEXTE_50", required = true, label = "Name")
+	@Field(domain = "DoTexte50", required = true, label = "Name")
 	private String name;
-	@Field(domain = "DO_TEXTE_50", label = "Firstname")
+	@Field(domain = "DoTexte50", label = "Firstname")
 	private String firstName;
-	@Field(domain = "DO_LOCAL_DATE", label = "Birthday")
+	@Field(domain = "DoLocalDate", label = "Birthday")
 	private LocalDate birthday;
-	@Field(domain = "DO_EMAIL", label = "Email")
+	@Field(domain = "DoEmail", label = "Email")
 	private String email;
-	@Field(domain = "DO_DT_ADDRESS_DTC", label = "Addresses connues", persistent = false)
+	@Field(domain = "DoDtAddressDtc", label = "Addresses connues", persistent = false)
 	private DtList<Address> addresses;
 
 	private List<String> tels;

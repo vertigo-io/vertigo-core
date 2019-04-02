@@ -27,10 +27,10 @@ public final class SmartItem implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "id")
+	@Field(domain = "DoId", type = "ID", required = true, label = "id")
 	private Long id;
 
-	@Field(domain = "DO_TEXT", label = "label")
+	@Field(domain = "DoText", label = "label")
 	private String label;
 
 	/** {@inheritDoc} */

@@ -57,9 +57,9 @@ public class LoginSecuredWebServices implements WebServices {
 		final UserSession userSession = securityManager.getCurrentUserSession().get();
 		userSession.authenticate();
 
-		final Authorization securedUser = getAuthorization("ATZ_SECURED_USER");
-		final Authorization contactWrite = getAuthorization("ATZ_CONTACT$WRITE");
-		final Authorization contactDelete = getAuthorization("ATZ_CONTACT$DELETE");
+		final Authorization securedUser = getAuthorization("AtzSecuredUser");
+		final Authorization contactWrite = getAuthorization("AtzContact$write");
+		final Authorization contactDelete = getAuthorization("AtzContact$delete");
 		authorizationManager.obtainUserAuthorizations()
 				.withSecurityKeys("name", "Fournier")
 				.withSecurityKeys("honorificCode", "MR_")

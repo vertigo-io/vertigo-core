@@ -30,18 +30,18 @@ import io.vertigo.dynamo.domain.stereotype.Field;
 public final class Contact implements Entity {
 	private static final long serialVersionUID = 2074906343392206381L;
 
-	@Field(domain = "DO_LONG", type = "ID", required = true, label = "Contact Id")
+	@Field(domain = "DoLong", type = "ID", required = true, label = "Contact Id")
 	private Long conId;
-	@Field(domain = "DO_STRING", label = "Honorific title")
+	@Field(domain = "DoString", label = "Honorific title")
 	private String honorificCode;
 	//mandatory
-	@Field(domain = "DO_STRING", required = true, label = "Name")
+	@Field(domain = "DoString", required = true, label = "Name")
 	private String name;
-	@Field(domain = "DO_STRING", label = "Firstname")
+	@Field(domain = "DoString", label = "Firstname")
 	private String firstName;
-	@Field(domain = "DO_DATE", label = "Birthday")
+	@Field(domain = "DoDate", label = "Birthday")
 	private Date birthday;
-	@Field(domain = "DO_STRING", label = "Email")
+	@Field(domain = "DoString", label = "Email")
 	private String email;
 
 	private List<String> tels;

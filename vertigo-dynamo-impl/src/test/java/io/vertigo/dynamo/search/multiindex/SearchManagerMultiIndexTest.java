@@ -24,9 +24,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.param.Param;
@@ -49,8 +49,8 @@ import io.vertigo.dynamo.search.model.SearchQuery;
  */
 public class SearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 	//Index
-	private static final String IDX_DYNA_ITEM = "IDX_DYNA_ITEM";
-	private static final String IDX_ITEM = "IDX_ITEM";
+	private static final String IDX_DYNA_ITEM = "IdxDynaItem";
+	private static final String IDX_ITEM = "IdxItem";
 
 	/** Manager de recherche. */
 	@Inject
@@ -72,7 +72,7 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 						.withESEmbedded(
 								Param.of("home", "io/vertigo/dynamo/search/indexconfig"),
 								Param.of("config.file", "io/vertigo/dynamo/search/indexconfig/elasticsearch.yml"),
-								Param.of("envIndex", "TU_TEST_"),
+								Param.of("envIndex", "TuTest"),
 								Param.of("rowsPerQuery", "50"))
 						.build())
 				.addModule(ModuleConfig.builder("myApp")

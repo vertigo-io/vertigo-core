@@ -95,17 +95,17 @@ public final class OracleSqlStoreManagerTest extends AbstractSqlStoreManagerTest
 		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
 		//-----
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final Domain doCar = definitionSpace.resolve("DO_DT_CAR_DTO", Domain.class);
+		final Domain doCar = definitionSpace.resolve("DoDtCarDto", Domain.class);
 
-		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_INSERT_CAR")
+		final TaskDefinition taskDefinition = TaskDefinition.builder("TkInsertCar")
 				.withEngine(TaskEngineProc.class)
 				.withRequest("insert into CAR (ID, FAM_ID,MAKE, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MOTOR_TYPE) values "
-						+ "(SEQ_CAR.nextval, #DTO_CAR.FAM_ID#, #DTO_CAR.MAKE#, #DTO_CAR.MODEL#, #DTO_CAR.DESCRIPTION#, #DTO_CAR.YEAR#, #DTO_CAR.KILO#, #DTO_CAR.PRICE#, #DTO_CAR.MOTOR_TYPE#)")
-				.addInRequired("DTO_CAR", doCar)
+						+ "(SEQ_CAR.nextval, #dtoCar.famId#, #dtoCar.make#, #dtoCar.model#, #dtoCar.description#, #dtoCar.year#, #dtoCar.kilo#, #dtoCar.price#, #dtoCar.motorType#)")
+				.addInRequired("dtoCar", doCar)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
-				.addValue("DTO_CAR", car)
+				.addValue("dtoCar", car)
 				.build();
 		final TaskResult taskResult = taskManager
 				.execute(task);

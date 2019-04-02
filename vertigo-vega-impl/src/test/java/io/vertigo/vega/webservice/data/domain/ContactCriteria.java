@@ -28,13 +28,13 @@ public final class ContactCriteria implements DtObject {
 	private static final long serialVersionUID = 6839427455017031471L;
 
 	//mandatory
-	@Field(domain = "DO_TEXTE_50", label = "Name")
+	@Field(domain = "DoTexte50", label = "Name")
 	private String name;
-	@Field(domain = "DO_TEXTE_50", label = "Firstname")
+	@Field(domain = "DoTexte50", label = "Firstname")
 	private String firstName;
-	@Field(domain = "DO_LOCAL_DATE", label = "Birthday min")
+	@Field(domain = "DoLocalDate", label = "Birthday min")
 	private LocalDate birthdayMin;
-	@Field(domain = "DO_LOCAL_DATE", label = "Birthday max")
+	@Field(domain = "DoLocalDate", label = "Birthday max")
 	private LocalDate birthdayMax;
 
 	public String getName() {

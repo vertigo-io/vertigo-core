@@ -42,7 +42,7 @@ final class CreateTestDataBase {
 				transactionManager,
 				taskManager,
 				getCreateMainStoreRequests(),
-				"TK_INIT_MAIN",
+				"TkInitMain",
 				Optional.empty());
 	}
 

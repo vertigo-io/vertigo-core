@@ -30,7 +30,7 @@ import io.vertigo.util.ClassUtil;
  *
  * @author pchretien
  */
-@DefinitionPrefix("FMT")
+@DefinitionPrefix("Fmt")
 public final class FormatterDefinition implements Formatter, Definition {
 	/**
 	* Nom de la contrainte.

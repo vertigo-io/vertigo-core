@@ -30,11 +30,11 @@ public final class Movie2 implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "id of the movie")
+	@Field(domain = "DoId", type = "ID", required = true, label = "id of the movie")
 	private Long id;
-	@Field(domain = "DO_STRING", label = "title")
+	@Field(domain = "DoString", label = "title")
 	private String title;
-	@Field(domain = "DO_INTEGER", label = "year")
+	@Field(domain = "DoInteger", label = "year")
 	private Integer year;
 
 	public Long getId() {

@@ -104,7 +104,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	/**
 	 * Daemon to purge old files
 	 */
-	@DaemonScheduled(name = "DMN_PURGE_FILE_STORE_DAEMON_", periodInSeconds = 5 * 60)
+	@DaemonScheduled(name = "DmnPurgeFileStoreDaemon", periodInSeconds = 5 * 60)
 	public void deleteOldFiles() {
 		if (purgeDelayMinutesOpt.isPresent()) {
 			final File documentRootFile = new File(documentRoot);

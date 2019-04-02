@@ -28,22 +28,40 @@ public final class SecurityNames {
 	 * Enumération des Authorizations globales.
 	 */
 	public enum GlobalAuthorizations implements AuthorizationName {
-	ATZ_ADMUSR, ATZ_ADMPRO, ATZ_ADMAPP
+		AtzAdmusr, AtzAdmpro, AtzAdmapp
 	}
 
 	/**
 	 * Enumération des Authorizations globales.
 	 */
 	public enum RecordAuthorizations implements AuthorizationName {
-		ATZ_RECORD$READ, ATZ_RECORD$READ2, ATZ_RECORD$READ3, ATZ_RECORD$READ_HP, ATZ_RECORD$DELETE, ATZ_RECORD$NOTIFY, ATZ_RECORD$CREATE, ATZ_RECORD$WRITE, //
-		ATZ_RECORD$TEST, ATZ_RECORD$TEST2, ATZ_RECORD$TEST3
+		AtzRecord$read,
+		AtzRecord$read2,
+		AtzRecord$read3,
+		AtzRecord$readHp,
+		AtzRecord$delete,
+		AtzRecord$notify,
+		AtzRecord$create,
+		AtzRecord$write, //
+		AtzRecord$test,
+		AtzRecord$test2,
+		AtzRecord$test3
 	}
 
 	/**
 	 * Enumération des opérations de Dossier.
 	 */
 	public enum RecordOperations implements OperationName<Record> {
-		READ, READ2, READ3, READ_HP, WRITE, CREATE, DELETE, NOTIFY, //
-		TEST, TEST2, TEST3
+		read,
+		read2,
+		read3,
+		readHp,
+		write,
+		create,
+		delete,
+		notify, //
+		test,
+		test2,
+		test3
 	}
 }

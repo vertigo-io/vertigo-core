@@ -25,7 +25,7 @@ import io.vertigo.lang.Assertion;
  * Définition d'une association NN.
  * @author  jcassignol, pchretien
  */
-@DefinitionPrefix("ANN")
+@DefinitionPrefix("Ann")
 public final class AssociationNNDefinition extends AssociationDefinition {
 	private final String tableName;
 

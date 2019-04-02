@@ -22,11 +22,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.NodeConfig;
-import io.vertigo.app.config.NodeConfigBuilder;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.app.config.NodeConfigBuilder;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -56,7 +56,7 @@ public final class MultiResourcesEnvironmentManagerTest {
 				.build();
 
 		try (final AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
+			final Domain doString = app.getDefinitionSpace().resolve("DoString", Domain.class);
 			Assertions.assertNotNull(doString);
 		}
 	}
@@ -72,9 +72,9 @@ public final class MultiResourcesEnvironmentManagerTest {
 				.build();
 
 		try (final AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
+			final Domain doString = app.getDefinitionSpace().resolve("DoString", Domain.class);
 			Assertions.assertNotNull(doString);
-			final DtDefinition dtItem = app.getDefinitionSpace().resolve("DT_ITEM", DtDefinition.class);
+			final DtDefinition dtItem = app.getDefinitionSpace().resolve("DtItem", DtDefinition.class);
 			Assertions.assertNotNull(dtItem);
 		}
 	}
@@ -91,9 +91,9 @@ public final class MultiResourcesEnvironmentManagerTest {
 				.build();
 
 		try (final AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
+			final Domain doString = app.getDefinitionSpace().resolve("DoString", Domain.class);
 			Assertions.assertNotNull(doString);
-			final DtDefinition dtItem = app.getDefinitionSpace().resolve("DT_ITEM", DtDefinition.class);
+			final DtDefinition dtItem = app.getDefinitionSpace().resolve("DtItem", DtDefinition.class);
 			Assertions.assertNotNull(dtItem);
 		}
 	}

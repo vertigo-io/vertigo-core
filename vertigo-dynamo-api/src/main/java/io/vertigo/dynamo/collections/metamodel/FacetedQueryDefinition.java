@@ -37,7 +37,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-@DefinitionPrefix("QRY")
+@DefinitionPrefix("Qry")
 public final class FacetedQueryDefinition implements Definition {
 	/**
 	 * Nom de la définition.

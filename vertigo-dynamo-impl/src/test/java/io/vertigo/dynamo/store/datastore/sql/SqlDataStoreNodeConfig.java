@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo.store.datastore.sql;
 
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.param.Param;
@@ -63,7 +63,7 @@ public class SqlDataStoreNodeConfig {
 						.withStore()
 						.addPlugin(SqlDataStorePlugin.class)
 						.addPlugin(DbFileStorePlugin.class,
-								Param.of("storeDtName", "DT_VX_FILE_INFO"))
+								Param.of("storeDtName", "DtVxFileInfo"))
 						.build())
 				.addModule(ModuleConfig.builder("definition")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)

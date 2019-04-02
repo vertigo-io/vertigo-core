@@ -36,7 +36,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author  fconstantin, pchretien
  */
-@DefinitionPrefix("TK")
+@DefinitionPrefix("Tk")
 public final class TaskDefinition implements Definition {
 	/** the name of the definition. */
 	private final String name;

@@ -65,6 +65,7 @@ import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
+import io.vertigo.util.StringUtil;
 
 /**
  * Gestion de la connexion au serveur Solr de manière transactionnel.
@@ -107,14 +108,14 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final ResourceManager resourceManager) {
 		Assertion.checkArgNotEmpty(indexNameOrPrefix);
 		Assertion.checkNotNull(codecManager);
-		Assertion.when(indexNameIsPrefix).check(() -> indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix);
-		Assertion.when(!indexNameIsPrefix).check(() -> !indexNameOrPrefix.endsWith("_"), "When envIndex isn't declared as prefix, it can't ends with _ (current : {0})", indexNameOrPrefix);
+		//Assertion.when(indexNameIsPrefix).check(() -> indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix);
+		//Assertion.when(!indexNameIsPrefix).check(() -> !indexNameOrPrefix.endsWith("_"), "When envIndex isn't declared as prefix, it can't ends with _ (current : {0})", indexNameOrPrefix);
 		//-----
 		this.defaultMaxRows = defaultMaxRows;
 		defaultListState = DtListState.of(defaultMaxRows, 0);
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
 		//------
-		this.indexNameOrPrefix = indexNameOrPrefix.toLowerCase(Locale.ROOT).trim();
+		this.indexNameOrPrefix = indexNameOrPrefix;
 		this.indexNameIsPrefix = indexNameIsPrefix;
 		configFileUrl = resourceManager.resolve(configFile);
 	}
@@ -134,7 +135,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 			updateTypeMapping(indexDefinition, hasSortableNormalizer(myIndexName));
 			logMappings(myIndexName);
-			types.add(indexDefinition.getName().toLowerCase(Locale.ROOT));
+			types.add(indexDefinition.getName());
 		}
 
 		waitForYellowStatus();
@@ -156,7 +157,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	}
 
 	private String obtainIndexName(final SearchIndexDefinition indexDefinition) {
-		return indexNameIsPrefix ? indexNameOrPrefix + indexDefinition.getName().toLowerCase(Locale.ROOT).trim() : indexNameOrPrefix;
+		return StringUtil.camelToConstCase(indexNameIsPrefix ? indexNameOrPrefix + indexDefinition.getName() : indexNameOrPrefix).toLowerCase(Locale.ROOT);
 	}
 
 	private void createIndex(final String myIndexName) {
@@ -298,9 +299,9 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.checkArgument(indexSettingsValid,
 				"Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
 		Assertion.checkNotNull(indexDefinition);
-		Assertion.checkArgument(types.contains(indexDefinition.getName().toLowerCase(Locale.ROOT)), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
+		Assertion.checkArgument(types.contains(indexDefinition.getName()), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
 		//-----
-		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), indexDefinition.getName().toLowerCase(Locale.ROOT), esClient);
+		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), indexDefinition.getName(), esClient);
 	}
 
 	private static String obtainPkIndexDataType(final Domain domain) {
@@ -337,7 +338,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					.field("type", "binary")
 					.endObject();
 
-			typeMapping.startObject("doc_id")
+			typeMapping.startObject(ESDocumentCodec.DOC_ID)
 					.field("type", obtainPkIndexDataType(indexDefinition.getKeyConceptDtDefinition().getIdField().get().getDomain()))
 					.endObject();
 
@@ -371,7 +372,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final AcknowledgedResponse putMappingResponse = esClient.admin()
 					.indices()
 					.preparePutMapping(obtainIndexName(indexDefinition))
-					.setType(indexDefinition.getName().toLowerCase(Locale.ROOT))
+					.setType(indexDefinition.getName())
 					.setSource(typeMapping)
 					.get();
 			putMappingResponse.isAcknowledged();

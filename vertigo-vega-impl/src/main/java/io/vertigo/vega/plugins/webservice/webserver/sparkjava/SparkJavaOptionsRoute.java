@@ -47,7 +47,7 @@ public final class SparkJavaOptionsRoute implements Route {
 		this.handlerChain = handlerChain;
 		//we use a fake webServiceDefinition, to ensure no webservice was called on Options request
 		webServiceCors = WebServiceDefinition.builder(ClassUtil.findMethod(SparkJavaOptionsRoute.class, "unsupported"))
-				.with(Verb.GET, "/_OPTIONS_*")
+				.with(Verb.Get, "/_OPTIONS_*")
 				.withCorsProtected(true)
 				.build();
 	}

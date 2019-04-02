@@ -37,18 +37,19 @@ import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
  * Web service definition.
  * @author npiedeloup
  */
-@DefinitionPrefix("WS_")
+@DefinitionPrefix("Ws")
 public final class WebServiceDefinition implements Definition {
 
 	/**
 	 * HTTP Verb supported.
 	 */
 	public enum Verb {
-	GET, POST, PUT, PATCH, DELETE,
+		Get, Post, Put, Patch, Delete,
 	}
 
 	private final String name;
 	private final String path;
+	private final String sortPath;
 	private final Verb verb;
 	private final String acceptType;
 
@@ -78,6 +79,7 @@ public final class WebServiceDefinition implements Definition {
 			final String name,
 			final Verb verb,
 			final String path,
+			final String sortPath,
 			final String acceptType,
 			final Method method,
 			final boolean needSession,
@@ -97,6 +99,7 @@ public final class WebServiceDefinition implements Definition {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(verb);
 		Assertion.checkArgNotEmpty(path);
+		Assertion.checkArgNotEmpty(sortPath);
 		Assertion.checkArgNotEmpty(acceptType);
 		Assertion.checkNotNull(method);
 		Assertion.checkNotNull(includedFields);
@@ -115,6 +118,7 @@ public final class WebServiceDefinition implements Definition {
 		this.name = name;
 		this.verb = verb;
 		this.path = path;
+		this.sortPath = sortPath;
 		this.acceptType = acceptType;
 
 		this.method = method;
@@ -181,6 +185,13 @@ public final class WebServiceDefinition implements Definition {
 	 */
 	public String getPath() {
 		return path;
+	}
+
+	/**
+	 * @return sortPath
+	 */
+	public String getSortPath() {
+		return sortPath;
 	}
 
 	/**

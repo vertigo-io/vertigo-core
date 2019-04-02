@@ -27,7 +27,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  * Attention cette classe est générée automatiquement !
  * Objet de données City
  */
-@io.vertigo.dynamo.domain.stereotype.Fragment(fragmentOf = "DT_CITY")
+@io.vertigo.dynamo.domain.stereotype.Fragment(fragmentOf = "DtCity")
 public final class CityFragment implements Fragment<City> {
 
 	/** SerialVersionUID. */
@@ -48,7 +48,7 @@ public final class CityFragment implements Fragment<City> {
 	 * Récupère la valeur de la propriété 'CIT ID'.
 	 * @return Long citId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_IDENTITY", type = "FOREIGN_KEY", required = true, label = "CIT ID")
+	@Field(domain = "DoIdentity", type = "FOREIGN_KEY", required = true, label = "CIT ID")
 	public Long getCitId() {
 		return citId;
 	}
@@ -67,7 +67,7 @@ public final class CityFragment implements Fragment<City> {
 	 * Récupère la valeur de la propriété 'Label'.
 	 * @return String label <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_FULL_TEXT", required = true, label = "Label")
+	@Field(domain = "DoFullText", required = true, label = "Label")
 	public String getLabel() {
 		return label;
 	}
@@ -86,7 +86,7 @@ public final class CityFragment implements Fragment<City> {
 	 * Récupère la valeur de la propriété 'Postal code'.
 	 * @return String postalCode <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_KEYWORD", required = true, label = "Postal code")
+	@Field(domain = "DoKeyword", required = true, label = "Postal code")
 	public String getPostalCode() {
 		return postalCode;
 	}

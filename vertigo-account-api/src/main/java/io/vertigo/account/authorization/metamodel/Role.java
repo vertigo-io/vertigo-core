@@ -31,7 +31,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author prahmoune, npiedeloup
  */
-@DefinitionPrefix("R_")
+@DefinitionPrefix("R")
 public final class Role implements Definition {
 	private final String name;
 	private final String description;

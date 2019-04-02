@@ -66,7 +66,6 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
 	private static final String ASSOCIATION_SIMPLE_DEFINITION_PREFIX = DefinitionUtil.getPrefix(AssociationSimpleDefinition.class);
 	private static final String ASSOCIATION_NN_DEFINITION_PREFIX = DefinitionUtil.getPrefix(AssociationNNDefinition.class);
-	private static final char SEPARATOR = Definition.SEPARATOR;
 	private final Map<String, DtDefinitionBuilder> dtDefinitionBuilders = new HashMap<>();
 
 	@Override
@@ -372,8 +371,8 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 	 * @return Nom corrigé de l'association comprenant le préfix obligatoire.
 	 */
 	private static String fixAssociationName(final String prefix, final String name) {
-		if (!name.startsWith(prefix + SEPARATOR)) {
-			return prefix + SEPARATOR + name;
+		if (!name.startsWith(prefix)) {
+			return prefix + name;
 		}
 		return name;
 	}
@@ -467,7 +466,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 
 		final DslEntity metaDefinitionDomain = DomainGrammar.DOMAIN_ENTITY;
 
-		return DslDefinition.builder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain)
+		return DslDefinition.builder(DOMAIN_PREFIX + definitionName + "Dto", metaDefinitionDomain)
 				.withPackageName(packageName)
 				.addDefinitionLink("dataType", "DtObject")
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
@@ -483,7 +482,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 
 		//On fait la même chose avec DTC
 
-		return DslDefinition.builder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain)
+		return DslDefinition.builder(DOMAIN_PREFIX + definitionName + "Dtc", metaDefinitionDomain)
 				.withPackageName(packageName)
 				.addDefinitionLink("dataType", "DtList")
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT

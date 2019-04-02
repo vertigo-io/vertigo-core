@@ -1,13 +1,13 @@
 package io.vertigo.dynamo.database.data.domain
 
-create Domain DO_STRING {
+create Domain DoString {
 	dataType : String
 }
 
-create Domain DO_INTEGER {
+create Domain DoInteger {
 	dataType : Integer
 }
 
-create Domain DO_ID{
+create Domain DoId{
 	dataType : Long
 }

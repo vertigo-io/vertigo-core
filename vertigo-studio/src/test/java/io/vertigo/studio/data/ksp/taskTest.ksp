@@ -1,51 +1,51 @@
 package io.vertigo.studio.dao
 
-create Task TK_GET_FIRST_CAR {
+create Task TkGetFirstCar {
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
     request : "
 				select * from car
 				limit 1
 			"
-	attribute dtoCar {domain : DO_DT_CAR_DTO  required:"false" inOut :"out"}
+	attribute dtoCar {domain : DoDtCarDto  required:"false" inOut :"out"}
 }
 
 
 /*To test PAO*/
-create Task TK_PING {
+create Task TkPing {
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
     request : "
 				select 1
 			"
-	attribute result {domain : DO_INTEGER  required:"false" inOut :"out"}
+	attribute result {domain : DoInteger  required:"false" inOut :"out"}
 }
 
 
-create Task TK_ONE_PARAM_SELECT {
+create Task TkOneParamSelect {
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
     request : "
 				select 1 where 1 = #input#
 	
 			"
-	attribute input {domain : DO_INTEGER  required:"true" inOut :"in"}
-	attribute result {domain : DO_INTEGER  required:"true" inOut :"out"}
+	attribute input {domain : DoInteger  required:"true" inOut :"in"}
+	attribute result {domain : DoInteger  required:"true" inOut :"out"}
 }
 
-create Task TK_ONE_LIST_PARAM_SELECT {
+create Task TkOneListParamSelect {
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
     request : "
-				select 1 where 1 in  (#input.ROWNUM#)
+				select 1 where 1 in  (#input.rownum#)
 	
 			"
-	attribute input {domain : DO_INTEGERS  required:"true" inOut :"in"}
-	attribute result {domain : DO_INTEGER  required:"true" inOut :"out"}
+	attribute input {domain : DoIntegers  required:"true" inOut :"in"}
+	attribute result {domain : DoInteger  required:"true" inOut :"out"}
 }
 
 
-create Task TK_SELECT_CAR_BY_IDS {
+create Task TkSelectCarByIds {
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
     request : "
-				select * from car where id in (#input.ROWNUM.ID#)
+				select * from car where id in (#input.rownum.id#)
 			"
-	attribute input {domain : DO_DT_CAR_DTC  required:"true" inOut :"in"}		
-	attribute dtoCar {domain : DO_DT_CAR_DTC  required:"true" inOut :"out"}
+	attribute input {domain : DoDtCarDtc  required:"true" inOut :"in"}		
+	attribute dtoCar {domain : DoDtCarDtc  required:"true" inOut :"out"}
 }

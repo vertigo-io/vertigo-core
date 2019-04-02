@@ -35,7 +35,7 @@ import io.vertigo.core.component.aop.AspectAnnotation;
 public @interface Secured {
 
 	/**
-	 * Returns the security configuration attributes (e.g. ROLE_USER, ROLE_ADMIN).
+	 * Returns the security configuration attributes (e.g. RoleUser, RoleAdmin).
 	 *
 	 * @return String The secure method attribute
 	 */

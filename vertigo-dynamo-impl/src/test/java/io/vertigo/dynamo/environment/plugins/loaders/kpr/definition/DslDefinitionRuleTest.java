@@ -32,7 +32,7 @@ public class DslDefinitionRuleTest {
 	@Test
 	public void test1() throws PegNoMatchFoundException {
 		final DslDefinition dslDefinition = new DslDynamicDefinitionRule("create", dslDefinitionRepository.getGrammar())
-				.parse("create Formatter FMT_TEST { args : \"UPPER\" }", 0)
+				.parse("create Formatter FmtTest { args : \"UPPER\" }", 0)
 				.getValue();
 
 		Assertions.assertNotNull(dslDefinition);
@@ -47,7 +47,7 @@ public class DslDefinitionRuleTest {
 	@Test
 	public void test2() throws PegNoMatchFoundException {
 		final DslDefinition dslDefinition = new DslDynamicDefinitionRule("create", dslDefinitionRepository.getGrammar())
-				.parse("create Domain DO_CODE_POSTAL { dataType : String ,  formatter:FMT_DEFAULT, constraint : [ CK_CODE_POSTAL ]   } ", 0)
+				.parse("create Domain DoCodePostal { dataType : String ,  formatter:FmtDefault, constraint : [ CkCodePostal ]   } ", 0)
 				.getValue();
 		Assertions.assertNotNull(dslDefinition);
 	}
@@ -55,6 +55,6 @@ public class DslDefinitionRuleTest {
 	@Test
 	public void testTemplate() throws PegNoMatchFoundException {
 		new DslDynamicDefinitionRule("alter", dslDefinitionRepository.getGrammar())
-				.parse("alter Formatter FMT_DEFAULT {args : \"UPPER\"}", 0);
+				.parse("alter Formatter FmtDefault {args : \"UPPER\"}", 0);
 	}
 }

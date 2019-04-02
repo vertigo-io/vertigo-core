@@ -137,7 +137,7 @@ final class BrokerNNImpl implements BrokerNN {
 		final String sourceFieldName = nn.sourceField.getName();
 		final String sourceColName = StringUtil.camelToConstCase(sourceFieldName);
 
-		final String taskName = "TK_DELETE_" + nn.tableName;
+		final String taskName = "TkDelete" + StringUtil.constToUpperCamelCase(nn.tableName);
 		final String request = String.format("delete from %s where %s = #%s#", nn.tableName, sourceColName, sourceFieldName);
 
 		processNN(taskName, request, nn.dataSpace, nn.sourceField, nn.sourceValue, null, null);
@@ -154,7 +154,7 @@ final class BrokerNNImpl implements BrokerNN {
 		final String sourceColName = StringUtil.camelToConstCase(sourceFieldName);
 		final String targetFieldName = nn.targetField.getName();
 		final String targetColName = StringUtil.camelToConstCase(targetFieldName);
-		final String taskName = "TK_INSERT_" + nn.tableName;
+		final String taskName = "TkInsert" + StringUtil.constToUpperCamelCase(nn.tableName);
 
 		final String request = String.format("insert into %s (%s, %s) values (#%s#, #%s#)", nn.tableName, sourceColName, targetColName, sourceFieldName, targetFieldName);
 		final int sqlRowCount = processNN(taskName, request, nn.dataSpace, nn.sourceField, nn.sourceValue, nn.targetField, targetValue);
@@ -176,7 +176,7 @@ final class BrokerNNImpl implements BrokerNN {
 		final String sourceColName = StringUtil.camelToConstCase(sourceFieldName);
 		final String targetFieldName = nn.targetField.getName();
 		final String targetColName = StringUtil.camelToConstCase(targetFieldName);
-		final String taskName = "TK_DELETE_" + nn.tableName;
+		final String taskName = "TkDelete" + StringUtil.constToUpperCamelCase(nn.tableName);
 
 		final String request = String.format("delete from %s where %s = #%s# and %s = #%s#",
 				nn.tableName, sourceColName, sourceFieldName, targetColName, targetFieldName);

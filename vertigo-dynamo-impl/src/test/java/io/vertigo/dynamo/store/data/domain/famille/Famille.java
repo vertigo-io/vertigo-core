@@ -44,32 +44,32 @@ public final class Famille implements Entity {
 	private String libelle;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_FAM_CAR_FAMILLE",
+			name = "AFamCarFamille",
 			fkFieldName = "famId",
-			primaryDtDefinitionName = "DT_FAMILLE",
+			primaryDtDefinitionName = "DtFamille",
 			primaryIsNavigable = false,
 			primaryRole = "Famille",
 			primaryLabel = "Famille",
 			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DT_CAR",
+			foreignDtDefinitionName = "DtCar",
 			foreignIsNavigable = true,
 			foreignRole = "VoituresFamille",
 			foreignLabel = "Voitures de la famille",
 			foreignMultiplicity = "0..*")
-	private final ListVAccessor<Car> voituresFamilleAccessor = new ListVAccessor<>(this, "A_FAM_CAR_FAMILLE", "VoituresFamille");
+	private final ListVAccessor<Car> voituresFamilleAccessor = new ListVAccessor<>(this, "AFamCarFamille", "VoituresFamille");
 
 	@io.vertigo.dynamo.domain.stereotype.AssociationNN(
-			name = "ANN_FAM_CAR_LOCATION",
+			name = "AnnFamCarLocation",
 			tableName = "FAM_CAR_LOCATION",
-			dtDefinitionA = "DT_FAMILLE",
-			dtDefinitionB = "DT_CAR",
+			dtDefinitionA = "DtFamille",
+			dtDefinitionB = "DtCar",
 			navigabilityA = false,
 			navigabilityB = true,
 			roleA = "Famille",
 			roleB = "VoituresLocation",
 			labelA = "Famille",
 			labelB = "Voitures de location")
-	private final ListVAccessor<Car> voituresLocationAccessor = new ListVAccessor<>(this, "ANN_FAM_CAR_LOCATION", "VoituresLocation");
+	private final ListVAccessor<Car> voituresLocationAccessor = new ListVAccessor<>(this, "AnnFamCarLocation", "VoituresLocation");
 
 	/** {@inheritDoc} */
 	@Override
@@ -82,7 +82,7 @@ public final class Famille implements Entity {
 	 * Récupère la valeur de la propriété 'identifiant de la famille'.
 	 * @return Long famId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "identifiant de la famille")
+	@Field(domain = "DoId", type = "ID", required = true, label = "identifiant de la famille")
 	public Long getFamId() {
 		return famId;
 	}
@@ -101,7 +101,7 @@ public final class Famille implements Entity {
 	 * Récupère la valeur de la propriété 'Libelle'.
 	 * @return String libelle
 	 */
-	@Field(domain = "DO_STRING", label = "Libelle")
+	@Field(domain = "DoString", label = "Libelle")
 	public String getLibelle() {
 		return libelle;
 	}
@@ -120,7 +120,7 @@ public final class Famille implements Entity {
 	 * Récupère la valeur de la propriété calculée 'Libelle'.
 	 * @return String description
 	 */
-	@Field(domain = "DO_LIBELLE_LONG", type = "COMPUTED", persistent = false, label = "Libelle")
+	@Field(domain = "DoLibelleLong", type = "COMPUTED", persistent = false, label = "Libelle")
 	public String getDescription() {
 		final StringBuilder builder = new StringBuilder();
 		builder.append(getLibelle());

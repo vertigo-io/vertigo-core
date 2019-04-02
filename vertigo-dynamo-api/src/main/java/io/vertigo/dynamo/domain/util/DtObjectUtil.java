@@ -21,7 +21,6 @@ package io.vertigo.dynamo.domain.util;
 import java.util.stream.Collectors;
 
 import io.vertigo.app.Home;
-import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -35,7 +34,6 @@ import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
-import io.vertigo.util.StringUtil;
 
 /**
  * The DtObjectUtil class is a set of utils about the DtObject.
@@ -44,7 +42,6 @@ import io.vertigo.util.StringUtil;
  */
 public final class DtObjectUtil {
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
-	private static final char SEPARATOR = Definition.SEPARATOR;
 
 	private DtObjectUtil() {
 		//private constructor.
@@ -203,7 +200,7 @@ public final class DtObjectUtil {
 	public static DtDefinition findDtDefinition(final Class<? extends DtObject> dtObjectClass) {
 		Assertion.checkNotNull(dtObjectClass);
 		//-----
-		final String name = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(dtObjectClass.getSimpleName());
+		final String name = DT_DEFINITION_PREFIX + dtObjectClass.getSimpleName();
 		return Home.getApp().getDefinitionSpace().resolve(name, DtDefinition.class);
 	}
 }

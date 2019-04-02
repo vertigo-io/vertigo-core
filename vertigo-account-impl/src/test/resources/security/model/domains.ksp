@@ -3,7 +3,7 @@ package io.vertigo.account.security.model
 /**************************************************************************************************/
 /********************************* Formatters *****************************************************/
 /**************************************************************************************************/
-create Formatter FMT_DEFAULT{
+create Formatter FmtDefault{
 	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"
 }
 
@@ -11,11 +11,11 @@ create Formatter FMT_DEFAULT{
 /********************************* Constraints ****************************************************/
 /**************************************************************************************************/
 
-create Constraint CK_MAX_LENGTH_10 {
+create Constraint CkMaxLength10 {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
 	args :"10"
 }
-create Constraint CK_MAX_LENGTH_100 {
+create Constraint CkMaxLength100 {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
 	args :"100"
 }
@@ -23,28 +23,28 @@ create Constraint CK_MAX_LENGTH_100 {
 /********************************* Domains ********************************************************/
 /**************************************************************************************************/
 
-create Domain DO_MONTANT {
+create Domain DoMontant {
 	dataType : Double
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 	storeType : "NUMERIC"
 }
 
-create Domain DO_ID {
+create Domain DoId {
 	dataType : Long
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 	storeType : "NUMERIC"
 }
 
-create Domain DO_CODE {
+create Domain DoCode {
 	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_MAX_LENGTH_10]
+	formatter : FmtDefault
+	constraint : [CkMaxLength10]
 	storeType : "VARCHAR(10)"
 }
 
-create Domain DO_LABEL  {
+create Domain DoLabel  {
 	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_MAX_LENGTH_100]
+	formatter : FmtDefault
+	constraint : [CkMaxLength100]
 	storeType : "VARCHAR(100)"
 }

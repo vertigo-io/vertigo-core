@@ -221,7 +221,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 	}
 
 	private static Aggregation obtainAggregation(final SearchResponse queryResponse, final String name) {
-		final Filter filterAggregation = queryResponse.getAggregations().get(name + "_FILTER");
+		final Filter filterAggregation = queryResponse.getAggregations().get(name + "Filter");
 		if (filterAggregation != null) {
 			return filterAggregation.getAggregations().get(name);
 		}

@@ -30,10 +30,10 @@ public final class SuperHero implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "superHero ID")
+	@Field(domain = "DoId", type = "ID", required = true, label = "superHero ID")
 	private Long id;
 
-	@Field(domain = "DO_STRING", label = "name")
+	@Field(domain = "DoString", label = "name")
 	private String name;
 
 	/** {@inheritDoc} */

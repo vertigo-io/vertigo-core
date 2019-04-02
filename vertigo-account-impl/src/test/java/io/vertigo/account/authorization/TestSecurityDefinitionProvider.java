@@ -32,10 +32,10 @@ public final class TestSecurityDefinitionProvider implements SimpleDefinitionPro
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		return new ListBuilder<Definition>()
-				.add(createRole("R_ADMIN"))
-				.add(createRole("R_USER"))
-				.add(createRole("R_MANAGER"))
-				.add(createRole("R_SECRETARY"))
+				.add(createRole("RAdmin"))
+				.add(createRole("RUser"))
+				.add(createRole("RManager"))
+				.add(createRole("RSecretary"))
 				.build();
 	}
 

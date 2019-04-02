@@ -1,30 +1,30 @@
 package io.vertigo.dynamock.domain
 
-create Formatter FMT_DEFAULT{
+create Formatter FmtDefault{
 	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"
 }
 
-create Domain DO_ID{
+create Domain DoId{
 	dataType : Long
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 }
 
-create Domain DO_KEYWORD{
+create Domain DoKeyword{
 	dataType : String
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 }
 
-create Domain DO_FULL_TEXT{
+create Domain DoFullText{
 	dataType : String
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 }
 
-create Domain DO_STRING {
+create Domain DoDtring {
 	dataType : String
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 }
 
-create Domain DO_LONG {
+create Domain DoLong {
 	dataType : Long
 }
 

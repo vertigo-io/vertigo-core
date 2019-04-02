@@ -37,7 +37,6 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * Model used by FreeMarker.
@@ -108,14 +107,6 @@ public final class DtDefinitionModel {
 	 */
 	public String getClassSimpleName() {
 		return dtDefinition.getClassSimpleName();
-	}
-
-	/**
-	 * Retourne le nom camelCase de la classe.
-	 * @return Simple Nom (i.e. sans le package) de la definition du DtObject
-	 */
-	public String getClassSimpleNameCamelCase() {
-		return StringUtil.constToLowerCamelCase(dtDefinition.getLocalName());
 	}
 
 	/**

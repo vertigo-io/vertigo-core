@@ -36,7 +36,7 @@ import io.vertigo.core.component.aop.AspectAnnotation;
 public @interface SecuredOperation {
 
 	/**
-	 * Returns the security configuration attributes (e.g. Operation READ, Operation WRITE).
+	 * Returns the security configuration attributes (e.g. Operation read, Operation write).
 	 *
 	 * @return String The secure method attribute
 	 */

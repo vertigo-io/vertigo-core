@@ -32,7 +32,7 @@ import io.vertigo.lang.Assertion;
  * 			- a way to test that provides a HealthMeasure
  * @author mlaroche, pchretien
  */
-@DefinitionPrefix("HCHK")
+@DefinitionPrefix("Hchk")
 public final class HealthCheckDefinition implements Definition {
 
 	private final String definitionName;
