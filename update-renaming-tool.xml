@@ -53,6 +53,10 @@
 			 			result = result.replace(/(\W(?:facets|constraint|from))(\s*:\s*)([\[\]\s,A-Z0-9_]+\W*)/g, function(match, attr, p1, p2, index) {
 			 			   return attr+p1+upperCamelCase(p2);
 			 			});
+			 			//replace lower request attributes
+			 			result = result.replace(/\#([A-Z0-9_]+\#)/g, function(match, p1, index) {
+			 			   return "#"+lowerCamelCase(p1)+"#";
+			 			});
 					    self.setToken(result);
 					</scriptfilter>
 				</tokenfilter>
