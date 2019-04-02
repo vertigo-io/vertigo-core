@@ -10,9 +10,45 @@
 	<property name="src.encoding" value="utf8" />
 	<property name="src.path" value="." />
 	
+	<target name="CONST Java Entity to CamelCase java" description="Replace old java definitions to CamelCase definition new in vertigo 2.0">
+			<copy todir="${src.path}\generated-java" encoding="${src.encoding}" overwrite="true">
+				<fileset dir="${src.path}">
+					<include name="**/*.java" />
+				</fileset>
+				<filterchain>
+				 	<tokenfilter>
+				 		<scriptfilter language="javascript">
+							function upperCamelCase(str) {
+							  return str.replace(/((?:\W|^)\w)|_+(\w)|\w/g, function(match, p1, p2, index) {
+							   if (p1) { return p1.toUpperCase();} 
+							   if (p2) { return p2.toUpperCase();} 
+							   return match.toLowerCase();
+							  });
+							}
+				 			function lowerCamelCase(str) {
+							  return str.replace(/((?:\W|^)\w)|_+(\w)|\w/g, function(match, p1, p2, index) {
+							   if (p1) { return p1.toLowerCase();} 
+							   if (p2) { return p2.toUpperCase();} 
+							   return match.toLowerCase();
+							  });
+							}
+				 			//replace domain
+							var result = self.getToken().replace(/((?:domain|name|dtDefinitionA|dtDefinitionB|primaryDtDefinitionName|foreignDtDefinitionName) = ")([A-Z0-9_]+)"/g, function(match, p1, p2, index) {
+							   return p1+upperCamelCase(p2)+"\"";
+							});
+				 			//replace in methods
+				 			result = result.replace(/((?:createDtListURIForNNAssociation|createUID)\(this, ")([A-Z0-9_]+)"/g, function(match, p1, p2, after, index) {
+							   return p1+lowerCamelCase(p2)+"\"";
+							});
+						    self.setToken(result);
+						</scriptfilter>
+					</tokenfilter>
+				</filterchain>
+			</copy> 
+		</target>
 		
 	<target name="CONST KSP to CamelCase ksp" description="Replace old ksp definitions to CamelCase definition new in vertigo 2.0">
-		<copy todir="${src.path}\generated-ksp" encoding="${src.encoding}">
+		<copy todir="${src.path}\generated-ksp" encoding="${src.encoding}" overwrite="true">
 			<fileset dir="${src.path}">
 				<include name="**/*.ksp" />
 			</fileset>
