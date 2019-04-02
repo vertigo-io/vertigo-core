@@ -53,7 +53,6 @@ import io.vertigo.util.StringUtil;
  */
 public abstract class AbstractXmlLoader implements Loader {
 	private static final int MAX_COLUMN_LENGTH = 30;
-	private static final Locale TO_UPPER_CASE_LOCALE = Locale.FRANCE;
 	private static final Logger LOGGER = LogManager.getLogger(AbstractXmlLoader.class);
 
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
