@@ -121,11 +121,12 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	 * @return SQL query
 	 */
 	protected String getNextIdsSqlQuery(final String tableName, final String pkFieldName) {
+		final String pkColumnName = StringUtil.camelToConstCase(pkFieldName);
 		final StringBuilder request = new StringBuilder()
-				.append(" select ").append(pkFieldName).append(" from ")
+				.append(" select ").append(pkColumnName).append(" from ")
 				.append(tableName)
 				.append(" where ")
-				.append(pkFieldName)
+				.append(pkColumnName)
 				.append(" > #")
 				.append(pkFieldName)
 				.append('#');
@@ -134,7 +135,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 		if (!sqlQueryFilter.isEmpty()) {
 			request.append(" and (").append(sqlQueryFilter).append(')');
 		}
-		request.append(" order by ").append(pkFieldName).append(" ASC");
+		request.append(" order by ").append(pkColumnName).append(" ASC");
 		appendMaxRows(request, SEARCH_CHUNK_SIZE);
 		return request.toString();
 	}
