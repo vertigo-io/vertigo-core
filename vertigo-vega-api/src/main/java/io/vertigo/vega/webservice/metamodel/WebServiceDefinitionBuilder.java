@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import io.vertigo.dynamo.domain.model.DtListState;
@@ -72,11 +73,10 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	@Override
 	public WebServiceDefinition build() {
 		final String usedPath = myPathPrefix != null ? myPathPrefix + myPath : myPath;
-		final String normalizedPath = normalizePath(usedPath);
 		final String sortPath = sortPath(myVerb, usedPath);
 		final String acceptedType = computeAcceptedType();
 		return new WebServiceDefinition(
-				"Ws" + myVerb + normalizedPath,
+				"Ws" + myVerb + normalizePath(usedPath),
 				myVerb,
 				usedPath,
 				sortPath,
@@ -99,33 +99,25 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	}
 
 	private static String normalizePath(final String servicePath) {
-		//On calcule la taille du path sans le nom des paramètres, c'est util pour trier les routes dans l'ordre d'interception.
-		final String argsRemovedPath = servicePath.replaceAll("\\{.*?\\}", "_");//.*? : reluctant quantifier;
-		final int argsRemovedPathSize = argsRemovedPath.length();
+		final String argsRemovedPath = servicePath
+				.replaceAll("_|\\(\\)", "") //remove unsignificative path elements (can't have different routes by _ or ()
+				.replaceAll("\\{.*?\\}|\\*", "_");//.*? : reluctant quantifier; remove params which works like wildcards
 
 		//On rend le path plus lisible et compatible DefinitionName
-		final String normalizedConstString = argsRemovedPath.replaceAll("[//\\*\\(\\)]", "_")
+		final String normalizedConstString = argsRemovedPath.toUpperCase(Locale.ROOT)
+				.replaceAll("/", "_")
 				.replaceAll("([0-9]+)", "_$1")
 				.replaceAll("_+", "_");
 		final String normalizedString = StringUtil.constToUpperCamelCase(normalizedConstString);
 		final String hashcodeAsHex = "$x" + Integer.toHexString(argsRemovedPath.hashCode());
 		//On limite sa taille pour avec un nom de définition acceptable
-		return normalizedString.substring(0, Math.min(NAME_MAX_SIZE, normalizedString.length())) + argsRemovedPathSize + hashcodeAsHex;
+		return normalizedString.substring(0, Math.min(NAME_MAX_SIZE, normalizedString.length())) + hashcodeAsHex;
 	}
 
 	private static String sortPath(final Verb myVerb, final String servicePath) {
-		//final String argsRemovedPath = servicePath.replaceAll("\\{.*?\\}", "_");//.*? : reluctant quantifier;
-		//return argsRemovedPath;
 		//On calcule la taille du path sans le nom des paramètres, c'est util pour trier les routes dans l'ordre d'interception.
-		final String argsRemovedPath = servicePath.replaceAll("\\{.*?\\}", "_");//.*? : reluctant quantifier;
-		final int argsRemovedPathSize = argsRemovedPath.length();
-
-		//On rend le path plus lisible et compatible DefinitionName
-		final String normalizedString = argsRemovedPath.replaceAll("[//\\*\\(\\)]", "_");
-		final String hashcodeAsHex = "$" + Integer.toHexString(argsRemovedPath.hashCode());
-		//On limite sa taille pour avec un nom de définition acceptable
-		return myVerb + "_" + normalizedString.toUpperCase() + "_" + argsRemovedPathSize + hashcodeAsHex;
-
+		final String argsRemovedPath = servicePath.replaceAll("_|\\(\\)", "").replaceAll("\\{.*?\\}|\\*", "_");//.*? : reluctant quantifier;
+		return myVerb + argsRemovedPath.toUpperCase(Locale.ROOT);
 	}
 
 	/**
