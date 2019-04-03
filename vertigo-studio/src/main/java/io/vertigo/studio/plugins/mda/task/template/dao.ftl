@@ -62,7 +62,6 @@ public final class ${dao.classSimpleName} extends DAO<${dao.dtClassSimpleName}, 
 		return readOneForUpdate(createDtObjectUID(id));
 	}
 	</#if>
-	
 	<#if !dao.taskDefinitions.empty>
 	<@lib.generateBody dao.taskDefinitions/>  
 	</#if>
