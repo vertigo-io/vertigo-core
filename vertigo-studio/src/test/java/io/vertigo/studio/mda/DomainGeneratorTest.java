@@ -20,9 +20,9 @@ package io.vertigo.studio.mda;
 
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -52,6 +52,7 @@ public class DomainGeneratorTest {
 						.withJsDomainGenerator()
 						.withTsDomainGenerator()
 						.withTaskGenerator()
+						.withSearchGenerator()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)

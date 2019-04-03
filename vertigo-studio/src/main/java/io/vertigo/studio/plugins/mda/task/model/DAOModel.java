@@ -21,11 +21,8 @@ package io.vertigo.studio.plugins.mda.task.model;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import io.vertigo.app.Home;
-import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
-import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
@@ -41,8 +38,6 @@ public final class DAOModel {
 	private final String packageName;
 	private final Collection<TaskDefinitionModel> taskDefinitions = new ArrayList<>();
 
-	private final SearchIndexDefinition indexDefinition;
-	private final Collection<FacetedQueryDefinitionModel> facetedQueryDefinitions = new ArrayList<>();
 	private final boolean hasOptions;
 
 	/**
@@ -80,27 +75,6 @@ public final class DAOModel {
 			hasOption = hasOption || templateTaskDefinition.hasOptions();
 		}
 		hasOptions = hasOption;
-		//TODO : find better than one dependency per behavior
-		if (Home.getApp().getDefinitionSpace().getAllTypes().contains(SearchIndexDefinition.class)) {
-			SearchIndexDefinition currentIndexDefinition = null;
-			for (final SearchIndexDefinition tmpIndexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
-				if (tmpIndexDefinition.getKeyConceptDtDefinition().equals(dtDefinition)) {
-					currentIndexDefinition = tmpIndexDefinition;
-					break;
-				}
-			}
-			indexDefinition = currentIndexDefinition;
-			if (indexDefinition != null) {
-				for (final FacetedQueryDefinition facetedQueryDefinition : Home.getApp().getDefinitionSpace().getAll(FacetedQueryDefinition.class)) {
-					if (facetedQueryDefinition.getKeyConceptDtDefinition().equals(dtDefinition)) {
-						final FacetedQueryDefinitionModel templateFacetedQueryDefinition = new FacetedQueryDefinitionModel(facetedQueryDefinition);
-						facetedQueryDefinitions.add(templateFacetedQueryDefinition);
-					}
-				}
-			}
-		} else {
-			indexDefinition = null;
-		}
 	}
 
 	/**
@@ -115,20 +89,6 @@ public final class DAOModel {
 	 */
 	public boolean isKeyConcept() {
 		return dtDefinition.getStereotype() == DtStereotype.KeyConcept;
-	}
-
-	/**
-	 * @return Si l'entité possède le "behavior" Search
-	 */
-	public boolean hasSearchBehavior() {
-		return indexDefinition != null;
-	}
-
-	/**
-	 * @return Liste des facetedQueryDefinition
-	 */
-	public Collection<FacetedQueryDefinitionModel> getFacetedQueryDefinitions() {
-		return facetedQueryDefinitions;
 	}
 
 	/**
@@ -150,20 +110,6 @@ public final class DAOModel {
 	 */
 	public String getDtClassSimpleName() {
 		return dtDefinition.getClassSimpleName();
-	}
-
-	/**
-	 * @return Nom simple de la classe du Dt d'index
-	 */
-	public String getIndexDtClassSimpleName() {
-		return indexDefinition.getIndexDtDefinition().getClassSimpleName();
-	}
-
-	/**
-	 * @return Nom de la classe du Dt d'index
-	 */
-	public String getIndexDtClassCanonicalName() {
-		return indexDefinition.getIndexDtDefinition().getClassCanonicalName();
 	}
 
 	/**

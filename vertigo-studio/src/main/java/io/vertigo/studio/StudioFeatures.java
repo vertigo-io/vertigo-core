@@ -32,6 +32,7 @@ import io.vertigo.studio.plugins.mda.domain.js.JSGeneratorPlugin;
 import io.vertigo.studio.plugins.mda.domain.sql.SqlGeneratorPlugin;
 import io.vertigo.studio.plugins.mda.domain.ts.TSGeneratorPlugin;
 import io.vertigo.studio.plugins.mda.file.FileInfoGeneratorPlugin;
+import io.vertigo.studio.plugins.mda.search.SearchGeneratorPlugin;
 import io.vertigo.studio.plugins.mda.task.TaskGeneratorPlugin;
 import io.vertigo.studio.plugins.mda.task.test.TaskTestGeneratorPlugin;
 import io.vertigo.studio.plugins.mda.webservice.WsTsGeneratorPlugin;
@@ -87,6 +88,12 @@ public class StudioFeatures extends Features<StudioFeatures> {
 	@Feature("mda.task")
 	public StudioFeatures withTaskGenerator(final Param... params) {
 		getModuleConfigBuilder().addPlugin(TaskGeneratorPlugin.class, params);
+		return this;
+	}
+
+	@Feature("mda.search")
+	public StudioFeatures withSearchGenerator(final Param... params) {
+		getModuleConfigBuilder().addPlugin(SearchGeneratorPlugin.class, params);
 		return this;
 	}
 

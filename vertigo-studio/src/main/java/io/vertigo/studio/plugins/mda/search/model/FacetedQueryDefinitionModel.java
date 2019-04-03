@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.studio.plugins.mda.task.model;
+package io.vertigo.studio.plugins.mda.search.model;
 
 import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
@@ -31,15 +31,17 @@ import io.vertigo.studio.plugins.mda.util.DomainUtil;
  */
 public final class FacetedQueryDefinitionModel {
 	private final FacetedQueryDefinition facetedQueryDefinition;
+
 	private final String simpleName;
 	private final String criteriaClassCanonicalName;
 
-	FacetedQueryDefinitionModel(final FacetedQueryDefinition facetedQueryDefinition) {
+	public FacetedQueryDefinitionModel(final FacetedQueryDefinition facetedQueryDefinition) {
 		Assertion.checkNotNull(facetedQueryDefinition);
 		//-----
 		this.facetedQueryDefinition = facetedQueryDefinition;
 		simpleName = DefinitionUtil.getLocalName(facetedQueryDefinition.getName(), FacetedQueryDefinition.class);
 		criteriaClassCanonicalName = obtainCriteriaClassCanonicalName();
+
 	}
 
 	/**
@@ -69,4 +71,5 @@ public final class FacetedQueryDefinitionModel {
 		//---
 		return DomainUtil.buildJavaType(domain);
 	}
+
 }

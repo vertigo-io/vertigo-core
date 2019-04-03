@@ -3,33 +3,11 @@ package ${dao.packageName};
 
 import javax.inject.Inject;
 
-<#if dao.hasSearchBehavior()>
-import java.util.Arrays;
-</#if>
 <#if dao.options >
 import java.util.Optional;
 </#if>
-<#if !dao.taskDefinitions.empty || dao.hasSearchBehavior() >
-import io.vertigo.app.Home;
-</#if>
-<#if dao.hasSearchBehavior()>
-import io.vertigo.core.component.di.injector.DIInjector;
-import io.vertigo.dynamo.search.SearchManager;
-import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
-import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.dynamo.search.model.SearchQueryBuilder;
-import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
-import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
-import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.collections.model.SelectedFacetValues;
-import io.vertigo.commons.transaction.VTransactionManager;
-<#if dao.indexDtClassCanonicalName != dao.dtClassCanonicalName >
-import ${dao.indexDtClassCanonicalName};
-</#if>
-</#if>
 <#if !dao.taskDefinitions.empty >
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
@@ -50,27 +28,15 @@ import io.vertigo.lang.Generated;
  */
 @Generated
 public final class ${dao.classSimpleName} extends DAO<${dao.dtClassSimpleName}, ${dao.idFieldType}> implements StoreServices {
-	<#if dao.keyConcept && dao.hasSearchBehavior()>
-	private final SearchManager searchManager;
-	private final VTransactionManager transactionManager;
-	</#if>
 
 	/**
 	 * Contructeur.
 	 * @param storeManager Manager de persistance
 	 * @param taskManager Manager de Task
-	 <#if dao.keyConcept && dao.hasSearchBehavior()>
-	 * @param searchManager Search Manager
-	 * @param transactionManager Transaction Manager
-	 </#if>
 	 */
 	@Inject
-	public ${dao.classSimpleName}(final StoreManager storeManager, final TaskManager taskManager<#if dao.keyConcept && dao.hasSearchBehavior()>, final SearchManager searchManager, final VTransactionManager transactionManager</#if>) {
+	public ${dao.classSimpleName}(final StoreManager storeManager, final TaskManager taskManager) {
 		super(${dao.dtClassSimpleName}.class, storeManager, taskManager);
-		<#if dao.keyConcept && dao.hasSearchBehavior()>
-		this.searchManager = searchManager;
-		this.transactionManager = transactionManager;
-		</#if>
 	}
 
 	<#if dao.keyConcept>
@@ -96,58 +62,7 @@ public final class ${dao.classSimpleName} extends DAO<${dao.dtClassSimpleName}, 
 		return readOneForUpdate(createDtObjectUID(id));
 	}
 	</#if>
-	<#if dao.keyConcept && dao.hasSearchBehavior()>
-
-	<#list dao.facetedQueryDefinitions as facetedQueryDefinition>
-	/**
-	 * Création d'une SearchQuery de type : ${facetedQueryDefinition.simpleName}.
-	 * @param criteria Critères de recherche
-	 * @param selectedFacetValues Liste des facettes sélectionnées à appliquer
-	 * @return SearchQueryBuilder pour ce type de recherche
-	 */
-	public SearchQueryBuilder createSearchQueryBuilder${facetedQueryDefinition.simpleName}(final ${facetedQueryDefinition.criteriaClassCanonicalName} criteria, final SelectedFacetValues selectedFacetValues) {
-		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("${facetedQueryDefinition.urn}", FacetedQueryDefinition.class);
-		final ListFilterBuilder<${facetedQueryDefinition.criteriaClassCanonicalName}> listFilterBuilder = DIInjector.newInstance(facetedQueryDefinition.getListFilterBuilderClass(), Home.getApp().getComponentSpace());
-		final ListFilter criteriaListFilter = listFilterBuilder.withBuildQuery(facetedQueryDefinition.getListFilterBuilderQuery()).withCriteria(criteria).build();
-		return SearchQuery.builder(criteriaListFilter).withFacetStrategy(facetedQueryDefinition, selectedFacetValues);
-	}
-	</#list>
-
-	/**
-	 * Récupération du résultat issu d'une requête.
-	 * @param searchQuery critères initiaux
-	 * @param listState Etat de la liste (tri et pagination)
-	 * @return Résultat correspondant à la requête (de type ${dao.indexDtClassSimpleName}) 
-	 */
-	public FacetedQueryResult<${dao.indexDtClassSimpleName}, SearchQuery> loadList(final SearchQuery searchQuery, final DtListState listState) {
-		final SearchIndexDefinition indexDefinition = searchManager.findFirstIndexDefinitionByKeyConcept(${dao.dtClassSimpleName}.class);
-		return searchManager.loadList(indexDefinition, searchQuery, listState);
-	}
 	
-/**
-	 * Mark an entity as dirty. Index of these elements will be reindexed if Tx commited.
-	 * Reindexation isn't synchrone, strategy is dependant of plugin's parameters.
-	 *
-	 * @param entityUID Key concept's UID
-	 */
-	public void markAsDirty(final UID<${dao.dtClassSimpleName}> entityUID) {
-		transactionManager.getCurrentTransaction().addAfterCompletion((final boolean txCommitted) -> {
-			if (txCommitted) {// reindex only is tx successful
-				searchManager.markAsDirty(Arrays.asList(entityUID));
-			}
-		});
-	}
-	
-	/**
-	 * Mark an entity as dirty. Index of these elements will be reindexed if Tx commited.
-	 * Reindexation isn't synchrone, strategy is dependant of plugin's parameters.
-	 * 
-	 * @param entity Key concept
-	 */
-	public void markAsDirty(final ${dao.dtClassSimpleName} entity) {
-		markAsDirty(UID.of(entity));
-	}
-	</#if>
 	<#if !dao.taskDefinitions.empty>
 	<@lib.generateBody dao.taskDefinitions/>  
 	</#if>
