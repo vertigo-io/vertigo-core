@@ -42,23 +42,23 @@ public final class ${dao.classSimpleName} extends DAO<${dao.dtClassSimpleName}, 
 	<#if dao.keyConcept>
 	/**
 	 * Indique que le keyConcept associé à cette UID va être modifié.
-	 * Techniquement cela interdit les opérations d'ecriture en concurrence 
-	 * et envoie un évenement de modification du keyConcept (à la fin de transaction eventuellement) 
+	 * Techniquement cela interdit les opérations d'ecriture en concurrence
+	 * et envoie un évenement de modification du keyConcept (à la fin de transaction eventuellement)
 	 * @param UID UID du keyConcept modifié
 	 * @return KeyConcept à modifier
 	 */
-	 public ${dao.dtClassSimpleName} readOneForUpdate(final UID<${dao.dtClassSimpleName}> uid) {
+	public ${dao.dtClassSimpleName} readOneForUpdate(final UID<${dao.dtClassSimpleName}> uid) {
 		return dataStore.readOneForUpdate(uid);
 	}
 
 	/**
 	 * Indique que le keyConcept associé à cet id va être modifié.
-	 * Techniquement cela interdit les opérations d'ecriture en concurrence 
-	 * et envoie un évenement de modification du keyConcept (à la fin de transaction eventuellement) 
+	 * Techniquement cela interdit les opérations d'ecriture en concurrence
+	 * et envoie un évenement de modification du keyConcept (à la fin de transaction eventuellement)
 	 * @param id Clé du keyConcept modifié
 	 * @return KeyConcept à modifier
 	 */
-	 public ${dao.dtClassSimpleName} readOneForUpdate(final ${dao.idFieldType} id) {
+	public ${dao.dtClassSimpleName} readOneForUpdate(final ${dao.idFieldType} id) {
 		return readOneForUpdate(createDtObjectUID(id));
 	}
 	</#if>
