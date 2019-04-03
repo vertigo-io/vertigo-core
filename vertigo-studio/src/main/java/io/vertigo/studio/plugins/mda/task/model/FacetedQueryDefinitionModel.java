@@ -23,7 +23,6 @@ import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
-import io.vertigo.util.StringUtil;
 
 /**
  * Génération des classes/méthodes des taches de type DAO.
@@ -39,7 +38,7 @@ public final class FacetedQueryDefinitionModel {
 		Assertion.checkNotNull(facetedQueryDefinition);
 		//-----
 		this.facetedQueryDefinition = facetedQueryDefinition;
-		simpleName = StringUtil.constToUpperCamelCase(DefinitionUtil.getLocalName(facetedQueryDefinition.getName(), FacetedQueryDefinition.class));
+		simpleName = DefinitionUtil.getLocalName(facetedQueryDefinition.getName(), FacetedQueryDefinition.class);
 		criteriaClassCanonicalName = obtainCriteriaClassCanonicalName();
 	}
 

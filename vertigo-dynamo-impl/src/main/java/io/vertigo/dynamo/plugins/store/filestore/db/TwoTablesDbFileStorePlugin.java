@@ -54,7 +54,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 	 * Ces champs sont obligatoire sur les Dt associés aux fileInfoDefinitions
 	 */
 	private enum DtoFields implements DtFieldName {
-	FILE_NAME, MIME_TYPE, LAST_MODIFIED, LENGTH, FILE_DATA, FMD_ID, FDT_ID
+	fileName, mimeType, lastModified, length, fileData, fmdId, fdtId
 	}
 
 	private final FileManager fileManager;
@@ -91,18 +91,18 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		// Ramène FileMetada
 		final UID<Entity> dtoMetaDataUri = UID.of(storeMetaDataDtDefinition, fileInfoUri.getKeyAs(storeMetaDataIdField.getDomain().getDataType()));
 		final DtObject fileMetadataDto = getStoreManager().getDataStore().readOne(dtoMetaDataUri);
-		final Object fdtId = getValue(fileMetadataDto, DtoFields.FDT_ID, Object.class);
+		final Object fdtId = getValue(fileMetadataDto, DtoFields.fdtId, Object.class);
 
 		// Ramène FileData
 		final UID<Entity> dtoDataUri = UID.of(storeFileDtDefinition, fdtId);
 
 		final DtObject fileDataDto = getStoreManager().getDataStore().readOne(dtoDataUri);
 		// Construction du vFile.
-		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(getValue(fileDataDto, DtoFields.FILE_DATA, DataStream.class));
-		final String fileName = getValue(fileMetadataDto, DtoFields.FILE_NAME, String.class);
-		final String mimeType = getValue(fileMetadataDto, DtoFields.MIME_TYPE, String.class);
-		final Instant lastModified = getValue(fileMetadataDto, DtoFields.LAST_MODIFIED, Instant.class);
-		final Long length = getValue(fileMetadataDto, DtoFields.LENGTH, Long.class);
+		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(getValue(fileDataDto, DtoFields.fileData, DataStream.class));
+		final String fileName = getValue(fileMetadataDto, DtoFields.fileName, String.class);
+		final String mimeType = getValue(fileMetadataDto, DtoFields.mimeType, String.class);
+		final Instant lastModified = getValue(fileMetadataDto, DtoFields.lastModified, Instant.class);
+		final Long length = getValue(fileMetadataDto, DtoFields.length, Long.class);
 		final VFile vFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
 
 		//TODO passer par une factory de FileInfo à partir de la FileInfoDefinition (comme DomainFactory)
@@ -122,7 +122,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		final Entity fileEntity = createFileEntity(fileInfo);
 		//-----
 		getStoreManager().getDataStore().create(fileEntity);
-		setValue(fileMetadataDto, DtoFields.FDT_ID, DtObjectUtil.getId(fileEntity));
+		setValue(fileMetadataDto, DtoFields.fdtId, DtObjectUtil.getId(fileEntity));
 		getStoreManager().getDataStore().create(fileMetadataDto);
 		final FileInfoURI fileInfoUri = createURI(fileInfo.getDefinition(), DtObjectUtil.getId(fileMetadataDto));
 		fileInfo.setURIStored(fileInfoUri);
@@ -143,9 +143,9 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		// Chargement du FDT_ID
 		final UID<Entity> dtoMetaDataUri = UID.of(storeMetaDataDtDefinition, fileInfo.getURI().getKeyAs(storeMetaDataIdField.getDomain().getDataType()));
 		final DtObject fileMetadataDtoOld = getStoreManager().getDataStore().readOne(dtoMetaDataUri);
-		final Object fdtId = getValue(fileMetadataDtoOld, DtoFields.FDT_ID, Object.class);
-		setValue(fileMetadataDto, DtoFields.FDT_ID, fdtId);
-		setValue(fileDataDto, DtoFields.FDT_ID, fdtId);
+		final Object fdtId = getValue(fileMetadataDtoOld, DtoFields.fdtId, Object.class);
+		setValue(fileMetadataDto, DtoFields.fdtId, fdtId);
+		setValue(fileDataDto, DtoFields.fdtId, fdtId);
 		getStoreManager().getDataStore().update(fileDataDto);
 		getStoreManager().getDataStore().update(fileMetadataDto);
 	}
@@ -162,7 +162,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 		//-----
 		final UID<Entity> dtoMetaDataUri = UID.of(storeMetaDataDtDefinition, fileInfoUri.getKeyAs(storeMetaDataIdField.getDomain().getDataType()));
 		final DtObject fileMetadataDtoOld = getStoreManager().getDataStore().readOne(dtoMetaDataUri);
-		final Object fdtId = getValue(fileMetadataDtoOld, DtoFields.FDT_ID, Object.class);
+		final Object fdtId = getValue(fileMetadataDtoOld, DtoFields.fdtId, Object.class);
 		final UID<Entity> dtoDataUri = UID.of(storeFileDtDefinition, fdtId);
 
 		getStoreManager().getDataStore().delete(dtoMetaDataUri);
@@ -172,18 +172,18 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 	private Entity createMetaDataEntity(final FileInfo fileInfo) {
 		final Entity fileMetadataDto = DtObjectUtil.createEntity(storeMetaDataDtDefinition);
 		final VFile vFile = fileInfo.getVFile();
-		setValue(fileMetadataDto, DtoFields.FILE_NAME, vFile.getFileName());
-		setValue(fileMetadataDto, DtoFields.MIME_TYPE, vFile.getMimeType());
-		setValue(fileMetadataDto, DtoFields.LAST_MODIFIED, vFile.getLastModified());
-		setValue(fileMetadataDto, DtoFields.LENGTH, vFile.getLength());
+		setValue(fileMetadataDto, DtoFields.fileName, vFile.getFileName());
+		setValue(fileMetadataDto, DtoFields.mimeType, vFile.getMimeType());
+		setValue(fileMetadataDto, DtoFields.lastModified, vFile.getLastModified());
+		setValue(fileMetadataDto, DtoFields.length, vFile.getLength());
 		return fileMetadataDto;
 	}
 
 	private Entity createFileEntity(final FileInfo fileInfo) {
 		final Entity fileDataDto = DtObjectUtil.createEntity(storeFileDtDefinition);
 		final VFile vFile = fileInfo.getVFile();
-		setValue(fileDataDto, DtoFields.FILE_NAME, vFile.getFileName());
-		setValue(fileDataDto, DtoFields.FILE_DATA, new VFileDataStream(vFile));
+		setValue(fileDataDto, DtoFields.fileName, vFile.getFileName());
+		setValue(fileDataDto, DtoFields.fileData, new VFileDataStream(vFile));
 		return fileDataDto;
 	}
 }

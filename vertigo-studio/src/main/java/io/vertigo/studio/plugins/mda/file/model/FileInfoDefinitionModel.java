@@ -21,7 +21,6 @@ package io.vertigo.studio.plugins.mda.file.model;
 import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * Génération des classes/méthodes des fileInfo.
@@ -41,7 +40,6 @@ public final class FileInfoDefinitionModel {
 	 * @return Nom de la class en CamelCase
 	 */
 	public String getClassSimpleName() {
-		final String localName = DefinitionUtil.getLocalName(fileInfoDefinition.getName(), FileInfoDefinition.class);
-		return StringUtil.constToUpperCamelCase(localName);
+		return DefinitionUtil.getLocalName(fileInfoDefinition.getName(), FileInfoDefinition.class);
 	}
 }

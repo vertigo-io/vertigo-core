@@ -70,16 +70,16 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	 * @author npiedeloup
 	 */
 	private enum DtoFields {
-		/** Champ FILE_NAME */
-		FILE_NAME,
-		/** Champ MIME_TYPE */
-		MIME_TYPE,
-		/** Champ LAST_MODIFIED */
-		LAST_MODIFIED,
-		/** Champ LENGTH */
-		LENGTH,
-		/** Champ FILE_PATH */
-		FILE_PATH
+		/** Champ FileName */
+		fileName,
+		/** Champ MimeType */
+		mimeType,
+		/** Champ LastModified */
+		lastModified,
+		/** Champ Length */
+		length,
+		/** Champ FilePath */
+		filePath
 	}
 
 	/**
@@ -152,11 +152,11 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		final DtObject fileInfoDto = getStoreManager().getDataStore().readOne(dtoUri);
 
 		// récupération du fichier
-		final String fileName = getValue(fileInfoDto, DtoFields.FILE_NAME, String.class);
-		final String mimeType = getValue(fileInfoDto, DtoFields.MIME_TYPE, String.class);
-		final Instant lastModified = getValue(fileInfoDto, DtoFields.LAST_MODIFIED, Instant.class);
-		final Long length = getValue(fileInfoDto, DtoFields.LENGTH, Long.class);
-		final String filePath = getValue(fileInfoDto, DtoFields.FILE_PATH, String.class);
+		final String fileName = getValue(fileInfoDto, DtoFields.fileName, String.class);
+		final String mimeType = getValue(fileInfoDto, DtoFields.mimeType, String.class);
+		final Instant lastModified = getValue(fileInfoDto, DtoFields.lastModified, Instant.class);
+		final Long length = getValue(fileInfoDto, DtoFields.length, Long.class);
+		final String filePath = getValue(fileInfoDto, DtoFields.filePath, String.class);
 
 		final InputStreamBuilder inputStreamBuilder = new FileInputStreamBuilder(new File(documentRoot + filePath));
 		final VFile vFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
@@ -179,13 +179,13 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		final Entity fileInfoDto = createFileInfoEntity(fileInfo.getDefinition());
 		//-----
 		final VFile vFile = fileInfo.getVFile();
-		setValue(fileInfoDto, DtoFields.FILE_NAME, vFile.getFileName());
-		setValue(fileInfoDto, DtoFields.MIME_TYPE, vFile.getMimeType());
-		setValue(fileInfoDto, DtoFields.LAST_MODIFIED, vFile.getLastModified());
-		setValue(fileInfoDto, DtoFields.LENGTH, vFile.getLength());
+		setValue(fileInfoDto, DtoFields.fileName, vFile.getFileName());
+		setValue(fileInfoDto, DtoFields.mimeType, vFile.getMimeType());
+		setValue(fileInfoDto, DtoFields.lastModified, vFile.getLastModified());
+		setValue(fileInfoDto, DtoFields.length, vFile.getLength());
 		if (fileInfo.getURI() == null) {
 			// cas de la création, on ajoute en base un chemin fictif (colonne not null)
-			setValue(fileInfoDto, DtoFields.FILE_PATH, "/dev/null");
+			setValue(fileInfoDto, DtoFields.filePath, "/dev/null");
 		} else {
 			// cas de l'update
 			setIdValue(fileInfoDto, fileInfo.getURI());
@@ -193,8 +193,8 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 			// récupération de l'objet en base pour récupérer le path du fichier et ne pas modifier la base
 			final UID<Entity> dtoUri = createDtObjectURI(fileInfo.getURI());
 			final DtObject fileInfoDtoBase = getStoreManager().getDataStore().readOne(dtoUri);
-			final String pathToSave = getValue(fileInfoDtoBase, DtoFields.FILE_PATH, String.class);
-			setValue(fileInfoDto, DtoFields.FILE_PATH, pathToSave);
+			final String pathToSave = getValue(fileInfoDtoBase, DtoFields.filePath, String.class);
+			setValue(fileInfoDto, DtoFields.filePath, pathToSave);
 		}
 		return fileInfoDto;
 	}
@@ -226,7 +226,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		// on met a jour la base
 		final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd/", Locale.FRANCE);
 		final String pathToSave = format.format(new Date()) + fileInfoDtoId;
-		setValue(fileInfoDto, DtoFields.FILE_PATH, pathToSave);
+		setValue(fileInfoDto, DtoFields.filePath, pathToSave);
 		//-----
 		getStoreManager().getDataStore().update(fileInfoDto);
 		//-----
@@ -244,7 +244,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		//-----
 		getStoreManager().getDataStore().update(fileInfoDto);
 
-		final String pathToSave = getValue(fileInfoDto, DtoFields.FILE_PATH, String.class);
+		final String pathToSave = getValue(fileInfoDto, DtoFields.filePath, String.class);
 		//-----
 		saveFile(fileInfo, pathToSave);
 	}
@@ -261,7 +261,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		final UID<Entity> dtoUri = createDtObjectURI(uri);
 		//-----suppression du fichier
 		final DtObject fileInfoDto = getStoreManager().getDataStore().readOne(dtoUri);
-		final String path = getValue(fileInfoDto, DtoFields.FILE_PATH, String.class);
+		final String path = getValue(fileInfoDto, DtoFields.filePath, String.class);
 		getCurrentTransaction().addAfterCompletion(new FileActionDelete(documentRoot + path));
 		//-----suppression en base
 		getStoreManager().getDataStore().delete(dtoUri);
