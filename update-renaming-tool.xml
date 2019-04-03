@@ -74,7 +74,11 @@
 						   return verb+p1+upperCamelCase(p2)+after;
 						});
 			 			//replace fields
-			 			result = result.replace(/(\W(?:id|field|range|indexCopyTo)\s+)([A-Z0-9_]+)(\s*\{)/g, function(match, p1, p2, after, index) {
+			 			result = result.replace(/(\W(?:id|field|computed|range|indexCopyTo)\s+)([A-Z0-9_]+)(\s*\{)/g, function(match, p1, p2, after, index) {
+						   return p1+lowerCamelCase(p2)+after;
+						});
+			 			//replace tasks attributes
+			 			result = result.replace(/(\W(?:attribute)\s+)([A-Z0-9_]+)(\s*\{)/g, function(match, p1, p2, after, index) {
 						   return p1+lowerCamelCase(p2)+after;
 						});
 			 			//replace attributes
@@ -82,7 +86,7 @@
 			 			   return attr+p1+upperCamelCase(p2);
 			 			});
 			 			//replace lower attributes
-			 			result = result.replace(/(\W(?:fkFieldName|fieldName))(\s*:\s*)([\"A-Z0-9_]+\W*)/g, function(match, attr, p1, p2, index) {
+			 			result = result.replace(/(\W(?:fkFieldName|fieldName|sortField|displayField))(\s*:\s*)([\"A-Z0-9_]+\W*)/g, function(match, attr, p1, p2, index) {
 			 			   return attr+p1+lowerCamelCase(p2);
 			 			});
 			 			//replace multiple attributes
@@ -90,8 +94,8 @@
 			 			   return attr+p1+upperCamelCase(p2);
 			 			});
 			 			//replace lower request attributes
-			 			result = result.replace(/\#([A-Z0-9_]+\#)/g, function(match, p1, index) {
-			 			   return "#"+lowerCamelCase(p1)+"#";
+			 			result = result.replace(/\#([A-Z0-9_.]+)\#/g, function(match, p1, index) {
+			 				return "#"+p1.split(".").map(function (s) {return lowerCamelCase(s)}.bind(this)).join(".")+"#";
 			 			});
 					    self.setToken(result);
 					</scriptfilter>
