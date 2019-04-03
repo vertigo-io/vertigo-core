@@ -842,7 +842,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		//on vérifie qu'il y a bien que la facette Manufacturer_ITEM à bien les autres constructeurs
 		Assertions.assertEquals(peugeotItems.size(), getFacetValueCount("FctManufacturerItemMulti", "peugeot", result1));
 		Assertions.assertEquals(volkswagenItems.size(), getFacetValueCount("FctManufacturerItemMulti", "volkswagen", result1));
-		Assertions.assertEquals(audiItemsSize, getFacetValueCount("FctManufacturerItem_MULTI", "Audi", result1));
+		Assertions.assertEquals(audiItemsSize, getFacetValueCount("FctManufacturerItemMulti", "Audi", result1));
 		//on vérifie que les autres facettes ont bien que des Peugeots
 		Assertions.assertEquals(peugeot2000To2005Count, getFacetValueCount("FctYearItem", "2000-2005", result1));
 
