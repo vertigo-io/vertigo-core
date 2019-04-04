@@ -38,8 +38,8 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	private final ListFilter myListFilter;
 	private ListFilter mySecurityListFilter;
 	//-----
-	private DtField myBoostedDocumentDateField;
-	private Integer myNumDaysOfBoostRefDocument;
+	private DtField myDateField;
+	private Integer myNumDaysOfBoostRef;
 	private Integer myMostRecentBoost;
 	private FacetedQuery myFacetedQuery;
 	private FacetDefinition myClusteringFacetDefinition;
@@ -56,17 +56,21 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 
 	/**
 	 * Defines Boost strategy  including most recents docs.
-	 * @param boostedDocumentDateField Nom du champ portant la date du document (null si non utilisé)
-	 * @param numDaysOfBoostRefDocument Age des documents servant de référence pour le boost des plus récents par rapport à eux (null si non utilisé)
+	 * On spécifie le boost des documents les plus récent par rapport à un age de référence.
+	 * La courbe est fixée par deux points de référence : mostRecentBoost à age=0 et numDaysOfBoostRef ou boost = 1;
+	 * Ex : withDateBoost('age', 15, 2)
+	 * => Les documents d'aujourd'hui ont un boost de 2 par rapport à ceux d'y a 15 jours.
+	 * @param dateField Nom du champ portant la date du document (null si non utilisé)
+	 * @param numDaysOfBoostRef Age des documents servant de référence pour le boost des plus récents par rapport à eux (null si non utilisé)
 	 * @param mostRecentBoost Boost relatif maximum entre les plus récents et ceux ayant l'age de référence (doit être > 1) (null si non utilisé)
 	 * @return SearchQuery.
 	 */
-	public SearchQueryBuilder withBoostStrategy(final DtField boostedDocumentDateField, final int numDaysOfBoostRefDocument, final int mostRecentBoost) {
-		Assertion.checkNotNull(boostedDocumentDateField);
-		Assertion.checkArgument(numDaysOfBoostRefDocument > 1 && mostRecentBoost > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieurs à 1.");
+	public SearchQueryBuilder withDateBoost(final DtField dateField, final int numDaysOfBoostRef, final int mostRecentBoost) {
+		Assertion.checkNotNull(dateField);
+		Assertion.checkArgument(numDaysOfBoostRef > 1 && mostRecentBoost > 1, "numDaysOfBoostRef et mostRecentBoost doivent être strictement supérieurs à 1.");
 		//-----
-		myBoostedDocumentDateField = boostedDocumentDateField;
-		myNumDaysOfBoostRefDocument = numDaysOfBoostRefDocument;
+		myDateField = dateField;
+		myNumDaysOfBoostRef = numDaysOfBoostRef;
 		myMostRecentBoost = mostRecentBoost;
 		return this;
 	}
@@ -76,15 +80,15 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 * @param selectedFacetValues ListFilter of selected facets
 	 * @return this builder
 	 */
-	public SearchQueryBuilder withFacetStrategy(final FacetedQueryDefinition facetedQueryDefinition, final SelectedFacetValues selectedFacetValues) {
-		return this.withFacetStrategy(new FacetedQuery(facetedQueryDefinition, selectedFacetValues));
+	public SearchQueryBuilder withFacet(final FacetedQueryDefinition facetedQueryDefinition, final SelectedFacetValues selectedFacetValues) {
+		return this.withFacet(new FacetedQuery(facetedQueryDefinition, selectedFacetValues));
 	}
 
 	/**
 	 * @param facetedQuery FacetedQuery
 	 * @return this builder
 	 */
-	public SearchQueryBuilder withFacetStrategy(final FacetedQuery facetedQuery) {
+	public SearchQueryBuilder withFacet(final FacetedQuery facetedQuery) {
 		Assertion.checkNotNull(facetedQuery);
 		//-----
 		myFacetedQuery = facetedQuery;
@@ -135,8 +139,8 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 				myListFilter,
 				Optional.ofNullable(mySecurityListFilter),
 				myClusteringFacetDefinition,
-				myBoostedDocumentDateField,
-				myNumDaysOfBoostRefDocument,
+				myDateField,
+				myNumDaysOfBoostRef,
 				myMostRecentBoost);
 	}
 }

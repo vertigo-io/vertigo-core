@@ -139,10 +139,10 @@ public final class SearchGeneratorPlugin implements GeneratorPlugin {
 
 			FileGenerator.builder(fileGeneratorConfig)
 					.withModel(model)
-					.withFileName(searchDtDefinitionModel.getClassSimpleName() + "SearchAo.java")
+					.withFileName(searchDtDefinitionModel.getClassSimpleName() + "SearchClient.java")
 					.withGenSubDir(targetSubDir)
 					.withPackageName(packageName)
-					.withTemplateName("search/template/search_ao.ftl")
+					.withTemplateName("search/template/search_client.ftl")
 					.build()
 					.generateFile(mdaResultBuilder);
 		}
