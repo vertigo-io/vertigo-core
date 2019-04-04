@@ -7,10 +7,11 @@
 --   Drop                                       
 -- ============================================================
 <#list nnAssociations as associationDefinition>
-drop table ${associationDefinition.getTableName()} cascade;
+drop table IF EXISTS ${associationDefinition.getTableName()} cascade;
 </#list>
 <#list dtDefinitions as dtDefinition>
-drop table ${dtDefinition.localName} cascade;
+drop table IF EXISTS ${dtDefinition.localName} cascade;
+drop sequence IF EXISTS SEQ_${dtDefinition.localName};
 </#list>
 
 </#if>
