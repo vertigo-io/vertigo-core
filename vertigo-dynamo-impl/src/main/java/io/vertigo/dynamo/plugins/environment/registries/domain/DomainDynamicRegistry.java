@@ -55,6 +55,7 @@ import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DynamicRegistry;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.util.StringUtil;
 
@@ -379,8 +380,46 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 
 	private AssociationSimpleDefinition createAssociationSimpleDefinition(final DefinitionSpace definitionSpace, final DslDefinition xassociation) {
 
-		final String multiplicityA = (String) xassociation.getPropertyValue(KspProperty.MULTIPLICITY_A);
-		final String multiplicityB = (String) xassociation.getPropertyValue(KspProperty.MULTIPLICITY_B);
+		final String associationType = (String) xassociation.getPropertyValue("type");
+
+		final String multiplicityA;
+		final String multiplicityB;
+		final Boolean navigabilityA;
+		final Boolean navigabilityB;
+		if (associationType != null) {
+			switch (associationType) {
+				case "*>1":
+					multiplicityA = "0..*";
+					multiplicityB = "1..1";
+					navigabilityA = false;
+					navigabilityB = true;
+					break;
+				case "*>?":
+					multiplicityA = "0..*";
+					multiplicityB = "0..1";
+					navigabilityA = false;
+					navigabilityB = true;
+					break;
+				case "*>*":
+					multiplicityA = "0..*";
+					multiplicityB = "0..*";
+					navigabilityA = false;
+					navigabilityB = true;
+					break;
+				default:
+					throw new VSystemException("type of asssociation not supported :" + associationType);
+			}
+		} else {
+			multiplicityA = (String) xassociation.getPropertyValue(KspProperty.MULTIPLICITY_A);
+			navigabilityA = (Boolean) xassociation.getPropertyValue(KspProperty.NAVIGABILITY_A);
+			multiplicityB = (String) xassociation.getPropertyValue(KspProperty.MULTIPLICITY_B);
+			navigabilityB = (Boolean) xassociation.getPropertyValue(KspProperty.NAVIGABILITY_B);
+			//---
+			Assertion.checkNotNull(multiplicityA);
+			Assertion.checkNotNull(navigabilityA);
+			Assertion.checkNotNull(multiplicityB);
+			Assertion.checkNotNull(navigabilityB);
+		}
 		// Vérification que l'on est bien dans le cas d'une association simple de type 1-n
 		if (AssociationUtil.isMultiple(multiplicityB) && AssociationUtil.isMultiple(multiplicityA)) {
 			//Relation n-n
@@ -394,13 +433,14 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		final String fkFieldName = (String) xassociation.getPropertyValue(KspProperty.FK_FIELD_NAME);
 
 		final DtDefinition dtDefinitionA = definitionSpace.resolve(xassociation.getDefinitionLinkName("dtDefinitionA"), DtDefinition.class);
-		final boolean navigabilityA = (Boolean) xassociation.getPropertyValue(KspProperty.NAVIGABILITY_A);
-		final String roleA = (String) xassociation.getPropertyValue(KspProperty.ROLE_A);
-		final String labelA = (String) xassociation.getPropertyValue(KspProperty.LABEL_A);
+		final String roleAOpt = (String) xassociation.getPropertyValue(KspProperty.ROLE_A);
+		final String roleA = roleAOpt != null ? roleAOpt : dtDefinitionA.getLocalName();
+		final String labelAOpt = (String) xassociation.getPropertyValue(KspProperty.LABEL_A);
+		final String labelA = labelAOpt != null ? labelAOpt : dtDefinitionA.getLocalName();
 
 		final DtDefinition dtDefinitionB = definitionSpace.resolve(xassociation.getDefinitionLinkName("dtDefinitionB"), DtDefinition.class);
-		final boolean navigabilityB = (Boolean) xassociation.getPropertyValue(KspProperty.NAVIGABILITY_B);
-		final String roleB = (String) xassociation.getPropertyValue(KspProperty.ROLE_B);
+		final String roleBOpt = (String) xassociation.getPropertyValue(KspProperty.ROLE_B);
+		final String roleB = roleBOpt != null ? roleBOpt : dtDefinitionB.getLocalName();
 		final String labelB = (String) xassociation.getPropertyValue(KspProperty.LABEL_B);
 
 		//Relation 1-n ou 1-1

@@ -48,7 +48,7 @@ public final class Artist implements KeyConcept {
 		this.id = id;
 	}
 
-	@Field(domain = "DoDtring", label = "name")
+	@Field(domain = "DoString", label = "name")
 	public String getName() {
 		return name;
 	}

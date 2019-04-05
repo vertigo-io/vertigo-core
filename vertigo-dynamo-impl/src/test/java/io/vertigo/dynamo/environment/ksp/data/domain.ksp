@@ -27,17 +27,10 @@ create Association AVobEnt {
  	fkFieldName : "id"
     
  	dtDefinitionA : DtTestVobject
+	type : "*>1" 	
 	dtDefinitionB : DtTestEntity
-			
-	navigabilityA : "false"
-	navigabilityB : "true"
-	
-	multiplicityA:"0..*"
-	multiplicityB:"1..1"
 	
 	labelA : "ValueObject"
 	labelB : "Entity"
-	roleA : "ValueObject"
-	roleB : "Entity"
 			
 }
