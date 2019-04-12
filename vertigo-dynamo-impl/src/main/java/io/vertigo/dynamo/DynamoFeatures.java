@@ -43,6 +43,7 @@ import io.vertigo.dynamo.plugins.store.filestore.fs.FsFullFileStorePlugin;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.TaskManager;
+import io.vertigo.dynamox.metric.domain.DomainMetricsProvider;
 
 /**
  * Defines dynamo features.
@@ -158,6 +159,13 @@ public final class DynamoFeatures extends Features<DynamoFeatures> {
 	public DynamoFeatures withTaskProxyMethod() {
 		getModuleConfigBuilder()
 				.addProxyMethod(TaskProxyMethod.class);
+		return this;
+	}
+
+	@Feature("domainMetrics")
+	public DynamoFeatures withDomainMetrics() {
+		getModuleConfigBuilder()
+				.addComponent(DomainMetricsProvider.class);
 		return this;
 	}
 
