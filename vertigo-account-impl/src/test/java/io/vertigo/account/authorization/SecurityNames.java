@@ -28,7 +28,7 @@ public final class SecurityNames {
 	 * Enumération des Authorizations globales.
 	 */
 	public enum GlobalAuthorizations implements AuthorizationName {
-		AtzAdmusr, AtzAdmpro, AtzAdmapp
+		AtzAdmUsr, AtzAdmPro, AtzAdmApp
 	}
 
 	/**

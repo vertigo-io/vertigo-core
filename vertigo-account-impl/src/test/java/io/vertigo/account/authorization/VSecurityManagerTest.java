@@ -140,17 +140,17 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testToString() {
-		final Authorization admUsr = getAuthorization(GlobalAuthorizations.AtzAdmusr);
+		final Authorization admUsr = getAuthorization(GlobalAuthorizations.AtzAdmUsr);
 		admUsr.toString();
-		final Authorization admPro = getAuthorization(GlobalAuthorizations.AtzAdmpro);
+		final Authorization admPro = getAuthorization(GlobalAuthorizations.AtzAdmPro);
 		admPro.toString();
 		/*Pour la couverture de code, et 35min de dette technique.... */
 	}
 
 	@Test
 	public void testAuthorized() {
-		final Authorization admUsr = getAuthorization(GlobalAuthorizations.AtzAdmusr);
-		final Authorization admPro = getAuthorization(GlobalAuthorizations.AtzAdmpro);
+		final Authorization admUsr = getAuthorization(GlobalAuthorizations.AtzAdmUsr);
+		final Authorization admPro = getAuthorization(GlobalAuthorizations.AtzAdmPro);
 
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
@@ -161,9 +161,9 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 					.addAuthorization(admUsr)
 					.addAuthorization(admPro);
 
-			Assertions.assertTrue(authorizationManager.hasAuthorization(GlobalAuthorizations.AtzAdmusr));
-			Assertions.assertTrue(authorizationManager.hasAuthorization(GlobalAuthorizations.AtzAdmpro));
-			Assertions.assertFalse(authorizationManager.hasAuthorization(GlobalAuthorizations.AtzAdmapp));
+			Assertions.assertTrue(authorizationManager.hasAuthorization(GlobalAuthorizations.AtzAdmUsr));
+			Assertions.assertTrue(authorizationManager.hasAuthorization(GlobalAuthorizations.AtzAdmPro));
+			Assertions.assertFalse(authorizationManager.hasAuthorization(GlobalAuthorizations.AtzAdmApp));
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}

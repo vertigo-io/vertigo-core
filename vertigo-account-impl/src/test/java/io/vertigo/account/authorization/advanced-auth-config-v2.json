@@ -1,13 +1,13 @@
 {
 	"globalAuthorizations": [{
-		"name": "Admusr",
-		"label": "security.authorization.admin.user"
+		"name": "AdmUsr",
+		"label": "Administration des utilisateurs"
 	}, {
-		"name": "Admpro",
-		"label": "security.authorization.admin.profil"
+		"name": "AdmPro",
+		"label": "Administration des profils"
 	}, {
-		"name": "Admapp",
-		"label": "security.authorization.admin.appli"
+		"name": "AdmApp",
+		"label": "Administration des paramètres applicatifs"
 	}],
 	"securedEntities": [{
 		"entity": "Record",

@@ -69,8 +69,8 @@ public final class VSecurityAspectTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testAuthorized() {
-		final Authorization admUsr = getAuthorization(GlobalAuthorizations.AtzAdmusr);
-		final Authorization admPro = getAuthorization(GlobalAuthorizations.AtzAdmpro);
+		final Authorization admUsr = getAuthorization(GlobalAuthorizations.AtzAdmUsr);
+		final Authorization admPro = getAuthorization(GlobalAuthorizations.AtzAdmPro);
 		final Authorization recordWrite = getAuthorization(RecordAuthorizations.AtzRecord$write);
 		final Record record = createRecord();
 
@@ -101,7 +101,7 @@ public final class VSecurityAspectTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testUnauthorized() {
-		final Authorization admPro = getAuthorization(GlobalAuthorizations.AtzAdmpro);
+		final Authorization admPro = getAuthorization(GlobalAuthorizations.AtzAdmPro);
 		final Authorization recordRead = getAuthorization(RecordAuthorizations.AtzRecord$read);
 		final Record record = createRecord();
 
@@ -142,8 +142,8 @@ public final class VSecurityAspectTest extends AbstractTestCaseJU5 {
 		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
 		recordOtherUserAndTooExpensive.setAmount(10000d);
 
-		final Authorization admUsr = getAuthorization(GlobalAuthorizations.AtzAdmusr);
-		final Authorization admPro = getAuthorization(GlobalAuthorizations.AtzAdmpro);
+		final Authorization admUsr = getAuthorization(GlobalAuthorizations.AtzAdmUsr);
+		final Authorization admPro = getAuthorization(GlobalAuthorizations.AtzAdmPro);
 		final Authorization recordWrite = getAuthorization(RecordAuthorizations.AtzRecord$write);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
@@ -202,7 +202,7 @@ public final class VSecurityAspectTest extends AbstractTestCaseJU5 {
 		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
 		recordOtherUserAndTooExpensive.setAmount(10000d);
 
-		final Authorization admPro = getAuthorization(GlobalAuthorizations.AtzAdmpro);
+		final Authorization admPro = getAuthorization(GlobalAuthorizations.AtzAdmPro);
 		final Authorization recordRead = getAuthorization(RecordAuthorizations.AtzRecord$read);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
