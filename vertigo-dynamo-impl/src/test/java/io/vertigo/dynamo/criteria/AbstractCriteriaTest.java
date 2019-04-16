@@ -196,9 +196,24 @@ public abstract class AbstractCriteriaTest extends AbstractTestCaseJU5 {
 	}
 
 	@Test
+	public final void testInNumberEmpty() {
+		final Criteria<Movie2> criteriaBool = Criterions.in(year);
+		assertCriteria(0, criteriaBool);
+	}
+
+	@Test
 	public final void testInString() {
 		final Criteria<Movie2> criteriaBool = Criterions.in(title, "terminator", "amadeus");
 		assertCriteria(2, criteriaBool);
+	}
+
+	@Test
+	public final void testInStringEmpty() {
+		final Criteria<Movie2> criteriaBool = Criterions.in(title);
+		assertCriteria(0, criteriaBool);
+
+		final Criteria<Movie2> criteriaBool2 = Criterions.in(title, "terminator", "amadeus").and(Criterions.in(title, new String[0]));
+		assertCriteria(0, criteriaBool2);
 	}
 
 }
