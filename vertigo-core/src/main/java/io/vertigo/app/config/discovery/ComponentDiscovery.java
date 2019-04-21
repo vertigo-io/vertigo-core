@@ -83,6 +83,7 @@ final class ComponentDiscovery {
 
 		final Collection<Class> proxyClasses = new Selector()
 				.from(allApiClasses)
+				.filterClasses(clazz -> clazz.getDeclaredMethods().length != 0)// to be a proxy you need to have at least one method
 				.filterMethods(proxyMethodPredicate)
 				.findClasses();
 
