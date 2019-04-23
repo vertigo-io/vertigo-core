@@ -26,6 +26,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
 import io.vertigo.database.timeseries.Measure;
@@ -42,14 +43,21 @@ import io.vertigo.lang.Assertion;
 public class TimeSeriesDataBaseManagerImpl implements TimeSeriesDataBaseManager {
 
 	public static final String WILDCARD_PLUGIN = "*";
+
+	private static final String TIMESERIES_CATEGORY = "timeseries";
+
+	private final AnalyticsManager analyticsManager;
 	private final Map<String, TimeSeriesPlugin> timeSeriesPluginByDb = new HashMap<>();
 	private final Optional<TimeSeriesPlugin> wildcardPluginOpt;
 
 	@Inject
 	public TimeSeriesDataBaseManagerImpl(
+			final AnalyticsManager analyticsManager,
 			final List<TimeSeriesPlugin> timeSeriesPlugins) {
+		Assertion.checkNotNull(analyticsManager);
 		Assertion.checkNotNull(timeSeriesPlugins);
 		//---
+		this.analyticsManager = analyticsManager;
 		timeSeriesPlugins.forEach(
 				plugin -> plugin.getDbNames()
 						.forEach(dbName -> {
@@ -64,13 +72,25 @@ public class TimeSeriesDataBaseManagerImpl implements TimeSeriesDataBaseManager 
 
 	@Override
 	public void insertMeasure(final String dbName, final Measure measure) {
-		getPluginByDb(dbName).insertMeasure(dbName, measure);
+		analyticsManager.trace(
+				TIMESERIES_CATEGORY,
+				"/insertMeasure/" + dbName,
+				tracer -> {
+					tracer.setMeasure("size", 1.0);
+					getPluginByDb(dbName).insertMeasure(dbName, measure);
+				});
 
 	}
 
 	@Override
 	public void insertMeasures(final String dbName, final List<Measure> measures) {
-		getPluginByDb(dbName).insertMeasures(dbName, measures);
+		analyticsManager.trace(
+				TIMESERIES_CATEGORY,
+				"/insertMeasure/" + dbName,
+				tracer -> {
+					tracer.setMeasure("size", Double.valueOf(measures.size()));
+					getPluginByDb(dbName).insertMeasures(dbName, measures);
+				});
 
 	}
 
@@ -81,7 +101,10 @@ public class TimeSeriesDataBaseManagerImpl implements TimeSeriesDataBaseManager 
 		Assertion.checkNotNull(dataFilter);
 		Assertion.checkNotNull(timeFilter.getDim());// we check dim is not null because we need it
 		//---
-		return getPluginByDb(dbName).getTimeSeries(dbName, measures, dataFilter, timeFilter);
+		return analyticsManager.traceWithReturn(
+				TIMESERIES_CATEGORY,
+				"/timed/" + dbName + "/" + dataFilter.getMeasurement(),
+				tracer -> getPluginByDb(dbName).getTimeSeries(dbName, measures, dataFilter, timeFilter));
 
 	}
 
@@ -99,27 +122,42 @@ public class TimeSeriesDataBaseManagerImpl implements TimeSeriesDataBaseManager 
 		//we use the natural order
 		clusteredMeasure.getThresholds().sort(Comparator.naturalOrder());
 		//---
-		return getPluginByDb(dbName).getClusteredTimeSeries(dbName, clusteredMeasure, dataFilter, timeFilter);
+		return analyticsManager.traceWithReturn(
+				TIMESERIES_CATEGORY,
+				"/clusturedTimed/" + dbName + "/" + dataFilter.getMeasurement(),
+				tracer -> getPluginByDb(dbName).getClusteredTimeSeries(dbName, clusteredMeasure, dataFilter, timeFilter));
 	}
 
 	@Override
 	public TimedDatas getTabularTimedData(final String dbName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
-		return getPluginByDb(dbName).getTabularTimedData(dbName, measures, dataFilter, timeFilter, groupBy);
+		return analyticsManager.traceWithReturn(
+				TIMESERIES_CATEGORY,
+				"/tabularTimed/" + dbName + "/" + dataFilter.getMeasurement(),
+				tracer -> getPluginByDb(dbName).getTabularTimedData(dbName, measures, dataFilter, timeFilter, groupBy));
 	}
 
 	@Override
 	public TabularDatas getTabularData(final String dbName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
-		return getPluginByDb(dbName).getTabularData(dbName, measures, dataFilter, timeFilter, groupBy);
+		return analyticsManager.traceWithReturn(
+				TIMESERIES_CATEGORY,
+				"/tabular/" + dbName + "/" + dataFilter.getMeasurement(),
+				tracer -> getPluginByDb(dbName).getTabularData(dbName, measures, dataFilter, timeFilter, groupBy));
 	}
 
 	@Override
 	public TabularDatas getTops(final String dbName, final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
-		return getPluginByDb(dbName).getTops(dbName, measure, dataFilter, timeFilter, groupBy, maxRows);
+		return analyticsManager.traceWithReturn(
+				TIMESERIES_CATEGORY,
+				"/tops/" + dbName + "/" + dataFilter.getMeasurement(),
+				tracer -> getPluginByDb(dbName).getTops(dbName, measure, dataFilter, timeFilter, groupBy, maxRows));
 	}
 
 	@Override
 	public List<String> getTagValues(final String dbName, final String measurement, final String tag) {
-		return getPluginByDb(dbName).getTagValues(dbName, measurement, tag);
+		return analyticsManager.traceWithReturn(
+				TIMESERIES_CATEGORY,
+				"/tags/" + dbName + "/" + measurement,
+				tracer -> getPluginByDb(dbName).getTagValues(dbName, measurement, tag));
 	}
 
 	private TimeSeriesPlugin getPluginByDb(final String dbName) {
