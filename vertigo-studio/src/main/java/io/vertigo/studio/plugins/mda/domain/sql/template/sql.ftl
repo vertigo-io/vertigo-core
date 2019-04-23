@@ -11,7 +11,9 @@ drop table IF EXISTS ${associationDefinition.getTableName()} cascade;
 </#list>
 <#list dtDefinitions as dtDefinition>
 drop table IF EXISTS ${dtDefinition.localName} cascade;
+<#if dtDefinition.hasSequence()>
 drop sequence IF EXISTS SEQ_${dtDefinition.localName};
+</#if>
 </#list>
 
 </#if>
@@ -30,8 +32,10 @@ drop sequence IF EXISTS SEQ_${dtDefinition.localName};
 --   Sequences                                      
 -- ============================================================
 <#list dtDefinitions as dtDefinition>
+<#if dtDefinition.hasSequence()>
 create sequence SEQ_${dtDefinition.localName}
 	start with 1000 cache 20; 
+</#if>
 
 </#list>
 
