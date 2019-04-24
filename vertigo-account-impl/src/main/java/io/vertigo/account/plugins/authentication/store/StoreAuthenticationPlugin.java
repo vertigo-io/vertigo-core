@@ -33,6 +33,7 @@ import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
@@ -89,7 +90,7 @@ public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeab
 	@Override
 	public Optional<String> authenticateAccount(final AuthenticationToken token) {
 		final Criteria criteriaByLogin = Criterions.isEqualTo(() -> userLoginField, token.getPrincipal());
-		final DtList<DtObject> results = storeManager.getDataStore().find(userCredentialDefinition, criteriaByLogin);
+		final DtList<DtObject> results = storeManager.getDataStore().find(userCredentialDefinition, criteriaByLogin, DtListState.of(2));
 		//may ensure, that valid or invalid login took the same time, so we don't assert no result here
 		Assertion.checkState(results.size() <= 1, "Too many matching credentials for {0}", token.getPrincipal());
 

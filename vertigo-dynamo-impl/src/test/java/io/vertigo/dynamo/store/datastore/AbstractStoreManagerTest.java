@@ -39,8 +39,7 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURI;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
@@ -80,7 +79,6 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 
 	protected DtDefinition dtDefinitionFamille;
 	private DtDefinition dtDefinitionCar;
-	private DtListURI allCarsUri;
 
 	private CarDataBase carDataBase;
 
@@ -90,7 +88,6 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 		dtDefinitionFamille = DtObjectUtil.findDtDefinition(Famille.class);
 
 		dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-		allCarsUri = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
 
 		initMainStore();
 	}
@@ -176,12 +173,10 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testSelectCarCachedRowMax() {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
-			final DtListURI someCars = new DtListURIForCriteria<>(dtDefinitionCar, null, 3);
-			final DtList<Car> dtc1 = storeManager.getDataStore().findAll(someCars);
+			final DtList<Car> dtc1 = storeManager.getDataStore().find(dtDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3));
 			Assertions.assertEquals(3, dtc1.size());
 			//-----
-			final DtListURI allCars = new DtListURIForCriteria<>(dtDefinitionCar, null, null);
-			final DtList<Car> dtc = storeManager.getDataStore().findAll(allCars);
+			final DtList<Car> dtc = storeManager.getDataStore().find(dtDefinitionCar, Criterions.alwaysTrue(), DtListState.of(null));
 			Assertions.assertEquals(9, dtc.size());
 		}
 	}
@@ -191,7 +186,8 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
 			final DtList<Car> dtcEssence = storeManager.getDataStore().find(
 					DtObjectUtil.findDtDefinition(Car.class),
-					Criterions.isEqualTo(CarFields.mtyCd, MotorTypeEnum.essence.getEntityUID().getId()));
+					Criterions.isEqualTo(CarFields.mtyCd, MotorTypeEnum.essence.getEntityUID().getId()),
+					DtListState.of(2));
 			//---
 			Assertions.assertEquals(1, dtcEssence.size());
 			Assertions.assertTrue(dtcEssence.get(0).motorType().getEnumValue() == MotorTypeEnum.essence);
@@ -260,8 +256,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testGetFamille() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
-			final DtList<Famille> dtc = storeManager.getDataStore().findAll(allFamilles);
+			final DtList<Famille> dtc = storeManager.getDataStore().find(dtDefinitionFamille, null, DtListState.of(null));
 			Assertions.assertNotNull(dtc);
 			Assertions.assertTrue(dtc.isEmpty(), "La liste des famille est vide");
 			transaction.commit();
@@ -274,8 +269,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testAddFamille() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
-			DtList<Famille> dtc = storeManager.getDataStore().findAll(allFamilles);
+			DtList<Famille> dtc = storeManager.getDataStore().find(dtDefinitionFamille, null, DtListState.of(null));
 			Assertions.assertEquals(0, dtc.size());
 			//-----
 			final Famille famille = new Famille();
@@ -284,7 +278,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 			// on attend un objet avec un id non null ?
 			Assertions.assertNotNull(createdFamille.getFamId());
 			//-----
-			dtc = storeManager.getDataStore().findAll(allFamilles);
+			dtc = storeManager.getDataStore().find(dtDefinitionFamille, null, DtListState.of(null));
 			Assertions.assertEquals(1, dtc.size());
 			transaction.commit();
 		}
@@ -372,7 +366,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 			final Famille createdFamille = storeManager.getDataStore().create(famille);
 
 			//on récupère la liste des voitures
-			final DtList<Car> cars = storeManager.getDataStore().findAll(allCarsUri);
+			final DtList<Car> cars = storeManager.getDataStore().find(dtDefinitionCar, null, DtListState.of(null));
 			Assertions.assertNotNull(cars);
 			Assertions.assertFalse(cars.isEmpty(), "La liste des cars est vide");
 
@@ -418,7 +412,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 			final Famille createdFamille = storeManager.getDataStore().create(famille);
 
 			//on récupère la liste des voitures
-			final DtList<Car> cars = storeManager.getDataStore().findAll(allCarsUri);
+			final DtList<Car> cars = storeManager.getDataStore().find(dtDefinitionCar, null, DtListState.of(null));
 			Assertions.assertNotNull(cars);
 			Assertions.assertFalse(cars.isEmpty(), "La liste des cars est vide");
 
@@ -742,7 +736,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 	}
 
 	private void checkCrudCarsCount(final int deltaCount) {
-		final DtList<Car> cars = storeManager.getDataStore().findAll(allCarsUri);
+		final DtList<Car> cars = storeManager.getDataStore().find(dtDefinitionCar, null, DtListState.of(null));
 		Assertions.assertNotNull(cars);
 		Assertions.assertEquals(carDataBase.size() + deltaCount, cars.size(), "Test du nombre de voiture");
 	}

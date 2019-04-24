@@ -20,6 +20,10 @@ package io.vertigo.dynamo.domain.model;
 
 import java.util.Optional;
 
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.metamodel.DtFieldName;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -28,6 +32,8 @@ import io.vertigo.lang.Assertion;
  * @author npiedeloup
  */
 public final class DtListState {
+	private static final int ABSOLUTE_MAX_ROWS = 5000;
+	private static final int DEFAULT_MAX_ROWS = 250;
 
 	private final Optional<String> sortFieldName;
 	private final Optional<Boolean> sortDesc;
@@ -36,12 +42,19 @@ public final class DtListState {
 
 	/**
 	 * @param maxRows max returning elements (null if not use)
-	 * @param skipRows elements to skip (mandatory, 0 by default)
+	 * skipRows elements to skip (mandatory, 0 by default)
 	 */
-	public static DtListState of(
-			final Integer maxRows,
-			final int skipRows) {
-		return new DtListState(maxRows, skipRows, null, null);
+	public static DtListState defaultOf(final Class<? extends Entity> entityClass) {
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
+		return new DtListState(DEFAULT_MAX_ROWS, 0, dtDefinition.getSortField().map(DtField::getName).orElse(null), false);
+	}
+
+	/**
+	 * @param maxRows max returning elements (null if not use)
+	 * skipRows elements to skip (mandatory, 0 by default)
+	 */
+	public static DtListState of(final Integer maxRows) {
+		return new DtListState(maxRows, 0, null, null);
 	}
 
 	/**
@@ -59,6 +72,24 @@ public final class DtListState {
 	}
 
 	/**
+	 * Added default properties to another DtListState.
+	 * @param maxRows max returning elements (null if not use)
+	 * @param sortFieldName sort fieldName (null if not use)
+	 * @param sortDesc desc or asc order (null if not use)
+	 */
+	public DtListState withDefault(
+			final Integer defaultMaxRows,
+			final DtFieldName defaultSortFieldName,
+			final Boolean defaultSortDesc) {
+		if ((maxRows.isPresent() || defaultMaxRows == null)
+				&& (sortFieldName.isPresent() || defaultSortFieldName == null)
+				&& (sortDesc.isPresent() || defaultSortDesc == null)) {
+			return this; //optim to avoid new DtListState if obvious unnecessary
+		}
+		return new DtListState(maxRows.orElse(defaultMaxRows), skipRows, sortFieldName.orElse(defaultSortFieldName.name()), sortDesc.orElse(defaultSortDesc));
+	}
+
+	/**
 	 * @param maxRows max returning elements (null if not use)
 	 * @param skipRows elements to skip (mandatory, 0 by default)
 	 * @param sortFieldName sort fieldName (null if not use)
@@ -73,7 +104,10 @@ public final class DtListState {
 				.check(() -> maxRows != Integer.MAX_VALUE, " maxRows should be null");
 		Assertion.when(maxRows != null)
 				.check(() -> maxRows > 0, "maxRows must be positive ({0})", maxRows);
-		Assertion.checkArgument(skipRows >= 0, "SkipRows must be positive ({0})", skipRows);
+		Assertion.when(maxRows != null)
+				.check(() -> maxRows <= ABSOLUTE_MAX_ROWS, "maxRows must be less than {0}", ABSOLUTE_MAX_ROWS);
+
+		Assertion.checkArgument(skipRows >= 0, "skipRows must be positive ({0})", skipRows);
 		Assertion.when(sortFieldName != null)
 				.check(() -> sortDesc != null, "When sorting, sortFieldName and sortDesc are both mandatory.");
 		//-----

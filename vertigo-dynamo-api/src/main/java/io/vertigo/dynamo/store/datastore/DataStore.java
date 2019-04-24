@@ -21,6 +21,7 @@ package io.vertigo.dynamo.store.datastore;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
@@ -42,7 +43,7 @@ public interface DataStore {
 
 	/**
 	 * Récupération d'un objet persistant par son UID.
-	 * Lorsque l'objet est en lecture seule il est possible d'accéder au objets partagés. (Liste de référence paér ex)
+	 * Lorsque l'objet est en lecture seule il est possible d'accéder au objets partagés. (Liste de référence par ex)
 	 * L'objet doit exister.
 	 *
 	 * @param <E> the type of entity
@@ -96,9 +97,10 @@ public interface DataStore {
 	 * Returns a list identified by criteria
 	 * @param dtDefinition the list definition
 	 * @param criteria criteria
+	 * @param dtListState request state : sort, top, offset
 	 * @return list
 	 */
-	<E extends Entity> DtList<E> find(final DtDefinition dtDefinition, Criteria<E> criteria);
+	<E extends Entity> DtList<E> find(final DtDefinition dtDefinition, Criteria<E> criteria, final DtListState dtListState);
 
 	/**
 	 * Return the a dedicated object that handles NN associations

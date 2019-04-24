@@ -22,8 +22,10 @@ import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.criteria.Criteria;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
@@ -42,6 +44,8 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class DataStoreImpl implements DataStore {
+	private static final Criteria CRITERIA_ALWAYS_TRUE = Criterions.alwaysTrue();
+
 	/** Le store est le point d'accès unique à la base (sql, xml, fichier plat...). */
 	private final CacheDataStore cacheDataStore;
 	private final LogicalDataStoreConfig logicalStoreConfig;
@@ -174,8 +178,15 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> find(final DtDefinition dtDefinition, final Criteria<E> criteria) {
-		return getPhysicalStore(dtDefinition).findByCriteria(dtDefinition, criteria, null);
+	public <E extends Entity> DtList<E> find(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
+		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(dtListState);
+		//-----
+		final DtList<E> list = cacheDataStore.findByCriteria(dtDefinition, criteria != null ? criteria : CRITERIA_ALWAYS_TRUE, dtListState);
+		//-----
+		Assertion.checkNotNull(list);
+		return list;
+
 	}
 
 	//------

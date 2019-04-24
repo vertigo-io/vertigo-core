@@ -43,6 +43,7 @@ import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.data.movies.Movie2;
 import io.vertigo.dynamo.criteria.data.movies.Movie2DataBase;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
@@ -122,7 +123,7 @@ public final class SqlCriteriaTest extends AbstractCriteriaTest {
 		}
 	}
 
-	protected final List<String> getCreateMovies() {
+	protected List<String> getCreateMovies() {
 		return new ListBuilder<String>()
 				.add(" create table movie_2(id BIGINT , TITLE varchar(50), YEAR INT);")
 				.add(" create sequence SEQ_MOVIE_2 start with 1 increment by 1;")
@@ -132,7 +133,7 @@ public final class SqlCriteriaTest extends AbstractCriteriaTest {
 	@Override
 	public void assertCriteria(final long expected, final Criteria<Movie2> criteria) {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
-			final long count = storeManager.getDataStore().find(dtDefinitionMovie, criteria).size();
+			final long count = storeManager.getDataStore().find(dtDefinitionMovie, criteria, DtListState.of(null)).size();
 			Assert.assertEquals(expected, count);
 		}
 	}

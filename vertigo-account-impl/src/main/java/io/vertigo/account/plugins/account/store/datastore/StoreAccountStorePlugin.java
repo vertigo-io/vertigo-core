@@ -47,6 +47,7 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinitio
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
@@ -236,7 +237,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		}
 		final Criteria<Entity> criteriaByAuthToken = Criterions.isEqualTo(() -> userAuthField, userAuthTokenValue);
 		return executeInTransaction(() -> {
-			final DtList<Entity> results = storeManager.getDataStore().find(getUserDtDefinition(), criteriaByAuthToken);
+			final DtList<Entity> results = storeManager.getDataStore().find(getUserDtDefinition(), criteriaByAuthToken, DtListState.of(2));
 			Assertion.checkState(results.size() <= 1, "Too many matching for authToken {0}", userAuthToken);
 			if (!results.isEmpty()) {
 				return Optional.of(userToAccount(results.get(0)));

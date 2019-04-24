@@ -32,7 +32,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.UID;
@@ -227,15 +227,15 @@ public class DAO<E extends Entity, P> {
 	/**
 	 * @param dtFieldName de l'object à récupérer NOT NULL
 	 * @param value de l'object à récupérer NOT NULL
-	 * @param maxRows Nombre maximum de ligne
+	 * @param dtListState Etat de la liste : Sort, top, offset
 	 * @return DtList<D> récupéré NOT NUL
 	 */
-	public final DtList<E> getListByDtFieldName(final DtFieldName dtFieldName, final Serializable value, final int maxRows) {
+	public final DtList<E> getListByDtFieldName(final DtFieldName dtFieldName, final Serializable value, final DtListState dtListState) {
 		final Criteria<E> criteria = Criterions.isEqualTo(dtFieldName, value);
 		// Verification de la valeur est du type du champ
 		final DtDefinition dtDefinition = getDtDefinition();
 		dtDefinition.getField(dtFieldName.name()).getDomain().checkValue(value);
-		return dataStore.findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
+		return dataStore.find(dtDefinition, criteria, dtListState);
 	}
 
 	/**
@@ -256,18 +256,18 @@ public class DAO<E extends Entity, P> {
 	 * @return  the optional result
 	 */
 	public final Optional<E> findOptional(final Criteria<E> criteria) {
-		final DtList<E> list = dataStore.findAll(new DtListURIForCriteria<>(getDtDefinition(), criteria, 2));
+		final DtList<E> list = dataStore.find(getDtDefinition(), criteria, DtListState.of(2));
 		Assertion.checkState(list.size() <= 1, "Too many results");
 		return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
 	}
 
 	/**
-	 * @param criteria Thr criteria
-	 * @param maxRows Max rows
+	 * @param criteria The criteria
+	 * @param dtListState Etat de la liste : Sort, top, offset
 	 * @return DtList<D> result NOT NULL
 	 */
-	public final DtList<E> findAll(final Criteria<E> criteria, final int maxRows) {
-		return dataStore.findAll(new DtListURIForCriteria<>(getDtDefinition(), criteria, maxRows));
+	public final DtList<E> findAll(final Criteria<E> criteria, final DtListState dtListState) {
+		return dataStore.find(getDtDefinition(), criteria, dtListState);
 	}
 
 	private DtDefinition getDtDefinition() {

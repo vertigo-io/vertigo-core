@@ -23,12 +23,14 @@ import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.eventbus.EventBusSubscriptionDefinition;
 import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.dynamo.criteria.Criteria;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtListURI;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
@@ -114,7 +116,7 @@ public final class CacheDataStore {
 		final E entity;
 		if (cacheDataStoreConfig.isReloadedByList(dtDefinition)) {
 			//On ne charge pas les cache de façon atomique.
-			final DtListURI dtcURIAll = new DtListURIForCriteria<>(dtDefinition, null, null);
+			final DtListURI dtcURIAll = new DtListURIForCriteria<>(dtDefinition, Criterions.alwaysTrue(), DtListState.of(null));
 			loadList(dtcURIAll); //on charge la liste complete (et on remplit les caches)
 			entity = cacheDataStoreConfig.getDataCache().getDtObject(uid);
 		} else {
@@ -139,7 +141,7 @@ public final class CacheDataStore {
 			list = getPhysicalStore(dtDefinition).findAll(dtDefinition, (DtListURIForNNAssociation) listUri);
 		} else if (listUri instanceof DtListURIForCriteria<?>) {
 			final DtListURIForCriteria<E> castedListUri = DtListURIForCriteria.class.cast(listUri);
-			list = getPhysicalStore(dtDefinition).findAll(dtDefinition, castedListUri);
+			list = getPhysicalStore(dtDefinition).findByCriteria(dtDefinition, castedListUri.getCriteria(), castedListUri.getDtListState());
 		} else {
 			throw new IllegalArgumentException("cas non traité " + listUri);
 		}
@@ -151,7 +153,7 @@ public final class CacheDataStore {
 		Assertion.checkArgument(uri.getDtDefinition().getSortField().isPresent(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDtDefinition().getName());
 		//-----
 		//On cherche la liste complete
-		final DtList<E> unFilteredDtc = findAll(new DtListURIForCriteria<E>(uri.getDtDefinition(), null, null));
+		final DtList<E> unFilteredDtc = getPhysicalStore(uri.getDtDefinition()).findByCriteria(uri.getDtDefinition(), Criterions.alwaysTrue(), DtListState.of(null, 0, uri.getDtDefinition().getSortField().get().getName(), false));
 
 		//On compose les fonctions
 		//1.on filtre
@@ -184,6 +186,10 @@ public final class CacheDataStore {
 		return doLoadList(uri.getDtDefinition(), uri);
 	}
 
+	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
+		return findAll(new DtListURIForCriteria(dtDefinition, criteria, dtListState));
+	}
+
 	private static boolean isMultipleAssociation(final DtListURI uri) {
 		return uri instanceof DtListURIForNNAssociation;
 	}
@@ -204,4 +210,5 @@ public final class CacheDataStore {
 		// A changer si on gère lucene différemment
 		cacheDataStoreConfig.getDataCache().clear(dtDefinition);
 	}
+
 }

@@ -24,7 +24,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 
@@ -92,17 +92,6 @@ public interface DataStorePlugin extends Plugin {
 	 */
 	<E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uid);
 
-	/**
-	 * Récupération d'une liste correspondant à l'URI fournie.
-	 * NOT NULL
-	 *
-	 * @param uri URI de la collection à charger
-	 * @param dtDefinition Definition
-	 * @return DtList<D> Liste correspondant à l'URI fournie
-	 * @param <E> the type of entity
-	 */
-	<E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<E> uri);
-
 	//==========================================================================
 	//=============================== WRITE ====================================
 	//==========================================================================
@@ -145,9 +134,9 @@ public interface DataStorePlugin extends Plugin {
 	 * Finds a lists of entities matching a criteria.
 	 * @param dtDefinition the definition of entities to find
 	 * @param criteria the criteria to match
-	 * @param maxRows max number of rows to retrieve
+	 * @param dtListState listState of rows to retrieve
 	 * @return the list
 	 */
-	<E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows);
+	<E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState);
 
 }

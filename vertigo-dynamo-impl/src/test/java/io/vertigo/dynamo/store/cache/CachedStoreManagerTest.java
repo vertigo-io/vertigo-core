@@ -32,8 +32,7 @@ import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURI;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.store.data.domain.famille.Famille;
 import io.vertigo.dynamo.store.datastore.AbstractStoreManagerTest;
@@ -88,8 +87,7 @@ public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
 	public void testAddFamille() {
 		//ce test est modifier car le cache n'est pas transactionnel : la liste n'est pas accessible sans commit
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
-			final DtList<Famille> dtc = storeManager.getDataStore().findAll(allFamilles);
+			final DtList<Famille> dtc = storeManager.getDataStore().find(dtDefinitionFamille, null, DtListState.of(null));
 			Assertions.assertEquals(0, dtc.size());
 			//-----
 			final Famille famille = new Famille();
@@ -100,8 +98,7 @@ public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
 			transaction.commit();
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final DtListURI allFamilles = new DtListURIForCriteria<>(dtDefinitionFamille, null, null);
-			final DtList<Famille> dtc = storeManager.getDataStore().findAll(allFamilles);
+			final DtList<Famille> dtc = storeManager.getDataStore().find(dtDefinitionFamille, null, DtListState.of(null));
 			Assertions.assertEquals(1, dtc.size());
 
 		}

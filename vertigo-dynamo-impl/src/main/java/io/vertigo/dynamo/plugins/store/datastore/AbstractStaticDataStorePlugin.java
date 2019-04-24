@@ -22,7 +22,6 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
@@ -32,12 +31,6 @@ import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
  * @author npiedeloup
  */
 public abstract class AbstractStaticDataStorePlugin implements DataStorePlugin {
-
-	/** {@inheritDoc} */
-	@Override
-	public int count(final DtDefinition dtDefinition) {
-		return findAll(dtDefinition, new DtListURIForCriteria<>(dtDefinition, null, null)).size();
-	}
 
 	/** {@inheritDoc} */
 	@Override

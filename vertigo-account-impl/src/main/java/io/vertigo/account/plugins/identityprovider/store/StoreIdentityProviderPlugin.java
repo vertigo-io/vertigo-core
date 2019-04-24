@@ -31,6 +31,7 @@ import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.domain.model.UID;
@@ -81,10 +82,9 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 	@Override
 	public <E extends Entity> E getUserByAuthToken(final String userAuthToken) {
 		final Criteria<Entity> criteriaByAuthToken = Criterions.isEqualTo(() -> userAuthField, userAuthToken);
-		final DtList<Entity> results = storeManager.getDataStore().find(userIdentityDefinition, criteriaByAuthToken);
+		final DtList<Entity> results = storeManager.getDataStore().find(userIdentityDefinition, criteriaByAuthToken, DtListState.of(2));
 		Assertion.checkState(results.size() <= 1, "Too many matching for authToken {0}", userAuthToken);
 		Assertion.checkState(!results.isEmpty(), "No user found for this authToken {0}", userAuthToken);
-
 		return (E) results.get(0);
 	}
 
@@ -97,7 +97,7 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> List<E> getAllUsers() {
-		return storeManager.getDataStore().find(userIdentityDefinition, Criterions.alwaysTrue());
+		return storeManager.getDataStore().find(userIdentityDefinition, Criterions.alwaysTrue(), DtListState.of(null));
 	}
 
 	/** {@inheritDoc} */

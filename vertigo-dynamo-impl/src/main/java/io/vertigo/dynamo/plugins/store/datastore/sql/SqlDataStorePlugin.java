@@ -42,7 +42,7 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
@@ -67,18 +67,14 @@ import io.vertigo.util.StringUtil;
 /**
  * This class is the basic implementation of the dataStore in the sql way.
  *
- * @author  pchretien
+ * @author pchretien
  */
 public final class SqlDataStorePlugin implements DataStorePlugin {
 	private static final int MAX_TASK_SPECIFIC_NAME_LENGTH = 40;
-	private static final Criteria EMPTY_CRITERIA = Criterions.alwaysTrue();
-
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
 
 	private final String dataSpace;
-
 	private final String connectionName;
-
 	private final String sequencePrefix;
 	/**
 	 * Domaine à usage interne.
@@ -265,27 +261,15 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
 		final Serializable value = dtcUri.getSource().getId();
 
-		return findByCriteria(dtDefinition, Criterions.isEqualTo(fkField::getName, value), null);
+		return findByCriteria(dtDefinition, Criterions.isEqualTo(fkField::getName, value), DtListState.of(null));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<E> uri) {
-		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkNotNull(uri);
-		//---
-		final Criteria<E> criteria = uri.getCriteria();
-		final Integer maxRows = uri.getMaxRows();
-		//---
-		final Criteria<E> filterCriteria = criteria == null ? EMPTY_CRITERIA : criteria;
-		return findByCriteria(dtDefinition, filterCriteria, maxRows);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
+	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(criteria);
+		Assertion.checkNotNull(dtListState);
 		//---
 		final String entityName = getEntityName(dtDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
@@ -293,7 +277,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		final String taskName = getListTaskName(entityName);
 		final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(sqlDialect);
 		final String where = tuple.getVal1();
-		final String request = createLoadAllLikeQuery(tableName, requestedCols, where, maxRows);
+		final String request = createLoadAllLikeQuery(tableName, requestedCols, where, dtListState);
 		final TaskDefinitionBuilder taskDefinitionBuilder = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
@@ -536,15 +520,19 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 			final String tableName,
 			final String requestedFields,
 			final String where,
-			final Integer maxRows) {
+			final DtListState dtListState) {
 
 		final StringBuilder request = new StringBuilder("select ")
 				.append(requestedFields)
 				.append(" from ").append(tableName)
 				.append(" where ").append(where);
-		if (maxRows != null) {
+		if (dtListState.getSortFieldName().isPresent()) {
+			request.append(" order by ").append(dtListState.getSortFieldName().get());
+			request.append(dtListState.isSortDesc().isPresent() ? " desc" : " asc");
+		}
+		if (dtListState.getMaxRows().isPresent()) {
 			// the criteria is not null so the where is not empty at least 1=1 for alwaysTrue
-			sqlDialect.appendMaxRows(request, maxRows);
+			sqlDialect.appendMaxRows(request, dtListState.getMaxRows().get());
 		}
 		return request.toString();
 	}
