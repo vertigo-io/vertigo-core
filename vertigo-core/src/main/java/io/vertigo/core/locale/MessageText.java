@@ -42,22 +42,25 @@ public final class MessageText implements Serializable {
 	private final Serializable[] params;
 
 	/**
-	 * static Builder of a messageText.
-	 * @return the builder
-	 */
-	public static MessageTextBuilder builder() {
-		return new MessageTextBuilder();
-	}
-
-	/**
 	 * static Builder of a messageText by its key.
 	 * @param key Clé de la ressource
 	 * @return the messageText
 	 */
-	public static MessageText of(final MessageKey key) {
+	public static MessageText of(final MessageKey key, final Serializable... params) {
 		Assertion.checkNotNull(key, "the message key is required");
 		//---
-		return new MessageText(null, key, new Serializable[0]);
+		return new MessageText(null, key, params);
+	}
+
+	/**
+	 * static Builder of a messageText by its default message.
+	 * @param msg Message par défaut (non formatté) de la ressource
+	 * @return the messageText
+	 */
+	public static MessageText of(final String msg, final Serializable... params) {
+		Assertion.checkArgNotEmpty(msg, "the message is required");
+		//---
+		return new MessageText(msg, null, params);
 	}
 
 	/**
@@ -65,10 +68,11 @@ public final class MessageText implements Serializable {
 	 * @param defaultMsg Message par défaut (non formatté) de la ressource
 	 * @return the messageText
 	 */
-	public static MessageText of(final String defaultMsg) {
+	public static MessageText ofDefaultMsg(final String defaultMsg, final MessageKey key, final Serializable... params) {
 		Assertion.checkArgNotEmpty(defaultMsg, "the default message is required");
+		Assertion.checkNotNull(key, "the message key is required");
 		//---
-		return new MessageText(defaultMsg, null, new Serializable[0]);
+		return new MessageText(defaultMsg, key, params);
 	}
 
 	/**

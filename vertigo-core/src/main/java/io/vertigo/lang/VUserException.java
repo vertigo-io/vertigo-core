@@ -52,7 +52,7 @@ public class VUserException extends RuntimeException {
 	 * @param params  list of params (optional)
 	 */
 	public VUserException(final String defaultMsg, final Serializable... params) {
-		this((MessageText.builder().withDefaultMsg(defaultMsg).withParams(params).build()));
+		this((MessageText.of(defaultMsg, params)));
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class VUserException extends RuntimeException {
 	 * @param params  list of params (optional)
 	 */
 	public VUserException(final MessageKey key, final Serializable... params) {
-		this((MessageText.builder().withKey(key).withParams(params).build()));
+		this((MessageText.of(key, params)));
 	}
 
 	/**

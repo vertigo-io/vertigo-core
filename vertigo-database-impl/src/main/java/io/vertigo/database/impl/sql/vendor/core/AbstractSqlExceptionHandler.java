@@ -102,11 +102,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 
 		//On récupère ici le message externalisé par défaut : Resources.DYNAMO_SQL_CONSTRAINT_IMPOSSIBLE_TO_DELETE ou Resources.DYNAMO_SQL_CONSTRAINT_ALREADY_REGISTRED)
 		final String defaultConstraintMsg = MessageText.of(defaultMsg).getDisplay();
-		final MessageText userContraintMessageText = MessageText
-				.builder()
-				.withKey(constraintKey)
-				.withDefaultMsg(defaultConstraintMsg)
-				.build();
+		final MessageText userContraintMessageText = MessageText.ofDefaultMsg(defaultConstraintMsg, constraintKey);
 		final VUserException constraintException = new VUserException(userContraintMessageText);
 		constraintException.initCause(sqle);
 		return constraintException;

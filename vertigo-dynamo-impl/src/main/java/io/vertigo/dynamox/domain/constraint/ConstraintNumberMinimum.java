@@ -54,10 +54,7 @@ public final class ConstraintNumberMinimum implements Constraint<Number, Number>
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return MessageText.builder()
-				.withKey(Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM)
-				.withParams(minValue)
-				.build();
+		return MessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM, minValue);
 	}
 
 	/** {@inheritDoc} */

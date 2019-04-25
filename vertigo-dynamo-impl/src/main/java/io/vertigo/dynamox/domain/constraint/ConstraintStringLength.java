@@ -47,9 +47,6 @@ public final class ConstraintStringLength extends AbstractConstraintLength<Strin
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return MessageText.builder()
-				.withKey(Resources.DYNAMO_CONSTRAINT_STRINGLENGTH_EXCEEDED)
-				.withParams(Integer.toString(getMaxLength()))
-				.build();
+		return MessageText.of(Resources.DYNAMO_CONSTRAINT_STRINGLENGTH_EXCEEDED, Integer.toString(getMaxLength()));
 	}
 }

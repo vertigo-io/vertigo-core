@@ -78,14 +78,10 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return MessageText
-				.builder()
-				.withKey(Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED)
-				.withParams(
-						new BigDecimal(new BigInteger("1"), 0 - maxPrecision - maxScale),
-						maxScale,
-						maxPrecision - maxScale)
-				.build();
+		return MessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED,
+				new BigDecimal(new BigInteger("1"), 0 - maxPrecision - maxScale),
+				maxScale,
+				maxPrecision - maxScale);
 	}
 
 	/** {@inheritDoc} */

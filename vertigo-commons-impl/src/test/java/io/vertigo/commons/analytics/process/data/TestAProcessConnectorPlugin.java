@@ -20,8 +20,8 @@ package io.vertigo.commons.analytics.process.data;
 
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.commons.analytics.process.AProcess;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
-import io.vertigo.commons.impl.analytics.process.AProcess;
 
 public class TestAProcessConnectorPlugin implements AnalyticsConnectorPlugin {
 	private static int count = 0;
