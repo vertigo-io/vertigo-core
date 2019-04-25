@@ -20,15 +20,16 @@ package io.vertigo.commons.plugins.analytics.log;
 
 import java.util.Collections;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.commons.analytics.process.AProcess;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
-import io.vertigo.commons.impl.analytics.process.AProcess;
 
 /**
  * Processes connector which only use a log4j logger.

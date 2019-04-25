@@ -26,6 +26,7 @@ import java.util.function.Function;
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.health.HealthStatus;
 import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.commons.analytics.process.AProcess;
 import io.vertigo.commons.analytics.process.ProcessAnalyticsTracer;
 import io.vertigo.core.component.Manager;
 
@@ -77,5 +78,12 @@ public interface AnalyticsManager extends Manager {
 	 * @return the list of metrics
 	 */
 	List<Metric> getMetrics();
+
+	/**
+	 * Adds an already built AProcess (with the builder) for tracking process that are not executed in a single thread environnement.
+	 * Prefer the use of method trace and traceWithReturn for commons cases (easier)
+	 * @param process the built process
+	 */
+	void addProcess(AProcess process);
 
 }

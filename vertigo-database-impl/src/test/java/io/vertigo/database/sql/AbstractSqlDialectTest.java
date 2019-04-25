@@ -34,7 +34,6 @@ public abstract class AbstractSqlDialectTest {
 
 	@Test
 	public void testInsertQuery() {
-
 		final SqlDialect sqlDialect = getDialect();
 		final String insertQuery = sqlDialect.createInsertQuery("id", Collections.singletonList("title"), "SEQ_", "MOVIE");
 		Assertions.assertEquals(getExpectedInsertQuery(), insertQuery);
@@ -55,9 +54,33 @@ public abstract class AbstractSqlDialectTest {
 	@Test
 	public void testAppendMaxRows() {
 		final StringBuilder stringBuilder = new StringBuilder("select * from MOVIE");
-		getDialect().appendMaxRows(stringBuilder, 100);
+		getDialect().appendListState(stringBuilder, 100, 0, null, false);
 		final String query = stringBuilder.toString();
 		Assertions.assertEquals(getExpectedAppendMaxRowsQuery(), query);
+	}
+
+	@Test
+	public void testAppendSkipRows() {
+		final StringBuilder stringBuilder = new StringBuilder("select * from MOVIE");
+		getDialect().appendListState(stringBuilder, null, 10, null, false);
+		final String query = stringBuilder.toString();
+		Assertions.assertEquals(getExpectedAppendSkipRowsQuery(), query);
+	}
+
+	@Test
+	public void testAppendSort() {
+		final StringBuilder stringBuilder = new StringBuilder("select * from MOVIE");
+		getDialect().appendListState(stringBuilder, null, 0, "title", false);
+		final String query = stringBuilder.toString();
+		Assertions.assertEquals(getExpectedAppendSortQuery(), query);
+	}
+
+	@Test
+	public void testAppendSortDesc() {
+		final StringBuilder stringBuilder = new StringBuilder("select * from MOVIE");
+		getDialect().appendListState(stringBuilder, null, 0, "title", true);
+		final String query = stringBuilder.toString();
+		Assertions.assertEquals(getExpectedAppendSortDescQuery(), query);
 	}
 
 	public abstract SqlDialect getDialect();
@@ -70,6 +93,20 @@ public abstract class AbstractSqlDialectTest {
 
 	public abstract Optional<String> getExpectedCreatePrimaryKeyQuery();
 
-	public abstract String getExpectedAppendMaxRowsQuery();
+	public String getExpectedAppendMaxRowsQuery() {
+		return "select * from MOVIE order by 1 offset 0 rows fetch next 100 rows only";
+	}
+
+	public String getExpectedAppendSkipRowsQuery() {
+		return "select * from MOVIE order by 1 offset 10 rows";
+	}
+
+	public String getExpectedAppendSortQuery() {
+		return "select * from MOVIE order by TITLE";
+	}
+
+	public String getExpectedAppendSortDescQuery() {
+		return "select * from MOVIE order by TITLE desc";
+	}
 
 }

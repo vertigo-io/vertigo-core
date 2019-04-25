@@ -82,7 +82,7 @@ public abstract class Criteria<E extends Entity> implements Serializable {
 	public String toString() {
 		return toSql(new SqlDialect() {
 			@Override
-			public void appendMaxRows(final StringBuilder query, final Integer maxRows) {
+			public void appendListState(final StringBuilder query, final Integer maxRows, final int skipRows, final String sortFieldName, final boolean sortDesc) {
 				//rien
 			}
 

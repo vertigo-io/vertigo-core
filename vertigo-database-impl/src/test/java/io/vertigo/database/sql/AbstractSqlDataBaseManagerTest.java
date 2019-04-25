@@ -44,6 +44,7 @@ import io.vertigo.database.sql.data.Movies;
 import io.vertigo.database.sql.statement.SqlParameter;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.statement.SqlStatementBuilder;
+import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.lang.DataStream;
 
@@ -475,5 +476,49 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 		final List<Integer> keys = executeQuery(Integer.class, "select id from movie", null);
 		Assertions.assertEquals(1, keys.size());
 		Assertions.assertEquals(generatedKey, keys.get(0).intValue());
+	}
+
+	protected abstract SqlDialect getDialect();
+
+	@Test
+	public void testSelectDtListState() throws Exception {
+		//On crée les données
+		createDatas();
+		//----
+		StringBuilder stringBuilder = new StringBuilder("select * from MOVIE");
+		getDialect().appendListState(stringBuilder, null, 0, "title", false);
+		final String querySortAsc = stringBuilder.toString();
+		final List<Movie> resultSortAsc = executeQuery(Movie.class, querySortAsc, null);
+		Assertions.assertEquals(3, resultSortAsc.size());
+		Assertions.assertEquals("citizen kane", resultSortAsc.get(0).getTitle());
+
+		stringBuilder = new StringBuilder("select * from MOVIE");
+		getDialect().appendListState(stringBuilder, null, 0, "title", true);
+		final String querySortDesc = stringBuilder.toString();
+		final List<Movie> resultSortDesc = executeQuery(Movie.class, querySortDesc, null);
+		Assertions.assertEquals(3, resultSortDesc.size());
+		Assertions.assertEquals("vertigo", resultSortDesc.get(0).getTitle());
+
+		stringBuilder = new StringBuilder("select * from MOVIE");
+		getDialect().appendListState(stringBuilder, 2, 0, null, false);
+		final String queryMaxRows = stringBuilder.toString();
+
+		final List<Movie> resultMaxRows = executeQuery(Movie.class, queryMaxRows, null);
+		Assertions.assertEquals(2, resultMaxRows.size());
+
+		stringBuilder = new StringBuilder("select * from MOVIE where 1=1");
+		getDialect().appendListState(stringBuilder, 2, 0, null, false);
+		final String queryMaxRows2 = stringBuilder.toString();
+
+		final List<Movie> resultMaxRows2 = executeQuery(Movie.class, queryMaxRows2, null);
+		Assertions.assertEquals(2, resultMaxRows2.size());
+
+		stringBuilder = new StringBuilder("select * from MOVIE");
+		getDialect().appendListState(stringBuilder, null, 1, null, false);
+		final String querySkipRows = stringBuilder.toString();
+		final List<Movie> resultSkipRows = executeQuery(Movie.class, querySkipRows, null);
+		Assertions.assertEquals(2, resultSkipRows.size());
+		Assertions.assertEquals(resultMaxRows.get(1).getId(), resultSkipRows.get(0).getId());
+
 	}
 }

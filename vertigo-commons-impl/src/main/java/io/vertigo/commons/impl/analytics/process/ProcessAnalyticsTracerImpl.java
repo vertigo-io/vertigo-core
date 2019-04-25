@@ -25,6 +25,8 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.vertigo.commons.analytics.process.AProcess;
+import io.vertigo.commons.analytics.process.AProcessBuilder;
 import io.vertigo.commons.analytics.process.ProcessAnalyticsTracer;
 import io.vertigo.lang.Assertion;
 

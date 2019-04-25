@@ -25,7 +25,11 @@ import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
-final class OracleDialect implements SqlDialect {
+/**
+ * Sql dialect for Oracle 12c+
+ * @author npiedeloup
+ */
+class OracleDialect implements SqlDialect {
 	/**
 	 * Oracle n'autorise pas de sequence de plus de 30 char.
 	 */
@@ -72,12 +76,6 @@ final class OracleDialect implements SqlDialect {
 			sequenceName = sequenceName.substring(0, ORACLE_SEQUENCE_NAME_MAX_LENGHT);
 		}
 		return sequenceName;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void appendMaxRows(final StringBuilder request, final Integer maxRows) {
-		request.append(" and rownum <= ").append(maxRows);
 	}
 
 	/** {@inheritDoc} */

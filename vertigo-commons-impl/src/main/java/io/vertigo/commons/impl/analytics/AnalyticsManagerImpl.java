@@ -32,11 +32,11 @@ import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.health.HealthStatus;
 import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.commons.analytics.process.AProcess;
 import io.vertigo.commons.analytics.process.ProcessAnalyticsTracer;
 import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.impl.analytics.health.HealthAnalyticsUtil;
 import io.vertigo.commons.impl.analytics.metric.MetricAnalyticsUtil;
-import io.vertigo.commons.impl.analytics.process.AProcess;
 import io.vertigo.commons.impl.analytics.process.ProcessAnalyticsImpl;
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.Component;
@@ -99,6 +99,12 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 	@Override
 	public <O> O traceWithReturn(final String category, final String name, final Function<ProcessAnalyticsTracer, O> function) {
 		return processAnalyticsImpl.traceWithReturn(category, name, function, this::onClose);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void addProcess(final AProcess process) {
+		onClose(process);
 	}
 
 	/** {@inheritDoc} */

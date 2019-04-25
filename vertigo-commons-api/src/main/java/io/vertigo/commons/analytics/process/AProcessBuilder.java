@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.impl.analytics.process;
+package io.vertigo.commons.analytics.process;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -33,21 +33,23 @@ import io.vertigo.lang.Builder;
  * @author pchretien, npiedeloup
  * @version $Id: KProcessBuilder.java,v 1.18 2012/11/08 17:06:27 pchretien Exp $
  */
-final class AProcessBuilder implements Builder<AProcess> {
+public final class AProcessBuilder implements Builder<AProcess> {
 	private final String myCategory;
 	private final Instant start;
+	private Instant myEnd;
 
 	private final String myName;
 
-	private final Map<String, Double> measures;
-	private final Map<String, String> tags;
+	private final Map<String, Double> measures = new HashMap<>();
+	private final Map<String, String> tags = new HashMap<>();
 
-	private final List<AProcess> subProcesses;
+	private final List<AProcess> subProcesses = new ArrayList<>();
 
 	/**
 	 * Constructor.
 	 * La duree du processus sera obtenue lors de l'appel a la methode build().
-	 * @param type Type du processus
+	 * @param category category of the processus
+	 * @param name name of the process, used for agregation
 	 */
 	AProcessBuilder(final String category, final String name) {
 		Assertion.checkArgNotEmpty(category, "the process category is required");
@@ -56,10 +58,28 @@ final class AProcessBuilder implements Builder<AProcess> {
 		myCategory = category;
 		myName = name;
 
-		measures = new HashMap<>();
-		tags = new HashMap<>();
-		subProcesses = new ArrayList<>();
 		start = Instant.now();
+	}
+
+	/**
+	 * Constructor.
+	 * La duree du processus sera obtenue lors de l'appel a la methode build().
+	 * @param category category of the processus
+	 * @param name name of the process, used for agregation
+	 * @param start beginning of the process
+	 * @param end end of the process
+	 */
+	AProcessBuilder(final String category, final String name, final Instant start, final Instant end) {
+		Assertion.checkArgNotEmpty(category, "the process category is required");
+		Assertion.checkArgNotEmpty(name, "the process name is required");
+		Assertion.checkNotNull(start, "the process start is required");
+		Assertion.checkNotNull(end, "the process end is required");
+		//---
+		myCategory = category;
+		myName = name;
+
+		this.start = start;
+		myEnd = end;
 	}
 
 	/**
@@ -69,7 +89,7 @@ final class AProcessBuilder implements Builder<AProcess> {
 	 * @param value  the measure value to increment
 	 * @return this builder
 	 */
-	AProcessBuilder incMeasure(final String measureName, final double measureValue) {
+	public AProcessBuilder incMeasure(final String measureName, final double measureValue) {
 		Assertion.checkNotNull(measureName, "Measure name is required");
 		//---------------------------------------------------------------------
 		final Double lastmValue = measures.get(measureName);
@@ -83,7 +103,7 @@ final class AProcessBuilder implements Builder<AProcess> {
 	 * @param value  the value measure
 	 * @return this builder
 	 */
-	AProcessBuilder setMeasure(final String name, final double value) {
+	public AProcessBuilder setMeasure(final String name, final double value) {
 		Assertion.checkNotNull(name, "measure name is required");
 		//---------------------------------------------------------------------
 		measures.put(name, value);
@@ -96,7 +116,7 @@ final class AProcessBuilder implements Builder<AProcess> {
 	 * @param value  the tag value
 	 * @return this builder
 	 */
-	AProcessBuilder addTag(final String name, final String value) {
+	public AProcessBuilder addTag(final String name, final String value) {
 		Assertion.checkNotNull(name, "tag name is required");
 		Assertion.checkNotNull(value, "tag value is required");
 		//---------------------------------------------------------------------
@@ -109,7 +129,7 @@ final class AProcessBuilder implements Builder<AProcess> {
 	 * @param subProcess the sub process to add
 	 * @return this builder
 	 */
-	AProcessBuilder addSubProcess(final AProcess subProcess) {
+	public AProcessBuilder addSubProcess(final AProcess subProcess) {
 		Assertion.checkNotNull(subProcess, "sub process is required ");
 		//---------------------------------------------------------------------
 		subProcesses.add(subProcess);
@@ -119,7 +139,7 @@ final class AProcessBuilder implements Builder<AProcess> {
 	/** {@inheritDoc} */
 	@Override
 	public AProcess build() {
-		final Instant end = Instant.now();
+		final Instant end = myEnd != null ? myEnd : Instant.now();
 		return new AProcess(
 				myCategory,
 				myName,

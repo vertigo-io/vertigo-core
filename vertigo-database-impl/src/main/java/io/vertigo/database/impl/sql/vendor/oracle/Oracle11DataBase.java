@@ -19,14 +19,14 @@
 package io.vertigo.database.impl.sql.vendor.oracle;
 
 /**
- * Gestion de la base de données Oracle.
+ * Gestion de la base de données Oracle 11g.
  *
  * @author pchretien
  */
-public final class OracleDataBase extends AbstractOracleDataBase {
+public final class Oracle11DataBase extends AbstractOracleDataBase {
 
-	public OracleDataBase() {
-		super(new OracleDialect());
+	public Oracle11DataBase() {
+		super(new Oracle11Dialect());
 	}
 
 }

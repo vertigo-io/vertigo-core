@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.impl.analytics.process;
+package io.vertigo.commons.analytics.process;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -123,6 +123,18 @@ public final class AProcess {
 	 */
 	public static AProcessBuilder builder(final String category, final String name) {
 		return new AProcessBuilder(category, name);
+	}
+
+	/**
+	 * Static method factory for NodeConfigBuilder
+	 * @param category category of the processus
+	 * @param name name of the process, used for agregation
+	 * @param start beginning of the process
+	 * @param end end of the process
+	 * @return AProcessBuilder
+	 */
+	public static AProcessBuilder builder(final String category, final String name, final Instant start, final Instant end) {
+		return new AProcessBuilder(category, name, start, end);
 	}
 
 	private static void checkRegex(final String s, final Pattern pattern, final String info) {
