@@ -134,6 +134,7 @@ public final class OOMLoader extends AbstractXmlLoader {
 				domain = childRef.getCode();
 			}
 		}
+		Assertion.checkNotNull(domain);
 		final String domainName = isConstFieldNameInSource() ? StringUtil.constToUpperCamelCase(domain.toUpperCase(Locale.ENGLISH)) : domain;
 		return new XmlAttribute(fieldName, label, persistent, notNull, domainName);
 	}

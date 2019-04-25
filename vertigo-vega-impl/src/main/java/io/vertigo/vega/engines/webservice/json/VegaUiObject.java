@@ -151,7 +151,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 * @return DtDefinition de l'objet métier
 	 */
 	@Override
-	public DtDefinition getDtDefinition() {
+	public final DtDefinition getDtDefinition() {
 		return dtDefinitionRef.get();
 	}
 
