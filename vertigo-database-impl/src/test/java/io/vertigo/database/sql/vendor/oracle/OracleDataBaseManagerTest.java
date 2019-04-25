@@ -35,7 +35,7 @@ import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 @Disabled
 public final class OracleDataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
 
-	private static final boolean ORACLE_11 = true;
+	private static final boolean ORACLE_11 = false;
 
 	@Override
 	public SqlDialect getDialect() {
@@ -56,7 +56,7 @@ public final class OracleDataBaseManagerTest extends AbstractSqlDataBaseManagerT
 								Param.of("dataBaseClass", ORACLE_11 ? Oracle11DataBase.class.getName() : OracleDataBase.class.getName()),
 								Param.of("jdbcDriver", "oracle.jdbc.OracleDriver"),
 								ORACLE_11 ? Param.of("jdbcUrl", "jdbc:oracle:thin:DT_VERTIGO/DT_VERTIGO@selma.dev.klee.lan.net:1521/O11UTF8")
-										: Param.of("jdbcUrl", "jdbc:oracle:thin:DT_VERTIGO/DT_VERTIGO@selma.dev.klee.lan.net:1521/O12UTF8"))
+										: Param.of("jdbcUrl", "jdbc:oracle:thin:DT_VERTIGO/DT_VERTIGO@luna.dev.klee.lan.net:1521/O12UTF8"))
 						.withC3p0(
 								Param.of("name", "secondary"),
 								Param.of("dataBaseClass", H2DataBase.class.getName()),
