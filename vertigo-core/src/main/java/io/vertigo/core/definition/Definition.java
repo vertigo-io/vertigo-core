@@ -43,7 +43,7 @@ public interface Definition {
 	 * ou
 	 * ToTo$tiTi
 	 */
-	Pattern REGEX_DEFINITION_URN = Pattern.compile("[A-Z][a-zA-Z0-9]{2,60}([$][a-z][a-zA-Z0-9]{2,60})?");
+	Pattern REGEX_DEFINITION_NAME = Pattern.compile("[A-Z][a-zA-Z0-9]{2,60}([$][a-z][a-zA-Z0-9]{2,60})?");
 
 	/**
 	 * @return Nom de la définition.
