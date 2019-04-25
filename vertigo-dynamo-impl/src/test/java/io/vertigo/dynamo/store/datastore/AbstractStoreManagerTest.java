@@ -182,6 +182,34 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 	}
 
 	@Test
+	public void testSelectCarDtListState() {
+		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+			final DtList<Car> dtc1 = storeManager.getDataStore().find(dtDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3));
+			Assertions.assertEquals(3, dtc1.size());
+			//-----
+			final DtList<Car> dtc2 = storeManager.getDataStore().find(dtDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3, 2, null, null));
+			Assertions.assertEquals(3, dtc2.size());
+			Assertions.assertEquals(dtc1.get(2).getId(), dtc2.get(0).getId());
+			//-----
+			final DtList<Car> dtc3 = storeManager.getDataStore().find(dtDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3, 0, CarFields.manufacturer.name(), false));
+			Assertions.assertEquals(3, dtc3.size());
+			Assertions.assertEquals("Audi", dtc3.get(0).getManufacturer());
+			//-----
+			final DtList<Car> dtc4 = storeManager.getDataStore().find(dtDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3, 0, CarFields.manufacturer.name(), true));
+			Assertions.assertEquals(3, dtc4.size());
+			Assertions.assertEquals("Volkswagen", dtc4.get(0).getManufacturer());
+			//-----
+			final DtList<Car> dtc5 = storeManager.getDataStore().find(dtDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3, 0, CarFields.price.name(), false));
+			Assertions.assertEquals(3, dtc5.size());
+			Assertions.assertEquals(2500, dtc5.get(0).getPrice().intValue());
+			//-----
+			final DtList<Car> dtc6 = storeManager.getDataStore().find(dtDefinitionCar, Criterions.alwaysTrue(), DtListState.of(3, 0, CarFields.price.name(), true));
+			Assertions.assertEquals(3, dtc6.size());
+			Assertions.assertEquals(109000, dtc6.get(0).getPrice().intValue());
+		}
+	}
+
+	@Test
 	public void testSelectCarAndTestMasterDataEnum() {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
 			final DtList<Car> dtcEssence = storeManager.getDataStore().find(

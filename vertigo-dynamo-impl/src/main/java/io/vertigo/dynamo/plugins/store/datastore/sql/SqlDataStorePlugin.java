@@ -526,14 +526,12 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.append(requestedFields)
 				.append(" from ").append(tableName)
 				.append(" where ").append(where);
-		if (dtListState.getSortFieldName().isPresent()) {
-			request.append(" order by ").append(dtListState.getSortFieldName().get());
-			request.append(dtListState.isSortDesc().isPresent() ? " desc" : " asc");
-		}
-		if (dtListState.getMaxRows().isPresent()) {
-			// the criteria is not null so the where is not empty at least 1=1 for alwaysTrue
-			sqlDialect.appendMaxRows(request, dtListState.getMaxRows().get());
-		}
+
+		sqlDialect.appendListState(request,
+				dtListState.getMaxRows().orElse(null),
+				dtListState.getSkipRows(),
+				dtListState.getSortFieldName().orElse(null),
+				dtListState.isSortDesc().orElse(false));
 		return request.toString();
 	}
 }
