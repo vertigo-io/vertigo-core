@@ -80,7 +80,7 @@ public interface AnalyticsManager extends Manager {
 	List<Metric> getMetrics();
 
 	/**
-	 * Adds an already built AProcess (with the builder) for tracking process that are not executed in a single thread environnement.
+	 * Adds an already built AProcess (via the builder) for tracking process that are not executed in a single thread environnement.
 	 * Prefer the use of method trace and traceWithReturn for commons cases (easier)
 	 * @param process the built process
 	 */
