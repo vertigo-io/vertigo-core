@@ -26,9 +26,14 @@ import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.impl.sql.vendor.postgresql.PostgreSqlDataBase;
 import io.vertigo.database.sql.AbstractSqlDataBaseManagerTest;
 import io.vertigo.database.sql.mapper.MailAdapterSupplierPlugin;
+import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 
 public final class PostgreSqlDataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
+	@Override
+	public SqlDialect getDialect() {
+		return new PostgreSqlDataBase().getSqlDialect();
+	}
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
@@ -72,7 +77,7 @@ public final class PostgreSqlDataBaseManagerTest extends AbstractSqlDataBaseMana
 	}
 
 	@Override
-	protected final String createSequenceMovie() {
+	protected String createSequenceMovie() {
 		return "CREATE SEQUENCE seq_movie";
 	}
 

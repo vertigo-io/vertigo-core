@@ -56,8 +56,4 @@ public final class SqlServerDialectTest extends AbstractSqlDialectTest {
 		return Optional.empty();
 	}
 
-	@Override
-	public String getExpectedAppendMaxRowsQuery() {
-		return "select  top 100 * from MOVIE";
-	}
 }

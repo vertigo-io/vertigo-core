@@ -58,8 +58,18 @@ final class H2SqlDialect implements SqlDialect {
 
 	/** {@inheritDoc} */
 	@Override
-	public void appendMaxRows(final StringBuilder request, final Integer maxRows) {
-		request.append(" limit ").append(maxRows);
+	public void appendListState(final StringBuilder query, final Integer maxRows, final int skipRows, final String sortFieldName, final boolean sortDesc) {
+		if (sortFieldName != null) {
+			query.append(" order by ").append(StringUtil.camelToConstCase(sortFieldName));
+			query.append(sortDesc ? " desc" : "");
+		}
+
+		if (maxRows != null) {
+			query.append(" limit ").append(maxRows);
+		}
+		if (skipRows > 0) {
+			query.append(" offset ").append(skipRows);
+		}
 	}
 
 	/** {@inheritDoc} */

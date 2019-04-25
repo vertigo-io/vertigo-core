@@ -55,9 +55,4 @@ public final class PostgreSqlDialectTest extends AbstractSqlDialectTest {
 	public Optional<String> getExpectedCreatePrimaryKeyQuery() {
 		return Optional.empty();
 	}
-
-	@Override
-	public String getExpectedAppendMaxRowsQuery() {
-		return "select * from MOVIE limit 100";
-	}
 }

@@ -25,13 +25,22 @@ import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
+import io.vertigo.database.impl.sql.vendor.oracle.Oracle11DataBase;
 import io.vertigo.database.impl.sql.vendor.oracle.OracleDataBase;
 import io.vertigo.database.sql.AbstractSqlDataBaseManagerTest;
 import io.vertigo.database.sql.mapper.MailAdapterSupplierPlugin;
+import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 
 @Disabled
 public final class OracleDataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
+
+	private static final boolean ORACLE_11 = true;
+
+	@Override
+	public SqlDialect getDialect() {
+		return ORACLE_11 ? new Oracle11DataBase().getSqlDialect() : new OracleDataBase().getSqlDialect();
+	}
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
@@ -44,9 +53,10 @@ public final class OracleDataBaseManagerTest extends AbstractSqlDataBaseManagerT
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()
 						.withC3p0(
-								Param.of("dataBaseClass", OracleDataBase.class.getName()),
+								Param.of("dataBaseClass", ORACLE_11 ? Oracle11DataBase.class.getName() : OracleDataBase.class.getName()),
 								Param.of("jdbcDriver", "oracle.jdbc.OracleDriver"),
-								Param.of("jdbcUrl", "jdbc:oracle:thin:DT_VERTIGO/DT_VERTIGO@selma.dev.klee.lan.net:1521/O11UTF8"))
+								ORACLE_11 ? Param.of("jdbcUrl", "jdbc:oracle:thin:DT_VERTIGO/DT_VERTIGO@selma.dev.klee.lan.net:1521/O11UTF8")
+										: Param.of("jdbcUrl", "jdbc:oracle:thin:DT_VERTIGO/DT_VERTIGO@selma.dev.klee.lan.net:1521/O12UTF8"))
 						.withC3p0(
 								Param.of("name", "secondary"),
 								Param.of("dataBaseClass", H2DataBase.class.getName()),

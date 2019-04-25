@@ -54,12 +54,6 @@ final class PostgreSqlDialect implements SqlDialect {
 
 	/** {@inheritDoc} */
 	@Override
-	public void appendMaxRows(final StringBuilder request, final Integer maxRows) {
-		request.append(" limit ").append(maxRows);
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public GenerationMode getGenerationMode() {
 		return GenerationMode.GENERATED_KEYS;
 	}

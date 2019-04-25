@@ -20,7 +20,7 @@ package io.vertigo.database.sql.vendor.oracle;
 
 import java.util.Optional;
 
-import io.vertigo.database.impl.sql.vendor.oracle.OracleDataBase;
+import io.vertigo.database.impl.sql.vendor.oracle.Oracle11DataBase;
 import io.vertigo.database.sql.AbstractSqlDialectTest;
 import io.vertigo.database.sql.vendor.SqlDialect;
 
@@ -28,11 +28,11 @@ import io.vertigo.database.sql.vendor.SqlDialect;
  *
  * @author mlaroche
  */
-public final class OracleDialectTest extends AbstractSqlDialectTest {
+public final class Oracle11DialectTest extends AbstractSqlDialectTest {
 
 	@Override
 	public SqlDialect getDialect() {
-		return new OracleDataBase().getSqlDialect();
+		return new Oracle11DataBase().getSqlDialect();
 
 	}
 
@@ -54,6 +54,26 @@ public final class OracleDialectTest extends AbstractSqlDialectTest {
 	@Override
 	public Optional<String> getExpectedCreatePrimaryKeyQuery() {
 		return Optional.empty();
+	}
+
+	@Override
+	public String getExpectedAppendMaxRowsQuery() {
+		return "select * from MOVIE where rownum <= 100";
+	}
+
+	@Override
+	public String getExpectedAppendSkipRowsQuery() {
+		return "select * from MOVIE";
+	}
+
+	@Override
+	public String getExpectedAppendSortQuery() {
+		return "select * from MOVIE order by TITLE";
+	}
+
+	@Override
+	public String getExpectedAppendSortDescQuery() {
+		return "select * from MOVIE order by TITLE desc";
 	}
 
 }

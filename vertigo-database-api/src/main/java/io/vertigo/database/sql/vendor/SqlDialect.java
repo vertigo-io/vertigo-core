@@ -61,11 +61,29 @@ public interface SqlDialect {
 			String tableName);
 
 	/**
-	 * Ajoute à la requete les éléments techniques nécessaire pour limiter le resultat à {maxRows}.
+	 * Ajoute à la requete les éléments techniques nécessaire pour paginer le resultat {maxRows}, {skipRows}, {sortFieldName} {sortDesc}.
 	 * @param query the sql query
-	 * @param maxRows max rows
+	 * @param maxRows max rows (null if none)
+	 * @param skipRows skip rows
+	 * @param sortFieldName sort FieldName (null if none)
+	 * @param sortDesc if sorting desc
 	 */
-	void appendMaxRows(final StringBuilder query, final Integer maxRows);
+	default void appendListState(final StringBuilder query, final Integer maxRows, final int skipRows, final String sortFieldName, final boolean sortDesc) {
+		//syntax SQL:2008
+		if (sortFieldName != null) {
+			query.append(" order by ").append(StringUtil.camelToConstCase(sortFieldName));
+			query.append(sortDesc ? " desc" : "");
+		} else if (skipRows > 0 || maxRows != null) {
+			query.append(" order by 1"); //order by is mandatory if offset or fetch next was use
+		}
+
+		if (skipRows > 0 || maxRows != null) {
+			query.append(" offset ").append(skipRows).append(" rows");
+		}
+		if (maxRows != null) {
+			query.append(" fetch next ").append(maxRows).append(" rows only");
+		}
+	}
 
 	/**
 	 * Requête à exécuter pour faire un select for update. Doit pouvoir être surchargé pour tenir compte des
@@ -96,4 +114,5 @@ public interface SqlDialect {
 	 * @return how keys are generated
 	 */
 	GenerationMode getGenerationMode();
+
 }

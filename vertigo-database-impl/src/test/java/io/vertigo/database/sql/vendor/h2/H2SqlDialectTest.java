@@ -64,4 +64,19 @@ public final class H2SqlDialectTest extends AbstractSqlDialectTest {
 	public String getExpectedAppendMaxRowsQuery() {
 		return "select * from MOVIE limit 100";
 	}
+
+	@Override
+	public String getExpectedAppendSkipRowsQuery() {
+		return "select * from MOVIE offset 10";
+	}
+
+	@Override
+	public String getExpectedAppendSortQuery() {
+		return "select * from MOVIE order by TITLE";
+	}
+
+	@Override
+	public String getExpectedAppendSortDescQuery() {
+		return "select * from MOVIE order by TITLE desc";
+	}
 }
