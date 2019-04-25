@@ -42,9 +42,9 @@ import com.google.gson.JsonObject;
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.commons.analytics.process.AProcess;
 import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
-import io.vertigo.commons.impl.analytics.process.AProcess;
 import io.vertigo.lang.Assertion;
 
 /**

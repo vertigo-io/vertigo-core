@@ -23,6 +23,7 @@ import java.util.Stack;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import io.vertigo.commons.analytics.process.AProcess;
 import io.vertigo.commons.analytics.process.ProcessAnalyticsTracer;
 import io.vertigo.lang.Assertion;
 

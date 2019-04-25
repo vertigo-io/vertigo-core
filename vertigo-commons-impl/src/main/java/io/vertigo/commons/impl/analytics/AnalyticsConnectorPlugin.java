@@ -20,7 +20,7 @@ package io.vertigo.commons.impl.analytics;
 
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.metric.Metric;
-import io.vertigo.commons.impl.analytics.process.AProcess;
+import io.vertigo.commons.analytics.process.AProcess;
 import io.vertigo.core.component.Plugin;
 
 /**
