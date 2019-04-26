@@ -19,7 +19,6 @@
 package io.vertigo.app.config.discovery;
 
 import io.vertigo.app.config.Features;
-import io.vertigo.core.component.Component;
 
 /**
  * An abstract Feature with no configuration for discovering and registering components in a package tree.
@@ -43,7 +42,7 @@ public abstract class ModuleDiscoveryFeatures<F> extends Features<F> {
 	@Override
 	protected void buildFeatures() {
 		//DAO + PAO + Services + WebServices
-		ComponentDiscovery.registerComponents(Component.class, getPackageRoot(), getModuleConfigBuilder());
+		ComponentDiscovery.registerComponents(getPackageRoot(), getModuleConfigBuilder());
 	}
 
 }

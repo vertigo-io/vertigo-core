@@ -53,12 +53,13 @@ final class ComponentDiscovery {
 	 * @param packagePrefix the package we to look
 	 * @param moduleConfigBuilder the module where components will be added.
 	 */
-	static void registerComponents(final Class<? extends Component> componentType, final String packagePrefix, final ModuleConfigBuilder moduleConfigBuilder) {
-		Assertion.checkNotNull(componentType);
-		//
+	static void registerComponents(final String packagePrefix, final ModuleConfigBuilder moduleConfigBuilder) {
+		Assertion.checkArgNotEmpty(packagePrefix);
+		Assertion.checkNotNull(moduleConfigBuilder);
+		//---
 		final Collection<Class> components = new Selector()
 				.from(packagePrefix)
-				.filterClasses(ClassConditions.subTypeOf(componentType))
+				.filterClasses(ClassConditions.subTypeOf(Component.class))
 				.filterClasses(ClassConditions.isAbstract().negate())// we filter abstract classes
 				// we ignore not discoverable classes
 				.filterClasses(ClassConditions.annotatedWith(NotDiscoverable.class).negate())
@@ -144,5 +145,4 @@ final class ComponentDiscovery {
 		pluginsImplClasses
 				.forEach(moduleConfigBuilder::addPlugin);
 	}
-
 }
