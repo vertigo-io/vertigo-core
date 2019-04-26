@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import io.vertigo.app.config.discovery.DiscoveryTest;
 import io.vertigo.app.config.xml.AppConfig2Test;
 import io.vertigo.app.config.xml2.AppConfigTest;
+import io.vertigo.app.config.yaml.YamlAppConfigTest;
 import io.vertigo.core.component.aop.Aspect2Test;
 import io.vertigo.core.component.aop.AspectTest;
 import io.vertigo.core.component.di.injector.InjectorTest;
@@ -68,9 +69,11 @@ import io.vertigo.util.StringUtilTest;
 		//Boot
 		AppConfigTest.class,
 		AppConfig2Test.class,
+		DiscoveryTest.class,
+		YamlAppConfigTest.class,
+
 		AspectTest.class,
 		Aspect2Test.class,
-		DiscoveryTest.class,
 		ProxyTest.class,
 		//Lang
 		AssertionTest.class,
@@ -91,6 +94,7 @@ import io.vertigo.util.StringUtilTest;
 		ResourceManagerTest.class,
 		//Locales
 		LocaleManagerTest.class
+
 })
 
 public final class CoreTestSuite {
