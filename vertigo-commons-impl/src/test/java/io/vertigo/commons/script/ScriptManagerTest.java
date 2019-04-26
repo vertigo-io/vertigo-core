@@ -28,7 +28,7 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.script.parser.ScriptParserHandler;
@@ -38,7 +38,7 @@ import io.vertigo.util.ListBuilder;
 /**
  * @author pchretien
  */
-public final class ScriptManagerTest extends AbstractTestCaseJU4 {
+public final class ScriptManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private ScriptManager scriptManager;
 	private final ScriptSeparator comment = new ScriptSeparator("<!--", "-->");
