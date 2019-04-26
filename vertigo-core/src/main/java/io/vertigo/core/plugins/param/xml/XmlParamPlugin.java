@@ -39,7 +39,7 @@ import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.StringUtil;
-import io.vertigo.util.XMLUtil;
+import io.vertigo.util.XmlUtil;
 
 /**
  * Parser XML du paramétrage de la config.
@@ -102,7 +102,7 @@ public final class XmlParamPlugin implements ParamPlugin {
 	private static void xsdValidate(final URL configURL) {
 		//--- validation XSD
 		final URL xsd = XmlParamPlugin.class.getResource("vertigo-config_1_0.xsd");
-		XMLUtil.validateXmlByXsd(configURL, xsd);
+		XmlUtil.validateXmlByXsd(configURL, xsd);
 		//--- fin validation XSD
 	}
 

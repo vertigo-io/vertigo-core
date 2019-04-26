@@ -34,7 +34,7 @@ import org.xml.sax.SAXException;
 import io.vertigo.app.config.NodeConfigBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-import io.vertigo.util.XMLUtil;
+import io.vertigo.util.XmlUtil;
 
 /**
  * Parser XML du paramétrage de l'application.
@@ -80,7 +80,7 @@ final class XMLModulesParser {
 	private static void doParse(final NodeConfigBuilder nodeConfigBuilder, final URL managersURL, final XMLModulesParams params) throws ParserConfigurationException, SAXException, IOException {
 		//---validation XSD
 		final URL xsd = XMLModulesParser.class.getResource("vertigo_1_0.xsd");
-		XMLUtil.validateXmlByXsd(managersURL, xsd);
+		XmlUtil.validateXmlByXsd(managersURL, xsd);
 		//---fin validation XSD
 
 		final XMLModulesHandler handler = new XMLModulesHandler(nodeConfigBuilder, params);

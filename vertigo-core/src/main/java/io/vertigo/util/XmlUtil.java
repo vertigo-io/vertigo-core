@@ -37,12 +37,12 @@ import io.vertigo.lang.WrappedException;
  * XSD Validation.
  * @author pchretien
  */
-public final class XMLUtil {
+public final class XmlUtil {
 
 	/**
 	 * Constructor.
 	 */
-	private XMLUtil() {
+	private XmlUtil() {
 		//private constructor
 	}
 
