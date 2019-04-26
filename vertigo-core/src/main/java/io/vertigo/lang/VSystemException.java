@@ -26,16 +26,7 @@ import io.vertigo.util.StringUtil;
  * @author fconstantin, pchretien, npiedeloup
  */
 public class VSystemException extends RuntimeException {
-
 	private static final long serialVersionUID = -2256807194400285743L;
-
-	/**
-	 * Constructor.
-	 * @param msg  the message
-	 */
-	public VSystemException(final String msg) {
-		super(msg);
-	}
 
 	/**
 	 * Constructor.
@@ -43,7 +34,7 @@ public class VSystemException extends RuntimeException {
 	 * @param params the params
 	 */
 	public VSystemException(final String msg, final Object... params) {
-		this(StringUtil.format(msg, params));
+		super(StringUtil.format(msg, params));
 	}
 
 	/**
