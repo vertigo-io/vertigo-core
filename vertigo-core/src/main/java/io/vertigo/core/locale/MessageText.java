@@ -83,7 +83,7 @@ public final class MessageText implements Serializable {
 	 * @param key Clé de la ressource
 	 * @param params paramètres de la ressource
 	 */
-	MessageText(final String defaultMsg, final MessageKey key, final Serializable... params) {
+	private MessageText(final String defaultMsg, final MessageKey key, final Serializable... params) {
 		Assertion.checkNotNull(params);
 		Assertion.checkArgument(defaultMsg != null || key != null, "key or msg must be defined");
 		//---
@@ -98,7 +98,7 @@ public final class MessageText implements Serializable {
 	 * @param key Clé de la ressource
 	 * @param params paramètres de la ressource
 	 */
-	MessageText(final MessageKey key, final Serializable... params) {
+	private MessageText(final MessageKey key, final Serializable... params) {
 		this(null, key, params);
 	}
 
