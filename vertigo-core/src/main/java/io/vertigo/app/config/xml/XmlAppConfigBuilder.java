@@ -35,7 +35,7 @@ import io.vertigo.lang.Builder;
 /**
  * @author npiedeloup, pchretien
  */
-public final class XMLAppConfigBuilder implements Builder<NodeConfig> {
+public final class XmlAppConfigBuilder implements Builder<NodeConfig> {
 	private final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder();
 
 	/**
@@ -54,7 +54,7 @@ public final class XMLAppConfigBuilder implements Builder<NodeConfig> {
 	*
 	* @return this builder
 	*/
-	public XMLAppConfigBuilder withModules(final Class relativeRootClass, final Properties xmlModulesParams, final String... xmlModulesFileNames) {
+	public XmlAppConfigBuilder withModules(final Class relativeRootClass, final Properties xmlModulesParams, final String... xmlModulesFileNames) {
 		Assertion.checkNotNull(relativeRootClass);
 		Assertion.checkNotNull(xmlModulesParams);
 		Assertion.checkNotNull(xmlModulesFileNames);
@@ -63,7 +63,7 @@ public final class XMLAppConfigBuilder implements Builder<NodeConfig> {
 				.map(xmlModulesFileName -> createURL(xmlModulesFileName, relativeRootClass))
 				.collect(Collectors.toList());
 
-		XMLModulesParser.parseAll(nodeConfigBuilder, xmlModulesParams, xmlModulesAsUrls);
+		XmlModulesParser.parseAll(nodeConfigBuilder, xmlModulesParams, xmlModulesAsUrls);
 		return this;
 	}
 
@@ -71,7 +71,7 @@ public final class XMLAppConfigBuilder implements Builder<NodeConfig> {
 	 * @param logConfig Config of logs
 	 * @return  this builder
 	 */
-	public XMLAppConfigBuilder withLogConfig(final LogConfig logConfig) {
+	public XmlAppConfigBuilder withLogConfig(final LogConfig logConfig) {
 		Assertion.checkNotNull(logConfig);
 		//-----
 		nodeConfigBuilder.beginBoot().withLogConfig(logConfig).endBoot();

@@ -24,7 +24,7 @@ import java.net.URL;
 import java.util.Properties;
 
 import io.vertigo.app.config.NodeConfig;
-import io.vertigo.app.config.xml.XMLAppConfigBuilder;
+import io.vertigo.app.config.xml.XmlAppConfigBuilder;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.WrappedException;
@@ -50,7 +50,7 @@ public final class SmartAppConfigBuilder implements Builder<NodeConfig> {
 
 	private static NodeConfig buildNodeConfig(final Properties conf) {
 		// Initialisation de l'état de l'application
-		final XMLAppConfigBuilder nodeConfigBuilder = new XMLAppConfigBuilder();
+		final XmlAppConfigBuilder nodeConfigBuilder = new XmlAppConfigBuilder();
 		if (conf.containsKey("boot.applicationConfiguration")) {
 			final String xmlModulesFileNames = conf.getProperty("boot.applicationConfiguration");
 			final String[] xmlFileNamesSplit = xmlModulesFileNames.split(";");

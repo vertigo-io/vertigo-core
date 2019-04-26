@@ -40,9 +40,9 @@ import io.vertigo.util.XmlUtil;
  * Parser XML du paramétrage de l'application.
  * @author npiedeloup, pchretien
  */
-final class XMLModulesParser {
+final class XmlModulesParser {
 
-	private XMLModulesParser() {
+	private XmlModulesParser() {
 		//
 	}
 
@@ -54,7 +54,7 @@ final class XMLModulesParser {
 		Assertion.checkNotNull(managersURLs);
 		Assertion.checkNotNull(properties);
 		//-----
-		final XMLModulesParams params = new XMLModulesParams(properties);
+		final XmlModulesParams params = new XmlModulesParams(properties);
 		for (final URL managersURL : managersURLs) {
 			parse(nodeConfigBuilder, managersURL, params);
 		}
@@ -62,7 +62,7 @@ final class XMLModulesParser {
 		Assertion.checkArgument(params.unreadProperties().isEmpty(), "Some boot properties are unused {0}; Check they must starts with 'boot.'", params.unreadProperties());
 	}
 
-	private static void parse(final NodeConfigBuilder nodeConfigBuilder, final URL managersURL, final XMLModulesParams params) {
+	private static void parse(final NodeConfigBuilder nodeConfigBuilder, final URL managersURL, final XmlModulesParams params) {
 		Assertion.checkNotNull(nodeConfigBuilder);
 		Assertion.checkNotNull(managersURL);
 		//-----
@@ -77,13 +77,13 @@ final class XMLModulesParser {
 		}
 	}
 
-	private static void doParse(final NodeConfigBuilder nodeConfigBuilder, final URL managersURL, final XMLModulesParams params) throws ParserConfigurationException, SAXException, IOException {
+	private static void doParse(final NodeConfigBuilder nodeConfigBuilder, final URL managersURL, final XmlModulesParams params) throws ParserConfigurationException, SAXException, IOException {
 		//---validation XSD
-		final URL xsd = XMLModulesParser.class.getResource("vertigo_1_0.xsd");
+		final URL xsd = XmlModulesParser.class.getResource("vertigo_1_0.xsd");
 		XmlUtil.validateXmlByXsd(managersURL, xsd);
 		//---fin validation XSD
 
-		final XMLModulesHandler handler = new XMLModulesHandler(nodeConfigBuilder, params);
+		final XmlModulesHandler handler = new XmlModulesHandler(nodeConfigBuilder, params);
 		final SAXParserFactory factory = SAXParserFactory.newInstance();
 		factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 

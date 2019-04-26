@@ -47,10 +47,10 @@ import io.vertigo.util.ClassUtil;
 /**
  * @author npiedeloup, pchretien
  */
-final class XMLModulesHandler extends DefaultHandler {
+final class XmlModulesHandler extends DefaultHandler {
 	private final NodeConfigBuilder nodeConfigBuilder;
 	//Global Params
-	private final XMLModulesParams params;
+	private final XmlModulesParams params;
 
 	private BootConfigBuilder bootConfigBuilder;
 	private ModuleConfigBuilder moduleConfigBuilder;
@@ -59,7 +59,7 @@ final class XMLModulesHandler extends DefaultHandler {
 	private DefinitionProviderConfigBuilder definitionProviderConfigBuilder;
 	private TagName current;
 
-	XMLModulesHandler(final NodeConfigBuilder nodeConfigBuilder, final XMLModulesParams params) {
+	XmlModulesHandler(final NodeConfigBuilder nodeConfigBuilder, final XmlModulesParams params) {
 		Assertion.checkNotNull(nodeConfigBuilder);
 		Assertion.checkNotNull(params);
 		//-----

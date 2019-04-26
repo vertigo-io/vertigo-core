@@ -27,12 +27,12 @@ import io.vertigo.lang.Assertion;
 /**
  * @author pchretien
  */
-final class XMLModulesParams {
+final class XmlModulesParams {
 	private final Properties properties;
 	private final Set<String> keys;
 	private final Set<String> readKeys = new HashSet<>();
 
-	XMLModulesParams(final Properties properties) {
+	XmlModulesParams(final Properties properties) {
 		Assertion.checkNotNull(properties);
 		//-----
 		this.properties = properties;

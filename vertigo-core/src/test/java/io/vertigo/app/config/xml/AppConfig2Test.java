@@ -36,7 +36,7 @@ public final class AppConfig2Test {
 	@Test
 	public void HomeTest() {
 
-		final NodeConfig nodeConfig = new XMLAppConfigBuilder()
+		final NodeConfig nodeConfig = new XmlAppConfigBuilder()
 				.withModules(getClass(), new Properties(), "bio.xml")
 				.build();
 
@@ -46,7 +46,7 @@ public final class AppConfig2Test {
 	@Test
 	public void FeatureTest() {
 
-		final NodeConfig nodeConfig = new XMLAppConfigBuilder()
+		final NodeConfig nodeConfig = new XmlAppConfigBuilder()
 				.withModules(getClass(), new Properties(), "bio-features.xml")
 				.build();
 
@@ -57,7 +57,7 @@ public final class AppConfig2Test {
 	@Test
 	public void nodeTest() {
 
-		final NodeConfig nodeConfig = new XMLAppConfigBuilder()
+		final NodeConfig nodeConfig = new XmlAppConfigBuilder()
 				.withModules(getClass(), new Properties(), "bio-node.xml")
 				.build();
 

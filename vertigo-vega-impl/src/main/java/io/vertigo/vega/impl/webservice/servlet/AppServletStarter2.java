@@ -34,7 +34,7 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.LogConfig;
-import io.vertigo.app.config.xml.XMLAppConfigBuilder;
+import io.vertigo.app.config.xml.XmlAppConfigBuilder;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -74,7 +74,7 @@ final class AppServletStarter2 {
 			final Properties bootConf = createBootProperties(servletContext);
 			Assertion.checkArgument(bootConf.containsKey("boot.applicationConfiguration"), "Param \"boot.applicationConfiguration\" is mandatory, check your .properties or web.xml.");
 
-			final XMLAppConfigBuilder nodeConfigBuilder = new XMLAppConfigBuilder();
+			final XmlAppConfigBuilder nodeConfigBuilder = new XmlAppConfigBuilder();
 			nodeConfigBuilder.beginBoot();
 
 			//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
