@@ -110,6 +110,15 @@ public final class StringUtilTest {
 	}
 
 	@Test
+	public void testCamelToSnakeCase() {
+		assertEquals("xxx_yyy_zzz", StringUtil.camelToSnakeCase("XxxYyyZzz"));
+		assertEquals("xxx_yyy_zzz", StringUtil.camelToSnakeCase("xxxYyyZzz"));
+		assertEquals("xxx_123", StringUtil.camelToSnakeCase("Xxx123"));
+		assertEquals("xxx_123_y", StringUtil.camelToSnakeCase("Xxx123Y"));
+		assertEquals("xxx_123y", StringUtil.camelToSnakeCase("Xxx123y"));
+	}
+
+	@Test
 	public void testCaseUnTransform() {
 		assertEquals("X_Z_YYY", StringUtil.camelToConstCase("xZYyy"));
 		assertEquals("X_Z_YYY", StringUtil.camelToConstCase("XZYyy"));
@@ -132,6 +141,20 @@ public final class StringUtilTest {
 			assertEquals(value, StringUtil.camelToConstCase(StringUtil.constToLowerCamelCase(value)));
 			assertEquals(value, StringUtil.camelToConstCase(StringUtil.constToUpperCamelCase(value)));
 		}
+	}
+
+	@Test
+	public void testFistToLowerCase() {
+		assertEquals("xZYyy", StringUtil.first2LowerCase("xZYyy"));
+		assertEquals("xZYyy", StringUtil.first2LowerCase("XZYyy"));
+		assertEquals("", StringUtil.first2LowerCase(""));
+	}
+
+	@Test
+	public void testFistToUpperCase() {
+		assertEquals("XZYyy", StringUtil.first2UpperCase("xZYyy"));
+		assertEquals("XZYyy", StringUtil.first2UpperCase("XZYyy"));
+		assertEquals("", StringUtil.first2UpperCase(""));
 	}
 
 	@Test
