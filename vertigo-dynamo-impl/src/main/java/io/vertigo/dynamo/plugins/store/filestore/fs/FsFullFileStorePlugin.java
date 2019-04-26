@@ -141,7 +141,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			fsFileInfo.setURIStored(uri);
 			return fsFileInfo;
 		} catch (final IOException e) {
-			throw WrappedException.wrap(e, "Can't read fileInfo " + uri.toURN());
+			throw WrappedException.wrap(e, "Can't read fileInfo {0}", uri.toURN());
 		}
 	}
 

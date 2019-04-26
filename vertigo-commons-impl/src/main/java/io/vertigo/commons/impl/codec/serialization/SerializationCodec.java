@@ -47,7 +47,7 @@ public final class SerializationCodec implements Codec<Serializable, byte[]> {
 			oos.flush();
 			return baos.toByteArray();
 		} catch (final IOException e) {
-			throw WrappedException.wrap(e, "Serialization : write stream exception for " + object.getClass().getName());
+			throw WrappedException.wrap(e, "Serialization : write stream exception for {0}", object.getClass().getName());
 		}
 	}
 

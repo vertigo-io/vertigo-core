@@ -85,7 +85,7 @@ public abstract class AbstractXmlLoader implements Loader {
 				saxParser.parse(is, getHandler());
 			}
 		} catch (final Exception e) {
-			throw WrappedException.wrap(e, "erreur lors de la lecture du fichier xmi : " + xmiFileURL);
+			throw WrappedException.wrap(e, "erreur lors de la lecture du fichier xmi : {0}", xmiFileURL);
 		}
 		Assertion.checkArgNotEmpty(resourcePath);
 		Assertion.checkNotNull(dslDefinitionRepository);

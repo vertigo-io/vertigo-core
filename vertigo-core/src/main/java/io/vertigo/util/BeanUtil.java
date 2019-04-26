@@ -127,7 +127,7 @@ public final class BeanUtil {
 		try {
 			return getBeanInfo(beanClass).getPropertyDescriptors();
 		} catch (final IntrospectionException e) {
-			throw WrappedException.wrap(e, "Erreur d'introspection des propriétés sur la classe " + beanClass);
+			throw WrappedException.wrap(e, "Erreur d'introspection des propriétés sur la classe {0}", beanClass);
 		}
 	}
 }

@@ -152,7 +152,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					.get(myIndexName);
 			return !currentSettings.getAsSettings("index.analysis.normalizer.sortable").isEmpty();
 		} catch (final ElasticsearchException e) {
-			throw WrappedException.wrap(e, "Error on index " + myIndexName);
+			throw WrappedException.wrap(e, "Error on index {0}", myIndexName);
 		}
 	}
 
@@ -179,7 +179,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 				}
 			}
 		} catch (final ElasticsearchException | IOException e) {
-			throw WrappedException.wrap(e, "Error on index " + myIndexName);
+			throw WrappedException.wrap(e, "Error on index {0}", myIndexName);
 		}
 	}
 

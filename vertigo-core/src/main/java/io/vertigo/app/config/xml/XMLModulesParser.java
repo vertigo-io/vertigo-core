@@ -69,11 +69,11 @@ final class XMLModulesParser {
 		try {
 			doParse(nodeConfigBuilder, managersURL, params);
 		} catch (final ParserConfigurationException pce) {
-			throw WrappedException.wrap(pce, "Erreur de configuration du parseur (fichier " + managersURL.getPath() + "), lors de l'appel à newSAXParser()");
+			throw WrappedException.wrap(pce, "Erreur de configuration du parseur (fichier {0}), lors de l'appel à newSAXParser()", managersURL.getPath());
 		} catch (final SAXException se) {
-			throw WrappedException.wrap(se, "Erreur de parsing (fichier " + managersURL.getPath() + "), lors de l'appel à parse()");
+			throw WrappedException.wrap(se, "Erreur de parsing (fichier {0}), lors de l'appel à parse()", managersURL.getPath());
 		} catch (final IOException ioe) {
-			throw WrappedException.wrap(ioe, "Erreur d'entrée/sortie (fichier " + managersURL.getPath() + "), lors de l'appel à parse()");
+			throw WrappedException.wrap(ioe, "Erreur d'entrée/sortie (fichier {0}), lors de l'appel à parse()", managersURL.getPath());
 		}
 	}
 

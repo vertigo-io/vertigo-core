@@ -37,11 +37,14 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.lang.VUserException;
+import io.vertigo.util.data.SA;
+import io.vertigo.util.data.SAnnotationA;
 
 /**
  * Test de l'utilitaire de manipulation des classes.
@@ -164,6 +167,13 @@ public final class ClassUtilTest {
 			final Method method = ClassUtil.findMethod(StringBuilder.class, "lastIndexOf", Date.class);
 			nop(method);
 		}));
+	}
+
+	@Test
+	public void testAnnotatedMethods() {
+		final Collection<Method> methods = ClassUtil.getAllMethods(SA.class, SAnnotationA.class);
+		Assert.assertEquals(1, methods.size());
+		Assert.assertEquals("annotatedMethod", methods.iterator().next().getName());
 	}
 
 	@Test

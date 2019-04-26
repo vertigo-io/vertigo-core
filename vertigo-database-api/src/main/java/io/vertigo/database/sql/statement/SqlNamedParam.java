@@ -92,7 +92,7 @@ final class SqlNamedParam {
 			Assertion.checkState(dtcRowNumber != null && dtcRowNumber >= 0, "Paramètre incohérent : {0} doit être positif ou null.", betweenPoints);
 			return dtcRowNumber;
 		} catch (final NumberFormatException nfe) {
-			throw WrappedException.wrap(nfe, betweenPoints + " n'est pas un entier.");
+			throw WrappedException.wrap(nfe, "Param {0} must be an integer.", betweenPoints);
 		}
 	}
 

@@ -213,7 +213,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 				}
 			}
 		} catch (final Exception e) {
-			throw WrappedException.wrap(e, "Erreur durant la lecture des données " + fileURL);
+			throw WrappedException.wrap(e, "Erreur durant la lecture des données {0}", fileURL);
 		}
 	}
 

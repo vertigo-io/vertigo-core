@@ -64,7 +64,7 @@ public final class DataSourceConnectionProviderPlugin extends AbstractSqlConnect
 			final javax.naming.Context context = new javax.naming.InitialContext();
 			this.dataSource = (DataSource) context.lookup(dataSource);
 		} catch (final NamingException e) {
-			throw WrappedException.wrap(e, "Can't obtain DataSource : " + dataSource);
+			throw WrappedException.wrap(e, "Can't obtain DataSource : {0}", dataSource);
 		}
 	}
 

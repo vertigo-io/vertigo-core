@@ -86,7 +86,7 @@ public final class JsonSecurityDefinitionProvider implements DefinitionProvider 
 			final AdvancedSecurityConfiguration config = gson.fromJson(confJson, AdvancedSecurityConfiguration.class);
 			registerDefinitions(config);
 		} catch (final Exception e) {
-			throw WrappedException.wrap(e, "Erreur durant la lecture du fichier JSON " + authConfURL);
+			throw WrappedException.wrap(e, "Erreur durant la lecture du fichier JSON {0}", authConfURL);
 		}
 	}
 

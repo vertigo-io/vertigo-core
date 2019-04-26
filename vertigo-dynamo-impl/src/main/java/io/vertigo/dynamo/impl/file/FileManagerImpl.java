@@ -168,7 +168,7 @@ public final class FileManagerImpl implements FileManager {
 		try {
 			return doCreateTempPath(vFile);
 		} catch (final IOException e) {
-			throw WrappedException.wrap(e, "Can't create temp file for FileInfo " + vFile.getFileName());
+			throw WrappedException.wrap(e, "Can't create temp file for FileInfo {0}", vFile.getFileName());
 		}
 	}
 

@@ -109,7 +109,7 @@ public class TextAuthenticationPlugin implements AuthenticationPlugin, Activeabl
 				}
 			}
 		} catch (final Exception e) {
-			throw WrappedException.wrap(e, "Erreur durant la lecture du Realm " + realmURL);
+			throw WrappedException.wrap(e, "Erreur durant la lecture du Realm {0}", realmURL);
 		}
 	}
 

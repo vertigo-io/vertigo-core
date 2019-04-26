@@ -63,7 +63,7 @@ public final class XMLUtil {
 			final Source source = new StreamSource(xml.openStream());
 			validate(xml, validator, source);
 		} catch (final SocketException e) {
-			throw WrappedException.wrap(e, "'" + xml.toString() + "' may refer an DTD, you should removed <!DOCTYPE header tag");
+			throw WrappedException.wrap(e, "'{0}' may refer an DTD, you should removed <!DOCTYPE header tag", xml);
 		} catch (final SAXException | IOException e) {
 			throw WrappedException.wrap(e);
 		}
@@ -73,7 +73,7 @@ public final class XMLUtil {
 		try {
 			validator.validate(source);
 		} catch (final SAXException e) {
-			throw WrappedException.wrap(e, "'" + xml.toString() + "' is not valid");
+			throw WrappedException.wrap(e, "'{0}' is not valid", xml);
 		}
 	}
 }

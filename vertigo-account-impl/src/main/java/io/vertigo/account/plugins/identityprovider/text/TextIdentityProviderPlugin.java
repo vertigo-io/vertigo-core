@@ -202,7 +202,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 				}
 			}
 		} catch (final Exception e) {
-			throw WrappedException.wrap(e, "Erreur durant la lecture du Realm " + realmURL + " line " + lineNumber);
+			throw WrappedException.wrap(e, "Erreur durant la lecture du Realm {0} line {1}", realmURL, lineNumber);
 		}
 	}
 

@@ -109,7 +109,7 @@ final class VFileUtil {
 		try {
 			send(result, attachment, response);
 		} catch (final IOException e) {
-			throw WrappedException.wrap(e, "Error while sending file. <!-- " + e.getMessage() + "-->");
+			throw WrappedException.wrap(e, "Error while sending file. <!-- {0} -->", e.getMessage());
 		}
 		// response already send
 	}
