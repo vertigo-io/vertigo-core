@@ -25,7 +25,7 @@ import java.util.Objects;
  * Tuple with 2 Objects.
  * @param <A> Type one
  * @param <B> Type two
- * 
+ *
  * @author pchretien
  */
 public final class Tuple<A, B> {
@@ -37,7 +37,7 @@ public final class Tuple<A, B> {
 	 * @return the new tuple created
 	 */
 	public static <A, B> Tuple<A, B> of(final A val1, final B val2) {
-		return new Tuple<A, B>(val1, val2);
+		return new Tuple<>(val1, val2);
 	}
 
 	private final A val1;

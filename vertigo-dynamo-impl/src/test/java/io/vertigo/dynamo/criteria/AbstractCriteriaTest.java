@@ -21,6 +21,8 @@ package io.vertigo.dynamo.criteria;
 import static io.vertigo.dynamo.criteria.CriterionLimit.ofExcluded;
 import static io.vertigo.dynamo.criteria.CriterionLimit.ofIncluded;
 
+import java.io.Serializable;
+
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
@@ -212,7 +214,7 @@ public abstract class AbstractCriteriaTest extends AbstractTestCaseJU5 {
 		final Criteria<Movie2> criteriaBool = Criterions.in(title);
 		assertCriteria(0, criteriaBool);
 
-		final Criteria<Movie2> criteriaBool2 = Criterions.in(title, "terminator", "amadeus").and(Criterions.in(title, new String[0]));
+		final Criteria<Movie2> criteriaBool2 = Criterions.in(title, "terminator", "amadeus").and(Criterions.in(title, (Serializable[]) new String[0]));
 		assertCriteria(0, criteriaBool2);
 	}
 
