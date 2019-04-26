@@ -36,7 +36,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Tuples;
+import io.vertigo.lang.Tuple;
 
 /**
  * Permet l'appel de requête insert en utilisant generatedKeys du PreparedStatement pour récupérer
@@ -78,7 +78,7 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final DtField idField = dtDefinition.getIdField().get();
 
-		final Tuples.Tuple2<Integer, ?> result = getDataBaseManager()
+		final Tuple<Integer, ?> result = getDataBaseManager()
 				.executeUpdateWithGeneratedKey(sqlStatement, generationMode, idField.getName(), idField.getDomain().getJavaClass(), connection);
 
 		final Object id = result.getVal2();

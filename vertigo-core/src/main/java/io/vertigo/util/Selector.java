@@ -33,8 +33,7 @@ import org.reflections.Reflections;
 import org.reflections.scanners.TypeElementsScanner;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Tuples;
-import io.vertigo.lang.Tuples.Tuple2;
+import io.vertigo.lang.Tuple;
 import javassist.Modifier;
 
 /**
@@ -179,7 +178,7 @@ public final class Selector {
 	 * Find the methods matching the requirements and with method matching the requirements.
 	 * @return the classes matching the selector
 	 */
-	public Collection<Tuple2<Class, Method>> findMethods() {
+	public Collection<Tuple<Class, Method>> findMethods() {
 
 		return scope.values()
 				.stream()
@@ -187,7 +186,7 @@ public final class Selector {
 				.filter(filterClassesBasedOnFields())
 				.flatMap(clazz -> Stream.of(clazz.getDeclaredMethods()))
 				.filter(methodPredicates)
-				.map(method -> Tuples.of(Class.class.cast(method.getDeclaringClass()), method))
+				.map(method -> Tuple.of(Class.class.cast(method.getDeclaringClass()), method))
 				.collect(Collectors.toList());
 	}
 
@@ -195,14 +194,14 @@ public final class Selector {
 	 * Finds the fields matching the requirements with the associatedClass.
 	 * @return the classes matching the selector
 	 */
-	public Collection<Tuple2<Class, Field>> findFields() {
+	public Collection<Tuple<Class, Field>> findFields() {
 		return scope.values()
 				.stream()
 				.filter(classPredicates)
 				.filter(filterClassesBasedOnMethods())
 				.flatMap(clazz -> Stream.of(clazz.getDeclaredFields()))
 				.filter(fieldPredicates)
-				.map(field -> Tuples.of(Class.class.cast(field.getDeclaringClass()), field))
+				.map(field -> Tuple.of(Class.class.cast(field.getDeclaringClass()), field))
 				.collect(Collectors.toList());
 	}
 

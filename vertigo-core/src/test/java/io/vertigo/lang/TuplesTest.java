@@ -35,10 +35,10 @@ import org.junit.runner.RunWith;
 @RunWith(JUnitPlatform.class)
 public final class TuplesTest {
 	@Test
-	public void testTuple2() {
-		final Tuples.Tuple2<String, String> homer = Tuples.of("homer", "simpson");
-		final Tuples.Tuple2<String, String> homer2 = Tuples.of("homer", "simpson");
-		final Tuples.Tuple2<String, String> marge = Tuples.of("marge", "simpson");
+	public void testTuple() {
+		final Tuple<String, String> homer = Tuple.of("homer", "simpson");
+		final Tuple<String, String> homer2 = Tuple.of("homer", "simpson");
+		final Tuple<String, String> marge = Tuple.of("marge", "simpson");
 
 		assertEquals(homer, homer);
 		assertTrue(homer.equals(homer));
@@ -52,31 +52,5 @@ public final class TuplesTest {
 
 		assertEquals("marge", marge.getVal1());
 		assertEquals("simpson", marge.getVal2());
-	}
-
-	@Test
-	public void testTuple3() {
-		final Tuples.Tuple3<String, String, String> homer = Tuples.of("homer", "simpson", "M");
-		final Tuples.Tuple3<String, String, String> homer2 = Tuples.of("homer", "simpson", "M");
-		final Tuples.Tuple3<String, String, String> marge = Tuples.of("marge", "simpson", "F");
-
-		assertEquals(homer, homer);
-		assertTrue(homer.equals(homer));
-		assertEquals(homer.hashCode(), homer2.hashCode());
-		assertEquals(homer, homer2);
-		assertNotEquals(homer, marge);
-		assertNotNull(marge);
-
-		assertEquals(homer, homer2);
-		assertEquals(homer, homer);
-		assertNotEquals(homer, marge);
-
-		assertEquals("homer", homer.getVal1());
-		assertEquals("simpson", homer.getVal2());
-		assertEquals("M", homer.getVal3());
-
-		assertEquals("marge", marge.getVal1());
-		assertEquals("simpson", marge.getVal2());
-		assertEquals("F", marge.getVal3());
 	}
 }

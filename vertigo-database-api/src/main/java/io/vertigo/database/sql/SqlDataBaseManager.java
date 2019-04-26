@@ -27,7 +27,7 @@ import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
-import io.vertigo.lang.Tuples;
+import io.vertigo.lang.Tuple;
 
 /**
  * Manages connections to database.
@@ -80,7 +80,7 @@ public interface SqlDataBaseManager extends Manager {
 	 * @return a tuple with the row count for INSERT, UPDATE or DELETE statements; or 0 for SQL statements that return nothing and the generated key
 	 * @throws SQLException
 	 */
-	<O> Tuples.Tuple2<Integer, O> executeUpdateWithGeneratedKey(
+	<O> Tuple<Integer, O> executeUpdateWithGeneratedKey(
 			SqlStatement sqlStatement,
 			final GenerationMode generationMode,
 			final String columnName,

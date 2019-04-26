@@ -60,7 +60,7 @@ import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Tuples;
+import io.vertigo.lang.Tuple;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.StringUtil;
 
@@ -275,7 +275,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		final String tableName = StringUtil.camelToConstCase(entityName);
 		final String requestedCols = getRequestedCols(dtDefinition);
 		final String taskName = getListTaskName(entityName);
-		final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(sqlDialect);
+		final Tuple<String, CriteriaCtx> tuple = criteria.toSql(sqlDialect);
 		final String where = tuple.getVal1();
 		final String request = createLoadAllLikeQuery(tableName, requestedCols, where, dtListState);
 		final TaskDefinitionBuilder taskDefinitionBuilder = TaskDefinition.builder(taskName)

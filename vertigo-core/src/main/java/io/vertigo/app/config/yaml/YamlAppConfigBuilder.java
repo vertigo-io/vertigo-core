@@ -49,7 +49,7 @@ import io.vertigo.core.component.Plugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Tuples.Tuple2;
+import io.vertigo.lang.Tuple;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.Selector;
@@ -190,7 +190,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 						.filterMethods(MethodConditions.annotatedWith(Feature.class))
 						.findMethods()
 						.stream()
-						.map(Tuple2::getVal2)
+						.map(Tuple::getVal2)
 						.collect(Collectors.toMap(method -> method.getAnnotation(Feature.class).value(), Function.identity()));
 
 				if (yamlModuleConfig.features != null) {

@@ -27,8 +27,7 @@ import java.util.stream.Collectors;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.lang.Tuples;
-import io.vertigo.lang.Tuples.Tuple2;
+import io.vertigo.lang.Tuple;
 import io.vertigo.util.BeanUtil;
 
 /**
@@ -42,7 +41,7 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 
 	private final String rawSqlQuery;
 	private final List<SqlNamedParam> sqlNamedParameters;
-	private final List<Map<String, Tuple2<Class, Object>>> sqlNamedParametersValues = new ArrayList<>();
+	private final List<Map<String, Tuple<Class, Object>>> sqlNamedParametersValues = new ArrayList<>();
 
 	private int parameterLineIndex = 0;
 
@@ -55,7 +54,7 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 			final String sqlQuery) {
 		Assertion.checkArgNotEmpty(sqlQuery);
 		//-----
-		final Tuple2<String, List<SqlNamedParam>> parsedQuery = parseQuery(sqlQuery);
+		final Tuple<String, List<SqlNamedParam>> parsedQuery = parseQuery(sqlQuery);
 		rawSqlQuery = parsedQuery.getVal1();
 		sqlNamedParameters = parsedQuery.getVal2();
 	}
@@ -72,8 +71,8 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 		if (sqlNamedParametersValues.size() < parameterLineIndex + 1) {
 			sqlNamedParametersValues.add(new HashMap<>());
 		}
-		final Map<String, Tuple2<Class, Object>> lineNamedParameterValues = sqlNamedParametersValues.get(parameterLineIndex);
-		lineNamedParameterValues.put(name, Tuples.of(dataType, value));
+		final Map<String, Tuple<Class, Object>> lineNamedParameterValues = sqlNamedParametersValues.get(parameterLineIndex);
+		lineNamedParameterValues.put(name, Tuple.of(dataType, value));
 		return this;
 	}
 
@@ -86,8 +85,8 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 		return this;
 	}
 
-	private SqlParameter buildSqlParameter(final SqlNamedParam namedParam, final Map<String, Tuple2<Class, Object>> params) {
-		final Tuple2<Class, Object> tuple = params.get(namedParam.getAttributeName());
+	private SqlParameter buildSqlParameter(final SqlNamedParam namedParam, final Map<String, Tuple<Class, Object>> params) {
+		final Tuple<Class, Object> tuple = params.get(namedParam.getAttributeName());
 		Assertion.checkNotNull(tuple, "no data found for param {0} in sql {1}", namedParam, rawSqlQuery);
 		final Object rootHolder = tuple.getVal2();
 		final Class rootType = tuple.getVal1();
@@ -126,7 +125,7 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 		return new SqlStatement(rawSqlQuery, sqlParameters);
 	}
 
-	private static Tuple2<String, List<SqlNamedParam>> parseQuery(final String query) {
+	private static Tuple<String, List<SqlNamedParam>> parseQuery(final String query) {
 		Assertion.checkArgNotEmpty(query);
 		//-----
 		//we add a space before and after to avoid side effects
@@ -158,6 +157,6 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 		sql.delete(0, 1);
 		sql.delete(sql.length() - 1, sql.length());
 
-		return Tuples.of(sql.toString(), sqlNamedParams);
+		return Tuple.of(sql.toString(), sqlNamedParams);
 	}
 }

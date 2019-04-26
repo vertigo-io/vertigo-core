@@ -43,7 +43,7 @@ import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.database.sql.vendor.SqlMapping;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Tuples;
+import io.vertigo.lang.Tuple;
 
 /**
 * Implémentation standard du gestionnaire des données et des accès aux données.
@@ -144,7 +144,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <O> Tuples.Tuple2<Integer, O> executeUpdateWithGeneratedKey(
+	public <O> Tuple<Integer, O> executeUpdateWithGeneratedKey(
 			final SqlStatement sqlStatement,
 			final GenerationMode generationMode,
 			final String columnName,
@@ -162,7 +162,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 			//execution de la Requête
 			final int result = traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecute(statement, tracer));
 			final O generatedId = sqlStatementDriver.getGeneratedKey(statement, columnName, dataType, connection);
-			return Tuples.of(result, generatedId);
+			return Tuple.of(result, generatedId);
 		} catch (final WrappedSqlException e) {
 			throw e.getSqlException();
 		}

@@ -74,8 +74,7 @@ import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.JsonExclude;
-import io.vertigo.lang.Tuples;
-import io.vertigo.lang.Tuples.Tuple2;
+import io.vertigo.lang.Tuple;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
@@ -299,7 +298,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 			// case of the lazy objet passed
 			Stream.of(((Class<D>) typeOfT).getDeclaredFields())
 					.filter(field -> VAccessor.class.isAssignableFrom(field.getType()))
-					.map(field -> Tuples.of(field, getAccessor(field, dtObject)))
+					.map(field -> Tuple.of(field, getAccessor(field, dtObject)))
 					.filter(tuple -> jsonObject.has(tuple.getVal2().getRole()))
 					.forEach(tuple -> tuple.getVal2().set(context.deserialize(jsonObject.get(tuple.getVal2().getRole()), ClassUtil.getGeneric(tuple.getVal1()))));
 
@@ -530,8 +529,8 @@ public final class GoogleJsonEngine implements JsonEngine {
 	}
 
 	private void filterObjectFields(final JsonElement jsonElement, final Set<String> includedAllFields, final Set<String> excludedAllFields) {
-		final Map<String, Tuple2<Set<String>, Set<String>>> filteredSubFields = parseSubFieldName(includedAllFields, excludedAllFields);
-		final Tuple2<Set<String>, Set<String>> firstLevel = filteredSubFields.get(FIRST_LEVEL_KEY);
+		final Map<String, Tuple<Set<String>, Set<String>>> filteredSubFields = parseSubFieldName(includedAllFields, excludedAllFields);
+		final Tuple<Set<String>, Set<String>> firstLevel = filteredSubFields.get(FIRST_LEVEL_KEY);
 		final Set<String> includedFields;
 		final Set<String> excludedFields;
 		if (firstLevel != null) { //Sonar préfère à contains
@@ -559,24 +558,24 @@ public final class GoogleJsonEngine implements JsonEngine {
 			}
 		}
 
-		for (final Map.Entry<String, Tuple2<Set<String>, Set<String>>> filteredField : filteredSubFields.entrySet()) {
+		for (final Map.Entry<String, Tuple<Set<String>, Set<String>>> filteredField : filteredSubFields.entrySet()) {
 			if (filteredField.getValue() != null) {
 				filterFields(jsonObject.get(filteredField.getKey()), filteredField.getValue().getVal1(), filteredField.getValue().getVal2());
 			}
 		}
 	}
 
-	private Map<String, Tuple2<Set<String>, Set<String>>> parseSubFieldName(final Set<String> includedFields, final Set<String> excludedFields) {
+	private Map<String, Tuple<Set<String>, Set<String>>> parseSubFieldName(final Set<String> includedFields, final Set<String> excludedFields) {
 		if (includedFields.isEmpty() && excludedFields.isEmpty()) {
 			return Collections.emptyMap();
 		}
-		final Map<String, Tuple2<Set<String>, Set<String>>> subFields = new HashMap<>();
-		parseSubFieldName(includedFields, subFields, Tuple2::getVal1);
-		parseSubFieldName(excludedFields, subFields, Tuple2::getVal2);
+		final Map<String, Tuple<Set<String>, Set<String>>> subFields = new HashMap<>();
+		parseSubFieldName(includedFields, subFields, Tuple::getVal1);
+		parseSubFieldName(excludedFields, subFields, Tuple::getVal2);
 		return subFields;
 	}
 
-	private static void parseSubFieldName(final Set<String> filteredFields, final Map<String, Tuple2<Set<String>, Set<String>>> subFields, final Function<Tuple2<Set<String>, Set<String>>, Set<String>> getter) {
+	private static void parseSubFieldName(final Set<String> filteredFields, final Map<String, Tuple<Set<String>, Set<String>>> subFields, final Function<Tuple<Set<String>, Set<String>>, Set<String>> getter) {
 		for (final String filteredField : filteredFields) {
 			final int commaIdx = filteredField.indexOf('.');
 			final String key;
@@ -588,8 +587,8 @@ public final class GoogleJsonEngine implements JsonEngine {
 				key = FIRST_LEVEL_KEY;
 				value = filteredField;
 			}
-			final Tuple2<Set<String>, Set<String>> tuple = subFields.computeIfAbsent(key,
-					k -> Tuples.of(new HashSet<>(), new HashSet<>()));
+			final Tuple<Set<String>, Set<String>> tuple = subFields.computeIfAbsent(key,
+					k -> Tuple.of(new HashSet<>(), new HashSet<>()));
 			getter.apply(tuple).add(value);
 		}
 	}

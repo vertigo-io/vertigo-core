@@ -31,7 +31,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.core.component.Component;
-import io.vertigo.lang.Tuples.Tuple2;
+import io.vertigo.lang.Tuple;
 import io.vertigo.util.Selector.ClassConditions;
 import io.vertigo.util.Selector.FieldConditions;
 import io.vertigo.util.Selector.MethodConditions;
@@ -109,7 +109,7 @@ public final class SelectorTest {
 
 	@Test
 	public void testFilterByMethodAnnotation() {
-		final Collection<Tuple2<Class, Method>> result = new Selector()
+		final Collection<Tuple<Class, Method>> result = new Selector()
 				.from(TEST_CLASSES_PACKAGE)
 				.filterMethods(MethodConditions.annotatedWith(SAnnotationA.class))
 				.findMethods();
@@ -129,7 +129,7 @@ public final class SelectorTest {
 
 	@Test
 	public void testFindFields() {
-		final Collection<Tuple2<Class, Field>> result = new Selector()
+		final Collection<Tuple<Class, Field>> result = new Selector()
 				.from(SC.class)
 				.findFields();
 		// ---
@@ -138,7 +138,7 @@ public final class SelectorTest {
 
 	@Test
 	public void testFindFieldsAnnotation() {
-		final Collection<Tuple2<Class, Field>> result = new Selector()
+		final Collection<Tuple<Class, Field>> result = new Selector()
 				.from(SC.class)
 				.filterFields(FieldConditions.annotatedWith(SAnnotationA.class))
 				.findFields();

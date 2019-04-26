@@ -44,7 +44,7 @@ import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.database.impl.sql.vendor.postgresql.PostgreSqlDataBase;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.dynamo.criteria.CriteriaCtx;
-import io.vertigo.lang.Tuples.Tuple2;
+import io.vertigo.lang.Tuple;
 
 /**
  * @author pchretien
@@ -307,7 +307,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 			Assertions.assertTrue(canReadRecord);
 
 			final SqlDialect sqlDialect = new PostgreSqlDataBase().getSqlDialect();
-			final Tuple2<String, CriteriaCtx> readRecordSql = authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.read).toSql(sqlDialect);
+			final Tuple<String, CriteriaCtx> readRecordSql = authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.read).toSql(sqlDialect);
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
 			Assertions.assertEquals("(AMOUNT <= #amount0# OR UTI_ID_OWNER = #utiIdOwner1#)", readRecordSql.getVal1());
 			Assertions.assertEquals(100.0, readRecordSql.getVal2().getAttributeValue("amount0"));

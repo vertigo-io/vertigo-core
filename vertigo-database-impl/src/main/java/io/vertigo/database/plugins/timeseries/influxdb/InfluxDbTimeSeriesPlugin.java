@@ -56,8 +56,7 @@ import io.vertigo.database.timeseries.TimeFilter;
 import io.vertigo.database.timeseries.TimedDataSerie;
 import io.vertigo.database.timeseries.TimedDatas;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Tuples;
-import io.vertigo.lang.Tuples.Tuple2;
+import io.vertigo.lang.Tuple;
 
 /**
  * @author mlaroche
@@ -387,7 +386,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		Assertion.checkArgNotEmpty(alias);
 		//----
 		final String[] measureDetails = measure.split(":");
-		final Tuple2<String, List<String>> aggregateFunction = parseAggregateFunction(measureDetails[1]);
+		final Tuple<String, List<String>> aggregateFunction = parseAggregateFunction(measureDetails[1]);
 		// append function name
 		final StringBuilder measureQueryBuilder = new java.lang.StringBuilder(aggregateFunction.getVal1()).append("(\"").append(measureDetails[0]).append("\"");
 		// append parameters
@@ -445,15 +444,14 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		}
 	}
 
-	private static Tuple2<String, List<String>> parseAggregateFunction(final String aggregateFunction) {
+	private static Tuple<String, List<String>> parseAggregateFunction(final String aggregateFunction) {
 		final int firstSeparatorIndex = aggregateFunction.indexOf('_');
 		if (firstSeparatorIndex > -1) {
-			return Tuples.of(
+			return Tuple.of(
 					aggregateFunction.substring(0, firstSeparatorIndex),
 					Arrays.asList(aggregateFunction.substring(firstSeparatorIndex + 1).split("_")));
 		}
-		return Tuples.of(aggregateFunction, Collections.emptyList());
-
+		return Tuple.of(aggregateFunction, Collections.emptyList());
 	}
 
 	@Override
