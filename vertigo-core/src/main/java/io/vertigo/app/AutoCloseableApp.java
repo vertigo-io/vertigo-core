@@ -26,8 +26,8 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ComponentInitializerConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.core.component.ComponentSpace;
@@ -81,16 +81,14 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 		this.nodeConfig = nodeConfig;
 		Home.setApp(this);
 		state = State.STARTING;
-		//-----
-		//-----0. Boot (considered as a Module)
-		final Boot boot = new Boot(nodeConfig.getBootConfig());
-		boot.init();
-		//-----0. Boot
+		//--
 		componentSpaceWritable = new ComponentSpaceWritable();
 		definitionSpaceWritable = new DefinitionSpaceWritable();
 
 		try {
-			//A faire créer par Boot : stratégie de chargement des composants à partir de ...
+			//--0. BootStrap : create native components : ResourceManager, ParamManager, LocaleManager 
+			final Boot boot = new Boot(nodeConfig.getBootConfig());
+			boot.init(); //A faire créer par Boot : stratégie de chargement des composants à partir de ...
 			final ComponentLoader componentLoader = new ComponentLoader(componentSpaceWritable,
 					nodeConfig.getBootConfig().getAopPlugin());
 			//contient donc à minima resourceManager et paramManager.
@@ -99,23 +97,30 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			componentLoader.registerComponents(Optional.empty(), "boot",
 					nodeConfig.getBootConfig().getComponentConfigs());
 
-			//-----1. Loads all components (and aspects).
+			//--1. Creates and register all components (and aspects and Proxies).
+			//all components can be parameterized
 			componentLoader.registerAllComponentsAndAspects(componentSpaceWritable.resolve(ParamManager.class), nodeConfig.getModuleConfigs());
-			//-----2. Print components
+			//---- Print components
 			if (nodeConfig.getBootConfig().isVerbose()) {
 				Logo.printCredits(System.out);
 				nodeConfig.print(System.out);
 			}
 			componentSpaceWritable.closeRegistration();
-			//-----3. a Load all definitions
+			//--2 Loads all definitions
+			//-----2. a Loads all definitions provided by DefinitionProvider
 			final DefinitionLoader definitionLoader = new DefinitionLoader(definitionSpaceWritable, componentSpaceWritable);
 			definitionLoader.createDefinitions(nodeConfig.getModuleConfigs())
 					.forEach(definitionSpaceWritable::registerDefinition);
-			//-----3. b Load all definitions provided by components
+			//-----2. b Loads all definitions provided by components
 			definitionLoader.createDefinitionsFromComponents()
 					.forEach(definitionSpaceWritable::registerDefinition);
+			/*
+			 * all definitions are now registered into the definitionSpace
+			 */
+			definitionSpaceWritable.closeRegistration();
 
-			//-----4. componentInitializers to populate definitions
+			//--3. init (Init all Initializers and starts activeable components)  
+			//-----3.a Init all Initializers
 			/*
 			 * componentInitializers are created and the init() is called on each.
 			 * Notice :
@@ -124,18 +129,13 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			 */
 			initializeAllComponents();
 
-			/*
-			 * Here all definitions are registered into the definitionSpace
-			 */
-			definitionSpaceWritable.closeRegistration();
-
-			//-----5. Starts all components
+			//-----3.b Starts activeable components
 			componentSpaceWritable.start();
 
-			//-----6. post just in case
+			//--4. App is active with a special hook 
+			//-----4.a Hook  : post just in case
 			appPreActivate();
-
-			//-----7. App is active
+			//-----4.b 
 			state = State.ACTIVE;
 		} catch (final Exception e) {
 			close();
