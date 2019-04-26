@@ -20,13 +20,13 @@ package io.vertigo.studio.data.tasktest;
 
 import javax.inject.Inject;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.App;
 import io.vertigo.app.Home;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.commons.transaction.VTransactionManager;
@@ -47,7 +47,7 @@ import io.vertigo.studio.plugins.mda.task.test.TaskTestDaoChecker;
 import io.vertigo.studio.plugins.mda.task.test.TaskTestDummyGenerator;
 import io.vertigo.studio.plugins.mda.task.test.TaskTestDummyGeneratorBasic;
 
-public class DaoTestClass extends AbstractTestCaseJU4 {
+public class DaoTestClass extends AbstractTestCaseJU5 {
 
 	@Inject
 	private VTransactionManager transactionManager;

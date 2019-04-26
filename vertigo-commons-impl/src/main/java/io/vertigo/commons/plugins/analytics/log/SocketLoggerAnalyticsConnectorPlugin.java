@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 
 import com.google.gson.Gson;
@@ -139,7 +140,9 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 		final LoggerContext context = LoggerContext.getContext(false); //on ne close pas : car ca stop le context
 		final Configuration config = context.getConfiguration();
-		config.getLoggerConfig(loggerName).addAppender(appender, null, null);
+		final LoggerConfig loggerConfig = config.getLoggerConfig(loggerName);
+		loggerConfig.getAppenders().keySet().forEach(appenderName -> loggerConfig.removeAppender(appenderName));
+		loggerConfig.addAppender(appender, null, null);
 
 		Configurator.setLevel(loggerName, Level.INFO);
 		return logger;
