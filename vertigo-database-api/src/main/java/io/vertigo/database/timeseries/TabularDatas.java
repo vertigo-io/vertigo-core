@@ -18,6 +18,7 @@
  */
 package io.vertigo.database.timeseries;
 
+import java.io.Serializable;
 import java.util.List;
 
 import io.vertigo.lang.Assertion;
@@ -26,7 +27,10 @@ import io.vertigo.lang.Assertion;
  * @author mlaroche
  *
  */
-public final class TabularDatas {
+public final class TabularDatas implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	private final List<TabularDataSerie> tabularDataSeries;
 	private final List<String> seriesNames;
 

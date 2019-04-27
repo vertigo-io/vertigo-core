@@ -18,6 +18,7 @@
  */
 package io.vertigo.database.timeseries;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Map;
 
@@ -27,7 +28,10 @@ import io.vertigo.lang.Assertion;
  * Couple(date, metriques)
  * @author pchretien, npiedeloup, mlaroche
  */
-public final class TimedDataSerie {
+public final class TimedDataSerie implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	private final Instant time;
 	private final Map<String, Object> values;
 

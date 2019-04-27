@@ -187,7 +187,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 					.stream()
 					.map(values -> new TimedDataSerie(LocalDateTime.parse(values.get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant(ZoneOffset.UTC), buildMapValue(series.getColumns(), values)))
 					.collect(Collectors.toList());
-			return new TimedDatas(dataSeries, series.getColumns().subList(1, series.getColumns().size()));//we remove the first one
+			return new TimedDatas(dataSeries, new ArrayList<>(series.getColumns().subList(1, series.getColumns().size())));//we remove the first one
 		}
 		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
 	}

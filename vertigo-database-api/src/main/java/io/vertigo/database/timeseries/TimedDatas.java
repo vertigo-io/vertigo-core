@@ -18,6 +18,7 @@
  */
 package io.vertigo.database.timeseries;
 
+import java.io.Serializable;
 import java.util.List;
 
 import io.vertigo.lang.Assertion;
@@ -26,7 +27,9 @@ import io.vertigo.lang.Assertion;
  * @author mlaroche
  *
  */
-public final class TimedDatas {
+public final class TimedDatas implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private final List<TimedDataSerie> timedDataSeries;
 	private final List<String> seriesNames;
 

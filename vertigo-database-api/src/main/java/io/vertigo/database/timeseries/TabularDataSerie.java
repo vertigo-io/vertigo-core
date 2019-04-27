@@ -18,6 +18,7 @@
  */
 package io.vertigo.database.timeseries;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import io.vertigo.lang.Assertion;
@@ -26,7 +27,10 @@ import io.vertigo.lang.Assertion;
  * Tabular metriques
  * @author pchretien, npiedeloup, mlaroche
  */
-public final class TabularDataSerie {
+public final class TabularDataSerie implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	private final Map<String, Object> values;
 
 	public TabularDataSerie(final Map<String, Object> values) {
