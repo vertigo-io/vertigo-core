@@ -69,13 +69,10 @@ public final class CacheDataStoreConfig {
 	 */
 	public void registerCacheable(
 			final DtDefinition dtDefinition,
-			final int timeToLiveInSeconds,
-			final boolean isReloadedByList,
-			final boolean serializeElements) {
+			final boolean isReloadedByList) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		cacheableDtDefinitionMap.put(dtDefinition, isReloadedByList);
-		dataCache.registerContext(dtDefinition, timeToLiveInSeconds, serializeElements);
 	}
 
 	/**

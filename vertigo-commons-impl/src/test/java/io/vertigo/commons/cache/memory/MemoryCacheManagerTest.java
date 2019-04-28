@@ -18,10 +18,11 @@
  */
 package io.vertigo.commons.cache.memory;
 
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.cache.AbstractCacheManagerTest;
-import io.vertigo.commons.cache.CacheManagerInitializer;
+import io.vertigo.commons.cache.TestCacheDefinitionProvider;
 
 /**
  * MemoryCache Manager test class
@@ -40,7 +41,9 @@ public class MemoryCacheManagerTest extends AbstractCacheManagerTest {
 						.withCache()
 						.withMemoryCache()
 						.build())
-				.addInitializer(CacheManagerInitializer.class)
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(TestCacheDefinitionProvider.class)
+						.build())
 				.build();
 	}
 }

@@ -18,32 +18,33 @@
  */
 package io.vertigo.commons.cache;
 
-import io.vertigo.app.Home;
-import io.vertigo.core.component.ComponentInitializer;
-import io.vertigo.core.definition.DefinitionSpaceWritable;
+import java.util.Arrays;
+import java.util.List;
+
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 
 /**
  * Initialisation du manager des caches.
  * @author dchallas
  */
-public final class CacheManagerInitializer implements ComponentInitializer {
+public final class TestCacheDefinitionProvider implements SimpleDefinitionProvider {
 
 	/** Cache context */
 	public static final String CONTEXT_EDITABLE = "CacheEditableElements";
 	public static final String CONTEXT_READONLY = "CacheReadOnlyElements";
 
-	/** {@inheritDoc} */
 	@Override
-	public void init() {
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		//Paramétrage d'un cache spécifique au test
 		/** Parametre du cache, pour une config ou il est multi-session*/
 		final int maxElementsInMemory = 50000;
 		final int timeToLiveSeconds = 1000; //longévité d'un élément
 		final int timeToIdleSeconds = 10; //longévité d'un élément non utilisé
-
-		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace())
-				.registerDefinition(new CacheDefinition(CONTEXT_EDITABLE, true, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
-		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace())
-				.registerDefinition(new CacheDefinition(CONTEXT_READONLY, false, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
+		return Arrays.asList(
+				new CacheDefinition(CONTEXT_EDITABLE, true, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds, true),
+				new CacheDefinition(CONTEXT_READONLY, false, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds, true));
 	}
+
 }

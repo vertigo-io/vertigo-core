@@ -49,7 +49,7 @@ public final class WrappedException extends RuntimeException {
 	 * @return RuntimeException runtime
 	 */
 	public static RuntimeException wrap(final Throwable th) {
-		return wrap(th, null);
+		return wrap(th, th.getMessage());
 	}
 
 	/**

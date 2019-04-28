@@ -40,8 +40,8 @@ import io.vertigo.lang.Assertion;
  */
 public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU5 {
 	private static final String KEY = "ma clé";
-	private static final String CONTEXT_EDITABLE = CacheManagerInitializer.CONTEXT_EDITABLE;
-	private static final String CONTEXT_READONLY = CacheManagerInitializer.CONTEXT_READONLY;
+	private static final String CONTEXT_EDITABLE = TestCacheDefinitionProvider.CONTEXT_EDITABLE;
+	private static final String CONTEXT_READONLY = TestCacheDefinitionProvider.CONTEXT_READONLY;
 
 	private final int maxNbRow;
 

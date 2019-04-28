@@ -59,6 +59,7 @@ public final class CacheDefinition implements Definition {
 	private final int maxElementsInMemory;
 	private final int timeToLiveSeconds;
 	private final int timeToIdleSeconds;
+	private final boolean isReloadedByList;
 
 	/**
 	 * Constructor.
@@ -73,7 +74,8 @@ public final class CacheDefinition implements Definition {
 			final boolean serializeElements,
 			final int maxElementsInMemory,
 			final int timeToLiveSeconds,
-			final int timeToIdleSeconds) {
+			final int timeToIdleSeconds,
+			final boolean isReloadedByList) {
 		DefinitionUtil.checkName(name, CacheDefinition.class);
 		//-----
 		this.name = name;
@@ -81,6 +83,7 @@ public final class CacheDefinition implements Definition {
 		this.maxElementsInMemory = maxElementsInMemory;
 		this.timeToLiveSeconds = timeToLiveSeconds;
 		this.timeToIdleSeconds = timeToIdleSeconds;
+		this.isReloadedByList = isReloadedByList;
 	}
 
 	/** {@inheritDoc} */
@@ -115,5 +118,9 @@ public final class CacheDefinition implements Definition {
 	 */
 	public int getTimeToIdleSeconds() {
 		return timeToIdleSeconds;
+	}
+
+	public boolean isReloadedByList() {
+		return isReloadedByList;
 	}
 }

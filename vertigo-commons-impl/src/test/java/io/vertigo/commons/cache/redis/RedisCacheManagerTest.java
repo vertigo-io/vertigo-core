@@ -18,10 +18,11 @@
  */
 package io.vertigo.commons.cache.redis;
 
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.cache.AbstractCacheManagerTest;
-import io.vertigo.commons.cache.CacheManagerInitializer;
+import io.vertigo.commons.cache.TestCacheDefinitionProvider;
 import io.vertigo.core.param.Param;
 
 /**
@@ -53,7 +54,9 @@ public class RedisCacheManagerTest extends AbstractCacheManagerTest {
 								Param.of("database", "0"))
 						.withRedisCache()
 						.build())
-				.addInitializer(CacheManagerInitializer.class)
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(TestCacheDefinitionProvider.class)
+						.build())
 				.build();
 	}
 }

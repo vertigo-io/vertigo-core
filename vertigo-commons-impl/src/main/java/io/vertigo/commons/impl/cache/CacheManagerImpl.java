@@ -57,7 +57,8 @@ public final class CacheManagerImpl implements CacheManager, SimpleDefinitionPro
 				false,
 				10,
 				60,
-				60));
+				60,
+				true));
 	}
 
 	//===========================================================================

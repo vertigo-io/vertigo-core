@@ -40,7 +40,7 @@ import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
-import io.vertigo.dynamo.store.StoreManagerInitializer;
+import io.vertigo.dynamo.store.StoreCacheDefinitionProvider;
 import io.vertigo.dynamo.store.data.fileinfo.FileInfoTemp;
 import io.vertigo.dynamo.store.datastore.AbstractStoreManagerTest;
 import io.vertigo.dynamo.store.datastore.SqlUtil;
@@ -94,8 +94,8 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 								.addDefinitionResource("kpr", "io/vertigo/dynamo/store/data/executionOtherStore.kpr")
 								.addDefinitionResource("classes", "io.vertigo.dynamo.store.data.DtDefinitions")
 								.build())
+						.addDefinitionProvider(StoreCacheDefinitionProvider.class)
 						.build())
-				.addInitializer(StoreManagerInitializer.class)
 				.build();
 	}
 

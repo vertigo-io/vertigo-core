@@ -89,7 +89,7 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 	/** {@inheritDoc} */
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return Collections.singletonList(new CacheDefinition(CACHE_LUCENE_INDEX, false, 1000, 30 * 60, 60 * 60));
+		return Collections.singletonList(new CacheDefinition(CACHE_LUCENE_INDEX, false, 1000, 30 * 60, 60 * 60, true));
 	}
 
 	private <D extends DtObject> RamLuceneIndex<D> indexList(final DtList<D> fullDtc, final boolean storeValue) throws IOException {

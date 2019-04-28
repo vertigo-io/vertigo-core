@@ -31,7 +31,7 @@ import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.dynamo.plugins.store.filestore.db.DbFileStorePlugin;
-import io.vertigo.dynamo.store.StoreManagerInitializer;
+import io.vertigo.dynamo.store.StoreCacheDefinitionProvider;
 
 /**
  * NodeConfig builder for SqlStore tests. (Params for db specificities)
@@ -70,8 +70,8 @@ public class SqlDataStoreNodeConfig {
 								.addDefinitionResource("kpr", "io/vertigo/dynamo/store/data/executionWfileinfo.kpr")
 								.addDefinitionResource("classes", "io.vertigo.dynamo.store.data.DtDefinitions")
 								.build())
+						.addDefinitionProvider(StoreCacheDefinitionProvider.class)
 						.build())
-				.addInitializer(StoreManagerInitializer.class)
 				.build();
 
 	}

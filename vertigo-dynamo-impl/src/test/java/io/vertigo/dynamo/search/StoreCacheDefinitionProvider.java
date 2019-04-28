@@ -16,31 +16,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.store.cache;
+package io.vertigo.dynamo.search;
 
-import javax.inject.Inject;
+import java.util.Collections;
+import java.util.List;
 
-import io.vertigo.core.component.ComponentInitializer;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.commons.cache.CacheDefinition;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.data.domain.car.Car;
-import io.vertigo.dynamo.store.data.domain.famille.Famille;
+import io.vertigo.dynamo.impl.store.datastore.cache.CacheData;
+import io.vertigo.dynamo.search.data.domain.Item;
 
 /**
  * Initialisation des listes de références.
  *
  * @author jmforhan
  */
-public class CacheStoreManagerInitializer implements ComponentInitializer {
-	@Inject
-	private StoreManager storeManager;
+public class StoreCacheDefinitionProvider implements SimpleDefinitionProvider {
 
-	/** {@inheritDoc} */
 	@Override
-	public void init() {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Car.class);
-		storeManager.getDataStoreConfig().registerCacheable(dtDefinition, 3600, true, true);
-		storeManager.getDataStoreConfig().registerCacheable(DtObjectUtil.findDtDefinition(Famille.class), 120, true, true);
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return Collections.singletonList(new CacheDefinition(CacheData.getContext(DtObjectUtil.findDtDefinition(Item.class)), true, 1000, 3600, 3600 / 2, true));
 	}
+
 }

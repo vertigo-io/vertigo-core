@@ -74,8 +74,8 @@ public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
 								.addDefinitionResource("kpr", "io/vertigo/dynamo/store/data/executionWfileinfo.kpr")
 								.addDefinitionResource("classes", "io.vertigo.dynamo.store.data.DtDefinitions")
 								.build())
+						.addDefinitionProvider(TestCacheStoreManagerDefinitionProvider.class)
 						.build())
-				.addInitializer(CacheStoreManagerInitializer.class)
 				.build();
 	}
 

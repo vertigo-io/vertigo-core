@@ -49,7 +49,7 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.search.SearchManager;
-import io.vertigo.dynamo.search.StoreManagerInitializer;
+import io.vertigo.dynamo.search.StoreCacheDefinitionProvider;
 import io.vertigo.dynamo.search.data.domain.Item;
 import io.vertigo.dynamo.search.data.domain.ItemDataBase;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
@@ -113,8 +113,8 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 								.addDefinitionResource("classes", "io.vertigo.dynamo.search.data.DtDefinitions")
 								.build())
 						.addComponent(io.vertigo.dynamo.search.withstore.ItemSearchLoader.class)
+						.addDefinitionProvider(StoreCacheDefinitionProvider.class)
 						.build())
-				.addInitializer(StoreManagerInitializer.class)
 				.build();
 	}
 
