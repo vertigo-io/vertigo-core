@@ -146,7 +146,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		//-----
 		try {
 			final QueryBuilder queryBuilder = ESSearchRequestBuilder.translateToQueryBuilder(query);
-			final DeleteByQueryRequestBuilder deleteByQueryAction = DeleteByQueryAction.INSTANCE.newRequestBuilder(esClient)
+			final DeleteByQueryRequestBuilder deleteByQueryAction = new DeleteByQueryRequestBuilder(esClient, DeleteByQueryAction.INSTANCE)
 					.filter(queryBuilder);
 			deleteByQueryAction
 					.source()
@@ -213,6 +213,6 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 				.setSize(0) //on cherche juste à compter
 				.execute()
 				.actionGet();
-		return response.getHits().getTotalHits();
+		return response.getHits().getTotalHits().value;
 	}
 }

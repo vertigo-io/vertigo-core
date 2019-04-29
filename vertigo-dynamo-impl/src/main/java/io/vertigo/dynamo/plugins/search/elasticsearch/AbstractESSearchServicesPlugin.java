@@ -31,6 +31,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthAction;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequestBuilder;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.Client;
@@ -428,7 +429,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final ClusterHealthResponse clusterHealthResponse = esClient
 					.admin()
 					.cluster()
-					.health(ClusterHealthAction.INSTANCE.newRequestBuilder(esClient).request())
+					.health(new ClusterHealthRequestBuilder(esClient, ClusterHealthAction.INSTANCE).request())
 					.get();
 			switch (clusterHealthResponse.getStatus()) {
 				case GREEN:

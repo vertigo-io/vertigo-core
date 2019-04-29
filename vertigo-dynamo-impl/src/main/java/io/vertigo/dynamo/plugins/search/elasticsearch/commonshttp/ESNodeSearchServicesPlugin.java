@@ -27,7 +27,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.logging.LogConfigurator;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.InternalSettingsPreparer;
 import org.elasticsearch.node.Node;
@@ -107,12 +106,7 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 
 	private static class MyNode extends Node {
 		public MyNode(final Settings preparedSettings, final Collection<Class<? extends Plugin>> classpathPlugins) {
-			super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, null), classpathPlugins, true);
-		}
-
-		@Override
-		protected void registerDerivedNodeNameWithLogger(final String nodeName) {
-			LogConfigurator.setNodeName(nodeName);
+			super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, Collections.emptyMap(), null, null), classpathPlugins, true);
 		}
 	}
 

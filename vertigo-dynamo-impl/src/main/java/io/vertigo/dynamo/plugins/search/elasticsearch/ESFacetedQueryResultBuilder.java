@@ -34,7 +34,7 @@ import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation.Bucket;
 import org.elasticsearch.search.aggregations.bucket.filter.Filter;
-import org.elasticsearch.search.aggregations.metrics.tophits.TopHits;
+import org.elasticsearch.search.aggregations.metrics.TopHits;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 
 import io.vertigo.core.locale.MessageText;
@@ -119,7 +119,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 		}
 		//On fabrique à la volée le résultat.
 		final List<Facet> facets = createFacetList(searchQuery, queryResponse);
-		final long count = queryResponse.getHits().getTotalHits();
+		final long count = queryResponse.getHits().getTotalHits().value;
 		return new FacetedQueryResult<>(
 				searchQuery.getFacetedQuery(),
 				count,

@@ -26,6 +26,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -33,7 +34,6 @@ import javax.inject.Named;
 
 import org.elasticsearch.analysis.common.CommonAnalysisPlugin;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.logging.LogConfigurator;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.index.mapper.MapperExtrasPlugin;
 import org.elasticsearch.index.reindex.ReindexPlugin;
@@ -130,12 +130,7 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 
 	private static class MyNode extends Node {
 		public MyNode(final Settings preparedSettings, final Collection<Class<? extends Plugin>> classpathPlugins) {
-			super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, null), classpathPlugins, true);
-		}
-
-		@Override
-		protected void registerDerivedNodeNameWithLogger(final String nodeName) {
-			LogConfigurator.setNodeName(nodeName);
+			super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, Collections.emptyMap(), null, null), classpathPlugins, true);
 		}
 	}
 
@@ -145,7 +140,6 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 				.put("node.name", "es-embedded-node-" + System.currentTimeMillis())
 				.put("transport.type", "netty4")
 				.put("http.type", "netty4")
-				.put("http.enabled", "true")
 				.put("http.port", httpPort)
 				.put("transport.tcp.port", transportPort)
 				.put("path.home", homePath)
