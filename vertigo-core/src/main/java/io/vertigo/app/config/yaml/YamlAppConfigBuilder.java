@@ -146,17 +146,19 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 
 	private void handleBoot(final YamlAppConfig yamlAppConfig) {
 		if (yamlAppConfig.boot != null) {
-			final String locales = yamlAppConfig.boot.params.get("locales");
-			final String defaultZoneId = yamlAppConfig.boot.params.get("defaultZoneId");
-			if (locales != null) {
-				if (defaultZoneId == null) {
-					nodeConfigBuilder
-							.beginBoot()
-							.withLocales(locales);
-				} else {
-					nodeConfigBuilder
-							.beginBoot()
-							.withLocalesAndDefaultZoneId(locales, defaultZoneId);
+			if (yamlAppConfig.boot.params != null) {
+				final String locales = yamlAppConfig.boot.params.get("locales");
+				final String defaultZoneId = yamlAppConfig.boot.params.get("defaultZoneId");
+				if (locales != null) {
+					if (defaultZoneId == null) {
+						nodeConfigBuilder
+								.beginBoot()
+								.withLocales(locales);
+					} else {
+						nodeConfigBuilder
+								.beginBoot()
+								.withLocalesAndDefaultZoneId(locales, defaultZoneId);
+					}
 				}
 			}
 			yamlAppConfig.boot.plugins.forEach(
