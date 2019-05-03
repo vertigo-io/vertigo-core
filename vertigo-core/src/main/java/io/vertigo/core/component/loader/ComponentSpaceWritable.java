@@ -63,6 +63,10 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	private final List<Component> startedComponents = new ArrayList<>();
 	private final AtomicBoolean locked = new AtomicBoolean(false);
 
+	ComponentSpaceWritable() {
+		super();
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
@@ -157,7 +161,7 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	 * Close registration of components.
 	 * After calling this method no more components are added to the componentSpace.
 	 */
-	public void closeRegistration() {
+	void closeRegistration() {
 		//registration is now closed.
 		locked.set(true);
 	}

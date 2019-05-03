@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.definition;
+package io.vertigo.core.definition.loader;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -25,6 +25,9 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
 
@@ -38,11 +41,15 @@ public final class DefinitionSpaceWritable implements DefinitionSpace {
 	private final Map<String, Definition> definitions = new LinkedHashMap<>();
 	private final AtomicBoolean locked = new AtomicBoolean(false);
 
+	DefinitionSpaceWritable() {
+		super();
+	}
+
 	/**
 	 * Enregistrement d'un nouvel object.
 	 * @param definition Objet à enregistrer
 	 */
-	public void registerDefinition(final Definition definition) {
+	void registerDefinition(final Definition definition) {
 		Assertion.checkState(!locked.get(), "Registration is now closed. A definition can be registerd only during the boot phase");
 		Assertion.checkNotNull(definition, "A definition can't be null.");
 		final String name = definition.getName();
@@ -102,7 +109,7 @@ public final class DefinitionSpaceWritable implements DefinitionSpace {
 	 * Close registration of definitions.
 	 * After calling this no more definitions can be loaded.
 	 */
-	public void closeRegistration() {
+	void closeRegistration() {
 		//registration is now closed.
 		locked.set(true);
 	}

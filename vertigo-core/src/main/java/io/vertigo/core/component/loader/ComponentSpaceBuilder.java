@@ -40,42 +40,48 @@ import io.vertigo.core.component.di.reactor.DIReactor;
 import io.vertigo.core.component.proxy.ProxyMethod;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Builder;
 import io.vertigo.lang.VSystemException;
 
 /**
  * The componentLoader class defines the way to load the components defined in the config into componentSpace.
  * @author pchretien
  */
-public final class ComponentLoader {
+public final class ComponentSpaceBuilder implements Builder<ComponentSpaceWritable> {
 	private final AopPlugin aopPlugin;
 	/** Aspects.*/
 	private final List<Aspect> aspects = new ArrayList<>();
 
 	/** Proxies.*/
 	private final List<ProxyMethod> proxyMethods = new ArrayList<>();
-	private final ComponentSpaceWritable componentSpace;
+	private final ComponentSpaceWritable componentSpaceWritable;
 
 	/**
 	 * Constructor.
-	 * @param componentSpace Space where all the components are stored
 	 * @param aopPlugin the plugin which is reponsible for the aop strategy
 	 */
-	public ComponentLoader(final ComponentSpaceWritable componentSpace, final AopPlugin aopPlugin) {
-		Assertion.checkNotNull(componentSpace);
+	public ComponentSpaceBuilder(final AopPlugin aopPlugin) {
 		Assertion.checkNotNull(aopPlugin);
 		//-----
-		this.componentSpace = componentSpace;
+		this.componentSpaceWritable = new ComponentSpaceWritable();
 		this.aopPlugin = aopPlugin;
+	}
+
+	public ComponentSpaceBuilder withBootComponents(final List<ComponentConfig> componentConfigs) {
+		Assertion.checkNotNull(componentConfigs);
+		//--
+		this.registerComponents(Optional.empty(), "boot", componentConfigs);
+		return this;
 	}
 
 	/**
 	 * Add all the components defined in the moduleConfigs into the componentSpace.
-	 * @param paramManagerOpt optional paramManager
 	 * @param moduleConfigs the config of the module to add.
 	 */
-	public void registerAllComponentsAndAspects(final ParamManager paramManager, final List<ModuleConfig> moduleConfigs) {
+	public ComponentSpaceBuilder withAllComponentsAndAspects(final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
+		ParamManager paramManager = componentSpaceWritable.resolve(ParamManager.class);
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
 			registerComponents(Optional.of(paramManager),
 					moduleConfig.getName(),
@@ -83,12 +89,7 @@ public final class ComponentLoader {
 			registerAspects(moduleConfig.getAspectConfigs());
 			registerProxyMethods(moduleConfig.getProxyMethodConfigs());
 		}
-	}
-
-	public void registerBootComponents(final List<ComponentConfig> componentConfigs) {
-		Assertion.checkNotNull(componentConfigs);
-		//--
-		this.registerComponents(Optional.empty(), "boot", componentConfigs);
+		return this;
 	}
 
 	/**
@@ -107,13 +108,13 @@ public final class ComponentLoader {
 				.filter(ComponentConfig::isProxy)
 				.forEach(componentConfig -> {
 					final Component component = createProxyWithOptions(/*paramManagerOpt,*/ componentConfig);
-					componentSpace.registerComponent(componentConfig.getId(), component);
+					componentSpaceWritable.registerComponent(componentConfig.getId(), component);
 				});
 
 		//---- No proxy----
 		final DIReactor reactor = new DIReactor();
 		//0; On ajoute la liste des ids qui sont déjà résolus.
-		for (final String id : componentSpace.keySet()) {
+		for (final String id : componentSpaceWritable.keySet()) {
 			reactor.addParent(id);
 		}
 		//Map des composants définis par leur id
@@ -128,7 +129,7 @@ public final class ComponentLoader {
 		final List<String> ids = reactor.proceed();
 		//On a récupéré la liste ordonnée des ids.
 		//On positionne un proxy pour compter les plugins non utilisés
-		final ComponentUnusedKeysContainer componentProxyContainer = new ComponentUnusedKeysContainer(componentSpace);
+		final ComponentUnusedKeysContainer componentProxyContainer = new ComponentUnusedKeysContainer(componentSpaceWritable);
 
 		for (final String id : ids) {
 			final ComponentConfig componentConfig = componentConfigById.get(id);
@@ -138,7 +139,7 @@ public final class ComponentLoader {
 				// 2.a On crée le composant avec AOP et autres options (elastic)
 				final Component component = createComponentWithOptions(paramManagerOpt, componentProxyContainer, componentConfig);
 				// 2.b. On enregistre le composant
-				componentSpace.registerComponent(componentConfig.getId(), component);
+				componentSpaceWritable.registerComponent(componentConfig.getId(), component);
 			}
 		}
 
@@ -162,14 +163,14 @@ public final class ComponentLoader {
 		//. We build then register all the aspects
 		aspectConfigs
 				.stream()
-				.map(aspectConfig -> createAspect(componentSpace, aspectConfig))
+				.map(aspectConfig -> createAspect(componentSpaceWritable, aspectConfig))
 				.forEach(this::registerAspect);
 	}
 
 	private void registerProxyMethods(final List<ProxyMethodConfig> proxyMethodConfigs) {
 		proxyMethodConfigs
 				.stream()
-				.map(proxyMethodConfig -> createProxyMethod(componentSpace, proxyMethodConfig))
+				.map(proxyMethodConfig -> createProxyMethod(componentSpaceWritable, proxyMethodConfig))
 				.forEach(this::registerProxyMethod);
 	}
 
@@ -276,5 +277,10 @@ public final class ComponentLoader {
 		final T component = DIInjector.newInstance(clazz, dualContainer);
 		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in component '{1}'", paramsContainer.getUnusedKeys(), clazz);
 		return component;
+	}
+
+	public ComponentSpaceWritable build() {
+		componentSpaceWritable.closeRegistration();
+		return componentSpaceWritable;
 	}
 }

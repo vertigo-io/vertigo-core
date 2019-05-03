@@ -26,12 +26,13 @@ import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.component.Component;
 import io.vertigo.core.component.ComponentSpace;
-import io.vertigo.core.component.loader.ComponentLoader;
+import io.vertigo.core.component.loader.ComponentSpaceBuilder;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionProvider;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.DefinitionSupplier;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Builder;
 
 /**
  * A DefinitionLoader uses all the DefinitionProviders of all the modules to register all definitions at once at the beginning.
@@ -39,20 +40,19 @@ import io.vertigo.lang.Assertion;
  *
  * @author pchretien
  */
-public final class DefinitionLoader {
-	private final DefinitionSpace definitionSpace;
+public final class DefinitionBuilder implements Builder<DefinitionSpace> {
+	private final DefinitionSpaceWritable definitionSpaceWritable;
 	private final ComponentSpace componentSpace;
 
 	/**
 	 * Loader of definitions
-	 * @param definitionSpace the definitionSpace to build
 	 * @param componentSpace the componentSpace
 	 */
-	public DefinitionLoader(final DefinitionSpace definitionSpace, final ComponentSpace componentSpace) {
-		Assertion.checkNotNull(definitionSpace);
+	public DefinitionBuilder(final ComponentSpace componentSpace) {
 		Assertion.checkNotNull(componentSpace);
 		//-----
-		this.definitionSpace = definitionSpace;
+		this.definitionSpaceWritable = new DefinitionSpaceWritable();
+		;
 		this.componentSpace = componentSpace;
 	}
 
@@ -62,43 +62,53 @@ public final class DefinitionLoader {
 	 * @param moduleConfigs module configs
 	 * @return a stream of definitions
 	 */
-	public Stream<Definition> createDefinitions(final List<ModuleConfig> moduleConfigs) {
+	public DefinitionBuilder withDefinitions(final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
-		//-----
-		return moduleConfigs
+		//--
+		Stream<Definition> definitions = moduleConfigs
 				.stream()
 				.flatMap(moduleConfig -> provide(moduleConfig.getDefinitionProviderConfigs()))
-				.map(supplier -> supplier.get(definitionSpace));
+				.map(supplier -> supplier.get(definitionSpaceWritable));
+
+		definitions.forEach(definitionSpaceWritable::registerDefinition);
+		return this;
 	}
 
 	/**
 	 * Inject all the definitions provided by components.
-	 * @return a stream of definitions
 	 */
-	public Stream<Definition> createDefinitionsFromComponents() {
-		return componentSpace.keySet()
+	public DefinitionBuilder withDefinitionsFromComponents() {
+		//--
+		Stream<Definition> definition = componentSpace.keySet()
 				.stream()
 				.map(key -> componentSpace.resolve(key, Component.class))
 				.filter(component -> DefinitionProvider.class.isAssignableFrom(component.getClass()))
-				.flatMap(component -> ((DefinitionProvider) component).get(definitionSpace).stream())
-				.map(defitionSupplier -> defitionSupplier.get(definitionSpace));
+				.flatMap(component -> ((DefinitionProvider) component).get(definitionSpaceWritable).stream())
+				.map(defitionSupplier -> defitionSupplier.get(definitionSpaceWritable));
+
+		definition.forEach(definitionSpaceWritable::registerDefinition);
+		return this;
 	}
 
 	private Stream<DefinitionSupplier> provide(final List<DefinitionProviderConfig> definitionProviderConfigs) {
 		return definitionProviderConfigs
 				.stream()
 				.map(this::createDefinitionProvider)
-				.flatMap(definitionProvider -> definitionProvider.get(definitionSpace).stream());
+				.flatMap(definitionProvider -> definitionProvider.get(definitionSpaceWritable).stream());
 	}
 
 	private DefinitionProvider createDefinitionProvider(final DefinitionProviderConfig definitionProviderConfig) {
-		final DefinitionProvider definitionProvider = ComponentLoader.createInstance(definitionProviderConfig.getDefinitionProviderClass(), componentSpace, Optional.empty(),
+		final DefinitionProvider definitionProvider = ComponentSpaceBuilder.createInstance(definitionProviderConfig.getDefinitionProviderClass(), componentSpace, Optional.empty(),
 				definitionProviderConfig.getParams());
 
 		definitionProviderConfig.getDefinitionResourceConfigs()
 				.forEach(definitionProvider::addDefinitionResourceConfig);
 
 		return definitionProvider;
+	}
 
+	public DefinitionSpaceWritable build() {
+		definitionSpaceWritable.closeRegistration();
+		return definitionSpaceWritable;
 	}
 }
