@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.component.di.reactor;
+package io.vertigo.core.component.di;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,9 +24,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import io.vertigo.core.component.di.DIDependency;
-import io.vertigo.core.component.di.DIException;
 
 /**
  * Reactor.

@@ -41,7 +41,7 @@ import io.vertigo.util.ClassUtil;
  *
  * @author pchretien
  */
-public final class DIDependency {
+final class DIDependency {
 	private final String targetId;
 	private final boolean isOption;
 	private final boolean isList;
@@ -51,7 +51,7 @@ public final class DIDependency {
 	 * Constructor for field injection.
 	 * @param field Field to inject into
 	 */
-	public DIDependency(final Field field) {
+	DIDependency(final Field field) {
 		Assertion.checkNotNull(field);
 		//-----
 		final String named = getNamedValue(field.getAnnotations());
@@ -68,7 +68,7 @@ public final class DIDependency {
 	 * @param constructor Constructor to inject into
 	 * @param i parameter index to inject into
 	 */
-	public DIDependency(final Constructor<?> constructor, final int i) {
+	DIDependency(final Constructor<?> constructor, final int i) {
 		Assertion.checkNotNull(constructor);
 		//-----
 		final String named = getNamedValue(constructor.getParameterAnnotations()[i]);
@@ -83,35 +83,35 @@ public final class DIDependency {
 	/**
 	 * @return Inject name
 	 */
-	public String getName() {
+	String getName() {
 		return targetId;
 	}
 
 	/**
 	 * @return if optionnal
 	 */
-	public boolean isOption() {
+	boolean isOption() {
 		return isOption;
 	}
 
 	/**
 	 * @return if required (not null)
 	 */
-	public boolean isRequired() {
+	boolean isRequired() {
 		return !(isList || isOption);
 	}
 
 	/**
 	 * @return is list
 	 */
-	public boolean isList() {
+	boolean isList() {
 		return isList;
 	}
 
 	/**
 	 * @return get object class
 	 */
-	public Class<?> getType() {
+	Class<?> getType() {
 		Assertion.checkNotNull(type);
 		return type;
 	}

@@ -23,7 +23,7 @@ import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 
 import io.vertigo.app.App;
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.core.component.di.injector.DIInjector;
+import io.vertigo.core.component.di.DIInjector;
 
 /**
  * Classe parente de tous les TNR associés à vertigo.

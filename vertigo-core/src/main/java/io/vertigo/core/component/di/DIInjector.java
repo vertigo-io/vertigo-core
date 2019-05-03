@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.component.di.injector;
+package io.vertigo.core.component.di;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -28,10 +28,8 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import io.vertigo.app.Home;
 import io.vertigo.core.component.Container;
-import io.vertigo.core.component.di.DIAnnotationUtil;
-import io.vertigo.core.component.di.DIDependency;
-import io.vertigo.core.component.di.DIException;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 
@@ -45,6 +43,19 @@ import io.vertigo.util.ClassUtil;
 public final class DIInjector {
 	private DIInjector() {
 		//constructor is protected, Injector contains only static methods
+	}
+
+	/**
+	 * Injection de dépendances.
+	 * Création d'une instance  à partir du conteneur par défaut.
+	 *
+	 * @param <T> Type de l'instance
+	 * @param clazz Classe de l'instance
+	 * @param container Fournisseur de composants
+	 * @return Instance de composants créée.
+	 */
+	public static <T> T newInstance(final Class<T> clazz) {
+		return newInstance(clazz, Home.getApp().getComponentSpace());
 	}
 
 	/**

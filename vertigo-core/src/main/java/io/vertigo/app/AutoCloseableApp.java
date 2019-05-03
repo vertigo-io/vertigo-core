@@ -30,7 +30,7 @@ import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.core.component.ComponentSpace;
-import io.vertigo.core.component.di.injector.DIInjector;
+import io.vertigo.core.component.di.DIInjector;
 import io.vertigo.core.component.loader.ComponentSpaceBuilder;
 import io.vertigo.core.component.loader.ComponentSpaceWritable;
 import io.vertigo.core.definition.DefinitionSpace;

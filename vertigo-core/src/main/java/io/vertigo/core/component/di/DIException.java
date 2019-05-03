@@ -23,14 +23,14 @@ package io.vertigo.core.component.di;
  *
  * @author pchretien
  */
-public final class DIException extends RuntimeException {
+final class DIException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructor.
 	 * @param msg messagae
 	 */
-	public DIException(final String msg) {
+	DIException(final String msg) {
 		super(msg);
 	}
 
@@ -39,7 +39,7 @@ public final class DIException extends RuntimeException {
 	 * @param msg message
 	 * @param t cause exception
 	 */
-	public DIException(final String msg, final Throwable t) {
+	DIException(final String msg, final Throwable t) {
 		super(msg, t);
 	}
 }

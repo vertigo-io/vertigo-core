@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.component.di.injector;
+package io.vertigo.core.component.di;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -34,6 +34,7 @@ import org.junit.runner.RunWith;
 
 import io.vertigo.core.component.Container;
 import io.vertigo.core.component.di.DIException;
+import io.vertigo.core.component.di.DIInjector;
 import io.vertigo.core.component.di.data.A;
 import io.vertigo.core.component.di.data.B;
 import io.vertigo.core.component.di.data.B2;
