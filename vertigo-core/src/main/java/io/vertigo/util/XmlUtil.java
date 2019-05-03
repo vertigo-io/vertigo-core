@@ -61,6 +61,8 @@ public final class XmlUtil {
 			final Validator validator = schemaFactory
 					.newSchema(xsd)
 					.newValidator();
+			validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
 			final Source source = new StreamSource(xml.openStream());
 			validate(xml, validator, source);
 		} catch (final SocketException e) {
