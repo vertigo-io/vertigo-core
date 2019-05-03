@@ -176,7 +176,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			throw WrappedException.wrap(e, "an error occured when stopping");
 		} finally {
 			state = State.CLOSED;
-			Home.setApp(null);
+			Home.resetApp();
 		}
 	}
 
