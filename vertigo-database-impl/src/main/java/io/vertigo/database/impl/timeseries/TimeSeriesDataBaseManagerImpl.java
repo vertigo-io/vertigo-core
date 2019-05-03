@@ -88,7 +88,7 @@ public class TimeSeriesDataBaseManagerImpl implements TimeSeriesDataBaseManager 
 				TIMESERIES_CATEGORY,
 				"/insertMeasure/" + dbName,
 				tracer -> {
-					tracer.setMeasure("size", Double.valueOf(measures.size()));
+					tracer.setMeasure("size", measures.size());
 					getPluginByDb(dbName).insertMeasures(dbName, measures);
 				});
 

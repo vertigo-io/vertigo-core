@@ -57,6 +57,7 @@ public final class XmlUtil {
 		//-----
 		final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		try {
+			schemaFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 			final Validator validator = schemaFactory
 					.newSchema(xsd)
 					.newValidator();

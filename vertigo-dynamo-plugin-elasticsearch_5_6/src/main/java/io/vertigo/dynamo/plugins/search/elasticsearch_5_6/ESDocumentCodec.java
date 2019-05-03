@@ -48,8 +48,8 @@ import io.vertigo.lang.Assertion;
  */
 final class ESDocumentCodec {
 	/** FieldName containing Full result object. */
-	static final String FULL_RESULT = "fullResult";
-	static final String DOC_ID = "docId";
+	protected static final String FULL_RESULT = "fullResult";
+	protected static final String DOC_ID = "docId";
 
 	//-----
 	private final CodecManager codecManager;

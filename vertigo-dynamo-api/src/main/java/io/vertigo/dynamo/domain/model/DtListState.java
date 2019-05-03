@@ -86,7 +86,8 @@ public final class DtListState {
 				&& (sortDesc.isPresent() || defaultSortDesc == null)) {
 			return this; //optim to avoid new DtListState if obvious unnecessary
 		}
-		return new DtListState(maxRows.orElse(defaultMaxRows), skipRows, sortFieldName.orElse(defaultSortFieldName.name()), sortDesc.orElse(defaultSortDesc));
+		final String defaultSortFieldNameAsString = defaultSortFieldName != null ? defaultSortFieldName.name() : null;
+		return new DtListState(maxRows.orElse(defaultMaxRows), skipRows, sortFieldName.orElse(defaultSortFieldNameAsString), sortDesc.orElse(defaultSortDesc));
 	}
 
 	/**
