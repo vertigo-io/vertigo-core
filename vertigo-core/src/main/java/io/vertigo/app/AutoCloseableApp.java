@@ -21,7 +21,6 @@ package io.vertigo.app;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,9 +30,9 @@ import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.core.component.ComponentSpace;
-import io.vertigo.core.component.ComponentSpaceWritable;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.core.component.loader.ComponentLoader;
+import io.vertigo.core.component.loader.ComponentSpaceWritable;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.core.definition.loader.DefinitionLoader;
@@ -94,8 +93,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			//contient donc à minima resourceManager et paramManager.
 
 			//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
-			componentLoader.registerComponents(Optional.empty(), "boot",
-					nodeConfig.getBootConfig().getComponentConfigs());
+			componentLoader.registerBootComponents(nodeConfig.getBootConfig().getComponentConfigs());
 
 			//--1. Creates and register all components (and aspects and Proxies).
 			//all components can be parameterized

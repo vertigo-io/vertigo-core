@@ -32,7 +32,6 @@ import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.ProxyMethodConfig;
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.Component;
-import io.vertigo.core.component.ComponentSpaceWritable;
 import io.vertigo.core.component.Container;
 import io.vertigo.core.component.Plugin;
 import io.vertigo.core.component.aop.Aspect;
@@ -86,14 +85,19 @@ public final class ComponentLoader {
 		}
 	}
 
+	public void registerBootComponents(final List<ComponentConfig> componentConfigs) {
+		Assertion.checkNotNull(componentConfigs);
+		//--
+		this.registerComponents(Optional.empty(), "boot", componentConfigs);
+	}
+
 	/**
 	 * registers all the components defined by their configs.
 	 * @param paramManagerOpt the optional manager of params
 	 * @param moduleName the name of the module
 	 * @param componentConfigs the configs of the components
 	 */
-	public void registerComponents(final Optional<ParamManager> paramManagerOpt, final String moduleName, final List<ComponentConfig> componentConfigs) {
-		Assertion.checkNotNull(componentSpace);
+	private void registerComponents(final Optional<ParamManager> paramManagerOpt, final String moduleName, final List<ComponentConfig> componentConfigs) {
 		Assertion.checkNotNull(paramManagerOpt);
 		Assertion.checkNotNull(moduleName);
 		Assertion.checkNotNull(componentConfigs);

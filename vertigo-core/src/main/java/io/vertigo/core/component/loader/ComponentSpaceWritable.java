@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.component;
+package io.vertigo.core.component.loader;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -28,6 +28,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.vertigo.core.component.Activeable;
+import io.vertigo.core.component.Component;
+import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -78,7 +81,7 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	 * @param componentId id of the component
 	 * @param component instance of the component
 	 */
-	public void registerComponent(final String componentId, final Component component) {
+	void registerComponent(final String componentId, final Component component) {
 		Assertion.checkState(!locked.get(), "Registration is now closed. A component can be registerd only during the boot phase");
 		Assertion.checkArgNotEmpty(componentId);
 		Assertion.checkNotNull(component);
