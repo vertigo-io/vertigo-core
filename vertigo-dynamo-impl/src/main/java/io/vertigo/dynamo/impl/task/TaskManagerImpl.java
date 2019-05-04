@@ -20,9 +20,8 @@ package io.vertigo.dynamo.impl.task;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.core.component.di.injector.DIInjector;
+import io.vertigo.core.component.di.DIInjector;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskEngine;
@@ -56,7 +55,7 @@ public final class TaskManagerImpl implements TaskManager {
 	}
 
 	private static TaskResult doExecute(final Task task) {
-		final TaskEngine taskEngine = DIInjector.newInstance(task.getDefinition().getTaskEngineClass(), Home.getApp().getComponentSpace());
+		final TaskEngine taskEngine = DIInjector.newInstance(task.getDefinition().getTaskEngineClass());
 		return taskEngine.process(task);
 	}
 }

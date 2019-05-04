@@ -21,7 +21,7 @@ package io.vertigo.dynamo.impl.store.datastore.cache;
 import io.vertigo.app.Home;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.eventbus.EventBusSubscriptionDefinition;
-import io.vertigo.core.definition.DefinitionSpaceWritable;
+import io.vertigo.core.definition.loader.DefinitionSpaceWritable;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
