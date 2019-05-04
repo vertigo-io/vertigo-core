@@ -40,7 +40,7 @@ import io.vertigo.lang.Builder;
  *
  * @author pchretien
  */
-public final class DefinitionBuilder implements Builder<DefinitionSpace> {
+public final class DefinitionSpaceBuilder implements Builder<DefinitionSpace> {
 	private final DefinitionSpaceWritable definitionSpaceWritable;
 	private final ComponentSpace componentSpace;
 
@@ -48,7 +48,7 @@ public final class DefinitionBuilder implements Builder<DefinitionSpace> {
 	 * Loader of definitions
 	 * @param componentSpace the componentSpace
 	 */
-	public DefinitionBuilder(final ComponentSpace componentSpace) {
+	public DefinitionSpaceBuilder(final ComponentSpace componentSpace) {
 		Assertion.checkNotNull(componentSpace);
 		//-----
 		this.definitionSpaceWritable = new DefinitionSpaceWritable();
@@ -62,7 +62,7 @@ public final class DefinitionBuilder implements Builder<DefinitionSpace> {
 	 * @param moduleConfigs module configs
 	 * @return a stream of definitions
 	 */
-	public DefinitionBuilder withDefinitions(final List<ModuleConfig> moduleConfigs) {
+	public DefinitionSpaceBuilder withDefinitions(final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//--
 		Stream<Definition> definitions = moduleConfigs
@@ -77,7 +77,7 @@ public final class DefinitionBuilder implements Builder<DefinitionSpace> {
 	/**
 	 * Inject all the definitions provided by components.
 	 */
-	public DefinitionBuilder withDefinitionsFromComponents() {
+	public DefinitionSpaceBuilder withDefinitionsFromComponents() {
 		//--
 		Stream<Definition> definition = componentSpace.keySet()
 				.stream()

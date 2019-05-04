@@ -34,7 +34,7 @@ import io.vertigo.core.component.di.DIInjector;
 import io.vertigo.core.component.loader.ComponentSpaceBuilder;
 import io.vertigo.core.component.loader.ComponentSpaceWritable;
 import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.loader.DefinitionBuilder;
+import io.vertigo.core.definition.loader.DefinitionSpaceBuilder;
 import io.vertigo.core.definition.loader.DefinitionSpaceWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -100,7 +100,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			//--2 Loads all definitions
 			//-----a Loads all definitions provided by DefinitionProvider
 			//-----b Loads all definitions provided by components
-			definitionSpaceWritable = new DefinitionBuilder(componentSpaceWritable)
+			definitionSpaceWritable = new DefinitionSpaceBuilder(componentSpaceWritable)
 					.withDefinitions(nodeConfig.getModuleConfigs())
 					.withDefinitionsFromComponents()
 					.build();
