@@ -36,7 +36,6 @@ import javax.inject.Inject;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.eventbus.EventBusSubscribed;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.locale.LocaleManager;
@@ -73,18 +72,15 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/**
 	 * Constructor.
 	 * @param searchServicesPlugin the searchServicesPlugin
-	 * @param eventBusManager the  eventBusManager
 	 * @param localeManager the localeManager
 	 * @param analyticsManager the analyticsManager
 	 */
 	@Inject
 	public SearchManagerImpl(
 			final SearchServicesPlugin searchServicesPlugin,
-			final EventBusManager eventBusManager,
 			final LocaleManager localeManager,
 			final AnalyticsManager analyticsManager) {
 		Assertion.checkNotNull(searchServicesPlugin);
-		Assertion.checkNotNull(eventBusManager);
 		Assertion.checkNotNull(analyticsManager);
 		//-----
 		this.searchServicesPlugin = searchServicesPlugin;
