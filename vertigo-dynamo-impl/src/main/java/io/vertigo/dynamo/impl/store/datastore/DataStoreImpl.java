@@ -18,8 +18,13 @@
  */
 package io.vertigo.dynamo.impl.store.datastore;
 
+import java.util.List;
+
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
@@ -43,7 +48,7 @@ import io.vertigo.lang.Assertion;
  * Implementation of DataStore.
  * @author pchretien
  */
-public final class DataStoreImpl implements DataStore {
+public final class DataStoreImpl implements DataStore, SimpleDefinitionProvider {
 	private static final Criteria CRITERIA_ALWAYS_TRUE = Criterions.alwaysTrue();
 
 	/** Le store est le point d'accès unique à la base (sql, xml, fichier plat...). */
@@ -77,7 +82,7 @@ public final class DataStoreImpl implements DataStore {
 		Assertion.checkNotNull(dataStoreConfig);
 		//-----
 		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
-		cacheDataStore = new CacheDataStore(collectionsManager, storeManager, eventBusManager, dataStoreConfig);
+		cacheDataStore = new CacheDataStore(collectionsManager, storeManager, dataStoreConfig);
 		this.eventBusManager = eventBusManager;
 		this.transactionManager = transactionManager;
 		brokerNN = new BrokerNNImpl(taskManager);
@@ -187,6 +192,12 @@ public final class DataStoreImpl implements DataStore {
 		Assertion.checkNotNull(list);
 		return list;
 
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return cacheDataStore.provideDefinitions(definitionSpace);
 	}
 
 	//------

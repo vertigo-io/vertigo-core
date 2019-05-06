@@ -18,10 +18,13 @@
  */
 package io.vertigo.dynamo.impl.store.datastore.cache;
 
-import io.vertigo.app.Home;
-import io.vertigo.commons.eventbus.EventBusManager;
+import java.util.Collections;
+import java.util.List;
+
 import io.vertigo.commons.eventbus.EventBusSubscriptionDefinition;
-import io.vertigo.core.definition.loader.DefinitionSpaceWritable;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
@@ -47,7 +50,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author  pchretien
  */
-public final class CacheDataStore {
+public final class CacheDataStore implements SimpleDefinitionProvider {
 	private final CollectionsManager collectionsManager;
 	private final StoreManager storeManager;
 	private final CacheDataStoreConfig cacheDataStoreConfig;
@@ -57,31 +60,20 @@ public final class CacheDataStore {
 	 * Constructor.
 	 * @param collectionsManager collectionsManager
 	 * @param storeManager Store manager
-	 * @param eventBusManager Event bus manager
 	 * @param dataStoreConfig Data store configuration
 	 */
 	public CacheDataStore(
 			final CollectionsManager collectionsManager,
 			final StoreManager storeManager,
-			final EventBusManager eventBusManager,
 			final DataStoreConfigImpl dataStoreConfig) {
 		Assertion.checkNotNull(collectionsManager);
 		Assertion.checkNotNull(storeManager);
-		Assertion.checkNotNull(eventBusManager);
 		Assertion.checkNotNull(dataStoreConfig);
 		//-----
 		this.collectionsManager = collectionsManager;
 		this.storeManager = storeManager;
 		cacheDataStoreConfig = dataStoreConfig.getCacheStoreConfig();
 		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
-
-		//TODO : A revoir plus tard
-		final EventBusSubscriptionDefinition<StoreEvent> eventBusSubscription = new EventBusSubscriptionDefinition<>(
-				"EvtClearCache",
-				StoreEvent.class,
-				event -> clearCache(event.getUID().getDefinition()));
-		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace())
-				.registerDefinition(eventBusSubscription);
 	}
 
 	private DataStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {
@@ -211,4 +203,13 @@ public final class CacheDataStore {
 		cacheDataStoreConfig.getDataCache().clear(dtDefinition);
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		final EventBusSubscriptionDefinition<StoreEvent> eventBusSubscription = new EventBusSubscriptionDefinition<>(
+				"EvtClearCache",
+				StoreEvent.class,
+				event -> clearCache(event.getUID().getDefinition()));
+		return Collections.singletonList(eventBusSubscription);
+	}
 }

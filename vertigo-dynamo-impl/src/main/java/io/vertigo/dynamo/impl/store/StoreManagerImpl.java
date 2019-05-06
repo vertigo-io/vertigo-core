@@ -28,6 +28,9 @@ import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreConfigImpl;
@@ -52,7 +55,7 @@ import io.vertigo.lang.Assertion;
 *
 * @author pchretien
 */
-public final class StoreManagerImpl implements StoreManager, Activeable {
+public final class StoreManagerImpl implements StoreManager, Activeable, SimpleDefinitionProvider {
 	private final MasterDataConfig masterDataConfig;
 	private final DataStoreConfigImpl dataStoreConfig;
 
@@ -140,4 +143,9 @@ public final class StoreManagerImpl implements StoreManager, Activeable {
 		return fileStore;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return ((SimpleDefinitionProvider) dataStore).provideDefinitions(definitionSpace);
+	}
 }
