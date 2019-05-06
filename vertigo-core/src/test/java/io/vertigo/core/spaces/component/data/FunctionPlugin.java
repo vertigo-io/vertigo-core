@@ -19,21 +19,21 @@
 package io.vertigo.core.spaces.component.data;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.core.component.Plugin;
+import io.vertigo.core.param.ParamValue;
 
 public final class FunctionPlugin implements Plugin {
 	@Inject
-	@Named("name")
+	@ParamValue("name")
 	private String name;
 
 	@Inject
-	@Named("a")
+	@ParamValue("a")
 	private int a;
 
 	@Inject
-	@Named("b")
+	@ParamValue("b")
 	private int b;
 
 	public String getName() {

@@ -25,8 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import javax.inject.Named;
-
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 
@@ -137,8 +136,8 @@ final class DIDependency {
 
 	private static String getNamedValue(final Annotation[] annotations) {
 		return Arrays.stream(annotations)
-				.filter(annotation -> annotation instanceof Named)
-				.map(annotation -> Named.class.cast(annotation).value())
+				.filter(annotation -> annotation instanceof ParamValue)
+				.map(annotation -> ParamValue.class.cast(annotation).value())
 				.findFirst().orElse(null);
 	}
 }

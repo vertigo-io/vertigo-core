@@ -24,10 +24,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.definition.DefinitionUtil;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.dynamo.criteria.Criteria;
@@ -110,9 +110,9 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	 */
 	@Inject
 	public SqlDataStorePlugin(
-			@Named("dataSpace") final Optional<String> optDataSpace,
-			@Named("connectionName") final Optional<String> optConnectionName,
-			@Named("sequencePrefix") final Optional<String> optSequencePrefix,
+			@ParamValue("dataSpace") final Optional<String> optDataSpace,
+			@ParamValue("connectionName") final Optional<String> optConnectionName,
+			@ParamValue("sequencePrefix") final Optional<String> optSequencePrefix,
 			final TaskManager taskManager,
 			final SqlDataBaseManager sqlDataBaseManager) {
 		Assertion.checkNotNull(optDataSpace);

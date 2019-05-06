@@ -22,13 +22,13 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.impl.account.AccountStorePlugin;
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
@@ -50,8 +50,8 @@ public final class LoaderAccountStorePlugin implements AccountStorePlugin, Activ
 	 */
 	@Inject
 	public LoaderAccountStorePlugin(
-			@Named("accountLoaderName") final String accountLoaderName,
-			@Named("groupLoaderName") final Optional<String> groupLoaderName) {
+			@ParamValue("accountLoaderName") final String accountLoaderName,
+			@ParamValue("groupLoaderName") final Optional<String> groupLoaderName) {
 		Assertion.checkArgNotEmpty(accountLoaderName);
 		Assertion.checkNotNull(groupLoaderName);
 

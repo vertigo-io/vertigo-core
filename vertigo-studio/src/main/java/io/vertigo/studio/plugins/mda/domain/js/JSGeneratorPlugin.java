@@ -25,8 +25,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
@@ -55,9 +55,9 @@ public final class JSGeneratorPlugin implements GeneratorPlugin {
 	 */
 	@Inject
 	public JSGeneratorPlugin(
-			@Named("targetSubDir") final Optional<String> targetSubDirOpt,
-			@Named("generateDtResourcesJS") final Optional<Boolean> generateDtResourcesJSOpt,
-			@Named("generateJsDtDefinitions") final Optional<Boolean> generateJsDtDefinitionsOpt) {
+			@ParamValue("targetSubDir") final Optional<String> targetSubDirOpt,
+			@ParamValue("generateDtResourcesJS") final Optional<Boolean> generateDtResourcesJSOpt,
+			@ParamValue("generateJsDtDefinitions") final Optional<Boolean> generateJsDtDefinitionsOpt) {
 		//-----
 		targetSubDir = targetSubDirOpt.orElse("jsgen");
 		shouldGenerateDtResourcesJS = generateDtResourcesJSOpt.orElse(true); //true by default

@@ -29,9 +29,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
@@ -56,7 +56,7 @@ public final class WsTsGeneratorPlugin implements GeneratorPlugin {
 	 * @param targetSubDirOpt Repertoire de generation des fichiers de ce plugin
 	 */
 	@Inject
-	public WsTsGeneratorPlugin(@Named("targetSubDir") final Optional<String> targetSubDirOpt) {
+	public WsTsGeneratorPlugin(@ParamValue("targetSubDir") final Optional<String> targetSubDirOpt) {
 		//-----
 		targetSubDir = targetSubDirOpt.orElse("tsgen");
 	}

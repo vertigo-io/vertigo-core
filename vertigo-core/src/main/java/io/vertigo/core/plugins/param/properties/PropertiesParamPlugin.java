@@ -25,10 +25,10 @@ import java.util.Optional;
 import java.util.Properties;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamPlugin;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 
@@ -48,7 +48,7 @@ public final class PropertiesParamPlugin implements ParamPlugin {
 	 * @throws IOException erreur de lecture du fichier
 	 */
 	@Inject
-	public PropertiesParamPlugin(final ResourceManager resourceManager, @Named("url") final String url) throws IOException {
+	public PropertiesParamPlugin(final ResourceManager resourceManager, @ParamValue("url") final String url) throws IOException {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkArgNotEmpty(url);
 		//-----

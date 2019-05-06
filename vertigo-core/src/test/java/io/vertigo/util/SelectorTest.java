@@ -23,8 +23,6 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 
-import javax.inject.Named;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
@@ -35,6 +33,7 @@ import io.vertigo.lang.Tuple;
 import io.vertigo.util.Selector.ClassConditions;
 import io.vertigo.util.Selector.FieldConditions;
 import io.vertigo.util.Selector.MethodConditions;
+import io.vertigo.util.data.ARandomAnnotation;
 import io.vertigo.util.data.SA;
 import io.vertigo.util.data.SAbstractD;
 import io.vertigo.util.data.SAnnotationA;
@@ -68,7 +67,7 @@ public final class SelectorTest {
 	public void testFromPackages() {
 		final Collection<Class> result = new Selector().from(TEST_CLASSES_PACKAGE).findClasses();
 		// ---
-		Assertions.assertEquals(5, result.size());
+		Assertions.assertEquals(6, result.size());
 	}
 
 	@Test
@@ -85,7 +84,7 @@ public final class SelectorTest {
 	public void testFilterByClassAnnotation() {
 		final Collection<Class> result = new Selector()
 				.from(TEST_CLASSES_PACKAGE)
-				.filterClasses(ClassConditions.annotatedWith(Named.class))
+				.filterClasses(ClassConditions.annotatedWith(ARandomAnnotation.class))
 				.findClasses();
 		// ---
 		Assertions.assertEquals(1, result.size());
@@ -124,7 +123,7 @@ public final class SelectorTest {
 				.filterClasses(ClassConditions.interfaces())
 				.findClasses();
 		// ---
-		Assertions.assertEquals(2, result.size());
+		Assertions.assertEquals(3, result.size());
 	}
 
 	@Test
@@ -153,7 +152,7 @@ public final class SelectorTest {
 	public void testOr() {
 		final Collection<Class> result = new Selector()
 				.from(TEST_CLASSES_PACKAGE)
-				.filterClasses(ClassConditions.annotatedWith(Named.class)
+				.filterClasses(ClassConditions.annotatedWith(ARandomAnnotation.class)
 						.or(ClassConditions.subTypeOf(SB.class)))
 				.findClasses();
 		// ---
@@ -164,7 +163,7 @@ public final class SelectorTest {
 	public void testAnd() {
 		final Collection<Class> result = new Selector()
 				.from(TEST_CLASSES_PACKAGE)
-				.filterClasses(ClassConditions.annotatedWith(Named.class))
+				.filterClasses(ClassConditions.annotatedWith(ARandomAnnotation.class))
 				.filterClasses(ClassConditions.subTypeOf(Component.class))
 				.findClasses();
 		// ---
@@ -191,7 +190,7 @@ public final class SelectorTest {
 		//We want to check that all 'from" clauses must be put together
 		new Selector()
 				.from(TEST_CLASSES_PACKAGE)
-				.filterClasses(ClassConditions.annotatedWith(Named.class))
+				.filterClasses(ClassConditions.annotatedWith(ARandomAnnotation.class))
 				.from(SA.class)
 				.findClasses();
 	}

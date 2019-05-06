@@ -21,7 +21,6 @@ package io.vertigo.commons.plugins.analytics.log;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,6 +31,7 @@ import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.metric.Metric;
 import io.vertigo.commons.analytics.process.AProcess;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -50,8 +50,8 @@ public final class SmartLoggerAnalyticsConnectorPlugin implements AnalyticsConne
 	 */
 	@Inject
 	public SmartLoggerAnalyticsConnectorPlugin(
-			@Named("aggregatedBy") final Optional<String> aggregatedByOpt,
-			@Named("durationThreshold") final Optional<Long> durationThresholdOpt) {
+			@ParamValue("aggregatedBy") final Optional<String> aggregatedByOpt,
+			@ParamValue("durationThreshold") final Optional<Long> durationThresholdOpt) {
 		Assertion.checkNotNull(aggregatedByOpt);
 		Assertion.checkNotNull(durationThresholdOpt);
 		//---

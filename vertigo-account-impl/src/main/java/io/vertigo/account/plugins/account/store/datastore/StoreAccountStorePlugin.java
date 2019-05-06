@@ -26,7 +26,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
@@ -36,6 +35,7 @@ import io.vertigo.account.plugins.account.store.AbstractAccountStorePlugin;
 import io.vertigo.app.Home;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -96,12 +96,12 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	 */
 	@Inject
 	public StoreAccountStorePlugin(
-			@Named("userIdentityEntity") final String userIdentityEntity,
-			@Named("groupIdentityEntity") final String groupIdentityEntity,
-			@Named("userAuthField") final String userAuthField,
-			@Named("photoFileInfo") final Optional<String> photoFileInfo,
-			@Named("userToAccountMapping") final String userToAccountMappingStr,
-			@Named("groupToGroupAccountMapping") final String groupToGroupAccountMappingStr,
+			@ParamValue("userIdentityEntity") final String userIdentityEntity,
+			@ParamValue("groupIdentityEntity") final String groupIdentityEntity,
+			@ParamValue("userAuthField") final String userAuthField,
+			@ParamValue("photoFileInfo") final Optional<String> photoFileInfo,
+			@ParamValue("userToAccountMapping") final String userToAccountMappingStr,
+			@ParamValue("groupToGroupAccountMapping") final String groupToGroupAccountMappingStr,
 			final StoreManager storeManager,
 			final VTransactionManager transactionManager) {
 		super(userIdentityEntity, userToAccountMappingStr);

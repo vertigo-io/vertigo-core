@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.elasticsearch.analysis.common.CommonAnalysisPlugin;
 import org.elasticsearch.client.Client;
@@ -44,6 +43,7 @@ import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.transport.Netty4Plugin;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
 import io.vertigo.lang.Assertion;
@@ -75,13 +75,13 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 	 */
 	@Inject
 	public ESEmbeddedSearchServicesPlugin(
-			@Named("home") final String elasticSearchHome,
-			@Named("envIndex") final String envIndex,
-			@Named("envIndexIsPrefix") final Optional<Boolean> envIndexIsPrefix,
-			@Named("rowsPerQuery") final int rowsPerQuery,
-			@Named("config.file") final String configFile,
-			@Named("http.port") final Optional<Integer> httpPortOpt,
-			@Named("transport.tcp.port") final Optional<Integer> transportPortOpt,
+			@ParamValue("home") final String elasticSearchHome,
+			@ParamValue("envIndex") final String envIndex,
+			@ParamValue("envIndexIsPrefix") final Optional<Boolean> envIndexIsPrefix,
+			@ParamValue("rowsPerQuery") final int rowsPerQuery,
+			@ParamValue("config.file") final String configFile,
+			@ParamValue("http.port") final Optional<Integer> httpPortOpt,
+			@ParamValue("transport.tcp.port") final Optional<Integer> transportPortOpt,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
 		super(envIndex, envIndexIsPrefix.orElse(true), rowsPerQuery, configFile, codecManager, resourceManager);

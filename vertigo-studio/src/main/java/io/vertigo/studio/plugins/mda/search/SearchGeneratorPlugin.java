@@ -25,9 +25,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
@@ -57,7 +57,7 @@ public final class SearchGeneratorPlugin implements GeneratorPlugin {
 	 * @param targetSubDirOpt Repertoire de generation des fichiers de ce plugin
 	 */
 	@Inject
-	public SearchGeneratorPlugin(@Named("targetSubDir") final Optional<String> targetSubDirOpt) {
+	public SearchGeneratorPlugin(@ParamValue("targetSubDir") final Optional<String> targetSubDirOpt) {
 		//-----
 		targetSubDir = targetSubDirOpt.orElse("javagen");
 	}

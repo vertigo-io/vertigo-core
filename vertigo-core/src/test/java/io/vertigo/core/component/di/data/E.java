@@ -22,7 +22,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
+
+import io.vertigo.core.param.ParamValue;
 
 public final class E {
 	private final List<P2> p2Plugins;
@@ -37,7 +38,7 @@ public final class E {
 	private List<P> pPlugins;
 
 	@Inject
-	public E(final Optional<A> a, final @Named("pen") List<P2> p2Plugins) {
+	public E(final Optional<A> a, final @ParamValue("pen") List<P2> p2Plugins) {
 		this.a = a;
 		this.p2Plugins = p2Plugins;
 	}

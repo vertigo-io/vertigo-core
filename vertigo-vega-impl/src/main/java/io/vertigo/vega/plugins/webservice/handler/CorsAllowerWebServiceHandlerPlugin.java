@@ -24,11 +24,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
@@ -60,8 +60,8 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 	 */
 	@Inject
 	public CorsAllowerWebServiceHandlerPlugin(
-			@Named("originCORSFilter") final Optional<String> originCORSFilter,
-			@Named("methodCORSFilter") final Optional<String> methodCORSFilter) {
+			@ParamValue("originCORSFilter") final Optional<String> originCORSFilter,
+			@ParamValue("methodCORSFilter") final Optional<String> methodCORSFilter) {
 		this.originCORSFilter = originCORSFilter.orElse(DEFAULT_ALLOW_ORIGIN_CORS_FILTER);
 		this.methodCORSFilter = methodCORSFilter.orElse(DEFAULT_ALLOW_METHODS_CORS_FILTER);
 		originCORSFiltersSet = parseStringToSet(this.originCORSFilter);

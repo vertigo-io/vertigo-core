@@ -39,11 +39,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.account.impl.identityprovider.IdentityProviderPlugin;
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -90,10 +90,10 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 	 */
 	@Inject
 	public TextIdentityProviderPlugin(
-			@Named("identityFilePath") final String filePath,
-			@Named("identityFilePattern") final String filePatternStr,
-			@Named("userAuthField") final String userAuthField,
-			@Named("userIdentityEntity") final String userIdentityEntity,
+			@ParamValue("identityFilePath") final String filePath,
+			@ParamValue("identityFilePattern") final String filePatternStr,
+			@ParamValue("userAuthField") final String userAuthField,
+			@ParamValue("userIdentityEntity") final String userIdentityEntity,
 			final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkArgNotEmpty(filePatternStr);

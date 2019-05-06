@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
@@ -30,6 +29,7 @@ import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeValidationException;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.search.elasticsearch_5_6.AbstractESSearchServicesPlugin;
 import io.vertigo.lang.Assertion;
@@ -66,13 +66,13 @@ public final class ESNodeSearchServicesPlugin extends AbstractESSearchServicesPl
 	 */
 	@Inject
 	public ESNodeSearchServicesPlugin(
-			@Named("servers.names") final String serversNamesStr,
-			@Named("envIndex") final String envIndex,
-			@Named("envIndexIsPrefix") final Optional<Boolean> envIndexIsPrefix,
-			@Named("rowsPerQuery") final int rowsPerQuery,
-			@Named("cluster.name") final String clusterName,
-			@Named("config.file") final String configFile,
-			@Named("node.name") final Optional<String> nodeNameOpt,
+			@ParamValue("servers.names") final String serversNamesStr,
+			@ParamValue("envIndex") final String envIndex,
+			@ParamValue("envIndexIsPrefix") final Optional<Boolean> envIndexIsPrefix,
+			@ParamValue("rowsPerQuery") final int rowsPerQuery,
+			@ParamValue("cluster.name") final String clusterName,
+			@ParamValue("config.file") final String configFile,
+			@ParamValue("node.name") final Optional<String> nodeNameOpt,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
 		super(envIndex, envIndexIsPrefix.orElse(false), rowsPerQuery, configFile, codecManager, resourceManager);

@@ -29,9 +29,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.lang.Assertion;
@@ -67,10 +67,10 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 	 */
 	@Inject
 	public TSGeneratorPlugin(
-			@Named("targetSubDir") final Optional<String> targetSubDirOpt,
-			@Named("generateDtResourcesTS") final Optional<Boolean> generateDtResourcesTSOpt,
-			@Named("generateTsDtDefinitions") final Optional<Boolean> generateTsDtDefinitionsOpt,
-			@Named("generateTsMasterData") final Optional<Boolean> generateTsMasterDataOpt,
+			@ParamValue("targetSubDir") final Optional<String> targetSubDirOpt,
+			@ParamValue("generateDtResourcesTS") final Optional<Boolean> generateDtResourcesTSOpt,
+			@ParamValue("generateTsDtDefinitions") final Optional<Boolean> generateTsDtDefinitionsOpt,
+			@ParamValue("generateTsMasterData") final Optional<Boolean> generateTsMasterDataOpt,
 			final MasterDataManager masterDataManager) {
 		//-----
 		targetSubDir = targetSubDirOpt.orElse("tsgen");

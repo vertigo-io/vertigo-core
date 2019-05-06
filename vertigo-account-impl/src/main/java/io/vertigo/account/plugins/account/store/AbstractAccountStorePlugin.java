@@ -18,12 +18,11 @@
  */
 package io.vertigo.account.plugins.account.store;
 
-import javax.inject.Named;
-
 import io.vertigo.account.account.Account;
 import io.vertigo.account.impl.account.AccountMapperHelper;
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.Entity;
@@ -49,8 +48,8 @@ public abstract class AbstractAccountStorePlugin implements Activeable {
 	 * @param userToAccountMappingStr User to account conversion mapping
 	 */
 	protected AbstractAccountStorePlugin(
-			@Named("userDtDefinitionName") final String userDtDefinitionName,
-			@Named("userToAccountMapping") final String userToAccountMappingStr) {
+			@ParamValue("userDtDefinitionName") final String userDtDefinitionName,
+			@ParamValue("userToAccountMapping") final String userToAccountMappingStr) {
 		Assertion.checkArgNotEmpty(userDtDefinitionName);
 		Assertion.checkArgNotEmpty(userToAccountMappingStr);
 		//-----

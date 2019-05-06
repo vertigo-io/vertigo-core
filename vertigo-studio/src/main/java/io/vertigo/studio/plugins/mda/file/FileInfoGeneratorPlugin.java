@@ -24,9 +24,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
@@ -50,7 +50,7 @@ public final class FileInfoGeneratorPlugin implements GeneratorPlugin {
 	 * @param targetSubDirOpt Repertoire de generation des fichiers de ce plugin
 	 */
 	@Inject
-	public FileInfoGeneratorPlugin(@Named("targetSubDir") final Optional<String> targetSubDirOpt) {
+	public FileInfoGeneratorPlugin(@ParamValue("targetSubDir") final Optional<String> targetSubDirOpt) {
 		//-----
 		targetSubDir = targetSubDirOpt.orElse("javagen");
 	}

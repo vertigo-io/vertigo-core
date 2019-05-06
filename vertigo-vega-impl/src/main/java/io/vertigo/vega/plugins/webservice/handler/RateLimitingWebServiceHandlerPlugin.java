@@ -26,7 +26,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
@@ -35,6 +34,7 @@ import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
@@ -78,8 +78,8 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 	public RateLimitingWebServiceHandlerPlugin(
 			final VSecurityManager securityManager,
 			final DaemonManager daemonManager,
-			@Named("windowSeconds") final Optional<Integer> windowSeconds,
-			@Named("limitValue") final Optional<Long> limitValue) {
+			@ParamValue("windowSeconds") final Optional<Integer> windowSeconds,
+			@ParamValue("limitValue") final Optional<Long> limitValue) {
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(limitValue);
 		Assertion.checkNotNull(windowSeconds);

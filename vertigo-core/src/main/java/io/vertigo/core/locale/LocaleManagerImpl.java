@@ -34,11 +34,11 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ListBuilder;
@@ -91,7 +91,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 	 * @param defaultZoneId ZoneId par défaut utilisée par l'application.
 	 */
 	@Inject
-	public LocaleManagerImpl(@Named("locales") final String locales, @Named("defaultZoneId") final Optional<String> defaultZoneId) {
+	public LocaleManagerImpl(@ParamValue("locales") final String locales, @ParamValue("defaultZoneId") final Optional<String> defaultZoneId) {
 		Assertion.checkArgNotEmpty(locales);
 		Assertion.checkNotNull(defaultZoneId);
 		//-----

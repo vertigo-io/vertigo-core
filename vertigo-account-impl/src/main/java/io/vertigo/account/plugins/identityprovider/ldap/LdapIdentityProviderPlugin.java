@@ -31,7 +31,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.naming.CommunicationException;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -51,6 +50,7 @@ import io.vertigo.account.impl.identityprovider.IdentityProviderPlugin;
 import io.vertigo.app.Home;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
@@ -103,14 +103,14 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	 */
 	@Inject
 	public LdapIdentityProviderPlugin(
-			@Named("ldapServerHost") final String ldapServerHost,
-			@Named("ldapServerPort") final String ldapServerPort,
-			@Named("ldapAccountBaseDn") final String ldapAccountBaseDn,
-			@Named("ldapReaderLogin") final String ldapReaderLogin,
-			@Named("ldapReaderPassword") final String ldapReaderPassword,
-			@Named("ldapUserAuthAttribute") final String ldapUserAuthAttribute,
-			@Named("userIdentityEntity") final String userIdentityEntity,
-			@Named("ldapUserAttributeMapping") final String ldapUserAttributeMappingStr,
+			@ParamValue("ldapServerHost") final String ldapServerHost,
+			@ParamValue("ldapServerPort") final String ldapServerPort,
+			@ParamValue("ldapAccountBaseDn") final String ldapAccountBaseDn,
+			@ParamValue("ldapReaderLogin") final String ldapReaderLogin,
+			@ParamValue("ldapReaderPassword") final String ldapReaderPassword,
+			@ParamValue("ldapUserAuthAttribute") final String ldapUserAuthAttribute,
+			@ParamValue("userIdentityEntity") final String userIdentityEntity,
+			@ParamValue("ldapUserAttributeMapping") final String ldapUserAttributeMappingStr,
 			final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(ldapServerHost);
 		Assertion.checkArgNotEmpty(ldapServerPort);

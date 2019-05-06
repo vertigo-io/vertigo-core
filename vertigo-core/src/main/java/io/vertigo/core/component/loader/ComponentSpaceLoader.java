@@ -283,6 +283,21 @@ public final class ComponentSpaceLoader {
 		return component;
 	}
 
+	public static void injectMembers(
+			final Object instance,
+			final Container container,
+			final Optional<ParamManager> paramManagerOpt,
+			final Map<String, String> params) {
+		Assertion.checkNotNull(instance);
+		Assertion.checkNotNull(container);
+		Assertion.checkNotNull(paramManagerOpt);
+		Assertion.checkNotNull(params);
+		//-----
+		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOpt, params);
+		final Container dualContainer = new ComponentDualContainer(container, paramsContainer);
+		DIInjector.injectMembers(instance, dualContainer);
+	}
+
 	public void endLoading() {
 		componentSpaceWritable.closeRegistration();
 	}

@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.dynamo.plugins.environment.loaders.Loader;
@@ -58,7 +58,7 @@ public final class KprLoader implements Loader {
 	@Inject
 	public KprLoader(
 			final ResourceManager resourceManager,
-			@Named("encoding") final Optional<String> encoding) {
+			@ParamValue("encoding") final Optional<String> encoding) {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkNotNull(encoding);
 		//-----

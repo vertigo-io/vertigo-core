@@ -18,14 +18,12 @@
  */
 package io.vertigo.util.data;
 
-import javax.inject.Named;
-
 import io.vertigo.core.component.Component;
 
 /**
  * @author mlaroche
  */
-@Named("sa")
+@ARandomAnnotation
 public class SA implements Component {
 
 	void firstMethod() {

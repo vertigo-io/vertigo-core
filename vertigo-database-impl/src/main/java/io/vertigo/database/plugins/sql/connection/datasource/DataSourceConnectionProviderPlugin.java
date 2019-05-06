@@ -22,10 +22,10 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.database.plugins.sql.connection.AbstractSqlConnectionProviderPlugin;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
@@ -53,9 +53,9 @@ public final class DataSourceConnectionProviderPlugin extends AbstractSqlConnect
 	 */
 	@Inject
 	public DataSourceConnectionProviderPlugin(
-			@Named("name") final Optional<String> name,
-			@Named("classname") final String dataBaseName,
-			@Named("source") final String dataSource) {
+			@ParamValue("name") final Optional<String> name,
+			@ParamValue("classname") final String dataBaseName,
+			@ParamValue("source") final String dataSource) {
 		super(name.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), createDataBase(dataBaseName));
 		Assertion.checkNotNull(dataSource);
 		//-----

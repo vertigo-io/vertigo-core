@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -43,6 +42,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import io.vertigo.commons.app.Node;
 import io.vertigo.commons.impl.app.AppNodeRegistryPlugin;
 import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.JsonExclude;
 import io.vertigo.lang.WrappedException;
@@ -64,8 +64,8 @@ public final class DbAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 	 */
 	@Inject
 	public DbAppNodeRegistryPlugin(
-			@Named("driverClassName") final String driverClassName,
-			@Named("jdbcUrl") final String jdbcUrl) {
+			@ParamValue("driverClassName") final String driverClassName,
+			@ParamValue("jdbcUrl") final String jdbcUrl) {
 		Assertion.checkArgNotEmpty(driverClassName);
 		Assertion.checkArgNotEmpty(jdbcUrl);
 		// ---

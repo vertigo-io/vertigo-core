@@ -24,12 +24,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.config.DefinitionResourceConfig;
 import io.vertigo.core.definition.DefinitionProvider;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.DefinitionSupplier;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
@@ -66,7 +66,7 @@ public class DynamoDefinitionProvider implements DefinitionProvider {
 	 * @param encoding the encoding to use for reading ksp files
 	 */
 	@Inject
-	public DynamoDefinitionProvider(final ResourceManager resourceManager, @Named("encoding") final Optional<String> encoding, @Named("constFieldName") final Optional<Boolean> constFieldName) {
+	public DynamoDefinitionProvider(final ResourceManager resourceManager, @ParamValue("encoding") final Optional<String> encoding, @ParamValue("constFieldName") final Optional<Boolean> constFieldName) {
 		loadersByType = new MapBuilder<String, Loader>()
 				.put("kpr", new KprLoader(resourceManager, encoding))
 				.put("oom", new OOMLoader(constFieldName.orElse(true), resourceManager))

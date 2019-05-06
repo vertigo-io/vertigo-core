@@ -30,9 +30,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
@@ -83,12 +83,12 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 	 */
 	@Inject
 	public SqlGeneratorPlugin(
-			@Named("targetSubDir") final Optional<String> targetSubDirOpt,
-			@Named("generateDrop") final boolean generateDrop,
-			@Named("baseCible") final String baseCible,
-			@Named("generateMasterData") final Optional<Boolean> generateMasterDataOpt,
-			@Named("tableSpaceData") final Optional<String> tableSpaceData,
-			@Named("tableSpaceIndex") final Optional<String> tableSpaceIndex,
+			@ParamValue("targetSubDir") final Optional<String> targetSubDirOpt,
+			@ParamValue("generateDrop") final boolean generateDrop,
+			@ParamValue("baseCible") final String baseCible,
+			@ParamValue("generateMasterData") final Optional<Boolean> generateMasterDataOpt,
+			@ParamValue("tableSpaceData") final Optional<String> tableSpaceData,
+			@ParamValue("tableSpaceIndex") final Optional<String> tableSpaceIndex,
 			final MasterDataManager masterDataManager) {
 		//-----
 		targetSubDir = targetSubDirOpt.orElse("sqlgen");

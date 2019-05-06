@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
@@ -45,6 +44,7 @@ import org.influxdb.dto.QueryResult;
 import org.influxdb.dto.QueryResult.Series;
 
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.database.impl.timeseries.TimeSeriesDataBaseManagerImpl;
 import io.vertigo.database.impl.timeseries.TimeSeriesPlugin;
 import io.vertigo.database.timeseries.ClusteredMeasure;
@@ -69,10 +69,10 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 
 	@Inject
 	public InfluxDbTimeSeriesPlugin(
-			@Named("host") final String host,
-			@Named("user") final String user,
-			@Named("password") final String password,
-			@Named("dbNames") final Optional<String> dbNamesOpt) {
+			@ParamValue("host") final String host,
+			@ParamValue("user") final String user,
+			@ParamValue("password") final String password,
+			@ParamValue("dbNames") final Optional<String> dbNamesOpt) {
 		Assertion.checkArgNotEmpty(host);
 		Assertion.checkArgNotEmpty(user);
 		Assertion.checkArgNotEmpty(password);

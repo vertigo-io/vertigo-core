@@ -42,12 +42,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.impl.account.AccountStorePlugin;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.file.model.VFile;
@@ -94,10 +94,10 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	 */
 	@Inject
 	public TextAccountStorePlugin(
-			@Named("accountFilePath") final String accountFilePath,
-			@Named("accountFilePattern") final String accountFilePatternStr,
-			@Named("groupFilePath") final String groupFilePath,
-			@Named("groupFilePattern") final String groupFilePatternStr,
+			@ParamValue("accountFilePath") final String accountFilePath,
+			@ParamValue("accountFilePattern") final String accountFilePatternStr,
+			@ParamValue("groupFilePath") final String groupFilePath,
+			@ParamValue("groupFilePattern") final String groupFilePatternStr,
 			final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkArgNotEmpty(accountFilePatternStr);

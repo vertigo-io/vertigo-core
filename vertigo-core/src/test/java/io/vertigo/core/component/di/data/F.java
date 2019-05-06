@@ -21,17 +21,17 @@ package io.vertigo.core.component.di.data;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 
 public final class F {
 	@Inject
-	@Named("a")
+	@ParamValue("a")
 	private Object a;
 
 	@Inject
-	@Named("param2")
+	@ParamValue("param2")
 	private String param2;
 
 	private final String param1;
@@ -40,9 +40,9 @@ public final class F {
 
 	@Inject
 	public F(
-			@Named("param1") final String param1,
-			@Named("param3") final Optional<String> param3,
-			@Named("param4") final Optional<String> param4) {
+			@ParamValue("param1") final String param1,
+			@ParamValue("param3") final Optional<String> param3,
+			@ParamValue("param4") final Optional<String> param4) {
 		Assertion.checkNotNull(param1);
 		Assertion.checkNotNull(param3);
 		Assertion.checkNotNull(param4);

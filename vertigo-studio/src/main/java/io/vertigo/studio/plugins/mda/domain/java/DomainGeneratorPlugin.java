@@ -28,9 +28,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.lang.Assertion;
@@ -70,10 +70,10 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 	 */
 	@Inject
 	public DomainGeneratorPlugin(
-			@Named("targetSubDir") final Optional<String> targetSubDirOpt,
-			@Named("generateDtResources") final Optional<Boolean> generateDtResourcesOpt,
-			@Named("generateDtDefinitions") final Optional<Boolean> generateDtDefinitionsOpt,
-			@Named("dictionaryClassName") final Optional<String> dictionaryClassNameOption,
+			@ParamValue("targetSubDir") final Optional<String> targetSubDirOpt,
+			@ParamValue("generateDtResources") final Optional<Boolean> generateDtResourcesOpt,
+			@ParamValue("generateDtDefinitions") final Optional<Boolean> generateDtDefinitionsOpt,
+			@ParamValue("dictionaryClassName") final Optional<String> dictionaryClassNameOption,
 			final MasterDataManager masterDataManager) {
 		//-----
 		targetSubDir = targetSubDirOpt.orElse("javagen");

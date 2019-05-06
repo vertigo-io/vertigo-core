@@ -40,7 +40,6 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -60,6 +59,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -108,7 +108,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 	}
 
 	@Inject
-	public GoogleJsonEngine(@Named("searchApiVersion") final Optional<String> searchApiVersionStr) {
+	public GoogleJsonEngine(@ParamValue("searchApiVersion") final Optional<String> searchApiVersionStr) {
 		final SearchApiVersion searchApiVersion = SearchApiVersion.valueOf(searchApiVersionStr.orElse(SearchApiVersion.V4.name()));
 		gson = createGson(searchApiVersion);
 	}

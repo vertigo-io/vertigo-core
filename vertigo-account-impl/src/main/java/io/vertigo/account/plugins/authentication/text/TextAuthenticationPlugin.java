@@ -31,13 +31,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.account.authentication.AuthenticationToken;
 import io.vertigo.account.impl.authentication.AuthenticationPlugin;
 import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -68,7 +68,7 @@ public class TextAuthenticationPlugin implements AuthenticationPlugin, Activeabl
 	 * @param filePath File path
 	 */
 	@Inject
-	public TextAuthenticationPlugin(@Named("filePath") final String filePath, final ResourceManager resourceManager) {
+	public TextAuthenticationPlugin(@ParamValue("filePath") final String filePath, final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
 		// -----
 		this.resourceManager = resourceManager;

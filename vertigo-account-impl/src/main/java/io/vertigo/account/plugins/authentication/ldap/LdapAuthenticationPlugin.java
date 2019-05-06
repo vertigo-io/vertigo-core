@@ -22,7 +22,6 @@ import java.util.Hashtable;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.naming.CommunicationException;
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -35,6 +34,7 @@ import org.apache.logging.log4j.Logger;
 import io.vertigo.account.authentication.AuthenticationToken;
 import io.vertigo.account.impl.authentication.AuthenticationPlugin;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
@@ -62,9 +62,9 @@ public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 	 */
 	@Inject
 	public LdapAuthenticationPlugin(
-			@Named("userLoginTemplate") final String userLoginTemplate,
-			@Named("ldapServerHost") final String ldapServerHost,
-			@Named("ldapServerPort") final String ldapServerPort) {
+			@ParamValue("userLoginTemplate") final String userLoginTemplate,
+			@ParamValue("ldapServerHost") final String ldapServerHost,
+			@ParamValue("ldapServerPort") final String ldapServerPort) {
 		parseUserLoginTemplate(userLoginTemplate);
 		ldapServer = ldapServerHost + ":" + ldapServerPort;
 	}

@@ -28,9 +28,9 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
@@ -62,8 +62,8 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 	 */
 	@Inject
 	public TaskTestGeneratorPlugin(
-			@Named("targetSubDir") final String targetSubDir,
-			@Named("baseTestClass") final String baseTestClass) {
+			@ParamValue("targetSubDir") final String targetSubDir,
+			@ParamValue("baseTestClass") final String baseTestClass) {
 		//-----
 		this.targetSubDir = targetSubDir;
 		this.baseTestClass = baseTestClass;

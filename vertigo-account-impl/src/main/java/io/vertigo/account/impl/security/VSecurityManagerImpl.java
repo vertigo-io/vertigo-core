@@ -23,13 +23,13 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleProvider;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 
@@ -56,7 +56,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	 * @param userSessionClassName ClassName de l'objet de session utilisateur
 	 */
 	@Inject
-	public VSecurityManagerImpl(final LocaleManager localeManager, @Named("userSessionClassName") final String userSessionClassName) {
+	public VSecurityManagerImpl(final LocaleManager localeManager, @ParamValue("userSessionClassName") final String userSessionClassName) {
 		Assertion.checkNotNull(localeManager);
 		Assertion.checkArgNotEmpty(userSessionClassName);
 		//-----

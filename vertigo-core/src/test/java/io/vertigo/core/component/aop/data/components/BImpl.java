@@ -18,14 +18,11 @@
  */
 package io.vertigo.core.component.aop.data.components;
 
-import javax.inject.Named;
-
 import io.vertigo.core.component.aop.data.MyException;
 
 /**
  * @author prahmoune
  */
-@Named("b")
 public class BImpl implements B {
 	private boolean initialized;
 	private boolean finalized;

@@ -24,7 +24,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -46,6 +45,7 @@ import io.vertigo.commons.analytics.metric.Metric;
 import io.vertigo.commons.analytics.process.AProcess;
 import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -75,9 +75,9 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	 */
 	@Inject
 	public SocketLoggerAnalyticsConnectorPlugin(
-			@Named("appName") final Optional<String> appNameOpt,
-			@Named("hostName") final Optional<String> hostNameOpt,
-			@Named("port") final Optional<Integer> portOpt) {
+			@ParamValue("appName") final Optional<String> appNameOpt,
+			@ParamValue("hostName") final Optional<String> hostNameOpt,
+			@ParamValue("port") final Optional<Integer> portOpt) {
 		Assertion.checkNotNull(appNameOpt);
 		Assertion.checkNotNull(hostNameOpt);
 		Assertion.checkNotNull(portOpt);

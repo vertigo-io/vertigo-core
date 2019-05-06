@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.account.impl.identityprovider.IdentityProviderPlugin;
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -63,10 +63,10 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 	 */
 	@Inject
 	public StoreIdentityProviderPlugin(
-			@Named("userIdentityEntity") final String userIdentityEntity,
-			@Named("userAuthField") final String userAuthField,
-			@Named("photoIdField") final Optional<String> photoIdField,
-			@Named("photoFileInfo") final Optional<String> photoFileInfo,
+			@ParamValue("userIdentityEntity") final String userIdentityEntity,
+			@ParamValue("userAuthField") final String userAuthField,
+			@ParamValue("photoIdField") final Optional<String> photoIdField,
+			@ParamValue("photoFileInfo") final Optional<String> photoFileInfo,
 			final StoreManager storeManager) {
 		Assertion.checkArgNotEmpty(userIdentityEntity);
 		Assertion.checkArgNotEmpty(userAuthField);

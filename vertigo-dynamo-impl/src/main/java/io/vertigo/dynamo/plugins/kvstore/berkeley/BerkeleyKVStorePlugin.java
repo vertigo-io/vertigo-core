@@ -26,7 +26,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,6 +39,7 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
 import io.vertigo.lang.Assertion;
@@ -85,8 +85,8 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	 */
 	@Inject
 	public BerkeleyKVStorePlugin(
-			@Named("collections") final String collections,
-			@Named("dbFilePath") final String dbFilePath,
+			@ParamValue("collections") final String collections,
+			@ParamValue("dbFilePath") final String dbFilePath,
 			final VTransactionManager transactionManager,
 			final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(collections);

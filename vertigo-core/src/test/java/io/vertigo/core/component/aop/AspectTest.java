@@ -29,8 +29,8 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.aop.data.MyException;
 import io.vertigo.core.component.aop.data.aspects.OneMoreAspect;
@@ -59,9 +59,9 @@ public final class AspectTest extends AbstractTestCaseJU5 {
 						.addAspect(TenMoreAspect.class)
 						.build())
 				.addModule(ModuleConfig.builder("components")
-						.addComponent(ComputerImpl.class)
+						.addComponent(Computer.class, ComputerImpl.class)
 						.addComponent(A.class)
-						.addComponent(BImpl.class)
+						.addComponent(B.class, BImpl.class)
 						.addComponent(C.class)
 						.addComponent(F.class)
 						.build())

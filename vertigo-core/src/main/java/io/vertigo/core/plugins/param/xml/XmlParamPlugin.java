@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -35,6 +34,7 @@ import org.xml.sax.SAXException;
 
 import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamPlugin;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -54,7 +54,7 @@ public final class XmlParamPlugin implements ParamPlugin {
 	 * @param url Url du fichier XML de configuration
 	 */
 	@Inject
-	public XmlParamPlugin(final ResourceManager resourceManager, @Named("url") final String url) {
+	public XmlParamPlugin(final ResourceManager resourceManager, @ParamValue("url") final String url) {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkArgNotEmpty(url);
 		//-----

@@ -22,10 +22,10 @@ import java.time.Instant;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
@@ -71,8 +71,8 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	 */
 	@Inject
 	public DbFileStorePlugin(
-			@Named("name") final Optional<String> name,
-			@Named("storeDtName") final String storeDtDefinitionName,
+			@ParamValue("name") final Optional<String> name,
+			@ParamValue("storeDtName") final String storeDtDefinitionName,
 			final FileManager fileManager) {
 		super(name);
 		Assertion.checkArgNotEmpty(storeDtDefinitionName);

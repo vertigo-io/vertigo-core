@@ -18,8 +18,6 @@
  */
 package io.vertigo.core.component.aop.data.components;
 
-import javax.inject.Named;
-
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.component.Component;
 import io.vertigo.core.component.aop.data.MyException;
@@ -27,7 +25,6 @@ import io.vertigo.core.component.aop.data.MyException;
 /**
  * @author prahmoune
  */
-@Named("a")
 public class A implements Component, Activeable {
 	boolean initialized;
 	boolean finalized;

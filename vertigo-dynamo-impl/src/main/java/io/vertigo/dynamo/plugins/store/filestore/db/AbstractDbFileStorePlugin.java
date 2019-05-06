@@ -22,9 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 
-import javax.inject.Named;
-
 import io.vertigo.app.Home;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
@@ -58,7 +57,7 @@ abstract class AbstractDbFileStorePlugin {
 	 * Constructor.
 	 * @param name Store name
 	 */
-	AbstractDbFileStorePlugin(@Named("name") final Optional<String> name) {
+	AbstractDbFileStorePlugin(@ParamValue("name") final Optional<String> name) {
 		Assertion.checkNotNull(name);
 		//-----
 		readOnly = false;

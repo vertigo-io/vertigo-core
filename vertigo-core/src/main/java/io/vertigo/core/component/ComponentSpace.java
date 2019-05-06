@@ -18,6 +18,14 @@
  */
 package io.vertigo.core.component;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+
+import io.vertigo.app.Home;
+import io.vertigo.core.component.loader.ComponentSpaceLoader;
+import io.vertigo.core.param.ParamManager;
+import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -34,4 +42,35 @@ public interface ComponentSpace extends Container {
 		final String normalizedId = StringUtil.first2LowerCase(componentClass.getSimpleName());
 		return resolve(normalizedId, componentClass);
 	}
+
+	public static <T> T newInstance(final Class<T> clazz) {
+		Assertion.checkNotNull(clazz);
+		// ---
+		return newInstance(clazz, Collections.emptyMap());
+	}
+
+	public static <T> T newInstance(final Class<T> clazz, final Map<String, String> params) {
+		Assertion.checkNotNull(clazz);
+		Assertion.checkNotNull(params);
+		// ---
+		final ComponentSpace componentSpace = Home.getApp().getComponentSpace();
+		final Optional<ParamManager> paramManagerOpt = Optional.of(componentSpace.resolve(ParamManager.class));
+		return ComponentSpaceLoader.createInstance(clazz, componentSpace, paramManagerOpt, params);
+	}
+
+	public static void injectMembers(final Object instance) {
+		Assertion.checkNotNull(instance);
+		//-----
+		injectMembers(instance, Collections.emptyMap());
+	}
+
+	public static void injectMembers(final Object instance, final Map<String, String> params) {
+		Assertion.checkNotNull(instance);
+		Assertion.checkNotNull(params);
+		//-----
+		final ComponentSpace componentSpace = Home.getApp().getComponentSpace();
+		final Optional<ParamManager> paramManagerOpt = Optional.of(componentSpace.resolve(ParamManager.class));
+		ComponentSpaceLoader.injectMembers(instance, componentSpace, paramManagerOpt, params);
+	}
+
 }

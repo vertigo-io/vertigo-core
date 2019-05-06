@@ -29,12 +29,12 @@ import java.util.Locale;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -104,9 +104,9 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	 */
 	@Inject
 	public FsFileStorePlugin(
-			@Named("name") final Optional<String> name,
-			@Named("storeDtName") final String storeDtDefinitionName,
-			@Named("path") final String path,
+			@ParamValue("name") final Optional<String> name,
+			@ParamValue("storeDtName") final String storeDtDefinitionName,
+			@ParamValue("path") final String path,
 			final VTransactionManager transactionManager,
 			final FileManager fileManager) {
 		Assertion.checkNotNull(name);

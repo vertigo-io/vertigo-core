@@ -38,11 +38,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
@@ -83,11 +83,11 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	 */
 	@Inject
 	public FsFullFileStorePlugin(
-			@Named("name") final Optional<String> name,
-			@Named("path") final String path,
+			@ParamValue("name") final Optional<String> name,
+			@ParamValue("path") final String path,
 			final FileManager fileManager,
 			final VTransactionManager transactionManager,
-			@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
+			@ParamValue("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
 		Assertion.checkNotNull(name);
 		Assertion.checkArgNotEmpty(path);
 		Assertion.checkNotNull(fileManager);

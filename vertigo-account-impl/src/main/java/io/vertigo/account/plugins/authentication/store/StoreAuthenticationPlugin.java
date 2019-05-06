@@ -21,7 +21,6 @@ package io.vertigo.account.plugins.authentication.store;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.account.authentication.AuthenticationToken;
 import io.vertigo.account.impl.authentication.AuthenticationPlugin;
@@ -29,6 +28,7 @@ import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -62,10 +62,10 @@ public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeab
 	 */
 	@Inject
 	public StoreAuthenticationPlugin(
-			@Named("userCredentialEntity") final String userCredentialEntity,
-			@Named("userLoginField") final String userLoginField,
-			@Named("userPasswordField") final String userPasswordField,
-			@Named("userTokenIdField") final String userTokenIdField,
+			@ParamValue("userCredentialEntity") final String userCredentialEntity,
+			@ParamValue("userLoginField") final String userLoginField,
+			@ParamValue("userPasswordField") final String userPasswordField,
+			@ParamValue("userTokenIdField") final String userTokenIdField,
 			final StoreManager storeManager) {
 		Assertion.checkNotNull(storeManager);
 		Assertion.checkArgNotEmpty(userLoginField);

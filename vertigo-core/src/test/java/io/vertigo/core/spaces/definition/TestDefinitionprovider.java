@@ -22,19 +22,19 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.config.DefinitionResourceConfig;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.spaces.definition.DefinitionSpaceTest.SampleDefinition;
 import io.vertigo.lang.Assertion;
 
 public class TestDefinitionprovider implements SimpleDefinitionProvider {
 
 	@Inject
-	public TestDefinitionprovider(@Named("testParam") final String testParam) {
+	public TestDefinitionprovider(@ParamValue("testParam") final String testParam) {
 		Assertion.checkArgNotEmpty(testParam);
 
 	}

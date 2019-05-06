@@ -23,11 +23,11 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.database.plugins.sql.connection.AbstractSqlConnectionProviderPlugin;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
@@ -53,10 +53,10 @@ public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionPro
 	 */
 	@Inject
 	public C3p0ConnectionProviderPlugin(
-			@Named("name") final Optional<String> name,
-			@Named("dataBaseClass") final String dataBaseClass,
-			@Named("jdbcDriver") final String jdbcDriver,
-			@Named("jdbcUrl") final String jdbcUrl) {
+			@ParamValue("name") final Optional<String> name,
+			@ParamValue("dataBaseClass") final String dataBaseClass,
+			@ParamValue("jdbcDriver") final String jdbcDriver,
+			@ParamValue("jdbcUrl") final String jdbcUrl) {
 		super(name.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), ClassUtil.newInstance(dataBaseClass, SqlDataBase.class));
 		Assertion.checkNotNull(jdbcUrl);
 		Assertion.checkNotNull(jdbcDriver);

@@ -21,9 +21,9 @@ package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.vega.impl.webservice.filter.JettyMultipartCleaner;
 import io.vertigo.vega.impl.webservice.filter.JettyMultipartConfig;
@@ -41,8 +41,8 @@ public final class SparkJavaEmbeddedWebServerPlugin extends AbstractSparkJavaWeb
 	 */
 	@Inject
 	public SparkJavaEmbeddedWebServerPlugin(
-			@Named("apiPrefix") final Optional<String> apiPrefix,
-			@Named("port") final int port) {
+			@ParamValue("apiPrefix") final Optional<String> apiPrefix,
+			@ParamValue("port") final int port) {
 		super(apiPrefix);
 		Spark.port(port);
 		//---

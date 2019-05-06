@@ -28,7 +28,6 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.Home;
 import io.vertigo.core.component.Container;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
@@ -43,19 +42,6 @@ import io.vertigo.util.ClassUtil;
 public final class DIInjector {
 	private DIInjector() {
 		//constructor is protected, Injector contains only static methods
-	}
-
-	/**
-	 * Injection de dépendances.
-	 * Création d'une instance  à partir du conteneur par défaut.
-	 *
-	 * @param <T> Type de l'instance
-	 * @param clazz Classe de l'instance
-	 * @param container Fournisseur de composants
-	 * @return Instance de composants créée.
-	 */
-	public static <T> T newInstance(final Class<T> clazz) {
-		return newInstance(clazz, Home.getApp().getComponentSpace());
 	}
 
 	/**

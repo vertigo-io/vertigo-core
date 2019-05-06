@@ -29,9 +29,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
@@ -61,7 +61,7 @@ public final class TaskGeneratorPlugin implements GeneratorPlugin {
 	 * @param targetSubDirOpt Repertoire de generation des fichiers de ce plugin
 	 */
 	@Inject
-	public TaskGeneratorPlugin(@Named("targetSubDir") final Optional<String> targetSubDirOpt) {
+	public TaskGeneratorPlugin(@ParamValue("targetSubDir") final Optional<String> targetSubDirOpt) {
 		//-----
 		targetSubDir = targetSubDirOpt.orElse("javagen");
 	}

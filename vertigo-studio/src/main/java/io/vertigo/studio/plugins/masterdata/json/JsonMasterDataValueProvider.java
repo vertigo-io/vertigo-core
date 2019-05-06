@@ -25,10 +25,10 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import com.google.gson.Gson;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -55,7 +55,7 @@ public class JsonMasterDataValueProvider implements MasterDataValueProviderPlugi
 	@Inject
 	public JsonMasterDataValueProvider(
 			final ResourceManager resourceManager,
-			final @Named("fileName") String fileName) {
+			final @ParamValue("fileName") String fileName) {
 		Assertion.checkArgNotEmpty(fileName);
 		//---
 		this.resourceManager = resourceManager;

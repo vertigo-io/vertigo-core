@@ -31,9 +31,9 @@ import java.util.Optional;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.commons.daemon.DaemonScheduled;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
@@ -58,7 +58,7 @@ public final class FileManagerImpl implements FileManager {
 	 * @param purgeDelayMinutesOpt Temp file purge delay.
 	 */
 	@Inject
-	public FileManagerImpl(@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
+	public FileManagerImpl(@ParamValue("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
 		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
 		final File documentRootFile = new File(TempFile.VERTIGO_TMP_DIR_PATH);
 		Assertion.checkState(documentRootFile.exists(), "Vertigo temp dir doesn't exists ({0})", TempFile.VERTIGO_TMP_DIR_PATH);

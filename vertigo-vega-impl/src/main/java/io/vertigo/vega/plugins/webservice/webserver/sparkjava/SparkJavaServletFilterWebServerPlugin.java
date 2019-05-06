@@ -21,8 +21,8 @@ package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
+import io.vertigo.core.param.ParamValue;
 import spark.globalstate.ServletFlag;
 
 /**
@@ -36,7 +36,7 @@ public final class SparkJavaServletFilterWebServerPlugin extends AbstractSparkJa
 	 * @param apiPrefix Global apiPrefix
 	 */
 	@Inject
-	public SparkJavaServletFilterWebServerPlugin(@Named("apiPrefix") final Optional<String> apiPrefix) {
+	public SparkJavaServletFilterWebServerPlugin(@ParamValue("apiPrefix") final Optional<String> apiPrefix) {
 		super(apiPrefix);
 		//-----
 		ServletFlag.runFromServlet();

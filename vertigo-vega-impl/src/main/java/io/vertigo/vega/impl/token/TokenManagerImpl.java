@@ -23,10 +23,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.token.TokenManager;
@@ -52,7 +52,7 @@ public final class TokenManagerImpl implements TokenManager {
 	 */
 	@Inject
 	public TokenManagerImpl(
-			@Named("collection") final String collection,
+			@ParamValue("collection") final String collection,
 			final VSecurityManager securityManager,
 			final KVStoreManager kvStoreManager) {
 		Assertion.checkArgNotEmpty(collection);

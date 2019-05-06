@@ -22,9 +22,9 @@ import java.time.Instant;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
@@ -71,9 +71,9 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 	 */
 	@Inject
 	public TwoTablesDbFileStorePlugin(
-			@Named("name") final Optional<String> name,
-			@Named("storeMetaDataDtName") final String storeMetaDataDtDefinitionName,
-			@Named("storeFileDtName") final String storeFileDtDefinitionName,
+			@ParamValue("name") final Optional<String> name,
+			@ParamValue("storeMetaDataDtName") final String storeMetaDataDtDefinitionName,
+			@ParamValue("storeFileDtName") final String storeFileDtDefinitionName,
 			final FileManager fileManager) {
 		super(name);
 		Assertion.checkNotNull(fileManager);

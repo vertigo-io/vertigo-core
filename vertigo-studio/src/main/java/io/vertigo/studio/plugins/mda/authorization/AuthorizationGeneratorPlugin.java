@@ -27,12 +27,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.account.authorization.metamodel.Authorization;
 import io.vertigo.account.authorization.metamodel.Role;
 import io.vertigo.account.authorization.metamodel.SecuredEntity;
 import io.vertigo.app.Home;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
@@ -56,7 +56,7 @@ public final class AuthorizationGeneratorPlugin implements GeneratorPlugin {
 	 * @param targetSubDirOpt Repertoire de generation des fichiers de ce plugin
 	 */
 	@Inject
-	public AuthorizationGeneratorPlugin(@Named("targetSubDir") final Optional<String> targetSubDirOpt) {
+	public AuthorizationGeneratorPlugin(@ParamValue("targetSubDir") final Optional<String> targetSubDirOpt) {
 		//-----
 		targetSubDir = targetSubDirOpt.orElse("javagen");
 	}

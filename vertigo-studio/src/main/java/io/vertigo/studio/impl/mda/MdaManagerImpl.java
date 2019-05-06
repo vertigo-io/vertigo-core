@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.mda.MdaManager;
 import io.vertigo.studio.mda.MdaResult;
@@ -50,9 +50,9 @@ public final class MdaManagerImpl implements MdaManager {
 	@Inject
 	public MdaManagerImpl(
 			final List<GeneratorPlugin> generatorPlugins,
-			@Named("targetGenDir") final Optional<String> targetGenDirOpt,
-			@Named("projectPackageName") final String projectPackageName,
-			@Named("encoding") final Optional<String> encodingOpt) {
+			@ParamValue("targetGenDir") final Optional<String> targetGenDirOpt,
+			@ParamValue("projectPackageName") final String projectPackageName,
+			@ParamValue("encoding") final Optional<String> encodingOpt) {
 		Assertion.checkNotNull(generatorPlugins);
 		Assertion.checkArgNotEmpty(projectPackageName);
 		//-----

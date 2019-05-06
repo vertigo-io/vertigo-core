@@ -19,13 +19,13 @@
 package io.vertigo.core.spaces.component.data;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.core.component.Plugin;
+import io.vertigo.core.param.ParamValue;
 
 public final class MathPlugin implements Plugin {
 	@Inject
-	@Named("factor")
+	@ParamValue("factor")
 	private int start;
 
 	public int add(final int a, final int b) {

@@ -29,7 +29,6 @@ import java.util.concurrent.DelayQueue;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,6 +39,7 @@ import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
 import io.vertigo.lang.Assertion;
 
@@ -68,9 +68,9 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 	 */
 	@Inject
 	public DelayedMemoryKVStorePlugin(
-			final @Named("collections") String collections,
+			final @ParamValue("collections") String collections,
 			final DaemonManager daemonManager,
-			final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
+			final @ParamValue("timeToLiveSeconds") int timeToLiveSeconds) {
 		Assertion.checkArgNotEmpty(collections);
 		//-----
 		this.collections = Arrays.stream(collections.split(", "))
