@@ -24,7 +24,6 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
@@ -58,8 +57,7 @@ public abstract class AbstractAccountManagerTest extends AbstractTestCaseJU5 {
 	}
 
 	@Override
-	@BeforeEach
-	public void setUp() {
+	public void doSetUp() {
 		accountUID0 = createAccountUID("0");
 		accountUID1 = createAccountUID("1");
 		accountUID2 = createAccountUID("2");

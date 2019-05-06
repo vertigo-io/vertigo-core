@@ -42,7 +42,6 @@ public final class DatabaseAccountManagerTest extends AbstractAccountManagerTest
 	@BeforeEach
 	public void cleanUp() {
 		CreateTestDataBase.initMainStore();
-
 	}
 
 	@Override
