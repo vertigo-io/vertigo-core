@@ -20,19 +20,18 @@ package io.vertigo;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import io.vertigo.app.App;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.Home;
 import io.vertigo.app.config.NodeConfig;
+import io.vertigo.core.component.di.DIInjector;
 
 /**
  * Classe parente de tous les TNR associés à vertigo.
  *
  * @author jmforhan
  */
-@ExtendWith(VertigoJunitExtension.class)
 public abstract class AbstractTestCaseJU5 {
 
 	protected final App getApp() {
@@ -49,7 +48,8 @@ public abstract class AbstractTestCaseJU5 {
 	}
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	public final void setUp() throws Exception {
+		openApp();
 		doSetUp();
 	}
 
@@ -63,13 +63,22 @@ public abstract class AbstractTestCaseJU5 {
 	}
 
 	@AfterEach
-	public void tearDown() throws Exception {
+	public final void tearDown() throws Exception {
 		try {
 			doTearDown();
 		} finally {
-			((AutoCloseableApp) Home.getApp()).close();
+			closeApp();
 		}
 		doAfterTearDown();
+	}
+
+	private void openApp() {
+		final App app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+	}
+
+	private static void closeApp() {
+		((AutoCloseableApp) Home.getApp()).close();
 	}
 
 	/**
