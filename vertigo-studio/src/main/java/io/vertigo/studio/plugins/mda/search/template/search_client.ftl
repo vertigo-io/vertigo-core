@@ -1,28 +1,29 @@
 package ${packageName};
 
+import java.util.Arrays;
+
 import javax.inject.Inject;
 
-import java.util.Arrays;
 import io.vertigo.app.Home;
+import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.component.Component;
-import io.vertigo.core.component.di.injector.DIInjector;
-import io.vertigo.dynamo.search.SearchManager;
-import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
-import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.dynamo.search.model.SearchQueryBuilder;
-import io.vertigo.dynamo.domain.model.DtListState;
+import io.vertigo.core.component.di.DIInjector;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.collections.model.SelectedFacetValues;
-import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.dynamo.domain.model.DtListState;
+import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.search.SearchManager;
+import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
+import io.vertigo.dynamo.search.model.SearchQuery;
+import io.vertigo.dynamo.search.model.SearchQueryBuilder;
+import io.vertigo.lang.Generated;
 <#if indexDtDefinition.classCanonicalName != dtDefinition.classCanonicalName >
 import ${indexDtDefinition.classCanonicalName};
 </#if>
-import io.vertigo.dynamo.domain.model.UID;
 import ${dtDefinition.classCanonicalName};
-import io.vertigo.lang.Generated;
 
 /**
  * This class is automatically generated.
