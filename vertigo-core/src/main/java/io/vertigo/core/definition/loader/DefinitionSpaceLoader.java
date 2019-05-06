@@ -26,13 +26,11 @@ import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.component.Component;
 import io.vertigo.core.component.ComponentSpace;
-import io.vertigo.core.component.loader.ComponentSpaceBuilder;
+import io.vertigo.core.component.loader.ComponentSpaceLoader;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionProvider;
-import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.DefinitionSupplier;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
 
 /**
  * A DefinitionLoader uses all the DefinitionProviders of all the modules to register all definitions at once at the beginning.
@@ -40,7 +38,7 @@ import io.vertigo.lang.Builder;
  *
  * @author pchretien
  */
-public final class DefinitionSpaceBuilder implements Builder<DefinitionSpace> {
+public final class DefinitionSpaceLoader {
 	private final DefinitionSpaceWritable definitionSpaceWritable;
 	private final ComponentSpace componentSpace;
 
@@ -48,11 +46,19 @@ public final class DefinitionSpaceBuilder implements Builder<DefinitionSpace> {
 	 * Loader of definitions
 	 * @param componentSpace the componentSpace
 	 */
-	public DefinitionSpaceBuilder(final ComponentSpace componentSpace) {
+	public static DefinitionSpaceLoader startLoading(final DefinitionSpaceWritable definitionSpaceWritable, final ComponentSpace componentSpace) {
+		return new DefinitionSpaceLoader(definitionSpaceWritable, componentSpace);
+	}
+
+	/**
+	 * Loader of definitions
+	 * @param componentSpace the componentSpace
+	 */
+	private DefinitionSpaceLoader(final DefinitionSpaceWritable definitionSpaceWritable, final ComponentSpace componentSpace) {
+		Assertion.checkNotNull(definitionSpaceWritable);
 		Assertion.checkNotNull(componentSpace);
 		//-----
-		this.definitionSpaceWritable = new DefinitionSpaceWritable();
-		;
+		this.definitionSpaceWritable = definitionSpaceWritable;
 		this.componentSpace = componentSpace;
 	}
 
@@ -62,10 +68,10 @@ public final class DefinitionSpaceBuilder implements Builder<DefinitionSpace> {
 	 * @param moduleConfigs module configs
 	 * @return a stream of definitions
 	 */
-	public DefinitionSpaceBuilder withDefinitions(final List<ModuleConfig> moduleConfigs) {
+	public DefinitionSpaceLoader loadDefinitions(final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//--
-		Stream<Definition> definitions = moduleConfigs
+		final Stream<Definition> definitions = moduleConfigs
 				.stream()
 				.flatMap(moduleConfig -> provide(moduleConfig.getDefinitionProviderConfigs()))
 				.map(supplier -> supplier.get(definitionSpaceWritable));
@@ -77,9 +83,9 @@ public final class DefinitionSpaceBuilder implements Builder<DefinitionSpace> {
 	/**
 	 * Inject all the definitions provided by components.
 	 */
-	public DefinitionSpaceBuilder withDefinitionsFromComponents() {
+	public DefinitionSpaceLoader loadDefinitionsFromComponents() {
 		//--
-		Stream<Definition> definition = componentSpace.keySet()
+		final Stream<Definition> definition = componentSpace.keySet()
 				.stream()
 				.map(key -> componentSpace.resolve(key, Component.class))
 				.filter(component -> DefinitionProvider.class.isAssignableFrom(component.getClass()))
@@ -98,7 +104,7 @@ public final class DefinitionSpaceBuilder implements Builder<DefinitionSpace> {
 	}
 
 	private DefinitionProvider createDefinitionProvider(final DefinitionProviderConfig definitionProviderConfig) {
-		final DefinitionProvider definitionProvider = ComponentSpaceBuilder.createInstance(definitionProviderConfig.getDefinitionProviderClass(), componentSpace, Optional.empty(),
+		final DefinitionProvider definitionProvider = ComponentSpaceLoader.createInstance(definitionProviderConfig.getDefinitionProviderClass(), componentSpace, Optional.empty(),
 				definitionProviderConfig.getParams());
 
 		definitionProviderConfig.getDefinitionResourceConfigs()
@@ -107,8 +113,7 @@ public final class DefinitionSpaceBuilder implements Builder<DefinitionSpace> {
 		return definitionProvider;
 	}
 
-	public DefinitionSpaceWritable build() {
+	public void endLoading() {
 		definitionSpaceWritable.closeRegistration();
-		return definitionSpaceWritable;
 	}
 }

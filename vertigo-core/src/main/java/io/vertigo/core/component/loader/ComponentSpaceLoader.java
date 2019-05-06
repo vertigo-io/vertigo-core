@@ -40,14 +40,13 @@ import io.vertigo.core.component.di.DIReactor;
 import io.vertigo.core.component.proxy.ProxyMethod;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
 import io.vertigo.lang.VSystemException;
 
 /**
  * The componentLoader class defines the way to load the components defined in the config into componentSpace.
  * @author pchretien
  */
-public final class ComponentSpaceBuilder implements Builder<ComponentSpaceWritable> {
+public final class ComponentSpaceLoader {
 	private final AopPlugin aopPlugin;
 	/** Aspects.*/
 	private final List<Aspect> aspects = new ArrayList<>();
@@ -56,21 +55,26 @@ public final class ComponentSpaceBuilder implements Builder<ComponentSpaceWritab
 	private final List<ProxyMethod> proxyMethods = new ArrayList<>();
 	private final ComponentSpaceWritable componentSpaceWritable;
 
+	public static ComponentSpaceLoader startLoading(final ComponentSpaceWritable componentSpaceWritable, final AopPlugin aopPlugin) {
+		return new ComponentSpaceLoader(componentSpaceWritable, aopPlugin);
+	}
+
 	/**
-	 * Constructor.
-	 * @param aopPlugin the plugin which is reponsible for the aop strategy
-	 */
-	public ComponentSpaceBuilder(final AopPlugin aopPlugin) {
+	* Constructor.
+	* @param aopPlugin the plugin which is reponsible for the aop strategy
+	*/
+	private ComponentSpaceLoader(final ComponentSpaceWritable componentSpaceWritable, final AopPlugin aopPlugin) {
+		Assertion.checkNotNull(componentSpaceWritable);
 		Assertion.checkNotNull(aopPlugin);
 		//-----
-		this.componentSpaceWritable = new ComponentSpaceWritable();
+		this.componentSpaceWritable = componentSpaceWritable;
 		this.aopPlugin = aopPlugin;
 	}
 
-	public ComponentSpaceBuilder withBootComponents(final List<ComponentConfig> componentConfigs) {
+	public ComponentSpaceLoader loadBootComponents(final List<ComponentConfig> componentConfigs) {
 		Assertion.checkNotNull(componentConfigs);
 		//--
-		this.registerComponents(Optional.empty(), "boot", componentConfigs);
+		registerComponents(Optional.empty(), "boot", componentConfigs);
 		return this;
 	}
 
@@ -78,10 +82,10 @@ public final class ComponentSpaceBuilder implements Builder<ComponentSpaceWritab
 	 * Add all the components defined in the moduleConfigs into the componentSpace.
 	 * @param moduleConfigs the config of the module to add.
 	 */
-	public ComponentSpaceBuilder withAllComponentsAndAspects(final List<ModuleConfig> moduleConfigs) {
+	public ComponentSpaceLoader loadAllComponentsAndAspects(final List<ModuleConfig> moduleConfigs) {
 		Assertion.checkNotNull(moduleConfigs);
 		//-----
-		ParamManager paramManager = componentSpaceWritable.resolve(ParamManager.class);
+		final ParamManager paramManager = componentSpaceWritable.resolve(ParamManager.class);
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
 			registerComponents(Optional.of(paramManager),
 					moduleConfig.getName(),
@@ -279,8 +283,7 @@ public final class ComponentSpaceBuilder implements Builder<ComponentSpaceWritab
 		return component;
 	}
 
-	public ComponentSpaceWritable build() {
+	public void endLoading() {
 		componentSpaceWritable.closeRegistration();
-		return componentSpaceWritable;
 	}
 }

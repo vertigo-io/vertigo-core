@@ -63,7 +63,7 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	private final List<Component> startedComponents = new ArrayList<>();
 	private final AtomicBoolean locked = new AtomicBoolean(false);
 
-	ComponentSpaceWritable() {
+	public ComponentSpaceWritable() {
 		super();
 	}
 

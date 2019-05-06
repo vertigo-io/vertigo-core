@@ -41,7 +41,7 @@ public final class DefinitionSpaceWritable implements DefinitionSpace {
 	private final Map<String, Definition> definitions = new LinkedHashMap<>();
 	private final AtomicBoolean locked = new AtomicBoolean(false);
 
-	DefinitionSpaceWritable() {
+	public DefinitionSpaceWritable() {
 		super();
 	}
 

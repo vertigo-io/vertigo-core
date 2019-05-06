@@ -31,10 +31,10 @@ import io.vertigo.core.component.Activeable;
 import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.core.component.di.DIInjector;
-import io.vertigo.core.component.loader.ComponentSpaceBuilder;
+import io.vertigo.core.component.loader.ComponentSpaceLoader;
 import io.vertigo.core.component.loader.ComponentSpaceWritable;
 import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.loader.DefinitionSpaceBuilder;
+import io.vertigo.core.definition.loader.DefinitionSpaceLoader;
 import io.vertigo.core.definition.loader.DefinitionSpaceWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -62,8 +62,8 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	private final NodeConfig nodeConfig;
 	private State state;
 
-	private final DefinitionSpaceWritable definitionSpaceWritable;
-	private final ComponentSpaceWritable componentSpaceWritable;
+	private final DefinitionSpaceWritable definitionSpaceWritable = new DefinitionSpaceWritable();
+	private final ComponentSpaceWritable componentSpaceWritable = new ComponentSpaceWritable();
 
 	//à remplacer par event ??
 	private final List<Runnable> preActivateFunctions = new ArrayList<>();
@@ -81,17 +81,17 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 		state = State.STARTING;
 		//--
 		try {
-			//--0. BootStrap : create native components : ResourceManager, ParamManager, LocaleManager 
+			//--0. BootStrap : create native components : ResourceManager, ParamManager, LocaleManager
 			final Boot boot = new Boot(nodeConfig.getBootConfig());
 			boot.init(); //A faire créer par Boot : stratégie de chargement des composants à partir de ...
 
 			//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
 			//Creates and register all components (and aspects and Proxies).
 			//all components can be parameterized
-			componentSpaceWritable = new ComponentSpaceBuilder(nodeConfig.getBootConfig().getAopPlugin())
-					.withBootComponents(nodeConfig.getBootConfig().getComponentConfigs())
-					.withAllComponentsAndAspects(nodeConfig.getModuleConfigs())
-					.build();
+			ComponentSpaceLoader.startLoading(componentSpaceWritable, nodeConfig.getBootConfig().getAopPlugin())
+					.loadBootComponents(nodeConfig.getBootConfig().getComponentConfigs())
+					.loadAllComponentsAndAspects(nodeConfig.getModuleConfigs())
+					.endLoading();
 			//---- Print components
 			if (nodeConfig.getBootConfig().isVerbose()) {
 				Logo.printCredits(System.out);
@@ -100,12 +100,12 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			//--2 Loads all definitions
 			//-----a Loads all definitions provided by DefinitionProvider
 			//-----b Loads all definitions provided by components
-			definitionSpaceWritable = new DefinitionSpaceBuilder(componentSpaceWritable)
-					.withDefinitions(nodeConfig.getModuleConfigs())
-					.withDefinitionsFromComponents()
-					.build();
+			DefinitionSpaceLoader.startLoading(definitionSpaceWritable, componentSpaceWritable)
+					.loadDefinitions(nodeConfig.getModuleConfigs())
+					.loadDefinitionsFromComponents()
+					.endLoading();
 
-			//--3. init (Init all Initializers and starts activeable components)  
+			//--3. init (Init all Initializers and starts activeable components)
 			//-----3.a Init all Initializers
 			/*
 			 * componentInitializers are created and the init() is called on each.
@@ -118,10 +118,10 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			//-----3.b Starts activeable components
 			componentSpaceWritable.start();
 
-			//--4. App is active with a special hook 
+			//--4. App is active with a special hook
 			//-----4.a Hook  : post just in case
 			appPreActivate();
-			//-----4.b 
+			//-----4.b
 			state = State.ACTIVE;
 		} catch (final Exception e) {
 			close();
@@ -143,10 +143,8 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	}
 
 	private void appStop() {
-		if (componentSpaceWritable != null)
-			componentSpaceWritable.stop();
-		if (definitionSpaceWritable != null)
-			definitionSpaceWritable.clear();
+		componentSpaceWritable.stop();
+		definitionSpaceWritable.clear();
 	}
 
 	/** {@inheritDoc} */
