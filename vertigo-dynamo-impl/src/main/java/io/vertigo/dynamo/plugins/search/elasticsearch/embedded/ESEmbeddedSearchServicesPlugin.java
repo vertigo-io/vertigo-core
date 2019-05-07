@@ -142,6 +142,9 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 				.put("http.type", "netty4")
 				.put("http.port", httpPort)
 				.put("transport.tcp.port", transportPort)
+				.put("cluster.routing.allocation.disk.watermark.low", "1000mb")
+				.put("cluster.routing.allocation.disk.watermark.high", "500mb")
+				.put("cluster.routing.allocation.disk.watermark.flood_stage", "250mb")
 				.put("path.home", homePath)
 				.build();
 	}
