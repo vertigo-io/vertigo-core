@@ -29,8 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonSyntaxException;
 
-import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.InjectorUtil;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.converter.DefaultJsonConverter;
@@ -89,7 +89,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 		Assertion.checkNotNull(jsonReaderEngine);
 		//-----
 		for (final Class<? extends JsonConverter> jsonConverterClass : JSON_CONVERTER_CLASSES) {
-			final JsonConverter jsonConverter = ComponentSpace.newInstance(jsonConverterClass);
+			final JsonConverter jsonConverter = InjectorUtil.newInstance(jsonConverterClass);
 			for (final Class inputType : jsonConverter.getSupportedInputs()) {
 				jsonConverters.computeIfAbsent(inputType, k -> new ArrayList<>())
 						.add(jsonConverter);
@@ -97,7 +97,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 		}
 
 		for (final Class<? extends JsonReader<?>> jsonReaderClass : JSON_READER_CLASSES) {
-			final JsonReader<?> jsonReader = ComponentSpace.newInstance(jsonReaderClass);
+			final JsonReader<?> jsonReader = InjectorUtil.newInstance(jsonReaderClass);
 			for (final WebServiceParamType restParamType : jsonReader.getSupportedInput()) {
 				List<JsonReader<?>> jsonReaderByRestParamType = jsonReaders.get(restParamType);
 				if (jsonReaderByRestParamType == null) {
@@ -108,7 +108,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 			}
 		}
 		for (final Class<? extends JsonSerializer> jsonSerializerClass : JSON_SERIALIZER_CLASSES) {
-			final JsonSerializer jsonSerializer = ComponentSpace.newInstance(jsonSerializerClass);
+			final JsonSerializer jsonSerializer = InjectorUtil.newInstance(jsonSerializerClass);
 			jsonWriters.add(jsonSerializer);
 		}
 

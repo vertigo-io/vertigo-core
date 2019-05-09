@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.app.AppManager;
 import io.vertigo.commons.app.Node;
-import io.vertigo.core.component.ComponentSpace;
+import io.vertigo.util.InjectorUtil;
 import io.vertigo.vega.webservice.data.MyNodeConfig;
 
 public final class DistantAppTest {
@@ -48,7 +48,7 @@ public final class DistantAppTest {
 
 	@BeforeEach
 	public void doBefore() {
-		ComponentSpace.injectMembers(this);
+		InjectorUtil.injectMembers(this);
 	}
 
 	@AfterAll

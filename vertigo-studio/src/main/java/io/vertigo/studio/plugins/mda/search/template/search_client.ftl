@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import io.vertigo.app.Home;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.component.Component;
-import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
@@ -20,10 +19,12 @@ import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 import io.vertigo.lang.Generated;
+import io.vertigo.util.InjectorUtil;
 <#if indexDtDefinition.classCanonicalName != dtDefinition.classCanonicalName >
 import ${indexDtDefinition.classCanonicalName};
 </#if>
 import ${dtDefinition.classCanonicalName};
+
 
 /**
  * This class is automatically generated.
@@ -55,7 +56,7 @@ public final class ${dtDefinition.classSimpleName}SearchClient implements Compon
 	 */
 	public SearchQueryBuilder createSearchQueryBuilder${facetedQueryDefinition.simpleName}(final ${facetedQueryDefinition.criteriaClassCanonicalName} criteria, final SelectedFacetValues selectedFacetValues) {
 		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("${facetedQueryDefinition.urn}", FacetedQueryDefinition.class);
-		final ListFilterBuilder<${facetedQueryDefinition.criteriaClassCanonicalName}> listFilterBuilder = ComponentSpace.newInstance(facetedQueryDefinition.getListFilterBuilderClass());
+		final ListFilterBuilder<${facetedQueryDefinition.criteriaClassCanonicalName}> listFilterBuilder = InjectorUtil.newInstance(facetedQueryDefinition.getListFilterBuilderClass());
 		final ListFilter criteriaListFilter = listFilterBuilder.withBuildQuery(facetedQueryDefinition.getListFilterBuilderQuery()).withCriteria(criteria).build();
 		return SearchQuery.builder(criteriaListFilter).withFacet(facetedQueryDefinition, selectedFacetValues);
 	}
