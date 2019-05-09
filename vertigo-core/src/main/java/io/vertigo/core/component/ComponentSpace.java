@@ -19,12 +19,10 @@
 package io.vertigo.core.component;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.component.loader.ComponentSpaceLoader;
-import io.vertigo.core.param.ParamManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
@@ -43,34 +41,28 @@ public interface ComponentSpace extends Container {
 		return resolve(normalizedId, componentClass);
 	}
 
+	/**
+	 * Creates an new object instance of the given class and inject dependencies using the current App ComponentSpace as container.
+	 * This created object is not registered in the ComponantSpace.
+	 * Therefore the clazz cannot implement the interface Activeable or DefinitionProvider because the lifecycle of this component is not handled by Vertigo.
+	 * @param clazz the clazz of the object your want to create with it's member injected.
+	 * @return the newly created object.
+	 */
 	public static <T> T newInstance(final Class<T> clazz) {
 		Assertion.checkNotNull(clazz);
 		// ---
-		return newInstance(clazz, Collections.emptyMap());
+		return ComponentSpaceLoader.createInstance(clazz, Home.getApp().getComponentSpace(), Optional.empty(), Collections.emptyMap());
 	}
 
-	public static <T> T newInstance(final Class<T> clazz, final Map<String, String> params) {
-		Assertion.checkNotNull(clazz);
-		Assertion.checkNotNull(params);
-		// ---
-		final ComponentSpace componentSpace = Home.getApp().getComponentSpace();
-		final Optional<ParamManager> paramManagerOpt = Optional.of(componentSpace.resolve(ParamManager.class));
-		return ComponentSpaceLoader.createInstance(clazz, componentSpace, paramManagerOpt, params);
-	}
-
+	/**
+	 * Inject dependencies in the instance using the current App ComponentSpace as container.
+	 * @param instance the object your want to get it's member injected.
+	 * @return the enhanced object.
+	 */
 	public static void injectMembers(final Object instance) {
 		Assertion.checkNotNull(instance);
 		//-----
-		injectMembers(instance, Collections.emptyMap());
-	}
-
-	public static void injectMembers(final Object instance, final Map<String, String> params) {
-		Assertion.checkNotNull(instance);
-		Assertion.checkNotNull(params);
-		//-----
-		final ComponentSpace componentSpace = Home.getApp().getComponentSpace();
-		final Optional<ParamManager> paramManagerOpt = Optional.of(componentSpace.resolve(ParamManager.class));
-		ComponentSpaceLoader.injectMembers(instance, componentSpace, paramManagerOpt, params);
+		ComponentSpaceLoader.injectMembers(instance, Home.getApp().getComponentSpace(), Optional.empty(), Collections.emptyMap());
 	}
 
 }
