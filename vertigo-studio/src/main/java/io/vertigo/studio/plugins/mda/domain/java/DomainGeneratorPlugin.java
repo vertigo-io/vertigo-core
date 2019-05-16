@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
  */
 package io.vertigo.studio.plugins.mda.domain.java;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -27,9 +28,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.lang.Assertion;
@@ -44,6 +45,7 @@ import io.vertigo.studio.plugins.mda.domain.java.model.DtDefinitionModel;
 import io.vertigo.studio.plugins.mda.domain.java.model.MethodAnnotationsModel;
 import io.vertigo.studio.plugins.mda.domain.java.model.masterdata.MasterDataDefinitionModel;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
+import io.vertigo.studio.plugins.mda.util.MdaUtil;
 import io.vertigo.util.MapBuilder;
 
 /**
@@ -54,39 +56,32 @@ import io.vertigo.util.MapBuilder;
 public final class DomainGeneratorPlugin implements GeneratorPlugin {
 	private final String targetSubDir;
 	private final boolean shouldGenerateDtResources;
-	private final boolean shouldGenerateJpaAnnotations;
 	private final boolean shouldGenerateDtDefinitions;
-	private final boolean shouldGenerateDtObject;
 	private final String dictionaryClassName;
 
-	private final Optional<MasterDataManager> masterDataManagerOpt;
+	private final MasterDataManager masterDataManager;
 
 	/**
 	 * Constructeur.
-	 * @param targetSubDir Repertoire de generation des fichiers de ce plugin
+	 * @param targetSubDirOpt Repertoire de generation des fichiers de ce plugin
 	 * @param generateDtResources Si on génère les fichiers i18n pour MessageText des labels des champs
-	 * @param generateJpaAnnotations Si on ajoute les annotations JPA
-	 * @param generateDtDefinitions Si on génère le fichier fournissant la liste des classes de Dt
+	 * @param generateDtDefinitionsOpt Si on génère le fichier fournissant la liste des classes de Dt
 	 * @param generateDtObject Si on génère les classes des Dt
 	 */
 	@Inject
 	public DomainGeneratorPlugin(
-			@Named("targetSubDir") final String targetSubDir,
-			@Named("generateDtResources") final boolean generateDtResources,
-			@Named("generateJpaAnnotations") final boolean generateJpaAnnotations,
-			@Named("generateDtDefinitions") final boolean generateDtDefinitions,
-			@Named("dictionaryClassName") final Optional<String> dictionaryClassNameOption,
-			@Named("generateDtObject") final boolean generateDtObject,
-			final Optional<MasterDataManager> masterDataManagerOpt) {
+			@ParamValue("targetSubDir") final Optional<String> targetSubDirOpt,
+			@ParamValue("generateDtResources") final Optional<Boolean> generateDtResourcesOpt,
+			@ParamValue("generateDtDefinitions") final Optional<Boolean> generateDtDefinitionsOpt,
+			@ParamValue("dictionaryClassName") final Optional<String> dictionaryClassNameOption,
+			final MasterDataManager masterDataManager) {
 		//-----
-		this.targetSubDir = targetSubDir;
-		shouldGenerateDtResources = generateDtResources;
-		shouldGenerateJpaAnnotations = generateJpaAnnotations;
-		shouldGenerateDtDefinitions = generateDtDefinitions;
+		targetSubDir = targetSubDirOpt.orElse("javagen");
+		shouldGenerateDtResources = generateDtResourcesOpt.orElse(Boolean.TRUE);// true by default
+		shouldGenerateDtDefinitions = generateDtDefinitionsOpt.orElse(Boolean.TRUE);// true by default
 		dictionaryClassName = dictionaryClassNameOption.orElse("DtDefinitions");
-		shouldGenerateDtObject = generateDtObject;
 		//---
-		this.masterDataManagerOpt = masterDataManagerOpt;
+		this.masterDataManager = masterDataManager;
 	}
 
 	/** {@inheritDoc} */
@@ -108,10 +103,8 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 		}
 
 		/* Générations des DTO. */
-		if (shouldGenerateDtObject) {
-			generateDtObjects(fileGeneratorConfig, mdaResultBuilder);
-			generateJavaEnums(fileGeneratorConfig, mdaResultBuilder);
-		}
+		generateDtObjects(fileGeneratorConfig, mdaResultBuilder);
+		generateJavaEnums(fileGeneratorConfig, mdaResultBuilder);
 
 	}
 
@@ -154,7 +147,7 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 
 		final Map<String, Object> model = new MapBuilder<String, Object>()
 				.put("dtDefinition", dtDefinitionModel)
-				.put("annotations", new MethodAnnotationsModel(shouldGenerateJpaAnnotations))
+				.put("annotations", new MethodAnnotationsModel())
 				.build();
 
 		FileGenerator.builder(fileGeneratorConfig)
@@ -221,7 +214,7 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 	private void generateJavaEnums(
 			final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder) {
-		final MasterDataValues masterDataValues = masterDataManagerOpt.isPresent() ? masterDataManagerOpt.get().getValues() : new MasterDataValues();
+		final MasterDataValues masterDataValues = masterDataManager.getValues();
 
 		Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)
 				.stream()
@@ -253,5 +246,10 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 				.build()
 				.generateFile(mdaResultBuilder);
 
+	}
+
+	@Override
+	public void clean(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+		MdaUtil.deleteFiles(new File(fileGeneratorConfig.getTargetGenDir() + targetSubDir), mdaResultBuilder);
 	}
 }

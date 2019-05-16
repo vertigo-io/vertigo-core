@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,10 +21,9 @@ package io.vertigo.database.sql;
 import java.util.Collections;
 import java.util.Optional;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.database.impl.sql.vendor.sqlserver.SqlServerDataBase;
 import io.vertigo.database.sql.vendor.SqlDialect;
 
 /**
@@ -35,30 +34,53 @@ public abstract class AbstractSqlDialectTest {
 
 	@Test
 	public void testInsertQuery() {
-
-		final SqlDialect sqlDialect = new SqlServerDataBase().getSqlDialect();
-		final String insertQuery = sqlDialect.createInsertQuery("ID", Collections.singletonList("TITLE"), "SEQ_", "MOVIE");
-		Assert.assertEquals(getExpectedInsertQuery(), insertQuery);
+		final SqlDialect sqlDialect = getDialect();
+		final String insertQuery = sqlDialect.createInsertQuery("id", Collections.singletonList("title"), "SEQ_", "MOVIE");
+		Assertions.assertEquals(getExpectedInsertQuery(), insertQuery);
 	}
 
 	@Test
 	public void testSelectForUpdateWildcardQuery() {
-		final String selectForUpdateQuery = getDialect().createSelectForUpdateQuery("MOVIE", "*", "ID");
-		Assert.assertEquals(getExpectedSelectForUpdateWildCardQuery(), selectForUpdateQuery);
+		final String selectForUpdateQuery = getDialect().createSelectForUpdateQuery("MOVIE", "*", "id");
+		Assertions.assertEquals(getExpectedSelectForUpdateWildCardQuery(), selectForUpdateQuery);
 	}
 
 	@Test
 	public void testSelectForUpdateFieldsQuery() {
-		final String selectForUpdateQuery = getDialect().createSelectForUpdateQuery("MOVIE", "ID, TITLE", "ID");
-		Assert.assertEquals(getExpectedSelectForUpdateFieldsQuery(), selectForUpdateQuery);
+		final String selectForUpdateQuery = getDialect().createSelectForUpdateQuery("MOVIE", "ID, TITLE", "id");
+		Assertions.assertEquals(getExpectedSelectForUpdateFieldsQuery(), selectForUpdateQuery);
 	}
 
 	@Test
 	public void testAppendMaxRows() {
 		final StringBuilder stringBuilder = new StringBuilder("select * from MOVIE");
-		getDialect().appendMaxRows(stringBuilder, 100);
+		getDialect().appendListState(stringBuilder, 100, 0, null, false);
 		final String query = stringBuilder.toString();
-		Assert.assertEquals(getExpectedAppendMaxRowsQuery(), query);
+		Assertions.assertEquals(getExpectedAppendMaxRowsQuery(), query);
+	}
+
+	@Test
+	public void testAppendSkipRows() {
+		final StringBuilder stringBuilder = new StringBuilder("select * from MOVIE");
+		getDialect().appendListState(stringBuilder, null, 10, null, false);
+		final String query = stringBuilder.toString();
+		Assertions.assertEquals(getExpectedAppendSkipRowsQuery(), query);
+	}
+
+	@Test
+	public void testAppendSort() {
+		final StringBuilder stringBuilder = new StringBuilder("select * from MOVIE");
+		getDialect().appendListState(stringBuilder, null, 0, "title", false);
+		final String query = stringBuilder.toString();
+		Assertions.assertEquals(getExpectedAppendSortQuery(), query);
+	}
+
+	@Test
+	public void testAppendSortDesc() {
+		final StringBuilder stringBuilder = new StringBuilder("select * from MOVIE");
+		getDialect().appendListState(stringBuilder, null, 0, "title", true);
+		final String query = stringBuilder.toString();
+		Assertions.assertEquals(getExpectedAppendSortDescQuery(), query);
 	}
 
 	public abstract SqlDialect getDialect();
@@ -71,6 +93,20 @@ public abstract class AbstractSqlDialectTest {
 
 	public abstract Optional<String> getExpectedCreatePrimaryKeyQuery();
 
-	public abstract String getExpectedAppendMaxRowsQuery();
+	public String getExpectedAppendMaxRowsQuery() {
+		return "select * from MOVIE order by 1 offset 0 rows fetch next 100 rows only";
+	}
+
+	public String getExpectedAppendSkipRowsQuery() {
+		return "select * from MOVIE order by 1 offset 10 rows";
+	}
+
+	public String getExpectedAppendSortQuery() {
+		return "select * from MOVIE order by TITLE";
+	}
+
+	public String getExpectedAppendSortDescQuery() {
+		return "select * from MOVIE order by TITLE desc";
+	}
 
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,14 +21,12 @@ package io.vertigo.studio.plugins.mda.task.model;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import io.vertigo.app.Home;
-import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
-import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
+import io.vertigo.util.StringUtil;
 
 /**
  * Objet utilisé par FreeMarker.
@@ -40,8 +38,6 @@ public final class DAOModel {
 	private final String packageName;
 	private final Collection<TaskDefinitionModel> taskDefinitions = new ArrayList<>();
 
-	private final SearchIndexDefinition indexDefinition;
-	private final Collection<FacetedQueryDefinitionModel> facetedQueryDefinitions = new ArrayList<>();
 	private final boolean hasOptions;
 
 	/**
@@ -54,12 +50,23 @@ public final class DAOModel {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(taskDefinitionCollection);
 		final String definitionPackageName = dtDefinition.getPackageName();
-		final String packageNamePrefix = fileGeneratorConfig.getProjectPackageName() + ".domain";
-		Assertion.checkArgument(definitionPackageName.contains(packageNamePrefix), "Le nom du package {0}, doit commencer par le prefix normalise: {1}", definitionPackageName, packageNamePrefix);
-		//-----
+		final String packageNamePrefix = fileGeneratorConfig.getProjectPackageName();
+		// ---
+		Assertion.checkArgument(definitionPackageName.startsWith(packageNamePrefix), "Package name {0}, must begin with normalised prefix: {1}", definitionPackageName, packageNamePrefix);
+		Assertion.checkArgument(definitionPackageName.substring(packageNamePrefix.length()).contains(".domain"), "Package name {0}, must contains the modifier .domain", definitionPackageName);
+		// ---
+		//we need to find the featureName, aka between projectpackageName and .domain
+		final String featureName = definitionPackageName.substring(packageNamePrefix.length(), definitionPackageName.indexOf(".domain"));
+		if (!StringUtil.isEmpty(featureName)) {
+			Assertion.checkState(featureName.lastIndexOf('.') == 0, "The feature {0} must not contain any dot", featureName.substring(1));
+		}
+		// the subpackage is what's behind the .domain
+		final String subpackage = definitionPackageName.substring(definitionPackageName.indexOf(".domain") + ".domain".length());
+		// breaking change -> need to redefine what's the desired folder structure in javagen...
+
 		this.dtDefinition = dtDefinition;
-		//On construit le nom du package à partir du package de la DT dans le quel on supprime le début.
-		packageName = fileGeneratorConfig.getProjectPackageName() + ".dao" + definitionPackageName.substring(packageNamePrefix.length());
+		//On construit le nom du package à partir du package de la DT et de la feature.
+		packageName = fileGeneratorConfig.getProjectPackageName() + featureName + ".dao" + subpackage;
 
 		boolean hasOption = false;
 		for (final TaskDefinition taskDefinition : taskDefinitionCollection) {
@@ -68,27 +75,6 @@ public final class DAOModel {
 			hasOption = hasOption || templateTaskDefinition.hasOptions();
 		}
 		hasOptions = hasOption;
-		//TODO : find better than one dependency per behavior
-		if (Home.getApp().getDefinitionSpace().getAllTypes().contains(SearchIndexDefinition.class)) {
-			SearchIndexDefinition currentIndexDefinition = null;
-			for (final SearchIndexDefinition tmpIndexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
-				if (tmpIndexDefinition.getKeyConceptDtDefinition().equals(dtDefinition)) {
-					currentIndexDefinition = tmpIndexDefinition;
-					break;
-				}
-			}
-			indexDefinition = currentIndexDefinition;
-			if (indexDefinition != null) {
-				for (final FacetedQueryDefinition facetedQueryDefinition : Home.getApp().getDefinitionSpace().getAll(FacetedQueryDefinition.class)) {
-					if (facetedQueryDefinition.getKeyConceptDtDefinition().equals(dtDefinition)) {
-						final FacetedQueryDefinitionModel templateFacetedQueryDefinition = new FacetedQueryDefinitionModel(facetedQueryDefinition);
-						facetedQueryDefinitions.add(templateFacetedQueryDefinition);
-					}
-				}
-			}
-		} else {
-			indexDefinition = null;
-		}
 	}
 
 	/**
@@ -103,20 +89,6 @@ public final class DAOModel {
 	 */
 	public boolean isKeyConcept() {
 		return dtDefinition.getStereotype() == DtStereotype.KeyConcept;
-	}
-
-	/**
-	 * @return Si l'entité possède le "behavior" Search
-	 */
-	public boolean hasSearchBehavior() {
-		return indexDefinition != null;
-	}
-
-	/**
-	 * @return Liste des facetedQueryDefinition
-	 */
-	public Collection<FacetedQueryDefinitionModel> getFacetedQueryDefinitions() {
-		return facetedQueryDefinitions;
 	}
 
 	/**
@@ -138,20 +110,6 @@ public final class DAOModel {
 	 */
 	public String getDtClassSimpleName() {
 		return dtDefinition.getClassSimpleName();
-	}
-
-	/**
-	 * @return Nom simple de la classe du Dt d'index
-	 */
-	public String getIndexDtClassSimpleName() {
-		return indexDefinition.getIndexDtDefinition().getClassSimpleName();
-	}
-
-	/**
-	 * @return Nom de la classe du Dt d'index
-	 */
-	public String getIndexDtClassCanonicalName() {
-		return indexDefinition.getIndexDtDefinition().getClassCanonicalName();
 	}
 
 	/**

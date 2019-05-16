@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.codec.AbstractCodecTest;
 import io.vertigo.commons.codec.Codec;
@@ -93,14 +94,16 @@ public final class CompressionCodecTest extends AbstractCodecTest<byte[], byte[]
 
 	/** {@inheritDoc} */
 	@Override
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testFailDecode() {
-		// object avec prefix ne correspondant pas à une classe;
-		final byte[] s = "COMPqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdf".getBytes();
-		assertTrue(s.length > CompressionCodec.MIN_SIZE_FOR_COMPRESSION);
-		/* final byte[] result = */
+		Assertions.assertThrows(RuntimeException.class, () -> {
+			// object avec prefix ne correspondant pas à une classe;
+			final byte[] s = "COMPqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdfqdfsdf".getBytes();
+			assertTrue(s.length > CompressionCodec.MIN_SIZE_FOR_COMPRESSION);
+			/* final byte[] result = */
 
-		//Le decodage lance une exception
-		codec.decode(s);
+			//Le decodage lance une exception
+			codec.decode(s);
+		});
 	}
 }

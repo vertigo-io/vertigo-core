@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +34,8 @@ import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.collections.model.SelectedFacetValues.SelectedFacetValuesBuilder;
 
-final class SelectedFacetValuesDeserializer implements JsonDeserializer<SelectedFacetValues> {
+public final class SelectedFacetValuesDeserializer implements JsonDeserializer<SelectedFacetValues> {
+	private static final String EMPTY_TERM = "_empty_";
 
 	@Override
 	public SelectedFacetValues deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) {
@@ -83,10 +84,20 @@ final class SelectedFacetValuesDeserializer implements JsonDeserializer<Selected
 	}
 
 	private static void appendTermFacetValue(final JsonElement value, final FacetDefinition facetDefinition, final SelectedFacetValuesBuilder selectedFacetValuesBuilder) {
-		final String term = value.getAsString();
-		final MessageText label = MessageText.of(term);
-		final String query = facetDefinition.getDtField().getName() + ":\"" + term + "\"";
-		final FacetValue facetValue = new FacetValue(term, ListFilter.of(query), label);
+		final String code = value.getAsString();
+		final String valueAsString;
+		final String query;
+		if (EMPTY_TERM.equals(code)) {
+			valueAsString = "";
+		} else {
+			valueAsString = code;
+		}
+		if (valueAsString != null) {
+			query = facetDefinition.getDtField().getName() + ":\"" + valueAsString + "\"";
+		} else {
+			query = "!_exists_:" + facetDefinition.getDtField().getName(); //only for null value, empty ones use FIELD:""
+		}
+		final FacetValue facetValue = new FacetValue(code, ListFilter.of(query), MessageText.of(code));
 		selectedFacetValuesBuilder.add(facetDefinition, facetValue);
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +18,15 @@
  */
 package io.vertigo.app.config;
 
+import io.vertigo.core.component.Plugin;
+import io.vertigo.core.param.Param;
 import io.vertigo.lang.Builder;
 
 /**
  * Defines a module by its features.
  * @author pchretien
  */
-public abstract class Features implements Builder<ModuleConfig> {
+public abstract class Features<F> implements Builder<ModuleConfig> {
 	private final ModuleConfigBuilder moduleConfigBuilder;
 
 	protected Features(final String name) {
@@ -35,6 +37,11 @@ public abstract class Features implements Builder<ModuleConfig> {
 
 	protected final ModuleConfigBuilder getModuleConfigBuilder() {
 		return moduleConfigBuilder;
+	}
+
+	public F addPlugin(final Class<? extends Plugin> pluginImplClass, final Param... params) {
+		moduleConfigBuilder.addPlugin(pluginImplClass, params);
+		return (F) this;
 	}
 
 	@Override

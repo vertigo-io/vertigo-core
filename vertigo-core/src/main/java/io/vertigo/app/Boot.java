@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,14 +54,14 @@ final class Boot {
 		final URL url = Home.class.getResource(log4jFileName);
 		if (url != null) {
 			Configurator.initialize("definedLog4jContext", Home.class.getClassLoader(), log4jFileName);
-			LogManager.getRootLogger().info("Log4J configuration chargée (resource) : " + url.getFile());
+			LogManager.getRootLogger().info("Log4J configuration chargée (resource) : {}", url.getFile());
 		} else {
 			Assertion.checkArgument(new File(log4jFileName).exists(), "Fichier de configuration log4j : {0} est introuvable", log4jFileName);
 			// Avec configureAndWatch (utilise un anonymous thread)
 			// on peut modifier à chaud le fichier de conf log4j
 			// mais en cas de hot-deploy, le thread reste présent ce qui peut-entrainer des problèmes.
 			Configurator.initialize("definedLog4jContext", null, log4jFileName);
-			LogManager.getRootLogger().info("Log4J configuration chargée (fichier) : " + log4jFileName);
+			LogManager.getRootLogger().info("Log4J configuration chargée (fichier) : {}", log4jFileName);
 		}
 	}
 

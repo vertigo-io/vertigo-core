@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@
 package io.vertigo.vega.webservice.data.ws;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -37,6 +38,8 @@ import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.data.domain.Contact;
 import io.vertigo.vega.webservice.data.domain.ContactDao;
+import io.vertigo.vega.webservice.stereotype.ExcludedFields;
+import io.vertigo.vega.webservice.stereotype.IncludedFields;
 import io.vertigo.vega.webservice.stereotype.POST;
 import io.vertigo.vega.webservice.stereotype.PathPrefix;
 
@@ -51,12 +54,12 @@ public final class SearchTestWebServices implements WebServices {
 
 	@POST("/selectedFacetValues")
 	public UiContext testSelectedFacetValues(final SelectedFacetValues selectedFacetValues) {
-		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QRY_CONTACT_FACET", FacetedQueryDefinition.class);
+		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryContactFacet", FacetedQueryDefinition.class);
 		final UiContext uiContext = new UiContext();
 		for (final FacetDefinition facetDefinition : facetedQueryDefinition.getFacetDefinitions()) {
-			if (!selectedFacetValues.getFacetValues(facetDefinition).isEmpty()) {
+			if (!selectedFacetValues.getFacetValues(facetDefinition.getName()).isEmpty()) {
 				uiContext.put(facetDefinition.getName(),
-						selectedFacetValues.getFacetValues(facetDefinition)
+						selectedFacetValues.getFacetValues(facetDefinition.getName())
 								.stream()
 								.map(FacetValue::getCode)
 								.collect(Collectors.joining(",")));
@@ -66,11 +69,27 @@ public final class SearchTestWebServices implements WebServices {
 	}
 
 	@POST("/facetedResult")
+	@ExcludedFields({ "highlight" })
+	@IncludedFields({ "list.name", "list.conId", "list.firstName" })
 	public FacetedQueryResult<Contact, DtList<Contact>> testFacetedQueryResult(final SelectedFacetValues selectedFacetValues) {
 		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
-		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QRY_CONTACT_FACET", FacetedQueryDefinition.class);
+		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryContactFacet", FacetedQueryDefinition.class);
 		final FacetedQuery facetedQuery = new FacetedQuery(facetedQueryDefinition, selectedFacetValues);
-		return collectionsManager.facetList(allContacts, facetedQuery);
+		return collectionsManager.facetList(allContacts, facetedQuery, Optional.empty());
+	}
+
+	@POST("/facetedClusteredResult")
+	@ExcludedFields({ "highlight" })
+	@IncludedFields({ "list.name", "list.conId", "list.firstName" })
+	public FacetedQueryResult<Contact, DtList<Contact>> testFacetedClusterQueryResult(final SelectedFacetValues selectedFacetValues) {
+		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
+		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryContactFacet", FacetedQueryDefinition.class);
+		final FacetedQuery facetedQuery = new FacetedQuery(facetedQueryDefinition, selectedFacetValues);
+		return collectionsManager.facetList(allContacts, facetedQuery, Optional.of(obtainFacetDefinition("FctHonorificCode")));
+	}
+
+	private static FacetDefinition obtainFacetDefinition(final String facetName) {
+		return Home.getApp().getDefinitionSpace().resolve(facetName, FacetDefinition.class);
 	}
 
 	private static <D extends DtObject> DtList<D> asDtList(final Collection<D> values, final Class<D> dtObjectClass) {

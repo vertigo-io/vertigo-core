@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,6 @@ package io.vertigo.dynamo.domain.util;
 import java.util.stream.Collectors;
 
 import io.vertigo.app.Home;
-import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -32,10 +31,9 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociat
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.Fragment;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
-import io.vertigo.util.StringUtil;
 
 /**
  * The DtObjectUtil class is a set of utils about the DtObject.
@@ -44,7 +42,6 @@ import io.vertigo.util.StringUtil;
  */
 public final class DtObjectUtil {
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
-	private static final char SEPARATOR = Definition.SEPARATOR;
 
 	private DtObjectUtil() {
 		//private constructor.
@@ -87,26 +84,14 @@ public final class DtObjectUtil {
 	}
 
 	/**
-	 * Creates the uri of the entity
-	 * @param entityClass the class of the entity
-	 * @param uriValue key value
-	 * @param <E> the type of entity
-	 * @return URI du DTO
-	 */
-	public static <E extends Entity> URI<E> createURI(final Class<E> entityClass, final Object uriValue) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
-		return new URI<>(dtDefinition, uriValue);
-	}
-
-	/**
-	 * Récupération d'une URI de DTO.
+	 * Récupération d'une UID de DTO.
 	 * On récupère l'URI d'un DTO référencé par une association.
 	 * Il est nécessaire que l'association soit simple.
-	 * Si l'association est multiple on ne récupère pas une URI mais une DtListURI, c'est à dire le pointeur vers une liste.
+	 * Si l'association est multiple on ne récupère pas une UID mais une DtListURI, c'est à dire le pointeur vers une liste.
 	 *
-	 *  On recherche une URI correspondant à une association.
+	 *  On recherche une UID correspondant à une association.
 	 *  Exemple : Une Commande possède un bénéficiaire.
-	 *  Dans cetexemple on recherche l'URI du bénéficiaire à partir de l'objet commande.
+	 *  Dans cetexemple on recherche l'UID du bénéficiaire à partir de l'objet commande.
 	 * @param <E>
 	
 	 * @param associationDefinitionName Nom de la définition d'une association
@@ -114,7 +99,7 @@ public final class DtObjectUtil {
 	 * @param dtoTargetClass Class of entity of this association
 	 * @return dto du DTO relié via l'association au dto passé en paramètre (Nullable)
 	 */
-	public static <E extends Entity> URI<E> createURI(final DtObject dto, final String associationDefinitionName, final Class<E> dtoTargetClass) {
+	public static <E extends Entity> UID<E> createUID(final DtObject dto, final String associationDefinitionName, final Class<E> dtoTargetClass) {
 		Assertion.checkNotNull(associationDefinitionName);
 		Assertion.checkNotNull(dto);
 		Assertion.checkNotNull(dtoTargetClass);
@@ -131,15 +116,15 @@ public final class DtObjectUtil {
 		if (id == null) {
 			return null;
 		}
-		return new URI(dtDefinition, id);
+		return UID.of(dtDefinition, id);
 	}
 
 	/**
-	 * Récupération d'une URI de Collection à partir d'un dto
+	 * Récupération d'une UID de Collection à partir d'un dto
 	 * @param entity the entity
 	 * @param associationDefinitionName Nom de l'association
 	 * @param roleName Nom du role
-	 * @return URI de la collection référencée.
+	 * @return UID de la collection référencée.
 	 */
 	public static DtListURIForSimpleAssociation createDtListURIForSimpleAssociation(final Entity entity, final String associationDefinitionName, final String roleName) {
 		Assertion.checkNotNull(associationDefinitionName);
@@ -147,15 +132,15 @@ public final class DtObjectUtil {
 		Assertion.checkNotNull(entity);
 		//-----
 		final AssociationSimpleDefinition associationDefinition = Home.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationSimpleDefinition.class);
-		return new DtListURIForSimpleAssociation(associationDefinition, entity.getURI(), roleName);
+		return new DtListURIForSimpleAssociation(associationDefinition, entity.getUID(), roleName);
 	}
 
 	/**
-	 * Récupération d'une URI de Collection à partir d'un dto
+	 * Récupération d'une UID de Collection à partir d'un dto
 	 * @param entity the entity
 	 * @param associationDefinitionName Nom de l'association
 	 * @param roleName Nom du role
-	 * @return URI de la collection référencée.
+	 * @return UID de la collection référencée.
 	 */
 	public static DtListURIForNNAssociation createDtListURIForNNAssociation(final Entity entity, final String associationDefinitionName, final String roleName) {
 		Assertion.checkNotNull(associationDefinitionName);
@@ -163,34 +148,22 @@ public final class DtObjectUtil {
 		Assertion.checkNotNull(entity);
 		//-----
 		final AssociationNNDefinition associationDefinition = Home.getApp().getDefinitionSpace().resolve(associationDefinitionName, AssociationNNDefinition.class);
-		return new DtListURIForNNAssociation(associationDefinition, entity.getURI(), roleName);
+		return new DtListURIForNNAssociation(associationDefinition, entity.getUID(), roleName);
 	}
 
 	/**
-	 * Creates an URI from an existing object.
-	 * @param entity Object
-	 * @return this object URI
-	 */
-	public static <E extends Entity> URI<E> createURI(final E entity) {
-		Assertion.checkNotNull(entity);
-		//-----
-		final DtDefinition dtDefinition = findDtDefinition(entity);
-		return new URI<>(dtDefinition, DtObjectUtil.getId(entity));
-	}
-
-	/**
-	 * Creates an URI of entity from an existing fragment.
+	 * Creates an UID of entity from an existing fragment.
 	 * @param fragment fragment
-	 * @return related entity URI
+	 * @return related entity UID
 	 */
-	public static <E extends Entity, F extends Fragment<E>> URI<E> createEntityURI(final F fragment) {
+	public static <E extends Entity, F extends Fragment<E>> UID<E> createEntityUID(final F fragment) {
 		Assertion.checkNotNull(fragment);
 		//-----
 		final DtDefinition dtDefinition = findDtDefinition(fragment);
 		final DtDefinition entityDtDefinition = dtDefinition.getFragment().get();
 		final DtField idField = entityDtDefinition.getIdField().get();
 		final Object idValue = idField.getDataAccessor().getValue(fragment);
-		return new URI<>(entityDtDefinition, idValue);
+		return UID.of(entityDtDefinition, idValue);
 	}
 
 	/**
@@ -227,7 +200,7 @@ public final class DtObjectUtil {
 	public static DtDefinition findDtDefinition(final Class<? extends DtObject> dtObjectClass) {
 		Assertion.checkNotNull(dtObjectClass);
 		//-----
-		final String name = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(dtObjectClass.getSimpleName());
+		final String name = DT_DEFINITION_PREFIX + dtObjectClass.getSimpleName();
 		return Home.getApp().getDefinitionSpace().resolve(name, DtDefinition.class);
 	}
 }

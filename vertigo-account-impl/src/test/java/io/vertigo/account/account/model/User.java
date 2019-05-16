@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.account.account.model;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -35,39 +35,39 @@ public final class User implements KeyConcept {
 	private String fullName;
 	private String email;
 
-	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_GRP_USR", fkFieldName = "GRP_ID", primaryDtDefinitionName = "DT_USER_GROUP", primaryIsNavigable = true, primaryRole = "Group", primaryLabel = "Group", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DT_USER", foreignIsNavigable = false, foreignRole = "User", foreignLabel = "User", foreignMultiplicity = "0..*")
+	@io.vertigo.dynamo.domain.stereotype.Association(name = "AGrpUsr", fkFieldName = "grpId", primaryDtDefinitionName = "DtUserGroup", primaryIsNavigable = true, primaryRole = "Group", primaryLabel = "Group", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DtUser", foreignIsNavigable = false, foreignRole = "User", foreignLabel = "User", foreignMultiplicity = "0..*")
 	private final VAccessor<UserGroup> grpIdAccessor = new VAccessor<>(UserGroup.class, "Group");
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<User> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<User> getUID() {
+		return UID.of(this);
 	}
 
-	@Field(domain = "DO_CODE", type = "ID", required = true, label = "Id")
-	public final String getUsrId() {
+	@Field(domain = "DoCode", type = "ID", required = true, label = "Id")
+	public String getUsrId() {
 		return usrId;
 	}
 
-	public final void setUsrId(final String usrId) {
+	public void setUsrId(final String usrId) {
 		this.usrId = usrId;
 	}
 
-	@Field(domain = "DO_LABEL", required = true, label = "FullName")
-	public final String getFullName() {
+	@Field(domain = "DoLabel", required = true, label = "FullName")
+	public String getFullName() {
 		return fullName;
 	}
 
-	public final void setFullName(final String fullName) {
+	public void setFullName(final String fullName) {
 		this.fullName = fullName;
 	}
 
-	@Field(domain = "DO_LABEL", required = true, label = "Email")
-	public final String getEmail() {
+	@Field(domain = "DoLabel", required = true, label = "Email")
+	public String getEmail() {
 		return email;
 	}
 
-	public final void setEmail(final String email) {
+	public void setEmail(final String email) {
 		this.email = email;
 	}
 
@@ -76,7 +76,7 @@ public final class User implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Group'.
 	 * @return String grpId
 	 */
-	@Field(domain = "DO_CODE", type = "FOREIGN_KEY", label = "Group")
+	@Field(domain = "DoCode", type = "FOREIGN_KEY", label = "Group")
 	public String getGrpId() {
 		return (String) grpIdAccessor.getId();
 	}

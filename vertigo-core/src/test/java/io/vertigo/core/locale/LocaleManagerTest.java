@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,23 +31,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.locale.data.CityGuide;
 
 /**
  * @author pchretien
  */
 @RunWith(JUnitPlatform.class)
-public final class LocaleManagerTest extends AbstractTestCaseJU4 {
+public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private LocaleManager localeManager;
 
 	@Override
-	protected AppConfig buildAppConfig() {
+	protected NodeConfig buildNodeConfig() {
 		//les locales doivent être séparées par des virgules
 		final String locales = "fr_FR, en , de_DE";
-		return AppConfig.builder()
+		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales(locales)
 				.endBoot()
@@ -145,11 +145,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 				return "UNKNOWN KEY";
 			}
 		};
-		final MessageText helloTxt = MessageText
-				.builder()
-				.withDefaultMsg("bonjour par défaut")
-				.withKey(key)
-				.build();
+		final MessageText helloTxt = MessageText.ofDefaultMsg("bonjour par défaut", key);
 		assertEquals("bonjour par défaut", helloTxt.getDisplay());
 	}
 
@@ -181,21 +177,13 @@ public final class LocaleManagerTest extends AbstractTestCaseJU4 {
 		MessageText helloTxt = MessageText.of(key);
 		assertEquals("<<fr:UNKNOWN KEY>>", helloTxt.getDisplay());
 
-		helloTxt = MessageText
-				.builder()
-				.withKey(key)
-				.withParams(param)
-				.build();
+		helloTxt = MessageText.of(key, param);
 		assertEquals("<<fr:UNKNOWN KEY[null]>>", helloTxt.getDisplay());
 
 		//		helloTxt = new MessageText(key, null);
 		//		assertEquals("<<fr:UNKNOWN KEY[null]>>", helloTxt.getDisplay());
 
-		helloTxt = MessageText
-				.builder()
-				.withKey(key)
-				.withParams(null, null)
-				.build();
+		helloTxt = MessageText.of(key, null, null);
 		assertEquals("<<fr:UNKNOWN KEY[null, null]>>", helloTxt.getDisplay());
 
 		helloTxt = MessageText.of("default");

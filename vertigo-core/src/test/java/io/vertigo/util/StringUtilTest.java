@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -110,6 +110,15 @@ public final class StringUtilTest {
 	}
 
 	@Test
+	public void testCamelToSnakeCase() {
+		assertEquals("xxx_yyy_zzz", StringUtil.camelToSnakeCase("XxxYyyZzz"));
+		assertEquals("xxx_yyy_zzz", StringUtil.camelToSnakeCase("xxxYyyZzz"));
+		assertEquals("xxx_123", StringUtil.camelToSnakeCase("Xxx123"));
+		assertEquals("xxx_123_y", StringUtil.camelToSnakeCase("Xxx123Y"));
+		assertEquals("xxx_123y", StringUtil.camelToSnakeCase("Xxx123y"));
+	}
+
+	@Test
 	public void testCaseUnTransform() {
 		assertEquals("X_Z_YYY", StringUtil.camelToConstCase("xZYyy"));
 		assertEquals("X_Z_YYY", StringUtil.camelToConstCase("XZYyy"));
@@ -132,6 +141,20 @@ public final class StringUtilTest {
 			assertEquals(value, StringUtil.camelToConstCase(StringUtil.constToLowerCamelCase(value)));
 			assertEquals(value, StringUtil.camelToConstCase(StringUtil.constToUpperCamelCase(value)));
 		}
+	}
+
+	@Test
+	public void testFistToLowerCase() {
+		assertEquals("xZYyy", StringUtil.first2LowerCase("xZYyy"));
+		assertEquals("xZYyy", StringUtil.first2LowerCase("XZYyy"));
+		assertEquals("", StringUtil.first2LowerCase(""));
+	}
+
+	@Test
+	public void testFistToUpperCase() {
+		assertEquals("XZYyy", StringUtil.first2UpperCase("xZYyy"));
+		assertEquals("XZYyy", StringUtil.first2UpperCase("XZYyy"));
+		assertEquals("", StringUtil.first2UpperCase(""));
 	}
 
 	@Test

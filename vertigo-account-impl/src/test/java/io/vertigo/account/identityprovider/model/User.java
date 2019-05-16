@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.account.identityprovider.model;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -36,11 +36,11 @@ public final class User implements KeyConcept {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<User> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<User> getUID() {
+		return UID.of(this);
 	}
 
-	@Field(domain = "DO_CODE", type = "ID", required = true, label = "Id")
+	@Field(domain = "DoCode", type = "ID", required = true, label = "Id")
 	public final String getUsrId() {
 		return usrId;
 	}
@@ -49,7 +49,7 @@ public final class User implements KeyConcept {
 		this.usrId = usrId;
 	}
 
-	@Field(domain = "DO_LABEL", required = true, label = "FullName")
+	@Field(domain = "DoLabel", required = true, label = "FullName")
 	public final String getFullName() {
 		return fullName;
 	}
@@ -58,7 +58,7 @@ public final class User implements KeyConcept {
 		this.fullName = fullName;
 	}
 
-	@Field(domain = "DO_LABEL", required = true, label = "Email")
+	@Field(domain = "DoLabel", required = true, label = "Email")
 	public final String getEmail() {
 		return email;
 	}

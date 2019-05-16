@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,13 +26,20 @@ import java.time.Instant;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.lang.WrappedException;
 
 /**
@@ -40,10 +47,28 @@ import io.vertigo.lang.WrappedException;
  *
  * @author dchallas
  */
-public final class FileManagerTest extends AbstractTestCaseJU4 {
+public final class FileManagerTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private FileManager fileManager;
+
+	@Override
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.build())
+				.addModule(new DynamoFeatures()
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/file/data/execution.kpr")
+								.build())
+						.build())
+				.build();
+	}
 
 	@Test
 	public void testCreateTempFile() {
@@ -100,12 +125,12 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private static void checkVFile(final VFile vFile, final String fileName, final Instant lastModified, final String mimeType, final Long length) {
-		Assert.assertEquals(fileName, vFile.getFileName());
+		Assertions.assertEquals(fileName, vFile.getFileName());
 		if (lastModified != null) { //le lastModified peut être inconnu du test
-			Assert.assertEquals(lastModified, vFile.getLastModified());
+			Assertions.assertEquals(lastModified, vFile.getLastModified());
 		}
-		Assert.assertEquals(mimeType, vFile.getMimeType());
-		Assert.assertEquals(length, vFile.getLength(), length * 0.1); //+ or - 10%
+		Assertions.assertEquals(mimeType, vFile.getMimeType());
+		Assertions.assertEquals(length, vFile.getLength(), length * 0.1); //+ or - 10%
 
 		try {
 			nop(vFile.createInputStream());
@@ -115,6 +140,6 @@ public final class FileManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private static void checVFile(final File outFile, final File inFile) {
-		Assert.assertEquals(inFile.getAbsolutePath(), outFile.getAbsolutePath());
+		Assertions.assertEquals(inFile.getAbsolutePath(), outFile.getAbsolutePath());
 	}
 }

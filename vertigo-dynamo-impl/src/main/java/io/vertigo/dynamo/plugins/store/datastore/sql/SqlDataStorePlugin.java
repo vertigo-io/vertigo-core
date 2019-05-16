@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,11 +24,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
-import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionUtil;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.dynamo.criteria.Criteria;
@@ -43,9 +42,9 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
@@ -61,25 +60,21 @@ import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Tuples;
+import io.vertigo.lang.Tuple;
 import io.vertigo.lang.VSystemException;
+import io.vertigo.util.StringUtil;
 
 /**
  * This class is the basic implementation of the dataStore in the sql way.
  *
- * @author  pchretien
+ * @author pchretien
  */
 public final class SqlDataStorePlugin implements DataStorePlugin {
 	private static final int MAX_TASK_SPECIFIC_NAME_LENGTH = 40;
-	private static final Criteria EMPTY_CRITERIA = Criterions.alwaysTrue();
-
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
-	private static final char SEPARATOR = Definition.SEPARATOR;
 
 	private final String dataSpace;
-
 	private final String connectionName;
-
 	private final String sequencePrefix;
 	/**
 	 * Domaine à usage interne.
@@ -89,17 +84,17 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 	private enum TASK {
 		/** Prefix of the SELECT.*/
-		TK_SELECT,
+		TkSelect,
 		/** Prefix of the INSERT.*/
-		TK_INSERT,
+		TkInsert,
 		/** Prefix of the UPDATE.*/
-		TK_UPDATE,
+		TkUpdate,
 		/** Prefix of the DELETE.*/
-		TK_DELETE,
+		TkDelete,
 		/** Prefix of the COUNT.*/
-		TK_COUNT,
+		TkCount,
 		/** Prefix of the LOCK.*/
-		TK_LOCK
+		TkLock
 	}
 
 	private final SqlDialect sqlDialect;
@@ -115,9 +110,9 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	 */
 	@Inject
 	public SqlDataStorePlugin(
-			@Named("dataSpace") final Optional<String> optDataSpace,
-			@Named("connectionName") final Optional<String> optConnectionName,
-			@Named("sequencePrefix") final Optional<String> optSequencePrefix,
+			@ParamValue("dataSpace") final Optional<String> optDataSpace,
+			@ParamValue("connectionName") final Optional<String> optConnectionName,
+			@ParamValue("sequencePrefix") final Optional<String> optSequencePrefix,
 			final TaskManager taskManager,
 			final SqlDataBaseManager sqlDataBaseManager) {
 		Assertion.checkNotNull(optDataSpace);
@@ -140,15 +135,16 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	 * @param dtDefinition the dtDefinition
 	 * @return the name of the table
 	 */
-	private static String getTableName(final DtDefinition dtDefinition) {
+	private static String getEntityName(final DtDefinition dtDefinition) {
 		return dtDefinition.getFragment().orElse(dtDefinition).getLocalName();
 	}
 
-	private static String getRequestedFields(final DtDefinition dtDefinition) {
+	private static String getRequestedCols(final DtDefinition dtDefinition) {
 		if (dtDefinition.getFragment().isPresent()) {
 			return dtDefinition.getFields()
 					.stream()
 					.map(DtField::getName)
+					.map(StringUtil::camelToConstCase)
 					.collect(Collectors.joining(", "));
 		}
 		return "*"; //all fields
@@ -174,17 +170,18 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final URI<E> uri) {
-		final String tableName = getTableName(dtDefinition);
-		final String taskName = TASK.TK_SELECT + "_" + dtDefinition.getLocalName() + "_BY_URI";
+	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final UID<E> uri) {
+		final String entityName = getEntityName(dtDefinition);
+		final String tableName = StringUtil.camelToConstCase(entityName);
+		final String taskName = TASK.TkSelect + entityName + "ByUri";
 
-		final String requestedFields = getRequestedFields(dtDefinition);
+		final String requestedCols = getRequestedCols(dtDefinition);
 		final DtField idField = getIdField(dtDefinition);
 		final String idFieldName = idField.getName();
 		final String request = new StringBuilder()
-				.append(" select ").append(requestedFields)
+				.append(" select ").append(requestedCols)
 				.append(" from ").append(tableName)
-				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
+				.append(" where ").append(StringUtil.camelToConstCase(idFieldName)).append(" = #").append(idFieldName).append('#')
 				.toString();
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
@@ -192,7 +189,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.addInRequired(idFieldName, idField.getDomain())
-				.withOutOptional("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.getDefinition().getName() + "_DTO", Domain.class))
+				.withOutOptional("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + uri.getDefinition().getName() + "Dto", Domain.class))
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
@@ -210,17 +207,18 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(dtcUri);
 		//-----
-		final String tableName = getTableName(dtDefinition);
+		final String entityName = getEntityName(dtDefinition);
+		final String tableName = StringUtil.camelToConstCase(entityName);
 
-		final String taskName = TASK.TK_SELECT + "_N_N_LIST_" + tableName + "_BY_URI";
+		final String taskName = TASK.TkSelect + "NNList" + entityName + "ByUri";
 
 		//PK de la DtList recherchée
-		final String idFieldName = getIdField(dtDefinition).getName();
+		final String idFieldName = StringUtil.camelToConstCase(getIdField(dtDefinition).getName());
 		//FK dans la table nn correspondant à la collection recherchée. (clé de jointure ).
 		final AssociationNNDefinition associationNNDefinition = dtcUri.getAssociationDefinition();
 		final String joinTableName = associationNNDefinition.getTableName();
 		final DtDefinition joinDtDefinition = AssociationUtil.getAssociationNode(associationNNDefinition, dtcUri.getRoleName()).getDtDefinition();
-		final DtField joinDtField = getIdField(joinDtDefinition);
+		final String joinDtFieldName = StringUtil.camelToConstCase(getIdField(joinDtDefinition).getName());
 
 		//La condition s'applique sur l'autre noeud de la relation (par rapport à la collection attendue)
 		final AssociationNode associationNode = AssociationUtil.getAssociationNodeTarget(associationNNDefinition, dtcUri.getRoleName());
@@ -230,9 +228,9 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		final String request = new StringBuilder(" select t.* from ")
 				.append(tableName).append(" t")
 				//On établit une jointure fermée entre la pk et la fk de la collection recherchée.
-				.append(" join ").append(joinTableName).append(" j on j.").append(joinDtField.getName()).append(" = t.").append(idFieldName)
+				.append(" join ").append(joinTableName).append(" j on j.").append(joinDtFieldName).append(" = t.").append(idFieldName)
 				//Condition de la recherche
-				.append(" where j.").append(fkFieldName).append(" = #").append(fkFieldName).append('#')
+				.append(" where j.").append(StringUtil.camelToConstCase(fkFieldName)).append(" = #").append(fkFieldName).append('#')
 				.toString();
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
@@ -240,13 +238,13 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.addInRequired(fkFieldName, fkField.getDomain())
-				.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class))
+				.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName() + "Dtc", Domain.class))
 				.build();
 
-		final URI uri = dtcUri.getSource();
+		final UID uid = dtcUri.getSource();
 
 		final Task task = Task.builder(taskDefinition)
-				.addValue(fkFieldName, uri.getId())
+				.addValue(fkFieldName, uid.getId())
 				.build();
 
 		return taskManager
@@ -263,34 +261,23 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		final DtField fkField = dtcUri.getAssociationDefinition().getFKField();
 		final Serializable value = dtcUri.getSource().getId();
 
-		return findByCriteria(dtDefinition, Criterions.isEqualTo(fkField::getName, value), null);
+		return findByCriteria(dtDefinition, Criterions.isEqualTo(fkField::getName, value), DtListState.of(null));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<E> uri) {
-		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkNotNull(uri);
-		//---
-		final Criteria<E> criteria = uri.getCriteria();
-		final Integer maxRows = uri.getMaxRows();
-		//---
-		final Criteria<E> filterCriteria = criteria == null ? EMPTY_CRITERIA : criteria;
-		return findByCriteria(dtDefinition, filterCriteria, maxRows);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
+	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(criteria);
+		Assertion.checkNotNull(dtListState);
 		//---
-		final String tableName = getTableName(dtDefinition);
-		final String requestedFields = getRequestedFields(dtDefinition);
-		final String taskName = getListTaskName(tableName);
-		final Tuples.Tuple2<String, CriteriaCtx> tuple = criteria.toSql(sqlDialect);
+		final String entityName = getEntityName(dtDefinition);
+		final String tableName = StringUtil.camelToConstCase(entityName);
+		final String requestedCols = getRequestedCols(dtDefinition);
+		final String taskName = getListTaskName(entityName);
+		final Tuple<String, CriteriaCtx> tuple = criteria.toSql(sqlDialect);
 		final String where = tuple.getVal1();
-		final String request = createLoadAllLikeQuery(tableName, requestedFields, where, maxRows);
+		final String request = createLoadAllLikeQuery(tableName, requestedCols, where, dtListState);
 		final TaskDefinitionBuilder taskDefinitionBuilder = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
@@ -303,7 +290,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		}
 		//OUT, obligatoire
 		final TaskDefinition taskDefinition = taskDefinitionBuilder
-				.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class))
+				.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName() + "Dtc", Domain.class))
 				.build();
 
 		final TaskBuilder taskBuilder = Task.builder(taskDefinition);
@@ -315,11 +302,11 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.getResult();
 	}
 
-	private static String getListTaskName(final String tableName) {
-		final String fullName = new StringBuilder(TASK.TK_SELECT.name())
-				.append("_LIST_")
-				.append(tableName)
-				.append("_BY_CRITERIA")
+	private static String getListTaskName(final String entityName) {
+		final String fullName = new StringBuilder(TASK.TkSelect.name())
+				.append("List")
+				.append(entityName)
+				.append("ByCriteria")
 				.toString();
 		if (fullName.length() > MAX_TASK_SPECIFIC_NAME_LENGTH) {
 			return fullName.substring(0, MAX_TASK_SPECIFIC_NAME_LENGTH);
@@ -356,7 +343,8 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	 * @return the sql request
 	 */
 	private static String createUpdateQuery(final DtDefinition dtDefinition) {
-		final String tableName = getTableName(dtDefinition);
+		final String entityName = getEntityName(dtDefinition);
+		final String tableName = StringUtil.camelToConstCase(entityName);
 		final DtField idField = getIdField(dtDefinition);
 
 		return new StringBuilder()
@@ -365,10 +353,10 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.append(dtDefinition.getFields()
 						.stream()
 						.filter(dtField -> dtField.isPersistent() && !dtField.getType().isId())
-						.map(dtField -> dtField.getName() + " =#DTO." + dtField.getName() + '#')
+						.map(dtField -> StringUtil.camelToConstCase(dtField.getName()) + " =#dto." + dtField.getName() + '#')
 						.collect(Collectors.joining(", ")))
 				.append(" where ")
-				.append(idField.getName()).append(" = #DTO.").append(idField.getName()).append('#')
+				.append(StringUtil.camelToConstCase(idField.getName())).append(" = #dto.").append(idField.getName()).append('#')
 				.toString();
 	}
 
@@ -389,8 +377,9 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 	 */
 	private void put(final Entity entity, final boolean insert) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
-		final String tableName = getTableName(dtDefinition);
-		final String taskName = (insert ? TASK.TK_INSERT : TASK.TK_UPDATE) + "_" + tableName;
+		final String entityName = getEntityName(dtDefinition);
+		final String tableName = StringUtil.camelToConstCase(entityName);
+		final String taskName = (insert ? TASK.TkInsert : TASK.TkUpdate) + entityName;
 
 		final String request = insert ? sqlDialect.createInsertQuery(dtDefinition.getIdField().get().getName(), getDataFields(dtDefinition), sequencePrefix, tableName) : createUpdateQuery(dtDefinition);
 
@@ -398,12 +387,12 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(getTaskEngineClass(insert))
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInRequired("DTO", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTO", Domain.class))
+				.addInRequired("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName() + "Dto", Domain.class))
 				.withOutRequired(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
-				.addValue("DTO", entity)
+				.addValue("dto", entity)
 				.build();
 
 		final int sqlRowCount = taskManager
@@ -429,19 +418,20 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final DtDefinition dtDefinition, final URI uri) {
+	public void delete(final DtDefinition dtDefinition, final UID uri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(uri);
 		//---
 		final DtField idField = getIdField(dtDefinition);
-		final String tableName = getTableName(dtDefinition);
-		final String taskName = TASK.TK_DELETE + "_" + tableName;
+		final String entityName = getEntityName(dtDefinition);
+		final String tableName = StringUtil.camelToConstCase(entityName);
+		final String taskName = TASK.TkDelete + entityName;
 
 		final String idFieldName = idField.getName();
 
 		final String request = new StringBuilder()
 				.append("delete from ").append(tableName)
-				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
+				.append(" where ").append(StringUtil.camelToConstCase(idFieldName)).append(" = #").append(idFieldName).append('#')
 				.toString();
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
@@ -473,8 +463,9 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkArgument(dtDefinition.isPersistent(), "DtDefinition is not  persistent");
 		//-----
-		final String tableName = getTableName(dtDefinition);
-		final String taskName = TASK.TK_COUNT + "_" + tableName;
+		final String entityName = getEntityName(dtDefinition);
+		final String tableName = StringUtil.camelToConstCase(entityName);
+		final String taskName = TASK.TkCount + entityName;
 		final Domain countDomain = Domain.builder("DO_COUNT", DataType.Long).build();
 
 		final String request = "select count(*) from " + tableName;
@@ -498,21 +489,22 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
-		final String tableName = getTableName(dtDefinition);
-		final String taskName = TASK.TK_LOCK + "_" + tableName;
+	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final UID<?> uri) {
+		final String entityName = getEntityName(dtDefinition);
+		final String tableName = StringUtil.camelToConstCase(entityName);
+		final String taskName = TASK.TkLock + entityName;
 
-		final String requestedFields = getRequestedFields(dtDefinition);
+		final String requestedCols = getRequestedCols(dtDefinition);
 		final DtField idField = getIdField(dtDefinition);
 		final String idFieldName = idField.getName();
-		final String request = sqlDialect.createSelectForUpdateQuery(tableName, requestedFields, idFieldName);
+		final String request = sqlDialect.createSelectForUpdateQuery(tableName, requestedCols, idFieldName);
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder(taskName)
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.addInRequired(idFieldName, idField.getDomain())
-				.withOutOptional("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + uri.getDefinition().getName() + "_DTO", Domain.class))
+				.withOutOptional("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + uri.getDefinition().getName() + "Dto", Domain.class))
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
@@ -528,16 +520,18 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 			final String tableName,
 			final String requestedFields,
 			final String where,
-			final Integer maxRows) {
+			final DtListState dtListState) {
 
 		final StringBuilder request = new StringBuilder("select ")
 				.append(requestedFields)
 				.append(" from ").append(tableName)
 				.append(" where ").append(where);
-		if (maxRows != null) {
-			// the criteria is not null so the where is not empty at least 1=1 for alwaysTrue
-			sqlDialect.appendMaxRows(request, maxRows);
-		}
+
+		sqlDialect.appendListState(request,
+				dtListState.getMaxRows().orElse(null),
+				dtListState.getSkipRows(),
+				dtListState.getSortFieldName().orElse(null),
+				dtListState.isSortDesc().orElse(false));
 		return request.toString();
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,14 +23,24 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.database.DatabaseFeatures;
+import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.data.domain.SuperHero;
@@ -42,14 +52,14 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
  *
  * @author npiedeloup
  */
-public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
-	private static final String DTC_SUPER_HERO_IN = "DTC_SUPER_HERO_IN";
-	private static final String SUPER_HERO_ID_LIST = "SUPER_HERO_ID_LIST";
-	private static final String DO_INTEGER = "DO_INTEGER";
-	private static final String DO_LONGS = "DO_LONGS";
-	private static final String DO_DT_SUPER_HERO_DTO = "DO_DT_SUPER_HERO_DTO";
-	private static final String DO_DT_SUPER_HERO_DTC = "DO_DT_SUPER_HERO_DTC";
-	private static final String DTO_SUPER_HERO = "DTO_SUPER_HERO";
+public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU5 {
+	private static final String DTC_SUPER_HERO_IN = "dtcSuperHeroIn";
+	private static final String SUPER_HERO_ID_LIST = "superHeroIdList";
+	private static final String DO_INTEGER = "DoInteger";
+	private static final String DO_LONGS = "DoLongs";
+	private static final String DO_DT_SUPER_HERO_DTO = "DoDtSuperHeroDto";
+	private static final String DO_DT_SUPER_HERO_DTC = "DoDtSuperHeroDtc";
+	private static final String DTO_SUPER_HERO = "dtoSuperHero";
 	@Inject
 	private TaskManager taskManager;
 	@Inject
@@ -58,6 +68,39 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	private VTransactionManager transactionManager;
 
 	private SuperHeroDataBase superHeroDataBase;
+
+	@Override
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.withLocales("fr_FR")
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.withCache()
+						.withScript()
+						.withMemoryCache()
+						.withJaninoScript()
+						.build())
+				.addModule(new DatabaseFeatures()
+						.withSqlDataBase()
+						.withC3p0(
+								Param.of("dataBaseClass", H2DataBase.class.getName()),
+								Param.of("jdbcDriver", "org.h2.Driver"),
+								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
+						.build())
+				.addModule(new DynamoFeatures()
+						.withStore()
+						.withSqlStore()
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/task/data/execution.kpr")
+								.addDefinitionResource("classes", "io.vertigo.dynamo.task.data.DtDefinitions")
+								.build())
+						.build())
+				.build();
+	}
 
 	@Override
 	protected void doSetUp() throws Exception {
@@ -72,8 +115,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testScript() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final TaskDefinition taskDefinition = registerTaskObject("TK_SCRIPT_TEST",
-					"select * from SUPER_HERO <%if(false) {%>where ID = #DTO_SUPER_HERO.ID#<%}%>");
+			final TaskDefinition taskDefinition = registerTaskObject("TkScriptTest",
+					"select * from SUPER_HERO <%if(false) {%>where id = #" + DTO_SUPER_HERO + ".id#<%}%>");
 
 			final SuperHero superHero = createSuperHero(10001L + 1);
 
@@ -85,7 +128,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(10, resultList.size());
+			Assertions.assertEquals(10, resultList.size());
 		}
 	}
 
@@ -95,8 +138,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testScriptVar() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final TaskDefinition taskDefinition = registerTaskObject("TK_SCRIPT_TEST",
-					"select * from SUPER_HERO <%if(dtoSuperHero.getId() == 10002L) {%>where ID = #DTO_SUPER_HERO.ID#<%}%>");
+			final TaskDefinition taskDefinition = registerTaskObject("TkScriptTest",
+					"select * from SUPER_HERO <%if(dtoSuperHero.getId() == 10002L) {%>where id = #" + DTO_SUPER_HERO + ".id#<%}%>");
 
 			final SuperHero superHero = new SuperHero();
 			superHero.setId(10001L + 1);
@@ -109,8 +152,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(1, resultList.size());
-			Assert.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
+			Assertions.assertEquals(1, resultList.size());
+			Assertions.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
 		}
 	}
 
@@ -120,22 +163,22 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testNullable() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final TaskDefinition taskDefinition = registerTaskWithNullableIn("TK_NULLABLE_TEST",
-					"select * from SUPER_HERO where ID = #PARAM_1#<%if(param2!=null) {%> OR ID = #PARAM_2#+2 <%}%><%if(param3!=null) {%> OR ID = #PARAM_3#+3<%}%>");
+			final TaskDefinition taskDefinition = registerTaskWithNullableIn("TkNullableTest",
+					"select * from SUPER_HERO where id = #param1#<%if(param2!=null) {%> OR id = #param2#+2 <%}%><%if(param3!=null) {%> OR id = #param3#+3<%}%>");
 
 			final Task task = Task.builder(taskDefinition)
-					.addValue("PARAM_1", 10002)
-					.addValue("PARAM_2", null)
-					.addValue("PARAM_3", 10002)
+					.addValue("param1", 10002)
+					.addValue("param2", null)
+					.addValue("param3", 10002)
 					.build();
 
 			final DtList<SuperHero> resultList = taskManager
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(2, resultList.size());
-			Assert.assertEquals(10002L, resultList.get(0).getId().longValue());
-			Assert.assertEquals(10002L + 3, resultList.get(1).getId().longValue());
+			Assertions.assertEquals(2, resultList.size());
+			Assertions.assertEquals(10002L, resultList.get(0).getId().longValue());
+			Assertions.assertEquals(10002L + 3, resultList.get(1).getId().longValue());
 		}
 	}
 
@@ -145,8 +188,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testScriptVarList() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final TaskDefinition taskDefinition = registerTaskList("TK_SCRIPT_TEST",
-					"select * from SUPER_HERO <%if(!dtcSuperHeroIn.isEmpty()) {%>where ID in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)<%}%>");
+			final TaskDefinition taskDefinition = registerTaskList("TkScriptTest",
+					"select * from SUPER_HERO <%if(!dtcSuperHeroIn.isEmpty()) {%>where id in (#" + DTC_SUPER_HERO_IN + ".rownum.id#)<%}%>");
 
 			final DtList<SuperHero> ids = new DtList<>(SuperHero.class);
 
@@ -158,7 +201,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(10, resultList.size());
+			Assertions.assertEquals(10, resultList.size());
 		}
 	}
 
@@ -169,8 +212,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testTrim() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final TaskDefinition taskDefinition = registerTaskObject("TK_SCRIPT_TEST",
-					"select * from SUPER_HERO  \n<%if(false) {%>\nwhere ID = #DTO_SUPER_HERO.ID#\n<%}%>\n");
+			final TaskDefinition taskDefinition = registerTaskObject("TkScriptTest",
+					"select * from SUPER_HERO  \n<%if(false) {%>\nwhere id = #" + DTO_SUPER_HERO + ".id#\n<%}%>\n");
 
 			final SuperHero superHero = new SuperHero();
 			superHero.setId(10001L + 1);
@@ -182,7 +225,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 			final DtList<SuperHero> resultList = taskManager
 					.execute(task)
 					.getResult();
-			Assert.assertEquals(10, resultList.size());
+			Assertions.assertEquals(10, resultList.size());
 		}
 	}
 
@@ -192,8 +235,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testWhereIn() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
-					"select * from SUPER_HERO  where ID in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
+			final TaskDefinition taskDefinition = registerTaskList("TkWhereIdTest",
+					"select * from SUPER_HERO  where id in (#" + DTC_SUPER_HERO_IN + ".rownum.id#)");
 
 			final DtList<SuperHero> ids = DtList.of(createSuperHero(10001L + 1), createSuperHero(10001L + 3));
 
@@ -205,9 +248,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(2, resultList.size());
-			Assert.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
-			Assert.assertEquals(10001L + 3, resultList.get(1).getId().longValue());
+			Assertions.assertEquals(2, resultList.size());
+			Assertions.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
+			Assertions.assertEquals(10001L + 3, resultList.get(1).getId().longValue());
 		}
 	}
 
@@ -217,8 +260,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testWhereInPrimitive() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final TaskDefinition taskDefinition = registerTaskListPrimitive("TK_WHERE_IN_PRIMITIVE_TEST",
-					"select * from SUPER_HERO  where ID in (#SUPER_HERO_ID_LIST.ROWNUM#)");
+			final TaskDefinition taskDefinition = registerTaskListPrimitive("TkWhereInPrimitiveTest",
+					"select * from SUPER_HERO  where id in (#" + SUPER_HERO_ID_LIST + ".rownum#)");
 
 			final List<Long> ids = Arrays.asList(10001L + 1, 10001L + 3);
 
@@ -230,9 +273,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(2, resultList.size());
-			Assert.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
-			Assert.assertEquals(10001L + 3, resultList.get(1).getId().longValue());
+			Assertions.assertEquals(2, resultList.size());
+			Assertions.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
+			Assertions.assertEquals(10001L + 3, resultList.get(1).getId().longValue());
 		}
 	}
 
@@ -242,8 +285,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testWhereInTab() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
-					"select * from SUPER_HERO  where\tID in\t(#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
+			final TaskDefinition taskDefinition = registerTaskList("TkWhereIdTest",
+					"select * from SUPER_HERO  where\tID in\t(#" + DTC_SUPER_HERO_IN + ".rownum.id#)");
 
 			final DtList<SuperHero> ids = DtList.of(createSuperHero(10001L + 1), createSuperHero(10001L + 3));
 
@@ -255,9 +298,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(2, resultList.size());
-			Assert.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
-			Assert.assertEquals(10001L + 3, resultList.get(1).getId().longValue());
+			Assertions.assertEquals(2, resultList.size());
+			Assertions.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
+			Assertions.assertEquals(10001L + 3, resultList.get(1).getId().longValue());
 		}
 	}
 
@@ -267,8 +310,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testWhereInParenthesis() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
-					"select * from SUPER_HERO  where\t(ID in\t(#DTC_SUPER_HERO_IN.ROWNUM.ID#))");
+			final TaskDefinition taskDefinition = registerTaskList("TkWhereIdTest",
+					"select * from SUPER_HERO  where\t(id in\t(#" + DTC_SUPER_HERO_IN + ".rownum.id#))");
 
 			final DtList<SuperHero> ids = DtList.of(createSuperHero(10001L + 1), createSuperHero(10001L + 3));
 
@@ -280,9 +323,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(2, resultList.size());
-			Assert.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
-			Assert.assertEquals(10001L + 3, resultList.get(1).getId().longValue());
+			Assertions.assertEquals(2, resultList.size());
+			Assertions.assertEquals(10001L + 1, resultList.get(0).getId().longValue());
+			Assertions.assertEquals(10001L + 3, resultList.get(1).getId().longValue());
 		}
 	}
 
@@ -292,8 +335,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testWhereInEmpty() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
-					"select * from SUPER_HERO where ID in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
+			final TaskDefinition taskDefinition = registerTaskList("TkWhereIdTest",
+					"select * from SUPER_HERO where id in (#" + DTC_SUPER_HERO_IN + ".rownum.id#)");
 
 			final DtList<SuperHero> ids = new DtList<>(SuperHero.class);
 
@@ -305,7 +348,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(0, resultList.size());
+			Assertions.assertEquals(0, resultList.size());
 		}
 	}
 
@@ -315,8 +358,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testWhereNotIn() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
-					"select * from SUPER_HERO where ID not in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
+			final TaskDefinition taskDefinition = registerTaskList("TkWhereIdTest",
+					"select * from SUPER_HERO where id not in (#" + DTC_SUPER_HERO_IN + ".rownum.id#)");
 
 			final DtList<SuperHero> ids = new DtList<>(SuperHero.class);
 
@@ -334,11 +377,11 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(4, resultList.size());
-			Assert.assertEquals(10001L + 0, resultList.get(0).getId().longValue());
-			Assert.assertEquals(10001L + 2, resultList.get(1).getId().longValue());
-			Assert.assertEquals(10001L + 4, resultList.get(2).getId().longValue());
-			Assert.assertEquals(10001L + 9, resultList.get(3).getId().longValue());
+			Assertions.assertEquals(4, resultList.size());
+			Assertions.assertEquals(10001L + 0, resultList.get(0).getId().longValue());
+			Assertions.assertEquals(10001L + 2, resultList.get(1).getId().longValue());
+			Assertions.assertEquals(10001L + 4, resultList.get(2).getId().longValue());
+			Assertions.assertEquals(10001L + 9, resultList.get(3).getId().longValue());
 		}
 	}
 
@@ -348,8 +391,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testWhereNotInEmpty() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
-					"select * from SUPER_HERO where ID not in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
+			final TaskDefinition taskDefinition = registerTaskList("TkWhereIdTest",
+					"select * from SUPER_HERO where id not in (#" + DTC_SUPER_HERO_IN + ".rownum.id#)");
 
 			final DtList<SuperHero> ids = new DtList<>(SuperHero.class);
 			final Task task = Task.builder(taskDefinition)
@@ -360,7 +403,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(10, resultList.size());
+			Assertions.assertEquals(10, resultList.size());
 		}
 	}
 
@@ -373,8 +416,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 		//---
 
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
-					"select * from SUPER_HERO  where ID in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
+			final TaskDefinition taskDefinition = registerTaskList("TkWhereIdTest",
+					"select * from SUPER_HERO  where id in (#" + DTC_SUPER_HERO_IN + ".rownum.id#)");
 
 			final DtList<SuperHero> ids = new DtList<>(SuperHero.class);
 			for (int i = 0; i < 2200; i++) {
@@ -389,7 +432,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(2200, resultList.size());
+			Assertions.assertEquals(2200, resultList.size());
 		}
 	}
 
@@ -402,8 +445,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 		//---
 
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final TaskDefinition taskDefinition = registerTaskList("TK_WHERE_ID_TEST",
-					"select * from SUPER_HERO  where ID not in (#DTC_SUPER_HERO_IN.ROWNUM.ID#)");
+			final TaskDefinition taskDefinition = registerTaskList("TkWhereIdTest",
+					"select * from SUPER_HERO  where id not in (#" + DTC_SUPER_HERO_IN + ".rownum.id#)");
 
 			final DtList<SuperHero> ids = new DtList<>(SuperHero.class);
 			for (int i = 0; i < 2200; i++) {
@@ -418,7 +461,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 					.execute(task)
 					.getResult();
 
-			Assert.assertEquals(10 + 4500 - 2200, resultList.size());
+			Assertions.assertEquals(10 + 4500 - 2200, resultList.size());
 		}
 	}
 
@@ -436,9 +479,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU4 {
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.addInRequired("PARAM_1", doInteger)
-				.addInOptional("PARAM_2", doInteger)
-				.addInOptional("PARAM_3", doInteger)
+				.addInRequired("param1", doInteger)
+				.addInOptional("param2", doInteger)
+				.addInOptional("param3", doInteger)
 				.withOutRequired("dtc", doSuperHeroes)
 				.build();
 	}

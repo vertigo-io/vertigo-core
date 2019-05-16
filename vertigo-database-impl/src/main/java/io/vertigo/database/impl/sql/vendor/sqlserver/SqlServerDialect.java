@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 final class SqlServerDialect implements SqlDialect {
 
@@ -42,11 +43,12 @@ final class SqlServerDialect implements SqlDialect {
 				.append("insert into ").append(tableName).append(" ( ")
 				.append(dataFieldsName
 						.stream()
+						.map(StringUtil::camelToConstCase)
 						.collect(Collectors.joining(", ")))
 				.append(") values ( ")
 				.append(dataFieldsName
 						.stream()
-						.map(fieldName -> " #DTO." + fieldName + '#')
+						.map(fieldName -> " #dto." + fieldName + '#')
 						.collect(Collectors.joining(", ")))
 				.append(") ")
 				.toString();
@@ -54,20 +56,12 @@ final class SqlServerDialect implements SqlDialect {
 
 	/** {@inheritDoc} */
 	@Override
-	public void appendMaxRows(final StringBuilder request, final Integer maxRows) {
-		Assertion.checkArgument(request.indexOf("select ") == 0, "request doit commencer par select");
-		//-----
-		request.insert("select ".length(), " top " + maxRows + ' ');
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public String createSelectForUpdateQuery(final String tableName, final String requestedFields, final String idFieldName) {
+	public String createSelectForUpdateQuery(final String tableName, final String requestedCols, final String idFieldName) {
 		return new StringBuilder()
-				.append(" select ").append(requestedFields).append(" from ")
+				.append(" select ").append(requestedCols).append(" from ")
 				.append(tableName)
 				.append(" WITH (UPDLOCK, INDEX(PK_").append(tableName).append(")) ")
-				.append(" where ").append(idFieldName).append(" = #").append(idFieldName).append('#')
+				.append(" where ").append(StringUtil.camelToConstCase(idFieldName)).append(" = #").append(idFieldName).append('#')
 				.toString();
 	}
 

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +18,9 @@
  */
 package io.vertigo.vega.webservice.data.domain;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import io.vertigo.dynamo.domain.model.DtList;
@@ -30,18 +30,18 @@ import io.vertigo.dynamo.domain.stereotype.Field;
 public final class ContactView implements DtObject {
 	private static final long serialVersionUID = 2074906343392206381L;
 
-	@Field(domain = "DO_CODE", label = "Honorific title")
+	@Field(domain = "DoCode", label = "Honorific title")
 	private String honorificCode;
 	//mandatory
-	@Field(domain = "DO_TEXTE_50", required = true, label = "Name")
+	@Field(domain = "DoTexte50", required = true, label = "Name")
 	private String name;
-	@Field(domain = "DO_TEXTE_50", label = "Firstname")
+	@Field(domain = "DoTexte50", label = "Firstname")
 	private String firstName;
-	@Field(domain = "DO_DATE", label = "Birthday")
-	private Date birthday;
-	@Field(domain = "DO_EMAIL", label = "Email")
+	@Field(domain = "DoLocalDate", label = "Birthday")
+	private LocalDate birthday;
+	@Field(domain = "DoEmail", label = "Email")
 	private String email;
-	@Field(domain = "DO_DT_ADDRESS_DTC", label = "Addresses connues", persistent = false)
+	@Field(domain = "DoDtAddressDtc", label = "Addresses connues", persistent = false)
 	private DtList<Address> addresses;
 
 	private List<String> tels;
@@ -70,11 +70,11 @@ public final class ContactView implements DtObject {
 		this.firstName = firstName;
 	}
 
-	public Date getBirthday() {
+	public LocalDate getBirthday() {
 		return birthday;
 	}
 
-	public void setBirthday(final Date birthday) {
+	public void setBirthday(final LocalDate birthday) {
 		this.birthday = birthday;
 	}
 

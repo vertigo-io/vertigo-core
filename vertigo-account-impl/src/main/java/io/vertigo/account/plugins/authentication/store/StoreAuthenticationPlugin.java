@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,6 @@ package io.vertigo.account.plugins.authentication.store;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.account.authentication.AuthenticationToken;
 import io.vertigo.account.impl.authentication.AuthenticationPlugin;
@@ -29,10 +28,12 @@ import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
@@ -61,10 +62,10 @@ public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeab
 	 */
 	@Inject
 	public StoreAuthenticationPlugin(
-			@Named("userCredentialEntity") final String userCredentialEntity,
-			@Named("userLoginField") final String userLoginField,
-			@Named("userPasswordField") final String userPasswordField,
-			@Named("userTokenIdField") final String userTokenIdField,
+			@ParamValue("userCredentialEntity") final String userCredentialEntity,
+			@ParamValue("userLoginField") final String userLoginField,
+			@ParamValue("userPasswordField") final String userPasswordField,
+			@ParamValue("userTokenIdField") final String userTokenIdField,
 			final StoreManager storeManager) {
 		Assertion.checkNotNull(storeManager);
 		Assertion.checkArgNotEmpty(userLoginField);
@@ -89,7 +90,7 @@ public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeab
 	@Override
 	public Optional<String> authenticateAccount(final AuthenticationToken token) {
 		final Criteria criteriaByLogin = Criterions.isEqualTo(() -> userLoginField, token.getPrincipal());
-		final DtList<DtObject> results = storeManager.getDataStore().find(userCredentialDefinition, criteriaByLogin);
+		final DtList<DtObject> results = storeManager.getDataStore().find(userCredentialDefinition, criteriaByLogin, DtListState.of(2));
 		//may ensure, that valid or invalid login took the same time, so we don't assert no result here
 		Assertion.checkState(results.size() <= 1, "Too many matching credentials for {0}", token.getPrincipal());
 

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,13 +30,13 @@ import io.vertigo.dynamo.task.model.TaskEngine;
  */
 public final class TaskEngineMock extends TaskEngine {
 	/** entier 1. */
-	public static final String ATTR_IN_INT_1 = "ATTR_IN_INT_1";
+	public static final String ATTR_IN_INT_1 = "attrInInt1";
 	/** entier 2. */
-	public static final String ATTR_IN_INT_2 = "ATTR_IN_INT_2";
+	public static final String ATTR_IN_INT_2 = "attrInInt2";
 	/** entier 3. */
-	public static final String ATTR_IN_INT_3 = "ATTR_IN_INT_3";
+	public static final String ATTR_IN_INT_3 = "attrInInt3";
 	/** Somme. */
-	public static final String ATTR_OUT = "ATTR_OUT";
+	public static final String ATTR_OUT = "attrOut";
 
 	private Integer getValue1() {
 		return getValue(ATTR_IN_INT_1);
@@ -51,14 +51,14 @@ public final class TaskEngineMock extends TaskEngine {
 	}
 
 	private void setOutput(final Integer result) {
-		this.setResult(result);
+		setResult(result);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void execute() {
 		final int outPut;
-		switch (this.getTaskDefinition().getRequest()) {
+		switch (getTaskDefinition().getRequest()) {
 			case "+":
 				outPut = getValue1() + getValue2() + getValue3();
 				break;

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,8 @@
 package io.vertigo.account.account;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -32,24 +31,28 @@ import io.vertigo.lang.Assertion;
 public final class Account implements Entity {
 	private static final long serialVersionUID = 7509030642946579907L;
 
-	@Field(type = "ID", domain = "DO_X_ACCOUNT_ID", required = true, label = "id")
+	@Field(type = "ID", domain = "DoXAccountId", required = true, label = "id")
 	private final String id;
 
-	@Field(domain = "DO_X_ACCOUNT_NAME", label = "displayName")
+	@Field(domain = "DoXAccountName", label = "displayName")
 	private final String displayName;
 
-	@Field(domain = "DO_X_ACCOUNT_EMAIL", label = "email")
+	@Field(domain = "DoXAccountEmail", label = "email")
 	private final String email;
 
-	@Field(domain = "DO_X_ACCOUNT_AUTH_TOKEN", label = "authToken")
+	@Field(domain = "DoXAccountPhoto", label = "photo")
+	private final String photo;
+
+	@Field(domain = "DoXAccountAuthToken", label = "authToken")
 	private final String authToken;
 
-	Account(final String id, final String displayName, final String email, final String authToken) {
+	Account(final String id, final String displayName, final String email, final String photo, final String authToken) {
 		Assertion.checkArgNotEmpty(id);
 		//-----
 		this.id = id;
 		this.displayName = displayName;
 		this.email = email;
+		this.photo = photo;
 		this.authToken = authToken;
 	}
 
@@ -64,8 +67,8 @@ public final class Account implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<Account> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<Account> getUID() {
+		return UID.of(this);
 	}
 
 	/**
@@ -87,6 +90,13 @@ public final class Account implements Entity {
 	 */
 	public String getEmail() {
 		return email;
+	}
+
+	/**
+	 * @return the photo
+	 */
+	public String getPhoto() {
+		return photo;
 	}
 
 	/**

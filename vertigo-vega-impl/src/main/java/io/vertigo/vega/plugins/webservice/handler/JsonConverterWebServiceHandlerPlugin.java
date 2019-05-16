@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,10 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonSyntaxException;
 
-import io.vertigo.app.Home;
-import io.vertigo.core.component.ComponentSpace;
-import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.InjectorUtil;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.converter.DefaultJsonConverter;
@@ -90,9 +88,8 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 	public JsonConverterWebServiceHandlerPlugin(final JsonEngine jsonReaderEngine) {
 		Assertion.checkNotNull(jsonReaderEngine);
 		//-----
-		final ComponentSpace componentSpace = Home.getApp().getComponentSpace();
 		for (final Class<? extends JsonConverter> jsonConverterClass : JSON_CONVERTER_CLASSES) {
-			final JsonConverter jsonConverter = DIInjector.newInstance(jsonConverterClass, componentSpace);
+			final JsonConverter jsonConverter = InjectorUtil.newInstance(jsonConverterClass);
 			for (final Class inputType : jsonConverter.getSupportedInputs()) {
 				jsonConverters.computeIfAbsent(inputType, k -> new ArrayList<>())
 						.add(jsonConverter);
@@ -100,7 +97,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 		}
 
 		for (final Class<? extends JsonReader<?>> jsonReaderClass : JSON_READER_CLASSES) {
-			final JsonReader<?> jsonReader = DIInjector.newInstance(jsonReaderClass, componentSpace);
+			final JsonReader<?> jsonReader = InjectorUtil.newInstance(jsonReaderClass);
 			for (final WebServiceParamType restParamType : jsonReader.getSupportedInput()) {
 				List<JsonReader<?>> jsonReaderByRestParamType = jsonReaders.get(restParamType);
 				if (jsonReaderByRestParamType == null) {
@@ -111,7 +108,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 			}
 		}
 		for (final Class<? extends JsonSerializer> jsonSerializerClass : JSON_SERIALIZER_CLASSES) {
-			final JsonSerializer jsonSerializer = DIInjector.newInstance(jsonSerializerClass, componentSpace);
+			final JsonSerializer jsonSerializer = InjectorUtil.newInstance(jsonSerializerClass);
 			jsonWriters.add(jsonSerializer);
 		}
 

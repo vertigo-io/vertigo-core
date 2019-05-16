@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,12 +23,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -36,11 +34,11 @@ import java.util.Map;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 import io.restassured.filter.session.SessionFilter;
@@ -49,10 +47,9 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.util.DateBuilder;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.util.MapBuilder;
-import io.vertigo.vega.webservice.data.MyAppConfig;
+import io.vertigo.vega.webservice.data.MyNodeConfig;
 
 public final class WebServiceManagerTest {
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
@@ -64,15 +61,15 @@ public final class WebServiceManagerTest {
 
 	static {
 		//RestAsssured init
-		RestAssured.port = MyAppConfig.WS_PORT;
+		RestAssured.port = MyNodeConfig.WS_PORT;
 	}
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() {
-		app = new AutoCloseableApp(MyAppConfig.config());
+		app = new AutoCloseableApp(MyNodeConfig.config());
 	}
 
-	@Before
+	@BeforeEach
 	public void preTestLogin() {
 		RestAssured.registerParser("plain/text", Parser.TEXT);
 		RestAssured.given()
@@ -80,7 +77,7 @@ public final class WebServiceManagerTest {
 				.get("/test/login");
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void tearDown() {
 		if (app != null) {
 			app.close();
@@ -101,7 +98,7 @@ public final class WebServiceManagerTest {
 	public void testSwaggerApi() {
 		RestAssured.given()
 				.expect()
-				.body("swagger", Matchers.equalTo(2.0f))
+				.body("swagger", Matchers.equalTo("2.0"))
 				.body("info", Matchers.notNullValue())
 				.body("info.size()", Matchers.equalTo(3))
 				.body("basePath", Matchers.anything()) //can be null
@@ -460,17 +457,17 @@ public final class WebServiceManagerTest {
 		given().header(HEADER_ACCESS_TOKEN, headerAccessToken)
 				.filter(anonymousSessionFilter)
 				.expect().log().ifValidationFails()
-				.statusCode(HttpStatus.SC_FORBIDDEN)
+				.statusCode(HttpStatus.SC_UNAUTHORIZED) //401 : Unauthorized means unauthenticated
 				.when()
 				.get("/anonymous/test/oneTimeAccess/1");
 	}
 
 	@Test
-	public void testPostContact() throws ParseException {
+	public void testPostContact() {
 		doCreateContact();
 	}
 
-	private Map<String, Object> doCreateContact() throws ParseException {
+	private Map<String, Object> doCreateContact() {
 		final Map<String, Object> newContact = createDefaultContact(null);
 
 		final Long conId = loggedAndExpect(given().body(newContact))
@@ -484,7 +481,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPostContactValidatorError() throws ParseException {
+	public void testPostContactValidatorError() {
 		final Map<String, Object> newContact = createDefaultContact(100L);
 
 		loggedAndExpect(given().body(newContact))
@@ -494,7 +491,7 @@ public final class WebServiceManagerTest {
 				.post("/test/contact");
 
 		final Map<String, Object> new2Contact = createDefaultContact(null);
-		new2Contact.put("birthday", convertDate("24/10/2012"));
+		new2Contact.put("birthday", "2012-10-24");
 
 		loggedAndExpect(given().body(new2Contact))
 				.body("fieldErrors.birthday", Matchers.contains("You can't add contact younger than 16"))
@@ -504,7 +501,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPostContactUserException() throws ParseException {
+	public void testPostContactUserException() {
 		final Map<String, Object> newContact = createDefaultContact(null);
 		newContact.put("name", null);
 
@@ -540,7 +537,7 @@ public final class WebServiceManagerTest {
 
 		for (final String testJson : testBadSyntaxJson) {
 			loggedAndExpect(given().body(testJson))
-					.body("globalErrors", Matchers.contains("Error parsing param :Body:[1] on service PUT /test/contactSyntax"))
+					.body("globalErrors", Matchers.contains("Error parsing param :Body:[1] on service Put /test/contactSyntax"))
 					.statusCode(HttpStatus.SC_BAD_REQUEST)
 					.when()
 					.put("/test/contactSyntax");
@@ -560,7 +557,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContact() throws ParseException {
+	public void testPutContact() {
 		final Map<String, Object> newContact = createDefaultContact(100L);
 
 		loggedAndExpect(given().body(newContact))
@@ -576,7 +573,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactVAccessor() throws ParseException {
+	public void testPutContactVAccessor() {
 		final Map<String, Object> newContact = createDefaultContact(100L);
 		newContact.put("adrId", 200);
 
@@ -594,7 +591,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactEmptyField() throws ParseException {
+	public void testPutContactEmptyField() {
 		final Map<String, Object> newContact = createDefaultContact(100L);
 		newContact.put("name", "");
 
@@ -640,7 +637,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactView() throws ParseException {
+	public void testPutContactView() {
 		final Map<String, Object> newContactView = createDefaultContact(100L);
 
 		final List<Map<String, Object>> addresses = new ListBuilder<Map<String, Object>>()
@@ -664,9 +661,9 @@ public final class WebServiceManagerTest {
 				.put("/contacts/contactView");
 	}
 
-	@Ignore("Not supported yet")
+	@Disabled("Not supported yet")
 	@Test
-	public void testPutContactViewError() throws ParseException {
+	public void testPutContactViewError() {
 		final Map<String, Object> newContactView = createDefaultContact(100L);
 		final List<Map<String, Object>> addresses = new ListBuilder<Map<String, Object>>()
 				.add(createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"))
@@ -686,7 +683,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactByPath() throws ParseException {
+	public void testPutContactByPath() {
 		final Map<String, Object> newContact = createDefaultContact(null);
 
 		loggedAndExpect(given().body(newContact))
@@ -702,7 +699,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactValidatorError() throws ParseException {
+	public void testPutContactValidatorError() {
 		final Map<String, Object> newContact = createDefaultContact(null);
 
 		loggedAndExpect(given().body(newContact))
@@ -712,7 +709,7 @@ public final class WebServiceManagerTest {
 				.put("/test/contact");
 
 		final Map<String, Object> new2Contact = createDefaultContact(100L);
-		new2Contact.put("birthday", convertDate("24/10/2012"));
+		new2Contact.put("birthday", "2012-10-24");
 
 		loggedAndExpect(given().body(new2Contact))
 				.body("fieldErrors.birthday", Matchers.contains("You can't add contact younger than 16"))
@@ -722,9 +719,9 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactByPathValidatorError() throws ParseException {
+	public void testPutContactByPathValidatorError() {
 		final Map<String, Object> new2Contact = createDefaultContact(null);
-		new2Contact.put("birthday", convertDate("24/10/2012"));
+		new2Contact.put("birthday", "2012-10-24");
 
 		loggedAndExpect(given().body(new2Contact))
 				.body("fieldErrors.birthday", Matchers.contains("You can't add contact younger than 16"))
@@ -734,7 +731,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactUserException() throws ParseException {
+	public void testPutContactUserException() {
 		final Map<String, Object> newContact = createDefaultContact(100L);
 		newContact.remove("name");
 
@@ -746,7 +743,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactByPathUserException() throws ParseException {
+	public void testPutContactByPathUserException() {
 		final Map<String, Object> newContact = createDefaultContact(null);
 		newContact.remove("name");
 
@@ -758,7 +755,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testDeleteContact() throws ParseException {
+	public void testDeleteContact() {
 		final Map<String, Object> newContact = createDefaultContact(null);
 		loggedAndExpect(given().body(newContact))
 				.statusCode(HttpStatus.SC_OK)
@@ -772,7 +769,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testDeleteContactErrors() throws ParseException {
+	public void testDeleteContactErrors() {
 		final Map<String, Object> newContact = createDefaultContact(null);
 		loggedAndExpect(given().body(newContact))
 				.statusCode(HttpStatus.SC_OK)
@@ -894,7 +891,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPostInnerBodyValidationErrors() throws ParseException {
+	public void testPostInnerBodyValidationErrors() {
 		final Map<String, Object> contactFrom = createDefaultContact(140L);
 		final Map<String, Object> contactTo = createDefaultContact(141L);
 
@@ -955,9 +952,9 @@ public final class WebServiceManagerTest {
 				.build();
 
 		loggedAndExpect(given().body(fullBody))
-				.body("contactFrom.name", Matchers.equalTo("Moreau"))
+				.body("contactFrom.name", Matchers.equalTo("Leroy"))
 				.body("contactFrom.serverToken", Matchers.notNullValue())
-				.body("contactTo.name", Matchers.equalTo("Lefebvre"))
+				.body("contactTo.name", Matchers.equalTo("Moreau"))
 				.body("contactTo.serverToken", Matchers.notNullValue())
 				.body("testLong", Matchers.equalTo(12))
 				.body("testString", Matchers.equalTo("the String test"))
@@ -969,7 +966,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testFilteredUpdateByExclude() throws ParseException {
+	public void testFilteredUpdateByExclude() {
 		final Map<String, Object> contact = doGetServerSideObject();
 
 		final Long oldConId = (Long) contact.get("conId");
@@ -999,7 +996,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testFilteredUpdateByExcludeErrors() throws ParseException {
+	public void testFilteredUpdateByExcludeErrors() {
 		final Map<String, Object> contact = doGetServerSideObject();
 		final Long oldConId = (Long) contact.get("conId");
 
@@ -1033,7 +1030,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testFilteredUpdateByInclude() throws ParseException {
+	public void testFilteredUpdateByInclude() {
 		final Map<String, Object> contact = doGetServerSideObject();
 
 		final Long oldConId = (Long) contact.get("conId");
@@ -1066,7 +1063,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testFilteredUpdateByIncludeErrors() throws ParseException {
+	public void testFilteredUpdateByIncludeErrors() {
 		final Map<String, Object> contact = doGetServerSideObject();
 		final Long oldConId = (Long) contact.get("conId");
 
@@ -1114,7 +1111,7 @@ public final class WebServiceManagerTest {
 				.put("/test/filteredInclude/" + oldConId);
 
 		contact.remove("honorificCode"); //can't modify honorificCode
-		contact.put("birthday", convertDate("24/10/1985")); //can't modify birthday
+		contact.put("birthday", "1985-10-24"); //can't modify birthday
 		loggedAndExpect(given().body(contact))
 				.statusCode(HttpStatus.SC_FORBIDDEN)
 				.when()
@@ -1128,7 +1125,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testFilteredUpdateServerTokenErrors() throws ParseException {
+	public void testFilteredUpdateServerTokenErrors() {
 		final Map<String, Object> contact = doGetServerSideObject();
 		final Long oldConId = (Long) contact.get("conId");
 
@@ -1149,7 +1146,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactTooLongField() throws ParseException {
+	public void testPutContactTooLongField() {
 		final Map<String, Object> newContact = createDefaultContact(null);
 		final String newNameValue = "Here i am !!";
 		newContact.put("itsatoolongaliasforfieldcontactname", newNameValue);
@@ -1175,7 +1172,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactExtended() throws ParseException {
+	public void testPutContactExtended() {
 		final Map<String, Object> newContact = createDefaultContact(103L);
 		newContact.remove("conId");
 		newContact.put("vanillaUnsupportedMultipleIds", new int[] { 3, 4, 5 });
@@ -1190,7 +1187,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testPutContactExtendedValidator() throws ParseException {
+	public void testPutContactExtendedValidator() {
 		final Map<String, Object> newContact = createDefaultContact(104L);
 		newContact.put("vanillaUnsupportedMultipleIds", new int[] { 3, 4, 5 });
 
@@ -1201,7 +1198,7 @@ public final class WebServiceManagerTest {
 				.put("/test/contactExtended/104");
 
 		newContact.remove("conId");
-		newContact.put("birthday", convertDate("24/10/2012"));
+		newContact.put("birthday", "2012-10-24");
 		loggedAndExpect(given().body(newContact))
 				.body("fieldErrors.birthday", Matchers.contains("You can't add contact younger than 16"))
 				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
@@ -1315,42 +1312,42 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSearchQueryPagined() throws ParseException {
+	public void testSearchQueryPagined() {
 		doTestSearchPagined(false);
 	}
 
 	@Test
-	public void testSearchAutoPagined() throws ParseException {
+	public void testSearchAutoPagined() {
 		doTestSearchPagined(true);
 	}
 
-	private void doTestSearchPagined(final boolean isAuto) throws ParseException {
+	private void doTestSearchPagined(final boolean isAuto) {
 		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
-				.put("birthdayMin", convertDate("19/05/1978"))
-				.put("birthdayMax", convertDate("19/05/1985"))
+				.put("birthdayMin", "1978-05-19")
+				.put("birthdayMax", "1985-05-19")
 				.build();
 
 		final String serverSideToken;
-		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia", isAuto);
+		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia", isAuto); //if Fournier : dateCriteria not applied
 		doPaginedSearch(criteriaContact, 3, 2, "name", false, serverSideToken, 3, "Garcia", "Moreau", isAuto);
 		doPaginedSearch(criteriaContact, 3, 5, "name", false, serverSideToken, 1, "Petit", "Petit", isAuto);
 		doPaginedSearch(criteriaContact, 10, 10, "name", false, serverSideToken, 0, "Petit", "Petit", isAuto);
 	}
 
 	@Test
-	public void testSearchQueryPaginedSortName() throws ParseException {
+	public void testSearchQueryPaginedSortName() {
 		doTestSearchPaginedSortName(false);
 	}
 
 	@Test
-	public void testSearchAutoPaginedSortName() throws ParseException {
+	public void testSearchAutoPaginedSortName() {
 		doTestSearchPaginedSortName(true);
 	}
 
-	private void doTestSearchPaginedSortName(final boolean isAuto) throws ParseException {
+	private void doTestSearchPaginedSortName(final boolean isAuto) {
 		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
-				.put("birthdayMin", convertDate("19/05/1978"))
-				.put("birthdayMax", convertDate("19/05/1985"))
+				.put("birthdayMin", "1978-05-19")
+				.put("birthdayMax", "1985-05-19")
 				.build();
 		//gets : "Dubois","Durant","Garcia","Martin","Moreau","Petit"
 
@@ -1364,19 +1361,19 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSearchQueryPaginedSortDate() throws ParseException {
+	public void testSearchQueryPaginedSortDate() {
 		doTestSearchPaginedSortDate(false);
 	}
 
 	@Test
-	public void testSearchAutoPaginedSortDate() throws ParseException {
+	public void testSearchAutoPaginedSortDate() {
 		doTestSearchPaginedSortDate(true);
 	}
 
-	private void doTestSearchPaginedSortDate(final boolean isAuto) throws ParseException {
+	private void doTestSearchPaginedSortDate(final boolean isAuto) {
 		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
-				.put("birthdayMin", convertDate("19/05/1978"))
-				.put("birthdayMax", convertDate("19/05/1985"))
+				.put("birthdayMin", "1978-05-19")
+				.put("birthdayMax", "1985-05-19")
 				.build();
 
 		final String serverSideToken;
@@ -1387,19 +1384,19 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSearchQueryPaginedMissing() throws ParseException {
+	public void testSearchQueryPaginedMissing() {
 		doTestSearchPaginedMissing(false);
 	}
 
 	@Test
-	public void testSearchAutoPaginedMissing() throws ParseException {
+	public void testSearchAutoPaginedMissing() {
 		doTestSearchPaginedMissing(true);
 	}
 
-	private void doTestSearchPaginedMissing(final boolean isAuto) throws ParseException {
+	private void doTestSearchPaginedMissing(final boolean isAuto) {
 		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
-				.put("birthdayMin", convertDate("19/05/1978"))
-				.put("birthdayMax", convertDate("19/05/1985"))
+				.put("birthdayMin", "1978-05-19")
+				.put("birthdayMax", "1985-05-19")
 				.build();
 
 		String serverSideToken;
@@ -1438,7 +1435,7 @@ public final class WebServiceManagerTest {
 			given.queryParam("listServerToken", listServerToken);
 		}
 		ResponseSpecification responseSpecification = given.body(criteriaContact)
-				.expect()
+				.expect().log().ifValidationFails()
 				.body("size()", Matchers.equalTo(expectedSize));
 		if (expectedSize > 0) {
 			responseSpecification = responseSpecification.body("get(0).name", Matchers.equalTo(firstContactName))
@@ -1497,7 +1494,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSaveListDelta() throws ParseException {
+	public void testSaveListDelta() {
 		final Map<String, Object> dtListDelta = new LinkedHashMap<>();
 		final Map<String, Map<String, Object>> collCreates = new LinkedHashMap<>();
 		final Map<String, Map<String, Object>> collUpdates = new LinkedHashMap<>();
@@ -1520,7 +1517,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSaveListDeltaValdationError() throws ParseException {
+	public void testSaveListDeltaValdationError() {
 		final Map<String, Object> dtListDelta = new LinkedHashMap<>();
 		final Map<String, Map<String, Object>> collCreates = new LinkedHashMap<>();
 		final Map<String, Map<String, Object>> collUpdates = new LinkedHashMap<>();
@@ -1533,7 +1530,7 @@ public final class WebServiceManagerTest {
 		collCreates.put("c110", createDefaultContact(110L));
 		collCreates.put("c111", createDefaultContact(111L));
 		final Map<String, Object> newContact = createDefaultContact(100L);
-		newContact.put("birthday", convertDate("24/10/2012"));
+		newContact.put("birthday", "2012-10-24");
 		collUpdates.put("c100", newContact);
 		collUpdates.put("c101", createDefaultContact(101L));
 		collUpdates.put("c102", createDefaultContact(102L));
@@ -1547,7 +1544,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSaveDtListContact() throws ParseException {
+	public void testSaveDtListContact() {
 		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
 				.add(createDefaultContact(120L))
 				.add(createDefaultContact(121L))
@@ -1565,7 +1562,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSaveDtListContactValidationError() throws ParseException {
+	public void testSaveDtListContactValidationError() {
 		final Map<String, Object> newContact = createDefaultContact(123L);
 		newContact.remove("name");
 
@@ -1585,7 +1582,7 @@ public final class WebServiceManagerTest {
 				.post("/test/saveDtListContact");
 
 		final Map<String, Object> new2Contact = createDefaultContact(127L);
-		new2Contact.put("birthday", convertDate("24/10/2012"));
+		new2Contact.put("birthday", "2012-10-24");
 		dtList.add(new2Contact);
 		loggedAndExpect(given().body(dtList))
 				.body("objectFieldErrors.idx6.birthday", Matchers.contains("You can't add contact younger than 16"))
@@ -1595,7 +1592,54 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSaveListContact() throws ParseException {
+	public void testSaveUiListContact() {
+		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
+				.add(createDefaultContact(130L))
+				.add(createDefaultContact(131L))
+				.add(createDefaultContact(133L))
+				.add(createDefaultContact(134L))
+				.add(createDefaultContact(135L))
+				.build();
+
+		loggedAndExpect(given().body(dtList))
+				.body(Matchers.equalTo("OK : received 5 contacts"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.post("/test/saveUiListContact");
+	}
+
+	@Test
+	public void testSaveUiListContactValidationError() {
+		final Map<String, Object> newContact = createDefaultContact(123L);
+		newContact.remove("name");
+
+		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
+				.add(createDefaultContact(120L))
+				.add(createDefaultContact(121L))
+				.add(newContact)
+				.add(createDefaultContact(124L))
+				.add(createDefaultContact(125L))
+				.add(createDefaultContact(126L))
+				.build();
+
+		loggedAndExpect(given().body(dtList))
+				.body("globalErrors", Matchers.contains("Name is mandatory"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.post("/test/saveUiListContact");
+
+		final Map<String, Object> new2Contact = createDefaultContact(127L);
+		new2Contact.put("birthday", "2012-10-24");
+		dtList.add(new2Contact);
+		loggedAndExpect(given().body(dtList))
+				.body("objectFieldErrors.idx6.birthday", Matchers.contains("You can't add contact younger than 16"))
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.post("/test/saveUiListContact");
+	}
+
+	@Test
+	public void testSaveListContact() {
 		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
 				.add(createDefaultContact(130L))
 				.add(createDefaultContact(131L))
@@ -1612,9 +1656,9 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testSaveDtListContactValidationError2() throws ParseException {
+	public void testSaveDtListContactValidationError2() {
 		final Map<String, Object> newContact = createDefaultContact(123L);
-		newContact.put("birthday", convertDate("24/10/2012"));
+		newContact.put("birthday", "2012-10-24");
 
 		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
 				.add(createDefaultContact(120L))
@@ -1726,8 +1770,21 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testDownloadNotModifiedFile() throws ParseException {
-		final DateFormat httpDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
+	public void testDownloadNotAttachmentFile() {
+		loggedAndExpect(given().queryParam("id", 10))
+				.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
+				.header("Content-Disposition", Matchers.equalToIgnoringCase("filename=\"image10.png\";filename*=UTF-8''image10.png"))
+				.header("Content-Length", Matchers.equalTo("27039"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.get("/test/downloadEmbeddedFile");
+	}
+
+	@Test
+	public void testDownloadNotModifiedFile() {
+		final DateTimeFormatter httpDateFormat = DateTimeFormatter
+				.ofPattern("EEE, dd MMM yyyy HH:mm:ss zzz")
+				.withLocale(Locale.US);
 		//Sans préciser le if-Modified-Since, le serveur retourne le fichier
 		final Response response = loggedAndExpect(given().queryParam("id", 10))
 				.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
@@ -1736,9 +1793,10 @@ public final class WebServiceManagerTest {
 				.statusCode(HttpStatus.SC_OK)
 				.when()
 				.get("/test/downloadNotModifiedFile");
+
 		final String lastModified = response.getHeader("Last-Modified");
-		final Date lastModifiedDate = httpDateFormat.parse(lastModified);
-		final String now = httpDateFormat.format(new Date());
+		final ZonedDateTime lastModifiedDate = ZonedDateTime.from(httpDateFormat.parse(lastModified));
+		final String now = httpDateFormat.format(ZonedDateTime.now());
 
 		//On test avec le if-Modified-Since now : le server test mais ne retourne pas le fichier
 		loggedAndExpect(given().queryParam("id", 10).header("if-Modified-Since", now))
@@ -1747,7 +1805,7 @@ public final class WebServiceManagerTest {
 				.get("/test/downloadNotModifiedFile");
 
 		//On test avec le if-Modified-Since 10 min avant le lastModified : le server test et retourne le fichier
-		final String beforeLastModified = httpDateFormat.format(new DateBuilder(lastModifiedDate).addMinutes(-10).build());
+		final String beforeLastModified = httpDateFormat.format(lastModifiedDate.minusMinutes(10));
 		loggedAndExpect(given().queryParam("id", 10).header("if-Modified-Since", beforeLastModified))
 				.header("Content-Type", Matchers.equalToIgnoringCase("image/png"))
 				.header("Content-Disposition", Matchers.equalToIgnoringCase("attachment;filename=\"image10.png\";filename*=UTF-8''image10.png"))
@@ -1845,7 +1903,7 @@ public final class WebServiceManagerTest {
 	}
 
 	@Test
-	public void testOptionalQueryParam() throws ParseException {
+	public void testOptionalQueryParam() {
 		final Map<String, Object> newContact = createDefaultContact(null);
 		loggedAndExpect(given().body(newContact)
 				.queryParam("token", "TestedToken"))
@@ -1873,49 +1931,49 @@ public final class WebServiceManagerTest {
 				.post("/search/selectedFacetValues");
 
 		final Map<String, Object> selectedFacetsMono = new MapBuilder<String, Object>()
-				.put("FCT_HONORIFIC_CODE", "Mr")
+				.put("FctHonorificCode", "Mr")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsMono))
 				.statusCode(HttpStatus.SC_OK)
-				.body(Matchers.equalTo("{\"FCT_HONORIFIC_CODE\":\"Mr\"}"))
+				.body(Matchers.equalTo("{\"FctHonorificCode\":\"Mr\"}"))
 				.when()
 				.post("/search/selectedFacetValues");
 
 		final Map<String, Object> selectedFacetsByCode = new MapBuilder<String, Object>()
-				.put("FCT_BIRTHDAY", "R1")
+				.put("FctBirthday", "r1")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsByCode))
 				.statusCode(HttpStatus.SC_OK)
-				.body(Matchers.equalTo("{\"FCT_BIRTHDAY\":\"R1\"}"))
+				.body(Matchers.equalTo("{\"FctBirthday\":\"r1\"}"))
 				.when()
 				.post("/search/selectedFacetValues");
 
 		final Map<String, Object> selectedFacetsByLabel = new MapBuilder<String, Object>()
-				.put("FCT_BIRTHDAY", "1980-1990")
+				.put("FctBirthday", "1980-1990")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsByLabel))
 				.statusCode(HttpStatus.SC_OK)
-				.body(Matchers.equalTo("{\"FCT_BIRTHDAY\":\"R2\"}"))
+				.body(Matchers.equalTo("{\"FctBirthday\":\"r2\"}"))
 				.when()
 				.post("/search/selectedFacetValues");
 
 		final Map<String, Object> selectedFacetsBoth = new MapBuilder<String, Object>()
-				.put("FCT_HONORIFIC_CODE", "Mr")
-				.put("FCT_BIRTHDAY", "R1")
+				.put("FctHonorificCode", "Mr")
+				.put("FctBirthday", "r1")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsBoth))
 				.statusCode(HttpStatus.SC_OK)
-				.body(Matchers.equalTo("{\"FCT_HONORIFIC_CODE\":\"Mr\", \"FCT_BIRTHDAY\":\"R1\"}"))
+				.body(Matchers.equalTo("{\"FctHonorificCode\":\"Mr\", \"FctBirthday\":\"r1\"}"))
 				.when()
 				.post("/search/selectedFacetValues");
 
 		final Map<String, Object> selectedFacetsMultiple = new MapBuilder<String, Object>()
-				.put("FCT_HONORIFIC_CODE", "Mr")
-				.put("FCT_BIRTHDAY", new String[] { "R1", "R3" })
+				.put("FctHonorificCode", "Mr")
+				.put("FctBirthday", new String[] { "r1", "r3" })
 				.build();
 		loggedAndExpect(given().body(selectedFacetsMultiple))
 				.statusCode(HttpStatus.SC_OK)
-				.body(Matchers.equalTo("{\"FCT_HONORIFIC_CODE\":\"Mr\", \"FCT_BIRTHDAY\":\"R1,R3\"}"))
+				.body(Matchers.equalTo("{\"FctHonorificCode\":\"Mr\", \"FctBirthday\":\"r1,r3\"}"))
 				.when()
 				.post("/search/selectedFacetValues");
 
@@ -1928,10 +1986,12 @@ public final class WebServiceManagerTest {
 		final Response getResponse = loggedAndExpect(given().body(emptySelectedFacets))
 				.statusCode(HttpStatus.SC_OK)
 				.body("list", Matchers.hasSize(Matchers.greaterThanOrEqualTo(10)))
-				.body("facets.get(1).code", Matchers.equalTo("FCT_BIRTHDAY"))
-				.body("facets.get(1).values.get(0).code", Matchers.equalTo("R1"))
-				.body("facets.get(1).values.get(0).count", Matchers.equalTo(4))
-				.body("facets.get(1).values.get(1).code", Matchers.equalTo("R2"))
+				.body("list.get(0).address", Matchers.nullValue())
+				.body("highlight", Matchers.nullValue())
+				.body("facets.get(1).code", Matchers.equalTo("FctBirthday"))
+				.body("facets.get(1).values.get(0).code", Matchers.equalTo("r1"))
+				.body("facets.get(1).values.get(0).count", Matchers.equalTo(5))
+				.body("facets.get(1).values.get(1).code", Matchers.equalTo("r2"))
 				.body("facets.get(1).values.get(1).count", Matchers.greaterThanOrEqualTo(6))
 				.body("totalCount", Matchers.greaterThanOrEqualTo(10))
 				.when()
@@ -1940,18 +2000,18 @@ public final class WebServiceManagerTest {
 		final int fctBirthDayR2 = getResponse.body().path("facets.get(1).values.get(1).count");
 
 		final Map<String, Object> selectedFacetsMono = new MapBuilder<String, Object>()
-				.put("FCT_HONORIFIC_CODE", "MR_")
+				.put("FctHonorificCode", "MR_")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsMono))
 				.statusCode(HttpStatus.SC_OK)
-				.body("list", Matchers.hasSize(1))
-				.body("totalCount", Matchers.equalTo(1))
+				.body("list", Matchers.hasSize(2))
+				.body("totalCount", Matchers.equalTo(2))
 				.body("facets.get(0).values", Matchers.hasSize(1))
 				.when()
 				.post("/search/facetedResult");
 
 		final Map<String, Object> selectedFacetsByCode = new MapBuilder<String, Object>()
-				.put("FCT_BIRTHDAY", "R1")
+				.put("FctBirthday", "r1")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsByCode))
 				.statusCode(HttpStatus.SC_OK)
@@ -1962,7 +2022,7 @@ public final class WebServiceManagerTest {
 				.post("/search/facetedResult");
 
 		final Map<String, Object> selectedFacetsByLabel = new MapBuilder<String, Object>()
-				.put("FCT_BIRTHDAY", "1980-1990")
+				.put("FctBirthday", "1980-1990")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsByLabel))
 				.statusCode(HttpStatus.SC_OK)
@@ -1973,8 +2033,8 @@ public final class WebServiceManagerTest {
 				.post("/search/facetedResult");
 
 		final Map<String, Object> selectedFacetsBoth = new MapBuilder<String, Object>()
-				.put("FCT_HONORIFIC_CODE", "MR_")
-				.put("FCT_BIRTHDAY", "R2")
+				.put("FctHonorificCode", "MR_")
+				.put("FctBirthday", "r2")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsBoth))
 				.statusCode(HttpStatus.SC_OK)
@@ -1985,8 +2045,8 @@ public final class WebServiceManagerTest {
 				.post("/search/facetedResult");
 
 		final Map<String, Object> selectedFacetsMultiple = new MapBuilder<String, Object>()
-				.put("FCT_HONORIFIC_CODE", new String[] { "MR_", "MS_" })
-				.put("FCT_BIRTHDAY", "R2")
+				.put("FctHonorificCode", new String[] { "MR_", "MS_" })
+				.put("FctBirthday", "r2")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsMultiple))
 				.statusCode(HttpStatus.SC_OK)
@@ -1995,7 +2055,74 @@ public final class WebServiceManagerTest {
 				.body("facets.get(0).values", Matchers.hasSize(2))
 				.when()
 				.post("/search/facetedResult");
+	}
 
+	@Test
+	public void testFacetedClusteredSearchResult() {
+		final Map<String, Object> emptySelectedFacets = new MapBuilder<String, Object>()
+				.build();
+		final Response getResponse = loggedAndExpect(given().body(emptySelectedFacets))
+				.statusCode(HttpStatus.SC_OK)
+				.body("list", Matchers.nullValue())
+				.body("groups", Matchers.hasSize(Matchers.greaterThanOrEqualTo(10)))
+				.body("groups.get(0).list", Matchers.hasSize(Matchers.greaterThanOrEqualTo(1)))
+				.body("groups.get(0).list.get(0).address", Matchers.nullValue())
+				.body("highlight", Matchers.nullValue())
+				.body("facets.get(1).code", Matchers.equalTo("FctBirthday"))
+				.body("facets.get(1).values.get(0).code", Matchers.equalTo("r1"))
+				.body("facets.get(1).values.get(0).count", Matchers.equalTo(5))
+				.body("facets.get(1).values.get(1).code", Matchers.equalTo("r2"))
+				.body("facets.get(1).values.get(1).count", Matchers.greaterThanOrEqualTo(6))
+				.body("totalCount", Matchers.greaterThanOrEqualTo(10))
+				.when()
+				.post("/search/facetedClusteredResult");
+		final int fctBirthDayR1 = getResponse.body().path("facets.get(1).values.get(0).count");
+		final int fctBirthDayR2 = getResponse.body().path("facets.get(1).values.get(1).count");
+
+		final Map<String, Object> selectedFacetsMono = new MapBuilder<String, Object>()
+				.put("FctHonorificCode", "MR_")
+				.build();
+		loggedAndExpect(given().body(selectedFacetsMono))
+				.statusCode(HttpStatus.SC_OK)
+				.body("groups", Matchers.hasSize(1))
+				.body("totalCount", Matchers.equalTo(2))
+				.body("groups.get(0).list", Matchers.hasSize(2))
+				.when()
+				.post("/search/facetedClusteredResult");
+
+		final Map<String, Object> selectedFacetsByCode = new MapBuilder<String, Object>()
+				.put("FctBirthday", "r1")
+				.build();
+		loggedAndExpect(given().body(selectedFacetsByCode))
+				.statusCode(HttpStatus.SC_OK)
+				.body("groups", Matchers.hasSize(fctBirthDayR1))
+				.body("totalCount", Matchers.equalTo(fctBirthDayR1))
+				.body("facets.get(0).values", Matchers.hasSize(fctBirthDayR1))
+				.when()
+				.post("/search/facetedClusteredResult");
+
+		final Map<String, Object> selectedFacetsByLabel = new MapBuilder<String, Object>()
+				.put("FctBirthday", "1980-1990")
+				.build();
+		loggedAndExpect(given().body(selectedFacetsByLabel))
+				.statusCode(HttpStatus.SC_OK)
+				.body("groups", Matchers.hasSize(6))
+				.body("totalCount", Matchers.equalTo(fctBirthDayR2))
+				.body("facets.get(0).values", Matchers.hasSize(6))
+				.when()
+				.post("/search/facetedClusteredResult");
+
+		final Map<String, Object> selectedFacetsMultiple = new MapBuilder<String, Object>()
+				.put("FctHonorificCode", new String[] { "MR_", "MS_" })
+				.put("FctBirthday", "r2")
+				.build();
+		loggedAndExpect(given().body(selectedFacetsMultiple))
+				.statusCode(HttpStatus.SC_OK)
+				.body("groups", Matchers.hasSize(2))
+				.body("totalCount", Matchers.equalTo(2))
+				.body("facets.get(0).values", Matchers.hasSize(2))
+				.when()
+				.post("/search/facetedClusteredResult");
 	}
 
 	//=========================================================================
@@ -2016,7 +2143,7 @@ public final class WebServiceManagerTest {
 				.expect().log().ifValidationFails();
 	}
 
-	private Map<String, Object> doGetServerSideObject() throws ParseException {
+	private Map<String, Object> doGetServerSideObject() {
 		final Map<String, Object> contact = doCreateContact();
 		final Long oldConId = (Long) contact.get("conId");
 
@@ -2029,15 +2156,8 @@ public final class WebServiceManagerTest {
 		return contact;
 	}
 
-	private static String convertDate(final String dateStr) throws ParseException {
-		final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		final Date date = dateFormat.parse(dateStr);
-		final DateFormat dateFormatUtc = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		return dateFormatUtc.format(date);
-	}
-
-	private static Map<String, Object> createDefaultContact(final Long conId) throws ParseException {
-		final Map<String, Object> newContact = createContact2(conId, "MRS", "Fournier", "Catherine", convertDate("24/10/1985"),
+	private static Map<String, Object> createDefaultContact(final Long conId) {
+		final Map<String, Object> newContact = createContact2(conId, "MRS", "Fournier", "Catherine", "1985-10-24",
 				createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"),
 				"catherine.fournier@gmail.com", "01 91 92 93 94");
 		return newContact;

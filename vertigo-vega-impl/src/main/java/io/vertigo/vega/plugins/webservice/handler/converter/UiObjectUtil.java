@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -73,14 +73,14 @@ final class UiObjectUtil {
 	private static void checkUnauthorizedFieldModifications(final UiObject<DtObject> uiObject, final WebServiceParam webServiceParam) {
 		for (final String excludedField : webServiceParam.getExcludedFields()) {
 			if (uiObject.isModified(excludedField)) {
-				throw new VSecurityException(MessageText.builder().withDefaultMsg(FORBIDDEN_OPERATION_FIELD_MODIFICATION).withParams(excludedField).build());
+				throw new VSecurityException(MessageText.of(FORBIDDEN_OPERATION_FIELD_MODIFICATION, excludedField));
 			}
 		}
 		final Set<String> includedFields = webServiceParam.getIncludedFields();
 		if (!includedFields.isEmpty()) {
 			for (final String modifiedField : uiObject.getModifiedFields()) {
 				if (!includedFields.contains(modifiedField)) {
-					throw new VSecurityException(MessageText.builder().withDefaultMsg(FORBIDDEN_OPERATION_FIELD_MODIFICATION).withParams(modifiedField).build());
+					throw new VSecurityException(MessageText.of(FORBIDDEN_OPERATION_FIELD_MODIFICATION, modifiedField));
 				}
 			}
 		}

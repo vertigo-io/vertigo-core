@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@ import java.util.function.Predicate;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Tuples;
+import io.vertigo.lang.Tuple;
 
 /**
  * A criteria to filter a list.
@@ -68,12 +68,12 @@ public abstract class Criteria<E extends Entity> implements Serializable {
 	 * @param sqlDialect the dialect to use
 	 * @return a tuple with the query and the sql params
 	 */
-	public Tuples.Tuple2<String, CriteriaCtx> toSql(final SqlDialect sqlDialect) {
+	public Tuple<String, CriteriaCtx> toSql(final SqlDialect sqlDialect) {
 		Assertion.checkNotNull(sqlDialect);
 		//---
 		final CriteriaCtx ctx = new CriteriaCtx();
 		final String sql = this.toSql(ctx, sqlDialect);
-		return Tuples.of(sql, ctx);
+		return Tuple.of(sql, ctx);
 
 	}
 
@@ -82,7 +82,7 @@ public abstract class Criteria<E extends Entity> implements Serializable {
 	public String toString() {
 		return toSql(new SqlDialect() {
 			@Override
-			public void appendMaxRows(final StringBuilder query, final Integer maxRows) {
+			public void appendListState(final StringBuilder query, final Integer maxRows, final int skipRows, final String sortFieldName, final boolean sortDesc) {
 				//rien
 			}
 

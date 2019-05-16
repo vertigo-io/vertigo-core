@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +18,10 @@
  */
 package io.vertigo.vega.impl.webservice.servlet;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +34,7 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.LogConfig;
-import io.vertigo.app.config.xml.XMLAppConfigBuilder;
+import io.vertigo.app.config.yaml.YamlAppConfigBuilder;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -73,25 +74,25 @@ final class AppServletStarter {
 			final Properties bootConf = createBootProperties(servletContext);
 			Assertion.checkArgument(bootConf.containsKey("boot.applicationConfiguration"), "Param \"boot.applicationConfiguration\" is mandatory, check your .properties or web.xml.");
 
-			final XMLAppConfigBuilder appConfigBuilder = new XMLAppConfigBuilder();
-			appConfigBuilder.beginBoot();
+			final YamlAppConfigBuilder nodeConfigBuilder = new YamlAppConfigBuilder(bootConf);
+			nodeConfigBuilder.beginBoot();
 
 			//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
 			if (bootConf.containsKey(LOG4J_CONFIGURATION_PARAM_NAME)) {
 				final String logFileName = bootConf.getProperty(LOG4J_CONFIGURATION_PARAM_NAME);
 				bootConf.remove(LOG4J_CONFIGURATION_PARAM_NAME);
 				//-----
-				appConfigBuilder.withLogConfig(new LogConfig(logFileName));
+				nodeConfigBuilder.withLogConfig(new LogConfig(logFileName));
 			}
 
-			final String xmlModulesFileNames = bootConf.getProperty("boot.applicationConfiguration");
-			final String[] xmlFileNamesSplit = xmlModulesFileNames.split(";");
+			final String jsonConfigFileNames = bootConf.getProperty("boot.applicationConfiguration");
+			final String[] jsonConfigFileNamesSplit = jsonConfigFileNames.split(";");
 			bootConf.remove("boot.applicationConfiguration");
 			//-----
-			appConfigBuilder.withModules(getClass(), bootConf, xmlFileNamesSplit);
+			nodeConfigBuilder.withFiles(getClass(), jsonConfigFileNamesSplit);
 
 			// Initialisation de l'état de l'application
-			app = new AutoCloseableApp(appConfigBuilder.build());
+			app = new AutoCloseableApp(nodeConfigBuilder.build());
 
 			appServletListener.onServletStart(getClass().getName());
 		} catch (final Exception e) {
@@ -99,7 +100,7 @@ final class AppServletStarter {
 			throw WrappedException.wrap(e, "Problème d'initialisation de l'application");
 		} finally {
 			if (LOG.isInfoEnabled()) {
-				LOG.info("Temps d'initialisation du listener " + (System.currentTimeMillis() - start));
+				LOG.info("Temps d'initialisation du listener {}", System.currentTimeMillis() - start);
 			}
 		}
 	}
@@ -181,7 +182,7 @@ final class AppServletStarter {
 
 	private static void readFile(final Properties servletParams, final String externalPropertiesFileName) throws IOException {
 		if (externalPropertiesFileName != null) {
-			try (final InputStream inputStream = new FileInputStream(externalPropertiesFileName)) {
+			try (final InputStream inputStream = Files.newInputStream(Paths.get(externalPropertiesFileName))) {
 				servletParams.load(inputStream);
 			}
 		}

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,7 +32,6 @@ import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
-import io.vertigo.vega.webservice.model.UiListState;
 import spark.QueryParamsMap;
 import spark.Request;
 
@@ -79,7 +78,6 @@ public final class QueryJsonReader implements JsonReader<String> {
 			return null;
 		}
 		if (DtListState.class.isAssignableFrom(paramClass)
-				|| UiListState.class.isAssignableFrom(paramClass)
 				|| DtObject.class.isAssignableFrom(paramClass)) {
 			return convertToJson(queryMap, webServiceParam.getName());
 		}

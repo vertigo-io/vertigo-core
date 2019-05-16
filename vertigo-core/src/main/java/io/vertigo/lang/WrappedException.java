@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,7 +49,7 @@ public final class WrappedException extends RuntimeException {
 	 * @return RuntimeException runtime
 	 */
 	public static RuntimeException wrap(final Throwable th) {
-		return wrap(th, null);
+		return wrap(th, th.getMessage());
 	}
 
 	/**
@@ -62,6 +62,8 @@ public final class WrappedException extends RuntimeException {
 	 * @return RuntimeException runtime
 	 */
 	public static RuntimeException wrap(final Throwable th, final String msg, final Object... params) {
+		Assertion.checkArgNotEmpty(msg);
+		//---
 		final Throwable t;
 		if (th instanceof InvocationTargetException) {
 			t = ((InvocationTargetException) th).getTargetException();
@@ -69,13 +71,15 @@ public final class WrappedException extends RuntimeException {
 			t = th;
 		}
 
+		final String message = msg != null ? StringUtil.format(msg, params) : null;
 		if (t instanceof RuntimeException) {
+			t.addSuppressed(new VSystemException(message));
 			throw (RuntimeException) t;
 		}
 		if (t instanceof Error) {
+			t.addSuppressed(new VSystemException(message));
 			throw (Error) t;
 		}
-		final String message = msg != null ? StringUtil.format(msg, params) : null;
 		throw new WrappedException(message, t);
 	}
 

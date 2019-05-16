@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63,26 +63,27 @@ public final class EAXmiHandler extends DefaultHandler {
 	/** {@inheritDoc} */
 	@Override
 	public void startElement(final String unusedUri, final String unusedLocalName, final String name, final Attributes attributes) {
-		LOG.debug(" Début de tag : " + name);
+		LOG.debug(" Début de tag : {}", name);
 		// Type xmi du tag
 		String typeElement = attributes.getValue(ATTR_TYPE);
 		// Si le type est null, alors on se base sur le nom du tag (cas des extensions EA)
 		if (typeElement == null) {
 			typeElement = name;
 		}
-		LOG.debug("Type : " + typeElement);
+		LOG.debug("Type : {}", typeElement);
 
 		//Les références
 		final String ref = attributes.getValue(ATTR_REF);
 
 		if (ref != null && typeElement != null && EAXmiType.isNodeByRef(typeElement)) {
 			phase2 = true;
-			LOG.debug("On est dans la référence " + name + " ref : " + ref);
+			LOG.debug("On est dans la référence {} ref : {}", name, ref);
 			// Si le tag courant est associé à un objet alors on ajoute à cet objet la référence.
 			final XmlId eaXmiId = new XmlId(ref);
-			if (map.containsKey(eaXmiId)) {
-				currentObject = map.get(eaXmiId);
-				LOG.debug("Current Object : " + currentObject.getName());
+			final EAXmiObject eaXmiObject = map.get(eaXmiId);
+			if (eaXmiObject != null) {
+				currentObject = eaXmiObject;
+				LOG.debug("Current Object : {}", currentObject.getName());
 			}
 			// On ne gère que les éléments objets qui nous intéressent
 		} else if (EAXmiType.isObjet(typeElement, name)) {

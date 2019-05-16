@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,20 +22,20 @@ import org.h2.Driver;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.commons.impl.CommonsFeatures;
-import io.vertigo.commons.plugins.node.registry.db.DbNodeRegistryPlugin;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.commons.plugins.app.registry.db.DbAppNodeRegistryPlugin;
 import io.vertigo.core.param.Param;
 
 @RunWith(JUnitPlatform.class)
 public class DbNodeRegistryPluginTest extends AbstractNodeManagerTest {
 
 	@Override
-	protected AppConfig buildAppConfig() {
+	protected NodeConfig buildNodeConfig() {
 
-		return buildRootAppConfig()
+		return buildRootNodeConfig()
 				.addModule(new CommonsFeatures()
-						.withNodeRegistryPlugin(DbNodeRegistryPlugin.class,
+						.withNodeRegistryPlugin(DbAppNodeRegistryPlugin.class,
 								Param.of("driverClassName", Driver.class.getName()),
 								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
 						.build())

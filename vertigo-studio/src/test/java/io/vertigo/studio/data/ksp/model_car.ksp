@@ -1,27 +1,27 @@
 package io.vertigo.studio.domain.car
 
-create DtDefinition DT_CAR {
-		key ID  			{ domain:DO_ID,			label:"identifiant de la voiture", 	notNull : "true"}
-		field MANUFACTURER  { domain:DO_KEYWORD, 	label:"Constructeur",  				notNull : "true"}
-		field MODEL   		{ domain:DO_FULL_TEXT, 	label:"Modèle",  					notNull : "true"}
-		field DESCRIPTION   { domain:DO_FULL_TEXT, 	label:"Descriptif"  				notNull : "true"}
-		field YEAR   		{ domain:DO_INTEGER, 	label:"Année",  					notNull : "true"}
-		field KILO   		{ domain:DO_INTEGER, 	label:"Kilométrage",  				notNull : "true"}
-		field PRICE   		{ domain:DO_INTEGER, 	label:"Prix",  						notNull : "true"}
-		field CONSOMMATION	{ domain:DO_CONSO, 	    label:"Consommation",  				notNull : "true"}
+create DtDefinition DtCar {
+		id  id  			{ domain: DoId,			label:"identifiant de la voiture" }
+		field manufacturer  { domain: DoKeyword, 	label:"Constructeur",  				required : "true"}
+		field model   		{ domain: DoFullText, 	label:"Modèle",  					required : "true"}
+		field description   { domain: DoFullText, 	label:"Descriptif"  				required : "true"}
+		field year   		{ domain: DoInteger, 	label:"Année",  					required : "true"}
+		field kilo   		{ domain: DoInteger, 	label:"Kilométrage",  				required : "true"}
+		field price   		{ domain: DoInteger, 	label:"Prix",  						required : "true"}
+		field consommation	{ domain: DoConso, 	    label:"Consommation",  				required : "true"}
 }
 
-create DtDefinition DT_MOTOR_TYPE {
+create DtDefinition DtMotorType {
 		stereotype : "StaticMasterData",
-		key MTY_CD 			{ domain:DO_STRING,			label:"id",			notNull : "true"}
-		field LABEL  		{ domain:DO_FULL_TEXT, 		label:"Label",		notNull : "true"}		
+		id mtyCd 			{ domain: DoString,			label:"id"}
+		field label  		{ domain: DoFullText, 		label:"Label",		required : "true"}		
 }
 
-create Association A_MTY_CAR {
-  	fkFieldName : "MTY_CD"
+create Association AMtyCar {
+  	fkFieldName : "mtyCd"
     
-  	dtDefinitionA : DT_CAR,
-	dtDefinitionB : DT_MOTOR_TYPE
+  	dtDefinitionA : DtCar,
+	dtDefinitionB : DtMotorType
 			
 	navigabilityA : "false"
 	navigabilityB : "true"
@@ -35,9 +35,9 @@ create Association A_MTY_CAR {
 	roleB : "MotorType"
 },
 
-create Task TK_LIST_CARS {
+create Task TkListCars {
 	className : "io.vertigo.studio.data.domain.CarEngine"
 	request : "hello"
-    attribute DTO_CAR_IN 	{domain:DO_DT_CAR_DTO, notNull:"true", inOut :"in"}
-    attribute DTO_CAR_OUT 	{domain:DO_DT_CAR_DTO, notNull:"true", inOut :"out"}
+    attribute dtoCarIn 	{domain:DoDtCarDto, required:"true", inOut :"in"}
+    attribute dtoCarOut 	{domain:DoDtCarDto, required:"true", inOut :"out"}
 }

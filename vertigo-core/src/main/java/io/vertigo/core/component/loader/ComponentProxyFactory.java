@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.component.Component;
@@ -67,7 +68,7 @@ final class ComponentProxyFactory {
 			Assertion.checkNotNull(proxyMethods);
 			//---
 			proxyMethodsByMethod = Arrays.stream(intf.getDeclaredMethods())
-					.collect(Collectors.toMap(method -> method,
+					.collect(Collectors.toMap(Function.identity(),
 							method -> findProxyMethod(method, proxyMethods)));
 			this.aspectsByMethod = aspectsByMethod;
 		}
@@ -81,7 +82,7 @@ final class ComponentProxyFactory {
 			Assertion.checkNotNull(method);
 			//---
 			return new MyMethodInvocation(method,
-					aspectsByMethod.containsKey(method) ? aspectsByMethod.get(method) : Collections.emptyList(),
+					aspectsByMethod.getOrDefault(method, Collections.emptyList()),
 					proxyMethodsByMethod.get(method))
 							.proceed(args);
 		}

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,12 +31,11 @@ import io.vertigo.dynamo.domain.metamodel.DataAccessor;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
-import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.Fragment;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.DataStore;
@@ -50,13 +49,11 @@ import io.vertigo.lang.Assertion;
  * @param <E> the type of entity
  * @param <P> Type de la clef primaire.
  */
-public class DAO<E extends Entity, P> implements BrokerNN {
+public class DAO<E extends Entity, P> {
 
 	/** DT de l'objet dont on gére le CRUD. */
 	private final Class<? extends Entity> entityClass;
 	protected final DataStore dataStore;
-	private final BrokerNN brokerNN;
-	private final BrokerBatch<E, P> brokerBatch;
 	private final TaskManager taskManager;
 
 	/**
@@ -74,16 +71,10 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 		this.entityClass = entityClass;
 		dataStore = storeManager.getDataStore();
 		this.taskManager = taskManager;
-		brokerNN = new BrokerNNImpl(taskManager);
-		brokerBatch = new BrokerBatchImpl<>(taskManager);
 	}
 
 	protected final TaskManager getTaskManager() {
 		return taskManager;
-	}
-
-	public final BrokerBatch<E, P> getBatch() {
-		return brokerBatch;
 	}
 
 	/**
@@ -151,12 +142,12 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	}
 
 	/**
-	 * Suppression d'un objet persistant par son URI.
+	 * Suppression d'un objet persistant par son UID.
 	 *
-	 * @param uri URI de l'objet à supprimer
+	 * @param uid UID de l'objet à supprimer
 	 */
-	public final void delete(final URI<E> uri) {
-		dataStore.delete(uri);
+	public final void delete(final UID<E> uid) {
+		dataStore.delete(uid);
 	}
 
 	/**
@@ -167,28 +158,28 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @param id identifiant de l'objet persistant à supprimer
 	 */
 	public final void delete(final P id) {
-		delete(createDtObjectURI(id));
+		delete(createDtObjectUID(id));
 	}
 
 	/**
 	 * Récupération d'un objet persistant par son URI. L'objet doit exister.
 	 *
-	 * @param uri URI de l'objet à récupérer
+	 * @param uid UID de l'objet à récupérer
 	 * @return D Object recherché
 	 */
-	public final E get(final URI<E> uri) {
-		return dataStore.readOne(uri);
+	public final E get(final UID<E> uid) {
+		return dataStore.readOne(uid);
 	}
 
 	/**
 	 * Récupération d'un fragment persistant par son URI. L'objet doit exister.
 	 *
-	 * @param uri URI de l'objet à récupérer
+	 * @param uid UID de l'objet à récupérer
 	 * @param fragmentClass Fragment class
 	 * @return F Fragment recherché
 	 */
-	public final <F extends Fragment<E>> F getFragment(final URI<E> uri, final Class<F> fragmentClass) {
-		final E dto = dataStore.readOne(uri);
+	public final <F extends Fragment<E>> F getFragment(final UID<E> uid, final Class<F> fragmentClass) {
+		final E dto = dataStore.readOne(uid);
 		final DtDefinition fragmentDefinition = DtObjectUtil.findDtDefinition(fragmentClass);
 		final F fragment = fragmentClass.cast(DtObjectUtil.createDtObject(fragmentDefinition));
 		for (final DtField dtField : fragmentDefinition.getFields()) {
@@ -208,7 +199,7 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return D Object objet recherché
 	 */
 	public final E get(final P id) {
-		return get(createDtObjectURI(id));
+		return get(createDtObjectUID(id));
 	}
 
 	/**
@@ -219,31 +210,32 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return D Fragment recherché
 	 */
 	public final <F extends Fragment<E>> F get(final P id, final Class<F> fragmentClass) {
-		return getFragment(new URI<E>(DtObjectUtil.findDtDefinition(fragmentClass).getFragment().get(), id), fragmentClass);
+		final UID<E> uid = UID.of(DtObjectUtil.findDtDefinition(fragmentClass).getFragment().get(), id);
+		return getFragment(uid, fragmentClass);
 	}
 
 	/**
-	 * Retourne l'URI de DtObject correspondant à une URN de définition et une valeur d'URI donnés.
+	 * Retourne l'URI de DtObject correspondant à une URN de définition et une valeur d'UID donnés.
 	 *
 	 * @param id identifiant de l'objet persistant recherché
-	 * @return URI recherchée
+	 * @return UID recherchée
 	 */
-	protected final URI<E> createDtObjectURI(final P id) {
-		return new URI<>(getDtDefinition(), id);
+	protected final UID<E> createDtObjectUID(final P id) {
+		return UID.of(getDtDefinition(), id);
 	}
 
 	/**
 	 * @param dtFieldName de l'object à récupérer NOT NULL
 	 * @param value de l'object à récupérer NOT NULL
-	 * @param maxRows Nombre maximum de ligne
+	 * @param dtListState Etat de la liste : Sort, top, offset
 	 * @return DtList<D> récupéré NOT NUL
 	 */
-	public final DtList<E> getListByDtFieldName(final DtFieldName dtFieldName, final Serializable value, final int maxRows) {
+	public final DtList<E> getListByDtFieldName(final DtFieldName dtFieldName, final Serializable value, final DtListState dtListState) {
 		final Criteria<E> criteria = Criterions.isEqualTo(dtFieldName, value);
 		// Verification de la valeur est du type du champ
 		final DtDefinition dtDefinition = getDtDefinition();
 		dtDefinition.getField(dtFieldName.name()).getDomain().checkValue(value);
-		return dataStore.findAll(new DtListURIForCriteria<>(dtDefinition, criteria, maxRows));
+		return dataStore.find(dtDefinition, criteria, dtListState);
 	}
 
 	/**
@@ -264,69 +256,18 @@ public class DAO<E extends Entity, P> implements BrokerNN {
 	 * @return  the optional result
 	 */
 	public final Optional<E> findOptional(final Criteria<E> criteria) {
-		final DtList<E> list = dataStore.findAll(new DtListURIForCriteria<>(getDtDefinition(), criteria, 2));
+		final DtList<E> list = dataStore.find(getDtDefinition(), criteria, DtListState.of(2));
 		Assertion.checkState(list.size() <= 1, "Too many results");
 		return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
 	}
 
 	/**
-	 * @param criteria Thr criteria
-	 * @param maxRows Max rows
+	 * @param criteria The criteria
+	 * @param dtListState Etat de la liste : Sort, top, offset
 	 * @return DtList<D> result NOT NULL
 	 */
-	public final DtList<E> findAll(final Criteria<E> criteria, final int maxRows) {
-		return dataStore.findAll(new DtListURIForCriteria<>(getDtDefinition(), criteria, maxRows));
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public final void removeAllNN(final DtListURIForNNAssociation dtListURI) {
-		brokerNN.removeAllNN(dtListURI);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public final void removeNN(final DtListURIForNNAssociation dtListURI, final URI uriToDelete) {
-		brokerNN.removeNN(dtListURI, uriToDelete);
-	}
-
-	/**
-	 * Mise à jour des associations n-n.
-	 *
-	 * @param <FK> <FK extends DtObject>
-	 * @param dtListURI DtList de référence
-	 * @param newDtc DtList modifiée
-	 */
-	public final <FK extends Entity> void updateNN(final DtListURIForNNAssociation dtListURI, final DtList<FK> newDtc) {
-		Assertion.checkNotNull(newDtc);
-		//-----
-		final List<URI> objectURIs = newDtc
-				.stream()
-				.map(DtObjectUtil::createURI)
-				.collect(Collectors.toList());
-		updateNN(dtListURI, objectURIs);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public final void updateNN(final DtListURIForNNAssociation dtListURI, final List<URI> newUriList) {
-		brokerNN.updateNN(dtListURI, newUriList);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public final void appendNN(final DtListURIForNNAssociation dtListURI, final URI uriToAppend) {
-		brokerNN.appendNN(dtListURI, uriToAppend);
-	}
-
-	/**
-	 * Ajout un objet à la collection existante.
-	 *
-	 * @param dtListURI DtList de référence
-	 * @param entity the entity to append
-	 */
-	public final void appendNN(final DtListURIForNNAssociation dtListURI, final Entity entity) {
-		brokerNN.appendNN(dtListURI, entity.getURI());
+	public final DtList<E> findAll(final Criteria<E> criteria, final DtListState dtListState) {
+		return dataStore.find(getDtDefinition(), criteria, dtListState);
 	}
 
 	private DtDefinition getDtDefinition() {

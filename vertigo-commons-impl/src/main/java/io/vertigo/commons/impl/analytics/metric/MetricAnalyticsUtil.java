@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,6 +41,8 @@ import io.vertigo.util.StringUtil;
  */
 public final class MetricAnalyticsUtil {
 
+	private static final String pluginCounterChar = "#";// char used in plugins for counting them plugin#1, plugin#2
+
 	private MetricAnalyticsUtil() {
 		//private
 	}
@@ -53,7 +55,7 @@ public final class MetricAnalyticsUtil {
 
 		//-- we construct a map of feature by componentId
 		final Map<String, String> featureByComponentId = new HashMap<>();
-		Home.getApp().getConfig().getModuleConfigs()
+		Home.getApp().getNodeConfig().getModuleConfigs()
 				.forEach(moduleConfig -> moduleConfig.getComponentConfigs()
 						.forEach(componentConfig -> featureByComponentId.put(componentConfig.getId(), moduleConfig.getName())));
 		//-----
@@ -66,7 +68,7 @@ public final class MetricAnalyticsUtil {
 					//-----
 					//2. For each method register a listener
 					// we remove # because it doesn't comply with definition naming rule
-					final String metricDefinitionName = "MET_" + StringUtil.camelToConstCase(componentId.replaceAll("#", "")) + "$" + StringUtil.camelToConstCase(method.getName());
+					final String metricDefinitionName = "Met" + StringUtil.first2UpperCase(componentId.replaceAll(pluginCounterChar, "")) + "$" + method.getName();
 					return new MetricDefinition(
 							metricDefinitionName,
 							() -> (List<Metric>) ClassUtil.invoke(component, method));

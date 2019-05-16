@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@
 package io.vertigo.vega.impl.webservice;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -114,13 +115,15 @@ public final class WebServiceManagerImpl implements WebServiceManager, SimpleDef
 	@Override
 	public void start() {
 		//we do nothing with webServerPlugin
-		webServerPlugin.registerWebServiceRoute(handlerChain, Home.getApp().getDefinitionSpace().getAll(WebServiceDefinition.class));
+		//2- We sort by path, parameterized path should be after strict path
+		final List<WebServiceDefinition> allWebServiceDefinitions = new ArrayList<>(Home.getApp().getDefinitionSpace().getAll(WebServiceDefinition.class));
+		Collections.sort(allWebServiceDefinitions, Comparator.comparing(WebServiceDefinition::getSortPath));
+		webServerPlugin.registerWebServiceRoute(handlerChain, allWebServiceDefinitions);
 	}
 
 	@Override
 	public void stop() {
 		// nothing
-
 	}
 
 	private static List<WebServiceHandlerPlugin> sortWebServiceHandlerPlugins(final List<WebServiceHandlerPlugin> restHandlerPlugins) {
@@ -146,7 +149,7 @@ public final class WebServiceManagerImpl implements WebServiceManager, SimpleDef
 	 * @return Scanned webServiceDefinitions
 	 */
 	List<WebServiceDefinition> scanComponents(final ComponentSpace componentSpace) {
-		final AopPlugin aopPlugin = Home.getApp().getConfig().getBootConfig().getAopPlugin();
+		final AopPlugin aopPlugin = Home.getApp().getNodeConfig().getBootConfig().getAopPlugin();
 
 		final ListBuilder<WebServiceDefinition> allWebServiceDefinitionListBuilder = new ListBuilder<>();
 		//1- We introspect all RestfulService class
@@ -159,11 +162,8 @@ public final class WebServiceManagerImpl implements WebServiceManager, SimpleDef
 			}
 		}
 
-		//2- We sort by path, parameterized path should be after strict path
-		return allWebServiceDefinitionListBuilder
-				.sort(Comparator.comparing(WebServiceDefinition::getName))
-				.unmodifiable()
-				.build();
+		return allWebServiceDefinitionListBuilder.build();
+
 	}
 
 }

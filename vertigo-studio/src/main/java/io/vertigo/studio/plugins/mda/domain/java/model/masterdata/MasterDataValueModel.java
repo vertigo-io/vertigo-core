@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,6 @@ import java.util.Map;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * Model Sql des materdata.
@@ -40,7 +39,7 @@ public final class MasterDataValueModel {
 		//-----
 		this.enumNameValue = enumNameValue;
 		this.allFieldValues = allFieldValues;
-		final String idFieldName = StringUtil.constToLowerCamelCase(dtDefinition.getIdField().get().getName());
+		final String idFieldName = dtDefinition.getIdField().get().getName();
 		//--
 		Assertion.checkState(allFieldValues.containsKey(idFieldName), "The id value is not present for the masterdata '{0}' of type {1}", allFieldValues, dtDefinition.getLocalName());
 		//---

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,12 +23,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
+import io.vertigo.account.security.UserSession;
+import io.vertigo.account.security.VSecurityManager;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.persona.security.UserSession;
-import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.token.TokenManager;
 
 /**
@@ -52,7 +52,7 @@ public final class TokenManagerImpl implements TokenManager {
 	 */
 	@Inject
 	public TokenManagerImpl(
-			@Named("collection") final String collection,
+			@ParamValue("collection") final String collection,
 			final VSecurityManager securityManager,
 			final KVStoreManager kvStoreManager) {
 		Assertion.checkArgNotEmpty(collection);

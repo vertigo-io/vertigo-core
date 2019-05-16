@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,6 @@ import java.util.concurrent.DelayQueue;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,6 +39,7 @@ import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
 import io.vertigo.lang.Assertion;
 
@@ -68,9 +68,9 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 	 */
 	@Inject
 	public DelayedMemoryKVStorePlugin(
-			final @Named("collections") String collections,
+			final @ParamValue("collections") String collections,
 			final DaemonManager daemonManager,
-			final @Named("timeToLiveSeconds") int timeToLiveSeconds) {
+			final @ParamValue("timeToLiveSeconds") int timeToLiveSeconds) {
 		Assertion.checkArgNotEmpty(collections);
 		//-----
 		this.collections = Arrays.stream(collections.split(", "))
@@ -84,7 +84,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		final int purgePeriod = Math.min(1 * 60, timeToLiveSeconds);
-		return Collections.singletonList(new DaemonDefinition("DMN_KV_DATA_STORE_CACHE", () -> new RemoveTooOldElementsDaemon(this), purgePeriod));
+		return Collections.singletonList(new DaemonDefinition("DmnKvDataStoreCache", () -> new RemoveTooOldElementsDaemon(this), purgePeriod));
 	}
 
 	/** {@inheritDoc} */
@@ -171,7 +171,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 				break;
 			}
 		}
-		LOGGER.info("purge " + checked + " elements");
+		LOGGER.info("purge {} elements", checked);
 	}
 
 	private boolean isTooOld(final DelayedMemoryCacheValue cacheValue) {

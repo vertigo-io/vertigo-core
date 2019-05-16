@@ -36,7 +36,7 @@ __Vertigo__ is split into different modules, detailed below.
 ## vertigo-database
 ### A simple data access to your databases
 
-* __sql__ : with built-in handlers : Oracle, MSSql, Postgresql, H2, Hibernate
+* __sql__ : with built-in handlers : Oracle, MSSql, Postgresql, H2
 
 ## vertigo-dynamo
 ### A simple way to define the model for your application and provide useful api over it like storage, search, etc...

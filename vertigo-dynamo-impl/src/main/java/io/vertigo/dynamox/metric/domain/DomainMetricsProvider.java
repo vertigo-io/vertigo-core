@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,11 +30,13 @@ import io.vertigo.commons.analytics.metric.Metrics;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.component.Component;
+import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
+import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -176,14 +178,14 @@ public final class DomainMetricsProvider implements Component {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			return Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)
 					.stream()
-					.filter(dtDefinition -> dtDefinition.isPersistent())
-					.map(dtDefinition -> doExecute(dtDefinition))
+					.filter(DtDefinition::isPersistent)
+					.map(dtDefinition -> doExecute(dtDefinition, transaction))
 					.collect(Collectors.toList());
 		}
 
 	}
 
-	private Metric doExecute(final DtDefinition dtDefinition) {
+	private Metric doExecute(final DtDefinition dtDefinition, final VTransactionWritable transaction) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkState(dtDefinition.isPersistent(), "Count can only be performed on persistent entities, DtDefinition '{0}' is not", dtDefinition.getName());
 		//-----
@@ -191,6 +193,10 @@ public final class DomainMetricsProvider implements Component {
 				.withName("entityCount")
 				.withFeature(dtDefinition.getName());
 		try {
+			final SqlConnection vTransactionResource = transaction.getResource(AbstractTaskEngineSQL.SQL_MAIN_RESOURCE_ID);
+			if (vTransactionResource != null) {
+				vTransactionResource.getJdbcConnection().rollback();
+			}
 			final double count = storeManager.getDataStore().count(dtDefinition);
 			return metricBuilder
 					.withSuccess()

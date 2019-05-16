@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,15 +23,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.commons.daemon.DaemonScheduled;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
@@ -56,7 +58,7 @@ public final class FileManagerImpl implements FileManager {
 	 * @param purgeDelayMinutesOpt Temp file purge delay.
 	 */
 	@Inject
-	public FileManagerImpl(@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
+	public FileManagerImpl(@ParamValue("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
 		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
 		final File documentRootFile = new File(TempFile.VERTIGO_TMP_DIR_PATH);
 		Assertion.checkState(documentRootFile.exists(), "Vertigo temp dir doesn't exists ({0})", TempFile.VERTIGO_TMP_DIR_PATH);
@@ -67,19 +69,53 @@ public final class FileManagerImpl implements FileManager {
 	/** {@inheritDoc} */
 	@Override
 	public File obtainReadOnlyFile(final VFile file) {
-		return doObtainReadOnlyFile(file);
+		return doObtainReadOnlyPath(file).toFile();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Path obtainReadOnlyPath(final VFile file) {
+		return doObtainReadOnlyPath(file);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public VFile createFile(final String fileName, final String typeMime, final File file) {
-		return new FSFile(fileName, typeMime, file);
+		try {
+			return new FSFile(fileName, typeMime, file.toPath());
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e);
+		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
+	public VFile createFile(final String fileName, final String typeMime, final Path file) {
+		try {
+			return new FSFile(fileName, typeMime, file);
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e);
+		}
+	}
+
+	/** {@inheritDoc}  */
+	@Override
 	public VFile createFile(final File file) {
-		return new FSFile(file.getName(), new MimetypesFileTypeMap().getContentType(file), file);
+		try {
+			return new FSFile(file.getName(), new MimetypesFileTypeMap().getContentType(file), file.toPath());
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e);
+		}
+	}
+
+	/** {@inheritDoc}*/
+	@Override
+	public VFile createFile(final Path file) {
+		try {
+			return new FSFile(file.getFileName().toString(), Files.probeContentType(file), file);
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e);
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -92,12 +128,6 @@ public final class FileManagerImpl implements FileManager {
 	@Override
 	public VFile createFile(final String fileName, final String typeMime, final Instant lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
 		return new StreamFile(fileName, typeMime, lastModified, length, inputStreamBuilder);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public VFile createFile(final String fileName, final Date lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
-		return createFile(fileName, lastModified.toInstant(), length, inputStreamBuilder);
 	}
 
 	/** {@inheritDoc} */
@@ -133,20 +163,20 @@ public final class FileManagerImpl implements FileManager {
 	 * @param vFile FileInfo à utiliser
 	 * @return Fichier temporaire.
 	 */
-	private static File createTempFile(final VFile vFile) {
+	private static Path createTempFile(final VFile vFile) {
 		// TODO voir a ajouter une WeakRef sur FileInfo pour vérifier la suppression des fichiers temp après usage
 		try {
-			return doCreateTempFile(vFile);
+			return doCreateTempPath(vFile);
 		} catch (final IOException e) {
-			throw WrappedException.wrap(e, "Can't create temp file for FileInfo " + vFile.getFileName());
+			throw WrappedException.wrap(e, "Can't create temp file for FileInfo {0}", vFile.getFileName());
 		}
 	}
 
-	private static File doCreateTempFile(final VFile fileInfo) throws IOException {
+	private static Path doCreateTempPath(final VFile fileInfo) throws IOException {
 		final File tmpFile = new TempFile("fileInfo", '.' + FileUtil.getFileExtension(fileInfo.getFileName()));
 		try (final InputStream inputStream = fileInfo.createInputStream()) {
 			FileUtil.copy(inputStream, tmpFile);
-			return tmpFile;
+			return tmpFile.toPath();
 		}
 	}
 
@@ -154,8 +184,8 @@ public final class FileManagerImpl implements FileManager {
 	 * @param vFile FileInfo à lire
 	 * @return Fichier physique readOnly (pour lecture d'un FileInfo)
 	 */
-	private static File doObtainReadOnlyFile(final VFile vFile) {
-		final File inputFile;
+	private static Path doObtainReadOnlyPath(final VFile vFile) {
+		final Path inputFile;
 		if (vFile instanceof FSFile) {
 			inputFile = ((FSFile) vFile).getFile();
 		} else {
@@ -167,7 +197,7 @@ public final class FileManagerImpl implements FileManager {
 	/**
 	 * Daemon for deleting old files.
 	 */
-	@DaemonScheduled(name = "DMN_PRUGE_TEMP_FILE", periodInSeconds = 5 * 60)
+	@DaemonScheduled(name = "DmnPurgeTempFile", periodInSeconds = 5 * 60)
 	public void deleteOldFiles() {
 		final File documentRootFile = new File(TempFile.VERTIGO_TMP_DIR_PATH);
 		final long maxTime = System.currentTimeMillis() - purgeDelayMinutesOpt.orElse(60) * 60L * 1000L;
@@ -183,6 +213,8 @@ public final class FileManagerImpl implements FileManager {
 				if (!succeeded) {
 					subFiles.deleteOnExit();
 				}
+			} else {
+				//keep this file
 			}
 		}
 	}

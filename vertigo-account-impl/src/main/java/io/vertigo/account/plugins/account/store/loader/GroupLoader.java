@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@ import java.util.Set;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 
 /**
  * @author npiedeloup
@@ -39,19 +39,19 @@ public interface GroupLoader {
 	 * @param groupURI the group URI
 	 * @return the group
 	 */
-	AccountGroup getGroup(URI<AccountGroup> groupURI);
+	AccountGroup getGroup(UID<AccountGroup> groupURI);
 
 	/**
 	 * @param accountURI the account defined by its URI
 	 * @return Set of groups of this account
 	 */
-	Set<URI<AccountGroup>> getGroupURIs(URI<Account> accountURI);
+	Set<UID<AccountGroup>> getGroupURIs(UID<Account> accountURI);
 
 	/**
 	 * Lists the accounts for a defined group.
 	 * @param groupURI the group URI
 	 * @return the list of acccounts.
 	 */
-	Set<URI<Account>> getAccountURIs(URI<AccountGroup> groupURI);
+	Set<UID<Account>> getAccountURIs(UID<AccountGroup> groupURI);
 
 }

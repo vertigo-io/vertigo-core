@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,9 +31,7 @@ import io.vertigo.dynamo.domain.stereotype.Association;
 import io.vertigo.dynamo.domain.stereotype.AssociationNN;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.lang.Assertion;
 import io.vertigo.util.ListBuilder;
-import io.vertigo.util.StringUtil;
 
 /**
  * Gestion centralisée des annotations sur les objets générés.
@@ -52,11 +50,8 @@ class AnnotationWriter {
 	 * @return Liste des lignes de code java à ajouter.
 	 */
 	List<String> writeAnnotations(final String propertyName) {
-		if ("URI".equalsIgnoreCase(propertyName)) {
-			return writeUriAnnotations();
-		}
-		if ("transientField".equalsIgnoreCase(propertyName)) {
-			return writeTransientAnnotations();
+		if ("UID".equalsIgnoreCase(propertyName)) {
+			return writeUIDAnnotations();
 		}
 		throw new UnsupportedOperationException("This property (" + propertyName + ") is not supported on domain MDA");
 	}
@@ -109,7 +104,6 @@ class AnnotationWriter {
 	 */
 	List<String> writeAnnotations(final DtField dtField) {
 		final List<String> lines = new ArrayList<>();
-		final String fieldName = dtField.getName();
 		// Générations des annotations Dynamo
 		// if (!isComputed) {
 		final StringBuilder buffer = new StringBuilder("@Field(")
@@ -127,8 +121,6 @@ class AnnotationWriter {
 			// On ne précise la persistance que si elle n'est pas gérée
 			buffer.append("persistent = false, ");
 		}
-		// On vérifie que le nom du champ (constante) est transformable en nom de méthode et réciproquement.
-		Assertion.checkArgument(fieldName.equals(StringUtil.camelToConstCase(StringUtil.constToUpperCamelCase(fieldName))), "le nom {0} n''est pas transformable en nom de méthode", fieldName);
 		buffer.append("label = \"")
 				.append(dtField.getLabel().getDisplay())
 				.append('\"')
@@ -142,7 +134,7 @@ class AnnotationWriter {
 	 * Ectiture des annotations sur le getURI.
 	 * @return Liste des lignes de code java à ajouter.
 	 */
-	List<String> writeUriAnnotations() {
+	List<String> writeUIDAnnotations() {
 		return Collections.emptyList();
 	}
 

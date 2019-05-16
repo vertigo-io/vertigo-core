@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,19 +29,19 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.lang.Assertion;
 
 /**
  *
  * @author dchallas
  */
-public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU4 {
+public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU5 {
 	private static final String KEY = "ma clé";
-	private static final String CONTEXT_EDITABLE = CacheManagerInitializer.CONTEXT_EDITABLE;
-	private static final String CONTEXT_READONLY = CacheManagerInitializer.CONTEXT_READONLY;
+	private static final String CONTEXT_EDITABLE = TestCacheDefinitionProvider.CONTEXT_EDITABLE;
+	private static final String CONTEXT_READONLY = TestCacheDefinitionProvider.CONTEXT_READONLY;
 
 	private final int maxNbRow;
 

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +18,9 @@
  */
 package io.vertigo.util;
 
+import java.time.Duration;
 import java.time.Instant;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
 
 import io.vertigo.lang.Assertion;
 
@@ -42,16 +42,16 @@ public final class DateUtil {
 	 * Récupère la date courante (précise au jour).
 	 * @return current day.
 	 */
-	public static Date newDate() {
-		return new DateBuilder(newDateTime()).build();
+	public static LocalDate newDate() {
+		return LocalDate.now();
 	}
 
 	/**
 	 * Récupère l'instant courant (avec heures, minutes, secondes, millisecondes).
 	 * @return current day.
 	 */
-	public static Date newDateTime() {
-		return new Date();
+	public static Instant newInstant() {
+		return Instant.now();
 	}
 
 	/**
@@ -61,14 +61,11 @@ public final class DateUtil {
 	 * @param endDate Date de fin
 	 * @return Nombre de jours
 	 */
-	public static int daysBetween(final Date startDate, final Date endDate) {
+	public static long daysBetween(final LocalDate startDate, final LocalDate endDate) {
 		Assertion.checkNotNull(startDate);
 		Assertion.checkNotNull(endDate);
-		checkIsDate(startDate);
-		checkIsDate(endDate);
 		//-----
-		final long diffMillis = endDate.getTime() / (24 * 60 * 60 * 1000L) - startDate.getTime() / (24 * 60 * 60 * 1000L);
-		return (int) diffMillis;
+		return Duration.between(startDate.atStartOfDay(), endDate.atStartOfDay()).toDays();
 	}
 
 	/**
@@ -81,11 +78,9 @@ public final class DateUtil {
 	 * @param secondDate Deuxiéme date
 	 * @return 0 si égale, moins de 0 si firstDate < secondDate, et plus de 0 si firstDate > secondDate
 	 */
-	public static int compareDate(final Date firstDate, final Date secondDate) {
+	public static int compareLocalDate(final LocalDate firstDate, final LocalDate secondDate) {
 		Assertion.checkNotNull(firstDate);
 		Assertion.checkNotNull(secondDate);
-		checkIsDate(firstDate);
-		checkIsDate(secondDate);
 		//-----
 		return firstDate.compareTo(secondDate);
 	}
@@ -96,27 +91,15 @@ public final class DateUtil {
 	 * On peut alors utiliser l'opérateur que l'on souhaite entre le résultat du compareTo et 0.
 	 * Ex: firstDate <= secondDate   eq.  firstDate.compareTo(secondDate) <= 0
 	 *     firstDate > secondDate    eq.  firstDate.compareTo(secondDate) > 0
-	 * @param firstDateTime première dateTime
-	 * @param secondDateTime Deuxiéme dateTime
+	 * @param firstInstant première dateTime
+	 * @param secondInstant Deuxiéme dateTime
 	 * @return 0 si égale, moins de 0 si firstDate < secondDate, et plus de 0 si firstDate > secondDate
 	 */
-	public static int compareDateTime(final Date firstDateTime, final Date secondDateTime) {
-		Assertion.checkNotNull(firstDateTime);
-		Assertion.checkNotNull(secondDateTime);
+	public static int compareInstant(final Instant firstInstant, final Instant secondInstant) {
+		Assertion.checkNotNull(firstInstant);
+		Assertion.checkNotNull(secondInstant);
 		//-----
-		return firstDateTime.compareTo(secondDateTime);
-	}
-
-	/**
-	 * Vérification que la date est du type Date(sans notion d'heure, min, sec, milisecondes)
-	 * @param dateToCheck Date à vérifier
-	 */
-	private static void checkIsDate(final Date dateToCheck) {
-		final Calendar calendar = Calendar.getInstance();
-		calendar.setTime(dateToCheck);
-		Assertion.checkArgument(
-				calendar.get(Calendar.HOUR_OF_DAY) == 0 && calendar.get(Calendar.MINUTE) == 0 && calendar.get(Calendar.SECOND) == 0 && calendar.get(Calendar.MILLISECOND) == 0,
-				"Cet objet n'est pas une Date mais une DateTime ({0}).", dateToCheck);
+		return firstInstant.compareTo(secondInstant);
 	}
 
 	/**
@@ -137,8 +120,8 @@ public final class DateUtil {
 	 *
 	 * @return date
 	 */
-	public static Date parseToDate(final String dateExpression, final String datePattern) {
-		return DateQueryParserUtil.parse(dateExpression, datePattern);
+	public static LocalDate parseToLocalDate(final String dateExpression, final String datePattern) {
+		return DateQueryParserUtil.parseAsLocalDate(dateExpression, datePattern);
 	}
 
 	/**
@@ -160,6 +143,6 @@ public final class DateUtil {
 	 * @return Instant
 	 */
 	public static Instant parseToInstant(final String dateExpression, final String datePattern) {
-		return DateQueryParserUtil.parse(dateExpression, datePattern).toInstant();
+		return DateQueryParserUtil.parseAsInstant(dateExpression, datePattern);
 	}
 }

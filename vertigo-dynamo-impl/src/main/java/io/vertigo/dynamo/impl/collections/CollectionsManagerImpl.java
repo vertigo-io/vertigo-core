@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -86,11 +86,12 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public <R extends DtObject> FacetedQueryResult<R, DtList<R>> facetList(final DtList<R> dtList, final FacetedQuery facetedQuery) {
+	public <R extends DtObject> FacetedQueryResult<R, DtList<R>> facetList(final DtList<R> dtList, final FacetedQuery facetedQuery, final Optional<FacetDefinition> clusterFacetDefinition) {
 		Assertion.checkNotNull(dtList);
 		Assertion.checkNotNull(facetedQuery);
 		//-----
 		//1- on applique les filtres
+		final DtList<R> resultDtList;
 		final DtList<R> filteredDtList = dtList.stream()
 				.filter(filter(facetedQuery))
 				.collect(VCollectors.toDtList(dtList.getDefinition()));
@@ -98,10 +99,16 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		//2- on facette
 		final List<Facet> facets = facetFactory.createFacets(facetedQuery.getDefinition(), filteredDtList);
 
-		//TODO 2a- cluster vide
-		final Optional<FacetDefinition> clusterFacetDefinition = Optional.empty();
-		//TODO 2b- cluster vide
-		final Map<FacetValue, DtList<R>> resultCluster = Collections.emptyMap();
+		//2a- cluster definition
+		//2b- cluster result
+		final Map<FacetValue, DtList<R>> resultCluster;
+		if (clusterFacetDefinition.isPresent()) {
+			resultCluster = facetFactory.createCluster(clusterFacetDefinition.get(), filteredDtList);
+			resultDtList = new DtList<>(dtList.getDefinition());
+		} else {
+			resultCluster = Collections.emptyMap();
+			resultDtList = filteredDtList;
+		}
 
 		//TODO 2c- mise en valeur vide
 		final Map<R, Map<DtField, String>> highlights = Collections.emptyMap();
@@ -110,7 +117,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		return new FacetedQueryResult<>(
 				Optional.of(facetedQuery),
 				filteredDtList.size(),
-				filteredDtList,
+				resultDtList, //empty if clustering
 				facets,
 				clusterFacetDefinition,
 				resultCluster,
@@ -125,9 +132,9 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 		final SelectedFacetValues selectedFacetValues = facetedQuery.getSelectedFacetValues();
 		Predicate<D> predicate = list -> true;
 		for (final FacetDefinition facetDefinition : facetedQuery.getDefinition().getFacetDefinitions()) {
-			if (!selectedFacetValues.getFacetValues(facetDefinition).isEmpty()) {
+			if (!selectedFacetValues.getFacetValues(facetDefinition.getName()).isEmpty()) {
 				Predicate<D> predicateValue = list -> false;
-				for (final FacetValue facetValue : selectedFacetValues.getFacetValues(facetDefinition)) {
+				for (final FacetValue facetValue : selectedFacetValues.getFacetValues(facetDefinition.getName())) {
 					predicateValue = predicateValue.or(this.filter(facetValue.getListFilter()));
 				}
 				predicate = predicate.and(predicateValue);

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,12 +61,8 @@ public final class TempFile extends File {
 		deleteOnExit();
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected void finalize() throws Throwable {
-		if (exists() && !delete()) {
-			deleteOnExit();
-		}
-		super.finalize();
-	}
+	/**
+	 * We can't use finalize anymore, because we keep a nio.Path reference, so this TempFile ref will be GC anyway we use it in a VFile.
+	 * Purge is done by a fileManager's deamon.
+	 */
 }

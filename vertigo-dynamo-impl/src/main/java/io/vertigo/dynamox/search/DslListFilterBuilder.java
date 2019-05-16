@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,19 +18,17 @@
  */
 package io.vertigo.dynamox.search;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
-import java.util.TimeZone;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
@@ -49,6 +47,7 @@ import io.vertigo.dynamox.search.dsl.model.DslTermQuery.EscapeMode;
 import io.vertigo.dynamox.search.dsl.model.DslUserCriteria;
 import io.vertigo.dynamox.search.dsl.rules.DslParserUtil;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.BeanUtil;
 import io.vertigo.util.StringUtil;
@@ -82,12 +81,27 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 	private static final String USER_QUERY_KEYWORD = "query";
 
-	private static final Set<String> RESERVED_QUERY_KEYWORDS = new HashSet<>(Arrays.asList(new String[] { "AND", "OR", "and", "or", "And", "Or", "*" }));
-	private static final String QUERY_RESERVERD_PATTERN = "(?i)([\\+\\-\\=\\&\\&\\|\\|\\>\\<\\!\\(\\)\\{\\}\\[\\]\\^\"\\~\\*\\?\\:\\\\\\/])|((?<=\\s|^)(or|and)(?=\\s|$))";
-	private static final String NEED_BLOCK_PATTERN = "(?i)([\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<\\s]|or|and)";
+	private static final Set<String> RESERVED_QUERY_KEYWORDS = new HashSet<>(Arrays.asList(new String[] { "AND", "OR", "*" }));
+	private static final String QUERY_RESERVERD_PATTERN_STR = "(?i)([\\+\\-\\=\\&\\|\\>\\<\\!\\(\\)\\{\\}\\[\\]\\^\"\\~\\*\\?\\:\\\\\\/])|((?<=\\s|^)(OR|AND)(?=\\s|$))";
+	private static final Pattern QUERY_RESERVERD_PATTERN = Pattern.compile(QUERY_RESERVERD_PATTERN_STR);
+	private static final String QUERY_INCOMPLETE_GRAMMAR_PATTERN_STR = "(?i)"
+			+ buildIncompletePatternStr('(', ')', 250) //cherche les ( mal fermées et les ) mal ouvertes (1 seul niveau d'imbrication maximum)
+			+ "|" + buildIncompletePatternStr('{', '}', 250)
+			+ "|" + buildIncompletePatternStr('[', ']', 250)
+			+ "|(?<![\\w\\)\\}\\]]\\s{0,250})(?<=[^\\w\\\\\\)\\}\\]]|^)(OR|AND)(?=\\W|$)|(?<=[^\\\\\\w]|^)(OR|AND)(?=[^\\w\\(\\{\\[]|$)(?!\\s*[\\w\\(\\{\\[])";
+	private static final Pattern QUERY_INCOMPLETE_GRAMMAR_PATTERN = Pattern.compile(QUERY_INCOMPLETE_GRAMMAR_PATTERN_STR);
+
+	private static final Pattern MAY_USE_BLOCK_1_PATTERN = Pattern.compile("((\\(.*\\))|([\\[\\{].*[\\]\\}])|(\\\".*\\\")|\\*)(\\^[0-9]+)?");
+	private static final Pattern MAY_USE_BLOCK_2_PATTERN = Pattern.compile("(?i)([\\+\\-\\!\\*\\?\\~\\^\\=\\>\\<\\s]|OR|AND)");
+
+	private static final Pattern BEGIN_LINE_TRIM_PATTERN = Pattern.compile("^\\s+");
 
 	private List<DslMultiExpression> myBuildQuery;
 	private C myCriteria;
+
+	private static String buildIncompletePatternStr(final char openChar, final char closeChar, final int maxLookBehind) {
+		return "(\\" + openChar + ")(?![^\\" + openChar + "]*\\" + closeChar + "|[^\\" + openChar + "]*\\" + openChar + "[^\\" + openChar + "]*\\" + closeChar + "[^\\" + openChar + "]*\\" + closeChar + ")|(?<!\\" + openChar + "[^\\" + closeChar + "]{0," + maxLookBehind + "}|\\" + openChar + "[^\\" + closeChar + "]{0," + maxLookBehind + "}\\" + openChar + "[^\\" + closeChar + "]{0," + maxLookBehind + "}\\" + closeChar + "[^\\" + closeChar + "]{0," + maxLookBehind + "})(\\" + closeChar + ")";
+	}
 
 	/**
 	 * Fix query pattern.
@@ -133,15 +147,23 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		return ListFilter.of(query);
 	}
 
+	private static final Pattern BEGINNING_LINE_PATTERN = Pattern.compile("^\\s+");
+	private static final Pattern END_LINE_PATTERN = Pattern.compile("\\s+$");
+	private static final Pattern MULTIPLE_WHITESPACE_PATTERN = Pattern.compile("\\s+");
+
 	private String buildQueryString() {
 		final StringBuilder query = new StringBuilder();
 		for (final DslMultiExpression multiExpressionDefinition : myBuildQuery) {
 			appendMultiExpression(query, multiExpressionDefinition);
 		}
-		return query.toString()
-				.replaceAll("^\\s+", "") //replace whitespaces at beginning of a line
-				.replaceAll("\\s+$", "") //replace whitespaces at end of a line
-				.replaceAll("\\s+", " "); // replace multiple whitespaces by space
+		return cleanQuery(query.toString());
+	}
+
+	protected static String cleanQuery(final String query) {
+		String queryString = BEGINNING_LINE_PATTERN.matcher(query).replaceAll("");//replace whitespaces at beginning of a line
+		queryString = END_LINE_PATTERN.matcher(queryString).replaceAll("");//replace whitespaces at end of a line
+		queryString = MULTIPLE_WHITESPACE_PATTERN.matcher(queryString).replaceAll(" ");// replace multiple whitespaces by space
+		return queryString;
 	}
 
 	private void appendMultiExpression(final StringBuilder query, final DslMultiExpression multiExpressionDefinition) {
@@ -182,16 +204,16 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 
 	private static boolean mayUseBlock(final String trimedExpression) {
 		//on place des parenthèses s'il n'y a pas encore de block, ou des caractères interdits
-		return !trimedExpression.matches("((\\(.*\\))|([\\[\\{].*[\\]\\}])|(\\\".*\\\")|\\*)(\\^[0-9]+)?")//not : (...) or [...] or "..." but may finished by ^2
-				&& trimedExpression.matches(".*" + NEED_BLOCK_PATTERN + ".*"); //contains any reserved char +-!*?~^=>< or any spaces
+		return !MAY_USE_BLOCK_1_PATTERN.matcher(trimedExpression).matches()//not : (...) or [...] or "..." but may finished by ^2
+				&& MAY_USE_BLOCK_2_PATTERN.matcher(trimedExpression).find();//contains any reserved char +-!*?~^=>< or any spaces
 
 	}
 
 	private static void flushSubQueryToQuery(final StringBuilder query, final String preExpression, final String postExpression, final boolean useBlock, final StringBuilder subQuery) {
 		if (subQuery.length() > 0) {
 			final String[] trimedQuery = splitTrimedSubQueryToQuery(subQuery.toString());
-			final boolean isAlreadyBlock = (preExpression.endsWith("\"") && postExpression.startsWith("\""))
-					|| (preExpression.endsWith("(") && postExpression.startsWith(")"));
+			final boolean isAlreadyBlock = preExpression.endsWith("\"") && postExpression.startsWith("\"")
+					|| preExpression.endsWith("(") && postExpression.startsWith(")");
 			query.append(trimedQuery[0]) //[0] contient les caractères du trim : on les place avant
 					.append(preExpression)
 					.append(!isAlreadyBlock && useBlock ? "(" : "")
@@ -205,7 +227,7 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	private static String[] splitTrimedSubQueryToQuery(final String subQueryStr) {
 		final String[] result = new String[2];
 		if (!subQueryStr.isEmpty()) {
-			final String trimSubQueryStr = subQueryStr.replaceFirst("^\\s*", "");
+			final String trimSubQueryStr = BEGIN_LINE_TRIM_PATTERN.matcher(subQueryStr).replaceFirst("");
 			final String preTrimSubQueryStr = subQueryStr.substring(0, subQueryStr.length() - trimSubQueryStr.length());
 			result[0] = preTrimSubQueryStr;
 			result[1] = trimSubQueryStr;
@@ -249,6 +271,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			appendRangeQuery(expressionQuery, (DslRangeQuery) dslQuery, expressionDefinition);
 		} else if (dslQuery instanceof DslFixedQuery) {
 			appendFixedQuery(expressionQuery, (DslFixedQuery) dslQuery);
+		} else {
+			throw new VSystemException("dslQuery of type '{0}' is not supported is query", dslQuery.getClass());
 		}
 	}
 
@@ -287,10 +311,12 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			if (((String) value).trim().isEmpty()) { //so not null too
 				return (O) "*";
 			} else if (escapeMode == EscapeMode.escape) {
-				return (O) ((String) value).replaceAll(QUERY_RESERVERD_PATTERN, "\\\\$0");
+				return (O) QUERY_RESERVERD_PATTERN.matcher((String) value).replaceAll("\\\\$0");
 			} else if (escapeMode == EscapeMode.remove) {
-				return (O) ((String) value).replaceAll(QUERY_RESERVERD_PATTERN, ""); //par on retire le deuxième espace
+				return (O) QUERY_RESERVERD_PATTERN.matcher((String) value).replaceAll(""); //par on retire le deuxième espace
 			}
+			//replace standard invalid syntax to escape this one
+			return (O) QUERY_INCOMPLETE_GRAMMAR_PATTERN.matcher((String) value).replaceAll("\\\\$0");
 		}
 		return value;
 	}
@@ -307,8 +333,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			useBlock = appendUserStringCriteria(queryPart, dslQuery, expressionDefinition, (String) value, outExpressionQuery);
 		} else if (value instanceof Instant) { //so not null too
 			useBlock = appendSimpleCriteria(queryPart, dslQuery, formatInstant((Instant) value));
-		} else if (value instanceof Date) { //so not null too
-			useBlock = appendSimpleCriteria(queryPart, dslQuery, formatDate((Date) value));
+		} else if (value instanceof LocalDate) { //so not null too
+			useBlock = appendSimpleCriteria(queryPart, dslQuery, formatDate((LocalDate) value));
 		} else if (value != null) {
 			useBlock = appendSimpleCriteria(queryPart, dslQuery, value.toString());
 		} else if (dslQuery.getDefaultValue().isPresent()) { //if value null => defaultValue
@@ -328,12 +354,16 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 			appendTermQuery(startRangeQuery, (DslTermQuery) startQueryDefinition, expressionDefinition, null); //null because, can't use upper output
 		} else if (startQueryDefinition instanceof DslFixedQuery) {
 			appendFixedQuery(startRangeQuery, (DslFixedQuery) startQueryDefinition);
+		} else {
+			throw new IllegalArgumentException("can't parse query \\\"\"+startQueryDefinition+\"\\\" of type " + startQueryDefinition.getClass().getSimpleName() + " (expected DslTermQuery or DslFixedQuery)");
 		}
 		final StringBuilder endRangeQuery = new StringBuilder();
 		if (endQueryDefinition instanceof DslTermQuery) {
 			appendTermQuery(endRangeQuery, (DslTermQuery) endQueryDefinition, expressionDefinition, null); //null because, can't use upper output
 		} else if (endQueryDefinition instanceof DslFixedQuery) {
 			appendFixedQuery(endRangeQuery, (DslFixedQuery) endQueryDefinition);
+		} else {
+			throw new IllegalArgumentException("can't parse query \"" + endQueryDefinition + "\" of type " + endQueryDefinition.getClass().getSimpleName() + " (expected DslTermQuery or DslFixedQuery)");
 		}
 
 		//flush Range Query
@@ -461,11 +491,8 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	 * @param date la date.
 	 * @return la chaine de caractere formattée.
 	 */
-	private static String formatDate(final Date date) {
-		final DateFormat formatter = new SimpleDateFormat("\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\"", Locale.getDefault());
-		final TimeZone tz = TimeZone.getTimeZone("UTC");
-		formatter.setTimeZone(tz);
-		return formatter.format(date);
+	private static String formatDate(final LocalDate date) {
+		return new StringBuilder("\"").append(date.toString()).append("\"").toString();
 	}
 
 	/**

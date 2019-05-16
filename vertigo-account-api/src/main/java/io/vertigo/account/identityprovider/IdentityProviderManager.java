@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import io.vertigo.core.component.Manager;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.file.model.VFile;
 
 /**
@@ -53,7 +53,7 @@ public interface IdentityProviderManager extends Manager {
 	 * @return the photo as a file
 	 * @param <E> project's User entity type
 	 */
-	<E extends Entity> Optional<VFile> getPhoto(URI<E> accountURI);
+	<E extends Entity> Optional<VFile> getPhoto(UID<E> accountURI);
 
 	/**
 	 * Gets an newly authentified account by his authToken.

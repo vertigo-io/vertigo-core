@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +20,10 @@ package io.vertigo.dynamo.store.datastore.sql.vendor.h2;
 
 import org.h2.Driver;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.dynamo.store.datastore.sql.AbstractSqlStoreManagerTest;
-import io.vertigo.dynamo.store.datastore.sql.SqlDataStoreAppConfig;
+import io.vertigo.dynamo.store.datastore.sql.SqlDataStoreNodeConfig;
 
 /**
  * Test of sql storage in H2 DB.
@@ -33,8 +33,8 @@ import io.vertigo.dynamo.store.datastore.sql.SqlDataStoreAppConfig;
 public final class H2SqlStoreManagerTest extends AbstractSqlStoreManagerTest {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return SqlDataStoreAppConfig.build(
+	protected NodeConfig buildNodeConfig() {
+		return SqlDataStoreNodeConfig.build(
 				H2DataBase.class.getCanonicalName(),
 				Driver.class.getCanonicalName(),
 				"jdbc:h2:mem:database");

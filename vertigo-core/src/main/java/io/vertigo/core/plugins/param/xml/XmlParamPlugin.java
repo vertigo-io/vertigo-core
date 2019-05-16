@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -35,11 +34,12 @@ import org.xml.sax.SAXException;
 
 import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamPlugin;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.StringUtil;
-import io.vertigo.util.XMLUtil;
+import io.vertigo.util.XmlUtil;
 
 /**
  * Parser XML du paramétrage de la config.
@@ -54,7 +54,7 @@ public final class XmlParamPlugin implements ParamPlugin {
 	 * @param url Url du fichier XML de configuration
 	 */
 	@Inject
-	public XmlParamPlugin(final ResourceManager resourceManager, @Named("url") final String url) {
+	public XmlParamPlugin(final ResourceManager resourceManager, @ParamValue("url") final String url) {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkArgNotEmpty(url);
 		//-----
@@ -102,7 +102,7 @@ public final class XmlParamPlugin implements ParamPlugin {
 	private static void xsdValidate(final URL configURL) {
 		//--- validation XSD
 		final URL xsd = XmlParamPlugin.class.getResource("vertigo-config_1_0.xsd");
-		XMLUtil.validateXmlByXsd(configURL, xsd);
+		XmlUtil.validateXmlByXsd(configURL, xsd);
 		//--- fin validation XSD
 	}
 

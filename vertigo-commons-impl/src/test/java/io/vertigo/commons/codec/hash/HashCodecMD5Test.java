@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,8 @@ package io.vertigo.commons.codec.hash;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.codec.AbstractEncoderTest;
 import io.vertigo.commons.codec.CodecManager;
@@ -39,13 +40,13 @@ public final class HashCodecMD5Test extends AbstractEncoderTest<Encoder<byte[], 
 
 	/** {@inheritDoc} */
 	@Override
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testNull() {
 		/*
 		* Test de création de l'empreinte MD5.
 		* On vérifie que null ne respecte pas le contrat.
 		*/
-		codec.encode(null);
+		Assertions.assertThrows(NullPointerException.class, () -> codec.encode(null));
 	}
 
 	/**

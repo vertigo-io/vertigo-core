@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,18 +34,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.LogConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
 
 @RunWith(JUnitPlatform.class)
-public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
+public final class EnvironmentManagerTest extends AbstractTestCaseJU5 {
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot().withLogConfig(new LogConfig("/log4j.xml")).endBoot()
 				.build();
 	}
@@ -56,7 +56,7 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 	public void simpleTest() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 
-		final DslDefinition address1Definition = DslDefinition.builder("MOCK_MAIN_ADDRESS", PersonGrammar.ADDRESS_ENTITY)
+		final DslDefinition address1Definition = DslDefinition.builder("MockMainAddress", PersonGrammar.ADDRESS_ENTITY)
 				.withPackageName("io.vertigo.test.model")
 				.addPropertyValue(STREET, "1, rue du louvre")
 				.addPropertyValue(POSTAL_CODE, "75008")
@@ -64,7 +64,7 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 				.build();
 		dslDefinitionRepository.addDefinition(address1Definition);
 
-		final DslDefinition address2Definition = DslDefinition.builder("MOCK_SECOND_ADDRESS", PersonGrammar.ADDRESS_ENTITY)
+		final DslDefinition address2Definition = DslDefinition.builder("MockSecondAddress", PersonGrammar.ADDRESS_ENTITY)
 				.withPackageName("io.vertigo.test.model")
 				.addPropertyValue(STREET, "105, rue martin")
 				.addPropertyValue(POSTAL_CODE, "75008")
@@ -72,15 +72,15 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 				.build();
 		dslDefinitionRepository.addDefinition(address2Definition);
 
-		final DslDefinition personDefinition = DslDefinition.builder("MOCK_MISTER_BEAN", PersonGrammar.PERSON_ENTITY)
+		final DslDefinition personDefinition = DslDefinition.builder("MockMisterBean", PersonGrammar.PERSON_ENTITY)
 				.withPackageName("io.vertigo.test.model")
 				.addPropertyValue(NAME, "105, rue martin")
 				.addPropertyValue(FIRST_NAME, "75008")
 				.addPropertyValue(AGE, 42)
 				.addPropertyValue(HEIGHT, 175.0d)
 				.addPropertyValue(MALE, Boolean.TRUE)
-				.addDefinitionLink(MAIN_ADDRESS, "MOCK_MAIN_ADDRESS")
-				.addDefinitionLink(PersonGrammar.SECOND_ADDRESS, "MOCK_SECOND_ADDRESS")
+				.addDefinitionLink(MAIN_ADDRESS, "MockMainAddress")
+				.addDefinitionLink(PersonGrammar.SECOND_ADDRESS, "MockSecondAddress")
 				.build();
 		dslDefinitionRepository.addDefinition(personDefinition);
 
@@ -92,7 +92,7 @@ public final class EnvironmentManagerTest extends AbstractTestCaseJU4 {
 	public void badTypeTest() {
 		Assertions.assertThrows(ClassCastException.class,
 				() -> {
-					final DslDefinition address1Definition = DslDefinition.builder("MOCK_MAIN_ADDRESS", PersonGrammar.ADDRESS_ENTITY)
+					final DslDefinition address1Definition = DslDefinition.builder("MockMainAddress", PersonGrammar.ADDRESS_ENTITY)
 							.withPackageName("io.vertigo.test.model")
 							.addPropertyValue(STREET, "1, rue du louvre")
 							.addPropertyValue(POSTAL_CODE, 75008)

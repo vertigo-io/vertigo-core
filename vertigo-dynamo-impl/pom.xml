@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.4.196</version>
+			<version>1.4.199</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -68,74 +68,54 @@
 		<dependency>
 			<groupId>com.sleepycat</groupId>
 			<artifactId>je</artifactId>
-			<version>7.5.11</version><!-- this version need Oracle repo. For maven central could be downgraded to 5.0.84, conf and usage fully compatible -->
+			<version>18.3.12</version>
 		</dependency>
 
 		<!-- CollectionsManager/LuceneIndexPlugin -->
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>6.6.1</version> <!-- 6.6.1 compatible with ElasticSearch 5.6.8 -->
+			<version>8.0.0</version> <!-- 8.0.0 compatible with ElasticSearch 6.6.0 -->
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-analyzers-common</artifactId>
-			<version>6.6.1</version> <!-- 6.6.1 compatible with ElasticSearch 5.6.8 -->
+			<version>8.0.0</version> <!-- 8.0.0 compatible with ElasticSearch 6.6.0 -->
 			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hibernate.javax.persistence</groupId><!-- no official version, but Hibernate publish 
-				this jar which contains only the API -->
-			<artifactId>hibernate-jpa-2.1-api</artifactId>
-			<version>1.0.0.Final</version>
-			<optional>true</optional> <!-- HibernateStorePlugin -->
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>5.2.15.Final</version>
-			<optional>true</optional> <!-- HibernateConnectionProviderPlugin -->
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>5.2.15.Final</version>
-			<scope>test</scope>
 		</dependency>
 
 		<!-- Search -->
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>5.6.8</version>
+			<version>7.0.0</version>
 			<optional>true</optional><!-- EsTransportSearchServicesPlugin -->
 		</dependency>
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>
 		    <artifactId>transport</artifactId>
-		    <version>5.6.8</version>
+		    <version>7.0.0</version>
 		    <optional>true</optional><!-- EsTransportSearchServicesPlugin -->
 		</dependency>
 		<dependency>
-	        <groupId>org.elasticsearch.plugin</groupId>
-	        <artifactId>transport-netty4-client</artifactId> 
-	        <version>5.6.8</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
+	        <groupId>org.codelibs.elasticsearch.module</groupId>
+	        <artifactId>analysis-common</artifactId> 
+	        <version>7.0.0</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
 	        <optional>true</optional>
 	    </dependency>
-	    <!-- ES requires 2.9.1 -->
-	    <dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-api</artifactId>
-		    <version>2.11.0</version>
+	   	<dependency>
+		    <groupId>org.codelibs.elasticsearch.module</groupId>
+		    <artifactId>mapper-extras</artifactId>
+		    <version>7.0.0</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
+	        <optional>true</optional>
 		</dependency>
 		
 		<!-- Connections Pool -->
 		<dependency>
 			<groupId>com.mchange</groupId>
 			<artifactId>c3p0</artifactId>
-			<version>0.9.5.2</version>
+			<version>0.9.5.3</version>
 			<optional>true</optional><!-- C3p0DataSourceProviderPlugin -->
 		</dependency>
 
@@ -165,13 +145,4 @@
 			<artifactId>odfdom-java</artifactId> <version>0.8.7</version> <optional>true</optional> </dependency -->
 		<!--/exporter -->
 	</dependencies>
-
-	<!-- repo pour com.sleepycat.je:7.5.11 -->
-	<repositories>
-		<repository>
-			<id>Oracle Download</id>
-			<name>Oracle Download</name>
-			<url>http://download.oracle.com/maven/</url>
-		</repository>
-	</repositories>
 </project>

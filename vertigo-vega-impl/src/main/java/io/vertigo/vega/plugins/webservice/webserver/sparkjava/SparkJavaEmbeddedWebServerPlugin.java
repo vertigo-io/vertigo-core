@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,9 +21,9 @@ package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.vega.impl.webservice.filter.JettyMultipartCleaner;
 import io.vertigo.vega.impl.webservice.filter.JettyMultipartConfig;
@@ -41,8 +41,8 @@ public final class SparkJavaEmbeddedWebServerPlugin extends AbstractSparkJavaWeb
 	 */
 	@Inject
 	public SparkJavaEmbeddedWebServerPlugin(
-			@Named("apiPrefix") final Optional<String> apiPrefix,
-			@Named("port") final int port) {
+			@ParamValue("apiPrefix") final Optional<String> apiPrefix,
+			@ParamValue("port") final int port) {
 		super(apiPrefix);
 		Spark.port(port);
 		//---

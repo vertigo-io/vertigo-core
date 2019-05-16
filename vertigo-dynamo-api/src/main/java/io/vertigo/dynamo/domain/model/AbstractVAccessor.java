@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,7 +44,7 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 	private State status = State.NOT_LOADED;
 	private final DefinitionReference<DtDefinition> targetDtDefinitionRef;
 	private final String role;
-	private URI<E> targetURI;
+	private UID<E> targetURI;
 	private E value;
 
 	/**
@@ -84,9 +84,9 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 	}
 
 	/**
-	 * @return the entity uri
+	 * @return the entity uid
 	 */
-	public final URI<E> getURI() {
+	public final UID<E> getUID() {
 		return targetURI;
 	}
 
@@ -113,7 +113,7 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 		Assertion.checkNotNull(entity);
 		//---
 		value = entity;
-		targetURI = entity.getURI();
+		targetURI = entity.getUID();
 		status = State.LOADED;
 	}
 
@@ -126,13 +126,13 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 		//---
 		//If already loaded and same id, we don't touch anything
 		if (!(status == State.LOADED && isSameId(id))) {
-			targetURI = id == null ? null : new URI(targetDtDefinitionRef.get(), id);
+			targetURI = id == null ? null : UID.of(targetDtDefinitionRef.get(), id);
 			//we have to reset the value and the state
 			value = null;
 			status = State.NOT_LOADED;
 		}
 	}
-	
+
 	private boolean isSameId(final Serializable id) {
 		if (targetURI == null) {
 			return id == null;
@@ -142,12 +142,12 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 
 	/**
 	 * Sets the entity uri
-	 * @param uri the entity uri
+	 * @param uid the entity uri
 	 */
-	public final void setUri(final URI<E> uri) {
-		Assertion.checkNotNull(uri);
+	public final void setUID(final UID<E> uid) {
+		Assertion.checkNotNull(uid);
 		//---
-		targetURI = uri; //maybe null
+		targetURI = uid; //maybe null
 		//we have to reset the value and the state
 		value = null;
 		status = State.NOT_LOADED;

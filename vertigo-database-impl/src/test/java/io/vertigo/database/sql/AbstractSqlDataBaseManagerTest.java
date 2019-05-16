@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,10 +32,10 @@ import java.util.OptionalInt;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.data.Movie;
@@ -44,6 +44,7 @@ import io.vertigo.database.sql.data.Movies;
 import io.vertigo.database.sql.statement.SqlParameter;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.statement.SqlStatementBuilder;
+import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.lang.DataStream;
 
@@ -51,11 +52,11 @@ import io.vertigo.lang.DataStream;
  *
  * @author pchretien
  */
-public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4 {
+public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5 {
 	private static final String DROP_TABLE_MOVIE = "DROP TABLE movie";
 	private static final String DROP_SEQUENCE_MOVIE = "DROP SEQUENCE seq_movie";
 
-	private static final String INSERT_INTO_MOVIE_VALUES = "insert into movie values (#movie.id#, #movie.title#, #movie.mail#, #movie.fps#, #movie.income#, #movie.color#, #movie.release_date#, #movie.release_local_date#, #movie.release_instant#, #movie.icon#)";
+	private static final String INSERT_INTO_MOVIE_VALUES = "insert into movie values (#movie.id#, #movie.title#, #movie.mail#, #movie.fps#, #movie.income#, #movie.color#, #movie.releaseDate#, #movie.releaseLocalDate#, #movie.releaseInstant#, #movie.icon#)";
 	private static final String CREATE_TABLE_MOVIE = "create table movie ("
 			+ "id bigint , "
 			+ "title varchar(255) , "
@@ -115,7 +116,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 	public void testConnection() throws Exception {
 		final SqlConnection connection = obtainMainConnection();
 		try {
-			Assert.assertNotNull(connection);
+			Assertions.assertNotNull(connection);
 			connection.commit();
 		} finally {
 			connection.release();
@@ -192,7 +193,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		//----
 		final List<Movie> movies = executeQuery(Movie.class, "select * from movie", null);
 
-		Assert.assertEquals(3, movies.size());
+		Assertions.assertEquals(3, movies.size());
 		movies.forEach(Movies::checkMovie);
 	}
 
@@ -201,7 +202,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		createDatas();
 		//----
 		final List<MovieInfo> movieInfos = executeQuery(MovieInfo.class, "select title from movie", null);
-		Assert.assertEquals(3, movieInfos.size());
+		Assertions.assertEquals(3, movieInfos.size());
 	}
 
 	@Test
@@ -209,9 +210,9 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		createDatas();
 		//----
 		final List<Movie> movies = executeQuery(Movie.class, "select * from movie where id=1", null);
-		Assert.assertEquals(1, movies.size());
+		Assertions.assertEquals(1, movies.size());
 		final Movie movie = movies.get(0);
-		Assert.assertEquals("citizen kane", movie.getTitle());
+		Assertions.assertEquals("citizen kane", movie.getTitle());
 	}
 
 	protected final <O> List<O> executeQuery(final Class<O> dataType, final String sql, final Integer limit) throws SQLException, Exception {
@@ -242,8 +243,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		createDatas();
 		//----
 		final List<Integer> result = executeQuery(Integer.class, "select count(*) from movie", 1);
-		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(3, result.get(0).intValue());
+		Assertions.assertEquals(1, result.size());
+		Assertions.assertEquals(3, result.get(0).intValue());
 	}
 
 	@Test
@@ -251,8 +252,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		createDatas();
 		//----
 		final List<String> result = executeQuery(String.class, "select title from movie where id=1", 1);
-		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(Movies.TITLE_MOVIE_1, result.get(0));
+		Assertions.assertEquals(1, result.size());
+		Assertions.assertEquals(Movies.TITLE_MOVIE_1, result.get(0));
 	}
 
 	@Test
@@ -261,7 +262,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		createDatas();
 		//----
 		final List<String> result = executeQuery(String.class, "select title from movie", null);
-		Assert.assertEquals(3, result.size());
+		Assertions.assertEquals(3, result.size());
 	}
 
 	@Test
@@ -286,7 +287,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		} finally {
 			connection.release();
 		}
-		Assert.assertEquals(2, movies.size());
+		Assertions.assertEquals(2, movies.size());
 	}
 
 	@Test
@@ -308,31 +309,33 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		} finally {
 			connection.release();
 		}
-		Assert.assertEquals(1, movies.size());
-		Assert.assertEquals(Movies.TITLE_MOVIE_1, movies.get(0).getTitle());
+		Assertions.assertEquals(1, movies.size());
+		Assertions.assertEquals(Movies.TITLE_MOVIE_1, movies.get(0).getTitle());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testQuotedParam() throws Exception {
-		//On crée les données
-		createDatas();
-		//----
-		final SqlConnection connection = obtainMainConnection();
-		final List<Movie> movies;
-		try {
-			movies = dataBaseManager.executeQuery(SqlStatement
-					.builder("select * from movie where movie.title = '#title#' ")
-					.bind("title", String.class, Movies.TITLE_MOVIE_1)
-					.build(),
-					Movie.class,
-					1,
-					connection);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			//On crée les données
+			createDatas();
+			//----
+			final SqlConnection connection = obtainMainConnection();
+			final List<Movie> movies;
+			try {
+				movies = dataBaseManager.executeQuery(SqlStatement
+						.builder("select * from movie where movie.title = '#title#' ")
+						.bind("title", String.class, Movies.TITLE_MOVIE_1)
+						.build(),
+						Movie.class,
+						1,
+						connection);
 
-		} finally {
-			connection.release();
-		}
-		Assert.assertEquals(1, movies.size());
-		Assert.assertEquals(Movies.TITLE_MOVIE_1, movies.get(0).getTitle());
+			} finally {
+				connection.release();
+			}
+			Assertions.assertEquals(1, movies.size());
+			Assertions.assertEquals(Movies.TITLE_MOVIE_1, movies.get(0).getTitle());
+		});
 	}
 
 	@Test
@@ -375,10 +378,10 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		}
 		//---
 		if (result.isPresent()) {
-			Assert.assertEquals(movies.size(), result.getAsInt());
+			Assertions.assertEquals(movies.size(), result.getAsInt());
 		}
 		final List<Integer> countMovie = executeQuery(Integer.class, "select count(*) from movie", 1);
-		Assert.assertEquals(movies.size(), countMovie.get(0).intValue());
+		Assertions.assertEquals(movies.size(), countMovie.get(0).intValue());
 	}
 
 	//On teste un preparestatement mappé sur un type statique (Class famille)
@@ -412,15 +415,15 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 		}
 		//----
 		final List<Integer> result2 = executeQuery(Integer.class, "select count(*) from movie", dataBaseManager.getConnectionProvider("secondary"), 1);
-		Assert.assertEquals(1, result2.size());
-		Assert.assertEquals(4, result2.get(0).intValue());
+		Assertions.assertEquals(1, result2.size());
+		Assertions.assertEquals(4, result2.get(0).intValue());
 		final List<Movie> resultMovie1 = executeQuery(Movie.class, "select * from movie where id=1", dataBaseManager.getConnectionProvider("secondary"), 1);
-		Assert.assertEquals(1, resultMovie1.size());
-		Assert.assertEquals("Star wars", resultMovie1.get(0).getTitle());
+		Assertions.assertEquals(1, resultMovie1.size());
+		Assertions.assertEquals("Star wars", resultMovie1.get(0).getTitle());
 
 		final List<Integer> result1 = executeQuery(Integer.class, "select count(*) from movie", dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), 1);
-		Assert.assertEquals(1, result1.size());
-		Assert.assertEquals(3, result1.get(0).intValue());
+		Assertions.assertEquals(1, result1.size());
+		Assertions.assertEquals(3, result1.get(0).intValue());
 	}
 
 	private void setupSecondary() throws Exception {
@@ -440,14 +443,14 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 	public final void testInsert() throws Exception {
 		final String insertWithgeneratedKey = obtainMainConnection().getDataBase().getSqlDialect()
 				.createInsertQuery(
-						"ID",
-						Arrays.asList("TITLE"),
+						"id",
+						Arrays.asList("title"),
 						"seq_",
 						"movie");
 
 		final GenerationMode generationMode = obtainMainConnection().getDataBase().getSqlDialect().getGenerationMode();
 		//We check that we have the right expected mode
-		Assert.assertEquals(getExpectedGenerationMode(), generationMode);
+		Assertions.assertEquals(getExpectedGenerationMode(), generationMode);
 		//---
 		final SqlConnection connection = obtainMainConnection();
 		long generatedKey;
@@ -456,9 +459,9 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 			movie.setTitle("frankenstein");
 			generatedKey = dataBaseManager
 					.executeUpdateWithGeneratedKey(
-							SqlStatement.builder(insertWithgeneratedKey).bind("DTO", Movie.class, movie).build(),
+							SqlStatement.builder(insertWithgeneratedKey).bind("dto", Movie.class, movie).build(),
 							generationMode,
-							"ID",
+							"id",
 							Long.class,
 							connection)
 					.getVal2();
@@ -467,11 +470,55 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU4
 			connection.release();
 		}
 		final List<Integer> result = executeQuery(Integer.class, "select count(*) from movie", null);
-		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(1, result.get(0).intValue());
+		Assertions.assertEquals(1, result.size());
+		Assertions.assertEquals(1, result.get(0).intValue());
 
 		final List<Integer> keys = executeQuery(Integer.class, "select id from movie", null);
-		Assert.assertEquals(1, keys.size());
-		Assert.assertEquals(generatedKey, keys.get(0).intValue());
+		Assertions.assertEquals(1, keys.size());
+		Assertions.assertEquals(generatedKey, keys.get(0).intValue());
+	}
+
+	protected abstract SqlDialect getDialect();
+
+	@Test
+	public void testSelectDtListState() throws Exception {
+		//On crée les données
+		createDatas();
+		//----
+		StringBuilder stringBuilder = new StringBuilder("select * from MOVIE");
+		getDialect().appendListState(stringBuilder, null, 0, "title", false);
+		final String querySortAsc = stringBuilder.toString();
+		final List<Movie> resultSortAsc = executeQuery(Movie.class, querySortAsc, null);
+		Assertions.assertEquals(3, resultSortAsc.size());
+		Assertions.assertEquals("citizen kane", resultSortAsc.get(0).getTitle());
+
+		stringBuilder = new StringBuilder("select * from MOVIE");
+		getDialect().appendListState(stringBuilder, null, 0, "title", true);
+		final String querySortDesc = stringBuilder.toString();
+		final List<Movie> resultSortDesc = executeQuery(Movie.class, querySortDesc, null);
+		Assertions.assertEquals(3, resultSortDesc.size());
+		Assertions.assertEquals("vertigo", resultSortDesc.get(0).getTitle());
+
+		stringBuilder = new StringBuilder("select * from MOVIE");
+		getDialect().appendListState(stringBuilder, 2, 0, null, false);
+		final String queryMaxRows = stringBuilder.toString();
+
+		final List<Movie> resultMaxRows = executeQuery(Movie.class, queryMaxRows, null);
+		Assertions.assertEquals(2, resultMaxRows.size());
+
+		stringBuilder = new StringBuilder("select * from MOVIE where 1=1");
+		getDialect().appendListState(stringBuilder, 2, 0, null, false);
+		final String queryMaxRows2 = stringBuilder.toString();
+
+		final List<Movie> resultMaxRows2 = executeQuery(Movie.class, queryMaxRows2, null);
+		Assertions.assertEquals(2, resultMaxRows2.size());
+
+		stringBuilder = new StringBuilder("select * from MOVIE");
+		getDialect().appendListState(stringBuilder, null, 1, null, false);
+		final String querySkipRows = stringBuilder.toString();
+		final List<Movie> resultSkipRows = executeQuery(Movie.class, querySkipRows, null);
+		Assertions.assertEquals(2, resultSkipRows.size());
+		Assertions.assertEquals(resultMaxRows.get(1).getId(), resultSkipRows.get(0).getId());
+
 	}
 }

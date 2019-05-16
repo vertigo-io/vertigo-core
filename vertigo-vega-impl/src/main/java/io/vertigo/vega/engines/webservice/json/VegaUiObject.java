@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,12 +20,13 @@ package io.vertigo.vega.engines.webservice.json;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -35,7 +36,6 @@ import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.validation.DtObjectErrors;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
@@ -53,14 +53,9 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
 public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webservice.model.UiObject<D> {
 	private static final long serialVersionUID = -4639050257543017072L;
 
-	/**
-	 * Index de transformation des propriétés CamelCase en champs du Dt en const
-	 */
-	protected final Map<String, String> camel2ConstIndex = new HashMap<>();
-	private final Map<String, String> const2CamelIndex = new HashMap<>();
-
 	/** Référence vers la définition. */
 	private final DefinitionReference<DtDefinition> dtDefinitionRef;
+	protected final Set<String> fieldIndex;
 
 	private String inputKey;
 	private D inputDto;
@@ -90,10 +85,9 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		//-----
 		this.inputDto = inputDto;
 		this.dtDefinitionRef = new DefinitionReference<>(DtObjectUtil.findDtDefinition(inputDto));
-		for (final DtField dtField : dtDefinitionRef.get().getFields()) {
-			camel2ConstIndex.put(StringUtil.constToLowerCamelCase(dtField.getName()), dtField.getName());
-			const2CamelIndex.put(dtField.getName(), StringUtil.constToLowerCamelCase(dtField.getName()));
-		}
+		fieldIndex = Collections.unmodifiableSet(getDtDefinition().getFields().stream()
+				.map(DtField::getName)
+				.collect(Collectors.toSet()));
 
 		for (final String field : modifiedFields) {
 			setTypedValue(field, (Serializable) getDtField(field).getDataAccessor().getValue(inputDto));
@@ -157,7 +151,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 * @return DtDefinition de l'objet métier
 	 */
 	@Override
-	public DtDefinition getDtDefinition() {
+	public final DtDefinition getDtDefinition() {
 		return dtDefinitionRef.get();
 	}
 
@@ -175,7 +169,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		Assertion.checkNotNull(inputDto, "inputDto is mandatory");
 		//-----
 		for (final DtField dtField : getDtDefinition().getFields()) {
-			if (isModified(const2CamelIndex.get(dtField.getName()))) {
+			if (isModified(dtField.getName())) {
 				dtField.getDataAccessor().setValue(serverSideDto, dtField.getDataAccessor().getValue(inputDto));
 			}
 		}
@@ -184,18 +178,20 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	/**
 	 * Vérifie les UiObjects de la liste et remplis la pile d'erreur.
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
+	 * @return if the object is valid (no format errors) if it's not valid you must not call mergeAndCheckInput
 	 */
 	@Override
-	public void checkFormat(final UiMessageStack uiMessageStack) {
+	public boolean checkFormat(final UiMessageStack uiMessageStack) {
 		if (getDtObjectErrors().hasError()) {
 			getDtObjectErrors().flushIntoMessageStack(inputKey, uiMessageStack);
 		}
 		isChecked = true;
+		return !getDtObjectErrors().hasError();
 	}
 
 	/**
 	 * Merge et Valide l'objet d'IHM et place les erreurs rencontrées dans la stack.
-	 * @param dtObjectValidators Validateurs à utiliser, peut-Ãªtre spécifique Ã  l'objet.
+	 * @param dtObjectValidators Validateurs à utiliser, peut-être spécifique à l'objet.
 	 * @param uiMessageStack Pile des messages qui sera mise Ã  jour
 	 * @return Objet métier mis Ã  jour
 	 */
@@ -206,6 +202,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		if (!isChecked) {
 			checkFormat(uiMessageStack);
 		}
+		Assertion.checkState(!getDtObjectErrors().hasError(), "Unable to merge input on a object that as format errors : {0}", this);
 		//we update inputBuffer with older datas
 		if (serverSideDto != null) { //If serverSideObject was kept, we merge input with server object
 			mergeInput();
@@ -228,7 +225,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	}
 
 	protected final DtField getDtField(final String camelField) {
-		return getDtDefinition().getField(camel2ConstIndex.get(camelField));
+		return getDtDefinition().getField(camelField);
 	}
 
 	/**
@@ -273,7 +270,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		final Object value = doGetTypedValue(fieldName);
 		final Domain domain = getDtField(fieldName).getDomain();
 		if (domain.getScope().isPrimitive() && !domain.isMultiple()) {
-			return domain.valueToString(value);
+			return domain.valueToString(value);// encodeValue
 		}
 		return null; // only non multiple primitives are supported (from user input)
 	}
@@ -285,7 +282,23 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		Assertion.checkNotNull(stringValue, "formatted value can't be null, but may be empty : {0}", fieldName);
 		//-----
 		final DtField dtField = getDtField(fieldName);
-		inputBuffer.put(fieldName, formatValue(dtField, stringValue));
+		//---
+		isChecked = false;
+		getDtObjectErrors().clearErrors(dtField.getName());
+		String formattedValue;
+		try {
+			final Serializable typedValue = (Serializable) dtField.getDomain().stringToValue(stringValue);// we should use an encoder instead
+			doSetTypedValue(dtField, typedValue);
+			// succesful encoding we can format and put in the inputbuffer
+			formattedValue = dtField.getDomain().valueToString(typedValue);
+		} catch (final FormatterException e) { //We don't log nor rethrow this exception // it should be an encoding exception
+			/** Erreur de typage.	 */
+			//encoding error
+			getDtObjectErrors().addError(dtField.getName(), e.getMessageText());
+			formattedValue = stringValue;
+		}
+
+		inputBuffer.put(fieldName, formattedValue);
 
 	}
 
@@ -294,7 +307,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 * @return Valeur typée du champs
 	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
 	 */
-	protected <T> T getTypedValue(final String fieldName, final Class<T> type) {
+	public <T> T getTypedValue(final String fieldName, final Class<T> type) {
 		Assertion.checkArgNotEmpty(fieldName);
 		Assertion.checkNotNull(type);
 		//-----
@@ -332,10 +345,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 			//Si le tableaux des valeurs formatées n'a pas été créé la valeur est null.
 			return dtField.getDataAccessor().getValue(inputDto);
 		}
-		if (serverSideDto != null) {
-			return dtField.getDataAccessor().getValue(serverSideDto);
-		}
-		return null;
+		return dtField.getDataAccessor().getValue(serverSideDto != null ? serverSideDto : inputDto);
 	}
 
 	/**
@@ -350,24 +360,10 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 * @param dtField Champs
 	 * @return Si le champs a une erreur de formatage
 	 */
-	boolean hasFormatError(final String fieldName) {
+	protected boolean hasFormatError(final String fieldName) {
 		Assertion.checkArgNotEmpty(fieldName);
 		//-----
 		return isModified(fieldName) && getDtObjectErrors().hasError(fieldName);
-	}
-
-	private String formatValue(final DtField dtField, final String value) {
-		isChecked = false;
-		getDtObjectErrors().clearErrors(dtField.getName());
-		try {
-			final Serializable typedValue = (Serializable) dtField.getDomain().stringToValue(value);
-			doSetTypedValue(dtField, typedValue);
-			return dtField.getDomain().valueToString(typedValue);
-		} catch (final FormatterException e) { //We don't log nor rethrow this exception
-			/** Erreur de typage.	 */
-			getDtObjectErrors().addError(StringUtil.constToLowerCamelCase(dtField.getName()), e.getMessageText());
-			return value;
-		}
 	}
 
 	private void doSetTypedValue(final DtField dtField, final Serializable typedValue) {
@@ -376,39 +372,32 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 
 	@Override
 	public Integer getInteger(final String fieldName) {
-		return getTypedValue(getCamelCase(fieldName), Integer.class);
+		return getTypedValue(fieldName, Integer.class);
 	}
 
 	@Override
 	public Long getLong(final String fieldName) {
-		return getTypedValue(getCamelCase(fieldName), Long.class);
+		return getTypedValue(fieldName, Long.class);
 	}
 
 	@Override
 	public String getString(final String fieldName) {
-		return getTypedValue(getCamelCase(fieldName), String.class);
+		return getTypedValue(fieldName, String.class);
 	}
 
 	@Override
 	public Boolean getBoolean(final String fieldName) {
-		return getTypedValue(getCamelCase(fieldName), Boolean.class);
+		return getTypedValue(fieldName, Boolean.class);
 	}
 
 	@Override
 	public Date getDate(final String fieldName) {
-		return getTypedValue(getCamelCase(fieldName), Date.class);
+		return getTypedValue(fieldName, Date.class);
 	}
 
 	@Override
 	public BigDecimal getBigDecimal(final String fieldName) {
-		return getTypedValue(getCamelCase(fieldName), BigDecimal.class);
-	}
-
-	private static String getCamelCase(final String fieldName) {
-		if (Character.isLowerCase(fieldName.charAt(0)) && !fieldName.contains("_")) {
-			return fieldName;
-		}
-		return StringUtil.constToLowerCamelCase(fieldName);
+		return getTypedValue(fieldName, BigDecimal.class);
 	}
 
 }

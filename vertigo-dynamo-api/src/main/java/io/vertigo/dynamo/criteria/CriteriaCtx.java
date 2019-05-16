@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,14 +31,20 @@ import io.vertigo.dynamo.domain.metamodel.DtFieldName;
  */
 public final class CriteriaCtx {
 	private int i;
+	private final Map<String, String> fieldValueNames = new HashMap<>();
 	private final Map<String, Object> attributeValues = new HashMap<>();
 	private final Map<String, DtFieldName> attributeNames = new HashMap<>();
 
 	String attributeName(final DtFieldName dtFieldName, final Object value) {
-		final String attributeName = dtFieldName.name() + '_' + i;
-		i++;
-		attributeValues.put(attributeName, value);
-		attributeNames.put(attributeName, dtFieldName);
+		final String attributeValueName = dtFieldName.name() + String.valueOf(value);
+		String attributeName = fieldValueNames.get(attributeValueName);
+		if (attributeName == null) {
+			attributeName = dtFieldName.name() + i;
+			i++;
+			fieldValueNames.put(attributeValueName, attributeName);
+			attributeValues.put(attributeName, value);
+			attributeNames.put(attributeName, dtFieldName);
+		}
 		return attributeName;
 	}
 

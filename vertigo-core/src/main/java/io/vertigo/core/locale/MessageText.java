@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,22 +42,25 @@ public final class MessageText implements Serializable {
 	private final Serializable[] params;
 
 	/**
-	 * static Builder of a messageText.
-	 * @return the builder
-	 */
-	public static MessageTextBuilder builder() {
-		return new MessageTextBuilder();
-	}
-
-	/**
 	 * static Builder of a messageText by its key.
 	 * @param key Clé de la ressource
 	 * @return the messageText
 	 */
-	public static MessageText of(final MessageKey key) {
+	public static MessageText of(final MessageKey key, final Serializable... params) {
 		Assertion.checkNotNull(key, "the message key is required");
 		//---
-		return new MessageText(null, key, new Serializable[0]);
+		return new MessageText(null, key, params);
+	}
+
+	/**
+	 * static Builder of a messageText by its default message.
+	 * @param msg Message par défaut (non formatté) de la ressource
+	 * @return the messageText
+	 */
+	public static MessageText of(final String msg, final Serializable... params) {
+		Assertion.checkArgNotEmpty(msg, "the message is required");
+		//---
+		return new MessageText(msg, null, params);
 	}
 
 	/**
@@ -65,10 +68,11 @@ public final class MessageText implements Serializable {
 	 * @param defaultMsg Message par défaut (non formatté) de la ressource
 	 * @return the messageText
 	 */
-	public static MessageText of(final String defaultMsg) {
+	public static MessageText ofDefaultMsg(final String defaultMsg, final MessageKey key, final Serializable... params) {
 		Assertion.checkArgNotEmpty(defaultMsg, "the default message is required");
+		Assertion.checkNotNull(key, "the message key is required");
 		//---
-		return new MessageText(defaultMsg, null, new Serializable[0]);
+		return new MessageText(defaultMsg, key, params);
 	}
 
 	/**
@@ -79,7 +83,7 @@ public final class MessageText implements Serializable {
 	 * @param key Clé de la ressource
 	 * @param params paramètres de la ressource
 	 */
-	MessageText(final String defaultMsg, final MessageKey key, final Serializable... params) {
+	private MessageText(final String defaultMsg, final MessageKey key, final Serializable... params) {
 		Assertion.checkNotNull(params);
 		Assertion.checkArgument(defaultMsg != null || key != null, "key or msg must be defined");
 		//---
@@ -94,7 +98,7 @@ public final class MessageText implements Serializable {
 	 * @param key Clé de la ressource
 	 * @param params paramètres de la ressource
 	 */
-	MessageText(final MessageKey key, final Serializable... params) {
+	private MessageText(final MessageKey key, final Serializable... params) {
 		this(null, key, params);
 	}
 

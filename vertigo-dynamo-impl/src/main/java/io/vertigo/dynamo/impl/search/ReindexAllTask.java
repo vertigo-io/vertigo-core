@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.search;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import org.apache.logging.log4j.LogManager;
@@ -80,22 +81,24 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 			try {
 				final Class<S> keyConceptClass = (Class<S>) ClassUtil.classForName(searchIndexDefinition.getKeyConceptDtDefinition().getClassCanonicalName(), KeyConcept.class);
 				final SearchLoader<S, DtObject> searchLoader = Home.getApp().getComponentSpace().resolve(searchIndexDefinition.getSearchLoaderId(), SearchLoader.class);
-				String lastUri = null;
-				LOGGER.info("Reindexation of " + searchIndexDefinition.getName() + " started");
+				Serializable lastUID = null;
+				LOGGER.info("Reindexation of {} started", searchIndexDefinition.getName());
 
 				for (final SearchChunk<S> searchChunk : searchLoader.chunk(keyConceptClass)) {
 					final Collection<SearchIndex<S, DtObject>> searchIndexes = searchLoader.loadData(searchChunk);
 
-					final String maxUri = String.valueOf(searchChunk.getLastURI().toString());
-					Assertion.checkState(!maxUri.equals(lastUri), "SearchLoader ({0}) error : return the same uri list", searchIndexDefinition.getSearchLoaderId());
-					searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUri, maxUri));
+					final Serializable maxUID = searchChunk.getLastUID().getId();
+					Assertion.checkState(!maxUID.equals(lastUID), "SearchLoader ({0}) error : return the same uid list", searchIndexDefinition.getSearchLoaderId());
+					searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUID, maxUID));
 					if (!searchIndexes.isEmpty()) {
 						searchManager.putAll(searchIndexDefinition, searchIndexes);
 					}
-					lastUri = maxUri;
-					reindexCount += searchChunk.getAllURIs().size();
+					lastUID = maxUID;
+					reindexCount += searchChunk.getAllUIDs().size();
 					updateReindexCount(reindexCount);
 				}
+				//On vide la suite, pour le cas ou les dernières données ne sont plus là
+				searchManager.removeAll(searchIndexDefinition, urisRangeToListFilter(lastUID, null));
 				//On ne retire pas la fin, il y a un risque de retirer les données ajoutées depuis le démarrage de l'indexation
 				reindexFuture.success(reindexCount);
 			} catch (final Exception e) {
@@ -103,7 +106,7 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 				reindexFuture.fail(e);
 			} finally {
 				stopReindex();
-				LOGGER.info("Reindexation of " + searchIndexDefinition.getName() + " finished in " + (System.currentTimeMillis() - startTime) + "ms (" + reindexCount + " elements done)");
+				LOGGER.info("Reindexation of {} finished in {} ms ({} elements done)", searchIndexDefinition.getName(), System.currentTimeMillis() - startTime, reindexCount);
 			}
 		}
 	}
@@ -128,14 +131,21 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 		return REINDEX_COUNT;
 	}
 
-	private static ListFilter urisRangeToListFilter(final String firstUri, final String lastUri) {
+	private static ListFilter urisRangeToListFilter(final Serializable firstUri, final Serializable lastUri) {
 		final String filterValue = new StringBuilder()
-				.append("urn").append(":{") //{ for exclude min
-				.append(firstUri != null ? ("\"" + firstUri + "\"") : "*")
+				.append("docId").append(":{") //{ for exclude min
+				.append(firstUri != null ? escapeStringId(firstUri) : "*")
 				.append(" TO ")
-				.append(lastUri != null ? ("\"" + lastUri + "\"") : "*")
+				.append(lastUri != null ? escapeStringId(lastUri) : "*")
 				.append("]")
 				.toString();
 		return ListFilter.of(filterValue);
+	}
+
+	private static Serializable escapeStringId(final Serializable id) {
+		if (id instanceof String) {
+			return "\"" + id + "\"";
+		}
+		return id;
 	}
 }

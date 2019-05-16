@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,6 +39,7 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
 import io.vertigo.lang.Assertion;
@@ -80,14 +80,13 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	 *  - inMemory default to false meaning store on file system
 	 * @param collections List of collections managed by this plugin (comma separated)
 	 * @param dbFilePath Base Berkeley DB file system path (Could use java env param like user.home user.dir or java.io.tmpdir)
-	 * @param minFreeDisk Minimum free disk space to maintain, in bytes. If the limit is exceeded, write operations will be prohibited. Default to 100M.
 	 * @param transactionManager Transaction manager
 	 * @param codecManager Codec manager
 	 */
 	@Inject
 	public BerkeleyKVStorePlugin(
-			@Named("collections") final String collections,
-			@Named("dbFilePath") final String dbFilePath,
+			@ParamValue("collections") final String collections,
+			@ParamValue("dbFilePath") final String dbFilePath,
 			final VTransactionManager transactionManager,
 			final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(collections);
@@ -101,7 +100,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 				.collect(Collectors.toList());
 		//-----
 		dbFilePathTranslated = FileUtil.translatePath(dbFilePath);
-		minFreeDisk = "100000000";
+		minFreeDisk = "100000000"; //Minimum free disk space to maintain, in bytes. If the limit is exceeded, write operations will be prohibited. Default to 100M.
 		this.transactionManager = transactionManager;
 		this.codecManager = codecManager;
 	}
@@ -203,7 +202,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	/**
 	 * Remove too old elements.
 	 */
-	@DaemonScheduled(name = "DMN_PURGE_BERKELEY_KV_STORE", periodInSeconds = REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS)
+	@DaemonScheduled(name = "DmnPurgeBerkeleyKvStore", periodInSeconds = REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS)
 	public void removeTooOldElements() {
 		Assertion.checkArgument(MAX_REMOVED_TOO_OLD_ELEMENTS > 0 && MAX_REMOVED_TOO_OLD_ELEMENTS < 100000, "maxRemovedTooOldElements must stay between 1 and 100000");
 		//---

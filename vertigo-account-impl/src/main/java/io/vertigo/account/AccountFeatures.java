@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,93 +20,207 @@ package io.vertigo.account;
 
 import io.vertigo.account.account.AccountManager;
 import io.vertigo.account.authentication.AuthenticationManager;
-import io.vertigo.account.impl.account.AccountCachePlugin;
+import io.vertigo.account.authorization.AuthorizationManager;
+import io.vertigo.account.identityprovider.IdentityProviderManager;
 import io.vertigo.account.impl.account.AccountDefinitionProvider;
-import io.vertigo.account.impl.account.AccountStorePlugin;
 import io.vertigo.account.impl.account.AccountManagerImpl;
 import io.vertigo.account.impl.authentication.AuthenticationManagerImpl;
-import io.vertigo.account.impl.authentication.AuthenticationPlugin;
+import io.vertigo.account.impl.authorization.AuthorizationAspect;
+import io.vertigo.account.impl.authorization.AuthorizationManagerImpl;
+import io.vertigo.account.impl.identityprovider.IdentityProviderManagerImpl;
 import io.vertigo.account.impl.security.VSecurityManagerImpl;
+import io.vertigo.account.plugins.account.cache.memory.MemoryAccountCachePlugin;
 import io.vertigo.account.plugins.account.cache.redis.RedisAccountCachePlugin;
+import io.vertigo.account.plugins.account.store.datastore.StoreAccountStorePlugin;
+import io.vertigo.account.plugins.account.store.loader.LoaderAccountStorePlugin;
+import io.vertigo.account.plugins.account.store.text.TextAccountStorePlugin;
+import io.vertigo.account.plugins.authentication.ldap.LdapAuthenticationPlugin;
+import io.vertigo.account.plugins.authentication.mock.MockAuthenticationPlugin;
+import io.vertigo.account.plugins.authentication.store.StoreAuthenticationPlugin;
+import io.vertigo.account.plugins.authentication.text.TextAuthenticationPlugin;
+import io.vertigo.account.plugins.identityprovider.ldap.LdapIdentityProviderPlugin;
+import io.vertigo.account.plugins.identityprovider.store.StoreIdentityProviderPlugin;
+import io.vertigo.account.plugins.identityprovider.text.TextIdentityProviderPlugin;
+import io.vertigo.account.security.VSecurityManager;
+import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
-import io.vertigo.persona.security.UserSession;
-import io.vertigo.persona.security.VSecurityManager;
 
 /**
  * Defines the 'account' extension
  * @author pchretien
  */
-public final class AccountFeatures extends Features {
+public final class AccountFeatures extends Features<AccountFeatures> {
 
 	/**
 	 * Constructor.
 	 */
 	public AccountFeatures() {
-		super("x-account");
+		super("account");
 	}
 
 	/**
 	 * Activates user session.
-	 * @param userSessionClass the user session class
+	 * @param params the user session class name
 	 * @return these features
 	 */
-	public AccountFeatures withUserSession(final Class<? extends UserSession> userSessionClass) {
+	@Feature("security")
+	public AccountFeatures withSecurity(final Param... params) {
 		getModuleConfigBuilder()
-				.addComponent(VSecurityManager.class, VSecurityManagerImpl.class,
-						Param.of("userSessionClassName", userSessionClass.getName()));
+				.addComponent(VSecurityManager.class, VSecurityManagerImpl.class, params);
 		return this;
 	}
 
 	/**
-	 * Defines REDIS as the database to store the accounts
-	 * @return the features
+	 * Activates authentication.
+	 * @return these features
 	 */
-	public AccountFeatures withRedisAccountCachePlugin() {
-		return withAccountCachePlugin(RedisAccountCachePlugin.class);
-	}
-
-	/**
-	 * Defines a Authenticating realm.
-	 * @param authenticatingRealmPluginClass
-	 * @param params
-	 * @return the features
-	 */
-	public AccountFeatures withAuthentication(final Class<? extends AuthenticationPlugin> authenticatingRealmPluginClass, final Param... params) {
+	@Feature("authentication")
+	public AccountFeatures withAuthentication() {
 		getModuleConfigBuilder()
-				.addPlugin(authenticatingRealmPluginClass, params);
+				.addComponent(AuthenticationManager.class, AuthenticationManagerImpl.class);
 		return this;
 	}
 
 	/**
-	 * @param accountCachePluginClass
-	 * @param params
-	 * @return the features
+	 * Activates text authentication.
+	 * @return these features
 	 */
-	public AccountFeatures withAccountCachePlugin(final Class<? extends AccountCachePlugin> accountCachePluginClass, final Param... params) {
+	@Feature("authentication.text")
+	public AccountFeatures withTextAuthentication(final Param... params) {
 		getModuleConfigBuilder()
-				.addPlugin(accountCachePluginClass, params);
+				.addPlugin(TextAuthenticationPlugin.class, params);
+		return this;
+	}
+
+	/**
+	 * Activates store authentication.
+	 * @return these features
+	 */
+	@Feature("authentication.store")
+	public AccountFeatures withStoreAuthentication(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(StoreAuthenticationPlugin.class, params);
+		return this;
+	}
+
+	/**
+	 * Activates ldap authentication.
+	 * @return these features
+	 */
+	@Feature("authentication.ldap")
+	public AccountFeatures withLdapAuthentication(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(LdapAuthenticationPlugin.class, params);
+		return this;
+	}
+
+	/**
+	 * Activates mock authentication.
+	 * @return these features
+	 */
+	@Feature("authentication.mock")
+	public AccountFeatures withMockAuthentication(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(MockAuthenticationPlugin.class, params);
+		return this;
+	}
+
+	@Feature("account")
+	public AccountFeatures withAccount() {
+		getModuleConfigBuilder()
+				.addComponent(AccountManager.class, AccountManagerImpl.class)
+				.addDefinitionProvider(AccountDefinitionProvider.class);
+		return this;
+	}
+
+	/**
+	 * Activates text authentication.
+	 * @return these features
+	 */
+	@Feature("account.store.store")
+	public AccountFeatures withStoreAccount(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(StoreAccountStorePlugin.class, params);
+		return this;
+	}
+
+	/**
+	 * Activates text authentication.
+	 * @return these features
+	 */
+	@Feature("account.store.text")
+	public AccountFeatures withTextAccount(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(TextAccountStorePlugin.class, params);
+		return this;
+	}
+
+	@Feature("account.store.loader")
+	public AccountFeatures withLoaderAccount(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(LoaderAccountStorePlugin.class, params);
+		return this;
+	}
+
+	@Feature("account.cache.memory")
+	public AccountFeatures withMemoryAccountCache(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(MemoryAccountCachePlugin.class, params);
+		return this;
+	}
+
+	@Feature("account.cache.redis")
+	public AccountFeatures withRedisAccountCache() {
+		getModuleConfigBuilder()
+				.addPlugin(RedisAccountCachePlugin.class);
+		return this;
+	}
+
+	@Feature("identityProvider")
+	public AccountFeatures withIdentityProvider() {
+		getModuleConfigBuilder()
+				.addComponent(IdentityProviderManager.class, IdentityProviderManagerImpl.class);
+		return this;
+	}
+
+	@Feature("identityProvider.store")
+	public AccountFeatures withStoreIdentityProvider(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(StoreIdentityProviderPlugin.class, params);
+		return this;
+	}
+
+	@Feature("identityProvider.ldap")
+	public AccountFeatures withLdapIdentityProvider(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(LdapIdentityProviderPlugin.class, params);
+		return this;
+	}
+
+	@Feature("identityProvider.text")
+	public AccountFeatures withTextIdentityProvider(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(TextIdentityProviderPlugin.class, params);
+		return this;
+	}
+
+	/**
+	 * Activates authorization.
+	 * @return these features
+	 */
+	@Feature("authorization")
+	public AccountFeatures withAuthorization() {
+		getModuleConfigBuilder()
+				.addComponent(AuthorizationManager.class, AuthorizationManagerImpl.class)
+				.addAspect(AuthorizationAspect.class);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
-		getModuleConfigBuilder()
-				.addDefinitionProvider(AccountDefinitionProvider.class);
-	}
-
-	/**
-	 * @param accountStorePluginClass
-	 * @param params
-	 * @return the features
-	 */
-	public AccountFeatures withAccountStorePlugin(final Class<? extends AccountStorePlugin> accountStorePluginClass, final Param... params) {
-		getModuleConfigBuilder()
-				.addComponent(AuthenticationManager.class, AuthenticationManagerImpl.class)
-				.addComponent(AccountManager.class, AccountManagerImpl.class)
-				.addPlugin(accountStorePluginClass, params);
-		return this;
+		//
 	}
 
 }

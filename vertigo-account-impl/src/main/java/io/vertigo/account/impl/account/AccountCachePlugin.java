@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,7 @@ import java.util.Set;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.core.component.Plugin;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.file.model.VFile;
 
 /**
@@ -33,38 +33,38 @@ import io.vertigo.dynamo.file.model.VFile;
 public interface AccountCachePlugin extends Plugin {
 
 	/**
-	 * @param accountURI the account defined by its URI
+	 * @param accountUID the account defined by its UID
 	 * @return the account
 	 */
-	Optional<Account> getAccount(URI<Account> accountURI);
+	Optional<Account> getAccount(UID<Account> accountUID);
 
 	/**
-	 * @param accountURI the account defined by its URI
+	 * @param accountUID the account defined by its UID
 	 * @return Set of groups of this account
 	 */
-	Set<URI<AccountGroup>> getGroupURIs(URI<Account> accountURI);
+	Set<UID<AccountGroup>> getGroupUIDs(UID<Account> accountUID);
 
 	/**
-	 * Gets the group defined by an URI.
-	 * @param groupURI the group URI
+	 * Gets the group defined by an UID.
+	 * @param groupUID the group UID
 	 * @return the group
 	 */
-	Optional<AccountGroup> getGroup(URI<AccountGroup> groupURI);
+	Optional<AccountGroup> getGroup(UID<AccountGroup> groupUID);
 
 	/**
 	 * Lists the accounts for a defined group.
-	 * @param groupURI the group URI
+	 * @param groupUID the group UID
 	 * @return the list of acccounts.
 	 */
-	Set<URI<Account>> getAccountURIs(URI<AccountGroup> groupURI);
+	Set<UID<Account>> getAccountUIDs(UID<AccountGroup> groupUID);
 
 	/**
-	 * Gets the photo of an account defined by its URI.
+	 * Gets the photo of an account defined by its UID.
 	 *
-	 * @param accountURI the account defined by its URI
+	 * @param accountUID the account defined by its UID
 	 * @return the photo as a file
 	 */
-	Optional<VFile> getPhoto(URI<Account> accountURI);
+	Optional<VFile> getPhoto(UID<Account> accountUID);
 
 	/**
 	 * Saves an account.
@@ -81,17 +81,17 @@ public interface AccountCachePlugin extends Plugin {
 
 	/**
 	 * Attaches an account to a group.
-	 * @param accountURI the account defined by its URI
-	 * @param groupURI the group
+	 * @param accountUID the account defined by its UID
+	 * @param groupUID the group
 	 */
-	void attach(URI<Account> accountURI, Set<URI<AccountGroup>> groupURI);
+	void attach(UID<Account> accountUID, Set<UID<AccountGroup>> groupUID);
 
 	/**
 	 * Attaches an account to a group.
-	 * @param accountsURI the accounts defined by their URI
-	 * @param groupURI the group
+	 * @param accountsUID the accounts defined by their UID
+	 * @param groupUID the group
 	 */
-	void attach(Set<URI<Account>> accountsURI, URI<AccountGroup> groupURI);
+	void attach(Set<UID<Account>> accountsUID, UID<AccountGroup> groupUID);
 
 	/**
 	 * Reset:
@@ -105,10 +105,10 @@ public interface AccountCachePlugin extends Plugin {
 	/**
 	 * Defines a photo to an account.
 	 *
-	 * @param accountURI the account defined by its URI
+	 * @param accountUID the account defined by its UID
 	 * @param photo the photo
 	 */
-	void setPhoto(URI<Account> accountURI, VFile photo);
+	void setPhoto(UID<Account> accountUID, VFile photo);
 
 	/**
 	 * Get an newly authentify user by his authToken.

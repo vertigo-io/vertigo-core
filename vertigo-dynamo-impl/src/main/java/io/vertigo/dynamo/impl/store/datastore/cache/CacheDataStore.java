@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,20 +18,25 @@
  */
 package io.vertigo.dynamo.impl.store.datastore.cache;
 
-import io.vertigo.app.Home;
-import io.vertigo.commons.eventbus.EventBusManager;
+import java.util.Collections;
+import java.util.List;
+
 import io.vertigo.commons.eventbus.EventBusSubscriptionDefinition;
-import io.vertigo.core.definition.DefinitionSpaceWritable;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.dynamo.criteria.Criteria;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtListURI;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreConfigImpl;
@@ -45,7 +50,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author  pchretien
  */
-public final class CacheDataStore {
+public final class CacheDataStore implements SimpleDefinitionProvider {
 	private final CollectionsManager collectionsManager;
 	private final StoreManager storeManager;
 	private final CacheDataStoreConfig cacheDataStoreConfig;
@@ -55,31 +60,20 @@ public final class CacheDataStore {
 	 * Constructor.
 	 * @param collectionsManager collectionsManager
 	 * @param storeManager Store manager
-	 * @param eventBusManager Event bus manager
 	 * @param dataStoreConfig Data store configuration
 	 */
 	public CacheDataStore(
 			final CollectionsManager collectionsManager,
 			final StoreManager storeManager,
-			final EventBusManager eventBusManager,
 			final DataStoreConfigImpl dataStoreConfig) {
 		Assertion.checkNotNull(collectionsManager);
 		Assertion.checkNotNull(storeManager);
-		Assertion.checkNotNull(eventBusManager);
 		Assertion.checkNotNull(dataStoreConfig);
 		//-----
 		this.collectionsManager = collectionsManager;
 		this.storeManager = storeManager;
 		cacheDataStoreConfig = dataStoreConfig.getCacheStoreConfig();
 		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
-
-		//TODO : A revoir plus tard
-		final EventBusSubscriptionDefinition<StoreEvent> eventBusSubscription = new EventBusSubscriptionDefinition<>(
-				"EVT_CLEAR_CACHE",
-				StoreEvent.class,
-				event -> clearCache(event.getUri().getDefinition()));
-		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace())
-				.registerDefinition(eventBusSubscription);
 	}
 
 	private DataStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {
@@ -88,38 +82,38 @@ public final class CacheDataStore {
 
 	/**
 	 * @param <E> the type of entity
-	 * @param uri Element uri
-	 * @return Element by uri
+	 * @param uid Element uid
+	 * @return Element by uid
 	 */
-	public <E extends Entity> E readNullable(final URI<E> uri) {
-		Assertion.checkNotNull(uri);
+	public <E extends Entity> E readNullable(final UID<E> uid) {
+		Assertion.checkNotNull(uid);
 		//-----
-		final DtDefinition dtDefinition = uri.getDefinition();
+		final DtDefinition dtDefinition = uid.getDefinition();
 		E entity;
 		if (cacheDataStoreConfig.isCacheable(dtDefinition)) {
 			// - Prise en compte du cache
-			entity = cacheDataStoreConfig.getDataCache().getDtObject(uri);
+			entity = cacheDataStoreConfig.getDataCache().getDtObject(uid);
 			// - Prise en compte du cache
 			if (entity == null) {
 				//Cas ou le dto représente un objet non mis en cache
-				entity = this.<E> loadNullable(dtDefinition, uri);
+				entity = this.<E> loadNullable(dtDefinition, uid);
 			}
 		} else {
-			entity = getPhysicalStore(dtDefinition).readNullable(dtDefinition, uri);
+			entity = getPhysicalStore(dtDefinition).readNullable(dtDefinition, uid);
 		}
 		return entity;
 	}
 
-	private synchronized <E extends Entity> E loadNullable(final DtDefinition dtDefinition, final URI<E> uri) {
+	private synchronized <E extends Entity> E loadNullable(final DtDefinition dtDefinition, final UID<E> uid) {
 		final E entity;
 		if (cacheDataStoreConfig.isReloadedByList(dtDefinition)) {
 			//On ne charge pas les cache de façon atomique.
-			final DtListURI dtcURIAll = new DtListURIForCriteria<>(dtDefinition, null, null);
+			final DtListURI dtcURIAll = new DtListURIForCriteria<>(dtDefinition, Criterions.alwaysTrue(), DtListState.of(null));
 			loadList(dtcURIAll); //on charge la liste complete (et on remplit les caches)
-			entity = cacheDataStoreConfig.getDataCache().getDtObject(uri);
+			entity = cacheDataStoreConfig.getDataCache().getDtObject(uid);
 		} else {
 			//On charge le cache de façon atomique à partir du dataStore
-			entity = getPhysicalStore(dtDefinition).readNullable(dtDefinition, uri);
+			entity = getPhysicalStore(dtDefinition).readNullable(dtDefinition, uid);
 			if (entity != null) {
 				cacheDataStoreConfig.getDataCache().putDtObject(entity);
 			}
@@ -139,7 +133,7 @@ public final class CacheDataStore {
 			list = getPhysicalStore(dtDefinition).findAll(dtDefinition, (DtListURIForNNAssociation) listUri);
 		} else if (listUri instanceof DtListURIForCriteria<?>) {
 			final DtListURIForCriteria<E> castedListUri = DtListURIForCriteria.class.cast(listUri);
-			list = getPhysicalStore(dtDefinition).findAll(dtDefinition, castedListUri);
+			list = getPhysicalStore(dtDefinition).findByCriteria(dtDefinition, castedListUri.getCriteria(), castedListUri.getDtListState());
 		} else {
 			throw new IllegalArgumentException("cas non traité " + listUri);
 		}
@@ -151,7 +145,7 @@ public final class CacheDataStore {
 		Assertion.checkArgument(uri.getDtDefinition().getSortField().isPresent(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDtDefinition().getName());
 		//-----
 		//On cherche la liste complete
-		final DtList<E> unFilteredDtc = findAll(new DtListURIForCriteria<E>(uri.getDtDefinition(), null, null));
+		final DtList<E> unFilteredDtc = getPhysicalStore(uri.getDtDefinition()).findByCriteria(uri.getDtDefinition(), Criterions.alwaysTrue(), DtListState.of(null, 0, uri.getDtDefinition().getSortField().get().getName(), false));
 
 		//On compose les fonctions
 		//1.on filtre
@@ -184,6 +178,10 @@ public final class CacheDataStore {
 		return doLoadList(uri.getDtDefinition(), uri);
 	}
 
+	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
+		return findAll(new DtListURIForCriteria(dtDefinition, criteria, dtListState));
+	}
+
 	private static boolean isMultipleAssociation(final DtListURI uri) {
 		return uri instanceof DtListURIForNNAssociation;
 	}
@@ -203,5 +201,15 @@ public final class CacheDataStore {
 		// On ne vérifie pas que la definition est cachable, Lucene utilise le même cache
 		// A changer si on gère lucene différemment
 		cacheDataStoreConfig.getDataCache().clear(dtDefinition);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		final EventBusSubscriptionDefinition<StoreEvent> eventBusSubscription = new EventBusSubscriptionDefinition<>(
+				"EvtClearCache",
+				StoreEvent.class,
+				event -> clearCache(event.getUID().getDefinition()));
+		return Collections.singletonList(eventBusSubscription);
 	}
 }

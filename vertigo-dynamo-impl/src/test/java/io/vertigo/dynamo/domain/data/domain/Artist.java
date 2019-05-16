@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.domain.data.domain;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -35,25 +35,25 @@ public final class Artist implements KeyConcept {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<Artist> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<Artist> getUID() {
+		return UID.of(this);
 	}
 
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "id of the artist")
-	public final Long getId() {
+	@Field(domain = "DoId", type = "ID", required = true, label = "id of the artist")
+	public Long getId() {
 		return id;
 	}
 
-	public final void setId(final Long id) {
+	public void setId(final Long id) {
 		this.id = id;
 	}
 
-	@Field(domain = "DO_STRING", label = "name")
-	public final String getName() {
+	@Field(domain = "DoString", label = "name")
+	public String getName() {
 		return name;
 	}
 
-	public final void setName(final String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 

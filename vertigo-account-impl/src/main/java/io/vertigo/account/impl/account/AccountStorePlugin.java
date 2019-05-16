@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,7 @@ import java.util.Set;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.core.component.Plugin;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.file.model.VFile;
 
 /**
@@ -33,38 +33,38 @@ import io.vertigo.dynamo.file.model.VFile;
 public interface AccountStorePlugin extends Plugin {
 
 	/**
-	 * @param accountURI the account defined by its URI
+	 * @param accountUID the account defined by its UID
 	 * @return the account
 	 */
-	Account getAccount(URI<Account> accountURI);
+	Account getAccount(UID<Account> accountUID);
 
 	/**
-	 * @param accountURI the account defined by its URI
+	 * @param accountUID the account defined by its UID
 	 * @return Set of groups of this account
 	 */
-	Set<URI<AccountGroup>> getGroupURIs(URI<Account> accountURI);
+	Set<UID<AccountGroup>> getGroupUIDs(UID<Account> accountUID);
 
 	/**
-	 * Gets the group defined by an URI.
-	 * @param groupURI the group URI
+	 * Gets the group defined by an UID.
+	 * @param groupUID the group UID
 	 * @return the group
 	 */
-	AccountGroup getGroup(URI<AccountGroup> groupURI);
+	AccountGroup getGroup(UID<AccountGroup> groupUID);
 
 	/**
 	 * Lists the accounts for a defined group.
-	 * @param groupURI the group URI
+	 * @param groupUID the group UID
 	 * @return the list of acccounts.
 	 */
-	Set<URI<Account>> getAccountURIs(URI<AccountGroup> groupURI);
+	Set<UID<Account>> getAccountUIDs(UID<AccountGroup> groupUID);
 
 	/**
-	 * Gets the photo of an account defined by its URI.
+	 * Gets the photo of an account defined by its UID.
 	 *
-	 * @param accountURI the account defined by its URI
+	 * @param accountUID the account defined by its UID
 	 * @return the photo as a file
 	 */
-	Optional<VFile> getPhoto(URI<Account> accountURI);
+	Optional<VFile> getPhoto(UID<Account> accountUID);
 
 	/**
 	 * Get an newly authentify user by his authToken.

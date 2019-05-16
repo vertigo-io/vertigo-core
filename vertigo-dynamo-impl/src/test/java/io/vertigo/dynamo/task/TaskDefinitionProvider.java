@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,11 +34,11 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.util.ListBuilder;
 
 public final class TaskDefinitionProvider implements SimpleDefinitionProvider {
-	public static String TK_MULTIPLICATION = "TK_MULTIPLICATION";
-	public static String TK_ADDITION = "TK_ADDITION";
+	public static String TK_MULTIPLICATION = "TkMultiplication";
+	public static String TK_ADDITION = "TkAddition";
 
-	public static String TK_MULTIPLICATION_2 = "TK_MULTIPLICATION_2";
-	public static String TK_ADDITION_2 = "TK_ADDITION_2";
+	public static String TK_MULTIPLICATION_2 = "TkMultiplication2";
+	public static String TK_ADDITION_2 = "TkAddition2";
 
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
@@ -55,7 +55,7 @@ public final class TaskDefinitionProvider implements SimpleDefinitionProvider {
 			final DefinitionSpace definitionSpace,
 			final String taskDefinitionName,
 			final String params) {
-		final Domain doInteger = definitionSpace.resolve("DO_INTEGER", Domain.class);
+		final Domain doInteger = definitionSpace.resolve("DoInteger", Domain.class);
 
 		return TaskDefinition.builder(taskDefinitionName)
 				.withEngine(TaskEngineMock.class)
@@ -72,8 +72,8 @@ public final class TaskDefinitionProvider implements SimpleDefinitionProvider {
 			final DefinitionSpace definitionSpace,
 			final String taskDefinitionName,
 			final String params) {
-		final Domain doIntegers = definitionSpace.resolve("DO_INTEGERS", Domain.class);
-		final Domain doInteger = definitionSpace.resolve("DO_INTEGER", Domain.class);
+		final Domain doIntegers = definitionSpace.resolve("DoIntegers", Domain.class);
+		final Domain doInteger = definitionSpace.resolve("DoInteger", Domain.class);
 
 		return TaskDefinition.builder(taskDefinitionName)
 				.withEngine(TaskEngineMock2.class)

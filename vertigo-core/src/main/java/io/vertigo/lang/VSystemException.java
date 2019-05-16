@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,16 +26,7 @@ import io.vertigo.util.StringUtil;
  * @author fconstantin, pchretien, npiedeloup
  */
 public class VSystemException extends RuntimeException {
-
 	private static final long serialVersionUID = -2256807194400285743L;
-
-	/**
-	 * Constructor.
-	 * @param msg  the message
-	 */
-	public VSystemException(final String msg) {
-		super(msg);
-	}
 
 	/**
 	 * Constructor.
@@ -43,7 +34,7 @@ public class VSystemException extends RuntimeException {
 	 * @param params the params
 	 */
 	public VSystemException(final String msg, final Object... params) {
-		this(StringUtil.format(msg, params));
+		super(StringUtil.format(msg, params));
 	}
 
 	/**

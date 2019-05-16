@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,39 +18,41 @@
  */
 package io.vertigo.core.component.aop;
 
-import java.util.Properties;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.xml.XMLAppConfigBuilder;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.core.component.aop.data.aspects.OneMoreAspect;
+import io.vertigo.core.component.aop.data.components.ComputerImpl;
 
 @RunWith(JUnitPlatform.class)
 public final class Aspect2Test {
+
+	protected static NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(ModuleConfig.builder("aspects")
+						.addAspect(OneMoreAspect.class)
+						.build())
+				.addModule(ModuleConfig.builder("components")
+						.addComponent(ComputerImpl.class)
+						.build())
+				.build();
+	}
 
 	@Test
 	public final void testLoadComponentsWithoutDeclaredAspects() {
 		Assertions.assertThrows(IllegalStateException.class,
 				() -> {
-					try (final AutoCloseableApp app = new AutoCloseableApp(buildAppConfig())) {
+					try (final AutoCloseableApp app = new AutoCloseableApp(buildNodeConfig())) {
 						//nop
 					}
 				});
-	}
-
-	private AppConfig buildAppConfig() {
-		//si présent on récupère le paramétrage du fichier externe de paramétrage log4j
-		return new XMLAppConfigBuilder()
-				.withModules(getClass(), new Properties(), getManagersXmlFileName())
-				.build();
-	}
-
-	private static String[] getManagersXmlFileName() {
-		return new String[] { "./managers-without-aspects-test.xml", };
 	}
 
 }

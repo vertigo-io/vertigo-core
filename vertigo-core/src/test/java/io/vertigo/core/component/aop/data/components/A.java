@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,8 +18,6 @@
  */
 package io.vertigo.core.component.aop.data.components;
 
-import javax.inject.Named;
-
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.component.Component;
 import io.vertigo.core.component.aop.data.MyException;
@@ -27,7 +25,6 @@ import io.vertigo.core.component.aop.data.MyException;
 /**
  * @author prahmoune
  */
-@Named("a")
 public class A implements Component, Activeable {
 	boolean initialized;
 	boolean finalized;

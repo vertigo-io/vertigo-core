@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,7 @@ final class WhereInPreProcessor {
 	private static final String REGEXP_CHECK_PATTERN = "\\s(?:IN|in).+#.+(?:ROWNUM|rownum).*#";
 	private static final Pattern JAVA_CHECK_PATTERN = Pattern.compile(REGEXP_CHECK_PATTERN);
 
-	private static final String REGEXP_PATTERN = "\\W([A-Za-z0-9_\\.]+)\\s+((?:NOT|not)\\s+)?(?:IN|in)\\s+\\(\\s*#([A-Z0-9_]+)\\.(?:ROWNUM|rownum)(?:\\.+([A-Z0-9_]+))?#\\s*\\)";
+	private static final String REGEXP_PATTERN = "\\W([a-zA-Z0-9_\\.]+)\\s+((?:NOT|not)\\s+)?(?:IN|in)\\s+\\(\\s*#([a-z][a-zA-Z0-9]*)\\.(?:ROWNUM|rownum)(?:\\.+([a-z][a-zA-Z0-9]*))?#\\s*\\)";
 	private static final Pattern JAVA_PATTERN = Pattern.compile(REGEXP_PATTERN);
 
 	private static final int NB_MAX_WHERE_IN_ITEM = 1000;

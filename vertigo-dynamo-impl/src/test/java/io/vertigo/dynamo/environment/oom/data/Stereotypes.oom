@@ -2550,8 +2550,8 @@ LABL 0 Arial,8,N</a:FontList>
 <c:Associations>
 <o:Association Id="o12">
 <a:ObjectID>F2BA60EA-D658-411E-9C95-82075055EF93</a:ObjectID>
-<a:Name>Association_1</a:Name>
-<a:Code>association1</a:Code>
+<a:Name>Association 1</a:Name>
+<a:Code>a_association_1</a:Code>
 <a:CreationDate>1425480888</a:CreationDate>
 <a:Creator>npiedeloup</a:Creator>
 <a:ModificationDate>1425649865</a:ModificationDate>
@@ -2576,8 +2576,8 @@ LABL 0 Arial,8,N</a:FontList>
 </o:Association>
 <o:Association Id="o15">
 <a:ObjectID>F77799DF-8D26-46FC-8D22-91075F4797FB</a:ObjectID>
-<a:Name>Association_2</a:Name>
-<a:Code>association2</a:Code>
+<a:Name>Association 2</a:Name>
+<a:Code>a_association_2</a:Code>
 <a:CreationDate>1425480889</a:CreationDate>
 <a:Creator>npiedeloup</a:Creator>
 <a:ModificationDate>1425649857</a:ModificationDate>
@@ -2602,8 +2602,8 @@ LABL 0 Arial,8,N</a:FontList>
 </o:Association>
 <o:Association Id="o18">
 <a:ObjectID>B552B52E-7574-4494-8F97-D2833689A3C9</a:ObjectID>
-<a:Name>Association_3</a:Name>
-<a:Code>association3</a:Code>
+<a:Name>Association 3</a:Name>
+<a:Code>a_association_3</a:Code>
 <a:CreationDate>1425480893</a:CreationDate>
 <a:Creator>npiedeloup</a:Creator>
 <a:ModificationDate>1425649878</a:ModificationDate>
@@ -2627,8 +2627,8 @@ LABL 0 Arial,8,N</a:FontList>
 </o:Association>
 <o:Association Id="o21">
 <a:ObjectID>427B25C1-16E4-4CFD-BB21-F9FA89EC69AC</a:ObjectID>
-<a:Name>Association_4</a:Name>
-<a:Code>association4</a:Code>
+<a:Name>Association 4</a:Name>
+<a:Code>a_association_4</a:Code>
 <a:CreationDate>1425480895</a:CreationDate>
 <a:Creator>npiedeloup</a:Creator>
 <a:ModificationDate>1425649883</a:ModificationDate>

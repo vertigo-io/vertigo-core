@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,6 @@ import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * Définition d'un FileInfo.
@@ -35,7 +34,7 @@ import io.vertigo.util.StringUtil;
  *
  * @author  npiedeloup, pchretien
  */
-@DefinitionPrefix("FI")
+@DefinitionPrefix("Fi")
 public final class FileInfoDefinition implements Definition {
 	/**
 	 * Nom de la définition.
@@ -88,7 +87,7 @@ public final class FileInfoDefinition implements Definition {
 	public static FileInfoDefinition findFileInfoDefinition(final Class<? extends FileInfo> fileInfoClass) {
 		Assertion.checkNotNull(fileInfoClass);
 		//-----
-		final String name = DefinitionUtil.getPrefix(FileInfoDefinition.class) + SEPARATOR + StringUtil.camelToConstCase(fileInfoClass.getSimpleName());
+		final String name = DefinitionUtil.getPrefix(FileInfoDefinition.class) + fileInfoClass.getSimpleName();
 		return Home.getApp().getDefinitionSpace().resolve(name, FileInfoDefinition.class);
 	}
 }

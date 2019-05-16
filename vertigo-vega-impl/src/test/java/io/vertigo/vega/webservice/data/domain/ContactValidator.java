@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.webservice.data.domain;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -35,10 +35,10 @@ public class ContactValidator extends AbstractDtObjectValidator<Contact> {
 	/** {@inheritDoc} */
 	@Override
 	protected void checkMonoFieldConstraints(final Contact dtObject, final DtField dtField, final DtObjectErrors dtObjectErrors) {
-		final String camelCaseFieldName = getCamelCaseFieldName(dtField);
+		final String camelCaseFieldName = dtField.getName();
 		if ("birthday".equals(camelCaseFieldName) && !dtObjectErrors.hasError(camelCaseFieldName)) {
-			final Date birthday = dtObject.getBirthday();
-			if (DateUtil.daysBetween(birthday, DateUtil.newDate()) < (16 * 365)) { //if less than 16
+			final LocalDate birthday = dtObject.getBirthday();
+			if (DateUtil.daysBetween(birthday, LocalDate.now()) < 16 * 365) { //if less than 16
 				dtObjectErrors.addError(camelCaseFieldName, MessageText.of("You can't add contact younger than 16"));
 			}
 		}

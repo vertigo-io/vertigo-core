@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,13 +26,15 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
+import org.elasticsearch.analysis.common.CommonAnalysisPlugin;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.index.mapper.MapperExtrasPlugin;
 import org.elasticsearch.index.reindex.ReindexPlugin;
 import org.elasticsearch.node.InternalSettingsPreparer;
 import org.elasticsearch.node.Node;
@@ -41,6 +43,7 @@ import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.transport.Netty4Plugin;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
 import io.vertigo.lang.Assertion;
@@ -57,6 +60,9 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 	private final URL elasticSearchHomeURL;
 	private Node node;
 
+	private final Integer httpPort;
+	private final Integer transportPort;
+
 	/**
 	 * Constructor.
 	 * @param elasticSearchHome URL du serveur SOLR
@@ -69,17 +75,21 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 	 */
 	@Inject
 	public ESEmbeddedSearchServicesPlugin(
-			@Named("home") final String elasticSearchHome,
-			@Named("envIndex") final String envIndex,
-			@Named("envIndexIsPrefix") final Optional<Boolean> envIndexIsPrefix,
-			@Named("rowsPerQuery") final int rowsPerQuery,
-			@Named("config.file") final String configFile,
+			@ParamValue("home") final String elasticSearchHome,
+			@ParamValue("envIndex") final String envIndex,
+			@ParamValue("envIndexIsPrefix") final Optional<Boolean> envIndexIsPrefix,
+			@ParamValue("rowsPerQuery") final int rowsPerQuery,
+			@ParamValue("config.file") final String configFile,
+			@ParamValue("http.port") final Optional<Integer> httpPortOpt,
+			@ParamValue("transport.tcp.port") final Optional<Integer> transportPortOpt,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
-		super(envIndex, envIndexIsPrefix.orElse(false), rowsPerQuery, configFile, codecManager, resourceManager);
+		super(envIndex, envIndexIsPrefix.orElse(true), rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(elasticSearchHome);
 		//-----
 		elasticSearchHomeURL = resourceManager.resolve(elasticSearchHome);
+		httpPort = httpPortOpt.orElse(9200);
+		transportPort = transportPortOpt.orElse(9300);
 	}
 
 	/** {@inheritDoc} */
@@ -104,33 +114,37 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 		}
 	}
 
-	private static Node createNode(final URL esHomeURL) {
+	private Node createNode(final URL esHomeURL) {
 		Assertion.checkNotNull(esHomeURL);
 		//-----
 		final File home;
 		try {
 			home = new File(URLDecoder.decode(esHomeURL.getFile(), StandardCharsets.UTF_8.name()));
 		} catch (final UnsupportedEncodingException e) {
-			throw WrappedException.wrap(e, "Error de parametrage du ElasticSearchHome " + esHomeURL);
+			throw WrappedException.wrap(e, "Error de parametrage du ElasticSearchHome {0}", esHomeURL);
 		}
 		Assertion.checkArgument(home.exists() && home.isDirectory(), "Le ElasticSearchHome : {0} n''existe pas, ou n''est pas un répertoire.", home.getAbsolutePath());
 		Assertion.checkArgument(home.canWrite(), "L''application n''a pas les droits d''écriture sur le ElasticSearchHome : {0}", home.getAbsolutePath());
-		return new MyNode(buildNodeSettings(home.getAbsolutePath()), Arrays.asList(Netty4Plugin.class, ReindexPlugin.class));
+		return new MyNode(buildNodeSettings(home.getAbsolutePath()), Arrays.asList(Netty4Plugin.class, ReindexPlugin.class, CommonAnalysisPlugin.class, MapperExtrasPlugin.class));
 	}
 
 	private static class MyNode extends Node {
 		public MyNode(final Settings preparedSettings, final Collection<Class<? extends Plugin>> classpathPlugins) {
-			super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, null), classpathPlugins);
+			super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, Collections.emptyMap(), null, null), classpathPlugins, true);
 		}
 	}
 
-	private static Settings buildNodeSettings(final String homePath) {
+	private Settings buildNodeSettings(final String homePath) {
 		//Build settings
 		return Settings.builder()
 				.put("node.name", "es-embedded-node-" + System.currentTimeMillis())
 				.put("transport.type", "netty4")
 				.put("http.type", "netty4")
-				.put("http.enabled", "true")
+				.put("http.port", httpPort)
+				.put("transport.tcp.port", transportPort)
+				.put("cluster.routing.allocation.disk.watermark.low", "1000mb")
+				.put("cluster.routing.allocation.disk.watermark.high", "500mb")
+				.put("cluster.routing.allocation.disk.watermark.flood_stage", "250mb")
 				.put("path.home", homePath)
 				.build();
 	}

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -55,19 +55,19 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin {
 			final String acceptType = webServiceDefinition.getAcceptType();
 			final SparkJavaRoute sparkJavaRoute = new SparkJavaRoute(webServiceDefinition, handlerChain, DEFAULT_CONTENT_CHARSET);
 			switch (webServiceDefinition.getVerb()) {
-				case GET:
+				case Get:
 					Spark.get(routePath, acceptType, sparkJavaRoute);
 					break;
-				case POST:
+				case Post:
 					Spark.post(routePath, acceptType, sparkJavaRoute);
 					break;
-				case PUT:
+				case Put:
 					Spark.put(routePath, acceptType, sparkJavaRoute);
 					break;
-				case PATCH:
+				case Patch:
 					Spark.patch(routePath, acceptType, sparkJavaRoute);
 					break;
-				case DELETE:
+				case Delete:
 					Spark.delete(routePath, acceptType, sparkJavaRoute);
 					break;
 				default:

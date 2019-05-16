@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,6 +34,8 @@ import io.vertigo.account.authorization.metamodel.SecuredEntity;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
 import io.vertigo.account.impl.authorization.dsl.translator.CriteriaSecurityRuleTranslator;
 import io.vertigo.account.impl.authorization.dsl.translator.SearchSecurityRuleTranslator;
+import io.vertigo.account.security.UserSession;
+import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.app.Home;
 import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.criteria.Criteria;
@@ -42,8 +44,6 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
-import io.vertigo.persona.security.UserSession;
-import io.vertigo.persona.security.VSecurityManager;
 
 /**
  * Main authorizations manager implementation.
@@ -89,11 +89,11 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean hasAuthorization(final AuthorizationName permissionName) {
-		Assertion.checkNotNull(permissionName);
+	public boolean hasAuthorization(final AuthorizationName... permissionNames) {
+		Assertion.checkNotNull(permissionNames);
 		//---
 		return getUserPermissionsOpt()
-				.map(userPermissions -> userPermissions.hasAuthorization(permissionName))
+				.map(userPermissions -> userPermissions.hasAuthorization(permissionNames))
 				// Si il n'y a pas de userPermissions alors pas d'autorisation.
 				.orElse(false);
 
@@ -181,11 +181,15 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return ""; //Attention : pas de *:*
 		}
-		final UserAuthorizations userPermissions = userPermissionsOpt.get();
-		final SearchSecurityRuleTranslator securityRuleTranslator = new SearchSecurityRuleTranslator();
-		securityRuleTranslator.withCriteria(userPermissions.getSecurityKeys());
 
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConceptClass);
+		final SecuredEntity securedEntity = findSecuredEntity(dtDefinition);
+
+		final UserAuthorizations userPermissions = userPermissionsOpt.get();
+		final SearchSecurityRuleTranslator securityRuleTranslator = new SearchSecurityRuleTranslator()
+				.on(securedEntity)
+				.withCriteria(userPermissions.getSecurityKeys());
+
 		final List<Authorization> permissions = userPermissions.getEntityAuthorizations(dtDefinition).stream()
 				.filter(permission -> permission.getOperation().get().equals(operationName.name()))
 				.collect(Collectors.toList());

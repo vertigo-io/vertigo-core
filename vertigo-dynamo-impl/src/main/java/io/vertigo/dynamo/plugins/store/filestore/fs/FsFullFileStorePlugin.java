@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,6 @@ package io.vertigo.dynamo.plugins.store.filestore.fs;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -30,6 +29,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
@@ -38,11 +38,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
@@ -54,7 +54,6 @@ import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-import io.vertigo.util.DateUtil;
 
 /**
  * Permet de gérer les accès atomiques à n'importe quel type de stockage SQL/
@@ -84,11 +83,11 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	 */
 	@Inject
 	public FsFullFileStorePlugin(
-			@Named("name") final Optional<String> name,
-			@Named("path") final String path,
+			@ParamValue("name") final Optional<String> name,
+			@ParamValue("path") final String path,
 			final FileManager fileManager,
 			final VTransactionManager transactionManager,
-			@Named("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
+			@ParamValue("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
 		Assertion.checkNotNull(name);
 		Assertion.checkArgNotEmpty(path);
 		Assertion.checkNotNull(fileManager);
@@ -105,7 +104,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	/**
 	 * Daemon to purge old files
 	 */
-	@DaemonScheduled(name = "DMN_PURGE_FILE_STORE_DAEMON_", periodInSeconds = 5 * 60)
+	@DaemonScheduled(name = "DmnPurgeFileStoreDaemon", periodInSeconds = 5 * 60)
 	public void deleteOldFiles() {
 		if (purgeDelayMinutesOpt.isPresent()) {
 			final File documentRootFile = new File(documentRoot);
@@ -131,7 +130,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			// récupération des infos
 			final String fileName = infos.get(0);
 			final String mimeType = infos.get(1);
-			final Instant lastModified = DateUtil.parseToInstant(infos.get(2), INFOS_DATE_PATTERN);
+			final Instant lastModified = Instant.from(DateTimeFormatter.ofPattern(INFOS_DATE_PATTERN).withZone(ZoneOffset.UTC).parse(infos.get(2)));
 			final Long length = Long.valueOf(infos.get(3));
 
 			final InputStreamBuilder inputStreamBuilder = new FileInputStreamBuilder(new File(obtainFullFilePath(uri)));
@@ -142,7 +141,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			fsFileInfo.setURIStored(uri);
 			return fsFileInfo;
 		} catch (final IOException e) {
-			throw WrappedException.wrap(e, "Can't read fileInfo " + uri.toURN());
+			throw WrappedException.wrap(e, "Can't read fileInfo {0}", uri.toURN());
 		}
 	}
 
@@ -243,7 +242,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		/** {@inheritDoc} */
 		@Override
 		public InputStream createInputStream() throws IOException {
-			return new FileInputStream(file);
+			return Files.newInputStream(file.toPath());
 		}
 	}
 

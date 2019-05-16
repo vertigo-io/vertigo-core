@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,9 +30,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import io.vertigo.account.security.UserSession;
+import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.app.Home;
-import io.vertigo.persona.security.UserSession;
-import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.webservice.exception.SessionException;
 
 /**
@@ -49,8 +49,6 @@ public final class SecurityFilter extends AbstractFilter {
 
 	private static final String NO_AUTHENTIFICATION_PATTERN_PARAM_NAME = "url-no-authentification";
 
-	private static final String CHECK_REQUEST_ACCESS_PARAM_NAME = "check-request-access";
-
 	/**
 	 * Le gestionnaire de sécurité
 	 */
@@ -58,14 +56,11 @@ public final class SecurityFilter extends AbstractFilter {
 
 	private Optional<Pattern> noAuthentificationPattern;
 
-	private boolean checkRequestAccess;
-
 	/** {@inheritDoc} */
 	@Override
 	public void doInit() {
 		securityManager = Home.getApp().getComponentSpace().resolve(VSecurityManager.class);
 		noAuthentificationPattern = parsePattern(getFilterConfig().getInitParameter(NO_AUTHENTIFICATION_PATTERN_PARAM_NAME));
-		checkRequestAccess = Boolean.parseBoolean(getFilterConfig().getInitParameter(CHECK_REQUEST_ACCESS_PARAM_NAME));
 	}
 
 	/** {@inheritDoc} */
@@ -91,16 +86,19 @@ public final class SecurityFilter extends AbstractFilter {
 			// 2. Vérification que l'utilisateur est authentifié si l'adresse demandée l'exige
 			if (needsAuthentification && !user.isAuthenticated()) {
 				/*
-				 * Lance des exceptions - si la session a expiré - ou si aucune session utilisateur n'existe.
+				 * il ne faut pas continuer
+				 * - si la session a expiré
+				 * - ou si aucune session utilisateur n'existe.
 				 */
-				httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
-				//il ne faut pas continuer
 				if (!hasSession) {
-					//Par défaut on considère que la session a expirer
-					throw new ServletException(new SessionException("Session expirée"));
+					httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Session Expired"); //No session found
+					httpRequest.setAttribute("SessionExpired", true);
+					throw new ServletException(new SessionException("Session Expired"));//will override the 401 error code and send a 500
+				} else {
+					httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED); //User not authenticated
 				}
-			} else if (checkRequestAccess && needsAuthentification && !securityManager.isAuthorized("HttpServletRequest", httpRequest, "OP_READ")) {
-				httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
+				//} else if (checkRequestAccess && needsAuthentification && false) { //TODO
+				//	httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
 			} else {
 				chain.doFilter(httpRequest, httpResponse);
 			}

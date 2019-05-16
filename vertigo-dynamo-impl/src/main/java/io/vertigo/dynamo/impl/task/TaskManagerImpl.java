@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,14 +20,13 @@ package io.vertigo.dynamo.impl.task;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.InjectorUtil;
 
 /**
  * @author pchretien
@@ -56,7 +55,7 @@ public final class TaskManagerImpl implements TaskManager {
 	}
 
 	private static TaskResult doExecute(final Task task) {
-		final TaskEngine taskEngine = DIInjector.newInstance(task.getDefinition().getTaskEngineClass(), Home.getApp().getComponentSpace());
+		final TaskEngine taskEngine = InjectorUtil.newInstance(task.getDefinition().getTaskEngineClass());
 		return taskEngine.process(task);
 	}
 }

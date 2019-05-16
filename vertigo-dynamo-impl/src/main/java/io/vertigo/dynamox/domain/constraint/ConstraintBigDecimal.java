@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -50,12 +50,12 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 		try {
 			maxPrecision = Integer.valueOf(beforeAfter[0]);
 		} catch (final NumberFormatException e) {
-			throw WrappedException.wrap(e, args + " : first part is a not an integer");
+			throw WrappedException.wrap(e, "{0} : first part is a not an integer", args);
 		}
 		try {
 			maxScale = Integer.valueOf(beforeAfter[1]);
 		} catch (final NumberFormatException e) {
-			throw WrappedException.wrap(e, args + " : second part is a not an integer");
+			throw WrappedException.wrap(e, "{0} : second part is a not an integer", args);
 		}
 		// ---
 		Assertion.checkNotNull(maxPrecision, "Le nombre de chiffres ne peut pas être null");
@@ -78,14 +78,10 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return MessageText
-				.builder()
-				.withKey(Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED)
-				.withParams(
-						new BigDecimal(new BigInteger("1"), 0 - maxPrecision - maxScale),
-						maxScale,
-						maxPrecision - maxScale)
-				.build();
+		return MessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED,
+				new BigDecimal(new BigInteger("1"), 0 - maxPrecision - maxScale),
+				maxScale,
+				maxPrecision - maxScale);
 	}
 
 	/** {@inheritDoc} */

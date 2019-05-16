@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,6 @@ package io.vertigo.dynamo.domain.metamodel;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.BeanUtil;
-import io.vertigo.util.StringUtil;
 
 /**
  * Permet d'accéder aux données d'un objet par son champ.
@@ -31,13 +30,11 @@ import io.vertigo.util.StringUtil;
  */
 public final class DataAccessor {
 	private final DtField dtField;
-	private final String ccFieldName;
 
 	DataAccessor(final DtField dtField) {
 		Assertion.checkNotNull(dtField);
 		//-----
 		this.dtField = dtField;
-		ccFieldName = StringUtil.constToLowerCamelCase(dtField.getName());
 	}
 
 	/**
@@ -53,7 +50,7 @@ public final class DataAccessor {
 		//On vérifie le type java de l'objet.
 		dtField.getDomain().checkValue(value);
 		//-----
-		BeanUtil.setValue(dto, ccFieldName, value);
+		BeanUtil.setValue(dto, dtField.getName(), value);
 	}
 
 	/**
@@ -69,6 +66,6 @@ public final class DataAccessor {
 	 */
 	public Object getValue(final DtObject dto) {
 		//Dans le cas d'un champ statique
-		return BeanUtil.getValue(dto, ccFieldName);
+		return BeanUtil.getValue(dto, dtField.getName());
 	}
 }

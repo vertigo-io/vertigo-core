@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,43 +23,48 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 
 /**
- * Objet utilisé par FreeMarker.
+ * Template used by freemarker.
  *
  * @author sezratty
  */
 public final class TemplateAoTaskTest {
 	private final String packageName;
-	private final String className;
-	private final TemplateTaskDefinition taskDefinition;
+	private final String classSimpleName;
+	private final TemplateTaskDefinition templateTaskDefinition;
 	private final String daoTestBaseClass;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
-	TemplateAoTaskTest(final FileGeneratorConfig taskConfiguration, final TaskDefinition taskDefinition, final String packageName, final String className, final String daoTestBaseClass) {
+	TemplateAoTaskTest(
+			final FileGeneratorConfig taskConfiguration,
+			final TaskDefinition taskDefinition,
+			final String packageName,
+			final String classSimpleName,
+			final String daoTestBaseClass) {
 		Assertion.checkNotNull(taskConfiguration);
 		Assertion.checkNotNull(taskDefinition);
 		Assertion.checkNotNull(packageName);
 		//-----
 		this.packageName = packageName;
 
-		this.className = className;
-		this.taskDefinition = new TemplateTaskDefinition(taskDefinition, packageName, className);
+		this.classSimpleName = classSimpleName;
+		this.templateTaskDefinition = new TemplateTaskDefinition(taskDefinition, packageName, classSimpleName);
 		this.daoTestBaseClass = daoTestBaseClass;
 	}
-	
+
 	/**
 	 * @return Simple Nom (i.e. sans le package) de la classe de test.
 	 */
 	public String getClassSimpleName() {
-		return className;
+		return classSimpleName;
 	}
 
 	/**
 	 * @return Task
 	 */
 	public TemplateTaskDefinition getTaskDefinition() {
-		return taskDefinition;
+		return templateTaskDefinition;
 	}
 
 	/**
@@ -67,13 +72,6 @@ public final class TemplateAoTaskTest {
 	 */
 	public String getPackageName() {
 		return packageName;
-	}	
-
-	/**
-	 * @return Si ce pao utilise au moins une Option : vertigo.core.lang.Option
-	 */
-	public boolean isOptions() {
-		return this.taskDefinition.hasOptions();
 	}
 
 	/**
@@ -82,14 +80,14 @@ public final class TemplateAoTaskTest {
 	public String getDaoTestBaseClass() {
 		return daoTestBaseClass;
 	}
-	
+
 	/**
 	 * @return Nom simple de la classe de base pour le test de DAO.
 	 */
 	public String getDaoTestBaseClassSimpleName() {
 		return getLastPackagename(daoTestBaseClass);
 	}
-	
+
 	private static String getLastPackagename(final String canonicalName) {
 		final String[] parts = canonicalName.split("\\.");
 		return parts[parts.length - 1];

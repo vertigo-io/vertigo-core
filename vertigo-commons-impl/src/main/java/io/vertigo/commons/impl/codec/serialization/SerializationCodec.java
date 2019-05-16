@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,7 +47,7 @@ public final class SerializationCodec implements Codec<Serializable, byte[]> {
 			oos.flush();
 			return baos.toByteArray();
 		} catch (final IOException e) {
-			throw WrappedException.wrap(e, "Serialization : write stream exception for " + object.getClass().getName());
+			throw WrappedException.wrap(e, "Serialization : write stream exception for {0}", object.getClass().getName());
 		}
 	}
 

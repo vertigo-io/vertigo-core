@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,8 +33,7 @@ import org.reflections.Reflections;
 import org.reflections.scanners.TypeElementsScanner;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Tuples;
-import io.vertigo.lang.Tuples.Tuple2;
+import io.vertigo.lang.Tuple;
 import javassist.Modifier;
 
 /**
@@ -63,12 +62,11 @@ public final class Selector {
 	private boolean scoped;
 
 	private void checkScope() {
-
 		Assertion.checkState(!scoped, "Classes cannot be added to scope after filtering");
 	}
 
 	/**
-	 * Add a class to the scope.
+	 * Adds a class to the scope.
 	 * @param clazz the class to add
 	 * @return the selector
 	 */
@@ -81,7 +79,7 @@ public final class Selector {
 	}
 
 	/**
-	 * Adds a collection of class to the scope provided by the given supplier.
+	 * Adds a collection of classes to the scope provided by the given supplier.
 	 * @param classesSupplier a supplier of classes
 	 * @return the selector
 	 */
@@ -94,7 +92,7 @@ public final class Selector {
 	}
 
 	/**
-	 * Adds a collection of class to the scope.
+	 * Adds a collection of classes to the scope.
 	 * @param classes a supplier of classes
 	 * @return the selector
 	 */
@@ -107,7 +105,7 @@ public final class Selector {
 	}
 
 	/**
-	 * Add all the classes with a package prefix in the scope.
+	 * Adds all the classes with a package prefix in the scope.
 	 * @param packageName the root package
 	 * @return the selector
 	 */
@@ -125,7 +123,7 @@ public final class Selector {
 	}
 
 	/**
-	 * Filter field with a predicate.
+	 * Filters field with a predicate.
 	 * @param fieldPredicate the predicate
 	 * @return the selector
 	 */
@@ -138,7 +136,7 @@ public final class Selector {
 	}
 
 	/**
-	 * Filter method with a predicate.
+	 * Filters method with a predicate.
 	 * @param methodPredicate the predicate
 	 * @return the selector
 	 */
@@ -151,7 +149,7 @@ public final class Selector {
 	}
 
 	/**
-	 * Filter classes with a predicate.
+	 * Filters classes with a predicate.
 	 * @param classPredicate the predicate
 	 * @return the selector
 	 */
@@ -180,7 +178,7 @@ public final class Selector {
 	 * Find the methods matching the requirements and with method matching the requirements.
 	 * @return the classes matching the selector
 	 */
-	public Collection<Tuple2<Class, Method>> findMethods() {
+	public Collection<Tuple<Class, Method>> findMethods() {
 
 		return scope.values()
 				.stream()
@@ -188,22 +186,22 @@ public final class Selector {
 				.filter(filterClassesBasedOnFields())
 				.flatMap(clazz -> Stream.of(clazz.getDeclaredMethods()))
 				.filter(methodPredicates)
-				.map(method -> Tuples.of(Class.class.cast(method.getDeclaringClass()), method))
+				.map(method -> Tuple.of(Class.class.cast(method.getDeclaringClass()), method))
 				.collect(Collectors.toList());
 	}
 
 	/**
-	 * Find the fields matching the requirements with the associatedClass.
+	 * Finds the fields matching the requirements with the associatedClass.
 	 * @return the classes matching the selector
 	 */
-	public Collection<Tuple2<Class, Field>> findFields() {
+	public Collection<Tuple<Class, Field>> findFields() {
 		return scope.values()
 				.stream()
 				.filter(classPredicates)
 				.filter(filterClassesBasedOnMethods())
 				.flatMap(clazz -> Stream.of(clazz.getDeclaredFields()))
 				.filter(fieldPredicates)
-				.map(field -> Tuples.of(Class.class.cast(field.getDeclaringClass()), field))
+				.map(field -> Tuple.of(Class.class.cast(field.getDeclaringClass()), field))
 				.collect(Collectors.toList());
 	}
 
@@ -236,9 +234,7 @@ public final class Selector {
 	}
 
 	/**
-	 * Condition for selecting a method.
-	 * @author mlaroche
-	 *
+	 * Conditions for selecting a method.
 	 */
 	public static final class MethodConditions {
 		private MethodConditions() {
@@ -246,7 +242,7 @@ public final class Selector {
 		}
 
 		/**
-		 * Build a predicate to check if the method is Annotated.
+		 * Builds a predicate to check if the method is Annotated.
 		 * @param annotationClass the annotation
 		 * @return the predicate
 		 */
@@ -258,9 +254,7 @@ public final class Selector {
 	}
 
 	/**
-	 * Condition for selecting a method.
-	 * @author mlaroche
-	 *
+	 * Conditions for selecting a method.
 	 */
 	public static final class FieldConditions {
 		private FieldConditions() {
@@ -268,7 +262,7 @@ public final class Selector {
 		}
 
 		/**
-		 * Build a predicate to check if the field is Annotated.
+		 * Builds a predicate to check if the field is Annotated.
 		 * @param annotationClass the annotation
 		 * @return the predicate
 		 */
@@ -281,8 +275,6 @@ public final class Selector {
 
 	/**
 	 * Conditions for selecting a class.
-	 * @author mlaroche
-	 *
 	 */
 	public static final class ClassConditions {
 		private ClassConditions() {
@@ -290,7 +282,7 @@ public final class Selector {
 		}
 
 		/**
-		 * Build a predicate to check if the classe is Annotated.
+		 * Builds a predicate to check if the class is annotated.
 		 * @param annotationClass the annotation
 		 * @return the predicate
 		 */
@@ -301,7 +293,7 @@ public final class Selector {
 		}
 
 		/**
-		 * Build a predicate to check if the classe is a subtype of the given class.
+		 * Builds a predicate to check if the class is a subtype of the given class.
 		 * @param clazz the annotation
 		 * @return the predicate
 		 */
@@ -312,9 +304,8 @@ public final class Selector {
 		}
 
 		/**
-		 * Build a predicate to check if the classe is an abstract class. (we consider here that interface class are not abstract classes)
+		 * Builds a predicate to check if the class is an abstract class. (we consider here that interface class are not abstract classes)
 		 * To filter interface clazz use the interfaces() ClassCondition
-		 * @param clazz the annotation
 		 * @return the predicate
 		 */
 		public static Predicate<Class> isAbstract() {
@@ -322,7 +313,7 @@ public final class Selector {
 		}
 
 		/**
-		 * Build a predicate to check if the classe is an interface.
+		 * Builds a predicate to check if the class is an interface.
 		 * @return the predicate
 		 */
 		public static Predicate<Class> interfaces() {

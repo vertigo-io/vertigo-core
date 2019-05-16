@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ package io.vertigo.dynamo.plugins.environment.registries.task;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.IN_OUT;
-import static io.vertigo.dynamo.plugins.environment.KspProperty.NOT_NULL;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUIRED;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUEST;
 import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.Boolean;
 import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.String;
@@ -45,7 +45,7 @@ final class TaskGrammar implements DslGrammar {
 
 	static {
 		final DslEntity taskAttributeDefinitionEntity = DslEntity.builder("Attribute")
-				.addRequiredField(NOT_NULL, Boolean)
+				.addRequiredField(REQUIRED, Boolean)
 				.addRequiredField(IN_OUT, String)
 				.addRequiredField("domain", DomainGrammar.DOMAIN_ENTITY.getLink())
 				.build();

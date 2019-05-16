@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,8 +27,8 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_B;
-import static io.vertigo.dynamo.plugins.environment.KspProperty.NOT_NULL;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.PERSISTENT;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUIRED;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.STEREOTYPE;
@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
@@ -75,7 +74,6 @@ import io.vertigo.util.StringUtil;
  */
 public final class AnnotationLoader implements Loader {
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
-	private static final char SEPARATOR = Definition.SEPARATOR;
 
 	/**
 	 * @return Liste des fichiers Java représentant des objets métiers.
@@ -116,7 +114,7 @@ public final class AnnotationLoader implements Loader {
 		//-----
 		final String simpleName = clazz.getSimpleName();
 		final String packageName = clazz.getPackage().getName();
-		final String dtDefinitionName = DT_DEFINITION_PREFIX + SEPARATOR + StringUtil.camelToConstCase(simpleName);
+		final String dtDefinitionName = DT_DEFINITION_PREFIX + simpleName;
 
 		String fragmentOf = null;
 		if (Fragment.class.isAssignableFrom(clazz)) {
@@ -318,23 +316,32 @@ public final class AnnotationLoader implements Loader {
 	private static void parseAnnotation(final String fieldName, final DslDefinitionBuilder dtDefinition, final io.vertigo.dynamo.domain.stereotype.Field field) {
 		//Si on trouve un domaine on est dans un objet dynamo.
 		final FieldType type = FieldType.valueOf(field.type());
-		final DslDefinition dtField = DslDefinition.builder(fieldName, DomainGrammar.DT_FIELD_ENTITY)
-				.addDefinitionLink("domain", field.domain())
-				.addPropertyValue(LABEL, field.label())
-				.addPropertyValue(NOT_NULL, field.required())
-				.addPropertyValue(PERSISTENT, field.persistent())
-				.build();
 
 		switch (type) {
 			case ID:
-				dtDefinition.addChildDefinition(DomainGrammar.ID, dtField);
+				final DslDefinition idField = DslDefinition.builder(fieldName, DomainGrammar.DT_ID_FIELD_ENTITY)
+						.addDefinitionLink("domain", field.domain())
+						.addPropertyValue(LABEL, field.label())
+						.build();
+				dtDefinition.addChildDefinition(DomainGrammar.ID_FIELD, idField);
 				break;
 			case DATA:
-				dtDefinition.addChildDefinition("field", dtField);
+				final DslDefinition dataField = DslDefinition.builder(fieldName, DomainGrammar.DT_DATA_FIELD_ENTITY)
+						.addDefinitionLink("domain", field.domain())
+						.addPropertyValue(LABEL, field.label())
+						.addPropertyValue(REQUIRED, field.required())
+						.addPropertyValue(PERSISTENT, field.persistent())
+						.build();
+				dtDefinition.addChildDefinition(DomainGrammar.DATA_FIELD, dataField);
 				break;
 			case COMPUTED:
+				final DslDefinition computedField = DslDefinition.builder(fieldName, DomainGrammar.DT_COMPUTED_FIELD_ENTITY)
+						.addDefinitionLink("domain", field.domain())
+						.addPropertyValue(LABEL, field.label())
+						//.addPropertyValue(EXPRESSION, null) no expression on annotation
+						.build();
 				//Valeurs renseignées automatiquement parce que l'on est dans le cas d'un champ calculé
-				dtDefinition.addChildDefinition("computed", dtField);
+				dtDefinition.addChildDefinition(DomainGrammar.COMPUTED_FIELD, computedField);
 				break;
 			case FOREIGN_KEY:
 				//on ne fait rien puisque le champ est défini par une association.
@@ -352,8 +359,8 @@ public final class AnnotationLoader implements Loader {
 	private static String createFieldName(final Field field) {
 		Assertion.checkNotNull(field);
 		//-----
-		final String fieldName = StringUtil.camelToConstCase(field.getName());
-		if (StringUtil.constToLowerCamelCase(fieldName).equals(field.getName())) {
+		final String fieldName = field.getName();
+		if (StringUtil.isLowerCamelCase(fieldName)) {
 			return fieldName;
 		}
 		throw new IllegalArgumentException(field.getName() + " ne permet pas de donner un nom unique de propriété ");
@@ -369,9 +376,8 @@ public final class AnnotationLoader implements Loader {
 		//-----
 		if (method.getName().startsWith("get")) {
 			final String propertyName = method.getName().substring("get".length());
-			final String fieldName = StringUtil.camelToConstCase(propertyName);
-			if (StringUtil.constToUpperCamelCase(fieldName).equals(propertyName)) {
-				//Si on a une bijection alors OK
+			final String fieldName = StringUtil.first2LowerCase(propertyName);
+			if (StringUtil.isLowerCamelCase(fieldName)) {
 				return fieldName;
 			}
 		}

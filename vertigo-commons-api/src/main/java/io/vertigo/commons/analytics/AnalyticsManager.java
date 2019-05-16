@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,6 +26,7 @@ import java.util.function.Function;
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.health.HealthStatus;
 import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.commons.analytics.process.AProcess;
 import io.vertigo.commons.analytics.process.ProcessAnalyticsTracer;
 import io.vertigo.core.component.Manager;
 
@@ -77,5 +78,12 @@ public interface AnalyticsManager extends Manager {
 	 * @return the list of metrics
 	 */
 	List<Metric> getMetrics();
+
+	/**
+	 * Adds an already built AProcess (via the builder) for tracking process that are not executed in a single thread environnement.
+	 * Prefer the use of method trace and traceWithReturn for commons cases (easier)
+	 * @param process the built process
+	 */
+	void addProcess(AProcess process);
 
 }

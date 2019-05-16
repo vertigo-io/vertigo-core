@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,8 +46,7 @@ public final class ListVAccessor<E extends Entity> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private static enum State {
-		LOADED,
-		NOT_LOADED
+		LOADED, NOT_LOADED
 	}
 
 	private State status = State.NOT_LOADED;
@@ -92,9 +91,9 @@ public final class ListVAccessor<E extends Entity> implements Serializable {
 	public final DtListURIForAssociation getDtListURI() {
 		final AssociationDefinition associationDefinition = associationDefinitionReference.get();
 		if (associationDefinition instanceof AssociationSimpleDefinition) {
-			return new DtListURIForSimpleAssociation((AssociationSimpleDefinition) associationDefinition, entity.getURI(), roleName);
+			return new DtListURIForSimpleAssociation((AssociationSimpleDefinition) associationDefinition, entity.getUID(), roleName);
 		} else if (associationDefinition instanceof AssociationNNDefinition) {
-			return new DtListURIForNNAssociation((AssociationNNDefinition) associationDefinition, entity.getURI(), roleName);
+			return new DtListURIForNNAssociation((AssociationNNDefinition) associationDefinition, entity.getUID(), roleName);
 		}
 		throw new VSystemException("Unhandled type of association. Only Simple and NN Associations are supported");
 	}
@@ -103,11 +102,11 @@ public final class ListVAccessor<E extends Entity> implements Serializable {
 	 * Loads the value if needed.
 	 */
 	public final void load() {
-		// we are not lazy the uri of the parent might have changed
-		if (entity.getURI() != null) {
+		// we are not lazy the uid of the parent might have changed
+		if (entity.getUID() != null) {
 			value = getDataStore().findAll(getDtListURI());
 		} else {
-			// if the uri is null we return an empty dtList
+			// if the uid is null we return an empty dtList
 			value = new DtList<>(targetDefinitionReference.get());
 		}
 		status = State.LOADED;

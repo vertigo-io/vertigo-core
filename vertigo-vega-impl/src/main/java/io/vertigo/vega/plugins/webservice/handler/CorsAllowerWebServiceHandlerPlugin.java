@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,11 +24,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
@@ -60,8 +60,8 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 	 */
 	@Inject
 	public CorsAllowerWebServiceHandlerPlugin(
-			@Named("originCORSFilter") final Optional<String> originCORSFilter,
-			@Named("methodCORSFilter") final Optional<String> methodCORSFilter) {
+			@ParamValue("originCORSFilter") final Optional<String> originCORSFilter,
+			@ParamValue("methodCORSFilter") final Optional<String> methodCORSFilter) {
 		this.originCORSFilter = originCORSFilter.orElse(DEFAULT_ALLOW_ORIGIN_CORS_FILTER);
 		this.methodCORSFilter = methodCORSFilter.orElse(DEFAULT_ALLOW_METHODS_CORS_FILTER);
 		originCORSFiltersSet = parseStringToSet(this.originCORSFilter);
@@ -99,7 +99,7 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 			if (!isAllowed(origin, originCORSFiltersSet) || !isAllowed(method, methodCORSFiltersSet)) {
 				response.status(HttpServletResponse.SC_FORBIDDEN);
 				response.raw().resetBuffer();
-				throw new VSecurityException(MessageText.builder().withDefaultMsg("Invalid CORS Access (Origin:{0}, Method:{1})").withParams(origin, method).build());
+				throw new VSecurityException(MessageText.of("Invalid CORS Access (Origin:{0}, Method:{1})", origin, method));
 			}
 		}
 		response.header("Access-Control-Allow-Origin", originCORSFilter);

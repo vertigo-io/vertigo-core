@@ -1,71 +1,95 @@
 {
 	"globalAuthorizations": [{
-		"name": "ADMUSR",
-		"label": "security.authorization.admin.user"
+		"name": "AdmUsr",
+		"label": "Administration des utilisateurs"
 	}, {
-		"name": "ADMPRO",
-		"label": "security.authorization.admin.profil"
+		"name": "AdmPro",
+		"label": "Administration des profils"
 	}, {
-		"name": "ADMAPP",
-		"label": "security.authorization.admin.appli"
+		"name": "AdmApp",
+		"label": "Administration des paramÃ¨tres applicatifs"
 	}],
 	"securedEntities": [{
-		"entity": "RECORD",
-		"securityFields" : ["UTI_ID_OWNER","TYP_ID","AMOUNT" ],
+		"entity": "Record",
+		"securityFields" : ["utiIdOwner","typId","amount" ],
 		"securityDimensions": [{
-				"name": "ETA_CD", "type": "ENUM", "values": ["CRE", "VAL", "PUB", "NOT", "REA", "ARC", "EXP"]
+				"name": "etaCd", "type": "ENUM", "values": ["CRE", "VAL", "PUB", "NOT", "REA", "ARC", "EXP"]
 			},{
-				"name": "GEO", "type": "TREE", "fields": [ "REG_ID", "DEP_ID", "COM_ID" ]
+				"name": "GEO", "type": "TREE", "fields": [ "regId", "depId", "comId" ]
 			}
 		],
-		"operations": [{
-			"__comment": "Visibilité attribuable avec un montant maximum, et visibilité pour l'utilisateur créateur.",
-			"name": "READ2",	"label" : "Lecture",
+		"operations": [  {
+			"__comment": "VisibilitÃ© attribuable avec un montant maximum, et visibilitÃ© pour l'utilisateur crÃ©ateur.",
+			"name": "read2", "label" : "Lecture",
 			"rules": [
-				"AMOUNT<=${montantMax} or UTI_ID_OWNER=${utiId}"
+				"amount<=${montantMax} or utiIdOwner=${utiId}"
 			]
 		}, {
-			"__comment": "Visibilité attribuable avec un montant maximum, et visibilité pour l'utilisateur créateur.",
-			"name": "READ",	"grants": ["READ2"], "label" : "Lecture",
+			"__comment": "VisibilitÃ© attribuable avec un montant maximum, et visibilitÃ© pour l'utilisateur crÃ©ateur.",
+			"name": "read3", "label" : "Lecture",
 			"rules": [
-				"AMOUNT<=${montantMax}",
-				"UTI_ID_OWNER=${utiId}"
+				"(amount<=${montantMax} AND utiIdOwner!=${utiId}) or (amount>${montantMax} AND utiIdOwner=${utiId})"
+			]
+		},{
+			"__comment": "Tests uniquement",
+			"name": "test", "label" : "Test",
+			"rules": [
+				"((amount<${montantMax} OR amount=${montantMax} OR amount<=${montantMax}) AND utiIdOwner!=${utiId}) or ((amount>${montantMax} OR amount=${montantMax} OR amount>=${montantMax}) AND utiIdOwner=${utiId})"
+			]
+		},{
+			"__comment": "Tests uniquement",
+			"name": "test2", "label" : "Test Enum",
+			"rules": [
+				"etaCd<NOT OR etaCd<=PUB OR etaCd=PUB OR etaCd!=PUB OR etaCd>VAL OR etaCd>=PUB"				
+			]
+		},{
+			"__comment": "Tests uniquement",
+			"name": "test3", "label" : "Test Tree",
+			"rules": [
+				"GEO<${geo} OR GEO<=${geo} OR GEO=${geo} OR GEO!=${geo} OR GEO>${geo} OR GEO>=${geo}"				
 			]
 		}, {
-			"__comment": "Visibilité globale attribuée avec une opération transverser Hors Périmètre. Sans règles = toujours ok.",
-			"name": "READ_HP", "label" : "Lecture hors périmètre",
-			"overrides": ["READ"],
+			"__comment": "VisibilitÃ© attribuable avec un montant maximum, et visibilitÃ© pour l'utilisateur crÃ©ateur.",
+			"name": "read",	 "grants": ["read2", "read3"] , "label" : "Lecture",
+			"rules": [
+				"amount<=${montantMax}",
+				"utiIdOwner=${utiId}"
+			]
+		}, {
+			"__comment": "VisibilitÃ© globale attribuÃ©e avec une opÃ©ration transverser Hors PÃ©rimÃ©tre. Sans rÃ©gles = toujours ok.",
+			"name": "readHp", "label" : "Lecture hors pÃ©rimÃ©tre",
+			"overrides": ["read"],
 			"rules": ["true"]
 		}, {
-			"__comment": "Ecriture possible par l'utilisateur créateur avant que le marché ne soit Archivé, ou avec un montant max avant Archivé.",
-			"name": "WRITE", "label" : "Edition",
-			"grants": ["READ"],
+			"__comment": "Ecriture possible par l'utilisateur crÃ©ateur avant que le marchÃ© ne soit ArchivÃ©, ou avec un montant max avant ArchivÃ©.",
+			"name": "write", "label" : "Edition",
+			"grants": ["read"],
 			"rules": [
-				"UTI_ID_OWNER=${utiId} and ETA_CD<ARC",
-				"TYP_ID=${typId} and AMOUNT<=${montantMax} and ETA_CD<ARC"
+				"utiIdOwner=${utiId} and etaCd<ARC",
+				"typId=${typId} and amount>0 and amount<=${montantMax} and etaCd<ARC"
 			]
 		}, {
-			"__comment": "Création attribuable par type et par montant maximum.",
-			"name": "CREATE", "label" : "Creation",
-			"grants": ["READ"],
+			"__comment": "CrÃ©ation attribuable par type et par montant maximum.",
+			"name": "create", "label" : "Creation",
+			"grants": ["read"],
 			"rules": [
-				"TYP_ID=${typId} and AMOUNT<=${montantMax}"
+				"typId=${typId} and amount<=${montantMax}"
 			]
 		}, {
-			"__comment": "Suppression attribuable par type de marché ou pour le créateur tant que non Publié (Attribué sans type = règle non vérifiée).",
-			"name": "DELETE", "label" : "Suppression",
-			"grants": ["READ", "WRITE"],
+			"__comment": "Suppression attribuable par type de marchÃ© ou pour le crÃ©ateur tant que non PubliÃ© (AttribuÃ© sans type = rÃ©gle non vÃ©rifiÃ©e).",
+			"name": "delete", "label" : "Suppression",
+			"grants": ["read", "write"],
 			"rules": [
-				"TYP_ID=${typId}",
-				"UTI_ID_OWNER=${utiId} and ETA_CD<PUB"
+				"typId=${typId}",
+				"utiIdOwner=${utiId} and etaCd<PUB"
 			]
 		}, {
-			"__comment": "Notification par type de marché et dans le respect de la hierachy geographique. Overrides WRITE : donne l'opération WRITE en conservant le périmètre de l'opération NOTIFY",
-			"name": "NOTIFY", "label" : "Notification",
-			"grants": ["READ"],
-			"overrides": ["WRITE"], 
+			"__comment": "Notification par type de marchÃ© et dans le respect de la hierachy geographique. Overrides WRITE : donne l'opÃ©ration WRITE en conservant le pÃ©rimÃ¨tre de l'opÃ©ration NOTIFY",
+			"name": "notify", "label" : "Notification",
+			"grants": ["read"],
+			"overrides": ["write"], 
 			"rules": [
-				"TYP_ID=${typId} and ETA_CD=PUB and GEO<=${geo}"
+				"typId=${typId} and etaCd=PUB and GEO<=${geo}"
 			]
 		}]
 	}]

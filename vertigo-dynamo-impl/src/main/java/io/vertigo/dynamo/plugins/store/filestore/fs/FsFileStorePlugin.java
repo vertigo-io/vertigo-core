@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,9 @@
 package io.vertigo.dynamo.plugins.store.filestore.fs;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
@@ -29,18 +29,18 @@ import java.util.Locale;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
@@ -70,16 +70,16 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	 * @author npiedeloup
 	 */
 	private enum DtoFields {
-		/** Champ FILE_NAME */
-		FILE_NAME,
-		/** Champ MIME_TYPE */
-		MIME_TYPE,
-		/** Champ LAST_MODIFIED */
-		LAST_MODIFIED,
-		/** Champ LENGTH */
-		LENGTH,
-		/** Champ FILE_PATH */
-		FILE_PATH
+		/** Champ FileName */
+		fileName,
+		/** Champ MimeType */
+		mimeType,
+		/** Champ LastModified */
+		lastModified,
+		/** Champ Length */
+		length,
+		/** Champ FilePath */
+		filePath
 	}
 
 	/**
@@ -89,6 +89,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	private final FileManager fileManager;
 	private final String name;
 	private final String documentRoot;
+	private DtField storeIdField;
 	private DtDefinition storeDtDefinition;
 	private final String storeDtDefinitionName;
 	private final VTransactionManager transactionManager;
@@ -103,9 +104,9 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	 */
 	@Inject
 	public FsFileStorePlugin(
-			@Named("name") final Optional<String> name,
-			@Named("storeDtName") final String storeDtDefinitionName,
-			@Named("path") final String path,
+			@ParamValue("name") final Optional<String> name,
+			@ParamValue("storeDtName") final String storeDtDefinitionName,
+			@ParamValue("path") final String path,
 			final VTransactionManager transactionManager,
 			final FileManager fileManager) {
 		Assertion.checkNotNull(name);
@@ -126,6 +127,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	@Override
 	public void start() {
 		storeDtDefinition = Home.getApp().getDefinitionSpace().resolve(storeDtDefinitionName, DtDefinition.class);
+		storeIdField = storeDtDefinition.getIdField().get();
 	}
 
 	/* (non-Javadoc)
@@ -146,15 +148,15 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	@Override
 	public FileInfo read(final FileInfoURI uri) {
 		// récupération de l'objet en base
-		final URI<Entity> dtoUri = createDtObjectURI(uri);
+		final UID<Entity> dtoUri = createDtObjectURI(uri);
 		final DtObject fileInfoDto = getStoreManager().getDataStore().readOne(dtoUri);
 
 		// récupération du fichier
-		final String fileName = getValue(fileInfoDto, DtoFields.FILE_NAME, String.class);
-		final String mimeType = getValue(fileInfoDto, DtoFields.MIME_TYPE, String.class);
-		final Instant lastModified = getValue(fileInfoDto, DtoFields.LAST_MODIFIED, Instant.class);
-		final Long length = getValue(fileInfoDto, DtoFields.LENGTH, Long.class);
-		final String filePath = getValue(fileInfoDto, DtoFields.FILE_PATH, String.class);
+		final String fileName = getValue(fileInfoDto, DtoFields.fileName, String.class);
+		final String mimeType = getValue(fileInfoDto, DtoFields.mimeType, String.class);
+		final Instant lastModified = getValue(fileInfoDto, DtoFields.lastModified, Instant.class);
+		final Long length = getValue(fileInfoDto, DtoFields.length, Long.class);
+		final String filePath = getValue(fileInfoDto, DtoFields.filePath, String.class);
 
 		final InputStreamBuilder inputStreamBuilder = new FileInputStreamBuilder(new File(documentRoot + filePath));
 		final VFile vFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
@@ -177,22 +179,22 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		final Entity fileInfoDto = createFileInfoEntity(fileInfo.getDefinition());
 		//-----
 		final VFile vFile = fileInfo.getVFile();
-		setValue(fileInfoDto, DtoFields.FILE_NAME, vFile.getFileName());
-		setValue(fileInfoDto, DtoFields.MIME_TYPE, vFile.getMimeType());
-		setValue(fileInfoDto, DtoFields.LAST_MODIFIED, vFile.getLastModified());
-		setValue(fileInfoDto, DtoFields.LENGTH, vFile.getLength());
+		setValue(fileInfoDto, DtoFields.fileName, vFile.getFileName());
+		setValue(fileInfoDto, DtoFields.mimeType, vFile.getMimeType());
+		setValue(fileInfoDto, DtoFields.lastModified, vFile.getLastModified());
+		setValue(fileInfoDto, DtoFields.length, vFile.getLength());
 		if (fileInfo.getURI() == null) {
 			// cas de la création, on ajoute en base un chemin fictif (colonne not null)
-			setValue(fileInfoDto, DtoFields.FILE_PATH, "/dev/null");
+			setValue(fileInfoDto, DtoFields.filePath, "/dev/null");
 		} else {
 			// cas de l'update
-			setIdValue(fileInfoDto, fileInfo.getURI().getKey());
+			setIdValue(fileInfoDto, fileInfo.getURI());
 
 			// récupération de l'objet en base pour récupérer le path du fichier et ne pas modifier la base
-			final URI<Entity> dtoUri = createDtObjectURI(fileInfo.getURI());
+			final UID<Entity> dtoUri = createDtObjectURI(fileInfo.getURI());
 			final DtObject fileInfoDtoBase = getStoreManager().getDataStore().readOne(dtoUri);
-			final String pathToSave = getValue(fileInfoDtoBase, DtoFields.FILE_PATH, String.class);
-			setValue(fileInfoDto, DtoFields.FILE_PATH, pathToSave);
+			final String pathToSave = getValue(fileInfoDtoBase, DtoFields.filePath, String.class);
+			setValue(fileInfoDto, DtoFields.filePath, pathToSave);
 		}
 		return fileInfoDto;
 	}
@@ -217,14 +219,14 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 
 		// cas de la création
 		final Object fileInfoDtoId = DtObjectUtil.getId(fileInfoDto);
-		Assertion.checkNotNull(fileInfoDtoId, "ID  du fichier doit être renseignée.");
+		Assertion.checkNotNull(fileInfoDtoId, "File's id must be set.");
 		final FileInfoURI uri = createURI(fileInfo.getDefinition(), fileInfoDtoId);
 		fileInfo.setURIStored(uri);
 
 		// on met a jour la base
 		final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd/", Locale.FRANCE);
 		final String pathToSave = format.format(new Date()) + fileInfoDtoId;
-		setValue(fileInfoDto, DtoFields.FILE_PATH, pathToSave);
+		setValue(fileInfoDto, DtoFields.filePath, pathToSave);
 		//-----
 		getStoreManager().getDataStore().update(fileInfoDto);
 		//-----
@@ -242,7 +244,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		//-----
 		getStoreManager().getDataStore().update(fileInfoDto);
 
-		final String pathToSave = getValue(fileInfoDto, DtoFields.FILE_PATH, String.class);
+		final String pathToSave = getValue(fileInfoDto, DtoFields.filePath, String.class);
 		//-----
 		saveFile(fileInfo, pathToSave);
 	}
@@ -256,10 +258,10 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	public void delete(final FileInfoURI uri) {
 		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
 
-		final URI<Entity> dtoUri = createDtObjectURI(uri);
+		final UID<Entity> dtoUri = createDtObjectURI(uri);
 		//-----suppression du fichier
 		final DtObject fileInfoDto = getStoreManager().getDataStore().readOne(dtoUri);
-		final String path = getValue(fileInfoDto, DtoFields.FILE_PATH, String.class);
+		final String path = getValue(fileInfoDto, DtoFields.filePath, String.class);
 		getCurrentTransaction().addAfterCompletion(new FileActionDelete(documentRoot + path));
 		//-----suppression en base
 		getStoreManager().getDataStore().delete(dtoUri);
@@ -271,11 +273,11 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	 * @param uri URI de FileInfo
 	 * @return URI du DTO utilisé en BDD pour stocker.
 	 */
-	private URI<Entity> createDtObjectURI(final FileInfoURI uri) {
+	private UID<Entity> createDtObjectURI(final FileInfoURI uri) {
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
 		//-----
 		// Il doit exister un DtObjet associé, avec la structure attendue.
-		return new URI<>(storeDtDefinition, uri.getKey());
+		return UID.of(storeDtDefinition, uri.getKeyAs(storeIdField.getDomain().getDataType()));
 	}
 
 	/**
@@ -316,9 +318,9 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		dtField.getDataAccessor().setValue(dto, value);
 	}
 
-	private static void setIdValue(final DtObject dto, final Object value) {
+	private static void setIdValue(final DtObject dto, final FileInfoURI uri) {
 		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getIdField().get();
-		dtField.getDataAccessor().setValue(dto, value);
+		dtField.getDataAccessor().setValue(dto, uri.getKeyAs(dtField.getDomain().getDataType()));
 	}
 
 	private static final class FileInputStreamBuilder implements InputStreamBuilder {
@@ -332,7 +334,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		/** {@inheritDoc} */
 		@Override
 		public InputStream createInputStream() throws IOException {
-			return new FileInputStream(file);
+			return Files.newInputStream(file.toPath());
 		}
 	}
 

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 final class PostgreSqlDialect implements SqlDialect {
 
@@ -36,24 +37,19 @@ final class PostgreSqlDialect implements SqlDialect {
 		//---
 		return new StringBuilder()
 				.append("insert into ").append(tableName).append(" (")
-				.append(idFieldName).append(", ")
+				.append(StringUtil.camelToConstCase(idFieldName)).append(", ")
 				.append(dataFieldsName
 						.stream()
+						.map(StringUtil::camelToConstCase)
 						.collect(Collectors.joining(", ")))
 				.append(") values (")
 				.append("nextval('").append(sequencePrefix).append(tableName).append("'), ")
 				.append(dataFieldsName
 						.stream()
-						.map(fieldName -> " #DTO." + fieldName + '#')
+						.map(fieldName -> " #dto." + fieldName + '#')
 						.collect(Collectors.joining(", ")))
 				.append(");")
 				.toString();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void appendMaxRows(final StringBuilder request, final Integer maxRows) {
-		request.append(" limit ").append(maxRows);
 	}
 
 	/** {@inheritDoc} */

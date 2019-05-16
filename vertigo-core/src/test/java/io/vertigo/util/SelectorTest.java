@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,18 +23,17 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 
-import javax.inject.Named;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.core.component.Component;
-import io.vertigo.lang.Tuples.Tuple2;
+import io.vertigo.lang.Tuple;
 import io.vertigo.util.Selector.ClassConditions;
 import io.vertigo.util.Selector.FieldConditions;
 import io.vertigo.util.Selector.MethodConditions;
+import io.vertigo.util.data.ARandomAnnotation;
 import io.vertigo.util.data.SA;
 import io.vertigo.util.data.SAbstractD;
 import io.vertigo.util.data.SAnnotationA;
@@ -68,7 +67,7 @@ public final class SelectorTest {
 	public void testFromPackages() {
 		final Collection<Class> result = new Selector().from(TEST_CLASSES_PACKAGE).findClasses();
 		// ---
-		Assertions.assertEquals(5, result.size());
+		Assertions.assertEquals(6, result.size());
 	}
 
 	@Test
@@ -85,7 +84,7 @@ public final class SelectorTest {
 	public void testFilterByClassAnnotation() {
 		final Collection<Class> result = new Selector()
 				.from(TEST_CLASSES_PACKAGE)
-				.filterClasses(ClassConditions.annotatedWith(Named.class))
+				.filterClasses(ClassConditions.annotatedWith(ARandomAnnotation.class))
 				.findClasses();
 		// ---
 		Assertions.assertEquals(1, result.size());
@@ -109,7 +108,7 @@ public final class SelectorTest {
 
 	@Test
 	public void testFilterByMethodAnnotation() {
-		final Collection<Tuple2<Class, Method>> result = new Selector()
+		final Collection<Tuple<Class, Method>> result = new Selector()
 				.from(TEST_CLASSES_PACKAGE)
 				.filterMethods(MethodConditions.annotatedWith(SAnnotationA.class))
 				.findMethods();
@@ -124,12 +123,12 @@ public final class SelectorTest {
 				.filterClasses(ClassConditions.interfaces())
 				.findClasses();
 		// ---
-		Assertions.assertEquals(2, result.size());
+		Assertions.assertEquals(3, result.size());
 	}
 
 	@Test
 	public void testFindFields() {
-		final Collection<Tuple2<Class, Field>> result = new Selector()
+		final Collection<Tuple<Class, Field>> result = new Selector()
 				.from(SC.class)
 				.findFields();
 		// ---
@@ -138,7 +137,7 @@ public final class SelectorTest {
 
 	@Test
 	public void testFindFieldsAnnotation() {
-		final Collection<Tuple2<Class, Field>> result = new Selector()
+		final Collection<Tuple<Class, Field>> result = new Selector()
 				.from(SC.class)
 				.filterFields(FieldConditions.annotatedWith(SAnnotationA.class))
 				.findFields();
@@ -153,7 +152,7 @@ public final class SelectorTest {
 	public void testOr() {
 		final Collection<Class> result = new Selector()
 				.from(TEST_CLASSES_PACKAGE)
-				.filterClasses(ClassConditions.annotatedWith(Named.class)
+				.filterClasses(ClassConditions.annotatedWith(ARandomAnnotation.class)
 						.or(ClassConditions.subTypeOf(SB.class)))
 				.findClasses();
 		// ---
@@ -164,7 +163,7 @@ public final class SelectorTest {
 	public void testAnd() {
 		final Collection<Class> result = new Selector()
 				.from(TEST_CLASSES_PACKAGE)
-				.filterClasses(ClassConditions.annotatedWith(Named.class))
+				.filterClasses(ClassConditions.annotatedWith(ARandomAnnotation.class))
 				.filterClasses(ClassConditions.subTypeOf(Component.class))
 				.findClasses();
 		// ---
@@ -191,7 +190,7 @@ public final class SelectorTest {
 		//We want to check that all 'from" clauses must be put together
 		new Selector()
 				.from(TEST_CLASSES_PACKAGE)
-				.filterClasses(ClassConditions.annotatedWith(Named.class))
+				.filterClasses(ClassConditions.annotatedWith(ARandomAnnotation.class))
 				.from(SA.class)
 				.findClasses();
 	}

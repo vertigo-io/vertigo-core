@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,13 +22,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 
-import javax.inject.Named;
-
 import io.vertigo.app.Home;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
@@ -57,7 +57,7 @@ abstract class AbstractDbFileStorePlugin {
 	 * Constructor.
 	 * @param name Store name
 	 */
-	AbstractDbFileStorePlugin(@Named("name") final Optional<String> name) {
+	AbstractDbFileStorePlugin(@ParamValue("name") final Optional<String> name) {
 		Assertion.checkNotNull(name);
 		//-----
 		readOnly = false;
@@ -119,10 +119,10 @@ abstract class AbstractDbFileStorePlugin {
 	 * @param dto DtObject
 	 * @param value Pk value
 	 */
-	protected static void setIdValue(final DtObject dto, final Object value) {
+	protected static void setIdValue(final DtObject dto, final FileInfoURI uri) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final DtField idField = dtDefinition.getIdField().get();
-		idField.getDataAccessor().setValue(dto, value);
+		idField.getDataAccessor().setValue(dto, uri.getKeyAs(idField.getDomain().getDataType()));
 	}
 
 	/**

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,7 +56,7 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		// we need to unwrap the component to scan the real class and not the enhanced version
-		final AopPlugin aopPlugin = Home.getApp().getConfig().getBootConfig().getAopPlugin();
+		final AopPlugin aopPlugin = Home.getApp().getNodeConfig().getBootConfig().getAopPlugin();
 		return Home.getApp().getComponentSpace().keySet()
 				.stream()
 				.flatMap(id -> createEventSubscriptions(id, Home.getApp().getComponentSpace().resolve(id, Component.class), aopPlugin).stream())
@@ -81,7 +81,7 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 					//-----
 					//2. For each method register a listener
 					final Class<? extends Event> eventType = (Class<? extends Event>) method.getParameterTypes()[0];
-					final String subscriptionName = "EVT_" + StringUtil.camelToConstCase(componentId) + "$" + StringUtil.camelToConstCase(eventType.getSimpleName());
+					final String subscriptionName = "Evt" + StringUtil.first2UpperCase(componentId) + "$" + StringUtil.first2LowerCase(eventType.getSimpleName());
 					return new EventBusSubscriptionDefinition<>(subscriptionName, eventType, event -> ClassUtil.invoke(subscriberInstance, method, event));
 				})
 				.collect(Collectors.toList());

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
 
@@ -32,7 +32,7 @@ import io.vertigo.commons.impl.codec.CodecManagerImpl;
  * @param <S> Type Source à encoder
  * @param <T> Type cible, résultat de l'encodage
  */
-public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends AbstractTestCaseJU4 {
+public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends AbstractTestCaseJU5 {
 	protected static final String TEXT = "Les sanglots longs des violons de l'automne blessent mon coeur d'une langueur monotone.";
 	protected C codec;
 
@@ -40,8 +40,8 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends
 	private CodecManager codecManager;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.addModule(ModuleConfig.builder("commons")
 						.addComponent(CodecManager.class, CodecManagerImpl.class)
 						.build())

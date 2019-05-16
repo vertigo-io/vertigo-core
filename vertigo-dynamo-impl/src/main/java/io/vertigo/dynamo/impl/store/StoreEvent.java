@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.impl.store;
 
 import io.vertigo.commons.eventbus.Event;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -41,26 +41,26 @@ public final class StoreEvent implements Event {
 	}
 
 	private final Type type;
-	private final URI uri;
+	private final UID uid;
 
 	/**
 	 * Constructor.
 	 * @param type Store type
-	 * @param uri Uri of stored element
+	 * @param uid UID of stored element
 	 */
-	public StoreEvent(final Type type, final URI uri) {
+	public StoreEvent(final Type type, final UID uid) {
 		Assertion.checkNotNull(type);
-		Assertion.checkNotNull(uri);
+		Assertion.checkNotNull(uid);
 		//-----
 		this.type = type;
-		this.uri = uri;
+		this.uid = uid;
 	}
 
 	/**
-	 * @return Uri of stored element
+	 * @return UID of stored element
 	 */
-	public URI getUri() {
-		return uri;
+	public UID getUID() {
+		return uid;
 	}
 
 	/**

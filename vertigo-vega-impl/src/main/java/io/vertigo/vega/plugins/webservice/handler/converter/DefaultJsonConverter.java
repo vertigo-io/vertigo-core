@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -65,7 +65,7 @@ public final class DefaultJsonConverter implements JsonConverter {
 		final Class<?> paramClass = webServiceParam.getType();
 		final Object value;
 		if (input instanceof String) {
-			value = jsonReaderEngine.fromJson((String) input, webServiceParam.getType());
+			value = jsonReaderEngine.fromJson((String) input, webServiceParam.getGenericType());
 		} else if (input instanceof UiContext) {
 			value = ((UiContext) input).get(webServiceParam.getName());
 		} else {

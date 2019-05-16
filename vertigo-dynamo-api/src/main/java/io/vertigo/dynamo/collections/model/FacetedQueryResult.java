@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -44,11 +45,11 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	private final DtList<R> dtc;
 	private final List<Facet> facets;
 	private final Map<R, Map<DtField, String>> highlights;
-	private final Optional<FacetDefinition> clusterFacetDefinitionOpt;
+	private final DefinitionReference<FacetDefinition> clusterFacetDefinitionRef; //nullable
 	private final Map<FacetValue, DtList<R>> clusteredDtc;
 	private final long count;
 	private final S source;
-	private final Optional<FacetedQuery> fecetedQueryOpt;
+	private final FacetedQuery facetedQueryOpt; //nullable
 
 	/**
 	 * Constructor.
@@ -78,11 +79,11 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 		Assertion.checkNotNull(clusteredDtc);
 		Assertion.checkNotNull(highlights);
 		//-----
-		this.fecetedQueryOpt = query;
+		this.facetedQueryOpt = query.orElse(null);
 		this.count = count;
 		this.dtc = dtc;
 		this.facets = facets;
-		this.clusterFacetDefinitionOpt = clusterFacetDefinition;
+		this.clusterFacetDefinitionRef = clusterFacetDefinition.isPresent() ? new DefinitionReference<>(clusterFacetDefinition.get()) : null;
 		this.clusteredDtc = clusteredDtc;
 		this.highlights = highlights;
 		this.source = source;
@@ -100,7 +101,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	 * @return Facettes de requète
 	 */
 	public Optional<FacetedQuery> getFacetedQuery() {
-		return fecetedQueryOpt;
+		return Optional.ofNullable(facetedQueryOpt);
 	}
 
 	/**
@@ -121,7 +122,7 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 	 * @return FacetDefinition du cluster des documents par valeur de facette, si demandé lors de la requête.
 	 */
 	public Optional<FacetDefinition> getClusterFacetDefinition() {
-		return clusterFacetDefinitionOpt;
+		return clusterFacetDefinitionRef == null ? Optional.empty() : Optional.ofNullable(clusterFacetDefinitionRef.get());
 	}
 
 	/**

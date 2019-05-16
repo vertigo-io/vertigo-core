@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.vega.webservice;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.vega.webservice.data.MyAppConfig;
+import io.vertigo.vega.webservice.data.MyNodeConfig;
 
 /**
  * Main WebService Route handler.
@@ -35,7 +35,7 @@ public final class WebServiceHandler {
 	//Spark.before(new CorsAllower());
 
 	public static void main(final String[] args) {
-		final AutoCloseableApp app = new AutoCloseableApp(MyAppConfig.config());
+		final AutoCloseableApp app = new AutoCloseableApp(MyNodeConfig.config());
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +28,7 @@ public final class AccountBuilder implements Builder<Account> {
 	private final String myId;
 	private String myDisplayName;
 	private String myEmail;
+	private String myPhoto;
 	private String myAuthToken;
 
 	/**
@@ -67,6 +68,19 @@ public final class AccountBuilder implements Builder<Account> {
 	}
 
 	/**
+	 * Adds an photo
+	 * @param photo the photo
+	 * @return this builder
+	 */
+	public AccountBuilder withPhoto(final String photo) {
+		Assertion.checkArgument(myPhoto == null, "photo already set");
+		//photo is nullable, we accept null value in case this builder is use by deserializer
+		//-----
+		myPhoto = photo;
+		return this;
+	}
+
+	/**
 	 * Adds an authToken
 	 * @param authToken the authToken
 	 * @return this builder
@@ -82,6 +96,6 @@ public final class AccountBuilder implements Builder<Account> {
 	/** {@inheritDoc} */
 	@Override
 	public Account build() {
-		return new Account(myId, myDisplayName, myEmail, myAuthToken != null ? myAuthToken : myEmail);
+		return new Account(myId, myDisplayName, myEmail, myPhoto, myAuthToken != null ? myAuthToken : myEmail);
 	}
 }

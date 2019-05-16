@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -92,7 +92,7 @@ final class SqlNamedParam {
 			Assertion.checkState(dtcRowNumber != null && dtcRowNumber >= 0, "Paramètre incohérent : {0} doit être positif ou null.", betweenPoints);
 			return dtcRowNumber;
 		} catch (final NumberFormatException nfe) {
-			throw WrappedException.wrap(nfe, betweenPoints + " n'est pas un entier.");
+			throw WrappedException.wrap(nfe, "Param {0} must be an integer.", betweenPoints);
 		}
 	}
 

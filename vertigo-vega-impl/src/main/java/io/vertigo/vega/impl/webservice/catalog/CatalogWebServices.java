@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import io.vertigo.app.Home;
@@ -42,7 +44,8 @@ public final class CatalogWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	@GET("/catalog")
 	public List<String> publishCatalog() {
-		final Collection<WebServiceDefinition> webServiceDefinitions = Home.getApp().getDefinitionSpace().getAll(WebServiceDefinition.class);
+		final List<WebServiceDefinition> webServiceDefinitions = new ArrayList<>(Home.getApp().getDefinitionSpace().getAll(WebServiceDefinition.class));
+		Collections.sort(webServiceDefinitions, Comparator.comparing(WebServiceDefinition::getSortPath));
 		return publishCatalog(webServiceDefinitions);
 	}
 

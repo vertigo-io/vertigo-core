@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -81,7 +81,7 @@ public final class TSDtDefinitionModel {
 	public boolean isContainsPrimitiveField() {
 		return getFields()
 				.stream()
-				.anyMatch(dtField -> dtField.isPrimitive());
+				.anyMatch(TSDtFieldModel::isPrimitive);
 	}
 
 	/**
@@ -90,7 +90,7 @@ public final class TSDtDefinitionModel {
 	public boolean isContainsListOfObjectField() {
 		return getFields()
 				.stream()
-				.anyMatch(dtField -> dtField.isListOfObject());
+				.anyMatch(TSDtFieldModel::isListOfObject);
 	}
 
 	/**
@@ -99,7 +99,7 @@ public final class TSDtDefinitionModel {
 	public boolean isContainsObjectField() {
 		return getFields()
 				.stream()
-				.anyMatch(dtField -> dtField.isObject());
+				.anyMatch(TSDtFieldModel::isObject);
 	}
 
 	/**

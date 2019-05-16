@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +34,6 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
-import io.vertigo.vega.webservice.model.UiListState;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
@@ -57,12 +56,7 @@ public final class WebServiceParam {
 	 * Parameter's source types.
 	 */
 	public enum WebServiceParamType {
-		Query,
-		Path,
-		Header,
-		Body,
-		InnerBody,
-		Implicit
+		Query, Path, Header, Body, InnerBody, Implicit
 	}
 
 	public enum ImplicitParam {
@@ -128,7 +122,6 @@ public final class WebServiceParam {
 		Assertion.checkNotNull(name);
 		Assertion.when(name.isEmpty())
 				.check(() -> WebServiceTypeUtil.isAssignableFrom(DtListState.class, type)
-						|| WebServiceTypeUtil.isAssignableFrom(UiListState.class, type)
 						|| WebServiceTypeUtil.isAssignableFrom(DtObject.class, type),
 						"Only DtObject and DtListState can be map from Query parameters"); //msg don't talk about deprecated class
 	}

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,12 +54,12 @@ public final class EnumVAccessor<E extends Entity, V extends Enum<V> & MasterDat
 	 * @return the enum value representing the distant entity
 	 */
 	public V getEnumValue() {
-		final URI<E> entityUri = getURI();
+		final UID<E> entityUri = getUID();
 		if (entityUri != null) {
 			return Stream.of(enumClass.getEnumConstants())
-					.filter(enumValue -> entityUri.equals(enumValue.getEntityUri()))
+					.filter(enumValue -> entityUri.equals(enumValue.getEntityUID()))
 					.findFirst()
-					.orElseThrow(() -> new VSystemException("Unable to find corresponding enum of type '{0}' with uri '{1}'", enumClass.getName(), entityUri));
+					.orElseThrow(() -> new VSystemException("Unable to find corresponding enum of type '{0}' with uid '{1}'", enumClass.getName(), entityUri));
 		}
 		return null;
 
@@ -70,7 +70,7 @@ public final class EnumVAccessor<E extends Entity, V extends Enum<V> & MasterDat
 	 * @param enumValue
 	 */
 	public void setEnumValue(final V enumValue) {
-		setUri(enumValue.getEntityUri());
+		setUID(enumValue.getEntityUID());
 	}
 
 }

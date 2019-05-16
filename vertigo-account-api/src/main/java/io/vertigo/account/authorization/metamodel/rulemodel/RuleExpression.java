@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,20 +28,22 @@ import io.vertigo.lang.Assertion;
 public final class RuleExpression {
 	/**
 	 * All authorized operators.
+	 * Should be ordered for parsing.
 	 */
 	public enum ValueOperator implements RuleOperator {
-		/** Equals. */
-		EQ("="),
-		/** Lesser Than. */
-		LT("<"),
-		/** Lesser Than or Equals. */
-		LTE("<="),
-		/** Greater Than. */
-		GT(">"),
-		/** Greater Than or Equals. */
-		GTE(">="),
-		/** Not Equals. */
-		NEQ("!=");
+	/** Lesser Than or Equals. */
+	LTE("<="),
+	/** Greater Than or Equals. */
+	GTE(">="),
+	/** Not Equals. */
+	NEQ("!="),
+	/** Equals. */
+	EQ("="),
+	/** Lesser Than. */
+	LT("<"),
+	/** Greater Than. */
+	GT(">");
+
 		private final String[] asString;
 
 		ValueOperator(final String... asString) {

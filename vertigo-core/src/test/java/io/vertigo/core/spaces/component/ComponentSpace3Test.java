@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.param.Param;
@@ -39,8 +39,8 @@ public final class ComponentSpace3Test {
 
 	@Test
 	public void testInjectPluginsAttribute() {
-		final AppConfig appConfig = createHomeWithInjectPluginsAttribute(true);
-		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+		final NodeConfig nodeConfig = createHomeWithInjectPluginsAttribute(true);
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			final FunctionManager functionManager = app.getComponentSpace().resolve(FunctionManager.class);
 			assertEquals(4, functionManager.compute("x+1", 3));
 			assertEquals(6, functionManager.compute("2x", 3));
@@ -53,8 +53,8 @@ public final class ComponentSpace3Test {
 
 	@Test
 	public void testInjectPluginsAttributeOrder() {
-		final AppConfig appConfig = createHomeWithInjectPluginsAttribute(false);
-		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+		final NodeConfig nodeConfig = createHomeWithInjectPluginsAttribute(false);
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			final FunctionManager functionManager = app.getComponentSpace().resolve(FunctionManager.class);
 			assertEquals(26, functionManager.computeAll(3));
 		}
@@ -62,8 +62,8 @@ public final class ComponentSpace3Test {
 
 	@Test
 	public void testInjectPluginsConstructor() {
-		final AppConfig appConfig = createHomeWithInjectPluginsConstructor(true);
-		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+		final NodeConfig nodeConfig = createHomeWithInjectPluginsConstructor(true);
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			final FunctionManager functionManager = app.getComponentSpace().resolve(FunctionManager.class);
 			assertEquals(4, functionManager.compute("x+1", 3));
 			assertEquals(6, functionManager.compute("2x", 3));
@@ -76,24 +76,24 @@ public final class ComponentSpace3Test {
 
 	@Test
 	public void testInjectPluginsConstructorOrder() {
-		final AppConfig appConfig = createHomeWithInjectPluginsConstructor(false);
-		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+		final NodeConfig nodeConfig = createHomeWithInjectPluginsConstructor(false);
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			final FunctionManager functionManager = app.getComponentSpace().resolve(FunctionManager.class);
 			assertEquals(26, functionManager.computeAll(3));
 		}
 	}
 
-	private static AppConfig createHomeWithInjectPluginsAttribute(final boolean withNullMult) {
+	private static NodeConfig createHomeWithInjectPluginsAttribute(final boolean withNullMult) {
 		return startHomeWithFunctionManager(FunctionManager1Impl.class, withNullMult);
 	}
 
-	private static AppConfig createHomeWithInjectPluginsConstructor(final boolean withNullMult) {
+	private static NodeConfig createHomeWithInjectPluginsConstructor(final boolean withNullMult) {
 		return startHomeWithFunctionManager(FunctionManager2Impl.class, withNullMult);
 	}
 
-	private static AppConfig startHomeWithFunctionManager(final Class<? extends FunctionManager> implClass, final boolean withNullMult) {
+	private static NodeConfig startHomeWithFunctionManager(final Class<? extends FunctionManager> implClass, final boolean withNullMult) {
 
-		return AppConfig.builder()
+		return NodeConfig.builder()
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()

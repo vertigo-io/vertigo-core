@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
@@ -66,28 +66,26 @@ public final class ItemSearchLoader extends AbstractSearchLoader<Long, Item, Ite
 		for (final Item item : itemDataBase.getAllItems()) {
 			itemPerId.put(item.getId(), item);
 		}
-		for (final URI<Item> uri : searchChunk.getAllURIs()) {
-			final Item item = itemPerId.get(uri.getId());
-			itemIndexes.add(SearchIndex.createIndex(indexDefinition, uri, item));
+		for (final UID<Item> uid : searchChunk.getAllUIDs()) {
+			final Item item = itemPerId.get(uid.getId());
+			itemIndexes.add(SearchIndex.createIndex(indexDefinition, uid, item));
 		}
 		return itemIndexes;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	protected List<URI<Item>> loadNextURI(final Long lastId, final DtDefinition dtDefinition) {
+	protected List<UID<Item>> loadNextURI(final Long lastId, final DtDefinition dtDefinition) {
 		final SearchIndexDefinition indexDefinition = searchManager.findFirstIndexDefinitionByKeyConcept(Item.class);
-		final List<URI<Item>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
+		final List<UID<Item>> uris = new ArrayList<>(SEARCH_CHUNK_SIZE);
 		//call loader service
-		int i = 0;
 		for (final Item item : itemDataBase.getAllItems()) {
-			if (i > lastId) {
-				uris.add(new URI(indexDefinition.getKeyConceptDtDefinition(), item.getId()));
+			if (item.getId() > lastId) {
+				uris.add(UID.of(indexDefinition.getKeyConceptDtDefinition(), item.getId()));
 			}
 			if (uris.size() >= SEARCH_CHUNK_SIZE) {
 				break;
 			}
-			i++;
 		}
 		return uris;
 	}

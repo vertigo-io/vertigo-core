@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -55,6 +55,7 @@ import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DynamicRegistry;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.util.StringUtil;
 
@@ -66,7 +67,6 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
 	private static final String ASSOCIATION_SIMPLE_DEFINITION_PREFIX = DefinitionUtil.getPrefix(AssociationSimpleDefinition.class);
 	private static final String ASSOCIATION_NN_DEFINITION_PREFIX = DefinitionUtil.getPrefix(AssociationNNDefinition.class);
-	private static final char SEPARATOR = Definition.SEPARATOR;
 	private final Map<String, DtDefinitionBuilder> dtDefinitionBuilders = new HashMap<>();
 
 	@Override
@@ -173,7 +173,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 			final DtField aliasDtField = from.getField(alias.getName());
 
 			//--- REQUIRED
-			final Boolean overiddenRequired = (Boolean) alias.getPropertyValue(KspProperty.NOT_NULL);
+			final Boolean overiddenRequired = (Boolean) alias.getPropertyValue(KspProperty.REQUIRED);
 			final boolean required = overiddenRequired != null ? overiddenRequired : aliasDtField.isRequired();
 
 			//--- LABEL
@@ -190,11 +190,11 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 
 		//2. adds data and computed fields
 		//Déclaration des champs du DT
-		final List<DslDefinition> fields = xdtDefinition.getChildDefinitions(DomainGrammar.FIELD);
+		final List<DslDefinition> fields = xdtDefinition.getChildDefinitions(DomainGrammar.DATA_FIELD);
 		populateDataDtField(definitionSpace, dtDefinitionBuilder, fields);
 
 		//Déclaration des champs calculés
-		final List<DslDefinition> computedFields = xdtDefinition.getChildDefinitions(DomainGrammar.COMPUTED);
+		final List<DslDefinition> computedFields = xdtDefinition.getChildDefinitions(DomainGrammar.COMPUTED_FIELD);
 		populateComputedDtField(definitionSpace, dtDefinitionBuilder, computedFields);
 
 		final DtDefinition dtDefinition = dtDefinitionBuilder
@@ -250,15 +250,15 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		dtDefinitionBuilders.put(dtDefinitionName, dtDefinitionBuilder);
 
 		//Déclaration de la clé primaire
-		final List<DslDefinition> keys = xdtDefinition.getChildDefinitions(DomainGrammar.ID);
+		final List<DslDefinition> keys = xdtDefinition.getChildDefinitions(DomainGrammar.ID_FIELD);
 		populateIdDtField(definitionSpace, dtDefinitionBuilder, keys);
 
 		//Déclaration des champs du DT
-		final List<DslDefinition> fields = xdtDefinition.getChildDefinitions(DomainGrammar.FIELD);
+		final List<DslDefinition> fields = xdtDefinition.getChildDefinitions(DomainGrammar.DATA_FIELD);
 		populateDataDtField(definitionSpace, dtDefinitionBuilder, fields);
 
 		//Déclaration des champs calculés
-		final List<DslDefinition> computedFields = xdtDefinition.getChildDefinitions(DomainGrammar.COMPUTED);
+		final List<DslDefinition> computedFields = xdtDefinition.getChildDefinitions(DomainGrammar.COMPUTED_FIELD);
 		populateComputedDtField(definitionSpace, dtDefinitionBuilder, computedFields);
 
 		return dtDefinitionBuilder.build();
@@ -302,8 +302,8 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 			Assertion.checkArgument(field.getPropertyNames().contains(KspProperty.LABEL), "Label est une propriété obligatoire");
 			final String label = (String) field.getPropertyValue(KspProperty.LABEL);
 			//--
-			final boolean notNull = (Boolean) field.getPropertyValue(KspProperty.NOT_NULL);
-			Assertion.checkArgument(field.getPropertyNames().contains(KspProperty.NOT_NULL), "Not null est une propriété obligatoire.");
+			final boolean notNull = (Boolean) field.getPropertyValue(KspProperty.REQUIRED);
+			Assertion.checkArgument(field.getPropertyNames().contains(KspProperty.REQUIRED), "Not null est une propriété obligatoire.");
 			//--
 			final Boolean tmpPersistent = (Boolean) field.getPropertyValue(KspProperty.PERSISTENT);
 			//Si PERSISTENT est non renseigné on suppose que le champ est à priori persistant .
@@ -372,16 +372,54 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 	 * @return Nom corrigé de l'association comprenant le préfix obligatoire.
 	 */
 	private static String fixAssociationName(final String prefix, final String name) {
-		if (!name.startsWith(prefix + SEPARATOR)) {
-			return prefix + SEPARATOR + name;
+		if (!name.startsWith(prefix)) {
+			return prefix + name;
 		}
 		return name;
 	}
 
 	private AssociationSimpleDefinition createAssociationSimpleDefinition(final DefinitionSpace definitionSpace, final DslDefinition xassociation) {
 
-		final String multiplicityA = (String) xassociation.getPropertyValue(KspProperty.MULTIPLICITY_A);
-		final String multiplicityB = (String) xassociation.getPropertyValue(KspProperty.MULTIPLICITY_B);
+		final String associationType = (String) xassociation.getPropertyValue("type");
+
+		final String multiplicityA;
+		final String multiplicityB;
+		final Boolean navigabilityA;
+		final Boolean navigabilityB;
+		if (associationType != null) {
+			switch (associationType) {
+				case "*>1":
+					multiplicityA = "0..*";
+					multiplicityB = "1..1";
+					navigabilityA = false;
+					navigabilityB = true;
+					break;
+				case "*>?":
+					multiplicityA = "0..*";
+					multiplicityB = "0..1";
+					navigabilityA = false;
+					navigabilityB = true;
+					break;
+				case "*>*":
+					multiplicityA = "0..*";
+					multiplicityB = "0..*";
+					navigabilityA = false;
+					navigabilityB = true;
+					break;
+				default:
+					throw new VSystemException("type of asssociation not supported :" + associationType);
+			}
+		} else {
+			multiplicityA = (String) xassociation.getPropertyValue(KspProperty.MULTIPLICITY_A);
+			navigabilityA = (Boolean) xassociation.getPropertyValue(KspProperty.NAVIGABILITY_A);
+			multiplicityB = (String) xassociation.getPropertyValue(KspProperty.MULTIPLICITY_B);
+			navigabilityB = (Boolean) xassociation.getPropertyValue(KspProperty.NAVIGABILITY_B);
+			//---
+			Assertion.checkNotNull(multiplicityA);
+			Assertion.checkNotNull(navigabilityA);
+			Assertion.checkNotNull(multiplicityB);
+			Assertion.checkNotNull(navigabilityB);
+		}
 		// Vérification que l'on est bien dans le cas d'une association simple de type 1-n
 		if (AssociationUtil.isMultiple(multiplicityB) && AssociationUtil.isMultiple(multiplicityA)) {
 			//Relation n-n
@@ -395,13 +433,14 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		final String fkFieldName = (String) xassociation.getPropertyValue(KspProperty.FK_FIELD_NAME);
 
 		final DtDefinition dtDefinitionA = definitionSpace.resolve(xassociation.getDefinitionLinkName("dtDefinitionA"), DtDefinition.class);
-		final boolean navigabilityA = (Boolean) xassociation.getPropertyValue(KspProperty.NAVIGABILITY_A);
-		final String roleA = (String) xassociation.getPropertyValue(KspProperty.ROLE_A);
-		final String labelA = (String) xassociation.getPropertyValue(KspProperty.LABEL_A);
+		final String roleAOpt = (String) xassociation.getPropertyValue(KspProperty.ROLE_A);
+		final String roleA = roleAOpt != null ? roleAOpt : dtDefinitionA.getLocalName();
+		final String labelAOpt = (String) xassociation.getPropertyValue(KspProperty.LABEL_A);
+		final String labelA = labelAOpt != null ? labelAOpt : dtDefinitionA.getLocalName();
 
 		final DtDefinition dtDefinitionB = definitionSpace.resolve(xassociation.getDefinitionLinkName("dtDefinitionB"), DtDefinition.class);
-		final boolean navigabilityB = (Boolean) xassociation.getPropertyValue(KspProperty.NAVIGABILITY_B);
-		final String roleB = (String) xassociation.getPropertyValue(KspProperty.ROLE_B);
+		final String roleBOpt = (String) xassociation.getPropertyValue(KspProperty.ROLE_B);
+		final String roleB = roleBOpt != null ? roleBOpt : dtDefinitionB.getLocalName();
 		final String labelB = (String) xassociation.getPropertyValue(KspProperty.LABEL_B);
 
 		//Relation 1-n ou 1-1
@@ -417,7 +456,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 
 		final DtDefinition fkDefinition = primaryAssociationNode.getDtDefinition();
 
-		LOGGER.trace("" + xassociation.getName() + " : ajout d'une FK [" + fkFieldName + "] sur la table '" + foreignAssociationNode.getDtDefinition().getName() + "'");
+		LOGGER.trace("{} : ajout d'une FK [{}] sur la table '{}'", xassociation.getName(), fkFieldName, foreignAssociationNode.getDtDefinition().getName());
 
 		final String label = primaryAssociationNode.getLabel();
 		dtDefinitionBuilders.get(foreignAssociationNode.getDtDefinition().getName())
@@ -467,7 +506,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 
 		final DslEntity metaDefinitionDomain = DomainGrammar.DOMAIN_ENTITY;
 
-		return DslDefinition.builder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTO", metaDefinitionDomain)
+		return DslDefinition.builder(DOMAIN_PREFIX + definitionName + "Dto", metaDefinitionDomain)
 				.withPackageName(packageName)
 				.addDefinitionLink("dataType", "DtObject")
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
@@ -483,7 +522,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 
 		//On fait la même chose avec DTC
 
-		return DslDefinition.builder(DOMAIN_PREFIX + SEPARATOR + definitionName + "_DTC", metaDefinitionDomain)
+		return DslDefinition.builder(DOMAIN_PREFIX + definitionName + "Dtc", metaDefinitionDomain)
 				.withPackageName(packageName)
 				.addDefinitionLink("dataType", "DtList")
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT

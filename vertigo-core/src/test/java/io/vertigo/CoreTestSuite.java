@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,17 +18,18 @@
  */
 package io.vertigo;
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 import io.vertigo.app.config.discovery.DiscoveryTest;
 import io.vertigo.app.config.xml.AppConfig2Test;
 import io.vertigo.app.config.xml2.AppConfigTest;
+import io.vertigo.app.config.yaml.YamlAppConfigTest;
 import io.vertigo.core.component.aop.Aspect2Test;
 import io.vertigo.core.component.aop.AspectTest;
-import io.vertigo.core.component.di.injector.InjectorTest;
-import io.vertigo.core.component.di.reactor.ReactorTest;
+import io.vertigo.core.component.di.InjectorTest;
+import io.vertigo.core.component.di.ReactorTest;
 import io.vertigo.core.component.proxy.ProxyTest;
 import io.vertigo.core.locale.LocaleManagerTest;
 import io.vertigo.core.param.multi.MultiParamManagerTest;
@@ -55,8 +56,8 @@ import io.vertigo.util.StringUtilTest;
  *
  * @author pchretien
  */
-@RunWith(Suite.class)
-@SuiteClasses({
+@RunWith(JUnitPlatform.class)
+@SelectClasses({
 		//Core
 		DefinitionSpaceTest.class,
 		ComponentSpaceTest.class,
@@ -68,9 +69,11 @@ import io.vertigo.util.StringUtilTest;
 		//Boot
 		AppConfigTest.class,
 		AppConfig2Test.class,
+		DiscoveryTest.class,
+		YamlAppConfigTest.class,
+
 		AspectTest.class,
 		Aspect2Test.class,
-		DiscoveryTest.class,
 		ProxyTest.class,
 		//Lang
 		AssertionTest.class,
@@ -91,6 +94,7 @@ import io.vertigo.util.StringUtilTest;
 		ResourceManagerTest.class,
 		//Locales
 		LocaleManagerTest.class
+
 })
 
 public final class CoreTestSuite {

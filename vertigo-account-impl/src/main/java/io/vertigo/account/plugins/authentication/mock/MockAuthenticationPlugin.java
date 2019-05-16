@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,17 +23,18 @@ import java.util.Optional;
 import io.vertigo.account.authentication.AuthenticationToken;
 import io.vertigo.account.impl.authentication.AuthenticationPlugin;
 import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
+import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 
 /**
  * A mock implementation of the Realm.
- * It accept all UsernameToken and create a URI based on the username.
+ * It accept all UsernameToken and create a UID based on the username.
  */
 public class MockAuthenticationPlugin implements AuthenticationPlugin {
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean supports(final AuthenticationToken token) {
-		return token instanceof UsernameAuthenticationToken;
+		return token instanceof UsernameAuthenticationToken || token instanceof UsernamePasswordAuthenticationToken;
 	}
 
 	/** {@inheritDoc} */

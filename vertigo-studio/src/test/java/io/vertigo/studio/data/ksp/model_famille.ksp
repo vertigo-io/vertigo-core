@@ -1,12 +1,12 @@
 package io.vertigo.studio.domain.famille
 
-create DtDefinition DT_FAMILLE {
-		key FAM_ID 	{ domain:DO_ID, 	label:"identifiant de la famille",  notNull : "true" }
-		field LIBELLE {domain:DO_STRING, 		label:"Libelle",  					notNull : "false"}
+create DtDefinition DtFamille {
+		id famId 	{ domain: DoId, 	label:"identifiant de la famille"}
+		field libelle {domain: DoString, 		label:"Libelle",  			required : "false"}
 }
 
-alter DtDefinition DT_FAMILLE {
-    computed DESCRIPTION {domain : DO_LIBELLE_LONG, label:"Libelle"
+alter DtDefinition DtFamille {
+    computed description {domain : DoLibelleLong, label:"Libelle"
         expression:"final StringBuilder builder = new StringBuilder();
         builder.append(getLibelle());
         builder.append('[');
@@ -16,11 +16,11 @@ alter DtDefinition DT_FAMILLE {
     }
 }
 
-create Association A_FAM_CAR_FAMILLE {
-	dtDefinitionA : DT_FAMILLE
-	dtDefinitionB : DT_CAR
+create Association AFamCarFamille {
+	dtDefinitionA : DtFamille
+	dtDefinitionB : DtCar
 
-	fkFieldName : "FAM_ID"
+	fkFieldName : "famId"
 
 	navigabilityA : "false"
 	navigabilityB : "true"
@@ -34,11 +34,11 @@ create Association A_FAM_CAR_FAMILLE {
 	labelB : "Voitures de la famille"
 }
 
-create AssociationNN ANN_FAM_CAR_LOCATION {
+create AssociationNN AnnFamCarLocation {
 	tableName : "FAM_CAR_LOCATION"
 
-	dtDefinitionA : DT_FAMILLE
-	dtDefinitionB : DT_CAR
+	dtDefinitionA : DtFamille
+	dtDefinitionB : DtCar
 
 	navigabilityA : "false"
 	navigabilityB : "true"

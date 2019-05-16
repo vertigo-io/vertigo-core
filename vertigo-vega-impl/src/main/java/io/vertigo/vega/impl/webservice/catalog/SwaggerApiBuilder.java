@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -44,12 +46,10 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.VSystemException;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
-import io.vertigo.vega.webservice.model.UiListState;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
@@ -292,7 +292,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		final List<String> required = new ArrayList<>(); //mandatory fields
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(objectClass);
 		for (final DtField dtField : dtDefinition.getFields()) {
-			final String fieldName = StringUtil.constToLowerCamelCase(dtField.getName());
+			final String fieldName = dtField.getName();
 			final Type fieldType = getFieldType(dtField);
 			final Map<String, Object> fieldSchema = createSchemaObject(fieldType); //not Nullable
 			fieldSchema.put("title", dtField.getLabel().getDisplay());
@@ -424,8 +424,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	private static List<WebServiceParam> createPseudoWebServiceParams(final WebServiceParam webServiceParam) {
 		final List<WebServiceParam> pseudoWebServiceParams = new ArrayList<>();
 		final String prefix = !webServiceParam.getName().isEmpty() ? webServiceParam.getName() + "." : "";
-		if (DtListState.class.isAssignableFrom(webServiceParam.getType())
-				|| UiListState.class.isAssignableFrom(webServiceParam.getType())) {
+		if (DtListState.class.isAssignableFrom(webServiceParam.getType())) {
 			pseudoWebServiceParams.add(WebServiceParam.builder(int.class)
 					.with(webServiceParam.getParamType(), prefix + "top").build());
 			pseudoWebServiceParams.add(WebServiceParam.builder(int.class)
@@ -438,7 +437,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			final Class<? extends DtObject> paramClass = (Class<? extends DtObject>) webServiceParam.getType();
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(paramClass);
 			for (final DtField dtField : dtDefinition.getFields()) {
-				final String fieldName = StringUtil.constToLowerCamelCase(dtField.getName());
+				final String fieldName = dtField.getName();
 				pseudoWebServiceParams.add(WebServiceParam.builder(dtField.getDomain().getJavaClass())
 						.with(webServiceParam.getParamType(), prefix + fieldName)
 						.build());
@@ -451,7 +450,6 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 		final Class<?> paramClass = webServiceParam.getType();
 		return webServiceParam.getParamType() == WebServiceParamType.Query &&
 				(DtListState.class.isAssignableFrom(paramClass)
-						|| UiListState.class.isAssignableFrom(paramClass)
 						|| DtObject.class.isAssignableFrom(paramClass));
 	}
 
@@ -527,8 +525,10 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			return new String[] { "number", "float" };
 		} else if (double.class.isAssignableFrom(paramClass) || Double.class.isAssignableFrom(paramClass)) {
 			return new String[] { "number", "double" };
-		} else if (Date.class.isAssignableFrom(paramClass)) {
+		} else if (Date.class.isAssignableFrom(paramClass) || Instant.class.isAssignableFrom(paramClass)) {
 			return new String[] { "string", "date-time" };
+		} else if (LocalDate.class.isAssignableFrom(paramClass)) {
+			return new String[] { "string", "date" };
 		} else if (VFile.class.isAssignableFrom(paramClass)) {
 			return new String[] { "file", null };
 		} else if (Collection.class.isAssignableFrom(paramClass)) {

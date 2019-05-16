@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +20,8 @@ package io.vertigo.commons.peg;
 
 import java.util.Arrays;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class PegRulesTest {
 	/**
@@ -37,57 +37,59 @@ public class PegRulesTest {
 
 	@Test
 	public void choice() throws PegNoMatchFoundException {
-		Assert.assertEquals(0, choice.parse("hi", 0).getValue().getChoiceIndex());
-		Assert.assertEquals(1, choice.parse("ho", 0).getValue().getChoiceIndex());
-		Assert.assertEquals(2, choice.parse("ha", 0).getValue().getChoiceIndex());
+		Assertions.assertEquals(0, choice.parse("hi", 0).getValue().getChoiceIndex());
+		Assertions.assertEquals(1, choice.parse("ho", 0).getValue().getChoiceIndex());
+		Assertions.assertEquals(2, choice.parse("ha", 0).getValue().getChoiceIndex());
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
-	public void choice2() throws PegNoMatchFoundException {
-		choice.parse("hu", 0);
+	@Test
+	public void choice2() {
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> choice.parse("hu", 0));
 	}
 
 	@Test
 	public void sequence() throws PegNoMatchFoundException {
-		Assert.assertEquals(Arrays.asList("hi", "ho", "ha"), sequence.parse("hihoha", 0).getValue());
+		Assertions.assertEquals(Arrays.asList("hi", "ho", "ha"), sequence.parse("hihoha", 0).getValue());
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
-	public void sequence2() throws PegNoMatchFoundException {
-		Assert.assertEquals(Arrays.asList("hi", "ho", "ha"), sequence.parse("hiho", 0).getValue());
+	@Test
+	public void sequence2() {
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> {
+			Assertions.assertEquals(Arrays.asList("hi", "ho", "ha"), sequence.parse("hiho", 0).getValue());
+		});
 	}
 
 	@Test
 	public void optional() throws PegNoMatchFoundException {
 		//option is not found => index =0
-		Assert.assertEquals(0, PegRules.optional(choice).parse("hu", 0).getIndex());
+		Assertions.assertEquals(0, PegRules.optional(choice).parse("hu", 0).getIndex());
 		//option is found => index =2
-		Assert.assertEquals(2, PegRules.optional(choice).parse("ha", 0).getIndex());
+		Assertions.assertEquals(2, PegRules.optional(choice).parse("ha", 0).getIndex());
 	}
 
 	@Test
 	public void oneOrMoreUntilTheEnd() throws PegNoMatchFoundException {
-		Assert.assertEquals(Arrays.asList("hi", "hi", "hi"), oneOrMore.parse("hihihi", 0).getValue());
+		Assertions.assertEquals(Arrays.asList("hi", "hi", "hi"), oneOrMore.parse("hihihi", 0).getValue());
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
-	public void oneOrMoreUntilTheEnd2() throws PegNoMatchFoundException {
-		oneOrMore.parse("hihihiho", 0);
+	@Test
+	public void oneOrMoreUntilTheEnd2() {
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> oneOrMore.parse("hihihiho", 0));
 	}
 
 	@Test
 	public void zerOrMoreUntilTheEnd() throws PegNoMatchFoundException {
-		Assert.assertEquals(0, zeroOrMore.parse("", 0).getIndex());
-		Assert.assertEquals(Arrays.asList("hi", "hi", "hi"), zeroOrMore.parse("hihihi", 0).getValue());
+		Assertions.assertEquals(0, zeroOrMore.parse("", 0).getIndex());
+		Assertions.assertEquals(Arrays.asList("hi", "hi", "hi"), zeroOrMore.parse("hihihi", 0).getValue());
 	}
 
-	@Test(expected = PegNoMatchFoundException.class)
-	public void zeroOrMoreUntilTheEnd2() throws PegNoMatchFoundException {
-		zeroOrMore.parse("hihihiho", 0);
+	@Test
+	public void zeroOrMoreUntilTheEnd2() {
+		Assertions.assertThrows(PegNoMatchFoundException.class, () -> zeroOrMore.parse("hihihiho", 0));
 	}
 
 	@Test
 	public void skipBlanks() throws PegNoMatchFoundException {
-		Assert.assertEquals(10, skipBlanks.parse("+++****+++", 0).getIndex());
+		Assertions.assertEquals(10, skipBlanks.parse("+++****+++", 0).getIndex());
 	}
 }

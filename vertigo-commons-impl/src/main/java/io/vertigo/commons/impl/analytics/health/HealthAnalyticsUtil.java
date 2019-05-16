@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,6 +47,8 @@ import io.vertigo.util.StringUtil;
  */
 public final class HealthAnalyticsUtil {
 
+	private static final String pluginCounterChar = "#";// char used in plugins for counting them plugin#1, plugin#2
+
 	private HealthAnalyticsUtil() {
 		//private constructor for util classes
 	}
@@ -63,7 +65,7 @@ public final class HealthAnalyticsUtil {
 
 		//-- we construct a map of feature by componentId
 		final Map<String, String> featureByComponentId = new HashMap<>();
-		Home.getApp().getConfig().getModuleConfigs()
+		Home.getApp().getNodeConfig().getModuleConfigs()
 				.forEach(moduleConfig -> moduleConfig.getComponentConfigs()
 						.forEach(componentConfig -> featureByComponentId.put(componentConfig.getId(), moduleConfig.getName())));
 		//-----
@@ -79,7 +81,7 @@ public final class HealthAnalyticsUtil {
 					//-----
 					//2. For each method register a listener
 					// we remove # because it doesn't comply with definition naming rule
-					final String healthCheckDefinitionName = "HCHK_" + StringUtil.camelToConstCase(componentId.replaceAll("#", "")) + "$" + StringUtil.camelToConstCase(method.getName());
+					final String healthCheckDefinitionName = "Hchk" + StringUtil.first2UpperCase(componentId.replaceAll(pluginCounterChar, "")) + "$" + method.getName();
 					return new HealthCheckDefinition(
 							healthCheckDefinitionName,
 							healthChecked.name(),
@@ -150,18 +152,11 @@ public final class HealthAnalyticsUtil {
 			final int nbGreen,
 			final int nbYellow,
 			final int nbRed) {
-		if (nbRed == 0) {
-			if (nbYellow == 0) {
-				return HealthStatus.GREEN;
-			}
-			//yellow >0
+		if (nbRed > 0) {
+			return HealthStatus.RED;
+		} else if (nbYellow > 0) {
 			return HealthStatus.YELLOW;
 		}
-		//red >0
-		if (nbYellow == 0 && nbGreen == 0) {
-			return HealthStatus.RED;
-		}
-		//red>0
-		return HealthStatus.YELLOW;
+		return HealthStatus.GREEN;
 	}
 }

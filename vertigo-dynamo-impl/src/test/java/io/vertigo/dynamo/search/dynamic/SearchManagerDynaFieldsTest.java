@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,19 +18,55 @@
  */
 package io.vertigo.dynamo.search.dynamic;
 
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.dynamo.DynamoFeatures;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.search.AbstractSearchManagerTest;
+import io.vertigo.dynamo.search.data.domain.ItemSearchLoader;
 
 /**
  * @author  npiedeloup
  */
 public class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest {
 	//Index
-	private static final String IDX_DYNA_ITEM = "IDX_DYNA_ITEM";
+	private static final String IDX_DYNA_ITEM = "IdxDynaItem";
 
 	/**{@inheritDoc}*/
 	@Override
 	protected void doSetUp() {
 		//attention : la première utilisation de l'index fige la définition des types
 		init(IDX_DYNA_ITEM);
+	}
+
+	@Override
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.withLocales("fr_FR")
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.build())
+				.addModule(new DynamoFeatures()
+						.withSearch()
+						.withESEmbedded(
+								Param.of("home", "io/vertigo/dynamo/search/indexconfig"),
+								Param.of("config.file", "io/vertigo/dynamo/search/indexconfig/elasticsearch.yml"),
+								Param.of("envIndex", "TuTest"),
+								Param.of("rowsPerQuery", "50"))
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/search/data/execution.kpr")
+								.addDefinitionResource("classes", "io.vertigo.dynamo.search.data.DtDefinitions")
+								.build())
+						.addComponent(ItemSearchLoader.class)
+						.build())
+				.build();
 	}
 }

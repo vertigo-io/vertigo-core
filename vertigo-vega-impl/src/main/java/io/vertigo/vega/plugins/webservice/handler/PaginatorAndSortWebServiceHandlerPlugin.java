@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,6 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.token.TokenManager;
 import io.vertigo.vega.webservice.exception.SessionException;
@@ -108,7 +107,7 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 
 	private static DtListState checkAndEnsureDefaultValue(final DtListState parsedDtListState) {
 		if (!parsedDtListState.getMaxRows().isPresent()) {//check if parsedDtListState is just not initalized
-			return new DtListState(DEFAULT_RESULT_PER_PAGE, parsedDtListState.getSkipRows(), parsedDtListState.getSortFieldName().orElse(null), parsedDtListState.isSortDesc().orElse(null));
+			return DtListState.of(DEFAULT_RESULT_PER_PAGE, parsedDtListState.getSkipRows(), parsedDtListState.getSortFieldName().orElse(null), parsedDtListState.isSortDesc().orElse(null));
 		}
 		return parsedDtListState;
 	}
@@ -146,7 +145,7 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
 		final DtList<D> sortedList;
 		if (dtListState.getSortFieldName().isPresent()) {
-			sortedList = collectionsManager.sort(unFilteredList, StringUtil.camelToConstCase(dtListState.getSortFieldName().get()), dtListState.isSortDesc().get());
+			sortedList = collectionsManager.sort(unFilteredList, dtListState.getSortFieldName().get(), dtListState.isSortDesc().get());
 		} else {
 			sortedList = unFilteredList;
 		}

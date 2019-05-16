@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,16 +26,37 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.criteria.AbstractCriteriaTest;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.data.movies.Movie2;
 import io.vertigo.dynamo.criteria.data.movies.Movie2DataBase;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 
 /**
  *
  */
 @RunWith(JUnitPlatform.class)
 public final class PredicateCriteriaTest extends AbstractCriteriaTest {
+
+	@Override
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/criteria/data/execution.kpr")
+								.addDefinitionResource("classes", "io.vertigo.dynamo.criteria.data.DtDefinitions")
+								.build())
+						.build())
+				.build();
+	}
+
 	private final Movie2DataBase movie2DataBase = new Movie2DataBase();
 
 	private static Predicate<Movie2> predicate(final Criteria<Movie2> criteria) {

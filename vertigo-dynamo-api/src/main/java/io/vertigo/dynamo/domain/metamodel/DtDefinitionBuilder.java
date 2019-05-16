@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -256,11 +256,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 
 		//2. Sinon Indication de longueur portée par le champ du DT.
 		//-----
-		final MessageText labelMsg = MessageText
-				.builder()
-				.withKey(new MessageKeyImpl(id))
-				.withDefaultMsg(strLabel)
-				.build();
+		final MessageText labelMsg = MessageText.ofDefaultMsg(strLabel, new MessageKeyImpl(id));
 		// Champ CODE_COMMUNE >> getCodeCommune()
 		//Un champ est persisanty s'il est marqué comme tel et si la définition l'est aussi.
 		return new DtField(

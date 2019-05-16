@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,6 @@ import io.vertigo.app.Home;
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -36,13 +35,14 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 /**
  * Default SearchLoader for Database datasource.
@@ -54,7 +54,6 @@ import io.vertigo.lang.Assertion;
 public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends KeyConcept, I extends DtObject> extends AbstractSearchLoader<P, S, I> {
 
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
-	private static final char SEPARATOR = Definition.SEPARATOR;
 	private static final int SEARCH_CHUNK_SIZE = 500;
 	private final TaskManager taskManager;
 	private final VTransactionManager transactionManager;
@@ -82,10 +81,11 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	/** {@inheritDoc} */
 	@Override
 	@Transactional
-	protected final List<URI<S>> loadNextURI(final P lastId, final DtDefinition dtDefinition) {
+	protected final List<UID<S>> loadNextURI(final P lastId, final DtDefinition dtDefinition) {
 		try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
-			final String tableName = getTableName(dtDefinition);
-			final String taskName = "TK_SELECT_" + tableName + "_NEXT_SEARCH_CHUNK";
+			final String entityName = getEntityName(dtDefinition);
+			final String tableName = StringUtil.camelToConstCase(entityName);
+			final String taskName = "TkSelect" + entityName + "NextSearchChunk";
 			final DtField idField = dtDefinition.getIdField().get();
 			final String idFieldName = idField.getName();
 			final String request = getNextIdsSqlQuery(tableName, idFieldName);
@@ -95,7 +95,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 					.withDataSpace(dtDefinition.getDataSpace())
 					.withRequest(request)
 					.addInRequired(idFieldName, idField.getDomain())
-					.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + SEPARATOR + dtDefinition.getName() + "_DTC", Domain.class))
+					.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName() + "Dtc", Domain.class))
 					.build();
 
 			final Task task = Task.builder(taskDefinition)
@@ -106,9 +106,9 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 					.execute(task)
 					.getResult();
 
-			final List<URI<S>> uris = new ArrayList<>(resultDtc.size());
+			final List<UID<S>> uris = new ArrayList<>(resultDtc.size());
 			for (final S dto : resultDtc) {
-				uris.add(new URI<S>(dtDefinition, DtObjectUtil.getId(dto)));
+				uris.add(UID.<S> of(dtDefinition, DtObjectUtil.getId(dto)));
 			}
 			return uris;
 		}
@@ -121,11 +121,12 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	 * @return SQL query
 	 */
 	protected String getNextIdsSqlQuery(final String tableName, final String pkFieldName) {
+		final String pkColumnName = StringUtil.camelToConstCase(pkFieldName);
 		final StringBuilder request = new StringBuilder()
-				.append(" select ").append(pkFieldName).append(" from ")
+				.append(" select ").append(pkColumnName).append(" from ")
 				.append(tableName)
 				.append(" where ")
-				.append(pkFieldName)
+				.append(pkColumnName)
 				.append(" > #")
 				.append(pkFieldName)
 				.append('#');
@@ -134,7 +135,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 		if (!sqlQueryFilter.isEmpty()) {
 			request.append(" and (").append(sqlQueryFilter).append(')');
 		}
-		request.append(" order by ").append(pkFieldName).append(" ASC");
+		request.append(" order by ").append(pkColumnName).append(" ASC");
 		appendMaxRows(request, SEARCH_CHUNK_SIZE);
 		return request.toString();
 	}
@@ -170,7 +171,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 	 * @param dtDefinition Définition du DT mappé
 	 * @return Nom de la table
 	 */
-	protected static final String getTableName(final DtDefinition dtDefinition) {
+	protected static final String getEntityName(final DtDefinition dtDefinition) {
 		return dtDefinition.getFragment().orElse(dtDefinition).getLocalName();
 	}
 

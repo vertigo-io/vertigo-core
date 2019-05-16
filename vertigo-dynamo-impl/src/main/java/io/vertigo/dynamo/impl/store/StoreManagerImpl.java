@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,14 +22,22 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.vertigo.app.Home;
+import io.vertigo.commons.cache.CacheDefinition;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.core.component.Activeable;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreConfigImpl;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreImpl;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.impl.store.datastore.MasterDataConfigImpl;
+import io.vertigo.dynamo.impl.store.datastore.cache.CacheData;
 import io.vertigo.dynamo.impl.store.filestore.FileStoreConfig;
 import io.vertigo.dynamo.impl.store.filestore.FileStoreImpl;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
@@ -37,7 +45,9 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
+import io.vertigo.dynamo.store.datastore.MasterDataDefinition;
 import io.vertigo.dynamo.store.filestore.FileStore;
+import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -45,7 +55,7 @@ import io.vertigo.lang.Assertion;
 *
 * @author pchretien
 */
-public final class StoreManagerImpl implements StoreManager {
+public final class StoreManagerImpl implements StoreManager, Activeable, SimpleDefinitionProvider {
 	private final MasterDataConfig masterDataConfig;
 	private final DataStoreConfigImpl dataStoreConfig;
 
@@ -69,21 +79,42 @@ public final class StoreManagerImpl implements StoreManager {
 			final CollectionsManager collectionsManager,
 			final List<FileStorePlugin> fileStorePlugins,
 			final List<DataStorePlugin> dataStorePlugins,
-			final EventBusManager eventBusManager) {
+			final EventBusManager eventBusManager,
+			final TaskManager taskManager) {
 		Assertion.checkNotNull(cacheManager);
 		Assertion.checkNotNull(collectionsManager);
 		Assertion.checkNotNull(dataStorePlugins);
 		Assertion.checkNotNull(fileStorePlugins);
 		Assertion.checkNotNull(eventBusManager);
+		Assertion.checkNotNull(taskManager);
 		//-----
 		masterDataConfig = new MasterDataConfigImpl();
 		//---
 		//On enregistre le plugin principal du broker
 		dataStoreConfig = new DataStoreConfigImpl(dataStorePlugins, cacheManager);
-		dataStore = new DataStoreImpl(collectionsManager, this, transactionManager, eventBusManager, dataStoreConfig);
+		dataStore = new DataStoreImpl(collectionsManager, this, transactionManager, eventBusManager, taskManager, dataStoreConfig);
 		//-----
 		final FileStoreConfig fileStoreConfig = new FileStoreConfig(fileStorePlugins);
 		fileStore = new FileStoreImpl(fileStoreConfig);
+	}
+
+	@Override
+	public void start() {
+		// register as cacheable the dtDefinitions that are persistant and have a corresponding CacheDefinition
+		Home.getApp().getDefinitionSpace().getAll(DtDefinition.class).stream()
+				.filter(DtDefinition::isPersistent)
+				.filter(dtDefinition -> Home.getApp().getDefinitionSpace().contains(CacheData.getContext(dtDefinition)))
+				.forEach(dtDefinition -> dataStoreConfig.getCacheStoreConfig().registerCacheable(dtDefinition, Home.getApp().getDefinitionSpace().resolve(CacheData.getContext(dtDefinition), CacheDefinition.class).isReloadedByList()));
+
+		Home.getApp().getDefinitionSpace().getAll(MasterDataDefinition.class)
+				.forEach(masterDataConfig::register);
+
+	}
+
+	@Override
+	public void stop() {
+		// nothing
+
 	}
 
 	/** {@inheritDoc} */
@@ -112,4 +143,9 @@ public final class StoreManagerImpl implements StoreManager {
 		return fileStore;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return ((SimpleDefinitionProvider) dataStore).provideDefinitions(definitionSpace);
+	}
 }

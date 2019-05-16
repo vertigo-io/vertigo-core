@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,8 +26,8 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -39,11 +39,12 @@ import io.vertigo.core.spaces.component.data.MathPlugin;
 
 @RunWith(JUnitPlatform.class)
 public final class AppConfigTest {
+
 	@Test
 	public void HomeTest() {
 		final String locales = "fr_FR";
 
-		final AppConfig appConfig = AppConfig.builder()
+		final NodeConfig nodeConfig = NodeConfig.builder()
 				.beginBoot()
 				.withLocales(locales)
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -60,7 +61,7 @@ public final class AppConfigTest {
 						.build())
 				.build();
 
-		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			assertEquals(app, app);
 			assertTrue(app.getComponentSpace().contains("bioManager"));
 			final BioManager bioManager = app.getComponentSpace().resolve(BioManager.class);

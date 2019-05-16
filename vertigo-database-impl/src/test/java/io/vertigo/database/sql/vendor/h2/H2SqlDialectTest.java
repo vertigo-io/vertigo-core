@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,9 @@ package io.vertigo.database.sql.vendor.h2;
 
 import java.util.Optional;
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
+
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.sql.AbstractSqlDialectTest;
 import io.vertigo.database.sql.vendor.SqlDialect;
@@ -28,6 +31,7 @@ import io.vertigo.database.sql.vendor.SqlDialect;
  *
  * @author mlaroche
  */
+@RunWith(JUnitPlatform.class)
 public final class H2SqlDialectTest extends AbstractSqlDialectTest {
 
 	@Override
@@ -38,17 +42,17 @@ public final class H2SqlDialectTest extends AbstractSqlDialectTest {
 
 	@Override
 	public String getExpectedInsertQuery() {
-		return "insert into MOVIE ( TITLE) values (  #DTO.TITLE#) ";
+		return "insert into MOVIE (ID, TITLE) values (nextval('SEQ_MOVIE'),  #dto.title#);";
 	}
 
 	@Override
 	public String getExpectedSelectForUpdateWildCardQuery() {
-		return " select * from MOVIE where ID = #ID# for update ";
+		return " select * from MOVIE where ID = #id# for update ";
 	}
 
 	@Override
 	public String getExpectedSelectForUpdateFieldsQuery() {
-		return " select ID, TITLE from MOVIE where ID = #ID# for update ";
+		return " select ID, TITLE from MOVIE where ID = #id# for update ";
 	}
 
 	@Override
@@ -59,5 +63,20 @@ public final class H2SqlDialectTest extends AbstractSqlDialectTest {
 	@Override
 	public String getExpectedAppendMaxRowsQuery() {
 		return "select * from MOVIE limit 100";
+	}
+
+	@Override
+	public String getExpectedAppendSkipRowsQuery() {
+		return "select * from MOVIE offset 10";
+	}
+
+	@Override
+	public String getExpectedAppendSortQuery() {
+		return "select * from MOVIE order by TITLE";
+	}
+
+	@Override
+	public String getExpectedAppendSortDescQuery() {
+		return "select * from MOVIE order by TITLE desc";
 	}
 }

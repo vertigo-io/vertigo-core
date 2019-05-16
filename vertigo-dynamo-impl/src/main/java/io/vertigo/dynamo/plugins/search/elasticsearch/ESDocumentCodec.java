@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +34,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
@@ -48,7 +48,8 @@ import io.vertigo.lang.Assertion;
  */
 final class ESDocumentCodec {
 	/** FieldName containing Full result object. */
-	static final String FULL_RESULT = "FULL_RESULT";
+	protected static final String FULL_RESULT = "fullResult";
+	protected static final String DOC_ID = "docId";
 
 	//-----
 	private final CodecManager codecManager;
@@ -88,19 +89,19 @@ final class ESDocumentCodec {
 	 */
 	<S extends KeyConcept, I extends DtObject> SearchIndex<S, I> searchHit2Index(final SearchIndexDefinition indexDefinition, final SearchHit searchHit) {
 		/* On lit du document les données persistantes. */
-		/* 1. URI */
+		/* 1. UID */
 		final String urn = searchHit.getId();
-		final URI uri = io.vertigo.dynamo.domain.model.URI.fromURN(urn);
+		final UID uid = io.vertigo.dynamo.domain.model.UID.of(urn);
 
 		/* 2 : Result stocké */
 		final I resultDtObjectdtObject;
 		if (searchHit.field(FULL_RESULT) == null) {
-			resultDtObjectdtObject = decode((String) searchHit.getSource().get(FULL_RESULT));
+			resultDtObjectdtObject = decode((String) searchHit.getSourceAsMap().get(FULL_RESULT));
 		} else {
 			resultDtObjectdtObject = decode(searchHit.field(FULL_RESULT).getValue());
 		}
 		//-----
-		return SearchIndex.createIndex(indexDefinition, uri, resultDtObjectdtObject);
+		return SearchIndex.createIndex(indexDefinition, uid, resultDtObjectdtObject);
 	}
 
 	/**
@@ -128,11 +129,11 @@ final class ESDocumentCodec {
 		/* 2: Result stocké */
 		final String result = encode(dtResult);
 
-		/* 1 : URI */
+		/* 1 : UID */
 		try (final XContentBuilder xContentBuilder = XContentFactory.jsonBuilder()) {
 			xContentBuilder.startObject()
 					.field(FULL_RESULT, result)
-					.field("urn", index.getURI().urn());
+					.field(DOC_ID, index.getUID().getId());
 
 			/* 3 : Les champs du dto index */
 			final DtObject dtIndex = index.getIndexDtObject();

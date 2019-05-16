@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
@@ -35,6 +36,7 @@ import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAssociation;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAttribute;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlClass;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
+import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -42,16 +44,17 @@ import io.vertigo.util.StringUtil;
  * @author pforhan
  */
 public final class EAXmiLoader extends AbstractXmlLoader {
-	private final Map<XmlId, EAXmiObject> map = new LinkedHashMap<>();
-
+	private static final Pattern CODE_PATTERN = Pattern.compile("[a-zA-Z0-9_]+");
 	private static final Logger LOG = LogManager.getLogger(EAXmiLoader.class);
+	private final Map<XmlId, EAXmiObject> map = new LinkedHashMap<>();
 
 	/**
 	 * Constructor.
+	 * @param constFieldNameInSource FieldName in file is in CONST_CASE instead of camelCase
 	 * @param resourceManager the vertigo resourceManager
 	 */
-	public EAXmiLoader(final ResourceManager resourceManager) {
-		super(resourceManager);
+	public EAXmiLoader(final boolean constFieldNameInSource, final ResourceManager resourceManager) {
+		super(constFieldNameInSource, resourceManager);
 	}
 
 	@Override
@@ -67,10 +70,10 @@ public final class EAXmiLoader extends AbstractXmlLoader {
 	public List<XmlClass> getClasses() {
 		return map.values()
 				.stream()
-				.peek(obj -> LOG.debug("class : " + obj))
+				.peek(obj -> LOG.debug("class : {}", obj))
 				//On ne conserve que les classes et les domaines
 				.filter(obj -> obj.getType() == EAXmiType.Class)
-				.map(EAXmiLoader::createClass)
+				.map(obj -> createClass(obj, isConstFieldNameInSource()))
 				.collect(Collectors.toList());
 	}
 
@@ -87,8 +90,8 @@ public final class EAXmiLoader extends AbstractXmlLoader {
 				.collect(Collectors.toList());
 	}
 
-	private static XmlClass createClass(final EAXmiObject obj) {
-		LOG.debug("Creation de classe : " + obj.getName());
+	private static XmlClass createClass(final EAXmiObject obj, final boolean constFieldNameInSource) {
+		LOG.debug("Creation de classe : {}", obj.getName());
 		//On recherche les attributs (>DtField) de cette classe(>Dt_DEFINITION)
 		final String code = obj.getName().toUpperCase(Locale.ENGLISH);
 		final String packageName = obj.getParent().getPackageName();
@@ -98,20 +101,23 @@ public final class EAXmiLoader extends AbstractXmlLoader {
 		final List<XmlAttribute> fieldAttributes = new ArrayList<>();
 		for (final EAXmiObject child : obj.getChildren()) {
 			if (child.getType() == EAXmiType.Attribute) {
-				LOG.debug("Attribut = " + child.getName() + " isId = " + Boolean.toString(child.getIsId()));
+				LOG.debug("Attribut = {} isId = {}", child.getName(), Boolean.toString(child.getIsId()));
 				if (child.getIsId()) {
-					final XmlAttribute attributeXmi = createAttribute(child, true);
+					final XmlAttribute attributeXmi = createAttribute(child, true, constFieldNameInSource);
 					keyAttributes.add(attributeXmi);
 				} else {
-					fieldAttributes.add(createAttribute(child, false));
+					fieldAttributes.add(createAttribute(child, false, constFieldNameInSource));
 				}
 			}
 		}
 		return new XmlClass(code, packageName, stereotype, keyAttributes, fieldAttributes);
 	}
 
-	private static XmlAttribute createAttribute(final EAXmiObject obj, final boolean isPK) {
-		final String code = obj.getName().toUpperCase(Locale.ENGLISH);
+	private static XmlAttribute createAttribute(final EAXmiObject obj, final boolean isPK, final boolean constFieldNameInSource) {
+		final String code = obj.getName();
+		Assertion.checkArgument(CODE_PATTERN.matcher(code).matches(), "Code {0} must use a simple charset a-z A-Z 0-9 or _", code);
+		final String fieldName = constFieldNameInSource ? StringUtil.constToLowerCamelCase(code.toUpperCase(Locale.ENGLISH)) : code;
+		final String domainName = constFieldNameInSource ? StringUtil.constToUpperCamelCase(obj.getDomain().toUpperCase(Locale.ENGLISH)) : obj.getDomain();
 		final String label = obj.getLabel();
 		final boolean persistent = true;
 
@@ -124,7 +130,7 @@ public final class EAXmiLoader extends AbstractXmlLoader {
 		}
 
 		// L'information de persistence ne peut pas être déduite du Xmi, tous les champs sont déclarés persistent de facto
-		return new XmlAttribute(code, label, persistent, notNull, obj.getDomain());
+		return new XmlAttribute(fieldName, label, persistent, notNull, domainName);
 	}
 
 	/**
@@ -133,7 +139,7 @@ public final class EAXmiLoader extends AbstractXmlLoader {
 	 * @return Association
 	 */
 	private XmlAssociation createAssociation(final EAXmiObject obj) {
-		LOG.debug("Créer association :" + obj.getName());
+		LOG.debug("Créer association : {}", obj.getName());
 		//On recherche les objets référencés par l'association.
 		final EAXmiObject objectB = map.get(obj.getClassB());
 		final EAXmiObject objectA = map.get(obj.getClassA());

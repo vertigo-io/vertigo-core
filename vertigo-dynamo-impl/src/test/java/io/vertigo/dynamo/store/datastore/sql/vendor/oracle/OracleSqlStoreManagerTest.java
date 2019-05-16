@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,15 +20,15 @@ package io.vertigo.dynamo.store.datastore.sql.vendor.oracle;
 
 import java.util.List;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.database.impl.sql.vendor.oracle.OracleDataBase;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.store.data.domain.car.Car;
 import io.vertigo.dynamo.store.datastore.sql.AbstractSqlStoreManagerTest;
-import io.vertigo.dynamo.store.datastore.sql.SqlDataStoreAppConfig;
+import io.vertigo.dynamo.store.datastore.sql.SqlDataStoreNodeConfig;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskResult;
@@ -41,12 +41,12 @@ import io.vertigo.util.ListBuilder;
  * @author mlaroche
  *
  */
-@Ignore
+@Disabled
 public final class OracleSqlStoreManagerTest extends AbstractSqlStoreManagerTest {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return SqlDataStoreAppConfig.build(
+	protected NodeConfig buildNodeConfig() {
+		return SqlDataStoreNodeConfig.build(
 				OracleDataBase.class.getCanonicalName(),
 				"oracle.jdbc.OracleDriver",
 				"jdbc:oracle:thin:DT_VERTIGO/DT_VERTIGO@selma.dev.klee.lan.net:1521/O11UTF8");
@@ -95,17 +95,17 @@ public final class OracleSqlStoreManagerTest extends AbstractSqlStoreManagerTest
 		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
 		//-----
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final Domain doCar = definitionSpace.resolve("DO_DT_CAR_DTO", Domain.class);
+		final Domain doCar = definitionSpace.resolve("DoDtCarDto", Domain.class);
 
-		final TaskDefinition taskDefinition = TaskDefinition.builder("TK_INSERT_CAR")
+		final TaskDefinition taskDefinition = TaskDefinition.builder("TkInsertCar")
 				.withEngine(TaskEngineProc.class)
 				.withRequest("insert into CAR (ID, FAM_ID,MAKE, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MOTOR_TYPE) values "
-						+ "(SEQ_CAR.nextval, #DTO_CAR.FAM_ID#, #DTO_CAR.MAKE#, #DTO_CAR.MODEL#, #DTO_CAR.DESCRIPTION#, #DTO_CAR.YEAR#, #DTO_CAR.KILO#, #DTO_CAR.PRICE#, #DTO_CAR.MOTOR_TYPE#)")
-				.addInRequired("DTO_CAR", doCar)
+						+ "(SEQ_CAR.nextval, #dtoCar.famId#, #dtoCar.make#, #dtoCar.model#, #dtoCar.description#, #dtoCar.year#, #dtoCar.kilo#, #dtoCar.price#, #dtoCar.motorType#)")
+				.addInRequired("dtoCar", doCar)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
-				.addValue("DTO_CAR", car)
+				.addValue("dtoCar", car)
 				.build();
 		final TaskResult taskResult = taskManager
 				.execute(task);

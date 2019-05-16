@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,14 +23,14 @@ package io.vertigo.core.component.di;
  *
  * @author pchretien
  */
-public final class DIException extends RuntimeException {
+final class DIException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructor.
 	 * @param msg messagae
 	 */
-	public DIException(final String msg) {
+	DIException(final String msg) {
 		super(msg);
 	}
 
@@ -39,7 +39,7 @@ public final class DIException extends RuntimeException {
 	 * @param msg message
 	 * @param t cause exception
 	 */
-	public DIException(final String msg, final Throwable t) {
+	DIException(final String msg, final Throwable t) {
 		super(msg, t);
 	}
 }

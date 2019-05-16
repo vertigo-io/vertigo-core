@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,7 +37,6 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * Model used by FreeMarker.
@@ -108,14 +107,6 @@ public final class DtDefinitionModel {
 	 */
 	public String getClassSimpleName() {
 		return dtDefinition.getClassSimpleName();
-	}
-
-	/**
-	 * Retourne le nom camelCase de la classe.
-	 * @return Simple Nom (i.e. sans le package) de la definition du DtObject
-	 */
-	public String getClassSimpleNameCamelCase() {
-		return StringUtil.constToLowerCamelCase(dtDefinition.getLocalName());
 	}
 
 	/**
@@ -226,7 +217,7 @@ public final class DtDefinitionModel {
 		return associationModels
 				.stream()
 				//only multiples
-				.filter(associationModel -> associationModel.isMultiple())
+				.filter(AssociationModel::isMultiple)
 				//simple navigable ou nn
 				.anyMatch(associationModel -> (associationModel.isSimple() && associationModel.isNavigable()) || !associationModel.isSimple());
 

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,7 +56,7 @@ public final class VFileJsonConverter implements JsonConverter, JsonSerializer {
 	/** {@inheritDoc} */
 	@Override
 	public String toJson(final Object result, final Response response, final WebServiceDefinition webServiceDefinition) {
-		VFileUtil.sendVFile(result, response);
+		VFileUtil.sendVFile(result, webServiceDefinition.isFileAttachment(), response);
 		return ""; // response already send but can't send null : javaspark understand it as : not consumed here
 	}
 

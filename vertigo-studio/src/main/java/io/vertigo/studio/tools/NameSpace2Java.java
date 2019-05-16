@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.studio.tools;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.studio.mda.MdaManager;
 
 /**
@@ -37,9 +37,8 @@ public final class NameSpace2Java {
 	 * à partir des déclarations (ksp, oom..)
 	 * @param args Le premier argument [0] précise le nom du fichier properties de paramétrage
 	 */
-	public static void main(final String[] args) {
-		final AppConfig appConfig = new SmartAppConfigBuilder(args).build();
-		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+	public static void main(final NodeConfig nodeConfig) {
+		try (final AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			app.getComponentSpace().resolve(MdaManager.class).generate().displayResultMessage(System.out);
 		}
 	}

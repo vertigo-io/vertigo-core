@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,26 +38,21 @@ public final class PostgreSqlDialectTest extends AbstractSqlDialectTest {
 
 	@Override
 	public String getExpectedInsertQuery() {
-		return "insert into MOVIE ( TITLE) values (  #DTO.TITLE#) ";
+		return "insert into MOVIE (ID, TITLE) values (nextval('SEQ_MOVIE'),  #dto.title#);";
 	}
 
 	@Override
 	public String getExpectedSelectForUpdateWildCardQuery() {
-		return " select * from MOVIE where ID = #ID# for update ";
+		return " select * from MOVIE where ID = #id# for update ";
 	}
 
 	@Override
 	public String getExpectedSelectForUpdateFieldsQuery() {
-		return " select ID, TITLE from MOVIE where ID = #ID# for update ";
+		return " select ID, TITLE from MOVIE where ID = #id# for update ";
 	}
 
 	@Override
 	public Optional<String> getExpectedCreatePrimaryKeyQuery() {
 		return Optional.empty();
-	}
-
-	@Override
-	public String getExpectedAppendMaxRowsQuery() {
-		return "select * from MOVIE limit 100";
 	}
 }

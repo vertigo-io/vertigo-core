@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,12 +33,11 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.functionscore.ExponentialDecayFunctionBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.filters.FiltersAggregator.KeyedFilter;
+import org.elasticsearch.search.aggregations.BucketOrder;
+import org.elasticsearch.search.aggregations.bucket.filter.FiltersAggregator.KeyedFilter;
+import org.elasticsearch.search.aggregations.bucket.range.DateRangeAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.range.RangeAggregationBuilder;
-import org.elasticsearch.search.aggregations.bucket.range.date.DateRangeAggregationBuilder;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms.Order;
-import org.elasticsearch.search.aggregations.metrics.tophits.TopHitsAggregationBuilder;
+import org.elasticsearch.search.aggregations.metrics.TopHitsAggregationBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
@@ -69,8 +68,8 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	private static final int TOPHITS_SUBAGGREGATION_MAXSIZE = 100; //max 100 documents per cluster when clusterization is used
 	private static final int TOPHITS_SUBAGGREGATION_SIZE = 10; //max 10 documents per cluster when clusterization is used
 	private static final String TOPHITS_SUBAGGREGATION_NAME = "top";
-	private static final String DATE_PATTERN = "dd/MM/yy";
-	private static final Pattern RANGE_PATTERN = Pattern.compile("([A-Z_0-9]+):([\\[\\{])(.*) TO (.*)([\\}\\]])");
+	private static final String DATE_PATTERN = "dd/MM/yyyy";
+	private static final Pattern RANGE_PATTERN = Pattern.compile("([a-z][a-zA-Z0-9]*):([\\[\\{])(.*) TO (.*)([\\}\\]])");
 
 	private final SearchRequestBuilder searchRequestBuilder;
 	private SearchIndexDefinition myIndexDefinition;
@@ -224,9 +223,9 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		if (facetedQuery.isPresent()) {
 			for (final FacetDefinition facetDefinition : facetedQuery.get().getDefinition().getFacetDefinitions()) {
 				if (facetDefinition.isMultiSelectable()) {
-					appendSelectedFacetValuesFilter(postFilterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition));
+					appendSelectedFacetValuesFilter(postFilterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition.getName()));
 				} else {
-					appendSelectedFacetValuesFilter(filterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition));
+					appendSelectedFacetValuesFilter(filterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition.getName()));
 				}
 			}
 		}
@@ -292,11 +291,11 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 				for (final FacetDefinition filterFacetDefinition : searchQuery.getFacetedQuery().get().getDefinition().getFacetDefinitions()) {
 					if (filterFacetDefinition.isMultiSelectable() && !facetDefinition.equals(filterFacetDefinition)) {
 						//on ne doit refiltrer que les multiSelectable (les autres sont dans le filter de la request), sauf la facet qu'on est entrain de traiter
-						appendSelectedFacetValuesFilter(aggsFilterBoolQueryBuilder, searchQuery.getFacetedQuery().get().getSelectedFacetValues().getFacetValues(filterFacetDefinition));
+						appendSelectedFacetValuesFilter(aggsFilterBoolQueryBuilder, searchQuery.getFacetedQuery().get().getSelectedFacetValues().getFacetValues(filterFacetDefinition.getName()));
 					}
 				}
 				if (aggsFilterBoolQueryBuilder.hasClauses()) {
-					final AggregationBuilder filterAggregationBuilder = AggregationBuilders.filter(facetDefinition.getName() + "_FILTER", aggsFilterBoolQueryBuilder);
+					final AggregationBuilder filterAggregationBuilder = AggregationBuilders.filter(facetDefinition.getName() + "Filter", aggsFilterBoolQueryBuilder);
 					filterAggregationBuilder.subAggregation(aggregationBuilder);
 					searchRequestBuilder.addAggregation(filterAggregationBuilder);
 				} else {
@@ -316,13 +315,13 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 
 	private static AggregationBuilder termFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
 		//facette par field
-		final Order facetOrder;
+		final BucketOrder facetOrder;
 		switch (facetDefinition.getOrder()) {
 			case alpha:
-				facetOrder = Terms.Order.term(true);
+				facetOrder = BucketOrder.key(true);
 				break;
 			case count:
-				facetOrder = Terms.Order.count(false);
+				facetOrder = BucketOrder.count(false);
 				break;
 			case definition:
 				facetOrder = null; //ES accept null for no sorting
@@ -346,7 +345,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	private static AggregationBuilder rangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
 		//facette par range
 		final DataType dataType = dtField.getDomain().getDataType();
-		if (dataType == DataType.Date) {
+		if (dataType == DataType.LocalDate) {
 			return dateRangeFacetToAggregationBuilder(facetDefinition, dtField);
 		} else if (dataType.isNumber()) {
 			return numberRangeFacetToAggregationBuilder(facetDefinition, dtField);

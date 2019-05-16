@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,12 +24,12 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.config.DefinitionResourceConfig;
 import io.vertigo.core.definition.DefinitionProvider;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.DefinitionSupplier;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
@@ -66,11 +66,11 @@ public class DynamoDefinitionProvider implements DefinitionProvider {
 	 * @param encoding the encoding to use for reading ksp files
 	 */
 	@Inject
-	public DynamoDefinitionProvider(final ResourceManager resourceManager, @Named("encoding") final Optional<String> encoding) {
+	public DynamoDefinitionProvider(final ResourceManager resourceManager, @ParamValue("encoding") final Optional<String> encoding, @ParamValue("constFieldName") final Optional<Boolean> constFieldName) {
 		loadersByType = new MapBuilder<String, Loader>()
 				.put("kpr", new KprLoader(resourceManager, encoding))
-				.put("oom", new OOMLoader(resourceManager))
-				.put("xmi", new EAXmiLoader(resourceManager))
+				.put("oom", new OOMLoader(constFieldName.orElse(true), resourceManager))
+				.put("xmi", new EAXmiLoader(constFieldName.orElse(true), resourceManager))
 				.put("classes", new AnnotationLoader())
 				.unmodifiable()
 				.build();

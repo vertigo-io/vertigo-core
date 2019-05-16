@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,6 +26,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -40,14 +42,14 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.impl.account.AccountStorePlugin;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
 import io.vertigo.lang.Assertion;
@@ -77,17 +79,11 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	private final String groupFilePath;
 
 	private enum AccountProperty {
-		id,
-		displayName,
-		email,
-		authToken,
-		photoUrl
+		id, displayName, email, authToken, photoUrl
 	}
 
 	private enum GroupProperty {
-		id,
-		displayName,
-		accountIds
+		id, displayName, accountIds
 	}
 
 	/**
@@ -98,20 +94,24 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	 */
 	@Inject
 	public TextAccountStorePlugin(
-			@Named("accountFilePath") final String accountFilePath,
-			@Named("accountFilePattern") final String accountFilePatternStr,
-			@Named("groupFilePath") final String groupFilePath,
-			@Named("groupFilePattern") final String groupFilePatternStr,
+			@ParamValue("accountFilePath") final String accountFilePath,
+			@ParamValue("accountFilePattern") final String accountFilePatternStr,
+			@ParamValue("groupFilePath") final String groupFilePath,
+			@ParamValue("groupFilePattern") final String groupFilePatternStr,
 			final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkArgNotEmpty(accountFilePatternStr);
-		Assertion.checkArgument(accountFilePatternStr.contains("(?<"), "accountFilePattern should be a regexp of named group for each Account's fields (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<email>)(?<authToken>[^\\s;]+);(?<photoUrl>[^\\s;]+)' )");
-		Assertion.checkArgument(groupFilePatternStr.contains("(?<"), "groupFilePattern should be a regexp of named group for each group's fields (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>([^\\s;]+(;[^\\s;]+)*)' )");
+		Assertion.checkArgument(accountFilePatternStr.contains("(?<"),
+				"accountFilePattern should be a regexp of named group for each Account's fields (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<email>)(?<authToken>[^\\s;]+);(?<photoUrl>[^\\s;]+)' )");
+		Assertion.checkArgument(groupFilePatternStr.contains("(?<"),
+				"groupFilePattern should be a regexp of named group for each group's fields (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>([^\\s;]+(;[^\\s;]+)*)' )");
 		for (final AccountProperty accountProperty : AccountProperty.values()) {
-			Assertion.checkArgument(accountFilePatternStr.contains("(?<" + accountProperty.name() + ">"), "filePattern should be a regexp of named group for each Account fields (missing {0} field) (like : '(?<id>\\S+);(?<displayName>\\S+);(?<email>)(?<authToken>\\S+);(?<photoUrl>\\S+)' )", accountProperty.name());
+			Assertion.checkArgument(accountFilePatternStr.contains("(?<" + accountProperty.name() + ">"),
+					"filePattern should be a regexp of named group for each Account fields (missing {0} field) (like : '(?<id>\\S+);(?<displayName>\\S+);(?<email>)(?<authToken>\\S+);(?<photoUrl>\\S+)' )", accountProperty.name());
 		}
 		for (final GroupProperty groupProperty : GroupProperty.values()) {
-			Assertion.checkArgument(groupFilePatternStr.contains("(?<" + groupProperty.name() + ">"), "filePattern should be a regexp of named group for each Group fields (missing {0} field) (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>([^\\s;]+(;[^\\s;]+)*)' )", groupProperty.name());
+			Assertion.checkArgument(groupFilePatternStr.contains("(?<" + groupProperty.name() + ">"),
+					"filePattern should be a regexp of named group for each Group fields (missing {0} field) (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>([^\\s;]+(;[^\\s;]+)*)' )", groupProperty.name());
 		}
 		// -----
 		this.resourceManager = resourceManager;
@@ -127,26 +127,26 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	}
 
 	@Override
-	public Account getAccount(final URI<Account> accountURI) {
+	public Account getAccount(final UID<Account> accountURI) {
 		return accounts.get(accountURI.getId()).getAccount();
 	}
 
 	@Override
-	public Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
-		return groupsPerAccount.get(accountURI.getId()).stream()
-				.map(AccountGroup::getURI)
+	public Set<UID<AccountGroup>> getGroupUIDs(final UID<Account> accountUID) {
+		return groupsPerAccount.get(accountUID.getId()).stream()
+				.map(AccountGroup::getUID)
 				.collect(Collectors.toSet());
 	}
 
 	@Override
-	public AccountGroup getGroup(final URI<AccountGroup> groupURI) {
+	public AccountGroup getGroup(final UID<AccountGroup> groupURI) {
 		return groups.get(groupURI.getId());
 	}
 
 	@Override
-	public Set<URI<Account>> getAccountURIs(final URI<AccountGroup> groupURI) {
+	public Set<UID<Account>> getAccountUIDs(final UID<AccountGroup> groupURI) {
 		return accountsPerGroup.get(groupURI.getId()).stream()
-				.map(Account::getURI)
+				.map(Account::getUID)
 				.collect(Collectors.toSet());
 	}
 
@@ -156,12 +156,12 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 		final Optional<AccountInfo> accountInfoOpt = accounts.values().stream()
 				.filter(accountInfo -> accountAuthToken.equals(accountInfo.getAccount().getAuthToken()))
 				.findFirst();
-		return accountInfoOpt.map(accountInfo -> accountInfo.getAccount());
+		return accountInfoOpt.map(AccountInfo::getAccount);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<VFile> getPhoto(final URI<Account> accountURI) {
+	public Optional<VFile> getPhoto(final UID<Account> accountURI) {
 		final AccountInfo accountInfo = accounts.get(accountURI.getId());
 		Assertion.checkNotNull(accountInfo, "No account found for {0}", accountURI);
 		if (accountInfo.getPhotoUrl() == null || accountInfo.getPhotoUrl().isEmpty()) {
@@ -178,18 +178,18 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 		return createVFile(accountURI, fileURL, accountInfo.getPhotoUrl());
 	}
 
-	private static Optional<VFile> createVFile(final URI<Account> accountURI, final URL fileURL, final String photoUrl) {
-		File photoFile;
+	private static Optional<VFile> createVFile(final UID<Account> accountURI, final URL fileURL, final String photoUrl) {
+		Path photoFile;
 		try {
-			photoFile = new File(fileURL.toURI());
+			photoFile = Paths.get(fileURL.toURI());
 		} catch (final URISyntaxException e) {
 			return Optional.empty();
 		}
-		Assertion.checkArgument(photoFile.exists(), "Account {0} photo {1} not found", accountURI, photoUrl);
-		Assertion.checkArgument(photoFile.isFile(), "Account {0} photo {1} must be a file", accountURI, photoUrl);
+		Assertion.checkArgument(photoFile.toFile().exists(), "Account {0} photo {1} not found", accountURI, photoUrl);
+		Assertion.checkArgument(photoFile.toFile().isFile(), "Account {0} photo {1} must be a file", accountURI, photoUrl);
 		try {
-			final String contentType = Files.probeContentType(photoFile.toPath());
-			return Optional.of(new FSFile(photoFile.getName(), contentType, photoFile));
+			final String contentType = Files.probeContentType(photoFile);
+			return Optional.of(new FSFile(photoFile.getFileName().toString(), contentType, photoFile));
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}
@@ -213,7 +213,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 				}
 			}
 		} catch (final Exception e) {
-			throw WrappedException.wrap(e, "Erreur durant la lecture des données " + fileURL);
+			throw WrappedException.wrap(e, "Erreur durant la lecture des données {0}", fileURL);
 		}
 	}
 

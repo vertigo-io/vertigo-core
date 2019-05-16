@@ -3,7 +3,7 @@ package io.vertigo.dynamock.domain
 /**************************************************************************************************/
 /********************************* Gestion des formatters *****************************************/
 /**************************************************************************************************/
-create Formatter FMT_DEFAULT{
+create Formatter FmtDefault{
 	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault",
 }
 
@@ -14,45 +14,50 @@ create Formatter FMT_DEFAULT{
 /**************************************************************************************************/
 /********************************* Gestion des domaines* ******************************************/
 /**************************************************************************************************/
-create Domain DO_TEXTE_50 {
+create Domain DoTexte50 {
 	dataType : String,
-	formatter : FMT_DEFAULT,
-    constraint : [CK_MAX_LENGTH_50]	
+	formatter : FmtDefault,
+    constraint : [CkMaxLength50]	
 }
 
-create Domain DO_EMAIL {
+create Domain DoEmail {
 	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_EMAIL]
+	formatter : FmtDefault
+	constraint : [CkEmail]
 }
 
-create Domain DO_DATE {
-	dataType :Date,
-	formatter : FMT_DEFAULT,
+create Domain DoInstant {
+	dataType : Instant,
+	formatter : FmtDefault,
 }
 
-create Domain DO_BOOLEAN {
+create Domain DoLocalDate {
+	dataType : LocalDate,
+	formatter : FmtDefault,
+}
+
+create Domain DoBoolean {
 	dataType :Boolean,
-	formatter : FMT_DEFAULT,
+	formatter : FmtDefault,
 }
 
-create Domain DO_ID {
+create Domain DoId {
 	dataType : Long,
-	formatter : FMT_DEFAULT,
+	formatter : FmtDefault,
 }
 
-create Domain DO_CODE {
+create Domain DoCode {
 	dataType : String,
-	formatter : FMT_DEFAULT,
+	formatter : FmtDefault,
 }
 
 
-create Constraint CK_MAX_LENGTH_50 {
+create Constraint CkMaxLength50 {
     className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
     args :"50"
 }
 
-create Constraint CK_EMAIL {
+create Constraint CkEmail {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintRegex",
 	args : "^[_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*(\\.[a-zA-Z0-9-]{2,3})+$",
 	msg : "Le courriel n'est pas valide",

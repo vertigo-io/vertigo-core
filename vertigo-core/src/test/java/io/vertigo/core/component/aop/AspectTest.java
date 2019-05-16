@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,20 +28,45 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.aop.data.MyException;
+import io.vertigo.core.component.aop.data.aspects.OneMoreAspect;
+import io.vertigo.core.component.aop.data.aspects.TenMoreAspect;
 import io.vertigo.core.component.aop.data.components.A;
 import io.vertigo.core.component.aop.data.components.B;
+import io.vertigo.core.component.aop.data.components.BImpl;
 import io.vertigo.core.component.aop.data.components.C;
 import io.vertigo.core.component.aop.data.components.Computer;
+import io.vertigo.core.component.aop.data.components.ComputerImpl;
 import io.vertigo.core.component.aop.data.components.F;
 
 @RunWith(JUnitPlatform.class)
-public final class AspectTest extends AbstractTestCaseJU4 {
+public final class AspectTest extends AbstractTestCaseJU5 {
 	private A a;
 	private B b;
 	private C c;
+
+	@Override
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(ModuleConfig.builder("aspects")
+						.addAspect(OneMoreAspect.class)
+						.addAspect(TenMoreAspect.class)
+						.build())
+				.addModule(ModuleConfig.builder("components")
+						.addComponent(Computer.class, ComputerImpl.class)
+						.addComponent(A.class)
+						.addComponent(B.class, BImpl.class)
+						.addComponent(C.class)
+						.addComponent(F.class)
+						.build())
+				.build();
+	}
 
 	@Test
 	public final void testNo() {
@@ -75,7 +100,7 @@ public final class AspectTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public final void testUnwrapp() {
-		final AopPlugin aopPlugin = getApp().getConfig().getBootConfig().getAopPlugin();
+		final AopPlugin aopPlugin = getApp().getNodeConfig().getBootConfig().getAopPlugin();
 		final F f = getApp().getComponentSpace().resolve(F.class);
 		// Il y a des aspects sur la classe donc elle doit être dewrappable
 		assertNotEquals(F.class.getName(), f.getClass().getName());

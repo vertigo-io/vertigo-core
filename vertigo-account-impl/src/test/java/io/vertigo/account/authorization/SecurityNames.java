@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,34 +28,40 @@ public final class SecurityNames {
 	 * Enumération des Authorizations globales.
 	 */
 	public enum GlobalAuthorizations implements AuthorizationName {
-		ATZ_ADMUSR,
-		ATZ_ADMPRO,
-		ATZ_ADMAPP
+		AtzAdmUsr, AtzAdmPro, AtzAdmApp
 	}
 
 	/**
 	 * Enumération des Authorizations globales.
 	 */
 	public enum RecordAuthorizations implements AuthorizationName {
-		ATZ_RECORD$READ,
-		ATZ_RECORD$READ2,
-		ATZ_RECORD$READ_HP,
-		ATZ_RECORD$DELETE,
-		ATZ_RECORD$NOTIFY,
-		ATZ_RECORD$CREATE,
-		ATZ_RECORD$WRITE;
+		AtzRecord$read,
+		AtzRecord$read2,
+		AtzRecord$read3,
+		AtzRecord$readHp,
+		AtzRecord$delete,
+		AtzRecord$notify,
+		AtzRecord$create,
+		AtzRecord$write, //
+		AtzRecord$test,
+		AtzRecord$test2,
+		AtzRecord$test3
 	}
 
 	/**
 	 * Enumération des opérations de Dossier.
 	 */
 	public enum RecordOperations implements OperationName<Record> {
-		READ,
-		READ2,
-		READ_HP,
-		WRITE,
-		CREATE,
-		DELETE,
-		NOTIFY,
+		read,
+		read2,
+		read3,
+		readHp,
+		write,
+		create,
+		delete,
+		notify, //
+		test,
+		test2,
+		test3
 	}
 }

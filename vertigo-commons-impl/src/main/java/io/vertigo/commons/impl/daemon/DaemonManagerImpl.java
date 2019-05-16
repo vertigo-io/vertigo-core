@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -69,7 +69,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		// we need to unwrap the component to scan the real class and not the enhanced version
-		final AopPlugin aopPlugin = Home.getApp().getConfig().getBootConfig().getAopPlugin();
+		final AopPlugin aopPlugin = Home.getApp().getNodeConfig().getBootConfig().getAopPlugin();
 		return Home.getApp().getComponentSpace().keySet()
 				.stream()
 				.flatMap(id -> createDaemonDefinitions(Home.getApp().getComponentSpace().resolve(id, Component.class), aopPlugin).stream())

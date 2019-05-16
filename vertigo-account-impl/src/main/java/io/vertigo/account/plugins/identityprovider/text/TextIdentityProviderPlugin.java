@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,13 +19,15 @@
 package io.vertigo.account.plugins.identityprovider.text;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,17 +39,17 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.account.impl.identityprovider.IdentityProviderPlugin;
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
@@ -67,29 +69,31 @@ import io.vertigo.lang.WrappedException;
  */
 public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activeable {
 	private static final String PHOTO_URL_RESERVED_FIELD = "photoUrl";
+	private static final Pattern PATTERN_FIELD_PARSER = Pattern.compile("\\(?<([^>]+)>[^)]*\\)");
 	private final Pattern filePattern;
 	private final List<String> filePatternFieldsOrdered;
 
-	private final Map<String, IdentityUserInfo> users; //id-to-Account
+	private final Map<String, IdentityUserInfo> authToUsers; //auth-to-Account
+	private final Map<Serializable, IdentityUserInfo> idsToUsers; //id-to-Account
 	private final ResourceManager resourceManager;
 	private final String filePath;
-	private final String userDtDefinitionName;
-	private final String userAuthTokenFieldName;
+	private final String userIdentityEntity;
+	private final String userAuthField;
 
 	/**
 	 * Constructor.
 	 * @param resourceManager Resource Manager
 	 * @param filePath File path
 	 * @param filePatternStr File Pattern (id, displayName, email, authToken, photoUrl)
-	 * @param userAuthTokenFieldName Authent token field name
-	 * @param userDtDefinitionName User dtDefinition name
+	 * @param userAuthField Authent token field name
+	 * @param userIdentityEntity User dtDefinition name
 	 */
 	@Inject
 	public TextIdentityProviderPlugin(
-			@Named("filePath") final String filePath,
-			@Named("filePattern") final String filePatternStr,
-			@Named("userAuthTokenFieldName") final String userAuthTokenFieldName,
-			@Named("userDtDefinitionName") final String userDtDefinitionName,
+			@ParamValue("identityFilePath") final String filePath,
+			@ParamValue("identityFilePattern") final String filePatternStr,
+			@ParamValue("userAuthField") final String userAuthField,
+			@ParamValue("userIdentityEntity") final String userIdentityEntity,
 			final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkArgNotEmpty(filePatternStr);
@@ -97,25 +101,25 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 				"filePattern should be a regexp of named group for each User's entity fields plus reserved field '{0}' (like : '(?<id>\\S+);(?<name>\\S+);(?<email>\\S+);;(?<{0}>\\S+)' )", PHOTO_URL_RESERVED_FIELD);
 		Assertion.checkArgument(filePatternStr.contains("(?<" + PHOTO_URL_RESERVED_FIELD + ">"),
 				"filePattern should be a regexp of named group for each User's entity fields plus reserved field '{0}' (like : '(?<id>\\S+);(?<name>\\S+);(?<email>\\S+);;(?<{0}>\\S+)' )", PHOTO_URL_RESERVED_FIELD);
-		Assertion.checkArgument(filePatternStr.contains("(?<" + userAuthTokenFieldName + ">"),
-				"filePattern should contains the userAuthTokenFieldName : {0}", userAuthTokenFieldName);
-		Assertion.checkArgNotEmpty(userDtDefinitionName);
-		Assertion.checkArgNotEmpty(userAuthTokenFieldName);
+		Assertion.checkArgument(filePatternStr.contains("(?<" + userAuthField + ">"),
+				"filePattern should contains the userAuthField : {0}", userAuthField);
+		Assertion.checkArgNotEmpty(userIdentityEntity);
+		Assertion.checkArgNotEmpty(userAuthField);
 		// -----
 		this.resourceManager = resourceManager;
 		this.filePath = filePath;
 		//SimpleAccountRealms are memory-only realms
-		users = new LinkedHashMap<>();
+		authToUsers = new LinkedHashMap<>();
+		idsToUsers = new LinkedHashMap<>();
 		filePattern = Pattern.compile(filePatternStr);
 		filePatternFieldsOrdered = parsePatternFields(filePatternStr);
-		this.userDtDefinitionName = userDtDefinitionName;
-		this.userAuthTokenFieldName = userAuthTokenFieldName;
+		this.userIdentityEntity = userIdentityEntity;
+		this.userAuthField = userAuthField;
 	}
 
 	private static List<String> parsePatternFields(final String filePatternStr) {
 		final List<String> fields = new ArrayList<>();
-		final Pattern pattern = Pattern.compile("\\(?<(\\S)>.*\\)");
-		final Matcher matcher = pattern.matcher(filePatternStr);
+		final Matcher matcher = PATTERN_FIELD_PARSER.matcher(filePatternStr);
 		while (matcher.find()) {
 			fields.add(matcher.group(1));
 		}
@@ -125,38 +129,55 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 	/** {@inheritDoc} */
 	@Override
 	public long getUsersCount() {
-		return users.size();
+		return authToUsers.size();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> List<E> getAllUsers() {
-		return users.values().stream()
-				.map(accountInfo -> (E) accountInfo.getUser())
+		return (List<E>) authToUsers.values().stream()
+				.map(IdentityUserInfo::getUser)
 				.collect(Collectors.toList());
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> E getUserByAuthToken(final String userAuthToken) {
-		return (E) users.get(userAuthToken).getUser();
+		return (E) authToUsers.get(userAuthToken).getUser();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> Optional<VFile> getPhoto(final URI<E> accountURI) {
-		final IdentityUserInfo identityAccountInfo = users.get(accountURI.getId());
-		Assertion.checkNotNull(identityAccountInfo, "No account found for {0}", accountURI);
-		if (identityAccountInfo.getPhotoUrl() == null) {
+	public <E extends Entity> Optional<VFile> getPhoto(final UID<E> accountURI) {
+		final IdentityUserInfo identityAccountInfo = idsToUsers.get(accountURI.getId());
+		Assertion.checkNotNull(identityAccountInfo, "No identity found for {0}", accountURI);
+		final String photoUrl = identityAccountInfo.getPhotoUrl();
+		if (photoUrl == null || photoUrl.isEmpty()) {
 			return Optional.empty();
 		}
-		final File photoFile = new File(identityAccountInfo.getPhotoUrl());
-		if (!photoFile.exists()) {
-			return Optional.empty();
+		final URL fileURL;
+		if (photoUrl.startsWith(".")) {//si on est en relatif, on repart du prefix du fichier des identities
+			final String accountFilePrefix = filePath.substring(0, filePath.lastIndexOf('/')) + "/";
+			fileURL = resourceManager.resolve(accountFilePrefix + photoUrl);
+		} else {
+			fileURL = resourceManager.resolve(photoUrl);
 		}
+
+		return createVFile(accountURI, fileURL, photoUrl);
+	}
+
+	private static <E extends Entity> Optional<VFile> createVFile(final UID<E> accountURI, final URL fileURL, final String photoUrl) {
+		Path photoFile;
 		try {
-			final String contentType = Files.probeContentType(photoFile.toPath());
-			return Optional.of(new FSFile("photoOf" + accountURI.getId(), contentType, photoFile));
+			photoFile = Paths.get(fileURL.toURI());
+		} catch (final URISyntaxException e) {
+			return Optional.empty();
+		}
+		Assertion.checkArgument(photoFile.toFile().exists(), "Identity {0} photo {1} not found", accountURI, photoUrl);
+		Assertion.checkArgument(photoFile.toFile().isFile(), "Identity {0} photo {1} must be a file", accountURI, photoUrl);
+		try {
+			final String contentType = Files.probeContentType(photoFile);
+			return Optional.of(new FSFile(photoFile.getFileName().toString(), contentType, photoFile));
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}
@@ -165,46 +186,55 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		final DtDefinition userDtDefinition = Home.getApp().getDefinitionSpace().resolve(userDtDefinitionName, DtDefinition.class);
-		Assertion.checkState(userDtDefinition.contains(userAuthTokenFieldName), "User definition ({0}) should contains the userAuthTokenField ({1})", userDtDefinitionName, userAuthTokenFieldName);
+		final DtDefinition userDtDefinition = Home.getApp().getDefinitionSpace().resolve(userIdentityEntity, DtDefinition.class);
+		Assertion.checkState(userDtDefinition.contains(userAuthField), "User definition ({0}) should contains the userAuthField ({1})", userIdentityEntity, userAuthField);
 
 		final URL realmURL = resourceManager.resolve(filePath);
+		int lineNumber = -1;
 		try {
 			final String confTest = parseFile(realmURL);
 			try (final Scanner scanner = new Scanner(confTest)) {
 				while (scanner.hasNextLine()) {
+					lineNumber++;
 					final String line = scanner.nextLine();
-					parseUserInfo(line, userDtDefinition);
+					parseAndPopulateUserInfo(line, userDtDefinition);
+
 				}
 			}
 		} catch (final Exception e) {
-			throw WrappedException.wrap(e, "Erreur durant la lecture du Realm " + realmURL);
+			throw WrappedException.wrap(e, "Erreur durant la lecture du Realm {0} line {1}", realmURL, lineNumber);
 		}
 	}
 
-	private void parseUserInfo(final String line, final DtDefinition userDtDefinition) throws FormatterException {
+	private void parseAndPopulateUserInfo(final String line, final DtDefinition userDtDefinition) throws FormatterException {
 		final Matcher matcher = filePattern.matcher(line);
+		if (!matcher.find()) {
+			throw new IllegalArgumentException("Can't parse textIdentity file , pattern can't match");
+		}
+
 		String photoUrl = null;
 		String userAuthToken = null;
 
 		final Entity user = Entity.class.cast(DtObjectUtil.createDtObject(userDtDefinition));
-		for (final String propertyName : filePatternFieldsOrdered) {
-			final String valueStr = matcher.group(propertyName);
-			if (PHOTO_URL_RESERVED_FIELD.equals(propertyName)) {
+		for (final String fieldName : filePatternFieldsOrdered) {
+			final String valueStr = matcher.group(fieldName);
+			if (PHOTO_URL_RESERVED_FIELD.equals(fieldName)) {
 				photoUrl = valueStr;
 			} else {
-				setTypedValue(userDtDefinition, user, propertyName, valueStr);
-				if (userAuthTokenFieldName.equals(propertyName)) {
+				setTypedValue(userDtDefinition, user, fieldName, valueStr);
+				if (userAuthField.equals(fieldName)) {
 					userAuthToken = valueStr;
 				}
 			}
 		}
-		Assertion.checkArgNotEmpty(userAuthToken, "User AuthToken not found");
-		users.put(userAuthToken, new IdentityUserInfo(user, photoUrl));
+		Assertion.checkArgNotEmpty(userAuthToken, "User AuthToken not found in file");
+		final IdentityUserInfo userInfo = new IdentityUserInfo(user, photoUrl);
+		authToUsers.put(userAuthToken, userInfo);
+		idsToUsers.put(user.getUID().getId(), userInfo);
 	}
 
-	private static void setTypedValue(final DtDefinition userDtDefinition, final Entity user, final String propertyName, final String valueStr) throws FormatterException {
-		final DtField dtField = userDtDefinition.getField(propertyName);
+	private static void setTypedValue(final DtDefinition userDtDefinition, final Entity user, final String fieldName, final String valueStr) throws FormatterException {
+		final DtField dtField = userDtDefinition.getField(fieldName);
 		final Serializable typedValue = (Serializable) dtField.getDomain().stringToValue(valueStr);
 		dtField.getDataAccessor().setValue(user, typedValue);
 	}
@@ -226,7 +256,8 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 	/** {@inheritDoc} */
 	@Override
 	public void stop() {
-		users.clear();
+		authToUsers.clear();
+		idsToUsers.clear();
 	}
 
 }

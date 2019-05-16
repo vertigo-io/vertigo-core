@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,14 +31,13 @@ import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * The DtDefinition class defines the definition of data.
  *
  * @author pchretien
  */
-@DefinitionPrefix("DT")
+@DefinitionPrefix("Dt")
 public final class DtDefinition implements Definition {
 	/** the dataSpace must match this pattern. */
 	public static final Pattern REGEX_DATA_SPACE = Pattern.compile("[a-z][a-zA-Z0-9]{3,60}");
@@ -169,7 +168,7 @@ public final class DtDefinition implements Definition {
 	 * @return Simple Nom (i.e. sans le package) de la classe d'implémentation du DtObject
 	 */
 	public String getClassSimpleName() {
-		return StringUtil.constToUpperCamelCase(getLocalName());
+		return getLocalName();
 	}
 
 	/**
@@ -237,7 +236,7 @@ public final class DtDefinition implements Definition {
 	}
 
 	/**
-	 * @return Nom de la définition sans prefix (XXX_YYYY).
+	 * @return Nom de la définition sans prefix (XxxYyyy).
 	 */
 	public String getLocalName() {
 		return DefinitionUtil.getLocalName(name, DtDefinition.class);

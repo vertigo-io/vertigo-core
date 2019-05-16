@@ -19,7 +19,7 @@
 	    <component api="MdaManager" class="io.vertigo.studio.impl.mda.MdaManagerImpl">
 	        <param name ="targetGenDir" value="src/main/javagen/"/>
             <param name ="encoding" value="UTF-8"/>
-            <param name ="projectPackageName" value="io.vertigo.persona.model"/>
+            <param name ="projectPackageName" value="io.vertigo.account.model"/>
 	    
 	    </component> 
     </module> 

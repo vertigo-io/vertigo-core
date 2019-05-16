@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +18,9 @@
  */
 package io.vertigo.dynamo;
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 import io.vertigo.dynamo.collections.CollectionsManagerTest;
 import io.vertigo.dynamo.collections.FacetManagerTest;
@@ -38,6 +38,7 @@ import io.vertigo.dynamo.environment.eaxmi.EAXmiTestParserAA;
 import io.vertigo.dynamo.environment.eaxmi.EAXmiTestParserIdentifiers;
 import io.vertigo.dynamo.environment.java.JavaEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.java.JavaParserStereotypesTest;
+import io.vertigo.dynamo.environment.ksp.KspEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.loader.EnvironmentManagerTest;
 import io.vertigo.dynamo.environment.multi.MultiResourcesEnvironmentManagerTest;
 import io.vertigo.dynamo.environment.oom.OOMEnvironmentManagerTest;
@@ -59,7 +60,6 @@ import io.vertigo.dynamo.search.multiindex.SearchManagerMultiIndexTest;
 import io.vertigo.dynamo.search.standard.SearchManagerTest;
 import io.vertigo.dynamo.search.withstore.SearchManagerStoreTest;
 import io.vertigo.dynamo.store.cache.CachedStoreManagerTest;
-import io.vertigo.dynamo.store.datastore.jpa.JpaStoreManagerTest;
 import io.vertigo.dynamo.store.datastore.multistore.MultiStoreManagerTest;
 import io.vertigo.dynamo.store.datastore.sql.vendor.h2.H2SqlStoreManagerTest;
 import io.vertigo.dynamo.store.datastore.sql.vendor.oracle.OracleSqlStoreManagerTest;
@@ -74,8 +74,8 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
  *
  * @author pchretien
  */
-@RunWith(Suite.class)
-@SuiteClasses({
+@RunWith(JUnitPlatform.class)
+@SelectClasses({
 		//--collections
 		CollectionsManagerTest.class,
 		FacetManagerTest.class,
@@ -95,6 +95,8 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		//----Java
 		JavaParserStereotypesTest.class,
 		JavaEnvironmentManagerTest.class,
+		//----KSP
+		KspEnvironmentManagerTest.class,
 		//----Multi
 		MultiResourcesEnvironmentManagerTest.class,
 		//----OOM
@@ -128,8 +130,6 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		OracleSqlStoreManagerTest.class,
 		//----------multistore
 		MultiStoreManagerTest.class,
-		//----------jpa
-		JpaStoreManagerTest.class,
 		//--task
 		TaskManagerTest.class,
 		TaskEngineSelectDynamicTest.class,
@@ -145,6 +145,7 @@ import io.vertigo.dynamox.search.DslListFilterBuilderTest;
 		EnvironmentManagerTest.class
 
 })
+
 public final class DynamoTestSuite {
 	//
 }

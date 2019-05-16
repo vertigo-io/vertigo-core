@@ -1,8 +1,8 @@
 package io.vertigo.account.identityprovider.model
 
 
-create DtDefinition DT_USER {
+create DtDefinition DtUser {
 	stereotype : "KeyConcept"
-	key	  USR_ID				{domain: DO_CODE	label: "Id" 	notNull:"true" }	
-	field FULL_NAME 			{domain: DO_LABEL label: "FullName"	notNull:"true" }	
+	id	  usrId				{domain: DoCode	label: "Id" }	
+	field fullName 			{domain: DoLabel 	label: "FullName"	required:"true" }	
 }

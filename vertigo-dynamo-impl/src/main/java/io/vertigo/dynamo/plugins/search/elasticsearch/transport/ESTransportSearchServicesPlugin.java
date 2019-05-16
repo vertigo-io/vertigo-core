@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,15 +22,15 @@ import java.net.InetSocketAddress;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
 import io.vertigo.lang.Assertion;
@@ -67,16 +67,16 @@ public final class ESTransportSearchServicesPlugin extends AbstractESSearchServi
 	 */
 	@Inject
 	public ESTransportSearchServicesPlugin(
-			@Named("servers.names") final String serversNamesStr,
-			@Named("envIndex") final String envIndex,
-			@Named("envIndexIsPrefix") final Optional<Boolean> envIndexIsPrefix,
-			@Named("rowsPerQuery") final int rowsPerQuery,
-			@Named("cluster.name") final String clusterName,
-			@Named("config.file") final String configFile,
-			@Named("node.name") final Optional<String> nodeNameOpt,
+			@ParamValue("servers.names") final String serversNamesStr,
+			@ParamValue("envIndex") final String envIndex,
+			@ParamValue("envIndexIsPrefix") final Optional<Boolean> envIndexIsPrefix,
+			@ParamValue("rowsPerQuery") final int rowsPerQuery,
+			@ParamValue("cluster.name") final String clusterName,
+			@ParamValue("config.file") final String configFile,
+			@ParamValue("node.name") final Optional<String> nodeNameOpt,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
-		super(envIndex, envIndexIsPrefix.orElse(false), rowsPerQuery, configFile, codecManager, resourceManager);
+		super(envIndex, envIndexIsPrefix.orElse(true), rowsPerQuery, configFile, codecManager, resourceManager);
 		Assertion.checkArgNotEmpty(serversNamesStr,
 				"Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
 		Assertion.checkArgument(!serversNamesStr.contains(";"),
@@ -99,7 +99,7 @@ public final class ESTransportSearchServicesPlugin extends AbstractESSearchServi
 			Assertion.checkArgument(serverNameSplit.length == 2,
 					"La déclaration du serveur doit être au format host:port ({0}", serverName);
 			final int port = Integer.parseInt(serverNameSplit[1]);
-			client.addTransportAddress(new InetSocketTransportAddress(new InetSocketAddress(serverNameSplit[0], port)));
+			client.addTransportAddress(new TransportAddress(new InetSocketAddress(serverNameSplit[0], port)));
 		}
 		return client;
 	}
@@ -113,16 +113,11 @@ public final class ESTransportSearchServicesPlugin extends AbstractESSearchServi
 	private Settings buildNodeSettings() {
 		// Build settings
 		return Settings.builder().put("node.name", nodeName)
-				// .put("node.data", false)
-				// .put("node.master", false)
-				// .put("discovery.zen.fd.ping_timeout", "30s")
-				// .put("discovery.zen.minimum_master_nodes", 2)
-				// .put("discovery.zen.ping.multicast.enabled", false)
-				// .putArray("discovery.zen.ping.unicast.hosts", serversNames)
+				// .put("client.transport.sniff", false)
+				// .put("client.transport.ignore_cluster_name", false)
+				// .put("client.transport.ping_timeout", "5s")
+				// .put("client.transport.nodes_sampler_interval", "5s")
 				.put("cluster.name", clusterName)
-				// .put("index.store.type", "memory")
-				// .put("index.store.fs.memory.enabled", "true")
-				// .put("gateway.type", "none")
 				.build();
 	}
 

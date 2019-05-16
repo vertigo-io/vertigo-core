@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,6 @@ package io.vertigo.core.component.di;
 import java.lang.reflect.Constructor;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
@@ -67,15 +66,6 @@ public final class DIAnnotationUtil {
 		Assertion.checkNotNull(clazz);
 		//-----
 		//On construit l'identifiant du composant.
-		//Par ordre de priorité l'id est
-		// - la valeur de l'annotation Named si il y a une annotation Named déclarée
-		// - Sinon on prend le nom de la classe passée en paramètre.
-		if (clazz.isAnnotationPresent(Named.class)) {
-			//Si le composant recherché n'est pas explicitement précisé alors on le recherche via son type
-			//et dans ce cas son id est obligatoirement le nom complet de la classe ou de l'interface.
-			final Named named = clazz.getAnnotation(Named.class);
-			return named.value();
-		}
 		//Par convention on prend le nom de la classe.
 		return StringUtil.first2LowerCase(clazz.getSimpleName());
 	}

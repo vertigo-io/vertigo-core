@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,11 +21,10 @@ package io.vertigo.database.impl.sql.vendor.core;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -89,7 +88,7 @@ public final class SqlDataStreamMappingUtil {
 		final File tmpFile = new TempFile("kdata", ".tmp");
 		//-----
 		//1ere étape : on recopie le contenu de la mémoire dans le fichier. (car on ne peut pas relire le Blob)
-		try (final OutputStream fileOut = new FileOutputStream(tmpFile); final InputStream memoryIn = new ByteArrayInputStream(bytes)) {
+		try (final OutputStream fileOut = Files.newOutputStream(tmpFile.toPath()); final InputStream memoryIn = new ByteArrayInputStream(bytes)) {
 			copy(memoryIn, fileOut, FILE_MAX_LENGTH);
 			Assertion.checkState(tmpFile.length() <= MEMORY_MAX_LENTH, "Le fichier n'a pas repris le debut de l'export (RAM)");
 			//2eme Etape : on copie la suite
@@ -150,7 +149,7 @@ public final class SqlDataStreamMappingUtil {
 
 		@Override
 		public InputStream createInputStream() throws IOException {
-			return new FileInputStream(tmpFile);
+			return Files.newInputStream(tmpFile.toPath());
 		}
 
 		@Override

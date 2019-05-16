@@ -7304,7 +7304,7 @@ LABL 0 Arial,8,N</a:FontList>
 <a:ModificationDate>1257345617</a:ModificationDate>
 <a:Modifier>npiedeloup</a:Modifier>
 <a:Comment>Formateur d&#39;une durée en heures et minutes.</a:Comment>
-<a:DataType>java.util.Date</a:DataType>
+<a:DataType>java.lang.String</a:DataType>
 <a:PersistentDataType>T</a:PersistentDataType>
 </o:Domain>
 <o:Domain Id="o25">

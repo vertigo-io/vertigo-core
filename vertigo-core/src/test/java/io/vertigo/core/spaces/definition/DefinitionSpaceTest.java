@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,11 +33,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.core.definition.DefinitionReference;
@@ -46,11 +46,11 @@ import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.core.param.Param;
 
 @RunWith(JUnitPlatform.class)
-public final class DefinitionSpaceTest extends AbstractTestCaseJU4 {
+public final class DefinitionSpaceTest extends AbstractTestCaseJU5 {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
@@ -69,11 +69,11 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 		assertEquals(1L, definitionSpace.getAllTypes().size(), "definitionSpace must contain one element ");
 		assertEquals(1L, definitionSpace.getAll(SampleDefinition.class).size(), "definitionSpace[SampleDefinition.class] must contain one element ");
 
-		final SampleDefinition sampleDefinition = definitionSpace.resolve("SAMPLE_THE_DEFINITION", SampleDefinition.class);
+		final SampleDefinition sampleDefinition = definitionSpace.resolve("SampleTheDefinition", SampleDefinition.class);
 		assertNotNull(sampleDefinition);
-		assertEquals("THE_DEFINITION", DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class), "localName must be THE_DEFINITION");
-		assertEquals(sampleDefinition.getName(), DefinitionUtil.getPrefix(SampleDefinition.class) + "_" + DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class),
-				"localName must be THE_DEFINITION");
+		assertEquals("TheDefinition", DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class), "localName must be TheDefinition");
+		assertEquals(sampleDefinition.getName(), DefinitionUtil.getPrefix(SampleDefinition.class) + DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class),
+				"globalName must be SampleTheDefinition");
 
 		final DefinitionReference<SampleDefinition> sampleDefinitionRef = new DefinitionReference<>(sampleDefinition);
 
@@ -94,12 +94,12 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU4 {
 		assertSame(sampleDefinition, definitionReference.get(), "Definitions must be strictly equals");
 	}
 
-	@DefinitionPrefix("SAMPLE")
+	@DefinitionPrefix("Sample")
 	public static class SampleDefinition implements Definition {
 
 		@Override
 		public String getName() {
-			return "SAMPLE_THE_DEFINITION";
+			return "SampleTheDefinition";
 		}
 	}
 }

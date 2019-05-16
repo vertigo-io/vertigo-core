@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -76,7 +76,7 @@ public final class TaskDynamicRegistry implements DynamicRegistry {
 			final String domainName = xtaskAttribute.getDefinitionLinkName("domain");
 			final Domain domain = Home.getApp().getDefinitionSpace().resolve(domainName, Domain.class);
 			//-----
-			final boolean required = (Boolean) xtaskAttribute.getPropertyValue(KspProperty.NOT_NULL);
+			final boolean required = (Boolean) xtaskAttribute.getPropertyValue(KspProperty.REQUIRED);
 			if (isInValue((String) xtaskAttribute.getPropertyValue(KspProperty.IN_OUT))) {
 				if (required) {
 					taskDefinitionBuilder.addInRequired(attributeName, domain);

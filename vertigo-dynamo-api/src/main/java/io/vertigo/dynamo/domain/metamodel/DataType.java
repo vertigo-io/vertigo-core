@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,15 +20,14 @@ package io.vertigo.dynamo.domain.metamodel;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Optional;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.DataStream;
 
 /**
- * Primitives types.
- *
+ * Primitive types.
+ * This class defines the primitive types.
  * @author  pchretien
  */
 public enum DataType {
@@ -40,9 +39,6 @@ public enum DataType {
 	Boolean(Boolean.class),
 	/** String. */
 	String(String.class),
-	/** Date. */
-	@Deprecated
-	Date(Date.class),
 	/** LocalDate. */
 	LocalDate(LocalDate.class),
 	/** Instant. */
@@ -55,7 +51,7 @@ public enum DataType {
 	DataStream(DataStream.class);
 
 	/**
-	 * Classe java que le Type encapsule.
+	 * The java class wrapped by this dataType.
 	 */
 	private final Class<?> javaClass;
 
@@ -86,8 +82,7 @@ public enum DataType {
 	 * @return if the dataType talks about a date
 	 */
 	public boolean isAboutDate() {
-		return this == DataType.Date
-				|| this == DataType.LocalDate
+		return this == DataType.LocalDate
 				|| this == DataType.Instant;
 	}
 
@@ -102,7 +97,7 @@ public enum DataType {
 	}
 
 	/**
-	 * @return Classe java encapsulé/wrappée par le type
+	 * @return the native java class wrapped by this dataType
 	 */
 	public Class<?> getJavaClass() {
 		return javaClass;
@@ -125,8 +120,6 @@ public enum DataType {
 			dataType = DataType.Boolean;
 		} else if (String.class.equals(type)) {
 			dataType = DataType.String;
-		} else if (Date.class.equals(type)) {
-			dataType = DataType.Date;
 		} else if (LocalDate.class.equals(type)) {
 			dataType = DataType.LocalDate;
 		} else if (Instant.class.equals(type)) {

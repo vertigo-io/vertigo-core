@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,16 +26,16 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
+import io.vertigo.account.security.UserSession;
+import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
-import io.vertigo.persona.security.UserSession;
-import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.exception.TooManyRequestException;
@@ -78,8 +78,8 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 	public RateLimitingWebServiceHandlerPlugin(
 			final VSecurityManager securityManager,
 			final DaemonManager daemonManager,
-			@Named("windowSeconds") final Optional<Integer> windowSeconds,
-			@Named("limitValue") final Optional<Long> limitValue) {
+			@ParamValue("windowSeconds") final Optional<Integer> windowSeconds,
+			@ParamValue("limitValue") final Optional<Long> limitValue) {
 		Assertion.checkNotNull(securityManager);
 		Assertion.checkNotNull(limitValue);
 		Assertion.checkNotNull(windowSeconds);
@@ -92,7 +92,7 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return Collections.singletonList(new DaemonDefinition("DMN_RATE_LIMIT_WINDOW_RESET", () -> () -> resetRateLimitWindow(), windowSeconds));
+		return Collections.singletonList(new DaemonDefinition("DmnRateLimitWindowReset", () -> () -> resetRateLimitWindow(), windowSeconds));
 	}
 
 	/** {@inheritDoc} */
@@ -124,7 +124,7 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 	private static String obtainUserKey(final Request request, final Optional<UserSession> userSessionOpt) {
 		return userSessionOpt
 				.map(userSession -> userSession.getSessionUUID().toString())
-				.orElse(request.ip() + ":" + request.headers("user-agent"));
+				.orElseGet(() -> request.ip() + ":" + request.headers("user-agent"));
 	}
 
 	private long touch(final String userKey) {

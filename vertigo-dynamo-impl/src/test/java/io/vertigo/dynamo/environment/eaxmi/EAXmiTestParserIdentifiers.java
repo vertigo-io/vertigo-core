@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,21 +18,36 @@
  */
 package io.vertigo.dynamo.environment.eaxmi;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 
 /**
  * Test de lecture d'un OOM.
  *
  * @author npiedeloup
  */
-public final class EAXmiTestParserIdentifiers extends AbstractTestCaseJU4 {
+public final class EAXmiTestParserIdentifiers extends AbstractTestCaseJU5 {
 	@Override
-	protected String[] getManagersXmlFileName() {
-		return new String[] { "managers-test.xml", "resources-test.xml" };
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("xmi", "io/vertigo/dynamo/environment/eaxmi/data/demo.xml")
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/eaxmi/data/domain.kpr")
+								.build())
+						.build())
+				.build();
 	}
 
 	private DtDefinition getDtDefinition(final String urn) {
@@ -42,7 +57,7 @@ public final class EAXmiTestParserIdentifiers extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testIdentifiersVsPrimaryKey() {
-		final DtDefinition loginDefinition = getDtDefinition("DT_LOGIN");
-		Assert.assertTrue(loginDefinition.getIdField().isPresent());
+		final DtDefinition loginDefinition = getDtDefinition("DtLogin");
+		Assertions.assertTrue(loginDefinition.getIdField().isPresent());
 	}
 }

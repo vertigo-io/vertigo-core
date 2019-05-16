@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@ import io.vertigo.dynamo.domain.metamodel.ConstraintException;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
+import io.vertigo.util.StringUtil;
 
 /**
  * Attribut d'une tache.
@@ -54,6 +55,7 @@ public final class TaskAttribute {
 	 */
 	TaskAttribute(final String attributeName, final Domain domain, final boolean required) {
 		Assertion.checkNotNull(attributeName);
+		Assertion.checkArgument(StringUtil.isLowerCamelCase(attributeName), "the name of the attribute {0} must be in lowerCamelCase", attributeName);
 		Assertion.checkNotNull(domain);
 		Assertion.when(!required).check(() -> !domain.isDtList(), "A list in never optional. Check attribute '{0}'", attributeName);
 		//-----

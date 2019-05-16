@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,36 +18,15 @@
  */
 package io.vertigo.database.impl.sql.vendor.oracle;
 
-import io.vertigo.database.impl.sql.vendor.core.SqlVendorMapping;
-import io.vertigo.database.sql.vendor.SqlDataBase;
-import io.vertigo.database.sql.vendor.SqlDialect;
-import io.vertigo.database.sql.vendor.SqlExceptionHandler;
-import io.vertigo.database.sql.vendor.SqlMapping;
-
 /**
- * Gestiond de la base de données Oracle.
+ * Gestion de la base de données Oracle.
  *
  * @author pchretien
  */
-public final class OracleDataBase implements SqlDataBase {
-	private final SqlExceptionHandler sqlExceptionHandler = new OracleExceptionHandler();
-	private final SqlMapping sqlVendorMapping = SqlVendorMapping.createWithBooleanAsBit();
-	private final SqlDialect sqlDialect = new OracleDialect();
+public final class OracleDataBase extends AbstractOracleDataBase {
 
-	/** {@inheritDoc} */
-	@Override
-	public SqlExceptionHandler getSqlExceptionHandler() {
-		return sqlExceptionHandler;
+	public OracleDataBase() {
+		super(new OracleDialect());
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public SqlMapping getSqlMapping() {
-		return sqlVendorMapping;
-	}
-
-	@Override
-	public SqlDialect getSqlDialect() {
-		return sqlDialect;
-	}
 }

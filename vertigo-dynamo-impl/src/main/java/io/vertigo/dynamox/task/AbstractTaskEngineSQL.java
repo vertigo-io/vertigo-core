@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -91,7 +91,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 * Dans le cas des Batchs ce nombre correspond à la somme de toutes les lignes affectées par le batch.
 	 */
 	//Qui utilise ça ?? // peut on revenir à une forme explicite
-	public static final String SQL_ROWCOUNT = "INT_SQL_ROWCOUNT";
+	public static final String SQL_ROWCOUNT = "intSqlRowcount";
 
 	private final ScriptManager scriptManager;
 	private final VTransactionManager transactionManager;
@@ -192,7 +192,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 **/
 	protected final String preProcessQuery(final String sqlQuery) {
 		final Collection<TaskAttribute> inAttributes = getTaskDefinition().getInAttributes();
-		final Map<TaskAttribute, Object> inTaskAttributes = new HashMap<>(inAttributes.size());
+		final Map<TaskAttribute, Object> inTaskAttributes = new HashMap<>();
 		for (final TaskAttribute taskAttribute : inAttributes) {
 			inTaskAttributes.put(taskAttribute, getValue(taskAttribute.getName()));
 		}

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,36 +22,36 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.commons.node.Node;
-import io.vertigo.commons.node.NodeManager;
-import io.vertigo.core.component.di.injector.DIInjector;
-import io.vertigo.vega.webservice.data.MyAppConfig;
+import io.vertigo.commons.app.AppManager;
+import io.vertigo.commons.app.Node;
+import io.vertigo.util.InjectorUtil;
+import io.vertigo.vega.webservice.data.MyNodeConfig;
 
 public final class DistantAppTest {
 
 	private static AutoCloseableApp app;
 
 	@Inject
-	private NodeManager nodeManager;
+	private AppManager nodeManager;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() {
-		app = new AutoCloseableApp(MyAppConfig.config());
+		app = new AutoCloseableApp(MyNodeConfig.config());
 	}
 
-	@Before
+	@BeforeEach
 	public void doBefore() {
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		InjectorUtil.injectMembers(this);
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void tearDown() {
 		if (app != null) {
 			app.close();
@@ -59,13 +59,13 @@ public final class DistantAppTest {
 	}
 
 	@Test
-	public void testDistantAppConfig() {
+	public void testDistantNodeConfig() {
 
 		final String currentNodeId = nodeManager.getCurrentNode().getId();
 		final Optional<Node> appNode = nodeManager.find(currentNodeId);
-		Assert.assertTrue(appNode.isPresent());
+		Assertions.assertTrue(appNode.isPresent());
 
-		Assert.assertTrue(nodeManager.getConfig().containsKey(currentNodeId));
+		Assertions.assertTrue(nodeManager.getConfig().containsKey(currentNodeId));
 	}
 
 	@Test
@@ -73,9 +73,9 @@ public final class DistantAppTest {
 
 		final String currentNodeId = nodeManager.getCurrentNode().getId();
 		final Optional<Node> appNode = nodeManager.find(currentNodeId);
-		Assert.assertTrue(appNode.isPresent());
+		Assertions.assertTrue(appNode.isPresent());
 
-		Assert.assertTrue(nodeManager.getStatus().containsKey(currentNodeId));
+		Assertions.assertTrue(nodeManager.getStatus().containsKey(currentNodeId));
 	}
 
 }

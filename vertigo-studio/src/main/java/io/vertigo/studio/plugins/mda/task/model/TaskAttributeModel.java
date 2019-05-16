@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,6 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
-import io.vertigo.util.StringUtil;
 
 /**
  * Génération des classes/méthodes des taches de type DAO.
@@ -49,7 +48,7 @@ public final class TaskAttributeModel {
 	 * @return Nom de la variable
 	 */
 	public String getVariableName() {
-		return StringUtil.constToLowerCamelCase(taskAttribute.getName());
+		return taskAttribute.getName();
 	}
 
 	/**

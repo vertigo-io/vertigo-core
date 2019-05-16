@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,14 +22,25 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.database.DatabaseFeatures;
+import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.dynamo.store.StoreCacheDefinitionProvider;
 import io.vertigo.dynamo.store.data.fileinfo.FileInfoTemp;
 import io.vertigo.dynamo.store.datastore.AbstractStoreManagerTest;
 import io.vertigo.dynamo.store.datastore.SqlUtil;
@@ -43,6 +54,52 @@ import io.vertigo.util.ListBuilder;
 public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 
 	@Override
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.withLocales("fr_FR")
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.withCache()
+						.withScript()
+						.withMemoryCache()
+						.withJaninoScript()
+						.build())
+				.addModule(new DatabaseFeatures()
+						.withSqlDataBase()
+						.withC3p0(
+								Param.of("dataBaseClass", H2DataBase.class.getName()),
+								Param.of("jdbcDriver", "org.h2.Driver"),
+								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
+						.withC3p0(
+								Param.of("name", "otherBase"),
+								Param.of("dataBaseClass", H2DataBase.class.getName()),
+								Param.of("jdbcDriver", "org.h2.Driver"),
+								Param.of("jdbcUrl", "jdbc:h2:mem:database2"))
+						.build())
+				.addModule(new DynamoFeatures()
+						.withStore()
+						.withSqlStore()
+						.withSqlStore(
+								Param.of("dataSpace", "otherStore"),
+								Param.of("connectionName", "otherBase"))
+						.withDbFileStore(Param.of("storeDtName", "DtVxFileInfo"))
+						.withFsFullFileStore(
+								Param.of("name", "temp"),
+								Param.of("path", "${java.io.tmpdir}/testVertigo/"))
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/store/data/executionOtherStore.kpr")
+								.addDefinitionResource("classes", "io.vertigo.dynamo.store.data.DtDefinitions")
+								.build())
+						.addDefinitionProvider(StoreCacheDefinitionProvider.class)
+						.build())
+				.build();
+	}
+
+	@Override
 	protected void doSetUp() throws Exception {
 		super.doSetUp();
 		initOtherStore();
@@ -54,7 +111,7 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 				transactionManager,
 				taskManager,
 				getCreateOtherStoreRequests(),
-				"TK_INIT_OTHER",
+				"TkInitOther",
 				Optional.of("otherStore"));
 	}
 
@@ -110,14 +167,14 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 			//on vérifie que le contenu des fichiers est identique.
 			//assertEquals("toto", "toto");
 			//assertEquals("toto", "ti");
-			Assert.assertEquals(source, read);
-			Assert.assertTrue("Test contenu du fichier", read.startsWith("Chant I"));
-			Assert.assertTrue("Test contenu du fichier : " + secureSubString(read, 16711, "ses notes langoureuses,"), read.indexOf("ses notes langoureuses,") > 0);
-			Assert.assertTrue("Test contenu du fichier : " + secureSubString(read, 11004, "mal : \"Adolescent,"), read.indexOf("mal : \"Adolescent,") > 0);
+			Assertions.assertEquals(source, read);
+			Assertions.assertTrue(read.startsWith("Chant I"), "Test contenu du fichier");
+			Assertions.assertTrue(read.indexOf("ses notes langoureuses,") > 0, "Test contenu du fichier : " + secureSubString(read, 16711, "ses notes langoureuses,"));
+			Assertions.assertTrue(read.indexOf("mal : \"Adolescent,") > 0, "Test contenu du fichier : " + secureSubString(read, 11004, "mal : \"Adolescent,"));
 
 			//On désactive pour l'instant
 			//Ne marche pas sur la PIC pour cause de charset sur le àé
-			//Assert.assertTrue("Test contenu du fichier : " + secureSubString(read, 15579, "adieu !à ;"), read.indexOf("adieu !à ;") > 0);
+			//Assertions.assertTrue("Test contenu du fichier : " + secureSubString(read, 15579, "adieu !à ;"), read.indexOf("adieu !à ;") > 0);
 		}
 	}
 }

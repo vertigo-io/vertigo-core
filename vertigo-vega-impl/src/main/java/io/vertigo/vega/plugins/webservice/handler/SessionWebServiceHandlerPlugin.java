@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,9 +21,9 @@ package io.vertigo.vega.plugins.webservice.handler;
 import javax.inject.Inject;
 
 import io.vertigo.account.authorization.VSecurityException;
+import io.vertigo.account.security.UserSession;
+import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.persona.security.UserSession;
-import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
@@ -76,7 +76,10 @@ public final class SessionWebServiceHandlerPlugin implements WebServiceHandlerPl
 				//If a new session is badly use, we invalid it (light protection against DDOS)
 				session.invalidate();
 				//If session was just created, we translate securityException as a Session expiration.
-				throw (SessionException) new SessionException("Session has expired").initCause(e);
+				throw (SessionException) new SessionException("Session Expired").initCause(e);
+			} else if (!user.isAuthenticated()) {
+				//If user isn't authenticated, it need a authentication (http 401) like a session expiration
+				throw (SessionException) new SessionException("Authentication mandatory").initCause(e);
 			}
 			throw e;
 		} finally {

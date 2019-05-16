@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,11 +18,9 @@
  */
 package io.vertigo.dynamox.domain.formatter;
 
-import java.text.ParsePosition;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -95,8 +93,6 @@ public final class FormatterDate implements Formatter {
 			return ""; //Affichage d'une date non renseignée;
 		}
 		switch (dataType) {
-			case Date:
-				return dateToString((Date) objValue, patterns.get(0));
 			case LocalDate:
 				return localDateToString((LocalDate) objValue, patterns.get(0));
 			case Instant:
@@ -116,8 +112,6 @@ public final class FormatterDate implements Formatter {
 		}
 		final String sValue = strValue.trim();
 		switch (dataType) {
-			case Date:
-				return applyStringToObject(sValue, FormatterDate::doStringToDate);
 			case LocalDate:
 				return applyStringToObject(sValue, FormatterDate::doStringToLocalDate);
 			case Instant:
@@ -162,32 +156,6 @@ public final class FormatterDate implements Formatter {
 		return DateTimeFormatter.ofPattern(pattern)
 				.withZone(getLocaleManager().getCurrentZoneId())
 				.parse(dateString, Instant::from);
-	}
-
-	/*
-	 * Converts a String to a java.util.Date according to a given pattern
-	 */
-	private static Date doStringToDate(final String dateString, final String pattern) {
-		Date dateValue;
-
-		//Formateur de date on le crée à chaque fois car l'implémentation de DateFormat est non synchronisé !
-		final java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat(pattern, getLocaleManager().getCurrentLocale());
-		formatter.setLenient(false);
-
-		final ParsePosition parsePosition = new ParsePosition(0);
-		dateValue = formatter.parse(dateString, parsePosition);
-
-		//si le parsing n'a pas consommé toute la chaine, on refuse la conversion
-		if (parsePosition.getIndex() != dateString.length()) {
-			throw new IllegalStateException("Error parsing " + dateString + " with pattern :" + pattern + "at position " + parsePosition.getIndex());
-		}
-		return dateValue;
-	}
-
-	private static String dateToString(final Date date, final String pattern) {
-		final java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat(pattern, getLocaleManager().getCurrentLocale());
-		formatter.setLenient(false);
-		return formatter.format(date);
 	}
 
 	private static String localDateToString(final LocalDate localDate, final String pattern) {

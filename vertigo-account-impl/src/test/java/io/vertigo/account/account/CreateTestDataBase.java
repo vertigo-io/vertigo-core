@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +21,7 @@ package io.vertigo.account.account;
 import java.util.List;
 import java.util.Optional;
 
+import io.vertigo.account.SqlUtil;
 import io.vertigo.app.Home;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.dynamo.task.TaskManager;
@@ -41,7 +42,7 @@ final class CreateTestDataBase {
 				transactionManager,
 				taskManager,
 				getCreateMainStoreRequests(),
-				"TK_INIT_MAIN",
+				"TkInitMain",
 				Optional.empty());
 	}
 

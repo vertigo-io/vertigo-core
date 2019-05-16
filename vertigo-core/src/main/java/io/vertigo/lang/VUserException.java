@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,7 +52,7 @@ public class VUserException extends RuntimeException {
 	 * @param params  list of params (optional)
 	 */
 	public VUserException(final String defaultMsg, final Serializable... params) {
-		this((MessageText.builder().withDefaultMsg(defaultMsg).withParams(params).build()));
+		this((MessageText.of(defaultMsg, params)));
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class VUserException extends RuntimeException {
 	 * @param params  list of params (optional)
 	 */
 	public VUserException(final MessageKey key, final Serializable... params) {
-		this((MessageText.builder().withKey(key).withParams(params).build()));
+		this((MessageText.of(key, params)));
 	}
 
 	/**

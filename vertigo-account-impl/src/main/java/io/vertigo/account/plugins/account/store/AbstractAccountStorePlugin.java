@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +18,11 @@
  */
 package io.vertigo.account.plugins.account.store;
 
-import javax.inject.Named;
-
 import io.vertigo.account.account.Account;
 import io.vertigo.account.impl.account.AccountMapperHelper;
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.Entity;
@@ -49,8 +48,8 @@ public abstract class AbstractAccountStorePlugin implements Activeable {
 	 * @param userToAccountMappingStr User to account conversion mapping
 	 */
 	protected AbstractAccountStorePlugin(
-			@Named("userDtDefinitionName") final String userDtDefinitionName,
-			@Named("userToAccountMapping") final String userToAccountMappingStr) {
+			@ParamValue("userDtDefinitionName") final String userDtDefinitionName,
+			@ParamValue("userToAccountMapping") final String userToAccountMappingStr) {
 		Assertion.checkArgNotEmpty(userDtDefinitionName);
 		Assertion.checkArgNotEmpty(userToAccountMappingStr);
 		//-----
@@ -90,22 +89,26 @@ public abstract class AbstractAccountStorePlugin implements Activeable {
 		final String authToken = parseAttribute(AccountProperty.authToken, userEntity);
 		final String displayName = parseAttribute(AccountProperty.displayName, userEntity);
 		final String email = parseOptionalAttribute(AccountProperty.email, userEntity);
+		final String photo = parseOptionalAttribute(AccountProperty.photo, userEntity);
 		return Account.builder(accountId)
 				.withAuthToken(authToken)
 				.withDisplayName(displayName)
 				.withEmail(email)
+				.withPhoto(photo)
 				.build();
 	}
 
 	private String parseAttribute(final AccountProperty accountProperty, final Entity userEntity) {
 		final DtField attributeField = mapperHelper.getSourceAttribute(accountProperty);
-		return String.valueOf(attributeField.getDataAccessor().getValue(userEntity));
+		final Object value = attributeField.getDataAccessor().getValue(userEntity);
+		return value != null ? String.valueOf(value) : null;
 	}
 
 	private String parseOptionalAttribute(final AccountProperty accountProperty, final Entity userEntity) {
 		final DtField attributeField = mapperHelper.getSourceAttribute(accountProperty);
 		if (attributeField != null) {
-			return String.valueOf(attributeField.getDataAccessor().getValue(userEntity));
+			final Object value = attributeField.getDataAccessor().getValue(userEntity);
+			return value != null ? String.valueOf(value) : null;
 		}
 		return null;
 	}

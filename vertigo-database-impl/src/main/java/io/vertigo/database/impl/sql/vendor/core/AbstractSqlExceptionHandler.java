@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -49,7 +49,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 	 * Crée une nouvelle instance de AbstractSqlExceptionHandler.
 	 */
 	public AbstractSqlExceptionHandler() {
-		LOGGER.info(String.format("Use %s as SqlExceptionHandler", this.getClass().getName()));
+		LOGGER.info("Use {} as SqlExceptionHandler", this.getClass().getName());
 	}
 
 	/**
@@ -102,11 +102,7 @@ public abstract class AbstractSqlExceptionHandler implements SqlExceptionHandler
 
 		//On récupère ici le message externalisé par défaut : Resources.DYNAMO_SQL_CONSTRAINT_IMPOSSIBLE_TO_DELETE ou Resources.DYNAMO_SQL_CONSTRAINT_ALREADY_REGISTRED)
 		final String defaultConstraintMsg = MessageText.of(defaultMsg).getDisplay();
-		final MessageText userContraintMessageText = MessageText
-				.builder()
-				.withKey(constraintKey)
-				.withDefaultMsg(defaultConstraintMsg)
-				.build();
+		final MessageText userContraintMessageText = MessageText.ofDefaultMsg(defaultConstraintMsg, constraintKey);
 		final VUserException constraintException = new VUserException(userContraintMessageText);
 		constraintException.initCause(sqle);
 		return constraintException;

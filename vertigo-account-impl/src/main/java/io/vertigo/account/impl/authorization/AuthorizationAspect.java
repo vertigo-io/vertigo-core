@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@
 package io.vertigo.account.impl.authorization;
 
 import java.lang.reflect.Parameter;
+import java.util.Arrays;
 
 import javax.inject.Inject;
 
@@ -26,6 +27,8 @@ import io.vertigo.account.authorization.AuthorizationManager;
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.account.authorization.annotations.Secured;
 import io.vertigo.account.authorization.annotations.SecuredOperation;
+import io.vertigo.account.authorization.metamodel.Authorization;
+import io.vertigo.account.authorization.metamodel.AuthorizationName;
 import io.vertigo.core.component.aop.Aspect;
 import io.vertigo.core.component.aop.AspectMethodInvocation;
 import io.vertigo.core.locale.MessageText;
@@ -52,12 +55,13 @@ public final class AuthorizationAspect implements Aspect {
 
 	@Override
 	public Object invoke(final Object[] args, final AspectMethodInvocation methodInvocation) {
-		final Secured secured = methodInvocation.getMethod().getAnnotation(Secured.class) != null
+		final Secured secured = methodInvocation.getMethod().getAnnotation(Secured.class) == null
 				? methodInvocation.getMethod().getDeclaringClass().getAnnotation(Secured.class)
 				: methodInvocation.getMethod().getAnnotation(Secured.class);
 
 		Assertion.checkNotNull(secured, "No Aspect if not @Secured (on {0})", methodInvocation.getMethod());
-		if (!authorizationManager.hasAuthorization(secured::value)) {
+		final AuthorizationName[] authorizationNames = Arrays.stream(secured.value()).map(value -> (AuthorizationName) () -> Authorization.PREFIX + value).toArray(AuthorizationName[]::new);
+		if (!authorizationManager.hasAuthorization(authorizationNames)) {
 			throw new VSecurityException(MessageText.of("Not enought authorizations"));//no too sharp info here : may use log
 		}
 		final Parameter[] parameters = methodInvocation.getMethod().getParameters();

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +27,7 @@ import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
-import io.vertigo.lang.Tuples;
+import io.vertigo.lang.Tuple;
 
 /**
  * Manages connections to database.
@@ -80,7 +80,7 @@ public interface SqlDataBaseManager extends Manager {
 	 * @return a tuple with the row count for INSERT, UPDATE or DELETE statements; or 0 for SQL statements that return nothing and the generated key
 	 * @throws SQLException
 	 */
-	<O> Tuples.Tuple2<Integer, O> executeUpdateWithGeneratedKey(
+	<O> Tuple<Integer, O> executeUpdateWithGeneratedKey(
 			SqlStatement sqlStatement,
 			final GenerationMode generationMode,
 			final String columnName,

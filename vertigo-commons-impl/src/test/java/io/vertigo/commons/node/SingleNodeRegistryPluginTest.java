@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,15 +21,15 @@ package io.vertigo.commons.node;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.commons.CommonsFeatures;
 
 @RunWith(JUnitPlatform.class)
 public class SingleNodeRegistryPluginTest extends AbstractNodeManagerTest {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return buildRootAppConfig()
+	protected NodeConfig buildNodeConfig() {
+		return buildRootNodeConfig()
 				.addModule(new CommonsFeatures()
 						.build())
 				.build();

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,16 +18,13 @@
  */
 package io.vertigo.dynamo.impl.store.datastore.cache;
 
-import io.vertigo.app.Home;
-import io.vertigo.commons.cache.CacheDefinition;
 import io.vertigo.commons.cache.CacheManager;
-import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 
@@ -50,33 +47,19 @@ public final class CacheData {
 		this.cacheManager = cacheManager;
 	}
 
-	/**
-	 * Register a context cache dedicated to one DtDefinition.
-	 * @param dtDefinition DT definition
-	 * @param timeToLiveSeconds Time to live in cache
-	 * @param serializeElements Elements should be serialized to guarantee there aren't modified
-	 */
-	void registerContext(final DtDefinition dtDefinition, final int timeToLiveSeconds, final boolean serializeElements) {
-		final String context = getContext(dtDefinition);
-		final int maxElementsInMemory = 1000;
-		final int timeToIdleSeconds = timeToLiveSeconds / 2; //longévité d'un élément non utilisé
-		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
-				new CacheDefinition(context, serializeElements, maxElementsInMemory, timeToLiveSeconds, timeToIdleSeconds));
-	}
-
-	private static String getContext(final DtDefinition dtDefinition) {
-		return "CACHE_DATA_" + dtDefinition.getName();
+	public static String getContext(final DtDefinition dtDefinition) {
+		return "CacheData" + dtDefinition.getName();
 	}
 
 	/**
 	 * Récupération d'un objet potentiellement mis en cache
-	 * @param uri URI du DTO
+	 * @param uid UID du DTO
 	 * @return null ou DTO
 	 * @param <E> the type of entity
 	 */
-	<E extends Entity> E getDtObject(final URI<E> uri) {
-		final DtDefinition dtDefinition = uri.getDefinition();
-		return (E) cacheManager.get(getContext(dtDefinition), uri);
+	<E extends Entity> E getDtObject(final UID<E> uid) {
+		final DtDefinition dtDefinition = uid.getDefinition();
+		return (E) cacheManager.get(getContext(dtDefinition), uid);
 	}
 
 	/**
@@ -88,7 +71,7 @@ public final class CacheData {
 		//-----
 		final String context = getContext(DtObjectUtil.findDtDefinition(entity));
 		//2.On met à jour l'objet
-		cacheManager.put(context, entity.getURI(), entity);
+		cacheManager.put(context, entity.getUID(), entity);
 	}
 
 	/**
@@ -114,7 +97,7 @@ public final class CacheData {
 
 		//1.On met à jour les objets
 		for (final Entity entity : dtc) {
-			cacheManager.put(context, entity.getURI(), entity);
+			cacheManager.put(context, entity.getUID(), entity);
 		}
 		//2.Puis on met à jour la liste racine : pour que la liste ne soit pas evincée par les objets
 		cacheManager.put(context, dtc.getURI(), dtc);

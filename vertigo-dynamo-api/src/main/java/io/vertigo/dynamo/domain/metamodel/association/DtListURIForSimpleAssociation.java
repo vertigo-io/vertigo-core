@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.domain.metamodel.association;
 
 import io.vertigo.core.definition.DefinitionReference;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 
 /**
  * URI for simple 1N relation list.
@@ -34,7 +34,7 @@ public final class DtListURIForSimpleAssociation extends DtListURIForAssociation
 	 * @param source URI source
 	 * @param roleName role of this association
 	 */
-	public DtListURIForSimpleAssociation(final AssociationSimpleDefinition associationDefinition, final URI source, final String roleName) {
+	public DtListURIForSimpleAssociation(final AssociationSimpleDefinition associationDefinition, final UID source, final String roleName) {
 		super(associationDefinition, source, roleName);
 		associationSimpleDefinitionRef = new DefinitionReference<>(associationDefinition);
 	}

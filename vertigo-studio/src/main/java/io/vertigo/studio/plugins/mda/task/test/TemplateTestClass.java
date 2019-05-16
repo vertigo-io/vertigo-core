@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,17 +27,17 @@ import io.vertigo.lang.Assertion;
  */
 public final class TemplateTestClass {
 	private final String packageName;
-	private final String className;
+	private final String classSimpleName;
 
 	/**
-	 * Constructeur.
+	 * Constructor.
 	 */
-	TemplateTestClass(final String packageName, final String className) {
+	TemplateTestClass(final String packageName, final String classSimpleName) {
 		Assertion.checkNotNull(packageName);
-		Assertion.checkNotNull(className);
+		Assertion.checkNotNull(classSimpleName);
 		//-----
 		this.packageName = packageName;
-		this.className = className;
+		this.classSimpleName = classSimpleName;
 	}
 
 	/**
@@ -48,13 +48,13 @@ public final class TemplateTestClass {
 	}
 
 	public String getClassName() {
-		return className;
+		return classSimpleName;
 	}
-	
+
 	/**
 	 * @return Nom canonique de la classe de test
 	 */
 	public String getClassCanonicalName() {
-		return packageName + "." + className;
+		return packageName + "." + classSimpleName;
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,11 +18,10 @@
  */
 package io.vertigo.vega.webservice.data.domain;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,12 +30,11 @@ import java.util.UUID;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
 
 public class ContactDao implements Activeable, StoreServices {
 	private final Map<Long, Contact> contacts = new HashMap<>();
 
-	private void appendContact(final Honorific honorific, final String name, final String firstName, final Date birthday, final Address address, final String email, final String... tels) {
+	private void appendContact(final Honorific honorific, final String name, final String firstName, final LocalDate birthday, final Address address, final String email, final String... tels) {
 		final long conId = contacts.size() + 1;
 		final Contact contact = new Contact();
 		contact.setConId(conId);
@@ -50,12 +48,9 @@ public class ContactDao implements Activeable, StoreServices {
 		contacts.put(conId, contact);
 	}
 
-	private static Date parseDate(final String dateStr) {
-		try {
-			return new SimpleDateFormat("dd/MM/yyyy").parse(dateStr);
-		} catch (final ParseException e) {
-			throw WrappedException.wrap(e);
-		}
+	private static LocalDate parseDate(final String dateStr) {
+		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		return LocalDate.parse(dateStr, dateTimeFormatter);
 	}
 
 	private static Address createAddress(final Long adrId, final String street1, final String street2, final String city, final String postalCode, final String country) {
@@ -114,6 +109,9 @@ public class ContactDao implements Activeable, StoreServices {
 		appendContact(Honorific.Mr, "Martin", "Jean", parseDate("19/05/1980"),
 				createAddress(1L, "1, rue de Rivoli", "", "Paris", "75001", "France"),
 				"jean.martin@gmail.com", "01 02 03 04 05");
+		appendContact(Honorific.Mr, "Martin", "Romain", parseDate("19/05/1977"),
+				createAddress(1L, "1, rue de Rivoli", "", "Paris", "75001", "France"),
+				"romain.martin@gmail.com", "01 02 03 04 06");
 		appendContact(Honorific.Miss, "Dubois", "Marie", parseDate("20/06/1981"),
 				createAddress(2L, "2, rue Beauregard", "", "Paris", "75002", "France"),
 				"marie.dubois@gmail.com", "01 13 14 15 16");

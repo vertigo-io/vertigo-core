@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,12 @@
 package io.vertigo.dynamox.search;
 
 import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
@@ -71,15 +73,15 @@ public final class DslListFilterBuilderTest {
 	public void testStringAdvancedQuery() {
 		final String[][] testQueries = new String[][] {
 				//QueryPattern, UserQuery, EspectedResult
-				{ "ALL:#query#", "Test or test2", "ALL:(Test OR test2)" }, //0
-				{ "ALL:#query#", "Test and test2", "ALL:(Test AND test2)" }, //1
+				{ "ALL:#query#", "Test or test2", "ALL:(Test or test2)" }, //0
+				{ "ALL:#query#", "Test and test2", "ALL:(Test and test2)" }, //1
 				{ "ALL:#query#", "Test OR test2", "ALL:(Test OR test2)" }, //2
 				{ "ALL:#query#", "Test AND test2", "ALL:(Test AND test2)" }, //3
-				{ "ALL:#query#", "Test AND (test2 OR test3)", "ALL:(Test AND (test2 OR test3))" }, //4
+				{ "ALL:#query#", "Test AND ( test2 OR test3 )", "ALL:(Test AND ( test2 OR test3 ))" }, //4
 				{ "ALL:#query*#", "Test AND test2", "ALL:(Test* AND test2*)" }, //5
 				{ "ALL:#query*#", "Test AND (test2 OR test3)", "ALL:(Test* AND (test2* OR test3*))" }, //6
 				{ "ALL:#+query*#", "Test AND (test2 OR test3)", "ALL:(+Test* AND (+test2* OR +test3*))" }, //7
-				{ "+ALL:#query#", "Test or test2", "+ALL:(Test OR test2)" }, //8
+				{ "+ALL:#query#", "Test or test2", "+ALL:(Test or test2)" }, //8
 				{ "ALL:#+query~#", "Test AND (test2 OR test3)", "ALL:(+Test~ AND (+test2~ OR +test3~))" }, //9
 				{ "ALL:#+query~1#", "Test AND (test2 OR test3)", "ALL:(+Test~1 AND (+test2~1 OR +test3~1))" }, //10
 				{ "ALL:#+query#", "Test AND (test2^2 OR test3)", "ALL:(+Test AND (+test2^2 OR +test3))" }, //11
@@ -103,10 +105,10 @@ public final class DslListFilterBuilderTest {
 		final String[][] testQueries = new String[][] {
 
 				//QueryPattern, UserQuery, EspectedResult
-				{ "ALL:#query#", "Test or test2", "ALL:(Test OR test2)" }, //0
-				{ "ALL:#query#", "Test and test2", "ALL:(Test AND test2)" }, //1
-				{ "ALL:#query#", "Test Or test2", "ALL:(Test OR test2)" }, //2
-				{ "ALL:#query#", "Test And test2", "ALL:(Test AND test2)" }, //3
+				{ "ALL:#query#", "Test or test2", "ALL:(Test or test2)" }, //0
+				{ "ALL:#query#", "Test and test2", "ALL:(Test and test2)" }, //1
+				{ "ALL:#query#", "Test Or test2", "ALL:(Test Or test2)" }, //2
+				{ "ALL:#query#", "Test And test2", "ALL:(Test And test2)" }, //3
 				{ "ALL:#query#", "Test OR test2", "ALL:(Test OR test2)" }, //4
 				{ "ALL:#query#", "Test AND test2", "ALL:(Test AND test2)" }, //5
 				{ "ALL:#query#?(escapeReserved)", "Test or test2", "ALL:(Test \\or test2)" }, //6
@@ -185,6 +187,50 @@ public final class DslListFilterBuilderTest {
 				{ "F1:#query# AND F2:#query#", "Test", "F1:Test AND F2:Test" }, //3
 				{ "F1:#query# AND (F2:#query# OR F3:#query#)", "Test", "F1:Test AND (F2:Test OR F3:Test)" }, //4
 				{ "(F1:#query# OR F2:#query#) AND (F3:#query# OR F4:#query#)", "Test", "(F1:Test OR F2:Test) AND (F3:Test OR F4:Test)" }, //5
+		};
+		testStringFixedQuery(testQueries);
+	}
+
+	@Test
+	public void testStringBadBooleanQuery() {
+		final String[][] testQueries = new String[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "ALL:#query#", "Test or ", "ALL:(Test \\or )" }, //0
+				{ "ALL:#query#", "Test and ", "ALL:(Test \\and )" }, //1
+				{ "ALL:#query#", "Test OR ", "ALL:(Test \\OR )" }, //2
+				{ "ALL:#query#", "Test AND ", "ALL:(Test \\AND )" }, //3
+				{ "ALL:#query#", "Test AND (test2 OR )", "ALL:(Test AND (test2 \\OR ))" }, //4
+				{ "ALL:#query#", "Test AND (test2 OR test3", "ALL:(Test AND \\(test2 OR test3)" }, //5
+				{ "ALL:#query*#", "Test AND ", "ALL:(Test* \\AND* )" }, //6
+				{ "ALL:#query*#", "Test AND (test2 OR )", "ALL:(Test* AND (test2* \\OR* ))" }, //7
+				{ "ALL:#+query*#", "Test AND (test2 OR )", "ALL:(+Test* AND (+test2* +\\OR* ))" }, //8
+				{ "+ALL:#query#", "Test or ", "+ALL:(Test \\or )" }, //9
+				{ "ALL:#+query~#", "Test AND (test2 OR ", "ALL:(+Test~ AND +\\(test2~ +\\OR~ )" }, //10
+				{ "ALL:#+query~1#", "Test AND (test2 OR ", "ALL:(+Test~1 AND +\\(test2~1 +\\OR~1 )" }, //11
+				{ "ALL:#+query#", "Test AND (test2^2 OR )", "ALL:(+Test AND (+test2^2 +\\OR ))" }, //12
+				{ "ALL:#+query#", "Test AND (test2^2 OR ", "ALL:(+Test AND +\\(test2^2 +\\OR )" }, //13
+				{ "ALL:#+query^2#", "Test AND (test2 OR )", "ALL:(+Test^2 AND (+test2^2 +\\OR^2 ))" }, //14
+				{ "ALL:#+query#^2", "Test AND (test2 OR )", "ALL:(+Test AND (+test2 +\\OR ))^2" }, //15
+				{ "ALL:#+query^2#", "Test AND (test2 OR ", "ALL:(+Test^2 AND +\\(test2^2 +\\OR^2 )" }, //16
+				{ "ALL:#+query#^2", "Test AND (test2 OR ", "ALL:(+Test AND +\\(test2 +\\OR )^2" }, //17
+				{ "ALL:#+query*#", "Test, test2, test3", "ALL:(+Test*, +test2*, +test3*)" }, //18
+				{ "ALL:#query# +YEAR:[2000 to 2005]", "Test AND (test2 OR ", "ALL:(Test AND \\(test2 \\OR ) +YEAR:[2000 TO 2005]" }, //19
+
+				{ "ALL:#query#", " or test2", "ALL:(\\or test2)" }, //20
+				{ "ALL:#query#", " and test2", "ALL:(\\and test2)" }, //21
+				{ "ALL:#query#", " OR test2", "ALL:(\\OR test2)" }, //22
+				{ "ALL:#query#", " AND test2", "ALL:(\\AND test2)" }, //23
+				{ "ALL:#query#", " AND ( OR test3)", "ALL:(\\AND ( \\OR test3))" }, //24
+				{ "ALL:#query*#", " AND test2", "ALL:(\\AND* test2*)" }, //25
+				{ "ALL:#query*#", " AND ( OR test3)", "ALL:(\\AND* ( \\OR* test3*))" }, //26
+				{ "ALL:#+query*#", " AND OR test3)", "ALL:(+\\AND* OR +test3\\)*)" }, //27
+				{ "+ALL:#query#", " or test2", "+ALL:(\\or test2)" }, //28
+				{ "ALL:#+query~#", " AND ( OR test3)", "ALL:(+\\AND~ ( +\\OR~ +test3~))" }, //29
+				{ "ALL:#+query~1#", " AND OR test3)", "ALL:(+\\AND~1 OR +test3\\)~1)" }, //30
+				{ "ALL:#+query#", " AND ( OR test3)", "ALL:(+\\AND ( +\\OR +test3))" }, //31
+				{ "ALL:#+query^2#", " AND ( OR test3)", "ALL:(+\\AND^2 ( +\\OR^2 +test3^2))" }, //32
+				{ "ALL:#+query#^2", " AND OR test3)", "ALL:(+\\AND OR +test3\\))^2" }, //33
+				{ "ALL:#query# +YEAR:[2000 to 2005]", "Test AND test2 OR test3)", "ALL:(Test AND test2 OR test3\\)) +YEAR:[2000 TO 2005]" }, //34
 		};
 		testStringFixedQuery(testQueries);
 	}
@@ -306,57 +352,57 @@ public final class DslListFilterBuilderTest {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#query# +security:fixedValue", "Test OR 1=1", "ALL:(Test OR 1=1) +security:fixedValue" },
 				{ "ALL:#query# +security:\"fixedValue\"", "Test OR 1=1", "ALL:(Test OR 1=1) +security:\"fixedValue\"" },
-				{ "ALL:#query# +security:fixedValue", "Test) OR (1=1", "ALL:(Test) OR (1=1) +security:fixedValue" }, //don't affect security
-				{ "ALL:#query# +security:fixedValue", "*) OR ", "ALL:(*) OR ) +security:fixedValue", "ALL:(*) OR) +security:fixedValue" },
+				{ "ALL:#query# +security:fixedValue", "Test) OR (1=1", "ALL:(Test\\) OR \\(1=1) +security:fixedValue" }, //don't affect security
+				{ "ALL:#query# +security:fixedValue", "*) OR ", "ALL:(*\\) \\OR ) +security:fixedValue" },
 		};
 		testStringFixedQuery(testQueries);
 	}
 
 	@Test
 	public void testBeanQuery() {
-		final Date dateTest1 = DateUtil.parseToDate("230715 123000 -00", "ddMMyy HHmmss X");
-		final Date dateTest2 = DateUtil.parseToDate("230715 164500 -00", "ddMMyy HHmmss X");
-		final Instant instantTest1 = DateUtil.parseToInstant("230715 123000 -00", "ddMMyy HHmmss X");
-		final Instant instantTest2 = DateUtil.parseToInstant("230715 164500 -00", "ddMMyy HHmmss X");
+		final LocalDate dateTest1 = DateUtil.parseToLocalDate("230715", "ddMMyy");
+		final LocalDate dateTest2 = DateUtil.parseToLocalDate("230715", "ddMMyy");
+		final Instant instantTest1 = LocalDateTime.of(2015, 07, 23, 12, 30, 00).toInstant(ZoneOffset.UTC);
+		final Instant instantTest2 = LocalDateTime.of(2015, 07, 23, 16, 45, 00).toInstant(ZoneOffset.UTC);
 
 		final TestBean testBean = new TestBean("Test", "Test test2", dateTest1, dateTest2, instantTest1, instantTest2, 5, 10);
 		final Object[][] testQueries = new Object[][] {
 				//QueryPattern, UserQuery, EspectedResult
 				{ "ALL:#str1#", testBean, "ALL:(Test)", "ALL:Test" }, //0
 				{ "ALL:#str2#", testBean, "ALL:(Test test2)" }, //1
-				{ "ALL:#date1#", testBean, "ALL:\"2015-07-23T12:30:00.000Z\"" }, //2
-				{ "ALL:#date2#", testBean, "ALL:\"2015-07-23T16:45:00.000Z\"" }, //3
+				{ "ALL:#date1#", testBean, "ALL:\"2015-07-23\"" }, //2
+				{ "ALL:#date2#", testBean, "ALL:\"2015-07-23\"" }, //3
 				{ "ALL:#int1#", testBean, "ALL:5" }, //4
 				{ "ALL:#int2#", testBean, "ALL:10" }, //5
 				{ "ALL:[#int1# to #int2#]", testBean, "ALL:[5 TO 10]" }, //6
 				{ "ALL:[#int1# TO #int2#]", testBean, "ALL:[5 TO 10]" }, //7
-				{ "ALL:[#date1# to #date2#]", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" TO \"2015-07-23T16:45:00.000Z\"]" }, //8
+				{ "ALL:[#date1# to #date2#]", testBean, "ALL:[\"2015-07-23\" TO \"2015-07-23\"]" }, //8
 				{ "ALL:[#instant1# to #instant2#]", testBean, "ALL:[\"2015-07-23T12:30:00Z\" TO \"2015-07-23T16:45:00Z\"]" }, //9
 				{ "ALL:[#int1# to #null#]", testBean, "ALL:[5 TO *]" }, //10
 				{ "ALL:[#int1# to #null#!(*)]", testBean, "ALL:[5 TO *]" }, //11
 				{ "ALL:[#null#!(*) to #int2#]", testBean, "ALL:[* TO 10]" }, //12
 				{ "ALL:[#null# to #null#]", testBean, "" }, //13
 				{ "ALL:[ #null# to #null# ]", testBean, "ALL:[  ]", "" }, //14
-				{ "ALL:[#date1# to #null#!(*)]", testBean, "ALL:[\"2015-07-23T12:30:00.000Z\" TO *]" }, //15
+				{ "ALL:[#date1# to #null#!(*)]", testBean, "ALL:[\"2015-07-23\" TO *]" }, //15
 				{ "ALL:[#instant1# to #null#!(*)]", testBean, "ALL:[\"2015-07-23T12:30:00Z\" TO *]" }, //16
 				{ "ALL:[#null#!(*) to #null#!(*)]", testBean, "ALL:[* TO *]", "" }, //17
 				{ "ALL:{#int1# TO #int2#]", testBean, "ALL:{5 TO 10]" }, //18
 				{ "ALL:[#int1# TO #int2#}", testBean, "ALL:[5 TO 10}" }, //19
 				{ "ALL:{#int1# TO #int2#}", testBean, "ALL:{5 TO 10}" }, //20
-				{ "+DATE_SESSION:[* to #date1#}", testBean, "+DATE_SESSION:[* TO \"2015-07-23T12:30:00.000Z\"}" }, //21
+				{ "+DATE_SESSION:[* to #date1#}", testBean, "+DATE_SESSION:[* TO \"2015-07-23\"}" }, //21
 				{ "+DATE_SESSION:[* to #instant1#}", testBean, "+DATE_SESSION:[* TO \"2015-07-23T12:30:00Z\"}" }, //22
-				{ "+DATE_SESSION:[#date1# to *}", testBean, "+DATE_SESSION:[\"2015-07-23T12:30:00.000Z\" TO *}" }, //23
+				{ "+DATE_SESSION:[#date1# to *}", testBean, "+DATE_SESSION:[\"2015-07-23\" TO *}" }, //23
 				{ "+DATE_SESSION:[#instant1# to *}", testBean, "+DATE_SESSION:[\"2015-07-23T12:30:00Z\" TO *}" }, //24
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#instant1#!(*) TO *] +DATE_NAISSANCE:#instant2#!(*)", testBean, "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:\"2015-07-23T16:45:00Z\"" }, //25
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#date1#!(*) TO *] +DATE_NAISSANCE:#date2#!(*)", testBean, "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:\"2015-07-23T16:45:00.000Z\"" }, //26
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#date1#!(*) TO *] +DATE_NAISSANCE:#date2#!(*)", testBean, "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:\"2015-07-23\"" }, //26
 		};
 		testObjectFixedQuery(testQueries);
 	}
 
 	@Test
 	public void testMultiQuery() {
-		final Date dateTest1 = DateUtil.parseToDate("230715 123000 -00", "ddMMyy HHmmss X");
-		final Instant instantTest1 = DateUtil.parseToInstant("230715 123000 -00", "ddMMyy HHmmss X");
+		final LocalDate dateTest1 = DateUtil.parseToLocalDate("230715", "ddMMyy");
+		final Instant instantTest1 = LocalDateTime.of(2015, 07, 23, 12, 30, 00).toInstant(ZoneOffset.UTC);
 		final TestBean testBeanNull = new TestBean(null, "Test test2", null, dateTest1, null, instantTest1, null, 5);
 		final TestBean testBeanEmpty = new TestBean("", "Test test2", null, dateTest1, null, instantTest1, null, 5);
 		final TestBean testBeanOne = new TestBean("12", "Test test2", null, null, null, null, null, null);
@@ -373,9 +419,9 @@ public final class DslListFilterBuilderTest {
 				{ "+PRO_ID:#str1# +ALL:#str2#", testBeanMultipleCode, "+PRO_ID:(CODE_1 CODE_3) +ALL:(Test test2)" }, //5
 				{ "+PRO_ID:#+str1# +ALL:#str2#", testBeanMultipleCode, "+PRO_ID:(+CODE_1 +CODE_3) +ALL:(Test test2)" }, //6
 				{ "+(PRO_ID:#str1#) +ALL:#str2#", testBeanNull, "+ALL:(Test test2)" }, //7
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:*" }, //8
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanEmpty, "+(NOM_NAISSANCE:* OR NOM:*) +PRENOM:* +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:*" }, //9
-				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00.000Z\" TO *] +DATE_NAISSANCE:*" }, //10
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:*" }, //8
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanEmpty, "+(NOM_NAISSANCE:* OR NOM:*) +PRENOM:* +DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:*" }, //9
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#date2#!(*) TO *] +DATE_NAISSANCE:#date1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:*" }, //10
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#instant2#!(*) TO *] +DATE_NAISSANCE:#instant1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:*" }, //11
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#instant2#!(*) TO *] +DATE_NAISSANCE:#instant1#!(*)", testBeanEmpty, "+(NOM_NAISSANCE:* OR NOM:*) +PRENOM:* +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:*" }, //12
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str1# +DATE_MODIFICATION_DEPUIS:[#instant2#!(*) TO *] +DATE_NAISSANCE:#instant1#!(*)", testBeanNull, "+DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:*" }, //13
@@ -432,7 +478,7 @@ public final class DslListFilterBuilderTest {
 					.build();
 			final String result = listFilter.getFilterValue();
 			final String expectedResult = testParam[Math.min(getPreferedResult(), testParam.length - 1)];
-			Assert.assertEquals("Built query #" + i + " incorrect", expectedResult, result);
+			Assertions.assertEquals(expectedResult, result, "Built query #" + i + " incorrect");
 			i++;
 		}
 	}
@@ -446,7 +492,7 @@ public final class DslListFilterBuilderTest {
 					.build();
 			final String result = listFilter.getFilterValue();
 			final Object expectedResult = testParam[Math.min(getPreferedResult(), testParam.length - 1)];
-			Assert.assertEquals("Built query #" + i + " incorrect", expectedResult, result);
+			Assertions.assertEquals(expectedResult, result, "Built query #" + i + " incorrect");
 			i++;
 		}
 	}
@@ -455,8 +501,8 @@ public final class DslListFilterBuilderTest {
 
 		private final String str1;
 		private final String str2;
-		private final Date date1;
-		private final Date date2;
+		private final LocalDate date1;
+		private final LocalDate date2;
 		private final Instant instant1;
 		private final Instant instant2;
 		private final Integer int1;
@@ -465,8 +511,8 @@ public final class DslListFilterBuilderTest {
 		TestBean(
 				final String str1,
 				final String str2,
-				final Date date1,
-				final Date date2,
+				final LocalDate date1,
+				final LocalDate date2,
 				final Instant instant1,
 				final Instant instant2,
 				final Integer int1,
@@ -489,11 +535,11 @@ public final class DslListFilterBuilderTest {
 			return str2;
 		}
 
-		public Date getDate1() {
+		public LocalDate getDate1() {
 			return date1;
 		}
 
-		public Date getDate2() {
+		public LocalDate getDate2() {
 			return date2;
 		}
 

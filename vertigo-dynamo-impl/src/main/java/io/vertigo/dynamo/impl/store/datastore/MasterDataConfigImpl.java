@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,14 @@
  */
 package io.vertigo.dynamo.impl.store.datastore;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
+import io.vertigo.dynamo.store.datastore.MasterDataDefinition;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -37,41 +36,12 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 	private final Map<DtListURIForMasterData, Predicate> mdlUriFilterMap = new HashMap<>();
 	private final Map<DtDefinition, DtListURIForMasterData> defaultMdlMap2 = new HashMap<>();
 
-	/**
-	 * Constructor.
-	 */
-	public MasterDataConfigImpl() {
-		super();
-	}
-
 	/** {@inheritDoc} */
 	@Override
-	public void register(final DtListURIForMasterData uri, final String fieldName, final Serializable value) {
-		Assertion.checkNotNull(uri);
-		Assertion.checkNotNull(fieldName);
+	public void register(final MasterDataDefinition masterDataDefinition) {
+		Assertion.checkNotNull(masterDataDefinition);
 		//-----
-		register(uri, Criterions.isEqualTo(() -> fieldName, value).toPredicate());
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void register(final DtListURIForMasterData uri, final String fieldName1, final Serializable value1, final String fieldName2, final Serializable value2) {
-		Assertion.checkNotNull(uri);
-		Assertion.checkNotNull(fieldName1);
-		Assertion.checkNotNull(fieldName2);
-		//-----
-		final Predicate filter1 = Criterions.isEqualTo(() -> fieldName1, value1).toPredicate();
-		final Predicate filter2 = Criterions.isEqualTo(() -> fieldName2, value2).toPredicate();
-		final Predicate predicate = filter1.and(filter2);
-		register(uri, predicate);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void register(final DtListURIForMasterData uri) {
-		Assertion.checkNotNull(uri);
-		//-----
-		register(uri, o -> true);
+		register(masterDataDefinition.getUri(), masterDataDefinition.getPredicate());
 	}
 
 	private void register(final DtListURIForMasterData uri, final Predicate dtListFilter) {

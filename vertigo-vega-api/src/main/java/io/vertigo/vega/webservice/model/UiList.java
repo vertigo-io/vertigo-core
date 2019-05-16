@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,7 +56,8 @@ public interface UiList<D extends DtObject> extends List<UiObject<D>> {
 	 * Vérifie les UiObjects de la liste et remplis la pile d'erreur.
 	 * @param validator Validateur à utilisé
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
+	 * @return if the object is valid (no format errors) if it's not valid you must not call mergeAndCheckInput
 	 */
-	void checkFormat(UiMessageStack uiMessageStack);
+	boolean checkFormat(UiMessageStack uiMessageStack);
 
 }

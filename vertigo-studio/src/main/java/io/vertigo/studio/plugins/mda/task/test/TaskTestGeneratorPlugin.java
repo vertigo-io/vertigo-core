@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,9 +28,9 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
@@ -39,7 +39,9 @@ import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
+import io.vertigo.studio.plugins.mda.task.model.TaskAttributeModel;
 import io.vertigo.studio.plugins.mda.task.model.TaskDefinitionModel;
+import io.vertigo.studio.plugins.mda.util.MdaUtil;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.util.StringUtil;
 
@@ -60,8 +62,8 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 	 */
 	@Inject
 	public TaskTestGeneratorPlugin(
-			@Named("targetSubDir") final String targetSubDir,
-			@Named("baseTestClass") final String baseTestClass) {
+			@ParamValue("targetSubDir") final String targetSubDir,
+			@ParamValue("baseTestClass") final String baseTestClass) {
 		//-----
 		this.targetSubDir = targetSubDir;
 		this.baseTestClass = baseTestClass;
@@ -97,10 +99,10 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 			if (!taskDefinitionCollection.isEmpty()) {
 
 				final String packageName = entry.getKey();
-				final String className = getLastPackagename(packageName) + "PAO";
+				final String classSimpleName = getLastPackageName(packageName) + "PAO";
 
 				generateAo(paosTargetSubDir, fileGeneratorConfig, mdaResultBuilder, taskDefinitionCollection, packageName,
-						className, aoSuites);
+						classSimpleName, aoSuites);
 			}
 		}
 
@@ -154,20 +156,20 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 				final String packageNamePrefix = fileGeneratorConfig.getProjectPackageName() + ".domain";
 				final String packageName = fileGeneratorConfig.getProjectPackageName() + ".dao" + definitionPackageName.substring(packageNamePrefix.length());
 
-				final String className = dtDefinition.getClassSimpleName() + "DAO";
+				final String classSimpleName = dtDefinition.getClassSimpleName() + "DAO";
 
 				generateAo(daosTargetSubDir, fileGeneratorConfig, mdaResultBuilder, entry.getValue(), packageName,
-						className, aoSuites);
+						classSimpleName, aoSuites);
 			}
 		}
 	}
 
 	private void generateAo(final String aoTargetSubDir, final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder, final Collection<TaskDefinition> taskDefinitionCollection,
-			final String packageName, final String className, final List<TemplateTestSuite> paoSuites) {
+			final String packageName, final String classSimpleName, final List<TemplateTestSuite> paoSuites) {
 		final List<TemplateTestClass> testClasses = new ArrayList<>();
 		for (final TaskDefinition taskDefinition : taskDefinitionCollection) {
-			final TemplateAoTaskTest paoModel = new TemplateAoTaskTest(fileGeneratorConfig, taskDefinition, packageName, className, baseTestClass);
+			final TemplateAoTaskTest paoModel = new TemplateAoTaskTest(fileGeneratorConfig, taskDefinition, packageName, classSimpleName, baseTestClass);
 			final TemplateTestClass testClass = new TemplateTestClass(paoModel.getTaskDefinition().getTestPackageName(), paoModel.getTaskDefinition().getTestClassName());
 			testClasses.add(testClass);
 
@@ -190,7 +192,7 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 	 * @param packageName Nom de package
 	 * @return Nom du package feuille à partir d'un nom complet de package
 	 */
-	private static String getLastPackagename(final String packageName) {
+	private static String getLastPackageName(final String packageName) {
 		String lastPackageName = packageName;
 		if (lastPackageName.indexOf('.') != -1) {
 			lastPackageName = lastPackageName.substring(lastPackageName.lastIndexOf('.') + 1);
@@ -280,7 +282,7 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 		//We are searching igf there is an no-ambiguous IN param defined as a DataObject(DTO or DTC)
 		final List<Domain> candidates = templateTaskDefinition.getInAttributes()
 				.stream()
-				.map(taskAtributeModel -> taskAtributeModel.getDomain())
+				.map(TaskAttributeModel::getDomain)
 				.filter(domain -> domain.getScope().isDataObject())
 				.collect(Collectors.toList());
 		//There MUST be only ONE candidate
@@ -338,5 +340,10 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 		}
 		return taskDefinitionsMap;
 
+	}
+
+	@Override
+	public void clean(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+		MdaUtil.deleteFiles(new File(fileGeneratorConfig.getTargetGenDir() + targetSubDir), mdaResultBuilder);
 	}
 }

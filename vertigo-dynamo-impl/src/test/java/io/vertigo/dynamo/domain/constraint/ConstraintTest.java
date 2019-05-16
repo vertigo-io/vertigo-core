@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +20,11 @@ package io.vertigo.dynamo.domain.constraint;
 
 import java.math.BigDecimal;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.dynamox.domain.constraint.ConstraintBigDecimal;
 import io.vertigo.dynamox.domain.constraint.ConstraintBigDecimalLength;
 import io.vertigo.dynamox.domain.constraint.ConstraintDoubleLength;
@@ -37,7 +38,7 @@ import io.vertigo.dynamox.domain.constraint.ConstraintStringLength;
  *
  * @author pchretien
  */
-public final class ConstraintTest extends AbstractTestCaseJU4 {
+public final class ConstraintTest extends AbstractTestCaseJU5 {
 	//private ConstraintNotNull constraintNotNull;
 
 	private ConstraintBigDecimal constraintBigDecimal;
@@ -49,6 +50,15 @@ public final class ConstraintTest extends AbstractTestCaseJU4 {
 	private ConstraintStringLength constraintStringLength;
 
 	private ConstraintRegex constraintRegex;
+
+	@Override
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.withLocales("fr_FR")
+				.endBoot()
+				.build();
+	}
 
 	/** {@inheritDoc} */
 	@Override
@@ -73,51 +83,51 @@ public final class ConstraintTest extends AbstractTestCaseJU4 {
 	}
 
 	private void testBDTrue(final BigDecimal value) {
-		Assert.assertTrue(constraintBigDecimal.checkConstraint(value));
+		Assertions.assertTrue(constraintBigDecimal.checkConstraint(value));
 	}
 
 	private void testBDFalse(final BigDecimal value) {
-		Assert.assertFalse(constraintBigDecimal.checkConstraint(value));
+		Assertions.assertFalse(constraintBigDecimal.checkConstraint(value));
 	}
 
 	private void testBDLengthTrue(final BigDecimal value) {
-		Assert.assertTrue(constraintBigDecimalLength.checkConstraint(value));
+		Assertions.assertTrue(constraintBigDecimalLength.checkConstraint(value));
 	}
 
 	private void testBDLengthFalse(final BigDecimal value) {
-		Assert.assertFalse(constraintBigDecimalLength.checkConstraint(value));
+		Assertions.assertFalse(constraintBigDecimalLength.checkConstraint(value));
 	}
 
 	private void testDoubleTrue(final Double value) {
-		Assert.assertTrue(constraintDoubleLength.checkConstraint(value));
+		Assertions.assertTrue(constraintDoubleLength.checkConstraint(value));
 	}
 
 	private void testDoubleFalse(final Double value) {
-		Assert.assertFalse(constraintDoubleLength.checkConstraint(value));
+		Assertions.assertFalse(constraintDoubleLength.checkConstraint(value));
 	}
 
 	private void testIntegerTrue(final Integer value) {
-		Assert.assertTrue(constraintIntegerLength.checkConstraint(value));
+		Assertions.assertTrue(constraintIntegerLength.checkConstraint(value));
 	}
 
 	private void testIntegerFalse(final Integer value) {
-		Assert.assertFalse(constraintIntegerLength.checkConstraint(value));
+		Assertions.assertFalse(constraintIntegerLength.checkConstraint(value));
 	}
 
 	private void testLongTrue(final Long value) {
-		Assert.assertTrue(constraintLongLength.checkConstraint(value));
+		Assertions.assertTrue(constraintLongLength.checkConstraint(value));
 	}
 
 	private void testLongFalse(final Long value) {
-		Assert.assertFalse(constraintLongLength.checkConstraint(value));
+		Assertions.assertFalse(constraintLongLength.checkConstraint(value));
 	}
 
 	private void testStringTrue(final String value) {
-		Assert.assertTrue(constraintStringLength.checkConstraint(value));
+		Assertions.assertTrue(constraintStringLength.checkConstraint(value));
 	}
 
 	private void testStringFalse(final String value) {
-		Assert.assertFalse(constraintStringLength.checkConstraint(value));
+		Assertions.assertFalse(constraintStringLength.checkConstraint(value));
 	}
 
 	/**
@@ -283,17 +293,17 @@ public final class ConstraintTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testConstraintRegex() {
-		Assert.assertTrue(constraintRegex.checkConstraint(null));
-		Assert.assertTrue(constraintRegex.checkConstraint("ABCDEFHIJKLMNOPQRSTUVWXYZ"));
-		Assert.assertTrue(constraintRegex.checkConstraint("abcdefghijklmnopqrstuvwxyz"));
-		Assert.assertTrue(constraintRegex.checkConstraint("0123456789"));
-		Assert.assertTrue(constraintRegex.checkConstraint("_-"));
-		Assert.assertTrue(constraintRegex.checkConstraint("abc0123ABC_-"));
+		Assertions.assertTrue(constraintRegex.checkConstraint(null));
+		Assertions.assertTrue(constraintRegex.checkConstraint("ABCDEFHIJKLMNOPQRSTUVWXYZ"));
+		Assertions.assertTrue(constraintRegex.checkConstraint("abcdefghijklmnopqrstuvwxyz"));
+		Assertions.assertTrue(constraintRegex.checkConstraint("0123456789"));
+		Assertions.assertTrue(constraintRegex.checkConstraint("_-"));
+		Assertions.assertTrue(constraintRegex.checkConstraint("abc0123ABC_-"));
 
-		Assert.assertFalse(constraintRegex.checkConstraint("&abc"));
-		Assert.assertFalse(constraintRegex.checkConstraint("éabc"));
-		Assert.assertFalse(constraintRegex.checkConstraint("%abc"));
-		Assert.assertFalse(constraintRegex.checkConstraint("'abc"));
+		Assertions.assertFalse(constraintRegex.checkConstraint("&abc"));
+		Assertions.assertFalse(constraintRegex.checkConstraint("éabc"));
+		Assertions.assertFalse(constraintRegex.checkConstraint("%abc"));
+		Assertions.assertFalse(constraintRegex.checkConstraint("'abc"));
 	}
 
 }

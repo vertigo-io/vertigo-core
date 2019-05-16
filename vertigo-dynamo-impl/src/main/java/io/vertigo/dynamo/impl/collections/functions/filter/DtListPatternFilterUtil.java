@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +20,6 @@ package io.vertigo.dynamo.impl.collections.functions.filter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.ZoneId;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -41,16 +39,16 @@ import io.vertigo.util.DateUtil;
  * Parser des filtres utilisant une syntaxe définie.
  */
 public final class DtListPatternFilterUtil {
-	private static final String DATE_PATTERN = "dd/MM/yy";
+	private static final String DATE_PATTERN = "dd/MM/yyyy";
 
 	/**
 	 * Pattern types : Range or Term.
 	 */
 	public enum FilterPattern {
 		/** range. */
-		Range("([A-Z_0-9]+):([\\[\\{\\]])(.*) TO (.*)([\\]\\}\\[])"), //[] : include, ][ or {} : exclude
+		Range("([a-z][a-zA-Z0-9]*):([\\[\\{\\]])(.*) TO (.*)([\\]\\}\\[])"), //[] : include, ][ or {} : exclude
 		/** term. */
-		Term("([A-Z_0-9]+):\"(.*)\"");
+		Term("([a-z][a-zA-Z0-9]*):\"(.*)\"");
 
 		private final Pattern pattern;
 
@@ -151,6 +149,7 @@ public final class DtListPatternFilterUtil {
 		return valueOf(dataType, stringValue);
 	}
 
+	/** Same as Criterion. */
 	private static Serializable valueOf(final DataType dataType, final String stringValue) {
 		switch (dataType) {
 			case Integer:
@@ -161,11 +160,8 @@ public final class DtListPatternFilterUtil {
 				return new BigDecimal(stringValue);
 			case Double:
 				return Double.valueOf(stringValue);
-			case Date:
-				return DateUtil.parseToDate(stringValue, DATE_PATTERN);
 			case LocalDate:
-				final Instant instant = DateUtil.parseToInstant(stringValue, DATE_PATTERN);
-				return instant.atZone(ZoneId.of("UTC")).toLocalDate();
+				return DateUtil.parseToLocalDate(stringValue, DATE_PATTERN);
 			case Instant:
 				return DateUtil.parseToInstant(stringValue, DATE_PATTERN);
 			case String:

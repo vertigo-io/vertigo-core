@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,16 +18,17 @@
  */
 package io.vertigo.account.authorization;
 
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.account.authorization.SecurityNames.GlobalAuthorizations;
 import io.vertigo.account.authorization.SecurityNames.RecordAuthorizations;
 import io.vertigo.account.authorization.SecurityNames.RecordOperations;
@@ -36,18 +37,19 @@ import io.vertigo.account.authorization.metamodel.AuthorizationName;
 import io.vertigo.account.authorization.metamodel.Role;
 import io.vertigo.account.authorization.model.Record;
 import io.vertigo.account.data.TestUserSession;
+import io.vertigo.account.security.UserSession;
+import io.vertigo.account.security.VSecurityManager;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.database.impl.sql.vendor.postgresql.PostgreSqlDataBase;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.dynamo.criteria.CriteriaCtx;
-import io.vertigo.lang.Tuples.Tuple2;
-import io.vertigo.persona.security.UserSession;
-import io.vertigo.persona.security.VSecurityManager;
+import io.vertigo.lang.Tuple;
 
 /**
  * @author pchretien
  */
-public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
+public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 
 	private static final long DEFAULT_REG_ID = 1L;
 	private static final long DEFAULT_DEP_ID = 2L;
@@ -64,11 +66,16 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 	@Inject
 	private AuthorizationManager authorizationManager;
 
+	@Override
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config();
+	}
+
 	@Test
 	public void testCreateUserSession() {
 		final UserSession userSession = securityManager.createUserSession();
-		Assert.assertEquals(Locale.FRANCE, userSession.getLocale());
-		Assert.assertEquals(TestUserSession.class, userSession.getClass());
+		Assertions.assertEquals(Locale.FRANCE, userSession.getLocale());
+		Assertions.assertEquals(TestUserSession.class, userSession.getClass());
 	}
 
 	@Test
@@ -76,23 +83,24 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final UserSession userSession = securityManager.createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			Assert.assertTrue(securityManager.getCurrentUserSession().isPresent());
-			Assert.assertEquals(userSession, securityManager.getCurrentUserSession().get());
+			Assertions.assertTrue(securityManager.getCurrentUserSession().isPresent());
+			Assertions.assertEquals(userSession, securityManager.getCurrentUserSession().get());
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}
 	}
 
+	@Test
 	public void testAuthenticate() {
 		final UserSession userSession = securityManager.createUserSession();
-		Assert.assertFalse(userSession.isAuthenticated());
+		Assertions.assertFalse(userSession.isAuthenticated());
 		userSession.authenticate();
 	}
 
 	@Test
 	public void testNoUserSession() {
 		final Optional<UserSession> userSession = securityManager.getCurrentUserSession();
-		Assert.assertFalse(userSession.isPresent());
+		Assertions.assertFalse(userSession.isPresent());
 	}
 
 	@Test
@@ -100,7 +108,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final UserSession userSession = securityManager.createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
-			Assert.assertTrue(securityManager.getCurrentUserSession().isPresent());
+			Assertions.assertTrue(securityManager.getCurrentUserSession().isPresent());
 			//
 			authorizationManager.obtainUserAuthorizations().clearSecurityKeys();
 			authorizationManager.obtainUserAuthorizations().clearAuthorizations();
@@ -108,16 +116,16 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}
-		Assert.assertFalse(securityManager.getCurrentUserSession().isPresent());
+		Assertions.assertFalse(securityManager.getCurrentUserSession().isPresent());
 	}
 
 	@Test
 	public void testRole() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final Role admin = definitionSpace.resolve("R_ADMIN", Role.class);
-		Assert.assertTrue("R_ADMIN".equals(admin.getName()));
-		final Role secretary = definitionSpace.resolve("R_SECRETARY", Role.class);
-		Assert.assertTrue("R_SECRETARY".equals(secretary.getName()));
+		final Role admin = definitionSpace.resolve("RAdmin", Role.class);
+		Assertions.assertTrue("RAdmin".equals(admin.getName()));
+		final Role secretary = definitionSpace.resolve("RSecretary", Role.class);
+		Assertions.assertTrue("RSecretary".equals(secretary.getName()));
 	}
 
 	@Test
@@ -132,17 +140,17 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void testToString() {
-		final Authorization admUsr = getAuthorization(GlobalAuthorizations.ATZ_ADMUSR);
+		final Authorization admUsr = getAuthorization(GlobalAuthorizations.AtzAdmUsr);
 		admUsr.toString();
-		final Authorization admPro = getAuthorization(GlobalAuthorizations.ATZ_ADMPRO);
+		final Authorization admPro = getAuthorization(GlobalAuthorizations.AtzAdmPro);
 		admPro.toString();
 		/*Pour la couverture de code, et 35min de dette technique.... */
 	}
 
 	@Test
 	public void testAuthorized() {
-		final Authorization admUsr = getAuthorization(GlobalAuthorizations.ATZ_ADMUSR);
-		final Authorization admPro = getAuthorization(GlobalAuthorizations.ATZ_ADMPRO);
+		final Authorization admUsr = getAuthorization(GlobalAuthorizations.AtzAdmUsr);
+		final Authorization admPro = getAuthorization(GlobalAuthorizations.AtzAdmPro);
 
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
@@ -153,9 +161,9 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 					.addAuthorization(admUsr)
 					.addAuthorization(admPro);
 
-			Assert.assertTrue(authorizationManager.hasAuthorization(GlobalAuthorizations.ATZ_ADMUSR));
-			Assert.assertTrue(authorizationManager.hasAuthorization(GlobalAuthorizations.ATZ_ADMPRO));
-			Assert.assertFalse(authorizationManager.hasAuthorization(GlobalAuthorizations.ATZ_ADMAPP));
+			Assertions.assertTrue(authorizationManager.hasAuthorization(GlobalAuthorizations.AtzAdmUsr));
+			Assertions.assertTrue(authorizationManager.hasAuthorization(GlobalAuthorizations.AtzAdmPro));
+			Assertions.assertFalse(authorizationManager.hasAuthorization(GlobalAuthorizations.AtzAdmApp));
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}
@@ -176,7 +184,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
 		recordOtherUserAndTooExpensive.setAmount(10000d);
 
-		final Authorization recordRead = getAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
+		final Authorization recordRead = getAuthorization(RecordAuthorizations.AtzRecord$read);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -185,14 +193,19 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
 					.addAuthorization(recordRead);
 
-			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
-			Assert.assertTrue(canReadRecord);
+			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.AtzRecord$read);
+			Assertions.assertTrue(canReadRecord);
 
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
-			Assert.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.READ));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordTooExpensive, RecordOperations.READ));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.READ));
-			Assert.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.READ));
+			Assertions.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.read));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordTooExpensive, RecordOperations.read));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.read));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.read));
+
+			Assertions.assertFalse(Arrays.asList("read", "read2", "read3").retainAll(authorizationManager.getAuthorizedOperations(record)));
+			Assertions.assertFalse(Arrays.asList("read", "read2", "read3").retainAll(authorizationManager.getAuthorizedOperations(recordTooExpensive)));
+			Assertions.assertFalse(Arrays.asList("read", "read2", "read3").retainAll(authorizationManager.getAuthorizedOperations(recordOtherUser)));
+			Assertions.assertFalse(Arrays.asList("read", "read2", "read3").retainAll(authorizationManager.getAuthorizedOperations(recordOtherUserAndTooExpensive)));
 
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -214,24 +227,47 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
 		recordOtherUserAndTooExpensive.setAmount(10000d);
 
-		final Authorization recordRead = getAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
+		final Authorization recordRead = getAuthorization(RecordAuthorizations.AtzRecord$read);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
 			authorizationManager.obtainUserAuthorizations().withSecurityKeys("utiId", DEFAULT_UTI_ID)
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
-					.addAuthorization(recordRead);
+					.withSecurityKeys("geo", new Long[] { DEFAULT_REG_ID, DEFAULT_DEP_ID, null }) //droit sur tout un département
+					.addAuthorization(recordRead).addAuthorization(recordRead)
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test2))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test3))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$write))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$create))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$delete));
 
-			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
-			Assert.assertTrue(canReadRecord);
+			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.AtzRecord$read);
+			Assertions.assertTrue(canReadRecord);
 
-			final Predicate<Record> readRecordPredicate = authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ).toPredicate();
+			final Predicate<Record> readRecordPredicate = authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.read).toPredicate();
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
-			Assert.assertTrue(readRecordPredicate.test(record));
-			Assert.assertTrue(readRecordPredicate.test(recordTooExpensive));
-			Assert.assertTrue(readRecordPredicate.test(recordOtherUser));
-			Assert.assertFalse(readRecordPredicate.test(recordOtherUserAndTooExpensive));
+			Assertions.assertTrue(readRecordPredicate.test(record));
+			Assertions.assertTrue(readRecordPredicate.test(recordTooExpensive));
+			Assertions.assertTrue(readRecordPredicate.test(recordOtherUser));
+			Assertions.assertFalse(readRecordPredicate.test(recordOtherUserAndTooExpensive));
+
+			Assertions.assertEquals("(AMOUNT <= #amount0# OR UTI_ID_OWNER = #utiIdOwner1#)", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.read).toString());
+			Assertions.assertEquals("(AMOUNT <= #amount0# OR UTI_ID_OWNER = #utiIdOwner1#)", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.read2).toString());
+			Assertions.assertEquals("((AMOUNT <= #amount0# AND (UTI_ID_OWNER is null or UTI_ID_OWNER != #utiIdOwner1# )) OR (AMOUNT > #amount0# AND UTI_ID_OWNER = #utiIdOwner1#))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.read3).toString());
+			Assertions.assertEquals("false", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.readHp).toString());
+			Assertions.assertEquals("((UTI_ID_OWNER = #utiIdOwner0# AND ETA_CD in ('CRE', 'VAL', 'PUB', 'NOT', 'REA')) OR (TYP_ID = #typId1# AND AMOUNT > #amount2# AND AMOUNT <= #amount3# AND ETA_CD in ('CRE', 'VAL', 'PUB', 'NOT', 'REA')))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.write).toString());
+			Assertions.assertEquals("(TYP_ID = #typId0# AND AMOUNT <= #amount1#)", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.create).toString());
+			Assertions.assertEquals("(TYP_ID = #typId0# OR (UTI_ID_OWNER = #utiIdOwner1# AND ETA_CD in ('CRE', 'VAL')))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.delete).toString());
+
+			Assertions.assertEquals("(((UTI_ID_OWNER is null or UTI_ID_OWNER != #utiIdOwner0# ) AND (AMOUNT < #amount1# OR AMOUNT = #amount1# OR AMOUNT <= #amount1#)) OR (UTI_ID_OWNER = #utiIdOwner0# AND (AMOUNT > #amount1# OR AMOUNT = #amount1# OR AMOUNT >= #amount1#)))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.test).toString());
+			Assertions.assertEquals("(ETA_CD in ('CRE', 'VAL', 'PUB') OR ETA_CD in ('CRE', 'VAL', 'PUB') OR ETA_CD = #etaCd0# OR (ETA_CD is null or ETA_CD != #etaCd0# ) OR ETA_CD in ('PUB', 'NOT', 'REA', 'ARC') OR ETA_CD in ('PUB', 'NOT', 'REA', 'ARC'))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.test2).toString());
+			Assertions.assertEquals("((((((REG_ID = #regId0# AND DEP_ID = #depId1# AND COM_ID is not null) OR (REG_ID = #regId0# AND DEP_ID = #depId1#)) OR (REG_ID = #regId0# AND DEP_ID = #depId1# AND COM_ID is null )) OR ((REG_ID is null or REG_ID != #regId0# ) AND (DEP_ID is null or DEP_ID != #depId1# ) AND COM_ID is not null )) OR (REG_ID = #regId0# AND DEP_ID is null AND COM_ID is null)) OR (REG_ID = #regId0# AND (DEP_ID is null OR DEP_ID = #depId1#) AND COM_ID is null))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.test3).toString());
+
+			final boolean canReadNotify = authorizationManager.hasAuthorization(RecordAuthorizations.AtzRecord$notify);
+			Assertions.assertFalse(canReadNotify);
+			Assertions.assertEquals("false", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.notify).toString());
 
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -251,24 +287,48 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
 		recordOtherUserAndTooExpensive.setAmount(10000d);
 
-		final Authorization recordRead = getAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
+		final Authorization recordRead = getAuthorization(RecordAuthorizations.AtzRecord$read);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
 			authorizationManager.obtainUserAuthorizations().withSecurityKeys("utiId", DEFAULT_UTI_ID)
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
-					.addAuthorization(recordRead);
+					.withSecurityKeys("geo", new Long[] { DEFAULT_REG_ID, DEFAULT_DEP_ID, null }) //droit sur tout un département
+					.addAuthorization(recordRead).addAuthorization(recordRead)
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test2))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test3))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$write))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$create))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$delete));
 
-			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
-			Assert.assertTrue(canReadRecord);
+			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.AtzRecord$read);
+			Assertions.assertTrue(canReadRecord);
 
 			final SqlDialect sqlDialect = new PostgreSqlDataBase().getSqlDialect();
-			final Tuple2<String, CriteriaCtx> readRecordSql = authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.READ).toSql(sqlDialect);
+			final Tuple<String, CriteriaCtx> readRecordSql = authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.read).toSql(sqlDialect);
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
-			Assert.assertEquals("( AMOUNT <= #AMOUNT_0# OR UTI_ID_OWNER = #UTI_ID_OWNER_1# ) ", readRecordSql.getVal1());
-			Assert.assertEquals(100.0, readRecordSql.getVal2().getAttributeValue("AMOUNT_0"));
-			Assert.assertEquals(1000L, readRecordSql.getVal2().getAttributeValue("UTI_ID_OWNER_1"));
+			Assertions.assertEquals("(AMOUNT <= #amount0# OR UTI_ID_OWNER = #utiIdOwner1#)", readRecordSql.getVal1());
+			Assertions.assertEquals(100.0, readRecordSql.getVal2().getAttributeValue("amount0"));
+			Assertions.assertEquals(1000L, readRecordSql.getVal2().getAttributeValue("utiIdOwner1"));
+
+			Assertions.assertEquals("(AMOUNT <= #amount0# OR UTI_ID_OWNER = #utiIdOwner1#)", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.read).toSql(sqlDialect).getVal1());
+			Assertions.assertEquals("(AMOUNT <= #amount0# OR UTI_ID_OWNER = #utiIdOwner1#)", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.read2).toSql(sqlDialect).getVal1());
+			Assertions.assertEquals("((AMOUNT <= #amount0# AND (UTI_ID_OWNER is null or UTI_ID_OWNER != #utiIdOwner1# )) OR (AMOUNT > #amount0# AND UTI_ID_OWNER = #utiIdOwner1#))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.read3).toSql(sqlDialect).getVal1());
+			Assertions.assertEquals("0=1", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.readHp).toSql(sqlDialect).getVal1());
+			Assertions.assertEquals("((UTI_ID_OWNER = #utiIdOwner0# AND ETA_CD in ('CRE', 'VAL', 'PUB', 'NOT', 'REA')) OR (TYP_ID = #typId1# AND AMOUNT > #amount2# AND AMOUNT <= #amount3# AND ETA_CD in ('CRE', 'VAL', 'PUB', 'NOT', 'REA')))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.write).toSql(sqlDialect).getVal1());
+			Assertions.assertEquals("(TYP_ID = #typId0# AND AMOUNT <= #amount1#)", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.create).toSql(sqlDialect).getVal1());
+			Assertions.assertEquals("(TYP_ID = #typId0# OR (UTI_ID_OWNER = #utiIdOwner1# AND ETA_CD in ('CRE', 'VAL')))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.delete).toSql(sqlDialect).getVal1());
+
+			Assertions.assertEquals("(((UTI_ID_OWNER is null or UTI_ID_OWNER != #utiIdOwner0# ) AND (AMOUNT < #amount1# OR AMOUNT = #amount1# OR AMOUNT <= #amount1#)) OR (UTI_ID_OWNER = #utiIdOwner0# AND (AMOUNT > #amount1# OR AMOUNT = #amount1# OR AMOUNT >= #amount1#)))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.test).toSql(sqlDialect).getVal1());
+			Assertions.assertEquals("(ETA_CD in ('CRE', 'VAL', 'PUB') OR ETA_CD in ('CRE', 'VAL', 'PUB') OR ETA_CD = #etaCd0# OR (ETA_CD is null or ETA_CD != #etaCd0# ) OR ETA_CD in ('PUB', 'NOT', 'REA', 'ARC') OR ETA_CD in ('PUB', 'NOT', 'REA', 'ARC'))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.test2).toSql(sqlDialect).getVal1());
+			//TODO
+			Assertions.assertEquals("((((((REG_ID = #regId0# AND DEP_ID = #depId1# AND COM_ID is not null) OR (REG_ID = #regId0# AND DEP_ID = #depId1#)) OR (REG_ID = #regId0# AND DEP_ID = #depId1# AND COM_ID is null )) OR ((REG_ID is null or REG_ID != #regId0# ) AND (DEP_ID is null or DEP_ID != #depId1# ) AND COM_ID is not null )) OR (REG_ID = #regId0# AND DEP_ID is null AND COM_ID is null)) OR (REG_ID = #regId0# AND (DEP_ID is null OR DEP_ID = #depId1#) AND COM_ID is null))", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.test3).toSql(sqlDialect).getVal1());
+
+			final boolean canReadNotify = authorizationManager.hasAuthorization(RecordAuthorizations.AtzRecord$notify);
+			Assertions.assertFalse(canReadNotify);
+			Assertions.assertEquals("0=1", authorizationManager.getCriteriaSecurity(Record.class, RecordOperations.notify).toSql(sqlDialect).getVal1());
 
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -288,33 +348,43 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
 		recordOtherUserAndTooExpensive.setAmount(10000d);
 
-		final Authorization recordRead = getAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
+		final Authorization recordRead = getAuthorization(RecordAuthorizations.AtzRecord$read);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
 			authorizationManager.obtainUserAuthorizations().withSecurityKeys("utiId", DEFAULT_UTI_ID)
 					.withSecurityKeys("typId", DEFAULT_TYPE_ID)
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
+					.withSecurityKeys("geo", new Long[] { DEFAULT_REG_ID, DEFAULT_DEP_ID, null }) //droit sur tout un département
 					.addAuthorization(recordRead)
-					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$READ_HP))
-					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$WRITE))
-					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$CREATE))
-					.addAuthorization(getAuthorization(RecordAuthorizations.ATZ_RECORD$DELETE));
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test2))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$test3))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$readHp))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$write))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$create))
+					.addAuthorization(getAuthorization(RecordAuthorizations.AtzRecord$delete));
 
-			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$READ);
-			Assert.assertTrue(canReadRecord);
+			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.AtzRecord$read);
+			Assertions.assertTrue(canReadRecord);
 
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
-			Assert.assertEquals("(+AMOUNT:<=100.0) (+UTI_ID_OWNER:1000)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.READ));
-			Assert.assertEquals("(AMOUNT:<=100.0 UTI_ID_OWNER:1000)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.READ2));
-			Assert.assertEquals("(*:*)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.READ_HP));
-			Assert.assertEquals("(+UTI_ID_OWNER:1000 +ETA_CD:<ARC) (+TYP_ID:10 +AMOUNT:<=100.0 +ETA_CD:<ARC)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.WRITE));
-			Assert.assertEquals("(+TYP_ID:10 +AMOUNT:<=100.0)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.CREATE));
-			Assert.assertEquals("(+TYP_ID:10) (+UTI_ID_OWNER:1000 +ETA_CD:<PUB)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.DELETE));
+			Assertions.assertEquals("(+amount:<=100.0) (+utiIdOwner:1000)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.read));
+			Assertions.assertEquals("(amount:<=100.0 utiIdOwner:1000)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.read2));
+			Assertions.assertEquals("((+amount:<=100.0 -utiIdOwner:1000) (+amount:>100.0 +utiIdOwner:1000))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.read3));
+			Assertions.assertEquals("(*:*)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.readHp));
+			Assertions.assertEquals("(+utiIdOwner:1000 +etaCd:('CRE' 'VAL' 'PUB' 'NOT' 'REA')) (+typId:10 +amount:>0 +amount:<=100.0 +etaCd:('CRE' 'VAL' 'PUB' 'NOT' 'REA'))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.write));
+			Assertions.assertEquals("(+typId:10 +amount:<=100.0)", authorizationManager.getSearchSecurity(Record.class, RecordOperations.create));
+			Assertions.assertEquals("(+typId:10) (+utiIdOwner:1000 +etaCd:('CRE' 'VAL'))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.delete));
 
-			final boolean canReadNotify = authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$NOTIFY);
-			Assert.assertFalse(canReadNotify);
-			Assert.assertEquals("", authorizationManager.getSearchSecurity(Record.class, RecordOperations.NOTIFY));
+			Assertions.assertEquals("((-utiIdOwner:1000 +(amount:<100.0 amount:100.0 amount:<=100.0)) (+utiIdOwner:1000 +(amount:>100.0 amount:100.0 amount:>=100.0)))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.test));
+			Assertions.assertEquals("(etaCd:('CRE' 'VAL' 'PUB') etaCd:('CRE' 'VAL' 'PUB') etaCd:'PUB' -etaCd:'PUB' etaCd:('PUB' 'NOT' 'REA' 'ARC') etaCd:('PUB' 'NOT' 'REA' 'ARC'))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.test2));
+			//GEO<${geo} OR GEO<=${geo} OR GEO=${geo} OR GEO!=${geo} OR GEO>${geo} OR GEO>=${geo}
+			Assertions.assertEquals("((+regId:1 +depId:2 +_exists_:comId) (+regId:1 +depId:2) (+regId:1 +depId:2 -_exists_:comId) (-regId:1 -depId:2 _exists_:comId) (+regId:1 -_exists_:depId -_exists_:comId) (+regId:1 +(depId:2 -_exists_:depId) -_exists_:comId))", authorizationManager.getSearchSecurity(Record.class, RecordOperations.test3));
+
+			final boolean canReadNotify = authorizationManager.hasAuthorization(RecordAuthorizations.AtzRecord$notify);
+			Assertions.assertFalse(canReadNotify);
+			Assertions.assertEquals("", authorizationManager.getSearchSecurity(Record.class, RecordOperations.notify));
 		} finally {
 			securityManager.stopCurrentUserSession();
 		}
@@ -337,7 +407,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final Record recordArchivedNotWriteable = createRecord();
 		recordArchivedNotWriteable.setEtaCd("ARC");
 
-		final Authorization recordCreate = getAuthorization(RecordAuthorizations.ATZ_RECORD$CREATE);
+		final Authorization recordCreate = getAuthorization(RecordAuthorizations.AtzRecord$create);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -347,22 +417,22 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
 					.addAuthorization(recordCreate);
 
-			final boolean canCreateRecord = authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$CREATE);
-			Assert.assertTrue(canCreateRecord);
+			final boolean canCreateRecord = authorizationManager.hasAuthorization(RecordAuthorizations.AtzRecord$create);
+			Assertions.assertTrue(canCreateRecord);
 
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
-			Assert.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.READ));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordTooExpensive, RecordOperations.READ));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.READ));
-			Assert.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.READ));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordArchivedNotWriteable, RecordOperations.READ));
+			Assertions.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.read));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordTooExpensive, RecordOperations.read));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.read));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.read));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordArchivedNotWriteable, RecordOperations.read));
 
 			//create -> TYP_ID=${typId} and MONTANT<=${montantMax}
-			Assert.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.CREATE));
-			Assert.assertFalse(authorizationManager.isAuthorized(recordTooExpensive, RecordOperations.CREATE));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.CREATE));
-			Assert.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.CREATE));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordArchivedNotWriteable, RecordOperations.CREATE));
+			Assertions.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.create));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordTooExpensive, RecordOperations.create));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.create));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.create));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordArchivedNotWriteable, RecordOperations.create));
 
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -383,7 +453,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		recordOtherUserAndTooExpensive.setUtiIdOwner(2000L);
 		recordOtherUserAndTooExpensive.setAmount(10000d);
 
-		final Authorization recordRead = getAuthorization(RecordAuthorizations.ATZ_RECORD$READ_HP);
+		final Authorization recordRead = getAuthorization(RecordAuthorizations.AtzRecord$readHp);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -393,14 +463,14 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
 					.addAuthorization(recordRead);
 
-			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$READ_HP);
-			Assert.assertTrue(canReadRecord);
+			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.AtzRecord$readHp);
+			Assertions.assertTrue(canReadRecord);
 
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
-			Assert.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.READ));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordTooExpensive, RecordOperations.READ));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.READ));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.READ));
+			Assertions.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.read));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordTooExpensive, RecordOperations.read));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.read));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.read));
 
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -424,7 +494,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		final Record recordArchivedNotWriteable = createRecord();
 		recordArchivedNotWriteable.setEtaCd("ARC");
 
-		final Authorization recordWrite = getAuthorization(RecordAuthorizations.ATZ_RECORD$WRITE);
+		final Authorization recordWrite = getAuthorization(RecordAuthorizations.AtzRecord$write);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -434,22 +504,22 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 					.withSecurityKeys("montantMax", DEFAULT_MONTANT_MAX)
 					.addAuthorization(recordWrite);
 
-			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$WRITE);
-			Assert.assertTrue(canReadRecord);
+			final boolean canReadRecord = authorizationManager.hasAuthorization(RecordAuthorizations.AtzRecord$write);
+			Assertions.assertTrue(canReadRecord);
 
 			//read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
-			Assert.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.READ));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordTooExpensive, RecordOperations.READ));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.READ));
-			Assert.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.READ));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordArchivedNotWriteable, RecordOperations.READ));
+			Assertions.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.read));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordTooExpensive, RecordOperations.read));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.read));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.read));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordArchivedNotWriteable, RecordOperations.read));
 
 			//write -> (UTI_ID_OWNER=${utiId} and ETA_CD<ARC) or (TYP_ID=${typId} and MONTANT<=${montantMax} and ETA_CD<ARC)
-			Assert.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.WRITE));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordTooExpensive, RecordOperations.WRITE));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.WRITE));
-			Assert.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.WRITE));
-			Assert.assertFalse(authorizationManager.isAuthorized(recordArchivedNotWriteable, RecordOperations.WRITE));
+			Assertions.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.write));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordTooExpensive, RecordOperations.write));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.write));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.write));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordArchivedNotWriteable, RecordOperations.write));
 
 		} finally {
 			securityManager.stopCurrentUserSession();
@@ -501,7 +571,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 		recordNational.setDepId(null);
 		recordNational.setComId(null);
 
-		final Authorization recordNotify = getAuthorization(RecordAuthorizations.ATZ_RECORD$NOTIFY);
+		final Authorization recordNotify = getAuthorization(RecordAuthorizations.AtzRecord$notify);
 		final UserSession userSession = securityManager.<TestUserSession> createUserSession();
 		try {
 			securityManager.startCurrentUserSession(userSession);
@@ -512,41 +582,41 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU4 {
 					.withSecurityKeys("geo", new Long[] { DEFAULT_REG_ID, DEFAULT_DEP_ID, null }) //droit sur tout un département
 					.addAuthorization(recordNotify);
 
-			Assert.assertTrue(authorizationManager.hasAuthorization(RecordAuthorizations.ATZ_RECORD$NOTIFY));
+			Assertions.assertTrue(authorizationManager.hasAuthorization(RecordAuthorizations.AtzRecord$notify));
 
 			//grant read -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
-			Assert.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.READ));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.READ));
-			Assert.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.READ));
+			Assertions.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.read));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.read));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.read));
 			//grant read2 -> MONTANT<=${montantMax} or UTI_ID_OWNER=${utiId}
-			Assert.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.READ2));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.READ2));
-			Assert.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.READ2));
+			Assertions.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.read2));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.read2));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.read2));
 
 			//notify -> TYP_ID=${typId} and ETA_CD=PUB and GEO<=${geo}
-			Assert.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.NOTIFY));
-			Assert.assertFalse(authorizationManager.isAuthorized(recordOtherType, RecordOperations.NOTIFY));
-			Assert.assertFalse(authorizationManager.isAuthorized(recordOtherEtat, RecordOperations.NOTIFY));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.NOTIFY));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.NOTIFY));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordOtherCommune, RecordOperations.NOTIFY));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordDepartement, RecordOperations.NOTIFY));
-			Assert.assertFalse(authorizationManager.isAuthorized(recordOtherDepartement, RecordOperations.NOTIFY));
-			Assert.assertFalse(authorizationManager.isAuthorized(recordRegion, RecordOperations.NOTIFY));
-			Assert.assertFalse(authorizationManager.isAuthorized(recordNational, RecordOperations.NOTIFY));
+			Assertions.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.notify));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordOtherType, RecordOperations.notify));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordOtherEtat, RecordOperations.notify));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.notify));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.notify));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherCommune, RecordOperations.notify));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordDepartement, RecordOperations.notify));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordOtherDepartement, RecordOperations.notify));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordRegion, RecordOperations.notify));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordNational, RecordOperations.notify));
 
 			//override write -> TYP_ID=${typId} and ETA_CD=PUB and GEO<=${geo}
 			//default write don't apply : (UTI_ID_OWNER=${utiId} and ETA_CD<ARC) or (TYP_ID=${typId} and MONTANT<=${montantMax} and ETA_CD<ARC)
-			Assert.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.WRITE));
-			Assert.assertFalse(authorizationManager.isAuthorized(recordOtherType, RecordOperations.WRITE));
-			Assert.assertFalse(authorizationManager.isAuthorized(recordOtherEtat, RecordOperations.WRITE));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.WRITE));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.WRITE));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordOtherCommune, RecordOperations.WRITE));
-			Assert.assertTrue(authorizationManager.isAuthorized(recordDepartement, RecordOperations.WRITE));
-			Assert.assertFalse(authorizationManager.isAuthorized(recordOtherDepartement, RecordOperations.WRITE));
-			Assert.assertFalse(authorizationManager.isAuthorized(recordRegion, RecordOperations.WRITE));
-			Assert.assertFalse(authorizationManager.isAuthorized(recordNational, RecordOperations.WRITE));
+			Assertions.assertTrue(authorizationManager.isAuthorized(record, RecordOperations.write));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordOtherType, RecordOperations.write));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordOtherEtat, RecordOperations.write));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.write));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.write));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherCommune, RecordOperations.write));
+			Assertions.assertTrue(authorizationManager.isAuthorized(recordDepartement, RecordOperations.write));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordOtherDepartement, RecordOperations.write));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordRegion, RecordOperations.write));
+			Assertions.assertFalse(authorizationManager.isAuthorized(recordNational, RecordOperations.write));
 
 		} finally {
 			securityManager.stopCurrentUserSession();

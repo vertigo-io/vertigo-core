@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,9 +24,9 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 
 /**
  * The DataStorePlugin class defines the logical way used to read and write data in a data store.
@@ -63,45 +63,34 @@ public interface DataStorePlugin extends Plugin {
 	/**
 	 * Récupération de l'objet correspondant à l'URI fournie.
 	 *
-	 * @param uri URI de l'objet à charger
+	 * @param uid UID de l'objet à charger
 	 * @param <E> the type of entity
 	 * @param dtDefinition Definition
 	 * @return D correspondant à l'URI fournie.
 	 */
-	<E extends Entity> E readNullable(DtDefinition dtDefinition, URI<E> uri);
+	<E extends Entity> E readNullable(DtDefinition dtDefinition, UID<E> uid);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
 	 * NOT NULL
 	 *
-	 * @param uri URI de la collection à charger
+	 * @param uid UID de la collection à charger
 	 * @param dtDefinition Definition
 	 * @return DtList<D> Liste correspondant à l'URI fournie
 	 * @param <E> the type of entity
 	 */
-	<E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri);
+	<E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uid);
 
 	/**
 	 * Récupération d'une liste correspondant à l'URI fournie.
 	 * NOT NULL
 	 *
-	 * @param uri URI de la collection à charger
+	 * @param uid UID de la collection à charger
 	 * @param dtDefinition Definition
 	 * @return DtList<D> Liste correspondant à l'URI fournie
 	 * @param <E> the type of entity
 	 */
-	<E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uri);
-
-	/**
-	 * Récupération d'une liste correspondant à l'URI fournie.
-	 * NOT NULL
-	 *
-	 * @param uri URI de la collection à charger
-	 * @param dtDefinition Definition
-	 * @return DtList<D> Liste correspondant à l'URI fournie
-	 * @param <E> the type of entity
-	 */
-	<E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<E> uri);
+	<E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForSimpleAssociation uid);
 
 	//==========================================================================
 	//=============================== WRITE ====================================
@@ -127,27 +116,27 @@ public interface DataStorePlugin extends Plugin {
 	/**
 	 * Deletes an object identified by an uri.
 	 * @param dtDefinition Definition
-	 * @param uri URI
+	 * @param uid UID
 	 */
-	void delete(DtDefinition dtDefinition, URI<?> uri);
+	void delete(DtDefinition dtDefinition, UID<?> uid);
 
 	/**
 	 * Loads for update.
 	 *
 	 * @param dtDefinition Object's definition
-	 * @param uri Object's uri
+	 * @param uid Object's uid
 	 * @param <E> the type of entity
 	 * @return D Object value.
 	 */
-	<E extends Entity> E readNullableForUpdate(DtDefinition dtDefinition, URI<?> uri);
+	<E extends Entity> E readNullableForUpdate(DtDefinition dtDefinition, UID<?> uid);
 
 	/**
 	 * Finds a lists of entities matching a criteria.
 	 * @param dtDefinition the definition of entities to find
 	 * @param criteria the criteria to match
-	 * @param maxRows max number of rows to retrieve
+	 * @param dtListState listState of rows to retrieve
 	 * @return the list
 	 */
-	<E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows);
+	<E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState);
 
 }

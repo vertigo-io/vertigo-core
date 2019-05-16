@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -116,7 +116,7 @@ public final class IndexFilterFunction<D extends DtObject> implements UnaryOpera
 	public DtList<D> apply(final DtList<D> dtc) {
 		Assertion.checkNotNull(dtc);
 		//-----
-		final DtListState dtListState = new DtListState(top, skip, sortFieldName, sortDesc);
+		final DtListState dtListState = DtListState.of(top, skip, sortFieldName, sortDesc);
 		return indexPlugin.getCollection(keywords, searchedFields, listFilters, dtListState, Optional.empty(), dtc);
 	}
 }

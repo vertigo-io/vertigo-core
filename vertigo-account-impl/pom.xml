@@ -41,10 +41,11 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.4.196</version>
+			<version>1.4.199</version>
 			<scope>test</scope>
 		</dependency>
 		
@@ -52,7 +53,7 @@
 		<dependency>
 			<groupId>com.mchange</groupId>
 			<artifactId>c3p0</artifactId>
-			<version>0.9.5.2</version>
+			<version>0.9.5.3</version>
 			<optional>true</optional><!-- C3p0DataSourceProviderPlugin -->
 		</dependency>
 	</dependencies>

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,8 +31,7 @@ import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.plugins.account.store.loader.AccountLoader;
 import io.vertigo.account.plugins.account.store.loader.GroupLoader;
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.util.ListBuilder;
 
@@ -41,19 +40,19 @@ public final class TestIdentities implements AccountLoader, GroupLoader {
 	private final Map<String, Account> accountsMap = new HashMap<>();
 	private final Map<String, Account> accountsMapByAuth = new HashMap<>();
 	private final Map<String, AccountGroup> groupsMap = new HashMap<>();
-	private final Map<URI<Account>, Set<URI<AccountGroup>>> groupsPerAccount = new HashMap<>();
-	private final Map<URI<AccountGroup>, Set<URI<Account>>> accountsPerGroup = new HashMap<>();
+	private final Map<UID<Account>, Set<UID<AccountGroup>>> groupsPerAccount = new HashMap<>();
+	private final Map<UID<AccountGroup>, Set<UID<Account>>> accountsPerGroup = new HashMap<>();
 
 	private TestIdentities() {
 		//rien
 	}
 
-	public static URI<Account> createAccountURI(final String id) {
-		return DtObjectUtil.createURI(Account.class, id);
+	public static UID<Account> createAccountURI(final String id) {
+		return UID.of(Account.class, id);
 	}
 
-	public static URI<AccountGroup> createGroupURI(final String id) {
-		return DtObjectUtil.createURI(AccountGroup.class, id);
+	public static UID<AccountGroup> createGroupURI(final String id) {
+		return UID.of(AccountGroup.class, id);
 	}
 
 	public void initData() {
@@ -63,19 +62,19 @@ public final class TestIdentities implements AccountLoader, GroupLoader {
 		final Account testAccount3 = Account.builder("3").withAuthToken("admin").withDisplayName("Phil Mormon").withEmail("phil.mormon@yopmail.com").build();
 		saveAccounts(Arrays.asList(testAccount0, testAccount1, testAccount2, testAccount3));
 
-		final URI<Account> accountURI0 = createAccountURI(testAccount0.getId());
-		final URI<Account> accountURI1 = createAccountURI(testAccount1.getId());
-		final URI<Account> accountURI2 = createAccountURI(testAccount2.getId());
+		final UID<Account> accountURI0 = createAccountURI(testAccount0.getId());
+		final UID<Account> accountURI1 = createAccountURI(testAccount1.getId());
+		final UID<Account> accountURI2 = createAccountURI(testAccount2.getId());
 
 		final AccountGroup testAccountGroup1 = new AccountGroup("100", "TIME's cover");
-		final URI<AccountGroup> group1Uri = DtObjectUtil.createURI(AccountGroup.class, testAccountGroup1.getId());
+		final UID<AccountGroup> group1Uri = UID.of(AccountGroup.class, testAccountGroup1.getId());
 		saveGroup(testAccountGroup1);
 
 		attach(accountURI1, group1Uri);
 		attach(accountURI2, group1Uri);
 
 		final AccountGroup groupAll = new AccountGroup("ALL", "Everyone");
-		final URI<AccountGroup> groupAllUri = DtObjectUtil.createURI(AccountGroup.class, groupAll.getId());
+		final UID<AccountGroup> groupAllUri = UID.of(AccountGroup.class, groupAll.getId());
 		saveGroup(groupAll);
 		attach(accountURI0, groupAllUri);
 		attach(accountURI1, groupAllUri);
@@ -85,7 +84,7 @@ public final class TestIdentities implements AccountLoader, GroupLoader {
 		final List<Account> accounts = createAccounts();
 		saveAccounts(accounts);
 		for (final Account account : accounts) {
-			final URI<Account> accountUri = createAccountURI(account.getId());
+			final UID<Account> accountUri = createAccountURI(account.getId());
 			attach(accountUri, groupAllUri);
 		}
 
@@ -116,7 +115,7 @@ public final class TestIdentities implements AccountLoader, GroupLoader {
 				.build();
 	}
 
-	private void attach(final URI<Account> accountURI, final URI<AccountGroup> groupURI) {
+	private void attach(final UID<Account> accountURI, final UID<AccountGroup> groupURI) {
 		groupsPerAccount.computeIfAbsent(accountURI, key -> new HashSet<>()).add(groupURI);
 		accountsPerGroup.computeIfAbsent(groupURI, key -> new HashSet<>()).add(accountURI);
 	}
@@ -138,12 +137,12 @@ public final class TestIdentities implements AccountLoader, GroupLoader {
 	}
 
 	@Override
-	public Account getAccount(final URI<Account> accountURI) {
+	public Account getAccount(final UID<Account> accountURI) {
 		return accountsMap.get(accountURI);
 	}
 
 	@Override
-	public Optional<VFile> getPhoto(final URI<Account> accountURI) {
+	public Optional<VFile> getPhoto(final UID<Account> accountURI) {
 		return Optional.empty();
 	}
 
@@ -158,17 +157,17 @@ public final class TestIdentities implements AccountLoader, GroupLoader {
 	}
 
 	@Override
-	public AccountGroup getGroup(final URI<AccountGroup> groupURI) {
+	public AccountGroup getGroup(final UID<AccountGroup> groupURI) {
 		return groupsMap.get(groupURI);
 	}
 
 	@Override
-	public Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
+	public Set<UID<AccountGroup>> getGroupURIs(final UID<Account> accountURI) {
 		return groupsPerAccount.computeIfAbsent(accountURI, key -> Collections.emptySet());
 	}
 
 	@Override
-	public Set<URI<Account>> getAccountURIs(final URI<AccountGroup> groupURI) {
+	public Set<UID<Account>> getAccountURIs(final UID<AccountGroup> groupURI) {
 		// TODO Auto-generated method stub
 		return null;
 	}

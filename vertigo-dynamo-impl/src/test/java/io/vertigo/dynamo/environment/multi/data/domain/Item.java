@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.environment.multi.data.domain;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -27,17 +27,16 @@ public final class Item implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@Field(domain = "DO_LONG", type = "ID", required = true, label = "id")
+	@Field(domain = "DoLong", type = "ID", required = true, label = "id")
 	private Long id;
 
-	@Field(domain = "DO_STRING", label = "label")
+	@Field(domain = "DoString", label = "label")
 	private String label;
 
 	/** {@inheritDoc} */
 	@Override
-	@javax.persistence.Transient
-	public URI<Item> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<Item> getUID() {
+		return UID.of(this);
 	}
 
 	public final Long getId() {

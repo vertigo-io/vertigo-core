@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,7 +36,7 @@ public final class DefaultDtObjectValidator<O extends DtObject> extends Abstract
 		final Object value = dtField.getDataAccessor().getValue(dtObject);
 		//pas d'assertion notNull, car le champs n'est pas forcément obligatoire
 		if (value == null && dtField.isRequired()) {
-			dtObjectErrors.addError(getCamelCaseFieldName(dtField), MessageText.of("Le champ doit être renseigné"));
+			dtObjectErrors.addError(dtField.getName(), MessageText.of("Le champ doit être renseigné"));
 		} else {
 			try {
 				// Le typage est OK
@@ -45,7 +45,7 @@ public final class DefaultDtObjectValidator<O extends DtObject> extends Abstract
 			} catch (final ConstraintException e) {
 				// Erreur lors du check de la valeur,
 				// la valeur est toutefois correctement typée.
-				dtObjectErrors.addError(getCamelCaseFieldName(dtField), e.getMessageText());
+				dtObjectErrors.addError(dtField.getName(), e.getMessageText());
 			}
 		}
 	}

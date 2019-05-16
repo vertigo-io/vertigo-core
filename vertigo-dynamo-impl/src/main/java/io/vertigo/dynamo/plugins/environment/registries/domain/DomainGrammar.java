@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,8 +36,8 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_B;
-import static io.vertigo.dynamo.plugins.environment.KspProperty.NOT_NULL;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.PERSISTENT;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUIRED;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.SORT_FIELD;
@@ -67,15 +67,15 @@ public final class DomainGrammar implements DslGrammar {
 	/**
 	 * Clé des FIELD_DEFINITION de type PK utilisés dans les DT_DEFINITION.
 	 */
-	public static final String ID = "key";
+	public static final String ID_FIELD = "id";
 	/**
 	 * Clé des FIELD_DEFINITION de type FIELD utilisés dans les DT_DEFINITION.
 	 */
-	public static final String FIELD = "field";
+	public static final String DATA_FIELD = "field";
 	/**
 	 * Clé des FIELD_DEFINITION de type COMPUTED utilisés dans les DT_DEFINITION.
 	 */
-	public static final String COMPUTED = "computed";
+	public static final String COMPUTED_FIELD = "computed";
 
 	/**Définition d'une constraint.*/
 	public static final DslEntity CONSTRAINT_ENTITY;
@@ -89,8 +89,10 @@ public final class DomainGrammar implements DslGrammar {
 			.withProvided()
 			.build();
 
-	/**Field*/
-	public static final DslEntity DT_FIELD_ENTITY;
+	/**Fields*/
+	public static final DslEntity DT_ID_FIELD_ENTITY;
+	public static final DslEntity DT_DATA_FIELD_ENTITY;
+	public static final DslEntity DT_COMPUTED_FIELD_ENTITY;
 
 	public static final DslEntity DT_DEFINITION_ENTITY;
 	/**Définition d'une association simple.*/
@@ -126,26 +128,30 @@ public final class DomainGrammar implements DslGrammar {
 				.addManyFields("constraint", CONSTRAINT_ENTITY.getLink())
 				.build();
 
-		DT_FIELD_ENTITY = DslEntity.builder("Field")
+		DT_ID_FIELD_ENTITY = DslEntity.builder("IdField")
 				.addRequiredField(LABEL, String)
-				.addRequiredField(NOT_NULL, Boolean)
 				.addRequiredField("domain", DOMAIN_ENTITY.getLink())
-				.addOptionalField(EXPRESSION, String)
+				.build();
+
+		DT_DATA_FIELD_ENTITY = DslEntity.builder("DataField")
+				.addRequiredField(LABEL, String)
+				.addRequiredField(REQUIRED, Boolean)
+				.addRequiredField("domain", DOMAIN_ENTITY.getLink())
 				.addOptionalField(PERSISTENT, Boolean)
 				.build();
 
-		final DslEntity computedFieldEntity = DslEntity.builder("ComputedField")
+		DT_COMPUTED_FIELD_ENTITY = DslEntity.builder("ComputedField")
 				.addRequiredField(LABEL, String)
 				.addRequiredField("domain", DOMAIN_ENTITY.getLink())
-				.addRequiredField(EXPRESSION, String)
+				.addOptionalField(EXPRESSION, String)
 				.build();
 
 		DT_DEFINITION_ENTITY = DslEntity.builder("DtDefinition")
 				.addOptionalField(DISPLAY_FIELD, String)
 				.addOptionalField(SORT_FIELD, String)
-				.addManyFields(FIELD, DT_FIELD_ENTITY)
-				.addManyFields(COMPUTED, computedFieldEntity)
-				.addOptionalField(ID, DT_FIELD_ENTITY)
+				.addManyFields(DATA_FIELD, DT_DATA_FIELD_ENTITY)
+				.addManyFields(COMPUTED_FIELD, DT_COMPUTED_FIELD_ENTITY)
+				.addOptionalField(ID_FIELD, DT_ID_FIELD_ENTITY)
 				.addOptionalField(FRAGMENT_OF, String)
 				.addOptionalField(STEREOTYPE, String)
 				.addOptionalField(DATA_SPACE, String)
@@ -153,7 +159,7 @@ public final class DomainGrammar implements DslGrammar {
 
 		final DslEntity fieldAliasEntity = DslEntity.builder("fieldAlias")
 				.addOptionalField(LABEL, String)
-				.addOptionalField(NOT_NULL, Boolean)
+				.addOptionalField(REQUIRED, Boolean)
 				.build();
 
 		FRAGMENT_ENTITY = DslEntity.builder("Fragment")
@@ -161,22 +167,23 @@ public final class DomainGrammar implements DslGrammar {
 				.addManyFields("alias", fieldAliasEntity) //on peut ajouter des champs
 				.addOptionalField(DISPLAY_FIELD, String)
 				.addOptionalField(SORT_FIELD, String)
-				.addManyFields(FIELD, DT_FIELD_ENTITY) //on peut ajouter des champs
-				.addManyFields(COMPUTED, computedFieldEntity) //et des computed
+				.addManyFields(DATA_FIELD, DT_DATA_FIELD_ENTITY) //on peut ajouter des champs
+				.addManyFields(COMPUTED_FIELD, DT_COMPUTED_FIELD_ENTITY) //et des computed
 				.build();
 
 		ASSOCIATION_ENTITY = DslEntity.builder("Association")
 				.addOptionalField(FK_FIELD_NAME, String)
-				.addRequiredField(MULTIPLICITY_A, String)
-				.addRequiredField(NAVIGABILITY_A, Boolean)
-				.addRequiredField(ROLE_A, String)
-				.addRequiredField(LABEL_A, String)
-				.addRequiredField(MULTIPLICITY_B, String)
-				.addRequiredField(NAVIGABILITY_B, Boolean)
-				.addRequiredField(ROLE_B, String)
+				.addOptionalField(MULTIPLICITY_A, String)
+				.addOptionalField(NAVIGABILITY_A, Boolean)
+				.addOptionalField(ROLE_A, String)
+				.addOptionalField(LABEL_A, String)
+				.addOptionalField(MULTIPLICITY_B, String)
+				.addOptionalField(NAVIGABILITY_B, Boolean)
+				.addOptionalField(ROLE_B, String)
 				.addRequiredField(LABEL_B, String)
 				.addRequiredField("dtDefinitionA", DT_DEFINITION_ENTITY.getLink())
 				.addRequiredField("dtDefinitionB", DT_DEFINITION_ENTITY.getLink())
+				.addOptionalField("type", String)
 				.build();
 
 		ASSOCIATION_NN_ENTITY = DslEntity.builder("AssociationNN")
@@ -214,7 +221,7 @@ public final class DomainGrammar implements DslGrammar {
 		//We are listing all primitives types
 		final List<String> types = new ListBuilder()
 				.addAll(Arrays.stream(DataType.values())
-						.map(dataType -> dataType.name())
+						.map(DataType::name)
 						.collect(Collectors.toList()))
 				.add("DtObject")
 				.add("DtList")

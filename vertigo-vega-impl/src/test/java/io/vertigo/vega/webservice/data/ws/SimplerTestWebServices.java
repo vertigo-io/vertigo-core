@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,10 +34,10 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import io.vertigo.account.authorization.VSecurityException;
+import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.lang.VUserException;
-import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.util.DateUtil;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.webservice.WebServices;
@@ -47,6 +47,8 @@ import io.vertigo.vega.webservice.data.domain.ContactValidator;
 import io.vertigo.vega.webservice.data.domain.EmptyPkValidator;
 import io.vertigo.vega.webservice.data.domain.MandatoryPkValidator;
 import io.vertigo.vega.webservice.model.DtListDelta;
+import io.vertigo.vega.webservice.model.UiList;
+import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.DELETE;
 import io.vertigo.vega.webservice.stereotype.Doc;
@@ -291,6 +293,18 @@ public final class SimplerTestWebServices implements WebServices {
 	public String saveDtListContact(final @Validate({ ContactValidator.class }) DtList<Contact> myList) {
 		for (final Contact contact : myList) {
 			if (contact.getName() == null || contact.getName().isEmpty()) {
+				//400
+				throw new VUserException("Name is mandatory");
+			}
+		}
+		return "OK : received " + myList.size() + " contacts";
+	}
+
+	@POST("/saveUiListContact")
+	public String saveUiListContact(final UiList<Contact> myList, final UiMessageStack uiMessageStack) {
+		myList.mergeAndCheckInput(Collections.singletonList(new ContactValidator()), uiMessageStack);
+		for (final UiObject<Contact> contact : myList) {
+			if (contact.getString("name") == null || contact.getString("name").isEmpty()) {
 				//400
 				throw new VUserException("Name is mandatory");
 			}

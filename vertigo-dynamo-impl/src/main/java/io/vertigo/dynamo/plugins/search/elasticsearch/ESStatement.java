@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,7 @@ import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.impl.search.SearchResource;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
@@ -102,7 +102,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 					bulkRequest.add(esClient.prepareIndex()
 							.setIndex(indexName)
 							.setType(typeName)
-							.setId(index.getURI().urn())
+							.setId(index.getUID().urn())
 							.setSource(xContentBuilder));
 				}
 			}
@@ -128,7 +128,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			esClient.prepareIndex().setRefreshPolicy(DEFAULT_REFRESH)
 					.setIndex(indexName)
 					.setType(typeName)
-					.setId(index.getURI().urn())
+					.setId(index.getUID().urn())
 					.setSource(xContentBuilder)
 					.execute() //execute asynchrone
 					.actionGet(); //get wait exec
@@ -146,7 +146,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		//-----
 		try {
 			final QueryBuilder queryBuilder = ESSearchRequestBuilder.translateToQueryBuilder(query);
-			final DeleteByQueryRequestBuilder deleteByQueryAction = DeleteByQueryAction.INSTANCE.newRequestBuilder(esClient)
+			final DeleteByQueryRequestBuilder deleteByQueryAction = new DeleteByQueryRequestBuilder(esClient, DeleteByQueryAction.INSTANCE)
 					.filter(queryBuilder);
 			deleteByQueryAction
 					.source()
@@ -154,7 +154,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 					.setTypes(typeName);
 			final BulkByScrollResponse response = deleteByQueryAction.get();
 			final long deleted = response.getDeleted();
-			LOGGER.debug("Removed {0} elements", deleted);
+			LOGGER.debug("Removed {} elements", deleted);
 		} catch (final SearchPhaseExecutionException e) {
 			final VUserException vue = new VUserException(SearchResource.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR);
 			vue.initCause(e);
@@ -164,15 +164,15 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 
 	/**
 	 * Supprime un document.
-	 * @param uri Uri du document à supprimer
+	 * @param uid UID du document à supprimer
 	 */
-	void remove(final URI uri) {
-		Assertion.checkNotNull(uri);
+	void remove(final UID uid) {
+		Assertion.checkNotNull(uid);
 		//-----
 		esClient.prepareDelete().setRefreshPolicy(DEFAULT_REFRESH)
 				.setIndex(indexName)
 				.setType(typeName)
-				.setId(uri.urn())
+				.setId(uid.urn())
 				.execute()
 				.actionGet();
 	}
@@ -192,7 +192,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 				.withSearchQuery(searchQuery)
 				.withListState(listState, defaultMaxRows)
 				.build();
-		LOGGER.info("loadList " + searchRequestBuilder);
+		LOGGER.info("loadList {}", searchRequestBuilder);
 		try {
 			final SearchResponse queryResponse = searchRequestBuilder.execute().actionGet();
 			return new ESFacetedQueryResultBuilder(esDocumentCodec, indexDefinition, queryResponse, searchQuery)
@@ -213,6 +213,6 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 				.setSize(0) //on cherche juste à compter
 				.execute()
 				.actionGet();
-		return response.getHits().getTotalHits();
+		return response.getHits().getTotalHits().value;
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +34,7 @@ import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation;
 import org.elasticsearch.search.aggregations.bucket.MultiBucketsAggregation.Bucket;
 import org.elasticsearch.search.aggregations.bucket.filter.Filter;
-import org.elasticsearch.search.aggregations.metrics.tophits.TopHits;
+import org.elasticsearch.search.aggregations.metrics.TopHits;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 
 import io.vertigo.core.locale.MessageText;
@@ -54,6 +54,7 @@ import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.lang.VSystemException;
+import io.vertigo.util.StringUtil;
 
 //vérifier
 /**
@@ -65,6 +66,8 @@ import io.vertigo.lang.VSystemException;
 final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<FacetedQueryResult<I, SearchQuery>> {
 
 	private static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
+
+	private static final String EMPTY_TERM = "_empty_";
 
 	private final ESDocumentCodec esDocumentCodec;
 	private final SearchIndexDefinition indexDefinition;
@@ -116,7 +119,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 		}
 		//On fabrique à la volée le résultat.
 		final List<Facet> facets = createFacetList(searchQuery, queryResponse);
-		final long count = queryResponse.getHits().getTotalHits();
+		final long count = queryResponse.getHits().getTotalHits().value;
 		return new FacetedQueryResult<>(
 				searchQuery.getFacetedQuery(),
 				count,
@@ -147,10 +150,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 			final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) facetAggregation;
 			FacetValue facetValue;
 			for (final Bucket bucket : multiBuckets.getBuckets()) {
-				final String term = bucket.getKeyAsString();
-				final String query = facetDefinition.getDtField().getName() + ":\"" + term + "\"";
-				final MessageText label = MessageText.of(term);
-				facetValue = new FacetValue(term, ListFilter.of(query), label);
+				facetValue = createFacetTermValue(bucket, facetDefinition);
 				populateCluster(bucket, facetValue, resultCluster, dtcIndex, resultHighlights);
 			}
 		}
@@ -221,7 +221,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 	}
 
 	private static Aggregation obtainAggregation(final SearchResponse queryResponse, final String name) {
-		final Filter filterAggregation = queryResponse.getAggregations().get(name + "_FILTER");
+		final Filter filterAggregation = queryResponse.getAggregations().get(name + "Filter");
 		if (filterAggregation != null) {
 			return filterAggregation.getAggregations().get(name);
 		}
@@ -240,15 +240,31 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 	private static Facet createTermFacet(final FacetDefinition facetDefinition, final MultiBucketsAggregation multiBuckets) {
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
 		FacetValue facetValue;
-		for (final Bucket value : multiBuckets.getBuckets()) {
-			final String term = value.getKeyAsString();
-			final MessageText label = MessageText.of(term);
-			final String query = facetDefinition.getDtField().getName() + ":\"" + term + "\"";
-			facetValue = new FacetValue(term, ListFilter.of(query), label);
-			facetValues.put(facetValue, value.getDocCount());
+		for (final Bucket bucket : multiBuckets.getBuckets()) {
+			facetValue = createFacetTermValue(bucket, facetDefinition);
+			facetValues.put(facetValue, bucket.getDocCount());
 		}
 
 		return new Facet(facetDefinition, facetValues);
+	}
+
+	private static FacetValue createFacetTermValue(final Bucket value, final FacetDefinition facetDefinition) {
+		final String valueAsString = value.getKeyAsString();
+		final String label;
+		final String query;
+		if (!StringUtil.isEmpty(valueAsString)) {
+			label = valueAsString;
+		} else {
+			label = EMPTY_TERM;
+		}
+		if (valueAsString != null) {
+			query = facetDefinition.getDtField().getName() + ":\"" + valueAsString + "\"";
+		} else {
+			query = "!_exists_:" + facetDefinition.getDtField().getName(); //only for null value, empty ones use FIELD:""
+		}
+
+		return new FacetValue(label, ListFilter.of(query), MessageText.of(label));
+
 	}
 
 	private static Facet createFacetRange(final FacetDefinition facetDefinition, final MultiBucketsAggregation rangeBuckets) {

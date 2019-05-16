@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -51,11 +51,11 @@ final class FileActionDelete implements VTransactionAfterCompletionFunction {
 		file = new File(path);
 
 		if (!file.exists()) {
-			LOG.error("Impossible de trouver le fichier pour suppression : " + file.getAbsolutePath());
+			LOG.error("Impossible de trouver le fichier pour suppression : {}", file.getAbsolutePath());
 			throw new VSystemException("Impossible de trouver le fichier à supprimer.");
 		}
 		if (!file.canWrite()) {
-			LOG.error("Impossible de supprimer le fichier : " + file.getAbsolutePath());
+			LOG.error("Impossible de supprimer le fichier : {}", file.getAbsolutePath());
 			throw new VSystemException("Impossible de supprimer le fichier.");
 		}
 	}
@@ -66,7 +66,7 @@ final class FileActionDelete implements VTransactionAfterCompletionFunction {
 		if (txCommited) {
 			// on supprime le fichier
 			if (!file.delete()) {
-				LOG.error("Impossible de supprimer le fichier " + file.getAbsolutePath());
+				LOG.error("Impossible de supprimer le fichier {}", file.getAbsolutePath());
 				throw new VSystemException("Erreur fatale : Impossible de supprimer le fichier.");
 			}
 		}

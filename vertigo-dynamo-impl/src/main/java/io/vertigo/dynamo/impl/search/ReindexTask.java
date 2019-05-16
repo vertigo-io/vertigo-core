@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,7 +33,7 @@ import io.vertigo.app.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
@@ -48,10 +48,10 @@ final class ReindexTask implements Runnable {
 	private static final int REINDEX_ERROR_MAX_RETRY = 5; //il y a 5 + 1 essais au total (le premier + 5 retry)
 
 	private final SearchIndexDefinition searchIndexDefinition;
-	private final Set<URI<? extends KeyConcept>> dirtyElements;
+	private final Set<UID<? extends KeyConcept>> dirtyElements;
 	private final SearchManager searchManager;
 
-	ReindexTask(final SearchIndexDefinition searchIndexDefinition, final Set<URI<? extends KeyConcept>> dirtyElements, final SearchManager searchManager) {
+	ReindexTask(final SearchIndexDefinition searchIndexDefinition, final Set<UID<? extends KeyConcept>> dirtyElements, final SearchManager searchManager) {
 		Assertion.checkNotNull(searchIndexDefinition);
 		Assertion.checkNotNull(dirtyElements);
 		Assertion.checkNotNull(searchManager);
@@ -67,7 +67,7 @@ final class ReindexTask implements Runnable {
 		long dirtyElementsCount = 0;
 		do {
 			final long startTime = System.currentTimeMillis();
-			final List<URI<? extends KeyConcept>> reindexUris = new ArrayList<>();
+			final List<UID<? extends KeyConcept>> reindexUris = new ArrayList<>();
 			try {
 				synchronized (dirtyElements) {
 					if (!dirtyElements.isEmpty()) {
@@ -124,18 +124,18 @@ final class ReindexTask implements Runnable {
 	}
 
 	private void removedNotFoundKeyConcept(final Collection<SearchIndex<KeyConcept, DtObject>> searchIndexes, final SearchChunk<? extends KeyConcept> searchChunk) {
-		if (searchIndexes.size() < searchChunk.getAllURIs().size()) {
-			final Set<URI<? extends KeyConcept>> notFoundUris = new LinkedHashSet<>(searchChunk.getAllURIs());
+		if (searchIndexes.size() < searchChunk.getAllUIDs().size()) {
+			final Set<UID<? extends KeyConcept>> notFoundUris = new LinkedHashSet<>(searchChunk.getAllUIDs());
 			for (final SearchIndex<KeyConcept, DtObject> searchIndex : searchIndexes) {
-				if (notFoundUris.contains(searchIndex.getURI())) {
-					notFoundUris.remove(searchIndex.getURI());
+				if (notFoundUris.contains(searchIndex.getUID())) {
+					notFoundUris.remove(searchIndex.getUID());
 				}
 			}
 			searchManager.removeAll(searchIndexDefinition, urisToListFilter(notFoundUris));
 		}
 	}
 
-	private ListFilter urisToListFilter(final Set<URI<? extends KeyConcept>> removedUris) {
+	private ListFilter urisToListFilter(final Set<UID<? extends KeyConcept>> removedUris) {
 		final String indexIdFieldName = searchIndexDefinition.getKeyConceptDtDefinition().getIdField().get().getName();
 		final String filterValue = removedUris
 				.stream()

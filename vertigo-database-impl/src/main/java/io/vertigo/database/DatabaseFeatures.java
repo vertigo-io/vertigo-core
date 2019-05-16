@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,30 +18,37 @@
  */
 package io.vertigo.database;
 
+import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
-import io.vertigo.database.impl.sql.SqlConnectionProviderPlugin;
 import io.vertigo.database.impl.sql.SqlDataBaseManagerImpl;
+import io.vertigo.database.impl.timeseries.TimeSeriesDataBaseManagerImpl;
+import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
+import io.vertigo.database.plugins.sql.connection.datasource.DataSourceConnectionProviderPlugin;
+import io.vertigo.database.plugins.timeseries.fake.FakeTimeSeriesPlugin;
+import io.vertigo.database.plugins.timeseries.influxdb.InfluxDbTimeSeriesPlugin;
 import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.timeseries.TimeSeriesDataBaseManager;
 
 /**
  * Defines database features.
  *
  * @author mlaroche
  */
-public final class DatabaseFeatures extends Features {
+public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 
 	/**
 	 * Constructor.
 	 */
 	public DatabaseFeatures() {
-		super("database");
+		super("vertigo-database");
 	}
 
 	/**
 	 * Add sqlDataBase management to dynamo.
 	 * @return  the feature
 	 */
+	@Feature("sql")
 	public DatabaseFeatures withSqlDataBase() {
 		getModuleConfigBuilder()
 				.addComponent(SqlDataBaseManager.class, SqlDataBaseManagerImpl.class);
@@ -49,19 +56,62 @@ public final class DatabaseFeatures extends Features {
 	}
 
 	/**
-	 * Add a database connection provider plugin
-	 * @param  connectionProviderPluginClass the plugin to use
-	 * @param params a list plugin's params
-	 * @return the feature
+	 * Add InfluxDb timeseries database.
+	 * @return  the feature
 	 */
-	public DatabaseFeatures addSqlConnectionProviderPlugin(final Class<? extends SqlConnectionProviderPlugin> connectionProviderPluginClass, final Param... params) {
+	@Feature("timeseries")
+	public DatabaseFeatures withTimeSeriesDataBase() {
 		getModuleConfigBuilder()
-				.addPlugin(connectionProviderPluginClass, params);
+				.addComponent(TimeSeriesDataBaseManager.class, TimeSeriesDataBaseManagerImpl.class);
 		return this;
 	}
 
 	/**
+	 * Add InfluxDb timeseries database.
+	 * @return  the feature
+	 */
+	@Feature("timeseries.influxdb")
+	public DatabaseFeatures withInfluxDb(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(InfluxDbTimeSeriesPlugin.class, params);
+		return this;
+	}
 
+	/**
+	 * Add InfluxDb timeseries database.
+	 * @return  the feature
+	 */
+	@Feature("timeseries.fake")
+	public DatabaseFeatures withFakeTimeseries() {
+		getModuleConfigBuilder()
+				.addPlugin(FakeTimeSeriesPlugin.class);
+		return this;
+	}
+
+	/**
+	 * Add InfluxDb timeseries database.
+	 * @return  the feature
+	 */
+	@Feature("sql.datasource")
+	public DatabaseFeatures withDatasource(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(DataSourceConnectionProviderPlugin.class, params);
+		return this;
+	}
+
+	/**
+	 * Add InfluxDb timeseries database.
+	 * @return  the feature
+	 */
+	@Feature("sql.c3p0")
+	public DatabaseFeatures withC3p0(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(C3p0ConnectionProviderPlugin.class, params);
+		return this;
+	}
+
+	/**
+	
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {

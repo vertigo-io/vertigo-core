@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +18,15 @@
  */
 package io.vertigo.studio.plugins.mda.file;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
@@ -32,6 +34,7 @@ import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 import io.vertigo.studio.plugins.mda.file.model.FileInfoDefinitionModel;
+import io.vertigo.studio.plugins.mda.util.MdaUtil;
 import io.vertigo.util.MapBuilder;
 
 /**
@@ -44,12 +47,12 @@ public final class FileInfoGeneratorPlugin implements GeneratorPlugin {
 
 	/**
 	 * Constructeur.
-	 * @param targetSubDir Repertoire de generation des fichiers de ce plugin
+	 * @param targetSubDirOpt Repertoire de generation des fichiers de ce plugin
 	 */
 	@Inject
-	public FileInfoGeneratorPlugin(@Named("targetSubDir") final String targetSubDir) {
+	public FileInfoGeneratorPlugin(@ParamValue("targetSubDir") final Optional<String> targetSubDirOpt) {
 		//-----
-		this.targetSubDir = targetSubDir;
+		targetSubDir = targetSubDirOpt.orElse("javagen");
 	}
 
 	/** {@inheritDoc} */
@@ -94,5 +97,10 @@ public final class FileInfoGeneratorPlugin implements GeneratorPlugin {
 				.withTemplateName("file/template/fileInfo.ftl")
 				.build()
 				.generateFile(mdaResultBuilder);
+	}
+
+	@Override
+	public void clean(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+		MdaUtil.deleteFiles(new File(fileGeneratorConfig.getTargetGenDir() + targetSubDir), mdaResultBuilder);
 	}
 }

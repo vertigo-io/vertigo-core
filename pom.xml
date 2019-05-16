@@ -33,7 +33,7 @@
 
 		<module>vertigo-dynamo-api</module>
 		<module>vertigo-dynamo-impl</module>
-		<module>vertigo-dynamo-plugin-elasticsearch_2_4</module>
+		<module>vertigo-dynamo-plugin-elasticsearch_5_6</module>
 		
 		<module>vertigo-account-api</module>
 		<module>vertigo-account-impl</module>
@@ -48,7 +48,7 @@
 		<connection>scm:git:https://github.com/KleeGroup/vertigo.git</connection>
 		<developerConnection>scm:git:https://github.com/KleeGroup/vertigo.git</developerConnection>
 		<url>scm:git:https://github.com/KleeGroup/vertigo.git</url>
-		<tag>vertigo-1.1.2</tag>
+		<tag>vertigo-2.0.0-SNAPSHOT</tag>
 	</scm>
 	
 </project>

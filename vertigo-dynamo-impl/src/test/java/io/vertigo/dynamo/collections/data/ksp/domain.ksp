@@ -1,26 +1,26 @@
 package io.vertigo.dynamo.collections.data.domain
 
-create Formatter FMT_DEFAULT{
+create Formatter FmtDefault{
 	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"
 }
 
-create Domain DO_ID{
+create Domain DoId{
 	dataType : Long
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 }
 
-create Domain DO_TEXT {
+create Domain DoText {
 	dataType : String
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 }
 
-create Domain DO_KEYWORD {
+create Domain DoKeyword {
 	dataType : String
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 }
 
-create Domain DO_INTEGER {
+create Domain DoInteger {
 	dataType : Integer
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 }
 

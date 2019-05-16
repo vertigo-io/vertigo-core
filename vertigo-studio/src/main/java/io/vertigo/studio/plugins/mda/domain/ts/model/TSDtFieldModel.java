@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,6 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * Model used to define a DtField.
@@ -43,7 +42,7 @@ public final class TSDtFieldModel {
 	}
 
 	public String getCamelCaseName() {
-		return StringUtil.constToLowerCamelCase(dtField.getName());
+		return dtField.getName();
 	}
 
 	/**
@@ -128,6 +127,6 @@ public final class TSDtFieldModel {
 		} else {
 			typescriptType = domain.getJavaClass().getSimpleName();
 		}
-		return typescriptType + ((domain.isMultiple() && withArray) ? "[]" : "");
+		return typescriptType + (domain.isMultiple() && withArray ? "[]" : "");
 	}
 }

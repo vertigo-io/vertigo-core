@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,9 +28,7 @@ import java.util.Set;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.impl.account.AccountCachePlugin;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 
@@ -38,21 +36,21 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class MemoryAccountCachePlugin implements AccountCachePlugin {
-	private final Map<URI<Account>, Account> accountByURI = new HashMap<>();
-	private final Map<String, URI<Account>> accountURIByAuthToken = new HashMap<>();
-	private final Map<URI<AccountGroup>, AccountGroup> groupByURI = new HashMap<>();
+	private final Map<UID<Account>, Account> accountByUID = new HashMap<>();
+	private final Map<String, UID<Account>> accountUIDByAuthToken = new HashMap<>();
+	private final Map<UID<AccountGroup>, AccountGroup> groupByUID = new HashMap<>();
 	//---
-	private final Map<URI<Account>, Set<URI<AccountGroup>>> groupByAccountURI = new HashMap<>();
-	private final Map<URI<AccountGroup>, Set<URI<Account>>> accountByGroupURI = new HashMap<>();
+	private final Map<UID<Account>, Set<UID<AccountGroup>>> groupByAccountUID = new HashMap<>();
+	private final Map<UID<AccountGroup>, Set<UID<Account>>> accountByGroupUID = new HashMap<>();
 	//---
-	private final Map<URI<Account>, VFile> photoByAccountURI = new HashMap<>();
+	private final Map<UID<Account>, VFile> photoByAccountUID = new HashMap<>();
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized Optional<Account> getAccount(final URI<Account> accountURI) {
-		Assertion.checkNotNull(accountURI);
+	public synchronized Optional<Account> getAccount(final UID<Account> accountUID) {
+		Assertion.checkNotNull(accountUID);
 		//-----
-		return Optional.ofNullable(accountByURI.get(accountURI));
+		return Optional.ofNullable(accountByUID.get(accountUID));
 	}
 
 	/** {@inheritDoc} */
@@ -60,23 +58,22 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 	public synchronized void putAccount(final Account account) {
 		Assertion.checkNotNull(account);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(account);
-		final URI<Account> uri = new URI<>(dtDefinition, account.getId());
+		final UID<Account> uid = account.getUID();
 		//----
-		final Object old = accountByURI.put(uri, account);
+		final Object old = accountByUID.put(uid, account);
 		if (old == null) {
-			groupByAccountURI.put(uri, new HashSet<URI<AccountGroup>>());
-			accountURIByAuthToken.put(account.getAuthToken(), uri);
+			groupByAccountUID.put(uid, new HashSet<UID<AccountGroup>>());
+			accountUIDByAuthToken.put(account.getAuthToken(), uid);
 		}
 	}
 
 	//-----
 	/** {@inheritDoc} */
 	@Override
-	public synchronized Optional<AccountGroup> getGroup(final URI<AccountGroup> groupURI) {
-		Assertion.checkNotNull(groupURI);
+	public synchronized Optional<AccountGroup> getGroup(final UID<AccountGroup> groupUID) {
+		Assertion.checkNotNull(groupUID);
 		//-----
-		return Optional.ofNullable(groupByURI.get(groupURI));
+		return Optional.ofNullable(groupByUID.get(groupUID));
 	}
 
 	/** {@inheritDoc} */
@@ -84,63 +81,60 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 	public synchronized void putGroup(final AccountGroup group) {
 		Assertion.checkNotNull(group);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(group);
-		final URI<AccountGroup> uri = new URI<>(dtDefinition, group.getId());
+		final UID<AccountGroup> uid = group.getUID();
 		//----
-		Assertion.checkArgument(!groupByURI.containsKey(uri), "this group is already registered, you can't create it");
+		Assertion.checkArgument(!groupByUID.containsKey(uid), "this group is already registered, you can't create it");
 		//-----
-		accountByGroupURI.put(uri, new HashSet<URI<Account>>());
-		groupByURI.put(uri, group);
+		accountByGroupUID.put(uid, new HashSet<UID<Account>>());
+		groupByUID.put(uid, group);
 	}
 
 	//-----
 	/** {@inheritDoc} */
 	@Override
-	public synchronized void attach(final Set<URI<Account>> accountsURI, final URI<AccountGroup> groupURI) {
-		Assertion.checkNotNull(accountsURI);
-		Assertion.checkNotNull(groupURI);
+	public synchronized void attach(final Set<UID<Account>> accountsUID, final UID<AccountGroup> groupUID) {
+		Assertion.checkNotNull(accountsUID);
+		Assertion.checkNotNull(groupUID);
 		//-----
-		accountsURI.forEach(accountURI -> this.attach(accountURI, groupURI));
+		accountsUID.forEach(accountURI -> this.attach(accountURI, groupUID));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized void attach(final URI<Account> accountURI, final Set<URI<AccountGroup>> groupURIs) {
+	public synchronized void attach(final UID<Account> accountUID, final Set<UID<AccountGroup>> groupUIDs) {
 		//-----
-		groupURIs.forEach(groupURI -> this.attach(accountURI, groupURI));
+		groupUIDs.forEach(groupURI -> this.attach(accountUID, groupURI));
 	}
 
-	private synchronized void attach(final URI<Account> accountURI, final URI<AccountGroup> groupURI) {
-		Assertion.checkNotNull(accountURI);
-		Assertion.checkNotNull(groupURI);
+	private synchronized void attach(final UID<Account> accountUID, final UID<AccountGroup> groupUID) {
+		Assertion.checkNotNull(accountUID);
+		Assertion.checkNotNull(groupUID);
 		//-----
-		final Set<URI<AccountGroup>> groupURIs = groupByAccountURI.get(accountURI);
-		Assertion.checkNotNull(groupURIs, "account must be create before this operation");
-		groupURIs.add(groupURI);
+		final Set<UID<AccountGroup>> groupUIDs = groupByAccountUID.computeIfAbsent(accountUID, key -> new HashSet<>());
+		groupUIDs.add(groupUID);
 		//-----
-		final Set<URI<Account>> accountURIs = accountByGroupURI.get(groupURI);
-		Assertion.checkNotNull(accountURIs, "group must be create before this operation");
-		accountURIs.add(accountURI);
+		final Set<UID<Account>> accountUIDs = accountByGroupUID.computeIfAbsent(groupUID, key -> new HashSet<>());
+		accountUIDs.add(accountUID);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
-		Assertion.checkNotNull(accountURI);
+	public synchronized Set<UID<AccountGroup>> getGroupUIDs(final UID<Account> accountUID) {
+		Assertion.checkNotNull(accountUID);
 		//-----
-		final Set<URI<AccountGroup>> groupURIs = groupByAccountURI.get(accountURI);
-		if (groupURIs == null) {
+		final Set<UID<AccountGroup>> groupUIDs = groupByAccountUID.get(accountUID);
+		if (groupUIDs == null) {
 			return Collections.emptySet();
 		}
-		return Collections.unmodifiableSet(groupURIs);
+		return Collections.unmodifiableSet(groupUIDs);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized Set<URI<Account>> getAccountURIs(final URI<AccountGroup> groupURI) {
-		Assertion.checkNotNull(groupURI);
+	public synchronized Set<UID<Account>> getAccountUIDs(final UID<AccountGroup> groupUID) {
+		Assertion.checkNotNull(groupUID);
 		//-----
-		final Set<URI<Account>> accountURIs = accountByGroupURI.get(groupURI);
+		final Set<UID<Account>> accountURIs = accountByGroupUID.get(groupUID);
 		if (accountURIs == null) {
 			return Collections.emptySet();
 		}
@@ -149,37 +143,37 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void setPhoto(final URI<Account> accountURI, final VFile photo) {
-		Assertion.checkNotNull(accountURI);
+	public void setPhoto(final UID<Account> accountUID, final VFile photo) {
+		Assertion.checkNotNull(accountUID);
 		Assertion.checkNotNull(photo);
 		//-----
-		photoByAccountURI.put(accountURI, photo);
+		photoByAccountUID.put(accountUID, photo);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<VFile> getPhoto(final URI<Account> accountURI) {
-		Assertion.checkNotNull(accountURI);
+	public Optional<VFile> getPhoto(final UID<Account> accountUID) {
+		Assertion.checkNotNull(accountUID);
 		//-----
-		return Optional.ofNullable(photoByAccountURI.get(accountURI));
+		return Optional.ofNullable(photoByAccountUID.get(accountUID));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void reset() {
-		photoByAccountURI.clear();
-		accountByGroupURI.clear();
-		accountByURI.clear();
-		groupByAccountURI.clear();
-		groupByURI.clear();
+		photoByAccountUID.clear();
+		accountByGroupUID.clear();
+		accountByUID.clear();
+		groupByAccountUID.clear();
+		groupByUID.clear();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Optional<Account> getAccountByAuthToken(final String userAuthToken) {
-		final URI<Account> accountURI = accountURIByAuthToken.get(userAuthToken);
-		if (accountURI != null) {
-			return getAccount(accountURI);
+		final UID<Account> accountUID = accountUIDByAuthToken.get(userAuthToken);
+		if (accountUID != null) {
+			return getAccount(accountUID);
 		}
 		return Optional.empty();
 	}

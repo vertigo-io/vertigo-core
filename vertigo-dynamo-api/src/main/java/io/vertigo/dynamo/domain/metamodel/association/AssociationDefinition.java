@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -65,6 +65,16 @@ public abstract class AssociationDefinition implements Definition {
 		this.name = name;
 		this.associationNodeA = associationNodeA;
 		this.associationNodeB = associationNodeB;
+		//-----
+		// we check that navigable nodes are entities because you cannot navigate toward an object that is not identified by a key
+		checkNavigability(associationNodeA, name);
+		checkNavigability(associationNodeB, name);
+	}
+
+	private static void checkNavigability(final AssociationNode associationNode, final String associationName) {
+		//-----
+		Assertion.when(associationNode.isNavigable())
+				.check(() -> associationNode.getDtDefinition().getStereotype().isPersistent(), "assocation : {0}. you cannot navigate towards an object that is not an entity ", associationName);
 	}
 
 	/**

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,23 +18,44 @@
  */
 package io.vertigo.dynamo.domain.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.domain.data.domain.Artist;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 
 /**
  *
  * @author xdurand
  *
  */
-public class VCollectorsTest extends AbstractTestCaseJU4 {
+public class VCollectorsTest extends AbstractTestCaseJU5 {
+
+	@Override
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.withLocales("fr_FR")
+				.endBoot()
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/domain/data/execution.kpr")
+								.addDefinitionResource("classes", "io.vertigo.dynamo.domain.data.DtDefinitions")
+								.build())
+						.build())
+				.build();
+	}
 
 	/**
 	 * Test du VCollectors.toDtList sur une liste vide
@@ -96,7 +117,7 @@ public class VCollectorsTest extends AbstractTestCaseJU4 {
 											.collect(VCollectors.toDtList(Artist.class));
 		// @formatter:on
 		assertNotNull(listCollected);
-		Assert.assertFalse(listCollected.isEmpty());
+		Assertions.assertFalse(listCollected.isEmpty());
 		assertEquals(1, listCollected.size());
 		assertEquals(listCollected.get(0), m2);
 		assertEquals(3, dtList.size());

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,7 +46,7 @@ public final class MandatoryPkValidator<E extends Entity> extends AbstractDtObje
 	protected void checkMultiFieldConstraints(final E entity, final Set<String> modifiedFieldNameSet, final DtObjectErrors dtObjectErrors) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final DtField idField = dtDefinition.getIdField().get();
-		final String camelCaseFieldName = getCamelCaseFieldName(idField);
+		final String camelCaseFieldName = idField.getName();
 		if (!dtObjectErrors.hasError(camelCaseFieldName)) {
 			if (DtObjectUtil.getId(entity) == null) {
 				dtObjectErrors.addError(camelCaseFieldName, MessageText.of("Id is mandatory"));

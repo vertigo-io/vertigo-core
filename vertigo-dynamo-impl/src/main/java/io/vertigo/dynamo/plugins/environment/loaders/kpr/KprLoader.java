@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.dynamo.plugins.environment.loaders.Loader;
@@ -58,12 +58,12 @@ public final class KprLoader implements Loader {
 	@Inject
 	public KprLoader(
 			final ResourceManager resourceManager,
-			@Named("encoding") final Optional<String> encoding) {
+			@ParamValue("encoding") final Optional<String> encoding) {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkNotNull(encoding);
 		//-----
 		this.resourceManager = resourceManager;
-		charset = Charset.forName(encoding.orElse("ISO-8859-1"));
+		charset = Charset.forName(encoding.orElse("utf-8"));
 	}
 
 	/** {@inheritDoc} */
@@ -89,7 +89,7 @@ public final class KprLoader implements Loader {
 		try {
 			return doGetKspFiles(kprURL, charset, resourceManager);
 		} catch (final Exception e) {
-			throw WrappedException.wrap(e, "Echec de lecture du fichier KPR " + kprURL.getFile());
+			throw WrappedException.wrap(e, "Echec de lecture du fichier KPR {0}", kprURL.getFile());
 		}
 	}
 

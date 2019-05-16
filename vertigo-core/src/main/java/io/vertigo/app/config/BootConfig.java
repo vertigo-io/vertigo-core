@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64,12 +64,12 @@ public final class BootConfig {
 	}
 
 	/**
-	 * Static method factory for AppConfigBuilder
-	 * @param appConfigBuilder Parent AppConfig builder
-	 * @return AppConfigBuilder
+	 * Static method factory for NodeConfigBuilder
+	 * @param nodeConfigBuilder Parent NodeConfig builder
+	 * @return NodeConfigBuilder
 	 */
-	public static BootConfigBuilder builder(final AppConfigBuilder appConfigBuilder) {
-		return new BootConfigBuilder(appConfigBuilder);
+	public static BootConfigBuilder builder(final NodeConfigBuilder nodeConfigBuilder) {
+		return new BootConfigBuilder(nodeConfigBuilder);
 	}
 
 	/**

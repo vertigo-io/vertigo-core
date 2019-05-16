@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@
 package io.vertigo.util;
 
 import java.text.MessageFormat;
+import java.util.regex.Pattern;
 
 import io.vertigo.lang.Assertion;
 
@@ -28,6 +29,9 @@ import io.vertigo.lang.Assertion;
  * @author  pchretien
  */
 public final class StringUtil {
+	private static Pattern UPPER_CAMEL_CASE_PATTERN = Pattern.compile("[A-Z][a-zA-Z0-9]*");
+	private static Pattern LOWER_CAMEL_CASE_PATTERN = Pattern.compile("[a-z][a-zA-Z0-9]*");
+
 	/**
 	 * Constructor
 	 */
@@ -168,6 +172,25 @@ public final class StringUtil {
 	 * @return Passage en constante d'une chaîne de caractères (Fonction inverse de caseTransform)
 	 */
 	public static String camelToConstCase(final String str) {
+		return camelToConstCase(str, false);
+	}
+
+	/**
+	 * Les chiffres sont assimilés à des lettres en majuscules
+	 * XxxYyyZzz ou xxxYyyZzz -> xxx_yyy_zzz
+	 * XxxYZzz ou xxxYZzz -> xxx_y_zzz
+	 * Xxx123 -->xxx_123
+	 * XxxYzw123 --> (interdit)
+	 * Xxx123Y --> xxx_123_y.
+	 * Xxx123y --> xxx_123y.
+	 * @param str la chaine de caratéres sur laquelle s'appliquent les transformation
+	 * @return Passage en constante d'une chaîne de caractères (Fonction inverse de caseTransform)
+	 */
+	public static String camelToSnakeCase(final String str) {
+		return camelToConstCase(str, true);
+	}
+
+	private static String camelToConstCase(final String str, final boolean lowerCase) {
 		Assertion.checkNotNull(str);
 		Assertion.checkArgument(str.length() > 0, "Chaine à modifier invalide");
 		//-----
@@ -190,9 +213,27 @@ public final class StringUtil {
 			} else {
 				isDigit = false;
 			}
-			result.append(Character.toUpperCase(c));
+			result.append(lowerCase ? Character.toLowerCase(c) : Character.toUpperCase(c));
 		}
 		return result.toString();
+	}
+
+	/**
+	 * Teste si une chaine est en camelCase avec la première lettre en majuscule.
+	 * @param testString chaine a tester
+	 * @return boolean
+	 */
+	public static boolean isUpperCamelCase(final String testString) {
+		return UPPER_CAMEL_CASE_PATTERN.matcher(testString).matches();
+	}
+
+	/**
+	 * Teste si une chaine est en camelCase avec la première lettre en minuscule.
+	 * @param testString chaine a tester
+	 * @return boolean
+	 */
+	public static boolean isLowerCamelCase(final String testString) {
+		return LOWER_CAMEL_CASE_PATTERN.matcher(testString).matches();
 	}
 
 	/**

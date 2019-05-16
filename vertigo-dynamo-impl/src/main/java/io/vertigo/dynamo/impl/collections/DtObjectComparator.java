@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.lang.Assertion;
@@ -38,7 +38,7 @@ import io.vertigo.lang.WrappedException;
  * Comparateur des DtObject.
  * S'appuie sur SortState.
  * Si la colonne est un type primitif alors on effectue le tri sur ce type.
- * Si la colonne est une URI on délégue à l'URI.
+ * Si la colonne est une UID on délégue à l'UID.
  * @param <D> Type de l'objet
  *
  * @author pchretien
@@ -148,10 +148,10 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 		}
 
 		private Object getSortValue(final Object o) {
-			final URI<Entity> uri = new URI(dtcURIForMasterData.getDtDefinition(), o);
+			final UID<Entity> uid = UID.of(dtcURIForMasterData.getDtDefinition(), o);
 			DtObject dto;
 			try {
-				dto = dataStore.readOne(uri);
+				dto = dataStore.readOne(uid);
 			} catch (final Exception e) {
 				//Il ne peut pas y avoir d'exception typée dans un comparateur.
 				throw WrappedException.wrap(e);

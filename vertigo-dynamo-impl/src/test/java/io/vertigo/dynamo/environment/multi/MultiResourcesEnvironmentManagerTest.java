@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,15 @@
  */
 package io.vertigo.dynamo.environment.multi;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.app.config.NodeConfigBuilder;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -47,7 +47,7 @@ public final class MultiResourcesEnvironmentManagerTest {
 
 	@Test
 	public void testFirst() {
-		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
+		final NodeConfig nodeConfig = prepareDefaultNodeConfigBuilder()
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
@@ -55,15 +55,15 @@ public final class MultiResourcesEnvironmentManagerTest {
 						.build())
 				.build();
 
-		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
-			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
-			Assert.assertNotNull(doString);
+		try (final AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
+			final Domain doString = app.getDefinitionSpace().resolve("DoString", Domain.class);
+			Assertions.assertNotNull(doString);
 		}
 	}
 
 	@Test
 	public void testMergedResources() {
-		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
+		final NodeConfig nodeConfig = prepareDefaultNodeConfigBuilder()
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
@@ -71,17 +71,17 @@ public final class MultiResourcesEnvironmentManagerTest {
 						.build())
 				.build();
 
-		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
-			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
-			Assert.assertNotNull(doString);
-			final DtDefinition dtItem = app.getDefinitionSpace().resolve("DT_ITEM", DtDefinition.class);
-			Assert.assertNotNull(dtItem);
+		try (final AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
+			final Domain doString = app.getDefinitionSpace().resolve("DoString", Domain.class);
+			Assertions.assertNotNull(doString);
+			final DtDefinition dtItem = app.getDefinitionSpace().resolve("DtItem", DtDefinition.class);
+			Assertions.assertNotNull(dtItem);
 		}
 	}
 
 	@Test
 	public void testSplittedModules() {
-		final AppConfig appConfig = prepareDefaultAppConfigBuilder()
+		final NodeConfig nodeConfig = prepareDefaultNodeConfigBuilder()
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
@@ -90,18 +90,18 @@ public final class MultiResourcesEnvironmentManagerTest {
 						.build())
 				.build();
 
-		try (final AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
-			final Domain doString = app.getDefinitionSpace().resolve("DO_STRING", Domain.class);
-			Assert.assertNotNull(doString);
-			final DtDefinition dtItem = app.getDefinitionSpace().resolve("DT_ITEM", DtDefinition.class);
-			Assert.assertNotNull(dtItem);
+		try (final AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
+			final Domain doString = app.getDefinitionSpace().resolve("DoString", Domain.class);
+			Assertions.assertNotNull(doString);
+			final DtDefinition dtItem = app.getDefinitionSpace().resolve("DtItem", DtDefinition.class);
+			Assertions.assertNotNull(dtItem);
 		}
 	}
 
-	private static AppConfigBuilder prepareDefaultAppConfigBuilder() {
+	private static NodeConfigBuilder prepareDefaultNodeConfigBuilder() {
 		// @formatter:off
 		return
-			AppConfig.builder()
+			NodeConfig.builder()
 			.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.withLocales("fr")

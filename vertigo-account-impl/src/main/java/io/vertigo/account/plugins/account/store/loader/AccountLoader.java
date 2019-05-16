@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ package io.vertigo.account.plugins.account.store.loader;
 import java.util.Optional;
 
 import io.vertigo.account.account.Account;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.file.model.VFile;
 
 /**
@@ -38,7 +38,7 @@ public interface AccountLoader {
 	 * @param accountURI the account defined by its URI
 	 * @return the account
 	 */
-	Account getAccount(URI<Account> accountURI);
+	Account getAccount(UID<Account> accountURI);
 
 	/**
 	 * Gets the photo of an account defined by its URI.
@@ -46,7 +46,7 @@ public interface AccountLoader {
 	 * @param accountURI the account defined by its URI
 	 * @return the photo as a file
 	 */
-	Optional<VFile> getPhoto(URI<Account> accountURI);
+	Optional<VFile> getPhoto(UID<Account> accountURI);
 
 	/**
 	 * Get an newly authentify user by his authToken.

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,7 +32,6 @@ import io.vertigo.account.authorization.metamodel.rulemodel.RuleUserPropertyValu
  * @author npiedeloup
  */
 public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTranslator<SqlSecurityRuleTranslator> {
-
 	/**
 	 * @return This security rule as SQL Query
 	 */
@@ -50,10 +49,9 @@ public final class SqlSecurityRuleTranslator extends AbstractSecurityRuleTransla
 			appendMultiExpression(query, multiExpressionDefinition);
 			sep = DEFAULT_BOOL_SEP;
 		}
-		return query.toString()
-				.replaceAll("^\\s+", "") //replace whitespaces at beginning of a line
-				.replaceAll("\\s+$", "") //replace whitespaces at end of a line
-				.replaceAll("\\s+", " "); // replace multiple whitespaces by space
+		String queryString = cleanQuery(query.toString());
+		queryString = EMPTY_QUERY_PATTERN.matcher(queryString).replaceAll("1=1");// replace empty query to all
+		return queryString;
 	}
 
 	private void appendMultiExpression(final StringBuilder query, final RuleMultiExpression multiExpressionDefinition) {

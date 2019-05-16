@@ -1,42 +1,42 @@
 package io.vertigo.studio.domain.stereotype
 
-create DtDefinition DT_COMMAND {
+create DtDefinition DtCommand {
 		stereotype : "KeyConcept"
-		key CMD_ID 			{ domain:DO_ID,label:"id", notNull:"true"}
+		id cmdId 			{ domain: DoId ,label:"id" }
 }
 
-create DtDefinition DT_COMMAND_TYPE {
+create DtDefinition DtCommandType {
 		stereotype : "StaticMasterData",
-		key CTY_ID 			{ domain:DO_ID,	label:"id",			notNull : "true"}
-		field LABEL  		{ domain:DO_FULL_TEXT, 		label:"Label",		notNull : "true"}		
+		id ctyId 			{ domain: DoId,	label:"id"}
+		field label  		{ domain: DoFullText, 		label:"Label",		required : "true"}		
 }
 
-create DtDefinition DT_CITY {
-		key CIT_ID 			{ domain:DO_ID,	label:"id",			notNull : "true"}
-		field LABEL  		{ domain:DO_FULL_TEXT, 		label:"Label",		notNull : "true"}	
-		field POSTAL_CODE	{ domain:DO_KEYWORD, 		label:"Postal code",notNull : "true"}			
+create DtDefinition DtCity {
+		id citId 			{ domain: DoId,	label:"id"}
+		field label  		{ domain: DoFullText, 		label:"Label",		required : "true"}	
+		field postalCode	{ domain: DoKeyword, 		label:"Postal code",required : "true"}			
 }
 
-alter  DtDefinition DT_CITY {
+alter  DtDefinition DtCity {
 	stereotype : "MasterData",
 }
 
-create DtDefinition DT_ATTACHMENT {
-		key ATT_ID 			{ domain:DO_ID,	label:"id",			notNull : "true"}
-		field URL  			{ domain:DO_KEYWORD, 		label:"Url",		notNull : "true"}	
+create DtDefinition DtAttachment {
+		id 		attId 		{ domain: DoId,	label:"id" }
+		field 	url  		{ domain: DoKeyword, 		label:"Url",		required : "true"}	
 }
 
-create DtDefinition DT_COMMAND_VALIDATION {
-		key CVA_ID 			{ domain:DO_ID,	label:"id",			notNull : "true"}
-		field SIGNER_NAME	{ domain:DO_FULL_TEXT, 		label:"Signer name",notNull : "true"}	
+create DtDefinition DtCommandValidation {
+		id cvaId 			{ domain: DoId,	label:"id"}
+		field signerName	{ domain: DoFullText, 		label:"Signer name",required : "true"}	
 }
 
 
-create Association A_CMD_ATT {
-  	fkFieldName : "CMD_ID"
+create Association ACmdAtt {
+  	fkFieldName : "cmdId"
     
-  	dtDefinitionA : DT_ATTACHMENT
-	dtDefinitionB : DT_COMMAND
+  	dtDefinitionA : DtAttachment
+	dtDefinitionB : DtCommand
 			
 	navigabilityA : "true"
 	navigabilityB : "true"
@@ -52,11 +52,11 @@ create Association A_CMD_ATT {
 
 
 
-create Association A_CMD_CVA {
-  	fkFieldName : "CMD_ID"
+create Association ACmdCva {
+  	fkFieldName : "cmdId"
     
-  	dtDefinitionA : DT_COMMAND_VALIDATION
-	dtDefinitionB : DT_COMMAND
+  	dtDefinitionA : DtCommandValidation
+	dtDefinitionB : DtCommand
 			
 	navigabilityA : "false"
 	navigabilityB : "true"
@@ -70,11 +70,11 @@ create Association A_CMD_CVA {
 	roleB : "Command"
 },
 
-create Association A_CTY_CMD {
-  	fkFieldName : "CTY_ID"
+create Association ACtyCmd {
+  	fkFieldName : "ctyId"
     
-  	dtDefinitionA : DT_COMMAND,
-	dtDefinitionB : DT_COMMAND_TYPE
+  	dtDefinitionA : DtCommand,
+	dtDefinitionB : DtCommandType
 			
 	navigabilityA : "false"
 	navigabilityB : "true"
@@ -89,11 +89,11 @@ create Association A_CTY_CMD {
 },
 
 
-create Association A_CIT_CMD {
-  	fkFieldName : "CIT_ID"
+create Association ACitCmd {
+  	fkFieldName : "citId"
     
-  	dtDefinitionA : DT_COMMAND
-	dtDefinitionB : DT_CITY
+  	dtDefinitionA : DtCommand
+	dtDefinitionB : DtCity
 			
 	navigabilityA : "false"
 	navigabilityB : "true"

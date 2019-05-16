@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -86,10 +86,10 @@ public final class TaskProxyMethod implements ProxyMethod {
 		if (hasOut(method)) {
 			final Domain outDomain = findOutDomain(method);
 			if (isOutOptional(method)) {
-				taskDefinitionBuilder.withOutOptional("OUT", outDomain);
+				taskDefinitionBuilder.withOutOptional("out", outDomain);
 
 			} else {
-				taskDefinitionBuilder.withOutRequired("OUT", outDomain);
+				taskDefinitionBuilder.withOutRequired("out", outDomain);
 			}
 		}
 		for (final Parameter parameter : method.getParameters()) {
@@ -121,7 +121,7 @@ public final class TaskProxyMethod implements ProxyMethod {
 
 			final Object arg;
 			if (optional) {
-				arg = ((Optional) (args[i])).orElse(null);
+				arg = ((Optional) args[i]).orElse(null);
 			} else {
 				arg = args[i];
 			}

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.domain.metamodel.association;
 
 import io.vertigo.dynamo.domain.model.DtListURI;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.lang.Assertion;
 
@@ -32,7 +32,7 @@ public abstract class DtListURIForAssociation<A extends AssociationDefinition> e
 	private static final long serialVersionUID = 5933412183954919000L;
 
 	private final String roleName;
-	private final URI source;
+	private final UID source;
 
 	/**
 	 * Constructor.
@@ -40,7 +40,7 @@ public abstract class DtListURIForAssociation<A extends AssociationDefinition> e
 	 * @param source URI (Clé primaire) du dtObject source
 	 * @param roleName Nom du rôle
 	 */
-	protected DtListURIForAssociation(final A associationDefinition, final URI source, final String roleName) {
+	protected DtListURIForAssociation(final A associationDefinition, final UID source, final String roleName) {
 		super(AssociationUtil.getAssociationNode(associationDefinition, roleName).getDtDefinition());
 		Assertion.checkNotNull(associationDefinition);
 		Assertion.checkNotNull(source);
@@ -63,7 +63,7 @@ public abstract class DtListURIForAssociation<A extends AssociationDefinition> e
 	 * @return Clé identifiant la ressource parmi les ressources du même type.
 	 * Exemple :
 	 */
-	public URI getSource() {
+	public UID getSource() {
 		return source;
 	}
 

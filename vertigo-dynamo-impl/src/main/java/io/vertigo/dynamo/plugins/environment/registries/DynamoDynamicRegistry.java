@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -101,7 +101,7 @@ public final class DynamoDynamicRegistry implements DynamicRegistry {
 					.supplyDefinition(dslDefinition);
 		} catch (final Exception e) {
 			//on catch tout (notament les assertions) car c'est ici qu'on indique l'URI de la définition posant problème
-			throw WrappedException.wrap(e, "An error occurred during the creation of the following definition : " + dslDefinition.getName());
+			throw WrappedException.wrap(e, "An error occurred during the creation of the following definition : {0}", dslDefinition.getName());
 		}
 	}
 

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.webservice.data.domain;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -28,14 +28,14 @@ public final class ContactCriteria implements DtObject {
 	private static final long serialVersionUID = 6839427455017031471L;
 
 	//mandatory
-	@Field(domain = "DO_TEXTE_50", label = "Name")
+	@Field(domain = "DoTexte50", label = "Name")
 	private String name;
-	@Field(domain = "DO_TEXTE_50", label = "Firstname")
+	@Field(domain = "DoTexte50", label = "Firstname")
 	private String firstName;
-	@Field(domain = "DO_DATE", label = "Birthday min")
-	private Date birthdayMin;
-	@Field(domain = "DO_DATE", label = "Birthday max")
-	private Date birthdayMax;
+	@Field(domain = "DoLocalDate", label = "Birthday min")
+	private LocalDate birthdayMin;
+	@Field(domain = "DoLocalDate", label = "Birthday max")
+	private LocalDate birthdayMax;
 
 	public String getName() {
 		return name;
@@ -53,19 +53,19 @@ public final class ContactCriteria implements DtObject {
 		this.firstName = firstName;
 	}
 
-	public Date getBirthdayMin() {
+	public LocalDate getBirthdayMin() {
 		return birthdayMin;
 	}
 
-	public void setBirthdayMin(final Date birthdayMin) {
+	public void setBirthdayMin(final LocalDate birthdayMin) {
 		this.birthdayMin = birthdayMin;
 	}
 
-	public Date getBirthdayMax() {
+	public LocalDate getBirthdayMax() {
 		return birthdayMax;
 	}
 
-	public void setBirthdayMax(final Date birthdayMax) {
+	public void setBirthdayMax(final LocalDate birthdayMax) {
 		this.birthdayMax = birthdayMax;
 	}
 

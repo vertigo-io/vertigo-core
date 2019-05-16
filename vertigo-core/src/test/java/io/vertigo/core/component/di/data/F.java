@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,17 +21,17 @@ package io.vertigo.core.component.di.data;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 
 public final class F {
 	@Inject
-	@Named("a")
+	@ParamValue("a")
 	private Object a;
 
 	@Inject
-	@Named("param2")
+	@ParamValue("param2")
 	private String param2;
 
 	private final String param1;
@@ -40,9 +40,9 @@ public final class F {
 
 	@Inject
 	public F(
-			@Named("param1") final String param1,
-			@Named("param3") final Optional<String> param3,
-			@Named("param4") final Optional<String> param4) {
+			@ParamValue("param1") final String param1,
+			@ParamValue("param3") final Optional<String> param3,
+			@ParamValue("param4") final Optional<String> param4) {
 		Assertion.checkNotNull(param1);
 		Assertion.checkNotNull(param3);
 		Assertion.checkNotNull(param4);

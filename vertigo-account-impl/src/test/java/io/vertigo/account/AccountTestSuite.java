@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,27 +18,35 @@
  */
 package io.vertigo.account;
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
-import io.vertigo.account.account.AccountManagerTest;
-import io.vertigo.account.authentification.AuthenticationManagerTest;
+import io.vertigo.account.account.DatabaseAccountManagerTest;
+import io.vertigo.account.account.MemoryAccountManagerTest;
+import io.vertigo.account.account.RedisAccountManagerTest;
+import io.vertigo.account.authentication.RedisCacheMockAuthenticationManagerTest;
+import io.vertigo.account.authentication.TextAuthenticationManagerTest;
 import io.vertigo.account.authorization.VSecurityManagerTest;
 import io.vertigo.account.authorization.dsl.DslSecurityRulesBuilderTest;
-import io.vertigo.account.identityprovider.IdentityProviderManagerTest;
+import io.vertigo.account.identityprovider.LdapIdentityManagerTest;
+import io.vertigo.account.identityprovider.TextIdentityManagerTest;
 
 /**
  * Test de l'implementation standard.
  *
  * @author pchretien
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-		AccountManagerTest.class,
-		AuthenticationManagerTest.class,
+@RunWith(JUnitPlatform.class)
+@SelectClasses({
+		RedisAccountManagerTest.class,
+		DatabaseAccountManagerTest.class,
+		MemoryAccountManagerTest.class,
+		RedisCacheMockAuthenticationManagerTest.class,
+		TextAuthenticationManagerTest.class,
 		VSecurityManagerTest.class,
-		IdentityProviderManagerTest.class,
+		LdapIdentityManagerTest.class,
+		TextIdentityManagerTest.class,
 		DslSecurityRulesBuilderTest.class
 })
 

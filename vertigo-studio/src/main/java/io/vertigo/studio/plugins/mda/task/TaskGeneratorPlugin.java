@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,18 +18,20 @@
  */
 package io.vertigo.studio.plugins.mda.task;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
@@ -40,7 +42,9 @@ import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 import io.vertigo.studio.plugins.mda.task.model.DAOModel;
 import io.vertigo.studio.plugins.mda.task.model.PAOModel;
+import io.vertigo.studio.plugins.mda.task.model.TaskAttributeModel;
 import io.vertigo.studio.plugins.mda.task.model.TaskDefinitionModel;
+import io.vertigo.studio.plugins.mda.util.MdaUtil;
 import io.vertigo.util.MapBuilder;
 
 /**
@@ -54,12 +58,12 @@ public final class TaskGeneratorPlugin implements GeneratorPlugin {
 
 	/**
 	 * Constructeur.
-	 * @param targetSubDir Repertoire de generation des fichiers de ce plugin
+	 * @param targetSubDirOpt Repertoire de generation des fichiers de ce plugin
 	 */
 	@Inject
-	public TaskGeneratorPlugin(@Named("targetSubDir") final String targetSubDir) {
+	public TaskGeneratorPlugin(@ParamValue("targetSubDir") final Optional<String> targetSubDirOpt) {
 		//-----
-		this.targetSubDir = targetSubDir;
+		targetSubDir = targetSubDirOpt.orElse("javagen");
 	}
 
 	/** {@inheritDoc} */
@@ -174,7 +178,7 @@ public final class TaskGeneratorPlugin implements GeneratorPlugin {
 		//We are searching igf there is an no-ambiguous IN param defined as a DataObject(DTO or DTC)
 		final List<Domain> candidates = templateTaskDefinition.getInAttributes()
 				.stream()
-				.map(taskAtributeModel -> taskAtributeModel.getDomain())
+				.map(TaskAttributeModel::getDomain)
 				.filter(domain -> domain.getScope().isDataObject())
 				.collect(Collectors.toList());
 		//There MUST be only ONE candidate
@@ -232,5 +236,10 @@ public final class TaskGeneratorPlugin implements GeneratorPlugin {
 		}
 		return taskDefinitionsMap;
 
+	}
+
+	@Override
+	public void clean(final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+		MdaUtil.deleteFiles(new File(fileGeneratorConfig.getTargetGenDir() + targetSubDir), mdaResultBuilder);
 	}
 }

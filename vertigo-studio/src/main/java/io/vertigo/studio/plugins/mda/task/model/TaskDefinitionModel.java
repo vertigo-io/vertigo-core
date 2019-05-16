@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -74,9 +74,9 @@ public final class TaskDefinitionModel {
 	 * @return Nom de la méthode en CamelCase
 	 */
 	public String getMethodName() {
-		// Nom de la définition sans prefix (XXX_YYYY).
+		// Nom de la définition sans prefix (XxxYyyy).
 		final String localName = DefinitionUtil.getLocalName(taskDefinition.getName(), TaskDefinition.class);
-		return StringUtil.constToLowerCamelCase(localName);
+		return StringUtil.first2LowerCase(localName);
 	}
 
 	/**

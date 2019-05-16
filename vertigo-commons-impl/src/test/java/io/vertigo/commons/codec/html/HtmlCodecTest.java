@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,8 @@ package io.vertigo.commons.codec.html;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.codec.AbstractCodecTest;
 import io.vertigo.commons.codec.Codec;
@@ -112,9 +113,9 @@ public final class HtmlCodecTest extends AbstractCodecTest<String, String> {
 
 	/** {@inheritDoc} */
 	@Override
-	@Test(expected = Exception.class)
+	@Test
 	public void testFailDecode() {
-		codec.decode("&eplat;");
+		Assertions.assertThrows(Exception.class, () -> codec.decode("&eplat;"));
 	}
 
 	/**

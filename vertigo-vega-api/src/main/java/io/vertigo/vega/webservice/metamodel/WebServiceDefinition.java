@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,22 +37,19 @@ import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
  * Web service definition.
  * @author npiedeloup
  */
-@DefinitionPrefix("WS_")
+@DefinitionPrefix("Ws")
 public final class WebServiceDefinition implements Definition {
 
 	/**
 	 * HTTP Verb supported.
 	 */
 	public enum Verb {
-		GET,
-		POST,
-		PUT,
-		PATCH,
-		DELETE,
+		Get, Post, Put, Patch, Delete,
 	}
 
 	private final String name;
 	private final String path;
+	private final String sortPath;
 	private final Verb verb;
 	private final String acceptType;
 
@@ -73,6 +70,7 @@ public final class WebServiceDefinition implements Definition {
 	private final List<WebServiceParam> webServiceParams;
 	private final String doc;
 	private final boolean corsProtected;
+	private final boolean fileAttachment;
 
 	/**
 	 * Constructor.
@@ -81,6 +79,7 @@ public final class WebServiceDefinition implements Definition {
 			final String name,
 			final Verb verb,
 			final String path,
+			final String sortPath,
 			final String acceptType,
 			final Method method,
 			final boolean needSession,
@@ -95,10 +94,12 @@ public final class WebServiceDefinition implements Definition {
 			final Set<String> excludedFields,
 			final List<WebServiceParam> webServiceParams,
 			final String doc,
-			final boolean corsProtected) {
+			final boolean corsProtected,
+			final boolean fileAttachment) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(verb);
 		Assertion.checkArgNotEmpty(path);
+		Assertion.checkArgNotEmpty(sortPath);
 		Assertion.checkArgNotEmpty(acceptType);
 		Assertion.checkNotNull(method);
 		Assertion.checkNotNull(includedFields);
@@ -117,6 +118,7 @@ public final class WebServiceDefinition implements Definition {
 		this.name = name;
 		this.verb = verb;
 		this.path = path;
+		this.sortPath = sortPath;
 		this.acceptType = acceptType;
 
 		this.method = method;
@@ -136,6 +138,7 @@ public final class WebServiceDefinition implements Definition {
 
 		this.doc = doc;
 		this.corsProtected = corsProtected;
+		this.fileAttachment = fileAttachment;
 	}
 
 	/**
@@ -182,6 +185,13 @@ public final class WebServiceDefinition implements Definition {
 	 */
 	public String getPath() {
 		return path;
+	}
+
+	/**
+	 * @return sortPath
+	 */
+	public String getSortPath() {
+		return sortPath;
 	}
 
 	/**
@@ -296,4 +306,10 @@ public final class WebServiceDefinition implements Definition {
 		return corsProtected;
 	}
 
+	/**
+	 * @return fileAttachment
+	 */
+	public boolean isFileAttachment() {
+		return fileAttachment;
+	}
 }

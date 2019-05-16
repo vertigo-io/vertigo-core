@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.environment.java.data.domain;
 
 import io.vertigo.dynamo.domain.model.Fragment;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -27,7 +27,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  * Attention cette classe est générée automatiquement !
  * Objet de données City
  */
-@io.vertigo.dynamo.domain.stereotype.Fragment(fragmentOf = "DT_CITY")
+@io.vertigo.dynamo.domain.stereotype.Fragment(fragmentOf = "DtCity")
 public final class CityFragment implements Fragment<City> {
 
 	/** SerialVersionUID. */
@@ -39,8 +39,8 @@ public final class CityFragment implements Fragment<City> {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<City> getEntityURI() {
-		return DtObjectUtil.createEntityURI(this);
+	public UID<City> getEntityUID() {
+		return DtObjectUtil.createEntityUID(this);
 	}
 
 	/**
@@ -48,7 +48,7 @@ public final class CityFragment implements Fragment<City> {
 	 * Récupère la valeur de la propriété 'CIT ID'.
 	 * @return Long citId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_IDENTITY", type = "FOREIGN_KEY", required = true, label = "CIT ID")
+	@Field(domain = "DoIdentity", type = "FOREIGN_KEY", required = true, label = "CIT ID")
 	public Long getCitId() {
 		return citId;
 	}
@@ -67,8 +67,7 @@ public final class CityFragment implements Fragment<City> {
 	 * Récupère la valeur de la propriété 'Label'.
 	 * @return String label <b>Obligatoire</b>
 	 */
-	@javax.persistence.Column(name = "LABEL")
-	@Field(domain = "DO_FULL_TEXT", required = true, label = "Label")
+	@Field(domain = "DoFullText", required = true, label = "Label")
 	public String getLabel() {
 		return label;
 	}
@@ -87,8 +86,7 @@ public final class CityFragment implements Fragment<City> {
 	 * Récupère la valeur de la propriété 'Postal code'.
 	 * @return String postalCode <b>Obligatoire</b>
 	 */
-	@javax.persistence.Column(name = "POSTAL_CODE")
-	@Field(domain = "DO_KEYWORD", required = true, label = "Postal code")
+	@Field(domain = "DoKeyword", required = true, label = "Postal code")
 	public String getPostalCode() {
 		return postalCode;
 	}

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,7 +47,7 @@ public final class SparkJavaOptionsRoute implements Route {
 		this.handlerChain = handlerChain;
 		//we use a fake webServiceDefinition, to ensure no webservice was called on Options request
 		webServiceCors = WebServiceDefinition.builder(ClassUtil.findMethod(SparkJavaOptionsRoute.class, "unsupported"))
-				.with(Verb.GET, "/_OPTIONS_*")
+				.with(Verb.Get, "/_OPTIONS_*")
 				.withCorsProtected(true)
 				.build();
 	}

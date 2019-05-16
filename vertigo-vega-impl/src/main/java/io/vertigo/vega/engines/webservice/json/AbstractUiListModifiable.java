@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -243,13 +243,15 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 
 	/** {@inheritDoc} */
 	@Override
-	public void checkFormat(final UiMessageStack uiMessageStack) {
+	public boolean checkFormat(final UiMessageStack uiMessageStack) {
 		//1. check Error => KUserException
 		//on valide les éléments internes
+		boolean isValid = true;
 		for (final UiObject<D> uiObject : bufferUiObjects) {
 			uiObject.setInputKey(findContextKey(uiObject));
-			uiObject.checkFormat(uiMessageStack);
+			isValid = isValid && uiObject.checkFormat(uiMessageStack);
 		}
+		return isValid;
 	}
 
 	/** {@inheritDoc} */
@@ -325,7 +327,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 
 	/** innerclass, volontairement non static */
 	class UiListModifiableIterator implements Iterator<UiObject<D>> {
-		private final int expectedSize;
+		private int expectedSize; //count removed elements
 		private int currentIndex; //init a 0
 
 		/**
@@ -358,6 +360,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		@Override
 		public void remove() {
 			AbstractUiListModifiable.this.remove(get(currentIndex - 1));
+			expectedSize--;
 		}
 
 		private void checkForComodification() {

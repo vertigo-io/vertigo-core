@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,8 @@
  */
 package io.vertigo.app;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import io.vertigo.lang.Assertion;
 
 /**
@@ -25,22 +27,31 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 public final class Home {
-	private static App currentApp;
+	private static final AtomicReference<App> CURRENT_APP_REF = new AtomicReference<>();
 
 	private Home() {
 		// Classe statique d'accès aux composants.
 	}
 
-	static synchronized void setApp(final App app) {
-		currentApp = app;
+	static void setApp(final App app) {
+		Assertion.checkNotNull(app);
+		//--
+		boolean success = CURRENT_APP_REF.compareAndSet(null, app);
+		//--
+		Assertion.checkState(success, "current App is already set");
+	}
+
+	static void resetApp() {
+		CURRENT_APP_REF.set(null);
 	}
 
 	/**
 	 * @return Application
 	 */
 	public static App getApp() {
-		Assertion.checkNotNull(currentApp, "app has not been started");
+		final App app = CURRENT_APP_REF.get();
+		Assertion.checkNotNull(app, "app has not been started");
 		//no synchronized for perf purpose
-		return currentApp;
+		return app;
 	}
 }

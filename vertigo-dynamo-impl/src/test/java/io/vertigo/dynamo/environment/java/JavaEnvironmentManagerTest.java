@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,20 @@
  */
 package io.vertigo.dynamo.environment.java;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 
 /**
@@ -34,44 +39,59 @@ import io.vertigo.dynamox.domain.formatter.FormatterDefault;
  *
  * @author dchallas
  */
-public final class JavaEnvironmentManagerTest extends AbstractTestCaseJU4 {
+public final class JavaEnvironmentManagerTest extends AbstractTestCaseJU5 {
+
+	@Override
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/java/data/execution.kpr")
+								.addDefinitionResource("classes", "io.vertigo.dynamo.environment.java.data.DtDefinitions")
+								.build())
+						.build())
+				.build();
+	}
 
 	@Test
 	public void testDefaultFormatter() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final FormatterDefinition formatter = definitionSpace.resolve("FMT_DEFAULT", FormatterDefinition.class);
-		Assert.assertEquals(FormatterDefault.class.getName(), formatter.getFormatterClassName());
+		final FormatterDefinition formatter = definitionSpace.resolve("FmtDefault", FormatterDefinition.class);
+		Assertions.assertEquals(FormatterDefault.class.getName(), formatter.getFormatterClassName());
 	}
 
 	@Test
 	public void testDomain() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final io.vertigo.dynamo.domain.metamodel.Domain domain = definitionSpace.resolve("DO_ID", Domain.class);
-		Assert.assertEquals(DataType.Long, domain.getDataType());
-		Assert.assertEquals(FormatterDefault.class.getName(), domain.getFormatterClassName());
+		final io.vertigo.dynamo.domain.metamodel.Domain domain = definitionSpace.resolve("DoId", Domain.class);
+		Assertions.assertEquals(DataType.Long, domain.getDataType());
+		Assertions.assertEquals(FormatterDefault.class.getName(), domain.getFormatterClassName());
 	}
 
 	@Test
 	public void testCommand() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final DtDefinition dtDefinition = definitionSpace.resolve("DT_COMMAND", DtDefinition.class);
-		Assert.assertTrue(dtDefinition.isPersistent());
-		Assert.assertEquals("io.vertigo.dynamo.environment.java.data.domain.Command", dtDefinition.getClassCanonicalName());
-		Assert.assertEquals("io.vertigo.dynamo.environment.java.data.domain", dtDefinition.getPackageName());
-		Assert.assertEquals("Command", dtDefinition.getClassSimpleName());
+		final DtDefinition dtDefinition = definitionSpace.resolve("DtCommand", DtDefinition.class);
+		Assertions.assertTrue(dtDefinition.isPersistent());
+		Assertions.assertEquals("io.vertigo.dynamo.environment.java.data.domain.Command", dtDefinition.getClassCanonicalName());
+		Assertions.assertEquals("io.vertigo.dynamo.environment.java.data.domain", dtDefinition.getPackageName());
+		Assertions.assertEquals("Command", dtDefinition.getClassSimpleName());
 	}
 
 	@Test
 	public void testCityFragment() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final DtDefinition dtDefinition = definitionSpace.resolve("DT_CITY_FRAGMENT", DtDefinition.class);
-		Assert.assertFalse(dtDefinition.isPersistent());
-		Assert.assertTrue(dtDefinition.getFragment().isPresent());
-		Assert.assertTrue("City".equals(dtDefinition.getFragment().get().getClassSimpleName()));
-		Assert.assertEquals("io.vertigo.dynamo.environment.java.data.domain.CityFragment", dtDefinition.getClassCanonicalName());
-		Assert.assertEquals("io.vertigo.dynamo.environment.java.data.domain", dtDefinition.getPackageName());
-		Assert.assertEquals("CityFragment", dtDefinition.getClassSimpleName());
-		Assert.assertTrue("City".equals(dtDefinition.getField("CIT_ID").getFkDtDefinition().getClassSimpleName()));
+		final DtDefinition dtDefinition = definitionSpace.resolve("DtCityFragment", DtDefinition.class);
+		Assertions.assertFalse(dtDefinition.isPersistent());
+		Assertions.assertTrue(dtDefinition.getFragment().isPresent());
+		Assertions.assertTrue("City".equals(dtDefinition.getFragment().get().getClassSimpleName()));
+		Assertions.assertEquals("io.vertigo.dynamo.environment.java.data.domain.CityFragment", dtDefinition.getClassCanonicalName());
+		Assertions.assertEquals("io.vertigo.dynamo.environment.java.data.domain", dtDefinition.getPackageName());
+		Assertions.assertEquals("CityFragment", dtDefinition.getClassSimpleName());
+		Assertions.assertTrue("City".equals(dtDefinition.getField("citId").getFkDtDefinition().getClassSimpleName()));
 	}
 
 	//	@Test
@@ -80,20 +100,20 @@ public final class JavaEnvironmentManagerTest extends AbstractTestCaseJU4 {
 	//		famille.setFamId(45L);
 	//		famille.setLibelle("Armes");
 	//
-	//		Assert.assertEquals(45L, famille.getFamId().longValue());
-	//		Assert.assertEquals("Armes", famille.getLibelle());
-	//		Assert.assertEquals("Armes[45]", famille.getDescription());
+	//		Assertions.assertEquals(45L, famille.getFamId().longValue());
+	//		Assertions.assertEquals("Armes", famille.getLibelle());
+	//		Assertions.assertEquals("Armes[45]", famille.getDescription());
 	//
 	//		//--Vérification des appels dynamiques--
 	//		final DtDefinition dtFamille = DtObjectUtil.findDtDefinition(Famille.class);
 	//
 	//		final DtField libelleDtField = dtFamille.getField("LIBELLE");
-	//		Assert.assertEquals("Armes", libelleDtField.getDataAccessor().getValue(famille));
+	//		Assertions.assertEquals("Armes", libelleDtField.getDataAccessor().getValue(famille));
 	//		//-cas du id
 	//		final DtField idDtField = dtFamille.getField("FAM_ID");
-	//		Assert.assertEquals(45L, idDtField.getDataAccessor().getValue(famille));
+	//		Assertions.assertEquals(45L, idDtField.getDataAccessor().getValue(famille));
 	//		//-cas du computed
 	//		final DtField descriptionDtField = dtFamille.getField("DESCRIPTION");
-	//		Assert.assertEquals("Armes[45]", descriptionDtField.getDataAccessor().getValue(famille));
+	//		Assertions.assertEquals("Armes[45]", descriptionDtField.getDataAccessor().getValue(famille));
 	//	}
 }

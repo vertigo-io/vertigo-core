@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,16 +29,17 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -58,31 +59,35 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
+import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.ListVAccessor;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.JsonExclude;
-import io.vertigo.lang.Tuples;
+import io.vertigo.lang.Tuple;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.model.DtListDelta;
+import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 
 /**
  * @author pchretien, npiedeloup
  */
 public final class GoogleJsonEngine implements JsonEngine {
+	private static final String FIRST_LEVEL_KEY = "this";
 	private final Gson gson;
 
 	private enum SearchApiVersion {
@@ -103,7 +108,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 	}
 
 	@Inject
-	public GoogleJsonEngine(@Named("searchApiVersion") final Optional<String> searchApiVersionStr) {
+	public GoogleJsonEngine(@ParamValue("searchApiVersion") final Optional<String> searchApiVersionStr) {
 		final SearchApiVersion searchApiVersion = SearchApiVersion.valueOf(searchApiVersionStr.orElse(SearchApiVersion.V4.name()));
 		gson = createGson(searchApiVersion);
 	}
@@ -120,14 +125,14 @@ public final class GoogleJsonEngine implements JsonEngine {
 		final JsonElement jsonValue = gson.toJsonTree(data);
 		filterFields(jsonValue, includedFields, excludedFields);
 
-		if (metaDatas.isEmpty() && data instanceof List) {
+		if (metaDatas.isEmpty() && (data instanceof List || jsonValue.isJsonPrimitive())) {
 			return gson.toJson(jsonValue); //only case where result wasn't an object
 		}
 
 		final JsonObject jsonResult;
-		if (data instanceof List) {
+		if (data instanceof List || jsonValue.isJsonPrimitive()) {
 			jsonResult = new JsonObject();
-			jsonResult.add(LIST_VALUE_FIELDNAME, jsonValue);
+			jsonResult.add(EXTENDED_VALUE_FIELDNAME, jsonValue);
 		} else {
 			jsonResult = jsonValue.getAsJsonObject();
 		}
@@ -136,33 +141,6 @@ public final class GoogleJsonEngine implements JsonEngine {
 			jsonResult.add(entry.getKey(), entry.getValue());
 		}
 		return gson.toJson(jsonResult);
-	}
-
-	private void filterFields(final JsonElement jsonElement, final Set<String> includedFields, final Set<String> excludedFields) {
-		if (jsonElement.isJsonArray()) {
-			final JsonArray jsonArray = jsonElement.getAsJsonArray();
-			for (final JsonElement jsonSubElement : jsonArray) {
-				filterFields(jsonSubElement, includedFields, excludedFields);
-			}
-		} else if (jsonElement.isJsonObject()) {
-			final JsonObject jsonObject = jsonElement.getAsJsonObject();
-			for (final String excludedField : excludedFields) {
-				jsonObject.remove(excludedField);
-			}
-			if (!includedFields.isEmpty()) {
-				final Set<String> notIncludedFields = new HashSet<>();
-				for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
-					if (!includedFields.contains(entry.getKey())) {
-						notIncludedFields.add(entry.getKey());
-					}
-				}
-				for (final String notIncludedField : notIncludedFields) {
-					jsonObject.remove(notIncludedField);
-				}
-			}
-
-		}
-		//else Primitive : no exclude
 	}
 
 	/** {@inheritDoc} */
@@ -285,7 +263,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.stream()
 					.filter(dtField -> dtField.getType() != FieldType.COMPUTED)// we don't serialize computed fields
 					.forEach(field -> {
-						jsonObject.add(StringUtil.constToLowerCamelCase(field.getName()), context.serialize(field.getDataAccessor().getValue(src)));
+						jsonObject.add(field.getName(), context.serialize(field.getDataAccessor().getValue(src)));
 					});
 
 			Stream.of(src.getClass().getDeclaredFields())
@@ -320,7 +298,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 			// case of the lazy objet passed
 			Stream.of(((Class<D>) typeOfT).getDeclaredFields())
 					.filter(field -> VAccessor.class.isAssignableFrom(field.getType()))
-					.map(field -> Tuples.of(field, getAccessor(field, dtObject)))
+					.map(field -> Tuple.of(field, getAccessor(field, dtObject)))
 					.filter(tuple -> jsonObject.has(tuple.getVal2().getRole()))
 					.forEach(tuple -> tuple.getVal2().set(context.deserialize(jsonObject.get(tuple.getVal2().getRole()), ClassUtil.getGeneric(tuple.getVal1()))));
 
@@ -331,7 +309,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.forEach(field -> field.getDataAccessor()
 							.setValue(
 									dtObject,
-									context.deserialize(jsonObject.get(StringUtil.constToLowerCamelCase(field.getName())), field.getDomain().getJavaClass())));
+									context.deserialize(jsonObject.get(field.getName()), field.getDomain().getJavaClass())));
 
 			return dtObject;
 
@@ -398,18 +376,35 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
-	private static final class URIJsonAdapter implements JsonSerializer<URI>, JsonDeserializer<URI> {
+	private static final class URIJsonAdapter implements JsonSerializer<UID>, JsonDeserializer<UID> {
 
 		/** {@inheritDoc} */
 		@Override
-		public JsonElement serialize(final URI uri, final Type typeOfSrc, final JsonSerializationContext context) {
+		public JsonElement serialize(final UID uri, final Type typeOfSrc, final JsonSerializationContext context) {
+			if (typeOfSrc instanceof ParameterizedType) {
+				return new JsonPrimitive(String.valueOf(uri.getId()));
+			}
 			return new JsonPrimitive(uri.urn());
+
 		}
 
 		/** {@inheritDoc} */
 		@Override
-		public URI deserialize(final JsonElement json, final Type paramType, final JsonDeserializationContext paramJsonDeserializationContext) {
-			return URI.fromURN(json.getAsString());
+		public UID deserialize(final JsonElement json, final Type paramType, final JsonDeserializationContext paramJsonDeserializationContext) {
+			final String uidJsonValue = json.getAsString();
+			if (paramType instanceof ParameterizedType
+					&& uidJsonValue != null && uidJsonValue.indexOf('@') == -1) { //Temporaly we accecpt two UID patterns : key only or urn
+				final Class<Entity> entityClass = (Class<Entity>) ((ParameterizedType) paramType).getActualTypeArguments()[0]; //we known that UID has one parameterized type
+				final DtDefinition entityDefinition = DtObjectUtil.findDtDefinition(entityClass);
+				Object entityId;
+				try {
+					entityId = entityDefinition.getIdField().get().getDomain().stringToValue(uidJsonValue);
+				} catch (final FormatterException e) {
+					throw new JsonParseException("Unsupported UID format " + uidJsonValue, e);
+				}
+				return UID.of(entityClass, entityId);
+			}
+			return UID.of(uidJsonValue);
 		}
 	}
 
@@ -500,7 +495,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.registerTypeAdapter(String.class, new EmptyStringAsNull())// add "" <=> null
 					.registerTypeAdapter(UiObject.class, new UiObjectDeserializer<>())
 					.registerTypeAdapter(UiListDelta.class, new UiListDeltaDeserializer<>())
-					.registerTypeAdapter(UiListModifiable.class, new UiListDeserializer<>())
+					.registerTypeHierarchyAdapter(UiList.class, new UiListDeserializer<>())
 					.registerTypeAdapter(DtList.class, new DtListDeserializer<>())
 					.registerTypeAdapter(DtListState.class, new DtListStateDeserializer())
 					.registerTypeAdapter(FacetedQueryResult.class, searchApiVersion.getJsonSerializerClass().newInstance())
@@ -511,11 +506,90 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.registerTypeAdapter(Optional.class, new OptionJsonSerializer())
 					.registerTypeAdapter(VAccessor.class, new VAccessorJsonSerializer())
 					.registerTypeAdapter(Class.class, new ClassJsonSerializer())
-					.registerTypeAdapter(URI.class, new URIJsonAdapter())
+					.registerTypeAdapter(UID.class, new URIJsonAdapter())
 					.addSerializationExclusionStrategy(new JsonExclusionStrategy())
 					.create();
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw WrappedException.wrap(e, "Can't create Gson");
+		}
+	}
+
+	private void filterFields(final JsonElement jsonElement, final Set<String> includedAllFields, final Set<String> excludedAllFields) {
+		if (jsonElement == null) {
+			return; //if filtering an missing field
+		} else if (jsonElement.isJsonArray()) {
+			final JsonArray jsonArray = jsonElement.getAsJsonArray();
+			for (final JsonElement jsonSubElement : jsonArray) {
+				filterFields(jsonSubElement, includedAllFields, excludedAllFields);
+			}
+		} else if (jsonElement.isJsonObject()) {
+			filterObjectFields(jsonElement, includedAllFields, excludedAllFields);
+		}
+		//else Primitive : no exclude
+	}
+
+	private void filterObjectFields(final JsonElement jsonElement, final Set<String> includedAllFields, final Set<String> excludedAllFields) {
+		final Map<String, Tuple<Set<String>, Set<String>>> filteredSubFields = parseSubFieldName(includedAllFields, excludedAllFields);
+		final Tuple<Set<String>, Set<String>> firstLevel = filteredSubFields.get(FIRST_LEVEL_KEY);
+		final Set<String> includedFields;
+		final Set<String> excludedFields;
+		if (firstLevel != null) { //Sonar préfère à contains
+			includedFields = filteredSubFields.get(FIRST_LEVEL_KEY).getVal1();
+			excludedFields = filteredSubFields.get(FIRST_LEVEL_KEY).getVal2();
+		} else {
+			includedFields = Collections.emptySet();
+			excludedFields = Collections.emptySet();
+		}
+
+		final JsonObject jsonObject = jsonElement.getAsJsonObject();
+		for (final String excludedField : excludedFields) {
+			jsonObject.remove(excludedField);
+		}
+
+		if (!includedFields.isEmpty()) {
+			final Set<String> notIncludedFields = new HashSet<>();
+			for (final Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+				if (!includedFields.contains(entry.getKey())) {
+					notIncludedFields.add(entry.getKey());
+				}
+			}
+			for (final String notIncludedField : notIncludedFields) {
+				jsonObject.remove(notIncludedField);
+			}
+		}
+
+		for (final Map.Entry<String, Tuple<Set<String>, Set<String>>> filteredField : filteredSubFields.entrySet()) {
+			if (filteredField.getValue() != null) {
+				filterFields(jsonObject.get(filteredField.getKey()), filteredField.getValue().getVal1(), filteredField.getValue().getVal2());
+			}
+		}
+	}
+
+	private Map<String, Tuple<Set<String>, Set<String>>> parseSubFieldName(final Set<String> includedFields, final Set<String> excludedFields) {
+		if (includedFields.isEmpty() && excludedFields.isEmpty()) {
+			return Collections.emptyMap();
+		}
+		final Map<String, Tuple<Set<String>, Set<String>>> subFields = new HashMap<>();
+		parseSubFieldName(includedFields, subFields, Tuple::getVal1);
+		parseSubFieldName(excludedFields, subFields, Tuple::getVal2);
+		return subFields;
+	}
+
+	private static void parseSubFieldName(final Set<String> filteredFields, final Map<String, Tuple<Set<String>, Set<String>>> subFields, final Function<Tuple<Set<String>, Set<String>>, Set<String>> getter) {
+		for (final String filteredField : filteredFields) {
+			final int commaIdx = filteredField.indexOf('.');
+			final String key;
+			final String value;
+			if (commaIdx > -1) {
+				key = filteredField.substring(0, commaIdx);
+				value = filteredField.substring(commaIdx + 1);
+			} else {
+				key = FIRST_LEVEL_KEY;
+				value = filteredField;
+			}
+			final Tuple<Set<String>, Set<String>> tuple = subFields.computeIfAbsent(key,
+					k -> Tuple.of(new HashSet<>(), new HashSet<>()));
+			getter.apply(tuple).add(value);
 		}
 	}
 }

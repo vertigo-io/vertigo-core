@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +34,6 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.model.UiObject;
 
 /**
@@ -77,7 +76,7 @@ final class UiObjectDeserializer<D extends DtObject> implements JsonDeserializer
 	private static Set<String> getFieldNames(final DtDefinition dtDefinition) {
 		final Set<String> dtFieldNames = new HashSet<>();
 		for (final DtField dtField : dtDefinition.getFields()) {
-			dtFieldNames.add(StringUtil.constToLowerCamelCase(dtField.getName()));
+			dtFieldNames.add(dtField.getName());
 		}
 		return dtFieldNames;
 	}

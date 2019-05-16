@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,23 +24,32 @@ import java.sql.SQLException;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.database.DatabaseFeatures;
+import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.search.SearchManager;
+import io.vertigo.dynamo.search.StoreCacheDefinitionProvider;
 import io.vertigo.dynamo.search.data.domain.Item;
 import io.vertigo.dynamo.search.data.domain.ItemDataBase;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
@@ -52,7 +61,7 @@ import io.vertigo.dynamo.store.StoreManager;
  *
  * @author npiedeloup
  */
-public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
+public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 	@Inject
@@ -62,22 +71,62 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	@Inject
 	private SearchManager searchManager;
 	//Index
-	private static final String IDX_ITEM = "IDX_ITEM";
+	private static final String IDX_ITEM = "IdxItem";
 
 	private SearchIndexDefinition itemIndexDefinition;
 
 	private long initialDbItemSize = 0;
 
 	@Override
-	protected void doSetUp() throws Exception {
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.withLocales("fr_FR")
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.withCache()
+						.withScript()
+						.withMemoryCache()
+						.withJaninoScript()
+						.build())
+				.addModule(new DatabaseFeatures()
+						.withSqlDataBase()
+						.withC3p0(
+								Param.of("dataBaseClass", H2DataBase.class.getName()),
+								Param.of("jdbcDriver", "org.h2.Driver"),
+								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
+						.build())
+				.addModule(new DynamoFeatures()
+						.withStore()
+						.withSearch()
+						.withSqlStore()
+						.withESEmbedded(
+								Param.of("home", "io/vertigo/dynamo/search/indexconfig"),
+								Param.of("config.file", "io/vertigo/dynamo/search/indexconfig/elasticsearch.yml"),
+								Param.of("envIndex", "TuTest"),
+								Param.of("rowsPerQuery", "50"))
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/search/data/execution.kpr")
+								.addDefinitionResource("classes", "io.vertigo.dynamo.search.data.DtDefinitions")
+								.build())
+						.addComponent(io.vertigo.dynamo.search.withstore.ItemSearchLoader.class)
+						.addDefinitionProvider(StoreCacheDefinitionProvider.class)
+						.build())
+				.build();
+	}
+
+	@Override
+	protected void doSetUp() throws SQLException {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
 
 		//A chaque test on recrée la table famille
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
-			execCallableStatement(connection, "create table item(ID BIGINT, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50), OPTIONAL_NUMBER BIGINT, OPTIONAL_STRING varchar(50), LAST_MODIFIED timestamp );");
-			execCallableStatement(connection, "create sequence SEQ_ITEM start with 10001 increment by 1");
+		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
+			execCallableStatement(connectionCloseable.getConnection(), "create table item(ID BIGINT, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MOTOR_TYPE varchar(50), OPTIONAL_NUMBER BIGINT, OPTIONAL_STRING varchar(50), LAST_MODIFIED timestamp );");
+			execCallableStatement(connectionCloseable.getConnection(), "create sequence SEQ_ITEM start with 10001 increment by 1");
 		}
 
 		//On supprime tout
@@ -97,12 +146,10 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 
 	/** {@inheritDoc} */
 	@Override
-	protected void doTearDown() throws Exception {
-		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			//A chaque fin de test on arréte la base.
-			final SqlConnection connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
-			execCallableStatement(connection, "shutdown;");
-			transaction.commit();
+	protected void doTearDown() throws SQLException {
+		//A chaque fin de test on arréte la base.
+		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
+			execCallableStatement(connectionCloseable.getConnection(), "shutdown;");
 		}
 	}
 
@@ -119,7 +166,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testIndexAllQuery() {
 		final long size = query("*:*");
-		Assert.assertEquals(initialDbItemSize, size);
+		Assertions.assertEquals(initialDbItemSize, size);
 	}
 
 	/**
@@ -136,8 +183,8 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 			transaction.commit();
 		}
 		waitIndexation();
-		Assert.assertEquals(initialDbItemSize + 1, query("*:*"));
-		Assert.assertEquals(1, query("DESCRIPTION:légende"));
+		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
+		Assertions.assertEquals(1, query("description:légende"));
 	}
 
 	/**
@@ -147,15 +194,15 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testIndexDeleteData() {
 		testIndexAllQuery();
-		Assert.assertEquals(1, query("ID:10001"));
+		Assertions.assertEquals(1, query("id:10001"));
 
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			storeManager.getDataStore().delete(createURI(10001L));
 			transaction.commit();
 		}
 		waitIndexation();
-		Assert.assertEquals(0, query("ID:10001"));
-		Assert.assertEquals(initialDbItemSize - 1, query("*:*"));
+		Assertions.assertEquals(0, query("id:10001"));
+		Assertions.assertEquals(initialDbItemSize - 1, query("*:*"));
 	}
 
 	/**
@@ -173,8 +220,8 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		}
 
 		waitIndexation();
-		Assert.assertEquals(initialDbItemSize + 1, query("*:*"));
-		Assert.assertEquals(1, query("DESCRIPTION:légende"));
+		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
+		Assertions.assertEquals(1, query("description:légende"));
 
 		item.setDescription("Vendue");
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -183,9 +230,9 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		}
 
 		waitIndexation();
-		Assert.assertEquals(initialDbItemSize + 1, query("*:*"));
-		Assert.assertEquals(0, query("DESCRIPTION:légende"));
-		Assert.assertEquals(1, query("DESCRIPTION:vendue"));
+		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
+		Assertions.assertEquals(0, query("description:légende"));
+		Assertions.assertEquals(1, query("description:vendue"));
 	}
 
 	/**
@@ -203,8 +250,8 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		}
 
 		waitIndexation();
-		Assert.assertEquals(initialDbItemSize + 1, query("*:*"));
-		Assert.assertEquals(1, query("DESCRIPTION:légende"));
+		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
+		Assertions.assertEquals(1, query("description:légende"));
 
 		item.setDescription("Vendue");
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -216,9 +263,9 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		}
 
 		waitIndexation();
-		Assert.assertEquals(initialDbItemSize + 1, query("*:*"));
-		Assert.assertEquals(0, query("DESCRIPTION:légende"));
-		Assert.assertEquals(1, query("DESCRIPTION:vendue"));
+		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
+		Assertions.assertEquals(0, query("description:légende"));
+		Assertions.assertEquals(1, query("description:vendue"));
 	}
 
 	/**
@@ -230,7 +277,75 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		//On supprime tout
 		remove("*:*");
 		final long resize = query("*:*");
-		Assert.assertEquals(0L, resize);
+		Assertions.assertEquals(0L, resize);
+	}
+
+	/**
+	 * Test de mise à jour de l'index après une creation.
+	 * La création s'effectue dans une seule transaction.
+	 */
+	@Test
+	public void testReIndexAll() {
+		testIndexAllQuery();
+		remove("*:*");
+		long resize = query("*:*");
+		Assertions.assertEquals(0L, resize);
+
+		doReindexAll();
+		waitIndexation();
+
+		resize = query("*:*");
+		Assertions.assertEquals(initialDbItemSize, resize);
+	}
+
+	/**
+	 * Test de mise à jour de l'index après une creation.
+	 * La création s'effectue dans une seule transaction.
+	 * @throws SQLException if some error in test
+	 */
+	@Test
+	public void testReIndexAllAfterDirectDelete() throws SQLException {
+		testIndexAllQuery();
+		long resize = query("*:*");
+		Assertions.assertEquals(initialDbItemSize, resize);
+
+		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
+			execCallableStatement(connectionCloseable.getConnection(), "delete from item where id = 10001");
+			connectionCloseable.commit();
+		}
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			Assertions.assertEquals(initialDbItemSize - 1, storeManager.getDataStore().count(itemIndexDefinition.getKeyConceptDtDefinition()));
+		}
+		doReindexAll();
+		waitIndexation();
+
+		resize = query("*:*");
+		Assertions.assertEquals(initialDbItemSize - 1, resize);
+	}
+
+	/**
+	 * Test de mise à jour de l'index après une creation.
+	 * La création s'effectue dans une seule transaction.
+	 * @throws SQLException if some error in test
+	 */
+	@Test
+	public void testReIndexAllAfterDirectDeleteAll() throws SQLException {
+		testIndexAllQuery();
+		long resize = query("*:*");
+		Assertions.assertEquals(initialDbItemSize, resize);
+
+		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
+			execCallableStatement(connectionCloseable.getConnection(), "delete from item ");
+			connectionCloseable.commit();
+		}
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			Assertions.assertEquals(0, storeManager.getDataStore().count(itemIndexDefinition.getKeyConceptDtDefinition()));
+		}
+		doReindexAll();
+		waitIndexation();
+
+		resize = query("*:*");
+		Assertions.assertEquals(0, resize);
 	}
 
 	private static Item createNewItem() {
@@ -261,9 +376,8 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		return searchManager.loadList(itemIndexDefinition, searchQuery, listState);
 	}
 
-	private static URI createURI(final long itemId) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Item.class);
-		return new URI(dtDefinition, itemId);
+	private static UID createURI(final long itemId) {
+		return UID.of(Item.class, itemId);
 	}
 
 	protected void remove(final String query) {
@@ -276,11 +390,41 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU4 {
 		searchManager.removeAll(itemIndexDefinition, removeQuery);
 	}
 
+	private void doReindexAll() {
+		searchManager.reindexAll(itemIndexDefinition);
+		try {
+			Thread.sleep(5000); //wait reindex job
+		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt(); //si interrupt on relance
+		}
+	}
+
 	private static void waitIndexation() {
 		try {
 			Thread.sleep(1000 + 1500); //wait index was done
 		} catch (final InterruptedException e) {
 			Thread.currentThread().interrupt(); //si interrupt on relance
+		}
+	}
+
+	private class SqlConnectionCloseable implements AutoCloseable {
+		private final SqlConnection connection;
+
+		SqlConnectionCloseable(final SqlDataBaseManager dataBaseManager) {
+			connection = dataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
+		}
+
+		SqlConnection getConnection() {
+			return connection;
+		}
+
+		public void commit() throws SQLException {
+			connection.commit();
+		}
+
+		@Override
+		public void close() throws SQLException {
+			connection.release();
 		}
 	}
 

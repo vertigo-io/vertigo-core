@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,7 @@ import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
@@ -57,11 +57,11 @@ public interface SearchManager extends Manager {
 	SearchIndexDefinition findIndexDefinitionByKeyConcept(Class<? extends KeyConcept> keyConceptClass);
 
 	/**
-	 * Mark an uri list as dirty. Index of these elements will be reindexed.
+	 * Mark an uid list as dirty. Index of these elements will be reindexed.
 	 * Reindexation isn't synchrone, strategy is dependant of plugin's parameters.
-	 * @param keyConceptUris Uri of keyConcept marked as dirty.
+	 * @param keyConceptUIDs UID of keyConcept marked as dirty.
 	 */
-	void markAsDirty(List<URI<? extends KeyConcept>> keyConceptUris);
+	void markAsDirty(List<UID<? extends KeyConcept>> keyConceptUIDs);
 
 	/**
 	 * Launch a complete reindexation of an index.
@@ -110,9 +110,9 @@ public interface SearchManager extends Manager {
 	 * Suppression d'une ressource de l'index.
 	 * @param <K> Type du keyConcept métier indexé
 	 * @param indexDefinition Type de l'index
-	 * @param uri URI de la ressource à supprimer
+	 * @param uid UID de la ressource à supprimer
 	 */
-	<K extends KeyConcept> void remove(SearchIndexDefinition indexDefinition, final URI<K> uri);
+	<K extends KeyConcept> void remove(SearchIndexDefinition indexDefinition, final UID<K> uid);
 
 	/**
 	 * Suppression des données correspondant à un filtre.

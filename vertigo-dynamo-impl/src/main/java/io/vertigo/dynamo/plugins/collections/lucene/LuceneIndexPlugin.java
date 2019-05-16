@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -57,7 +57,7 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 
 	private final CacheManager cacheManager;
 
-	private static final String CACHE_LUCENE_INDEX = "CACHE_LUCENE_INDEX";
+	private static final String CACHE_LUCENE_INDEX = "CacheLuceneIndex";
 
 	/**
 	 * Constructor.
@@ -83,13 +83,13 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 	 */
 	@EventBusSubscribed
 	public void onStoreEvent(final StoreEvent event) {
-		cacheManager.remove(CACHE_LUCENE_INDEX, getIndexCacheContext(event.getUri().getDefinition()));
+		cacheManager.remove(CACHE_LUCENE_INDEX, getIndexCacheContext(event.getUID().getDefinition()));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return Collections.singletonList(new CacheDefinition(CACHE_LUCENE_INDEX, false, 1000, 30 * 60, 60 * 60));
+		return Collections.singletonList(new CacheDefinition(CACHE_LUCENE_INDEX, false, 1000, 30 * 60, 60 * 60, true));
 	}
 
 	private <D extends DtObject> RamLuceneIndex<D> indexList(final DtList<D> fullDtc, final boolean storeValue) throws IOException {

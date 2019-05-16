@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +27,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.param.Param;
@@ -43,7 +43,7 @@ public final class ComponentSpaceTest {
 
 	@Test
 	public void testHome() {
-		final AppConfig appConfig = AppConfig.builder()
+		final NodeConfig nodeConfig = NodeConfig.builder()
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
@@ -56,7 +56,7 @@ public final class ComponentSpaceTest {
 						.build())
 				.build();
 
-		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			final BioManager bioManager = app.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
 			assertEquals(366, res);
@@ -66,7 +66,7 @@ public final class ComponentSpaceTest {
 
 	@Test
 	public void testHome2() {
-		final AppConfig appConfig = AppConfig.builder()
+		final NodeConfig nodeConfig = NodeConfig.builder()
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
@@ -83,7 +83,7 @@ public final class ComponentSpaceTest {
 
 		Assertions.assertThrows(RuntimeException.class,
 				() -> {
-					try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+					try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 						//
 					}
 				});
@@ -91,7 +91,7 @@ public final class ComponentSpaceTest {
 
 	@Test
 	public void testHome3() {
-		final AppConfig appConfig = AppConfig.builder()
+		final NodeConfig nodeConfig = NodeConfig.builder()
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
@@ -106,7 +106,7 @@ public final class ComponentSpaceTest {
 						.build())
 				.build();
 
-		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			//
 		}
 	}

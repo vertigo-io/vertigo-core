@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,11 +20,12 @@ package io.vertigo.dynamo.file.util;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import io.vertigo.lang.Assertion;
 
@@ -36,12 +37,22 @@ import io.vertigo.lang.Assertion;
 public final class FileUtil {
 
 	private static final String USER_CHECK_ERROR_MSG = "User try to use illegal fileName";
+
 	private static final String USER_HOME = "user.home";
 	private static final String USER_DIR = "user.dir";
+	private static final String USER_HOME_PATH = System.getProperty(USER_HOME).replace('\\', '/');
+	private static final String USER_DIR_PATH = System.getProperty(USER_DIR).replace('\\', '/');
+
 	private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
+	private static final String JAVA_IO_TMPDIR_PATH = System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/');
+
 	private static final String KEY_USER_HOME = "\\$\\{" + USER_HOME + "\\}";
 	private static final String KEY_USER_DIR = "\\$\\{" + USER_DIR + "\\}";
 	private static final String KEY_JAVA_IO_TMPDIR = "\\$\\{" + JAVA_IO_TMPDIR + "\\}";
+
+	private static final Pattern PATTERN_USER_HOME = Pattern.compile(KEY_USER_HOME);
+	private static final Pattern PATTERN_USER_DIR = Pattern.compile(KEY_USER_DIR);
+	private static final Pattern PATTERN_JAVA_IO_TMPDIR = Pattern.compile(KEY_JAVA_IO_TMPDIR);
 
 	/**
 	 * Constructeur privé pour classe utilitaire
@@ -73,7 +84,7 @@ public final class FileUtil {
 	 * @throws IOException Erreur d'entrée/sortie
 	 */
 	public static void copy(final InputStream in, final File file) throws IOException {
-		try (final OutputStream out = new BufferedOutputStream(new FileOutputStream(file))) {
+		try (final OutputStream out = new BufferedOutputStream(Files.newOutputStream(file.toPath()))) {
 			FileUtil.copy(in, out);
 		}
 	}
@@ -124,10 +135,10 @@ public final class FileUtil {
 	 * @return translated path
 	 */
 	public static String translatePath(final String path) {
-		return path
-				.replaceAll(KEY_USER_HOME, System.getProperty(USER_HOME).replace('\\', '/'))
-				.replaceAll(KEY_USER_DIR, System.getProperty(USER_DIR).replace('\\', '/'))
-				.replaceAll(KEY_JAVA_IO_TMPDIR, System.getProperty(JAVA_IO_TMPDIR).replace('\\', '/'));
+		String translatedPath = PATTERN_USER_HOME.matcher(path).replaceAll(USER_HOME_PATH);
+		translatedPath = PATTERN_USER_DIR.matcher(translatedPath).replaceAll(USER_DIR_PATH);
+		translatedPath = PATTERN_JAVA_IO_TMPDIR.matcher(translatedPath).replaceAll(JAVA_IO_TMPDIR_PATH);
+		return translatedPath;
 	}
 
 	/**

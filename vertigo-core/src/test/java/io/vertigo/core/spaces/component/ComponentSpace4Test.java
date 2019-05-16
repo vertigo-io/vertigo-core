@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.spaces.component.data.StartedManager;
@@ -38,7 +38,7 @@ public final class ComponentSpace4Test {
 
 	@Test
 	public void testStartedComponent() {
-		final AppConfig appConfig = AppConfig.builder()
+		final NodeConfig nodeConfig = NodeConfig.builder()
 				.beginBoot()
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
@@ -48,7 +48,7 @@ public final class ComponentSpace4Test {
 				.addInitializer(StartedManagerInitializer.class)
 				.build();
 		final StartedManager startedManager;
-		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			startedManager = app.getComponentSpace().resolve(StartedManager.class);
 			assertTrue(startedManager.isInitialized(), "Component StartedManager not Initialized");
 			assertTrue(startedManager.isStarted(), "Component StartedManager not Started");

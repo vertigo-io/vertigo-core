@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
@@ -97,6 +98,40 @@ public final class FileInfoURI implements Serializable {
 	 */
 	public Serializable getKey() {
 		return key;
+	}
+
+	public Serializable getKeyAs(final DataType dataType) {
+		switch (dataType) {
+			case Integer:
+				if (key instanceof Long) {
+					return ((Long) key).intValue();
+				} else if (key instanceof Integer) {
+					return key;
+				} else if (key instanceof String) {
+					return Integer.valueOf((String) key);
+				}
+				break;
+			case Long:
+				if (key instanceof Long) {
+					return key;
+				} else if (key instanceof Integer) {
+					return ((Integer) key).longValue();
+				} else if (key instanceof String) {
+					return Long.valueOf((String) key);
+				}
+				break;
+			case String:
+				return String.valueOf(key);
+			case BigDecimal:
+			case Boolean:
+			case DataStream:
+			case Double:
+			case Instant:
+			case LocalDate:
+			default:
+				break;
+		}
+		throw new IllegalStateException("Unsupported key type : " + dataType);
 	}
 
 	//=========================================================================

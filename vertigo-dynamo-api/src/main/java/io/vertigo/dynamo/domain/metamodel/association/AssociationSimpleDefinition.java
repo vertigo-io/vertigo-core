@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@ import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 /**
  * This class defines a simple association : 1-1 or 1-n.
@@ -53,6 +54,7 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 		//We check that this assocation is not multiple
 		Assertion.checkArgument(!(associationNodeA.isMultiple() && associationNodeB.isMultiple()), "assocation : {0}. n-n assocation is prohibited in a simple assocation", name);
 		Assertion.checkNotNull(fkFieldName);
+		Assertion.checkArgument(StringUtil.isLowerCamelCase(fkFieldName), "the name of the field {0} must be in lowerCamelCase", fkFieldName);
 		//-----
 		// Which node is the key node (the primary key)
 		final boolean isAPrimaryNode = AssociationUtil.isAPrimaryNode(
@@ -67,6 +69,9 @@ public final class AssociationSimpleDefinition extends AssociationDefinition {
 			foreignAssociationNode = getAssociationNodeA();
 		}
 		this.fkFieldName = fkFieldName;
+		//-----
+		// no one can make an association with you if you're not identified by a key (for now, before refac, isPersistent is the way to make the test isPersistent() <=> isEntity() )
+		Assertion.checkState(primaryAssociationNode.getDtDefinition().getStereotype().isPersistent(), "assocation : {0}. The primary associationNode must be an entity ", name);
 	}
 
 	/**

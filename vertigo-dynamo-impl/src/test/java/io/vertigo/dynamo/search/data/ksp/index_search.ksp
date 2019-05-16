@@ -1,67 +1,81 @@
 package io.vertigo.dynamo.search.data.domain
 
-create IndexDefinition IDX_ITEM {
-    keyConcept : DT_ITEM
-    dtIndex : DT_ITEM
-    indexCopyTo ALL_TEXT 	{ from: "MANUFACTURER,MODEL,DESCRIPTION,YEAR,KILO,PRICE,MOTOR_TYPE" }
+create IndexDefinition IdxItem {
+    keyConcept : DtItem
+    dtIndex : DtItem
+    indexCopyTo allText 	{ from: "manufacturer,model,description,year,kilo,price,motorType" }
     loaderId : "ItemSearchLoader"
 }
 
-create IndexDefinition IDX_DYNA_ITEM {
-    keyConcept : DT_ITEM
-    dtIndex : DT_ITEM
-    indexCopyTo ALL_TEXT 	{ from: "MANUFACTURER,MODEL,DESCRIPTION,YEAR,KILO,PRICE,MOTOR_TYPE" }
+create IndexDefinition IdxDynaItem {
+    keyConcept : DtItem
+    dtIndex : DtItem
+    indexCopyTo allText 	{ from: "manufacturer,model,description,year,kilo,price,motorType" }
     loaderId : "ItemSearchLoader"
 }
 
-create FacetDefinition FCT_DESCRIPTION_ITEM {
-	dtDefinition : DT_ITEM 
-	fieldName : "DESCRIPTION" 
+create FacetDefinition FctDescriptionItem {
+	dtDefinition : DtItem 
+	fieldName : "description" 
 	label : "Description"
 }
 
-create FacetDefinition FCT_MANUFACTURER_ITEM {
-	dtDefinition : DT_ITEM 
-	fieldName : "MANUFACTURER"
+create FacetDefinition FctOptionalStringItem {
+	dtDefinition : DtItem 
+	fieldName : "optionalString" 
+	label : "optionalString"
+}
+
+create FacetDefinition FctManufacturerItem {
+	dtDefinition : DtItem 
+	fieldName : "manufacturer"
 	label : "Par constructeur"
 }
 
-create FacetDefinition FCT_MANUFACTURER_ITEM_ALPHA {
-	dtDefinition : DT_ITEM 
-	fieldName : "MANUFACTURER"
+create FacetDefinition FctManufacturerItemAlpha {
+	dtDefinition : DtItem 
+	fieldName : "manufacturer"
 	label : "Par constructeur", order : "alpha"
 }
 
 
-create FacetDefinition FCT_MANUFACTURER_ITEM_MULTI {
-	dtDefinition : DT_ITEM 
-	fieldName : "MANUFACTURER"
+create FacetDefinition FctManufacturerItemMulti {
+	dtDefinition : DtItem 
+	fieldName : "manufacturer"
 	label : "Par constructeur", 
 	order : "alpha",
 	multiselectable : "true"
 }
 
-create FacetDefinition FCT_YEAR_ITEM {
-	dtDefinition : DT_ITEM 
-	fieldName : "YEAR" 
+create FacetDefinition FctYearItem {
+	dtDefinition : DtItem 
+	fieldName : "year" 
 	label : "Par date"
-	range R1 { filter : "YEAR:[* TO 2000]" 		label : "avant 2000" }
-	range R2 { filter : "YEAR:[2000 TO 2005]" 	label : "2000-2005"  }
-	range R3 { filter : "YEAR:[2005 TO *]" 		label : "apres 2005" }
+	range r1 { filter : "year:[* TO 2000]" 		label : "avant 2000" }
+	range r2 { filter : "year:[2000 TO 2005]" 	label : "2000-2005"  }
+	range r3 { filter : "year:[2005 TO *]" 		label : "apres 2005" }
 }
 
-create FacetedQueryDefinition QRY_ITEM_FACET {
-    keyConcept : DT_ITEM
-    facets : [ FCT_DESCRIPTION_ITEM, FCT_MANUFACTURER_ITEM, FCT_MANUFACTURER_ITEM_ALPHA, FCT_YEAR_ITEM]
-    domainCriteria : DO_STRING
+create FacetedQueryDefinition QryItemFacet {
+    keyConcept : DtItem
+    facets : [ FctDescriptionItem, FctManufacturerItem, FctManufacturerItemAlpha, FctYearItem]
+    domainCriteria : DoString
     listFilterBuilderClass : "io.vertigo.dynamox.search.DslListFilterBuilder"  
-    listFilterBuilderQuery : "#CRITERIA#"    
+    listFilterBuilderQuery : "#criteria#"    
 }
 
-create FacetedQueryDefinition QRY_ITEM_FACET_MULTI {
-    keyConcept : DT_ITEM
-    facets : [ FCT_DESCRIPTION_ITEM, FCT_MANUFACTURER_ITEM_MULTI, FCT_YEAR_ITEM]
-    domainCriteria : DO_STRING
+create FacetedQueryDefinition QryItemOptionalFacet {
+    keyConcept : DtItem
+    facets : [ FctOptionalStringItem]
+    domainCriteria : DoString
     listFilterBuilderClass : "io.vertigo.dynamox.search.DslListFilterBuilder"  
-    listFilterBuilderQuery : "#CRITERIA#"    
+    listFilterBuilderQuery : "#criteria#"    
+}
+
+create FacetedQueryDefinition QryItemFacetMulti {
+    keyConcept : DtItem
+    facets : [ FctDescriptionItem, FctManufacturerItemMulti, FctYearItem]
+    domainCriteria : DoString
+    listFilterBuilderClass : "io.vertigo.dynamox.search.DslListFilterBuilder"  
+    listFilterBuilderQuery : "#criteria#"    
 }

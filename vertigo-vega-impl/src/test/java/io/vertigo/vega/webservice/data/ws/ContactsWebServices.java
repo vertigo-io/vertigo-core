@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -50,7 +50,7 @@ public final class ContactsWebServices implements WebServices {
 	@Inject
 	private ContactDao contactDao;
 
-	@GET("/search()")
+	@POST("/search()")
 	public List<Contact> readList(final ContactCriteria listCriteria) {
 		//offset + range ?
 		//code 200
@@ -107,8 +107,7 @@ public final class ContactsWebServices implements WebServices {
 
 	//@POST is non-indempotent
 	@POST("")
-	public Contact insert(//
-			final @Validate({ ContactValidator.class, MandatoryPkValidator.class }) Contact contact) {
+	public Contact create(final Contact contact) {
 		if (contact.getConId() != null) {
 			throw new VUserException("Contact #" + contact.getConId() + " already exist");
 		}
@@ -122,7 +121,8 @@ public final class ContactsWebServices implements WebServices {
 
 	//PUT is indempotent : ID obligatoire
 	@PUT("/*")
-	public Contact update(final Contact contact) {
+	public Contact update(//
+			@Validate({ ContactValidator.class, MandatoryPkValidator.class }) final Contact contact) {
 		if (contact.getName() == null || contact.getName().isEmpty()) {
 			//400
 			throw new VUserException("Name is mandatory");

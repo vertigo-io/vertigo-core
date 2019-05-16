@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,12 +53,13 @@ final class ComponentDiscovery {
 	 * @param packagePrefix the package we to look
 	 * @param moduleConfigBuilder the module where components will be added.
 	 */
-	static void registerComponents(final Class<? extends Component> componentType, final String packagePrefix, final ModuleConfigBuilder moduleConfigBuilder) {
-		Assertion.checkNotNull(componentType);
-		//
+	static void registerComponents(final String packagePrefix, final ModuleConfigBuilder moduleConfigBuilder) {
+		Assertion.checkArgNotEmpty(packagePrefix);
+		Assertion.checkNotNull(moduleConfigBuilder);
+		//---
 		final Collection<Class> components = new Selector()
 				.from(packagePrefix)
-				.filterClasses(ClassConditions.subTypeOf(componentType))
+				.filterClasses(ClassConditions.subTypeOf(Component.class))
 				.filterClasses(ClassConditions.isAbstract().negate())// we filter abstract classes
 				// we ignore not discoverable classes
 				.filterClasses(ClassConditions.annotatedWith(NotDiscoverable.class).negate())
@@ -83,6 +84,7 @@ final class ComponentDiscovery {
 
 		final Collection<Class> proxyClasses = new Selector()
 				.from(allApiClasses)
+				.filterClasses(clazz -> clazz.getDeclaredMethods().length != 0)// to be a proxy you need to have at least one method
 				.filterMethods(proxyMethodPredicate)
 				.findClasses();
 
@@ -143,5 +145,4 @@ final class ComponentDiscovery {
 		pluginsImplClasses
 				.forEach(moduleConfigBuilder::addPlugin);
 	}
-
 }

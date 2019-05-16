@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -101,15 +101,15 @@ final class VFileUtil {
 	 * @param result WebService result
 	 * @param response Response
 	 */
-	static void sendVFile(final Object result, final Response response) {
-		sendVFile((VFile) result, true, response);
+	static void sendVFile(final Object result, final boolean attachment, final Response response) {
+		sendVFile((VFile) result, attachment, response);
 	}
 
 	private static void sendVFile(final VFile result, final boolean attachment, final Response response) {
 		try {
 			send(result, attachment, response);
 		} catch (final IOException e) {
-			throw WrappedException.wrap(e, "Error while sending file. <!-- " + e.getMessage() + "-->");
+			throw WrappedException.wrap(e, "Error while sending file. <!-- {0} -->", e.getMessage());
 		}
 		// response already send
 	}
@@ -146,6 +146,7 @@ final class VFileUtil {
 				encodeFileNameToContentDisposition(vFile.getFileName(), isAttachment));
 		response.raw().addDateHeader("Last-Modified", vFile.getLastModified().toEpochMilli());
 		response.type(vFile.getMimeType());
+		response.header("Cache-Control", "private");
 
 		try (final InputStream input = vFile.createInputStream()) {
 			try (final OutputStream output = response.raw().getOutputStream()) {

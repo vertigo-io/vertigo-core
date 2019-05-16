@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,8 +27,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.spaces.component.data.BioManager;
@@ -38,7 +38,7 @@ import io.vertigo.core.spaces.component.data.MathManagerImpl;
 import io.vertigo.core.spaces.component.data.MathPlugin;
 
 @RunWith(JUnitPlatform.class)
-public final class ComponentSpace2Test extends AbstractTestCaseJU4 {
+public final class ComponentSpace2Test extends AbstractTestCaseJU5 {
 	@Inject
 	private BioManager bioManager;
 
@@ -55,8 +55,8 @@ public final class ComponentSpace2Test extends AbstractTestCaseJU4 {
 	}
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.addModule(ModuleConfig.builder("bio")
 						.addComponent(BioManager.class, BioManagerImpl.class)
 						.addComponent(MathManager.class, MathManagerImpl.class,

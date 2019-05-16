@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,6 @@ import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.util.StringUtil;
 
 /**
  * Objet de validation d'un DtObject.
@@ -73,8 +72,7 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	 */
 	protected final boolean shouldCheck(final Set<String> modifiedFieldNames, final String... fieldNames) {
 		for (final String fieldName : fieldNames) {
-			final String constFieldName = StringUtil.camelToConstCase(fieldName);
-			if (!modifiedFieldNames.contains(constFieldName)) {
+			if (!modifiedFieldNames.contains(fieldName)) {
 				return false;
 			}
 		}
@@ -92,9 +90,9 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	protected final void checkFieldEquals(final O dto, final String fieldName1, final String fieldName2, final DtObjectErrors dtObjectErrors, final MessageText messageText) {
 		final Object value1 = getValue(fieldName1, dto);
 		final Object value2 = getValue(fieldName2, dto);
-		if ((value1 == null && value2 != null) //
-				|| (value1 != null && value2 == null) //
-				|| (value1 != null && !value1.equals(value2))) {
+		if (value1 == null && value2 != null //
+				|| value1 != null && value2 == null //
+				|| value1 != null && !value1.equals(value2)) {
 			dtObjectErrors.addError(fieldName2, messageText);
 		}
 	}
@@ -191,20 +189,12 @@ public abstract class AbstractDtObjectValidator<O extends DtObject> implements D
 	}
 
 	/**
-	 * @param dtField DtField
-	 * @return camelCase fieldName.
-	 */
-	protected static final String getCamelCaseFieldName(final DtField dtField) {
-		return StringUtil.constToLowerCamelCase(dtField.getName());
-	}
-
-	/**
 	 * @param fieldName Nom du champ
 	 * @param dto Objet portant le champ
 	 * @return DtField.
 	 */
 	protected final DtField getDtField(final String fieldName, final O dto) {
-		return DtObjectUtil.findDtDefinition(dto).getField(StringUtil.camelToConstCase(fieldName));
+		return DtObjectUtil.findDtDefinition(dto).getField(fieldName);
 	}
 
 	/**

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +20,9 @@ package io.vertigo.util;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -33,17 +34,22 @@ public final class DateQueryParserUtilTest {
 	private static final String DATE_PATTERN = "dd/MM/yy";
 	private static final Long DIFF_MS = 5 * 1000L;
 
-	private static void assertEquals(final Date expectedDate, final String query) {
-		final Date compareDate = DateUtil.parseToDate(query, DATE_PATTERN);
-		final long deltaInMillis = Math.abs(expectedDate.getTime() - compareDate.getTime());
-		assertTrue(deltaInMillis < DIFF_MS, "expects " + expectedDate + " and finds " + compareDate);
+	private static void assertEqualsLocalDate(final LocalDate expectedDate, final String query) {
+		final LocalDate compareDate = DateUtil.parseToLocalDate(query, DATE_PATTERN);
+		assertTrue(expectedDate.isEqual(compareDate));
+	}
+
+	private static void assertEqualsInstant(final Instant expectedDate, final String query) {
+		final Instant compareInstant = DateUtil.parseToInstant(query, DATE_PATTERN);
+		final long deltaInMillis = Math.abs(expectedDate.toEpochMilli() - compareInstant.toEpochMilli());
+		assertTrue(deltaInMillis < DIFF_MS, "expects " + expectedDate + " and finds " + compareInstant);
 	}
 
 	/** Test le keyword now avec une erreur. */
 	@Test
 	public void testWithError0() {
 		Assertions.assertThrows(Exception.class,
-				() -> DateUtil.parseToDate("now+", DATE_PATTERN));
+				() -> DateUtil.parseToLocalDate("now+", DATE_PATTERN));
 	}
 
 	/** Test le keyword now avec une erreur. */
@@ -51,7 +57,7 @@ public final class DateQueryParserUtilTest {
 	public void testWithError1() {
 		Assertions.assertThrows(Exception.class,
 				//an explicit  number must be defined
-				() -> DateUtil.parseToDate("now+DAY", DATE_PATTERN));
+				() -> DateUtil.parseToLocalDate("now+DAY", DATE_PATTERN));
 	}
 
 	/** Test le keyword now avec une erreur. */
@@ -59,7 +65,7 @@ public final class DateQueryParserUtilTest {
 	public void testWithError2() {
 		Assertions.assertThrows(Exception.class,
 				//Day must be in upperCase : DAY
-				() -> DateUtil.parseToDate("now+1Day", DATE_PATTERN));
+				() -> DateUtil.parseToLocalDate("now+1Day", DATE_PATTERN));
 	}
 
 	/** Test le keyword now avec une erreur. */
@@ -67,7 +73,7 @@ public final class DateQueryParserUtilTest {
 	public void testWithError3() {
 		Assertions.assertThrows(Exception.class,
 				//day is not a calendar unit
-				() -> DateUtil.parseToDate("now+1day", DATE_PATTERN));
+				() -> DateUtil.parseToLocalDate("now+1day", DATE_PATTERN));
 	}
 
 	/** Test le keyword now avec une erreur. */
@@ -75,7 +81,7 @@ public final class DateQueryParserUtilTest {
 	public void testWithError4() {
 		Assertions.assertThrows(Exception.class,
 				//D is not a calendar unit even if d is valid
-				() -> DateUtil.parseToDate("now+1D", DATE_PATTERN));
+				() -> DateUtil.parseToLocalDate("now+1D", DATE_PATTERN));
 	}
 
 	/**
@@ -83,8 +89,14 @@ public final class DateQueryParserUtilTest {
 	 */
 	@Test
 	public void testNow() {
-		final Date expectedDate = new Date();
-		assertEquals(expectedDate, "now");
+		final LocalDate expectedDate = LocalDate.now();
+		assertEqualsLocalDate(expectedDate, "now");
+	}
+
+	@Test
+	public void testInstant() {
+		final Instant expectedInstant = Instant.now();
+		assertEqualsInstant(expectedInstant, "now");
 	}
 
 	/**
@@ -92,8 +104,8 @@ public final class DateQueryParserUtilTest {
 	 */
 	@Test
 	public void testAddDay() {
-		final Date expectedDate = new DateBuilder(new Date()).addDays(1).toDateTime();
-		assertEquals(expectedDate, "now+1d");
+		final LocalDate expectedDate = DateUtil.newDate().plusDays(1);
+		assertEqualsLocalDate(expectedDate, "now+1d");
 	}
 
 	/**
@@ -101,8 +113,8 @@ public final class DateQueryParserUtilTest {
 	 */
 	@Test
 	public void testAddWeek() {
-		final Date expectedDate = new DateBuilder(new Date()).addWeeks(5).toDateTime();
-		assertEquals(expectedDate, "now+5w");
+		final LocalDate expectedDate = DateUtil.newDate().plusWeeks(5);
+		assertEqualsLocalDate(expectedDate, "now+5w");
 	}
 
 	/**
@@ -110,8 +122,8 @@ public final class DateQueryParserUtilTest {
 	 */
 	@Test
 	public void testAddDays() {
-		final Date expectedDate = new DateBuilder(new Date()).addDays(2).toDateTime();
-		assertEquals(expectedDate, "now+2d");
+		final LocalDate expectedDate = LocalDate.now().plusDays(2);
+		assertEqualsLocalDate(expectedDate, "now+2d");
 	}
 
 	/**
@@ -119,8 +131,8 @@ public final class DateQueryParserUtilTest {
 	 */
 	@Test
 	public void testRemoveDays() {
-		final Date expectedDate = new DateBuilder(new Date()).addDays(-12).toDateTime();
-		assertEquals(expectedDate, "now-12d");
+		final LocalDate expectedDate = LocalDate.now().minusDays(12);
+		assertEqualsLocalDate(expectedDate, "now-12d");
 	}
 
 	/**
@@ -128,8 +140,8 @@ public final class DateQueryParserUtilTest {
 	 */
 	@Test
 	public void testAddMonths() {
-		final Date expectedDate = new DateBuilder(new Date()).addMonths(3).toDateTime();
-		assertEquals(expectedDate, "now+3M");
+		final LocalDate expectedDate = LocalDate.now().plusMonths(3);
+		assertEqualsLocalDate(expectedDate, "now+3M");
 	}
 
 	/**
@@ -137,8 +149,8 @@ public final class DateQueryParserUtilTest {
 	 */
 	@Test
 	public void testAddYears() {
-		final Date expectedDate = new DateBuilder(new Date()).addYears(5).toDateTime();
-		assertEquals(expectedDate, "now+5y");
+		final LocalDate expectedDate = LocalDate.now().plusYears(5);
+		assertEqualsLocalDate(expectedDate, "now+5y");
 	}
 
 	/**
@@ -146,8 +158,8 @@ public final class DateQueryParserUtilTest {
 	 */
 	@Test
 	public void testAddHours() {
-		final Date expectedDate = new DateBuilder(new Date()).addHours(50).toDateTime();
-		assertEquals(expectedDate, "now+50h");
+		final Instant expectedInstant = Instant.now().plus(50, ChronoUnit.HOURS);
+		assertEqualsInstant(expectedInstant, "now+50h");
 	}
 
 	/**
@@ -155,7 +167,7 @@ public final class DateQueryParserUtilTest {
 	 */
 	@Test
 	public void testFixedDate() {
-		final Date expectedDate = new GregorianCalendar(2014, 4, 25).getTime();
-		assertEquals(expectedDate, "25/05/14");
+		final LocalDate expectedDate = LocalDate.of(2014, 5, 25);
+		assertEqualsLocalDate(expectedDate, "25/05/14");
 	}
 }

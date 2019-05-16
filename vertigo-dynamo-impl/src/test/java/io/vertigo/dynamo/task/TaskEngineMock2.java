@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,21 +33,21 @@ import io.vertigo.dynamo.task.model.TaskEngine;
  */
 public final class TaskEngineMock2 extends TaskEngine {
 	/** list<Integer>. */
-	public static final String ATTR_IN_INTEGERS = "ATTR_IN_INTEGERS";
+	public static final String ATTR_IN_INTEGERS = "attrInIntegers";
 
 	private List<Integer> getValues() {
 		return getValue(ATTR_IN_INTEGERS);
 	}
 
 	private void setOutput(final Integer result) {
-		this.setResult(result);
+		setResult(result);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void execute() {
 		int output;
-		switch (this.getTaskDefinition().getRequest()) {
+		switch (getTaskDefinition().getRequest()) {
 			case "+":
 				output = 0;
 				for (final int value : getValues()) {

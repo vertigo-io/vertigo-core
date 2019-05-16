@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import io.vertigo.account.authorization.metamodel.SecuredEntity;
 import io.vertigo.account.authorization.metamodel.SecurityDimension;
@@ -34,6 +35,10 @@ import io.vertigo.lang.WrappedException;
 import io.vertigo.util.StringUtil;
 
 abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTranslator<S>> {
+	private static final Pattern BEGIN_LINE_TRIM_PATTERN = Pattern.compile("^\\s+");
+	private static final Pattern END_LINE_TRIM_PATTERN = Pattern.compile("\\s+$");
+	private static final Pattern MULTIPLE_WHITESPACE_PATTERN = Pattern.compile("\\s+");
+	protected static final Pattern EMPTY_QUERY_PATTERN = Pattern.compile("^\\(\\)$");
 
 	private SecuredEntity mySecuredEntity;
 	private final List<RuleMultiExpression> myMultiExpressions = new ArrayList<>();
@@ -97,16 +102,17 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 		return (S) this;
 	}
 
-	protected final SecuredEntity getSecuredEntity() {
-		return mySecuredEntity;
-	}
-
 	protected final boolean isSimpleSecurityField(final String fieldName) {
+		if (mySecuredEntity == null) {
+			return true; //if no SecuredEntity (ie juste a translator in test), we use only simple field query
+		}
 		return mySecuredEntity.getSecurityFields().stream()
 				.anyMatch(field -> fieldName.equals(field.getName()));
 	}
 
 	protected final SecurityDimension getSecurityDimension(final String fieldName) {
+		Assertion.checkNotNull(mySecuredEntity, "Can't use SecurityDimension when no SecuredEntity definition was set");
+		//-----
 		return mySecuredEntity.getSecurityDimensions().stream()
 				.filter(securityDimension -> fieldName.equals(securityDimension.getName()))
 				.findFirst()//findFirst car pas le moment de vérifier qu'il y en qu'un seul
@@ -123,5 +129,30 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 		Assertion.checkNotNull(myUserCriteria, "UserCriteria was not set");
 		//----
 		return myUserCriteria.getOrDefault(userProperty, Collections.emptyList());
+	}
+
+	protected static List<Serializable> subValues(final List<String> values, final boolean includeHead, final String value, final boolean valueIncluded) {
+		final int indexof = values.indexOf(value);
+		Assertion.checkArgument(indexof >= 0, "Current value ({0}) of security axe {1} not found in authorized values", value);
+		//----
+		final int offsetEdge = valueIncluded == includeHead ? 1 : 0; //add +1 to indexOf if valueInclude XOR includeHead
+		final List<? extends Serializable> subValues = includeHead ? values.subList(0, indexof + offsetEdge) : values.subList(indexof + offsetEdge, values.size() - 1);
+		return (List<Serializable>) subValues;
+	}
+
+	protected static <K> int lastIndexNotNull(final K[] value) {
+		for (int i = value.length - 1; i >= 0; i--) {
+			if (value[i] != null) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	protected static String cleanQuery(final String query) {
+		String queryString = BEGIN_LINE_TRIM_PATTERN.matcher(query).replaceAll("");//replace whitespaces at beginning of a line
+		queryString = END_LINE_TRIM_PATTERN.matcher(queryString).replaceAll("");//replace whitespaces at end of a line
+		queryString = MULTIPLE_WHITESPACE_PATTERN.matcher(queryString).replaceAll(" ");// replace multiple whitespaces by space
+		return queryString;
 	}
 }

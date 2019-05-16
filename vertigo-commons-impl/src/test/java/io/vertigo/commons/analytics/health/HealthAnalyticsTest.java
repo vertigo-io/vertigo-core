@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,6 @@
 package io.vertigo.commons.analytics.health;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -29,34 +28,35 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.health.data.FailedComponentChecker;
 import io.vertigo.commons.analytics.health.data.RedisHealthChecker;
 import io.vertigo.commons.analytics.health.data.SuccessComponentChecker;
-import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 
 @RunWith(JUnitPlatform.class)
-public class HealthAnalyticsTest extends AbstractTestCaseJU4 {
+public class HealthAnalyticsTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private AnalyticsManager analyticsManager;
 
 	@Override
-	protected AppConfig buildAppConfig() {
+	protected NodeConfig buildNodeConfig() {
 		final String redisHost = "redis-pic.part.klee.lan.net";
 		final int redisPort = 6379;
 		final int redisDatabase = 15;
 
-		return AppConfig.builder()
+		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
 				.addModule(new CommonsFeatures()
-						.withRedisConnector(redisHost, redisPort, redisDatabase, Optional.empty())
+						.withRedisConnector(Param.of("host", redisHost), Param.of("port", Integer.toString(redisPort)), Param.of("database", Integer.toString(redisDatabase)))
 						.build())
 				.addModule(ModuleConfig.builder("checkers")
 						.addComponent(RedisHealthChecker.class)

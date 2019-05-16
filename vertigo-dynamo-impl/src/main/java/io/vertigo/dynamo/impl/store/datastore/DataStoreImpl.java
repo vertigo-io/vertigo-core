@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,33 +18,46 @@
  */
 package io.vertigo.dynamo.impl.store.datastore;
 
+import java.util.List;
+
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.criteria.Criteria;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.store.StoreEvent;
 import io.vertigo.dynamo.impl.store.datastore.cache.CacheDataStore;
 import io.vertigo.dynamo.impl.store.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.dynamo.store.datastore.BrokerNN;
 import io.vertigo.dynamo.store.datastore.DataStore;
+import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.lang.Assertion;
 
 /**
  * Implementation of DataStore.
  * @author pchretien
  */
-public final class DataStoreImpl implements DataStore {
+public final class DataStoreImpl implements DataStore, SimpleDefinitionProvider {
+	private static final Criteria CRITERIA_ALWAYS_TRUE = Criterions.alwaysTrue();
+
 	/** Le store est le point d'accès unique à la base (sql, xml, fichier plat...). */
 	private final CacheDataStore cacheDataStore;
 	private final LogicalDataStoreConfig logicalStoreConfig;
 	private final EventBusManager eventBusManager;
 	private final VTransactionManager transactionManager;
+
+	private final BrokerNNImpl brokerNN;
 
 	/**
 	 * Constructor
@@ -59,17 +72,20 @@ public final class DataStoreImpl implements DataStore {
 			final StoreManager storeManager,
 			final VTransactionManager transactionManager,
 			final EventBusManager eventBusManager,
+			final TaskManager taskManager,
 			final DataStoreConfigImpl dataStoreConfig) {
 		Assertion.checkNotNull(collectionsManager);
 		Assertion.checkNotNull(storeManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(eventBusManager);
+		Assertion.checkNotNull(taskManager);
 		Assertion.checkNotNull(dataStoreConfig);
 		//-----
 		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
-		cacheDataStore = new CacheDataStore(collectionsManager, storeManager, eventBusManager, dataStoreConfig);
+		cacheDataStore = new CacheDataStore(collectionsManager, storeManager, dataStoreConfig);
 		this.eventBusManager = eventBusManager;
 		this.transactionManager = transactionManager;
+		brokerNN = new BrokerNNImpl(taskManager);
 	}
 
 	private DataStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {
@@ -78,7 +94,7 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readOneForUpdate(final URI<E> uri) {
+	public <E extends Entity> E readOneForUpdate(final UID<E> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
@@ -90,7 +106,7 @@ public final class DataStoreImpl implements DataStore {
 		return entity;
 	}
 
-	private void fireAfterCommit(final StoreEvent.Type evenType, final URI<?> uri) {
+	private void fireAfterCommit(final StoreEvent.Type evenType, final UID<?> uri) {
 		transactionManager.getCurrentTransaction().addAfterCompletion(
 				(final boolean txCommitted) -> {
 					if (txCommitted) {//send event only is tx successful
@@ -109,7 +125,7 @@ public final class DataStoreImpl implements DataStore {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		final E createdEntity = getPhysicalStore(dtDefinition).create(dtDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.CREATE, new URI(dtDefinition, DtObjectUtil.getId(createdEntity)));
+		fireAfterCommit(StoreEvent.Type.CREATE, UID.of(dtDefinition, DtObjectUtil.getId(createdEntity)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 		return createdEntity;
 	}
@@ -122,13 +138,13 @@ public final class DataStoreImpl implements DataStore {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		getPhysicalStore(dtDefinition).update(dtDefinition, entity);
 		//-----
-		fireAfterCommit(StoreEvent.Type.UPDATE, new URI(dtDefinition, DtObjectUtil.getId(entity)));
+		fireAfterCommit(StoreEvent.Type.UPDATE, UID.of(dtDefinition, DtObjectUtil.getId(entity)));
 		//La mise à jour d'un seul élément suffit à rendre le cache obsolète
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final URI<? extends Entity> uri) {
+	public void delete(final UID<? extends Entity> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final DtDefinition dtDefinition = uri.getDefinition();
@@ -139,7 +155,7 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readOne(final URI<E> uri) {
+	public <E extends Entity> E readOne(final UID<E> uri) {
 		Assertion.checkNotNull(uri);
 		//-----
 		final E entity = cacheDataStore.readNullable(uri);
@@ -167,8 +183,29 @@ public final class DataStoreImpl implements DataStore {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> find(final DtDefinition dtDefinition, final Criteria<E> criteria) {
-		return getPhysicalStore(dtDefinition).findByCriteria(dtDefinition, criteria, null);
+	public <E extends Entity> DtList<E> find(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
+		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(dtListState);
+		//-----
+		final DtList<E> list = cacheDataStore.findByCriteria(dtDefinition, criteria != null ? criteria : CRITERIA_ALWAYS_TRUE, dtListState);
+		//-----
+		Assertion.checkNotNull(list);
+		return list;
+
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return cacheDataStore.provideDefinitions(definitionSpace);
+	}
+
+	//------
+
+	/** {@inheritDoc} */
+	@Override
+	public BrokerNN getBrokerNN() {
+		return brokerNN;
 	}
 
 }

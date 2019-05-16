@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,24 +18,44 @@
  */
 package io.vertigo.dynamo.environment.java;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 
 /**
  * Test de lecture de class Java.
  *
  * @author npiedeloup
  */
-public final class JavaParserStereotypesTest extends AbstractTestCaseJU4 {
+public final class JavaParserStereotypesTest extends AbstractTestCaseJU5 {
 
 	private DtDefinition getDtDefinition(final String urn) {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		return definitionSpace.resolve(urn, DtDefinition.class);
+	}
+
+	@Override
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/java/data/execution.kpr")
+								.addDefinitionResource("classes", "io.vertigo.dynamo.environment.java.data.DtDefinitions")
+								.build())
+						.build())
+				.build();
 	}
 
 	/**
@@ -43,13 +63,13 @@ public final class JavaParserStereotypesTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testStereotypeMasterData() {
-		final DtDefinition dtDefinitionCity = getDtDefinition("DT_CITY");
-		Assert.assertNotNull(dtDefinitionCity);
-		Assert.assertEquals(DtStereotype.MasterData, dtDefinitionCity.getStereotype());
+		final DtDefinition dtDefinitionCity = getDtDefinition("DtCity");
+		Assertions.assertNotNull(dtDefinitionCity);
+		Assertions.assertEquals(DtStereotype.MasterData, dtDefinitionCity.getStereotype());
 
-		final DtDefinition dtDefinitionCommandType = getDtDefinition("DT_COMMAND_TYPE");
-		Assert.assertNotNull(dtDefinitionCommandType);
-		Assert.assertEquals(DtStereotype.StaticMasterData, dtDefinitionCommandType.getStereotype());
+		final DtDefinition dtDefinitionCommandType = getDtDefinition("DtCommandType");
+		Assertions.assertNotNull(dtDefinitionCommandType);
+		Assertions.assertEquals(DtStereotype.StaticMasterData, dtDefinitionCommandType.getStereotype());
 	}
 
 	/**
@@ -57,9 +77,9 @@ public final class JavaParserStereotypesTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testStereotypeKeyConcept() {
-		final DtDefinition dtDefinitionCommand = getDtDefinition("DT_COMMAND");
-		Assert.assertNotNull(dtDefinitionCommand);
-		Assert.assertEquals(DtStereotype.KeyConcept, dtDefinitionCommand.getStereotype());
+		final DtDefinition dtDefinitionCommand = getDtDefinition("DtCommand");
+		Assertions.assertNotNull(dtDefinitionCommand);
+		Assertions.assertEquals(DtStereotype.KeyConcept, dtDefinitionCommand.getStereotype());
 
 	}
 
@@ -68,20 +88,20 @@ public final class JavaParserStereotypesTest extends AbstractTestCaseJU4 {
 	 */
 	@Test
 	public void testStereotypeEntity() {
-		final DtDefinition dtDefinitionAttachment = getDtDefinition("DT_ATTACHMENT");
-		Assert.assertNotNull(dtDefinitionAttachment);
-		Assert.assertEquals(DtStereotype.Entity, dtDefinitionAttachment.getStereotype());
+		final DtDefinition dtDefinitionAttachment = getDtDefinition("DtAttachment");
+		Assertions.assertNotNull(dtDefinitionAttachment);
+		Assertions.assertEquals(DtStereotype.Entity, dtDefinitionAttachment.getStereotype());
 
-		final DtDefinition dtDefinitionCommandValidation = getDtDefinition("DT_COMMAND_VALIDATION");
-		Assert.assertNotNull(dtDefinitionCommandValidation);
-		Assert.assertEquals(DtStereotype.Entity, dtDefinitionCommandValidation.getStereotype());
+		final DtDefinition dtDefinitionCommandValidation = getDtDefinition("DtCommandValidation");
+		Assertions.assertNotNull(dtDefinitionCommandValidation);
+		Assertions.assertEquals(DtStereotype.Entity, dtDefinitionCommandValidation.getStereotype());
 	}
 
 	@Test
 	public void testStereotypeData() {
-		final DtDefinition dtDefinitionAttachment = getDtDefinition("DT_COMMAND_CRITERIA");
-		Assert.assertNotNull(dtDefinitionAttachment);
-		Assert.assertEquals(DtStereotype.ValueObject, dtDefinitionAttachment.getStereotype());
+		final DtDefinition dtDefinitionAttachment = getDtDefinition("DtCommandCriteria");
+		Assertions.assertNotNull(dtDefinitionAttachment);
+		Assertions.assertEquals(DtStereotype.ValueObject, dtDefinitionAttachment.getStereotype());
 
 	}
 }

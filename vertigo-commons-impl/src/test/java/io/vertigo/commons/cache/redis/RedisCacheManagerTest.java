@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,12 @@
  */
 package io.vertigo.commons.cache.redis;
 
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.cache.AbstractCacheManagerTest;
+import io.vertigo.commons.cache.TestCacheDefinitionProvider;
+import io.vertigo.core.param.Param;
 
 /**
  * RedisCache Manager test class.
@@ -34,5 +39,24 @@ public class RedisCacheManagerTest extends AbstractCacheManagerTest {
 	 */
 	public RedisCacheManagerTest() {
 		super(500);
+	}
+
+	@Override
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.withCache()
+						.withRedisConnector(
+								Param.of("host", "redis-pic.part.klee.lan.net"),
+								Param.of("port", "6379"),
+								Param.of("database", "0"))
+						.withRedisCache()
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(TestCacheDefinitionProvider.class)
+						.build())
+				.build();
 	}
 }

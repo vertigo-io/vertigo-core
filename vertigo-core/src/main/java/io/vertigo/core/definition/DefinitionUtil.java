@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 package io.vertigo.core.definition;
-
-import java.util.Locale;
 
 import io.vertigo.lang.Assertion;
 
@@ -61,8 +59,7 @@ public final class DefinitionUtil {
 		//On vérifie aussi que le prefix est OK
 		final String prefix = getPrefix(definitionClass);
 		Assertion.checkArgument(definitionName.startsWith(prefix), "Le nom de la définition '{0}' ne commence pas par le prefix attendu : '{1}'", definitionName, prefix);
-		Assertion.checkArgument(definitionName.charAt(prefix.length()) == Definition.SEPARATOR, "Séparateur utilisé pour la définition '{0}' n'est pas correct", definitionName);
-		return definitionName.substring(prefix.length() + 1);
+		return definitionName.substring(prefix.length());
 	}
 
 	/**
@@ -78,8 +75,8 @@ public final class DefinitionUtil {
 		final String prefix = DefinitionUtil.getPrefix(definitionClass);
 		Assertion.checkArgument(definitionName.startsWith(prefix), "La définition {0} doit commencer par {1}", definitionName, prefix);
 		Assertion.checkArgument(definitionName.length() > prefix.length(), "Le nom de la définition doit être renseigné");
-		Assertion.checkArgument(definitionName.toUpperCase(Locale.ENGLISH).equals(definitionName), "La définition {0} doit être en majuscules", definitionName);
-		Assertion.checkArgument(Definition.REGEX_DEFINITION_URN.matcher(definitionName).matches(), "urn de définition {0} doit matcher le pattern {1}", definitionName, Definition.REGEX_DEFINITION_URN);
+		Assertion.checkArgument(Character.isUpperCase(definitionName.charAt(prefix.length())), "the name of the dtDefinition {0} must be in UpperCamelCase", definitionName);
+		Assertion.checkArgument(Definition.REGEX_DEFINITION_NAME.matcher(definitionName).matches(), "urn de définition {0} doit matcher le pattern {1}", definitionName, Definition.REGEX_DEFINITION_NAME);
 	}
 
 }

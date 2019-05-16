@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,14 +34,16 @@ import io.vertigo.lang.Assertion;
  * @author pchretien, npiedeloup
  */
 public final class FormatterDefault implements Formatter {
-	private static final String FMT_STRING_DEFAULT = "FMT_STRING_DEFAULT";
-	private static final String FMT_DATE_DEFAULT = "FMT_DATE_DEFAULT";
-	private static final String FMT_BOOLEAN_DEFAULT = "FMT_BOOLEAN_DEFAULT";
-	private static final String FMT_NUMBER_DEFAULT = "FMT_NUMBER_DEFAULT";
+	private static final String FMT_STRING_DEFAULT = "FmtStringDefault";
+	private static final String FMT_LOCAL_DATE_DEFAULT = "FmtLocalDateDefault";
+	private static final String FMT_INSTANT_DEFAULT = "FmtInstantDefault";
+	private static final String FMT_BOOLEAN_DEFAULT = "FmtBooleanDefault";
+	private static final String FMT_NUMBER_DEFAULT = "FmtNumberDefault";
 
 	private final Formatter booleanFormatter;
 	private final Formatter numberformatter;
-	private final Formatter dateFormater;
+	private final Formatter localDateFormater;
+	private final Formatter instantFormater;
 	private final Formatter stringFormatter;
 
 	/**
@@ -53,7 +55,8 @@ public final class FormatterDefault implements Formatter {
 		//-----
 		booleanFormatter = obtainFormatterBoolean();
 		numberformatter = obtainFormatterNumber();
-		dateFormater = obtainFormatterDate();
+		localDateFormater = obtainFormatterLocalDate();
+		instantFormater = obtainFormatterInstant();
 		stringFormatter = obtainFormatterString();
 	}
 
@@ -70,8 +73,10 @@ public final class FormatterDefault implements Formatter {
 		switch (dataType) {
 			case String:
 				return stringFormatter;
-			case Date:
-				return dateFormater;
+			case LocalDate:
+				return localDateFormater;
+			case Instant:
+				return instantFormater;
 			case Boolean:
 				return booleanFormatter;
 			case Integer:
@@ -111,11 +116,18 @@ public final class FormatterDefault implements Formatter {
 		return new FormatterNumber("#,###.##");
 	}
 
-	private static Formatter obtainFormatterDate() {
-		if (getDefinitionSpace().contains(FMT_DATE_DEFAULT)) {
-			return getDefinitionSpace().resolve(FMT_DATE_DEFAULT, FormatterDefinition.class);
+	private static Formatter obtainFormatterLocalDate() {
+		if (getDefinitionSpace().contains(FMT_LOCAL_DATE_DEFAULT)) {
+			return getDefinitionSpace().resolve(FMT_LOCAL_DATE_DEFAULT, FormatterDefinition.class);
 		}
-		return new FormatterDate("dd/MM/yyyy HH:mm ; dd/MM/yyyy");
+		return new FormatterDate("dd/MM/yyyy");
+	}
+
+	private static Formatter obtainFormatterInstant() {
+		if (getDefinitionSpace().contains(FMT_INSTANT_DEFAULT)) {
+			return getDefinitionSpace().resolve(FMT_INSTANT_DEFAULT, FormatterDefinition.class);
+		}
+		return new FormatterDate("dd/MM/yyyy HH:mm");
 	}
 
 	private static Formatter obtainFormatterString() {

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,7 +37,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author jgarnier, npiedeloup
  */
-@DefinitionPrefix("SEC_")
+@DefinitionPrefix("Sec")
 public final class SecuredEntity implements Definition {
 	private final String name;
 	private final DtDefinition entityDefinition;
@@ -63,7 +63,7 @@ public final class SecuredEntity implements Definition {
 		Assertion.checkNotNull(advancedDimensions);
 		Assertion.checkNotNull(operations);
 		//---
-		name = "SEC_" + entityDefinition.getName();
+		name = "Sec" + entityDefinition.getName();
 		this.entityDefinition = entityDefinition;
 		this.securityFields = securityFields;
 		this.advancedDimensions = advancedDimensions;

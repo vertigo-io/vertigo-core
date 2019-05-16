@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@ import javax.inject.Inject;
 
 import io.vertigo.account.identityprovider.IdentityProviderManager;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 
@@ -61,8 +61,8 @@ public final class IdentityProviderManagerImpl implements IdentityProviderManage
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> Optional<VFile> getPhoto(final URI<E> accountURI) {
-		return identityProviderPlugin.getPhoto(accountURI);
+	public <E extends Entity> Optional<VFile> getPhoto(final UID<E> userURI) {
+		return identityProviderPlugin.getPhoto(userURI);
 	}
 
 	/** {@inheritDoc} */

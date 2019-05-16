@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,11 +34,11 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.ListBuilder;
@@ -91,7 +91,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 	 * @param defaultZoneId ZoneId par défaut utilisée par l'application.
 	 */
 	@Inject
-	public LocaleManagerImpl(@Named("locales") final String locales, @Named("defaultZoneId") final Optional<String> defaultZoneId) {
+	public LocaleManagerImpl(@ParamValue("locales") final String locales, @ParamValue("defaultZoneId") final Optional<String> defaultZoneId) {
 		Assertion.checkArgNotEmpty(locales);
 		Assertion.checkNotNull(defaultZoneId);
 		//-----
@@ -171,7 +171,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 					//Si on est en mode override on autorise des chargements partiels de dictionnaire
 					continue;
 				}
-				throw WrappedException.wrap(e, "le dictionnaire pour la locale '" + locale + "' n'est pas renseigné");
+				throw WrappedException.wrap(e, "le dictionnaire pour la locale '{0}' n'est pas renseigné", locale);
 			}
 			//On a trouvé un dictionnaire
 			check(resourceBundle, enums, override);
@@ -255,7 +255,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 			final Locale currentLocale = localeProvider.getCurrentLocale();
 			//We have to check if the currentLocale belongs to locales.
 			if (!locales.contains(localeProvider.getCurrentLocale())) {
-				LOG.error("CurrentLocale '" + currentLocale + "' is not allowed, it must be in '" + locales + "'");
+				LOG.error("CurrentLocale '{}' is not allowed, it must be in '{}'", currentLocale, locales);
 				//So, we can pick the default language.
 				return locales.get(0);
 			}
@@ -283,9 +283,9 @@ public final class LocaleManagerImpl implements LocaleManager {
 	 */
 	private static void logResourceNotFound(final String resource, final boolean isMultiLocales) {
 		if (isMultiLocales) {
-			LOG.warn("Resource " + resource + " non trouvée");
+			LOG.warn("Resource {} non trouvée", resource);
 		} else {
-			LOG.info("Resource " + resource + " non trouvée");
+			LOG.info("Resource {} non trouvée", resource);
 		}
 	}
 }

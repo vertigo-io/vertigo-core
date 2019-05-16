@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +20,8 @@ package io.vertigo.dynamo.environment.plugins.loaders.kpr.definition;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
@@ -50,7 +50,7 @@ public class DslDefinitionBodyRuleTest {
 				.parse("{ args : \"UPPER\" }", 0)
 				.getValue();
 
-		Assert.assertEquals(1, definitionBody.getPropertyEntries().size());
+		Assertions.assertEquals(1, definitionBody.getPropertyEntries().size());
 	}
 
 	//Exemple de test sur la déclaration d'un Domain
@@ -65,24 +65,24 @@ public class DslDefinitionBodyRuleTest {
 		final DslEntity entity = find(entities, "Domain");
 
 		final DslDefinitionBody definitionBody = new DslDefinitionBodyRule(entity)
-				.parse("{ dataType : String ,  formatter : FMT_DEFAULT,  constraint : [ CK_CODE_POSTAL ]    } ", 0)
+				.parse("{ dataType : String ,  formatter : FmtDefault,  constraint : [ CkCodePostal ]    } ", 0)
 				.getValue();
 
-		Assert.assertNotNull(definitionBody);
+		Assertions.assertNotNull(definitionBody);
 	}
 
 	@Test
 	public void testError() {
 		final List<DslEntity> entities = dslDefinitionRepository.getGrammar().getEntities();
 		final DslEntity entity = find(entities, "Domain");
-		final String testValue = "{ dataType : String ,  formatter : FMT_DEFAULT,  constraint : [ CK_CODE_POSTAL ] , maxLengh:\"true\"   } ";
+		final String testValue = "{ dataType : String ,  formatter : FmtDefault,  constraint : [ CkCodePostal ] , maxLengh:\"true\"   } ";
 		try {
 			new DslDefinitionBodyRule(entity)
 					.parse(testValue, 0);
-			Assert.fail();
+			Assertions.fail();
 		} catch (final PegNoMatchFoundException e) {
 			//System.out.println(e.getFullMessage());
-			Assert.assertEquals(testValue.indexOf("maxLengh") + "maxLengh".length() - 1, e.getIndex());
+			Assertions.assertEquals(testValue.indexOf("maxLengh") + "maxLengh".length() - 1, e.getIndex());
 		}
 	}
 }

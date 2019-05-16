@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,16 +25,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthAction;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequestBuilder;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
-import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
@@ -54,18 +53,20 @@ import io.vertigo.core.component.Activeable;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.impl.search.SearchServicesPlugin;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
+import io.vertigo.util.StringUtil;
 
 /**
  * Gestion de la connexion au serveur Solr de manière transactionnel.
@@ -73,6 +74,7 @@ import io.vertigo.lang.WrappedException;
  */
 public abstract class AbstractESSearchServicesPlugin implements SearchServicesPlugin, Activeable {
 	private static final int DEFAULT_SCALING_FACTOR = 1000;
+	private static final String DEFAULT_DATE_FORMAT = "dd/MM/yyyy||strict_date_optional_time||epoch_second";
 	private static final int OPTIMIZE_MAX_NUM_SEGMENT = 32;
 	/** field suffix for keyword fields added by this plugin. */
 	public static final String SUFFIX_SORT_FIELD = ".keyword";
@@ -107,14 +109,14 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final ResourceManager resourceManager) {
 		Assertion.checkArgNotEmpty(indexNameOrPrefix);
 		Assertion.checkNotNull(codecManager);
-		Assertion.when(indexNameIsPrefix).check(() -> indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix);
-		Assertion.when(!indexNameIsPrefix).check(() -> !indexNameOrPrefix.endsWith("_"), "When envIndex isn't declared as prefix, it can't ends with _ (current : {0})", indexNameOrPrefix);
+		//Assertion.when(indexNameIsPrefix).check(() -> indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix);
+		//Assertion.when(!indexNameIsPrefix).check(() -> !indexNameOrPrefix.endsWith("_"), "When envIndex isn't declared as prefix, it can't ends with _ (current : {0})", indexNameOrPrefix);
 		//-----
 		this.defaultMaxRows = defaultMaxRows;
-		defaultListState = new DtListState(defaultMaxRows, 0, null, null);
+		defaultListState = DtListState.of(defaultMaxRows);
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
 		//------
-		this.indexNameOrPrefix = indexNameOrPrefix.toLowerCase(Locale.ROOT).trim();
+		this.indexNameOrPrefix = indexNameOrPrefix;
 		this.indexNameIsPrefix = indexNameIsPrefix;
 		configFileUrl = resourceManager.resolve(configFile);
 	}
@@ -134,7 +136,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 			updateTypeMapping(indexDefinition, hasSortableNormalizer(myIndexName));
 			logMappings(myIndexName);
-			types.add(indexDefinition.getName().toLowerCase(Locale.ROOT));
+			types.add(indexDefinition.getName());
 		}
 
 		waitForYellowStatus();
@@ -151,12 +153,12 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					.get(myIndexName);
 			return !currentSettings.getAsSettings("index.analysis.normalizer.sortable").isEmpty();
 		} catch (final ElasticsearchException e) {
-			throw WrappedException.wrap(e, "Error on index " + myIndexName);
+			throw WrappedException.wrap(e, "Error on index {0}", myIndexName);
 		}
 	}
 
 	private String obtainIndexName(final SearchIndexDefinition indexDefinition) {
-		return indexNameIsPrefix ? indexNameOrPrefix + indexDefinition.getName().toLowerCase(Locale.ROOT).trim() : indexNameOrPrefix;
+		return StringUtil.camelToConstCase(indexNameIsPrefix ? indexNameOrPrefix + indexDefinition.getName() : indexNameOrPrefix).toLowerCase(Locale.ROOT);
 	}
 
 	private void createIndex(final String myIndexName) {
@@ -166,19 +168,19 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					esClient.admin().indices().prepareCreate(myIndexName).get();
 				} else {
 					try (InputStream is = configFileUrl.openStream()) {
-						final Settings settings = Settings.builder().loadFromStream(configFileUrl.getFile(), is).build();
+						final Settings settings = Settings.builder().loadFromStream(configFileUrl.getFile(), is, false).build();
 						esClient.admin().indices().prepareCreate(myIndexName).setSettings(settings).get();
 					}
 				}
 			} else if (configFileUrl != null) {
 				// If we use local config file, we check config against ES server
 				try (InputStream is = configFileUrl.openStream()) {
-					final Settings settings = Settings.builder().loadFromStream(configFileUrl.getFile(), is).build();
+					final Settings settings = Settings.builder().loadFromStream(configFileUrl.getFile(), is, false).build();
 					indexSettingsValid = indexSettingsValid && !isIndexSettingsDirty(myIndexName, settings);
 				}
 			}
 		} catch (final ElasticsearchException | IOException e) {
-			throw WrappedException.wrap(e, "Error on index " + myIndexName);
+			throw WrappedException.wrap(e, "Error on index {0}", myIndexName);
 		}
 	}
 
@@ -191,17 +193,17 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 				.getSettings()
 				.get(myIndexName);
 		boolean indexSettingsDirty = false;
-		final Map<String, String> settingsMap = settings.getAsMap();
-		for (final Entry<String, String> entry : settingsMap.entrySet()) {
-			final String currentValue = currentSettings.get(entry.getKey());
+		final Set<String> settingsNames = settings.keySet();
+		for (final String settingsName : settingsNames) {
+			final String currentValue = currentSettings.get(settingsName);
 			if (currentValue == null) {
 				indexSettingsDirty = true;
 				break;
 			}
-			final String expectedValue = entry.getValue();
+			final Object expectedValue = settings.get(settingsName);
 			if (!currentValue.equals(expectedValue)) {
 				indexSettingsDirty = true;
-				LOGGER.warn("[" + myIndexName + "] " + entry.getKey() + ":  current=" + currentValue + ", expected=" + expectedValue);
+				LOGGER.warn("[{}] {} :  current={}, expected= {}", myIndexName, settingsName, currentValue, expectedValue);
 				break;
 			}
 		}
@@ -212,9 +214,9 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		final IndicesAdminClient indicesAdmin = esClient.admin().indices();
 		final ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexMappings = indicesAdmin.prepareGetMappings(myIndexName).get().getMappings();
 		for (final ObjectObjectCursor<String, ImmutableOpenMap<String, MappingMetaData>> indexMapping : indexMappings) {
-			LOGGER.info("Index " + indexMapping.key + " CurrentMapping:");
+			LOGGER.info("Index {} CurrentMapping:", indexMapping.key);
 			for (final ObjectObjectCursor<String, MappingMetaData> dtoMapping : indexMapping.value) {
-				LOGGER.info(dtoMapping.key + " -> " + dtoMapping.value.source());
+				LOGGER.info(" {} -> {}", dtoMapping.key, dtoMapping.value.source());
 			}
 		}
 	}
@@ -258,7 +260,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	/** {@inheritDoc} */
 	@Override
-	public final <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final URI<S> uri) {
+	public final <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final UID<S> uri) {
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(indexDefinition);
 		//-----
@@ -298,9 +300,29 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		Assertion.checkArgument(indexSettingsValid,
 				"Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
 		Assertion.checkNotNull(indexDefinition);
-		Assertion.checkArgument(types.contains(indexDefinition.getName().toLowerCase(Locale.ROOT)), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
+		Assertion.checkArgument(types.contains(indexDefinition.getName()), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
 		//-----
-		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), indexDefinition.getName().toLowerCase(Locale.ROOT), esClient);
+		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), indexDefinition.getName(), esClient);
+	}
+
+	private static String obtainPkIndexDataType(final Domain domain) {
+		// On peut préciser pour chaque domaine le type d'indexation
+		// Calcul automatique  par default.
+		switch (domain.getDataType()) {
+			case Boolean:
+			case Double:
+			case Integer:
+			case Long:
+				return domain.getDataType().name().toLowerCase(Locale.ROOT);
+			case String:
+				return "keyword";
+			case LocalDate:
+			case Instant:
+			case BigDecimal:
+			case DataStream:
+			default:
+				throw new IllegalArgumentException("Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + domain + "].");
+		}
 	}
 
 	/**
@@ -315,6 +337,10 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					.startObject("properties")
 					.startObject(ESDocumentCodec.FULL_RESULT)
 					.field("type", "binary")
+					.endObject();
+
+			typeMapping.startObject(ESDocumentCodec.DOC_ID)
+					.field("type", obtainPkIndexDataType(indexDefinition.getKeyConceptDtDefinition().getIdField().get().getDomain()))
 					.endObject();
 
 			/* 3 : Les champs du dto index */
@@ -344,10 +370,10 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			}
 			typeMapping.endObject().endObject(); //end properties
 
-			final PutMappingResponse putMappingResponse = esClient.admin()
+			final AcknowledgedResponse putMappingResponse = esClient.admin()
 					.indices()
 					.preparePutMapping(obtainIndexName(indexDefinition))
-					.setType(indexDefinition.getName().toLowerCase(Locale.ROOT))
+					.setType(indexDefinition.getName())
 					.setSource(typeMapping)
 					.get();
 			putMappingResponse.isAcknowledged();
@@ -377,6 +403,9 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		if ("scaled_float".equals(indexType.getIndexDataType())) {
 			typeMapping.field("scaling_factor", DEFAULT_SCALING_FACTOR);
 		}
+		if ("date".equals(indexType.getIndexDataType())) {
+			typeMapping.field("format", DEFAULT_DATE_FORMAT);
+		}
 	}
 
 	private void markToOptimize(final String myIndexName) {
@@ -400,7 +429,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final ClusterHealthResponse clusterHealthResponse = esClient
 					.admin()
 					.cluster()
-					.health(ClusterHealthAction.INSTANCE.newRequestBuilder(esClient).request())
+					.health(new ClusterHealthRequestBuilder(esClient, ClusterHealthAction.INSTANCE).request())
 					.get();
 			switch (clusterHealthResponse.getStatus()) {
 				case GREEN:

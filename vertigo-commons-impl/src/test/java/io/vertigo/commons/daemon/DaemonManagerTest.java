@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,9 +23,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.inject.Inject;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.health.HealthStatus;
@@ -33,13 +36,30 @@ import io.vertigo.commons.analytics.health.HealthStatus;
 /**
  * @author TINGARGIOLA
  */
-public final class DaemonManagerTest extends AbstractTestCaseJU4 {
+public final class DaemonManagerTest extends AbstractTestCaseJU5 {
+
 	@Inject
 	private DaemonManager daemonManager;
 	@Inject
 	private AnalyticsManager analyticsManager;
 	@Inject
 	private FakeComponent fakeComponent;
+
+	@Override
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.build())
+				.addModule(ModuleConfig.builder("myAspects")
+						.addAspect(DaemonFakeAspect.class)
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addComponent(FakeComponent.class)
+						.build())
+				.build();
+	}
 
 	@Test
 	public void testSimple() throws Exception {

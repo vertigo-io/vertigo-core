@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,9 +22,8 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 
 /**
@@ -32,12 +31,6 @@ import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
  * @author npiedeloup
  */
 public abstract class AbstractStaticDataStorePlugin implements DataStorePlugin {
-
-	/** {@inheritDoc} */
-	@Override
-	public int count(final DtDefinition dtDefinition) {
-		return findAll(dtDefinition, new DtListURIForCriteria<>(dtDefinition, null, null)).size();
-	}
 
 	/** {@inheritDoc} */
 	@Override
@@ -53,7 +46,7 @@ public abstract class AbstractStaticDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final DtDefinition dtDefinition, final URI uri) {
+	public void delete(final DtDefinition dtDefinition, final UID uri) {
 		throw new UnsupportedOperationException();
 	}
 

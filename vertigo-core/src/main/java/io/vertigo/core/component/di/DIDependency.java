@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,8 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import javax.inject.Named;
-
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 
@@ -41,7 +40,7 @@ import io.vertigo.util.ClassUtil;
  *
  * @author pchretien
  */
-public final class DIDependency {
+final class DIDependency {
 	private final String targetId;
 	private final boolean isOption;
 	private final boolean isList;
@@ -51,7 +50,7 @@ public final class DIDependency {
 	 * Constructor for field injection.
 	 * @param field Field to inject into
 	 */
-	public DIDependency(final Field field) {
+	DIDependency(final Field field) {
 		Assertion.checkNotNull(field);
 		//-----
 		final String named = getNamedValue(field.getAnnotations());
@@ -68,7 +67,7 @@ public final class DIDependency {
 	 * @param constructor Constructor to inject into
 	 * @param i parameter index to inject into
 	 */
-	public DIDependency(final Constructor<?> constructor, final int i) {
+	DIDependency(final Constructor<?> constructor, final int i) {
 		Assertion.checkNotNull(constructor);
 		//-----
 		final String named = getNamedValue(constructor.getParameterAnnotations()[i]);
@@ -83,35 +82,35 @@ public final class DIDependency {
 	/**
 	 * @return Inject name
 	 */
-	public String getName() {
+	String getName() {
 		return targetId;
 	}
 
 	/**
 	 * @return if optionnal
 	 */
-	public boolean isOption() {
+	boolean isOption() {
 		return isOption;
 	}
 
 	/**
 	 * @return if required (not null)
 	 */
-	public boolean isRequired() {
+	boolean isRequired() {
 		return !(isList || isOption);
 	}
 
 	/**
 	 * @return is list
 	 */
-	public boolean isList() {
+	boolean isList() {
 		return isList;
 	}
 
 	/**
 	 * @return get object class
 	 */
-	public Class<?> getType() {
+	Class<?> getType() {
 		Assertion.checkNotNull(type);
 		return type;
 	}
@@ -137,8 +136,8 @@ public final class DIDependency {
 
 	private static String getNamedValue(final Annotation[] annotations) {
 		return Arrays.stream(annotations)
-				.filter(annotation -> annotation instanceof Named)
-				.map(annotation -> Named.class.cast(annotation).value())
+				.filter(annotation -> annotation instanceof ParamValue)
+				.map(annotation -> ParamValue.class.cast(annotation).value())
 				.findFirst().orElse(null);
 	}
 }

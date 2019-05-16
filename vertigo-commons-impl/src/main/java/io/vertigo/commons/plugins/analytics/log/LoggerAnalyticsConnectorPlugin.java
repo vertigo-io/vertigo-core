@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,15 +20,16 @@ package io.vertigo.commons.plugins.analytics.log;
 
 import java.util.Collections;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.commons.analytics.process.AProcess;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
-import io.vertigo.commons.impl.analytics.process.AProcess;
 
 /**
  * Processes connector which only use a log4j logger.

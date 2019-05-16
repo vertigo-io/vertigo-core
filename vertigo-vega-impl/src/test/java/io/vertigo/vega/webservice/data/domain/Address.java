@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,45 +20,44 @@ package io.vertigo.vega.webservice.data.domain;
 
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.ListVAccessor;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 public final class Address implements Entity {
 	private static final long serialVersionUID = 8922834274442256496L;
 
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "address Id")
+	@Field(domain = "DoId", type = "ID", required = true, label = "address Id")
 	private Long adrId;
-	@Field(domain = "DO_TEXTE_50", label = "street1")
+	@Field(domain = "DoTexte50", label = "street1")
 	private String street1;
-	@Field(domain = "DO_TEXTE_50", label = "street2")
+	@Field(domain = "DoTexte50", label = "street2")
 	private String street2;
-	@Field(domain = "DO_TEXTE_50", label = "city")
+	@Field(domain = "DoTexte50", label = "city")
 	private String city;
-	@Field(domain = "DO_TEXTE_50", label = "postal code")
+	@Field(domain = "DoTexte50", label = "postal code")
 	private String postalCode;
-	@Field(domain = "DO_TEXTE_50", label = "country")
+	@Field(domain = "DoTexte50", label = "country")
 	private String country;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_CON_ADR",
-			fkFieldName = "ADR_ID",
-			primaryDtDefinitionName = "DT_ADDRESS",
+			name = "AConAdr",
+			fkFieldName = "adrId",
+			primaryDtDefinitionName = "DtAddress",
 			primaryIsNavigable = true,
 			primaryRole = "Address",
 			primaryLabel = "Address",
 			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DT_CONTACT",
+			foreignDtDefinitionName = "DtContact",
 			foreignIsNavigable = false,
 			foreignRole = "Contact",
 			foreignLabel = "Contact",
 			foreignMultiplicity = "0..*")
-	private final ListVAccessor<Contact> contactAccessor = new ListVAccessor<>(this, "A_CON_ADR", "Contact");
+	private final ListVAccessor<Contact> contactAccessor = new ListVAccessor<>(this, "AConAdr", "Contact");
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<Address> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<Address> getUID() {
+		return UID.of(this);
 	}
 
 	public Long getAdrId() {

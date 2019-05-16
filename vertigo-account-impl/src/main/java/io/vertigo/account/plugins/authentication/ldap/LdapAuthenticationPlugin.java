@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,6 @@ import java.util.Hashtable;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.naming.CommunicationException;
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -35,6 +34,7 @@ import org.apache.logging.log4j.Logger;
 import io.vertigo.account.authentication.AuthenticationToken;
 import io.vertigo.account.impl.authentication.AuthenticationPlugin;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 
@@ -62,9 +62,9 @@ public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 	 */
 	@Inject
 	public LdapAuthenticationPlugin(
-			@Named("userLoginTemplate") final String userLoginTemplate,
-			@Named("ldapServerHost") final String ldapServerHost,
-			@Named("ldapServerPort") final String ldapServerPort) {
+			@ParamValue("userLoginTemplate") final String userLoginTemplate,
+			@ParamValue("ldapServerHost") final String ldapServerHost,
+			@ParamValue("ldapServerPort") final String ldapServerPort) {
 		parseUserLoginTemplate(userLoginTemplate);
 		ldapServer = ldapServerHost + ":" + ldapServerPort;
 	}
@@ -86,14 +86,14 @@ public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 			final String userProtectedDn = userLoginPrefix + protectLdap(usernamePasswordToken.getPrincipal()) + userLoginSuffix;
 			ldapContext = createLdapContext(userProtectedDn, usernamePasswordToken.getPassword());
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Ouverture de connexion LDAP  '" + ldapContext + "'");
+				LOGGER.debug("Ouverture de connexion LDAP  '{}'", ldapContext);
 			}
 			return Optional.of(token.getPrincipal());
 		} catch (final NamingException e) {
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.info("Can't authenticate user '" + token.getPrincipal() + "'", e);
+				LOGGER.info("Can't authenticate user '{}'", token.getPrincipal(), e);
 			} else {
-				LOGGER.info("Can't authenticate user '" + token.getPrincipal() + "'");
+				LOGGER.info("Can't authenticate user '{}'", token.getPrincipal());
 			}
 			return Optional.empty(); //can't connect user
 		} finally {
@@ -149,7 +149,7 @@ public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 		try {
 			ldapContext.close();
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Fermeture connexion Ldap  \"" + ldapContext.toString() + "\" ");
+				LOGGER.debug("Fermeture connexion Ldap  \" {} \"", ldapContext);
 			}
 		} catch (final NamingException e) {
 			throw WrappedException.wrap(e, "Erreur lors de la fermeture de l'objet LdapContext");

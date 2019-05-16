@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +21,7 @@
  */
 package io.vertigo.account.authorization.metamodel;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -56,16 +57,16 @@ public final class SecurityDimension {
 		Assertion.checkNotNull(fields);
 		Assertion.checkNotNull(values);
 		Assertion
-				.when(SecurityDimensionType.ENUM.equals(type))
+				.when(SecurityDimensionType.ENUM == type) // == because enum
 				.check(() -> fields.isEmpty() && values.size() > 1, "SecurityDimension of type ENUM ({0}) needs the ordered list of values and no field (name is use)", name);
 		Assertion
-				.when(SecurityDimensionType.TREE.equals(type))
+				.when(SecurityDimensionType.TREE == type) // == because enum
 				.check(() -> fields.size() > 1 && values.isEmpty(), "SecurityDimension of type TREE ({0}) needs more than on fields and the no values", name);
 		//----
 		this.name = name;
 		this.type = type;
-		this.fields = fields;
-		this.values = values;
+		this.fields = Collections.unmodifiableList(fields);
+		this.values = Collections.unmodifiableList(values);
 	}
 
 	/**

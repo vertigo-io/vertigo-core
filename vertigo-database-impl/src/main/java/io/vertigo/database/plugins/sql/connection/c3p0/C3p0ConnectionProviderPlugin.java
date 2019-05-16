@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,11 +23,11 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.database.plugins.sql.connection.AbstractSqlConnectionProviderPlugin;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
@@ -53,10 +53,10 @@ public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionPro
 	 */
 	@Inject
 	public C3p0ConnectionProviderPlugin(
-			@Named("name") final Optional<String> name,
-			@Named("dataBaseClass") final String dataBaseClass,
-			@Named("jdbcDriver") final String jdbcDriver,
-			@Named("jdbcUrl") final String jdbcUrl) {
+			@ParamValue("name") final Optional<String> name,
+			@ParamValue("dataBaseClass") final String dataBaseClass,
+			@ParamValue("jdbcDriver") final String jdbcDriver,
+			@ParamValue("jdbcUrl") final String jdbcUrl) {
 		super(name.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME), ClassUtil.newInstance(dataBaseClass, SqlDataBase.class));
 		Assertion.checkNotNull(jdbcUrl);
 		Assertion.checkNotNull(jdbcDriver);
@@ -73,7 +73,7 @@ public final class C3p0ConnectionProviderPlugin extends AbstractSqlConnectionPro
 			throw WrappedException.wrap(e, "Can't defined JdbcDriver {0}", jdbcDriver);
 		}
 		comboPooledDataSource.setJdbcUrl(jdbcUrl);
-		comboPooledDataSource.setCheckoutTimeout(5000);
+		comboPooledDataSource.setCheckoutTimeout(10000);
 		//c3p0 can work with defaults
 		return comboPooledDataSource;
 	}

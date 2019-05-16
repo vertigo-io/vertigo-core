@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,15 +22,16 @@ import java.time.Instant;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.FileInfo;
@@ -54,11 +55,12 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	 * @author npiedeloup
 	 */
 	private enum DtoFields implements DtFieldName {
-		FILE_NAME, MIME_TYPE, LAST_MODIFIED, LENGTH, FILE_DATA
+	fileName, mimeType, lastModified, length, fileData
 	}
 
 	private final FileManager fileManager;
 	private final String storeDtDefinitionName;
+	private DtField storeIdField;
 	private DtDefinition storeDtDefinition;
 
 	/**
@@ -69,8 +71,8 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	 */
 	@Inject
 	public DbFileStorePlugin(
-			@Named("name") final Optional<String> name,
-			@Named("storeDtName") final String storeDtDefinitionName,
+			@ParamValue("name") final Optional<String> name,
+			@ParamValue("storeDtName") final String storeDtDefinitionName,
 			final FileManager fileManager) {
 		super(name);
 		Assertion.checkArgNotEmpty(storeDtDefinitionName);
@@ -83,6 +85,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	@Override
 	public void start() {
 		storeDtDefinition = Home.getApp().getDefinitionSpace().resolve(storeDtDefinitionName, DtDefinition.class);
+		storeIdField = storeDtDefinition.getIdField().get();
 	}
 
 	@Override
@@ -97,13 +100,13 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		Assertion.checkNotNull(uri);
 		checkDefinitionStoreBinding(uri.getDefinition());
 		//-----
-		final URI<Entity> dtoUri = new URI<>(storeDtDefinition, uri.getKey());
+		final UID<Entity> dtoUri = UID.of(storeDtDefinition, uri.getKeyAs(storeIdField.getDomain().getDataType()));
 		final Entity fileInfoDto = getStoreManager().getDataStore().readOne(dtoUri);
-		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(getValue(fileInfoDto, DtoFields.FILE_DATA, DataStream.class));
-		final String fileName = getValue(fileInfoDto, DtoFields.FILE_NAME, String.class);
-		final String mimeType = getValue(fileInfoDto, DtoFields.MIME_TYPE, String.class);
-		final Instant lastModified = getValue(fileInfoDto, DtoFields.LAST_MODIFIED, Instant.class);
-		final Long length = getValue(fileInfoDto, DtoFields.LENGTH, Long.class);
+		final InputStreamBuilder inputStreamBuilder = new DataStreamInputStreamBuilder(getValue(fileInfoDto, DtoFields.fileData, DataStream.class));
+		final String fileName = getValue(fileInfoDto, DtoFields.fileName, String.class);
+		final String mimeType = getValue(fileInfoDto, DtoFields.mimeType, String.class);
+		final Instant lastModified = getValue(fileInfoDto, DtoFields.lastModified, Instant.class);
+		final Long length = getValue(fileInfoDto, DtoFields.length, Long.class);
 		final VFile vFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
 		return new DatabaseFileInfo(uri.getDefinition(), vFile);
 	}
@@ -120,7 +123,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		getStoreManager().getDataStore().create(fileInfoDto);
 		//-----
 		final Object fileInfoDtoId = DtObjectUtil.getId(fileInfoDto);
-		Assertion.checkNotNull(fileInfoDtoId, "ID  du fichier doit être renseignée.");
+		Assertion.checkNotNull(fileInfoDtoId, "File's id must be set");
 		final FileInfoURI uri = new FileInfoURI(fileInfo.getDefinition(), fileInfoDtoId);
 		fileInfo.setURIStored(uri);
 		return fileInfo;
@@ -145,7 +148,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
 		checkDefinitionStoreBinding(uri.getDefinition());
 		//-----
-		final URI<Entity> dtoUri = new URI<>(storeDtDefinition, uri.getKey());
+		final UID<Entity> dtoUri = UID.of(storeDtDefinition, uri.getKeyAs(storeIdField.getDomain().getDataType()));
 		getStoreManager().getDataStore().delete(dtoUri);
 	}
 
@@ -155,14 +158,14 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		//-----
 
 		final VFile vFile = fileInfo.getVFile();
-		setValue(fileInfoDto, DtoFields.FILE_NAME, vFile.getFileName());
-		setValue(fileInfoDto, DtoFields.MIME_TYPE, vFile.getMimeType());
-		setValue(fileInfoDto, DtoFields.LAST_MODIFIED, vFile.getLastModified());
-		setValue(fileInfoDto, DtoFields.LENGTH, vFile.getLength());
-		setValue(fileInfoDto, DtoFields.FILE_DATA, new VFileDataStream(vFile));
+		setValue(fileInfoDto, DtoFields.fileName, vFile.getFileName());
+		setValue(fileInfoDto, DtoFields.mimeType, vFile.getMimeType());
+		setValue(fileInfoDto, DtoFields.lastModified, vFile.getLastModified());
+		setValue(fileInfoDto, DtoFields.length, vFile.getLength());
+		setValue(fileInfoDto, DtoFields.fileData, new VFileDataStream(vFile));
 
 		if (fileInfo.getURI() != null) {
-			setIdValue(fileInfoDto, fileInfo.getURI().getKey());
+			setIdValue(fileInfoDto, fileInfo.getURI());
 		}
 		return fileInfoDto;
 	}

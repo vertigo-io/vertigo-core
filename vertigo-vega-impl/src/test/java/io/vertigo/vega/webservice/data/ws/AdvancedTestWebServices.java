@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,18 +22,14 @@ import java.io.File;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.collections.CollectionsManager;
@@ -51,7 +47,6 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.VUserException;
 import io.vertigo.util.DateUtil;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.data.domain.Contact;
@@ -302,35 +297,6 @@ public final class AdvancedTestWebServices implements WebServices {
 		return 1337;
 	}
 
-	@GET("/downloadFile")
-	public VFile testDownloadFile(final @QueryParam("id") Integer id) {
-		final URL imageUrl = resourcetManager.resolve("npi2loup.png");
-		final File imageFile = asFile(imageUrl);
-		final VFile imageVFile = fileManager.createFile("image" + id + ".png", "image/png", imageFile);
-		return imageVFile;
-	}
-
-	@GET("/downloadNotModifiedFile")
-	public VFile testDownloadNotModifiedFile(final @QueryParam("id") Integer id, final @HeaderParam("If-Modified-Since") Optional<Date> ifModifiedSince, final HttpServletResponse response) {
-		final VFile imageFile = testDownloadFile(id);
-		if (ifModifiedSince.isPresent() && imageFile.getLastModified().compareTo(Instant.ofEpochMilli(ifModifiedSince.get().getTime())) <= 0) {
-			response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-			return null;
-			//this service must declared VFile as return type because it should return VFile when file was modified
-		}
-		return imageFile;
-	}
-
-	private static File asFile(final URL url) {
-		File f;
-		try {
-			f = new File(url.toURI());
-		} catch (final URISyntaxException e) {
-			f = new File(url.getPath());
-		}
-		return f;
-	}
-
 	@GET("/headerParams")
 	@Doc("Just send x-test-param:\"i'ts fine\"")
 	public String testHeaderParams(final @HeaderParam("x-test-param") String testParam) {
@@ -373,7 +339,7 @@ public final class AdvancedTestWebServices implements WebServices {
 	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
 		final DtList<D> sortedList;
 		if (dtListState.getSortFieldName().isPresent()) {
-			sortedList = collectionsManager.sort(unFilteredList, StringUtil.camelToConstCase(dtListState.getSortFieldName().get()), dtListState.isSortDesc().get());
+			sortedList = collectionsManager.sort(unFilteredList, dtListState.getSortFieldName().get(), dtListState.isSortDesc().get());
 		} else {
 			sortedList = unFilteredList;
 		}
@@ -397,11 +363,11 @@ public final class AdvancedTestWebServices implements WebServices {
 			if (!alreadyAddedField.contains(fieldName)) { //when we consume two fields at once (min;max)
 				final Object value = field.getDataAccessor().getValue(criteria);
 				if (value != null) {
-					if (fieldName.endsWith("_MIN") || fieldName.endsWith("_MAX")) {
-						final String filteredField = fieldName.substring(0, fieldName.length() - "_MIN".length());
+					if (fieldName.endsWith("Min") || fieldName.endsWith("Max")) {
+						final String filteredField = fieldName.substring(0, fieldName.length() - "Min".length());
 						final DtField resultDtField = resultDefinition.getField(filteredField);
-						final DtField minField = fieldName.endsWith("_MIN") ? field : criteriaDefinition.getField(filteredField + "_MIN");
-						final DtField maxField = fieldName.endsWith("_MAX") ? field : criteriaDefinition.getField(filteredField + "_MAX");
+						final DtField minField = fieldName.endsWith("Min") ? field : criteriaDefinition.getField(filteredField + "Min");
+						final DtField maxField = fieldName.endsWith("Max") ? field : criteriaDefinition.getField(filteredField + "Max");
 						final Serializable minValue = (Serializable) minField.getDataAccessor().getValue(criteria);
 						final Serializable maxValue = (Serializable) maxField.getDataAccessor().getValue(criteria);
 						filter = filter.and(Criterions.isBetween(() -> resultDtField.getName(),

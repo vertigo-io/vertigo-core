@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,27 +18,27 @@
  */
 package io.vertigo.studio.plugins.mda.task.test;
 
+import java.util.Optional;
+
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
 
 /**
  * Représente un attribut de task.
  *
- * @author sezratty
+ * @author sezratty, mlaroche
  */
 public final class TemplateTaskAttribute {
 	private final TaskAttribute taskAttribute;
-	private final DumExpression value;
+	private final String value;
 
-	TemplateTaskAttribute(final TaskDefinition taskDefinition, final TaskAttribute taskAttribute) {
-		Assertion.checkNotNull(taskDefinition);
+	TemplateTaskAttribute(final TaskAttribute taskAttribute) {
 		Assertion.checkNotNull(taskAttribute);
 		//-----
 		this.taskAttribute = taskAttribute;
-		value = DumExpression.create(this.taskAttribute.getDomain(), this.taskAttribute.isRequired());
+		value = create(this.taskAttribute.getDomain(), this.taskAttribute.isRequired());
 	}
 
 	/**
@@ -58,7 +58,7 @@ public final class TemplateTaskAttribute {
 	/**
 	 * @return L'expression de la valeur factice.
 	 */
-	public DumExpression getValue() {
+	public String getValue() {
 		return value;
 	}
 
@@ -67,5 +67,24 @@ public final class TemplateTaskAttribute {
 	 */
 	Domain getDomain() {
 		return taskAttribute.getDomain();
+	}
+
+	private static String create(final Domain domain, final boolean isRequired) {
+		final String dumFunction;
+		if (domain.isMultiple()) {
+			if (domain.getScope().isDataObject()) {
+				dumFunction = "dumDtList";
+			} else {
+				dumFunction = "dumList";
+			}
+		} else {
+			dumFunction = "dum";
+		}
+		//we don't have generated classes right now... so we need to only we the domain info and can't use domain.getJavaClass() for this case
+		final String javaClassName = domain.getScope().isDataObject() ? domain.getDtDefinition().getClassCanonicalName() : domain.getJavaClass().getCanonicalName();
+		//---
+		final String rawExpression = "dum()." + dumFunction + "(" + javaClassName + ".class)";
+		final String expression = isRequired ? rawExpression : Optional.class.getCanonicalName() + ".ofNullable(" + rawExpression + ")";
+		return expression;
 	}
 }

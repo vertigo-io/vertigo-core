@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -83,7 +83,7 @@ final class DslUserCriteriaRule {
 			+ "|" + CRITERIA_VALUE_RANGE_PATTERN_STRING // group 10-13
 			+ "|" + CRITERIA_VALUE_STAR_PATTERN_STRING // group 14-17
 			+ "|" + CRITERIA_VALUE_WORD_PATTERN_STRING // group 18-21
-			+ ")(\\S*)"; // group 22
+			+ ")(\\S*)(?=\\s|$)"; // group 22
 	private static final Pattern CRITERIA_VALUE_PATTERN = Pattern.compile(CRITERIA_VALUE_PATTERN_STRING);
 
 	/**
@@ -94,7 +94,14 @@ final class DslUserCriteriaRule {
 		final List<DslUserCriteria> userCriteria = new ArrayList<>();
 		//split space chars to add preModifier and postModifier
 		final Matcher criteriaValueMatcher = CRITERIA_VALUE_PATTERN.matcher(userString);
+		DslUserCriteria preparedDslUserCriteria = null;
+		int lastMatchedIndex = -1;
 		while (criteriaValueMatcher.find()) {
+			lastMatchedIndex = criteriaValueMatcher.end();
+			if (preparedDslUserCriteria != null) {
+				//on garde un coup de retard sur le criteria pour compléter le postMissingPart si on est sur le dernier élément
+				userCriteria.add(preparedDslUserCriteria);
+			}
 			final String preMissingPart = DslUtil.nullToEmpty(criteriaValueMatcher.group(1));
 			final String postMissingPart = criteriaValueMatcher.group(22);
 			//les capturing groups matchs par group de 4, on cherche le premier qui match 4 par 4
@@ -110,8 +117,16 @@ final class DslUserCriteriaRule {
 			final String overridedPreModifier = DslUtil.nullToEmpty(criteriaValueMatcher.group(foundGroup + 1));
 			final String criteriaValue = DslUtil.nullToEmpty(criteriaValueMatcher.group(foundGroup + 2));
 			final String overridedPostModifier = DslUtil.nullToEmpty(criteriaValueMatcher.group(foundGroup + 3));
-			userCriteria.add(new DslUserCriteria(preMissingPart, overridedFieldName, overridedPreModifier, criteriaValue, overridedPostModifier, postMissingPart));
+			preparedDslUserCriteria = new DslUserCriteria(preMissingPart, overridedFieldName, overridedPreModifier, criteriaValue, overridedPostModifier, postMissingPart);
 		}
+		if (preparedDslUserCriteria != null) {
+			if (lastMatchedIndex < userString.length()) {
+				//on garde un coup de retard sur le criteria pour compléter le postMissingPart si on est sur le dernier élément
+				preparedDslUserCriteria = new DslUserCriteria(preparedDslUserCriteria.getPreMissingPart(), preparedDslUserCriteria.getOverridedFieldName(), preparedDslUserCriteria.getOverridedPreModifier(), preparedDslUserCriteria.getCriteriaWord(), preparedDslUserCriteria.getOverridedPostModifier(), preparedDslUserCriteria.getPostMissingPart() + userString.substring(lastMatchedIndex));
+			}
+			userCriteria.add(preparedDslUserCriteria);
+		}
+
 		return userCriteria;
 	}
 }

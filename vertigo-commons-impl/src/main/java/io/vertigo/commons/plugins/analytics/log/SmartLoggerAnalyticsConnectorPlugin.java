@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,16 +21,17 @@ package io.vertigo.commons.plugins.analytics.log;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
-import org.apache.logging.log4j.LogManager;import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.JsonObject;
 
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.commons.analytics.process.AProcess;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
-import io.vertigo.commons.impl.analytics.process.AProcess;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -49,8 +50,8 @@ public final class SmartLoggerAnalyticsConnectorPlugin implements AnalyticsConne
 	 */
 	@Inject
 	public SmartLoggerAnalyticsConnectorPlugin(
-			@Named("aggregatedBy") final Optional<String> aggregatedByOpt,
-			@Named("durationThreshold") final Optional<Long> durationThresholdOpt) {
+			@ParamValue("aggregatedBy") final Optional<String> aggregatedByOpt,
+			@ParamValue("durationThreshold") final Optional<Long> durationThresholdOpt) {
 		Assertion.checkNotNull(aggregatedByOpt);
 		Assertion.checkNotNull(durationThresholdOpt);
 		//---

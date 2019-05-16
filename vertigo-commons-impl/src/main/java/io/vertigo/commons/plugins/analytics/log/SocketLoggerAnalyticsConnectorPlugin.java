@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -33,6 +32,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 
 import com.google.gson.Gson;
@@ -42,9 +42,10 @@ import com.google.gson.JsonObject;
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.commons.analytics.process.AProcess;
 import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
-import io.vertigo.commons.impl.analytics.process.AProcess;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -74,14 +75,14 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	 */
 	@Inject
 	public SocketLoggerAnalyticsConnectorPlugin(
-			@Named("appName") final Optional<String> appNameOpt,
-			@Named("hostName") final Optional<String> hostNameOpt,
-			@Named("port") final Optional<Integer> portOpt) {
+			@ParamValue("appName") final Optional<String> appNameOpt,
+			@ParamValue("hostName") final Optional<String> hostNameOpt,
+			@ParamValue("port") final Optional<Integer> portOpt) {
 		Assertion.checkNotNull(appNameOpt);
 		Assertion.checkNotNull(hostNameOpt);
 		Assertion.checkNotNull(portOpt);
 		// ---
-		appName = appNameOpt.orElse(Home.getApp().getConfig().getNodeConfig().getAppName());
+		appName = appNameOpt.orElseGet(() -> Home.getApp().getNodeConfig().getAppName());
 		hostName = hostNameOpt.orElse("analytica.part.klee.lan.net");
 		port = portOpt.orElse(DEFAULT_SERVER_PORT);
 		localHostName = retrieveHostName();
@@ -139,7 +140,9 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 		final LoggerContext context = LoggerContext.getContext(false); //on ne close pas : car ca stop le context
 		final Configuration config = context.getConfiguration();
-		config.getLoggerConfig(loggerName).addAppender(appender, null, null);
+		final LoggerConfig loggerConfig = config.getLoggerConfig(loggerName);
+		loggerConfig.getAppenders().keySet().forEach(appenderName -> loggerConfig.removeAppender(appenderName));
+		loggerConfig.addAppender(appender, null, null);
 
 		Configurator.setLevel(loggerName, Level.INFO);
 		return logger;
@@ -148,7 +151,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	/**
 	 * Daemon to unstack processes to end them
 	 */
-	@DaemonScheduled(name = "DMN_REMOTE_LOGGER", periodInSeconds = 1, analytics = false)
+	@DaemonScheduled(name = "DmnRemoteLogger", periodInSeconds = 1, analytics = false)
 	public void pollQueue() {
 		while (!processQueue.isEmpty()) {
 			final AProcess head = processQueue.poll();

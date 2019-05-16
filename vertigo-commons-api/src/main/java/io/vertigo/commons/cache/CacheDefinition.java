@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,13 +52,14 @@ import io.vertigo.core.definition.DefinitionUtil;
  *
  * @author pchretien
  */
-@DefinitionPrefix("CACHE")
+@DefinitionPrefix("Cache")
 public final class CacheDefinition implements Definition {
 	private final String name;
 	private final boolean serializeElements;
 	private final int maxElementsInMemory;
 	private final int timeToLiveSeconds;
 	private final int timeToIdleSeconds;
+	private final boolean isReloadedByList;
 
 	/**
 	 * Constructor.
@@ -73,7 +74,8 @@ public final class CacheDefinition implements Definition {
 			final boolean serializeElements,
 			final int maxElementsInMemory,
 			final int timeToLiveSeconds,
-			final int timeToIdleSeconds) {
+			final int timeToIdleSeconds,
+			final boolean isReloadedByList) {
 		DefinitionUtil.checkName(name, CacheDefinition.class);
 		//-----
 		this.name = name;
@@ -81,6 +83,7 @@ public final class CacheDefinition implements Definition {
 		this.maxElementsInMemory = maxElementsInMemory;
 		this.timeToLiveSeconds = timeToLiveSeconds;
 		this.timeToIdleSeconds = timeToIdleSeconds;
+		this.isReloadedByList = isReloadedByList;
 	}
 
 	/** {@inheritDoc} */
@@ -115,5 +118,9 @@ public final class CacheDefinition implements Definition {
 	 */
 	public int getTimeToIdleSeconds() {
 		return timeToIdleSeconds;
+	}
+
+	public boolean isReloadedByList() {
+		return isReloadedByList;
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,10 +25,10 @@ import java.util.Optional;
 import java.util.Properties;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamPlugin;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 
@@ -48,7 +48,7 @@ public final class PropertiesParamPlugin implements ParamPlugin {
 	 * @throws IOException erreur de lecture du fichier
 	 */
 	@Inject
-	public PropertiesParamPlugin(final ResourceManager resourceManager, @Named("url") final String url) throws IOException {
+	public PropertiesParamPlugin(final ResourceManager resourceManager, @ParamValue("url") final String url) throws IOException {
 		Assertion.checkNotNull(resourceManager);
 		Assertion.checkArgNotEmpty(url);
 		//-----

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,9 +21,10 @@ package io.vertigo.dynamo.store.datastore;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 
 /**
  * Defines the way to acces and store all the data.
@@ -41,33 +42,33 @@ public interface DataStore {
 	int count(final DtDefinition dtDefinition);
 
 	/**
-	 * Récupération d'un objet persistant par son URI.
-	 * Lorsque l'objet est en lecture seule il est possible d'accéder au objets partagés. (Liste de référence paér ex)
+	 * Récupération d'un objet persistant par son UID.
+	 * Lorsque l'objet est en lecture seule il est possible d'accéder au objets partagés. (Liste de référence par ex)
 	 * L'objet doit exister.
 	 *
 	 * @param <E> the type of entity
-	 * @param uri Uri de l'object
+	 * @param uid UID de l'object
 	 * @return object récupéré NOT NULL
 	 */
-	<E extends Entity> E readOne(final URI<E> uri);
+	<E extends Entity> E readOne(final UID<E> uid);
 
 	/**
-	 * Récupération d'une liste identifiée par son URI.
+	 * Récupération d'une liste identifiée par son UID.
 	 *
 	 * @param <E> the type of entity
-	 * @param uri URI de la collection à récupérer
+	 * @param uid UID de la collection à récupérer
 	 * @return DtList DTC
 	 */
-	<E extends Entity> DtList<E> findAll(final DtListURI uri);
+	<E extends Entity> DtList<E> findAll(final DtListURI uid);
 
 	/**
 	 * Loads and marks element for update, and ensure non concurrency.
-	 * Fire an update event for this uri on eventbus after commit.
+	 * Fire an update event for this uid on eventbus after commit.
 	 * @param <E> the type of entity
-	 * @param uri URI of object
+	 * @param uid UID of object
 	 * @return object to update
 	 */
-	<E extends Entity> E readOneForUpdate(URI<E> uri);
+	<E extends Entity> E readOneForUpdate(UID<E> uid);
 
 	/**
 	* Create an object.
@@ -86,18 +87,25 @@ public interface DataStore {
 	void update(Entity entity);
 
 	/**
-	 * Destruction d'un objet persistant par son URI.
+	 * Destruction d'un objet persistant par son UID.
 	 *
-	 * @param uri URI de l'objet à supprimer
+	 * @param uid UID de l'objet à supprimer
 	 */
-	void delete(URI<? extends Entity> uri);
+	void delete(UID<? extends Entity> uid);
 
 	/**
 	 * Returns a list identified by criteria
 	 * @param dtDefinition the list definition
 	 * @param criteria criteria
+	 * @param dtListState request state : sort, top, offset
 	 * @return list
 	 */
-	<E extends Entity> DtList<E> find(final DtDefinition dtDefinition, Criteria<E> criteria);
+	<E extends Entity> DtList<E> find(final DtDefinition dtDefinition, Criteria<E> criteria, final DtListState dtListState);
+
+	/**
+	 * Return the a dedicated object that handles NN associations
+	 * @return the handler for NN Associations
+	 */
+	BrokerNN getBrokerNN();
 
 }

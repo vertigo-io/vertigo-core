@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,9 +25,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.util.ListBuilder;
@@ -35,7 +38,7 @@ import io.vertigo.util.ListBuilder;
 /**
  * @author pchretien
  */
-public final class ScriptManagerTest extends AbstractTestCaseJU4 {
+public final class ScriptManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private ScriptManager scriptManager;
 	private final ScriptSeparator comment = new ScriptSeparator("<!--", "-->");
@@ -48,6 +51,18 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 				.add(new ExpressionParameter("nom", String.class, "Duraton"))
 				.add(new ExpressionParameter("prenom", String.class, "jean paul"))
 				.add(new ExpressionParameter("age", Integer.class, 54))
+				.build();
+	}
+
+	@Override
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.withScript()
+						.withJaninoScript()
+						.build())
 				.build();
 	}
 
@@ -79,12 +94,14 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 		assertEquals("Il s'agit bien de M.Duraton", result);
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void testSyntaxError() {
-		//On génère une erreur java
-		final String script = "<%if (nom.sttart(\"Dur\")) {%>Il s'agit bien de M.Duraton<%}%>";
-		final String result = scriptManager.evaluateScript(script, SeparatorType.CLASSIC, createParameters());
-		nop(result);
+		Assertions.assertThrows(Exception.class, () -> {
+			//On génère une erreur java
+			final String script = "<%if (nom.sttart(\"Dur\")) {%>Il s'agit bien de M.Duraton<%}%>";
+			final String result = scriptManager.evaluateScript(script, SeparatorType.CLASSIC, createParameters());
+			nop(result);
+		});
 	}
 
 	@Test
@@ -104,13 +121,16 @@ public final class ScriptManagerTest extends AbstractTestCaseJU4 {
 		assertEquals("bla bla", scriptHandler.result.toString());
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void testParameterForgotten() {
-		final String script = "bla <!---->bla";
+		Assertions.assertThrows(Exception.class, () -> {
+			final String script = "bla <!---->bla";
 
-		final MyScriptParserHandler scriptHandler = new MyScriptParserHandler();
+			final MyScriptParserHandler scriptHandler = new MyScriptParserHandler();
 
-		scriptManager.parse(script, scriptHandler, comment);
+			scriptManager.parse(script, scriptHandler, comment);
+		});
+
 	}
 
 	@Test

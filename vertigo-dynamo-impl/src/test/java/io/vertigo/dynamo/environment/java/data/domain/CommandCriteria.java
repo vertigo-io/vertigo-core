@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,7 +40,7 @@ public final class CommandCriteria implements DtObject {
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return String cmdId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_FULL_TEXT", label = "Numero de commande")
+	@Field(domain = "DoFullText", label = "Numero de commande")
 	public String getCmdId() {
 		return cmdId;
 	}
@@ -59,8 +59,7 @@ public final class CommandCriteria implements DtObject {
 	 * Récupère la valeur de la propriété 'Command type'.
 	 * @return Long ctyId
 	 */
-	@javax.persistence.Column(name = "CTY_ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "FOREIGN_KEY", label = "Command type")
+	@Field(domain = "DoIdentifiant", type = "FOREIGN_KEY", label = "Command type")
 	public Long getCtyId() {
 		return ctyId;
 	}
@@ -79,8 +78,7 @@ public final class CommandCriteria implements DtObject {
 	 * Récupère la valeur de la propriété 'City'.
 	 * @return Long citId
 	 */
-	@javax.persistence.Column(name = "CIT_ID")
-	@Field(domain = "DO_IDENTIFIANT", type = "FOREIGN_KEY", label = "City")
+	@Field(domain = "DoIdentifiant", type = "FOREIGN_KEY", label = "City")
 	public Long getCitId() {
 		return citId;
 	}

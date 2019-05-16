@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.dynamo.collections.data.domain;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -27,19 +27,19 @@ public final class SmartCar implements KeyConcept {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "identifiant de la voiture")
+	@Field(domain = "DoId", type = "ID", required = true, label = "identifiant de la voiture")
 	private Long id;
-	@Field(domain = "DO_KEYWORD", required = true, label = "Constructeur")
+	@Field(domain = "DoKeyword", required = true, label = "Constructeur")
 	private String manufacturer;
-	@Field(domain = "DO_INTEGER", required = true, label = "Année")
+	@Field(domain = "DoInteger", required = true, label = "Année")
 	private Integer year;
-	@Field(domain = "DO_TEXT", required = true, label = "Descriptif")
+	@Field(domain = "DoText", required = true, label = "Descriptif")
 	private String description;
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<SmartCar> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<SmartCar> getUID() {
+		return UID.of(this);
 	}
 
 	public final Long getId() {

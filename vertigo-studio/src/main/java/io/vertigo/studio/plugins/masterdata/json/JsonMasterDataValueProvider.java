@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,10 +25,10 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import com.google.gson.Gson;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -55,7 +55,7 @@ public class JsonMasterDataValueProvider implements MasterDataValueProviderPlugi
 	@Inject
 	public JsonMasterDataValueProvider(
 			final ResourceManager resourceManager,
-			final @Named("fileName") String fileName) {
+			final @ParamValue("fileName") String fileName) {
 		Assertion.checkArgNotEmpty(fileName);
 		//---
 		this.resourceManager = resourceManager;

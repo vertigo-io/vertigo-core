@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,23 +29,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 
 /**
  * @author pchretien
  */
 @RunWith(JUnitPlatform.class)
-public final class ResourceManagerTest extends AbstractTestCaseJU4 {
+public final class ResourceManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private ResourceManager resourceManager;
 	final String locales = "fr_FR";
 
 	@Override
-	protected AppConfig buildAppConfig() {
+	protected NodeConfig buildNodeConfig() {
 		//@formatter:off
-		return AppConfig.builder()
+		return NodeConfig.builder()
 			.beginBoot()
 				.withLocales(locales)
 				.addPlugin(ClassPathResourceResolverPlugin.class)

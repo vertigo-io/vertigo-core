@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,13 +31,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.account.authentication.AuthenticationToken;
 import io.vertigo.account.impl.authentication.AuthenticationPlugin;
 import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -55,7 +55,7 @@ import io.vertigo.lang.WrappedException;
  */
 public class TextAuthenticationPlugin implements AuthenticationPlugin, Activeable {
 	//	accountKey  |  login  |  password
-	private static final String FILE_PATTERN_STR = "^(\\S+)\\s+(\\S+)\\s+(\\S+)\\s*$";
+	private static final String FILE_PATTERN_STR = "^(\\S+)\\s+(\\S+)\\s+(\\S+)\\s*\\/\\/.*$";
 	private static final Pattern FILE_PATTERN = Pattern.compile(FILE_PATTERN_STR);
 
 	private final Map<String, AuthenticationAccountInfo> users; //username-to-SimpleAccount
@@ -68,7 +68,7 @@ public class TextAuthenticationPlugin implements AuthenticationPlugin, Activeabl
 	 * @param filePath File path
 	 */
 	@Inject
-	public TextAuthenticationPlugin(@Named("filePath") final String filePath, final ResourceManager resourceManager) {
+	public TextAuthenticationPlugin(@ParamValue("filePath") final String filePath, final ResourceManager resourceManager) {
 		Assertion.checkNotNull(resourceManager);
 		// -----
 		this.resourceManager = resourceManager;
@@ -109,7 +109,7 @@ public class TextAuthenticationPlugin implements AuthenticationPlugin, Activeabl
 				}
 			}
 		} catch (final Exception e) {
-			throw WrappedException.wrap(e, "Erreur durant la lecture du Realm " + realmURL);
+			throw WrappedException.wrap(e, "Erreur durant la lecture du Realm {0}", realmURL);
 		}
 	}
 

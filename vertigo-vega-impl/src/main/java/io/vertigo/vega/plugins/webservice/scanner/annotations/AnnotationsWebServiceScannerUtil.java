@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,7 +38,6 @@ import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.ImplicitParam;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
 import io.vertigo.vega.webservice.metamodel.WebServiceParamBuilder;
-import io.vertigo.vega.webservice.model.UiListState;
 import io.vertigo.vega.webservice.stereotype.AccessTokenConsume;
 import io.vertigo.vega.webservice.stereotype.AccessTokenMandatory;
 import io.vertigo.vega.webservice.stereotype.AccessTokenPublish;
@@ -47,6 +46,7 @@ import io.vertigo.vega.webservice.stereotype.AutoSortAndPagination;
 import io.vertigo.vega.webservice.stereotype.DELETE;
 import io.vertigo.vega.webservice.stereotype.Doc;
 import io.vertigo.vega.webservice.stereotype.ExcludedFields;
+import io.vertigo.vega.webservice.stereotype.FileAttachment;
 import io.vertigo.vega.webservice.stereotype.GET;
 import io.vertigo.vega.webservice.stereotype.HeaderParam;
 import io.vertigo.vega.webservice.stereotype.IncludedFields;
@@ -86,7 +86,7 @@ final class AnnotationsWebServiceScannerUtil {
 		Assertion.checkNotNull(webServicesClass);
 		//-----
 		return Arrays.stream(webServicesClass.getMethods())
-				.map(method -> buildWebServiceDefinition(method))
+				.map(AnnotationsWebServiceScannerUtil::buildWebServiceDefinition)
 				.filter(webServiceDefinitionOptional -> webServiceDefinitionOptional.isPresent())
 				.map(webServiceDefinitionOptional -> webServiceDefinitionOptional.get())
 				.collect(Collectors.toList());
@@ -100,15 +100,15 @@ final class AnnotationsWebServiceScannerUtil {
 		}
 		for (final Annotation annotation : method.getAnnotations()) {
 			if (annotation instanceof GET) {
-				builder.with(Verb.GET, ((GET) annotation).value());
+				builder.with(Verb.Get, ((GET) annotation).value());
 			} else if (annotation instanceof POST) {
-				builder.with(Verb.POST, ((POST) annotation).value());
+				builder.with(Verb.Post, ((POST) annotation).value());
 			} else if (annotation instanceof PUT) {
-				builder.with(Verb.PUT, ((PUT) annotation).value());
+				builder.with(Verb.Put, ((PUT) annotation).value());
 			} else if (annotation instanceof PATCH) {
-				builder.with(Verb.PATCH, ((PATCH) annotation).value());
+				builder.with(Verb.Patch, ((PATCH) annotation).value());
 			} else if (annotation instanceof DELETE) {
-				builder.with(Verb.DELETE, ((DELETE) annotation).value());
+				builder.with(Verb.Delete, ((DELETE) annotation).value());
 			} else if (annotation instanceof AnonymousAccessAllowed) {
 				builder.withNeedAuthentication(false);
 			} else if (annotation instanceof SessionLess) {
@@ -132,6 +132,10 @@ final class AnnotationsWebServiceScannerUtil {
 				builder.withAutoSortAndPagination(true);
 			} else if (annotation instanceof Doc) {
 				builder.withDoc(((Doc) annotation).value());
+			} else if (annotation instanceof FileAttachment) {
+				builder.withFileAttachment(((FileAttachment) annotation).value());
+			} else {
+				//other annotations was accepted obviously
 			}
 		}
 		if (builder.hasVerb()) {
@@ -155,7 +159,7 @@ final class AnnotationsWebServiceScannerUtil {
 			builder.addValidatorClasses(DefaultDtObjectValidator.class);
 		} else if (isImplicitParam(paramType)) {
 			builder.with(WebServiceParamType.Implicit, getImplicitParam(paramType).name());
-		} else if (DtListState.class.equals(paramType) || UiListState.class.equals(paramType)) {
+		} else if (DtListState.class.equals(paramType)) {
 			builder.with(WebServiceParamType.Query, "listState"); //DtListState don't need to be named, it will be retrieve from query
 		}
 		for (final Annotation annotation : annotations) {

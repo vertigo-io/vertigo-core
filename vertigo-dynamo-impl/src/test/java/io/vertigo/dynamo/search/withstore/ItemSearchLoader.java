@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,10 +29,8 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.data.domain.Item;
 import io.vertigo.dynamo.search.metamodel.SearchChunk;
@@ -73,10 +71,9 @@ public final class ItemSearchLoader extends AbstractSqlSearchLoader<Long, Item, 
 		final SearchIndexDefinition indexDefinition = searchManager.findFirstIndexDefinitionByKeyConcept(Item.class);
 		try (final VTransactionWritable tx = getTransactionManager().createCurrentTransaction()) {
 			final List<SearchIndex<Item, Item>> result = new ArrayList<>();
-			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Item.class);
 			for (final Item item : loadItems(searchChunk)) {
-				final URI<Item> uri = new URI<>(dtDefinition, item.getId());
-				result.add(SearchIndex.createIndex(indexDefinition, uri, item));
+				final UID<Item> uid = item.getUID();
+				result.add(SearchIndex.createIndex(indexDefinition, uid, item));
 			}
 			return result;
 		}
@@ -94,13 +91,13 @@ public final class ItemSearchLoader extends AbstractSqlSearchLoader<Long, Item, 
 	}
 
 	private TaskDefinition getTaskDefinition(final SearchChunk<Item> searchChunk) {
-		final Domain doItems = definitionSpace.resolve("DO_DT_ITEM_DTC", Domain.class);
-		final String sql = searchChunk.getAllURIs()
+		final Domain doItems = definitionSpace.resolve("DoDtItemDtc", Domain.class);
+		final String sql = searchChunk.getAllUIDs()
 				.stream()
 				.map(uri -> uri.getId().toString())
 				.collect(Collectors.joining(", ", "select * from ITEM where ID in (", ")"));
 
-		return TaskDefinition.builder("TK_LOAD_ALL_ITEMS")
+		return TaskDefinition.builder("TkLoadAllItems")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(sql)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
