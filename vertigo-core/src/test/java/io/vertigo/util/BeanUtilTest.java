@@ -22,13 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 /**
 * @author pchretien
 */
-@RunWith(JUnitPlatform.class)
 public final class BeanUtilTest {
 	public static class Book {
 		private String author;

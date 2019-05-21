@@ -24,12 +24,10 @@ import javax.inject.Inject;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.metric.data.DummyMetricsProvider;
 import io.vertigo.commons.impl.analytics.AnalyticsManagerImpl;
@@ -37,7 +35,6 @@ import io.vertigo.commons.impl.analytics.AnalyticsManagerImpl;
 /**
  * @author mlaroche
  */
-@RunWith(JUnitPlatform.class)
 public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
 
 	@Override

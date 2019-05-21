@@ -26,7 +26,6 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -87,7 +86,7 @@ public abstract class AbstractParamManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void test8() {
 		final Optional<Param> optionalParam = paramManager.getOptionalParam("non.existing.param");
-		Assert.assertFalse(optionalParam.isPresent());
+		Assertions.assertFalse(optionalParam.isPresent());
 	}
 
 	/**

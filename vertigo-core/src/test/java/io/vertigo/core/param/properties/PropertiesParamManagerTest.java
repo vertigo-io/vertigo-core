@@ -18,9 +18,6 @@
  */
 package io.vertigo.core.param.properties;
 
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
-
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.param.AbstractParamManagerTest;
 import io.vertigo.core.param.Param;
@@ -30,7 +27,6 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 /**
  * @author pchretien
  */
-@RunWith(JUnitPlatform.class)
 public final class PropertiesParamManagerTest extends AbstractParamManagerTest {
 	@Override
 	protected NodeConfig buildNodeConfig() {

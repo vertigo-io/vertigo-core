@@ -21,20 +21,17 @@ package io.vertigo.core.spaces.component;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.spaces.component.data.FunctionManager;
 import io.vertigo.core.spaces.component.data.FunctionManager1Impl;
 import io.vertigo.core.spaces.component.data.FunctionManager2Impl;
 import io.vertigo.core.spaces.component.data.FunctionPlugin;
 
-@RunWith(JUnitPlatform.class)
 public final class ComponentSpace3Test {
 
 	@Test

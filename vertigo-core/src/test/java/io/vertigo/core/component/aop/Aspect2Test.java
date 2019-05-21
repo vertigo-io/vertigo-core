@@ -20,16 +20,13 @@ package io.vertigo.core.component.aop;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.component.aop.data.aspects.OneMoreAspect;
 import io.vertigo.core.component.aop.data.components.ComputerImpl;
 
-@RunWith(JUnitPlatform.class)
 public final class Aspect2Test {
 
 	protected static NodeConfig buildNodeConfig() {

@@ -22,18 +22,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.spaces.component.data.StartedManager;
 import io.vertigo.core.spaces.component.data.StartedManagerImpl;
 import io.vertigo.core.spaces.component.data.StartedManagerInitializer;
 
-@RunWith(JUnitPlatform.class)
 public final class ComponentSpace4Test {
 
 	@Test

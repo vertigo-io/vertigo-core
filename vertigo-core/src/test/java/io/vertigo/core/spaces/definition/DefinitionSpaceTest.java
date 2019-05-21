@@ -30,8 +30,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.DefinitionProviderConfig;
@@ -45,7 +43,6 @@ import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.DefinitionUtil;
 import io.vertigo.core.param.Param;
 
-@RunWith(JUnitPlatform.class)
 public final class DefinitionSpaceTest extends AbstractTestCaseJU5 {
 
 	@Override

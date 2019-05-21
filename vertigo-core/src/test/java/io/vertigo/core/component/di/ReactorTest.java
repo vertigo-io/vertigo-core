@@ -26,11 +26,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
-import io.vertigo.core.component.di.DIException;
-import io.vertigo.core.component.di.DIReactor;
 import io.vertigo.core.component.di.data.A;
 import io.vertigo.core.component.di.data.B;
 import io.vertigo.core.component.di.data.C;
@@ -50,7 +46,6 @@ import io.vertigo.core.component.di.data.P3;
  *
  * @author pchretien
  */
-@RunWith(JUnitPlatform.class)
 public final class ReactorTest {
 	private static void nop(final Object o) {
 		//NOP

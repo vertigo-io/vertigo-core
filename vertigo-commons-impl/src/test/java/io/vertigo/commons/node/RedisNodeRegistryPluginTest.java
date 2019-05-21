@@ -18,15 +18,11 @@
  */
 package io.vertigo.commons.node;
 
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
-
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.app.registry.redis.RedisAppNodeRegistryPlugin;
 import io.vertigo.core.param.Param;
 
-@RunWith(JUnitPlatform.class)
 public class RedisNodeRegistryPluginTest extends AbstractNodeManagerTest {
 
 	@Override

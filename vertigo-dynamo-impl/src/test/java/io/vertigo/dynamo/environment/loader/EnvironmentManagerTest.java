@@ -31,8 +31,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.LogConfig;
@@ -41,7 +39,6 @@ import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
 
-@RunWith(JUnitPlatform.class)
 public final class EnvironmentManagerTest extends AbstractTestCaseJU5 {
 	@Override
 	protected NodeConfig buildNodeConfig() {

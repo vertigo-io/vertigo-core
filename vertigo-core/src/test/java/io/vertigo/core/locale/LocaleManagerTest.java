@@ -28,8 +28,6 @@ import javax.inject.Inject;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.NodeConfig;
@@ -38,7 +36,6 @@ import io.vertigo.core.locale.data.CityGuide;
 /**
  * @author pchretien
  */
-@RunWith(JUnitPlatform.class)
 public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private LocaleManager localeManager;

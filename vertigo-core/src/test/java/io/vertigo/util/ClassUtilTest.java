@@ -37,10 +37,8 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import io.vertigo.lang.VUserException;
 import io.vertigo.util.data.SA;
@@ -51,7 +49,6 @@ import io.vertigo.util.data.SAnnotationA;
  *
  * @author pchretien
  */
-@RunWith(JUnitPlatform.class)
 public final class ClassUtilTest {
 	private static void nop(final Object o) {
 		//NOP
@@ -172,8 +169,8 @@ public final class ClassUtilTest {
 	@Test
 	public void testAnnotatedMethods() {
 		final Collection<Method> methods = ClassUtil.getAllMethods(SA.class, SAnnotationA.class);
-		Assert.assertEquals(1, methods.size());
-		Assert.assertEquals("annotatedMethod", methods.iterator().next().getName());
+		Assertions.assertEquals(1, methods.size());
+		Assertions.assertEquals("annotatedMethod", methods.iterator().next().getName());
 	}
 
 	@Test

@@ -25,8 +25,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import io.vertigo.core.component.Component;
 import io.vertigo.lang.Tuple;
@@ -44,7 +42,6 @@ import io.vertigo.util.data.SC;
  * Junit test of the Selector Class.
  * @author mlaroche
  */
-@RunWith(JUnitPlatform.class)
 public final class SelectorTest {
 
 	private static final String TEST_CLASSES_PACKAGE = "io.vertigo.util.data";

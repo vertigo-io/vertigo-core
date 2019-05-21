@@ -22,15 +22,12 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 /**
  * Test de l'utilitaire des assertions.
  *
  * @author pchretien
  */
-@RunWith(JUnitPlatform.class)
 public final class AssertionTest {
 	@Test
 	public void testCheckNotNull() {

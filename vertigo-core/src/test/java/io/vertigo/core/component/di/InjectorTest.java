@@ -29,12 +29,8 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import io.vertigo.core.component.Container;
-import io.vertigo.core.component.di.DIException;
-import io.vertigo.core.component.di.DIInjector;
 import io.vertigo.core.component.di.data.A;
 import io.vertigo.core.component.di.data.B;
 import io.vertigo.core.component.di.data.B2;
@@ -49,7 +45,6 @@ import io.vertigo.lang.Assertion;
  * Voir sur reactor pour l'arbre des dépendances des objets A==>F.
  * @author pchretien
  */
-@RunWith(JUnitPlatform.class)
 public final class InjectorTest {
 	private static class MyContainer implements Container {
 		private final Map<String, Object> map = new HashMap<>();

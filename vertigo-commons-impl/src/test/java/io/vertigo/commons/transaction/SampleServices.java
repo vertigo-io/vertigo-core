@@ -20,7 +20,7 @@ package io.vertigo.commons.transaction;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 import io.vertigo.commons.transaction.data.SampleDataBase;
 import io.vertigo.commons.transaction.data.SampleDataBaseConnection;
@@ -50,13 +50,13 @@ public class SampleServices implements Component {
 		// --- modification de la bdd
 		final String value = createNewData();
 		connection.setData(value);
-		Assert.assertEquals(value, connection.getData());
+		Assertions.assertEquals(value, connection.getData());
 		return value;
 	}
 
 	public void check(final String value) {
 		//On vérifie que la bdd est mise à jour.
-		Assert.assertEquals(value, dataBase.getData());
+		Assertions.assertEquals(value, dataBase.getData());
 	}
 
 	private static String createNewData() {

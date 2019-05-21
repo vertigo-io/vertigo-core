@@ -23,9 +23,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
 
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
@@ -55,7 +53,6 @@ import io.vertigo.util.ListBuilder;
 /**
  *
  */
-@RunWith(JUnitPlatform.class)
 public final class SqlCriteriaTest extends AbstractCriteriaTest {
 	@Inject
 	protected StoreManager storeManager;
@@ -134,7 +131,7 @@ public final class SqlCriteriaTest extends AbstractCriteriaTest {
 	public void assertCriteria(final long expected, final Criteria<Movie2> criteria) {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
 			final long count = storeManager.getDataStore().find(dtDefinitionMovie, criteria, DtListState.of(null)).size();
-			Assert.assertEquals(expected, count);
+			Assertions.assertEquals(expected, count);
 		}
 	}
 

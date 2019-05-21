@@ -25,8 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.ModuleConfig;
@@ -43,7 +41,6 @@ import io.vertigo.core.component.aop.data.components.Computer;
 import io.vertigo.core.component.aop.data.components.ComputerImpl;
 import io.vertigo.core.component.aop.data.components.F;
 
-@RunWith(JUnitPlatform.class)
 public final class AspectTest extends AbstractTestCaseJU5 {
 	private A a;
 	private B b;

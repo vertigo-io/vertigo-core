@@ -26,15 +26,12 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 /**
  * Test de l'utilitaitre de manipulation des dates.
  *
  * @author pchretien
  */
-@RunWith(JUnitPlatform.class)
 public final class DateUtilTest {
 
 	@Test

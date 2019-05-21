@@ -23,16 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.component.proxy.data.Aggregate;
 import io.vertigo.core.component.proxy.data.AggregatorProxyMethod;
 
-@RunWith(JUnitPlatform.class)
 public final class ProxyTest extends AbstractTestCaseJU5 {
 
 	@Inject

@@ -24,14 +24,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 /**
  * Test de l'utilitaitre de manipulation des strings.
  * @author pchretien
  */
-@RunWith(JUnitPlatform.class)
 public final class StringUtilTest {
 	private static final String XXX_YYY_ZZZ = "XXX_YYY_ZZZ";
 

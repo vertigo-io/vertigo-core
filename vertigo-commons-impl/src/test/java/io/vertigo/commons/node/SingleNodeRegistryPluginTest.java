@@ -18,13 +18,9 @@
  */
 package io.vertigo.commons.node;
 
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
-
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 
-@RunWith(JUnitPlatform.class)
 public class SingleNodeRegistryPluginTest extends AbstractNodeManagerTest {
 
 	@Override

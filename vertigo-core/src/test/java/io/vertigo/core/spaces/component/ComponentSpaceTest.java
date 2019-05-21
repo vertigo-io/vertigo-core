@@ -23,13 +23,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.spaces.component.data.BioManager;
 import io.vertigo.core.spaces.component.data.BioManagerImpl;
@@ -38,7 +36,6 @@ import io.vertigo.core.spaces.component.data.MathManager;
 import io.vertigo.core.spaces.component.data.MathManagerImpl;
 import io.vertigo.core.spaces.component.data.MathPlugin;
 
-@RunWith(JUnitPlatform.class)
 public final class ComponentSpaceTest {
 
 	@Test
