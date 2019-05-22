@@ -6,54 +6,73 @@ Running 2.0.0-SNAPSHOT
 
 more to come :)
 
-Release 2.0.0 - 2019/04/XX
+Release 2.0.0 - 2019/05/16
 ----------------------
-This version is a major release with a lots of breaks. It should be use for projets in early stages of development.
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-113-to-200)
-
-* [all] Code cleaning, refactoring and documenting 
+* [all] tests in junit 5 (use AbstractTestCaseJU5)
+* __[all] Migrate from CONST_CASE to UpperCamelCase everywhere except in SQL databases__ a tool is provided to help migration
+* __[core] all definitions are UpperCamelCase__
+* [core] discovery : Added conditions to filter abstract classes
+* [core] Removed deprecated Date DataType + remove all use of java.util.Date
+* [core] Removed MessageTextBuilder (.of + simple)
+* [core] Removed Tuple3, Tuples.Tuple2 renamed to Tuple
+* [core] syntaxic sugar : use InjectorUtil instead of DIInjector
+* __[core] replaced `@Named` by `@ParamValue`__
+* __[core] Removed unused concept of named components__
+* __[core] add yaml configuration with flippable features, xml configuration is now discouraged and will be removed in next version (even 2.x)__
+* [core] refactored AppConfig -> Renamed in NodeConfig
+* [commons] Fixed aggregate health status : 1 or more Red drive to Red
+* [commons] Added ability to track non single thread processes
+* [database] Added timeseries in database module
 * __[database,dynamo,studio] remove hibernate support__
-* __[core] refactored AppConfig -> Renamed in NodeConfig__
-* [core] added conditions to filter abstract classes with discovery
-* [core] Possibility to have an optional parameter in the configuration
-* [core] tests in junit 5 (AbstractTestCaseJU4 is now deprecated use AbstractTestCaseJU5)
-* __[core] add yaml configuration with flippable features__
-* [core] remove deprecated Date DataType + remove all use of java.util.Date
-* [core] More specific temp dir for TempFiles
-* [database] add timeseries in database module
+* [dynamo] Added check on association fix #129
+* [dynamo] notNull is replaced by required in all ksp (task and entities)
 * [dynamo] key is replaced by id in ksp
 * [dynamo] URI is replaced by UID
 * [dynamo] Made FacetedQueryResult serializable
-* [dynamo] Modified date pattern for es query (breaking change)
+* __[dynamo] Modified date pattern for ES query (breaking change)__
 * [dynamo] localdate support in query
-* [dynamo] es : added optional param for embeded
-* [dynamo] Fixed reindexall task when removed old elements
-* [dynamo] Fixed index urn type (bug on removeAll)
+* [dynamo] ES: added optional param for embeded
+* [dynamo] ES: Fix urn type, no normalizer
+* [dynamo] ES: Fixed reindexall task when removed old elements
 * [dynamo] From io.File to nio.Path
 * [dynamo] DtListState.of
 * [dynamo] Changed default charset ok Ksp loader from iso-8859-1 to utf-8
+* [dynamo] Add FileInfoURI convert key for DataStore
+* [dynamo] Upgraded ES version from 5.6.8 to 7.0.0, and Lucene from 6.6.0  to 8.0.0
 * [dynamo] Fixed Search user DSL to escape bad syntax instead of VUser
-* [dynamo] remove es 2.4 plugin
 * [dynamo] Added ElasticSearch plugin for v5.6
-* [dynamo] Upgraded ES version from 5.6.8 to 6.6.0, and Lucene from 6.6.1 to 7.6.0
 * [dynamo] Added clustering to CollectionsManager
-* [account] allow comments in textauthentication plugin
+* [dynamo] Fixed empty facets from Json with Vega
+* __[dynamo] KSP Definition in CamelCase__
+* [dynamo] remove brokerbatch and moved brokerNN in DataStore
+* [dynamo] Fixed search by prefix with accents
+* [dynamo] Simplified syntax to declare an association in ksp
+* [dynamo] Fix domain metrics
+* [dynamo] Replaced DAO access with DtListState instead of RowMax only
+* [dynamo] Fix masterdatas to comply with with boot order : no more MasterDataInitializer -> replaced by a DefinitionProvider. Devs can use AbstractMasterDataDefinitionProvider
+* __[es2.4] Remove ElasticSearch 2.4 plugin__
+* [account] Allow comments in textauthentication plugin
 * [account] Fixed account store plugin and null value
-* [account] Need a formatter on ID for convertion
-* [account] Removed deprecated persona VSecurityManager
+* [account] Support Id conversion from Account to Entity source
+* __[account] Removed deprecated personna__
 * [account] Removed definition prefix from authorization aspect
+* [vega] fix Bug Content-Type sous JBoss
 * [vega] Added support of '.' in exclude and include fieldname
+* [vega] App version for swagger is a string
 * [vega] Added Instant and LocalDate support to SwaggerApi
-* [vega] UID Json encoding now send only key part, and use generics for found entity class
+* [vega] UID Json encoding now send only key part, and use generics in order to resolved entity class
 * [vega] Set attribute 'SessionExpired' true in case of session expiration
 * [vega] Fixed iterator of uiListModifiable : remove change the expected count
 * [vega] Inactive CacheControlFilter when Cache-Control header is already set
 * [vega] Removed securityCheck of URL : may use @secured on WS
 * [vega] Removed deprecated UiListState
-* [studio] multi file for sql init of staticmasterdatas 
+* [studio] multiple files for sql init of staticmasterdatas
 * [studio] dt objects can be splitted by feature
-* [all] update dependencies
-log4j2 2.11.0 -> 2.11.2 ; cglib-nodep 3.2.6 -> 3.2.10 ; gson 2.8.2 -> 2.8.5 ; c3p0 0.9.5.2 -> 0.9.5.3 ; janino	3.0.8 -> 3.0.12 ; ehcache 2.10.4 -> 2.10.6  ; berkleydb sleepycat je 7.5.11 -> 18.3.12 ; rest-assured 3.0.7 -> 3.3.0 ; freemarker 2.3.23 -> 2.3.28 ; javax-mail 1.6.0 -> 1.6.2 ; h2 1.4.196 -> 1.4.199 ; struts2 2.5.16 -> 2.5.20 ; fr.opensagres.xdocreport.converter.odt.odfdom 2.0.1 -> 2.0.2 ; fr.opensagres.xdocreport.converter.docx.xwpf 2.0.1 -> 2.0.2 ; org.apache.poi 3.16 -> 4.0.1
+* [studio] fix dao import when dt_index = keyconcept
+* [studio] created a SearchClient component dedicated to search access
+* [studio] Drop if exists
+* [studio] Removed sequences for non numeric PK
+* [all] update dependencies log4j2 2.11.0 -> 2.11.2 ; cglib-nodep 3.2.6 -> 3.2.10 ; gson 2.8.2 -> 2.8.5 ; c3p0 0.9.5.2 -> 0.9.5.3 ; janino	3.0.8 -> 3.0.12 ; ehcache 2.10.4 -> 2.10.6 ; berkleydb sleepycat je 7.5.11 -> 18.3.12 ; rest-assured 3.0.7 -> 3.3.0 ; freemarker 2.3.23 -> 2.3.28 ; javax-mail 1.6.0 -> 1.6.2 ; h2 1.4.196 -> 1.4.199 ; struts2 2.5.16 -> 2.5.20 ; fr.opensagres.xdocreport.converter.odt.odfdom 2.0.1 -> 2.0.2 ; fr.opensagres.xdocreport.converter.docx.xwpf 2.0.1 -> 2.0.2 ; org.apache.poi 3.16 -> 4.0.1
 
 Release 1.1.3 - 2019/03/21
 ----------------------
