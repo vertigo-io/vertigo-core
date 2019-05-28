@@ -75,14 +75,14 @@
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>8.1.0</version> <!-- 8.0.0 compatible with ElasticSearch 7.1.0 -->
-			<scope>test</scope>
+			<version>8.0.0</version><!-- 8.0.0 compatible with ElasticSearch 7.1.0 -->
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-analyzers-common</artifactId>
-			<version>8.1.0</version> <!-- 8.0.0 compatible with ElasticSearch 7.1.0 -->
-			<scope>test</scope>
+			<version>8.0.0</version> <!-- 8.0.0 compatible with ElasticSearch 7.1.0 -->
+			<optional>true</optional>
 		</dependency>
 
 		<!-- Search -->
@@ -90,25 +90,25 @@
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
 			<version>7.1.0</version>
-			<scope>test</scope><!-- EsTransportSearchServicesPlugin -->
+			<optional>true</optional> <!-- EsTransportSearchServicesPlugin -->
 		</dependency>
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>
 		    <artifactId>transport</artifactId>
 		    <version>7.1.0</version>
-		    <scope>test</scope><!-- EsTransportSearchServicesPlugin -->
+		    <optional>true</optional> <!-- EsTransportSearchServicesPlugin -->
 		</dependency>
 		<dependency>
 	        <groupId>org.codelibs.elasticsearch.module</groupId>
 	        <artifactId>analysis-common</artifactId> 
 	        <version>7.1.0</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
-	        <scope>test</scope>
+	        <optional>true</optional>
 	    </dependency>
 	   	<dependency>
 		    <groupId>org.codelibs.elasticsearch.module</groupId>
 		    <artifactId>mapper-extras</artifactId>
 		    <version>7.1.0</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
-	        <scope>test</scope>
+	        <optional>true</optional>
 		</dependency>
 	    
 		<!-- Connections Pool -->
