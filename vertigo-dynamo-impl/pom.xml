@@ -75,42 +75,42 @@
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>8.0.0</version> <!-- 8.0.0 compatible with ElasticSearch 6.6.0 -->
-			<optional>true</optional>
+			<version>8.1.0</version> <!-- 8.0.0 compatible with ElasticSearch 7.1.0 -->
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-analyzers-common</artifactId>
-			<version>8.0.0</version> <!-- 8.0.0 compatible with ElasticSearch 6.6.0 -->
-			<optional>true</optional>
+			<version>8.1.0</version> <!-- 8.0.0 compatible with ElasticSearch 7.1.0 -->
+			<scope>test</scope>
 		</dependency>
 
 		<!-- Search -->
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>7.0.0</version>
-			<optional>true</optional><!-- EsTransportSearchServicesPlugin -->
+			<version>7.1.0</version>
+			<scope>test</scope><!-- EsTransportSearchServicesPlugin -->
 		</dependency>
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>
 		    <artifactId>transport</artifactId>
-		    <version>7.0.0</version>
-		    <optional>true</optional><!-- EsTransportSearchServicesPlugin -->
+		    <version>7.1.0</version>
+		    <scope>test</scope><!-- EsTransportSearchServicesPlugin -->
 		</dependency>
 		<dependency>
 	        <groupId>org.codelibs.elasticsearch.module</groupId>
 	        <artifactId>analysis-common</artifactId> 
-	        <version>7.0.0</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
-	        <optional>true</optional>
+	        <version>7.1.0</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
+	        <scope>test</scope>
 	    </dependency>
 	   	<dependency>
 		    <groupId>org.codelibs.elasticsearch.module</groupId>
 		    <artifactId>mapper-extras</artifactId>
-		    <version>7.0.0</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
-	        <optional>true</optional>
+		    <version>7.1.0</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
+	        <scope>test</scope>
 		</dependency>
-		
+	    
 		<!-- Connections Pool -->
 		<dependency>
 			<groupId>com.mchange</groupId>
