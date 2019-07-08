@@ -76,7 +76,7 @@ Release 2.0.0 - 2019/05/16
 
 Release 1.1.3 - 2019/03/21
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-112-to-113)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-112-to-113)
 * [Studio] unused attribute
 * [Core] More specific temp dir for TempFiles
 * [Database] add check for quoted bound param
@@ -85,7 +85,7 @@ Release 1.1.3 - 2019/03/21
 
 Release 1.1.2 - 2018/06/28
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-111-to-112)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-111-to-112)
 * [Vega] Moved VSecurityException to Account
 * [Account] Added AuthorizationAspect : Warning reentrance not supported
 * [Dynamo] Fixed defaut index data type when analyser is set
@@ -97,7 +97,7 @@ Release 1.1.2 - 2018/06/28
 
 Release 1.1.1 - 2018/04/27
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-110-to-111)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-110-to-111)
 * [Dynamo] Fixed IndexType parsing
 * [Dynamo] Fixed collections facets
 * [Dynamo] Fixed search.sortable fields with specific filter (lowercase, acsiifolding)
@@ -130,7 +130,7 @@ Release 1.1.1 - 2018/04/27
 
 Release 1.1.0 - 2017/12/07
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-100-to-110)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-100-to-110)
 
 * [core] stop failed started component + resilience on stop 
 * [core] added proxies
@@ -176,7 +176,7 @@ Release 1.1.0 - 2017/12/07
 
 Release 1.0.0 - 2017/07/07
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-094-to-100)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-094-to-100)
 
 __In Bold__ : Potential compatibility problems 
 
@@ -298,7 +298,7 @@ __This release is limited to Studio only__
 
 Release 0.9.4 - 2017/03/13
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-093-to-094)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-093-to-094)
 
 __In Bold__ : Potential compatibility problems 
 
@@ -358,7 +358,7 @@ __Warning : You must use 0.9.4a version of Studio module !!__
 
 Release 0.9.3 - 2016/10/11
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-092-to-093)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-092-to-093)
 
 __In Bold__ : Potential compatibility problems 
 * __[All] Updated to JDK 8__
@@ -402,7 +402,7 @@ __In Bold__ : Potential compatibility problems
 
 Release 0.9.2 - 2016/06/28
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-091-to-092)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-091-to-092)
 
 __In Bold__ : Potential compatibility problems 
 * [All] Code cleaning, refactoring and documenting
@@ -437,7 +437,7 @@ __In Bold__ : Potential compatibility problems
 
 Release 0.9.1 - 2016/02/05
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-090-to-091)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-090-to-091)
 
 __In Bold__ : Potential compatibility problems 
 * __[All] Refactored all (injectable) components must extend Component__
@@ -515,7 +515,7 @@ __In Bold__ : Potential compatibility problems
 
 Release 0.9.0 - 2015/11/20
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-083-to-090)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-083-to-090)
 
 __In Bold__ : Potential compatibility problems 
 * [All] Code cleaning and refactoring
@@ -554,7 +554,7 @@ __In Bold__ : Potential compatibility problems
 
 Release 0.8.3 - 2015/10/08
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-082-to-083)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-082-to-083)
 
 __In Bold__ : Potential compatibility problems 
 * [All] Code cleaning and refactoring
@@ -579,7 +579,7 @@ __In Bold__ : Potential compatibility problems
 
 Release 0.8.2 - 2015/09/10
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-081-to-082)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-081-to-082)
 __In Bold__ : Potential compatibility problems 
 * [All] Lots of code cleaning and refactoring
 * [All] Changed private methods that can be static to static
@@ -635,7 +635,7 @@ __In Bold__ : Potential compatibility problems
 
 Release 0.8.1 - 2015/07/31
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-080-to-081)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-080-to-081)
 * [All] Lots of code cleaning and refactoring
 * [Core] Renamed io.vertigo.core.Home.App to io.vertigo.core.App
 * [Core] Renamed io.vertigo.core.boot to io.vertigo.core.config
@@ -658,7 +658,7 @@ Release 0.8.1 - 2015/07/31
 
 Release 0.8.0 - 2015/07/02
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-075-to-080)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-075-to-080)
 * [All] Fixed some code style and some refactor to simpler code
 * [All] Renamed prefix in Builder with ==> add
 * [Core] split BootConfig from NodeConfig
@@ -708,7 +708,7 @@ Release 0.7.5a - 2015/03/23
 
 Release 0.7.5 - 2015/03/20
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-074-to-075)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-074-to-075)
 * [Core] Renamed KTransaction to VTransaction
 * [Dynamo] Renamed KSecurityManager to VSecurityManager
 * [Dynamo] Renamed KFile to VFile
@@ -723,7 +723,7 @@ Release 0.7.5 - 2015/03/20
 
 Release 0.7.4 - 2015/03/12
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-073-to-074)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-073-to-074)
 * [All] Fixed some code style
 * [All] Removed some deprecated : PersistenceManager.getBrokerConfiguration, PersistenceManager.getMasterDataConfiguration, UiMessageStack.hasErrorOnField, UiRequestUtil.getHttpServletRequest, UiRequestUtil.getHttpSession
 * [Core] Aspects Order preserved
@@ -758,7 +758,7 @@ Release 0.7.4 - 2015/03/12
 
 Release 0.7.3 - 2015/02/02
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-072-to-073)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-072-to-073)
 * [All] Refactored tests to made them more autonomous
 * [All] Fixed some code style
 * [All] Cleaned some dependencies
@@ -803,7 +803,7 @@ Release 0.7.2 - 2014/12/16
 
 Release 0.7.1 - 2014/12/09
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-070-to-071)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-070-to-071)
 * [Studio] Refactored : DomainGeneratorPlugin splited into more Plugins usages dependents (look at SqlGeneratorPlugin and JSGeneratorPlugin)
 * [Studio] Fixed sql.ftl
 * [Vega] UiListState in query instead of body
@@ -818,7 +818,7 @@ Release 0.7.1 - 2014/12/09
 
 Release 0.7.0 - 2014/11/25
 ----------------------
-[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-06x-to-070)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-06x-to-070)
 A big version :)
 * [All] Lots of code style fixes, tests units coverage, cleaning and refactoring
 * [Core] Managers.xml syntax changed : Renamed &lt;modules&gt; to &lt;config&gt; (tag module doesn't change)
