@@ -203,7 +203,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		try (InputStream inputStream = fileInfo.getVFile().createInputStream()) {
 			getCurrentTransaction().addAfterCompletion(new FileActionSave(inputStream, documentRoot + pathToSave));
 		} catch (final IOException e) {
-			throw WrappedException.wrap(e, "Impossible de lire le fichier uploadé.");
+			throw WrappedException.wrap(e, "Can't read uploaded file.");
 		}
 	}
 
@@ -274,7 +274,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	 * @return URI du DTO utilisé en BDD pour stocker.
 	 */
 	private UID<Entity> createDtObjectURI(final FileInfoURI uri) {
-		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
+		Assertion.checkNotNull(uri, "file uri must be provided.");
 		//-----
 		// Il doit exister un DtObjet associé, avec la structure attendue.
 		return UID.of(storeDtDefinition, uri.getKeyAs(storeIdField.getDomain().getDataType()));
@@ -287,7 +287,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	 * @return DTO utilisé en BDD pour stocker.
 	 */
 	private Entity createFileInfoEntity(final FileInfoDefinition fileInfoDefinition) {
-		Assertion.checkNotNull(fileInfoDefinition, "fileInfoDefinition du fichier doit être renseignée.");
+		Assertion.checkNotNull(fileInfoDefinition, "fileInfoDefinition must be provided.");
 		//-----
 		// Il doit exister un DtObjet associé, avec la structure attendue.
 		return DtObjectUtil.createEntity(storeDtDefinition);

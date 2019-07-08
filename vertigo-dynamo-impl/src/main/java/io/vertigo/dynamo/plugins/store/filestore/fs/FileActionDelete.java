@@ -16,9 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- *
- */
 package io.vertigo.dynamo.plugins.store.filestore.fs;
 
 import java.io.File;
@@ -31,7 +28,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 
 /**
- * Classe de gestion de la sauvegarde d'un fichier.
+ * Handling removal of a file.
  *
  * @author skerdudou
  */
@@ -43,7 +40,7 @@ final class FileActionDelete implements VTransactionAfterCompletionFunction {
 	/**
 	 * Constructor.
 	 *
-	 * @param path le chemin de destination du fichier
+	 * @param path Location of the file
 	 */
 	FileActionDelete(final String path) {
 		Assertion.checkNotNull(path);

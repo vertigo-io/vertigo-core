@@ -157,12 +157,12 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		try (final InputStream inputStream = fileInfo.getVFile().createInputStream()) {
 			getCurrentTransaction().addAfterCompletion(new FileActionSave(inputStream, obtainFullFilePath(fileInfo.getURI())));
 		} catch (final IOException e) {
-			throw WrappedException.wrap(e, "Impossible de lire le fichier uploadé.");
+			throw WrappedException.wrap(e, "Can't read uploaded file.");
 		}
 		try (final InputStream inputStream = new ByteArrayInputStream(metaData.getBytes(METADATA_CHARSET))) {
 			getCurrentTransaction().addAfterCompletion(new FileActionSave(inputStream, obtainFullMetaDataFilePath(fileInfo.getURI())));
 		} catch (final IOException e) {
-			throw WrappedException.wrap(e, "Impossible de lire le fichier uploadé.");
+			throw WrappedException.wrap(e, "Can't read metadata file.");
 		}
 	}
 

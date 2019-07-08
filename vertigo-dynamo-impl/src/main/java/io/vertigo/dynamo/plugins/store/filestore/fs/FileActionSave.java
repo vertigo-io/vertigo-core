@@ -16,9 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- *
- */
 package io.vertigo.dynamo.plugins.store.filestore.fs;
 
 import java.io.File;
@@ -35,7 +32,7 @@ import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;
 
 /**
- * Classe de gestion de la sauvegarde d'un fichier.
+ * Handling saving file to disk.
  *
  * @author skerdudou
  */
@@ -52,8 +49,8 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 	/**
 	 * Constructor.
 	 *
-	 * @param inputStream l'inputStream du fichier
-	 * @param path le chemin de destination du fichier
+	 * @param inputStream File inputStream
+	 * @param path Location of the file
 	 */
 	public FileActionSave(final InputStream inputStream, final String path) {
 		Assertion.checkNotNull(inputStream);
@@ -62,11 +59,14 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 		txPrevFile = new File(path);
 		txNewFile = new File(path + EXT_SEPARATOR + System.currentTimeMillis() + EXT_SEPARATOR + EXT_NEW);
 
-		// création du fichier temporaire
-		if (!txNewFile.getParentFile().exists() && !txNewFile.getParentFile().mkdirs()) {
+		// Creation of the folder containing the file
+		// the double check of exists() is for concurrency check, another process can have created the folder between our instructions
+		if (!txNewFile.getParentFile().exists() && !txNewFile.getParentFile().mkdirs() && !txNewFile.getParentFile().exists()) {
 			LOG.error("Can't create temp directories {}", txNewFile.getAbsolutePath());
 			throw new VSystemException("Can't create temp directories");
 		}
+		
+		// Creation of the temporary file inside the destination folder
 		try {
 			if (!txNewFile.createNewFile()) {
 				LOG.error("Can't create temp file {}", txNewFile.getAbsolutePath());
@@ -77,8 +77,7 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 			throw WrappedException.wrap(e, "Can't save temp file.");
 		}
 
-		// copie des données dans le fichier temporaire. Permet de vérifier l'espace disque avant d'arriver à la phase
-		// de commit. Si la phase de commit a une erreur, garde trace du fichier sur le FS.
+		// Write data into the temp file. By doing this before the commit phase, we ensure we have enough space left.
 		try {
 			FileUtil.copy(inputStream, txNewFile);
 		} catch (final IOException e) {
@@ -98,25 +97,23 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 	}
 
 	private void doCommit() {
-		// on supprime l'ancien fichier s'il existe
+		// Clean old file if exist
 		if (txPrevFile.exists() && !txPrevFile.delete()) {
-			LOG.fatal("Impossible supprimer l'ancien fichier ({}) lors de la sauvegarde. Le fichier a sauvegarder se trouve dans {}", txPrevFile.getAbsolutePath(), txNewFile.getAbsolutePath());
-			throw new VSystemException("Erreur fatale : Impossible de sauvegarder le fichier.");
+			LOG.fatal("Can't save file. Error replacing previous file ({}). A copy of the new file to save is kept into {}", txPrevFile.getAbsolutePath(), txNewFile.getAbsolutePath());
+			throw new VSystemException("An error occured while saving the file.");
 		}
 
-		// on met le fichier au bon emplacement
+		// we move the temp file to it's final destination
 		if (!txNewFile.renameTo(txPrevFile)) {
-			LOG.fatal("Impossible sauvegarder le fichier. Déplacement impossible de {} vers {}", txNewFile.getAbsolutePath(), txPrevFile.getAbsolutePath());
-			throw new VSystemException("Erreur fatale : Impossible de sauvegarder le fichier.");
+			LOG.fatal("Can't save file. Error moving the file {} to it's final location {}", txNewFile.getAbsolutePath(), txPrevFile.getAbsolutePath());
+			throw new VSystemException("An error occured while saving the file.");
 		}
 	}
 
 	private void doRollback() {
-		// on ne fait pas de ménage si on a eu une erreur
-		if (txNewFile.exists()) {
-			if (!txNewFile.delete()) {
-				LOG.error("Can't rollback and delete file : {}", txNewFile.getAbsolutePath());
-			}
+		// cleaning temp file on error
+		if (txNewFile.exists() && !txNewFile.delete()) {
+			LOG.error("Can't delete file {} on rollback", txNewFile.getAbsolutePath());
 		}
 	}
 }
