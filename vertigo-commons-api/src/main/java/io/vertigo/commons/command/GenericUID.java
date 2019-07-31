@@ -34,7 +34,7 @@ import io.vertigo.util.StringUtil;
  * Cela permet de créer des UID plus intuitive comme UID<Personne> qui est un identifiant de personne.
  *
  * @author  pchretien
- * @param <E> the type of entity
+ * @param <O> the type of entity
  */
 public final class GenericUID<O extends Object> implements Serializable {
 	private static final long serialVersionUID = -1L;
@@ -56,7 +56,7 @@ public final class GenericUID<O extends Object> implements Serializable {
 	 * @param definition the entity definition
 	 * @param id the entity id
 	 */
-	private GenericUID(final String type, final Object id) {
+	private GenericUID(final String type, final Serializable id) {
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(type);
 		//-----
@@ -78,9 +78,9 @@ public final class GenericUID<O extends Object> implements Serializable {
 		//-----
 		final int i = urn.indexOf(SEPARATOR);
 		final String dname = urn.substring(0, i);
-		final Object id = stringToId(urn.substring(i + 1));
+		final Serializable id = stringToId(urn.substring(i + 1));
 
-		return new GenericUID(dname, id);
+		return new GenericUID<>(dname, id);
 	}
 
 	/**
@@ -92,8 +92,8 @@ public final class GenericUID<O extends Object> implements Serializable {
 	 * @param id the entity id
 	 * @return the entity UID
 	 */
-	public static <O extends Object> GenericUID<O> of(final String dname, final Object id) {
-		return new GenericUID(dname, id);
+	public static <O extends Object> GenericUID<O> of(final String dname, final Serializable id) {
+		return new GenericUID<>(dname, id);
 	}
 
 	public String getType() {
