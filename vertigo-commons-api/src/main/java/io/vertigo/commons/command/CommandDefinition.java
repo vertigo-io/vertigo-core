@@ -21,16 +21,19 @@ public final class CommandDefinition implements Definition {
 	private final String name;
 	private final String command;
 	private final String description;
+	private final List<String> questions;
 	private final Function<Object[], CommandResponse> action;
 	private final List<CommandParam> commandParams;
 
 	public CommandDefinition(
 			final String command,
 			final String description,
+			final List<String> questions,
 			final List<CommandParam> commandParams,
 			final Function<Object[], CommandResponse> action) {
 		Assertion.checkArgNotEmpty(command);
 		Assertion.checkArgNotEmpty(description);
+		Assertion.checkNotNull(questions);
 		Assertion.checkState(COMMAND_PATTERN.matcher(command).matches(), "handle '{0}' must respect the pattern '{1}'", command, COMMAND_PATTERN);
 		Assertion.checkNotNull(action);
 		commandParams
@@ -46,6 +49,7 @@ public final class CommandDefinition implements Definition {
 		//---
 		this.command = command;
 		this.description = description;
+		this.questions = questions;
 		this.commandParams = commandParams;
 		final String[] commandParts = command.substring(1).split("\\/"); // we remove the first slash
 		name = "Cmd"
@@ -65,6 +69,10 @@ public final class CommandDefinition implements Definition {
 
 	public String getCommand() {
 		return command;
+	}
+
+	public List<String> getQuestions() {
+		return questions;
 	}
 
 	public List<CommandParam> getParams() {

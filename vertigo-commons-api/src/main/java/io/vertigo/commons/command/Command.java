@@ -22,4 +22,6 @@ public @interface Command {
 
 	String description() default "";
 
+	String[] questions() default {};
+
 }

@@ -1,6 +1,7 @@
 package io.vertigo.commons.impl.command;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -47,6 +48,7 @@ public final class CommandManagerImpl implements CommandManager, SimpleDefinitio
 							return new CommandDefinition(
 									command.handle(),
 									command.description(),
+									Arrays.asList(command.questions()),
 									commandParams,
 									args -> (CommandResponse) ClassUtil.invoke(component, method, args));
 						})
