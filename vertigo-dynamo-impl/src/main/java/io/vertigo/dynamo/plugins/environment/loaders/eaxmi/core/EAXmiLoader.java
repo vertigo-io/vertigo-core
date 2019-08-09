@@ -93,7 +93,9 @@ public final class EAXmiLoader extends AbstractXmlLoader {
 	private static XmlClass createClass(final EAXmiObject obj, final boolean constFieldNameInSource) {
 		LOG.debug("Creation de classe : {}", obj.getName());
 		//On recherche les attributs (>DtField) de cette classe(>Dt_DEFINITION)
-		final String code = obj.getName().toUpperCase(Locale.ENGLISH);
+		final String code = constFieldNameInSource
+				? StringUtil.constToUpperCamelCase(obj.getName().toUpperCase(Locale.ENGLISH))
+				: obj.getName();
 		final String packageName = obj.getParent().getPackageName();
 		final String stereotype = obj.getStereotype();
 
@@ -138,7 +140,7 @@ public final class EAXmiLoader extends AbstractXmlLoader {
 	 * @param obj ObjectOOM
 	 * @return Association
 	 */
-	private XmlAssociation createAssociation(final EAXmiObject obj) {
+	private XmlAssociation createAssociation(final EAXmiObject obj, final boolean constFieldNameInSource) {
 		LOG.debug("Créer association : {}", obj.getName());
 		//On recherche les objets référencés par l'association.
 		final EAXmiObject objectB = map.get(obj.getClassB());
@@ -148,21 +150,29 @@ public final class EAXmiLoader extends AbstractXmlLoader {
 			throw new IllegalArgumentException("Noeuds de l'association introuvables");
 		}
 
-		final String code = obj.getName().toUpperCase(Locale.ENGLISH);
+		final String code = constFieldNameInSource
+				? StringUtil.constToUpperCamelCase(obj.getName().toUpperCase(Locale.ENGLISH))
+				: obj.getName();
 		final String packageName = obj.getParent().getPackageName();
 
 		final String multiplicityA = obj.getRoleAMultiplicity();
 		final String multiplicityB = obj.getRoleBMultiplicity();
 
 		//Si les roles ne sont pas renseignés ont prend le nom de la table en CamelCase.
-		final String roleLabelA = obj.getRoleALabel() != null ? obj.getRoleALabel() : StringUtil.constToUpperCamelCase(objectA.getName());
-		final String roleLabelB = obj.getRoleBLabel() != null ? obj.getRoleBLabel() : StringUtil.constToUpperCamelCase(objectB.getName());
+		final String computedRoleA = constFieldNameInSource
+				? StringUtil.constToUpperCamelCase(objectA.getName())
+				: objectA.getName();
+		final String computedRoleB = constFieldNameInSource
+				? StringUtil.constToUpperCamelCase(objectB.getName())
+				: objectB.getName();
+		final String roleLabelA = obj.getRoleALabel() != null ? obj.getRoleALabel() : computedRoleA;
+		final String roleLabelB = obj.getRoleBLabel() != null ? obj.getRoleBLabel() : computedRoleB;
 		// Si il n'existe pas de libelle pour un role donné alors on utilise le nom de l'objet référencé.
 		//Le code du role est déduit du libellé.
 
 		//Attention pamc inverse dans oom les déclarations des objets !!
-		final String codeA = objectA.getName().toUpperCase(Locale.ENGLISH);
-		final String codeB = objectB.getName().toUpperCase(Locale.ENGLISH);
+		final String codeA = constFieldNameInSource ? objectA.getName().toUpperCase(Locale.ENGLISH) : objectA.getName();
+		final String codeB = constFieldNameInSource ? objectB.getName().toUpperCase(Locale.ENGLISH) : objectB.getName();
 
 		// associationDefinition.
 		//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
