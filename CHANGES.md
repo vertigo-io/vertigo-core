@@ -1,7 +1,7 @@
 Version history
 ===============
 
-Running 2.0.0-SNAPSHOT
+Running 2.0.1-SNAPSHOT
 ----------------------
 
 more to come :)
