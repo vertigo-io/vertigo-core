@@ -162,8 +162,8 @@ public final class EAXmiLoader extends AbstractXmlLoader {
 		//Le code du role est déduit du libellé.
 
 		//Attention pamc inverse dans oom les déclarations des objets !!
-		final String codeA = constFieldNameInSource ? objectA.getName().toUpperCase(Locale.ENGLISH) : objectA.getName();
-		final String codeB = constFieldNameInSource ? objectB.getName().toUpperCase(Locale.ENGLISH) : objectB.getName();
+		final String codeA = constFieldNameInSource ? StringUtil.constToUpperCamelCase(objectA.getName().toUpperCase(Locale.ENGLISH)) : objectA.getName();
+		final String codeB = constFieldNameInSource ? StringUtil.constToUpperCamelCase(objectB.getName().toUpperCase(Locale.ENGLISH)) : objectB.getName();
 
 		// associationDefinition.
 		//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)

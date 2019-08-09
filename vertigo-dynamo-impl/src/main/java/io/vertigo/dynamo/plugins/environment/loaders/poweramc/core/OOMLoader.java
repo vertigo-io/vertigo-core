@@ -79,7 +79,7 @@ public final class OOMLoader extends AbstractXmlLoader {
 
 	private XmlClass createClass(final OOMObject obj, final boolean constFieldNameInSource) {
 		//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
-		final String code = constFieldNameInSource ? StringUtil.constToUpperCamelCase(obj.getName().toUpperCase(Locale.ENGLISH)) : obj.getName();
+		final String code = constFieldNameInSource ? StringUtil.constToUpperCamelCase(obj.getCode().toUpperCase(Locale.ENGLISH)) : obj.getCode();
 		final String packageName = obj.getParent().getPackageName();
 		final String stereotype = obj.getStereotype();
 		//On recherche les PrimaryIdentifiers :
@@ -165,7 +165,7 @@ public final class OOMLoader extends AbstractXmlLoader {
 			throw new IllegalArgumentException("Noeuds de l'association introuvables");
 		}
 
-		final String code = constFieldNameInSource ? StringUtil.constToUpperCamelCase(obj.getName().toUpperCase(Locale.ENGLISH)) : obj.getName();
+		final String code = constFieldNameInSource ? StringUtil.constToUpperCamelCase(obj.getCode().toUpperCase(Locale.ENGLISH)) : obj.getCode();
 		final String packageName = obj.getParent().getPackageName();
 
 		final String multiplicityA = obj.getRoleAMultiplicity();
@@ -180,8 +180,8 @@ public final class OOMLoader extends AbstractXmlLoader {
 		//Le code du role est déduit du libellé.
 
 		//Attention pamc inverse dans oom les déclarations des objets !!
-		final String codeA = constFieldNameInSource ? objectA.getName().toUpperCase(Locale.ENGLISH) : objectA.getName();
-		final String codeB = constFieldNameInSource ? objectB.getName().toUpperCase(Locale.ENGLISH) : objectB.getName();
+		final String codeA = constFieldNameInSource ? StringUtil.constToUpperCamelCase(objectA.getCode().toUpperCase(Locale.ENGLISH)) : objectA.getCode();
+		final String codeB = constFieldNameInSource ? StringUtil.constToUpperCamelCase(objectB.getCode().toUpperCase(Locale.ENGLISH)) : objectB.getCode();
 
 		// associationDefinition.
 		//On recherche les attributs (>DtField) de cet classe(>Dt_DEFINITION)
