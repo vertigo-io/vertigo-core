@@ -69,7 +69,6 @@
 		<sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.reportPaths>
 	</properties>
 
-
 	<dependencies>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -131,7 +130,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -150,7 +148,7 @@
 				<!-- We need a test jar too -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.1.2</version>
+				<version>3.1.1</version>
 				<configuration>
 					<forceCreation>true</forceCreation>
 					<skipIfEmpty>true</skipIfEmpty>
