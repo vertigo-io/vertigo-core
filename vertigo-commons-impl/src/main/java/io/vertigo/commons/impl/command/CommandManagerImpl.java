@@ -39,7 +39,9 @@ public final class CommandManagerImpl implements CommandManager, SimpleDefinitio
 				.filter(method -> method.isAnnotationPresent(Command.class))
 				.map(
 						method -> {
-							Assertion.checkState(CommandResponse.class.isAssignableFrom(method.getReturnType()), "Method {0} on component {1} must return a CommandResult to be used as a command", method.getName(), component.getClass().getName());
+							Assertion.checkState(
+									CommandResponse.class.isAssignableFrom(method.getReturnType()),
+									"Method {0} on component {1} must return a CommandResult to be used as a command", method.getName(), component.getClass().getName());
 							//---
 							final Command command = method.getAnnotation(Command.class);
 							final List<CommandParam> commandParams = Stream.of(method.getGenericParameterTypes())
@@ -76,7 +78,9 @@ public final class CommandManagerImpl implements CommandManager, SimpleDefinitio
 	@Override
 	public CommandResponse executeCommand(final String handle, final String... commandParams) {
 		final CommandDefinition commandDefinition = findCommand(handle);
-		Assertion.checkState(commandParams.length == commandDefinition.getParams().size(), "Command '{0}' takes {1} arguments and {2} were passed", commandDefinition.getCommand(), commandDefinition.getParams().size(), commandParams.length);
+		Assertion.checkState(
+				commandParams.length == commandDefinition.getParams().size(),
+				"Command '{0}' takes {1} arguments and {2} were passed", commandDefinition.getCommand(), commandDefinition.getParams().size(), commandParams.length);
 		final Object[] actualArguments = IntStream.range(0, commandParams.length)
 				.mapToObj(i -> {
 					if (commandDefinition.getParams().get(i).getType() instanceof ParameterizedType) {

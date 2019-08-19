@@ -9,7 +9,8 @@ public final class CommandResponseBuilder<P> implements Builder<CommandResponse<
 	private String myTargetUrl; // may be null
 	private P myPayload; // may be null
 
-	public CommandResponseBuilder() {
+	CommandResponseBuilder() {
+		//package
 	}
 
 	public CommandResponseBuilder<P> withStatus(final CommandResponseStatus status) {
