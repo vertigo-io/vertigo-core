@@ -26,7 +26,7 @@ import io.vertigo.app.config.Features;
  *  - Extends this class
  *  - Provide a module name
  *  - Provide the package prefix to scan for components
- *  - Register this feature in your app's configuration (XML or Java)
+ *  - Register this feature in your app's configuration (YAML or Java)
  * @author mlaroche
  *
  */
