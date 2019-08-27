@@ -18,11 +18,14 @@
  */
 package io.vertigo.dynamo.store.datastore;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 
@@ -337,14 +340,34 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testCreateFile() throws Exception {
+		doCreateFile(this::createFileInfo);
+	}
+
+	@Test
+	public void testUpdateFile() throws Exception {
+		doUpdateFile(this::createFileInfo);
+	}
+
+	@Test
+	public void testDeleteFile() throws Exception {
+		doDeleteFile(this::createFileInfo);
+	}
+
+	protected void doCreateFile(final Function<VFile, FileInfo> createFileInfoFct) throws Exception {
+		//1.Création du fichier depuis un fichier texte du FS
+		final VFile vFile = TestUtil.createVFile(fileManager, "../data/lautreamont.txt", AbstractStoreManagerTest.class);
+		//2. Sauvegarde en BDD
+		final FileInfo fileInfo = createFileInfoFct.apply(vFile);
+		final FileInfo createdFileInfo;
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			//1.Création du fichier depuis un fichier texte du FS
+			//2. Sauvegarde en Temp
+			createdFileInfo = storeManager.getFileStore().create(fileInfo);
+			transaction.commit(); //can't read file if not commited (TODO ?)
 
-			final VFile vFile = TestUtil.createVFile(fileManager, "../data/lautreamont.txt", AbstractStoreManagerTest.class);
-			//2. Sauvegarde en BDD
-			final FileInfo fileInfo = new FileInfoStd(vFile);
-			final FileInfo createdFileInfo = storeManager.getFileStore().create(fileInfo);
+			System.out.println("doCreateFile " + createdFileInfo.getURI().toURN());
+		}
 
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//3.relecture du fichier
 			final FileInfo readFileInfo = storeManager.getFileStore().read(createdFileInfo.getURI());
 
@@ -372,6 +395,103 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 			//On désactive pour l'instant
 			//Ne marche pas sur la PIC pour cause de charset sur le àé			//Assertions.assertTrue("Test contenu du fichier : " + secureSubString(read, 15579, "adieu !à ;"), read.indexOf("adieu !à ;") > 0);
 		}
+	}
+
+	protected void doDeleteFile(final Function<VFile, FileInfo> createFileInfoFct) throws Exception {
+		//1.Création du fichier depuis un fichier texte du FS
+		final VFile vFile = TestUtil.createVFile(fileManager, "../data/lautreamont.txt", AbstractStoreManagerTest.class);
+		//2. Sauvegarde en BDD
+		final FileInfo fileInfo = createFileInfoFct.apply(vFile);
+		final FileInfo createdFileInfo;
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			//2. Sauvegarde en Temp
+			createdFileInfo = storeManager.getFileStore().create(fileInfo);
+			transaction.commit(); //can't read file if not commited (TODO ?)
+
+			System.out.println("doDeleteFile " + createdFileInfo.getURI().toURN());
+		}
+
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			//3.relecture du fichier
+			storeManager.getFileStore().read(createdFileInfo.getURI());
+		}
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			//4. suppression.
+			storeManager.getFileStore().delete(createdFileInfo.getURI());
+			transaction.commit();
+		}
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			//3.relecture du fichier
+			Assertions.assertThrows(NullPointerException.class, () -> {
+				storeManager.getFileStore().read(createdFileInfo.getURI());
+			});
+		}
+	}
+
+	protected void doUpdateFile(final Function<VFile, FileInfo> createFileInfoFct) throws Exception {
+		//1.Création du fichier depuis un fichier texte du FS
+
+		final VFile vFile = TestUtil.createVFile(fileManager, "../data/execution.kpr", AbstractStoreManagerTest.class);
+		final VFile vFile2 = TestUtil.createVFile(fileManager, "../data/lautreamont.txt", AbstractStoreManagerTest.class);
+		//2. Sauvegarde en BDD
+		final FileInfo createdFileInfo;
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			final FileInfo fileInfo = createFileInfoFct.apply(vFile);
+			createdFileInfo = storeManager.getFileStore().create(fileInfo);
+			transaction.commit();
+			System.out.println("doUpdateFile " + createdFileInfo.getURI().toURN());
+		}
+		final FileInfo readFileInfo;
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			//3. relecture du fichier
+			readFileInfo = storeManager.getFileStore().read(createdFileInfo.getURI());
+		}
+
+		//4. comparaison du fichier créé et du fichier lu.
+		final String source = readFileContent(vFile2);
+		final String read = readFileContent(readFileInfo.getVFile());
+
+		//on vérifie que le contenu des fichiers est différent.
+		Assertions.assertNotEquals(source, read);
+
+		//2. Mise à jour en BDD
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			final FileInfo fileInfo2 = createFileInfoFct.apply(vFile2);
+			fileInfo2.setURIStored(createdFileInfo.getURI());
+			storeManager.getFileStore().update(fileInfo2);
+			transaction.commit();
+			System.out.println("doUpdateFile2 " + createdFileInfo.getURI().toURN());
+		}
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+
+			//3. relecture du fichier
+			final FileInfo readFileInfo2 = storeManager.getFileStore().read(createdFileInfo.getURI());
+
+			//4. comparaison du fichier créé et du fichier lu.
+			final String read2 = readFileContent(readFileInfo2.getVFile());
+
+			//on vérifie que le contenu des fichiers est identique.
+			//assertEquals("toto", "toto");
+			//assertEquals("toto", "ti");
+			Assertions.assertEquals(source, read2);
+			Assertions.assertTrue(read2.startsWith("Chant I"), "Test contenu du fichier");
+			Assertions.assertTrue(read2.indexOf("ses notes langoureuses,") > 0, "Test contenu du fichier : " + secureSubString(read2, 16711, "ses notes langoureuses,"));
+			Assertions.assertTrue(read2.indexOf("mal : \"Adolescent,") > 0, "Test contenu du fichier : " + secureSubString(read2, 11004, "mal : \"Adolescent,"));
+		}
+
+	}
+
+	private String readFileContent(final VFile vFile) throws IOException {
+		try (final OutputStream sourceOS = new java.io.ByteArrayOutputStream()) {
+			try (final InputStream fileIS = vFile.createInputStream()) {
+				FileUtil.copy(fileIS, sourceOS);
+			}
+			return sourceOS.toString();
+		}
+	}
+
+	protected FileInfo createFileInfo(final VFile vFile) {
+		return new FileInfoStd(vFile);
 	}
 
 	protected static String secureSubString(final String read, final int index, final String searchString) {

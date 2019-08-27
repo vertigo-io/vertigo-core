@@ -21,6 +21,8 @@ package io.vertigo.dynamo.plugins.store.filestore.fs;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,6 +30,7 @@ import org.apache.logging.log4j.Logger;
 import io.vertigo.commons.transaction.VTransactionAfterCompletionFunction;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Tuple;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;
 
@@ -42,9 +45,7 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 	private static final Logger LOG = LogManager.getLogger(FileActionSave.class.getName());
 
 	//ref the file before this save action
-	private final File txPrevFile;
-	//ref the new file to save on this transaction
-	private final File txNewFile;
+	private final List<Tuple<File, File>> txSaveFiles = new ArrayList<>();
 
 	/**
 	 * Constructor.
@@ -53,11 +54,21 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 	 * @param path Location of the file
 	 */
 	public FileActionSave(final InputStream inputStream, final String path) {
+		add(inputStream, path);
+	}
+
+	/**
+	 * Add same live span file to save.
+	 *
+	 * @param inputStream File inputStream
+	 * @param path Location of the file
+	 */
+	public FileActionSave add(final InputStream inputStream, final String path) {
 		Assertion.checkNotNull(inputStream);
 		Assertion.checkNotNull(path);
 		//-----
-		txPrevFile = new File(path);
-		txNewFile = new File(path + EXT_SEPARATOR + System.currentTimeMillis() + EXT_SEPARATOR + EXT_NEW);
+		final File txFinalFile = new File(path);
+		final File txNewFile = new File(path + EXT_SEPARATOR + System.currentTimeMillis() + EXT_SEPARATOR + EXT_NEW);
 
 		// Creation of the folder containing the file
 		// the double check of exists() is for concurrency check, another process can have created the folder between our instructions
@@ -65,7 +76,7 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 			LOG.error("Can't create temp directories {}", txNewFile.getAbsolutePath());
 			throw new VSystemException("Can't create temp directories");
 		}
-		
+
 		// Creation of the temporary file inside the destination folder
 		try {
 			if (!txNewFile.createNewFile()) {
@@ -84,6 +95,10 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 			LOG.error("Can't copy uploaded file to : {}", txNewFile.getAbsolutePath());
 			throw WrappedException.wrap(e, "Can't save uploaded file.");
 		}
+
+		txSaveFiles.add(Tuple.of(txNewFile, txFinalFile));
+
+		return this;
 	}
 
 	/** {@inheritDoc} */
@@ -97,23 +112,31 @@ final class FileActionSave implements VTransactionAfterCompletionFunction {
 	}
 
 	private void doCommit() {
-		// Clean old file if exist
-		if (txPrevFile.exists() && !txPrevFile.delete()) {
-			LOG.fatal("Can't save file. Error replacing previous file ({}). A copy of the new file to save is kept into {}", txPrevFile.getAbsolutePath(), txNewFile.getAbsolutePath());
-			throw new VSystemException("An error occured while saving the file.");
-		}
+		for (final Tuple<File, File> tuple : txSaveFiles) {
+			final File txNewFile = tuple.getVal1();
+			final File txFinalFile = tuple.getVal2();
 
-		// we move the temp file to it's final destination
-		if (!txNewFile.renameTo(txPrevFile)) {
-			LOG.fatal("Can't save file. Error moving the file {} to it's final location {}", txNewFile.getAbsolutePath(), txPrevFile.getAbsolutePath());
-			throw new VSystemException("An error occured while saving the file.");
+			// Clean old file if exist
+			if (txFinalFile.exists() && !txFinalFile.delete()) {
+				LOG.fatal("Can't save file. Error replacing previous file ({}). A copy of the new file to save is kept into {}", txFinalFile.getAbsolutePath(), txNewFile.getAbsolutePath());
+				throw new VSystemException("An error occured while saving the file.");
+			}
+			// we move the temp file to it's final destination
+			if (!txNewFile.renameTo(txFinalFile)) {
+				LOG.fatal("Can't save file. Error moving the file {} to it's final location {}", txNewFile.getAbsolutePath(), txFinalFile.getAbsolutePath());
+				throw new VSystemException("An error occured while saving the file.");
+			}
 		}
 	}
 
 	private void doRollback() {
 		// cleaning temp file on error
-		if (txNewFile.exists() && !txNewFile.delete()) {
-			LOG.error("Can't delete file {} on rollback", txNewFile.getAbsolutePath());
+		for (final Tuple<File, File> tuple : txSaveFiles) {
+			final File txNewFile = tuple.getVal1();
+			if (txNewFile.exists() && !txNewFile.delete()) {
+				LOG.error("Can't delete file {} on rollback", txNewFile.getAbsolutePath());
+			}
 		}
+
 	}
 }

@@ -18,9 +18,16 @@
  */
 package io.vertigo.dynamo.store.datastore.multistore;
 
+import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
+
+import javax.inject.Inject;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -39,7 +46,9 @@ import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
+import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.dynamo.plugins.store.filestore.fs.FsFullFileStorePlugin;
 import io.vertigo.dynamo.store.StoreCacheDefinitionProvider;
 import io.vertigo.dynamo.store.data.fileinfo.FileInfoTemp;
 import io.vertigo.dynamo.store.datastore.AbstractStoreManagerTest;
@@ -87,7 +96,8 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 						.withDbFileStore(Param.of("storeDtName", "DtVxFileInfo"))
 						.withFsFullFileStore(
 								Param.of("name", "temp"),
-								Param.of("path", "${java.io.tmpdir}/testVertigo/"))
+								Param.of("path", "${java.io.tmpdir}/testVertigo/"),
+								Param.of("purgeDelayMinutes", "0"))
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
@@ -144,6 +154,8 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 			//2. Sauvegarde en Temp
 			createdFileInfo = storeManager.getFileStore().create(fileInfo);
 			transaction.commit(); //can't read file if not commited (TODO ?)
+			System.out.println("testOtherStoreFile " + createdFileInfo.getURI().toURN());
+
 		}
 
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
@@ -177,4 +189,70 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 			//Assertions.assertTrue("Test contenu du fichier : " + secureSubString(read, 15579, "adieu !à ;"), read.indexOf("adieu !à ;") > 0);
 		}
 	}
+
+	@Test
+	public void testCreateTempFile() throws Exception {
+		doCreateFile(this::createTempFileInfo);
+	}
+
+	@Test
+	public void testUpdateTempFile() throws Exception {
+		doUpdateFile(this::createTempFileInfo);
+	}
+
+	@Test
+	public void testDeleteTempFile() throws Exception {
+		doDeleteFile(this::createTempFileInfo);
+	}
+
+	protected FileInfo createTempFileInfo(final VFile vFile) {
+		return new FileInfoTemp(vFile);
+	}
+
+	@Inject
+	private List<FileStorePlugin> fileStorePlugins;
+
+	@Test
+	public void testRemovedOldFileDaemon() throws Exception {
+		final Path tempDir = Paths.get(FileUtil.translatePath("${java.io.tmpdir}/testVertigo/"));
+		final long firstCount = fileCount(tempDir);
+
+		Thread.sleep(1000); //wait remove dir
+
+		final VFile vFile = TestUtil.createVFile(fileManager, "../data/lautreamont.txt", AbstractStoreManagerTest.class);
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			//1.Création du fichier depuis un fichier texte du FS
+			final FileInfo fileInfo = new FileInfoTemp(vFile);
+			//2. Sauvegarde en Temp
+			final FileInfo createdFileInfo = storeManager.getFileStore().create(fileInfo);
+			System.out.println(createdFileInfo.getURI().toURN());
+			transaction.commit(); //can't read file if not commited (TODO ?)
+		}
+
+		final long beforeCount = fileCount(tempDir);
+
+		Assertions.assertEquals(firstCount + 2, beforeCount, "Created file wasn't store in temp dir");
+
+		Thread.sleep(1000); //wait remove dir
+
+		fileStorePlugins.stream()
+				.filter((plugin) -> plugin instanceof FsFullFileStorePlugin)
+				.findFirst().ifPresent(
+						(plugin) -> ((FsFullFileStorePlugin) plugin).deleteOldFiles());
+
+		Thread.sleep(1000); //wait remove dir
+
+		final long afterCount = fileCount(tempDir);
+
+		Assertions.assertEquals(0, afterCount, "Clean of temp dir wasn't complete");
+
+	}
+
+	public long fileCount(final Path dir) throws IOException {
+		try (Stream<Path> subFiles = Files.walk(dir)) {
+			return subFiles.filter(p -> !Files.isDirectory(p))
+					.count();
+		}
+	}
+
 }

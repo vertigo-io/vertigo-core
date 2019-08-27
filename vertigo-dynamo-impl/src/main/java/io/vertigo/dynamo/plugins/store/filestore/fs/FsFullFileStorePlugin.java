@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -31,6 +32,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -38,6 +40,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import javax.inject.Inject;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.transaction.VTransaction;
@@ -62,6 +67,9 @@ import io.vertigo.lang.WrappedException;
  * @author pchretien, npiedeloup, skerdudou
  */
 public final class FsFullFileStorePlugin implements FileStorePlugin {
+
+	private static final Logger LOG = LogManager.getLogger(FsFullFileStorePlugin.class);
+
 	private static final String METADATA_SUFFIX = ".info";
 	private static final String METADATA_CHARSET = "utf8";
 	private static final String DEFAULT_STORE_NAME = "temp";
@@ -107,7 +115,9 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	@DaemonScheduled(name = "DmnPurgeFileStoreDaemon", periodInSeconds = 5 * 60)
 	public void deleteOldFiles() {
 		if (purgeDelayMinutesOpt.isPresent()) {
-			final File documentRootFile = new File(documentRoot);
+			final Path documentRootFile = Paths.get(documentRoot);
+			Assertion.checkArgument(Files.isDirectory(documentRootFile), "documentRoot ({0}) must be an directory", documentRoot);
+			//-----
 			final long maxTime = System.currentTimeMillis() - purgeDelayMinutesOpt.get() * 60L * 1000L;
 			doDeleteOldFiles(documentRootFile, maxTime);
 		}
@@ -140,6 +150,9 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			final FsFileInfo fsFileInfo = new FsFileInfo(uri.getDefinition(), vFile);
 			fsFileInfo.setURIStored(uri);
 			return fsFileInfo;
+		} catch (final NoSuchFileException e) { //throw NulPoint if not found, to respect FileStore read contract
+			throw (NullPointerException) new NullPointerException("fileInfo not found '" + uri + "'")
+					.initCause(e);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Can't read fileInfo {0}", uri.toURN());
 		}
@@ -154,16 +167,18 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	}
 
 	private void saveFile(final String metaData, final FileInfo fileInfo) {
+		FileActionSave fileActionSave;
 		try (final InputStream inputStream = fileInfo.getVFile().createInputStream()) {
-			getCurrentTransaction().addAfterCompletion(new FileActionSave(inputStream, obtainFullFilePath(fileInfo.getURI())));
+			fileActionSave = new FileActionSave(inputStream, obtainFullFilePath(fileInfo.getURI()));
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Can't read uploaded file.");
 		}
 		try (final InputStream inputStream = new ByteArrayInputStream(metaData.getBytes(METADATA_CHARSET))) {
-			getCurrentTransaction().addAfterCompletion(new FileActionSave(inputStream, obtainFullMetaDataFilePath(fileInfo.getURI())));
+			fileActionSave.add(inputStream, obtainFullMetaDataFilePath(fileInfo.getURI()));
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Can't read metadata file.");
 		}
+		getCurrentTransaction().addAfterCompletion(fileActionSave);
 	}
 
 	private String obtainFullFilePath(final FileInfoURI uri) {
@@ -217,7 +232,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		final String metaData = new StringBuilder()
 				.append(vFile.getFileName()).append('\n')
 				.append(vFile.getMimeType()).append('\n')
-				.append(formatter.format(vFile.getLastModified()))
+				.append(formatter.format(vFile.getLastModified())).append('\n')
 				.append(vFile.getLength()).append('\n')
 				.toString();
 
@@ -251,16 +266,38 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		return transactionManager.getCurrentTransaction();
 	}
 
-	private static void doDeleteOldFiles(final File documentRootFile, final long maxTime) {
-		for (final File subFiles : documentRootFile.listFiles()) {
-			if (subFiles.isDirectory() && subFiles.canRead()) { //canRead pour les pbs de droits
-				doDeleteOldFiles(subFiles, maxTime);
-			} else if (subFiles.lastModified() < maxTime) {
-				final boolean succeeded = subFiles.delete();
-				if (!succeeded) {
-					subFiles.deleteOnExit();
-				}
-			}
+	private static void doDeleteOldFiles(final Path documentRootFile, final long maxTime) {
+		final List<RuntimeException> processIOExceptions = new ArrayList<>();
+		try {
+			Files.list(documentRootFile)
+					.forEach(subFile -> {
+						if (Files.isDirectory(subFile) && Files.isReadable(subFile)) { //canRead pour les pbs de droits
+							doDeleteOldFiles(subFile, maxTime);
+						} else {
+							try {
+								System.out.print("test " + subFile.getFileName().toString());
+								if (Files.getLastModifiedTime(subFile).toMillis() <= maxTime) {
+									Files.delete(subFile);
+									System.out.println(" -> delete ");
+
+								} else {
+									System.out.println(" -> keep ");
+								}
+							} catch (final IOException e) {
+								managedIOException(processIOExceptions, e);
+							}
+						}
+					});
+		} catch (final IOException e) {
+			managedIOException(processIOExceptions, e);
 		}
+		if (!processIOExceptions.isEmpty()) {
+			throw processIOExceptions.get(0); //We throw the first exception (for daemon health stats), and log the others
+		}
+	}
+
+	private static void managedIOException(final List<RuntimeException> processIOExceptions, final IOException causeException) {
+		processIOExceptions.add(WrappedException.wrap(causeException));
+		LOG.error("doDeleteOldFiles error", causeException);
 	}
 }
