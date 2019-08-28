@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -268,26 +269,25 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 
 	private static void doDeleteOldFiles(final Path documentRootFile, final long maxTime) {
 		final List<RuntimeException> processIOExceptions = new ArrayList<>();
-		try {
-			Files.list(documentRootFile)
-					.forEach(subFile -> {
-						if (Files.isDirectory(subFile) && Files.isReadable(subFile)) { //canRead pour les pbs de droits
-							doDeleteOldFiles(subFile, maxTime);
-						} else {
-							try {
-								System.out.print("test " + subFile.getFileName().toString());
-								if (Files.getLastModifiedTime(subFile).toMillis() <= maxTime) {
-									Files.delete(subFile);
-									System.out.println(" -> delete ");
+		try (Stream<Path> fileStream = Files.list(documentRootFile)) {
+			fileStream.forEach(subFile -> {
+				if (Files.isDirectory(subFile) && Files.isReadable(subFile)) { //canRead pour les pbs de droits
+					doDeleteOldFiles(subFile, maxTime);
+				} else {
+					try {
+						System.out.print("test " + subFile.getFileName().toString());
+						if (Files.getLastModifiedTime(subFile).toMillis() <= maxTime) {
+							Files.delete(subFile);
+							System.out.println(" -> delete ");
 
-								} else {
-									System.out.println(" -> keep ");
-								}
-							} catch (final IOException e) {
-								managedIOException(processIOExceptions, e);
-							}
+						} else {
+							System.out.println(" -> keep ");
 						}
-					});
+					} catch (final IOException e) {
+						managedIOException(processIOExceptions, e);
+					}
+				}
+			});
 		} catch (final IOException e) {
 			managedIOException(processIOExceptions, e);
 		}
