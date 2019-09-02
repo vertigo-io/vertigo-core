@@ -99,9 +99,9 @@ public final class XmlAssociation {
 	}
 
 	/**
-	 * Formatage du code : AAA_YYY_{CODE NAME}
-	 * AAA = Trois première lettre du code de A
-	 * BBB = Trois première lettre du code de B
+	 * Formatage du code : AaaBbb{CodeName}
+	 * Aaa = Trois première lettre du code de A
+	 * Bbb = Trois première lettre du code de B
 	 * Le nom défini par l'utilisateur est facultatif.
 	 *
 	 * @return Code de l'association

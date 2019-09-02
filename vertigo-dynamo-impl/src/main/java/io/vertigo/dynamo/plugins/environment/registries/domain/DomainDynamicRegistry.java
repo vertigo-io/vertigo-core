@@ -355,8 +355,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 
 		final AssociationNode associationNodeA = new AssociationNode(dtDefinitionA, navigabilityA, roleA, labelA, true, false);
 		final AssociationNode associationNodeB = new AssociationNode(dtDefinitionB, navigabilityB, roleB, labelB, true, false);
-		final String name = fixAssociationName(ASSOCIATION_NN_DEFINITION_PREFIX, xassociation.getName());
-		return new AssociationNNDefinition(name, tableName, associationNodeA, associationNodeB);
+		return new AssociationNNDefinition(xassociation.getName(), tableName, associationNodeA, associationNodeB);
 	}
 
 	// méthode permettant de créer une liste de contraintes à partir d'une liste de noms de contrainte
@@ -443,13 +442,10 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		final String roleB = roleBOpt != null ? roleBOpt : dtDefinitionB.getLocalName();
 		final String labelB = (String) xassociation.getPropertyValue(KspProperty.LABEL_B);
 
-		//Relation 1-n ou 1-1
-		final String urn = fixAssociationName(ASSOCIATION_SIMPLE_DEFINITION_PREFIX, xassociation.getName());
-
 		final AssociationNode associationNodeA = new AssociationNode(dtDefinitionA, navigabilityA, roleA, labelA, AssociationUtil.isMultiple(multiplicityA), AssociationUtil.isNotNull(multiplicityA));
 		final AssociationNode associationNodeB = new AssociationNode(dtDefinitionB, navigabilityB, roleB, labelB, AssociationUtil.isMultiple(multiplicityB), AssociationUtil.isNotNull(multiplicityB));
 
-		final AssociationSimpleDefinition associationSimpleDefinition = new AssociationSimpleDefinition(urn, fkFieldName, associationNodeA, associationNodeB);
+		final AssociationSimpleDefinition associationSimpleDefinition = new AssociationSimpleDefinition(xassociation.getName(), fkFieldName, associationNodeA, associationNodeB);
 
 		final AssociationNode primaryAssociationNode = associationSimpleDefinition.getPrimaryAssociationNode();
 		final AssociationNode foreignAssociationNode = associationSimpleDefinition.getForeignAssociationNode();

@@ -159,8 +159,10 @@ public abstract class AbstractXmlLoader implements Loader {
 			dynamicMetaDefinition = associationEntity;
 		}
 
+		final String associationDefinitionName = (isAssociationNN ? "Ann" : "A") + association.getCode();
+
 		//On crée l'association
-		final DslDefinitionBuilder associationDefinitionBuilder = DslDefinition.builder(association.getCode(), dynamicMetaDefinition)
+		final DslDefinitionBuilder associationDefinitionBuilder = DslDefinition.builder(associationDefinitionName, dynamicMetaDefinition)
 				.withPackageName(association.getPackageName())
 				.addPropertyValue(KspProperty.NAVIGABILITY_A, association.isNavigableA())
 				.addPropertyValue(KspProperty.NAVIGABILITY_B, association.isNavigableB())
@@ -211,8 +213,8 @@ public abstract class AbstractXmlLoader implements Loader {
 		if (dtDefinitionA.getName().equals(dtDefinitionB.getName()) && association.getCodeName() == null) {
 			throw new IllegalArgumentException("Pour l'association '" + association.getCode() + "' le nom de la clé est obligatoire (AutoJointure) '"
 					+ foreignDefinition.getName()
-					+ "'. Ce nom est déduit du code l'association, le code doit être composé ainsi : {Trigramme Table1}_{Trigramme Table2}_{Code association}."
-					+ " Par exemple : DOS_UTI_EMMETEUR, DOS_UTI_DESTINATAIRE, DOS_DOS_PARENT, ...");
+					+ "'. Ce nom est déduit du code l'association, le code doit être composé ainsi : {Trigramme Table1}{Trigramme Table2}{Code association}."
+					+ " Par exemple : DosUtiEmmeteur, DosUtiDestinataire, DosDosParent, ...");
 		}
 
 		//On récupère le nom de LA clé primaire .
