@@ -44,7 +44,7 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.impl.collections.IndexPlugin;
-import io.vertigo.dynamo.impl.store.StoreEvent;
+import io.vertigo.dynamo.store.StoreEvent;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 

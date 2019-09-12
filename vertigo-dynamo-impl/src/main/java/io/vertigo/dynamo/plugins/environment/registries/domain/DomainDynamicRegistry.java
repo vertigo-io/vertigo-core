@@ -158,6 +158,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 
 		final String sortFieldName = (String) xdtDefinition.getPropertyValue(KspProperty.SORT_FIELD);
 		final String displayFieldName = (String) xdtDefinition.getPropertyValue(KspProperty.DISPLAY_FIELD);
+		final String handleFieldName = (String) xdtDefinition.getPropertyValue(KspProperty.HANDLE_FIELD);
 
 		//0. clones characteristics
 		final DtDefinitionBuilder dtDefinitionBuilder = DtDefinition.builder(xdtDefinition.getName())
@@ -166,7 +167,8 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 				.withDataSpace(from.getDataSpace())
 				.withPackageName(from.getPackageName())
 				.withSortField(sortFieldName)
-				.withDisplayField(displayFieldName);
+				.withDisplayField(displayFieldName)
+				.withHandleField(handleFieldName);
 
 		//1. adds aliases
 		for (final DslDefinition alias : xdtDefinition.getChildDefinitions("alias")) {
@@ -221,6 +223,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		//Déclaration de la définition
 		final String sortFieldName = (String) xdtDefinition.getPropertyValue(KspProperty.SORT_FIELD);
 		final String displayFieldName = (String) xdtDefinition.getPropertyValue(KspProperty.DISPLAY_FIELD);
+		final String handleFieldName = (String) xdtDefinition.getPropertyValue(KspProperty.HANDLE_FIELD);
 		//-----
 		final String tmpStereotype = (String) xdtDefinition.getPropertyValue(KspProperty.STEREOTYPE);
 		//Si Stereotype est non renseigné on suppose que la définition est DtStereotype.Data.
@@ -236,7 +239,8 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 				.withPackageName(xdtDefinition.getPackageName())
 				.withDataSpace(dataSpace)
 				.withSortField(sortFieldName)
-				.withDisplayField(displayFieldName);
+				.withDisplayField(displayFieldName)
+				.withHandleField(handleFieldName);
 
 		if (stereotype != null) {
 			dtDefinitionBuilder.withStereoType(stereotype);

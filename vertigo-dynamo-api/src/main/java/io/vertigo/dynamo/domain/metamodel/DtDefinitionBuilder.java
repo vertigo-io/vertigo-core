@@ -66,6 +66,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	private String myDataSpace;
 	private String mySortFieldName;
 	private String myDisplayFieldName;
+	private String myHandleFieldName;
 
 	/**
 	 * Constructor.
@@ -303,6 +304,16 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		return this;
 	}
 
+	/**
+	 * Specifies which field to be used for handle
+	 * @param handleFieldName fieldName to use
+	 * @return this builder
+	 */
+	public DtDefinitionBuilder withHandleField(final String handleFieldName) {
+		myHandleFieldName = handleFieldName;
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public DtDefinition build() {
@@ -328,6 +339,14 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 			displayField = null;
 		}
 
+		final DtField handleField;
+		if (myHandleFieldName != null) {
+			handleField = findFieldByName(myHandleFieldName)
+					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Handle field '{0}' not found on '{1}'", myHandleFieldName, dtDefinition.getName())));
+		} else {
+			handleField = null;
+		}
+
 		dtDefinition = new DtDefinition(
 				myName,
 				Optional.ofNullable(myFragmentRef),
@@ -336,7 +355,8 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 				myFields,
 				myDataSpace == null ? StoreManager.MAIN_DATA_SPACE_NAME : myDataSpace,
 				Optional.ofNullable(sortField),
-				Optional.ofNullable(displayField));
+				Optional.ofNullable(displayField),
+				Optional.ofNullable(handleField));
 		return dtDefinition;
 	}
 

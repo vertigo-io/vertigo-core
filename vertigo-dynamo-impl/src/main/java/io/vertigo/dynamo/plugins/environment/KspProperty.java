@@ -79,6 +79,11 @@ public final class KspProperty {
 	public static final String DISPLAY_FIELD = "DISPLAY_FIELD";
 
 	/**
+	 * Champ qui sert pour le handle. (Un au plus par DT)
+	 */
+	public static final String HANDLE_FIELD = "HANDLE_FIELD";
+
+	/**
 	 * Le Stereotype appliqué au DT : Data (defaut), MasterData ou KeyConcept
 	 */
 	public static final String STEREOTYPE = "STEREOTYPE";
