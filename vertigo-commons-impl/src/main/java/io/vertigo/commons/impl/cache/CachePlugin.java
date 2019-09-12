@@ -82,9 +82,9 @@ public interface CachePlugin extends Plugin {
 	default HealthMeasure checkIo() {
 		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
 		try {
-			put("CACHE_HEALTH_VERTIGO", "healthcheckkey", "healthcheckvalue");
-			get("CACHE_HEALTH_VERTIGO", "healthcheckkey");
-			remove("CACHE_HEALTH_VERTIGO", "healthcheckkey");
+			put("CacheHealthVertigo", "healthcheckkey", "healthcheckvalue");
+			get("CacheHealthVertigo", "healthcheckkey");
+			remove("CacheHealthVertigo", "healthcheckkey");
 			healthMeasureBuilder.withGreenStatus();
 		} catch (final Exception e) {
 			healthMeasureBuilder.withRedStatus(e.getMessage(), e);
