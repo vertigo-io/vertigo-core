@@ -410,7 +410,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 					navigabilityB = true;
 					break;
 				default:
-					throw new VSystemException("type of asssociation not supported :" + associationType);
+					throw new VSystemException("type of asssociation not supported : '{0}', available types are : '{1}'" + associationType, " *>1 , *>? , *>* ");
 			}
 		} else {
 			multiplicityA = (String) xassociation.getPropertyValue(KspProperty.MULTIPLICITY_A);
