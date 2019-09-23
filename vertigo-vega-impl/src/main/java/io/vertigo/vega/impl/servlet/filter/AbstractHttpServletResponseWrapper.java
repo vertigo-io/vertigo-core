@@ -177,6 +177,8 @@ public abstract class AbstractHttpServletResponseWrapper extends javax.servlet.h
 			writer.flush();
 		} else if (stream != null) {
 			stream.flush();
+		} else {
+			super.flushBuffer();
 		}
 	}
 
