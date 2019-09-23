@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -71,6 +72,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 
 	private static final Logger LOG = LogManager.getLogger(FsFullFileStorePlugin.class);
 
+	private static final Pattern URI_AS_PATH_PATTERN = Pattern.compile("^([0-9]{4})([0-9]{2})([0-9]{2})-");
 	private static final String METADATA_SUFFIX = ".info";
 	private static final String METADATA_CHARSET = "utf8";
 	private static final String DEFAULT_STORE_NAME = "temp";
@@ -184,13 +186,13 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 
 	private String obtainFullFilePath(final FileInfoURI uri) {
 		final String uriAsString = String.class.cast(uri.getKey());
-		final String uriAsPath = uriAsString.replaceFirst("^([0-9]{4})([0-9]{2})([0-9]{2})-", "$1/$2/$3/");
+		final String uriAsPath = URI_AS_PATH_PATTERN.matcher(uriAsString).replaceFirst("$1/$2/$3/");
 		return documentRoot + uriAsPath;
 	}
 
 	private String obtainFullMetaDataFilePath(final FileInfoURI uri) {
 		final String uriAsString = String.class.cast(uri.getKey());
-		final String uriAsPath = uriAsString.replaceFirst("^([0-9]{4})([0-9]{2})([0-9]{2})-", "$1/$2/$3/");
+		final String uriAsPath = URI_AS_PATH_PATTERN.matcher(uriAsString).replaceFirst("$1/$2/$3/");
 		return documentRoot + uriAsPath + METADATA_SUFFIX;
 	}
 
