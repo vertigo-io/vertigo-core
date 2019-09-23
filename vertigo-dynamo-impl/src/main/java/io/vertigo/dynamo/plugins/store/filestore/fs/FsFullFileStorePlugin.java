@@ -275,13 +275,8 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 					doDeleteOldFiles(subFile, maxTime);
 				} else {
 					try {
-						System.out.print("test " + subFile.getFileName().toString());
 						if (Files.getLastModifiedTime(subFile).toMillis() <= maxTime) {
 							Files.delete(subFile);
-							System.out.println(" -> delete ");
-
-						} else {
-							System.out.println(" -> keep ");
 						}
 					} catch (final IOException e) {
 						managedIOException(processIOExceptions, e);

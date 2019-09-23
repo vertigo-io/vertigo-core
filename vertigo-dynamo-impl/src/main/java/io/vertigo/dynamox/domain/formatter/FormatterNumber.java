@@ -140,7 +140,8 @@ public class FormatterNumber implements Formatter {
 			throw new IllegalArgumentException("Type unsupported : " + dataType);
 		} catch (final NumberFormatException e) {
 			// cas des erreurs sur les formats de nombre
-			throw new FormatterException(Resources.DYNAMOX_NUMBER_NOT_FORMATTED, e);
+			throw (FormatterException) new FormatterException(Resources.DYNAMOX_NUMBER_NOT_FORMATTED)
+					.initCause(e);
 		}
 
 	}
@@ -153,9 +154,8 @@ public class FormatterNumber implements Formatter {
 			return Integer.valueOf(sValue);
 		} catch (final NumberFormatException e) {
 			// C'est un entier trop grand
-			final FormatterException formatterException = new FormatterException(Resources.DYNAMOX_NUMBER_TOO_BIG);
-			formatterException.initCause(e);
-			throw formatterException;
+			throw (FormatterException) new FormatterException(Resources.DYNAMOX_NUMBER_TOO_BIG)
+					.initCause(e);
 		}
 	}
 
