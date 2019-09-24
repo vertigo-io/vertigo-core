@@ -320,13 +320,15 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		Assertion.checkState(dtDefinition == null, "build() already executed");
 		//-----
 		if (myStereotype == null) {
-			myStereotype = (myIdField == null) ? DtStereotype.ValueObject : DtStereotype.Entity;
+			myStereotype = myIdField == null ? DtStereotype.ValueObject : DtStereotype.Entity;
 		}
 
 		final DtField sortField;
 		if (mySortFieldName != null) {
 			sortField = findFieldByName(mySortFieldName)
 					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Sort field '{0}' not found on '{1}'", mySortFieldName, dtDefinition.getName())));
+		} else if (myStereotype == DtStereotype.Fragment) {
+			sortField = myFragmentRef.get().getSortField().orElse(null);
 		} else {
 			sortField = null;
 		}
@@ -335,6 +337,8 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		if (myDisplayFieldName != null) {
 			displayField = findFieldByName(myDisplayFieldName)
 					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Display field '{0}' not found on '{1}'", myDisplayFieldName, dtDefinition.getName())));
+		} else if (myStereotype == DtStereotype.Fragment) {
+			displayField = myFragmentRef.get().getDisplayField().orElse(null);
 		} else {
 			displayField = null;
 		}
@@ -343,6 +347,8 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		if (myHandleFieldName != null) {
 			handleField = findFieldByName(myHandleFieldName)
 					.orElseThrow(() -> new IllegalStateException(StringUtil.format("Handle field '{0}' not found on '{1}'", myHandleFieldName, dtDefinition.getName())));
+		} else if (myStereotype == DtStereotype.Fragment) {
+			handleField = myFragmentRef.get().getHandleField().orElse(null);
 		} else {
 			handleField = null;
 		}

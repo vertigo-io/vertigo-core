@@ -169,6 +169,7 @@ public final class DomainGrammar implements DslGrammar {
 				.addManyFields("alias", fieldAliasEntity) //on peut ajouter des champs
 				.addOptionalField(DISPLAY_FIELD, String)
 				.addOptionalField(SORT_FIELD, String)
+				.addOptionalField(HANDLE_FIELD, String)
 				.addManyFields(DATA_FIELD, DT_DATA_FIELD_ENTITY) //on peut ajouter des champs
 				.addManyFields(COMPUTED_FIELD, DT_COMPUTED_FIELD_ENTITY) //et des computed
 				.build();
