@@ -59,6 +59,13 @@ public final class TaskAttributeModel {
 	}
 
 	/**
+	 * @return Type java du champ
+	 */
+	public String getJavaTypeLabel() {
+		return DomainUtil.buildJavaTypeLabel(taskAttribute.getDomain());
+	}
+
+	/**
 	 * @return Si l'attribut est obligatoire.
 	 */
 	public boolean isRequired() {
