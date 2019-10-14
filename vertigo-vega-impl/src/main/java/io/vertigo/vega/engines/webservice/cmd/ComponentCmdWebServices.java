@@ -45,7 +45,7 @@ import io.vertigo.vega.webservice.stereotype.PathParam;
 import io.vertigo.vega.webservice.stereotype.SessionLess;
 
 public final class ComponentCmdWebServices implements WebServices {
-	private final JsonEngine jsonEngine = new GoogleJsonEngine(Optional.empty());
+	private final JsonEngine jsonEngine = new GoogleJsonEngine(Optional.empty(), Optional.empty());
 
 	@Inject
 	private AnalyticsManager analyticsManager;

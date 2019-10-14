@@ -108,9 +108,9 @@ public final class GoogleJsonEngine implements JsonEngine {
 	}
 
 	@Inject
-	public GoogleJsonEngine(@ParamValue("searchApiVersion") final Optional<String> searchApiVersionStr) {
+	public GoogleJsonEngine(@ParamValue("serializeNulls") final Optional<Boolean> serializeNulls, @ParamValue("searchApiVersion") final Optional<String> searchApiVersionStr) {
 		final SearchApiVersion searchApiVersion = SearchApiVersion.valueOf(searchApiVersionStr.orElse(SearchApiVersion.V4.name()));
-		gson = createGson(searchApiVersion);
+		gson = createGson(serializeNulls.orElse(false), searchApiVersion);
 	}
 
 	/** {@inheritDoc} */
@@ -482,9 +482,13 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
-	private Gson createGson(final SearchApiVersion searchApiVersion) {
+	private Gson createGson(final boolean serializeNulls, final SearchApiVersion searchApiVersion) {
 		try {
-			return new GsonBuilder()
+			final GsonBuilder gsonBuilder = new GsonBuilder();
+			if (serializeNulls) {
+				gsonBuilder.serializeNulls();
+			}
+			return gsonBuilder
 					.setPrettyPrinting()
 					//.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 					.registerTypeHierarchyAdapter(Entity.class, new EntityJsonAdapter())
