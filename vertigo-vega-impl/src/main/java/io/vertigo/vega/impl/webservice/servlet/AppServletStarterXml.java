@@ -44,8 +44,8 @@ import io.vertigo.vega.plugins.webservice.servlet.WebAppContextParamPlugin;
 /**
  * @author npiedeloup
  */
-final class AppServletStarter2 {
-	private static final Logger LOG = LogManager.getLogger(AppServletStarter2.class);
+final class AppServletStarterXml {
+	private static final Logger LOG = LogManager.getLogger(AppServletStarterXml.class);
 
 	private static final String BOOT_PROPERTIES_PREFIX = "boot.";
 	private static final String EXTERNAL_PROPERTIES_PARAM_NAME = "external-properties";
@@ -193,7 +193,11 @@ final class AppServletStarter2 {
 	 * @param servletContext ServletContext
 	 */
 	public void contextDestroyed(final ServletContext servletContext) {
-		app.close();
+		if (app != null) {
+			app.close();
+		} else {
+			LOG.warn("Context destroyed : App wasn't started");
+		}
 		appServletListener.onServletDestroy(getClass().getName());
 
 	}

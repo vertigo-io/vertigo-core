@@ -26,10 +26,10 @@ import javax.servlet.ServletContextListener;
  *
  * @author pforhan
  */
-public class AppServletContextListener2 implements ServletContextListener {
+public class AppServletContextListenerXml implements ServletContextListener {
 
 	/** Servlet listener */
-	private final AppServletStarter2 appServletStarter = new AppServletStarter2();
+	private final AppServletStarterXml appServletStarter = new AppServletStarterXml();
 
 	/** {@inheritDoc} */
 	@Override
