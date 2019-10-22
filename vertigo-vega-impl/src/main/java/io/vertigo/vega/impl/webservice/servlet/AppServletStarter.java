@@ -193,7 +193,11 @@ final class AppServletStarter {
 	 * @param servletContext ServletContext
 	 */
 	public void contextDestroyed(final ServletContext servletContext) {
-		app.close();
+		if (app != null) {
+			app.close();
+		} else {
+			LOG.warn("Context destroyed : App wasn't started");
+		}
 		appServletListener.onServletDestroy(getClass().getName());
 
 	}
