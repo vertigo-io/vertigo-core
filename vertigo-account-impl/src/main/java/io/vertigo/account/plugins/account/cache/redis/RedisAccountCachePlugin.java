@@ -30,7 +30,7 @@ import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.impl.account.AccountCachePlugin;
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.impl.connectors.redis.RedisConnector;
+import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
@@ -147,7 +147,7 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 			} catch (final IOException ex) {
 				throw WrappedException.wrap(ex);
 			}
-	
+
 		}
 		//----- we are using tx to avoid roundtrips
 		final List<AccountGroup> groups = new ArrayList<>();

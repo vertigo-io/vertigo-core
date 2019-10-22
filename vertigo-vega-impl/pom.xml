@@ -52,6 +52,14 @@
 					<groupId>org.eclipse.jetty.orbit</groupId>
 					<artifactId>javax.servlet</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty.websocket</groupId>
+					<artifactId>websocket-client</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty.websocket</groupId>
+					<artifactId>websocket-server</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 

@@ -26,7 +26,7 @@ import io.vertigo.app.Home;
 import io.vertigo.commons.cache.CacheDefinition;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.cache.CachePlugin;
-import io.vertigo.commons.impl.connectors.redis.RedisConnector;
+import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.lang.Assertion;
 import redis.clients.jedis.Jedis;
 

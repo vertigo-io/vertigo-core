@@ -24,6 +24,12 @@
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-redis-connector</artifactId>
+			<version>${vertigo.version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-dynamo-impl</artifactId>
 			<version>${project.version}</version>
 		</dependency>

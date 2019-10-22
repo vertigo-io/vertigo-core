@@ -35,7 +35,6 @@ import io.vertigo.commons.impl.app.AppNodeRegistryPlugin;
 import io.vertigo.commons.impl.cache.CacheManagerImpl;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.commons.impl.command.CommandManagerImpl;
-import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.commons.impl.daemon.DaemonManagerImpl;
 import io.vertigo.commons.impl.eventbus.EventBusManagerImpl;
 import io.vertigo.commons.impl.script.ScriptManagerImpl;
@@ -133,22 +132,6 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 		getModuleConfigBuilder()
 				.addPlugin(EhCachePlugin.class);
 		return this;
-	}
-
-	/**
-	 * Adds a REDIS connector.
-	 * @param host the REDIS host
-	 * @param port the REDIS port
-	 * @param passwordOpt the REDIS password
-	 * @param database the index of the REDIS database
-	 * @return these features
-	 */
-	@Feature("redis")
-	public CommonsFeatures withRedisConnector(final Param... params) {
-		getModuleConfigBuilder()
-				.addComponent(RedisConnector.class, params);
-		return this;
-
 	}
 
 	@Feature("analytics.socketLoggerConnector")
