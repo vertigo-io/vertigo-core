@@ -65,8 +65,6 @@ import io.vertigo.util.StringUtil;
 public final class DomainDynamicRegistry implements DynamicRegistry {
 	private static final Logger LOGGER = LogManager.getLogger(DomainDynamicRegistry.class);
 	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
-	private static final String ASSOCIATION_SIMPLE_DEFINITION_PREFIX = DefinitionUtil.getPrefix(AssociationSimpleDefinition.class);
-	private static final String ASSOCIATION_NN_DEFINITION_PREFIX = DefinitionUtil.getPrefix(AssociationNNDefinition.class);
 	private final Map<String, DtDefinitionBuilder> dtDefinitionBuilders = new HashMap<>();
 
 	@Override
@@ -367,18 +365,6 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		return constraintNames.stream()
 				.map(constraintName -> definitionSpace.resolve(constraintName, ConstraintDefinition.class))
 				.collect(Collectors.toList());
-	}
-
-	/**
-	 * Corrige le nom des associations qui ne respectent pas la règle de nommage.
-	 * @param name Nom de l'association
-	 * @return Nom corrigé de l'association comprenant le préfix obligatoire.
-	 */
-	private static String fixAssociationName(final String prefix, final String name) {
-		if (!name.startsWith(prefix)) {
-			return prefix + name;
-		}
-		return name;
 	}
 
 	private AssociationSimpleDefinition createAssociationSimpleDefinition(final DefinitionSpace definitionSpace, final DslDefinition xassociation) {
