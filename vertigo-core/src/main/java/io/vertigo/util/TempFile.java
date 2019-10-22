@@ -39,7 +39,7 @@ public final class TempFile extends File {
 	}
 
 	/**
-	 * Crée un fichier temporaire qui sera supprimé lorsqu'il ne sera plus référencé.
+	 * Crée un fichier temporaire.
 	 * @param prefix Prefix du nom de fichier
 	 * @param suffix Suffix du nom de fichier
 	 * @param subDirectory Sous-répertoire des fichiers temporaires (null = répertoire temporaire de vertigo = ${java.io.tmpdir}/vertigo)
@@ -51,7 +51,7 @@ public final class TempFile extends File {
 	}
 
 	/**
-	 * Crée un fichier temporaire qui sera supprimé lorsqu'il ne sera plus référencé.
+	 * Crée un fichier temporaire.
 	 * @param prefix Prefix du nom de fichier
 	 * @param suffix Suffix du nom de fichier
 	 * @throws IOException Exception IO
