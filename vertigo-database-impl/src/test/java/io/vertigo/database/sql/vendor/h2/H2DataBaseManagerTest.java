@@ -82,7 +82,7 @@ public final class H2DataBaseManagerTest extends AbstractSqlDataBaseManagerTest 
 
 	@Override
 	protected GenerationMode getExpectedGenerationMode() {
-		return GenerationMode.GENERATED_KEYS;
+		return GenerationMode.GENERATED_COLUMNS;
 	}
 
 	@Override

@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>com.mchange</groupId>
 			<artifactId>c3p0</artifactId>
-			<version>0.9.5.3</version>
+			<version>0.9.5.4</version>
 			<optional>true</optional>
 		</dependency>
 
@@ -37,15 +37,15 @@
 		<dependency>
 			<groupId>org.codehaus.janino</groupId>
 			<artifactId>janino</artifactId>
-			<version>3.0.8</version>
+			<version>3.1.0</version>
 			<optional>false</optional><!-- pour JaninoExpressionEvaluatorPlugin -->
 		</dependency>
 
 		<!--cache -->
 		<dependency>
-			<groupId>net.sf.ehcache</groupId>
+			<groupId>org.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
-			<version>2.10.6</version> <!-- pour EhCachePlugin -->
+			<version>3.8.1</version> <!-- pour EhCachePlugin -->
 		</dependency>
 
 		<dependency>
@@ -58,7 +58,7 @@
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
-			<version>2.9.0</version>
+			<version>3.1.0</version>
 		</dependency>
 
 
@@ -73,7 +73,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.4.199</version>
+			<version>1.4.200</version>
 			<scope>test</scope>
 		</dependency>
 

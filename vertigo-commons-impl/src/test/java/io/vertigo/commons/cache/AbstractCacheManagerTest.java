@@ -21,7 +21,6 @@ package io.vertigo.commons.cache;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -85,7 +84,7 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU5 {
 	public void testRemove1() {
 		testPut1();
 		// vérification de suppression d'un element
-		assertTrue(cacheManager.remove(CONTEXT_EDITABLE, KEY));
+		cacheManager.remove(CONTEXT_EDITABLE, KEY);
 		assertNull(cacheManager.get(CONTEXT_EDITABLE, KEY));
 	}
 
@@ -122,7 +121,7 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU5 {
 		}
 		//System.out.println("Hit Ratio : " + cacheManager.getDescription().getMainSummaryInfo().getStringValue());
 
-		for (int i = maxNbRow / 2; i < (maxNbRow * 0.55d); i++) {
+		for (int i = maxNbRow / 2; i < maxNbRow * 0.55d; i++) {
 			final String key = "ma clé[" + i + "]";
 			assertNotNull(cacheManager.get(CONTEXT_EDITABLE, key), "key [" + i + "] not found");
 		}
