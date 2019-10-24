@@ -21,7 +21,6 @@ package io.vertigo.commons.node;
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.app.registry.redis.RedisAppNodeRegistryPlugin;
-import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.param.Param;
 
 public class RedisNodeRegistryPluginTest extends AbstractNodeManagerTest {
@@ -34,10 +33,8 @@ public class RedisNodeRegistryPluginTest extends AbstractNodeManagerTest {
 		final int redisDatabase = 11;
 
 		return buildRootNodeConfig()
-				.addModule(new RedisFeatures()
-						.withJedis(Param.of("host", redisHost), Param.of("port", Integer.toString(redisPort)), Param.of("database", Integer.toString(redisDatabase)))
-						.build())
 				.addModule(new CommonsFeatures()
+						.withRedisConnector(Param.of("host", redisHost), Param.of("port", Integer.toString(redisPort)), Param.of("database", Integer.toString(redisDatabase)))
 						.withNodeRegistryPlugin(RedisAppNodeRegistryPlugin.class)
 						.build())
 				.build();

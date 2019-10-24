@@ -34,7 +34,6 @@ import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.health.data.FailedComponentChecker;
 import io.vertigo.commons.analytics.health.data.RedisHealthChecker;
 import io.vertigo.commons.analytics.health.data.SuccessComponentChecker;
-import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
@@ -53,10 +52,8 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU5 {
 		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
-				.addModule(new RedisFeatures()
-						.withJedis(Param.of("host", redisHost), Param.of("port", Integer.toString(redisPort)), Param.of("database", Integer.toString(redisDatabase)))
-						.build())
 				.addModule(new CommonsFeatures()
+						.withRedisConnector(Param.of("host", redisHost), Param.of("port", Integer.toString(redisPort)), Param.of("database", Integer.toString(redisDatabase)))
 						.build())
 				.addModule(ModuleConfig.builder("checkers")
 						.addComponent(RedisHealthChecker.class)

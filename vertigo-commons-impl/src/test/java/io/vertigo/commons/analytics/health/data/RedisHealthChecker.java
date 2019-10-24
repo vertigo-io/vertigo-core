@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import io.vertigo.commons.analytics.health.HealthChecked;
 import io.vertigo.commons.analytics.health.HealthMeasure;
 import io.vertigo.commons.analytics.health.HealthMeasureBuilder;
-import io.vertigo.connectors.redis.RedisConnector;
+import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.Component;
 import io.vertigo.lang.Assertion;
 import redis.clients.jedis.Jedis;

@@ -49,17 +49,18 @@
 		</dependency>
 
 		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-redis-connector</artifactId>
-			<version>${vertigo.version}</version>
-			<optional>true</optional>
-		</dependency>
-		
-		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.25</version> <!-- pour EhCachePlugin -->
 		</dependency>
+
+		<!--redis -->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+
 
 		<!-- tests -->
 		<dependency>

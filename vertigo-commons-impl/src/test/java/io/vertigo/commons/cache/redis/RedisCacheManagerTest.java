@@ -23,7 +23,6 @@ import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.cache.AbstractCacheManagerTest;
 import io.vertigo.commons.cache.TestCacheDefinitionProvider;
-import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.param.Param;
 
 /**
@@ -47,14 +46,12 @@ public class RedisCacheManagerTest extends AbstractCacheManagerTest {
 		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
-				.addModule(new RedisFeatures()
-						.withJedis(
+				.addModule(new CommonsFeatures()
+						.withCache()
+						.withRedisConnector(
 								Param.of("host", "redis-pic.part.klee.lan.net"),
 								Param.of("port", "6379"),
 								Param.of("database", "0"))
-						.build())
-				.addModule(new CommonsFeatures()
-						.withCache()
 						.withRedisCache()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")

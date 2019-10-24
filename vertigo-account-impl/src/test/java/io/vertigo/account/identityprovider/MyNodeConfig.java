@@ -24,9 +24,7 @@ import io.vertigo.account.identityprovider.model.DtDefinitions;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
-import io.vertigo.app.config.NodeConfigBuilder;
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
@@ -58,6 +56,8 @@ public final class MyNodeConfig {
 				.withIdentityProvider();
 
 		if (redis) {
+			commonsFeatures
+					.withRedisConnector(Param.of("host", REDIS_HOST), Param.of("port", Integer.toString(REDIS_PORT)), Param.of("database", Integer.toString(REDIS_DATABASE)));
 			accountFeatures
 					.withRedisAccountCache();
 		}
@@ -99,19 +99,11 @@ public final class MyNodeConfig {
 					Param.of("userAuthField", "email"));
 		}
 
-		final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder()
+		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.endBoot();
-
-		if (redis) {
-			nodeConfigBuilder.addModule(new RedisFeatures()
-					.withJedis(Param.of("host", REDIS_HOST), Param.of("port", Integer.toString(REDIS_PORT)), Param.of("database", Integer.toString(REDIS_DATABASE)))
-					.build());
-		}
-
-		nodeConfigBuilder
+				.endBoot()
 				.addModule(commonsFeatures.build())
 				.addModule(databaseFeatures.build())
 				.addModule(dynamoFeatures.build())
@@ -122,8 +114,7 @@ public final class MyNodeConfig {
 										.addDefinitionResource("classes", DtDefinitions.class.getName())
 										.addDefinitionResource("kpr", "account/domains.kpr")
 										.build())
-						.build());
-
-		return nodeConfigBuilder.build();
+						.build())
+				.build();
 	}
 }
