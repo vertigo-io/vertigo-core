@@ -91,6 +91,12 @@
 			<artifactId>elasticsearch</artifactId>
 			<version>7.4.1</version>
 			<optional>true</optional> <!-- EsTransportSearchServicesPlugin -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+		    		<artifactId>log4j-api</artifactId><!-- to keep vertigo's version -->
+		    	</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>
