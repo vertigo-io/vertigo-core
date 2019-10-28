@@ -330,6 +330,15 @@ public final class SimplerTestWebServices implements WebServices {
 		return result;
 	}
 
+	@GET("/dtList10/{id}")
+	public DtList<Contact> loadListDigitInRoute(@PathParam("id") final long conId) {
+		final DtList<Contact> result = new DtList<>(Contact.class);
+		for (final Contact contact : contactDao.getList()) {
+			result.add(contact);
+		}
+		return (DtList<Contact>) result.subList(0, 10);
+	}
+
 	@GET("/dtListMetaAsList")
 	public List<Contact> loadListMetaAsList() {
 		return loadListMeta();

@@ -92,6 +92,8 @@ public final class StringUtilTest {
 		assertEquals("TAdresseAdr", StringUtil.constToUpperCamelCase("T_ADRESSE_ADR"));
 		assertEquals("x2Yyy", StringUtil.constToLowerCamelCase("X_2_YYY"));
 		assertEquals("X2Yyy", StringUtil.constToUpperCamelCase("X_2_YYY"));
+		assertEquals("TAdresseAdr10", StringUtil.constToUpperCamelCase("T_ADRESSE_ADR_10"));
+		assertEquals("TAdresseAdr10", StringUtil.constToUpperCamelCase("T_ADRESSE_ADR_10_"));
 	}
 
 	@Test

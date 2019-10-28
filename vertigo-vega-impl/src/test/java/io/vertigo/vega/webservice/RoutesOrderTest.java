@@ -133,6 +133,7 @@ public final class RoutesOrderTest {
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/downloadFile (class java.lang.Integer :Query:id) -> VFile"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/downloadFileContentType (class java.lang.Integer :Query:id) -> VFile"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/downloadNotModifiedFile (class java.lang.Integer :Query:id, class java.util.Date :Header:If-Modified-Since, interface javax.servlet.http.HttpServletResponse :Implicit:Response) -> VFile"))
+				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/dtList10/{id} (long :Path:id) -> class io.vertigo.dynamo.domain.model.DtList<Contact>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/dtListMeta () -> class io.vertigo.dynamo.domain.model.DtList<Contact>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/dtListMetaAsList () -> interface java.util.List<Contact>"))
 				.body("get(" + i++ + ")", Matchers.equalTo("Get /test/export/pdf/ () -> VFile"))

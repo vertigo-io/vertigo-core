@@ -138,7 +138,7 @@ public final class StringUtil {
 			if (c == '_') {
 				if (digit != null
 						&& digit
-						&& Character.isDigit(str.charAt(i + 1))) {
+						&& i + 1 < length && Character.isDigit(str.charAt(i + 1))) {
 					result.append('_');
 				}
 				digit = null;
