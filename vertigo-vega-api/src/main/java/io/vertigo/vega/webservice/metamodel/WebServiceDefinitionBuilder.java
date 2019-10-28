@@ -106,6 +106,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 		//On rend le path plus lisible et compatible DefinitionName
 		final String normalizedConstString = argsRemovedPath.toUpperCase(Locale.ROOT)
 				.replaceAll("/", "_")
+				.replaceAll("([0-9]+)([^0-9])", "_$1_$2")
 				.replaceAll("([0-9]+)", "_$1")
 				.replaceAll("_+", "_");
 		final String normalizedString = StringUtil.constToUpperCamelCase(normalizedConstString);
