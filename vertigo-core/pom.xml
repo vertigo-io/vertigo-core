@@ -17,6 +17,11 @@
 	<dependencies>
 		<dependency>
 		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-api</artifactId> <!-- Mandatory to declared deps to log4j-api AND log4j-core, to avoid overrided version by another sub dependencies -->
+		    <version>2.12.1</version> 
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
 		    <artifactId>log4j-core</artifactId>
 		    <version>2.12.1</version>
 		</dependency>
