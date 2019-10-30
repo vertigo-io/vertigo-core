@@ -71,6 +71,16 @@
 
 	<dependencies>
 		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-api</artifactId>
+		    <version>2.12.1</version> <!-- To avoid conflict of version, we must fix log4j-api version in all modules -->
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-core</artifactId>
+		    <version>2.12.1</version> <!-- To avoid conflict of version, we must fix log4j-core version in all modules -->
+		</dependency>
+		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<version>5.5.2</version>
