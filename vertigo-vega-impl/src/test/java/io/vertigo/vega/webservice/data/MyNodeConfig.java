@@ -23,9 +23,9 @@ import java.util.Iterator;
 
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.plugins.authorization.loaders.JsonSecurityDefinitionProvider;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.app.infos.http.HttpAppNodeInfosPlugin;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
@@ -65,7 +65,17 @@ public final class MyNodeConfig {
 		}
 	}
 
-	public static NodeConfig config() {
+	public static NodeConfig config(final boolean isEmbedded) {
+
+		final VegaFeatures vegaFeatures = new VegaFeatures()
+				.withWebServices()
+				.withWebServicesTokens(Param.of("tokens", "tokens"))
+				.withWebServicesSecurity()
+				.withWebServicesRateLimiting();
+		if (isEmbedded) {
+			vegaFeatures.withWebServicesEmbeddedServer(Param.of("port", Integer.toString(WS_PORT)));
+		}
+
 		return NodeConfig.builder()
 				.withEndPoint("http://localhost:" + WS_PORT)
 				.beginBoot()
@@ -88,13 +98,7 @@ public final class MyNodeConfig {
 						.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
 						.withAuthorization()
 						.build())
-				.addModule(new VegaFeatures()
-						.withWebServices()
-						.withWebServicesTokens(Param.of("tokens", "tokens"))
-						.withWebServicesSecurity()
-						.withWebServicesRateLimiting()
-						.withWebServicesEmbeddedServer(Param.of("port", Integer.toString(WS_PORT)))
-						.build())
+				.addModule(vegaFeatures.build())
 				//-----
 				.addModule(ModuleConfig.builder("dao-app")
 						.addComponent(ContactDao.class)

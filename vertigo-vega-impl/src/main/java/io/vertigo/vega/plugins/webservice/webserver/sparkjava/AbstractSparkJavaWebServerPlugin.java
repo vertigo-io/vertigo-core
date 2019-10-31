@@ -21,7 +21,9 @@ package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 import java.util.Collection;
 import java.util.Optional;
 
+import io.vertigo.core.component.Activeable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.vega.impl.webservice.WebServerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
@@ -31,7 +33,7 @@ import spark.Spark;
  * RoutesRegisterPlugin use to register Spark-java route.
  * @author npiedeloup
  */
-abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin {
+abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin, Activeable {
 	private static final String DEFAULT_CONTENT_CHARSET = "UTF-8";
 	private final Optional<String> apiPrefix;
 
@@ -41,6 +43,22 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin {
 				.check(() -> apiPrefix.get().startsWith("/"), "Global route apiPrefix must starts with /");
 		//-----
 		this.apiPrefix = apiPrefix;
+	}
+
+	@Override
+	public void start() {
+		// nothing
+	}
+
+	@Override
+	public void stop() {
+		Spark.stop();
+		// we need to sleep because spark starts a new thread to stop the server
+		try {
+			Thread.sleep(100L);
+		} catch (final InterruptedException e) {
+			throw WrappedException.wrap(e);
+		}
 	}
 
 	/** {@inheritDoc} */

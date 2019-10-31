@@ -43,7 +43,7 @@ public final class DistantAppTest {
 
 	@BeforeAll
 	public static void setUp() {
-		app = new AutoCloseableApp(MyNodeConfig.config());
+		app = new AutoCloseableApp(MyNodeConfig.config(true));
 	}
 
 	@BeforeEach

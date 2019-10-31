@@ -51,7 +51,7 @@ public final class WebServiceManagerSecuredTest {
 
 	@BeforeAll
 	public static void setUp() {
-		app = new AutoCloseableApp(MyNodeConfig.config());
+		app = new AutoCloseableApp(MyNodeConfig.config(true));
 	}
 
 	@BeforeEach
@@ -70,6 +70,7 @@ public final class WebServiceManagerSecuredTest {
 	public static void tearDown() {
 		if (app != null) {
 			app.close();
+			app = null;
 		}
 	}
 

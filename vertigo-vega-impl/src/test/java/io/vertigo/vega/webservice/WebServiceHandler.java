@@ -35,7 +35,7 @@ public final class WebServiceHandler {
 	//Spark.before(new CorsAllower());
 
 	public static void main(final String[] args) {
-		final AutoCloseableApp app = new AutoCloseableApp(MyNodeConfig.config());
+		final AutoCloseableApp app = new AutoCloseableApp(MyNodeConfig.config(true));
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {

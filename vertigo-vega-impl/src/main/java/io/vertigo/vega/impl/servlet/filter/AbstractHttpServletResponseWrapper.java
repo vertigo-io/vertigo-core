@@ -73,6 +73,10 @@ public abstract class AbstractHttpServletResponseWrapper extends javax.servlet.h
 	@Override
 	public final void addHeader(final String name, final String value) {
 		// nécessaire pour header gzip du filtre de compression
+		if ("Content-Length".equals(name)) {
+			setContentLength(Integer.parseInt(value));
+			return;
+		}
 		response.addHeader(name, value);
 	}
 
@@ -83,6 +87,10 @@ public abstract class AbstractHttpServletResponseWrapper extends javax.servlet.h
 	 */
 	@Override
 	public final void setHeader(final String name, final String value) {
+		if ("Content-Length".equals(name)) {
+			setContentLength(Integer.parseInt(value));
+			return;
+		}
 		response.setHeader(name, value);
 	}
 
@@ -189,7 +197,7 @@ public abstract class AbstractHttpServletResponseWrapper extends javax.servlet.h
 	 */
 	@Override
 	public void setContentLength(final int length) {
-		getResponse().setContentLength(length);
+		response.setContentLength(length);
 	}
 
 	/**
@@ -199,6 +207,6 @@ public abstract class AbstractHttpServletResponseWrapper extends javax.servlet.h
 	 */
 	@Override
 	public final void setContentType(final String type) {
-		getResponse().setContentType(type);
+		response.setContentType(type);
 	}
 }
