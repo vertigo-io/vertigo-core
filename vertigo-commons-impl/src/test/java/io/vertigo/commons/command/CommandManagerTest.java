@@ -50,4 +50,28 @@ public class CommandManagerTest extends AbstractTestCaseJU5 {
 		Assertions.assertEquals("something", commandResponse.getPayload());
 	}
 
+	@Test
+	public void testGenricUidCommandParam() {
+		final CommandResponse<String> commandResponse = commandManager.executeCommand("/t/exists", GenericUID.of("myObject", 1000L).urn());
+		Assertions.assertEquals(CommandResponseStatus.OK, commandResponse.getStatus());
+		Assertions.assertEquals("myObject@l-1000", commandResponse.getDisplay());
+		Assertions.assertEquals(false, commandResponse.getPayload());
+	}
+
+	@Test
+	public void testGenricUidIntCommandParam() {
+		final CommandResponse<String> commandResponse = commandManager.executeCommand("/t/exists", GenericUID.of("myObject", 1000).urn());
+		Assertions.assertEquals(CommandResponseStatus.OK, commandResponse.getStatus());
+		Assertions.assertEquals("myObject@i-1000", commandResponse.getDisplay());
+		Assertions.assertEquals(false, commandResponse.getPayload());
+	}
+
+	@Test
+	public void testGenricUidStrCommandParam() {
+		final CommandResponse<String> commandResponse = commandManager.executeCommand("/t/exists", GenericUID.of("myObject", "first").urn());
+		Assertions.assertEquals(CommandResponseStatus.OK, commandResponse.getStatus());
+		Assertions.assertEquals("myObject@s-first", commandResponse.getDisplay());
+		Assertions.assertEquals(false, commandResponse.getPayload());
+	}
+
 }
