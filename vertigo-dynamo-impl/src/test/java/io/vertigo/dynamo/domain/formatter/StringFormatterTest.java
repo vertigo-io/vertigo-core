@@ -31,10 +31,31 @@ import io.vertigo.dynamox.domain.formatter.FormatterString;
  * @author pchretien
  */
 public class StringFormatterTest {
-	private final Formatter formatterString = new FormatterString("UPPER");
 
 	@Test
 	public void testUpper() {
+		final Formatter formatterString = new FormatterString("UPPER");
 		Assertions.assertEquals("AA", formatterString.valueToString("aa", DataType.String));
+		Assertions.assertEquals("AA", formatterString.valueToString("AA", DataType.String));
+		Assertions.assertEquals("AA", formatterString.valueToString("Aa", DataType.String));
+		Assertions.assertEquals("AA", formatterString.valueToString("aA", DataType.String));
+	}
+
+	@Test
+	public void testLower() {
+		final Formatter formatterString = new FormatterString("LOWER");
+		Assertions.assertEquals("aa", formatterString.valueToString("aa", DataType.String));
+		Assertions.assertEquals("aa", formatterString.valueToString("AA", DataType.String));
+		Assertions.assertEquals("aa", formatterString.valueToString("Aa", DataType.String));
+		Assertions.assertEquals("aa", formatterString.valueToString("aA", DataType.String));
+	}
+
+	@Test
+	public void testUpperFirst() {
+		final Formatter formatterString = new FormatterString("UPPER_FIRST");
+		Assertions.assertEquals("Aa", formatterString.valueToString("aa", DataType.String));
+		Assertions.assertEquals("Aa", formatterString.valueToString("AA", DataType.String));
+		Assertions.assertEquals("Aa", formatterString.valueToString("Aa", DataType.String));
+		Assertions.assertEquals("Aa", formatterString.valueToString("aA", DataType.String));
 	}
 }
