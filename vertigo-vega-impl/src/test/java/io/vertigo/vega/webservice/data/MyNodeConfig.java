@@ -51,6 +51,7 @@ import io.vertigo.vega.webservice.data.ws.FileDownloadWebServices;
 import io.vertigo.vega.webservice.data.ws.LoginSecuredWebServices;
 import io.vertigo.vega.webservice.data.ws.SearchTestWebServices;
 import io.vertigo.vega.webservice.data.ws.SimplerTestWebServices;
+import io.vertigo.vega.webservice.data.ws.ValidationsTestWebServices;
 
 public final class MyNodeConfig {
 	public static final int WS_PORT = 8088;
@@ -110,6 +111,7 @@ public final class MyNodeConfig {
 						.addComponent(ContactsSecuredWebServices.class)
 						.addComponent(LoginSecuredWebServices.class)
 						.addComponent(SimplerTestWebServices.class)
+						.addComponent(ValidationsTestWebServices.class)
 						.addComponent(AdvancedTestWebServices.class)
 						.addComponent(AnonymousTestWebServices.class)
 						.addComponent(FileDownloadWebServices.class)

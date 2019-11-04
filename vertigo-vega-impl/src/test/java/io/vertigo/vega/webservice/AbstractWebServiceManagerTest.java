@@ -551,6 +551,18 @@ abstract class AbstractWebServiceManagerTest {
 	}
 
 	@Test
+	public void testPostContactValidations() {
+		final Map<String, Object> newContact = createDefaultContact(null);
+		final Long conId = loggedAndExpect(given().body(newContact))
+				.body("fieldErrors.birthday", Matchers.contains("Test birthday after birthday")) //manual validation by Vega
+				.body("fieldErrors.email", Matchers.contains("Test error : email")) //manual validation by Vega
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.when()
+				.post("/test/contactValidations")
+				.body().path("conId");
+	}
+
+	@Test
 	public void testPutContactVAccessor() {
 		final Map<String, Object> newContact = createDefaultContact(100L);
 		newContact.put("adrId", 200);
@@ -2105,7 +2117,7 @@ abstract class AbstractWebServiceManagerTest {
 
 	//=========================================================================
 
-	private static RequestSpecification given() {
+	protected static RequestSpecification given() {
 		return RestAssured.given();
 	}
 
@@ -2115,7 +2127,7 @@ abstract class AbstractWebServiceManagerTest {
 				.expect().log().ifValidationFails();
 	}
 
-	private ResponseSpecification loggedAndExpect(final RequestSpecification given) {
+	protected ResponseSpecification loggedAndExpect(final RequestSpecification given) {
 		return given
 				.filter(loggedSessionFilter)
 				.expect().log().ifValidationFails();
@@ -2134,7 +2146,7 @@ abstract class AbstractWebServiceManagerTest {
 		return contact;
 	}
 
-	private static Map<String, Object> createDefaultContact(final Long conId) {
+	protected static Map<String, Object> createDefaultContact(final Long conId) {
 		final Map<String, Object> newContact = createContact2(conId, "MRS", "Fournier", "Catherine", "1985-10-24",
 				createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"),
 				"catherine.fournier@gmail.com", "01 91 92 93 94");
