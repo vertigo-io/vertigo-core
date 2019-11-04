@@ -553,7 +553,7 @@ abstract class AbstractWebServiceManagerTest {
 	@Test
 	public void testPostContactValidations() {
 		final Map<String, Object> newContact = createDefaultContact(null);
-		final Long conId = loggedAndExpect(given().body(newContact))
+		loggedAndExpect(given().body(newContact))
 				.body("fieldErrors.birthday", Matchers.contains("Test birthday after birthday")) //manual validation by Vega
 				.body("fieldErrors.email", Matchers.contains("Test error : email")) //manual validation by Vega
 				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
