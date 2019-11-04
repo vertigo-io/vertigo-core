@@ -187,11 +187,11 @@ public final class InjectorTest {
 		container.put("param2", "test2");
 		container.put("param3", "test3");
 		final F f = DIInjector.newInstance(F.class, container);
-		assertEquals(f.getA(), a);
-		assertEquals(f.getParam1(), "test1");
-		assertEquals(f.getParam2(), "test2");
+		assertEquals(a, f.getA());
+		assertEquals("test1", f.getParam1());
+		assertEquals("test2", f.getParam2());
 		assertTrue(f.getParam3().isPresent());
-		assertEquals(f.getParam3().get(), "test3");
+		assertEquals("test3", f.getParam3().get());
 		assertFalse(f.getParam4().isPresent());
 	}
 }
