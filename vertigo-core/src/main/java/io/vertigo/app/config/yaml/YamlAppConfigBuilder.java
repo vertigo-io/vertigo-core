@@ -263,7 +263,13 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 			return true;// no flags declared means always
 		}
 		return flags.stream()
-				.anyMatch(flag -> activeFlags.contains(flag));
+				.anyMatch(flag -> {
+					Assertion.checkArgNotEmpty(flag, "A flag cannot be empty");
+					if (flag.charAt(0) == '!') {
+						return !activeFlags.contains(flag.substring(1));
+					}
+					return activeFlags.contains(flag);
+				});
 	}
 
 	private static Object[] findmethodParameters(final Map<String, Object> paramsConfig, final Method method, final String featureName, final String featuresClassName) {

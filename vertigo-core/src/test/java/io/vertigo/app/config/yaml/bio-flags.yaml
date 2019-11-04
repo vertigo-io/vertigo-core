@@ -8,7 +8,11 @@ modules:
       features:
         - bio:
         - math:
+            __flags__: ["!customStart"]
             start: 100
+        - math:
+            __flags__: ["customStart"]
+            start: 200
       plugins:
         - io.vertigo.core.spaces.component.data.MathPlugin: 
             __flags__: ["main"]

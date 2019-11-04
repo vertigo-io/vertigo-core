@@ -94,6 +94,24 @@ public final class YamlAppConfigTest {
 		}
 	}
 
+	@Test
+	public void testNegateFlagsConfig() {
+		final Properties params = new Properties();
+		params.setProperty("boot.activeFlags", "main;customStart");
+		final NodeConfig nodeConfig = new YamlAppConfigBuilder(params)
+				.withFiles(getClass(), "bio-flags.yaml")
+				.build();
+
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
+			assertEquals(app, app);
+			assertTrue(app.getComponentSpace().contains("bioManager"));
+			final BioManager bioManager = app.getComponentSpace().resolve(BioManager.class);
+			final int res = bioManager.add(1, 2, 3);
+			assertEquals(666, res);
+			assertTrue(bioManager.isActive());
+		}
+	}
+
 	private void testBioManager(final NodeConfig nodeConfig) {
 		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			assertEquals(app, app);
