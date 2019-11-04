@@ -57,6 +57,7 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin, Acti
 		try {
 			Thread.sleep(100L);
 		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt();
 			throw WrappedException.wrap(e);
 		}
 	}
