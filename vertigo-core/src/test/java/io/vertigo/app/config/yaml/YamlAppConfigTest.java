@@ -65,6 +65,35 @@ public final class YamlAppConfigTest {
 		assertEquals("http://localhost/", nodeConfig.getEndPoint().get());
 	}
 
+	@Test
+	public void testActiveFlagsMainConfig() {
+		final Properties params = new Properties();
+		params.setProperty("boot.activeFlags", "main");
+		final NodeConfig nodeConfig = new YamlAppConfigBuilder(params)
+				.withFiles(getClass(), "bio-flags.yaml")
+				.build();
+
+		testBioManager(nodeConfig);
+	}
+
+	@Test
+	public void testActiveFlagsSecondaryConfig() {
+		final Properties params = new Properties();
+		params.setProperty("boot.activeFlags", "secondary");
+		final NodeConfig nodeConfig = new YamlAppConfigBuilder(params)
+				.withFiles(getClass(), "bio-flags.yaml")
+				.build();
+
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
+			assertEquals(app, app);
+			assertTrue(app.getComponentSpace().contains("bioManager"));
+			final BioManager bioManager = app.getComponentSpace().resolve(BioManager.class);
+			final int res = bioManager.add(1, 2, 3);
+			assertEquals(336, res);
+			assertTrue(bioManager.isActive());
+		}
+	}
+
 	private void testBioManager(final NodeConfig nodeConfig) {
 		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			assertEquals(app, app);
