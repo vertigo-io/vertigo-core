@@ -16,10 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.task.x;
+package io.vertigo.dynamox.metrics;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -31,33 +30,35 @@ import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.analytics.metric.Metric;
 import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.dynamo.DynamoFeatures;
-import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.dynamo.task.data.domain.SuperHero;
 import io.vertigo.dynamo.task.data.domain.SuperHeroDataBase;
+import io.vertigo.dynamo.task.x.SuperHeroDao;
+import io.vertigo.dynamox.metric.domain.DomainMetricsProvider;
+import io.vertigo.dynamox.metric.task.TasksMetricsProvider;
 
 /**
- *
- * @author npiedeloup
+ * @author mlaroche
  */
-public final class TaskProxyTest extends AbstractTestCaseJU5 {
+public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
+
+	@Inject
+	private AnalyticsManager analyticsManager;
 	@Inject
 	private TaskManager taskManager;
 	@Inject
 	private StoreManager storeManager;
 	@Inject
 	private VTransactionManager transactionManager;
-	@Inject
-	private SuperHeroDao superHeroDao;
 
 	private SuperHeroDataBase superHeroDataBase;
 
@@ -88,10 +89,14 @@ public final class TaskProxyTest extends AbstractTestCaseJU5 {
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/dynamo/task/data/execution.kpr")
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/task/data/executionWTask.kpr")
 								.addDefinitionResource("classes", "io.vertigo.dynamo.task.data.DtDefinitions")
 								.build())
 						.addProxy(SuperHeroDao.class)
+						.build())
+				.addModule(ModuleConfig.builder("analytics-metric")
+						.addComponent(DomainMetricsProvider.class)
+						.addComponent(TasksMetricsProvider.class)
 						.build())
 				.build();
 	}
@@ -103,64 +108,10 @@ public final class TaskProxyTest extends AbstractTestCaseJU5 {
 		superHeroDataBase.populateSuperHero(storeManager, 33);
 	}
 
-	/**
-	 * Test where in avec 2200 Id a exclure.
-	 */
 	@Test
-	public void testCount() {
-		superHeroDataBase.populateSuperHero(storeManager, 100);
+	public void testAnalyze() {
+		final List<Metric> metrics = analyticsManager.getMetrics();
 		//---
-		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final int count = superHeroDao.count();
-			Assertions.assertEquals(100 + 33, count);
-		}
-	}
-
-	@Test
-	public void testCountByName() {
-		final int count = superHeroDao.count("SuperHero ( 10)");
-		Assertions.assertEquals(1, count);
-	}
-
-	@Test
-	public void testSelectByName() {
-		DtList<SuperHero> list;
-		list = superHeroDao.findAll(Optional.of("SuperHero ( 10)"));
-		Assertions.assertEquals(1, list.size());
-
-		list = superHeroDao.findAll(Optional.empty());
-		Assertions.assertEquals(33, list.size());
-
-		list = superHeroDao.findAll(Optional.of("nada"));
-		Assertions.assertEquals(0, list.size());
-	}
-
-	@Test
-	public void testSelectDistinctNames() {
-		final List<String> names = superHeroDao.names();
-		Assertions.assertEquals(33, names.size());
-	}
-
-	@Test
-	public void testUpdateNames() {
-		final String oldName = "SuperHero ( 10)";
-		final String newName = "superMan";
-
-		DtList<SuperHero> list;
-		list = superHeroDao.findAll(Optional.of(oldName));
-		Assertions.assertEquals(1, list.size());
-
-		list = superHeroDao.findAll(Optional.of(newName));
-		Assertions.assertEquals(0, list.size());
-
-		superHeroDao.update(oldName, newName);
-		final List<String> names = superHeroDao.names();
-		Assertions.assertEquals(33, names.size());
-
-		list = superHeroDao.findAll(Optional.of(oldName));
-		Assertions.assertEquals(0, list.size());
-
-		list = superHeroDao.findAll(Optional.of(newName));
-		Assertions.assertEquals(1, list.size());
+		Assertions.assertEquals(35, metrics.size());
 	}
 }

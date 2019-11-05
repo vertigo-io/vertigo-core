@@ -38,7 +38,7 @@ import io.vertigo.util.ClassUtil;
  *
  * @author tchassagnette
  */
-public final class TaskPopulator {
+final class TaskPopulator {
 	private final TaskDefinition taskDefinition;
 	private final TaskBuilder taskBuilder;
 

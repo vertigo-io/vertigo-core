@@ -16,24 +16,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.task.x;
+package io.vertigo.dynamo.task.data.domain;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.dynamo.task.data.domain.SuperHero;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.lang.Assertion;
 
-final class SuperHeroDataBase {
+public final class SuperHeroDataBase {
 	private final VTransactionManager transactionManager;
 	private final TaskManager taskManager;
 
-	SuperHeroDataBase(final VTransactionManager transactionManager, final TaskManager taskManager) {
+	public SuperHeroDataBase(final VTransactionManager transactionManager, final TaskManager taskManager) {
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(taskManager);
 		//---
@@ -41,7 +40,7 @@ final class SuperHeroDataBase {
 		this.taskManager = taskManager;
 	}
 
-	void createDataBase() {
+	public void createDataBase() {
 		//A chaque test on recrée la table SUPER_HERO
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
 			execStatement("create table SUPER_HERO(id BIGINT , name varchar(255));");
@@ -58,7 +57,7 @@ final class SuperHeroDataBase {
 		taskManager.execute(task);
 	}
 
-	static DtList<SuperHero> getSuperHeroes() {
+	public static DtList<SuperHero> getSuperHeroes() {
 		return DtList.of(
 				createSuperHero(1, "superman"),
 				createSuperHero(2, "batman"),
@@ -77,7 +76,7 @@ final class SuperHeroDataBase {
 		return superHero;
 	}
 
-	void populateSuperHero(final StoreManager storeManager, final int size) {
+	public void populateSuperHero(final StoreManager storeManager, final int size) {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//-----
 			for (int i = 0; i < size; i++) {
