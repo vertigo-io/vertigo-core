@@ -68,6 +68,12 @@
 			<artifactId>elasticsearch</artifactId>
 			<version>5.6.16</version>
 			<optional>true</optional><!-- EsTransportSearchServicesPlugin -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>
