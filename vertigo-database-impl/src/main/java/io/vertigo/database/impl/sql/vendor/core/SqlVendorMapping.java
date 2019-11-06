@@ -19,7 +19,6 @@
 package io.vertigo.database.impl.sql.vendor.core;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Clob;
 import java.sql.ResultSet;
@@ -138,9 +137,9 @@ public final class SqlVendorMapping implements SqlMapping {
 				statement.setTimestamp(index, ts);
 			} else if (DataStream.class.isAssignableFrom(dataType)) {
 				final DataStream dataStream = (DataStream) value;
-				try (InputStream in = dataStream.createInputStream()) {
+				try {
 					//Notice : setBinaryStream() without length is NOT implemented by all the database drivers.
-					statement.setBinaryStream(index, in, (int) dataStream.getLength());
+					statement.setBinaryStream(index, new CloseAtEoFInputStream(dataStream.createInputStream(), (int) dataStream.getLength()), (int) dataStream.getLength());
 				} catch (final IOException e) {
 					throw new SQLException("writing error", e);
 				}
