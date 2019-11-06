@@ -59,6 +59,7 @@ public interface VFile extends Serializable {
 	String getMimeType();
 
 	/**
+	 * Create a inputStream : It must be closed by caller !!
 	 * @return Stream représentant le document physique.
 	 * @throws IOException Erreur d'entrée/sortie
 	 */

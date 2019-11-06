@@ -22,9 +22,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -224,8 +224,8 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		fileInfo.setURIStored(uri);
 
 		// on met a jour la base
-		final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd/", Locale.FRANCE);
-		final String pathToSave = format.format(new Date()) + fileInfoDtoId;
+		final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy/MM/dd/", Locale.FRANCE);
+		final String pathToSave = format.format(LocalDate.now()) + fileInfoDtoId;
 		setValue(fileInfoDto, DtoFields.filePath, pathToSave);
 		//-----
 		getStoreManager().getDataStore().update(fileInfoDto);

@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.store.datastore;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -141,7 +142,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 
 	protected List<String> getCreateFileInfoRequests() {
 		return new ListBuilder<String>()
-				.add(" create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_DATA BLOB)")
+				.add(" create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_PATH varchar(255), FILE_DATA BLOB)")
 				.add(" create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1")
 				.build();
 	}
@@ -375,13 +376,17 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 
 			final String source;
 			try (final OutputStream sourceOS = new java.io.ByteArrayOutputStream()) {
-				FileUtil.copy(vFile.createInputStream(), sourceOS);
+				try (final InputStream in = vFile.createInputStream()) {
+					FileUtil.copy(in, sourceOS);
+				}
 				source = sourceOS.toString();
 			}
 
 			final String read;
 			try (final OutputStream readOS = new java.io.ByteArrayOutputStream()) {
-				FileUtil.copy(readFileInfo.getVFile().createInputStream(), readOS);
+				try (final InputStream in = readFileInfo.getVFile().createInputStream()) {
+					FileUtil.copy(in, readOS);
+				}
 				read = readOS.toString();
 			}
 			//on vérifie que le contenu des fichiers est identique.
@@ -482,7 +487,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 	}
 
 	private String readFileContent(final VFile vFile) throws IOException {
-		try (final OutputStream sourceOS = new java.io.ByteArrayOutputStream()) {
+		try (final OutputStream sourceOS = new ByteArrayOutputStream()) {
 			try (final InputStream fileIS = vFile.createInputStream()) {
 				FileUtil.copy(fileIS, sourceOS);
 			}

@@ -30,9 +30,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.DynamoFeatures;
@@ -132,8 +132,8 @@ public final class FileManagerTest extends AbstractTestCaseJU5 {
 		Assertions.assertEquals(mimeType, vFile.getMimeType());
 		Assertions.assertEquals(length, vFile.getLength(), length * 0.1); //+ or - 10%
 
-		try {
-			nop(vFile.createInputStream());
+		try (InputStream in = vFile.createInputStream()) {
+			nop(in);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}
