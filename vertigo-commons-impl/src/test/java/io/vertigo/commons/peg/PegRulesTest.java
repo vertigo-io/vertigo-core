@@ -92,4 +92,13 @@ public class PegRulesTest {
 	public void skipBlanks() throws PegNoMatchFoundException {
 		Assertions.assertEquals(10, skipBlanks.parse("+++****+++", 0).getIndex());
 	}
+
+	@Test
+	public void asHtml() {
+		Assertions.assertNotEquals("", new PegRulesHtmlRenderer().render(choice));
+		Assertions.assertNotEquals("", new PegRulesHtmlRenderer().render(sequence));
+		Assertions.assertNotEquals("", new PegRulesHtmlRenderer().render(oneOrMore));
+		Assertions.assertNotEquals("", new PegRulesHtmlRenderer().render(zeroOrMore));
+		Assertions.assertNotEquals("", new PegRulesHtmlRenderer().render(skipBlanks));
+	}
 }
