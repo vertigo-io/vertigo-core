@@ -1900,13 +1900,45 @@ abstract class AbstractWebServiceManagerTest {
 						.statusCode(HttpStatus.SC_OK)
 						.body(Matchers.equalTo("TestedToken"))
 						.when()
-						.post("/test/contact/secured");
+						.post("/test/string/optionalQueryParam");
 
 		loggedAndExpect(given().body(newContact))
 				.statusCode(HttpStatus.SC_OK)
 				.body(Matchers.equalTo("empty"))
 				.when()
-				.post("/test/contact/secured");
+				.post("/test/string/optionalQueryParam");
+
+	}
+
+	@Test
+	public void testOptionalInnerBodyParam() {
+		final Map<String, Object> newContact = createDefaultContact(null);
+		loggedAndExpect(given().body(newContact))
+				.statusCode(HttpStatus.SC_OK)
+				.body(Matchers.equalTo("empty"))
+				.when()
+				.post("/test/string/optionalInnerBodyParam");
+
+		newContact.put("token", null);
+		loggedAndExpect(given().body(newContact))
+				.statusCode(HttpStatus.SC_OK)
+				.body(Matchers.equalTo("empty"))
+				.when()
+				.post("/test/string/optionalInnerBodyParam");
+
+		newContact.put("token", "");
+		loggedAndExpect(given().body(newContact))
+				.statusCode(HttpStatus.SC_OK)
+				.body(Matchers.equalTo("empty"))
+				.when()
+				.post("/test/string/optionalInnerBodyParam");
+
+		newContact.put("token", "TestedToken");
+		loggedAndExpect(given().body(newContact))
+				.statusCode(HttpStatus.SC_OK)
+				.body(Matchers.equalTo("TestedToken"))
+				.when()
+				.post("/test/string/optionalInnerBodyParam");
 
 	}
 

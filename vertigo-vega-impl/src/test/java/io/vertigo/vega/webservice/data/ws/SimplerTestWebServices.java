@@ -446,7 +446,12 @@ public final class SimplerTestWebServices implements WebServices {
 		return bodyString;
 	}
 
-	@POST("/contact/secured")
+	@POST("/string/optionalInnerBodyParam")
+	public String testOptionalInnerBodyParam(final Contact contact, @InnerBodyParam("token") final Optional<String> token) {
+		return token.orElse("empty");
+	}
+
+	@POST("/string/optionalQueryParam")
 	public String testOptionalQueryParam(final Contact contact, @QueryParam("token") final Optional<String> token) {
 		return token.orElse("empty");
 	}
