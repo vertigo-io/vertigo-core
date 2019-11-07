@@ -74,7 +74,7 @@ abstract class AbstractAppServletStarter {
 			Assertion.checkArgument(bootConf.containsKey("boot.applicationConfiguration"), "Param \"boot.applicationConfiguration\" is mandatory, check your .properties or web.xml.");
 
 			// Initialisation de l'état de l'application
-			app = new AutoCloseableApp(buidlNodeConfigBuilder(bootConf));
+			app = new AutoCloseableApp(buildNodeConfig(bootConf));
 
 			appServletListener.onServletStart(getClass().getName());
 		} catch (final Exception e) {
@@ -87,7 +87,7 @@ abstract class AbstractAppServletStarter {
 		}
 	}
 
-	abstract NodeConfig buidlNodeConfigBuilder(final Properties bootConf);
+	abstract NodeConfig buildNodeConfig(final Properties bootConf);
 
 	/**
 	 * Création des propriétés à partir du Web XML : utilisé par le plugin WebAppParamPlugin du ParamManager.

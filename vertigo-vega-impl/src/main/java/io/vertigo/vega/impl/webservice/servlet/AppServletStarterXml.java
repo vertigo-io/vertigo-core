@@ -31,7 +31,7 @@ final class AppServletStarterXml extends AbstractAppServletStarter {
 
 	/** {@inheritDoc} */
 	@Override
-	NodeConfig buidlNodeConfigBuilder(final Properties bootConf) {
+	NodeConfig buildNodeConfig(final Properties bootConf) {
 		final XmlAppConfigBuilder nodeConfigBuilder = new XmlAppConfigBuilder();
 		nodeConfigBuilder.beginBoot();
 

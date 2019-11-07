@@ -31,7 +31,7 @@ final class AppServletStarter extends AbstractAppServletStarter {
 
 	/** {@inheritDoc} */
 	@Override
-	NodeConfig buidlNodeConfigBuilder(final Properties bootConf) {
+	NodeConfig buildNodeConfig(final Properties bootConf) {
 		final YamlAppConfigBuilder nodeConfigBuilder = new YamlAppConfigBuilder(bootConf);
 		nodeConfigBuilder.beginBoot();
 

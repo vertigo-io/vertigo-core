@@ -27,27 +27,18 @@ import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import io.restassured.RestAssured;
 import io.vertigo.vega.webservice.data.MyNodeConfig;
 
-public final class WebServiceManagerServletTest extends AbstractWebServiceManagerTest {
-	static {
-		//RestAsssured init
-		RestAssured.port = MyNodeConfig.WS_PORT;
-	}
+public final class ConfigYamlManagerServletTest {
 
 	private static Server server;
 
-	@BeforeAll
-	public static void setUp() throws Exception {
+	@Test
+	public void startServerTest() throws Exception {
 		startServer();
-	}
 
-	@AfterAll
-	public static void tearDown() throws Exception {
 		if (server != null) {
 			server.stop();
 			server = null;
@@ -55,18 +46,18 @@ public final class WebServiceManagerServletTest extends AbstractWebServiceManage
 	}
 
 	private static ClassLoader getUrlClassLoader() {
-		return new URLClassLoader(new URL[0], WebServiceManagerServletTest.class.getClassLoader());
+		return new URLClassLoader(new URL[0], ConfigYamlManagerServletTest.class.getClassLoader());
 	}
 
 	private static void startServer() throws IOException, Exception {
 		server = new Server(MyNodeConfig.WS_PORT);
-		final WebAppContext context = new WebAppContext(WebServiceManagerServletTest.class.getClassLoader().getResource("io/vertigo/vega/testWebApp/").getFile(), "/");
+		final WebAppContext context = new WebAppContext(ConfigYamlManagerServletTest.class.getClassLoader().getResource("io/vertigo/vega/webAppYaml/").getFile(), "/");
 		System.setProperty("org.apache.jasper.compiler.disablejsr199", "false");
 		context.setAttribute("jacoco.exclClassLoaders", "*");
 		context.setAttribute("javax.servlet.context.tempdir", getScratchDir());
 		context.addBean(new ServletContainerInitializersStarter(context), true);
 		context.setClassLoader(getUrlClassLoader());
-		context.setClassLoader(new WebAppClassLoader(WebServiceManagerServletTest.class.getClassLoader(), context));
+		context.setClassLoader(new WebAppClassLoader(ConfigYamlManagerServletTest.class.getClassLoader(), context));
 
 		server.setHandler(context);
 		server.start();
