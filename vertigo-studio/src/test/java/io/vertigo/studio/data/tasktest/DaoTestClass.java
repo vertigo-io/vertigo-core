@@ -95,7 +95,7 @@ public class DaoTestClass extends AbstractTestCaseJU5 {
 
 	@Override
 	protected void doSetUp() throws Exception {
-		execSqlScript("target/databasegenMasterdata/crebas.sql", Home.getApp());
+		execSqlScript("io/vertigo/studio/data/sql/crebas.sql", Home.getApp());
 		currentTransaction = transactionManager.createCurrentTransaction();
 	}
 
