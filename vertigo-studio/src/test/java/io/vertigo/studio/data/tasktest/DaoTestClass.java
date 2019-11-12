@@ -28,7 +28,6 @@ import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.param.Param;
@@ -46,6 +45,7 @@ import io.vertigo.studio.mda.DataBaseScriptUtil;
 import io.vertigo.studio.plugins.mda.task.test.TaskTestDaoChecker;
 import io.vertigo.studio.plugins.mda.task.test.TaskTestDummyGenerator;
 import io.vertigo.studio.plugins.mda.task.test.TaskTestDummyGeneratorBasic;
+import io.vertigo.studio.tasktest.DaoPAO;
 
 public class DaoTestClass extends AbstractTestCaseJU5 {
 
@@ -64,7 +64,8 @@ public class DaoTestClass extends AbstractTestCaseJU5 {
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
 				.addModule(new CommonsFeatures()
-						.addPlugin(MemoryCachePlugin.class)
+						.withCache()
+						.withMemoryCache()
 						.withScript()
 						.withJaninoScript()
 						.build())
@@ -83,8 +84,9 @@ public class DaoTestClass extends AbstractTestCaseJU5 {
 				.addModule(ModuleConfig.builder("dao")
 						// to use this class for actual test target/javagen must contains those two dao classes and target/javagen must be included as a source folder
 						// .addComponent(CarDAO.class)
-						// .addComponent(DaoPAO.class)
+						.addComponent(DaoPAO.class)
 						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("classes", "io.vertigo.studio.data.DtDefinitions")
 								.addDefinitionResource("kpr", "io/vertigo/studio/data/generationWTask.kpr")
 								.build())
 						.build())
