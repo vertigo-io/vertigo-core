@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.plugins.analytics.log;
+package io.vertigo.core.plugins.analytics.log;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -40,11 +40,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import io.vertigo.app.Home;
-import io.vertigo.commons.analytics.health.HealthCheck;
-import io.vertigo.commons.analytics.metric.Metric;
-import io.vertigo.commons.analytics.process.AProcess;
-import io.vertigo.commons.daemon.DaemonScheduled;
-import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
+import io.vertigo.core.analytics.health.HealthCheck;
+import io.vertigo.core.analytics.metric.Metric;
+import io.vertigo.core.analytics.process.AProcess;
+import io.vertigo.core.daemon.DaemonScheduled;
+import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 

@@ -16,29 +16,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.impl.app;
+package io.vertigo.core.daemon;
 
-import java.util.List;
-import java.util.Map;
-
-import io.vertigo.commons.analytics.health.HealthCheck;
-import io.vertigo.commons.app.Node;
-import io.vertigo.core.component.Plugin;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Plugin for retrieving infos about a node.
+ * Annotation for scheduling daemons.
  * @author mlaroche
  *
  */
-public interface AppNodeInfosPlugin extends Plugin {
+@Target({ ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface DaemonScheduled {
 
-	// TODO : à terme NodeConfig
-	String getConfig(Node node);
+	/**
+	 * The name of the daemon being scheduled.
+	 * @return name of daemon
+	 */
+	String name();
 
-	List<HealthCheck> getStatus(Node node);
+	/**
+	 * The daemon execution period in seconds
+	 * @return daemon execution period
+	 */
+	int periodInSeconds();
 
-	Map<String, Object> getStats(Node node);
-
-	String getProtocol();
+	/**
+	 * If the deaemon from this method is monitored by an analytics tracer.
+	 * @return daemon execution monitored by a tracer
+	 */
+	boolean analytics() default true;
 
 }

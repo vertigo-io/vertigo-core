@@ -19,7 +19,7 @@
 /**
  *
  */
-package io.vertigo.commons.impl.analytics.health;
+package io.vertigo.core.impl.analytics.health;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -29,11 +29,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.vertigo.app.Home;
-import io.vertigo.commons.analytics.health.HealthCheck;
-import io.vertigo.commons.analytics.health.HealthCheckDefinition;
-import io.vertigo.commons.analytics.health.HealthChecked;
-import io.vertigo.commons.analytics.health.HealthMeasure;
-import io.vertigo.commons.analytics.health.HealthStatus;
+import io.vertigo.core.analytics.health.HealthCheck;
+import io.vertigo.core.analytics.health.HealthCheckDefinition;
+import io.vertigo.core.analytics.health.HealthChecked;
+import io.vertigo.core.analytics.health.HealthMeasure;
+import io.vertigo.core.analytics.health.HealthStatus;
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.Component;
 import io.vertigo.lang.Assertion;

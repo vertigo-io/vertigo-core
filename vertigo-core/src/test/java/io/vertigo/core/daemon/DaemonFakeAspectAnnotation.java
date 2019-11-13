@@ -16,21 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.analytics.metric;
+package io.vertigo.core.daemon;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import io.vertigo.core.component.aop.AspectAnnotation;
+
 /**
- * This annotation must be added on each method of a component.
- * This method is automatically registered in the analyticsManager as a metrics supplier .
+ * This annotation must be inserted on methods and classes that need a transaction.
  *
- * @author mlaroche
+ * For example, this annotation should be placed on each class that is a service.
+ *
+ * @author prahmoune
  */
-@Target({ ElementType.METHOD })
+@Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Metrics {
+@AspectAnnotation
+public @interface DaemonFakeAspectAnnotation {
 	//
 }

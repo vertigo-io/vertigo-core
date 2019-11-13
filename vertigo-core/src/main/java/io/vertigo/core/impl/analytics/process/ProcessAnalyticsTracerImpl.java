@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.impl.analytics.process;
+package io.vertigo.core.impl.analytics.process;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -25,9 +25,9 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.commons.analytics.process.AProcess;
-import io.vertigo.commons.analytics.process.AProcessBuilder;
-import io.vertigo.commons.analytics.process.ProcessAnalyticsTracer;
+import io.vertigo.core.analytics.process.AProcess;
+import io.vertigo.core.analytics.process.AProcessBuilder;
+import io.vertigo.core.analytics.process.ProcessAnalyticsTracer;
 import io.vertigo.lang.Assertion;
 
 /**

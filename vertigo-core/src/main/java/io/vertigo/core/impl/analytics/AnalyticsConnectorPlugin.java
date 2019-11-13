@@ -16,11 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.impl.analytics;
+package io.vertigo.core.impl.analytics;
 
-import io.vertigo.commons.analytics.health.HealthCheck;
-import io.vertigo.commons.analytics.metric.Metric;
-import io.vertigo.commons.analytics.process.AProcess;
+import io.vertigo.core.analytics.health.HealthCheck;
+import io.vertigo.core.analytics.metric.Metric;
+import io.vertigo.core.analytics.process.AProcess;
 import io.vertigo.core.component.Plugin;
 
 /**

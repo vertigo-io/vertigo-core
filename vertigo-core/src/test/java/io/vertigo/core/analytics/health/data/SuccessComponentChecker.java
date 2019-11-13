@@ -16,10 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.analytics.health.data;
+package io.vertigo.core.analytics.health.data;
 
-import io.vertigo.commons.analytics.health.HealthChecked;
-import io.vertigo.commons.analytics.health.HealthMeasure;
+import io.vertigo.core.analytics.health.HealthChecked;
+import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.component.Component;
 
 public class SuccessComponentChecker implements Component {

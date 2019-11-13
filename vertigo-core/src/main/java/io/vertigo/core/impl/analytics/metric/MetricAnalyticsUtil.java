@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.impl.analytics.metric;
+package io.vertigo.core.impl.analytics.metric;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,9 +25,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.vertigo.app.Home;
-import io.vertigo.commons.analytics.metric.Metric;
-import io.vertigo.commons.analytics.metric.MetricDefinition;
-import io.vertigo.commons.analytics.metric.Metrics;
+import io.vertigo.core.analytics.metric.Metric;
+import io.vertigo.core.analytics.metric.MetricDefinition;
+import io.vertigo.core.analytics.metric.Metrics;
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.Component;
 import io.vertigo.lang.Assertion;

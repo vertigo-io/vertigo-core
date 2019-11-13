@@ -16,50 +16,57 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.impl.app;
-
-import java.util.List;
-import java.util.Optional;
-
-import io.vertigo.commons.app.Node;
-import io.vertigo.core.component.Plugin;
+package io.vertigo.core.daemon;
 
 /**
- * Plugin for storing and querying the node topology of an App.
- * @author mlaroche
+ * Some execution stats about registered daemons.
  *
+ * @author pchretien
  */
-public interface AppNodeRegistryPlugin extends Plugin {
+public interface DaemonStat {
 
 	/**
-	 * Register a node
-	 * @param node the node to register
+	 * Daemon execution status.
 	 */
-	void register(Node node);
+	enum Status {
+		/** Waiting for next execution. */
+		pending,
+		/** Running. */
+		running;
+	}
 
 	/**
-	 * Unregister a node
-	 * @param node the node to unregister
+	 * @return the daemon name
 	 */
-	void unregister(Node node);
+	String getDaemonName();
 
 	/**
-	 * Get the whole topology of the app
-	 * @return the list of node of the app
+	 * @return the demon period
 	 */
-	List<Node> getTopology();
+	int getDaemonPeriodInSecond();
 
 	/**
-	 * Find a node in the topology with the given id
-	 * @param nodeId the id to look for
-	 * @return an optional Node
+	 * @return the number of executions since the daemon started
 	 */
-	Optional<Node> find(String nodeId);
+	long getCount();
 
 	/**
-	 * Update the status of a node
-	 * @param node the node to update
+	 * @return the number of successes since the daemon started
 	 */
-	void updateStatus(Node node);
+	long getSuccesses();
 
+	/**
+	 * @return the number of failures since the daemon started
+	 */
+	long getFailures();
+
+	/**
+	 * @return the current status
+	 */
+	Status getStatus();
+
+	/**
+	 * @return if last exec was a success
+	 */
+	boolean isLastExecSuccess();
 }

@@ -16,27 +16,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.node;
+package io.vertigo.core.daemon;
 
-import org.h2.Driver;
+import io.vertigo.core.component.Component;
 
-import io.vertigo.app.config.NodeConfig;
-import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.commons.plugins.app.registry.db.DbAppNodeRegistryPlugin;
-import io.vertigo.core.param.Param;
+@DaemonFakeAspectAnnotation
+public class FakeComponent implements Component {
 
-public class DbNodeRegistryPluginTest extends AbstractNodeManagerTest {
+	static final String SIMPLE_DAEMON_NAME = "DmnSimple";
+	private int executions = 0;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	public int getExecutionCount() {
+		return executions;
+	}
 
-		return buildRootNodeConfig()
-				.addModule(new CommonsFeatures()
-						.withNodeRegistryPlugin(DbAppNodeRegistryPlugin.class,
-								Param.of("driverClassName", Driver.class.getName()),
-								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
-						.build())
-				.build();
+	@DaemonScheduled(name = SIMPLE_DAEMON_NAME, periodInSeconds = 2)
+	public void execute() {
+		executions++;
+		if (executions == 1) {
+			throw new IllegalStateException("ExpectedException for Test");
+		}
 	}
 
 }

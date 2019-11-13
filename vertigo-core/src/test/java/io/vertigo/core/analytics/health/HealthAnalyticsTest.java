@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.analytics.health;
+package io.vertigo.core.analytics.health;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,12 +29,9 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
-import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.health.data.FailedComponentChecker;
-import io.vertigo.commons.analytics.health.data.RedisHealthChecker;
-import io.vertigo.commons.analytics.health.data.SuccessComponentChecker;
-import io.vertigo.core.param.Param;
+import io.vertigo.core.analytics.AnalyticsManager;
+import io.vertigo.core.analytics.health.data.FailedComponentChecker;
+import io.vertigo.core.analytics.health.data.SuccessComponentChecker;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 
@@ -45,34 +42,14 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU5 {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
-		final String redisHost = "redis-pic.part.klee.lan.net";
-		final int redisPort = 6379;
-		final int redisDatabase = 15;
-
 		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
-				.addModule(new CommonsFeatures()
-						.withRedisConnector(Param.of("host", redisHost), Param.of("port", Integer.toString(redisPort)), Param.of("database", Integer.toString(redisDatabase)))
-						.build())
 				.addModule(ModuleConfig.builder("checkers")
-						.addComponent(RedisHealthChecker.class)
 						.addComponent(FailedComponentChecker.class)
 						.addComponent(SuccessComponentChecker.class)
 						.build())
 				.build();
-	}
-
-	@Test
-	void testRedisChecker() {
-		final List<HealthCheck> redisHealthChecks = findHealthChecksByName("ping")
-				.stream()
-				.filter(healthCheck -> "redisChecker".equals(healthCheck.getFeature()))
-				.collect(Collectors.toList());
-		//---
-		Assertions.assertEquals(1, redisHealthChecks.size());
-		Assertions.assertEquals(HealthStatus.GREEN, redisHealthChecks.get(0).getMeasure().getStatus());
-
 	}
 
 	@Test

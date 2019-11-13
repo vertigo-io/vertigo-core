@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.analytics.metric.data;
+package io.vertigo.core.analytics.metric.data;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
@@ -26,9 +26,9 @@ import java.util.function.Supplier;
 
 import javax.inject.Inject;
 
-import io.vertigo.commons.analytics.metric.Metric;
-import io.vertigo.commons.analytics.metric.MetricBuilder;
-import io.vertigo.commons.analytics.metric.Metrics;
+import io.vertigo.core.analytics.metric.Metric;
+import io.vertigo.core.analytics.metric.MetricBuilder;
+import io.vertigo.core.analytics.metric.Metrics;
 import io.vertigo.core.component.Component;
 import io.vertigo.lang.Assertion;
 

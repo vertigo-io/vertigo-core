@@ -16,15 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.impl.analytics.process;
+package io.vertigo.core.impl.analytics.process;
 
 import java.util.Optional;
 import java.util.Stack;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import io.vertigo.commons.analytics.process.AProcess;
-import io.vertigo.commons.analytics.process.ProcessAnalyticsTracer;
+import io.vertigo.core.analytics.process.AProcess;
+import io.vertigo.core.analytics.process.ProcessAnalyticsTracer;
 import io.vertigo.lang.Assertion;
 
 public class ProcessAnalyticsImpl {

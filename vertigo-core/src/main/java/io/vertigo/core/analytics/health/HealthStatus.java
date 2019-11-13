@@ -19,7 +19,7 @@
 /**
  *
  */
-package io.vertigo.commons.analytics.health;
+package io.vertigo.core.analytics.health;
 
 /**
  * This class lists the health status.

@@ -16,19 +16,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.node;
+package io.vertigo.core.daemon;
 
-import io.vertigo.app.config.NodeConfig;
-import io.vertigo.commons.CommonsFeatures;
+import java.util.List;
 
-public class SingleNodeRegistryPluginTest extends AbstractNodeManagerTest {
+import io.vertigo.core.component.Manager;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
-		return buildRootNodeConfig()
-				.addModule(new CommonsFeatures()
-						.build())
-				.build();
-	}
-
+/**
+ * Manages daemons.
+ * A daemon is technical (vs job or batch).
+ *
+ * @author mlaroche, pchretien, npiedeloup
+ */
+public interface DaemonManager extends Manager {
+	/**
+	 * Provides a snapshot/copy of execution's stats.
+	 * @return Stats
+	 */
+	List<DaemonStat> getStats();
 }

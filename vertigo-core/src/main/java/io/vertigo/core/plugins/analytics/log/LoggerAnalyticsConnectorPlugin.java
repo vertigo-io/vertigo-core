@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.plugins.analytics.log;
+package io.vertigo.core.plugins.analytics.log;
 
 import java.util.Collections;
 
@@ -26,10 +26,10 @@ import org.apache.logging.log4j.Logger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import io.vertigo.commons.analytics.health.HealthCheck;
-import io.vertigo.commons.analytics.metric.Metric;
-import io.vertigo.commons.analytics.process.AProcess;
-import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
+import io.vertigo.core.analytics.health.HealthCheck;
+import io.vertigo.core.analytics.metric.Metric;
+import io.vertigo.core.analytics.process.AProcess;
+import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 
 /**
  * Processes connector which only use a log4j logger.

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.analytics.process;
+package io.vertigo.core.analytics.process;
 
 import javax.inject.Inject;
 
@@ -28,13 +28,13 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.process.data.TestAProcessConnectorPlugin;
-import io.vertigo.commons.analytics.process.data.TestAnalyticsAspectServices;
-import io.vertigo.commons.impl.analytics.AnalyticsManagerImpl;
-import io.vertigo.commons.impl.analytics.process.AnalyticsAspect;
-import io.vertigo.commons.plugins.analytics.log.LoggerAnalyticsConnectorPlugin;
-import io.vertigo.commons.plugins.analytics.log.SmartLoggerAnalyticsConnectorPlugin;
+import io.vertigo.core.analytics.AnalyticsManager;
+import io.vertigo.core.analytics.process.data.TestAProcessConnectorPlugin;
+import io.vertigo.core.analytics.process.data.TestAnalyticsAspectServices;
+import io.vertigo.core.impl.analytics.AnalyticsManagerImpl;
+import io.vertigo.core.impl.analytics.process.AnalyticsAspect;
+import io.vertigo.core.plugins.analytics.log.LoggerAnalyticsConnectorPlugin;
+import io.vertigo.core.plugins.analytics.log.SmartLoggerAnalyticsConnectorPlugin;
 import io.vertigo.core.param.Param;
 
 /**

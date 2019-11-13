@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.analytics.metric;
+package io.vertigo.core.analytics.metric;
 
 import java.util.List;
 
@@ -28,9 +28,9 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
-import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.metric.data.DummyMetricsProvider;
-import io.vertigo.commons.impl.analytics.AnalyticsManagerImpl;
+import io.vertigo.core.analytics.AnalyticsManager;
+import io.vertigo.core.analytics.metric.data.DummyMetricsProvider;
+import io.vertigo.core.impl.analytics.AnalyticsManagerImpl;
 
 /**
  * @author mlaroche

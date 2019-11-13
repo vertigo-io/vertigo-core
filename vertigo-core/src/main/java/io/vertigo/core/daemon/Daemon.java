@@ -16,28 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.node;
+package io.vertigo.core.daemon;
 
-import io.vertigo.app.config.NodeConfig;
-import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.commons.plugins.app.registry.redis.RedisAppNodeRegistryPlugin;
-import io.vertigo.core.param.Param;
-
-public class RedisNodeRegistryPluginTest extends AbstractNodeManagerTest {
-
-	@Override
-	protected NodeConfig buildNodeConfig() {
-
-		final String redisHost = "redis-pic.part.klee.lan.net";
-		final int redisPort = 6379;
-		final int redisDatabase = 11;
-
-		return buildRootNodeConfig()
-				.addModule(new CommonsFeatures()
-						.withRedisConnector(Param.of("host", redisHost), Param.of("port", Integer.toString(redisPort)), Param.of("database", Integer.toString(redisDatabase)))
-						.withNodeRegistryPlugin(RedisAppNodeRegistryPlugin.class)
-						.build())
-				.build();
+/**
+ * This interface is a marker to identify the daemons (from the simple other runnables)
+ *
+ * @author mlaroche, pchretien, npiedeloup
+ */
+public interface Daemon extends Runnable {
+	/**
+	 * @return if the logs are activated or not.
+	 */
+	default boolean verbose() {
+		return false;
 	}
-
 }

@@ -16,13 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.analytics.metric.data;
+package io.vertigo.core.analytics.metric.data;
 
 import java.util.Collections;
 import java.util.List;
 
-import io.vertigo.commons.analytics.metric.Metric;
-import io.vertigo.commons.analytics.metric.Metrics;
+import io.vertigo.core.analytics.metric.Metric;
+import io.vertigo.core.analytics.metric.Metrics;
 import io.vertigo.core.component.Component;
 
 public class DummyMetricsProvider implements Component {

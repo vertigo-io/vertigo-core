@@ -19,7 +19,7 @@
 /**
  *
  */
-package io.vertigo.commons.analytics.health;
+package io.vertigo.core.analytics.health;
 
 import java.time.Instant;
 

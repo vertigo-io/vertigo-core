@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.analytics.process.data;
+package io.vertigo.core.analytics.process.data;
 
 import javax.inject.Inject;
 
-import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.process.Analytics;
+import io.vertigo.core.analytics.AnalyticsManager;
+import io.vertigo.core.analytics.process.Analytics;
 import io.vertigo.core.component.Component;
 import io.vertigo.lang.Assertion;
 

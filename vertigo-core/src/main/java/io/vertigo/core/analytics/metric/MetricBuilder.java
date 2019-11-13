@@ -16,11 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.analytics.metric;
+package io.vertigo.core.analytics.metric;
 
 import java.time.Instant;
 
-import io.vertigo.commons.analytics.metric.Metric.Status;
+import io.vertigo.core.analytics.metric.Metric.Status;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 

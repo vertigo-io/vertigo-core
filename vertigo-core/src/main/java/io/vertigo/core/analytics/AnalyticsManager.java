@@ -16,18 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.analytics;
+package io.vertigo.core.analytics;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import io.vertigo.commons.analytics.health.HealthCheck;
-import io.vertigo.commons.analytics.health.HealthStatus;
-import io.vertigo.commons.analytics.metric.Metric;
-import io.vertigo.commons.analytics.process.AProcess;
-import io.vertigo.commons.analytics.process.ProcessAnalyticsTracer;
+import io.vertigo.core.analytics.health.HealthCheck;
+import io.vertigo.core.analytics.health.HealthStatus;
+import io.vertigo.core.analytics.metric.Metric;
+import io.vertigo.core.analytics.process.AProcess;
+import io.vertigo.core.analytics.process.ProcessAnalyticsTracer;
 import io.vertigo.core.component.Manager;
 
 /**

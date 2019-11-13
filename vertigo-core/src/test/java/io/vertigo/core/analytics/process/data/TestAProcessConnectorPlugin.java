@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.analytics.process.data;
+package io.vertigo.core.analytics.process.data;
 
-import io.vertigo.commons.analytics.health.HealthCheck;
-import io.vertigo.commons.analytics.metric.Metric;
-import io.vertigo.commons.analytics.process.AProcess;
-import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
+import io.vertigo.core.analytics.health.HealthCheck;
+import io.vertigo.core.analytics.metric.Metric;
+import io.vertigo.core.analytics.process.AProcess;
+import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 
 public class TestAProcessConnectorPlugin implements AnalyticsConnectorPlugin {
 	private static int count = 0;

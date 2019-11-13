@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.impl.analytics;
+package io.vertigo.core.impl.analytics;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,16 +28,16 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
-import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.health.HealthCheck;
-import io.vertigo.commons.analytics.health.HealthStatus;
-import io.vertigo.commons.analytics.metric.Metric;
-import io.vertigo.commons.analytics.process.AProcess;
-import io.vertigo.commons.analytics.process.ProcessAnalyticsTracer;
-import io.vertigo.commons.daemon.DaemonScheduled;
-import io.vertigo.commons.impl.analytics.health.HealthAnalyticsUtil;
-import io.vertigo.commons.impl.analytics.metric.MetricAnalyticsUtil;
-import io.vertigo.commons.impl.analytics.process.ProcessAnalyticsImpl;
+import io.vertigo.core.analytics.AnalyticsManager;
+import io.vertigo.core.analytics.health.HealthCheck;
+import io.vertigo.core.analytics.health.HealthStatus;
+import io.vertigo.core.analytics.metric.Metric;
+import io.vertigo.core.analytics.process.AProcess;
+import io.vertigo.core.analytics.process.ProcessAnalyticsTracer;
+import io.vertigo.core.daemon.DaemonScheduled;
+import io.vertigo.core.impl.analytics.health.HealthAnalyticsUtil;
+import io.vertigo.core.impl.analytics.metric.MetricAnalyticsUtil;
+import io.vertigo.core.impl.analytics.process.ProcessAnalyticsImpl;
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.Component;
 import io.vertigo.core.definition.Definition;
