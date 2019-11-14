@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
+import io.vertigo.core.CoreFeatures;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.health.data.FailedComponentChecker;
 import io.vertigo.core.analytics.health.data.SuccessComponentChecker;
@@ -43,8 +44,7 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU5 {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.endBoot()
+				.addModule(new CoreFeatures().build())
 				.addModule(ModuleConfig.builder("checkers")
 						.addComponent(FailedComponentChecker.class)
 						.addComponent(SuccessComponentChecker.class)

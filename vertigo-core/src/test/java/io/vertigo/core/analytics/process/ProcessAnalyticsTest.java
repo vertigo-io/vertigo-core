@@ -26,16 +26,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.core.CoreFeatures;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.process.data.TestAProcessConnectorPlugin;
 import io.vertigo.core.analytics.process.data.TestAnalyticsAspectServices;
-import io.vertigo.core.impl.analytics.AnalyticsManagerImpl;
-import io.vertigo.core.impl.analytics.process.AnalyticsAspect;
-import io.vertigo.core.plugins.analytics.log.LoggerAnalyticsConnectorPlugin;
-import io.vertigo.core.plugins.analytics.log.SmartLoggerAnalyticsConnectorPlugin;
 import io.vertigo.core.param.Param;
+import io.vertigo.core.plugins.analytics.log.LoggerAnalyticsConnectorPlugin;
 
 /**
  * Cas de Test JUNIT de l'API Analytics.
@@ -62,14 +60,12 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU5 {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.addModule(ModuleConfig.builder("vertigo-commons")
-						.addComponent(AnalyticsManager.class, AnalyticsManagerImpl.class)
-						.addPlugin(SmartLoggerAnalyticsConnectorPlugin.class, Param.of("aggregatedBy", "test"))
-						.addPlugin(TestAProcessConnectorPlugin.class)
-						.addPlugin(LoggerAnalyticsConnectorPlugin.class)
-						.addAspect(AnalyticsAspect.class)
+				.addModule(new CoreFeatures()
+						.withSmartLoggerAnalyticsConnector(Param.of("aggregatedBy", "test"))
+						.addAnalyticsConnectorPlugin(TestAProcessConnectorPlugin.class)
+						.addAnalyticsConnectorPlugin(LoggerAnalyticsConnectorPlugin.class)
 						.build())
-				.addModule(ModuleConfig.builder("vertigo-commons-2")
+				.addModule(ModuleConfig.builder("vertigo-core-2")
 						.addComponent(TestAnalyticsAspectServices.class)
 						.build())
 				.build();
