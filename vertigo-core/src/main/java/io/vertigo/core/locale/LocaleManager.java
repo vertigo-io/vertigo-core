@@ -22,7 +22,7 @@ import java.time.ZoneId;
 import java.util.Locale;
 import java.util.function.Supplier;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 
 /**
  * Toute application gérée par kapser est multilingue ou plus précisémment multidictionnaires.

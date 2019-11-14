@@ -25,13 +25,13 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.app.config.NodeConfig;
+import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.process.data.TestAProcessConnectorPlugin;
 import io.vertigo.core.analytics.process.data.TestAnalyticsAspectServices;
 import io.vertigo.core.impl.analytics.process.AnalyticsAspect;
+import io.vertigo.core.node.config.ModuleConfig;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.analytics.log.LoggerAnalyticsConnectorPlugin;
 

@@ -24,11 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import io.vertigo.core.component.AopPlugin;
-import io.vertigo.core.component.Component;
-import io.vertigo.core.component.aop.Aspect;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ClassUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.component.AopPlugin;
+import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.aop.Aspect;
+import io.vertigo.core.util.ClassUtil;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.Factory;

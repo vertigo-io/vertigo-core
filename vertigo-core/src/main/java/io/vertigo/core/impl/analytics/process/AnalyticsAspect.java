@@ -22,10 +22,10 @@ import javax.inject.Inject;
 
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.process.Analytics;
-import io.vertigo.core.component.aop.Aspect;
-import io.vertigo.core.component.aop.AspectMethodInvocation;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.component.aop.Aspect;
+import io.vertigo.core.node.component.aop.AspectMethodInvocation;
+import io.vertigo.core.util.StringUtil;
 
 /**
  * * Intercepteur de performance des composant.

@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
 import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.daemon.DaemonDefinition;
 import io.vertigo.core.daemon.DaemonStat;
-import io.vertigo.core.component.Activeable;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.component.Activeable;
 
 /**
  * This class executes the daemons that have been previously registered.

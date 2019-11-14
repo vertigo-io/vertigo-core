@@ -20,7 +20,7 @@ package io.vertigo.core.analytics.health.data;
 
 import io.vertigo.core.analytics.health.HealthChecked;
 import io.vertigo.core.analytics.health.HealthMeasure;
-import io.vertigo.core.component.Component;
+import io.vertigo.core.node.component.Component;
 
 public class SuccessComponentChecker implements Component {
 

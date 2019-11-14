@@ -21,7 +21,7 @@ package io.vertigo.core.impl.analytics;
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.analytics.process.AProcess;
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.node.component.Plugin;
 
 /**
  * Connecteur des process.

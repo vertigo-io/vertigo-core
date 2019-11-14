@@ -28,7 +28,7 @@ import io.vertigo.core.analytics.health.HealthStatus;
 import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.analytics.process.AProcess;
 import io.vertigo.core.analytics.process.ProcessAnalyticsTracer;
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 
 /**
  * Main access to all analytics functions.

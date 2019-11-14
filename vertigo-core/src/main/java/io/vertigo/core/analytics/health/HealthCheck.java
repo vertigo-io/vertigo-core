@@ -23,7 +23,7 @@ package io.vertigo.core.analytics.health;
 
 import java.time.Instant;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Health check.

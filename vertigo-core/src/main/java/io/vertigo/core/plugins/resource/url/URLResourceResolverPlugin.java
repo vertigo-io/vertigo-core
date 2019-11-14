@@ -24,8 +24,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 
-import io.vertigo.core.resource.ResourceResolverPlugin;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.impl.resource.ResourceResolverPlugin;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Résolution des URL par le standard java.net.URL.

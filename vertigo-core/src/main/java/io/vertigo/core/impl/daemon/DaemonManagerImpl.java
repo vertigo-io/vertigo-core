@@ -25,7 +25,6 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.Home;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.health.HealthChecked;
 import io.vertigo.core.analytics.health.HealthMeasure;
@@ -35,14 +34,15 @@ import io.vertigo.core.daemon.DaemonDefinition;
 import io.vertigo.core.daemon.DaemonManager;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.daemon.DaemonStat;
-import io.vertigo.core.component.Activeable;
-import io.vertigo.core.component.AopPlugin;
-import io.vertigo.core.component.Component;
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.SimpleDefinitionProvider;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ClassUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.node.component.AopPlugin;
+import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.core.util.ClassUtil;
 
 /**
  * Manager of all the daemons.

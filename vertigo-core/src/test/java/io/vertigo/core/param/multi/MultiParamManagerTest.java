@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.param.multi;
 
-import io.vertigo.app.config.NodeConfig;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.AbstractParamManagerTest;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.param.properties.PropertiesParamPlugin;

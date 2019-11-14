@@ -32,14 +32,14 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
+import io.vertigo.core.impl.param.ParamPlugin;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.Param;
-import io.vertigo.core.param.ParamPlugin;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.StringUtil;
-import io.vertigo.util.XmlUtil;
+import io.vertigo.core.util.StringUtil;
+import io.vertigo.core.util.XmlUtil;
 
 /**
  * Parser XML du paramétrage de la config.

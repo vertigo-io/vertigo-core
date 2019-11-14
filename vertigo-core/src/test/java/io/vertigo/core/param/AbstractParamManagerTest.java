@@ -29,7 +29,7 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.core.AbstractTestCaseJU5;
 
 /**
  * @author pchretien

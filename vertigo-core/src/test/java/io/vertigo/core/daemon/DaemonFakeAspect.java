@@ -18,8 +18,8 @@
  */
 package io.vertigo.core.daemon;
 
-import io.vertigo.core.component.aop.Aspect;
-import io.vertigo.core.component.aop.AspectMethodInvocation;
+import io.vertigo.core.node.component.aop.Aspect;
+import io.vertigo.core.node.component.aop.AspectMethodInvocation;
 
 public final class DaemonFakeAspect implements Aspect {
 

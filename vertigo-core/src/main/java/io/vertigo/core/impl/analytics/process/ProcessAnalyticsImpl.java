@@ -25,7 +25,7 @@ import java.util.function.Function;
 
 import io.vertigo.core.analytics.process.AProcess;
 import io.vertigo.core.analytics.process.ProcessAnalyticsTracer;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 public class ProcessAnalyticsImpl {
 

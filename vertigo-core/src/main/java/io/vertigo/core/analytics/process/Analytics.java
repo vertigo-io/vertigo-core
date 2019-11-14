@@ -23,7 +23,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import io.vertigo.core.component.aop.AspectAnnotation;
+import io.vertigo.core.node.component.aop.AspectAnnotation;
 
 /**
  * Annotation for the analytics Aspect.

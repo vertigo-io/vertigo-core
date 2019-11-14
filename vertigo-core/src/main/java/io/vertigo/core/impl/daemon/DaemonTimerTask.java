@@ -21,7 +21,7 @@ package io.vertigo.core.impl.daemon;
 import java.lang.reflect.Field;
 
 import io.vertigo.core.daemon.Daemon;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * @author mlaroche, pchretien, npiedeloup

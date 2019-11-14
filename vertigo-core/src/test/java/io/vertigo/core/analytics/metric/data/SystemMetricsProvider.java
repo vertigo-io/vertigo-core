@@ -29,8 +29,8 @@ import javax.inject.Inject;
 import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.analytics.metric.MetricBuilder;
 import io.vertigo.core.analytics.metric.Metrics;
-import io.vertigo.core.component.Component;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.component.Component;
 
 /**
  * Composant to provide Metrics about system

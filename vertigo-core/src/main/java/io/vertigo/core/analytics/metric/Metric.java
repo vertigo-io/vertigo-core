@@ -20,7 +20,7 @@ package io.vertigo.core.analytics.metric;
 
 import java.time.Instant;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Interface décrivant un résultat de metric.

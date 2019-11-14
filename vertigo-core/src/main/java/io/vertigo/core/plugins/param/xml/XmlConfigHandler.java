@@ -24,8 +24,8 @@ import java.util.Map;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.Param;
-import io.vertigo.lang.Assertion;
 
 /**
  * @author  pchretien

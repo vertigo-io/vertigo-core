@@ -27,7 +27,6 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.Home;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.health.HealthStatus;
@@ -38,12 +37,13 @@ import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.impl.analytics.health.HealthAnalyticsUtil;
 import io.vertigo.core.impl.analytics.metric.MetricAnalyticsUtil;
 import io.vertigo.core.impl.analytics.process.ProcessAnalyticsImpl;
-import io.vertigo.core.component.AopPlugin;
-import io.vertigo.core.component.Component;
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.SimpleDefinitionProvider;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.AopPlugin;
+import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 
 /**
  * Main analytics manager implementation.

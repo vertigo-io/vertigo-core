@@ -18,8 +18,8 @@
  */
 package io.vertigo.core.analytics.health;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
 
 /**
  * This builder must be used to build a health measure.

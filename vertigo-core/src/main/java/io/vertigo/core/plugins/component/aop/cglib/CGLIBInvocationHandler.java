@@ -22,10 +22,10 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
-import io.vertigo.core.component.aop.Aspect;
-import io.vertigo.core.component.aop.AspectMethodInvocation;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ClassUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.component.aop.Aspect;
+import io.vertigo.core.node.component.aop.AspectMethodInvocation;
+import io.vertigo.core.util.ClassUtil;
 
 /**
  * @author pchretien

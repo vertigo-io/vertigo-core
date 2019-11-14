@@ -31,8 +31,8 @@ import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.analytics.process.AProcess;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.lang.Assertion;
 
 /**
  * This connector analyses the process and calculates duration and count.

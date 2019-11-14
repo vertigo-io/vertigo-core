@@ -20,10 +20,10 @@ package io.vertigo.core.daemon;
 
 import java.util.function.Supplier;
 
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionPrefix;
-import io.vertigo.core.definition.DefinitionUtil;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionPrefix;
+import io.vertigo.core.node.definition.DefinitionUtil;
 
 /**
  * Daemon's info.

@@ -26,11 +26,11 @@ import java.util.Properties;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.impl.param.ParamPlugin;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.Param;
-import io.vertigo.core.param.ParamPlugin;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.lang.Assertion;
 
 /**
  * Plugin de gestion de configuration de fichiers properties.

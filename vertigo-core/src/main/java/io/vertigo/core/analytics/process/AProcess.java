@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Un processus est un evenement

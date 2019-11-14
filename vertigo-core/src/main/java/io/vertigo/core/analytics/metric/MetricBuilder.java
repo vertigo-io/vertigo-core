@@ -21,8 +21,8 @@ package io.vertigo.core.analytics.metric;
 import java.time.Instant;
 
 import io.vertigo.core.analytics.metric.Metric.Status;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
 
 /**
  * Builder de metric.

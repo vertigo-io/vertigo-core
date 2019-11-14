@@ -23,7 +23,7 @@ import java.util.List;
 
 import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.analytics.metric.Metrics;
-import io.vertigo.core.component.Component;
+import io.vertigo.core.node.component.Component;
 
 public class DummyMetricsProvider implements Component {
 

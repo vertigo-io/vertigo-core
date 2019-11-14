@@ -20,8 +20,8 @@ package io.vertigo.core.param;
 
 import java.util.regex.Pattern;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
 
 /**
  * Param.

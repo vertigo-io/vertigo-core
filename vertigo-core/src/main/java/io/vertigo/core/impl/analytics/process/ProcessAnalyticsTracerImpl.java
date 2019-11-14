@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
 import io.vertigo.core.analytics.process.AProcess;
 import io.vertigo.core.analytics.process.AProcessBuilder;
 import io.vertigo.core.analytics.process.ProcessAnalyticsTracer;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * A tracer collectes information durint the execution of a process.

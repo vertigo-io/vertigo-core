@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.daemon;
 
-import io.vertigo.core.component.Component;
+import io.vertigo.core.node.component.Component;
 
 @DaemonFakeAspectAnnotation
 public class FakeComponent implements Component {

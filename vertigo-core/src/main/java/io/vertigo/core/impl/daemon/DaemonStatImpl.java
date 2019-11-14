@@ -20,7 +20,7 @@ package io.vertigo.core.impl.daemon;
 
 import io.vertigo.core.daemon.DaemonDefinition;
 import io.vertigo.core.daemon.DaemonStat;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Snapshot of execution's stats.

@@ -28,17 +28,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import io.vertigo.app.Home;
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.health.HealthCheckDefinition;
 import io.vertigo.core.analytics.health.HealthChecked;
 import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.analytics.health.HealthStatus;
-import io.vertigo.core.component.AopPlugin;
-import io.vertigo.core.component.Component;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ClassUtil;
-import io.vertigo.util.StringUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.AopPlugin;
+import io.vertigo.core.node.component.Component;
+import io.vertigo.core.util.ClassUtil;
+import io.vertigo.core.util.StringUtil;
 
 /**
  * HealthAnalyticsUtil.

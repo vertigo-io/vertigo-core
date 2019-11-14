@@ -20,7 +20,7 @@ package io.vertigo.core.param;
 
 import java.util.Optional;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 
 /**
  * Interface du gestionnaire de la configuration applicative.

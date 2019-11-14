@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
 
 /**
  * This builder allows  to build a process in a fluent way.

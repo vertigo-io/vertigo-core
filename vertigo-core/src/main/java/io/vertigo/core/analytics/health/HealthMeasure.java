@@ -21,7 +21,7 @@
  */
 package io.vertigo.core.analytics.health;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  *  Measure.

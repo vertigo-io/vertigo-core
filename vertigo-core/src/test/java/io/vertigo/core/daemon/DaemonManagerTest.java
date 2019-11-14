@@ -25,12 +25,12 @@ import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.app.config.NodeConfig;
+import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.health.HealthStatus;
+import io.vertigo.core.node.config.ModuleConfig;
+import io.vertigo.core.node.config.NodeConfig;
 
 /**
  * @author mlaroche, pchretien, npiedeloup

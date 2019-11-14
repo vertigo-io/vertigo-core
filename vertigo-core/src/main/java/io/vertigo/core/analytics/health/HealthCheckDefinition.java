@@ -20,9 +20,9 @@ package io.vertigo.core.analytics.health;
 
 import java.util.function.Supplier;
 
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionPrefix;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionPrefix;
 
 /**
  * This definition defines a health check

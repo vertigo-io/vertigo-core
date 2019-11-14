@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.daemon.DaemonDefinition;
 import io.vertigo.core.daemon.DaemonStat;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 final class DaemonListener {
 	private static final Logger LOG = LogManager.getLogger(DaemonListener.class);
