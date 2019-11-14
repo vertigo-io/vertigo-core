@@ -1,4 +1,4 @@
 <?xml version =	'1.0' encoding = 'ISO-8859-1'?>
 <config>
-	<feature class="io.vertigo.app.config.xml.BioFeatures" />
+	<feature class="io.vertigo.core.node.config.xml.BioFeatures" />
 </config>

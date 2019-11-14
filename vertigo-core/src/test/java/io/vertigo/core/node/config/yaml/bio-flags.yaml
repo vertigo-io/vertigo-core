@@ -4,7 +4,7 @@ boot:
   plugins:
     - io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin: {}
 modules:
-  io.vertigo.app.config.yaml.YamlBioFeatures:
+  io.vertigo.core.node.config.yaml.YamlBioFeatures:
       features:
         - bio:
         - math:
@@ -14,9 +14,9 @@ modules:
             __flags__: ["customStart"]
             start: 200
       plugins:
-        - io.vertigo.core.spaces.component.data.MathPlugin: 
+        - io.vertigo.core.node.component.data.MathPlugin: 
             __flags__: ["main"]
             factor: 20
-        - io.vertigo.core.spaces.component.data.MathPlugin: 
+        - io.vertigo.core.node.component.data.MathPlugin: 
             __flags__: ["secondary"]
             factor: 10

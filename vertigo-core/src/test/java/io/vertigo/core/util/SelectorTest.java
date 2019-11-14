@@ -28,8 +28,6 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.component.Component;
-import io.vertigo.core.util.ListBuilder;
-import io.vertigo.core.util.Selector;
 import io.vertigo.core.util.Selector.ClassConditions;
 import io.vertigo.core.util.Selector.FieldConditions;
 import io.vertigo.core.util.Selector.MethodConditions;
@@ -46,7 +44,7 @@ import io.vertigo.core.util.data.SC;
  */
 public final class SelectorTest {
 
-	private static final String TEST_CLASSES_PACKAGE = "io.vertigo.util.data";
+	private static final String TEST_CLASSES_PACKAGE = "io.vertigo.core.util.data";
 
 	//-----
 	//---From

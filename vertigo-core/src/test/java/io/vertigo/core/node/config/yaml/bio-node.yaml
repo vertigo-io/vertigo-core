@@ -3,11 +3,11 @@ node:
   nodeId: myFirstNodeId
   endPoint: http://localhost/
 modules:
-  io.vertigo.app.config.yaml.YamlBioFeatures:
+  io.vertigo.core.node.config.yaml.YamlBioFeatures:
       features:
         - bio:
         - math: 
             start: 100
       plugins:
-        - io.vertigo.core.spaces.component.data.MathPlugin: 
+        - io.vertigo.core.node.component.data.MathPlugin: 
             factor: 20

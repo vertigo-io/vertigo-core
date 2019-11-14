@@ -2,10 +2,10 @@
 <config>
 	<app name="bioApp" nodeId="bioNode1" endPoint="http://localhost:8080"/>
 	<module name="Bio">
-		<component api="BioManager" class="io.vertigo.core.spaces.component.data.BioManagerImpl" />
-		<component api="MathManager" class="io.vertigo.core.spaces.component.data.MathManagerImpl">
+		<component api="BioManager" class="io.vertigo.core.node.component.data.BioManagerImpl" />
+		<component api="MathManager" class="io.vertigo.core.node.component.data.MathManagerImpl">
 			<param name="start" value="100" />
-			<plugin class="io.vertigo.core.spaces.component.data.MathPlugin">
+			<plugin class="io.vertigo.core.node.component.data.MathPlugin">
 				<param name="factor" value="20" />
 			</plugin>
 		</component>
