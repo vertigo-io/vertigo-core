@@ -46,7 +46,7 @@ public final class AppConfigTest {
 				.withLocales(locales)
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.addPlugin(XmlParamPlugin.class,
-						Param.of("url", "io/vertigo/app/config/xml2/basic-app-config.xml"))
+						Param.of("url", "io/vertigo/core/node/config/xml2/basic-app-config.xml"))
 				.endBoot()
 
 				.addModule(ModuleConfig.builder("bio")
