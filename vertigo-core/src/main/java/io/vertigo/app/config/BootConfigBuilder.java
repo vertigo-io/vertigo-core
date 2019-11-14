@@ -23,14 +23,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.component.AopPlugin;
 import io.vertigo.core.component.Component;
 import io.vertigo.core.component.Plugin;
+import io.vertigo.core.daemon.DaemonManager;
+import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
+import io.vertigo.core.impl.analytics.AnalyticsManagerImpl;
+import io.vertigo.core.impl.daemon.DaemonManagerImpl;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleManagerImpl;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.param.ParamManagerImpl;
+import io.vertigo.core.plugins.analytics.log.SmartLoggerAnalyticsConnectorPlugin;
+import io.vertigo.core.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin;
 import io.vertigo.core.plugins.component.aop.cglib.CGLIBAopPlugin;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.resource.ResourceManagerImpl;
@@ -123,6 +130,31 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 		return this;
 	}
 
+	@Feature("analytics.socketLoggerConnector")
+	public BootConfigBuilder withSocketLoggerAnalyticsConnector(final Param... params) {
+		addPlugin(SocketLoggerAnalyticsConnectorPlugin.class, params);
+		return this;
+
+	}
+
+	@Feature("analytics.smartLoggerConnector")
+	public BootConfigBuilder withSmartLoggerAnalyticsConnector(final Param... params) {
+		addPlugin(SmartLoggerAnalyticsConnectorPlugin.class, params);
+		return this;
+
+	}
+
+	/**
+	 * Adds a AnalyticsConnectorPlugin
+	 * @param analyticsConnectorPluginClass the plugin to use
+	 * @param params the params
+	 * @return these features
+	 */
+	public BootConfigBuilder addAnalyticsConnectorPlugin(final Class<? extends AnalyticsConnectorPlugin> analyticsConnectorPluginClass, final Param... params) {
+		addPlugin(analyticsConnectorPluginClass, params);
+		return this;
+	}
+
 	/**
 	 * @return NodeConfig builder
 	 */
@@ -175,7 +207,9 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	@Override
 	public BootConfig build() {
 		addComponent(ResourceManager.class, ResourceManagerImpl.class)
-				.addComponent(ParamManager.class, ParamManagerImpl.class);
+				.addComponent(ParamManager.class, ParamManagerImpl.class)
+				.addComponent(DaemonManager.class, DaemonManagerImpl.class)
+				.addComponent(AnalyticsManager.class, AnalyticsManagerImpl.class);
 
 		return new BootConfig(
 				myLogConfigOpt,

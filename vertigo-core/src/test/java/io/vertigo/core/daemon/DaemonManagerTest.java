@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
-import io.vertigo.core.CoreFeatures;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.health.HealthStatus;
@@ -50,7 +49,6 @@ public final class DaemonManagerTest extends AbstractTestCaseJU5 {
 		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
-				.addModule(new CoreFeatures().build())
 				.addModule(ModuleConfig.builder("myAspects")
 						.addAspect(DaemonFakeAspect.class)
 						.build())

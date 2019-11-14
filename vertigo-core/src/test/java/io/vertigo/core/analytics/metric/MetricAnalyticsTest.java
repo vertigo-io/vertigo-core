@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
-import io.vertigo.core.CoreFeatures;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.metric.data.DummyMetricsProvider;
 
@@ -40,7 +39,6 @@ public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.addModule(new CoreFeatures().build())
 				.addModule(ModuleConfig.builder("test-metric")
 						.addComponent(DummyMetricsProvider.class)
 						.build())

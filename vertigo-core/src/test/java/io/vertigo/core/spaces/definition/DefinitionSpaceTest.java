@@ -33,7 +33,6 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.config.DefinitionProviderConfig;
-import io.vertigo.app.config.LogConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.core.definition.Definition;
@@ -48,9 +47,6 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU5 {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.withLogConfig(new LogConfig("/log4j.xml"))
-				.endBoot()
 				.addModule(ModuleConfig.builder("test")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(TestDefinitionprovider.class)
 								.addParam(Param.of("testParam", "testParamValue"))
@@ -63,7 +59,7 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testRegister() throws IOException, ClassNotFoundException {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		assertEquals(1L, definitionSpace.getAllTypes().size(), "definitionSpace must contain one element ");
+		assertEquals(3L, definitionSpace.getAllTypes().size(), "definitionSpace must contain three elements ");
 		assertEquals(1L, definitionSpace.getAll(SampleDefinition.class).size(), "definitionSpace[SampleDefinition.class] must contain one element ");
 
 		final SampleDefinition sampleDefinition = definitionSpace.resolve("SampleTheDefinition", SampleDefinition.class);
