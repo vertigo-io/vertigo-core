@@ -25,12 +25,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.data.BioManager;
 import io.vertigo.core.node.component.data.BioManagerImpl;
 import io.vertigo.core.node.component.data.DummyPlugin;
 import io.vertigo.core.node.component.data.MathManager;
 import io.vertigo.core.node.component.data.MathManagerImpl;
 import io.vertigo.core.node.component.data.MathPlugin;
+import io.vertigo.core.node.component.data.SomeConnector;
+import io.vertigo.core.node.component.data.SomeManager;
+import io.vertigo.core.node.component.data.SomeMonoConnectorPlugin;
+import io.vertigo.core.node.component.data.SomeMultiConnectorPlugin;
 import io.vertigo.core.node.config.LogConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -107,4 +112,63 @@ public final class ComponentSpaceTest {
 			//
 		}
 	}
+
+	@Test
+	public void testOneConnector() {
+		final NodeConfig nodeConfig = NodeConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(ModuleConfig.builder("Bio")
+						.addComponent(SomeManager.class)
+						.addConnector(SomeConnector.class, Param.of("name", "main"))
+						.addPlugin(SomeMonoConnectorPlugin.class)
+						.build())
+				.build();
+
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
+			final SomeManager manager = Home.getApp().getComponentSpace().resolve(SomeManager.class);
+			Assertions.assertEquals("main", manager.getSomeNames());
+		}
+	}
+
+	@Test
+	public void testTwoConnectors() {
+		final NodeConfig nodeConfig = NodeConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(ModuleConfig.builder("Bio")
+						.addComponent(SomeManager.class)
+						.addConnector(SomeConnector.class, Param.of("name", "first"))
+						.addConnector(SomeConnector.class, Param.of("name", "second"))
+						.addPlugin(SomeMultiConnectorPlugin.class)
+						.build())
+				.build();
+
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
+			final SomeManager manager = Home.getApp().getComponentSpace().resolve(SomeManager.class);
+			Assertions.assertEquals("first,second", manager.getSomeNames());
+		}
+	}
+
+	@Test
+	public void testOutsideModuleConnectors() {
+		final NodeConfig nodeConfig = NodeConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(ModuleConfig.builder("Connector")
+						.addConnector(SomeConnector.class, Param.of("name", "first"))
+						.addConnector(SomeConnector.class, Param.of("name", "second"))
+						.build())
+				.addModule(ModuleConfig.builder("Bio")
+						.addComponent(SomeManager.class)
+						.addPlugin(SomeMultiConnectorPlugin.class)
+						.build())
+				.build();
+
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
+			final SomeManager manager = Home.getApp().getComponentSpace().resolve(SomeManager.class);
+			Assertions.assertEquals("first,second", manager.getSomeNames());
+		}
+	}
+
 }

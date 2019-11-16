@@ -25,6 +25,7 @@ import java.util.List;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.Connector;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.node.component.aop.Aspect;
 import io.vertigo.core.node.component.proxy.ProxyMethod;
@@ -46,6 +47,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
 	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
+	private final List<ConnectorConfig> myConnectorConfigs = new ArrayList<>();
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
 	private final List<ProxyMethodConfig> myProxyMethodConfigs = new ArrayList<>();
 	private final List<DefinitionProviderConfig> myDefinitionProviderConfigs = new ArrayList<>();
@@ -198,6 +200,28 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		return this.addPlugin(new PluginConfig(pluginImplClass, Arrays.asList(params)));
 	}
 
+	/**
+	 * Adds a connector defined by its config.
+	 * @param connectorConfig the connector-config
+	 * @return this builder
+	 */
+	public ModuleConfigBuilder addConnector(final ConnectorConfig connectorConfig) {
+		Assertion.checkNotNull(connectorConfig);
+		//---
+		myConnectorConfigs.add(connectorConfig);
+		return this;
+	}
+
+	/**
+	 * Adds a connector defined by its implementation.
+	 * @param connectorImplClass  impl of the connector
+	 * @param params  the list of params
+	 * @return this builder
+	 */
+	public ModuleConfigBuilder addConnector(final Class<? extends Connector> connectorImplClass, final Param... params) {
+		return this.addConnector(new ConnectorConfig(connectorImplClass, Arrays.asList(params)));
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public ModuleConfig build() {
@@ -206,6 +230,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 				myDefinitionProviderConfigs,
 				myComponentConfigs,
 				myPluginConfigs,
+				myConnectorConfigs,
 				myAspectConfigs,
 				myProxyMethodConfigs);
 	}

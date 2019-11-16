@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.component.di.DIAnnotationUtil;
+import io.vertigo.core.util.StringUtil;
 
 final class ConfigUtil {
 	private ConfigUtil() {
@@ -51,6 +53,34 @@ final class ConfigUtil {
 					.withImpl(pluginConfig.getImplClass())
 					.withId(id)
 					.addParams(pluginConfig.getParams())
+					.build();
+			componentConfigs.add(componentConfig);
+		}
+		return componentConfigs;
+	}
+
+	static List<ComponentConfig> buildConnectorsComponentConfigs(final List<ConnectorConfig> connectorConfigs) {
+		Assertion.checkNotNull(connectorConfigs);
+		//---
+		final List<ComponentConfig> componentConfigs = new ArrayList<>();
+		final Set<String> connectorTypes = new HashSet<>();
+
+		int index = 1;
+		for (final ConnectorConfig connectorConfig : connectorConfigs) {
+			final String connectorType = StringUtil.first2LowerCase(DIAnnotationUtil.buildId(connectorConfig.getImplClass()));
+			final boolean added = connectorTypes.add(connectorType);
+			final String id;
+			if (added) {
+				id = connectorType;
+			} else {
+				id = connectorType + '#' + index;
+				index++;
+			}
+
+			final ComponentConfig componentConfig = ComponentConfig.builder()
+					.withImpl(connectorConfig.getImplClass())
+					.withId(id)
+					.addParams(connectorConfig.getParams())
 					.build();
 			componentConfigs.add(componentConfig);
 		}

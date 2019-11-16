@@ -167,9 +167,9 @@ public final class DIReactor {
 			//Si l'objet fait partie de la liste alors il doit être résolu.
 			for (final String id : allComponentInfos) {
 				final boolean match = id.equals(dependency.getName()) || id.startsWith(dependency.getName() + '#');
-				if (match && !sorted.contains(id)) {
+				if (match && !sorted.contains(id) && !parentComponentInfos.contains(id)) {
 					//L'objet id fait partie de la liste
-					return sorted.contains(id);
+					return false;
 				}
 			}
 			return true;
