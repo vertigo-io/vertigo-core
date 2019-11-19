@@ -29,6 +29,7 @@ import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.daemon.DaemonDefinition;
 import io.vertigo.core.daemon.DaemonStat;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
 
 /**
@@ -79,6 +80,11 @@ final class DaemonExecutor implements Activeable {
 	@Override
 	public void stop() {
 		scheduler.shutdown();
+		try {
+			scheduler.awaitTermination(5000, TimeUnit.SECONDS);
+		} catch (final InterruptedException e) {
+			throw WrappedException.wrap(e);
+		}
 		isActive = false;
 	}
 }

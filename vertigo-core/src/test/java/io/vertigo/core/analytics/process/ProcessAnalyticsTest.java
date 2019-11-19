@@ -30,6 +30,7 @@ import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.process.data.TestAProcessConnectorPlugin;
 import io.vertigo.core.analytics.process.data.TestAnalyticsAspectServices;
 import io.vertigo.core.impl.analytics.process.AnalyticsAspect;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
@@ -62,6 +63,7 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU5 {
 		return NodeConfig.builder()
 				.beginBoot()
 				.withSmartLoggerAnalyticsConnector(Param.of("aggregatedBy", "test"))
+				.withSocketLoggerAnalyticsConnector()
 				.addAnalyticsConnectorPlugin(TestAProcessConnectorPlugin.class)
 				.addAnalyticsConnectorPlugin(LoggerAnalyticsConnectorPlugin.class)
 				.endBoot()
@@ -75,10 +77,16 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU5 {
 
 	}
 
+	@Override
+	protected void doTearDown() throws Exception {
+		Thread.sleep(1050); //wait daemon run once
+	}
+
 	/**
 	 * Test simple avec deux compteurs.
 	 * Test sur l'envoi de 1000 articles d'un poids de 25 kg.
 	 * Chaque article coute 10€.
+	 * @throws InterruptedException for sleep
 	 */
 	@Test
 	public void test1000Articles() {
@@ -91,6 +99,11 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU5 {
 								.incMeasure(PRICE, 10);
 					}
 				});
+		try {
+			Thread.sleep(1);
+		} catch (final InterruptedException e) {
+			throw WrappedException.wrap(e);
+		}
 	}
 
 	/**
@@ -125,8 +138,10 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU5 {
 		}
 		Assertions.assertEquals(100, TestAProcessConnectorPlugin.getCount());
 		Assertions.assertEquals("test", TestAProcessConnectorPlugin.getLastcategory());
+
 	}
 
+	@Test
 	public void testFail() {
 		Assertions.assertThrows(IllegalStateException.class, () -> {
 			TestAProcessConnectorPlugin.reset();

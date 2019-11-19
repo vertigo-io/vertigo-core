@@ -22,6 +22,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -30,6 +31,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.SocketAppender;
+import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
@@ -46,13 +48,14 @@ import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 
 /**
  * Processes connector which use the log4j SocketAppender.
  * @author mlaroche, pchretien, npiedeloup
  */
-public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin {
+public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin, Activeable {
 	private static final Gson GSON = new GsonBuilder().create();
 	private static final int DEFAULT_SERVER_PORT = 4562;// DefaultPort of SocketAppender 4650 for log4j and 4562 for log4j2
 
@@ -125,27 +128,49 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		}
 	}
 
-	private static Logger createLogger(final String loggerName, final String hostName, final int port) {
-		// If it doesn't exist we create it with the right appender
-		final Logger logger = LogManager.getLogger(loggerName);
-		//we create appender
-		final SocketAppender appender = SocketAppender.newBuilder()
-				.withName("socketAnalytics")
-				.withLayout(SerializedLayout.createLayout())
+	private SocketAppender appender;
+	private AppenderRef[] appenderRefs;
+
+	@Override
+	public void start() {
+
+		//we create appender (like a resource it must be close on stop)
+		appender = SocketAppender.newBuilder()
+				.setName("socketAnalytics")
+				.setLayout(SerializedLayout.createLayout())
 				.withHost(hostName)
 				.withPort(port)
+				.withConnectTimeoutMillis(250)
+				.withImmediateFail(true)
 				.withReconnectDelayMillis(0)// we make only one try
 				.build();
+
 		appender.start();
+		final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+		final Configuration config = ctx.getConfiguration();
+		config.addAppender(appender);
+		final AppenderRef ref = AppenderRef.createAppenderRef("socketAnalytics", null, null);
+		appenderRefs = new AppenderRef[] { ref };
+	}
 
-		final LoggerContext context = LoggerContext.getContext(false); //on ne close pas : car ca stop le context
+	@Override
+	public void stop() {
+		appender.stop(5000, TimeUnit.SECONDS);
+		appender = null;
+	}
+
+	private Logger createLogger(final String loggerName, final String hostName, final int port) {
+		// If it doesn't exist we create it with the right appender
+
+		final LoggerContext context = (LoggerContext) LogManager.getContext(false); //on ne close pas : car ca stop le context
 		final Configuration config = context.getConfiguration();
-		final LoggerConfig loggerConfig = config.getLoggerConfig(loggerName);
-		loggerConfig.getAppenders().keySet().forEach(appenderName -> loggerConfig.removeAppender(appenderName));
-		loggerConfig.addAppender(appender, null, null);
+		final LoggerConfig loggerConfig = LoggerConfig.createLogger(false, Level.INFO, loggerName, "true", appenderRefs, null, config, null);
 
+		loggerConfig.addAppender(appender, null, null);
 		Configurator.setLevel(loggerName, Level.INFO);
-		return logger;
+		config.addLogger(loggerName, loggerConfig);
+		context.updateLoggers();
+		return LogManager.getLogger(loggerName);
 	}
 
 	/**
