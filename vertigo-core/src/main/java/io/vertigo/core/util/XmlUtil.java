@@ -39,6 +39,8 @@ import io.vertigo.core.lang.WrappedException;
  */
 public final class XmlUtil {
 
+	private static final String INTERNAL_XML_SCHEMA_FACTORY = "com.sun.org.apache.xerces.internal.jaxp.validation.XMLSchemaFactory";
+
 	/**
 	 * Constructor.
 	 */
@@ -55,7 +57,7 @@ public final class XmlUtil {
 		Assertion.checkNotNull(xml);
 		Assertion.checkNotNull(xsd);
 		//-----
-		final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI, INTERNAL_XML_SCHEMA_FACTORY, XmlUtil.class.getClassLoader());
 		try {
 			schemaFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 			final Validator validator = schemaFactory
