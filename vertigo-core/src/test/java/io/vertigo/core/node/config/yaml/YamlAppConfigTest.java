@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.component.data.BioManager;
 import io.vertigo.core.node.config.NodeConfig;
-import io.vertigo.core.node.config.yaml.YamlAppConfigBuilder;
 
 public final class YamlAppConfigTest {
 
@@ -111,6 +110,14 @@ public final class YamlAppConfigTest {
 			assertEquals(666, res);
 			assertTrue(bioManager.isActive());
 		}
+	}
+
+	@Test
+	public void testFull() {
+		final NodeConfig nodeConfig = new YamlAppConfigBuilder(new Properties())
+				.withFiles(getClass(), "bio-full.yaml")
+				.build();
+		testBioManager(nodeConfig);
 	}
 
 	private void testBioManager(final NodeConfig nodeConfig) {

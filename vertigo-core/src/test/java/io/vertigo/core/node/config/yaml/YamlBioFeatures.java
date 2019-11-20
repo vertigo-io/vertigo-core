@@ -51,6 +51,11 @@ public class YamlBioFeatures extends Features {
 		return this;
 	}
 
+	@Feature("math.mock")
+	public YamlBioFeatures withMathMock() {
+		return this;
+	}
+
 	@Override
 	protected void buildFeatures() {
 		//nothing by default
