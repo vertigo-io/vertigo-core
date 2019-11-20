@@ -57,6 +57,8 @@ import io.vertigo.core.param.ParamValue;
  */
 public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin, Activeable {
 	private static final Gson GSON = new GsonBuilder().create();
+	private static final int DEFAULT_CONNECT_TIMEOUT = 250;// 250ms for connection to log4j server
+	private static final int DEFAULT_DISCONNECT_TIMEOUT = 5000;// 5s for disconnection to log4j server
 	private static final int DEFAULT_SERVER_PORT = 4562;// DefaultPort of SocketAppender 4650 for log4j and 4562 for log4j2
 
 	private Logger socketProcessLogger;
@@ -64,6 +66,8 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	private Logger socketMetricLogger;
 	private final String hostName;
 	private final int port;
+	private SocketAppender appender;
+	private AppenderRef[] appenderRefs;
 
 	private final String appName;
 	private final String localHostName;
@@ -128,9 +132,6 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		}
 	}
 
-	private SocketAppender appender;
-	private AppenderRef[] appenderRefs;
-
 	@Override
 	public void start() {
 
@@ -140,7 +141,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 				.setLayout(SerializedLayout.createLayout())
 				.withHost(hostName)
 				.withPort(port)
-				.withConnectTimeoutMillis(250)
+				.withConnectTimeoutMillis(DEFAULT_CONNECT_TIMEOUT)
 				.withImmediateFail(true)
 				.withReconnectDelayMillis(0)// we make only one try
 				.build();
@@ -155,7 +156,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	@Override
 	public void stop() {
-		appender.stop(5000, TimeUnit.SECONDS);
+		appender.stop(DEFAULT_DISCONNECT_TIMEOUT, TimeUnit.MILLISECONDS);
 		appender = null;
 	}
 
