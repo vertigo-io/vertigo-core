@@ -42,6 +42,23 @@ public final class MessageText implements Serializable {
 	private final Serializable[] params;
 
 	/**
+	 * Constructor.
+	 * La clé et/ou le message par défaut doit être non null.
+	 *
+	 * @param defaultMsg Message par défaut (non formatté) de la ressource
+	 * @param key Clé de la ressource
+	 * @param params paramètres de la ressource
+	 */
+	private MessageText(final String defaultMsg, final MessageKey key, final Serializable... params) {
+		Assertion.checkNotNull(params);
+		Assertion.checkArgument(defaultMsg != null || key != null, "key or msg must be defined");
+		//---
+		this.key = key;
+		this.defaultMsg = defaultMsg;
+		this.params = params;
+	}
+
+	/**
 	 * static Builder of a messageText by its key.
 	 * @param key Clé de la ressource
 	 * @return the messageText
@@ -73,33 +90,6 @@ public final class MessageText implements Serializable {
 		Assertion.checkNotNull(key, "the message key is required");
 		//---
 		return new MessageText(defaultMsg, key, params);
-	}
-
-	/**
-	 * Constructor.
-	 * La clé et/ou le message par défaut doit être non null.
-	 *
-	 * @param defaultMsg Message par défaut (non formatté) de la ressource
-	 * @param key Clé de la ressource
-	 * @param params paramètres de la ressource
-	 */
-	private MessageText(final String defaultMsg, final MessageKey key, final Serializable... params) {
-		Assertion.checkNotNull(params);
-		Assertion.checkArgument(defaultMsg != null || key != null, "key or msg must be defined");
-		//---
-		this.key = key;
-		this.defaultMsg = defaultMsg;
-		this.params = params;
-	}
-
-	/**
-	 * Constructor.
-	 *
-	 * @param key Clé de la ressource
-	 * @param params paramètres de la ressource
-	 */
-	private MessageText(final MessageKey key, final Serializable... params) {
-		this(null, key, params);
 	}
 
 	/**
