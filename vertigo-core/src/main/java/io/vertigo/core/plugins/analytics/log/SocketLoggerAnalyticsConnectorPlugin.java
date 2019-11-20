@@ -103,7 +103,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	@Override
 	public void add(final Metric metric) {
 		if (socketMetricLogger == null) {
-			socketMetricLogger = createLogger("vertigo-analytics-metric", hostName, port);
+			socketMetricLogger = createLogger("vertigo-analytics-metric");
 		}
 		sendObject(metric, socketMetricLogger);
 
@@ -113,7 +113,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	@Override
 	public void add(final HealthCheck healthCheck) {
 		if (socketHealthLogger == null) {
-			socketHealthLogger = createLogger("vertigo-analytics-health", hostName, port);
+			socketHealthLogger = createLogger("vertigo-analytics-health");
 		}
 		sendObject(healthCheck, socketHealthLogger);
 
@@ -159,7 +159,8 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		appender = null;
 	}
 
-	private Logger createLogger(final String loggerName, final String hostName, final int port) {
+	private Logger createLogger(final String loggerName) {
+		Assertion.checkNotNull(appender, "SocketLogger is not started, cannot create logger and send analytics data. Wait until app is started.");
 		// If it doesn't exist we create it with the right appender
 
 		final LoggerContext context = (LoggerContext) LogManager.getContext(false); //on ne close pas : car ca stop le context
@@ -189,7 +190,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	private void sendProcess(final AProcess process) {
 		if (socketProcessLogger == null) {
-			socketProcessLogger = createLogger("vertigo-analytics-process", hostName, port);
+			socketProcessLogger = createLogger("vertigo-analytics-process");
 		}
 		sendObject(process, socketProcessLogger);
 	}
