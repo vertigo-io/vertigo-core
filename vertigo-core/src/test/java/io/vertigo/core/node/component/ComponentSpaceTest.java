@@ -36,6 +36,7 @@ import io.vertigo.core.node.component.data.SomeConnector;
 import io.vertigo.core.node.component.data.SomeManager;
 import io.vertigo.core.node.component.data.SomeMonoConnectorPlugin;
 import io.vertigo.core.node.component.data.SomeMultiConnectorPlugin;
+import io.vertigo.core.node.component.data.SomeOptionalPlugin;
 import io.vertigo.core.node.config.LogConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -168,6 +169,43 @@ public final class ComponentSpaceTest {
 		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			final SomeManager manager = Home.getApp().getComponentSpace().resolve(SomeManager.class);
 			Assertions.assertEquals("first,second", manager.getSomeNames());
+		}
+	}
+
+	@Test
+	public void testOutsideModuleOptionalConnector() {
+		final NodeConfig nodeConfig = NodeConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(ModuleConfig.builder("Connector")
+						.addConnector(SomeConnector.class, Param.of("name", "first"))
+						.build())
+				.addModule(ModuleConfig.builder("Bio")
+						.addComponent(SomeManager.class)
+						.addPlugin(SomeOptionalPlugin.class)
+						.build())
+				.build();
+
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
+			final SomeManager manager = Home.getApp().getComponentSpace().resolve(SomeManager.class);
+			Assertions.assertEquals("first", manager.getSomeNames());
+		}
+	}
+
+	@Test
+	public void testOutsideModuleOptionalConnector2() {
+		final NodeConfig nodeConfig = NodeConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(ModuleConfig.builder("Bio")
+						.addComponent(SomeManager.class)
+						.addPlugin(SomeOptionalPlugin.class)
+						.build())
+				.build();
+
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
+			final SomeManager manager = Home.getApp().getComponentSpace().resolve(SomeManager.class);
+			Assertions.assertEquals("none", manager.getSomeNames());
 		}
 	}
 
