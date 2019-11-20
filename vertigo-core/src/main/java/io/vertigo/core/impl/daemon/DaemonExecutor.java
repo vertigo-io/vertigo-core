@@ -80,11 +80,13 @@ final class DaemonExecutor implements Activeable {
 	@Override
 	public void stop() {
 		scheduler.shutdown();
+		isActive = false;
 		try {
 			scheduler.awaitTermination(5000, TimeUnit.SECONDS);
 		} catch (final InterruptedException e) {
+			// Restore interrupted state...
+			Thread.currentThread().interrupt();
 			throw WrappedException.wrap(e);
 		}
-		isActive = false;
 	}
 }
