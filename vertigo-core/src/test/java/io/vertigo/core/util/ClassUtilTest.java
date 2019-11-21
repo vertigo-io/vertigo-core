@@ -41,9 +41,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.lang.VUserException;
-import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.data.SA;
+import io.vertigo.core.util.data.SAbstractD;
 import io.vertigo.core.util.data.SAnnotationA;
+import io.vertigo.core.util.data.SD;
 
 /**
  * Test de l'utilitaire de manipulation des classes.
@@ -72,18 +73,58 @@ public final class ClassUtilTest {
 
 	@Test
 	public void testNewInstanceWithTypeError() {
-		assertThrows(Exception.class, (() -> {
+		assertThrows(Exception.class, () -> {
 			final String className = StringBuilder.class.getCanonicalName() + ".";
 			final StringBuilder created = ClassUtil.newInstance(className, StringBuilder.class);
 			nop(created);
 
-		}));
+		});
 	}
 
 	@Test
 	public void testNewInstanceWithClasss() {
 		final Object created = ClassUtil.newInstance(StringBuilder.class);
 		assertEquals(StringBuilder.class, created.getClass());
+	}
+
+	@Test
+	public void testNewInstanceAbstract() {
+		assertThrows(Exception.class, () -> {
+			final String className = SAbstractD.class.getCanonicalName();
+			final Object created = ClassUtil.newInstance(className);
+			nop(created);
+		});
+	}
+
+	@Test
+	public void testNewInstanceException() {
+		assertThrows(Exception.class, () -> {
+			final String className = SD.class.getCanonicalName();
+			final Object created = ClassUtil.newInstance(className);
+			nop(created);
+		});
+	}
+
+	@Test
+	public void testGetConstructorException() {
+		assertThrows(Exception.class, () -> {
+			final Constructor<?> constructor = ClassUtil.findConstructor(SD.class, new Class[] { Long.class });
+			nop(constructor);
+		});
+
+		assertThrows(Exception.class, () -> {
+			final Constructor<?> constructor = ClassUtil.findConstructor(ClassUtil.class, new Class[] {});
+			nop(constructor);
+		});
+	}
+
+	@Test
+	public void testClassForNameCastException() {
+		assertThrows(Exception.class, () -> {
+			final String className = StringBuilder.class.getCanonicalName();
+			final Class<? extends String> created = ClassUtil.classForName(className, String.class);
+			nop(created);
+		});
 	}
 
 	@Test
@@ -94,10 +135,10 @@ public final class ClassUtilTest {
 
 	@Test
 	public void testFindConstructorWithError() {
-		assertThrows(Exception.class, (() -> {
+		assertThrows(Exception.class, () -> {
 			final Constructor<StringBuilder> constructor = ClassUtil.findConstructor(StringBuilder.class, new Class[] { Date.class });
 			nop(constructor);
-		}));
+		});
 	}
 
 	@Test
@@ -109,11 +150,11 @@ public final class ClassUtilTest {
 
 	@Test
 	public void testNewInstanceFail() {
-		assertThrows(Exception.class, (() -> {
+		assertThrows(Exception.class, () -> {
 			final String className = StringBuilder.class.getCanonicalName() + ".";
 			final Object created = ClassUtil.newInstance(className);
 			nop(created);
-		}));
+		});
 	}
 
 	@Test
@@ -124,11 +165,11 @@ public final class ClassUtilTest {
 
 	@Test
 	public void testClassForNameFail() {
-		assertThrows(Exception.class, (() -> {
+		assertThrows(Exception.class, () -> {
 			final String className = StringBuilder.class.getCanonicalName() + ".";
 			final Class<?> clazz = ClassUtil.classForName(className);
 			nop(clazz);
-		}));
+		});
 	}
 
 	@Test
@@ -139,11 +180,11 @@ public final class ClassUtilTest {
 
 	@Test
 	public void testClassForNameWithTypeFail() {
-		assertThrows(Exception.class, (() -> {
+		assertThrows(Exception.class, () -> {
 			final String className = StringBuilder.class.getCanonicalName() + ".";
 			final Class<?> clazz = ClassUtil.classForName(className, StringBuilder.class);
 			nop(clazz);
-		}));
+		});
 	}
 
 	@Test
@@ -161,10 +202,10 @@ public final class ClassUtilTest {
 
 	@Test
 	public void testFindMethodWithError() {
-		assertThrows(Exception.class, (() -> {
+		assertThrows(Exception.class, () -> {
 			final Method method = ClassUtil.findMethod(StringBuilder.class, "lastIndexOf", Date.class);
 			nop(method);
-		}));
+		});
 	}
 
 	@Test
@@ -224,20 +265,20 @@ public final class ClassUtilTest {
 
 	@Test
 	public void testInvokeWithError() {
-		assertThrows(ArithmeticException.class, (() -> {
+		assertThrows(ArithmeticException.class, () -> {
 			final Method divMethod = ClassUtil.findMethod(MyMath.class, "div", long.class, long.class);
 			final Object result = ClassUtil.invoke(new MyMath(), divMethod, 4L, 0L);
 			nop(result);
-		}));
+		});
 	}
 
 	@Test
 	public void testInvokeWithException() {
-		assertThrows(VUserException.class, (() -> {
+		assertThrows(VUserException.class, () -> {
 			final Method addMethod = ClassUtil.findMethod(MyMath.class, "kuser", long.class, long.class);
 			final Object result = ClassUtil.invoke(new MyMath(), addMethod, 4L, 6L);
 			nop(result);
-		}));
+		});
 	}
 
 	@Test
@@ -267,11 +308,11 @@ public final class ClassUtilTest {
 
 	@Test
 	public void testGenericWithError() throws SecurityException {
-		assertThrows(Exception.class, (() -> {
+		assertThrows(Exception.class, () -> {
 			final Field field = MyGenerics.class.getField("myList2");
 			final Class<?> generic = ClassUtil.getGeneric(field);
 			nop(generic);
-		}));
+		});
 	}
 
 	@Test
@@ -298,10 +339,10 @@ public final class ClassUtilTest {
 	public void testConstructorParameterGenericWithError() throws NoSuchMethodException, SecurityException {
 		final Constructor<MyGenerics> constructor = MyGenerics.class.getConstructor(Optional.class, List.class, List.class, List.class);
 		//---
-		assertThrows(Exception.class, (() -> {
+		assertThrows(Exception.class, () -> {
 			final Class<?> generic = ClassUtil.getGeneric(constructor, 2);
 			nop(generic);
-		}));
+		});
 	}
 
 	@Test
@@ -377,29 +418,29 @@ public final class ClassUtilTest {
 	@Test
 	public void testGetPropertyNameSetterWithError() throws NoSuchMethodException, SecurityException {
 		final Method method = MyPojo.class.getDeclaredMethod("setValue1", Long.class);
-		assertThrows(Exception.class, (() -> {
+		assertThrows(Exception.class, () -> {
 			final String name = ClassUtil.getPropertyName(method);
 			nop(name);
-		}));
+		});
 	}
 
 	@Test
 	public void testGetPropertyNameIsWithError() throws NoSuchMethodException, SecurityException {
 		final Method method = MyPojo.class.getDeclaredMethod("isValueLong");
 
-		assertThrows(Exception.class, (() -> {
+		assertThrows(Exception.class, () -> {
 			final String name = ClassUtil.getPropertyName(method);
 			nop(name);
-		}));
+		});
 	}
 
 	@Test
 	public void testGetPropertyNameHasWithError() throws SecurityException {
-		assertThrows(Exception.class, (() -> {
+		assertThrows(Exception.class, () -> {
 			final Method method = MyPojo.class.getDeclaredMethod("hasValue2");
 			final String name = ClassUtil.getPropertyName(method);
 			nop(name);
-		}));
+		});
 	}
 
 	public static final class MyInjected {
@@ -407,7 +448,7 @@ public final class ClassUtilTest {
 		private Long myPrivateLong = 2L;
 		private final Long myFinalLong = 3L;
 
-		final void initMyPrivateLong() {
+		void initMyPrivateLong() {
 			myPrivateLong = 2L;
 			nop(myPrivateLong); //Pour faire croire que la var est utilisée
 			nop(myFinalLong); //idem
