@@ -57,6 +57,8 @@ import io.vertigo.core.util.Selector.MethodConditions;
 
 public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 
+	private static final String FLAGS = "__flags__";
+
 	private static final Object[] EMPTY_ARRAY = new Object[0];
 
 	private final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder();
@@ -98,7 +100,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 		//---
 		Stream.of(jsonFileNames)
 				.map(xmlModulesFileName -> createURL(xmlModulesFileName, relativeRootClass))
-				.forEach(jsonConfigUrl -> handleJsonFileConfig(jsonConfigUrl));
+				.forEach(this::handleJsonFileConfig);
 		return this;
 	}
 
@@ -171,7 +173,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 									.addPlugin(
 											ClassUtil.classForName(pluginEntry.getKey(), Plugin.class),
 											pluginEntry.getValue().entrySet().stream()
-													.filter(entry -> !"__flags__".equals(entry.getKey()))
+													.filter(entry -> !FLAGS.equals(entry.getKey()))
 													.map(entry -> Param.of(entry.getKey(), evalParamValue(String.valueOf(entry.getValue()))))
 													.toArray(Param[]::new));
 						}
@@ -205,7 +207,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 								Assertion.checkNotNull(methodForFeature, "Unable to find method for feature '{0}' in feature class '{1}'", featureClassName, featuresClassName);
 								final Map<String, Object> paramsMap = featureEntry.getValue();
 								if (isEnabledByFlag(getFlagsOfMapParams(paramsMap))) {
-									ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findmethodParameters(paramsMap, methodForFeature, featureClassName, featuresClassName));
+									ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findMethodParameters(paramsMap, methodForFeature));
 								}
 							});
 				}
@@ -220,7 +222,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 								Assertion.checkNotNull(methodForFeature, "Unable to find method for feature '{0}' in feature class '{1}'", featureClassName, featuresClassName);
 								final Map<String, Object> paramsMap = featureEntry.getValue();
 								if (isEnabledByFlag(getFlagsOfMapParams(paramsMap))) {
-									ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findmethodParameters(paramsMap, methodForFeature, featureClassName, featuresClassName));
+									ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findMethodParameters(paramsMap, methodForFeature));
 								}
 							});
 				}
@@ -237,7 +239,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 										.addPlugin(
 												ClassUtil.classForName(pluginClassName, Plugin.class),
 												plugin.get(pluginClassName).entrySet().stream()
-														.filter(entry -> !"__flags__".equals(entry.getKey()))
+														.filter(entry -> !FLAGS.equals(entry.getKey()))
 														.map(entry -> Param.of(entry.getKey(), String.valueOf(entry.getValue())))
 														.toArray(Param[]::new));
 							}
@@ -248,12 +250,12 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 	}
 
 	private static List<String> getFlagsOfMapParams(final Map<String, Object> paramsMap) {
-		if (paramsMap == null || !paramsMap.containsKey("__flags__")) {
+		if (paramsMap == null || !paramsMap.containsKey(FLAGS)) {
 			return Collections.emptyList();
 		}
 		// if contains we check we have a list
-		Assertion.checkState(List.class.isAssignableFrom(paramsMap.get("__flags__").getClass()), "flags are array of strings");
-		return (List<String>) paramsMap.get("__flags__");
+		Assertion.checkState(List.class.isAssignableFrom(paramsMap.get(FLAGS).getClass()), "flags are array of strings");
+		return (List<String>) paramsMap.get(FLAGS);
 	}
 
 	private boolean isEnabledByFlag(final List<String> flags) {
@@ -272,7 +274,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 				});
 	}
 
-	private static Object[] findmethodParameters(final Map<String, Object> paramsConfig, final Method method, final String featureName, final String featuresClassName) {
+	private static Object[] findMethodParameters(final Map<String, Object> paramsConfig, final Method method) {
 		Assertion.checkState(method.getParameterCount() <= 1, "A feature method can have 0 parameter or a single Param... parameter");
 		if (method.getParameterCount() == 1) {
 			if (paramsConfig == null) {
@@ -280,7 +282,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 			}
 			final Param[] params = paramsConfig.entrySet()
 					.stream()
-					.filter(paramEntry -> !"__flags__".equals(paramEntry.getKey()))
+					.filter(paramEntry -> !FLAGS.equals(paramEntry.getKey()))
 					.map(paramEntry -> Param.of(paramEntry.getKey(), String.valueOf(paramEntry.getValue())))
 					.toArray(Param[]::new);
 			return new Object[] { params };
