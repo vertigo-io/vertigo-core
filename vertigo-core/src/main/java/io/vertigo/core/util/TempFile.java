@@ -66,7 +66,7 @@ public final class TempFile extends File {
 	 * @throws IOException Exception IO
 	 */
 	public TempFile(final String prefix, final String suffix) throws IOException {
-		super(Files.createTempFile(VERTIGO_TMP_DIR_PATH, prefix, suffix).toAbsolutePath().toString());
+		super(Files.createTempFile(Files.createDirectories(VERTIGO_TMP_DIR_PATH), prefix, suffix).toAbsolutePath().toString());
 		deleteOnExit();
 	}
 
