@@ -20,6 +20,11 @@ package io.vertigo.core.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import io.vertigo.core.lang.WrappedException;
 
 /**
  * Fichier temporaire supprimé automatiquement après utilisation.
@@ -31,22 +36,26 @@ public final class TempFile extends File {
 	/**
 	 * Vertigo Temp directory path.
 	 */
-	public static final String VERTIGO_TMP_DIR_PATH;
+	public static final Path VERTIGO_TMP_DIR_PATH;
 	static {
-		final File vertigoTmpDir = new File(System.getProperty("java.io.tmpdir"), "vertigo/tempFiles");
-		vertigoTmpDir.mkdirs();
-		VERTIGO_TMP_DIR_PATH = vertigoTmpDir.getAbsolutePath();
+		try {
+			final Path vertigoTmpDir = Paths.get(System.getProperty("java.io.tmpdir"), "/vertigo/tempFiles");
+			Files.createDirectories(vertigoTmpDir);
+			VERTIGO_TMP_DIR_PATH = vertigoTmpDir.toAbsolutePath();
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e);
+		}
 	}
 
 	/**
 	 * Crée un fichier temporaire.
 	 * @param prefix Prefix du nom de fichier
 	 * @param suffix Suffix du nom de fichier
-	 * @param subDirectory Sous-répertoire des fichiers temporaires (null = répertoire temporaire de vertigo = ${java.io.tmpdir}/vertigo)
+	 * @param subDirectory Sous-répertoire des fichiers temporaires (null = répertoire temporaire de vertigo = ${java.io.tmpdir}/vertigo/tempFiles)
 	 * @throws IOException Exception IO
 	 */
 	public TempFile(final String prefix, final String suffix, final String subDirectory) throws IOException {
-		super(File.createTempFile(prefix, suffix, new File(VERTIGO_TMP_DIR_PATH, subDirectory)).getAbsolutePath());
+		super(Files.createTempFile(Files.createDirectories(VERTIGO_TMP_DIR_PATH.resolve(subDirectory)), prefix, suffix).toAbsolutePath().toString());
 		deleteOnExit();
 	}
 
@@ -57,7 +66,7 @@ public final class TempFile extends File {
 	 * @throws IOException Exception IO
 	 */
 	public TempFile(final String prefix, final String suffix) throws IOException {
-		super(File.createTempFile(prefix, suffix, new File(VERTIGO_TMP_DIR_PATH)).getAbsolutePath());
+		super(Files.createTempFile(VERTIGO_TMP_DIR_PATH, prefix, suffix).toAbsolutePath().toString());
 		deleteOnExit();
 	}
 
