@@ -64,7 +64,7 @@ public final class SelectorTest {
 	public void testFromPackages() {
 		final Collection<Class> result = new Selector().from(TEST_CLASSES_PACKAGE).findClasses();
 		// ---
-		Assertions.assertEquals(6, result.size());
+		Assertions.assertEquals(7, result.size());
 	}
 
 	@Test
@@ -174,7 +174,7 @@ public final class SelectorTest {
 				.filterClasses(ClassConditions.interfaces().negate())
 				.findClasses();
 		// ---
-		Assertions.assertEquals(3, result.size()); // SA SC an SAbstractC
+		Assertions.assertEquals(4, result.size()); // SA SC SD and SAbstractC
 	}
 
 	//--- from -> filter -> find
