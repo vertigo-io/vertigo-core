@@ -19,12 +19,17 @@
 package io.vertigo.core.node.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.Connector;
+import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.node.component.di.DIAnnotationUtil;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
 
 final class ConfigUtil {
@@ -32,7 +37,7 @@ final class ConfigUtil {
 		//
 	}
 
-	static List<ComponentConfig> buildConfigs(final List<PluginConfig> pluginConfigs) {
+	static List<ComponentConfig> buildPluginsComponentConfigs(final List<PluginConfig> pluginConfigs) {
 		Assertion.checkNotNull(pluginConfigs);
 		//---
 		final List<ComponentConfig> componentConfigs = new ArrayList<>();
@@ -40,12 +45,13 @@ final class ConfigUtil {
 
 		int index = 1;
 		for (final PluginConfig pluginConfig : pluginConfigs) {
-			final boolean added = pluginTypes.add(pluginConfig.getPluginType());
+			final String pluginType = StringUtil.first2LowerCase(getType(pluginConfig.getImplClass(), Plugin.class));
+			final boolean added = pluginTypes.add(pluginType);
 			final String id;
 			if (added) {
-				id = pluginConfig.getPluginType();
+				id = pluginType;
 			} else {
-				id = pluginConfig.getPluginType() + '#' + index;
+				id = pluginType + '#' + index;
 				index++;
 			}
 
@@ -67,7 +73,7 @@ final class ConfigUtil {
 
 		int index = 1;
 		for (final ConnectorConfig connectorConfig : connectorConfigs) {
-			final String connectorType = StringUtil.first2LowerCase(DIAnnotationUtil.buildId(connectorConfig.getImplClass()));
+			final String connectorType = StringUtil.first2LowerCase(getType(connectorConfig.getImplClass(), Connector.class));
 			final boolean added = connectorTypes.add(connectorType);
 			final String id;
 			if (added) {
@@ -85,6 +91,29 @@ final class ConfigUtil {
 			componentConfigs.add(componentConfig);
 		}
 		return componentConfigs;
+	}
+
+	/*
+	 * We are looking for the type of the plugin.
+	 * This type is the first objector interface that inherits from then 'plugin' interface.
+	 */
+	private static String getType(final Class<? extends Component> implClass, final Class<? extends Component> componentType) {
+		//We are seeking the first and unique Object that extends Plugin.
+		//This Interface defines the type of the plugin.
+
+		for (final Class intf : ClassUtil.getAllInterfaces(implClass)) {
+			if (Arrays.asList(intf.getInterfaces()).contains(componentType)) {
+				return DIAnnotationUtil.buildId(intf);
+			}
+		}
+		//We have found nothing among the interfaces.
+		//we are drilling the classes to look for a class that inherits the plugin.
+		for (Class currentClass = implClass; currentClass != null; currentClass = currentClass.getSuperclass()) {
+			if (Arrays.asList(currentClass.getInterfaces()).contains(componentType)) {
+				return DIAnnotationUtil.buildId(currentClass);
+			}
+		}
+		throw new IllegalArgumentException("A plugin must extends an interface|class that defines its contract : " + implClass);
 	}
 
 }

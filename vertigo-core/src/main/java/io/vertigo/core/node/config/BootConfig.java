@@ -85,7 +85,7 @@ public final class BootConfig {
 	public List<ComponentConfig> getComponentConfigs() {
 		return new ListBuilder<ComponentConfig>()
 				.addAll(componentConfigs)
-				.addAll(ConfigUtil.buildConfigs(pluginConfigs))
+				.addAll(ConfigUtil.buildPluginsComponentConfigs(pluginConfigs))
 				.build();
 	}
 
