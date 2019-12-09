@@ -42,7 +42,7 @@ import io.vertigo.core.util.ClassUtil;
  */
 final class DIDependency {
 	private final String targetId;
-	private final boolean isOption;
+	private final boolean isOptionnal;
 	private final boolean isList;
 	private final Class<?> type;
 
@@ -56,9 +56,9 @@ final class DIDependency {
 		final String named = getNamedValue(field.getAnnotations());
 		final Class<?> rootType = field.getType();
 
-		isOption = isOptional(rootType);
-		isList = isList(rootType);
-		type = (isOption || isList) ? ClassUtil.getGeneric(field) : rootType;
+		isOptionnal = caseOptional(rootType);
+		isList = caseList(rootType);
+		type = (isOptionnal || isList) ? ClassUtil.getGeneric(field) : rootType;
 		targetId = named != null ? named : DIAnnotationUtil.buildId(type);
 	}
 
@@ -73,9 +73,9 @@ final class DIDependency {
 		final String named = getNamedValue(constructor.getParameterAnnotations()[i]);
 		final Class<?> rootType = constructor.getParameterTypes()[i];
 
-		isOption = isOptional(rootType);
-		isList = isList(rootType);
-		type = (isOption || isList) ? ClassUtil.getGeneric(constructor, i) : rootType;
+		isOptionnal = caseOptional(rootType);
+		isList = caseList(rootType);
+		type = (isOptionnal || isList) ? ClassUtil.getGeneric(constructor, i) : rootType;
 		targetId = named != null ? named : DIAnnotationUtil.buildId(type);
 	}
 
@@ -89,15 +89,15 @@ final class DIDependency {
 	/**
 	 * @return if optionnal
 	 */
-	boolean isOption() {
-		return isOption;
+	boolean isOptionnal() {
+		return isOptionnal;
 	}
 
 	/**
 	 * @return if required (not null)
 	 */
 	boolean isRequired() {
-		return !(isList || isOption);
+		return !(isList || isOptionnal);
 	}
 
 	/**
@@ -120,17 +120,17 @@ final class DIDependency {
 	public String toString() {
 		if (isList) {
 			return targetId + '*';
-		} else if (isOption) {
+		} else if (isOptionnal) {
 			return targetId + '?';
 		}
 		return targetId;
 	}
 
-	private static boolean isList(final Class<?> type) {
+	private static boolean caseList(final Class<?> type) {
 		return List.class.isAssignableFrom(type);
 	}
 
-	private static boolean isOptional(final Class<?> type) {
+	private static boolean caseOptional(final Class<?> type) {
 		return Optional.class.isAssignableFrom(type);
 	}
 

@@ -156,7 +156,7 @@ public final class DIReactor {
 
 		if (dependency.isRequired()) {
 			return parentComponentInfos.contains(dependency.getName()) || sorted.contains(dependency.getName());
-		} else if (dependency.isOption()) {
+		} else if (dependency.isOptionnal()) {
 			//Si l'objet fait partie de la liste alors il doit être résolu.
 			if (allComponentInfos.contains(dependency.getName())) {
 				return sorted.contains(dependency.getName()) || parentComponentInfos.contains(dependency.getName());

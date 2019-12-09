@@ -131,7 +131,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 
 	@Override
 	public void registerPreActivateFunction(final Runnable preActivateFunction) {
-		Assertion.checkArgument(State.STARTING.equals(state), "Applisteners can't be registered at runtime");
+		Assertion.checkArgument(state == State.STARTING, "Applisteners can't be registered at runtime");
 		Assertion.checkNotNull(preActivateFunction);
 		//-----
 		preActivateFunctions.add(preActivateFunction);

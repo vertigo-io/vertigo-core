@@ -107,7 +107,7 @@ public final class DIInjector {
 	}
 
 	private static Object getInjected(final Container container, final DIDependency dependency) {
-		if (dependency.isOption()) {
+		if (dependency.isOptionnal()) {
 			if (container.contains(dependency.getName())) {
 				//On récupère la valeur et on la transforme en option.
 				//ex : <param name="opt-port" value="a value that can be null or not">
