@@ -47,7 +47,7 @@ import io.vertigo.core.util.StringUtil;
  */
 public final class HealthAnalyticsUtil {
 
-	private static final String pluginCounterChar = "#";// char used in plugins for counting them plugin#1, plugin#2
+	private static final String PLUGIN_COUNTER_CHAR = "#";// char used in plugins for counting them plugin#1, plugin#2
 
 	private HealthAnalyticsUtil() {
 		//private constructor for util classes
@@ -84,7 +84,7 @@ public final class HealthAnalyticsUtil {
 					//-----
 					//2. For each method register a listener
 					// we remove # because it doesn't comply with definition naming rule
-					final String healthCheckDefinitionName = "Hchk" + StringUtil.first2UpperCase(componentId.replaceAll(pluginCounterChar, "")) + "$" + method.getName();
+					final String healthCheckDefinitionName = "Hchk" + StringUtil.first2UpperCase(componentId.replaceAll(PLUGIN_COUNTER_CHAR, "")) + "$" + method.getName();
 					return new HealthCheckDefinition(
 							healthCheckDefinitionName,
 							healthChecked.name(),

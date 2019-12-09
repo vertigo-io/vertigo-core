@@ -29,8 +29,8 @@ import io.vertigo.core.lang.Assertion;
  * @author  pchretien
  */
 public final class StringUtil {
-	private static Pattern UPPER_CAMEL_CASE_PATTERN = Pattern.compile("[A-Z][a-zA-Z0-9]*");
-	private static Pattern LOWER_CAMEL_CASE_PATTERN = Pattern.compile("[a-z][a-zA-Z0-9]*");
+	private static final Pattern UPPER_CAMEL_CASE_PATTERN = Pattern.compile("[A-Z][a-zA-Z0-9]*");
+	private static final Pattern LOWER_CAMEL_CASE_PATTERN = Pattern.compile("[a-z][a-zA-Z0-9]*");
 
 	/**
 	 * Constructor

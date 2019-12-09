@@ -29,17 +29,6 @@ import java.util.Objects;
  * @author pchretien
  */
 public final class Tuple<A, B> {
-
-	/**
-	 * Creates a Tuple with 2 objects
-	 * @param val1 the first object
-	 * @param val2 the second object
-	 * @return the new tuple created
-	 */
-	public static <A, B> Tuple<A, B> of(final A val1, final B val2) {
-		return new Tuple<>(val1, val2);
-	}
-
 	private final A val1;
 	private final B val2;
 
@@ -52,6 +41,16 @@ public final class Tuple<A, B> {
 	private Tuple(final A val1, final B val2) {
 		this.val1 = val1;
 		this.val2 = val2;
+	}
+
+	/**
+	 * Creates a Tuple with 2 objects
+	 * @param val1 the first object
+	 * @param val2 the second object
+	 * @return the new tuple created
+	 */
+	public static <A, B> Tuple<A, B> of(final A val1, final B val2) {
+		return new Tuple<>(val1, val2);
 	}
 
 	/**
