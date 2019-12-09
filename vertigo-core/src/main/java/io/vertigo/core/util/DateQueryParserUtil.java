@@ -104,7 +104,6 @@ final class DateQueryParserUtil {
 		final Matcher matcher = PATTERN_INSTANT.matcher(operand);
 		Assertion.checkState(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", PATTERN_INSTANT.toString());
 		//---
-		final int unitCount = sign * Integer.parseInt(matcher.group(1));
 		final String calendarUnit = matcher.group(2);
 		//We check that we have found a real unit Calendar and not 'NOW+15DAL'
 		if (!CALENDAR_UNITS_INSTANT.containsKey(calendarUnit)) {
@@ -112,6 +111,7 @@ final class DateQueryParserUtil {
 		}
 		//---
 		final Calendar calendar = new GregorianCalendar();
+		final int unitCount = sign * Integer.parseInt(matcher.group(1));
 		calendar.add(CALENDAR_UNITS_INSTANT.get(calendarUnit), unitCount);
 		return calendar.toInstant();
 	}
@@ -137,7 +137,6 @@ final class DateQueryParserUtil {
 			final Matcher matcher = PATTERN_LOCAL_DATE.matcher(operand);
 			Assertion.checkState(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", PATTERN_LOCAL_DATE.toString());
 			//---
-			final int unitCount = sign * Integer.parseInt(matcher.group(1));
 			final String calendarUnit = matcher.group(2);
 			//We check that we have found a real unit Calendar and not 'NOW+15DAL'
 			if (!CALENDAR_UNITS_LOCAL_DATE.containsKey(calendarUnit)) {
@@ -145,6 +144,7 @@ final class DateQueryParserUtil {
 			}
 			//---
 			final Calendar calendar = new GregorianCalendar();
+			final int unitCount = sign * Integer.parseInt(matcher.group(1));
 			calendar.add(CALENDAR_UNITS_LOCAL_DATE.get(calendarUnit), unitCount);
 			return LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
 		}
