@@ -55,10 +55,6 @@ public final class ComponentSpaceLoader {
 	private final List<ProxyMethod> proxyMethods = new ArrayList<>();
 	private final ComponentSpaceWritable componentSpaceWritable;
 
-	public static ComponentSpaceLoader startLoading(final ComponentSpaceWritable componentSpaceWritable, final AopPlugin aopPlugin) {
-		return new ComponentSpaceLoader(componentSpaceWritable, aopPlugin);
-	}
-
 	/**
 	* Constructor.
 	* @param aopPlugin the plugin which is reponsible for the aop strategy
@@ -69,6 +65,10 @@ public final class ComponentSpaceLoader {
 		//-----
 		this.componentSpaceWritable = componentSpaceWritable;
 		this.aopPlugin = aopPlugin;
+	}
+
+	public static ComponentSpaceLoader startLoading(final ComponentSpaceWritable componentSpaceWritable, final AopPlugin aopPlugin) {
+		return new ComponentSpaceLoader(componentSpaceWritable, aopPlugin);
 	}
 
 	public ComponentSpaceLoader loadBootComponents(final List<ComponentConfig> componentConfigs) {
