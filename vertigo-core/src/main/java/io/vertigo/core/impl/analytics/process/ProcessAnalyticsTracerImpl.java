@@ -100,6 +100,7 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 			addTag("exception", causeException.getClass().getName());
 		}
 		final AProcess process = processBuilder.build();
+		logProcess(process);
 
 		final Optional<ProcessAnalyticsTracerImpl> parentOpt = parentOptSupplier.get();
 		if (parentOpt.isPresent()) {
@@ -109,7 +110,6 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 			//when the current process is the root process, it's finished and must be sent to the connector
 			consumer.accept(process);
 		}
-		logProcess(process);
 	}
 
 	private void logProcess(final AProcess process) {
