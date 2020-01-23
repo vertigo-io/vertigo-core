@@ -106,7 +106,9 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 					.endLoading();
 
 			//--3. init (Init all Initializers and starts activeable components)
-			//-----3.a Init all Initializers
+			//-----3.a Starts activeable components
+			componentSpaceWritable.start();
+			//-----3.b Init all Initializers
 			/*
 			 * componentInitializers are created and the init() is called on each.
 			 * Notice :
@@ -114,9 +116,6 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			 * that's why this kind of component can't be activeable.
 			 */
 			initializeAllComponents();
-
-			//-----3.b Starts activeable components
-			componentSpaceWritable.start();
 
 			//--4. App is active with a special hook
 			//-----4.a Hook  : post just in case
