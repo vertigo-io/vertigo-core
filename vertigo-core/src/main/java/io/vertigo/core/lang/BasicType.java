@@ -23,8 +23,9 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 /**
- * Primitive types.
- * This class defines the primitive types.
+ * Basic types.
+ * This class defines ALL the basic types, used by Vertigo.
+ * This set is limited to only a few types.
  * @author  pchretien
  */
 public enum BasicType {
@@ -48,7 +49,7 @@ public enum BasicType {
 	DataStream(DataStream.class);
 
 	/**
-	 * The java class wrapped by this dataType.
+	 * The java class wrapped by this basic type.
 	 */
 	private final Class<?> javaClass;
 
@@ -84,7 +85,7 @@ public enum BasicType {
 	}
 
 	/**
-	 * @return if the dataType is a number
+	 * @return if the basic type is a number
 	 */
 	public boolean isNumber() {
 		return this == BasicType.Double
@@ -101,36 +102,36 @@ public enum BasicType {
 	}
 
 	/**
-	 * Finds the dataType bound to a class.
-	 * @param type
-	 * @return Optional DataType of this Class
+	 * Finds the basic type bound to a class.
+	 * @param type a candidate type 
+	 * @return Optional Basic Type of this Class
 	 */
 	public static Optional<BasicType> of(final Class type) {
 		Assertion.checkNotNull(type);
 		//---
-		BasicType dataType;
+		BasicType basicType;
 		if (Integer.class.equals(type) || int.class.equals(type)) {
-			dataType = BasicType.Integer;
+			basicType = BasicType.Integer;
 		} else if (Double.class.equals(type) || double.class.equals(type)) {
-			dataType = BasicType.Double;
+			basicType = BasicType.Double;
 		} else if (Boolean.class.equals(type) || boolean.class.equals(type)) {
-			dataType = BasicType.Boolean;
+			basicType = BasicType.Boolean;
 		} else if (String.class.equals(type)) {
-			dataType = BasicType.String;
+			basicType = BasicType.String;
 		} else if (LocalDate.class.equals(type)) {
-			dataType = BasicType.LocalDate;
+			basicType = BasicType.LocalDate;
 		} else if (Instant.class.equals(type)) {
-			dataType = BasicType.Instant;
+			basicType = BasicType.Instant;
 		} else if (java.math.BigDecimal.class.equals(type)) {
-			dataType = BasicType.BigDecimal;
+			basicType = BasicType.BigDecimal;
 		} else if (Long.class.equals(type) || long.class.equals(type)) {
-			dataType = BasicType.Long;
+			basicType = BasicType.Long;
 		} else if (DataStream.class.equals(type)) {
-			dataType = BasicType.DataStream;
+			basicType = BasicType.DataStream;
 		} else {
-			//not a well known dataType
-			dataType = null;
+			//not a well known basicType
+			basicType = null;
 		}
-		return Optional.ofNullable(dataType);
+		return Optional.ofNullable(basicType);
 	}
 }

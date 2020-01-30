@@ -2,11 +2,20 @@ package io.vertigo.core.lang;
 
 /** Cardinalities. */
 public enum Cardinality {
-	/* 0  or 1*/
+	/** 
+	 * card   : 0  or 1
+	 * symbol : ?
+	 */
 	OPTIONAL_OR_NULLABLE,
-	/* 1 */
+	/** 
+	 * card   : 1 
+	 * symbol : 1
+	 */
 	ONE,
-	/* 0..n */
+	/**
+	 * card   :  0..n 
+	 * symbol : *
+	 */
 	MANY;
 
 	public boolean isOptionalOrNullable() {
