@@ -27,7 +27,7 @@ import java.util.Optional;
  * This class defines the primitive types.
  * @author  pchretien
  */
-public enum DataType {
+public enum BasicType {
 	/** Integer. */
 	Integer(Integer.class),
 	/** Double. */
@@ -56,7 +56,7 @@ public enum DataType {
 	 * Constructor.
 	 * @param javaClass the java class
 	 */
-	DataType(final Class<?> javaClass) {
+	BasicType(final Class<?> javaClass) {
 		Assertion.checkNotNull(javaClass);
 		//-----
 		this.javaClass = javaClass;
@@ -79,18 +79,18 @@ public enum DataType {
 	 * @return if the dataType talks about a date
 	 */
 	public boolean isAboutDate() {
-		return this == DataType.LocalDate
-				|| this == DataType.Instant;
+		return this == BasicType.LocalDate
+				|| this == BasicType.Instant;
 	}
 
 	/**
 	 * @return if the dataType is a number
 	 */
 	public boolean isNumber() {
-		return this == DataType.Double
-				|| this == DataType.BigDecimal
-				|| this == DataType.Long
-				|| this == DataType.Integer;
+		return this == BasicType.Double
+				|| this == BasicType.BigDecimal
+				|| this == BasicType.Long
+				|| this == BasicType.Integer;
 	}
 
 	/**
@@ -105,28 +105,28 @@ public enum DataType {
 	 * @param type
 	 * @return Optional DataType of this Class
 	 */
-	public static Optional<DataType> of(final Class type) {
+	public static Optional<BasicType> of(final Class type) {
 		Assertion.checkNotNull(type);
 		//---
-		DataType dataType;
+		BasicType dataType;
 		if (Integer.class.equals(type) || int.class.equals(type)) {
-			dataType = DataType.Integer;
+			dataType = BasicType.Integer;
 		} else if (Double.class.equals(type) || double.class.equals(type)) {
-			dataType = DataType.Double;
+			dataType = BasicType.Double;
 		} else if (Boolean.class.equals(type) || boolean.class.equals(type)) {
-			dataType = DataType.Boolean;
+			dataType = BasicType.Boolean;
 		} else if (String.class.equals(type)) {
-			dataType = DataType.String;
+			dataType = BasicType.String;
 		} else if (LocalDate.class.equals(type)) {
-			dataType = DataType.LocalDate;
+			dataType = BasicType.LocalDate;
 		} else if (Instant.class.equals(type)) {
-			dataType = DataType.Instant;
+			dataType = BasicType.Instant;
 		} else if (java.math.BigDecimal.class.equals(type)) {
-			dataType = DataType.BigDecimal;
+			dataType = BasicType.BigDecimal;
 		} else if (Long.class.equals(type) || long.class.equals(type)) {
-			dataType = DataType.Long;
+			dataType = BasicType.Long;
 		} else if (DataStream.class.equals(type)) {
-			dataType = DataType.DataStream;
+			dataType = BasicType.DataStream;
 		} else {
 			//not a well known dataType
 			dataType = null;
