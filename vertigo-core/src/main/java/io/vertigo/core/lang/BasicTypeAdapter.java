@@ -41,26 +41,22 @@ public interface BasicTypeAdapter<J, B> {
 	/**
 	 * String -> Mail
 	 * @param primitiveValue the stored value
+	 * @param javaType ex : Mail, Point...
 	 * @return the value transformed in POJO
 	 */
-	J toJava(B basicValue);
+	J toJava(B basicValue, Class<J> javaType);
 
 	/**
 	 * Mail -> String
 	 * @param javaValue the pojo value
-	 * @return the value transformed in a primitive type
+	 * @return the value transformed in a basicType ex : String, Integer....
 	 */
 	B toBasic(J javaValue);
 
 	/**
-	 * ex : Mail, Point...
-	 * @return the JavaDataTyp
-	 */
-	Class<J> getJavaType();
-
-	/**
 	 * ex : String, Integer....
-	 * @return the PrimitiveDataType
+	 * @return the BasicType
 	 */
-	Class<B> getBasicType();
+	BasicType getBasicType();
+
 }

@@ -97,13 +97,13 @@ public enum BasicType {
 	/**
 	 * @return the native java class wrapped by this dataType
 	 */
-	public Class<?> getJavaClass() {
+	public Class getJavaClass() {
 		return javaClass;
 	}
 
 	/**
 	 * Finds the basic type bound to a class.
-	 * @param type a candidate type 
+	 * @param type a candidate type
 	 * @return Optional Basic Type of this Class
 	 */
 	public static Optional<BasicType> of(final Class type) {
