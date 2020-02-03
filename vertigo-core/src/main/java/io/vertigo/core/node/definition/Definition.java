@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 /**
  * Définition.
  *
- * Les Définitions de service, de DT, les domaines, les Formatters sont des définitions.
+ * Les Définitions de service, de DT, les smartTypes, les Formatters sont des définitions.
  * De maniére plus générale tout élément qui sert établir le modèle est une définition.
  * Une définition sert à modéliser le métier.
  *
