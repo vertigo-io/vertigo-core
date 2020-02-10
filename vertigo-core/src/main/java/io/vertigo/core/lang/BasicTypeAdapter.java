@@ -32,6 +32,7 @@ package io.vertigo.core.lang;
  *  - DataStream
  *
  *  If you want to store another value type like 'mail' you have to define a specific adapter.
+ *  This Adapter MUST handle null value.
  *
  * @author pchretien
  * @param <J> JavaDataType (ex : Mail, Point)
@@ -48,7 +49,7 @@ public interface BasicTypeAdapter<J, B> {
 
 	/**
 	 * Mail -> String
-	 * @param javaValue the pojo value
+	 * @param javaValue the pojo nullable value
 	 * @return the value transformed in a basicType ex : String, Integer....
 	 */
 	B toBasic(J javaValue);
