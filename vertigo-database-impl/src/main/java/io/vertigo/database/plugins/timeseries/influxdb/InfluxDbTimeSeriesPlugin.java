@@ -386,6 +386,10 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		Assertion.checkArgNotEmpty(alias);
 		//----
 		final String[] measureDetails = measure.split(":");
+		if (measureDetails.length == 1) {
+			return '"' + measure + "\" as \"" + alias + '"';
+		}
+		
 		final Tuple<String, List<String>> aggregateFunction = parseAggregateFunction(measureDetails[1]);
 		// append function name
 		final StringBuilder measureQueryBuilder = new java.lang.StringBuilder(aggregateFunction.getVal1()).append("(\"").append(measureDetails[0]).append("\"");
