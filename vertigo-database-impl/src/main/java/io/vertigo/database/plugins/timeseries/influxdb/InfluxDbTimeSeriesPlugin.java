@@ -253,7 +253,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 
 	@Override
 	public TimedDatas getTabularTimedData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
-		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter);
+		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter, true);
 
 		final String groupByClause = Stream.of(groupBy)
 				.collect(Collectors.joining("\", \"", "\"", "\""));
@@ -266,7 +266,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 
 	@Override
 	public TabularDatas getTabularData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
-		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter);
+		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter, true);
 
 		final String groupByClause = Stream.of(groupBy)
 				.collect(Collectors.joining("\", \"", "\"", "\""));
@@ -306,7 +306,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		Assertion.checkNotNull(dataFilter);
 		Assertion.checkNotNull(timeFilter.getDim());// we check dim is not null because we need it
 		//---
-		final String q = buildQuery(measures, dataFilter, timeFilter)
+		final String q = buildQuery(measures, dataFilter, timeFilter, false)
 				.append(" group by time(").append(timeFilter.getDim()).append(')')
 				.toString();
 
@@ -410,6 +410,8 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		final StringBuilder queryBuilder = new StringBuilder("select ");
 		String separator = "";
 		for (final String measure : measures) {
+			Assertion.checkState(supportUnaggregateMeasure || measure.contains(":"), "No aggregation function provided for measure '{0}'. Provide it with ':' as in 'measure:sum'.", measure);
+			
 			queryBuilder
 					.append(separator)
 					.append(buildMeasureQuery(measure, measure));
