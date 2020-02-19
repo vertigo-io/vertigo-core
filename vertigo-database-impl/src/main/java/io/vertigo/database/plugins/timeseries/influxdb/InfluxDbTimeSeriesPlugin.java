@@ -386,10 +386,6 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		Assertion.checkArgNotEmpty(alias);
 		//----
 		final String[] measureDetails = measure.split(":");
-		if (measureDetails.length == 1) {
-			return '"' + measure + "\" as \"" + alias + '"';
-		}
-		
 		final Tuple<String, List<String>> aggregateFunction = parseAggregateFunction(measureDetails[1]);
 		// append function name
 		final StringBuilder measureQueryBuilder = new java.lang.StringBuilder(aggregateFunction.getVal1()).append("(\"").append(measureDetails[0]).append("\"");
@@ -410,11 +406,15 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		final StringBuilder queryBuilder = new StringBuilder("select ");
 		String separator = "";
 		for (final String measure : measures) {
-			Assertion.checkState(supportUnaggregatedMeasure || measure.contains(":"), "No aggregation function provided for measure '{0}'. Provide it with ':' as in 'measure:sum'.", measure);
+			final boolean isAggregated = measure.contains(":");
+
+			Assertion.checkState(supportUnaggregatedMeasure || isAggregated, "No aggregation function provided for measure '{0}'. Provide it with ':' as in 'measure:sum'.", measure);
+
+			final String measureQuery = isAggregated ? buildMeasureQuery(measure, measure) : '"' + measure + '"';
 			
 			queryBuilder
 					.append(separator)
-					.append(buildMeasureQuery(measure, measure));
+					.append(measureQuery);
 			separator = " ,";
 		}
 		queryBuilder.append(" from ").append(dataFilter.getMeasurement());
