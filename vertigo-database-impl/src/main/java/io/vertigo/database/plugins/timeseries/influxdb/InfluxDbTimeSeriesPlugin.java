@@ -404,13 +404,13 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		return measureQueryBuilder.toString();
 	}
 
-	private static StringBuilder buildQuery(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
+	private static StringBuilder buildQuery(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final boolean supportUnaggregatedMeasure) {
 		Assertion.checkNotNull(measures);
 		//---
 		final StringBuilder queryBuilder = new StringBuilder("select ");
 		String separator = "";
 		for (final String measure : measures) {
-			Assertion.checkState(supportUnaggregateMeasure || measure.contains(":"), "No aggregation function provided for measure '{0}'. Provide it with ':' as in 'measure:sum'.", measure);
+			Assertion.checkState(supportUnaggregatedMeasure || measure.contains(":"), "No aggregation function provided for measure '{0}'. Provide it with ':' as in 'measure:sum'.", measure);
 			
 			queryBuilder
 					.append(separator)
