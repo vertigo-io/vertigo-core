@@ -118,6 +118,33 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 
 	}
 
+	private TimedDatas executeFlatTimedTabularQuery(final String appName, final String queryString) {
+		final Query query = new Query(queryString, appName);
+		final QueryResult queryResult = influxDB.query(query);
+
+		final List<Series> series = queryResult.getResults().get(0).getSeries();
+
+		if (series != null && !series.isEmpty()) {
+			final Series serie = series.get(0);
+			final List<String> columns = serie.getColumns();
+
+			// all columns are the measures
+			final List<String> seriesName = new ArrayList<>();
+			seriesName.addAll(columns.subList(1, columns.size()));
+
+			final List<TimedDataSerie> dataSeries = serie.getValues()
+					.stream()
+					.map(value -> {
+						final Map<String, Object> mapValues = buildMapValue(columns, value);
+						return new TimedDataSerie(LocalDateTime.parse(value.get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant(ZoneOffset.UTC), mapValues);
+					})
+					.collect(Collectors.toList());
+
+			return new TimedDatas(dataSeries, seriesName);
+		}
+		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
+	}
+
 	private TimedDatas executeTimedTabularQuery(final String appName, final String queryString) {
 		final Query query = new Query(queryString, appName);
 		final QueryResult queryResult = influxDB.query(query);
@@ -252,6 +279,15 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 	}
 
 	@Override
+	public TimedDatas getFlatTabularTimedData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
+		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter, false);
+
+		final String queryString = queryBuilder.toString();
+
+		return executeFlatTimedTabularQuery(appName, queryString);
+	}
+
+	@Override
 	public TimedDatas getTabularTimedData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
 		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter, true);
 
@@ -306,7 +342,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		Assertion.checkNotNull(dataFilter);
 		Assertion.checkNotNull(timeFilter.getDim());// we check dim is not null because we need it
 		//---
-		final String q = buildQuery(measures, dataFilter, timeFilter, false)
+		final String q = buildQuery(measures, dataFilter, timeFilter, true)
 				.append(" group by time(").append(timeFilter.getDim()).append(')')
 				.toString();
 
@@ -400,7 +436,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		return measureQueryBuilder.toString();
 	}
 
-	private static StringBuilder buildQuery(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final boolean supportUnaggregatedMeasure) {
+	private static StringBuilder buildQuery(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final boolean needAggregatedMeasures) {
 		Assertion.checkNotNull(measures);
 		//---
 		final StringBuilder queryBuilder = new StringBuilder("select ");
@@ -408,7 +444,8 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		for (final String measure : measures) {
 			final boolean isAggregated = measure.contains(":");
 
-			Assertion.checkState(supportUnaggregatedMeasure || isAggregated, "No aggregation function provided for measure '{0}'. Provide it with ':' as in 'measure:sum'.", measure);
+			Assertion.checkState(!needAggregatedMeasures || isAggregated, "No aggregation function provided for measure '{0}'. Provide it with ':' as in 'measure:sum'.", measure);
+			Assertion.checkState(needAggregatedMeasures || !isAggregated, "No support for aggregation function in this case. Measure '{0}'.", measure);
 
 			final String measureQuery = isAggregated ? buildMeasureQuery(measure, measure) : '"' + measure + '"';
 			

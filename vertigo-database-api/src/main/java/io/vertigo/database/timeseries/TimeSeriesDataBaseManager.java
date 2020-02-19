@@ -48,6 +48,12 @@ public interface TimeSeriesDataBaseManager extends Manager {
 			final DataFilter dataFilter,
 			final TimeFilter timeFilter);
 
+	TimedDatas getFlatTabularTimedData(
+			final String dbName,
+			final List<String> measures,
+			final DataFilter dataFilter,
+			final TimeFilter timeFilter);
+
 	TimedDatas getTabularTimedData(
 			final String dbName,
 			final List<String> measures,

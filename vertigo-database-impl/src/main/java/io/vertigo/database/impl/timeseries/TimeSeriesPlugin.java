@@ -54,6 +54,12 @@ public interface TimeSeriesPlugin extends Plugin {
 			final DataFilter dataFilter,
 			final TimeFilter timeFilter);
 
+	TimedDatas getFlatTabularTimedData(
+			final String appName,
+			final List<String> measures,
+			final DataFilter dataFilter,
+			final TimeFilter timeFilter);
+
 	TimedDatas getTabularTimedData(
 			final String dbName,
 			final List<String> measures,
