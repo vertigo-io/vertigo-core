@@ -281,9 +281,9 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 	@Override
 	public TimedDatas getFlatTabularTimedData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
 		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter, false);
-
+		queryBuilder.append(" LIMIT 500");
+		
 		final String queryString = queryBuilder.toString();
-
 		return executeFlatTimedTabularQuery(appName, queryString);
 	}
 
