@@ -287,8 +287,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter, false);
 		queryBuilder.append(" ORDER BY time DESC");
 		queryBuilder.append(" LIMIT " + resolvedLimit);
-		queryBuilder.append(" LIMIT 500");
-		
+
 		final String queryString = queryBuilder.toString();
 		return executeFlatTimedTabularQuery(appName, queryString);
 	}
