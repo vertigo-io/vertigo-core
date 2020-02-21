@@ -19,11 +19,13 @@
 package io.vertigo.database.timeseries;
 
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.core.component.Manager;
 
 /**
  * Manages connections to a time series database.
+ * 
  * @author mlaroche
  */
 public interface TimeSeriesDataBaseManager extends Manager {
@@ -48,11 +50,22 @@ public interface TimeSeriesDataBaseManager extends Manager {
 			final DataFilter dataFilter,
 			final TimeFilter timeFilter);
 
+	/**
+	 * Get raw (unaggregated) data from database.
+	 *
+	 * @param dbName     Database name
+	 * @param measures   list of measures to fetch
+	 * @param dataFilter Data filter
+	 * @param timeFilter Time filter
+	 * @param limit      Optional. By default 500, max 5000.
+	 * @return datas
+	 */
 	TimedDatas getFlatTabularTimedData(
 			final String dbName,
 			final List<String> measures,
 			final DataFilter dataFilter,
-			final TimeFilter timeFilter);
+			final TimeFilter timeFilter,
+			final Optional<Long> limit);
 
 	TimedDatas getTabularTimedData(
 			final String dbName,

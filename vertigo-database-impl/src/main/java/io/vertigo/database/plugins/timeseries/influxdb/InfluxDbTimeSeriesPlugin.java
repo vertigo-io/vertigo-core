@@ -60,7 +60,6 @@ import io.vertigo.lang.Tuple;
 
 /**
  * @author mlaroche
- *
  */
 public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activeable {
 
@@ -212,7 +211,8 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 			final List<TimedDataSerie> dataSeries = series
 					.getValues()
 					.stream()
-					.map(values -> new TimedDataSerie(LocalDateTime.parse(values.get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant(ZoneOffset.UTC), buildMapValue(series.getColumns(), values)))
+					.map(values -> new TimedDataSerie(LocalDateTime.parse(values.get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant(ZoneOffset.UTC),
+							buildMapValue(series.getColumns(), values)))
 					.collect(Collectors.toList());
 			return new TimedDatas(dataSeries, new ArrayList<>(series.getColumns().subList(1, series.getColumns().size())));//we remove the first one
 		}
@@ -279,8 +279,14 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 	}
 
 	@Override
-	public TimedDatas getFlatTabularTimedData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
+	public TimedDatas getFlatTabularTimedData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final Optional<Long> limit) {
+		Assertion.checkNotNull(limit);
+		// -----
+		final Long resolvedLimit = limit.map(l -> Math.min(l, 5000L)).orElse(500L);
+
 		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter, false);
+		queryBuilder.append(" ORDER BY time DESC");
+		queryBuilder.append(" LIMIT " + resolvedLimit);
 		queryBuilder.append(" LIMIT 500");
 		
 		final String queryString = queryBuilder.toString();
@@ -448,7 +454,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 			Assertion.checkState(needAggregatedMeasures || !isAggregated, "No support for aggregation function in this case. Measure '{0}'.", measure);
 
 			final String measureQuery = isAggregated ? buildMeasureQuery(measure, measure) : '"' + measure + '"';
-			
+
 			queryBuilder
 					.append(separator)
 					.append(measureQuery);

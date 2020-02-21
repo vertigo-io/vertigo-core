@@ -20,6 +20,7 @@ package io.vertigo.database.plugins.timeseries.fake;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.database.impl.timeseries.TimeSeriesDataBaseManagerImpl;
 import io.vertigo.database.impl.timeseries.TimeSeriesPlugin;
@@ -32,7 +33,6 @@ import io.vertigo.database.timeseries.TimedDatas;
 
 /**
  * @author mlaroche
- *
  */
 public final class FakeTimeSeriesPlugin implements TimeSeriesPlugin {
 
@@ -42,7 +42,7 @@ public final class FakeTimeSeriesPlugin implements TimeSeriesPlugin {
 	}
 
 	@Override
-	public TimedDatas getFlatTabularTimedData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
+	public TimedDatas getFlatTabularTimedData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final Optional<Long> limit) {
 		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
 	}
 
