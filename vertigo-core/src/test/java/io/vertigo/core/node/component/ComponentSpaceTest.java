@@ -226,7 +226,7 @@ public final class ComponentSpaceTest {
 
 		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			final SomeManagerWithSomeTypeOfConnector manager = Home.getApp().getComponentSpace().resolve(SomeManagerWithSomeTypeOfConnector.class);
-			Assertions.assertEquals("hello;hello", manager.sayHello());
+			Assertions.assertEquals("hello A;hello B", manager.sayHello());
 		}
 	}
 

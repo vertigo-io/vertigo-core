@@ -18,7 +18,7 @@ public class SomeManagerWithSomeTypeOfConnector implements Component {
 
 	public String sayHello() {
 		return someConnectors.stream()
-				.map(SomeTypeOfConnector::sayHello)
+				.map(SomeTypeOfConnector::getClient)
 				.collect(Collectors.joining(";"));
 
 	}

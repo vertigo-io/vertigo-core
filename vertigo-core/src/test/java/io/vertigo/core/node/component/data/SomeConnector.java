@@ -6,7 +6,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Connector;
 import io.vertigo.core.param.ParamValue;
 
-public class SomeConnector implements Connector {
+public class SomeConnector implements Connector<String> {
 
 	private final String name;
 
@@ -19,6 +19,11 @@ public class SomeConnector implements Connector {
 
 	@Override
 	public String getName() {
+		return name;
+	}
+
+	@Override
+	public String getClient() {
 		return name;
 	}
 
