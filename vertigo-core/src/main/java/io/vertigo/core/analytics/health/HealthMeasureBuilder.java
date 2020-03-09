@@ -47,11 +47,7 @@ public final class HealthMeasureBuilder implements Builder<HealthMeasure> {
 	 * @return this builder
 	 */
 	public HealthMeasureBuilder withGreenStatus(final String message) {
-		Assertion.checkState(myStatus == null, "status already set");
-		//---
-		myStatus = HealthStatus.GREEN;
-		myMessage = message;
-		return this;
+		return withStatus(HealthStatus.GREEN, message, null);
 	}
 
 	/**
@@ -61,12 +57,7 @@ public final class HealthMeasureBuilder implements Builder<HealthMeasure> {
 	 * @return this builder
 	 */
 	public HealthMeasureBuilder withYellowStatus(final String message, final Exception cause) {
-		Assertion.checkState(myStatus == null, "status already set");
-		//---
-		myStatus = HealthStatus.YELLOW;
-		myMessage = message;
-		myCause = cause;
-		return this;
+		return withStatus(HealthStatus.YELLOW, message, cause);
 	}
 
 	/**
@@ -75,9 +66,13 @@ public final class HealthMeasureBuilder implements Builder<HealthMeasure> {
 	 * @return this builder
 	*/
 	public HealthMeasureBuilder withRedStatus(final String message, final Exception cause) {
+		return withStatus(HealthStatus.RED, message, cause);
+	}
+
+	private HealthMeasureBuilder withStatus(final HealthStatus healthStatus, final String message, final Exception cause) {
 		Assertion.checkState(myStatus == null, "status already set");
 		//---
-		myStatus = HealthStatus.RED;
+		myStatus = healthStatus;
 		myMessage = message;
 		myCause = cause;
 		return this;
