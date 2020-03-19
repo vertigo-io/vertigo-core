@@ -19,10 +19,18 @@
 package io.vertigo.core.node.component;
 
 /**
- * Composant.
- * Tout composant doit être ThreadSafe.
- * Un module possède un paramétrage et un état interne,
- * ce qui lui permet d'offrir des services.
+ * A component is one of tbe core concept of vertigo.
+ * 
+ * A component 
+ * - is thread safe
+ * - has parameters and a state 
+ * - offers services (technical or business)
+ * 
+ * A component can be activeable.
+ * 
+ * ----------------------------------------------------------------
+ * ----------------------------------------------------------------
+ * ----------------------------------------------------------------
  *
  * L'usage du module permet d'enrichir des statistiques.
  *
@@ -41,8 +49,9 @@ package io.vertigo.core.node.component;
  * Lors de l'arrét du composant
  *  - Libération des ressources consommées par le composant lors du undeploy.
  * 		Exemples : connexions, thread, flux
+ * 
  * @author pchretien
  */
 public interface Component {
-	//Comportements ajoutables : Activeable,  Describable
+	// note : a component can be activeable
 }
