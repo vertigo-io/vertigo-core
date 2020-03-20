@@ -19,39 +19,22 @@
 package io.vertigo.core.node.component;
 
 /**
- * A component is one of tbe core concept of vertigo.
+ * A coreComponent is one of tbe core concept of vertigo.
  * 
  * A component 
  * - is thread safe
  * - has parameters and a state 
  * - offers services (technical or business)
  * 
- * A component can be activeable.
+ * A component can be activeable (with start/stop methods).
  * 
- * ----------------------------------------------------------------
- * ----------------------------------------------------------------
- * ----------------------------------------------------------------
- *
- * L'usage du module permet d'enrichir des statistiques.
- *
- * Le module permet de représenter
- * - ce qu'il est, ce qu'il fait (ex : module de cache permet de...)
- * - les statistiques d'usage (ex: 99 % d'utilisation du cache)
- * - son état interne (ex : 153 Mo utilisé dont 3 Mo sur disque)
- * - son paramétrage. (ex : Implémentation eh cache avec les paramètres suivants ...)
- *
- * Les statistiques et l'état varient au fil du temps.
- * Le paramétrage doit être stable et nécessite une reconfiguration. (Nouvelle version d'une application)
- * Le contrat du composant (ce qu'il est, ce qu'il fait) doit évidemment être très stable.
- *
- * Lors du démarrage du composant. (méthode Start)
- *  - Vérification de la configuration avec les méthodes register.
- * Lors de l'arrét du composant
- *  - Libération des ressources consommées par le composant lors du undeploy.
- * 		Exemples : connexions, thread, flux
+ * There are 3 types of coreComponents
+ *  - Components
+ *  - Plugins
+ *  - Connectors
  * 
  * @author pchretien
  */
-public interface Component {
-	// note : a component can be activeable
+public interface Component extends CoreComponent {
+	// note : a cooreComponent can be activeable
 }
