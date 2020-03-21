@@ -45,7 +45,7 @@ public final class ConnectorConfig {
 	 * @param implClass the impl class of the component
 	 * @param params the params
 	 */
-	public ConnectorConfig(final Class<? extends Connector> implClass, final List<Param> params) {
+	ConnectorConfig(final Class<? extends Connector> implClass, final List<Param> params) {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkArgument(Connector.class.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, Connector.class);
 		Assertion.checkNotNull(params);
