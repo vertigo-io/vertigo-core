@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Activeable;
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.ComponentSpace;
 import io.vertigo.core.util.StringUtil;
 
@@ -56,11 +56,11 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	/**
 	 * Components (sorted by creation)
 	 */
-	private final Map<String, Component> components = new LinkedHashMap<>();
+	private final Map<String, CoreComponent> components = new LinkedHashMap<>();
 	/**
 	 * Started components are sublist of components.values(). They are added after the start call of a component.
 	 */
-	private final List<Component> startedComponents = new ArrayList<>();
+	private final List<CoreComponent> startedComponents = new ArrayList<>();
 	private final AtomicBoolean locked = new AtomicBoolean(false);
 
 	public ComponentSpaceWritable() {
@@ -85,7 +85,7 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	 * @param componentId id of the component
 	 * @param component instance of the component
 	 */
-	void registerComponent(final String componentId, final Component component) {
+	void registerComponent(final String componentId, final CoreComponent component) {
 		Assertion.checkState(!locked.get(), "Registration is now closed. A component can be registerd only during the boot phase");
 		Assertion.checkArgNotEmpty(componentId);
 		Assertion.checkNotNull(component);
@@ -118,13 +118,13 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 		return components.keySet();
 	}
 
-	private static void startComponent(final Component component) {
+	private static void startComponent(final CoreComponent component) {
 		if (component instanceof Activeable) {
 			Activeable.class.cast(component).start();
 		}
 	}
 
-	private static void stopComponent(final Component component) {
+	private static void stopComponent(final CoreComponent component) {
 		if (component instanceof Activeable) {
 			Activeable.class.cast(component).stop();
 		}
@@ -135,7 +135,7 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	}
 
 	private void startComponents() {
-		for (final Component component : components.values()) {
+		for (final CoreComponent component : components.values()) {
 			startedComponents.add(component);
 			startComponent(component);
 		}
@@ -145,10 +145,10 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 		/* Fermeture de tous les gestionnaires.*/
 		//On fait les fermetures dans l'ordre inverse des enregistrements.
 		//On se limite aux composants qui ont été démarrés.
-		final List<Component> reversedComponents = new ArrayList<>(startedComponents);
+		final List<CoreComponent> reversedComponents = new ArrayList<>(startedComponents);
 		java.util.Collections.reverse(reversedComponents);
 
-		for (final Component component : reversedComponents) {
+		for (final CoreComponent component : reversedComponents) {
 			try {
 				stopComponent(component);
 			} catch (final Exception e) {

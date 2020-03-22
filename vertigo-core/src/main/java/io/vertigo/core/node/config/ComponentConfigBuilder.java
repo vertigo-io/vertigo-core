@@ -25,7 +25,7 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.di.DIAnnotationUtil;
 import io.vertigo.core.param.Param;
 
@@ -37,8 +37,8 @@ import io.vertigo.core.param.Param;
 public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	private String myId;
 	private final boolean proxy;
-	private Class<? extends Component> myApiClass;
-	private Class<? extends Component> myImplClass;
+	private Class<? extends CoreComponent> myApiClass;
+	private Class<? extends CoreComponent> myImplClass;
 	private final List<Param> myParams = new ArrayList<>();
 
 	/**
@@ -53,7 +53,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	 * @param implClass the impl class of the component
 	 * @return this builder
 	 */
-	public ComponentConfigBuilder withImpl(final Class<? extends Component> implClass) {
+	public ComponentConfigBuilder withImpl(final Class<? extends CoreComponent> implClass) {
 		Assertion.checkNotNull(implClass);
 		//-----
 		myImplClass = implClass;
@@ -64,7 +64,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	 * @param apiClass the apiClass for the component
 	 * @return this builder
 	 */
-	public ComponentConfigBuilder withApi(final Class<? extends Component> apiClass) {
+	public ComponentConfigBuilder withApi(final Class<? extends CoreComponent> apiClass) {
 		Assertion.checkNotNull(apiClass);
 		//-----
 		myApiClass = apiClass;
@@ -121,8 +121,8 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	/** {@inheritDoc} */
 	@Override
 	public ComponentConfig build() {
-		final Optional<Class<? extends Component>> apiClassOpt = Optional.ofNullable(myApiClass);
-		final Optional<Class<? extends Component>> implClassOpt = Optional.ofNullable(myImplClass);
+		final Optional<Class<? extends CoreComponent>> apiClassOpt = Optional.ofNullable(myApiClass);
+		final Optional<Class<? extends CoreComponent>> implClassOpt = Optional.ofNullable(myImplClass);
 		if (myId == null) {
 			if (proxy) {
 				//if proxy then apiClass is required

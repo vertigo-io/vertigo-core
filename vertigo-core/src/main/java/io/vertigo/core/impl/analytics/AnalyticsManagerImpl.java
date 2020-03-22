@@ -40,7 +40,7 @@ import io.vertigo.core.impl.analytics.process.ProcessAnalyticsImpl;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.AopPlugin;
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
@@ -81,9 +81,9 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 				.stream()
 				.flatMap(id -> Stream.concat(
 						//health
-						HealthAnalyticsUtil.createHealthCheckDefinitions(id, Home.getApp().getComponentSpace().resolve(id, Component.class), aopPlugin).stream(),
+						HealthAnalyticsUtil.createHealthCheckDefinitions(id, Home.getApp().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream(),
 						//metrics
-						MetricAnalyticsUtil.createMetricDefinitions(id, Home.getApp().getComponentSpace().resolve(id, Component.class), aopPlugin).stream()))
+						MetricAnalyticsUtil.createMetricDefinitions(id, Home.getApp().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream()))
 				.collect(Collectors.toList());
 	}
 

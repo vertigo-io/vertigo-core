@@ -30,7 +30,7 @@ import io.vertigo.core.analytics.metric.Metrics;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.AopPlugin;
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
 
@@ -50,7 +50,7 @@ public final class MetricAnalyticsUtil {
 	/**
 	 * Registers all methods annotated with @Metrics
 	 */
-	public static List<MetricDefinition> createMetricDefinitions(final String componentId, final Component component, final AopPlugin aopPlugin) {
+	public static List<MetricDefinition> createMetricDefinitions(final String componentId, final CoreComponent component, final AopPlugin aopPlugin) {
 		Assertion.checkNotNull(component);
 
 		//-- we construct a map of feature by componentId

@@ -27,7 +27,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.node.component.proxy.ProxyMethodAnnotation;
 import io.vertigo.core.node.config.ModuleConfigBuilder;
@@ -59,7 +59,7 @@ final class ComponentDiscovery {
 		//---
 		final Collection<Class> components = new Selector()
 				.from(packagePrefix)
-				.filterClasses(ClassConditions.subTypeOf(Component.class))
+				.filterClasses(ClassConditions.subTypeOf(CoreComponent.class))
 				.filterClasses(ClassConditions.isAbstract().negate())// we filter abstract classes
 				// we ignore not discoverable classes
 				.filterClasses(ClassConditions.annotatedWith(NotDiscoverable.class).negate())

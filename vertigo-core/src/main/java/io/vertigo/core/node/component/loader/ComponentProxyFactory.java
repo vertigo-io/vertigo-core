@@ -29,7 +29,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.aop.Aspect;
 import io.vertigo.core.node.component.aop.AspectMethodInvocation;
 import io.vertigo.core.node.component.proxy.ProxyMethod;
@@ -41,7 +41,7 @@ final class ComponentProxyFactory {
 		//private
 	}
 
-	static <C extends Component> C createProxy(
+	static <C extends CoreComponent> C createProxy(
 			final Class<C> intf,
 			final List<ProxyMethod> proxyMethods,
 			final Map<Method, List<Aspect>> joinPoints) {
@@ -62,7 +62,7 @@ final class ComponentProxyFactory {
 		private final Map<Method, List<Aspect>> aspectsByMethod;
 
 		MyInvocationHandler(
-				final Class<? extends Component> intf,
+				final Class<? extends CoreComponent> intf,
 				final List<ProxyMethod> proxyMethods,
 				final Map<Method, List<Aspect>> aspectsByMethod) {
 			Assertion.checkNotNull(proxyMethods);

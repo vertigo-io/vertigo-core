@@ -26,6 +26,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.core.node.component.Connector;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.node.component.aop.Aspect;
 import io.vertigo.core.node.component.proxy.ProxyMethod;
@@ -135,7 +136,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @param params the list of params
 	 * @return this builder
 	 */
-	public ModuleConfigBuilder addComponent(final Class<? extends Component> implClass, final Param... params) {
+	public ModuleConfigBuilder addComponent(final Class<? extends CoreComponent> implClass, final Param... params) {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
@@ -153,7 +154,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @param params the list of params
 	 * @return this builder
 	 */
-	public ModuleConfigBuilder addComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass, final Param... params) {
+	public ModuleConfigBuilder addComponent(final Class<? extends CoreComponent> apiClass, final Class<? extends CoreComponent> implClass, final Param... params) {
 		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);

@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.ComponentSpace;
 import io.vertigo.core.node.component.loader.ComponentSpaceLoader;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
@@ -87,7 +87,7 @@ public final class DefinitionSpaceLoader {
 		//--
 		final Stream<Definition> definition = componentSpace.keySet()
 				.stream()
-				.map(key -> componentSpace.resolve(key, Component.class))
+				.map(key -> componentSpace.resolve(key, CoreComponent.class))
 				.filter(component -> DefinitionProvider.class.isAssignableFrom(component.getClass()))
 				.flatMap(component -> ((DefinitionProvider) component).get(definitionSpaceWritable).stream())
 				.map(defitionSupplier -> defitionSupplier.get(definitionSpaceWritable));

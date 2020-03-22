@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.Connector;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.node.component.di.DIAnnotationUtil;
@@ -97,7 +97,7 @@ final class ConfigUtil {
 	 * We are looking for the type of the plugin.
 	 * This type is the first objector interface that inherits from then 'plugin' interface.
 	 */
-	private static String getType(final Class<? extends Component> implClass, final Class<? extends Component> componentType) {
+	private static String getType(final Class<? extends CoreComponent> implClass, final Class<? extends CoreComponent> componentType) {
 		//We are seeking the first and unique Object that extends Plugin.
 		//This Interface defines the type of the plugin.
 

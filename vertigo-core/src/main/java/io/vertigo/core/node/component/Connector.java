@@ -30,7 +30,7 @@ package io.vertigo.core.node.component;
  *
  * @author mlaroche
  */
-public interface Connector<C> extends Component {
+public interface Connector<C> extends CoreComponent {
 
 	/**
 	 * A connector might need to define it's name to be findable by plugin and to differentiate multiple instance of the same connector.

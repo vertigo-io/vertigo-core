@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.lang.Tuple;
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.util.Selector.ClassConditions;
 import io.vertigo.core.util.Selector.FieldConditions;
 import io.vertigo.core.util.Selector.MethodConditions;
@@ -97,7 +97,7 @@ public final class SelectorTest {
 	public void testFilterBySubtype() {
 		final Collection<Class> result = new Selector()
 				.from(TEST_CLASSES_PACKAGE)
-				.filterClasses(ClassConditions.subTypeOf(Component.class))
+				.filterClasses(ClassConditions.subTypeOf(CoreComponent.class))
 				.findClasses();
 		// ---
 		Assertions.assertEquals(3, result.size()); //SA SB SAbstractD
@@ -161,7 +161,7 @@ public final class SelectorTest {
 		final Collection<Class> result = new Selector()
 				.from(TEST_CLASSES_PACKAGE)
 				.filterClasses(ClassConditions.annotatedWith(ARandomAnnotation.class))
-				.filterClasses(ClassConditions.subTypeOf(Component.class))
+				.filterClasses(ClassConditions.subTypeOf(CoreComponent.class))
 				.findClasses();
 		// ---
 		Assertions.assertEquals(1, result.size()); // SA

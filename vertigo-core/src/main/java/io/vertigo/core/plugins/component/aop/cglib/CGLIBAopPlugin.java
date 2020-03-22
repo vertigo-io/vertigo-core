@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.AopPlugin;
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.aop.Aspect;
 import io.vertigo.core.util.ClassUtil;
 import net.sf.cglib.proxy.Callback;
@@ -41,7 +41,7 @@ public final class CGLIBAopPlugin implements AopPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <C extends Component> C wrap(final C instance, final Map<Method, List<Aspect>> joinPoints) {
+	public <C extends CoreComponent> C wrap(final C instance, final Map<Method, List<Aspect>> joinPoints) {
 		Assertion.checkNotNull(instance);
 		Assertion.checkNotNull(joinPoints);
 		//check : witgh cglib all methods have to bo non-final
@@ -51,7 +51,7 @@ public final class CGLIBAopPlugin implements AopPlugin {
 		//-----
 		final Enhancer enhancer = new Enhancer();
 		enhancer.setCallback(createCallBack(instance, joinPoints));
-		final Class<? extends Component> implClass = instance.getClass();
+		final Class<? extends CoreComponent> implClass = instance.getClass();
 		final Class[] intfs = ClassUtil.getAllInterfaces(implClass).toArray(new Class[0]);
 		enhancer.setInterfaces(intfs);
 		enhancer.setSuperclass(implClass);
@@ -63,7 +63,7 @@ public final class CGLIBAopPlugin implements AopPlugin {
 	}
 
 	@Override
-	public <C extends Component> C unwrap(final C component) {
+	public <C extends CoreComponent> C unwrap(final C component) {
 		if (isWrapped(component)) {
 			return (C) Stream.of(((Factory) component).getCallbacks())
 					.filter(callback -> CGLIBInvocationHandler.class.isAssignableFrom(callback.getClass()))

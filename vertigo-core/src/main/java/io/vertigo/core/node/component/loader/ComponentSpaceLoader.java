@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.component.AopPlugin;
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.Container;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.node.component.aop.Aspect;
@@ -111,7 +111,7 @@ public final class ComponentSpaceLoader {
 				.stream()
 				.filter(ComponentConfig::isProxy)
 				.forEach(componentConfig -> {
-					final Component component = createProxyWithOptions(/*paramManagerOpt,*/ componentConfig);
+					final CoreComponent component = createProxyWithOptions(/*paramManagerOpt,*/ componentConfig);
 					componentSpaceWritable.registerComponent(componentConfig.getId(), component);
 				});
 
@@ -141,7 +141,7 @@ public final class ComponentSpaceLoader {
 				//Si il s'agit d'un composant (y compris plugin)
 
 				// 2.a On crée le composant avec AOP et autres options (elastic)
-				final Component component = createComponentWithOptions(paramManagerOpt, componentProxyContainer, componentConfig);
+				final CoreComponent component = createComponentWithOptions(paramManagerOpt, componentProxyContainer, componentConfig);
 				// 2.b. On enregistre le composant
 				componentSpaceWritable.registerComponent(componentConfig.getId(), component);
 			}
@@ -214,7 +214,7 @@ public final class ComponentSpaceLoader {
 		proxyMethods.add(proxyMethod);
 	}
 
-	private <C extends Component> C injectAspects(final C instance, final Class implClass) {
+	private <C extends CoreComponent> C injectAspects(final C instance, final Class implClass) {
 		//2. AOP , a new instance is created when aspects are injected in the previous instance
 		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createAspectsByMethod(implClass, aspects);
 		if (!joinPoints.isEmpty()) {
@@ -223,7 +223,7 @@ public final class ComponentSpaceLoader {
 		return instance;
 	}
 
-	private static <C extends Component> C createInstance(
+	private static <C extends CoreComponent> C createInstance(
 			final Container container,
 			final Optional<ParamManager> paramManagerOpt,
 			final ComponentConfig componentConfig) {
@@ -231,20 +231,20 @@ public final class ComponentSpaceLoader {
 	}
 
 	//ici
-	private Component createComponentWithOptions(
+	private CoreComponent createComponentWithOptions(
 			final Optional<ParamManager> paramManagerOpt,
 			final ComponentUnusedKeysContainer componentContainer,
 			final ComponentConfig componentConfig) {
 		Assertion.checkArgument(!componentConfig.isProxy(), "a no-proxy component is expected");
 		//---
 		// 1. An instance is created
-		final Component instance = createInstance(componentContainer, paramManagerOpt, componentConfig);
+		final CoreComponent instance = createInstance(componentContainer, paramManagerOpt, componentConfig);
 
 		//2. AOP , a new instance is created when aspects are injected in the previous instance
 		return injectAspects(instance, componentConfig.getImplClass());
 	}
 
-	private Component createProxyWithOptions(
+	private CoreComponent createProxyWithOptions(
 			//	final Optional<ParamManager> paramManagerOpt,
 			final ComponentConfig componentConfig) {
 		Assertion.checkArgument(componentConfig.isProxy(), "a proxy component is expected");
