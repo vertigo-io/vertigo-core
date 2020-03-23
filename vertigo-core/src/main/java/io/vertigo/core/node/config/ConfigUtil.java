@@ -37,10 +37,10 @@ final class ConfigUtil {
 		//
 	}
 
-	static List<ComponentConfig> buildPluginsComponentConfigs(final List<PluginConfig> pluginConfigs) {
+	static List<CoreComponentConfig> buildPluginsComponentConfigs(final List<PluginConfig> pluginConfigs) {
 		Assertion.checkNotNull(pluginConfigs);
 		//---
-		final List<ComponentConfig> componentConfigs = new ArrayList<>();
+		final List<CoreComponentConfig> componentConfigs = new ArrayList<>();
 		final Set<String> pluginTypes = new HashSet<>();
 
 		int index = 1;
@@ -55,7 +55,7 @@ final class ConfigUtil {
 				index++;
 			}
 
-			final ComponentConfig componentConfig = ComponentConfig.builder()
+			final CoreComponentConfig componentConfig = CoreComponentConfig.builder()
 					.withPlugin(pluginConfig.getImplClass(), pluginConfig.getParams(), id)
 					.build();
 			componentConfigs.add(componentConfig);
@@ -63,10 +63,10 @@ final class ConfigUtil {
 		return componentConfigs;
 	}
 
-	static List<ComponentConfig> buildConnectorsComponentConfigs(final List<ConnectorConfig> connectorConfigs) {
+	static List<CoreComponentConfig> buildConnectorsComponentConfigs(final List<ConnectorConfig> connectorConfigs) {
 		Assertion.checkNotNull(connectorConfigs);
 		//---
-		final List<ComponentConfig> componentConfigs = new ArrayList<>();
+		final List<CoreComponentConfig> componentConfigs = new ArrayList<>();
 		final Set<String> connectorTypes = new HashSet<>();
 
 		int index = 1;
@@ -81,12 +81,34 @@ final class ConfigUtil {
 				index++;
 			}
 
-			final ComponentConfig componentConfig = ComponentConfig.builder()
+			final CoreComponentConfig componentConfig = CoreComponentConfig.builder()
 					.withConnector(connectorConfig.getImplClass(), connectorConfig.getParams(), id)
 					.build();
 			componentConfigs.add(componentConfig);
 		}
 		return componentConfigs;
+	}
+
+	static List<CoreComponentConfig> buildComponentConfigs(final List<ComponentConfig> componentConfigs) {
+		Assertion.checkNotNull(componentConfigs);
+		//---
+		final List<CoreComponentConfig> coreComponentConfigs = new ArrayList<>();
+		for (final ComponentConfig componentConfig : componentConfigs) {
+			final CoreComponentConfigBuilder coreComponentConfigBuilder = CoreComponentConfig.builder(componentConfig.isProxy())
+					.withId(componentConfig.getId())
+					.addParams(componentConfig.getParams());
+
+			if (!componentConfig.isProxy()) {
+				coreComponentConfigBuilder
+						.withImpl(componentConfig.getImplClass());
+			}
+			if (componentConfig.getApiClass().isPresent()) {
+				coreComponentConfigBuilder
+						.withApi(componentConfig.getApiClass().get());
+			}
+			coreComponentConfigs.add(coreComponentConfigBuilder.build());
+		}
+		return coreComponentConfigs;
 	}
 
 	/*

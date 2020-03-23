@@ -155,9 +155,9 @@ public final class NodeConfig {
 		printComponents(out, moduleConfig.getName(), moduleConfig.getComponentConfigs());
 	}
 
-	private static void printComponents(final PrintStream out, final String moduleName, final List<ComponentConfig> componentConfigs) {
+	private static void printComponents(final PrintStream out, final String moduleName, final List<CoreComponentConfig> componentConfigs) {
 		boolean first = true;
-		for (final ComponentConfig componentConfig : componentConfigs) {
+		for (final CoreComponentConfig componentConfig : componentConfigs) {
 			final String componentClassName = componentConfig.getApiClass()
 					.orElseGet(componentConfig::getImplClass)
 					.getSimpleName();

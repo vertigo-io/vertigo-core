@@ -85,9 +85,9 @@ public final class ModuleConfig {
 	/**
 	 * @return the list of the component-configs
 	 */
-	public List<ComponentConfig> getComponentConfigs() {
-		return new ListBuilder<ComponentConfig>()
-				.addAll(components)
+	public List<CoreComponentConfig> getComponentConfigs() {
+		return new ListBuilder<CoreComponentConfig>()
+				.addAll(ConfigUtil.buildComponentConfigs(components))
 				.addAll(ConfigUtil.buildPluginsComponentConfigs(plugins))
 				.addAll(ConfigUtil.buildConnectorsComponentConfigs(connectors))
 				.build();

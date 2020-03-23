@@ -26,9 +26,6 @@ import java.util.Optional;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.node.component.Component;
-import io.vertigo.core.node.component.Connector;
-import io.vertigo.core.node.component.CoreComponent;
-import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.node.component.di.DIAnnotationUtil;
 import io.vertigo.core.param.Param;
 
@@ -38,10 +35,9 @@ import io.vertigo.core.param.Param;
  * @author npiedeloup, pchretien
  */
 public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
-	private String myId;
 	private final boolean proxy;
-	private Class<? extends CoreComponent> myApiClass;
-	private Class<? extends CoreComponent> myImplClass;
+	private Class<? extends Component> myApiClass;
+	private Class<? extends Component> myImplClass;
 	private final List<Param> myParams = new ArrayList<>();
 
 	/**
@@ -50,22 +46,6 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	 */
 	ComponentConfigBuilder(final boolean proxy) {
 		this.proxy = proxy;
-	}
-
-	ComponentConfigBuilder withPlugin(final Class<? extends Plugin> implClass, List<Param> params, String id) {
-		Assertion.checkNotNull(implClass);
-		//-----
-		myImplClass = implClass;
-		return addParams(params)
-				.withId(id);
-	}
-
-	ComponentConfigBuilder withConnector(final Class<? extends Connector> implClass, List<Param> params, String id) {
-		Assertion.checkNotNull(implClass);
-		//-----
-		myImplClass = implClass;
-		return addParams(params)
-				.withId(id);
 	}
 
 	/**
@@ -95,62 +75,26 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	 * @param params the list of params
 	 * @return this builder
 	 */
-	public ComponentConfigBuilder addParams(final List<Param> params) {
-		Assertion.checkNotNull(params);
-		//-----
-		myParams.addAll(params);
-		return this;
-	}
-
-	/**
-	 * Adds a list of params to this component config.
-	 * @param params the list of params
-	 * @return this builder
-	 */
 	public ComponentConfigBuilder addParams(final Param[] params) {
 		Assertion.checkNotNull(params);
 		//-----
-		return addParams(Arrays.asList(params));
-	}
-
-	/**
-	 * Adds a param to this component config.
-	 * @param param the param
-	 * @return this builder
-	 */
-	public ComponentConfigBuilder addParam(final Param param) {
-		Assertion.checkNotNull(param);
-		//-----
-		myParams.add(param);
-		return this;
-	}
-
-	/**
-	 * Specifies the id to be used (otherwise an id will be chosen by convention) see build method.
-	 * @param id the id to use
-	 * @return this builder
-	 */
-	public ComponentConfigBuilder withId(final String id) {
-		Assertion.checkArgNotEmpty(id);
-		//---
-		myId = id;
+		myParams.addAll(Arrays.asList(params));
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public ComponentConfig build() {
-		final Optional<Class<? extends CoreComponent>> apiClassOpt = Optional.ofNullable(myApiClass);
-		final Optional<Class<? extends CoreComponent>> implClassOpt = Optional.ofNullable(myImplClass);
-		if (myId == null) {
-			if (proxy) {
-				//if proxy then apiClass is required
-				myId = DIAnnotationUtil.buildId(apiClassOpt.get());
-			} else {
-				//if no proxy then implClass is required
-				//By convention the component id is the simpleName of the api or the impl
-				myId = DIAnnotationUtil.buildId(apiClassOpt.orElseGet(implClassOpt::get));
-			}
+		final Optional<Class<? extends Component>> apiClassOpt = Optional.ofNullable(myApiClass);
+		final Optional<Class<? extends Component>> implClassOpt = Optional.ofNullable(myImplClass);
+		final String myId;
+		if (proxy) {
+			//if proxy then apiClass is required
+			myId = DIAnnotationUtil.buildId(apiClassOpt.get());
+		} else {
+			//if no proxy then implClass is required
+			//By convention the component id is the simpleName of the api or the impl
+			myId = DIAnnotationUtil.buildId(apiClassOpt.orElseGet(implClassOpt::get));
 		}
 		return new ComponentConfig(myId, proxy, apiClassOpt, implClassOpt, myParams);
 	}

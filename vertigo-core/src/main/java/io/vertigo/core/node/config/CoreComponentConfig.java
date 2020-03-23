@@ -19,10 +19,12 @@
 package io.vertigo.core.node.config;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.param.Param;
 
 /**
@@ -37,12 +39,12 @@ import io.vertigo.core.param.Param;
  *
  * @author npiedeloup, pchretien
  */
-public final class ComponentConfig {
+public final class CoreComponentConfig {
 	private final String id;
 	private final boolean proxy;
-	private final Optional<Class<? extends Component>> implClassOpt;
-	private final Optional<Class<? extends Component>> apiClassOpt;
-	private final List<Param> params;
+	private final Optional<Class<? extends CoreComponent>> implClassOpt;
+	private final Optional<Class<? extends CoreComponent>> apiClassOpt;
+	private final Map<String, String> params;
 
 	/**
 	 * Constructor.
@@ -50,11 +52,11 @@ public final class ComponentConfig {
 	 * @param implClass impl class of the component
 	 * @param params params
 	 */
-	ComponentConfig(
+	CoreComponentConfig(
 			final String id,
 			final boolean proxy,
-			final Optional<Class<? extends Component>> apiClassOpt,
-			final Optional<Class<? extends Component>> implClassOpt,
+			final Optional<Class<? extends CoreComponent>> apiClassOpt,
+			final Optional<Class<? extends CoreComponent>> implClassOpt,
 			final List<Param> params) {
 		Assertion.checkArgNotEmpty(id);
 		Assertion.checkNotNull(apiClassOpt);
@@ -64,8 +66,8 @@ public final class ComponentConfig {
 			Assertion.checkArgument(apiClassOpt.isPresent(), "When a proxy is declared, an api is required");
 		} else {
 			Assertion.checkArgument(implClassOpt.isPresent(), "When a classic component -no proxy-  is declared, an impl is required");
-			Assertion.when(apiClassOpt.isPresent()).check(() -> Component.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, Component.class);
-			Assertion.checkArgument(apiClassOpt.orElse(Component.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(Component.class));
+			Assertion.when(apiClassOpt.isPresent()).check(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
+			Assertion.checkArgument(apiClassOpt.orElse(CoreComponent.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(CoreComponent.class));
 		}
 		Assertion.checkNotNull(params);
 		//-----
@@ -75,7 +77,9 @@ public final class ComponentConfig {
 		this.apiClassOpt = apiClassOpt;
 		this.implClassOpt = implClassOpt;
 
-		this.params = params;
+		this.params = params
+				.stream()
+				.collect(Collectors.toMap(Param::getName, Param::getValue));
 	}
 
 	/**
@@ -83,9 +87,9 @@ public final class ComponentConfig {
 	 * By default a pure component is expected
 	 * @return ComponentConfigBuilder
 	 */
-	public static ComponentConfigBuilder builder() {
+	public static CoreComponentConfigBuilder builder() {
 		final boolean proxy = false;
-		return new ComponentConfigBuilder(proxy);
+		return new CoreComponentConfigBuilder(proxy);
 	}
 
 	/**
@@ -93,22 +97,23 @@ public final class ComponentConfig {
 	 * @param proxy if the component is a proxy
 	 * @return ComponentConfigBuilder
 	 */
-	public static ComponentConfigBuilder builder(final boolean proxy) {
-		return new ComponentConfigBuilder(proxy);
+	public static CoreComponentConfigBuilder builder(final boolean proxy) {
+		return new CoreComponentConfigBuilder(proxy);
 	}
 
 	/**
 	 * @return impl class of the component
 	 */
-	public Class<? extends Component> getImplClass() {
+	public Class<? extends CoreComponent> getImplClass() {
 		Assertion.checkState(!proxy, "a proxy has no impl");
+		//---
 		return implClassOpt.get();
 	}
 
 	/**
 	 * @return api of the component
 	 */
-	public Optional<Class<? extends Component>> getApiClass() {
+	public Optional<Class<? extends CoreComponent>> getApiClass() {
 		return apiClassOpt;
 	}
 
@@ -129,7 +134,7 @@ public final class ComponentConfig {
 	/**
 	 * @return params
 	 */
-	public List<Param> getParams() {
+	public Map<String, String> getParams() {
 		return params;
 	}
 

@@ -37,7 +37,7 @@ import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.component.di.DIReactor;
 import io.vertigo.core.node.component.proxy.ProxyMethod;
 import io.vertigo.core.node.config.AspectConfig;
-import io.vertigo.core.node.config.ComponentConfig;
+import io.vertigo.core.node.config.CoreComponentConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.ProxyMethodConfig;
 import io.vertigo.core.param.ParamManager;
@@ -71,7 +71,7 @@ public final class ComponentSpaceLoader {
 		return new ComponentSpaceLoader(componentSpaceWritable, aopPlugin);
 	}
 
-	public ComponentSpaceLoader loadBootComponents(final List<ComponentConfig> componentConfigs) {
+	public ComponentSpaceLoader loadBootComponents(final List<CoreComponentConfig> componentConfigs) {
 		Assertion.checkNotNull(componentConfigs);
 		//--
 		registerComponents(Optional.empty(), "boot", componentConfigs);
@@ -102,14 +102,14 @@ public final class ComponentSpaceLoader {
 	 * @param moduleName the name of the module
 	 * @param componentConfigs the configs of the components
 	 */
-	private void registerComponents(final Optional<ParamManager> paramManagerOpt, final String moduleName, final List<ComponentConfig> componentConfigs) {
+	private void registerComponents(final Optional<ParamManager> paramManagerOpt, final String moduleName, final List<CoreComponentConfig> componentConfigs) {
 		Assertion.checkNotNull(paramManagerOpt);
 		Assertion.checkNotNull(moduleName);
 		Assertion.checkNotNull(componentConfigs);
 		//---- Proxies----
 		componentConfigs
 				.stream()
-				.filter(ComponentConfig::isProxy)
+				.filter(CoreComponentConfig::isProxy)
 				.forEach(componentConfig -> {
 					final CoreComponent component = createProxyWithOptions(/*paramManagerOpt,*/ componentConfig);
 					componentSpaceWritable.registerComponent(componentConfig.getId(), component);
@@ -122,11 +122,11 @@ public final class ComponentSpaceLoader {
 			reactor.addParent(id);
 		}
 		//Map des composants définis par leur id
-		final Map<String, ComponentConfig> componentConfigById = componentConfigs
+		final Map<String, CoreComponentConfig> componentConfigById = componentConfigs
 				.stream()
 				.filter(componentConfig -> !componentConfig.isProxy())
 				.peek(componentConfig -> reactor.addComponent(componentConfig.getId(), componentConfig.getImplClass(), componentConfig.getParams().keySet()))
-				.collect(Collectors.toMap(ComponentConfig::getId, Function.identity()));
+				.collect(Collectors.toMap(CoreComponentConfig::getId, Function.identity()));
 
 		//Comment trouver des plugins orphenlins ?
 
@@ -136,7 +136,7 @@ public final class ComponentSpaceLoader {
 		final ComponentUnusedKeysContainer componentProxyContainer = new ComponentUnusedKeysContainer(componentSpaceWritable);
 
 		for (final String id : ids) {
-			final ComponentConfig componentConfig = componentConfigById.get(id);
+			final CoreComponentConfig componentConfig = componentConfigById.get(id);
 			if (componentConfig != null) {
 				//Si il s'agit d'un composant (y compris plugin)
 
@@ -153,7 +153,7 @@ public final class ComponentSpaceLoader {
 				.filter(componentConfig -> !componentConfig.isProxy())
 				.filter(componentConfig -> Plugin.class.isAssignableFrom(componentConfig.getImplClass()))
 				//only plugins are considered
-				.map(ComponentConfig::getId)
+				.map(CoreComponentConfig::getId)
 				//used keys are removed
 				.filter(pluginId -> !componentProxyContainer.getUsedKeys().contains(pluginId))
 				.collect(Collectors.toList());
@@ -226,7 +226,7 @@ public final class ComponentSpaceLoader {
 	private static <C extends CoreComponent> C createInstance(
 			final Container container,
 			final Optional<ParamManager> paramManagerOpt,
-			final ComponentConfig componentConfig) {
+			final CoreComponentConfig componentConfig) {
 		return (C) createInstance(componentConfig.getImplClass(), container, paramManagerOpt, componentConfig.getParams());
 	}
 
@@ -234,7 +234,7 @@ public final class ComponentSpaceLoader {
 	private CoreComponent createComponentWithOptions(
 			final Optional<ParamManager> paramManagerOpt,
 			final ComponentUnusedKeysContainer componentContainer,
-			final ComponentConfig componentConfig) {
+			final CoreComponentConfig componentConfig) {
 		Assertion.checkArgument(!componentConfig.isProxy(), "a no-proxy component is expected");
 		//---
 		// 1. An instance is created
@@ -246,7 +246,7 @@ public final class ComponentSpaceLoader {
 
 	private CoreComponent createProxyWithOptions(
 			//	final Optional<ParamManager> paramManagerOpt,
-			final ComponentConfig componentConfig) {
+			final CoreComponentConfig componentConfig) {
 		Assertion.checkArgument(componentConfig.isProxy(), "a proxy component is expected");
 		//---
 		//1. AOP : finds all aspects

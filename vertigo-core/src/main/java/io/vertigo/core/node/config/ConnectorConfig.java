@@ -42,7 +42,7 @@ public final class ConnectorConfig {
 
 	/**
 	 * Constructor.
-	 * @param implClass the impl class of the component
+	 * @param implClass the impl class of the connector
 	 * @param params the params
 	 */
 	ConnectorConfig(final Class<? extends Connector> implClass, final List<Param> params) {
@@ -52,15 +52,6 @@ public final class ConnectorConfig {
 		//-----
 		this.implClass = implClass;
 		this.params = params;
-	}
-
-	/**
-	 * Static method factory for PluginConfigBuilder
-	 * @param connectorImplClass impl of the connector
-	 * @return PluginConfigBuilder
-	 */
-	public static ConnectorConfigBuilder builder(final Class<? extends Connector> connectorImplClass) {
-		return new ConnectorConfigBuilder(connectorImplClass);
 	}
 
 	/**
@@ -82,5 +73,4 @@ public final class ConnectorConfig {
 	public String toString() {
 		return implClass.getName();
 	}
-
 }

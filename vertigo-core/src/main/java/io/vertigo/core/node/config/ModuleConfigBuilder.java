@@ -179,25 +179,19 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	* Adds a plugin  defined by its config.
-	 * @param pluginConfig the plugin-config
-	 * @return this builder
-	 */
-	public ModuleConfigBuilder addPlugin(final PluginConfig pluginConfig) {
-		Assertion.checkNotNull(pluginConfig);
-		//---
-		myPluginConfigs.add(pluginConfig);
-		return this;
-	}
-
-	/**
 	 * Adds a plugin defined by its implementation.
 	 * @param pluginImplClass  impl of the plugin
 	 * @param params  the list of params
 	 * @return this builder
 	 */
 	public ModuleConfigBuilder addPlugin(final Class<? extends Plugin> pluginImplClass, final Param... params) {
-		return this.addPlugin(new PluginConfig(pluginImplClass, Arrays.asList(params)));
+		return addPlugin(pluginImplClass, Arrays.asList(params));
+	}
+
+	public ModuleConfigBuilder addPlugin(final Class<? extends Plugin> pluginImplClass, final List<Param> params) {
+		Assertion.checkNotNull(params);
+		myPluginConfigs.add(new PluginConfig(pluginImplClass, params));
+		return this;
 	}
 
 	/**
@@ -205,12 +199,6 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @param connectorConfig the connector-config
 	 * @return this builder
 	 */
-	public ModuleConfigBuilder addConnector(final ConnectorConfig connectorConfig) {
-		Assertion.checkNotNull(connectorConfig);
-		//---
-		myConnectorConfigs.add(connectorConfig);
-		return this;
-	}
 
 	/**
 	 * Adds a connector defined by its implementation.
@@ -219,7 +207,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return this builder
 	 */
 	public ModuleConfigBuilder addConnector(final Class<? extends Connector> connectorImplClass, final Param... params) {
-		return this.addConnector(new ConnectorConfig(connectorImplClass, Arrays.asList(params)));
+		myConnectorConfigs.add(new ConnectorConfig(connectorImplClass, Arrays.asList(params)));
+		return this;
 	}
 
 	/** {@inheritDoc} */

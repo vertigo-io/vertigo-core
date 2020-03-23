@@ -48,7 +48,7 @@ public final class PluginConfig {
 	 * @param implClass the impl class of the component
 	 * @param params the params
 	 */
-	public PluginConfig(final Class<? extends Plugin> implClass, final List<Param> params) {
+	PluginConfig(final Class<? extends Plugin> implClass, final List<Param> params) {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkArgument(Plugin.class.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, Plugin.class);
 		Assertion.checkNotNull(params);
@@ -56,15 +56,6 @@ public final class PluginConfig {
 		this.implClass = implClass;
 
 		this.params = params;
-	}
-
-	/**
-	 * Static method factory for PluginConfigBuilder
-	 * @param pluginImplClass impl of the plugin
-	 * @return PluginConfigBuilder
-	 */
-	public static PluginConfigBuilder builder(final Class<? extends Plugin> pluginImplClass) {
-		return new PluginConfigBuilder(pluginImplClass);
 	}
 
 	/**
