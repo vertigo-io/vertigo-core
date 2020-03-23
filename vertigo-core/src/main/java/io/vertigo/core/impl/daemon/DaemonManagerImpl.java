@@ -38,7 +38,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.node.component.AopPlugin;
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
@@ -72,11 +72,11 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 		final AopPlugin aopPlugin = Home.getApp().getNodeConfig().getBootConfig().getAopPlugin();
 		return Home.getApp().getComponentSpace().keySet()
 				.stream()
-				.flatMap(id -> createDaemonDefinitions(Home.getApp().getComponentSpace().resolve(id, Component.class), aopPlugin).stream())
+				.flatMap(id -> createDaemonDefinitions(Home.getApp().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream())
 				.collect(Collectors.toList());
 	}
 
-	private List<DaemonDefinition> createDaemonDefinitions(final Component component, final AopPlugin aopPlugin) {
+	private List<DaemonDefinition> createDaemonDefinitions(final CoreComponent component, final AopPlugin aopPlugin) {
 		return Stream.of(aopPlugin.unwrap(component).getClass().getMethods())
 				.filter(method -> method.isAnnotationPresent(DaemonScheduled.class))
 				.map(
