@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.Connector;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.node.component.di.DIAnnotationUtil;
 import io.vertigo.core.util.ClassUtil;
@@ -56,9 +56,7 @@ final class ConfigUtil {
 			}
 
 			final ComponentConfig componentConfig = ComponentConfig.builder()
-					.withImpl(pluginConfig.getImplClass())
-					.withId(id)
-					.addParams(pluginConfig.getParams())
+					.withPlugin(pluginConfig.getImplClass(), pluginConfig.getParams(), id)
 					.build();
 			componentConfigs.add(componentConfig);
 		}
@@ -84,9 +82,7 @@ final class ConfigUtil {
 			}
 
 			final ComponentConfig componentConfig = ComponentConfig.builder()
-					.withImpl(connectorConfig.getImplClass())
-					.withId(id)
-					.addParams(connectorConfig.getParams())
+					.withConnector(connectorConfig.getImplClass(), connectorConfig.getParams(), id)
 					.build();
 			componentConfigs.add(componentConfig);
 		}

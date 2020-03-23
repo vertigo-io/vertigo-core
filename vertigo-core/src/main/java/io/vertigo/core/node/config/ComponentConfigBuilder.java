@@ -25,7 +25,10 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
+import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.Connector;
 import io.vertigo.core.node.component.CoreComponent;
+import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.node.component.di.DIAnnotationUtil;
 import io.vertigo.core.param.Param;
 
@@ -49,11 +52,27 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 		this.proxy = proxy;
 	}
 
+	ComponentConfigBuilder withPlugin(final Class<? extends Plugin> implClass, List<Param> params, String id) {
+		Assertion.checkNotNull(implClass);
+		//-----
+		myImplClass = implClass;
+		return addParams(params)
+				.withId(id);
+	}
+
+	ComponentConfigBuilder withConnector(final Class<? extends Connector> implClass, List<Param> params, String id) {
+		Assertion.checkNotNull(implClass);
+		//-----
+		myImplClass = implClass;
+		return addParams(params)
+				.withId(id);
+	}
+
 	/**
 	 * @param implClass the impl class of the component
 	 * @return this builder
 	 */
-	public ComponentConfigBuilder withImpl(final Class<? extends CoreComponent> implClass) {
+	public ComponentConfigBuilder withImpl(final Class<? extends Component> implClass) {
 		Assertion.checkNotNull(implClass);
 		//-----
 		myImplClass = implClass;
@@ -64,7 +83,7 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	 * @param apiClass the apiClass for the component
 	 * @return this builder
 	 */
-	public ComponentConfigBuilder withApi(final Class<? extends CoreComponent> apiClass) {
+	public ComponentConfigBuilder withApi(final Class<? extends Component> apiClass) {
 		Assertion.checkNotNull(apiClass);
 		//-----
 		myApiClass = apiClass;
