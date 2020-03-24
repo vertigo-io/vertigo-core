@@ -19,15 +19,15 @@ public enum Cardinality {
 	MANY;
 
 	public boolean isOptionalOrNullable() {
-		return OPTIONAL_OR_NULLABLE.equals(this);
+		return OPTIONAL_OR_NULLABLE == this;
 	}
 
 	public boolean hasOne() {
-		return ONE.equals(this);
+		return ONE == this;
 	}
 
 	public boolean hasMany() {
-		return MANY.equals(this);
+		return MANY == this;
 	}
 
 	public static Cardinality fromSymbol(final String sCardinality) {
@@ -41,7 +41,7 @@ public enum Cardinality {
 			case "*":
 				return MANY;
 			default:
-				throw new VSystemException("Unknown cardinality symbol : '" + sCardinality + "' Supported cardinalities are '?' for optional, '1' for one and '*' for many ");
+				throw new VSystemException("Unknown cardinality symbol : '{0}'. Supported cardinalities are '?' for optional, '1' for one and '*' for many ", sCardinality);
 		}
 	}
 
@@ -54,7 +54,7 @@ public enum Cardinality {
 			case MANY:
 				return "*";
 			default:
-				throw new VSystemException("Unknown cardinality : '" + this + "' Supported cardinalities are optional, one and many ");
+				throw new VSystemException("Unknown cardinality : '{0}'. Supported cardinalities are optional, one and many ", this);
 		}
 	}
 
