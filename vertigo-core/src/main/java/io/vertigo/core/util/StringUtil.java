@@ -72,7 +72,10 @@ public final class StringUtil {
 		}
 
 		final char firstChar = strValue.charAt(0);
-		if (Character.isUpperCase(firstChar)) { //la méthode est appellé souvant et la concaténation de chaine est lourde : on test avant de faire l'opération
+		if (Character.isUpperCase(firstChar)) {
+			//This method can be called many times. 
+			//Concat is an heavy operation
+			//so we prefer test before executing operation			
 			return Character.toLowerCase(firstChar) + strValue.substring(1);
 		}
 		return strValue;
@@ -92,7 +95,10 @@ public final class StringUtil {
 		}
 
 		final char firstChar = strValue.charAt(0);
-		if (Character.isLowerCase(firstChar)) { //la méthode est appellé souvant et la concaténation de chaine est lourde : on test avant de faire l'opération
+		if (Character.isLowerCase(firstChar)) {
+			//This method can be called many times. 
+			//Concat is an heavy operation
+			//so we prefer test before executing operation			
 			return Character.toUpperCase(firstChar) + strValue.substring(1);
 		}
 		return strValue;
