@@ -49,16 +49,16 @@ import io.vertigo.core.node.component.Manager;
  */
 public interface LocaleManager extends Manager {
 	/**
-	 * Enregistre une stratégie de choix de langue.
-	 * @param localeProvider Définit la langue par défaut de façon contextuelle
+	 * Register a strategy to choose a locale.
+	 * @param localeSupplier Supply a locale in a context
 	 */
-	void registerLocaleProvider(LocaleProvider localeProvider);
+	void registerLocaleSupplier(Supplier<Locale> localeSupplier);
 
 	/**
-	 * Enregistre une stratégie de choix de time zone.
-	 * @param zoneProvider Définit la time zone par défaut de façon contextuelle
+	 * Register a strategy to choose a zone.
+	 * @param zoneSupplier Supply a zone in a context
 	 */
-	void registerZoneProvider(Supplier<ZoneId> zoneProvider);
+	void registerZoneSupplier(Supplier<ZoneId> zoneSupplier);
 
 	/**
 	 * Ajout d'un dictionnaire de ressources.

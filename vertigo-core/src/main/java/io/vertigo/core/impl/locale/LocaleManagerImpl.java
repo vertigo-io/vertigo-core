@@ -41,7 +41,6 @@ import org.apache.logging.log4j.Logger;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.core.locale.LocaleProvider;
 import io.vertigo.core.locale.MessageKey;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ListBuilder;
@@ -71,7 +70,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 	 * Stratégie de choix de la langue.
 	 * Si pas de stratégie ou pas de langue trouvée alors langue par défaut = première langue déclarée.
 	 */
-	private LocaleProvider localeProvider;
+	private Supplier<Locale> localeSupplier;
 
 	/**
 	 * Stratégie de choix de la zone.
@@ -135,7 +134,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void registerZoneProvider(final Supplier<ZoneId> newZoneSupplier) {
+	public void registerZoneSupplier(final Supplier<ZoneId> newZoneSupplier) {
 		Assertion.checkArgument(zoneSupplier == null, "zoneSupplier already registered");
 		Assertion.checkNotNull(newZoneSupplier);
 		//-----
@@ -144,11 +143,11 @@ public final class LocaleManagerImpl implements LocaleManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void registerLocaleProvider(final LocaleProvider newLocaleProvider) {
-		Assertion.checkArgument(localeProvider == null, "localeProvider already registered");
-		Assertion.checkNotNull(newLocaleProvider);
+	public void registerLocaleSupplier(final Supplier<Locale> newLocaleSupplier) {
+		Assertion.checkArgument(localeSupplier == null, "localeSupplier already registered");
+		Assertion.checkNotNull(newLocaleSupplier);
 		//-----
-		localeProvider = newLocaleProvider;
+		localeSupplier = newLocaleSupplier;
 	}
 
 	/** {@inheritDoc} */
@@ -254,10 +253,10 @@ public final class LocaleManagerImpl implements LocaleManager {
 	/** {@inheritDoc} */
 	@Override
 	public Locale getCurrentLocale() {
-		if (localeProvider != null && localeProvider.getCurrentLocale() != null) {
-			final Locale currentLocale = localeProvider.getCurrentLocale();
+		if (localeSupplier != null && localeSupplier.get() != null) {
+			final Locale currentLocale = localeSupplier.get();
 			//We have to check if the currentLocale belongs to locales.
-			if (!locales.contains(localeProvider.getCurrentLocale())) {
+			if (!locales.contains(localeSupplier.get())) {
 				LOG.error("CurrentLocale '{}' is not allowed, it must be in '{}'", currentLocale, locales);
 				//So, we can pick the default language.
 				return locales.get(0);

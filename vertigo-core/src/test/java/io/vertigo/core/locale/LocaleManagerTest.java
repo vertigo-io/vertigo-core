@@ -92,7 +92,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testLocaleProvider() {
-		localeManager.registerLocaleProvider(() -> Locale.GERMANY);
+		localeManager.registerLocaleSupplier(() -> Locale.GERMANY);
 		assertEquals(Locale.GERMANY, localeManager.getCurrentLocale());
 		final MessageText helloTxt = MessageText.of(CityGuide.HELLO);
 		assertEquals("guten tag", helloTxt.getDisplay());
@@ -108,7 +108,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testJapanese() {
-		localeManager.registerLocaleProvider(() -> Locale.JAPANESE);
+		localeManager.registerLocaleSupplier(() -> Locale.JAPANESE);
 		//On vérifie que l'on ne connait pas le japonais et que l'on retombe sur la langue par défaut
 		final MessageText helloTxt = MessageText.of(CityGuide.HELLO);
 		assertEquals("bonjour", helloTxt.getDisplay());
