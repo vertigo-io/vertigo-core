@@ -49,22 +49,22 @@ public final class YamlAppConfig {
 	}
 
 	public static class YamlFeatureConfig extends LinkedHashMap<String, Map<String, Object>> {
-		private static final long serialVersionUID = -2681657188040880067L;
+		private static final long serialVersionUID = 2215302676236317592L;
 		//nothing more
 	}
 
 	public static class YamlPluginConfig extends LinkedHashMap<String, Map<String, Object>> {
-		private static final long serialVersionUID = 7801652174493689560L;
+		private static final long serialVersionUID = 5960474098385665743L;
 		//nothing more
 	}
 
 	public static class YamlParamsConfig extends LinkedHashMap<String, String> {
-		private static final long serialVersionUID = -3551104464145560067L;
+		private static final long serialVersionUID = -3049054122944956757L;
 		// nothing more
 	}
 
 	public static class YamlInitializerConfig extends LinkedHashMap<String, Map<String, Object>> {
-		private static final long serialVersionUID = -8925834051505358263L;
+		private static final long serialVersionUID = -9154787055203850947L;
 		// nothing more
 	}
 }

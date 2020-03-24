@@ -33,7 +33,7 @@ import io.vertigo.core.util.StringUtil;
  * @author npiedeloup, pchretien
  */
 public final class MessageText implements Serializable {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 4723023230514051954L;
 	/**Clé du libellé dans le dictionnaire. */
 	private final MessageKey key;
 	/**Libellé non formatté. */

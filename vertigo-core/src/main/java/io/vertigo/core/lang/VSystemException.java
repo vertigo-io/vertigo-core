@@ -26,7 +26,7 @@ import io.vertigo.core.util.StringUtil;
  * @author fconstantin, pchretien, npiedeloup
  */
 public class VSystemException extends RuntimeException {
-	private static final long serialVersionUID = -2256807194400285743L;
+	private static final long serialVersionUID = 8367574550413643134L;
 
 	/**
 	 * Constructor.

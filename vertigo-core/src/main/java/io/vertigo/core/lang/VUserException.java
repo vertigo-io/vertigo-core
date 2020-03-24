@@ -32,7 +32,7 @@ import io.vertigo.core.locale.MessageText;
  * @author fconstantin, pchretien
  */
 public class VUserException extends RuntimeException {
-	private static final long serialVersionUID = 3911465988816189879L;
+	private static final long serialVersionUID = 33066445931128456L;
 	private final MessageText messageText;
 
 	/**
