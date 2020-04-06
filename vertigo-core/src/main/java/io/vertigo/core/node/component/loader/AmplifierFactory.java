@@ -29,19 +29,20 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.component.Amplifier;
 import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.aop.Aspect;
 import io.vertigo.core.node.component.aop.AspectMethodInvocation;
 import io.vertigo.core.node.component.proxy.ProxyMethod;
 import io.vertigo.core.node.component.proxy.ProxyMethodAnnotation;
 
-final class ComponentProxyFactory {
+final class AmplifierFactory {
 
-	private ComponentProxyFactory() {
+	private AmplifierFactory() {
 		//private
 	}
 
-	static <C extends CoreComponent> C createProxy(
+	static <C extends Amplifier> C createAmplifier(
 			final Class<C> intf,
 			final List<ProxyMethod> proxyMethods,
 			final Map<Method, List<Aspect>> joinPoints) {

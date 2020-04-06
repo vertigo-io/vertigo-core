@@ -19,14 +19,19 @@
 package io.vertigo.core.node.component;
 
 /**
- * A component is the common core-component.
+ * An amplifier is a special core-component.
+ * It's defined by a simple API (aka a java interface).
+ * The "real" component is automatically from annotations that explain 
+ * how to deal with their decalarations
  * 
- * It's defined in a module 
- * It can used plugins, connectors and amplifiers.
- * It can be used by all the core-components.
+ * Technically, the created core-component is a java proxy.
+ * ----------------------------------------------------------------
+ * The perfect use case of the amplifier is when you have to request a remote server, 
+ * that's to say when you need a simple client. (sql, webServices, redis...)
  * 
+ * The amplifier tanslates the particular request (defined in a anotation) in a java code.      
  * @author pchretien
  */
-public interface Component extends CoreComponent {
-	// 
+public interface Amplifier extends CoreComponent {
+	//
 }

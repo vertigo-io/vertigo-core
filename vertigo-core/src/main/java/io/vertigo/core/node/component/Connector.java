@@ -19,14 +19,14 @@
 package io.vertigo.core.node.component;
 
 /**
- * A connecotr is a particular component.
+ * A connecotr is a particular core-component.
  * A connector bridge to dedicated library or product but with no purpose in mind.
  * A connector is only used by plugins to implement specific functions via the dedicated library.
  *
  * All connectors MUST BE thread safe.
  * Connectors are singletons.
  *
- * As a connector is a component, it can own component's behaviors such as Activeable.
+ * As a connector is a core-component, it can own component's behaviors such as Activeable.
  *
  * @author mlaroche
  */

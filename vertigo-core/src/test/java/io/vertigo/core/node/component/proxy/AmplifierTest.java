@@ -22,27 +22,44 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.component.proxy.data.Aggregate;
 import io.vertigo.core.node.component.proxy.data.AggregatorProxyMethod;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 
-public final class ProxyTest extends AbstractTestCaseJU5 {
+public class AmplifierTest {
 
 	@Inject
 	private Aggregate aggregatea;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+	}
+
+	@AfterEach
+	public void tearDown() {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.addModule(ModuleConfig.builder("proxies")
 						.addProxyMethod(AggregatorProxyMethod.class)
 						.build())
 				.addModule(ModuleConfig.builder("components")
-						.addProxy(Aggregate.class)
+						.addAmplifier(Aggregate.class)
 						.build())
 				.build();
 	}

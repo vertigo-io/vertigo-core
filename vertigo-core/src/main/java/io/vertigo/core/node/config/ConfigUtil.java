@@ -134,4 +134,20 @@ final class ConfigUtil {
 		throw new IllegalArgumentException("A plugin must extends an interface|class that defines its contract : " + implClass);
 	}
 
+	static List<CoreComponentConfig> buildAmplifiersComponentConfigs(final List<AmplifierConfig> amplifierConfigs) {
+		Assertion.checkNotNull(amplifierConfigs);
+		//---
+		final List<CoreComponentConfig> componentConfigs = new ArrayList<>();
+
+		for (AmplifierConfig amplifierConfig : amplifierConfigs) {
+			final String id = DIAnnotationUtil.buildId(amplifierConfig.getApiClass());
+			final CoreComponentConfig coreComponentConfig = CoreComponentConfig.builder(true)
+					.withAmplifier(amplifierConfig.getApiClass(),
+							amplifierConfig.getParams(),
+							id)
+					.build();
+			componentConfigs.add(coreComponentConfig);
+		}
+		return componentConfigs;
+	}
 }

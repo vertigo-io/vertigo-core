@@ -41,6 +41,7 @@ public final class ModuleConfig {
 	private final List<ComponentConfig> components;
 	private final List<PluginConfig> plugins;
 	private final List<ConnectorConfig> connectors;
+	private final List<AmplifierConfig> amplifiers;
 	private final List<AspectConfig> aspects;
 	private final List<ProxyMethodConfig> proxyMethods;
 
@@ -50,6 +51,7 @@ public final class ModuleConfig {
 			final List<ComponentConfig> componentConfigs,
 			final List<PluginConfig> pluginConfigs,
 			final List<ConnectorConfig> connectorConfigs,
+			final List<AmplifierConfig> amplifierConfigs,
 			final List<AspectConfig> aspectConfigs,
 			final List<ProxyMethodConfig> proxyMethods) {
 		Assertion.checkArgNotEmpty(name);
@@ -57,6 +59,7 @@ public final class ModuleConfig {
 		Assertion.checkNotNull(componentConfigs);
 		Assertion.checkNotNull(pluginConfigs);
 		Assertion.checkNotNull(connectorConfigs);
+		Assertion.checkNotNull(amplifierConfigs);
 		Assertion.checkNotNull(aspectConfigs);
 		Assertion.checkNotNull(proxyMethods);
 		//-----
@@ -65,6 +68,7 @@ public final class ModuleConfig {
 		components = Collections.unmodifiableList(new ArrayList<>(componentConfigs));
 		plugins = Collections.unmodifiableList(new ArrayList<>(pluginConfigs));
 		connectors = Collections.unmodifiableList(new ArrayList<>(connectorConfigs));
+		amplifiers = Collections.unmodifiableList(new ArrayList<>(amplifierConfigs));
 		aspects = aspectConfigs;
 		this.proxyMethods = proxyMethods;
 	}
@@ -90,6 +94,7 @@ public final class ModuleConfig {
 				.addAll(ConfigUtil.buildComponentConfigs(components))
 				.addAll(ConfigUtil.buildPluginsComponentConfigs(plugins))
 				.addAll(ConfigUtil.buildConnectorsComponentConfigs(connectors))
+				.addAll(ConfigUtil.buildAmplifiersComponentConfigs(amplifiers))
 				.build();
 	}
 

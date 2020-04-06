@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
+import io.vertigo.core.node.component.Amplifier;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.core.node.component.Connector;
 import io.vertigo.core.node.component.CoreComponent;
@@ -54,6 +55,14 @@ final class CoreComponentConfigBuilder implements Builder<CoreComponentConfig> {
 		Assertion.checkNotNull(implClass);
 		//-----
 		myImplClass = implClass;
+		return addParams(params)
+				.withId(id);
+	}
+
+	CoreComponentConfigBuilder withAmplifier(final Class<? extends Amplifier> apiClass, List<Param> params, String id) {
+		Assertion.checkNotNull(apiClass);
+		//-----
+		myApiClass = apiClass;
 		return addParams(params)
 				.withId(id);
 	}

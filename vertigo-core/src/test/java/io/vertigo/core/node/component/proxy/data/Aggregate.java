@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.node.component.proxy.data;
 
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.Amplifier;
 
 /**
  * Example of a component defined as a proxy.
@@ -26,7 +26,7 @@ import io.vertigo.core.node.component.Component;
  * @author pchretien
  *
  */
-public interface Aggregate extends Component {
+public interface Aggregate extends Amplifier {
 
 	@AggregatorAnnotation(operation = AggregatorOperation.count)
 	long count(int a);

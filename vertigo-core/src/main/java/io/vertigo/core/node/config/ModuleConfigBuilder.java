@@ -24,6 +24,7 @@ import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
+import io.vertigo.core.node.component.Amplifier;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.core.node.component.Connector;
 import io.vertigo.core.node.component.Plugin;
@@ -46,6 +47,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final String myName;
 
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
+	private final List<AmplifierConfig> myAmplifierConfigs = new ArrayList<>();
 	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
 	private final List<ConnectorConfig> myConnectorConfigs = new ArrayList<>();
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
@@ -113,20 +115,18 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	 * Adds a proxy component defined by an interface.
-	 * @param apiClass api of the component
+	 * Adds aa amplifier defined by an interface.
+	 * @param apiClass api of the amplifie 
 	 * @param params the list of params
 	 * @return this builder
 	 */
-	public ModuleConfigBuilder addProxy(final Class<? extends Component> apiClass, final Param... params) {
+	public ModuleConfigBuilder addAmplifier(final Class<? extends Amplifier> apiClass, final Param... params) {
 		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(params);
 		//---
-		final ComponentConfig componentConfig = ComponentConfig.builder(true)
-				.withApi(apiClass)
-				.addParams(params)
-				.build();
-		return addComponent(componentConfig);
+		final AmplifierConfig amplifierConfig = new AmplifierConfig(apiClass, Arrays.asList(params));
+		myAmplifierConfigs.add(amplifierConfig);
+		return this;
 	}
 
 	/**
@@ -220,6 +220,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 				myComponentConfigs,
 				myPluginConfigs,
 				myConnectorConfigs,
+				myAmplifierConfigs,
 				myAspectConfigs,
 				myProxyMethodConfigs);
 	}

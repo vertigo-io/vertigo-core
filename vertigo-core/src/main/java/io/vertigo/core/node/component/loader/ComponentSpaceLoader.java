@@ -28,9 +28,10 @@ import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
+import io.vertigo.core.node.component.Amplifier;
 import io.vertigo.core.node.component.AopPlugin;
-import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.Container;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.node.component.aop.Aspect;
 import io.vertigo.core.node.component.di.DIInjector;
@@ -111,7 +112,7 @@ public final class ComponentSpaceLoader {
 				.stream()
 				.filter(CoreComponentConfig::isProxy)
 				.forEach(componentConfig -> {
-					final CoreComponent component = createProxyWithOptions(/*paramManagerOpt,*/ componentConfig);
+					final Amplifier component = createAmplifier(/*paramManagerOpt,*/ componentConfig);
 					componentSpaceWritable.registerComponent(componentConfig.getId(), component);
 				});
 
@@ -244,7 +245,7 @@ public final class ComponentSpaceLoader {
 		return injectAspects(instance, componentConfig.getImplClass());
 	}
 
-	private CoreComponent createProxyWithOptions(
+	private Amplifier createAmplifier(
 			//	final Optional<ParamManager> paramManagerOpt,
 			final CoreComponentConfig componentConfig) {
 		Assertion.checkArgument(componentConfig.isProxy(), "a proxy component is expected");
@@ -253,8 +254,8 @@ public final class ComponentSpaceLoader {
 		final Map<Method, List<Aspect>> aspectsByMethod = ComponentAspectUtil.createAspectsByMethod(componentConfig.getApiClass().get(), aspects);
 
 		// 2. An instance is created and all aspects are injected
-		return ComponentProxyFactory.createProxy(
-				componentConfig.getApiClass().get(),
+		return AmplifierFactory.createAmplifier(
+				(Class<? extends Amplifier>) componentConfig.getApiClass().get(),
 				proxyMethods,
 				aspectsByMethod);
 	}

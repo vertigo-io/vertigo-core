@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.component.Amplifier;
 import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.param.Param;
 
@@ -64,6 +65,7 @@ public final class CoreComponentConfig {
 		if (proxy) {
 			Assertion.checkArgument(!implClassOpt.isPresent(), "When a proxy is declared there is no impl");
 			Assertion.checkArgument(apiClassOpt.isPresent(), "When a proxy is declared, an api is required");
+			Assertion.checkArgument(Amplifier.class.isAssignableFrom(apiClassOpt.get()), "An amplifier must inherit Amplifier");
 		} else {
 			Assertion.checkArgument(implClassOpt.isPresent(), "When a classic component -no proxy-  is declared, an impl is required");
 			Assertion.when(apiClassOpt.isPresent()).check(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);

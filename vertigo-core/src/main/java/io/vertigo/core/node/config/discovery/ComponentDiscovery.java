@@ -131,7 +131,7 @@ final class ComponentDiscovery {
 		//---
 		// Proxies
 		proxyClasses
-				.forEach(moduleConfigBuilder::addProxy);
+				.forEach(moduleConfigBuilder::addAmplifier);
 
 		// With API
 		apiImplMap
