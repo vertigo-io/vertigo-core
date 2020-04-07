@@ -25,7 +25,10 @@ import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Amplifier;
+import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.Connector;
 import io.vertigo.core.node.component.CoreComponent;
+import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.param.Param;
 
 /**
@@ -47,13 +50,37 @@ public final class CoreComponentConfig {
 	private final Optional<Class<? extends CoreComponent>> apiClassOpt;
 	private final Map<String, String> params;
 
+	static CoreComponentConfig createComponent(String id, Optional<Class<? extends Component>> apiClassOpt, final Class<? extends Component> implClass, List<Param> params) {
+		Optional<Class<? extends CoreComponent>> implClassOpt = Optional.of(implClass);
+		Optional<Class<? extends CoreComponent>> myApiClassOpt = Optional.ofNullable(apiClassOpt.orElse(null));
+		return new CoreComponentConfig(id, false, myApiClassOpt, implClassOpt, params);
+	}
+
+	static CoreComponentConfig createPlugin(String id, final Class<? extends Plugin> implClass, List<Param> params) {
+		final Optional<Class<? extends CoreComponent>> apiClassOpt = Optional.empty();
+		Optional<Class<? extends CoreComponent>> implClassOpt = Optional.of(implClass);
+		return new CoreComponentConfig(id, false, apiClassOpt, implClassOpt, params);
+	}
+
+	static CoreComponentConfig createAmplifier(String id, final Class<? extends Amplifier> apiClass, List<Param> params) {
+		final Optional<Class<? extends CoreComponent>> apiClassOpt = Optional.of(apiClass);
+		Optional<Class<? extends CoreComponent>> implClassOpt = Optional.empty();
+		return new CoreComponentConfig(id, true, apiClassOpt, implClassOpt, params);
+	}
+
+	static CoreComponentConfig createConnector(String id, final Class<? extends Connector> implClass, List<Param> params) {
+		final Optional<Class<? extends CoreComponent>> apiClassOpt = Optional.empty();
+		Optional<Class<? extends CoreComponent>> implClassOpt = Optional.of(implClass);
+		return new CoreComponentConfig(id, false, apiClassOpt, implClassOpt, params);
+	}
+
 	/**
 	 * Constructor.
 	 * @param apiClassOpt api of the component
 	 * @param implClass impl class of the component
 	 * @param params params
 	 */
-	CoreComponentConfig(
+	private CoreComponentConfig(
 			final String id,
 			final boolean proxy,
 			final Optional<Class<? extends CoreComponent>> apiClassOpt,
@@ -82,15 +109,6 @@ public final class CoreComponentConfig {
 		this.params = params
 				.stream()
 				.collect(Collectors.toMap(Param::getName, Param::getValue));
-	}
-
-	/**
-	 * Static method factory for ComponentConfigBuilder
-	 * @param proxy if the component is a proxy
-	 * @return ComponentConfigBuilder
-	 */
-	public static CoreComponentConfigBuilder builder(final boolean proxy) {
-		return new CoreComponentConfigBuilder(proxy);
 	}
 
 	/**

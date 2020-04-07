@@ -139,10 +139,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
-		final ComponentConfig componentConfig = ComponentConfig.builder()
-				.withImpl(implClass)
-				.addParams(params)
-				.build();
+		final ComponentConfig componentConfig = ComponentConfig.of(implClass, params);
 		return addComponent(componentConfig);
 	}
 
@@ -158,11 +155,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 		Assertion.checkNotNull(implClass);
 		Assertion.checkNotNull(params);
 		//---
-		final ComponentConfig componentConfig = ComponentConfig.builder()
-				.withImpl(implClass)
-				.withApi(apiClass)
-				.addParams(params)
-				.build();
+		final ComponentConfig componentConfig = ComponentConfig.of(apiClass, implClass, params);
 		return addComponent(componentConfig);
 	}
 

@@ -55,9 +55,7 @@ final class ConfigUtil {
 				index++;
 			}
 
-			final CoreComponentConfig componentConfig = CoreComponentConfig.builder(false)
-					.withPlugin(pluginConfig.getImplClass(), pluginConfig.getParams(), id)
-					.build();
+			final CoreComponentConfig componentConfig = CoreComponentConfig.createPlugin(id, pluginConfig.getImplClass(), pluginConfig.getParams());
 			componentConfigs.add(componentConfig);
 		}
 		return componentConfigs;
@@ -81,9 +79,7 @@ final class ConfigUtil {
 				index++;
 			}
 
-			final CoreComponentConfig componentConfig = CoreComponentConfig.builder(false)
-					.withConnector(connectorConfig.getImplClass(), connectorConfig.getParams(), id)
-					.build();
+			final CoreComponentConfig componentConfig = CoreComponentConfig.createConnector(id, connectorConfig.getImplClass(), connectorConfig.getParams());
 			componentConfigs.add(componentConfig);
 		}
 		return componentConfigs;
@@ -95,17 +91,13 @@ final class ConfigUtil {
 		final List<CoreComponentConfig> coreComponentConfigs = new ArrayList<>();
 		for (final ComponentConfig componentConfig : componentConfigs) {
 			//By convention the component id is the simpleName of the api or the impl
-			final String id = DIAnnotationUtil.buildId(componentConfig.getApiClass().orElse(componentConfig.getImplClass()));
+			final String id = DIAnnotationUtil.buildId(componentConfig.getApiClassOpt().orElse(componentConfig.getImplClass()));
 
-			final CoreComponentConfigBuilder coreComponentConfigBuilder = CoreComponentConfig.builder(false)
-					.withId(id)
-					.withImpl(componentConfig.getImplClass())
-					.addParams(componentConfig.getParams());
-			if (componentConfig.getApiClass().isPresent()) {
-				coreComponentConfigBuilder
-						.withApi(componentConfig.getApiClass().get());
-			}
-			coreComponentConfigs.add(coreComponentConfigBuilder.build());
+			final CoreComponentConfig coreComponentConfig = CoreComponentConfig.createComponent(id,
+					componentConfig.getApiClassOpt(),
+					componentConfig.getImplClass(),
+					componentConfig.getParams());
+			coreComponentConfigs.add(coreComponentConfig);
 		}
 		return coreComponentConfigs;
 	}
@@ -140,11 +132,7 @@ final class ConfigUtil {
 
 		for (AmplifierConfig amplifierConfig : amplifierConfigs) {
 			final String id = DIAnnotationUtil.buildId(amplifierConfig.getApiClass());
-			final CoreComponentConfig coreComponentConfig = CoreComponentConfig.builder(true)
-					.withAmplifier(amplifierConfig.getApiClass(),
-							amplifierConfig.getParams(),
-							id)
-					.build();
+			final CoreComponentConfig coreComponentConfig = CoreComponentConfig.createAmplifier(id, amplifierConfig.getApiClass(), amplifierConfig.getParams());
 			componentConfigs.add(coreComponentConfig);
 		}
 		return componentConfigs;

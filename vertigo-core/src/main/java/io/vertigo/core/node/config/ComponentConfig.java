@@ -18,6 +18,7 @@
  */
 package io.vertigo.core.node.config;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,12 +44,35 @@ public final class ComponentConfig {
 	private final List<Param> params;
 
 	/**
+	 * Short in-line builder.
+	 * @param apiClassOpt api of the component
+	 * @param params params
+	 */
+	static ComponentConfig of(
+			final Class<? extends Component> apiClass,
+			final Class<? extends Component> implClass,
+			final Param[] params) {
+		return new ComponentConfig(Optional.of(apiClass), implClass, Arrays.asList(params));
+	}
+
+	/**
+	 * Short in-line builder.
+	 * @param implClass impl class of the component
+	 * @param params params
+	 */
+	static ComponentConfig of(
+			final Class<? extends Component> implClass,
+			final Param[] params) {
+		return new ComponentConfig(Optional.empty(), implClass, Arrays.asList(params));
+	}
+
+	/**
 	 * Constructor.
 	 * @param apiClassOpt api of the component
 	 * @param implClass impl class of the component
 	 * @param params params
 	 */
-	ComponentConfig(
+	private ComponentConfig(
 			final Optional<Class<? extends Component>> apiClassOpt,
 			final Class<? extends Component> implClass,
 			final List<Param> params) {
@@ -64,14 +88,6 @@ public final class ComponentConfig {
 	}
 
 	/**
-	 * Static method factory for ComponentConfigBuilder
-	 * @return ComponentConfigBuilder
-	 */
-	public static ComponentConfigBuilder builder() {
-		return new ComponentConfigBuilder();
-	}
-
-	/**
 	 * @return impl class of the component
 	 */
 	public Class<? extends Component> getImplClass() {
@@ -81,7 +97,7 @@ public final class ComponentConfig {
 	/**
 	 * @return api of the component
 	 */
-	public Optional<Class<? extends Component>> getApiClass() {
+	public Optional<Class<? extends Component>> getApiClassOpt() {
 		return apiClassOpt;
 	}
 
