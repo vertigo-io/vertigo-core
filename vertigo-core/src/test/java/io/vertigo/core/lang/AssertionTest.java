@@ -1,5 +1,5 @@
 /**
- * vertigo - simple java starter
+O * vertigo - simple java starter
  *
  * Copyright (C) 2013-2019, Vertigo.io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
@@ -22,8 +22,6 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import io.vertigo.core.lang.Assertion;
 
 /**
  * Test de l'utilitaire des assertions.

@@ -27,8 +27,6 @@ import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.util.DateUtil;
-
 public final class DateQueryParserUtilTest {
 	private static final String DATE_PATTERN = "dd/MM/yy";
 	private static final Long DIFF_MS = 5 * 1000L;

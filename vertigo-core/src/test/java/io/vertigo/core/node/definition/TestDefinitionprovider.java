@@ -25,9 +25,6 @@ import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.config.DefinitionResourceConfig;
-import io.vertigo.core.node.definition.Definition;
-import io.vertigo.core.node.definition.DefinitionSpace;
-import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.core.node.definition.DefinitionSpaceTest.SampleDefinition;
 import io.vertigo.core.param.ParamValue;
 

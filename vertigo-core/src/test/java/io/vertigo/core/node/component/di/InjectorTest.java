@@ -32,8 +32,6 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Container;
-import io.vertigo.core.node.component.di.DIException;
-import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.component.di.data.A;
 import io.vertigo.core.node.component.di.data.B;
 import io.vertigo.core.node.component.di.data.B2;

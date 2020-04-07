@@ -55,7 +55,7 @@ final class ConfigUtil {
 				index++;
 			}
 
-			final CoreComponentConfig componentConfig = CoreComponentConfig.builder()
+			final CoreComponentConfig componentConfig = CoreComponentConfig.builder(false)
 					.withPlugin(pluginConfig.getImplClass(), pluginConfig.getParams(), id)
 					.build();
 			componentConfigs.add(componentConfig);
@@ -81,7 +81,7 @@ final class ConfigUtil {
 				index++;
 			}
 
-			final CoreComponentConfig componentConfig = CoreComponentConfig.builder()
+			final CoreComponentConfig componentConfig = CoreComponentConfig.builder(false)
 					.withConnector(connectorConfig.getImplClass(), connectorConfig.getParams(), id)
 					.build();
 			componentConfigs.add(componentConfig);
@@ -94,14 +94,13 @@ final class ConfigUtil {
 		//---
 		final List<CoreComponentConfig> coreComponentConfigs = new ArrayList<>();
 		for (final ComponentConfig componentConfig : componentConfigs) {
-			final CoreComponentConfigBuilder coreComponentConfigBuilder = CoreComponentConfig.builder(componentConfig.isProxy())
-					.withId(componentConfig.getId())
-					.addParams(componentConfig.getParams());
+			//By convention the component id is the simpleName of the api or the impl
+			final String id = DIAnnotationUtil.buildId(componentConfig.getApiClass().orElse(componentConfig.getImplClass()));
 
-			if (!componentConfig.isProxy()) {
-				coreComponentConfigBuilder
-						.withImpl(componentConfig.getImplClass());
-			}
+			final CoreComponentConfigBuilder coreComponentConfigBuilder = CoreComponentConfig.builder(false)
+					.withId(id)
+					.withImpl(componentConfig.getImplClass())
+					.addParams(componentConfig.getParams());
 			if (componentConfig.getApiClass().isPresent()) {
 				coreComponentConfigBuilder
 						.withApi(componentConfig.getApiClass().get());

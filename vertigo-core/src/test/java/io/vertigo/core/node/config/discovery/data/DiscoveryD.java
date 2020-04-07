@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.node.config.discovery.data;
 
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.Amplifier;
 
 /**
  * Example of a component defined as a proxy.
@@ -26,7 +26,7 @@ import io.vertigo.core.node.component.Component;
  * @author pchretien
  *
  */
-public interface DiscoveryD extends Component {
+public interface DiscoveryD extends Amplifier {
 
 	@TrueProxyAnnotation
 	Boolean isTrue();

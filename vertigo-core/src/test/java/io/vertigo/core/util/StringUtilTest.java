@@ -25,8 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.util.StringUtil;
-
 /**
  * Test de l'utilitaitre de manipulation des strings.
  * @author pchretien

@@ -38,9 +38,7 @@ import io.vertigo.core.param.Param;
  * @author npiedeloup, pchretien
  */
 public final class ComponentConfig {
-	private final String id;
-	private final boolean proxy;
-	private final Optional<Class<? extends Component>> implClassOpt;
+	private final Class<? extends Component> implClass;
 	private final Optional<Class<? extends Component>> apiClassOpt;
 	private final List<Param> params;
 
@@ -51,58 +49,33 @@ public final class ComponentConfig {
 	 * @param params params
 	 */
 	ComponentConfig(
-			final String id,
-			final boolean proxy,
 			final Optional<Class<? extends Component>> apiClassOpt,
-			final Optional<Class<? extends Component>> implClassOpt,
+			final Class<? extends Component> implClass,
 			final List<Param> params) {
-		Assertion.checkArgNotEmpty(id);
 		Assertion.checkNotNull(apiClassOpt);
-		Assertion.checkNotNull(implClassOpt);
-		if (proxy) {
-			Assertion.checkArgument(!implClassOpt.isPresent(), "When a proxy is declared there is no impl");
-			Assertion.checkArgument(apiClassOpt.isPresent(), "When a proxy is declared, an api is required");
-		} else {
-			Assertion.checkArgument(implClassOpt.isPresent(), "When a classic component -no proxy-  is declared, an impl is required");
-			Assertion.when(apiClassOpt.isPresent()).check(() -> Component.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, Component.class);
-			Assertion.checkArgument(apiClassOpt.orElse(Component.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(Component.class));
-		}
+		Assertion.checkNotNull(implClass);
+		Assertion.when(apiClassOpt.isPresent()).check(() -> Component.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, Component.class);
+		Assertion.checkArgument(apiClassOpt.orElse(Component.class).isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClassOpt.orElse(Component.class));
 		Assertion.checkNotNull(params);
 		//-----
-		this.id = id;
-		this.proxy = proxy;
-		//-----
 		this.apiClassOpt = apiClassOpt;
-		this.implClassOpt = implClassOpt;
-
+		this.implClass = implClass;
 		this.params = params;
 	}
 
 	/**
 	 * Static method factory for ComponentConfigBuilder
-	 * By default a pure component is expected
 	 * @return ComponentConfigBuilder
 	 */
 	public static ComponentConfigBuilder builder() {
-		final boolean proxy = false;
-		return new ComponentConfigBuilder(proxy);
-	}
-
-	/**
-	 * Static method factory for ComponentConfigBuilder
-	 * @param proxy if the component is a proxy
-	 * @return ComponentConfigBuilder
-	 */
-	public static ComponentConfigBuilder builder(final boolean proxy) {
-		return new ComponentConfigBuilder(proxy);
+		return new ComponentConfigBuilder();
 	}
 
 	/**
 	 * @return impl class of the component
 	 */
 	public Class<? extends Component> getImplClass() {
-		Assertion.checkState(!proxy, "a proxy has no impl");
-		return implClassOpt.get();
+		return implClass;
 	}
 
 	/**
@@ -110,20 +83,6 @@ public final class ComponentConfig {
 	 */
 	public Optional<Class<? extends Component>> getApiClass() {
 		return apiClassOpt;
-	}
-
-	/**
-	 * @return id of the component
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * @return if the component is a proxy
-	 */
-	public boolean isProxy() {
-		return proxy;
 	}
 
 	/**
@@ -136,6 +95,6 @@ public final class ComponentConfig {
 	@Override
 	/** {@inheritDoc} */
 	public String toString() {
-		return id;
+		return implClass.getSimpleName();
 	}
 }

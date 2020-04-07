@@ -26,7 +26,6 @@ import java.util.Optional;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.node.component.Component;
-import io.vertigo.core.node.component.di.DIAnnotationUtil;
 import io.vertigo.core.param.Param;
 
 /**
@@ -35,17 +34,14 @@ import io.vertigo.core.param.Param;
  * @author npiedeloup, pchretien
  */
 public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
-	private final boolean proxy;
 	private Class<? extends Component> myApiClass;
 	private Class<? extends Component> myImplClass;
 	private final List<Param> myParams = new ArrayList<>();
 
 	/**
 	 * Constructor of a component config
-	 * @param proxy if the component is a proxy
 	 */
-	ComponentConfigBuilder(final boolean proxy) {
-		this.proxy = proxy;
+	ComponentConfigBuilder() {
 	}
 
 	/**
@@ -86,16 +82,6 @@ public final class ComponentConfigBuilder implements Builder<ComponentConfig> {
 	@Override
 	public ComponentConfig build() {
 		final Optional<Class<? extends Component>> apiClassOpt = Optional.ofNullable(myApiClass);
-		final Optional<Class<? extends Component>> implClassOpt = Optional.ofNullable(myImplClass);
-		final String myId;
-		if (proxy) {
-			//if proxy then apiClass is required
-			myId = DIAnnotationUtil.buildId(apiClassOpt.get());
-		} else {
-			//if no proxy then implClass is required
-			//By convention the component id is the simpleName of the api or the impl
-			myId = DIAnnotationUtil.buildId(apiClassOpt.orElseGet(implClassOpt::get));
-		}
-		return new ComponentConfig(myId, proxy, apiClassOpt, implClassOpt, myParams);
+		return new ComponentConfig(apiClassOpt, myImplClass, myParams);
 	}
 }

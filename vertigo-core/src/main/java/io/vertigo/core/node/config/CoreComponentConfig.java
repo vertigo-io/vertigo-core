@@ -86,16 +86,6 @@ public final class CoreComponentConfig {
 
 	/**
 	 * Static method factory for ComponentConfigBuilder
-	 * By default a pure component is expected
-	 * @return ComponentConfigBuilder
-	 */
-	public static CoreComponentConfigBuilder builder() {
-		final boolean proxy = false;
-		return new CoreComponentConfigBuilder(proxy);
-	}
-
-	/**
-	 * Static method factory for ComponentConfigBuilder
 	 * @param proxy if the component is a proxy
 	 * @return ComponentConfigBuilder
 	 */

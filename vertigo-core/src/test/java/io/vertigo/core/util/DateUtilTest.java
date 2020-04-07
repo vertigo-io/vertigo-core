@@ -27,8 +27,6 @@ import java.time.temporal.ChronoUnit;
 
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.util.DateUtil;
-
 /**
  * Test de l'utilitaitre de manipulation des dates.
  *

@@ -27,8 +27,6 @@ import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.node.component.di.DIException;
-import io.vertigo.core.node.component.di.DIReactor;
 import io.vertigo.core.node.component.di.data.A;
 import io.vertigo.core.node.component.di.data.B;
 import io.vertigo.core.node.component.di.data.C;

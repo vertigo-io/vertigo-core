@@ -23,7 +23,6 @@ import org.junit.jupiter.api.BeforeEach;
 
 import io.vertigo.core.node.App;
 import io.vertigo.core.node.AutoCloseableApp;
-import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 
@@ -33,9 +32,10 @@ import io.vertigo.core.node.config.NodeConfig;
  * @author jmforhan
  */
 public abstract class AbstractTestCaseJU5 {
+	private AutoCloseableApp app;
 
 	protected final App getApp() {
-		return Home.getApp();
+		return app;
 	}
 
 	/**
@@ -73,12 +73,14 @@ public abstract class AbstractTestCaseJU5 {
 	}
 
 	private void openApp() {
-		final App app = new AutoCloseableApp(buildNodeConfig());
+		app = new AutoCloseableApp(buildNodeConfig());
 		DIInjector.injectMembers(this, app.getComponentSpace());
 	}
 
-	private static void closeApp() {
-		((AutoCloseableApp) Home.getApp()).close();
+	private void closeApp() {
+		if (app != null) {
+			app.close();
+		}
 	}
 
 	/**
