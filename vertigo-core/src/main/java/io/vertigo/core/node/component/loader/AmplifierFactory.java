@@ -47,7 +47,7 @@ final class AmplifierFactory {
 			final List<ProxyMethod> proxyMethods,
 			final Map<Method, List<Aspect>> joinPoints) {
 		Assertion.checkNotNull(intf);
-		Assertion.checkArgument(intf.isInterface(), "only interface can be proxified");
+		Assertion.checkArgument(intf.isInterface(), "only interface can be amplified");
 		Assertion.checkNotNull(proxyMethods);
 		Assertion.checkNotNull(joinPoints);
 		//---

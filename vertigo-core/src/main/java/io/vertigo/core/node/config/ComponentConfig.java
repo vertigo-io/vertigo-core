@@ -78,7 +78,8 @@ public final class ComponentConfig {
 			final List<Param> params) {
 		Assertion.checkNotNull(apiClassOpt);
 		Assertion.checkNotNull(implClass);
-		Assertion.when(apiClassOpt.isPresent()).check(() -> Component.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, Component.class);
+		Assertion.when(apiClassOpt.isPresent())
+				.check(() -> Component.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, Component.class);
 		Assertion.checkArgument(apiClassOpt.orElse(Component.class).isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClassOpt.orElse(Component.class));
 		Assertion.checkNotNull(params);
 		//-----
@@ -106,11 +107,5 @@ public final class ComponentConfig {
 	 */
 	public List<Param> getParams() {
 		return params;
-	}
-
-	@Override
-	/** {@inheritDoc} */
-	public String toString() {
-		return implClass.getSimpleName();
 	}
 }

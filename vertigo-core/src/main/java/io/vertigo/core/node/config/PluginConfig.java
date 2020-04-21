@@ -54,7 +54,6 @@ public final class PluginConfig {
 		Assertion.checkNotNull(params);
 		//-----
 		this.implClass = implClass;
-
 		this.params = params;
 	}
 
@@ -71,11 +70,4 @@ public final class PluginConfig {
 	public List<Param> getParams() {
 		return params;
 	}
-
-	@Override
-	/** {@inheritDoc} */
-	public String toString() {
-		return implClass.getName();
-	}
-
 }

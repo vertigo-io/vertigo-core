@@ -67,10 +67,4 @@ public final class ConnectorConfig {
 	public List<Param> getParams() {
 		return params;
 	}
-
-	@Override
-	/** {@inheritDoc} */
-	public String toString() {
-		return implClass.getName();
-	}
 }

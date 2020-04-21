@@ -64,10 +64,4 @@ public final class AmplifierConfig {
 	public List<Param> getParams() {
 		return params;
 	}
-
-	@Override
-	/** {@inheritDoc} */
-	public String toString() {
-		return apiClass.getName();
-	}
 }
