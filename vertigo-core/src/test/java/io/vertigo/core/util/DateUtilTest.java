@@ -35,12 +35,6 @@ import org.junit.jupiter.api.Test;
 public final class DateUtilTest {
 
 	@Test
-	public void testNewDate() {
-		final LocalDate date = DateUtil.newDate();
-		assertEquals(date, LocalDate.now());
-	}
-
-	@Test
 	public void testDaysBetween() {
 		final LocalDate today = LocalDate.now();
 		final LocalDate date2 = today.plusDays(48);

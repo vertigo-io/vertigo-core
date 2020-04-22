@@ -39,14 +39,6 @@ public final class DateUtil {
 	}
 
 	/**
-	 * Récupère la date courante (précise au jour).
-	 * @return current day.
-	 */
-	public static LocalDate newDate() {
-		return LocalDate.now();
-	}
-
-	/**
 	 * Calcule le nombre de jours entre deux dates.
 	 *
 	 * @param startDate Date de début

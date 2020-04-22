@@ -101,7 +101,7 @@ public final class DateQueryParserUtilTest {
 	 */
 	@Test
 	public void testAddDay() {
-		final LocalDate expectedDate = DateUtil.newDate().plusDays(1);
+		final LocalDate expectedDate = LocalDate.now().plusDays(1);
 		assertEqualsLocalDate(expectedDate, "now+1d");
 	}
 
@@ -110,7 +110,7 @@ public final class DateQueryParserUtilTest {
 	 */
 	@Test
 	public void testAddWeek() {
-		final LocalDate expectedDate = DateUtil.newDate().plusWeeks(5);
+		final LocalDate expectedDate = LocalDate.now().plusWeeks(5);
 		assertEqualsLocalDate(expectedDate, "now+5w");
 	}
 
