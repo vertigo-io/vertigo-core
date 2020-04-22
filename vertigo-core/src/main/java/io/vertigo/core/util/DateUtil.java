@@ -47,14 +47,6 @@ public final class DateUtil {
 	}
 
 	/**
-	 * Récupère l'instant courant (avec heures, minutes, secondes, millisecondes).
-	 * @return current day.
-	 */
-	public static Instant newInstant() {
-		return Instant.now();
-	}
-
-	/**
 	 * Calcule le nombre de jours entre deux dates.
 	 *
 	 * @param startDate Date de début

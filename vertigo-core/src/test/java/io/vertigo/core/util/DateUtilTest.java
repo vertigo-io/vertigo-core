@@ -41,12 +41,6 @@ public final class DateUtilTest {
 	}
 
 	@Test
-	public void testNewInstant() {
-		final Instant date = DateUtil.newInstant();
-		assertEquals(date, Instant.now());
-	}
-
-	@Test
 	public void testDaysBetween() {
 		final LocalDate today = LocalDate.now();
 		final LocalDate date2 = today.plusDays(48);
@@ -93,21 +87,21 @@ public final class DateUtilTest {
 
 	@Test
 	public void testCompareDateTimeLower() {
-		final Instant now = DateUtil.newInstant();
+		final Instant now = Instant.now();
 		final Instant date2 = now.plus(20, ChronoUnit.MINUTES);
 		assertTrue(DateUtil.compareInstant(now, date2) < 0);
 	}
 
 	@Test
 	public void testCompareDateTimeGreater() {
-		final Instant now = DateUtil.newInstant();
+		final Instant now = Instant.now();
 		final Instant date2 = now.minus(20, ChronoUnit.MINUTES);
 		assertTrue(DateUtil.compareInstant(now, date2) > 0);
 	}
 
 	@Test
 	public void testCompareDateTimeEquals() {
-		final Instant now = DateUtil.newInstant();
+		final Instant now = Instant.now();
 		final Instant date2 = now.minus(0, ChronoUnit.MINUTES);
 		assertTrue(DateUtil.compareInstant(now, date2) == 0);
 	}
