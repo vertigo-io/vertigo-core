@@ -14,9 +14,9 @@ modules:
             __flags__: ["customStart"]
             start: 200
       plugins:
-        - io.vertigo.core.node.component.data.MathPlugin: 
+        - io.vertigo.core.node.component.data.SimpleMathPlugin: 
             __flags__: ["main"]
             factor: 20
-        - io.vertigo.core.node.component.data.MathPlugin: 
+        - io.vertigo.core.node.component.data.SimpleMathPlugin: 
             __flags__: ["secondary"]
             factor: 10

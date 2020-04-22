@@ -18,10 +18,17 @@
  */
 package io.vertigo.core.node.component.data;
 
-import io.vertigo.core.node.component.Plugin;
+import javax.inject.Inject;
 
-public interface FunctionPlugin extends Plugin {
-	String getName();
+import io.vertigo.core.param.ParamValue;
 
-	int compute(final int x);
+public final class SimpleMathPlugin implements MathPlugin {
+	@Inject
+	@ParamValue("factor")
+	private int start;
+
+	@Override
+	public int add(final int a, final int b) {
+		return start + a + b;
+	}
 }

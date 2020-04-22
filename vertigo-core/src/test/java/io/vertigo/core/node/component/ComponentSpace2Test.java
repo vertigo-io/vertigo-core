@@ -30,7 +30,7 @@ import io.vertigo.core.node.component.data.BioManager;
 import io.vertigo.core.node.component.data.BioManagerImpl;
 import io.vertigo.core.node.component.data.MathManager;
 import io.vertigo.core.node.component.data.MathManagerImpl;
-import io.vertigo.core.node.component.data.MathPlugin;
+import io.vertigo.core.node.component.data.SimpleMathPlugin;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
@@ -58,7 +58,7 @@ public final class ComponentSpace2Test extends AbstractTestCaseJU5 {
 						.addComponent(BioManager.class, BioManagerImpl.class)
 						.addComponent(MathManager.class, MathManagerImpl.class,
 								Param.of("start", "100"))
-						.addPlugin(MathPlugin.class,
+						.addPlugin(SimpleMathPlugin.class,
 								Param.of("factor", "20"))
 						.build())
 				.build();

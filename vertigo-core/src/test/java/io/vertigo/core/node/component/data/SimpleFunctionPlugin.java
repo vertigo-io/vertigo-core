@@ -18,10 +18,30 @@
  */
 package io.vertigo.core.node.component.data;
 
-import io.vertigo.core.node.component.Plugin;
+import javax.inject.Inject;
 
-public interface FunctionPlugin extends Plugin {
-	String getName();
+import io.vertigo.core.param.ParamValue;
 
-	int compute(final int x);
+public final class SimpleFunctionPlugin implements FunctionPlugin {
+	@Inject
+	@ParamValue("name")
+	private String name;
+
+	@Inject
+	@ParamValue("a")
+	private int a;
+
+	@Inject
+	@ParamValue("b")
+	private int b;
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public int compute(final int x) {
+		return a * x + b;
+	}
 }

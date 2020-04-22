@@ -26,7 +26,7 @@ import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.component.data.FunctionManager;
 import io.vertigo.core.node.component.data.FunctionManager1Impl;
 import io.vertigo.core.node.component.data.FunctionManager2Impl;
-import io.vertigo.core.node.component.data.FunctionPlugin;
+import io.vertigo.core.node.component.data.SimpleFunctionPlugin;
 import io.vertigo.core.node.config.LogConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -96,23 +96,23 @@ public final class ComponentSpace3Test {
 				.endBoot()
 				.addModule(ModuleConfig.builder("Function")
 						.addComponent(FunctionManager.class, implClass)
-						.addPlugin(FunctionPlugin.class,
+						.addPlugin(SimpleFunctionPlugin.class,
 								Param.of("name", "x+1"),
 								Param.of("a", "1"),
 								Param.of("b", "1"))
-						.addPlugin(FunctionPlugin.class,
+						.addPlugin(SimpleFunctionPlugin.class,
 								Param.of("name", "2x"),
 								Param.of("a", "2"),
 								Param.of("b", "0"))
-						.addPlugin(FunctionPlugin.class,
+						.addPlugin(SimpleFunctionPlugin.class,
 								Param.of("name", "4x+3"),
 								Param.of("a", "4"),
 								Param.of("b", "3"))
-						.addPlugin(FunctionPlugin.class,
+						.addPlugin(SimpleFunctionPlugin.class,
 								Param.of("name", (withNullMult ? "0" : "1") + "x+1"),
 								Param.of("a", withNullMult ? "0" : "1"),
 								Param.of("b", "1"))
-						.addPlugin(FunctionPlugin.class,
+						.addPlugin(SimpleFunctionPlugin.class,
 								Param.of("name", "x-10"),
 								Param.of("a", "1"),
 								Param.of("b", "-10"))

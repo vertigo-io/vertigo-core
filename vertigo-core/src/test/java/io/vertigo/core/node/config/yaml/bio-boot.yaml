@@ -10,6 +10,6 @@ modules:
         - math: 
             start: 100
       plugins:
-        - io.vertigo.core.node.component.data.MathPlugin: 
+        - io.vertigo.core.node.component.data.SimpleMathPlugin: 
             factor: 20
   

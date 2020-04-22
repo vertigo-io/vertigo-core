@@ -12,7 +12,7 @@ modules:
       featuresConfig:
         - math.mock:
       plugins:
-        - io.vertigo.core.node.component.data.MathPlugin: 
+        - io.vertigo.core.node.component.data.SimpleMathPlugin: 
             factor: 20
 initializers:
   - io.vertigo.core.node.component.data.DataInitializer:
