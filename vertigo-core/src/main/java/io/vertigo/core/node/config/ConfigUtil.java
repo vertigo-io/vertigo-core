@@ -30,7 +30,6 @@ import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.node.component.di.DIAnnotationUtil;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.core.util.StringUtil;
 
 final class ConfigUtil {
 	private ConfigUtil() {
@@ -45,7 +44,7 @@ final class ConfigUtil {
 
 		int index = 1;
 		for (final PluginConfig pluginConfig : pluginConfigs) {
-			final String pluginType = StringUtil.first2LowerCase(getType(pluginConfig.getImplClass(), Plugin.class));
+			final String pluginType = DIAnnotationUtil.buildId(pluginConfig.getApiClass());
 			final boolean added = pluginTypes.add(pluginType);
 			final String id;
 			if (added) {
@@ -69,7 +68,7 @@ final class ConfigUtil {
 
 		int index = 1;
 		for (final ConnectorConfig connectorConfig : connectorConfigs) {
-			final String connectorType = StringUtil.first2LowerCase(getType(connectorConfig.getImplClass(), Connector.class));
+			final String connectorType = getType(connectorConfig.getImplClass(), Connector.class);
 			final boolean added = connectorTypes.add(connectorType);
 			final String id;
 			if (added) {
@@ -100,6 +99,21 @@ final class ConfigUtil {
 			coreComponentConfigs.add(coreComponentConfig);
 		}
 		return coreComponentConfigs;
+	}
+
+	/*
+	 * We are looking for the type of the plugin.
+	 * This type is the first objector interface that inherits from then 'plugin' interface.
+	 */
+	static Class<? extends Plugin> getPluginApi(final Class<? extends Plugin> implClass) {
+		//We are seeking the first and unique Object that extends Plugin.
+		//This Interface defines the type of the plugin.
+		for (final Class intf : ClassUtil.getAllInterfaces(implClass)) {
+			if (Arrays.asList(intf.getInterfaces()).contains(Plugin.class)) {
+				return intf;
+			}
+		}
+		throw new IllegalArgumentException("A plugin impl must extend an interface that defines its api: " + implClass);
 	}
 
 	/*

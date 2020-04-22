@@ -30,9 +30,9 @@ import io.vertigo.core.node.component.data.BioManager;
 import io.vertigo.core.node.component.data.BioManagerImpl;
 import io.vertigo.core.node.component.data.ConnectorA;
 import io.vertigo.core.node.component.data.ConnectorB;
-import io.vertigo.core.node.component.data.DummyPlugin;
 import io.vertigo.core.node.component.data.MathManager;
 import io.vertigo.core.node.component.data.MathManagerImpl;
+import io.vertigo.core.node.component.data.SimpleDummyPlugin;
 import io.vertigo.core.node.component.data.SimpleMathPlugin;
 import io.vertigo.core.node.component.data.SomeConnector;
 import io.vertigo.core.node.component.data.SomeManager;
@@ -79,7 +79,7 @@ public final class ComponentSpaceTest {
 				.addModule(ModuleConfig.builder("Bio")
 						.addComponent(BioManager.class, BioManagerImpl.class)
 						//This plugin DummyPlugin is not used By BioManager !!
-						.addPlugin(DummyPlugin.class)
+						.addPlugin(SimpleDummyPlugin.class)
 						.addComponent(MathManager.class, MathManagerImpl.class,
 								Param.of("start", "100"))
 						.addPlugin(SimpleMathPlugin.class,

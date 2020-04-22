@@ -18,9 +18,10 @@
  */
 package io.vertigo.core.node.component.data;
 
-import io.vertigo.core.node.component.Plugin;
+public final class SimpleDummyPlugin implements DummyPlugin {
 
-public interface DummyPlugin extends Plugin {
-
-	long timeMillis();
+	@Override
+	public long timeMillis() {
+		return System.currentTimeMillis();
+	}
 }

@@ -28,9 +28,9 @@ import io.vertigo.core.param.Param;
  * This class defines the configuration of a plugin.
  *
  * A plugin is defined by
- *  - a implemenation class
+ *  - an api (an interface that extends Plugin ) 
+ *  - an implemenation class of the api
  *  - a map of params
- *  - a type
  *
  * Several plugins may have the same type.
  *  - for example : a metaDataExtractor plugin has many implementations to deal with all the formats
@@ -41,24 +41,37 @@ import io.vertigo.core.param.Param;
  */
 public final class PluginConfig {
 	private final Class<? extends Plugin> implClass;
+	private final Class<? extends Plugin> apiClass;
 	private final List<Param> params;
 
 	/**
 	 * Constructor.
-	 * @param implClass the impl class of the component
+	 * @param apiClass api of the plugin
+	 * @param implClass the impl class of the plugin
 	 * @param params the params
 	 */
-	PluginConfig(final Class<? extends Plugin> implClass, final List<Param> params) {
+	PluginConfig(final Class<? extends Plugin> apiClass, final Class<? extends Plugin> implClass, final List<Param> params) {
+		Assertion.checkNotNull(apiClass);
 		Assertion.checkNotNull(implClass);
-		Assertion.checkArgument(Plugin.class.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, Plugin.class);
+		Assertion.checkArgument(Plugin.class.isAssignableFrom(apiClass), "api class {0} must implement {1}", apiClass, Plugin.class);
+		Assertion.checkArgument(apiClass.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClass);
+		Assertion.checkState(apiClass.isInterface(), "api class {0} must be an interface", apiClass);
 		Assertion.checkNotNull(params);
 		//-----
+		this.apiClass = apiClass;
 		this.implClass = implClass;
 		this.params = params;
 	}
 
 	/**
-	 * @return the impl class of the component
+	 * @return the api class
+	 */
+	public Class<? extends Plugin> getApiClass() {
+		return apiClass;
+	}
+
+	/**
+	 * @return the impl class
 	 */
 	public Class<? extends Plugin> getImplClass() {
 		return implClass;

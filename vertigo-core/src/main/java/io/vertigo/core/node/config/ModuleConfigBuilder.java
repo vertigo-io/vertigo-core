@@ -182,8 +182,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	public ModuleConfigBuilder addPlugin(final Class<? extends Plugin> pluginImplClass, final List<Param> params) {
-		Assertion.checkNotNull(params);
-		myPluginConfigs.add(new PluginConfig(pluginImplClass, params));
+		myPluginConfigs.add(new PluginConfig(ConfigUtil.getPluginApi(pluginImplClass), pluginImplClass, params));
 		return this;
 	}
 

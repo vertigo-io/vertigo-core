@@ -182,7 +182,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 * @return this builder
 	 */
 	public BootConfigBuilder addPlugin(final Class<? extends Plugin> pluginImplClass, final Param... params) {
-		return addPlugin(new PluginConfig(pluginImplClass, Arrays.asList(params)));
+		return addPlugin(new PluginConfig(ConfigUtil.getPluginApi(pluginImplClass), pluginImplClass, Arrays.asList(params)));
 	}
 
 	/**
