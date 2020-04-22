@@ -44,8 +44,12 @@ import io.vertigo.core.param.Param;
  * @author npiedeloup, pchretien
  */
 public final class CoreComponentConfig {
+	private static enum Type {
+		COMPONENT, PLUGIN, AMPLIFIER, CONNECTOR
+	}
+
+	private final Type type;
 	private final String id;
-	private final boolean proxy;
 	private final Optional<Class<? extends CoreComponent>> implClassOpt;
 	private final Optional<Class<? extends CoreComponent>> apiClassOpt;
 	private final Map<String, String> params;
@@ -53,25 +57,25 @@ public final class CoreComponentConfig {
 	static CoreComponentConfig createComponent(String id, Optional<Class<? extends Component>> apiClassOpt, final Class<? extends Component> implClass, List<Param> params) {
 		Optional<Class<? extends CoreComponent>> implClassOpt = Optional.of(implClass);
 		Optional<Class<? extends CoreComponent>> myApiClassOpt = Optional.ofNullable(apiClassOpt.orElse(null));
-		return new CoreComponentConfig(id, false, myApiClassOpt, implClassOpt, params);
+		return new CoreComponentConfig(Type.COMPONENT, id, myApiClassOpt, implClassOpt, params);
 	}
 
 	static CoreComponentConfig createPlugin(String id, final Class<? extends Plugin> implClass, List<Param> params) {
 		final Optional<Class<? extends CoreComponent>> apiClassOpt = Optional.empty();
 		Optional<Class<? extends CoreComponent>> implClassOpt = Optional.of(implClass);
-		return new CoreComponentConfig(id, false, apiClassOpt, implClassOpt, params);
+		return new CoreComponentConfig(Type.PLUGIN, id, apiClassOpt, implClassOpt, params);
 	}
 
 	static CoreComponentConfig createAmplifier(String id, final Class<? extends Amplifier> apiClass, List<Param> params) {
 		final Optional<Class<? extends CoreComponent>> apiClassOpt = Optional.of(apiClass);
 		Optional<Class<? extends CoreComponent>> implClassOpt = Optional.empty();
-		return new CoreComponentConfig(id, true, apiClassOpt, implClassOpt, params);
+		return new CoreComponentConfig(Type.AMPLIFIER, id, apiClassOpt, implClassOpt, params);
 	}
 
 	static CoreComponentConfig createConnector(String id, final Class<? extends Connector> implClass, List<Param> params) {
 		final Optional<Class<? extends CoreComponent>> apiClassOpt = Optional.empty();
 		Optional<Class<? extends CoreComponent>> implClassOpt = Optional.of(implClass);
-		return new CoreComponentConfig(id, false, apiClassOpt, implClassOpt, params);
+		return new CoreComponentConfig(Type.CONNECTOR, id, apiClassOpt, implClassOpt, params);
 	}
 
 	/**
@@ -81,15 +85,42 @@ public final class CoreComponentConfig {
 	 * @param params params
 	 */
 	private CoreComponentConfig(
+			final Type type,
 			final String id,
-			final boolean proxy,
 			final Optional<Class<? extends CoreComponent>> apiClassOpt,
 			final Optional<Class<? extends CoreComponent>> implClassOpt,
 			final List<Param> params) {
+		Assertion.checkNotNull(type);
 		Assertion.checkArgNotEmpty(id);
 		Assertion.checkNotNull(apiClassOpt);
 		Assertion.checkNotNull(implClassOpt);
-		if (proxy) {
+		Assertion.checkNotNull(params);
+		//--
+		this.type = type;
+		switch (type) {
+			case AMPLIFIER:
+				Assertion.checkArgument(!implClassOpt.isPresent(), "When an amplifier is declared there is no impl");
+				Assertion.checkArgument(apiClassOpt.isPresent(), "When an amplifier is declared, an api is required");
+				Assertion.checkArgument(Amplifier.class.isAssignableFrom(apiClassOpt.get()), "An amplifier must inherit Amplifier");
+				break;
+			case COMPONENT:
+				Assertion.when(apiClassOpt.isPresent()).check(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
+				Assertion.checkArgument(apiClassOpt.orElse(CoreComponent.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(CoreComponent.class));
+				break;
+			case CONNECTOR:
+				Assertion.when(apiClassOpt.isPresent()).check(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
+				Assertion.when(apiClassOpt.isPresent()).check(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
+				Assertion.checkArgument(apiClassOpt.orElse(CoreComponent.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(CoreComponent.class));
+				break;
+			case PLUGIN:
+				Assertion.when(apiClassOpt.isPresent()).check(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
+				Assertion.when(apiClassOpt.isPresent()).check(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
+				Assertion.checkArgument(apiClassOpt.orElse(CoreComponent.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(CoreComponent.class));
+				break;
+			default:
+				throw new IllegalStateException();
+		}
+		if (type == Type.AMPLIFIER) {
 			Assertion.checkArgument(!implClassOpt.isPresent(), "When a proxy is declared there is no impl");
 			Assertion.checkArgument(apiClassOpt.isPresent(), "When a proxy is declared, an api is required");
 			Assertion.checkArgument(Amplifier.class.isAssignableFrom(apiClassOpt.get()), "An amplifier must inherit Amplifier");
@@ -98,11 +129,8 @@ public final class CoreComponentConfig {
 			Assertion.when(apiClassOpt.isPresent()).check(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
 			Assertion.checkArgument(apiClassOpt.orElse(CoreComponent.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(CoreComponent.class));
 		}
-		Assertion.checkNotNull(params);
 		//-----
 		this.id = id;
-		this.proxy = proxy;
-		//-----
 		this.apiClassOpt = apiClassOpt;
 		this.implClassOpt = implClassOpt;
 
@@ -115,7 +143,7 @@ public final class CoreComponentConfig {
 	 * @return impl class of the component
 	 */
 	public Class<? extends CoreComponent> getImplClass() {
-		Assertion.checkState(!proxy, "a proxy has no impl");
+		//Assertion.checkState(!proxy, "a proxy has no impl");
 		//---
 		return implClassOpt.get();
 	}
@@ -134,11 +162,18 @@ public final class CoreComponentConfig {
 		return id;
 	}
 
+	/*
+	 * Return type of the Core Component
+	 */
+	public Type getType() {
+		return type;
+	}
+
 	/**
 	 * @return if the component is a proxy
 	 */
 	public boolean isProxy() {
-		return proxy;
+		return type == Type.AMPLIFIER;
 	}
 
 	/**
@@ -146,11 +181,5 @@ public final class CoreComponentConfig {
 	 */
 	public Map<String, String> getParams() {
 		return params;
-	}
-
-	@Override
-	/** {@inheritDoc} */
-	public String toString() {
-		return id;
 	}
 }
