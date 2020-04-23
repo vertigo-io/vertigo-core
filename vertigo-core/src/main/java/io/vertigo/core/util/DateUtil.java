@@ -38,23 +38,6 @@ public final class DateUtil {
 	}
 
 	/**
-	 * Compare deux Date.
-	 * Cette méthode s'utilise comme firstDate.compareTo(secondDate).
-	 * On peut alors utiliser l'opérateur que l'on souhaite entre le résultat du compareTo et 0.
-	 * Ex: firstDate <= secondDate   eq.  firstDate.compareTo(secondDate) <= 0
-	 *     firstDate > secondDate    eq.  firstDate.compareTo(secondDate) > 0
-	 * @param firstDate première date
-	 * @param secondDate Deuxiéme date
-	 * @return 0 si égale, moins de 0 si firstDate < secondDate, et plus de 0 si firstDate > secondDate
-	 */
-	public static int compareLocalDate(final LocalDate firstDate, final LocalDate secondDate) {
-		Assertion.checkNotNull(firstDate);
-		Assertion.checkNotNull(secondDate);
-		//-----
-		return firstDate.compareTo(secondDate);
-	}
-
-	/**
 	 * Compare deux dateTime.
 	 * Cette méthode s'utilise comme firstDate.compareTo(secondDate).
 	 * On peut alors utiliser l'opérateur que l'on souhaite entre le résultat du compareTo et 0.
