@@ -21,7 +21,6 @@ package io.vertigo.core.util;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 import org.junit.jupiter.api.Test;
@@ -32,28 +31,6 @@ import org.junit.jupiter.api.Test;
  * @author pchretien
  */
 public final class DateUtilTest {
-
-	@Test
-	public void testCompareDateLower() {
-		final LocalDate today = LocalDate.now();
-		final LocalDate date2 = today.plusDays(20);
-		assertTrue(DateUtil.compareLocalDate(today, date2) < 0);
-	}
-
-	@Test
-	public void testCompareDateGreater() {
-		final LocalDate today = LocalDate.now();
-		final LocalDate date2 = today.minusDays(20);
-		assertTrue(DateUtil.compareLocalDate(today, date2) > 0);
-	}
-
-	@Test
-	public void testCompareDateEquals() {
-		final LocalDate today = LocalDate.now();
-		final LocalDate date2 = LocalDate.now();
-		assertTrue(DateUtil.compareLocalDate(today, date2) == 0);
-	}
-
 	@Test
 	public void testCompareDateTimeLower() {
 		final Instant now = Instant.now();
