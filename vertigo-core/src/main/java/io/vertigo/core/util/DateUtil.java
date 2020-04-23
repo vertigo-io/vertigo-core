@@ -18,7 +18,6 @@
  */
 package io.vertigo.core.util;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 
@@ -36,20 +35,6 @@ import io.vertigo.core.lang.Assertion;
 public final class DateUtil {
 	private DateUtil() {
 		super();
-	}
-
-	/**
-	 * Calcule le nombre de jours entre deux dates.
-	 *
-	 * @param startDate Date de début
-	 * @param endDate Date de fin
-	 * @return Nombre de jours
-	 */
-	public static long daysBetween(final LocalDate startDate, final LocalDate endDate) {
-		Assertion.checkNotNull(startDate);
-		Assertion.checkNotNull(endDate);
-		//-----
-		return Duration.between(startDate.atStartOfDay(), endDate.atStartOfDay()).toDays();
 	}
 
 	/**

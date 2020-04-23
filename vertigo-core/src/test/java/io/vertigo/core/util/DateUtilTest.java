@@ -18,7 +18,6 @@
  */
 package io.vertigo.core.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
@@ -33,30 +32,6 @@ import org.junit.jupiter.api.Test;
  * @author pchretien
  */
 public final class DateUtilTest {
-
-	@Test
-	public void testDaysBetween() {
-		final LocalDate today = LocalDate.now();
-		final LocalDate date2 = today.plusDays(48);
-		final long days = DateUtil.daysBetween(today, date2);
-		assertEquals(48L, days);
-	}
-
-	@Test
-	public void testDaysBetweenCEST2CET() {
-		final LocalDate startDate = LocalDate.of(2011, 3, 1);
-		final LocalDate date2 = startDate.plusDays(48);
-		final long days = DateUtil.daysBetween(startDate, date2);
-		assertEquals(48, days);
-	}
-
-	@Test
-	public void testDaysBetweenCET2CEST() {
-		final LocalDate startDate = LocalDate.of(2011, 9, 20);
-		final LocalDate date2 = startDate.plusDays(48);
-		final long days = DateUtil.daysBetween(startDate, date2);
-		assertEquals(48L, days);
-	}
 
 	@Test
 	public void testCompareDateLower() {
