@@ -21,8 +21,6 @@ package io.vertigo.core.util;
 import java.time.Instant;
 import java.time.LocalDate;
 
-import io.vertigo.core.lang.Assertion;
-
 /**
  * The DateUtil provides usefull methods concerning dates.
  *
@@ -35,23 +33,6 @@ import io.vertigo.core.lang.Assertion;
 public final class DateUtil {
 	private DateUtil() {
 		super();
-	}
-
-	/**
-	 * Compare deux dateTime.
-	 * Cette méthode s'utilise comme firstDate.compareTo(secondDate).
-	 * On peut alors utiliser l'opérateur que l'on souhaite entre le résultat du compareTo et 0.
-	 * Ex: firstDate <= secondDate   eq.  firstDate.compareTo(secondDate) <= 0
-	 *     firstDate > secondDate    eq.  firstDate.compareTo(secondDate) > 0
-	 * @param firstInstant première dateTime
-	 * @param secondInstant Deuxiéme dateTime
-	 * @return 0 si égale, moins de 0 si firstDate < secondDate, et plus de 0 si firstDate > secondDate
-	 */
-	public static int compareInstant(final Instant firstInstant, final Instant secondInstant) {
-		Assertion.checkNotNull(firstInstant);
-		Assertion.checkNotNull(secondInstant);
-		//-----
-		return firstInstant.compareTo(secondInstant);
 	}
 
 	/**
