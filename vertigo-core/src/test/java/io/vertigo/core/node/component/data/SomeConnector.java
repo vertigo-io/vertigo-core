@@ -6,7 +6,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Connector;
 import io.vertigo.core.param.ParamValue;
 
-public class SomeConnector implements Connector<String> {
+public final class SomeConnector implements Connector<String> {
 
 	private final String name;
 

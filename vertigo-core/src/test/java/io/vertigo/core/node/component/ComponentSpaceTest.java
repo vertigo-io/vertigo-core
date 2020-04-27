@@ -28,15 +28,12 @@ import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.data.BioManager;
 import io.vertigo.core.node.component.data.BioManagerImpl;
-import io.vertigo.core.node.component.data.ConnectorA;
-import io.vertigo.core.node.component.data.ConnectorB;
 import io.vertigo.core.node.component.data.MathManager;
 import io.vertigo.core.node.component.data.MathManagerImpl;
 import io.vertigo.core.node.component.data.SimpleDummyPlugin;
 import io.vertigo.core.node.component.data.SimpleMathPlugin;
 import io.vertigo.core.node.component.data.SomeConnector;
 import io.vertigo.core.node.component.data.SomeManager;
-import io.vertigo.core.node.component.data.SomeManagerWithSomeTypeOfConnector;
 import io.vertigo.core.node.component.data.SomeMonoConnectorPlugin;
 import io.vertigo.core.node.component.data.SomeMultiConnectorPlugin;
 import io.vertigo.core.node.component.data.SomeOptionalPlugin;
@@ -209,24 +206,6 @@ public final class ComponentSpaceTest {
 		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			final SomeManager manager = Home.getApp().getComponentSpace().resolve(SomeManager.class);
 			Assertions.assertEquals("none", manager.getSomeNames());
-		}
-	}
-
-	@Test
-	public void testConnectorInterface() {
-		final NodeConfig nodeConfig = NodeConfig.builder()
-				.beginBoot()
-				.endBoot()
-				.addModule(ModuleConfig.builder("Bio")
-						.addComponent(SomeManagerWithSomeTypeOfConnector.class)
-						.addConnector(ConnectorA.class)
-						.addConnector(ConnectorB.class)
-						.build())
-				.build();
-
-		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final SomeManagerWithSomeTypeOfConnector manager = Home.getApp().getComponentSpace().resolve(SomeManagerWithSomeTypeOfConnector.class);
-			Assertions.assertEquals("hello A;hello B", manager.sayHello());
 		}
 	}
 

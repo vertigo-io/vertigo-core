@@ -182,7 +182,11 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	public ModuleConfigBuilder addPlugin(final Class<? extends Plugin> pluginImplClass, final List<Param> params) {
-		myPluginConfigs.add(new PluginConfig(ConfigUtil.getPluginApi(pluginImplClass), pluginImplClass, params));
+		return addPlugin(ConfigUtil.getPluginApi(pluginImplClass), pluginImplClass, params);
+	}
+
+	public ModuleConfigBuilder addPlugin(final Class<? extends Plugin> pluginApiClass, final Class<? extends Plugin> pluginImplClass, final List<Param> params) {
+		myPluginConfigs.add(new PluginConfig(pluginApiClass, pluginImplClass, params));
 		return this;
 	}
 
