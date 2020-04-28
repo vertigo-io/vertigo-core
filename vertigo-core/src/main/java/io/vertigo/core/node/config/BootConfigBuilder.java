@@ -151,8 +151,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 * @return these features
 	 */
 	public BootConfigBuilder addAnalyticsConnectorPlugin(final Class<? extends AnalyticsConnectorPlugin> analyticsConnectorPluginClass, final Param... params) {
-		addPlugin(analyticsConnectorPluginClass, params);
-		return this;
+		return addPlugin(analyticsConnectorPluginClass, params);
 	}
 
 	/**
