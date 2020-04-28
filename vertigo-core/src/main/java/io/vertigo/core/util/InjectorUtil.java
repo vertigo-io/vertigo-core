@@ -40,8 +40,9 @@ public final class InjectorUtil {
 	 * @return the newly created object.
 	 */
 	public static <T> T newInstance(final Class<T> clazz) {
-		Assertion.checkNotNull(clazz);
-		Assertion.checkState(!clazz.isAssignableFrom(Activeable.class), " {0} is an Activeable component and must be registred in the NodeConfig for creation at the application startup", clazz);
+		Assertion.check()
+				.notNull(clazz)
+				.state(!clazz.isAssignableFrom(Activeable.class), " {0} is an Activeable component and must be registred in the NodeConfig for creation at the application startup", clazz);
 		// ---
 		return ComponentSpaceLoader.createInstance(clazz, Home.getApp().getComponentSpace(), Optional.empty(), Collections.emptyMap());
 	}

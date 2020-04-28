@@ -31,9 +31,10 @@ public final class StartedManagerInitializer implements ComponentInitializer {
 	/** {@inheritDoc} */
 	@Override
 	public void init() {
-		Assertion.checkState(startedManager.isStarted(), "Component StartedManager not Started");
-		Assertion.checkState(!startedManager.isAppPreActivated(), "Component StartedManager already PostStarted");
-		Assertion.checkState(!startedManager.isInitialized(), "Component StartedManager already Initialized");
+		Assertion.check()
+				.state(startedManager.isStarted(), "Component StartedManager not Started")
+				.state(!startedManager.isAppPreActivated(), "Component StartedManager already PostStarted")
+				.state(!startedManager.isInitialized(), "Component StartedManager already Initialized");
 		startedManager.init();
 	}
 

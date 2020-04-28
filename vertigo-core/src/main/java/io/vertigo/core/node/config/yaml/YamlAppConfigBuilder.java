@@ -95,8 +95,9 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 	* @return this builder
 	*/
 	public YamlAppConfigBuilder withFiles(final Class relativeRootClass, final String... jsonFileNames) {
-		Assertion.checkNotNull(relativeRootClass);
-		Assertion.checkNotNull(jsonFileNames);
+		Assertion.check()
+				.notNull(relativeRootClass)
+				.notNull(jsonFileNames);
 		//---
 		Stream.of(jsonFileNames)
 				.map(xmlModulesFileName -> createURL(xmlModulesFileName, relativeRootClass))

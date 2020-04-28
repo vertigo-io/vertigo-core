@@ -31,8 +31,9 @@ final class DaemonTimerTask implements Runnable {
 	private final DaemonListener daemonListener;
 
 	DaemonTimerTask(final DaemonListener daemonListener, final Daemon daemon) {
-		Assertion.checkNotNull(daemonListener);
-		Assertion.checkNotNull(daemon);
+		Assertion.check()
+				.notNull(daemonListener)
+				.notNull(daemon);
 		// -----
 		this.daemon = daemon;
 		this.daemonListener = daemonListener;

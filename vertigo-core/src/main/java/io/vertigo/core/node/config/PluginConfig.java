@@ -51,12 +51,13 @@ public final class PluginConfig {
 	 * @param params the params
 	 */
 	PluginConfig(final Class<? extends Plugin> apiClass, final Class<? extends Plugin> implClass, final List<Param> params) {
-		Assertion.checkNotNull(apiClass);
-		Assertion.checkNotNull(implClass);
-		Assertion.checkArgument(Plugin.class.isAssignableFrom(apiClass), "api class {0} must implement {1}", apiClass, Plugin.class);
-		Assertion.checkArgument(apiClass.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClass);
-		Assertion.checkState(apiClass.isInterface(), "api class {0} must be an interface", apiClass);
-		Assertion.checkNotNull(params);
+		Assertion.check()
+				.notNull(apiClass)
+				.notNull(implClass)
+				.argument(Plugin.class.isAssignableFrom(apiClass), "api class {0} must implement {1}", apiClass, Plugin.class)
+				.argument(apiClass.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClass)
+				.state(apiClass.isInterface(), "api class {0} must be an interface", apiClass)
+				.notNull(params);
 		//-----
 		this.apiClass = apiClass;
 		this.implClass = implClass;

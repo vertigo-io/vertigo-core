@@ -55,8 +55,9 @@ final class ComponentAspectUtil {
 	static Map<Method, List<Aspect>> createAspectsByMethod(
 			final Class<?> implClass,
 			final Collection<Aspect> aspects) {
-		Assertion.checkNotNull(implClass);
-		Assertion.checkNotNull(aspects);
+		Assertion.check()
+				.notNull(implClass)
+				.notNull(aspects);
 		//-----
 		//1 - Annotated class
 		final List<Aspect> classBasedInterceptors = Stream.of(implClass.getAnnotations())
@@ -91,8 +92,9 @@ final class ComponentAspectUtil {
 	}
 
 	private static Aspect findAspect(final Annotation annotation, final Collection<Aspect> aspects) {
-		Assertion.checkNotNull(annotation);
-		Assertion.checkNotNull(aspects);
+		Assertion.check()
+				.notNull(annotation)
+				.notNull(aspects);
 		// --
 		return aspects
 				.stream()

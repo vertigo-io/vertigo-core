@@ -47,8 +47,9 @@ public final class DaemonDefinition implements Definition {
 	 */
 	public DaemonDefinition(final String name, final Supplier<Daemon> daemonSupplier, final int periodInSeconds) {
 		DefinitionUtil.checkName(name, DaemonDefinition.class);
-		Assertion.checkNotNull(daemonSupplier);
-		Assertion.checkArgument(periodInSeconds > 0, "period {0} must be > 0", periodInSeconds);
+		Assertion.check()
+				.notNull(daemonSupplier)
+				.argument(periodInSeconds > 0, "period {0} must be > 0", periodInSeconds);
 		// -----
 		this.name = name;
 		this.daemonSupplier = daemonSupplier;

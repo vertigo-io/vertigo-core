@@ -50,10 +50,11 @@ public final class Metric {
 			final String feature,
 			final Double value,
 			final Status status) {
-		Assertion.checkNotNull(measureTime);
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkArgNotEmpty(feature);
-		Assertion.checkNotNull(status);
+		Assertion.check()
+				.notNull(measureTime)
+				.argNotEmpty(name)
+				.argNotEmpty(feature)
+				.notNull(status);
 		//-----
 		measureInstant = measureTime;
 		this.name = name;

@@ -50,8 +50,9 @@ public final class MessageText implements Serializable {
 	 * @param params paramètres de la ressource
 	 */
 	private MessageText(final String defaultMsg, final MessageKey key, final Serializable... params) {
-		Assertion.checkNotNull(params);
-		Assertion.checkArgument(defaultMsg != null || key != null, "key or msg must be defined");
+		Assertion.check()
+				.notNull(params)
+				.argument(defaultMsg != null || key != null, "key or msg must be defined");
 		//---
 		this.key = key;
 		this.defaultMsg = defaultMsg;
@@ -86,8 +87,9 @@ public final class MessageText implements Serializable {
 	 * @return the messageText
 	 */
 	public static MessageText ofDefaultMsg(final String defaultMsg, final MessageKey key, final Serializable... params) {
-		Assertion.checkArgNotEmpty(defaultMsg, "the default message is required");
-		Assertion.checkNotNull(key, "the message key is required");
+		Assertion.check()
+				.argNotEmpty(defaultMsg, "the default message is required")
+				.notNull(key, "the message key is required");
 		//---
 		return new MessageText(defaultMsg, key, params);
 	}

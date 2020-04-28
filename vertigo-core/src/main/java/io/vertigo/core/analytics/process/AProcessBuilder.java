@@ -52,8 +52,9 @@ public final class AProcessBuilder implements Builder<AProcess> {
 	 * @param name name of the process, used for agregation
 	 */
 	AProcessBuilder(final String category, final String name) {
-		Assertion.checkArgNotEmpty(category, "the process category is required");
-		Assertion.checkArgNotEmpty(name, "the process name is required");
+		Assertion.check()
+				.argNotEmpty(category, "the process category is required")
+				.argNotEmpty(name, "the process name is required");
 		//---
 		myCategory = category;
 		myName = name;
@@ -70,10 +71,11 @@ public final class AProcessBuilder implements Builder<AProcess> {
 	 * @param end end of the process
 	 */
 	AProcessBuilder(final String category, final String name, final Instant start, final Instant end) {
-		Assertion.checkArgNotEmpty(category, "the process category is required");
-		Assertion.checkArgNotEmpty(name, "the process name is required");
-		Assertion.checkNotNull(start, "the process start is required");
-		Assertion.checkNotNull(end, "the process end is required");
+		Assertion.check()
+				.argNotEmpty(category, "the process category is required")
+				.argNotEmpty(name, "the process name is required")
+				.notNull(start, "the process start is required")
+				.notNull(end, "the process end is required");
 		//---
 		myCategory = category;
 		myName = name;
@@ -117,8 +119,9 @@ public final class AProcessBuilder implements Builder<AProcess> {
 	 * @return this builder
 	 */
 	public AProcessBuilder addTag(final String name, final String value) {
-		Assertion.checkNotNull(name, "tag name is required");
-		Assertion.checkNotNull(value, "tag value is required");
+		Assertion.check()
+				.notNull(name, "tag name is required")
+				.notNull(value, "tag value is required");
 		//---------------------------------------------------------------------
 		tags.put(name, value);
 		return this;

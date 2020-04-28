@@ -168,8 +168,9 @@ public final class ClassUtil {
 	 * @return Classe java
 	 */
 	public static <J> Class<? extends J> classForName(final String javaClassName, final Class<J> type) {
-		Assertion.checkNotNull(javaClassName);
-		Assertion.checkNotNull(type);
+		Assertion.check()
+				.notNull(javaClassName)
+				.notNull(type);
 		//-----
 		try {
 			return Class.forName(javaClassName).asSubclass(type);
@@ -191,8 +192,9 @@ public final class ClassUtil {
 	 * @return value provided as the result by the method
 	 */
 	public static Object invoke(final Object instance, final Method method, final Object... args) {
-		Assertion.checkNotNull(instance);
-		Assertion.checkNotNull(method);
+		Assertion.check()
+				.notNull(instance)
+				.notNull(method);
 		//-----
 		try {
 			return method.invoke(instance, args);
@@ -211,8 +213,9 @@ public final class ClassUtil {
 	 * @param value Nouvelle valeur
 	 */
 	public static void set(final Object instance, final Field field, final Object value) {
-		Assertion.checkNotNull(instance);
-		Assertion.checkNotNull(field);
+		Assertion.check()
+				.notNull(instance)
+				.notNull(field);
 		//-----
 		try {
 			field.setAccessible(true);
@@ -230,8 +233,9 @@ public final class ClassUtil {
 	 * @return Valeur
 	 */
 	public static Object get(final Object instance, final Field field) {
-		Assertion.checkNotNull(instance);
-		Assertion.checkNotNull(field);
+		Assertion.check()
+				.notNull(instance)
+				.checkNotNull(field);
 		//-----
 		try {
 			field.setAccessible(true);

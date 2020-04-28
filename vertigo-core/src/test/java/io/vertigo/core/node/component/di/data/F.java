@@ -43,9 +43,10 @@ public final class F {
 			@ParamValue("param1") final String param1,
 			@ParamValue("param3") final Optional<String> param3,
 			@ParamValue("param4") final Optional<String> param4) {
-		Assertion.checkNotNull(param1);
-		Assertion.checkNotNull(param3);
-		Assertion.checkNotNull(param4);
+		Assertion.check()
+				.notNull(param1)
+				.notNull(param3)
+				.notNull(param4);
 		//-----
 		this.param1 = param1;
 		this.param3 = param3;

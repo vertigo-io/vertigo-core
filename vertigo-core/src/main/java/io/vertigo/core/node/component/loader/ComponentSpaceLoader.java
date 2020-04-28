@@ -104,9 +104,10 @@ public final class ComponentSpaceLoader {
 	 * @param componentConfigs the configs of the components
 	 */
 	private void registerComponents(final Optional<ParamManager> paramManagerOpt, final String moduleName, final List<CoreComponentConfig> componentConfigs) {
-		Assertion.checkNotNull(paramManagerOpt);
-		Assertion.checkNotNull(moduleName);
-		Assertion.checkNotNull(componentConfigs);
+		Assertion.check()
+				.notNull(paramManagerOpt)
+				.notNull(moduleName)
+				.notNull(componentConfigs);
 		//---- Proxies----
 		componentConfigs
 				.stream()
@@ -206,11 +207,12 @@ public final class ComponentSpaceLoader {
 	}
 
 	private void registerProxyMethod(final ProxyMethod proxyMethod) {
-		Assertion.checkNotNull(proxyMethod);
-		Assertion.checkArgument(proxyMethods.stream().noneMatch(a -> a.getClass().equals(proxyMethod.getClass())),
-				"proxy {0} already registered with the same class", proxyMethod.getClass());
-		Assertion.checkArgument(proxyMethods.stream().noneMatch(p -> p.getAnnotationType().equals(proxyMethod.getAnnotationType())),
-				"proxy {0} already registered with the same annotation", proxyMethod.getClass());
+		Assertion.check()
+				.notNull(proxyMethod)
+				.argument(proxyMethods.stream().noneMatch(a -> a.getClass().equals(proxyMethod.getClass())),
+						"proxy {0} already registered with the same class", proxyMethod.getClass())
+				.argument(proxyMethods.stream().noneMatch(p -> p.getAnnotationType().equals(proxyMethod.getAnnotationType())),
+						"proxy {0} already registered with the same annotation", proxyMethod.getClass());
 		//-----
 		proxyMethods.add(proxyMethod);
 	}
@@ -273,8 +275,9 @@ public final class ComponentSpaceLoader {
 			final Container container,
 			final Optional<ParamManager> paramManagerOpt,
 			final Map<String, String> params) {
-		Assertion.checkNotNull(paramManagerOpt);
-		Assertion.checkNotNull(params);
+		Assertion.check()
+				.notNull(paramManagerOpt)
+				.notNull(params);
 		// ---
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOpt, params);
 		final Container dualContainer = new ComponentDualContainer(container, paramsContainer);
@@ -289,10 +292,11 @@ public final class ComponentSpaceLoader {
 			final Container container,
 			final Optional<ParamManager> paramManagerOpt,
 			final Map<String, String> params) {
-		Assertion.checkNotNull(instance);
-		Assertion.checkNotNull(container);
-		Assertion.checkNotNull(paramManagerOpt);
-		Assertion.checkNotNull(params);
+		Assertion.check()
+				.notNull(instance)
+				.notNull(container)
+				.notNull(paramManagerOpt)
+				.notNull(params);
 		//-----
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOpt, params);
 		final Container dualContainer = new ComponentDualContainer(container, paramsContainer);

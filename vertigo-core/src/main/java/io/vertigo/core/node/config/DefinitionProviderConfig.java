@@ -40,9 +40,10 @@ public final class DefinitionProviderConfig {
 			final Class<? extends DefinitionProvider> definitionProviderClass,
 			final List<Param> params,
 			final List<DefinitionResourceConfig> definitionResourceConfigs) {
-		Assertion.checkNotNull(definitionProviderClass);
-		Assertion.checkNotNull(params);
-		Assertion.checkNotNull(definitionResourceConfigs);
+		Assertion.check()
+				.notNull(definitionProviderClass)
+				.notNull(params)
+				.notNull(definitionResourceConfigs);
 		//-----
 		this.definitionProviderClass = definitionProviderClass;
 		this.params = params

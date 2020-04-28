@@ -54,9 +54,10 @@ public final class XmlUtil {
 	 * @param xml XML to validate
 	 */
 	public static void validateXmlByXsd(final URL xml, final URL xsd) {
-		Assertion.checkNotNull(xml);
-		Assertion.checkNotNull(xsd);
-		//-----
+		Assertion.check()
+				.notNull(xml)
+				.notNull(xsd);
+		//---
 		final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI, INTERNAL_XML_SCHEMA_FACTORY, XmlUtil.class.getClassLoader());
 		try {
 			schemaFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);

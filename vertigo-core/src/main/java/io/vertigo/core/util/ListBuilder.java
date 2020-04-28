@@ -79,8 +79,9 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 	 * @return this builder
 	 */
 	public ListBuilder<X> sort(final Comparator<? super X> comparator) {
-		Assertion.checkNotNull(comparator);
-		Assertion.checkArgument(myComparator == null, "comparator already set");
+		Assertion.check()
+				.notNull(comparator)
+				.argument(myComparator == null, "comparator already set");
 		//---
 		myComparator = comparator;
 		return this;

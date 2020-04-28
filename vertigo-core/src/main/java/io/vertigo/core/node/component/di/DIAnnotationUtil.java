@@ -44,9 +44,10 @@ public final class DIAnnotationUtil {
 		Assertion.checkNotNull(clazz);
 		//-----
 		final Constructor<T>[] constructors = (Constructor<T>[]) clazz.getConstructors();
-		Assertion.checkNotNull(constructors, "Aucun constructeur public identifiable");
-		Assertion.checkArgument(constructors.length == 1, "Un seul constructeur public doit être déclaré sur {0}", clazz.getName());
-		Assertion.checkArgument(isInjectable(constructors[0]), "Le constructeur public de {0} doit être marqué avec l'annotation @Inject ou bien être vide", clazz.getName());
+		Assertion.check()
+				.notNull(constructors, "Aucun constructeur public identifiable")
+				.argument(constructors.length == 1, "Un seul constructeur public doit être déclaré sur {0}", clazz.getName())
+				.argument(isInjectable(constructors[0]), "Le constructeur public de {0} doit être marqué avec l'annotation @Inject ou bien être vide", clazz.getName());
 		//-----
 
 		//On a un et un seul constructeur.

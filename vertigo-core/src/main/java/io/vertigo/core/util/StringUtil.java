@@ -130,9 +130,10 @@ public final class StringUtil {
 	 * à l'exception des premières lettres aprés les underscores dans str
 	 */
 	private static String constToCamelCase(final String str, final boolean first2UpperCase) {
-		Assertion.checkNotNull(str);
-		Assertion.checkArgument(str.length() > 0, "Chaine à modifier invalide (ne doit pas être vide)");
-		Assertion.checkArgument(!str.contains("__"), "Chaine à modifier invalide : {0} (__ interdit)", str);
+		Assertion.check()
+				.notNull(str)
+				.argument(str.length() > 0, "Chaine à modifier invalide (ne doit pas être vide)")
+				.argument(!str.contains("__"), "Chaine à modifier invalide : {0} (__ interdit)", str);
 		//-----
 		final StringBuilder result = new StringBuilder();
 		boolean upper = first2UpperCase;
@@ -279,10 +280,11 @@ public final class StringUtil {
 	 * @param newStr Chaine de remplacement
 	 */
 	public static void replace(final StringBuilder str, final String oldStr, final String newStr) {
-		Assertion.checkNotNull(str);
-		Assertion.checkNotNull(oldStr);
-		Assertion.checkArgument(oldStr.length() > 0, "La chaine a remplacer ne doit pas être vide");
-		Assertion.checkNotNull(newStr);
+		Assertion.check()
+				.notNull(str)
+				.notNull(oldStr)
+				.argument(oldStr.length() > 0, "La chaine a remplacer ne doit pas être vide")
+				.notNull(newStr);
 		//-----
 		int index = str.indexOf(oldStr);
 		if (index == -1) {

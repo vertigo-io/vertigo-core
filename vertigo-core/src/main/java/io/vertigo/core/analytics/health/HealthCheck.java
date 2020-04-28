@@ -58,12 +58,13 @@ public final class HealthCheck {
 			final String feature,
 			final Instant checkInstant,
 			final HealthMeasure healthMeasure) {
-		Assertion.checkNotNull(name);
-		Assertion.checkNotNull(checker);
-		Assertion.checkNotNull(module);
-		Assertion.checkNotNull(feature);
-		Assertion.checkNotNull(checkInstant);
-		Assertion.checkNotNull(healthMeasure);
+		Assertion.check()
+				.notNull(name)
+				.notNull(checker)
+				.notNull(module)
+				.notNull(feature)
+				.notNull(checkInstant)
+				.notNull(healthMeasure);
 		//-----
 		this.name = name;
 		this.checker = checker;

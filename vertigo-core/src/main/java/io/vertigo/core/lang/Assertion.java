@@ -47,13 +47,20 @@ public final class Assertion {
 		//private constructor
 	}
 
+	private static final Assertion INSTANCE = new Assertion();
+
+	public static Assertion check() {
+		return INSTANCE;
+	}
+
 	/**
 	 * Check if an object is not null.
 	 * If not a generic exception is thrown.
 	 * @param o Object object  that must be not null
 	 */
-	public static void checkNotNull(final Object o) {
-		Objects.requireNonNull(o);
+	public static Assertion checkNotNull(final Object o) {
+		check().notNull(o);
+		return INSTANCE;
 	}
 
 	/**
@@ -65,8 +72,7 @@ public final class Assertion {
 	 * @param params params of the message
 	 */
 	public static void checkNotNull(final Object o, final String msg, final Object... params) {
-		//Attention si o est un Boolean : il peut s'agir du resultat d'un test (boolean) qui a été autoboxé en Boolean
-		Objects.requireNonNull(o, () -> StringUtil.format(msg, params));
+		check().notNull(o, msg, params);
 	}
 
 	/**
@@ -78,9 +84,7 @@ public final class Assertion {
 	 * @param params params of the message
 	 */
 	public static void checkArgument(final boolean test, final String msg, final Object... params) {
-		if (!test) {
-			throw new IllegalArgumentException(StringUtil.format(msg, params));
-		}
+		check().argument(test, msg, params);
 	}
 
 	/**
@@ -90,10 +94,7 @@ public final class Assertion {
 	 * @param str String that must be not empty
 	 */
 	public static void checkArgNotEmpty(final String str) {
-		checkNotNull(str);
-		if (StringUtil.isEmpty(str)) {
-			throw new IllegalArgumentException("String must not be empty");
-		}
+		check().argNotEmpty(str);
 	}
 
 	/**
@@ -103,10 +104,7 @@ public final class Assertion {
 	 * @param params params of the message
 	 */
 	public static void checkArgNotEmpty(final String str, final String msg, final Object... params) {
-		checkNotNull(str, msg, params);
-		if (StringUtil.isEmpty(str)) {
-			throw new IllegalArgumentException(StringUtil.format(msg, params));
-		}
+		check().argNotEmpty(str, msg, params);
 	}
 
 	/**
@@ -118,9 +116,7 @@ public final class Assertion {
 	 * @param params params of the message
 	 */
 	public static void checkState(final boolean test, final String msg, final Object... params) {
-		if (!test) {
-			throw new IllegalStateException(StringUtil.format(msg, params));
-		}
+		check().state(test, msg, params);
 	}
 
 	/**
@@ -149,4 +145,46 @@ public final class Assertion {
 		 */
 		void check(final BooleanSupplier test, final String msg, final Object... params);
 	}
+
+	public Assertion notNull(final Object o) {
+		Objects.requireNonNull(o);
+		return INSTANCE;
+	}
+
+	public Assertion notNull(final Object o, final String msg, final Object... params) {
+		//Attention si o est un Boolean : il peut s'agir du resultat d'un test (boolean) qui a été autoboxé en Boolean
+		Objects.requireNonNull(o, () -> StringUtil.format(msg, params));
+		return INSTANCE;
+	}
+
+	public Assertion argument(final boolean test, final String msg, final Object... params) {
+		if (!test) {
+			throw new IllegalArgumentException(StringUtil.format(msg, params));
+		}
+		return INSTANCE;
+	}
+
+	public Assertion state(final boolean test, final String msg, final Object... params) {
+		if (!test) {
+			throw new IllegalStateException(StringUtil.format(msg, params));
+		}
+		return INSTANCE;
+	}
+
+	public Assertion argNotEmpty(final String str) {
+		checkNotNull(str);
+		if (StringUtil.isEmpty(str)) {
+			throw new IllegalArgumentException("String must not be empty");
+		}
+		return INSTANCE;
+	}
+
+	public Assertion argNotEmpty(final String str, final String msg, final Object... params) {
+		checkNotNull(str, msg, params);
+		if (StringUtil.isEmpty(str)) {
+			throw new IllegalArgumentException(StringUtil.format(msg, params));
+		}
+		return INSTANCE;
+	}
+
 }
