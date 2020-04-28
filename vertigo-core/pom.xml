@@ -31,11 +31,6 @@
 			<version>1</version>
 		</dependency>
 		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib-nodep</artifactId>
-			<version>3.3.0</version> <!-- proxies -->
-		</dependency>
-		<dependency>
 			<groupId>org.reflections</groupId>
 			<artifactId>reflections</artifactId>
 			<version>0.9.11</version>
