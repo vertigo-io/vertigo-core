@@ -50,13 +50,13 @@ public final class NodeConfig {
 			final BootConfig bootConfig,
 			final List<ModuleConfig> moduleConfigs,
 			final List<ComponentInitializerConfig> componentInitializerConfigs) {
-		Assertion.checkArgNotEmpty(appName);
-		Assertion.checkArgNotEmpty(nodeId);
-		Assertion.checkNotNull(endPointOpt);
-		//---
-		Assertion.checkNotNull(bootConfig);
-		Assertion.checkNotNull(moduleConfigs);
-		Assertion.checkNotNull(componentInitializerConfigs);
+		Assertion.check()
+				.argNotEmpty(appName)
+				.argNotEmpty(nodeId)
+				.notNull(endPointOpt)
+				.notNull(bootConfig)
+				.notNull(moduleConfigs)
+				.notNull(componentInitializerConfigs);
 		//---
 		this.appName = appName;
 		this.nodeId = nodeId;
@@ -127,7 +127,8 @@ public final class NodeConfig {
 	 * @param out Out
 	 */
 	public void print(final PrintStream out) {
-		Assertion.checkNotNull(out);
+		Assertion.check()
+				.notNull(out);
 		doPrint(out);
 	}
 

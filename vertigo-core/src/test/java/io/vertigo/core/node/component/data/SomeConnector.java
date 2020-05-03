@@ -12,7 +12,8 @@ public final class SomeConnector implements Connector<String> {
 
 	@Inject
 	public SomeConnector(@ParamValue("name") final String name) {
-		Assertion.checkArgNotEmpty(name);
+		Assertion.check()
+				.argNotEmpty(name);
 		//----
 		this.name = name;
 	}

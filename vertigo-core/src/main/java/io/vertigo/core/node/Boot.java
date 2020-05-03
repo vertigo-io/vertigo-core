@@ -41,22 +41,26 @@ final class Boot {
 	 * @param bootConfig The config of the boot
 	 */
 	Boot(final BootConfig bootConfig) {
-		Assertion.checkNotNull(bootConfig);
+		Assertion.check()
+				.notNull(bootConfig);
 		//-----
 		this.bootConfig = bootConfig;
 	}
 
 	private static void initLog(final LogConfig log4Config) {
-		Assertion.checkNotNull(log4Config);
+		Assertion.check()
+				.notNull(log4Config);
 		//-----
 		final String log4jFileName = log4Config.getFileName();
-		Assertion.checkArgument(log4jFileName.endsWith(".xml"), "Use the XML format for log4j configurations (instead of : {0}).", log4jFileName);
+		Assertion.check()
+				.argument(log4jFileName.endsWith(".xml"), "Use the XML format for log4j configurations (instead of : {0}).", log4jFileName);
 		final URL url = Home.class.getResource(log4jFileName);
 		if (url != null) {
 			Configurator.initialize("definedLog4jContext", Home.class.getClassLoader(), log4jFileName);
 			LogManager.getRootLogger().info("Log4J configuration chargée (resource) : {}", url.getFile());
 		} else {
-			Assertion.checkArgument(new File(log4jFileName).exists(), "Fichier de configuration log4j : {0} est introuvable", log4jFileName);
+			Assertion.check()
+					.argument(new File(log4jFileName).exists(), "Fichier de configuration log4j : {0} est introuvable", log4jFileName);
 			// Avec configureAndWatch (utilise un anonymous thread)
 			// on peut modifier à chaud le fichier de conf log4j
 			// mais en cas de hot-deploy, le thread reste présent ce qui peut-entrainer des problèmes.

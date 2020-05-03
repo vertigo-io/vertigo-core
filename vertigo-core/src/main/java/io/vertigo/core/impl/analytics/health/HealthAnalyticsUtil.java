@@ -61,7 +61,8 @@ public final class HealthAnalyticsUtil {
 	 * @return List of HealthCheckDefinition
 	 */
 	public static List<HealthCheckDefinition> createHealthCheckDefinitions(final String componentId, final CoreComponent component, final AopPlugin aopPlugin) {
-		Assertion.checkNotNull(component);
+		Assertion.check()
+				.notNull(component);
 
 		//-- we construct a map of feature by componentId
 		final Map<String, String> featureByComponentId = new HashMap<>();
@@ -77,10 +78,10 @@ public final class HealthAnalyticsUtil {
 				.filter(method -> method.isAnnotationPresent(HealthChecked.class))
 				.map(method -> {
 					final HealthChecked healthChecked = method.getAnnotation(HealthChecked.class);
-					Assertion.checkArgument(HealthMeasure.class.equals(method.getReturnType()), "health check methods of class {0} must return a HealthMeasure instead of {1}",
-							component.getClass(), method.getReturnType());
-					Assertion.checkArgument(method.getName().startsWith("check"), "health check methods of class {0} must start with check", component.getClass());
-					Assertion.checkArgument(method.getParameterTypes().length == 0, "health check methods of class {0} must not have any parameter", component.getClass());
+					Assertion.check()
+							.argument(HealthMeasure.class.equals(method.getReturnType()), "health check methods of class {0} must return a HealthMeasure instead of {1}", component.getClass(), method.getReturnType())
+							.argument(method.getName().startsWith("check"), "health check methods of class {0} must start with check", component.getClass())
+							.argument(method.getParameterTypes().length == 0, "health check methods of class {0} must not have any parameter", component.getClass());
 					//-----
 					//2. For each method register a listener
 					// we remove # because it doesn't comply with definition naming rule
@@ -128,7 +129,8 @@ public final class HealthAnalyticsUtil {
 	}
 
 	public static HealthStatus aggregate(final List<HealthCheck> healthChecks) {
-		Assertion.checkNotNull(healthChecks);
+		Assertion.check()
+				.notNull(healthChecks);
 		//---
 		int nbGreen = 0;
 		int nbYellow = 0;

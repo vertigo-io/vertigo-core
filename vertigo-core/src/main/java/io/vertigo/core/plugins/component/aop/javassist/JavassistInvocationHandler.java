@@ -37,8 +37,9 @@ final class JavassistInvocationHandler implements MethodHandler {
 	private final Map<Method, List<Aspect>> joinPoints;
 
 	JavassistInvocationHandler(final Object instance, final Map<Method, List<Aspect>> joinPoints) {
-		Assertion.checkNotNull(instance);
-		Assertion.checkNotNull(joinPoints);
+		Assertion.check()
+				.notNull(instance)
+				.notNull(joinPoints);
 		//-----
 		this.instance = instance;
 		this.joinPoints = joinPoints;
@@ -65,9 +66,10 @@ final class JavassistInvocationHandler implements MethodHandler {
 		private int index;
 
 		private MyMethodInvocation(final Object instance, final Method method, final List<Aspect> aspects) {
-			Assertion.checkNotNull(instance);
-			Assertion.checkNotNull(method);
-			Assertion.checkNotNull(aspects);
+			Assertion.check()
+					.notNull(instance)
+					.notNull(method)
+					.notNull(aspects);
 			//-----
 			this.instance = instance;
 			this.method = method;

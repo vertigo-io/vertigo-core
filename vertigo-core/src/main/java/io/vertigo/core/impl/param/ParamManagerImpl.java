@@ -43,7 +43,8 @@ public final class ParamManagerImpl implements ParamManager {
 	 */
 	@Inject
 	public ParamManagerImpl(final List<ParamPlugin> paramPlugins) {
-		Assertion.checkNotNull(paramPlugins);
+		Assertion.check()
+				.notNull(paramPlugins);
 		//-----
 		this.paramPlugins = paramPlugins;
 	}
@@ -57,7 +58,8 @@ public final class ParamManagerImpl implements ParamManager {
 
 	@Override
 	public Optional<Param> getOptionalParam(final String paramName) {
-		Assertion.checkArgNotEmpty(paramName);
+		Assertion.check()
+				.argNotEmpty(paramName);
 		//-----
 		return paramPlugins
 				.stream()

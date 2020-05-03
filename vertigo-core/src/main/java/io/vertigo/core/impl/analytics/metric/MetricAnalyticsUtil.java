@@ -51,7 +51,8 @@ public final class MetricAnalyticsUtil {
 	 * Registers all methods annotated with @Metrics
 	 */
 	public static List<MetricDefinition> createMetricDefinitions(final String componentId, final CoreComponent component, final AopPlugin aopPlugin) {
-		Assertion.checkNotNull(component);
+		Assertion.check()
+				.notNull(component);
 
 		//-- we construct a map of feature by componentId
 		final Map<String, String> featureByComponentId = new HashMap<>();
@@ -63,8 +64,9 @@ public final class MetricAnalyticsUtil {
 		return Stream.of(aopPlugin.unwrap(component).getClass().getMethods())
 				.filter(method -> method.isAnnotationPresent(Metrics.class))
 				.map(method -> {
-					Assertion.checkArgument(List.class.isAssignableFrom(method.getReturnType()), "metrics supplier methods of class {0} must return a List of Metric instead of {1}", component.getClass(), method.getReturnType());
-					Assertion.checkArgument(method.getParameterTypes().length == 0, "metrics supplier methods of class {0} must not have any parameter", component.getClass());
+					Assertion.check()
+							.argument(List.class.isAssignableFrom(method.getReturnType()), "metrics supplier methods of class {0} must return a List of Metric instead of {1}", component.getClass(), method.getReturnType())
+							.argument(method.getParameterTypes().length == 0, "metrics supplier methods of class {0} must not have any parameter", component.getClass());
 					//-----
 					//2. For each method register a listener
 					// we remove # because it doesn't comply with definition naming rule

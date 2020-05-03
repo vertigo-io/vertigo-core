@@ -53,7 +53,8 @@ public final class InjectorUtil {
 	 * @return the enhanced object.
 	 */
 	public static void injectMembers(final Object instance) {
-		Assertion.checkNotNull(instance);
+		Assertion.check()
+				.notNull(instance);
 		//-----
 		ComponentSpaceLoader.injectMembers(instance, Home.getApp().getComponentSpace(), Optional.empty(), Collections.emptyMap());
 	}

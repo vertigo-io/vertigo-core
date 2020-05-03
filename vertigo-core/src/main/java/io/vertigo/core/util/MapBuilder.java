@@ -52,7 +52,8 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 				.notNull(value);
 		//-----
 		final Object previous = myMap.put(key, value);
-		Assertion.checkArgument(previous == null, "Data with key '{0}' already registered", key);
+		Assertion.check()
+				.argument(previous == null, "Data with key '{0}' already registered", key);
 		return this;
 	}
 
@@ -63,7 +64,8 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	 * @return this builder
 	 */
 	public MapBuilder<K, V> putAll(final Map<K, V> map) {
-		Assertion.checkNotNull(map);
+		Assertion.check()
+				.notNull(map);
 		//-----
 		map.forEach(this::put);
 		return this;
@@ -92,7 +94,8 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	 * @return this builder
 	 */
 	public MapBuilder<K, V> putNullable(final K key, final V value) {
-		Assertion.checkNotNull(key);
+		Assertion.check()
+				.notNull(key);
 		//-----
 		if (value != null) {
 			myMap.put(key, value);

@@ -32,8 +32,8 @@ public class TestDefinitionprovider implements SimpleDefinitionProvider {
 
 	@Inject
 	public TestDefinitionprovider(@ParamValue("testParam") final String testParam) {
-		Assertion.checkArgNotEmpty(testParam);
-
+		Assertion.check()
+				.argNotEmpty(testParam);
 	}
 
 	@Override

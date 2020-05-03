@@ -76,12 +76,13 @@ public final class ComponentConfig {
 			final Optional<Class<? extends Component>> apiClassOpt,
 			final Class<? extends Component> implClass,
 			final List<Param> params) {
-		Assertion.checkNotNull(apiClassOpt);
-		Assertion.checkNotNull(implClass);
+		Assertion.check()
+				.notNull(apiClassOpt)
+				.notNull(implClass)
+				.argument(apiClassOpt.orElse(Component.class).isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClassOpt.orElse(Component.class))
+				.notNull(params);
 		Assertion.when(apiClassOpt.isPresent())
 				.check(() -> Component.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, Component.class);
-		Assertion.checkArgument(apiClassOpt.orElse(Component.class).isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClassOpt.orElse(Component.class));
-		Assertion.checkNotNull(params);
 		//-----
 		this.apiClassOpt = apiClassOpt;
 		this.implClass = implClass;

@@ -92,7 +92,8 @@ public final class AProcessBuilder implements Builder<AProcess> {
 	 * @return this builder
 	 */
 	public AProcessBuilder incMeasure(final String measureName, final double measureValue) {
-		Assertion.checkNotNull(measureName, "Measure name is required");
+		Assertion.check()
+				.notNull(measureName, "Measure name is required");
 		//---------------------------------------------------------------------
 		final Double lastmValue = measures.get(measureName);
 		measures.put(measureName, lastmValue == null ? measureValue : measureValue + lastmValue);
@@ -106,7 +107,8 @@ public final class AProcessBuilder implements Builder<AProcess> {
 	 * @return this builder
 	 */
 	public AProcessBuilder setMeasure(final String name, final double value) {
-		Assertion.checkNotNull(name, "measure name is required");
+		Assertion.check()
+				.notNull(name, "measure name is required");
 		//---------------------------------------------------------------------
 		measures.put(name, value);
 		return this;
@@ -133,7 +135,8 @@ public final class AProcessBuilder implements Builder<AProcess> {
 	 * @return this builder
 	 */
 	public AProcessBuilder addSubProcess(final AProcess subProcess) {
-		Assertion.checkNotNull(subProcess, "sub process is required ");
+		Assertion.check()
+				.notNull(subProcess, "sub process is required ");
 		//---------------------------------------------------------------------
 		subProcesses.add(subProcess);
 		return this;

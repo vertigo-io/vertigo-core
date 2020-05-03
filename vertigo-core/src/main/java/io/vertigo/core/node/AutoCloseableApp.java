@@ -73,7 +73,8 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	 * @param nodeConfig Application configuration
 	 */
 	public AutoCloseableApp(final NodeConfig nodeConfig) {
-		Assertion.checkNotNull(nodeConfig);
+		Assertion.check()
+				.notNull(nodeConfig);
 		//-----
 		start = Instant.now();
 		this.nodeConfig = nodeConfig;
@@ -130,8 +131,9 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 
 	@Override
 	public void registerPreActivateFunction(final Runnable preActivateFunction) {
-		Assertion.checkArgument(state == State.STARTING, "Applisteners can't be registered at runtime");
-		Assertion.checkNotNull(preActivateFunction);
+		Assertion.check()
+				.argument(state == State.STARTING, "Applisteners can't be registered at runtime")
+				.notNull(preActivateFunction);
 		//-----
 		preActivateFunctions.add(preActivateFunction);
 	}
@@ -150,7 +152,8 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	@Override
 	public void close() {
 		//En cas d'erreur on essaie de fermer proprement les composants démarrés.
-		Assertion.checkState(state == State.ACTIVE || state == State.STARTING, "App with a state '{0}' can not be be closed", state);
+		Assertion.check()
+				.state(state == State.ACTIVE || state == State.STARTING, "App with a state '{0}' can not be be closed", state);
 		state = State.STOPPING;
 		//-----
 		try {
@@ -189,8 +192,9 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 
 	private void initializeAllComponents() {
 		for (final ComponentInitializerConfig componentInitializerConfig : nodeConfig.getComponentInitializerConfigs()) {
-			Assertion.checkArgument(!Activeable.class.isAssignableFrom(componentInitializerConfig.getInitializerClass()),
-					"The initializer '{0}' can't be activeable", componentInitializerConfig.getInitializerClass());
+			Assertion.check()
+					.argument(!Activeable.class.isAssignableFrom(componentInitializerConfig.getInitializerClass()),
+							"The initializer '{0}' can't be activeable", componentInitializerConfig.getInitializerClass());
 			final ComponentInitializer componentInitializer = DIInjector.newInstance(componentInitializerConfig.getInitializerClass(), componentSpaceWritable);
 			componentInitializer.init();
 		}

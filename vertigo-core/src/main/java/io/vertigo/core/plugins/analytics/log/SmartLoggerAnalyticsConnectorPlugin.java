@@ -52,8 +52,9 @@ public final class SmartLoggerAnalyticsConnectorPlugin implements AnalyticsConne
 	public SmartLoggerAnalyticsConnectorPlugin(
 			@ParamValue("aggregatedBy") final Optional<String> aggregatedByOpt,
 			@ParamValue("durationThreshold") final Optional<Long> durationThresholdOpt) {
-		Assertion.checkNotNull(aggregatedByOpt);
-		Assertion.checkNotNull(durationThresholdOpt);
+		Assertion.check()
+				.notNull(aggregatedByOpt)
+				.notNull(durationThresholdOpt);
 		//---
 		this.aggregatedByOpt = aggregatedByOpt;
 		// see Jakob Nielsen dhttps://www.nngroup.com/articles/response-times-3-important-limits/

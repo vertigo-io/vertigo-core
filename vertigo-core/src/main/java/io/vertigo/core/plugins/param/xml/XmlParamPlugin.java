@@ -55,8 +55,9 @@ public final class XmlParamPlugin implements ParamPlugin {
 	 */
 	@Inject
 	public XmlParamPlugin(final ResourceManager resourceManager, @ParamValue("url") final String url) {
-		Assertion.checkNotNull(resourceManager);
-		Assertion.checkArgNotEmpty(url);
+		Assertion.check()
+				.notNull(resourceManager)
+				.argNotEmpty(url);
 		//-----
 		final URL configURL = resourceManager.resolve(url);
 		params = readXML(configURL);
@@ -65,7 +66,8 @@ public final class XmlParamPlugin implements ParamPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<Param> getParam(final String paramName) {
-		Assertion.checkArgNotEmpty(paramName);
+		Assertion.check()
+				.argNotEmpty(paramName);
 		//-----
 		return Optional.ofNullable(params.get(paramName));
 	}
@@ -74,7 +76,8 @@ public final class XmlParamPlugin implements ParamPlugin {
 	 * Charge une configuration, et complète celle existante.
 	 */
 	private static Map<String, Param> readXML(final URL configURL) {
-		Assertion.checkNotNull(configURL);
+		Assertion.check()
+				.notNull(configURL);
 		//-----
 		try {
 			return doReadXML(configURL);

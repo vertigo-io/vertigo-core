@@ -33,7 +33,8 @@ public final class ComponentInitializerConfig {
 	 * @param componentInitializerClass Class de l'initialiseur du composant
 	 */
 	ComponentInitializerConfig(final Class<? extends ComponentInitializer> componentInitializerClass) {
-		Assertion.checkNotNull(componentInitializerClass);
+		Assertion.check()
+				.notNull(componentInitializerClass);
 		//-----
 		this.componentInitializerClass = componentInitializerClass;
 	}

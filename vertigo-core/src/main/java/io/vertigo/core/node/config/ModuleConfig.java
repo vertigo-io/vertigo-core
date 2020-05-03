@@ -54,14 +54,15 @@ public final class ModuleConfig {
 			final List<AmplifierConfig> amplifierConfigs,
 			final List<AspectConfig> aspectConfigs,
 			final List<ProxyMethodConfig> proxyMethods) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(definitionProviderConfigs);
-		Assertion.checkNotNull(componentConfigs);
-		Assertion.checkNotNull(pluginConfigs);
-		Assertion.checkNotNull(connectorConfigs);
-		Assertion.checkNotNull(amplifierConfigs);
-		Assertion.checkNotNull(aspectConfigs);
-		Assertion.checkNotNull(proxyMethods);
+		Assertion.check()
+				.argNotEmpty(name)
+				.notNull(definitionProviderConfigs)
+				.notNull(componentConfigs)
+				.notNull(pluginConfigs)
+				.notNull(connectorConfigs)
+				.notNull(amplifierConfigs)
+				.notNull(aspectConfigs)
+				.notNull(proxyMethods);
 		//-----
 		this.name = name;
 		definitionProviders = Collections.unmodifiableList(new ArrayList<>(definitionProviderConfigs));

@@ -23,8 +23,8 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.ComponentSpace;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.loader.ComponentSpaceLoader;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
@@ -55,8 +55,9 @@ public final class DefinitionSpaceLoader {
 	 * @param componentSpace the componentSpace
 	 */
 	private DefinitionSpaceLoader(final DefinitionSpaceWritable definitionSpaceWritable, final ComponentSpace componentSpace) {
-		Assertion.checkNotNull(definitionSpaceWritable);
-		Assertion.checkNotNull(componentSpace);
+		Assertion.check()
+				.notNull(definitionSpaceWritable)
+				.notNull(componentSpace);
 		//-----
 		this.definitionSpaceWritable = definitionSpaceWritable;
 		this.componentSpace = componentSpace;
@@ -69,7 +70,8 @@ public final class DefinitionSpaceLoader {
 	 * @return a stream of definitions
 	 */
 	public DefinitionSpaceLoader loadDefinitions(final List<ModuleConfig> moduleConfigs) {
-		Assertion.checkNotNull(moduleConfigs);
+		Assertion.check()
+				.notNull(moduleConfigs);
 		//--
 		final Stream<Definition> definitions = moduleConfigs
 				.stream()

@@ -48,7 +48,8 @@ public final class DefinitionProviderConfigBuilder implements Builder<Definition
 	 */
 
 	DefinitionProviderConfigBuilder(final Class<? extends DefinitionProvider> definitionProviderClass) {
-		Assertion.checkNotNull(definitionProviderClass);
+		Assertion.check()
+				.notNull(definitionProviderClass);
 		//-----
 		myClass = definitionProviderClass;
 	}
@@ -60,8 +61,9 @@ public final class DefinitionProviderConfigBuilder implements Builder<Definition
 	* @return this builder
 	 */
 	public DefinitionProviderConfigBuilder addDefinitionResource(final String resourceType, final String resourcePath) {
-		Assertion.checkArgNotEmpty(resourceType);
-		Assertion.checkNotNull(resourcePath);
+		Assertion.check()
+				.argNotEmpty(resourceType)
+				.notNull(resourcePath);
 		//-----
 		myDefinitionResourceConfigs.add(new DefinitionResourceConfig(resourceType, resourcePath));
 		return this;
@@ -73,7 +75,8 @@ public final class DefinitionProviderConfigBuilder implements Builder<Definition
 	 * @return this builder
 	 */
 	public DefinitionProviderConfigBuilder addAllParams(final Param... params) {
-		Assertion.checkNotNull(params);
+		Assertion.check()
+				.notNull(params);
 		//-----
 		myParams.addAll(Arrays.asList(params));
 		return this;
@@ -85,7 +88,8 @@ public final class DefinitionProviderConfigBuilder implements Builder<Definition
 	 * @return this builder
 	 */
 	public DefinitionProviderConfigBuilder addParam(final Param param) {
-		Assertion.checkNotNull(param);
+		Assertion.check()
+				.notNull(param);
 		//-----
 		myParams.add(param);
 		return this;

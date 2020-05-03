@@ -51,10 +51,11 @@ public final class BootConfig {
 			final List<PluginConfig> pluginConfigs,
 			final AopPlugin aopPlugin,
 			final boolean verbose) {
-		Assertion.checkNotNull(logConfigOpt);
-		Assertion.checkNotNull(componentConfigs);
-		Assertion.checkNotNull(pluginConfigs);
-		Assertion.checkNotNull(aopPlugin);
+		Assertion.check()
+				.notNull(logConfigOpt)
+				.notNull(componentConfigs)
+				.notNull(pluginConfigs)
+				.notNull(aopPlugin);
 		//-----
 		this.logConfigOpt = logConfigOpt;
 		this.componentConfigs = componentConfigs;

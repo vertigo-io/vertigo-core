@@ -63,7 +63,8 @@ public final class SystemMetricsProvider implements Component {
 	}
 
 	private static Metric buildMetric(final String name, final Supplier<Double> supplier) {
-		Assertion.checkArgNotEmpty(name);
+		Assertion.check()
+				.argNotEmpty(name);
 		//---
 		final MetricBuilder metricBuilder = Metric.builder()
 				.withName(name)
