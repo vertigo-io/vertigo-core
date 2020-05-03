@@ -98,8 +98,9 @@ public final class ClassUtil {
 	 * @return Nouvelle instance
 	 */
 	public static <J> J newInstance(final Constructor<J> constructor, final Object[] args) {
-		Assertion.checkNotNull(constructor);
-		Assertion.checkNotNull(args);
+		Assertion.check()
+				.notNull(constructor)
+				.notNull(args);
 		//-----
 		try {
 			return constructor.newInstance(args);
@@ -129,8 +130,9 @@ public final class ClassUtil {
 	* @return Constructeur recherché
 	*/
 	public static <J> Constructor<J> findConstructor(final Class<J> clazz, final Class<?>[] parameterTypes) {
-		Assertion.checkNotNull(clazz);
-		Assertion.checkNotNull(parameterTypes);
+		Assertion.check()
+				.notNull(clazz)
+				.notNull(parameterTypes);
 		//-----
 		try {
 			return clazz.getConstructor(parameterTypes);
@@ -150,7 +152,8 @@ public final class ClassUtil {
 	 * @return Classe java
 	 */
 	public static Class<?> classForName(final String javaClassName) {
-		Assertion.checkArgNotEmpty(javaClassName);
+		Assertion.check()
+				.argNotEmpty(javaClassName);
 		//-----
 		try {
 			return Class.forName(javaClassName);
@@ -235,7 +238,7 @@ public final class ClassUtil {
 	public static Object get(final Object instance, final Field field) {
 		Assertion.check()
 				.notNull(instance)
-				.checkNotNull(field);
+				.notNull(field);
 		//-----
 		try {
 			field.setAccessible(true);
@@ -253,9 +256,10 @@ public final class ClassUtil {
 	 * @return Méthode recherchée
 	 */
 	public static Method findMethod(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) {
-		Assertion.checkNotNull(clazz);
-		Assertion.checkNotNull(methodName);
-		Assertion.checkNotNull(parameterTypes);
+		Assertion.check()
+				.notNull(clazz)
+				.notNull(methodName)
+				.notNull(parameterTypes);
 		//-----
 		try {
 			return clazz.getMethod(methodName, parameterTypes);
@@ -271,8 +275,9 @@ public final class ClassUtil {
 	 * @return Tous les champs déclarés (incluant les champs parents)
 	 */
 	public static Collection<Field> getAllFields(final Class<?> clazz, final Class<? extends Annotation> annotation) {
-		Assertion.checkNotNull(clazz);
-		Assertion.checkNotNull(annotation);
+		Assertion.check()
+				.notNull(clazz)
+				.notNull(annotation);
 		//-----
 		return ClassUtil.getAllFields(clazz)
 				.stream()
@@ -287,8 +292,9 @@ public final class ClassUtil {
 	 * @return Tous les champs déclarés (incluant les champs parents)
 	 */
 	public static Collection<Method> getAllMethods(final Class<?> clazz, final Class<? extends Annotation> annotation) {
-		Assertion.checkNotNull(clazz);
-		Assertion.checkNotNull(annotation);
+		Assertion.check()
+				.notNull(clazz)
+				.notNull(annotation);
 		//-----
 		return ClassUtil.getAllMethods(clazz)
 				.stream()
@@ -302,7 +308,8 @@ public final class ClassUtil {
 	 * @return Tous les champs déclarés (incluant les champs parents)
 	 */
 	public static Collection<Field> getAllFields(final Class<?> clazz) {
-		Assertion.checkNotNull(clazz);
+		Assertion.check()
+				.notNull(clazz);
 		//-----
 		final List<Field> fields = new ArrayList<>();
 		final Field[] declaredFields = clazz.getDeclaredFields();
@@ -320,7 +327,8 @@ public final class ClassUtil {
 	 * @return Toutes les méthodes déclarées (incluant les méthodes des parents)
 	 */
 	public static Collection<Method> getAllMethods(final Class<?> clazz) {
-		Assertion.checkNotNull(clazz);
+		Assertion.check()
+				.notNull(clazz);
 		//-----
 		final List<Method> methods = new ArrayList<>();
 		final Method[] declaredMethods = clazz.getDeclaredMethods();
@@ -338,7 +346,8 @@ public final class ClassUtil {
 	 * @return Toutes les interfaces implémentées
 	 */
 	public static Set<Class<?>> getAllInterfaces(final Class<?> clazz) {
-		Assertion.checkNotNull(clazz);
+		Assertion.check()
+				.notNull(clazz);
 		//-----
 		Class<?> root = clazz;
 		final Set<Class<?>> allInterfaces = new HashSet<>();
@@ -365,7 +374,8 @@ public final class ClassUtil {
 	 * @return Classe du type générique
 	 */
 	public static Class<?> getGeneric(final Constructor<?> constructor, final int i) {
-		Assertion.checkNotNull(constructor);
+		Assertion.check()
+				.notNull(constructor);
 		//-----
 		return getGeneric(
 				constructor.getGenericParameterTypes()[i],
@@ -383,7 +393,8 @@ public final class ClassUtil {
 	 * @return Classe du type générique
 	 */
 	public static Class<?> getGeneric(final Method method, final int i) {
-		Assertion.checkNotNull(method);
+		Assertion.check()
+				.notNull(method);
 		//-----
 		return getGeneric(
 				method.getGenericParameterTypes()[i],
@@ -400,7 +411,8 @@ public final class ClassUtil {
 	 * @return Classe du type générique
 	 */
 	public static Class<?> getGeneric(final Field field) {
-		Assertion.checkNotNull(field);
+		Assertion.check()
+				.notNull(field);
 		//-----
 		return getGeneric(field.getGenericType(),
 				() -> new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur le champ " + field.getName()));
@@ -416,12 +428,14 @@ public final class ClassUtil {
 	public static Class<?> getGeneric(
 			final Type type,
 			final Supplier<RuntimeException> exceptionSupplier) {
-		Assertion.checkNotNull(type);
-		Assertion.checkNotNull(exceptionSupplier);
+		Assertion.check()
+				.notNull(type)
+				.notNull(exceptionSupplier);
 		//---
 		if (type instanceof ParameterizedType) {
 			final ParameterizedType parameterizedType = ParameterizedType.class.cast(type);
-			Assertion.checkArgument(parameterizedType.getActualTypeArguments().length == 1, "Il doit y avoir 1 et 1 seul générique déclaré");
+			Assertion.check()
+					.argument(parameterizedType.getActualTypeArguments().length == 1, "Il doit y avoir 1 et 1 seul générique déclaré");
 			final Type optionType = parameterizedType.getActualTypeArguments()[0];
 			if (optionType instanceof Class) {
 				return (Class<?>) optionType;
@@ -440,13 +454,15 @@ public final class ClassUtil {
 	 * @return Nom de la propriété associée
 	 */
 	public static String getPropertyName(final Method method) {
-		Assertion.checkNotNull(method);
+		Assertion.check()
+				.notNull(method);
 		//-----
 		final String property;
 		if (method.getName().startsWith("get")) {
 			property = method.getName().substring("get".length());
 		} else if (method.getName().startsWith("is")) {
-			Assertion.checkArgument(Boolean.class.equals(method.getReturnType()) || boolean.class.equals(method.getReturnType()), "une méthode is concerne un boolean : {0}", method);
+			Assertion.check()
+					.argument(Boolean.class.equals(method.getReturnType()) || boolean.class.equals(method.getReturnType()), "une méthode is concerne un boolean : {0}", method);
 			property = method.getName().substring("is".length());
 		} else {
 			throw new IllegalArgumentException("Type de Méthode " + method + " non gérée en tant que propriété");

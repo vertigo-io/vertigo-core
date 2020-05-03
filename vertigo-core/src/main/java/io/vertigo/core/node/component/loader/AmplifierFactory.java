@@ -67,7 +67,8 @@ final class AmplifierFactory {
 				final Class<? extends CoreComponent> intf,
 				final List<ProxyMethod> proxyMethods,
 				final Map<Method, List<Aspect>> aspectsByMethod) {
-			Assertion.checkNotNull(proxyMethods);
+			Assertion.check()
+					.notNull(proxyMethods);
 			//---
 			proxyMethodsByMethod = Arrays.stream(intf.getDeclaredMethods())
 					.collect(Collectors.toMap(Function.identity(),
@@ -80,8 +81,9 @@ final class AmplifierFactory {
 				final Object instance,
 				final Method method,
 				final Object[] args) throws Throwable {
-			Assertion.checkNotNull(instance);
-			Assertion.checkNotNull(method);
+			Assertion.check()
+					.notNull(instance)
+					.notNull(method);
 			//---
 			return new MyMethodInvocation(method,
 					aspectsByMethod.getOrDefault(method, Collections.emptyList()),

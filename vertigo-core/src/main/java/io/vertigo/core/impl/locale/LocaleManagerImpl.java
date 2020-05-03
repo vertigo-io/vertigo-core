@@ -94,14 +94,16 @@ public final class LocaleManagerImpl implements LocaleManager {
 	 */
 	@Inject
 	public LocaleManagerImpl(@ParamValue("locales") final String locales, @ParamValue("defaultZoneId") final Optional<String> defaultZoneId) {
-		Assertion.checkArgNotEmpty(locales);
-		Assertion.checkNotNull(defaultZoneId);
+		Assertion.check()
+				.argNotEmpty(locales)
+				.notNull(defaultZoneId);
 		//-----
 		this.locales = createLocales(locales);
 		this.defaultZoneId = createDefaultZoneId(defaultZoneId);
 		//-----
-		Assertion.checkNotNull(this.locales);
-		Assertion.checkArgument(!this.locales.isEmpty(), "Il faut au moins déclarer une locale");
+		Assertion.check()
+				.notNull(this.locales)
+				.argument(!this.locales.isEmpty(), "Il faut au moins déclarer une locale");
 		//-----
 		for (final Locale locale : this.locales) {
 			dictionaries.put(locale, new HashMap<>());
@@ -123,7 +125,8 @@ public final class LocaleManagerImpl implements LocaleManager {
 		String variant;
 		for (final String locale : locales.split(",")) {
 			final String[] loc = locale.trim().split("_");
-			Assertion.checkArgument(loc.length > 0, "Locale specifiée vide");
+			Assertion.check()
+					.argument(loc.length > 0, "Locale specifiée vide");
 			language = loc[0];
 			country = loc.length > 1 ? loc[1] : "";
 			variant = loc.length > 2 ? loc[2] : "";
@@ -135,8 +138,9 @@ public final class LocaleManagerImpl implements LocaleManager {
 	/** {@inheritDoc} */
 	@Override
 	public void registerZoneSupplier(final Supplier<ZoneId> newZoneSupplier) {
-		Assertion.checkArgument(zoneSupplier == null, "zoneSupplier already registered");
-		Assertion.checkNotNull(newZoneSupplier);
+		Assertion.check()
+				.argument(zoneSupplier == null, "zoneSupplier already registered")
+				.notNull(newZoneSupplier);
 		//-----
 		zoneSupplier = newZoneSupplier;
 	}
@@ -144,8 +148,9 @@ public final class LocaleManagerImpl implements LocaleManager {
 	/** {@inheritDoc} */
 	@Override
 	public void registerLocaleSupplier(final Supplier<Locale> newLocaleSupplier) {
-		Assertion.checkArgument(localeSupplier == null, "localeSupplier already registered");
-		Assertion.checkNotNull(newLocaleSupplier);
+		Assertion.check()
+				.argument(localeSupplier == null, "localeSupplier already registered")
+				.notNull(newLocaleSupplier);
 		//-----
 		localeSupplier = newLocaleSupplier;
 	}
@@ -182,17 +187,20 @@ public final class LocaleManagerImpl implements LocaleManager {
 	}
 
 	private Map<String, String> getDictionary(final Locale locale) {
-		Assertion.checkArgument(dictionaries.containsKey(locale), "La locale {0} n'est pas gérée", locale);
+		Assertion.check()
+				.argument(dictionaries.containsKey(locale), "La locale {0} n'est pas gérée", locale);
 		return dictionaries.get(locale);
 	}
 
 	private void load(final Locale locale, final ResourceBundle resourceBundle, final boolean override) {
 		for (final String key : Collections.list(resourceBundle.getKeys())) {
 			final String value = resourceBundle.getString(key);
-			Assertion.checkNotNull(value);
+			Assertion.check()
+					.notNull(value);
 			final String oldValue = getDictionary(locale).put(key, value);
 			if (!override) {
-				Assertion.checkState(oldValue == null, "Valeur deja renseignée pour{0}", key);
+				Assertion.check()
+						.state(oldValue == null, "Valeur deja renseignée pour{0}", key);
 			}
 		}
 	}
@@ -227,8 +235,9 @@ public final class LocaleManagerImpl implements LocaleManager {
 	/** {@inheritDoc} */
 	@Override
 	public String getMessage(final MessageKey messageKey, final Locale locale) {
-		Assertion.checkNotNull(messageKey);
-		Assertion.checkNotNull(locale);
+		Assertion.check()
+				.notNull(messageKey)
+				.notNull(locale);
 		//-----
 		final String msg = getDictionary(locale).get(messageKey.name());
 		//Cas anormal :  où la ressource n'est pas présente.

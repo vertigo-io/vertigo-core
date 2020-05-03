@@ -34,7 +34,8 @@ final class ComponentUnusedKeysContainer implements Container {
 	private final Set<String> usedKeys = new HashSet<>();
 
 	ComponentUnusedKeysContainer(final Container container) {
-		Assertion.checkNotNull(container);
+		Assertion.check()
+				.notNull(container);
 		//-----
 		this.container = container;
 	}

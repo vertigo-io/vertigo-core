@@ -35,7 +35,8 @@ final class ConfigUtil {
 	}
 
 	static List<CoreComponentConfig> buildPluginsComponentConfigs(final List<PluginConfig> pluginConfigs) {
-		Assertion.checkNotNull(pluginConfigs);
+		Assertion.check()
+				.notNull(pluginConfigs);
 		//---
 		final List<CoreComponentConfig> componentConfigs = new ArrayList<>();
 		final Set<String> pluginTypes = new HashSet<>();
@@ -59,7 +60,8 @@ final class ConfigUtil {
 	}
 
 	static List<CoreComponentConfig> buildConnectorsComponentConfigs(final List<ConnectorConfig> connectorConfigs) {
-		Assertion.checkNotNull(connectorConfigs);
+		Assertion.check()
+				.notNull(connectorConfigs);
 		//---
 		final List<CoreComponentConfig> componentConfigs = new ArrayList<>();
 		final Set<String> connectorTypes = new HashSet<>();
@@ -84,7 +86,8 @@ final class ConfigUtil {
 	}
 
 	static List<CoreComponentConfig> buildComponentConfigs(final List<ComponentConfig> componentConfigs) {
-		Assertion.checkNotNull(componentConfigs);
+		Assertion.check()
+				.notNull(componentConfigs);
 		//---
 		final List<CoreComponentConfig> coreComponentConfigs = new ArrayList<>();
 		for (final ComponentConfig componentConfig : componentConfigs) {
@@ -105,7 +108,8 @@ final class ConfigUtil {
 	 * This type is the first objector interface that inherits from then 'plugin' interface.
 	 */
 	static Class<? extends Plugin> getPluginApi(final Class<? extends Plugin> implClass) {
-		Assertion.checkNotNull(implClass);
+		Assertion.check()
+				.notNull(implClass);
 		//---
 		//We are seeking the first and unique Object that extends Plugin.
 		//This Interface defines the type of the plugin.
@@ -118,7 +122,8 @@ final class ConfigUtil {
 	}
 
 	static List<CoreComponentConfig> buildAmplifiersComponentConfigs(final List<AmplifierConfig> amplifierConfigs) {
-		Assertion.checkNotNull(amplifierConfigs);
+		Assertion.check()
+				.notNull(amplifierConfigs);
 		//---
 		final List<CoreComponentConfig> componentConfigs = new ArrayList<>();
 		for (AmplifierConfig amplifierConfig : amplifierConfigs) {

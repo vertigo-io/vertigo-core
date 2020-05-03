@@ -54,8 +54,9 @@ public final class DIInjector {
 	 * @return Instance de composants créée.
 	 */
 	public static <T> T newInstance(final Class<T> clazz, final Container container) {
-		Assertion.checkNotNull(clazz);
-		Assertion.checkNotNull(container);
+		Assertion.check()
+				.notNull(clazz)
+				.notNull(container);
 		//-----
 		//On encapsule la création par un bloc try/ctach afin de préciser le type de composant qui n'a pas pu être créé.
 		try {
@@ -82,8 +83,9 @@ public final class DIInjector {
 	 * @param container container of all the components that can be injected in the instance
 	 */
 	public static void injectMembers(final Object instance, final Container container) {
-		Assertion.checkNotNull(instance);
-		Assertion.checkNotNull(container);
+		Assertion.check()
+				.notNull(instance)
+				.notNull(container);
 		//-----
 		final Collection<Field> fields = ClassUtil.getAllFields(instance.getClass(), Inject.class);
 		for (final Field field : fields) {
@@ -123,7 +125,8 @@ public final class DIInjector {
 				final boolean match = id.equals(dependency.getName()) || id.startsWith(dependency.getName() + '#');
 				if (match) {
 					final Object injected = container.resolve(id, Object.class);
-					Assertion.checkArgument(dependency.getType().isAssignableFrom(injected.getClass()), "type of {0} is incorrect ; expected : {1}", id, dependency.getType().getName());
+					Assertion.check()
+							.argument(dependency.getType().isAssignableFrom(injected.getClass()), "type of {0} is incorrect ; expected : {1}", id, dependency.getType().getName());
 					list.add(injected);
 				}
 			}
@@ -131,7 +134,8 @@ public final class DIInjector {
 		}
 		//-----
 		final Object value = container.resolve(dependency.getName(), dependency.getType());
-		Assertion.checkNotNull(value);
+		Assertion.check()
+				.notNull(value);
 		//-----
 		return value;
 	}

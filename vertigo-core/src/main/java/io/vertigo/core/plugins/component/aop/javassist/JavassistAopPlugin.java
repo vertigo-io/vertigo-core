@@ -43,11 +43,13 @@ public final class JavassistAopPlugin implements AopPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public <C extends CoreComponent> C wrap(final C instance, final Map<Method, List<Aspect>> joinPoints) {
-		Assertion.checkNotNull(instance);
-		Assertion.checkNotNull(joinPoints);
+		Assertion.check()
+				.notNull(instance)
+				.notNull(joinPoints);
 		//check : witgh cglib all methods have to bo non-final
 		for (final Method method : joinPoints.keySet()) {
-			Assertion.checkArgument(!Modifier.isFinal(method.getModifiers()), "due to cglib method '" + method.getName() + "' on '" + instance.getClass().getName() + "' can not be markedf as final");
+			Assertion.check()
+					.argument(!Modifier.isFinal(method.getModifiers()), "due to cglib method '" + method.getName() + "' on '" + instance.getClass().getName() + "' can not be markedf as final");
 		}
 		//-----
 		final Class<? extends CoreComponent> implClass = instance.getClass();
@@ -90,7 +92,8 @@ public final class JavassistAopPlugin implements AopPlugin {
 	}
 
 	private static boolean isWrapped(final Object object) {
-		Assertion.checkNotNull(object);
+		Assertion.check()
+				.notNull(object);
 		// ---
 		return ProxyFactory.isProxyClass(object.getClass());
 	}

@@ -85,10 +85,10 @@ final class DateQueryParserUtil {
 	 * @return date
 	 */
 	static Instant parseAsInstant(final String dateExpression, final String datePattern) {
-		Assertion.checkArgNotEmpty(dateExpression);
-		Assertion.checkArgNotEmpty(datePattern, "you must define a valid datePattern such as dd/MM/yyyy or MM/dd/yy");
-		// ---
-		Assertion.checkState(dateExpression.startsWith(NOW), "Instant evaluation is always relative to now");
+		Assertion.check()
+				.argNotEmpty(dateExpression)
+				.argNotEmpty(datePattern, "you must define a valid datePattern such as dd/MM/yyyy or MM/dd/yy")
+				.state(dateExpression.startsWith(NOW), "Instant evaluation is always relative to now");
 		//---
 		if (NOW.equals(dateExpression)) {
 			//today is gonna be the day
@@ -102,7 +102,8 @@ final class DateQueryParserUtil {
 		final String operand = dateExpression.substring(index + 1);
 		//NOW+21DAY or NOW-12MONTH
 		final Matcher matcher = PATTERN_INSTANT.matcher(operand);
-		Assertion.checkState(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", PATTERN_INSTANT.toString());
+		Assertion.check()
+				.state(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", PATTERN_INSTANT.toString());
 		//---
 		final String calendarUnit = matcher.group(2);
 		//We check that we have found a real unit Calendar and not 'NOW+15DAL'
@@ -117,10 +118,10 @@ final class DateQueryParserUtil {
 	}
 
 	static LocalDate parseAsLocalDate(final String dateExpression, final String datePattern) {
-		Assertion.checkArgNotEmpty(dateExpression);
-		Assertion.checkArgNotEmpty(datePattern, "you must define a valid datePattern such as dd/MM/yyyy or MM/dd/yy");
-		// ---
-		Assertion.checkState(!datePattern.contains("H") && !datePattern.contains("m"), "LocalDate evaluation cannot contain HH ou mm in the pattern");
+		Assertion.check()
+				.argNotEmpty(dateExpression)
+				.argNotEmpty(datePattern, "you must define a valid datePattern such as dd/MM/yyyy or MM/dd/yy")
+				.state(!datePattern.contains("H") && !datePattern.contains("m"), "LocalDate evaluation cannot contain HH ou mm in the pattern");
 		//---
 		if (NOW.equals(dateExpression)) {
 			//today is gonna be the day
@@ -135,7 +136,8 @@ final class DateQueryParserUtil {
 			final String operand = dateExpression.substring(index + 1);
 			//NOW+21DAY or NOW-12MONTH
 			final Matcher matcher = PATTERN_LOCAL_DATE.matcher(operand);
-			Assertion.checkState(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", PATTERN_LOCAL_DATE.toString());
+			Assertion.check()
+					.state(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", PATTERN_LOCAL_DATE.toString());
 			//---
 			final String calendarUnit = matcher.group(2);
 			//We check that we have found a real unit Calendar and not 'NOW+15DAL'

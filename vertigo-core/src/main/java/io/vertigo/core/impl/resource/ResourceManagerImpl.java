@@ -45,7 +45,8 @@ public final class ResourceManagerImpl implements ResourceManager {
 	 */
 	@Inject
 	public ResourceManagerImpl(final List<ResourceResolverPlugin> resourceResolverPlugins) {
-		Assertion.checkNotNull(resourceResolverPlugins);
+		Assertion.check()
+				.notNull(resourceResolverPlugins);
 		//-----
 		this.resourceResolverPlugins = resourceResolverPlugins;
 	}

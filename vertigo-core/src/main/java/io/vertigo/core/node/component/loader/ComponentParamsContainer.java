@@ -41,8 +41,9 @@ final class ComponentParamsContainer implements Container {
 	private final Set<String> unusedKeys;
 
 	ComponentParamsContainer(final Optional<ParamManager> paramManagerOpt, final Map<String, String> params) {
-		Assertion.checkNotNull(paramManagerOpt);
-		Assertion.checkNotNull(params);
+		Assertion.check()
+				.notNull(paramManagerOpt)
+				.notNull(params);
 		//-----
 		this.paramManagerOpt = paramManagerOpt;
 		this.params = params;
@@ -52,7 +53,8 @@ final class ComponentParamsContainer implements Container {
 	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final String id) {
-		Assertion.checkNotNull(id);
+		Assertion.check()
+				.notNull(id);
 		//-----
 		return params.containsKey(id);
 	}
@@ -60,8 +62,9 @@ final class ComponentParamsContainer implements Container {
 	/** {@inheritDoc} */
 	@Override
 	public <O> O resolve(final String id, final Class<O> clazz) {
-		Assertion.checkNotNull(id);
-		Assertion.checkState(params.containsKey(id), "param '{0}' of type '{1}' has not be registered.", id, clazz.getSimpleName());
+		Assertion.check()
+				.notNull(id)
+				.state(params.containsKey(id), "param '{0}' of type '{1}' has not be registered.", id, clazz.getSimpleName());
 		//-----
 		unusedKeys.remove(id);
 		return getParam(id).getValue(clazz);
@@ -79,7 +82,8 @@ final class ComponentParamsContainer implements Container {
 	 * @return Valeur sous forme texte du paramètre
 	 */
 	private Param getParam(final String paramName) {
-		Assertion.checkNotNull(paramName);
+		Assertion.check()
+				.notNull(paramName);
 		//-----
 		final String paramValue = params.get(paramName);
 		if (paramValue != null && paramValue.startsWith("${") && paramValue.endsWith("}")) {

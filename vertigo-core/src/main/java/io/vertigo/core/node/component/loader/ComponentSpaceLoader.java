@@ -61,8 +61,9 @@ public final class ComponentSpaceLoader {
 	* @param aopPlugin the plugin which is reponsible for the aop strategy
 	*/
 	private ComponentSpaceLoader(final ComponentSpaceWritable componentSpaceWritable, final AopPlugin aopPlugin) {
-		Assertion.checkNotNull(componentSpaceWritable);
-		Assertion.checkNotNull(aopPlugin);
+		Assertion.check()
+				.notNull(componentSpaceWritable)
+				.notNull(aopPlugin);
 		//-----
 		this.componentSpaceWritable = componentSpaceWritable;
 		this.aopPlugin = aopPlugin;
@@ -73,7 +74,8 @@ public final class ComponentSpaceLoader {
 	}
 
 	public ComponentSpaceLoader loadBootComponents(final List<CoreComponentConfig> componentConfigs) {
-		Assertion.checkNotNull(componentConfigs);
+		Assertion.check()
+				.notNull(componentConfigs);
 		//--
 		registerComponents(Optional.empty(), "boot", componentConfigs);
 		return this;
@@ -84,7 +86,8 @@ public final class ComponentSpaceLoader {
 	 * @param moduleConfigs the config of the module to add.
 	 */
 	public ComponentSpaceLoader loadAllComponentsAndAspects(final List<ModuleConfig> moduleConfigs) {
-		Assertion.checkNotNull(moduleConfigs);
+		Assertion.check()
+				.notNull(moduleConfigs);
 		//-----
 		final ParamManager paramManager = componentSpaceWritable.resolve(ParamManager.class);
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
@@ -184,7 +187,8 @@ public final class ComponentSpaceLoader {
 		// création de l'instance du composant
 		final Aspect aspect = DIInjector.newInstance(aspectConfig.getAspectClass(), container);
 		//---
-		Assertion.checkNotNull(aspect.getAnnotationType());
+		Assertion.check()
+				.notNull(aspect.getAnnotationType());
 		return aspect;
 	}
 
@@ -192,16 +196,18 @@ public final class ComponentSpaceLoader {
 		// création de l'instance du composant
 		final ProxyMethod proxyMethod = DIInjector.newInstance(proxyMethodConfig.getProxyMethodClass(), container);
 		//---
-		Assertion.checkNotNull(proxyMethod.getAnnotationType());
+		Assertion.check()
+				.notNull(proxyMethod.getAnnotationType());
 		return proxyMethod;
 	}
 
 	private void registerAspect(final Aspect aspect) {
-		Assertion.checkNotNull(aspect);
-		Assertion.checkArgument(aspects.stream().noneMatch(a -> a.getClass().equals(aspect.getClass())),
-				"aspect {0} already registered with the same class", aspect.getClass());
-		Assertion.checkArgument(aspects.stream().noneMatch(a -> a.getAnnotationType().equals(aspect.getAnnotationType())),
-				"aspect {0} already registered with the same annotation", aspect.getClass());
+		Assertion.check()
+				.notNull(aspect)
+				.argument(aspects.stream().noneMatch(a -> a.getClass().equals(aspect.getClass())),
+						"aspect {0} already registered with the same class", aspect.getClass())
+				.argument(aspects.stream().noneMatch(a -> a.getAnnotationType().equals(aspect.getAnnotationType())),
+						"aspect {0} already registered with the same annotation", aspect.getClass());
 		//-----
 		aspects.add(aspect);
 	}
@@ -238,7 +244,8 @@ public final class ComponentSpaceLoader {
 			final Optional<ParamManager> paramManagerOpt,
 			final ComponentUnusedKeysContainer componentContainer,
 			final CoreComponentConfig componentConfig) {
-		Assertion.checkArgument(!componentConfig.isProxy(), "a no-proxy component is expected");
+		Assertion.check()
+				.argument(!componentConfig.isProxy(), "a no-proxy component is expected");
 		//---
 		// 1. An instance is created
 		final CoreComponent instance = createInstance(componentContainer, paramManagerOpt, componentConfig);
@@ -250,7 +257,8 @@ public final class ComponentSpaceLoader {
 	private Amplifier createAmplifier(
 			//	final Optional<ParamManager> paramManagerOpt,
 			final CoreComponentConfig componentConfig) {
-		Assertion.checkArgument(componentConfig.isProxy(), "a proxy component is expected");
+		Assertion.check()
+				.argument(componentConfig.isProxy(), "a proxy component is expected");
 		//---
 		//1. AOP : finds all aspects
 		final Map<Method, List<Aspect>> aspectsByMethod = ComponentAspectUtil.createAspectsByMethod(componentConfig.getApiClass().get(), aspects);
@@ -283,7 +291,8 @@ public final class ComponentSpaceLoader {
 		final Container dualContainer = new ComponentDualContainer(container, paramsContainer);
 		//---
 		final T component = DIInjector.newInstance(clazz, dualContainer);
-		Assertion.checkState(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in component '{1}'", paramsContainer.getUnusedKeys(), clazz);
+		Assertion.check()
+				.state(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in component '{1}'", paramsContainer.getUnusedKeys(), clazz);
 		return component;
 	}
 

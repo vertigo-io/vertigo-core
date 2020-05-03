@@ -43,9 +43,10 @@ public final class AmplifierConfig {
 	 * @param params the params
 	 */
 	AmplifierConfig(final Class<? extends Amplifier> apiClass, final List<Param> params) {
-		Assertion.checkNotNull(apiClass);
-		Assertion.checkArgument(Amplifier.class.isAssignableFrom(apiClass), "api class {0} must implement {1}", apiClass, Amplifier.class);
-		Assertion.checkNotNull(params);
+		Assertion.check()
+				.notNull(apiClass)
+				.argument(Amplifier.class.isAssignableFrom(apiClass), "api class {0} must implement {1}", apiClass, Amplifier.class)
+				.notNull(params);
 		//-----
 		this.apiClass = apiClass;
 		this.params = params;

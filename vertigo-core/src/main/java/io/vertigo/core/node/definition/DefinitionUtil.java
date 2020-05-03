@@ -36,12 +36,14 @@ public final class DefinitionUtil {
 	 * @return the prefix concerning the type of the defintion
 	 */
 	public static String getPrefix(final Class<? extends Definition> definitionClass) {
-		Assertion.checkNotNull(definitionClass);
+		Assertion.check()
+				.notNull(definitionClass);
 		//-----
 		final DefinitionPrefix prefix = definitionClass.getAnnotation(DefinitionPrefix.class);
 		//-----
-		Assertion.checkNotNull(prefix, "Annotation '@DefinitionPrefix' not found on {0}", definitionClass.getName());
-		Assertion.checkArgNotEmpty(prefix.value());
+		Assertion.check()
+				.notNull(prefix, "Annotation '@DefinitionPrefix' not found on {0}", definitionClass.getName())
+				.argNotEmpty(prefix.value());
 		return prefix.value();
 	}
 
@@ -52,13 +54,15 @@ public final class DefinitionUtil {
 	 * @return the short name of the definition
 	 */
 	public static String getLocalName(final String definitionName, final Class<? extends Definition> definitionClass) {
-		Assertion.checkArgNotEmpty(definitionName);
-		Assertion.checkNotNull(definitionClass);
+		Assertion.check()
+				.argNotEmpty(definitionName)
+				.notNull(definitionClass);
 		//-----
 		//On enléve le prefix et le separateur.
 		//On vérifie aussi que le prefix est OK
 		final String prefix = getPrefix(definitionClass);
-		Assertion.checkArgument(definitionName.startsWith(prefix), "Le nom de la définition '{0}' ne commence pas par le prefix attendu : '{1}'", definitionName, prefix);
+		Assertion.check()
+				.argument(definitionName.startsWith(prefix), "Le nom de la définition '{0}' ne commence pas par le prefix attendu : '{1}'", definitionName, prefix);
 		return definitionName.substring(prefix.length());
 	}
 
@@ -69,14 +73,16 @@ public final class DefinitionUtil {
 	 * @param definitionClass Type of the definition
 	 */
 	public static void checkName(final String definitionName, final Class<? extends Definition> definitionClass) {
-		Assertion.checkArgNotEmpty(definitionName);
-		Assertion.checkNotNull(definitionClass);
+		Assertion.check()
+				.argNotEmpty(definitionName)
+				.notNull(definitionClass);
 		//-----
 		final String prefix = DefinitionUtil.getPrefix(definitionClass);
-		Assertion.checkArgument(definitionName.startsWith(prefix), "La définition {0} doit commencer par {1}", definitionName, prefix);
-		Assertion.checkArgument(definitionName.length() > prefix.length(), "Le nom de la définition doit être renseigné");
-		Assertion.checkArgument(Character.isUpperCase(definitionName.charAt(prefix.length())), "the name of the dtDefinition {0} must be in UpperCamelCase", definitionName);
-		Assertion.checkArgument(Definition.REGEX_DEFINITION_NAME.matcher(definitionName).matches(), "urn de définition {0} doit matcher le pattern {1}", definitionName, Definition.REGEX_DEFINITION_NAME);
+		Assertion.check()
+				.argument(definitionName.startsWith(prefix), "La définition {0} doit commencer par {1}", definitionName, prefix)
+				.argument(definitionName.length() > prefix.length(), "Le nom de la définition doit être renseigné")
+				.argument(Character.isUpperCase(definitionName.charAt(prefix.length())), "the name of the dtDefinition {0} must be in UpperCamelCase", definitionName)
+				.argument(Definition.REGEX_DEFINITION_NAME.matcher(definitionName).matches(), "urn de définition {0} doit matcher le pattern {1}", definitionName, Definition.REGEX_DEFINITION_NAME);
 	}
 
 }

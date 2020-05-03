@@ -90,44 +90,51 @@ public final class CoreComponentConfig {
 			final Optional<Class<? extends CoreComponent>> apiClassOpt,
 			final Optional<Class<? extends CoreComponent>> implClassOpt,
 			final List<Param> params) {
-		Assertion.checkNotNull(type);
-		Assertion.checkArgNotEmpty(id);
-		Assertion.checkNotNull(apiClassOpt);
-		Assertion.checkNotNull(implClassOpt);
-		Assertion.checkNotNull(params);
+		Assertion.check()
+				.notNull(type)
+				.argNotEmpty(id)
+				.notNull(apiClassOpt)
+				.notNull(implClassOpt)
+				.notNull(params);
 		//--
 		this.type = type;
 		switch (type) {
 			case AMPLIFIER:
-				Assertion.checkArgument(!implClassOpt.isPresent(), "When an amplifier is declared there is no impl");
-				Assertion.checkArgument(apiClassOpt.isPresent(), "When an amplifier is declared, an api is required");
-				Assertion.checkArgument(Amplifier.class.isAssignableFrom(apiClassOpt.get()), "An amplifier must inherit Amplifier");
+				Assertion.check()
+						.argument(!implClassOpt.isPresent(), "When an amplifier is declared there is no impl")
+						.argument(apiClassOpt.isPresent(), "When an amplifier is declared, an api is required")
+						.argument(Amplifier.class.isAssignableFrom(apiClassOpt.get()), "An amplifier must inherit Amplifier");
 				break;
 			case COMPONENT:
 				Assertion.when(apiClassOpt.isPresent()).check(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
-				Assertion.checkArgument(apiClassOpt.orElse(CoreComponent.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(CoreComponent.class));
+				Assertion.check()
+						.argument(apiClassOpt.orElse(CoreComponent.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(CoreComponent.class));
 				break;
 			case CONNECTOR:
 				Assertion.when(apiClassOpt.isPresent()).check(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
 				Assertion.when(apiClassOpt.isPresent()).check(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
-				Assertion.checkArgument(apiClassOpt.orElse(CoreComponent.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(CoreComponent.class));
+				Assertion.check()
+						.argument(apiClassOpt.orElse(CoreComponent.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(CoreComponent.class));
 				break;
 			case PLUGIN:
 				Assertion.when(apiClassOpt.isPresent()).check(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
 				Assertion.when(apiClassOpt.isPresent()).check(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
-				Assertion.checkArgument(apiClassOpt.orElse(CoreComponent.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(CoreComponent.class));
+				Assertion.check()
+						.argument(apiClassOpt.orElse(CoreComponent.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(CoreComponent.class));
 				break;
 			default:
 				throw new IllegalStateException();
 		}
 		if (type == Type.AMPLIFIER) {
-			Assertion.checkArgument(!implClassOpt.isPresent(), "When a proxy is declared there is no impl");
-			Assertion.checkArgument(apiClassOpt.isPresent(), "When a proxy is declared, an api is required");
-			Assertion.checkArgument(Amplifier.class.isAssignableFrom(apiClassOpt.get()), "An amplifier must inherit Amplifier");
+			Assertion.check()
+					.argument(!implClassOpt.isPresent(), "When a proxy is declared there is no impl")
+					.argument(apiClassOpt.isPresent(), "When a proxy is declared, an api is required")
+					.argument(Amplifier.class.isAssignableFrom(apiClassOpt.get()), "An amplifier must inherit Amplifier");
 		} else {
-			Assertion.checkArgument(implClassOpt.isPresent(), "When a classic component -no proxy-  is declared, an impl is required");
+			Assertion.check()
+					.argument(implClassOpt.isPresent(), "When a classic component -no proxy-  is declared, an impl is required")
+					.argument(apiClassOpt.orElse(CoreComponent.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(CoreComponent.class));
 			Assertion.when(apiClassOpt.isPresent()).check(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
-			Assertion.checkArgument(apiClassOpt.orElse(CoreComponent.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(CoreComponent.class));
 		}
 		//-----
 		this.id = id;

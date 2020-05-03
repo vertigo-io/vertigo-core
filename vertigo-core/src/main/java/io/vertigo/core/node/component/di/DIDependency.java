@@ -51,7 +51,8 @@ final class DIDependency {
 	 * @param field Field to inject into
 	 */
 	DIDependency(final Field field) {
-		Assertion.checkNotNull(field);
+		Assertion.check()
+				.notNull(field);
 		//-----
 		final String named = getNamedValue(field.getAnnotations());
 		final Class<?> rootType = field.getType();
@@ -68,7 +69,8 @@ final class DIDependency {
 	 * @param i parameter index to inject into
 	 */
 	DIDependency(final Constructor<?> constructor, final int i) {
-		Assertion.checkNotNull(constructor);
+		Assertion.check()
+				.notNull(constructor);
 		//-----
 		final String named = getNamedValue(constructor.getParameterAnnotations()[i]);
 		final Class<?> rootType = constructor.getParameterTypes()[i];
@@ -111,7 +113,8 @@ final class DIDependency {
 	 * @return get object class
 	 */
 	Class<?> getType() {
-		Assertion.checkNotNull(type);
+		Assertion.check()
+				.notNull(type);
 		return type;
 	}
 

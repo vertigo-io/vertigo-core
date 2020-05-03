@@ -61,7 +61,8 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 * @param nodeConfigBuilder Parent NodeConfig builder
 	 */
 	BootConfigBuilder(final NodeConfigBuilder nodeConfigBuilder) {
-		Assertion.checkNotNull(nodeConfigBuilder);
+		Assertion.check()
+				.notNull(nodeConfigBuilder);
 		//-----
 		this.nodeConfigBuilder = nodeConfigBuilder;
 	}
@@ -104,7 +105,8 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 * @return this builder
 	 */
 	public BootConfigBuilder withLogConfig(final LogConfig logConfig) {
-		Assertion.checkNotNull(logConfig);
+		Assertion.check()
+				.notNull(logConfig);
 		//-----
 		myLogConfigOpt = Optional.of(logConfig);
 		return this;
@@ -124,7 +126,8 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 * @return this builder
 	 */
 	public BootConfigBuilder withAopEngine(final AopPlugin aopPlugin) {
-		Assertion.checkNotNull(aopPlugin);
+		Assertion.check()
+				.notNull(aopPlugin);
 		//-----
 		myAopPlugin = aopPlugin;
 		return this;
@@ -190,7 +193,8 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 * @return this builder
 	 */
 	public BootConfigBuilder addPlugin(final PluginConfig pluginConfig) {
-		Assertion.checkNotNull(pluginConfig);
+		Assertion.check()
+				.notNull(pluginConfig);
 		//---
 		myPluginConfigs.add(pluginConfig);
 		return this;

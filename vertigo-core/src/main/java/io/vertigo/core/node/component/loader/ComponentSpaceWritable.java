@@ -30,8 +30,8 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Activeable;
-import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.ComponentSpace;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.util.StringUtil;
 
 /**
@@ -86,18 +86,21 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	 * @param component instance of the component
 	 */
 	void registerComponent(final String componentId, final CoreComponent component) {
-		Assertion.checkState(!locked.get(), "Registration is now closed. A component can be registerd only during the boot phase");
-		Assertion.checkArgNotEmpty(componentId);
-		Assertion.checkNotNull(component);
+		Assertion.check()
+				.state(!locked.get(), "Registration is now closed. A component can be registerd only during the boot phase")
+				.argNotEmpty(componentId)
+				.notNull(component);
 		//-----
 		final Object previous = components.put(componentId, component);
-		Assertion.checkState(previous == null, "component '{0}' already registered", componentId);
+		Assertion.check()
+				.state(previous == null, "component '{0}' already registered", componentId);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final String id) {
-		Assertion.checkArgNotEmpty(id);
+		Assertion.check()
+				.argNotEmpty(id);
 		//-----
 		final String normalizedId = StringUtil.first2LowerCase(id);
 		return components.containsKey(normalizedId);
@@ -107,7 +110,8 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	@Override
 	public <C> C resolve(final String id, final Class<C> componentClass) {
 		final String normalizedId = StringUtil.first2LowerCase(id);
-		Assertion.checkArgument(contains(normalizedId), "Aucun composant enregistré pour id = {0} parmi {1}", normalizedId, keySet());
+		Assertion.check()
+				.argument(contains(normalizedId), "Aucun composant enregistré pour id = {0} parmi {1}", normalizedId, keySet());
 		//-----
 		return componentClass.cast(components.get(normalizedId));
 	}

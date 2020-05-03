@@ -64,8 +64,9 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	 * @return this builder
 	 */
 	public NodeConfigBuilder withAppName(final String appName) {
-		Assertion.checkState(myAppName == null, "appName '{0}' is not allowed. appName is already defined as '{1}'", appName, myAppName);
-		Assertion.checkArgNotEmpty(appName);
+		Assertion.check()
+				.state(myAppName == null, "appName '{0}' is not allowed. appName is already defined as '{1}'", appName, myAppName)
+				.argNotEmpty(appName);
 		// ---
 		myAppName = appName;
 		return this;
@@ -78,8 +79,9 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	 * @return this builder
 	 */
 	public NodeConfigBuilder withNodeId(final String nodeId) {
-		Assertion.checkState(myNodeId == null, "nodeId '{0}' is not allowed. nodeId is already defined as '{1}'", nodeId, myNodeId);
-		Assertion.checkArgNotEmpty(nodeId);
+		Assertion.check()
+				.state(myNodeId == null, "nodeId '{0}' is not allowed. nodeId is already defined as '{1}'", nodeId, myNodeId)
+				.argNotEmpty(nodeId);
 		// ---
 		myNodeId = nodeId;
 		return this;
@@ -92,8 +94,9 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	 * @return this builder
 	 */
 	public NodeConfigBuilder withEndPoint(final String endPoint) {
-		Assertion.checkState(myEndPoint == null, "endPoint '{0}' is not allowed. endPoint is already defined as '{1}'", endPoint, myEndPoint);
-		Assertion.checkArgNotEmpty(endPoint);
+		Assertion.check()
+				.state(myEndPoint == null, "endPoint '{0}' is not allowed. endPoint is already defined as '{1}'", endPoint, myEndPoint)
+				.argNotEmpty(endPoint);
 		// ---
 		myEndPoint = endPoint;
 		return this;
@@ -116,7 +119,8 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	 * @return this builder
 	 */
 	public NodeConfigBuilder addModule(final ModuleConfig moduleConfig) {
-		Assertion.checkNotNull(moduleConfig);
+		Assertion.check()
+				.notNull(moduleConfig);
 		//-----
 		myModuleConfigsBuilder.add(moduleConfig);
 		return this;

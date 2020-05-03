@@ -59,8 +59,9 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @param name Name of the module
 	 */
 	ModuleConfigBuilder(final String name) {
-		Assertion.checkArgument(!"boot".equalsIgnoreCase(name), "boot is a reserved name");
-		Assertion.checkArgNotEmpty(name);
+		Assertion.check()
+				.argument(!"boot".equalsIgnoreCase(name), "boot is a reserved name")
+				.argNotEmpty(name);
 		//-----
 		myName = name;
 	}
@@ -91,7 +92,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return this builder
 	 */
 	public ModuleConfigBuilder addDefinitionProvider(final DefinitionProviderConfig definitionProviderConfig) {
-		Assertion.checkNotNull(definitionProviderConfig);
+		Assertion.check()
+				.notNull(definitionProviderConfig);
 		//-----
 		myDefinitionProviderConfigs.add(definitionProviderConfig);
 		return this;
@@ -104,8 +106,9 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return this builder
 	 */
 	public ModuleConfigBuilder addDefinitionProvider(final Class<? extends DefinitionProvider> definitionProviderClass, final Param... params) {
-		Assertion.checkNotNull(definitionProviderClass);
-		Assertion.checkNotNull(params);
+		Assertion.check()
+				.notNull(definitionProviderClass)
+				.notNull(params);
 		//-----
 		myDefinitionProviderConfigs.add(
 				DefinitionProviderConfig.builder(definitionProviderClass)
@@ -121,8 +124,9 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return this builder
 	 */
 	public ModuleConfigBuilder addAmplifier(final Class<? extends Amplifier> apiClass, final Param... params) {
-		Assertion.checkNotNull(apiClass);
-		Assertion.checkNotNull(params);
+		Assertion.check()
+				.notNull(apiClass)
+				.notNull(params);
 		//---
 		final AmplifierConfig amplifierConfig = new AmplifierConfig(apiClass, Arrays.asList(params));
 		myAmplifierConfigs.add(amplifierConfig);
@@ -136,8 +140,9 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return this builder
 	 */
 	public ModuleConfigBuilder addComponent(final Class<? extends Component> implClass, final Param... params) {
-		Assertion.checkNotNull(implClass);
-		Assertion.checkNotNull(params);
+		Assertion.check()
+				.notNull(implClass)
+				.notNull(params);
 		//---
 		final ComponentConfig componentConfig = ComponentConfig.of(implClass, params);
 		return addComponent(componentConfig);
@@ -151,9 +156,10 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return this builder
 	 */
 	public ModuleConfigBuilder addComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass, final Param... params) {
-		Assertion.checkNotNull(apiClass);
-		Assertion.checkNotNull(implClass);
-		Assertion.checkNotNull(params);
+		Assertion.check()
+				.notNull(apiClass)
+				.notNull(implClass)
+				.notNull(params);
 		//---
 		final ComponentConfig componentConfig = ComponentConfig.of(apiClass, implClass, params);
 		return addComponent(componentConfig);
@@ -165,7 +171,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return this builder
 	 */
 	public ModuleConfigBuilder addComponent(final ComponentConfig componentConfig) {
-		Assertion.checkNotNull(componentConfig);
+		Assertion.check()
+				.notNull(componentConfig);
 		//---
 		myComponentConfigs.add(componentConfig);
 		return this;

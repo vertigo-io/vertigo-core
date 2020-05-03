@@ -50,11 +50,13 @@ public final class DefinitionSpaceWritable implements DefinitionSpace {
 	 * @param definition Objet à enregistrer
 	 */
 	void registerDefinition(final Definition definition) {
-		Assertion.checkState(!locked.get(), "Registration is now closed. A definition can be registerd only during the boot phase");
-		Assertion.checkNotNull(definition, "A definition can't be null.");
+		Assertion.check()
+				.state(!locked.get(), "Registration is now closed. A definition can be registerd only during the boot phase")
+				.notNull(definition, "A definition can't be null.");
 		final String name = definition.getName();
 		DefinitionUtil.checkName(name, definition.getClass());
-		Assertion.checkArgument(!definitions.containsKey(name), "this definition '{0}' is already registered", name);
+		Assertion.check()
+				.argument(!definitions.containsKey(name), "this definition '{0}' is already registered", name);
 		//-----
 		definitions.put(name, definition);
 	}
@@ -68,11 +70,13 @@ public final class DefinitionSpaceWritable implements DefinitionSpace {
 	/** {@inheritDoc} */
 	@Override
 	public <D extends Definition> D resolve(final String name, final Class<D> clazz) {
-		Assertion.checkNotNull(name);
-		Assertion.checkNotNull(clazz);
+		Assertion.check()
+				.notNull(name)
+				.notNull(clazz);
 		//-----
 		final Definition definition = definitions.get(name);
-		Assertion.checkNotNull(definition, "Definition '{0}' of type '{1}' not found in ({2})", name, clazz.getSimpleName(), definitions.keySet());
+		Assertion.check()
+				.notNull(definition, "Definition '{0}' of type '{1}' not found in ({2})", name, clazz.getSimpleName(), definitions.keySet());
 		return clazz.cast(definition);
 	}
 
@@ -88,7 +92,8 @@ public final class DefinitionSpaceWritable implements DefinitionSpace {
 	/** {@inheritDoc} */
 	@Override
 	public <C extends Definition> Collection<C> getAll(final Class<C> clazz) {
-		Assertion.checkNotNull(clazz); // Le type des objets recherchés ne peut pas être null
+		Assertion.check()
+				.notNull(clazz); // Le type des objets recherchés ne peut pas être null
 		//-----
 		return definitions.values()
 				.stream()

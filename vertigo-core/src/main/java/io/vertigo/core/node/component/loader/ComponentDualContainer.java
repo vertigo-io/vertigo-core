@@ -36,21 +36,24 @@ final class ComponentDualContainer implements Container {
 	private final Set<String> ids;
 
 	ComponentDualContainer(final Container container1, final Container container2) {
-		Assertion.checkNotNull(container1);
-		Assertion.checkNotNull(container2);
+		Assertion.check()
+				.notNull(container1)
+				.notNull(container2);
 		//-----
 		this.container1 = container1;
 		this.container2 = container2;
 		ids = new LinkedHashSet<>();
 		ids.addAll(container1.keySet());
 		ids.addAll(container2.keySet());
-		Assertion.checkArgument(ids.size() == container1.keySet().size() + container2.keySet().size(), "Ambiguité : il y a des ids en doublon");
+		Assertion.check()
+				.argument(ids.size() == container1.keySet().size() + container2.keySet().size(), "Ambiguité : il y a des ids en doublon");
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final String id) {
-		Assertion.checkNotNull(id);
+		Assertion.check()
+				.notNull(id);
 		//-----
 		return ids.contains(id);
 	}
@@ -58,8 +61,9 @@ final class ComponentDualContainer implements Container {
 	/** {@inheritDoc} */
 	@Override
 	public <O> O resolve(final String id, final Class<O> clazz) {
-		Assertion.checkNotNull(id);
-		Assertion.checkNotNull(clazz);
+		Assertion.check()
+				.notNull(id)
+				.notNull(clazz);
 		//-----
 		if (container1.contains(id)) {
 			return container1.resolve(id, clazz);

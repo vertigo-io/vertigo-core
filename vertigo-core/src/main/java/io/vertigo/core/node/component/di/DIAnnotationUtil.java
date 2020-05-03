@@ -41,7 +41,8 @@ public final class DIAnnotationUtil {
 	 * @return Constructeur de l'objet
 	 */
 	public static <T> Constructor<T> findInjectableConstructor(final Class<T> clazz) {
-		Assertion.checkNotNull(clazz);
+		Assertion.check()
+				.notNull(clazz);
 		//-----
 		final Constructor<T>[] constructors = (Constructor<T>[]) clazz.getConstructors();
 		Assertion.check()
@@ -64,7 +65,8 @@ public final class DIAnnotationUtil {
 	 * @return Identifiant du composant
 	 */
 	public static String buildId(final Class<?> clazz) {
-		Assertion.checkNotNull(clazz);
+		Assertion.check()
+				.notNull(clazz);
 		//-----
 		//On construit l'identifiant du composant.
 		//Par convention on prend le nom de la classe.
