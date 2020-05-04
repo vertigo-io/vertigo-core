@@ -31,17 +31,32 @@ import org.junit.jupiter.api.Test;
 public final class AssertionTest {
 	@Test
 	public void testCheckNotNull() {
+		//syntax A
 		Assertion.checkNotNull("notNull");
+		//Syntax B 
+		Assertion.check()
+				.notNull("notNull1")
+				.notNull("notNull2");
 	}
 
 	@Test
 	public void testCheckNotNull2() {
+		//syntax A
 		Assertion.checkNotNull("notNull", "message");
+		//Syntax B 
+		Assertion.check()
+				.notNull("notNull1", "msg1")
+				.notNull("notNull2", "msg2");
 	}
 
 	@Test
 	public void testCheckNotNull3() {
+		//syntax A
 		Assertion.checkNotNull("notNull", "message: {0} ", "param");
+		//Syntax B 
+		Assertion.check()
+				.notNull("notNull1", "message1: {0} ", "param")
+				.notNull("notNull2", "message2: {0} ", "param");
 	}
 
 	@Test
@@ -121,10 +136,12 @@ public final class AssertionTest {
 	@Test
 	public void testWhen() {
 		final Optional<String> option1 = Optional.empty();
-		Assertion.when(option1.isPresent()).check(() -> option1.get() != null, "fail");
+		Assertion.when(option1.isPresent())
+				.state(() -> option1.get() != null, "fail");
 
 		final Optional<String> option2 = Optional.of("test");
-		Assertion.when(option2.isPresent()).check(() -> option2.get() != null, "fail");
+		Assertion.when(option2.isPresent())
+				.state(() -> option2.get() != null, "fail");
 	}
 
 }

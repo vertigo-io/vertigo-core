@@ -43,14 +43,25 @@ import io.vertigo.core.util.StringUtil;
  * @author fconstantin
  */
 public final class Assertion {
-	private Assertion() {
-		//private constructor
+	private final boolean enabled;
+
+	private Assertion(final boolean enabled) {
+		this.enabled = enabled;
 	}
 
-	private static final Assertion INSTANCE = new Assertion();
+	private static final Assertion ENABLED = new Assertion(true);
+	private static final Assertion DISABLED = new Assertion(false);
+
+	/**
+	 * @param ifCondition condition of this assertion
+	 * @return Assertion to check if condition is true
+	 */
+	public static Assertion when(final boolean ifCondition) {
+		return ifCondition ? ENABLED : DISABLED;
+	}
 
 	public static Assertion check() {
-		return INSTANCE;
+		return ENABLED;
 	}
 
 	/**
@@ -58,9 +69,8 @@ public final class Assertion {
 	 * If not a generic exception is thrown.
 	 * @param o Object object  that must be not null
 	 */
-	public static Assertion checkNotNull(final Object o) {
+	public static void checkNotNull(final Object o) {
 		check().notNull(o);
-		return INSTANCE;
 	}
 
 	/**
@@ -119,72 +129,64 @@ public final class Assertion {
 		check().state(test, msg, params);
 	}
 
-	/**
-	 * @param ifCondition condition of this assertion
-	 * @return Assertion to check if condition is true
-	 */
-	public static ConditionalAssertion when(final boolean ifCondition) {
-		return (test, msg, params) -> {
-			if (ifCondition) {
-				Assertion.checkState(test.getAsBoolean(), msg, params);
-			}
-		};
-	}
-
-	/**
-	 * Function to assert when a condition if fulfilled.
-	 * @author npiedeloup
-	 */
-	@FunctionalInterface
-	public interface ConditionalAssertion {
-		/**
-		 * Assert something if test return null
-		 * @param test BooleanSupplier Check if a state is valid.
-		 * @param msg Message Error message
-		 * @param params params of the message
-		 */
-		void check(final BooleanSupplier test, final String msg, final Object... params);
-	}
-
 	public Assertion notNull(final Object o) {
-		Objects.requireNonNull(o);
-		return INSTANCE;
+		if (enabled) {
+			Objects.requireNonNull(o);
+		}
+		return this;
 	}
 
 	public Assertion notNull(final Object o, final String msg, final Object... params) {
-		//Attention si o est un Boolean : il peut s'agir du resultat d'un test (boolean) qui a été autoboxé en Boolean
-		Objects.requireNonNull(o, () -> StringUtil.format(msg, params));
-		return INSTANCE;
+		if (enabled) {
+			//Attention si o est un Boolean : il peut s'agir du resultat d'un test (boolean) qui a été autoboxé en Boolean
+			Objects.requireNonNull(o, () -> StringUtil.format(msg, params));
+		}
+		return this;
 	}
 
 	public Assertion argument(final boolean test, final String msg, final Object... params) {
-		if (!test) {
-			throw new IllegalArgumentException(StringUtil.format(msg, params));
+		if (enabled) {
+			if (!test) {
+				throw new IllegalArgumentException(StringUtil.format(msg, params));
+			}
 		}
-		return INSTANCE;
+		return this;
+	}
+
+	public Assertion state(final BooleanSupplier test, final String msg, final Object... params) {
+		if (enabled) {
+			state(test.getAsBoolean(), msg, params);
+		}
+		return this;
 	}
 
 	public Assertion state(final boolean test, final String msg, final Object... params) {
-		if (!test) {
-			throw new IllegalStateException(StringUtil.format(msg, params));
+		if (enabled) {
+			if (!test) {
+				throw new IllegalStateException(StringUtil.format(msg, params));
+			}
 		}
-		return INSTANCE;
+		return this;
 	}
 
 	public Assertion argNotEmpty(final String str) {
-		checkNotNull(str);
-		if (StringUtil.isEmpty(str)) {
-			throw new IllegalArgumentException("String must not be empty");
+		if (enabled) {
+			checkNotNull(str);
+			if (StringUtil.isEmpty(str)) {
+				throw new IllegalArgumentException("String must not be empty");
+			}
 		}
-		return INSTANCE;
+		return this;
 	}
 
 	public Assertion argNotEmpty(final String str, final String msg, final Object... params) {
-		checkNotNull(str, msg, params);
-		if (StringUtil.isEmpty(str)) {
-			throw new IllegalArgumentException(StringUtil.format(msg, params));
+		if (enabled) {
+			checkNotNull(str, msg, params);
+			if (StringUtil.isEmpty(str)) {
+				throw new IllegalArgumentException(StringUtil.format(msg, params));
+			}
 		}
-		return INSTANCE;
+		return this;
 	}
 
 }
