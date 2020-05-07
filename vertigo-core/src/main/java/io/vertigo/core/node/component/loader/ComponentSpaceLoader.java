@@ -128,7 +128,7 @@ public final class ComponentSpaceLoader {
 		//Map des composants définis par leur id
 		final Map<String, CoreComponentConfig> componentConfigById = componentConfigs
 				.stream()
-				.filter(componentConfig -> !componentConfig.isProxy())
+				.filter(componentConfig -> !componentConfig.isAmplifier())
 				.peek(componentConfig -> reactor.addComponent(componentConfig.getId(), componentConfig.getImplClass(), componentConfig.getParams().keySet()))
 				.collect(Collectors.toMap(CoreComponentConfig::getId, Function.identity()));
 
@@ -243,7 +243,7 @@ public final class ComponentSpaceLoader {
 			final ComponentUnusedKeysContainer componentContainer,
 			final CoreComponentConfig componentConfig) {
 		Assertion.check()
-				.argument(!componentConfig.isProxy(), "a no-proxy component is expected");
+				.argument(!componentConfig.isAmplifier(), "a no-amplifier component is expected");
 		//---
 		// 1. An instance is created
 		final CoreComponent instance = createInstance(componentContainer, paramManagerOpt, componentConfig);
@@ -254,16 +254,16 @@ public final class ComponentSpaceLoader {
 
 	private Amplifier createAmplifier(
 			//	final Optional<ParamManager> paramManagerOpt,
-			final CoreComponentConfig componentConfig) {
+			final CoreComponentConfig coreComponentConfig) {
 		Assertion.check()
-				.argument(componentConfig.isProxy(), "a proxy component is expected");
+				.argument(coreComponentConfig.isAmplifier(), "an amplifier component is expected");
 		//---
 		//1. AOP : finds all aspects
-		final Map<Method, List<Aspect>> aspectsByMethod = ComponentAspectUtil.createAspectsByMethod(componentConfig.getApiClass().get(), aspects);
+		final Map<Method, List<Aspect>> aspectsByMethod = ComponentAspectUtil.createAspectsByMethod(coreComponentConfig.getApiClass().get(), aspects);
 
 		// 2. An instance is created and all aspects are injected
 		return AmplifierFactory.createAmplifier(
-				(Class<? extends Amplifier>) componentConfig.getApiClass().get(),
+				(Class<? extends Amplifier>) coreComponentConfig.getApiClass().get(),
 				proxyMethods,
 				aspectsByMethod);
 	}
