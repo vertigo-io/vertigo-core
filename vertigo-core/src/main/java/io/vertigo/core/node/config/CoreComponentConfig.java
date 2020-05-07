@@ -181,10 +181,24 @@ public final class CoreComponentConfig {
 	}
 
 	/**
-	 * @return if the component is a proxy
+	 * @return if the component is an amplifier
 	 */
-	public boolean isProxy() {
+	public boolean isAmplifier() {
 		return type == Type.AMPLIFIER;
+	}
+
+	/**
+	 * @return if the component is a plugin
+	 */
+	public boolean isPlugin() {
+		return type == Type.PLUGIN;
+	}
+
+	/**
+	 * @return if the component is a connector
+	 */
+	public boolean isConnector() {
+		return type == Type.CONNECTOR;
 	}
 
 	/**

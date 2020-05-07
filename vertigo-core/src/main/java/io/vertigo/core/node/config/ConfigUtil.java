@@ -22,9 +22,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.component.Connector;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.node.component.di.DIAnnotationUtil;
 import io.vertigo.core.util.ClassUtil;
@@ -68,7 +70,10 @@ final class ConfigUtil {
 
 		int index = 1;
 		for (final ConnectorConfig connectorConfig : connectorConfigs) {
-			final String connectorType = DIAnnotationUtil.buildId(connectorConfig.getImplClass());
+			final String connectorType = DIAnnotationUtil.buildId(
+					connectorConfig.getApiClassOpt().isPresent() ?
+					connectorConfig.getApiClassOpt().get()
+					:connectorConfig.getImplClass());
 
 			final boolean added = connectorTypes.add(connectorType);
 			final String id;
@@ -103,22 +108,31 @@ final class ConfigUtil {
 		return coreComponentConfigs;
 	}
 
-	/*
-	 * We are looking for the type of the plugin.
-	 * This type is the first objector interface that inherits from then 'plugin' interface.
-	 */
-	static Class<? extends Plugin> getPluginApi(final Class<? extends Plugin> implClass) {
+	private static <C> Optional<Class<? extends C>> getApiOpt(final Class<? extends C> implClass, Class<C> superApi) {
 		Assertion.check()
 				.notNull(implClass);
 		//---
 		//We are seeking the first and unique Object that extends Plugin.
 		//This Interface defines the type of the plugin.
 		for (final Class intf : ClassUtil.getAllInterfaces(implClass)) {
-			if (Arrays.asList(intf.getInterfaces()).contains(Plugin.class)) {
-				return intf;
+			if (Arrays.asList(intf.getInterfaces()).contains(superApi)) {
+				return Optional.of(intf);
 			}
 		}
-		throw new IllegalArgumentException("A plugin impl must extend an interface that defines its api: " + implClass);
+		return Optional.empty();
+	}
+
+	static Optional<Class<? extends Connector>> getConnectorApiOpt(final Class<? extends Connector> implClass) {
+		return getApiOpt(implClass, Connector.class);
+	}
+
+	/*
+	 * We are looking for the type of the plugin.
+	 * This type is the first objector interface that inherits from then 'plugin' interface.
+	 */
+	static Class<? extends Plugin> getPluginApi(final Class<? extends Plugin> implClass) {
+		return getApiOpt(implClass, Plugin.class)
+				.orElseThrow(() -> new IllegalArgumentException("A plugin impl must extend an interface that defines its api: " + implClass));
 	}
 
 	static List<CoreComponentConfig> buildAmplifiersComponentConfigs(final List<AmplifierConfig> amplifierConfigs) {

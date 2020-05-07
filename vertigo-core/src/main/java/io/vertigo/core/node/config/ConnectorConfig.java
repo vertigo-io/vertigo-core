@@ -19,6 +19,7 @@
 package io.vertigo.core.node.config;
 
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Connector;
@@ -37,26 +38,44 @@ import io.vertigo.core.param.Param;
  * @author mlaroche
  */
 public final class ConnectorConfig {
+	private final Optional<Class<? extends Connector>> apiClassOpt;
 	private final Class<? extends Connector> implClass;
 	private final List<Param> params;
 
 	/**
 	 * Constructor.
+	 * @param apiClassOpt the api class of the connector
 	 * @param implClass the impl class of the connector
 	 * @param params the params
 	 */
-	ConnectorConfig(final Class<? extends Connector> implClass, final List<Param> params) {
+	ConnectorConfig(
+			final Optional<Class<? extends Connector>> apiClassOpt,
+			final Class<? extends Connector> implClass,
+			final List<Param> params) {
 		Assertion.check()
+				.notNull(apiClassOpt)
 				.notNull(implClass)
 				.argument(Connector.class.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, Connector.class)
 				.notNull(params);
+		Assertion.when(apiClassOpt.isPresent())
+				.state(() -> Connector.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must implement {1}", apiClassOpt, Connector.class)
+				.state(() -> apiClassOpt.get().isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClassOpt)
+				.state(() -> apiClassOpt.get().isInterface(), "api class {0} must be an interface", apiClassOpt);
 		//-----
+		this.apiClassOpt = apiClassOpt;
 		this.implClass = implClass;
 		this.params = params;
 	}
 
 	/**
-	 * @return the impl class of the component
+	 * @return the api class
+	 */
+	public Optional<Class<? extends Connector>> getApiClassOpt() {
+		return apiClassOpt;
+	}
+
+	/**
+	 * @return the impl class
 	 */
 	public Class<? extends Connector> getImplClass() {
 		return implClass;

@@ -32,7 +32,6 @@ import io.vertigo.core.node.component.Amplifier;
 import io.vertigo.core.node.component.AopPlugin;
 import io.vertigo.core.node.component.Container;
 import io.vertigo.core.node.component.CoreComponent;
-import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.node.component.aop.Aspect;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.component.di.DIReactor;
@@ -111,10 +110,10 @@ public final class ComponentSpaceLoader {
 				.notNull(paramManagerOpt)
 				.notNull(moduleName)
 				.notNull(componentConfigs);
-		//---- Proxies----
+		//---- Amplifier----
 		componentConfigs
 				.stream()
-				.filter(CoreComponentConfig::isProxy)
+				.filter(CoreComponentConfig::isAmplifier)
 				.forEach(componentConfig -> {
 					final Amplifier component = createAmplifier(/*paramManagerOpt,*/ componentConfig);
 					componentSpaceWritable.registerComponent(componentConfig.getId(), component);
@@ -155,9 +154,8 @@ public final class ComponentSpaceLoader {
 		//--Search for unuseds plugins
 		final List<String> unusedPluginIds = componentConfigs
 				.stream()
-				.filter(componentConfig -> !componentConfig.isProxy())
-				.filter(componentConfig -> Plugin.class.isAssignableFrom(componentConfig.getImplClass()))
 				//only plugins are considered
+				.filter(CoreComponentConfig::isPlugin)
 				.map(CoreComponentConfig::getId)
 				//used keys are removed
 				.filter(pluginId -> !componentProxyContainer.getUsedKeys().contains(pluginId))

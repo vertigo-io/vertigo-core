@@ -210,7 +210,11 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return this builder
 	 */
 	public ModuleConfigBuilder addConnector(final Class<? extends Connector> connectorImplClass, final Param... params) {
-		myConnectorConfigs.add(new ConnectorConfig(connectorImplClass, Arrays.asList(params)));
+		myConnectorConfigs.add(
+				new ConnectorConfig(
+						ConfigUtil.getConnectorApiOpt(connectorImplClass),
+						connectorImplClass,
+						Arrays.asList(params)));
 		return this;
 	}
 
