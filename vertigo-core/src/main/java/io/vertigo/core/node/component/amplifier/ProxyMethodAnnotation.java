@@ -16,27 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package amplifier;
+package io.vertigo.core.node.component.amplifier;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Marks a method to be proxied a simple annotation
- *
+ * Marks a method to be proxied by a simple annotation
+ * This method can only be used on method
+ * and must be used on each method of a proxy.
  * @author pchretien
  */
-public interface ProxyMethod {
-	/**
-	 * Executes the methods with args as a function
-	 * @param method the method
-	 * @param args the args
-	 * @return the result
-	 */
-	Object invoke(final Method method, final Object[] args);
-
-	/**
-	* @return the annotation that must be used to mark the methods
-	*/
-	Class<? extends Annotation> getAnnotationType();
+@Target({ ElementType.ANNOTATION_TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ProxyMethodAnnotation {
+	//
 }

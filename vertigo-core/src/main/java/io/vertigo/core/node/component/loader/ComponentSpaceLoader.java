@@ -26,13 +26,13 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import amplifier.ProxyMethod;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.component.Amplifier;
 import io.vertigo.core.node.component.AopPlugin;
 import io.vertigo.core.node.component.Container;
 import io.vertigo.core.node.component.CoreComponent;
+import io.vertigo.core.node.component.amplifier.ProxyMethod;
 import io.vertigo.core.node.component.aop.Aspect;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.component.di.DIReactor;

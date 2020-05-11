@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-import amplifier.ProxyMethod;
+import io.vertigo.core.node.component.amplifier.ProxyMethod;
 
 public final class AggregatorProxyMethod implements ProxyMethod {
 
