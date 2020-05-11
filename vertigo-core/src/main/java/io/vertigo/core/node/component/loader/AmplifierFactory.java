@@ -28,13 +28,13 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import amplifier.ProxyMethod;
+import amplifier.ProxyMethodAnnotation;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Amplifier;
 import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.aop.Aspect;
 import io.vertigo.core.node.component.aop.AspectMethodInvocation;
-import io.vertigo.core.node.component.proxy.ProxyMethod;
-import io.vertigo.core.node.component.proxy.ProxyMethodAnnotation;
 
 final class AmplifierFactory {
 

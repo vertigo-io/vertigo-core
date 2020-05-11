@@ -18,8 +18,8 @@
  */
 package io.vertigo.core.node.config;
 
+import amplifier.ProxyMethod;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.component.proxy.ProxyMethod;
 
 /**
  * The ProxyMethodConfig class defines the way to create a new proxy on an interface using small proxy methods.

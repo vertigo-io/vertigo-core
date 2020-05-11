@@ -16,13 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.node.component.proxy.data;
+package io.vertigo.core.node.component.amplifier.data;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-import io.vertigo.core.node.component.proxy.ProxyMethod;
+import amplifier.ProxyMethod;
 
 public final class AggregatorProxyMethod implements ProxyMethod {
 

@@ -16,10 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.node.component.proxy.data;
+package amplifier;
 
-public enum AggregatorOperation {
-	max,
-	min,
-	count
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * Marks a method to be proxied by a simple annotation
+ * This method can only be used on method
+ * and must be used on each method of a proxy.
+ * @author pchretien
+ */
+@Target({ ElementType.ANNOTATION_TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ProxyMethodAnnotation {
+	//
 }

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import amplifier.ProxyMethod;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.node.component.Amplifier;
@@ -29,7 +30,6 @@ import io.vertigo.core.node.component.Component;
 import io.vertigo.core.node.component.Connector;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.node.component.aop.Aspect;
-import io.vertigo.core.node.component.proxy.ProxyMethod;
 import io.vertigo.core.node.definition.DefinitionProvider;
 import io.vertigo.core.param.Param;
 

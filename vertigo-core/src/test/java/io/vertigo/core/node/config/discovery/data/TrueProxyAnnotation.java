@@ -23,7 +23,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import io.vertigo.core.node.component.proxy.ProxyMethodAnnotation;
+import amplifier.ProxyMethodAnnotation;
 
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)

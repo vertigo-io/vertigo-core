@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.node.component.proxy;
+package io.vertigo.core.node.component.amplifier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -27,9 +27,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.amplifier.data.Aggregate;
+import io.vertigo.core.node.component.amplifier.data.AggregatorProxyMethod;
 import io.vertigo.core.node.component.di.DIInjector;
-import io.vertigo.core.node.component.proxy.data.Aggregate;
-import io.vertigo.core.node.component.proxy.data.AggregatorProxyMethod;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 

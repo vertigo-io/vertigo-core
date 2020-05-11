@@ -16,27 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.node.component.proxy;
+package io.vertigo.core.node.component.amplifier.data;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-
-/**
- * Marks a method to be proxied a simple annotation
- *
- * @author pchretien
- */
-public interface ProxyMethod {
-	/**
-	 * Executes the methods with args as a function
-	 * @param method the method
-	 * @param args the args
-	 * @return the result
-	 */
-	Object invoke(final Method method, final Object[] args);
-
-	/**
-	* @return the annotation that must be used to mark the methods
-	*/
-	Class<? extends Annotation> getAnnotationType();
+public enum AggregatorOperation {
+	max,
+	min,
+	count
 }

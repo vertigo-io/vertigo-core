@@ -16,21 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.node.component.proxy;
+package io.vertigo.core.node.component.amplifier.data;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import amplifier.ProxyMethodAnnotation;
+
+@Target({ ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+@ProxyMethodAnnotation
+
 /**
- * Marks a method to be proxied by a simple annotation
- * This method can only be used on method
- * and must be used on each method of a proxy.
+ * This annotation is used to mark a method that will be proxied.
+ *
  * @author pchretien
  */
-@Target({ ElementType.ANNOTATION_TYPE })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ProxyMethodAnnotation {
-	//
+public @interface AggregatorAnnotation {
+
+	/**
+	 * @return the operation that will be applied to the args of the method
+	 */
+	AggregatorOperation operation();
 }

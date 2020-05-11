@@ -20,7 +20,7 @@ package io.vertigo.core.node.config.discovery.data;
 
 import java.lang.reflect.Method;
 
-import io.vertigo.core.node.component.proxy.ProxyMethod;
+import amplifier.ProxyMethod;
 
 public final class TrueProxyMethod implements ProxyMethod {
 
