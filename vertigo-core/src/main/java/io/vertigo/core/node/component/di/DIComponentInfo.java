@@ -47,12 +47,11 @@ final class DIComponentInfo {
 	 * @param params parameters
 	 */
 	DIComponentInfo(final String id, final Class<?> implClass, final Set<String> params) {
-		//		Assertion.precondition(Container.REGEX_ID.matcher(id).matches(), "id '{0}' doit être camelCase et commencer par une minuscule", id);
 		Assertion.check()
 				.argNotEmpty(id)
 				.notNull(implClass)
 				.notNull(params);
-		//-----
+		//---
 		this.id = id;
 		this.implClass = implClass;
 		dependencies = buildDependencies(implClass, params);

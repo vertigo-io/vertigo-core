@@ -18,8 +18,6 @@
  */
 package io.vertigo.core.node.component.di.data;
 
-import io.vertigo.core.node.component.Plugin;
-
-public final class P3 implements Plugin {
+public final class P3 {
 	//
 }

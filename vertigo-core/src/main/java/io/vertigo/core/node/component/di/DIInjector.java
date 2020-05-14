@@ -65,7 +65,7 @@ public final class DIInjector {
 			return instance;
 		} catch (final Exception e) {
 			//Contextualisation de l'exception et des assertions.
-			throw new DIException("Erreur lors de la création du composant de type : '" + clazz.getName() + "'", e);
+			throw new DIException("Error when creating new component : '" + clazz.getName() + "'", e);
 		}
 	}
 
@@ -86,7 +86,7 @@ public final class DIInjector {
 		Assertion.check()
 				.notNull(instance)
 				.notNull(container);
-		//-----
+		//---
 		final Collection<Field> fields = ClassUtil.getAllFields(instance.getClass(), Inject.class);
 		for (final Field field : fields) {
 			final DIDependency dependency = new DIDependency(field);

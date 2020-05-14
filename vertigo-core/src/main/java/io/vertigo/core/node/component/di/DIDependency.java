@@ -60,6 +60,7 @@ final class DIDependency {
 		isOptionnal = caseOptional(rootType);
 		isList = caseList(rootType);
 		type = (isOptionnal || isList) ? ClassUtil.getGeneric(field) : rootType;
+		Assertion.check().notNull(type);
 		targetId = named != null ? named : DIAnnotationUtil.buildId(type);
 	}
 
@@ -113,8 +114,6 @@ final class DIDependency {
 	 * @return get object class
 	 */
 	Class<?> getType() {
-		Assertion.check()
-				.notNull(type);
 		return type;
 	}
 

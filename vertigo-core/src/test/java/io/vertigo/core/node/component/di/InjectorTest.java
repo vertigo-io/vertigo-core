@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.component.Container;
 import io.vertigo.core.node.component.di.data.A;
 import io.vertigo.core.node.component.di.data.B;
@@ -98,7 +99,7 @@ public final class InjectorTest {
 
 			@Override
 			public <T> T resolve(final String id, final Class<T> componentClass) {
-				return null;
+				throw new VSystemException("component info with id '{0}' not found.", id);
 			}
 
 			@Override
