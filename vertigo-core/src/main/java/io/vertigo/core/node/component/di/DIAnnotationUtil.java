@@ -40,7 +40,7 @@ public final class DIAnnotationUtil {
 	 * @param clazz Class de l'objet
 	 * @return Constructeur de l'objet
 	 */
-	public static <T> Constructor<T> findInjectableConstructor(final Class<T> clazz) {
+	static <T> Constructor<T> findInjectableConstructor(final Class<T> clazz) {
 		Assertion.check()
 				.notNull(clazz);
 		//-----
