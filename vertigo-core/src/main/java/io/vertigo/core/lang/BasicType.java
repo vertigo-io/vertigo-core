@@ -58,7 +58,7 @@ public enum BasicType {
 	 * @param javaClass the java class
 	 */
 	BasicType(final Class<?> javaClass) {
-		Assertion.checkNotNull(javaClass);
+		Assertion.check().notNull(javaClass);
 		//-----
 		this.javaClass = javaClass;
 	}
@@ -107,7 +107,7 @@ public enum BasicType {
 	 * @return Optional Basic Type of this Class
 	 */
 	public static Optional<BasicType> of(final Class type) {
-		Assertion.checkNotNull(type);
+		Assertion.check().notNull(type);
 		//---
 		BasicType basicType;
 		if (Integer.class.equals(type) || int.class.equals(type)) {
