@@ -149,13 +149,6 @@
 					<forceCreation>true</forceCreation>
 					<skipIfEmpty>true</skipIfEmpty>
 				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin><!-- license:format -->
 				<groupId>com.mycila</groupId>
@@ -223,7 +216,6 @@
 								<id>attach-sources</id>
 								<goals>
 									<goal>jar</goal>
-									<goal>test-jar</goal>
 								</goals>
 							</execution>
 						</executions>
@@ -293,7 +285,4 @@
 			</distributionManagement>
 		</profile>
 	</profiles>
-
-	
-
 </project>
