@@ -56,7 +56,7 @@ public final class SelectorTest {
 
 	@Test
 	public void testFromClasses() {
-		final List<Class> classes = new ListBuilder<Class>().add(SA.class).add(SB.class).build();
+		final List<Class> classes = List.of(SA.class, SB.class);
 		Assertions.assertEquals(2, new Selector().from(classes).findClasses().size());
 	}
 
@@ -69,7 +69,7 @@ public final class SelectorTest {
 
 	@Test
 	public void testFromSupplier() {
-		final Collection<Class> result = new Selector().from(() -> new ListBuilder<Class>().add(SA.class).add(SB.class).build()).findClasses();
+		final Collection<Class> result = new Selector().from(() -> List.of(SA.class,SB.class)).findClasses();
 		// ---
 		Assertions.assertEquals(2, result.size());
 	}
@@ -89,7 +89,7 @@ public final class SelectorTest {
 
 	@Test
 	public void testFilterAbstract() {
-		final List<Class> classes = new ListBuilder<Class>().add(SAbstractD.class).add(SA.class).add(SB.class).add(SC.class).build();
+		final List<Class> classes = List.of(SAbstractD.class, SA.class, SB.class, SC.class);
 		Assertions.assertEquals(1, new Selector().from(classes).filterClasses(ClassConditions.isAbstract()).findClasses().size());
 	}
 
