@@ -101,7 +101,7 @@ public final class CoreComponentConfig {
 		switch (type) {
 			case AMPLIFIER:
 				Assertion.check()
-						.argument(!implClassOpt.isPresent(), "When an amplifier is declared there is no impl")
+						.argument(implClassOpt.isEmpty(), "When an amplifier is declared there is no impl")
 						.argument(apiClassOpt.isPresent(), "When an amplifier is declared, an api is required")
 						.argument(Amplifier.class.isAssignableFrom(apiClassOpt.get()), "An amplifier must inherit Amplifier");
 				break;
@@ -130,7 +130,7 @@ public final class CoreComponentConfig {
 		}
 		if (type == Type.AMPLIFIER) {
 			Assertion.check()
-					.argument(!implClassOpt.isPresent(), "When a proxy is declared there is no impl")
+					.argument(implClassOpt.isEmpty(), "When a proxy is declared there is no impl")
 					.argument(apiClassOpt.isPresent(), "When a proxy is declared, an api is required")
 					.argument(Amplifier.class.isAssignableFrom(apiClassOpt.get()), "An amplifier must inherit Amplifier");
 		} else {

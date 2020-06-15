@@ -87,7 +87,7 @@ public class ProcessAnalyticsImpl {
 	private Optional<ProcessAnalyticsTracerImpl> removeCurrentAndGetParentTracer() {
 		THREAD_LOCAL_PROCESS.get().pop();
 		final Optional<ProcessAnalyticsTracerImpl> parentOpt = doGetCurrentTracer();
-		if (!parentOpt.isPresent()) {
+		if (parentOpt.isEmpty()) {
 			THREAD_LOCAL_PROCESS.remove();
 		}
 		return parentOpt;
