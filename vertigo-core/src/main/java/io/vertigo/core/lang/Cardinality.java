@@ -31,7 +31,7 @@ public enum Cardinality {
 	}
 
 	public static Cardinality fromSymbol(final String sCardinality) {
-		Assertion.checkArgNotEmpty(sCardinality);
+		Assertion.check().argNotEmpty(sCardinality);
 		//---
 		switch (sCardinality) {
 			case "?":

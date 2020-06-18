@@ -118,19 +118,19 @@ public final class AssertionTest {
 
 	@Test
 	public void testCheckNotEmpty() {
-		Assertion.checkArgNotEmpty("test", "message");
+		Assertion.check().argNotEmpty("test", "message");
 	}
 
 	@Test
 	public void testCheckNotEmptyFail() {
 		Assertions.assertThrows(IllegalArgumentException.class,
-				() -> Assertion.checkArgNotEmpty("  ", "message"));
+				() -> Assertion.check().argNotEmpty("  ", "message"));
 	}
 
 	@Test
 	public void testCheckNotEmpty2Fail() {
 		Assertions.assertThrows(NullPointerException.class,
-				() -> Assertion.checkArgNotEmpty(null, "message {0}", "param"));
+				() -> Assertion.check().argNotEmpty(null, "message {0}", "param"));
 	}
 
 	@Test

@@ -62,7 +62,7 @@ public final class WrappedException extends RuntimeException {
 	 * @return RuntimeException runtime
 	 */
 	public static RuntimeException wrap(final Throwable th, final String msg, final Object... params) {
-		Assertion.checkArgNotEmpty(msg);
+		Assertion.check().argNotEmpty(msg);
 		//---
 		final Throwable t;
 		if (th instanceof InvocationTargetException) {
