@@ -18,13 +18,10 @@
  */
 package io.vertigo.core.node.config.yaml;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -52,6 +49,7 @@ import io.vertigo.core.node.config.NodeConfigBuilder;
 import io.vertigo.core.node.config.yaml.YamlAppConfig.YamlModuleConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.util.ClassUtil;
+import io.vertigo.core.util.FileUtil;
 import io.vertigo.core.util.Selector;
 import io.vertigo.core.util.Selector.MethodConditions;
 
@@ -344,16 +342,8 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 	}
 
 	private static String parseFile(final URL url) {
-		try (final BufferedReader reader = new BufferedReader(
-				new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
-			final StringBuilder buff = new StringBuilder();
-			String line = reader.readLine();
-			while (line != null) {
-				buff.append(line);
-				line = reader.readLine();
-				buff.append("\r\n");
-			}
-			return buff.toString();
+		try {
+			return FileUtil.parse(url);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error reading json file : '{0}'", url);
 		}
