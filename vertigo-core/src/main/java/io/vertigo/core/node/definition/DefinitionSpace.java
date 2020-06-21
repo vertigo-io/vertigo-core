@@ -18,7 +18,7 @@
  */
 package io.vertigo.core.node.definition;
 
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * Espace de définitions (non threadSafe).
@@ -45,12 +45,12 @@ public interface DefinitionSpace {
 	/**
 	 * @return Liste de tous les types de définition gérés.
 	 */
-	Collection<Class<? extends Definition>> getAllTypes();
+	Set<Class<? extends Definition>> getAllTypes();
 
 	/**
-	 * @return Collection de tous les objets enregistrés pour un type donné.
-	 * @param clazz type de l'object
-	 * @param <C> Type de l'objet
+	 * @return Ordered Set of all objects for a type defined by its class
+	 * @param clazz Class of the definition
+	 * @param <C> Type of the definition
 	 */
-	<C extends Definition> Collection<C> getAll(Class<C> clazz);
+	<C extends Definition> Set<C> getAll(Class<C> clazz);
 }
