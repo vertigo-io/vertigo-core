@@ -343,7 +343,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 
 	private static String parseFile(final URL url) {
 		try {
-			return FileUtil.parse(url);
+			return FileUtil.read(url);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error reading json file : '{0}'", url);
 		}

@@ -7,7 +7,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public final class FileUtil {
-	public static String parse(final URL url) throws IOException {
+	public static String read(final URL url) throws IOException {
 		try (final BufferedReader reader = new BufferedReader(
 				new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
 			final StringBuilder buff = new StringBuilder();
