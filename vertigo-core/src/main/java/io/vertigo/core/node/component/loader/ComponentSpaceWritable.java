@@ -99,8 +99,7 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final String id) {
-		Assertion.check()
-				.argNotEmpty(id);
+		Assertion.check().argNotEmpty(id);
 		//-----
 		final String normalizedId = StringUtil.first2LowerCase(id);
 		return components.containsKey(normalizedId);
@@ -110,8 +109,7 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	@Override
 	public <C> C resolve(final String id, final Class<C> componentClass) {
 		final String normalizedId = StringUtil.first2LowerCase(id);
-		Assertion.check()
-				.argument(contains(normalizedId), "Aucun composant enregistré pour id = {0} parmi {1}", normalizedId, keySet());
+		Assertion.check().argument(contains(normalizedId), "Aucun composant enregistré pour id = {0} parmi {1}", normalizedId, keySet());
 		//-----
 		return componentClass.cast(components.get(normalizedId));
 	}

@@ -33,8 +33,7 @@ public final class EnvParamPlugin implements ParamPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<Param> getParam(final String paramName) {
-		Assertion.check()
-				.argNotEmpty(paramName);
+		Assertion.check().argNotEmpty(paramName);
 		//-----
 		final String paramValue = System.getenv().get(paramName);
 		return paramValue != null ? Optional.of(Param.of(paramName, paramValue)) : Optional.empty();

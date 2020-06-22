@@ -70,8 +70,7 @@ public final class HealthMeasureBuilder implements Builder<HealthMeasure> {
 	}
 
 	private HealthMeasureBuilder withStatus(final HealthStatus healthStatus, final String message, final Exception cause) {
-		Assertion.check()
-				.state(myStatus == null, "status already set");
+		Assertion.check().state(myStatus == null, "status already set");
 		//---
 		myStatus = healthStatus;
 		myMessage = message;

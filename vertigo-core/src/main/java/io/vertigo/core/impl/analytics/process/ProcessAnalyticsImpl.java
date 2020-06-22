@@ -73,14 +73,12 @@ public class ProcessAnalyticsImpl {
 	}
 
 	private static void push(final ProcessAnalyticsTracerImpl analyticstracer) {
-		Assertion.check()
-				.notNull(analyticstracer);
+		Assertion.check().notNull(analyticstracer);
 		//---
 		if (THREAD_LOCAL_PROCESS.get() == null) {
 			THREAD_LOCAL_PROCESS.set(new Stack<>());
 		}
-		Assertion.check()
-				.state(THREAD_LOCAL_PROCESS.get().size() < 100, "More than 100 process deep. All processes must be closed.");
+		Assertion.check().state(THREAD_LOCAL_PROCESS.get().size() < 100, "More than 100 process deep. All processes must be closed.");
 		THREAD_LOCAL_PROCESS.get().push(analyticstracer);
 	}
 

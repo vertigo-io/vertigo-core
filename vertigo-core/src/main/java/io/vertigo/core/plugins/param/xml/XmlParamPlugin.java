@@ -66,8 +66,7 @@ public final class XmlParamPlugin implements ParamPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<Param> getParam(final String paramName) {
-		Assertion.check()
-				.argNotEmpty(paramName);
+		Assertion.check().argNotEmpty(paramName);
 		//-----
 		return Optional.ofNullable(params.get(paramName));
 	}
@@ -76,8 +75,7 @@ public final class XmlParamPlugin implements ParamPlugin {
 	 * Charge une configuration, et complète celle existante.
 	 */
 	private static Map<String, Param> readXML(final URL configURL) {
-		Assertion.check()
-				.notNull(configURL);
+		Assertion.check().notNull(configURL);
 		//-----
 		try {
 			return doReadXML(configURL);

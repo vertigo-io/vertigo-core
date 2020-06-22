@@ -38,8 +38,7 @@ public class TestAnalyticsAspectServices implements Component {
 
 	@Analytics(category = "test", name = "checkPositive")
 	public void checkPositive(final int a) {
-		Assertion.check()
-				.state(a >= 0, "The number must be positive");
+		Assertion.check().state(a >= 0, "The number must be positive");
 	}
 
 	@Analytics(category = "test", name = "setMeasure")

@@ -65,8 +65,7 @@ public final class StringUtil {
 	 * @return Chaine avec la premiere lettre en minuscule
 	 */
 	public static String first2LowerCase(final String strValue) {
-		Assertion.check()
-				.notNull(strValue);
+		Assertion.check().notNull(strValue);
 		//-----
 		if (strValue.isEmpty()) {
 			return strValue;
@@ -89,8 +88,7 @@ public final class StringUtil {
 	 * @return Chaine avec la premiere lettre en majuscule
 	 */
 	public static String first2UpperCase(final String strValue) {
-		Assertion.check()
-				.notNull(strValue);
+		Assertion.check().notNull(strValue);
 		//-----
 		if (strValue.isEmpty()) {
 			return strValue;
@@ -154,8 +152,7 @@ public final class StringUtil {
 				upper = true;
 			} else {
 				if (digit != null) {
-					Assertion.check()
-							.argument(digit.equals(Character.isDigit(c)), "Chaine à modifier invalide : {0} (lettres et chiffres doivent toujours être séparés par _)", str);
+					Assertion.check().argument(digit.equals(Character.isDigit(c)), "Chaine à modifier invalide : {0} (lettres et chiffres doivent toujours être séparés par _)", str);
 				}
 				digit = Character.isDigit(c);
 
@@ -268,8 +265,7 @@ public final class StringUtil {
 	 * @return Chaine remplacée
 	 */
 	public static String replace(final String str, final String oldStr, final String newStr) {
-		Assertion.check()
-				.notNull(str);
+		Assertion.check().notNull(str);
 		//-----
 		final StringBuilder result = new StringBuilder(str);
 		replace(result, oldStr, newStr);
@@ -313,8 +309,7 @@ public final class StringUtil {
 	 * @return Chaine fusionnée
 	 */
 	public static String format(final String msg, final Object... params) {
-		Assertion.check()
-				.notNull(msg);
+		Assertion.check().notNull(msg);
 		//-----
 		if (params == null || params.length == 0) {
 			return msg;

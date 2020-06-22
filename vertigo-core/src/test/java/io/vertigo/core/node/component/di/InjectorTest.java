@@ -52,8 +52,7 @@ public final class InjectorTest {
 
 		@Override
 		public boolean contains(final String id) {
-			Assertion.check()
-					.argNotEmpty(id);
+			Assertion.check().argNotEmpty(id);
 			//-----
 			return map.containsKey(id);
 		}
@@ -73,8 +72,7 @@ public final class InjectorTest {
 					.notNull(componentClass);
 			//-----
 			final Object object = map.get(id);
-			Assertion.check()
-					.notNull(object, "{0} not found", id);
+			Assertion.check().notNull(object, "{0} not found", id);
 			return componentClass.cast(object);
 		}
 

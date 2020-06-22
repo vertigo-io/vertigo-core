@@ -68,8 +68,7 @@ public final class PropertiesParamPlugin implements ParamPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<Param> getParam(final String paramName) {
-		Assertion.check()
-				.argNotEmpty(paramName);
+		Assertion.check().argNotEmpty(paramName);
 		//-----
 		final String paramValue = properties.getProperty(paramName);
 		return paramValue != null ? Optional.of(Param.of(paramName, paramValue)) : Optional.empty();

@@ -37,8 +37,7 @@ public final class URLResourceResolverPlugin implements ResourceResolverPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<URL> resolve(final String resource) {
-		Assertion.check()
-				.notNull(resource);
+		Assertion.check().notNull(resource);
 		//-----
 		try {
 			final URL url = new URL(resource);

@@ -35,8 +35,7 @@ public final class ClassPathResourceResolverPlugin implements ResourceResolverPl
 	/** {@inheritDoc} */
 	@Override
 	public Optional<URL> resolve(final String resource) {
-		Assertion.check()
-				.notNull(resource);
+		Assertion.check().notNull(resource);
 		//-----
 		try {
 			//le getClassLoader permet de se mettre en absolue (getClass().getRessource serait relatif)

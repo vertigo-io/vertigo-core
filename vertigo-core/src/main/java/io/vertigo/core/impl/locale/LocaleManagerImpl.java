@@ -125,8 +125,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 		String variant;
 		for (final String locale : locales.split(",")) {
 			final String[] loc = locale.trim().split("_");
-			Assertion.check()
-					.argument(loc.length > 0, "Locale specifiée vide");
+			Assertion.check().argument(loc.length > 0, "Locale specifiée vide");
 			language = loc[0];
 			country = loc.length > 1 ? loc[1] : "";
 			variant = loc.length > 2 ? loc[2] : "";
@@ -187,20 +186,18 @@ public final class LocaleManagerImpl implements LocaleManager {
 	}
 
 	private Map<String, String> getDictionary(final Locale locale) {
-		Assertion.check()
-				.argument(dictionaries.containsKey(locale), "La locale {0} n'est pas gérée", locale);
+		Assertion.check().argument(dictionaries.containsKey(locale), "La locale {0} n'est pas gérée", locale);
+		//---
 		return dictionaries.get(locale);
 	}
 
 	private void load(final Locale locale, final ResourceBundle resourceBundle, final boolean override) {
 		for (final String key : Collections.list(resourceBundle.getKeys())) {
 			final String value = resourceBundle.getString(key);
-			Assertion.check()
-					.notNull(value);
+			Assertion.check().notNull(value);
 			final String oldValue = getDictionary(locale).put(key, value);
 			if (!override) {
-				Assertion.check()
-						.state(oldValue == null, "Valeur deja renseignée pour{0}", key);
+				Assertion.check().state(oldValue == null, "Valeur deja renseignée pour{0}", key);
 			}
 		}
 	}

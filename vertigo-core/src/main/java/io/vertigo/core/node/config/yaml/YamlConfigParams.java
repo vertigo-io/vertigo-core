@@ -34,8 +34,7 @@ final class YamlConfigParams {
 	private final Set<String> readKeys = new HashSet<>();
 
 	YamlConfigParams(final Properties properties) {
-		Assertion.check()
-				.notNull(properties);
+		Assertion.check().notNull(properties);
 		//-----
 		this.properties = properties;
 		keys = new HashSet<>(properties.stringPropertyNames());

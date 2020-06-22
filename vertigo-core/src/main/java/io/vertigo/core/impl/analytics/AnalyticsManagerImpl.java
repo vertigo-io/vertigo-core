@@ -64,8 +64,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 	@Inject
 	public AnalyticsManagerImpl(
 			final List<AnalyticsConnectorPlugin> processConnectorPlugins) {
-		Assertion.check()
-				.notNull(processConnectorPlugins);
+		Assertion.check().notNull(processConnectorPlugins);
 		//---
 		processAnalyticsImpl = new ProcessAnalyticsImpl();
 		this.processConnectorPlugins = processConnectorPlugins;
@@ -119,8 +118,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 	}
 
 	private void onClose(final AProcess process) {
-		Assertion.check()
-				.notNull(process);
+		Assertion.check().notNull(process);
 		//---
 		processConnectorPlugins.forEach(
 				processConnectorPlugin -> processConnectorPlugin.add(process));

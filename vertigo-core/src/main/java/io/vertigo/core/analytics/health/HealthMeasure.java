@@ -54,8 +54,7 @@ public final class HealthMeasure {
 			final HealthStatus status,
 			final String message,
 			final Exception cause) {
-		Assertion.check()
-				.notNull(status);
+		Assertion.check().notNull(status);
 		//-----
 		this.status = status;
 		/*

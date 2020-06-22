@@ -78,8 +78,7 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU5 {
 	}
 
 	private List<HealthCheck> findHealthChecksByName(final String name) {
-		Assertion.check()
-				.argNotEmpty(name);
+		Assertion.check().argNotEmpty(name);
 		//---
 		return analyticsManager.getHealthChecks()
 				.stream()

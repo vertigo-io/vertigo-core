@@ -52,8 +52,7 @@ final class XmlConfigHandler extends DefaultHandler {
 				break;
 			case param:
 				final String paramName = attrs.getValue("name").trim();
-				Assertion.check()
-						.argument(!paramName.endsWith("."), "a path must not be ended with a point");
+				Assertion.check().argument(!paramName.endsWith("."), "a path must not be ended with a point");
 				final String paramValue = attrs.getValue("value").trim();
 				final Param param = Param.of(currentPath + "." + paramName, paramValue);
 				params.put(param.getName(), param);

@@ -61,8 +61,7 @@ public final class HealthAnalyticsUtil {
 	 * @return List of HealthCheckDefinition
 	 */
 	public static List<HealthCheckDefinition> createHealthCheckDefinitions(final String componentId, final CoreComponent component, final AopPlugin aopPlugin) {
-		Assertion.check()
-				.notNull(component);
+		Assertion.check().notNull(component);
 
 		//-- we construct a map of feature by componentId
 		final Map<String, String> featureByComponentId = new HashMap<>();
@@ -129,8 +128,7 @@ public final class HealthAnalyticsUtil {
 	}
 
 	public static HealthStatus aggregate(final List<HealthCheck> healthChecks) {
-		Assertion.check()
-				.notNull(healthChecks);
+		Assertion.check().notNull(healthChecks);
 		//---
 		int nbGreen = 0;
 		int nbYellow = 0;
