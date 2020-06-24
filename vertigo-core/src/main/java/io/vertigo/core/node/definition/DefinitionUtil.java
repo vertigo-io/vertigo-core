@@ -43,7 +43,7 @@ public final class DefinitionUtil {
 		//-----
 		Assertion.check()
 				.notNull(prefix, "Annotation '@DefinitionPrefix' not found on {0}", definitionClass.getName())
-				.argNotEmpty(prefix.value());
+				.isNotBlank(prefix.value());
 		return prefix.value();
 	}
 
@@ -55,7 +55,7 @@ public final class DefinitionUtil {
 	 */
 	public static String getLocalName(final String definitionName, final Class<? extends Definition> definitionClass) {
 		Assertion.check()
-				.argNotEmpty(definitionName)
+				.isNotBlank(definitionName)
 				.notNull(definitionClass);
 		//-----
 		//On enléve le prefix et le separateur.
@@ -74,7 +74,7 @@ public final class DefinitionUtil {
 	 */
 	public static void checkName(final String definitionName, final Class<? extends Definition> definitionClass) {
 		Assertion.check()
-				.argNotEmpty(definitionName)
+				.isNotBlank(definitionName)
 				.notNull(definitionClass);
 		//-----
 		final String prefix = DefinitionUtil.getPrefix(definitionClass);

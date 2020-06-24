@@ -57,7 +57,7 @@ public final class ParamManagerImpl implements ParamManager {
 
 	@Override
 	public Optional<Param> getOptionalParam(final String paramName) {
-		Assertion.check().argNotEmpty(paramName);
+		Assertion.check().isNotBlank(paramName);
 		//-----
 		return paramPlugins
 				.stream()

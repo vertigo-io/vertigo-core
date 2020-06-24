@@ -153,7 +153,7 @@ public final class ClassUtil {
 	 */
 	public static Class<?> classForName(final String javaClassName) {
 		Assertion.check()
-				.argNotEmpty(javaClassName);
+				.isNotBlank(javaClassName);
 		//-----
 		try {
 			return Class.forName(javaClassName);

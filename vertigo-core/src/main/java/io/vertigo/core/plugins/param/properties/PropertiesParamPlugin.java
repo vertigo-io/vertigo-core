@@ -51,7 +51,7 @@ public final class PropertiesParamPlugin implements ParamPlugin {
 	public PropertiesParamPlugin(final ResourceManager resourceManager, @ParamValue("url") final String url) throws IOException {
 		Assertion.check()
 				.notNull(resourceManager)
-				.argNotEmpty(url);
+				.isNotBlank(url);
 		//-----
 		final URL configURL = resourceManager.resolve(url);
 		properties = loadProperties(configURL);
@@ -68,7 +68,7 @@ public final class PropertiesParamPlugin implements ParamPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<Param> getParam(final String paramName) {
-		Assertion.check().argNotEmpty(paramName);
+		Assertion.check().isNotBlank(paramName);
 		//-----
 		final String paramValue = properties.getProperty(paramName);
 		return paramValue != null ? Optional.of(Param.of(paramName, paramValue)) : Optional.empty();

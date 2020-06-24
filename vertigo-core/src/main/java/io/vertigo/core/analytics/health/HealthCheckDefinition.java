@@ -57,11 +57,11 @@ public final class HealthCheckDefinition implements Definition {
 			final String feature,
 			final Supplier<HealthMeasure> checkMethod) {
 		Assertion.check()
-				.argNotEmpty(definitionName)
-				.argNotEmpty(healthCheckName)
-				.argNotEmpty(checker)
-				.argNotEmpty(module)
-				.argNotEmpty(feature)
+				.isNotBlank(definitionName)
+				.isNotBlank(healthCheckName)
+				.isNotBlank(checker)
+				.isNotBlank(module)
+				.isNotBlank(feature)
 				.notNull(checkMethod);
 		//-----
 		this.definitionName = definitionName;

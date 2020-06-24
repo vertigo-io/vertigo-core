@@ -53,8 +53,8 @@ public final class AProcessBuilder implements Builder<AProcess> {
 	 */
 	AProcessBuilder(final String category, final String name) {
 		Assertion.check()
-				.argNotEmpty(category, "the process category is required")
-				.argNotEmpty(name, "the process name is required");
+				.isNotBlank(category, "the process category is required")
+				.isNotBlank(name, "the process name is required");
 		//---
 		myCategory = category;
 		myName = name;
@@ -72,8 +72,8 @@ public final class AProcessBuilder implements Builder<AProcess> {
 	 */
 	AProcessBuilder(final String category, final String name, final Instant start, final Instant end) {
 		Assertion.check()
-				.argNotEmpty(category, "the process category is required")
-				.argNotEmpty(name, "the process name is required")
+				.isNotBlank(category, "the process category is required")
+				.isNotBlank(name, "the process name is required")
 				.notNull(start, "the process start is required")
 				.notNull(end, "the process end is required");
 		//---

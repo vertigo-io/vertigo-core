@@ -103,8 +103,8 @@ public final class Assertion {
 	 *
 	 * @param str String that must be not empty
 	 */
-	public static void checkArgNotEmpty(final String str) {
-		check().argNotEmpty(str);
+	public static void checkIsNotBlank(final String str) {
+		check().isNotBlank(str);
 	}
 
 	/**
@@ -113,8 +113,8 @@ public final class Assertion {
 	 * @param msg Error message
 	 * @param params params of the message
 	 */
-	public static void checkArgNotEmpty(final String str, final String msg, final Object... params) {
-		check().argNotEmpty(str, msg, params);
+	public static void checkIsNotBlank(final String str, final String msg, final Object... params) {
+		check().isNotBlank(str, msg, params);
 	}
 
 	/**
@@ -169,7 +169,7 @@ public final class Assertion {
 		return this;
 	}
 
-	public Assertion argNotEmpty(final String str) {
+	public Assertion isNotBlank(final String str) {
 		if (enabled) {
 			checkNotNull(str);
 			if (StringUtil.isBlank(str)) {
@@ -179,7 +179,7 @@ public final class Assertion {
 		return this;
 	}
 
-	public Assertion argNotEmpty(final String str, final String msg, final Object... params) {
+	public Assertion isNotBlank(final String str, final String msg, final Object... params) {
 		if (enabled) {
 			checkNotNull(str, msg, params);
 			if (StringUtil.isBlank(str)) {

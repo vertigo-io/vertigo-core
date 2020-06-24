@@ -86,8 +86,8 @@ final class DateQueryParserUtil {
 	 */
 	static Instant parseAsInstant(final String dateExpression, final String datePattern) {
 		Assertion.check()
-				.argNotEmpty(dateExpression)
-				.argNotEmpty(datePattern, "you must define a valid datePattern such as dd/MM/yyyy or MM/dd/yy")
+				.isNotBlank(dateExpression)
+				.isNotBlank(datePattern, "you must define a valid datePattern such as dd/MM/yyyy or MM/dd/yy")
 				.state(dateExpression.startsWith(NOW), "Instant evaluation is always relative to now");
 		//---
 		if (NOW.equals(dateExpression)) {
@@ -119,8 +119,8 @@ final class DateQueryParserUtil {
 
 	static LocalDate parseAsLocalDate(final String dateExpression, final String datePattern) {
 		Assertion.check()
-				.argNotEmpty(dateExpression)
-				.argNotEmpty(datePattern, "you must define a valid datePattern such as dd/MM/yyyy or MM/dd/yy")
+				.isNotBlank(dateExpression)
+				.isNotBlank(datePattern, "you must define a valid datePattern such as dd/MM/yyyy or MM/dd/yy")
 				.state(!datePattern.contains("H") && !datePattern.contains("m"), "LocalDate evaluation cannot contain HH ou mm in the pattern");
 		//---
 		if (NOW.equals(dateExpression)) {

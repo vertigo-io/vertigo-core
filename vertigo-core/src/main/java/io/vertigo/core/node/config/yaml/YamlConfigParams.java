@@ -42,7 +42,7 @@ final class YamlConfigParams {
 
 	String getParam(final String paramName) {
 		Assertion.check()
-				.argNotEmpty(paramName)
+				.isNotBlank(paramName)
 				.argument(properties.containsKey(paramName), "property '{0}' not found", paramName);
 		//-----
 		readKeys.add(paramName);

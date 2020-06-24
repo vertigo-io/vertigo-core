@@ -55,7 +55,7 @@ final class ComponentDiscovery {
 	 */
 	static void registerComponents(final String packagePrefix, final ModuleConfigBuilder moduleConfigBuilder) {
 		Assertion.check()
-				.argNotEmpty(packagePrefix)
+				.isNotBlank(packagePrefix)
 				.notNull(moduleConfigBuilder);
 		//---
 		final Collection<Class> components = new Selector()

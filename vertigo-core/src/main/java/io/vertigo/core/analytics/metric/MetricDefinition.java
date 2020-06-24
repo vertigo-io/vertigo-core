@@ -46,7 +46,7 @@ public final class MetricDefinition implements Definition {
 			final String definitionName,
 			final Supplier<List<Metric>> metricSupplier) {
 		Assertion.check()
-				.argNotEmpty(definitionName)
+				.isNotBlank(definitionName)
 				.notNull(metricSupplier);
 		//-----
 		this.definitionName = definitionName;

@@ -66,7 +66,7 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	public NodeConfigBuilder withAppName(final String appName) {
 		Assertion.check()
 				.state(myAppName == null, "appName '{0}' is not allowed. appName is already defined as '{1}'", appName, myAppName)
-				.argNotEmpty(appName);
+				.isNotBlank(appName);
 		// ---
 		myAppName = appName;
 		return this;
@@ -81,7 +81,7 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	public NodeConfigBuilder withNodeId(final String nodeId) {
 		Assertion.check()
 				.state(myNodeId == null, "nodeId '{0}' is not allowed. nodeId is already defined as '{1}'", nodeId, myNodeId)
-				.argNotEmpty(nodeId);
+				.isNotBlank(nodeId);
 		// ---
 		myNodeId = nodeId;
 		return this;
@@ -96,7 +96,7 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	public NodeConfigBuilder withEndPoint(final String endPoint) {
 		Assertion.check()
 				.state(myEndPoint == null, "endPoint '{0}' is not allowed. endPoint is already defined as '{1}'", endPoint, myEndPoint)
-				.argNotEmpty(endPoint);
+				.isNotBlank(endPoint);
 		// ---
 		myEndPoint = endPoint;
 		return this;

@@ -92,7 +92,7 @@ public final class CoreComponentConfig {
 			final List<Param> params) {
 		Assertion.check()
 				.notNull(type)
-				.argNotEmpty(id)
+				.isNotBlank(id)
 				.notNull(apiClassOpt)
 				.notNull(implClassOpt)
 				.notNull(params);

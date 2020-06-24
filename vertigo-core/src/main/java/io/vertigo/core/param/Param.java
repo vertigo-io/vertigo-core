@@ -43,9 +43,9 @@ public final class Param {
 	 */
 	private Param(final String name, final String value) {
 		Assertion.check()
-				.argNotEmpty(name)
+				.isNotBlank(name)
 				.argument(REGEX_PARAM_NAME.matcher(name).matches(), "param '{0}' must match pattern {1}", name, REGEX_PARAM_NAME)
-				.argNotEmpty(name)
+				.isNotBlank(name)
 				.notNull(value);
 		//---
 		this.name = name;

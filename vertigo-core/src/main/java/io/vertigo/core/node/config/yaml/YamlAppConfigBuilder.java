@@ -276,7 +276,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 		return flags.stream()
 				.anyMatch(flag -> {
 					Assertion.check()
-							.argNotEmpty(flag, "A flag cannot be empty");
+							.isNotBlank(flag, "A flag cannot be empty");
 					if (flag.charAt(0) == '!') {
 						return !activeFlags.contains(flag.substring(1));
 					}
@@ -328,7 +328,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 	 */
 	private static URL createURL(final String fileName, final Class<?> relativeRootClass) {
 		Assertion.check()
-				.argNotEmpty(fileName);
+				.isNotBlank(fileName);
 		//-----
 		try {
 			return new URL(fileName);

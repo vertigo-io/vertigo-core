@@ -36,7 +36,7 @@ public final class LogConfig {
 	 */
 	public LogConfig(final String fileName) {
 		Assertion.check()
-				.argNotEmpty(fileName);
+				.isNotBlank(fileName);
 		//-----
 		this.fileName = fileName;
 

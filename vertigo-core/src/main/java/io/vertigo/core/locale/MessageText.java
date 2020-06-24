@@ -76,7 +76,7 @@ public final class MessageText implements Serializable {
 	 * @return the messageText
 	 */
 	public static MessageText of(final String msg, final Serializable... params) {
-		Assertion.check().argNotEmpty(msg, "the message is required");
+		Assertion.check().isNotBlank(msg, "the message is required");
 		//---
 		return new MessageText(msg, null, params);
 	}
@@ -88,7 +88,7 @@ public final class MessageText implements Serializable {
 	 */
 	public static MessageText ofDefaultMsg(final String defaultMsg, final MessageKey key, final Serializable... params) {
 		Assertion.check()
-				.argNotEmpty(defaultMsg, "the default message is required")
+				.isNotBlank(defaultMsg, "the default message is required")
 				.notNull(key, "the message key is required");
 		//---
 		return new MessageText(defaultMsg, key, params);

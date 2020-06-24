@@ -56,8 +56,8 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 			final Consumer<AProcess> consumer,
 			final Supplier<Optional<ProcessAnalyticsTracerImpl>> parentOptSupplier) {
 		Assertion.check()
-				.argNotEmpty(category)
-				.argNotEmpty(name)
+				.isNotBlank(category)
+				.isNotBlank(name)
 				.notNull(consumer);
 		//---
 		logger = LogManager.getLogger(category);

@@ -62,7 +62,7 @@ public final class DefinitionProviderConfigBuilder implements Builder<Definition
 	 */
 	public DefinitionProviderConfigBuilder addDefinitionResource(final String resourceType, final String resourcePath) {
 		Assertion.check()
-				.argNotEmpty(resourceType)
+				.isNotBlank(resourceType)
 				.notNull(resourcePath);
 		//-----
 		myDefinitionResourceConfigs.add(new DefinitionResourceConfig(resourceType, resourcePath));

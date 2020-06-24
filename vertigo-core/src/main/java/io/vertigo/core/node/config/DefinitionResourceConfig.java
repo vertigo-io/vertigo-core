@@ -35,8 +35,8 @@ public final class DefinitionResourceConfig {
 
 	DefinitionResourceConfig(final String type, final String path) {
 		Assertion.check()
-				.argNotEmpty(type)
-				.argNotEmpty(path);
+				.isNotBlank(type)
+				.isNotBlank(path);
 		//-----
 		this.type = type;
 		this.path = path;

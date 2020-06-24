@@ -88,7 +88,7 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	void registerComponent(final String componentId, final CoreComponent component) {
 		Assertion.check()
 				.state(!locked.get(), "Registration is now closed. A component can be registerd only during the boot phase")
-				.argNotEmpty(componentId)
+				.isNotBlank(componentId)
 				.notNull(component);
 		//-----
 		final Object previous = components.put(componentId, component);
@@ -99,7 +99,7 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final String id) {
-		Assertion.check().argNotEmpty(id);
+		Assertion.check().isNotBlank(id);
 		//-----
 		final String normalizedId = StringUtil.first2LowerCase(id);
 		return components.containsKey(normalizedId);

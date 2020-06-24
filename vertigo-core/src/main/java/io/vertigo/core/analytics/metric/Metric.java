@@ -52,8 +52,8 @@ public final class Metric {
 			final Status status) {
 		Assertion.check()
 				.notNull(measureTime)
-				.argNotEmpty(name)
-				.argNotEmpty(feature)
+				.isNotBlank(name)
+				.isNotBlank(feature)
 				.notNull(status);
 		//-----
 		measureInstant = measureTime;

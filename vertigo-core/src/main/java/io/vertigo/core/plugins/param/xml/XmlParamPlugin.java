@@ -57,7 +57,7 @@ public final class XmlParamPlugin implements ParamPlugin {
 	public XmlParamPlugin(final ResourceManager resourceManager, @ParamValue("url") final String url) {
 		Assertion.check()
 				.notNull(resourceManager)
-				.argNotEmpty(url);
+				.isNotBlank(url);
 		//-----
 		final URL configURL = resourceManager.resolve(url);
 		params = readXML(configURL);
@@ -66,7 +66,7 @@ public final class XmlParamPlugin implements ParamPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<Param> getParam(final String paramName) {
-		Assertion.check().argNotEmpty(paramName);
+		Assertion.check().isNotBlank(paramName);
 		//-----
 		return Optional.ofNullable(params.get(paramName));
 	}

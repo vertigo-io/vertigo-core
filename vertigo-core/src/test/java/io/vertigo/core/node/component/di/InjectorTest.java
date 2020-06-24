@@ -52,14 +52,14 @@ public final class InjectorTest {
 
 		@Override
 		public boolean contains(final String id) {
-			Assertion.check().argNotEmpty(id);
+			Assertion.check().isNotBlank(id);
 			//-----
 			return map.containsKey(id);
 		}
 
 		public void put(final String id, final Object object) {
 			Assertion.check()
-					.argNotEmpty(id)
+					.isNotBlank(id)
 					.notNull(object);
 			//-----
 			map.put(id, object);
@@ -68,7 +68,7 @@ public final class InjectorTest {
 		@Override
 		public <C> C resolve(final String id, final Class<C> componentClass) {
 			Assertion.check()
-					.argNotEmpty(id)
+					.isNotBlank(id)
 					.notNull(componentClass);
 			//-----
 			final Object object = map.get(id);

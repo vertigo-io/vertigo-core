@@ -55,7 +55,7 @@ public final class ModuleConfig {
 			final List<AspectConfig> aspectConfigs,
 			final List<ProxyMethodConfig> proxyMethods) {
 		Assertion.check()
-				.argNotEmpty(name)
+				.isNotBlank(name)
 				.notNull(definitionProviderConfigs)
 				.notNull(componentConfigs)
 				.notNull(pluginConfigs)

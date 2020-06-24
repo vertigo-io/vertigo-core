@@ -46,21 +46,21 @@ public final class MetricBuilder implements Builder<Metric> {
 	}
 
 	public MetricBuilder withName(final String name) {
-		Assertion.check().argNotEmpty(name);
+		Assertion.check().isNotBlank(name);
 		//---
 		myName = name;
 		return this;
 	}
 
 	public MetricBuilder withModule(final String module) {
-		Assertion.check().argNotEmpty(module);
+		Assertion.check().isNotBlank(module);
 		//---
 		myModule = module;
 		return this;
 	}
 
 	public MetricBuilder withFeature(final String feature) {
-		Assertion.check().argNotEmpty(feature);
+		Assertion.check().isNotBlank(feature);
 		//---
 		myFeature = feature;
 		return this;

@@ -51,8 +51,8 @@ public final class NodeConfig {
 			final List<ModuleConfig> moduleConfigs,
 			final List<ComponentInitializerConfig> componentInitializerConfigs) {
 		Assertion.check()
-				.argNotEmpty(appName)
-				.argNotEmpty(nodeId)
+				.isNotBlank(appName)
+				.isNotBlank(nodeId)
 				.notNull(endPointOpt)
 				.notNull(bootConfig)
 				.notNull(moduleConfigs)

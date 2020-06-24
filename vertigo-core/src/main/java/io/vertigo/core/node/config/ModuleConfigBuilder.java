@@ -61,7 +61,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	ModuleConfigBuilder(final String name) {
 		Assertion.check()
 				.argument(!"boot".equalsIgnoreCase(name), "boot is a reserved name")
-				.argNotEmpty(name);
+				.isNotBlank(name);
 		//-----
 		myName = name;
 	}

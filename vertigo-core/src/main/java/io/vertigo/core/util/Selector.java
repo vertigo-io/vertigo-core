@@ -115,7 +115,7 @@ public final class Selector {
 	 */
 	public Selector from(final String packageName) {
 		Assertion.check()
-				.argNotEmpty(packageName);
+				.isNotBlank(packageName);
 		checkScope();
 		// ---
 		new Reflections(packageName,

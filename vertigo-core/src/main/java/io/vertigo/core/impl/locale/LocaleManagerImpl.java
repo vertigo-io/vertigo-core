@@ -95,7 +95,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 	@Inject
 	public LocaleManagerImpl(@ParamValue("locales") final String locales, @ParamValue("defaultZoneId") final Optional<String> defaultZoneId) {
 		Assertion.check()
-				.argNotEmpty(locales)
+				.isNotBlank(locales)
 				.notNull(defaultZoneId);
 		//-----
 		this.locales = createLocales(locales);
