@@ -44,8 +44,8 @@ public final class JavassistAopPlugin implements AopPlugin {
 	@Override
 	public <C extends CoreComponent> C wrap(final C instance, final Map<Method, List<Aspect>> joinPoints) {
 		Assertion.check()
-				.notNull(instance)
-				.notNull(joinPoints);
+				.isNotNull(instance)
+				.isNotNull(joinPoints);
 		//check : witgh cglib all methods have to bo non-final
 		for (final Method method : joinPoints.keySet()) {
 			Assertion.check()
@@ -93,7 +93,7 @@ public final class JavassistAopPlugin implements AopPlugin {
 
 	private static boolean isWrapped(final Object object) {
 		Assertion.check()
-				.notNull(object);
+				.isNotNull(object);
 		// ---
 		return ProxyFactory.isProxyClass(object.getClass());
 	}

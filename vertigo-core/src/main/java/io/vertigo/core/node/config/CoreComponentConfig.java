@@ -91,11 +91,11 @@ public final class CoreComponentConfig {
 			final Optional<Class<? extends CoreComponent>> implClassOpt,
 			final List<Param> params) {
 		Assertion.check()
-				.notNull(type)
+				.isNotNull(type)
 				.isNotBlank(id)
-				.notNull(apiClassOpt)
-				.notNull(implClassOpt)
-				.notNull(params);
+				.isNotNull(apiClassOpt)
+				.isNotNull(implClassOpt)
+				.isNotNull(params);
 		//--
 		this.type = type;
 		switch (type) {
@@ -107,21 +107,21 @@ public final class CoreComponentConfig {
 				break;
 			case COMPONENT:
 				Assertion.when(apiClassOpt.isPresent())
-						.state(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
+						.isTrue(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
 				Assertion.check()
 						.argument(apiClassOpt.orElse(CoreComponent.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(CoreComponent.class));
 				break;
 			case CONNECTOR:
 				Assertion.when(apiClassOpt.isPresent())
-						.state(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class)
-						.state(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
+						.isTrue(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class)
+						.isTrue(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
 				Assertion.check()
 						.argument(apiClassOpt.orElse(CoreComponent.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(CoreComponent.class));
 				break;
 			case PLUGIN:
 				Assertion.when(apiClassOpt.isPresent())
-						.state(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class)
-						.state(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
+						.isTrue(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class)
+						.isTrue(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
 				Assertion.check()
 						.argument(apiClassOpt.orElse(CoreComponent.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(CoreComponent.class));
 				break;
@@ -138,7 +138,7 @@ public final class CoreComponentConfig {
 					.argument(implClassOpt.isPresent(), "When a classic component -no proxy-  is declared, an impl is required")
 					.argument(apiClassOpt.orElse(CoreComponent.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(CoreComponent.class));
 			Assertion.when(apiClassOpt.isPresent())
-					.state(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
+					.isTrue(() -> CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class);
 		}
 		//-----
 		this.id = id;

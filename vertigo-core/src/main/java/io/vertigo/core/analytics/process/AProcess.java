@@ -92,13 +92,13 @@ public final class AProcess {
 			final Map<String, String> tags,
 			final List<AProcess> subProcesses) {
 		Assertion.check()
-				.notNull(category, "the category of the process is required")
-				.notNull(name, "the name of the process is required")
-				.notNull(start, "the start is required")
-				.notNull(end, "the end is required")
-				.notNull(measures, "the measures are required")
-				.notNull(tags, "the tags are required")
-				.notNull(subProcesses, "the subProcesses are required");
+				.isNotNull(category, "the category of the process is required")
+				.isNotNull(name, "the name of the process is required")
+				.isNotNull(start, "the start is required")
+				.isNotNull(end, "the end is required")
+				.isNotNull(measures, "the measures are required")
+				.isNotNull(tags, "the tags are required")
+				.isNotNull(subProcesses, "the subProcesses are required");
 		//---
 		checkRegex(category, PROCESS_CATEGORY_REGEX, "process type");
 		measures.keySet()

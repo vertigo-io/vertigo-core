@@ -61,8 +61,8 @@ public final class ComponentSpaceLoader {
 	*/
 	private ComponentSpaceLoader(final ComponentSpaceWritable componentSpaceWritable, final AopPlugin aopPlugin) {
 		Assertion.check()
-				.notNull(componentSpaceWritable)
-				.notNull(aopPlugin);
+				.isNotNull(componentSpaceWritable)
+				.isNotNull(aopPlugin);
 		//-----
 		this.componentSpaceWritable = componentSpaceWritable;
 		this.aopPlugin = aopPlugin;
@@ -74,7 +74,7 @@ public final class ComponentSpaceLoader {
 
 	public ComponentSpaceLoader loadBootComponents(final List<CoreComponentConfig> componentConfigs) {
 		Assertion.check()
-				.notNull(componentConfigs);
+				.isNotNull(componentConfigs);
 		//--
 		registerComponents(Optional.empty(), "boot", componentConfigs);
 		return this;
@@ -86,7 +86,7 @@ public final class ComponentSpaceLoader {
 	 */
 	public ComponentSpaceLoader loadAllComponentsAndAspects(final List<ModuleConfig> moduleConfigs) {
 		Assertion.check()
-				.notNull(moduleConfigs);
+				.isNotNull(moduleConfigs);
 		//-----
 		final ParamManager paramManager = componentSpaceWritable.resolve(ParamManager.class);
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
@@ -107,9 +107,9 @@ public final class ComponentSpaceLoader {
 	 */
 	private void registerComponents(final Optional<ParamManager> paramManagerOpt, final String moduleName, final List<CoreComponentConfig> componentConfigs) {
 		Assertion.check()
-				.notNull(paramManagerOpt)
-				.notNull(moduleName)
-				.notNull(componentConfigs);
+				.isNotNull(paramManagerOpt)
+				.isNotNull(moduleName)
+				.isNotNull(componentConfigs);
 		//---- Amplifier----
 		componentConfigs
 				.stream()
@@ -186,7 +186,7 @@ public final class ComponentSpaceLoader {
 		final Aspect aspect = DIInjector.newInstance(aspectConfig.getAspectClass(), container);
 		//---
 		Assertion.check()
-				.notNull(aspect.getAnnotationType());
+				.isNotNull(aspect.getAnnotationType());
 		return aspect;
 	}
 
@@ -195,13 +195,13 @@ public final class ComponentSpaceLoader {
 		final ProxyMethod proxyMethod = DIInjector.newInstance(proxyMethodConfig.getProxyMethodClass(), container);
 		//---
 		Assertion.check()
-				.notNull(proxyMethod.getAnnotationType());
+				.isNotNull(proxyMethod.getAnnotationType());
 		return proxyMethod;
 	}
 
 	private void registerAspect(final Aspect aspect) {
 		Assertion.check()
-				.notNull(aspect)
+				.isNotNull(aspect)
 				.argument(aspects.stream().noneMatch(a -> a.getClass().equals(aspect.getClass())),
 						"aspect {0} already registered with the same class", aspect.getClass())
 				.argument(aspects.stream().noneMatch(a -> a.getAnnotationType().equals(aspect.getAnnotationType())),
@@ -212,7 +212,7 @@ public final class ComponentSpaceLoader {
 
 	private void registerProxyMethod(final ProxyMethod proxyMethod) {
 		Assertion.check()
-				.notNull(proxyMethod)
+				.isNotNull(proxyMethod)
 				.argument(proxyMethods.stream().noneMatch(a -> a.getClass().equals(proxyMethod.getClass())),
 						"proxy {0} already registered with the same class", proxyMethod.getClass())
 				.argument(proxyMethods.stream().noneMatch(p -> p.getAnnotationType().equals(proxyMethod.getAnnotationType())),
@@ -282,15 +282,15 @@ public final class ComponentSpaceLoader {
 			final Optional<ParamManager> paramManagerOpt,
 			final Map<String, String> params) {
 		Assertion.check()
-				.notNull(paramManagerOpt)
-				.notNull(params);
+				.isNotNull(paramManagerOpt)
+				.isNotNull(params);
 		// ---
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOpt, params);
 		final Container dualContainer = new ComponentDualContainer(container, paramsContainer);
 		//---
 		final T component = DIInjector.newInstance(clazz, dualContainer);
 		Assertion.check()
-				.state(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in component '{1}'", paramsContainer.getUnusedKeys(), clazz);
+				.isTrue(paramsContainer.getUnusedKeys().isEmpty(), "some params are not used :'{0}' in component '{1}'", paramsContainer.getUnusedKeys(), clazz);
 		return component;
 	}
 
@@ -300,10 +300,10 @@ public final class ComponentSpaceLoader {
 			final Optional<ParamManager> paramManagerOpt,
 			final Map<String, String> params) {
 		Assertion.check()
-				.notNull(instance)
-				.notNull(container)
-				.notNull(paramManagerOpt)
-				.notNull(params);
+				.isNotNull(instance)
+				.isNotNull(container)
+				.isNotNull(paramManagerOpt)
+				.isNotNull(params);
 		//-----
 		final ComponentParamsContainer paramsContainer = new ComponentParamsContainer(paramManagerOpt, params);
 		final Container dualContainer = new ComponentDualContainer(container, paramsContainer);

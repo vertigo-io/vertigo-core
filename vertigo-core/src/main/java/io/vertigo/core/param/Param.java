@@ -46,7 +46,7 @@ public final class Param {
 				.isNotBlank(name)
 				.argument(REGEX_PARAM_NAME.matcher(name).matches(), "param '{0}' must match pattern {1}", name, REGEX_PARAM_NAME)
 				.isNotBlank(name)
-				.notNull(value);
+				.isNotNull(value);
 		//---
 		this.name = name;
 		this.value = value;
@@ -84,7 +84,7 @@ public final class Param {
 	 */
 	public <O> O getValue(final Class<O> paramType) {
 		Assertion.check()
-				.notNull(paramType);
+				.isNotNull(paramType);
 		//-----
 		return (O) parse(name, paramType, value);
 	}
@@ -123,9 +123,9 @@ public final class Param {
 
 	private static Object parse(final String paramName, final Class<?> paramType, final String paramValue) {
 		Assertion.check()
-				.notNull(paramName)
-				.notNull(paramType)
-				.notNull(paramValue);
+				.isNotNull(paramName)
+				.isNotNull(paramType)
+				.isNotNull(paramValue);
 		//-----
 		try {
 			if (String.class.equals(paramType)) {

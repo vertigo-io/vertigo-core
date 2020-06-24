@@ -50,7 +50,7 @@ public final class PropertiesParamPlugin implements ParamPlugin {
 	@Inject
 	public PropertiesParamPlugin(final ResourceManager resourceManager, @ParamValue("url") final String url) throws IOException {
 		Assertion.check()
-				.notNull(resourceManager)
+				.isNotNull(resourceManager)
 				.isNotBlank(url);
 		//-----
 		final URL configURL = resourceManager.resolve(url);

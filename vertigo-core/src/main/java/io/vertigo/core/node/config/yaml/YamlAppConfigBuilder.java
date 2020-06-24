@@ -66,7 +66,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 
 	public YamlAppConfigBuilder(final Properties params) {
 		Assertion.check()
-				.notNull(params);
+				.isNotNull(params);
 		//---
 		if (params.containsKey("boot.activeFlags")) {
 			activeFlags = Arrays.asList(params.getProperty("boot.activeFlags").split(";"));
@@ -95,8 +95,8 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 	*/
 	public YamlAppConfigBuilder withFiles(final Class relativeRootClass, final String... jsonFileNames) {
 		Assertion.check()
-				.notNull(relativeRootClass)
-				.notNull(jsonFileNames);
+				.isNotNull(relativeRootClass)
+				.isNotNull(jsonFileNames);
 		//---
 		Stream.of(jsonFileNames)
 				.map(xmlModulesFileName -> createURL(xmlModulesFileName, relativeRootClass))
@@ -121,7 +121,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 		yamlNodeConfig.initializers
 				.forEach(initializerConfig -> {
 					Assertion.check()
-							.state(initializerConfig.size() == 1, "an initializer is defined by it's class");
+							.isTrue(initializerConfig.size() == 1, "an initializer is defined by it's class");
 					// ---
 					final Map.Entry<String, Map<String, Object>> initializerEntry = initializerConfig.entrySet().iterator().next();
 					if (isEnabledByFlag(getFlagsOfMapParams(initializerEntry.getValue()))) {
@@ -167,7 +167,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 			yamlAppConfig.boot.plugins.forEach(
 					plugin -> {
 						Assertion.check()
-								.state(plugin.size() == 1, "a plugin is defined by it's class");
+								.isTrue(plugin.size() == 1, "a plugin is defined by it's class");
 						// ---
 						final Map.Entry<String, Map<String, Object>> pluginEntry = plugin.entrySet().iterator().next();
 						if (isEnabledByFlag(getFlagsOfMapParams(pluginEntry.getValue()))) {
@@ -203,12 +203,12 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 					yamlModuleConfig.features
 							.forEach(featureConfig -> {
 								Assertion.check()
-										.state(featureConfig.size() == 1, "a feature is designed by it's class");
+										.isTrue(featureConfig.size() == 1, "a feature is designed by it's class");
 								final Map.Entry<String, Map<String, Object>> featureEntry = featureConfig.entrySet().iterator().next();
 								final String featureClassName = featureEntry.getKey();
 								final Method methodForFeature = featureMethods.get(featureClassName);
 								Assertion.check()
-										.notNull(methodForFeature, "Unable to find method for feature '{0}' in feature class '{1}'", featureClassName, featuresClassName);
+										.isNotNull(methodForFeature, "Unable to find method for feature '{0}' in feature class '{1}'", featureClassName, featuresClassName);
 								final Map<String, Object> paramsMap = featureEntry.getValue();
 								if (isEnabledByFlag(getFlagsOfMapParams(paramsMap))) {
 									ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findMethodParameters(paramsMap, methodForFeature));
@@ -220,12 +220,12 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 					yamlModuleConfig.featuresConfig
 							.forEach(featureConfig -> {
 								Assertion.check()
-										.state(featureConfig.size() == 1, "a feature is designed by it's class");
+										.isTrue(featureConfig.size() == 1, "a feature is designed by it's class");
 								final Map.Entry<String, Map<String, Object>> featureEntry = featureConfig.entrySet().iterator().next();
 								final String featureClassName = featureEntry.getKey();
 								final Method methodForFeature = featureMethods.get(featureClassName);
 								Assertion.check()
-										.notNull(methodForFeature, "Unable to find method for feature '{0}' in feature class '{1}'", featureClassName, featuresClassName);
+										.isNotNull(methodForFeature, "Unable to find method for feature '{0}' in feature class '{1}'", featureClassName, featuresClassName);
 								final Map<String, Object> paramsMap = featureEntry.getValue();
 								if (isEnabledByFlag(getFlagsOfMapParams(paramsMap))) {
 									ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findMethodParameters(paramsMap, methodForFeature));
@@ -236,7 +236,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 				yamlModuleConfig.plugins.forEach(
 						plugin -> {
 							Assertion.check()
-									.state(plugin.size() == 1, "a plugin is defined by it's class");
+									.isTrue(plugin.size() == 1, "a plugin is defined by it's class");
 							// ---
 							final Map.Entry<String, Map<String, Object>> pluginEntry = plugin.entrySet().iterator().next();
 							final String pluginClassName = pluginEntry.getKey();
@@ -262,13 +262,13 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 		}
 		// if contains we check we have a list
 		Assertion.check()
-				.state(List.class.isAssignableFrom(paramsMap.get(FLAGS).getClass()), "flags are array of strings");
+				.isTrue(List.class.isAssignableFrom(paramsMap.get(FLAGS).getClass()), "flags are array of strings");
 		return (List<String>) paramsMap.get(FLAGS);
 	}
 
 	private boolean isEnabledByFlag(final List<String> flags) {
 		Assertion.check()
-				.notNull(flags);
+				.isNotNull(flags);
 		//---
 		if (flags.isEmpty()) {
 			return true;// no flags declared means always
@@ -286,7 +286,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 
 	private static Object[] findMethodParameters(final Map<String, Object> paramsConfig, final Method method) {
 		Assertion.check()
-				.state(method.getParameterCount() <= 1, "A feature method can have 0 parameter or a single Param... parameter");
+				.isTrue(method.getParameterCount() <= 1, "A feature method can have 0 parameter or a single Param... parameter");
 		if (method.getParameterCount() == 1) {
 			if (paramsConfig == null) {
 				return new Object[] { new Param[0] };
@@ -308,7 +308,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 	 */
 	public YamlAppConfigBuilder withLogConfig(final LogConfig logConfig) {
 		Assertion.check()
-				.notNull(logConfig);
+				.isNotNull(logConfig);
 		//-----
 		nodeConfigBuilder.beginBoot().withLogConfig(logConfig).endBoot();
 		return this;
@@ -336,7 +336,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 			//Si fileName non trouvé, on recherche dans le classPath
 			final URL url = relativeRootClass.getResource(fileName);
 			Assertion.check()
-					.notNull(url, "Impossible de récupérer le fichier [" + fileName + "]");
+					.isNotNull(url, "Impossible de récupérer le fichier [" + fileName + "]");
 			return url;
 		}
 	}

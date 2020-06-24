@@ -55,8 +55,8 @@ public final class DIInjector {
 	 */
 	public static <T> T newInstance(final Class<T> clazz, final Container container) {
 		Assertion.check()
-				.notNull(clazz)
-				.notNull(container);
+				.isNotNull(clazz)
+				.isNotNull(container);
 		//-----
 		//On encapsule la création par un bloc try/ctach afin de préciser le type de composant qui n'a pas pu être créé.
 		try {
@@ -84,8 +84,8 @@ public final class DIInjector {
 	 */
 	public static void injectMembers(final Object instance, final Container container) {
 		Assertion.check()
-				.notNull(instance)
-				.notNull(container);
+				.isNotNull(instance)
+				.isNotNull(container);
 		//---
 		final Collection<Field> fields = ClassUtil.getAllFields(instance.getClass(), Inject.class);
 		for (final Field field : fields) {
@@ -94,7 +94,7 @@ public final class DIInjector {
 
 			//On vérifie que si il s'agit d'un champ non primitif alors ce champs n'avait pas été initialisé
 			Assertion.when(!field.getType().isPrimitive())
-					.state(null == ClassUtil.get(instance, field), "field '{0}' is already initialized", field);
+					.isTrue(null == ClassUtil.get(instance, field), "field '{0}' is already initialized", field);
 			ClassUtil.set(instance, field, injected);
 		}
 	}
@@ -134,7 +134,7 @@ public final class DIInjector {
 		//-----
 		final Object value = container.resolve(dependency.getName(), dependency.getType());
 		Assertion.check()
-				.notNull(value);
+				.isNotNull(value);
 		//-----
 		return value;
 	}

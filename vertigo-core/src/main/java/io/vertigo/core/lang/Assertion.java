@@ -64,79 +64,14 @@ public final class Assertion {
 		return ENABLED;
 	}
 
-	/**
-	 * Check if an object is not null.
-	 * If not a generic exception is thrown.
-	 * @param o Object object  that must be not null
-	 */
-	public static void checkNotNull(final Object o) {
-		check().notNull(o);
-	}
-
-	/**
-	 * Check if an object is not null.
-	 * If not an exception with a contextual message is thrown.
-	 *
-	 * @param o Object object that must be not null
-	 * @param msg Error message
-	 * @param params params of the message
-	 */
-	public static void checkNotNull(final Object o, final String msg, final Object... params) {
-		check().notNull(o, msg, params);
-	}
-
-	/**
-	 * Check if a test is valid.
-	 * If not an exception with a contextual message is thrown.
-	 *
-	 * @param test If the assertion succeeds
-	 * @param msg Error message
-	 * @param params params of the message
-	 */
-	public static void checkArgument(final boolean test, final String msg, final Object... params) {
-		check().argument(test, msg, params);
-	}
-
-	/**
-	 * Check if a string is not empty.
-	 * If not an generic exception is thrown.
-	 *
-	 * @param str String that must be not empty
-	 */
-	public static void checkIsNotBlank(final String str) {
-		check().isNotBlank(str);
-	}
-
-	/**
-	 * Check if a string is not empty.
-	 * @param str String that must be not empty
-	 * @param msg Error message
-	 * @param params params of the message
-	 */
-	public static void checkIsNotBlank(final String str, final String msg, final Object... params) {
-		check().isNotBlank(str, msg, params);
-	}
-
-	/**
-	 * Check if a state is valid.
-	 * This assertion should be used inside a processing to check a step.
-	 *
-	 * @param test If the assertion succeeds
-	 * @param msg Error message
-	 * @param params params of the message
-	 */
-	public static void checkState(final boolean test, final String msg, final Object... params) {
-		check().state(test, msg, params);
-	}
-
-	public Assertion notNull(final Object o) {
+	public Assertion isNotNull(final Object o) {
 		if (enabled) {
 			Objects.requireNonNull(o);
 		}
 		return this;
 	}
 
-	public Assertion notNull(final Object o, final String msg, final Object... params) {
+	public Assertion isNotNull(final Object o, final String msg, final Object... params) {
 		if (enabled) {
 			//Attention si o est un Boolean : il peut s'agir du resultat d'un test (boolean) qui a été autoboxé en Boolean
 			Objects.requireNonNull(o, () -> StringUtil.format(msg, params));
@@ -153,14 +88,14 @@ public final class Assertion {
 		return this;
 	}
 
-	public Assertion state(final BooleanSupplier test, final String msg, final Object... params) {
+	public Assertion isTrue(final BooleanSupplier test, final String msg, final Object... params) {
 		if (enabled) {
-			state(test.getAsBoolean(), msg, params);
+			isTrue(test.getAsBoolean(), msg, params);
 		}
 		return this;
 	}
 
-	public Assertion state(final boolean test, final String msg, final Object... params) {
+	public Assertion isTrue(final boolean test, final String msg, final Object... params) {
 		if (enabled) {
 			if (!test) {
 				throw new IllegalStateException(StringUtil.format(msg, params));
@@ -171,7 +106,7 @@ public final class Assertion {
 
 	public Assertion isNotBlank(final String str) {
 		if (enabled) {
-			checkNotNull(str);
+			isNotNull(str);
 			if (StringUtil.isBlank(str)) {
 				throw new IllegalArgumentException("String must not be empty");
 			}
@@ -181,7 +116,7 @@ public final class Assertion {
 
 	public Assertion isNotBlank(final String str, final String msg, final Object... params) {
 		if (enabled) {
-			checkNotNull(str, msg, params);
+			isNotNull(str, msg, params);
 			if (StringUtil.isBlank(str)) {
 				throw new IllegalArgumentException(StringUtil.format(msg, params));
 			}

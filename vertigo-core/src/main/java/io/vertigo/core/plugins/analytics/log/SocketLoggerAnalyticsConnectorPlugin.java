@@ -86,9 +86,9 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 			@ParamValue("hostName") final Optional<String> hostNameOpt,
 			@ParamValue("port") final Optional<Integer> portOpt) {
 		Assertion.check()
-				.notNull(appNameOpt)
-				.notNull(hostNameOpt)
-				.notNull(portOpt);
+				.isNotNull(appNameOpt)
+				.isNotNull(hostNameOpt)
+				.isNotNull(portOpt);
 		// ---
 		appName = appNameOpt.orElseGet(() -> Home.getApp().getNodeConfig().getAppName());
 		hostName = hostNameOpt.orElse("analytica.part.klee.lan.net");
@@ -100,7 +100,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	@Override
 	public void add(final AProcess process) {
 		Assertion.check()
-				.notNull(process);
+				.isNotNull(process);
 		//---
 		processQueue.add(process);
 	}
@@ -164,7 +164,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	private Logger createLogger(final String loggerName) {
 		Assertion.check()
-				.notNull(appender, "SocketLogger is not started, cannot create logger and send analytics data. Wait until app is started.");
+				.isNotNull(appender, "SocketLogger is not started, cannot create logger and send analytics data. Wait until app is started.");
 		// If it doesn't exist we create it with the right appender
 
 		final LoggerContext context = (LoggerContext) LogManager.getContext(false); //on ne close pas : car ca stop le context

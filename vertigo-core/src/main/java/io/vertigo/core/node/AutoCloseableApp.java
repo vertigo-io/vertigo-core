@@ -74,7 +74,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	 */
 	public AutoCloseableApp(final NodeConfig nodeConfig) {
 		Assertion.check()
-				.notNull(nodeConfig);
+				.isNotNull(nodeConfig);
 		//-----
 		start = Instant.now();
 		this.nodeConfig = nodeConfig;
@@ -133,7 +133,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	public void registerPreActivateFunction(final Runnable preActivateFunction) {
 		Assertion.check()
 				.argument(state == State.STARTING, "Applisteners can't be registered at runtime")
-				.notNull(preActivateFunction);
+				.isNotNull(preActivateFunction);
 		//-----
 		preActivateFunctions.add(preActivateFunction);
 	}
@@ -153,7 +153,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	public void close() {
 		//En cas d'erreur on essaie de fermer proprement les composants démarrés.
 		Assertion.check()
-				.state(state == State.ACTIVE || state == State.STARTING, "App with a state '{0}' can not be be closed", state);
+				.isTrue(state == State.ACTIVE || state == State.STARTING, "App with a state '{0}' can not be be closed", state);
 		state = State.STOPPING;
 		//-----
 		try {

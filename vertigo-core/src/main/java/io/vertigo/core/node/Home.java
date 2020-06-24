@@ -35,12 +35,12 @@ public final class Home {
 
 	static void setApp(final App app) {
 		Assertion.check()
-				.notNull(app);
+				.isNotNull(app);
 		//--
 		boolean success = CURRENT_APP_REF.compareAndSet(null, app);
 		//--
 		Assertion.check()
-				.state(success, "current App is already set");
+				.isTrue(success, "current App is already set");
 	}
 
 	static void resetApp() {
@@ -53,7 +53,7 @@ public final class Home {
 	public static App getApp() {
 		final App app = CURRENT_APP_REF.get();
 		Assertion.check()
-				.notNull(app, "app has not been started");
+				.isNotNull(app, "app has not been started");
 		//no synchronized for perf purpose
 		return app;
 	}

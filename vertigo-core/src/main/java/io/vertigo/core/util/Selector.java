@@ -63,7 +63,7 @@ public final class Selector {
 
 	private void checkScope() {
 		Assertion.check()
-				.state(!scoped, "Classes cannot be added to scope after filtering");
+				.isTrue(!scoped, "Classes cannot be added to scope after filtering");
 	}
 
 	/**
@@ -73,7 +73,7 @@ public final class Selector {
 	 */
 	public Selector from(final Class clazz) {
 		Assertion.check()
-				.notNull(clazz);
+				.isNotNull(clazz);
 		checkScope();
 		// ---
 		scope.put(clazz.getName(), clazz);
@@ -87,7 +87,7 @@ public final class Selector {
 	 */
 	public Selector from(final Supplier<Collection<Class>> classesSupplier) {
 		Assertion.check()
-				.notNull(classesSupplier);
+				.isNotNull(classesSupplier);
 		checkScope();
 		// ---
 		from(classesSupplier.get());
@@ -101,7 +101,7 @@ public final class Selector {
 	 */
 	public Selector from(final Iterable<Class> classes) {
 		Assertion.check()
-				.notNull(classes);
+				.isNotNull(classes);
 		checkScope();
 		// ---
 		classes.forEach(this::from);
@@ -134,7 +134,7 @@ public final class Selector {
 	 */
 	public Selector filterFields(final Predicate<Field> fieldPredicate) {
 		Assertion.check()
-				.notNull(fieldPredicate);
+				.isNotNull(fieldPredicate);
 		scoped = true;
 		// ---
 		fieldPredicates = fieldPredicates.and(fieldPredicate);
@@ -148,7 +148,7 @@ public final class Selector {
 	 */
 	public Selector filterMethods(final Predicate<Method> methodPredicate) {
 		Assertion.check()
-				.notNull(methodPredicate);
+				.isNotNull(methodPredicate);
 		scoped = true;
 		// ---
 		methodPredicates = methodPredicates.and(methodPredicate);
@@ -162,7 +162,7 @@ public final class Selector {
 	 */
 	public Selector filterClasses(final Predicate<Class> classPredicate) {
 		Assertion.check()
-				.notNull(classPredicate);
+				.isNotNull(classPredicate);
 		scoped = true;
 		// ---
 		classPredicates = classPredicates.and(classPredicate);
@@ -256,7 +256,7 @@ public final class Selector {
 		 */
 		public static Predicate<Method> annotatedWith(final Class<? extends Annotation> annotationClass) {
 			Assertion.check()
-					.notNull(annotationClass);
+					.isNotNull(annotationClass);
 			//---
 			return method -> method.getAnnotationsByType(annotationClass).length > 0;
 		}
@@ -277,7 +277,7 @@ public final class Selector {
 		 */
 		public static Predicate<Field> annotatedWith(final Class<? extends Annotation> annotationClass) {
 			Assertion.check()
-					.notNull(annotationClass);
+					.isNotNull(annotationClass);
 			//---
 			return field -> field.getAnnotationsByType(annotationClass).length > 0;
 		}
@@ -298,7 +298,7 @@ public final class Selector {
 		 */
 		public static Predicate<Class> annotatedWith(final Class<? extends Annotation> annotationClass) {
 			Assertion.check()
-					.notNull(annotationClass);
+					.isNotNull(annotationClass);
 			//---
 			return clazz -> clazz.getAnnotationsByType(annotationClass).length > 0;
 		}
@@ -310,7 +310,7 @@ public final class Selector {
 		 */
 		public static Predicate<Class> subTypeOf(final Class clazz) {
 			Assertion.check()
-					.notNull(clazz);
+					.isNotNull(clazz);
 			//---
 			return clazz::isAssignableFrom;
 		}

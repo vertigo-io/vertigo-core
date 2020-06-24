@@ -56,8 +56,8 @@ final class ComponentAspectUtil {
 			final Class<?> implClass,
 			final Collection<Aspect> aspects) {
 		Assertion.check()
-				.notNull(implClass)
-				.notNull(aspects);
+				.isNotNull(implClass)
+				.isNotNull(aspects);
 		//-----
 		//1 - Annotated class
 		final List<Aspect> classBasedInterceptors = Stream.of(implClass.getAnnotations())
@@ -93,8 +93,8 @@ final class ComponentAspectUtil {
 
 	private static Aspect findAspect(final Annotation annotation, final Collection<Aspect> aspects) {
 		Assertion.check()
-				.notNull(annotation)
-				.notNull(aspects);
+				.isNotNull(annotation)
+				.isNotNull(aspects);
 		// --
 		return aspects
 				.stream()

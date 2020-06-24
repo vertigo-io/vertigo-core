@@ -96,13 +96,13 @@ public final class LocaleManagerImpl implements LocaleManager {
 	public LocaleManagerImpl(@ParamValue("locales") final String locales, @ParamValue("defaultZoneId") final Optional<String> defaultZoneId) {
 		Assertion.check()
 				.isNotBlank(locales)
-				.notNull(defaultZoneId);
+				.isNotNull(defaultZoneId);
 		//-----
 		this.locales = createLocales(locales);
 		this.defaultZoneId = createDefaultZoneId(defaultZoneId);
 		//-----
 		Assertion.check()
-				.notNull(this.locales)
+				.isNotNull(this.locales)
 				.argument(!this.locales.isEmpty(), "Il faut au moins déclarer une locale");
 		//-----
 		for (final Locale locale : this.locales) {
@@ -139,7 +139,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 	public void registerZoneSupplier(final Supplier<ZoneId> newZoneSupplier) {
 		Assertion.check()
 				.argument(zoneSupplier == null, "zoneSupplier already registered")
-				.notNull(newZoneSupplier);
+				.isNotNull(newZoneSupplier);
 		//-----
 		zoneSupplier = newZoneSupplier;
 	}
@@ -149,7 +149,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 	public void registerLocaleSupplier(final Supplier<Locale> newLocaleSupplier) {
 		Assertion.check()
 				.argument(localeSupplier == null, "localeSupplier already registered")
-				.notNull(newLocaleSupplier);
+				.isNotNull(newLocaleSupplier);
 		//-----
 		localeSupplier = newLocaleSupplier;
 	}
@@ -194,10 +194,10 @@ public final class LocaleManagerImpl implements LocaleManager {
 	private void load(final Locale locale, final ResourceBundle resourceBundle, final boolean override) {
 		for (final String key : Collections.list(resourceBundle.getKeys())) {
 			final String value = resourceBundle.getString(key);
-			Assertion.check().notNull(value);
+			Assertion.check().isNotNull(value);
 			final String oldValue = getDictionary(locale).put(key, value);
 			if (!override) {
-				Assertion.check().state(oldValue == null, "Valeur deja renseignée pour{0}", key);
+				Assertion.check().isTrue(oldValue == null, "Valeur deja renseignée pour{0}", key);
 			}
 		}
 	}
@@ -233,8 +233,8 @@ public final class LocaleManagerImpl implements LocaleManager {
 	@Override
 	public String getMessage(final MessageKey messageKey, final Locale locale) {
 		Assertion.check()
-				.notNull(messageKey)
-				.notNull(locale);
+				.isNotNull(messageKey)
+				.isNotNull(locale);
 		//-----
 		final String msg = getDictionary(locale).get(messageKey.name());
 		//Cas anormal :  où la ressource n'est pas présente.

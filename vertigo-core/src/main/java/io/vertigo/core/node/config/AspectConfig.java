@@ -36,7 +36,7 @@ public final class AspectConfig {
 	 * Constructor.
 	 */
 	AspectConfig(final Class<? extends Aspect> aspectClass) {
-		Assertion.check().notNull(aspectClass);
+		Assertion.check().isNotNull(aspectClass);
 		//-----
 		this.aspectClass = aspectClass;
 	}

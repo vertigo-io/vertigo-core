@@ -99,8 +99,8 @@ public final class ClassUtil {
 	 */
 	public static <J> J newInstance(final Constructor<J> constructor, final Object[] args) {
 		Assertion.check()
-				.notNull(constructor)
-				.notNull(args);
+				.isNotNull(constructor)
+				.isNotNull(args);
 		//-----
 		try {
 			return constructor.newInstance(args);
@@ -131,8 +131,8 @@ public final class ClassUtil {
 	*/
 	public static <J> Constructor<J> findConstructor(final Class<J> clazz, final Class<?>[] parameterTypes) {
 		Assertion.check()
-				.notNull(clazz)
-				.notNull(parameterTypes);
+				.isNotNull(clazz)
+				.isNotNull(parameterTypes);
 		//-----
 		try {
 			return clazz.getConstructor(parameterTypes);
@@ -172,8 +172,8 @@ public final class ClassUtil {
 	 */
 	public static <J> Class<? extends J> classForName(final String javaClassName, final Class<J> type) {
 		Assertion.check()
-				.notNull(javaClassName)
-				.notNull(type);
+				.isNotNull(javaClassName)
+				.isNotNull(type);
 		//-----
 		try {
 			return Class.forName(javaClassName).asSubclass(type);
@@ -196,8 +196,8 @@ public final class ClassUtil {
 	 */
 	public static Object invoke(final Object instance, final Method method, final Object... args) {
 		Assertion.check()
-				.notNull(instance)
-				.notNull(method);
+				.isNotNull(instance)
+				.isNotNull(method);
 		//-----
 		try {
 			return method.invoke(instance, args);
@@ -217,8 +217,8 @@ public final class ClassUtil {
 	 */
 	public static void set(final Object instance, final Field field, final Object value) {
 		Assertion.check()
-				.notNull(instance)
-				.notNull(field);
+				.isNotNull(instance)
+				.isNotNull(field);
 		//-----
 		try {
 			field.setAccessible(true);
@@ -237,8 +237,8 @@ public final class ClassUtil {
 	 */
 	public static Object get(final Object instance, final Field field) {
 		Assertion.check()
-				.notNull(instance)
-				.notNull(field);
+				.isNotNull(instance)
+				.isNotNull(field);
 		//-----
 		try {
 			field.setAccessible(true);
@@ -257,9 +257,9 @@ public final class ClassUtil {
 	 */
 	public static Method findMethod(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) {
 		Assertion.check()
-				.notNull(clazz)
-				.notNull(methodName)
-				.notNull(parameterTypes);
+				.isNotNull(clazz)
+				.isNotNull(methodName)
+				.isNotNull(parameterTypes);
 		//-----
 		try {
 			return clazz.getMethod(methodName, parameterTypes);
@@ -276,8 +276,8 @@ public final class ClassUtil {
 	 */
 	public static Collection<Field> getAllFields(final Class<?> clazz, final Class<? extends Annotation> annotation) {
 		Assertion.check()
-				.notNull(clazz)
-				.notNull(annotation);
+				.isNotNull(clazz)
+				.isNotNull(annotation);
 		//-----
 		return ClassUtil.getAllFields(clazz)
 				.stream()
@@ -293,8 +293,8 @@ public final class ClassUtil {
 	 */
 	public static Collection<Method> getAllMethods(final Class<?> clazz, final Class<? extends Annotation> annotation) {
 		Assertion.check()
-				.notNull(clazz)
-				.notNull(annotation);
+				.isNotNull(clazz)
+				.isNotNull(annotation);
 		//-----
 		return ClassUtil.getAllMethods(clazz)
 				.stream()
@@ -309,7 +309,7 @@ public final class ClassUtil {
 	 */
 	public static Collection<Field> getAllFields(final Class<?> clazz) {
 		Assertion.check()
-				.notNull(clazz);
+				.isNotNull(clazz);
 		//-----
 		final List<Field> fields = new ArrayList<>();
 		final Field[] declaredFields = clazz.getDeclaredFields();
@@ -328,7 +328,7 @@ public final class ClassUtil {
 	 */
 	public static Collection<Method> getAllMethods(final Class<?> clazz) {
 		Assertion.check()
-				.notNull(clazz);
+				.isNotNull(clazz);
 		//-----
 		final List<Method> methods = new ArrayList<>();
 		final Method[] declaredMethods = clazz.getDeclaredMethods();
@@ -347,7 +347,7 @@ public final class ClassUtil {
 	 */
 	public static Set<Class<?>> getAllInterfaces(final Class<?> clazz) {
 		Assertion.check()
-				.notNull(clazz);
+				.isNotNull(clazz);
 		//-----
 		Class<?> root = clazz;
 		final Set<Class<?>> allInterfaces = new HashSet<>();
@@ -375,7 +375,7 @@ public final class ClassUtil {
 	 */
 	public static Class<?> getGeneric(final Constructor<?> constructor, final int i) {
 		Assertion.check()
-				.notNull(constructor);
+				.isNotNull(constructor);
 		//-----
 		return getGeneric(
 				constructor.getGenericParameterTypes()[i],
@@ -394,7 +394,7 @@ public final class ClassUtil {
 	 */
 	public static Class<?> getGeneric(final Method method, final int i) {
 		Assertion.check()
-				.notNull(method);
+				.isNotNull(method);
 		//-----
 		return getGeneric(
 				method.getGenericParameterTypes()[i],
@@ -412,7 +412,7 @@ public final class ClassUtil {
 	 */
 	public static Class<?> getGeneric(final Field field) {
 		Assertion.check()
-				.notNull(field);
+				.isNotNull(field);
 		//-----
 		return getGeneric(field.getGenericType(),
 				() -> new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur le champ " + field.getName()));
@@ -429,8 +429,8 @@ public final class ClassUtil {
 			final Type type,
 			final Supplier<RuntimeException> exceptionSupplier) {
 		Assertion.check()
-				.notNull(type)
-				.notNull(exceptionSupplier);
+				.isNotNull(type)
+				.isNotNull(exceptionSupplier);
 		//---
 		if (type instanceof ParameterizedType) {
 			final ParameterizedType parameterizedType = ParameterizedType.class.cast(type);
@@ -455,7 +455,7 @@ public final class ClassUtil {
 	 */
 	public static String getPropertyName(final Method method) {
 		Assertion.check()
-				.notNull(method);
+				.isNotNull(method);
 		//-----
 		final String property;
 		if (method.getName().startsWith("get")) {

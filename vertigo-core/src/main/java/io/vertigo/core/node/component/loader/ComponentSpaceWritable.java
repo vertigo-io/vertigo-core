@@ -87,13 +87,13 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	 */
 	void registerComponent(final String componentId, final CoreComponent component) {
 		Assertion.check()
-				.state(!locked.get(), "Registration is now closed. A component can be registerd only during the boot phase")
+				.isTrue(!locked.get(), "Registration is now closed. A component can be registerd only during the boot phase")
 				.isNotBlank(componentId)
-				.notNull(component);
+				.isNotNull(component);
 		//-----
 		final Object previous = components.put(componentId, component);
 		Assertion.check()
-				.state(previous == null, "component '{0}' already registered", componentId);
+				.isTrue(previous == null, "component '{0}' already registered", componentId);
 	}
 
 	/** {@inheritDoc} */

@@ -37,8 +37,8 @@ final class ComponentDualContainer implements Container {
 
 	ComponentDualContainer(final Container container1, final Container container2) {
 		Assertion.check()
-				.notNull(container1)
-				.notNull(container2);
+				.isNotNull(container1)
+				.isNotNull(container2);
 		//-----
 		this.container1 = container1;
 		this.container2 = container2;
@@ -53,7 +53,7 @@ final class ComponentDualContainer implements Container {
 	@Override
 	public boolean contains(final String id) {
 		Assertion.check()
-				.notNull(id);
+				.isNotNull(id);
 		//-----
 		return ids.contains(id);
 	}
@@ -62,8 +62,8 @@ final class ComponentDualContainer implements Container {
 	@Override
 	public <O> O resolve(final String id, final Class<O> clazz) {
 		Assertion.check()
-				.notNull(id)
-				.notNull(clazz);
+				.isNotNull(id)
+				.isNotNull(clazz);
 		//-----
 		if (container1.contains(id)) {
 			return container1.resolve(id, clazz);

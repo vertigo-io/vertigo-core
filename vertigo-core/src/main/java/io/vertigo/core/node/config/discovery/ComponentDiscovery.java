@@ -56,7 +56,7 @@ final class ComponentDiscovery {
 	static void registerComponents(final String packagePrefix, final ModuleConfigBuilder moduleConfigBuilder) {
 		Assertion.check()
 				.isNotBlank(packagePrefix)
-				.notNull(moduleConfigBuilder);
+				.isNotNull(moduleConfigBuilder);
 		//---
 		final Collection<Class> components = new Selector()
 				.from(packagePrefix)
@@ -70,8 +70,8 @@ final class ComponentDiscovery {
 
 	private static void registerComponents(final Collection<Class> components, final ModuleConfigBuilder moduleConfigBuilder) {
 		Assertion.check()
-				.notNull(components)
-				.notNull(moduleConfigBuilder);
+				.isNotNull(components)
+				.isNotNull(moduleConfigBuilder);
 		// ---
 		//API
 		final Collection<Class> allApiClasses = new Selector()
@@ -124,8 +124,8 @@ final class ComponentDiscovery {
 					.findClasses();
 			// ---
 			Assertion.check()
-					.state(!candidates.isEmpty(), "No implentation found for the api {0}", apiClazz)
-					.state(candidates.size() == 1, "Multiple implentations found for the api {0}", apiClazz);
+					.isTrue(!candidates.isEmpty(), "No implentation found for the api {0}", apiClazz)
+					.isTrue(candidates.size() == 1, "Multiple implentations found for the api {0}", apiClazz);
 			// ---
 			final Class implClass = candidates.stream().findFirst().get();
 			myImplClasses.remove(implClass);

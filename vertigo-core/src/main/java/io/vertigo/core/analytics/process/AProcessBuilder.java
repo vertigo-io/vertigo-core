@@ -74,8 +74,8 @@ public final class AProcessBuilder implements Builder<AProcess> {
 		Assertion.check()
 				.isNotBlank(category, "the process category is required")
 				.isNotBlank(name, "the process name is required")
-				.notNull(start, "the process start is required")
-				.notNull(end, "the process end is required");
+				.isNotNull(start, "the process start is required")
+				.isNotNull(end, "the process end is required");
 		//---
 		myCategory = category;
 		myName = name;
@@ -92,7 +92,7 @@ public final class AProcessBuilder implements Builder<AProcess> {
 	 * @return this builder
 	 */
 	public AProcessBuilder incMeasure(final String measureName, final double measureValue) {
-		Assertion.check().notNull(measureName, "Measure name is required");
+		Assertion.check().isNotNull(measureName, "Measure name is required");
 		//---------------------------------------------------------------------
 		final Double lastmValue = measures.get(measureName);
 		measures.put(measureName, lastmValue == null ? measureValue : measureValue + lastmValue);
@@ -106,7 +106,7 @@ public final class AProcessBuilder implements Builder<AProcess> {
 	 * @return this builder
 	 */
 	public AProcessBuilder setMeasure(final String name, final double value) {
-		Assertion.check().notNull(name, "measure name is required");
+		Assertion.check().isNotNull(name, "measure name is required");
 		//---------------------------------------------------------------------
 		measures.put(name, value);
 		return this;
@@ -120,8 +120,8 @@ public final class AProcessBuilder implements Builder<AProcess> {
 	 */
 	public AProcessBuilder addTag(final String name, final String value) {
 		Assertion.check()
-				.notNull(name, "tag name is required")
-				.notNull(value, "tag value is required");
+				.isNotNull(name, "tag name is required")
+				.isNotNull(value, "tag value is required");
 		//---------------------------------------------------------------------
 		tags.put(name, value);
 		return this;
@@ -133,7 +133,7 @@ public final class AProcessBuilder implements Builder<AProcess> {
 	 * @return this builder
 	 */
 	public AProcessBuilder addSubProcess(final AProcess subProcess) {
-		Assertion.check().notNull(subProcess, "sub process is required ");
+		Assertion.check().isNotNull(subProcess, "sub process is required ");
 		//---------------------------------------------------------------------
 		subProcesses.add(subProcess);
 		return this;

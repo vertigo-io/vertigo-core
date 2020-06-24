@@ -56,13 +56,13 @@ public final class ModuleConfig {
 			final List<ProxyMethodConfig> proxyMethods) {
 		Assertion.check()
 				.isNotBlank(name)
-				.notNull(definitionProviderConfigs)
-				.notNull(componentConfigs)
-				.notNull(pluginConfigs)
-				.notNull(connectorConfigs)
-				.notNull(amplifierConfigs)
-				.notNull(aspectConfigs)
-				.notNull(proxyMethods);
+				.isNotNull(definitionProviderConfigs)
+				.isNotNull(componentConfigs)
+				.isNotNull(pluginConfigs)
+				.isNotNull(connectorConfigs)
+				.isNotNull(amplifierConfigs)
+				.isNotNull(aspectConfigs)
+				.isNotNull(proxyMethods);
 		//-----
 		this.name = name;
 		definitionProviders = Collections.unmodifiableList(new ArrayList<>(definitionProviderConfigs));

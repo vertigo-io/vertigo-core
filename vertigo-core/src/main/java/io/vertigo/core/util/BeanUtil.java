@@ -53,8 +53,8 @@ public final class BeanUtil {
 	 */
 	public static Object getValue(final Object object, final String propertyName) {
 		Assertion.check()
-				.notNull(object)
-				.notNull(propertyName)
+				.isNotNull(object)
+				.isNotNull(propertyName)
 				.argument(propertyName.indexOf('.') == -1, "the dot notation is forbidden");
 		//-----
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
@@ -74,8 +74,8 @@ public final class BeanUtil {
 	 */
 	public static void setValue(final Object object, final String propertyName, final Object value) {
 		Assertion.check()
-				.notNull(object)
-				.notNull(propertyName)
+				.isNotNull(object)
+				.isNotNull(propertyName)
 				.argument(propertyName.indexOf('.') == -1, "the dot notation is forbidden");
 		//-----
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());

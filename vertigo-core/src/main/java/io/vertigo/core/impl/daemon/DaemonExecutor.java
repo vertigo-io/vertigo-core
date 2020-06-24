@@ -52,8 +52,8 @@ final class DaemonExecutor implements Activeable {
 	*/
 	void scheduleDaemon(final DaemonDefinition daemonDefinition, final Daemon daemon) {
 		Assertion.check()
-				.notNull(daemonDefinition)
-				.state(isActive, "Manager must be active to schedule a daemon");
+				.isNotNull(daemonDefinition)
+				.isTrue(isActive, "Manager must be active to schedule a daemon");
 		// -----
 		final DaemonListener daemonListener = new DaemonListener(daemonDefinition, daemon.verbose());
 		final DaemonTimerTask timerTask = new DaemonTimerTask(daemonListener, daemon);

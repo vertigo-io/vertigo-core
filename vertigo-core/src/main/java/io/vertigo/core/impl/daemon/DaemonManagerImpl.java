@@ -59,7 +59,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	 */
 	@Inject
 	public DaemonManagerImpl(final AnalyticsManager analyticsManager) {
-		Assertion.check().notNull(analyticsManager);
+		Assertion.check().isNotNull(analyticsManager);
 		//---
 		this.analyticsManager = analyticsManager;
 		Home.getApp().registerPreActivateFunction(this::startAllDaemons);
@@ -81,7 +81,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 				.filter(method -> method.isAnnotationPresent(DaemonScheduled.class))
 				.map(
 						method -> {
-							Assertion.check().state(method.getParameterTypes().length == 0, "Method {0} on component {1} cannot have any parameter to be used as a daemon", method.getName(), component.getClass().getName());
+							Assertion.check().isTrue(method.getParameterTypes().length == 0, "Method {0} on component {1} cannot have any parameter to be used as a daemon", method.getName(), component.getClass().getName());
 							//---
 							final DaemonScheduled daemonSchedule = method.getAnnotation(DaemonScheduled.class);
 							final Supplier<Daemon> daemonSupplier;
@@ -131,7 +131,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	 * @param daemonDefinition Le démon à lancer.
 	 */
 	private void startDaemon(final DaemonDefinition daemonDefinition) {
-		Assertion.check().notNull(daemonDefinition);
+		Assertion.check().isNotNull(daemonDefinition);
 		// -----
 		final Daemon daemon = createDaemon(daemonDefinition);
 		daemonExecutor.scheduleDaemon(daemonDefinition, daemon);

@@ -56,7 +56,7 @@ public final class XmlParamPlugin implements ParamPlugin {
 	@Inject
 	public XmlParamPlugin(final ResourceManager resourceManager, @ParamValue("url") final String url) {
 		Assertion.check()
-				.notNull(resourceManager)
+				.isNotNull(resourceManager)
 				.isNotBlank(url);
 		//-----
 		final URL configURL = resourceManager.resolve(url);
@@ -75,7 +75,7 @@ public final class XmlParamPlugin implements ParamPlugin {
 	 * Charge une configuration, et complète celle existante.
 	 */
 	private static Map<String, Param> readXML(final URL configURL) {
-		Assertion.check().notNull(configURL);
+		Assertion.check().isNotNull(configURL);
 		//-----
 		try {
 			return doReadXML(configURL);

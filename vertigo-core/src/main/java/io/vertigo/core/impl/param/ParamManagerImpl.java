@@ -43,7 +43,7 @@ public final class ParamManagerImpl implements ParamManager {
 	 */
 	@Inject
 	public ParamManagerImpl(final List<ParamPlugin> paramPlugins) {
-		Assertion.check().notNull(paramPlugins);
+		Assertion.check().isNotNull(paramPlugins);
 		//-----
 		this.paramPlugins = paramPlugins;
 	}

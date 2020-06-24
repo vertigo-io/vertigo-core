@@ -44,9 +44,9 @@ public final class F {
 			@ParamValue("param3") final Optional<String> param3,
 			@ParamValue("param4") final Optional<String> param4) {
 		Assertion.check()
-				.notNull(param1)
-				.notNull(param3)
-				.notNull(param4);
+				.isNotNull(param1)
+				.isNotNull(param3)
+				.isNotNull(param4);
 		//-----
 		this.param1 = param1;
 		this.param3 = param3;

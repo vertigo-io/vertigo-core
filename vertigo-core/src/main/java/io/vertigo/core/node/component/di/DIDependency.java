@@ -51,7 +51,7 @@ final class DIDependency {
 	 * @param field Field to inject into
 	 */
 	DIDependency(final Field field) {
-		Assertion.check().notNull(field);
+		Assertion.check().isNotNull(field);
 		//-----
 		final String named = getNamedValue(field.getAnnotations());
 		final Class<?> rootType = field.getType();
@@ -59,7 +59,7 @@ final class DIDependency {
 		isOptionnal = caseOptional(rootType);
 		isList = caseList(rootType);
 		type = (isOptionnal || isList) ? ClassUtil.getGeneric(field) : rootType;
-		Assertion.check().notNull(type);
+		Assertion.check().isNotNull(type);
 		targetId = named != null ? named : DIAnnotationUtil.buildId(type);
 	}
 
@@ -69,7 +69,7 @@ final class DIDependency {
 	 * @param i parameter index to inject into
 	 */
 	DIDependency(final Constructor<?> constructor, final int i) {
-		Assertion.check().notNull(constructor);
+		Assertion.check().isNotNull(constructor);
 		//-----
 		final String named = getNamedValue(constructor.getParameterAnnotations()[i]);
 		final Class<?> rootType = constructor.getParameterTypes()[i];

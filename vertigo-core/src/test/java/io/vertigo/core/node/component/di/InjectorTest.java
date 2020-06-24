@@ -60,7 +60,7 @@ public final class InjectorTest {
 		public void put(final String id, final Object object) {
 			Assertion.check()
 					.isNotBlank(id)
-					.notNull(object);
+					.isNotNull(object);
 			//-----
 			map.put(id, object);
 		}
@@ -69,10 +69,10 @@ public final class InjectorTest {
 		public <C> C resolve(final String id, final Class<C> componentClass) {
 			Assertion.check()
 					.isNotBlank(id)
-					.notNull(componentClass);
+					.isNotNull(componentClass);
 			//-----
 			final Object object = map.get(id);
-			Assertion.check().notNull(object, "{0} not found", id);
+			Assertion.check().isNotNull(object, "{0} not found", id);
 			return componentClass.cast(object);
 		}
 

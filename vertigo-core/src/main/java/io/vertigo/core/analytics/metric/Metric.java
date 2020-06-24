@@ -51,10 +51,10 @@ public final class Metric {
 			final Double value,
 			final Status status) {
 		Assertion.check()
-				.notNull(measureTime)
+				.isNotNull(measureTime)
 				.isNotBlank(name)
 				.isNotBlank(feature)
-				.notNull(status);
+				.isNotNull(status);
 		//-----
 		measureInstant = measureTime;
 		this.name = name;

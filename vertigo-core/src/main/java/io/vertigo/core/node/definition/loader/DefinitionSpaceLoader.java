@@ -56,8 +56,8 @@ public final class DefinitionSpaceLoader {
 	 */
 	private DefinitionSpaceLoader(final DefinitionSpaceWritable definitionSpaceWritable, final ComponentSpace componentSpace) {
 		Assertion.check()
-				.notNull(definitionSpaceWritable)
-				.notNull(componentSpace);
+				.isNotNull(definitionSpaceWritable)
+				.isNotNull(componentSpace);
 		//-----
 		this.definitionSpaceWritable = definitionSpaceWritable;
 		this.componentSpace = componentSpace;
@@ -71,7 +71,7 @@ public final class DefinitionSpaceLoader {
 	 */
 	public DefinitionSpaceLoader loadDefinitions(final List<ModuleConfig> moduleConfigs) {
 		Assertion.check()
-				.notNull(moduleConfigs);
+				.isNotNull(moduleConfigs);
 		//--
 		final Stream<Definition> definitions = moduleConfigs
 				.stream()

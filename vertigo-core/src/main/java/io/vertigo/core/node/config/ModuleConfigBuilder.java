@@ -93,7 +93,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 */
 	public ModuleConfigBuilder addDefinitionProvider(final DefinitionProviderConfig definitionProviderConfig) {
 		Assertion.check()
-				.notNull(definitionProviderConfig);
+				.isNotNull(definitionProviderConfig);
 		//-----
 		myDefinitionProviderConfigs.add(definitionProviderConfig);
 		return this;
@@ -107,8 +107,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 */
 	public ModuleConfigBuilder addDefinitionProvider(final Class<? extends DefinitionProvider> definitionProviderClass, final Param... params) {
 		Assertion.check()
-				.notNull(definitionProviderClass)
-				.notNull(params);
+				.isNotNull(definitionProviderClass)
+				.isNotNull(params);
 		//-----
 		myDefinitionProviderConfigs.add(
 				DefinitionProviderConfig.builder(definitionProviderClass)
@@ -125,8 +125,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 */
 	public ModuleConfigBuilder addAmplifier(final Class<? extends Amplifier> apiClass, final Param... params) {
 		Assertion.check()
-				.notNull(apiClass)
-				.notNull(params);
+				.isNotNull(apiClass)
+				.isNotNull(params);
 		//---
 		final AmplifierConfig amplifierConfig = new AmplifierConfig(apiClass, Arrays.asList(params));
 		myAmplifierConfigs.add(amplifierConfig);
@@ -141,8 +141,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 */
 	public ModuleConfigBuilder addComponent(final Class<? extends Component> implClass, final Param... params) {
 		Assertion.check()
-				.notNull(implClass)
-				.notNull(params);
+				.isNotNull(implClass)
+				.isNotNull(params);
 		//---
 		final ComponentConfig componentConfig = ComponentConfig.of(implClass, params);
 		return addComponent(componentConfig);
@@ -157,9 +157,9 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 */
 	public ModuleConfigBuilder addComponent(final Class<? extends Component> apiClass, final Class<? extends Component> implClass, final Param... params) {
 		Assertion.check()
-				.notNull(apiClass)
-				.notNull(implClass)
-				.notNull(params);
+				.isNotNull(apiClass)
+				.isNotNull(implClass)
+				.isNotNull(params);
 		//---
 		final ComponentConfig componentConfig = ComponentConfig.of(apiClass, implClass, params);
 		return addComponent(componentConfig);
@@ -172,7 +172,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 */
 	public ModuleConfigBuilder addComponent(final ComponentConfig componentConfig) {
 		Assertion.check()
-				.notNull(componentConfig);
+				.isNotNull(componentConfig);
 		//---
 		myComponentConfigs.add(componentConfig);
 		return this;

@@ -42,14 +42,14 @@ final class Boot {
 	 */
 	Boot(final BootConfig bootConfig) {
 		Assertion.check()
-				.notNull(bootConfig);
+				.isNotNull(bootConfig);
 		//-----
 		this.bootConfig = bootConfig;
 	}
 
 	private static void initLog(final LogConfig log4Config) {
 		Assertion.check()
-				.notNull(log4Config);
+				.isNotNull(log4Config);
 		//-----
 		final String log4jFileName = log4Config.getFileName();
 		Assertion.check()

@@ -41,7 +41,7 @@ public final class AnalyticsAspect implements Aspect {
 	 */
 	@Inject
 	public AnalyticsAspect(final AnalyticsManager analyticsManager) {
-		Assertion.check().notNull(analyticsManager);
+		Assertion.check().isNotNull(analyticsManager);
 		//---
 		this.analyticsManager = analyticsManager;
 	}

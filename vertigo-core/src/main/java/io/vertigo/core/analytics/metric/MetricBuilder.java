@@ -67,14 +67,14 @@ public final class MetricBuilder implements Builder<Metric> {
 	}
 
 	public MetricBuilder withValue(final Double value) {
-		Assertion.check().notNull(value);
+		Assertion.check().isNotNull(value);
 		//---
 		myValue = value;
 		return this;
 	}
 
 	public MetricBuilder withMeasureInstant(final Instant measureInstant) {
-		Assertion.check().notNull(measureInstant);
+		Assertion.check().isNotNull(measureInstant);
 		//---
 		myMeasureInstant = measureInstant;
 		return this;

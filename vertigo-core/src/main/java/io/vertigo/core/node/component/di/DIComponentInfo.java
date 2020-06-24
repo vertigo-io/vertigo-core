@@ -49,8 +49,8 @@ final class DIComponentInfo {
 	DIComponentInfo(final String id, final Class<?> implClass, final Set<String> params) {
 		Assertion.check()
 				.isNotBlank(id)
-				.notNull(implClass)
-				.notNull(params);
+				.isNotNull(implClass)
+				.isNotNull(params);
 		//---
 		this.id = id;
 		this.implClass = implClass;

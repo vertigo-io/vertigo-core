@@ -46,7 +46,7 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 	 */
 	public ListBuilder<X> add(final X value) {
 		Assertion.check()
-				.notNull(value);
+				.isNotNull(value);
 		//-----
 		list.add(value);
 		return this;
@@ -60,7 +60,7 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 	 */
 	public ListBuilder<X> addAll(final Collection<? extends X> values) {
 		Assertion.check()
-				.notNull(values);
+				.isNotNull(values);
 		//-----
 		values.forEach(this::add);
 		return this;
@@ -82,7 +82,7 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 	 */
 	public ListBuilder<X> sort(final Comparator<? super X> comparator) {
 		Assertion.check()
-				.notNull(comparator)
+				.isNotNull(comparator)
 				.argument(myComparator == null, "comparator already set");
 		//---
 		myComparator = comparator;

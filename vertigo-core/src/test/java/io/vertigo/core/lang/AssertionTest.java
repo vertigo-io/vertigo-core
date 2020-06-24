@@ -31,89 +31,80 @@ import org.junit.jupiter.api.Test;
 public final class AssertionTest {
 	@Test
 	public void testCheckNotNull() {
-		//syntax A
-		Assertion.checkNotNull("notNull");
-		//Syntax B 
 		Assertion.check()
-				.notNull("notNull1")
-				.notNull("notNull2");
+				.isNotNull("notNull1")
+				.isNotNull("notNull2");
 	}
 
 	@Test
 	public void testCheckNotNull2() {
-		//syntax A
-		Assertion.checkNotNull("notNull", "message");
-		//Syntax B 
 		Assertion.check()
-				.notNull("notNull1", "msg1")
-				.notNull("notNull2", "msg2");
+				.isNotNull("notNull1", "msg1")
+				.isNotNull("notNull2", "msg2");
 	}
 
 	@Test
 	public void testCheckNotNull3() {
-		//syntax A
-		Assertion.checkNotNull("notNull", "message: {0} ", "param");
-		//Syntax B 
 		Assertion.check()
-				.notNull("notNull1", "message1: {0} ", "param")
-				.notNull("notNull2", "message2: {0} ", "param");
+				.isNotNull("notNull1", "message1: {0} ", "param")
+				.isNotNull("notNull2", "message2: {0} ", "param");
 	}
 
 	@Test
 	public void testCheckNotNullFail() {
 		Assertions.assertThrows(NullPointerException.class,
-				() -> Assertion.checkNotNull(null));
+				() -> Assertion.check().isNotNull(null));
 	}
 
 	@Test
 	public void testCheckNotNull3FailWithMessage() {
 		Assertions.assertThrows(NullPointerException.class,
-				() -> Assertion.checkNotNull(null, "message: {0} ", "param"));
+				() -> Assertion.check().isNotNull(null, "message: {0} ", "param"));
 	}
 
 	@Test
 	public void testCheckArgument() {
-		Assertion.checkArgument(true, "message");
+		Assertion.check().argument(true, "message");
 	}
 
 	@Test
 	public void testCheckArgument2() {
-		Assertion.checkArgument(true, "message {0}", "param");
+		Assertion.check().argument(true, "message {0}", "param");
 	}
 
 	@Test
 	public void testCheckArgumentFail() {
 		Assertions.assertThrows(IllegalArgumentException.class,
-				() -> Assertion.checkArgument(false, "message"));
+				() -> Assertion.check().argument(false, "message"));
 	}
 
 	@Test
 	public void testCheckArgument2Fail() {
 		Assertions.assertThrows(IllegalArgumentException.class,
-				() -> Assertion.checkArgument(false, "message {0}", "param"));
+				() -> Assertion.check().argument(false, "message {0}", "param"));
 	}
 
 	//-----
 	@Test
 	public void testCheckState() {
-		Assertion.checkState(true, "message");
+		Assertion.check().isTrue(true, "message");
 	}
 
 	@Test
 	public void testCheckState2() {
-		Assertion.checkState(true, "message {0}", "param1");
+		Assertion.check().isTrue(true, "message {0}", "param1");
 	}
 
 	@Test
 	public void testCheckStateFail() {
 		Assertions.assertThrows(IllegalStateException.class,
-				() -> Assertion.checkState(false, "message"));
+				() -> Assertion.check().isTrue(false, "message"));
 	}
 
 	@Test
 	public void testCheckState2Fail() {
 		Assertions.assertThrows(IllegalStateException.class,
-				() -> Assertion.checkState(false, "message {0}", "param1"));
+				() -> Assertion.check().isTrue(false, "message {0}", "param1"));
 	}
 
 	@Test
@@ -137,11 +128,11 @@ public final class AssertionTest {
 	public void testWhen() {
 		final Optional<String> option1 = Optional.empty();
 		Assertion.when(option1.isPresent())
-				.state(() -> option1.get() != null, "fail");
+				.isTrue(() -> option1.get() != null, "fail");
 
 		final Optional<String> option2 = Optional.of("test");
 		Assertion.when(option2.isPresent())
-				.state(() -> option2.get() != null, "fail");
+				.isTrue(() -> option2.get() != null, "fail");
 	}
 
 }

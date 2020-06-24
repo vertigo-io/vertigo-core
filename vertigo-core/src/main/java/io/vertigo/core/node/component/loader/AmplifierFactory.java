@@ -47,10 +47,10 @@ final class AmplifierFactory {
 			final List<ProxyMethod> proxyMethods,
 			final Map<Method, List<Aspect>> joinPoints) {
 		Assertion.check()
-				.notNull(intf)
+				.isNotNull(intf)
 				.argument(intf.isInterface(), "only interface can be amplified")
-				.notNull(proxyMethods)
-				.notNull(joinPoints);
+				.isNotNull(proxyMethods)
+				.isNotNull(joinPoints);
 		//---
 		final InvocationHandler handler = new MyInvocationHandler(intf, proxyMethods, joinPoints);
 		return (C) java.lang.reflect.Proxy.newProxyInstance(
@@ -68,7 +68,7 @@ final class AmplifierFactory {
 				final List<ProxyMethod> proxyMethods,
 				final Map<Method, List<Aspect>> aspectsByMethod) {
 			Assertion.check()
-					.notNull(proxyMethods);
+					.isNotNull(proxyMethods);
 			//---
 			proxyMethodsByMethod = Arrays.stream(intf.getDeclaredMethods())
 					.collect(Collectors.toMap(Function.identity(),
@@ -82,8 +82,8 @@ final class AmplifierFactory {
 				final Method method,
 				final Object[] args) throws Throwable {
 			Assertion.check()
-					.notNull(instance)
-					.notNull(method);
+					.isNotNull(instance)
+					.isNotNull(method);
 			//---
 			return new MyMethodInvocation(method,
 					aspectsByMethod.getOrDefault(method, Collections.emptyList()),
@@ -118,9 +118,9 @@ final class AmplifierFactory {
 				final List<Aspect> aspects,
 				final ProxyMethod proxyMethod) {
 			Assertion.check()
-					.notNull(method)
-					.notNull(aspects)
-					.notNull(proxyMethod);
+					.isNotNull(method)
+					.isNotNull(aspects)
+					.isNotNull(proxyMethod);
 			//-----
 			this.method = method;
 			this.aspects = aspects;

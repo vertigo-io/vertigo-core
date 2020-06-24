@@ -41,9 +41,9 @@ public final class DefinitionProviderConfig {
 			final List<Param> params,
 			final List<DefinitionResourceConfig> definitionResourceConfigs) {
 		Assertion.check()
-				.notNull(definitionProviderClass)
-				.notNull(params)
-				.notNull(definitionResourceConfigs);
+				.isNotNull(definitionProviderClass)
+				.isNotNull(params)
+				.isNotNull(definitionResourceConfigs);
 		//-----
 		this.definitionProviderClass = definitionProviderClass;
 		this.params = params

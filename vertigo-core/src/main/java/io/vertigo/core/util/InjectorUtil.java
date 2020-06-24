@@ -41,8 +41,8 @@ public final class InjectorUtil {
 	 */
 	public static <T> T newInstance(final Class<T> clazz) {
 		Assertion.check()
-				.notNull(clazz)
-				.state(!clazz.isAssignableFrom(Activeable.class), " {0} is an Activeable component and must be registred in the NodeConfig for creation at the application startup", clazz);
+				.isNotNull(clazz)
+				.isTrue(!clazz.isAssignableFrom(Activeable.class), " {0} is an Activeable component and must be registred in the NodeConfig for creation at the application startup", clazz);
 		// ---
 		return ComponentSpaceLoader.createInstance(clazz, Home.getApp().getComponentSpace(), Optional.empty(), Collections.emptyMap());
 	}
@@ -54,7 +54,7 @@ public final class InjectorUtil {
 	 */
 	public static void injectMembers(final Object instance) {
 		Assertion.check()
-				.notNull(instance);
+				.isNotNull(instance);
 		//-----
 		ComponentSpaceLoader.injectMembers(instance, Home.getApp().getComponentSpace(), Optional.empty(), Collections.emptyMap());
 	}

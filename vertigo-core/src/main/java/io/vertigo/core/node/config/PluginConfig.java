@@ -52,12 +52,12 @@ public final class PluginConfig {
 	 */
 	PluginConfig(final Class<? extends Plugin> apiClass, final Class<? extends Plugin> implClass, final List<Param> params) {
 		Assertion.check()
-				.notNull(apiClass)
-				.notNull(implClass)
+				.isNotNull(apiClass)
+				.isNotNull(implClass)
 				.argument(Plugin.class.isAssignableFrom(apiClass), "api class {0} must implement {1}", apiClass, Plugin.class)
 				.argument(apiClass.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClass)
-				.state(apiClass.isInterface(), "api class {0} must be an interface", apiClass)
-				.notNull(params);
+				.isTrue(apiClass.isInterface(), "api class {0} must be an interface", apiClass)
+				.isNotNull(params);
 		//-----
 		this.apiClass = apiClass;
 		this.implClass = implClass;

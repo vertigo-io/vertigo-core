@@ -38,8 +38,8 @@ final class JavassistInvocationHandler implements MethodHandler {
 
 	JavassistInvocationHandler(final Object instance, final Map<Method, List<Aspect>> joinPoints) {
 		Assertion.check()
-				.notNull(instance)
-				.notNull(joinPoints);
+				.isNotNull(instance)
+				.isNotNull(joinPoints);
 		//-----
 		this.instance = instance;
 		this.joinPoints = joinPoints;
@@ -67,9 +67,9 @@ final class JavassistInvocationHandler implements MethodHandler {
 
 		private MyMethodInvocation(final Object instance, final Method method, final List<Aspect> aspects) {
 			Assertion.check()
-					.notNull(instance)
-					.notNull(method)
-					.notNull(aspects);
+					.isNotNull(instance)
+					.isNotNull(method)
+					.isNotNull(aspects);
 			//-----
 			this.instance = instance;
 			this.method = method;

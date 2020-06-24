@@ -36,7 +36,7 @@ public final class LocalResourceResolverPlugin implements ResourceResolverPlugin
 	/** {@inheritDoc} */
 	@Override
 	public Optional<URL> resolve(final String resource) {
-		Assertion.check().notNull(resource);
+		Assertion.check().isNotNull(resource);
 		//-----
 		final File file = new File(resource);
 		if (file.exists() && file.canRead()) {

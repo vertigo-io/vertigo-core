@@ -51,8 +51,8 @@ public final class DefinitionSpaceWritable implements DefinitionSpace {
 	 */
 	void registerDefinition(final Definition definition) {
 		Assertion.check()
-				.state(!locked.get(), "Registration is now closed. A definition can be registerd only during the boot phase")
-				.notNull(definition, "A definition can't be null.");
+				.isTrue(!locked.get(), "Registration is now closed. A definition can be registerd only during the boot phase")
+				.isNotNull(definition, "A definition can't be null.");
 		final String name = definition.getName();
 		DefinitionUtil.checkName(name, definition.getClass());
 		Assertion.check()
@@ -71,12 +71,12 @@ public final class DefinitionSpaceWritable implements DefinitionSpace {
 	@Override
 	public <D extends Definition> D resolve(final String name, final Class<D> clazz) {
 		Assertion.check()
-				.notNull(name)
-				.notNull(clazz);
+				.isNotNull(name)
+				.isNotNull(clazz);
 		//-----
 		final Definition definition = definitions.get(name);
 		Assertion.check()
-				.notNull(definition, "Definition '{0}' of type '{1}' not found in ({2})", name, clazz.getSimpleName(), definitions.keySet());
+				.isNotNull(definition, "Definition '{0}' of type '{1}' not found in ({2})", name, clazz.getSimpleName(), definitions.keySet());
 		return clazz.cast(definition);
 	}
 
@@ -93,7 +93,7 @@ public final class DefinitionSpaceWritable implements DefinitionSpace {
 	@Override
 	public <C extends Definition> Set<C> getAll(final Class<C> clazz) {
 		Assertion.check()
-				.notNull(clazz); // Le type des objets recherchés ne peut pas être null
+				.isNotNull(clazz); // Le type des objets recherchés ne peut pas être null
 		//-----
 		return definitions.values()
 				.stream()

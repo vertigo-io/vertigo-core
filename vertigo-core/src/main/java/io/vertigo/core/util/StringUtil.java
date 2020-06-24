@@ -65,7 +65,7 @@ public final class StringUtil {
 	 * @return Chaine avec la premiere lettre en minuscule
 	 */
 	public static String first2LowerCase(final String strValue) {
-		Assertion.check().notNull(strValue);
+		Assertion.check().isNotNull(strValue);
 		//-----
 		if (strValue.isEmpty()) {
 			return strValue;
@@ -88,7 +88,7 @@ public final class StringUtil {
 	 * @return Chaine avec la premiere lettre en majuscule
 	 */
 	public static String first2UpperCase(final String strValue) {
-		Assertion.check().notNull(strValue);
+		Assertion.check().isNotNull(strValue);
 		//-----
 		if (strValue.isEmpty()) {
 			return strValue;
@@ -131,7 +131,7 @@ public final class StringUtil {
 	 */
 	private static String constToCamelCase(final String str, final boolean first2UpperCase) {
 		Assertion.check()
-				.notNull(str)
+				.isNotNull(str)
 				.argument(str.length() > 0, "Chaine à modifier invalide (ne doit pas être vide)")
 				.argument(!str.contains("__"), "Chaine à modifier invalide : {0} (__ interdit)", str);
 		//-----
@@ -199,7 +199,7 @@ public final class StringUtil {
 
 	private static String camelToConstCase(final String str, final boolean lowerCase) {
 		Assertion.check()
-				.notNull(str)
+				.isNotNull(str)
 				.argument(str.length() > 0, "Chaine à modifier invalide");
 		//-----
 		final StringBuilder result = new StringBuilder();
@@ -265,7 +265,7 @@ public final class StringUtil {
 	 * @return Chaine remplacée
 	 */
 	public static String replace(final String str, final String oldStr, final String newStr) {
-		Assertion.check().notNull(str);
+		Assertion.check().isNotNull(str);
 		//-----
 		final StringBuilder result = new StringBuilder(str);
 		replace(result, oldStr, newStr);
@@ -282,10 +282,10 @@ public final class StringUtil {
 	 */
 	public static void replace(final StringBuilder str, final String oldStr, final String newStr) {
 		Assertion.check()
-				.notNull(str)
-				.notNull(oldStr)
+				.isNotNull(str)
+				.isNotNull(oldStr)
 				.argument(oldStr.length() > 0, "La chaine a remplacer ne doit pas être vide")
-				.notNull(newStr);
+				.isNotNull(newStr);
 		//-----
 		int index = str.indexOf(oldStr);
 		if (index == -1) {
@@ -309,7 +309,7 @@ public final class StringUtil {
 	 * @return Chaine fusionnée
 	 */
 	public static String format(final String msg, final Object... params) {
-		Assertion.check().notNull(msg);
+		Assertion.check().isNotNull(msg);
 		//-----
 		if (params == null || params.length == 0) {
 			return msg;

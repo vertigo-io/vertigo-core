@@ -41,11 +41,11 @@ public final class DIAnnotationUtil {
 	 * @return Constructeur de l'objet
 	 */
 	static <T> Constructor<T> findInjectableConstructor(final Class<T> clazz) {
-		Assertion.check().notNull(clazz);
+		Assertion.check().isNotNull(clazz);
 		//-----
 		final Constructor<T>[] constructors = (Constructor<T>[]) clazz.getConstructors();
 		Assertion.check()
-				.notNull(constructors, "Aucun constructeur public identifiable")
+				.isNotNull(constructors, "Aucun constructeur public identifiable")
 				.argument(constructors.length == 1, "Un seul constructeur public doit être déclaré sur {0}", clazz.getName())
 				.argument(isInjectable(constructors[0]), "Le constructeur public de {0} doit être marqué avec l'annotation @Inject ou bien être vide", clazz.getName());
 		//-----
@@ -64,7 +64,7 @@ public final class DIAnnotationUtil {
 	 * @return Identifiant du composant
 	 */
 	public static String buildId(final Class<?> clazz) {
-		Assertion.check().notNull(clazz);
+		Assertion.check().isNotNull(clazz);
 		//-----
 		//On construit l'identifiant du composant.
 		//Par convention on prend le nom de la classe.

@@ -58,7 +58,7 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 		Assertion.check()
 				.isNotBlank(category)
 				.isNotBlank(name)
-				.notNull(consumer);
+				.isNotNull(consumer);
 		//---
 		logger = LogManager.getLogger(category);
 		this.consumer = consumer;

@@ -29,7 +29,7 @@ public final class FunctionManager2Impl implements FunctionManager {
 
 	@Inject
 	public FunctionManager2Impl(final List<FunctionPlugin> functionPlugins) {
-		Assertion.check().notNull(functionPlugins);
+		Assertion.check().isNotNull(functionPlugins);
 		//-----
 		this.functionPlugins = functionPlugins;
 	}

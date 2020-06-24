@@ -53,10 +53,10 @@ public final class NodeConfig {
 		Assertion.check()
 				.isNotBlank(appName)
 				.isNotBlank(nodeId)
-				.notNull(endPointOpt)
-				.notNull(bootConfig)
-				.notNull(moduleConfigs)
-				.notNull(componentInitializerConfigs);
+				.isNotNull(endPointOpt)
+				.isNotNull(bootConfig)
+				.isNotNull(moduleConfigs)
+				.isNotNull(componentInitializerConfigs);
 		//---
 		this.appName = appName;
 		this.nodeId = nodeId;
@@ -128,7 +128,7 @@ public final class NodeConfig {
 	 */
 	public void print(final PrintStream out) {
 		Assertion.check()
-				.notNull(out);
+				.isNotNull(out);
 		doPrint(out);
 	}
 

@@ -38,7 +38,7 @@ final class ConfigUtil {
 
 	static List<CoreComponentConfig> buildPluginsComponentConfigs(final List<PluginConfig> pluginConfigs) {
 		Assertion.check()
-				.notNull(pluginConfigs);
+				.isNotNull(pluginConfigs);
 		//---
 		final List<CoreComponentConfig> componentConfigs = new ArrayList<>();
 		final Set<String> pluginTypes = new HashSet<>();
@@ -63,7 +63,7 @@ final class ConfigUtil {
 
 	static List<CoreComponentConfig> buildConnectorsComponentConfigs(final List<ConnectorConfig> connectorConfigs) {
 		Assertion.check()
-				.notNull(connectorConfigs);
+				.isNotNull(connectorConfigs);
 		//---
 		final List<CoreComponentConfig> componentConfigs = new ArrayList<>();
 		final Set<String> connectorTypes = new HashSet<>();
@@ -92,7 +92,7 @@ final class ConfigUtil {
 
 	static List<CoreComponentConfig> buildComponentConfigs(final List<ComponentConfig> componentConfigs) {
 		Assertion.check()
-				.notNull(componentConfigs);
+				.isNotNull(componentConfigs);
 		//---
 		final List<CoreComponentConfig> coreComponentConfigs = new ArrayList<>();
 		for (final ComponentConfig componentConfig : componentConfigs) {
@@ -110,7 +110,7 @@ final class ConfigUtil {
 
 	private static <C> Optional<Class<? extends C>> getApiOpt(final Class<? extends C> implClass, Class<C> superApi) {
 		Assertion.check()
-				.notNull(implClass);
+				.isNotNull(implClass);
 		//---
 		//We are seeking the first and unique Object that extends Plugin.
 		//This Interface defines the type of the plugin.
@@ -137,7 +137,7 @@ final class ConfigUtil {
 
 	static List<CoreComponentConfig> buildAmplifiersComponentConfigs(final List<AmplifierConfig> amplifierConfigs) {
 		Assertion.check()
-				.notNull(amplifierConfigs);
+				.isNotNull(amplifierConfigs);
 		//---
 		final List<CoreComponentConfig> componentConfigs = new ArrayList<>();
 		for (AmplifierConfig amplifierConfig : amplifierConfigs) {

@@ -47,7 +47,7 @@ public final class MetricDefinition implements Definition {
 			final Supplier<List<Metric>> metricSupplier) {
 		Assertion.check()
 				.isNotBlank(definitionName)
-				.notNull(metricSupplier);
+				.isNotNull(metricSupplier);
 		//-----
 		this.definitionName = definitionName;
 		this.metricSupplier = metricSupplier;

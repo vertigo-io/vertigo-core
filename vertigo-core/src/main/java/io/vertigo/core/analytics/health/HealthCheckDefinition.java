@@ -62,7 +62,7 @@ public final class HealthCheckDefinition implements Definition {
 				.isNotBlank(checker)
 				.isNotBlank(module)
 				.isNotBlank(feature)
-				.notNull(checkMethod);
+				.isNotNull(checkMethod);
 		//-----
 		this.definitionName = definitionName;
 		this.healthCheckName = healthCheckName;
