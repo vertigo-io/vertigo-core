@@ -46,7 +46,7 @@ public final class StringUtil {
 	 * @return Si la chaine ne contient que des caractères blank
 	 * @see java.lang.Character isWhitespace(char)
 	 */
-	public static boolean isEmpty(final String strValue) {
+	public static boolean isBlank(final String strValue) {
 		if (strValue == null) {
 			return true;
 		}

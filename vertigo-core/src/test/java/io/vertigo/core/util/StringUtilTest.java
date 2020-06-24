@@ -34,11 +34,11 @@ public final class StringUtilTest {
 
 	@Test
 	public void testIsEmpty() {
-		assertTrue(StringUtil.isEmpty(null));
-		assertTrue(StringUtil.isEmpty(""));
-		assertTrue(StringUtil.isEmpty("  "));
-		assertFalse(StringUtil.isEmpty("a"));
-		assertFalse(StringUtil.isEmpty(" a "));
+		assertTrue(StringUtil.isBlank(null));
+		assertTrue(StringUtil.isBlank(""));
+		assertTrue(StringUtil.isBlank("  "));
+		assertFalse(StringUtil.isBlank("a"));
+		assertFalse(StringUtil.isBlank(" a "));
 	}
 
 	/**

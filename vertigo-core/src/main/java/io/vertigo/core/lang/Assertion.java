@@ -172,7 +172,7 @@ public final class Assertion {
 	public Assertion argNotEmpty(final String str) {
 		if (enabled) {
 			checkNotNull(str);
-			if (StringUtil.isEmpty(str)) {
+			if (StringUtil.isBlank(str)) {
 				throw new IllegalArgumentException("String must not be empty");
 			}
 		}
@@ -182,7 +182,7 @@ public final class Assertion {
 	public Assertion argNotEmpty(final String str, final String msg, final Object... params) {
 		if (enabled) {
 			checkNotNull(str, msg, params);
-			if (StringUtil.isEmpty(str)) {
+			if (StringUtil.isBlank(str)) {
 				throw new IllegalArgumentException(StringUtil.format(msg, params));
 			}
 		}

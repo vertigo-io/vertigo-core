@@ -59,7 +59,7 @@ public final class AnalyticsAspect implements Aspect {
 		final Analytics analytics = invocation.getMethod().getAnnotation(Analytics.class) == null ? invocation.getMethod().getDeclaringClass().getAnnotation(Analytics.class)
 				: invocation.getMethod().getAnnotation(Analytics.class);
 
-		final String name = StringUtil.isEmpty(analytics.name()) ? invocation.getMethod().getDeclaringClass().getSimpleName() + "::" + invocation.getMethod().getName() : analytics.name();
+		final String name = StringUtil.isBlank(analytics.name()) ? invocation.getMethod().getDeclaringClass().getSimpleName() + "::" + invocation.getMethod().getName() : analytics.name();
 		return analyticsManager.traceWithReturn(
 				analytics.category(),
 				name,
