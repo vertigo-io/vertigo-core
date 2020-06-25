@@ -127,7 +127,7 @@ public final class StringUtil {
 		Assertion.check()
 				.isNotNull(str)
 				.isTrue(str.length() > 0, "Chaine à modifier invalide (ne doit pas être vide)")
-				.isTrue(!str.contains("__"), "Chaine à modifier invalide : {0} (__ interdit)", str);
+				.isFalse(str.contains("__"), "Chaine à modifier invalide : {0} (__ interdit)", str);
 		//-----
 		final StringBuilder result = new StringBuilder();
 		boolean upper = first2UpperCase;

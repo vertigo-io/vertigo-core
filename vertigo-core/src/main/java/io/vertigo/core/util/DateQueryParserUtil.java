@@ -121,7 +121,7 @@ final class DateQueryParserUtil {
 		Assertion.check()
 				.isNotBlank(dateExpression)
 				.isNotBlank(datePattern, "you must define a valid datePattern such as dd/MM/yyyy or MM/dd/yy")
-				.isTrue(!datePattern.contains("H") && !datePattern.contains("m"), "LocalDate evaluation cannot contain HH ou mm in the pattern");
+				.isFalse(datePattern.contains("H") || datePattern.contains("m"), "LocalDate evaluation cannot contain HH ou mm in the pattern");
 		//---
 		if (NOW.equals(dateExpression)) {
 			//today is gonna be the day
