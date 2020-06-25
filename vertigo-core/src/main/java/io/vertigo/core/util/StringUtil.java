@@ -50,13 +50,7 @@ public final class StringUtil {
 		if (strValue == null) {
 			return true;
 		}
-		//On prefere cette implementation qui ne crée pas de nouvelle chaine (contrairement au trim())
-		for (int i = 0; i < strValue.length(); i++) {
-			if (!Character.isWhitespace(strValue.charAt(i))) {
-				return false;
-			}
-		}
-		return true;
+		return strValue.isBlank();
 	}
 
 	/**
