@@ -103,7 +103,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 		//-----
 		Assertion.check()
 				.isNotNull(this.locales)
-				.isTrue(!this.locales.isEmpty(), "Il faut au moins déclarer une locale");
+				.isFalse(this.locales.isEmpty(), "Il faut au moins déclarer une locale");
 		//-----
 		for (final Locale locale : this.locales) {
 			dictionaries.put(locale, new HashMap<>());

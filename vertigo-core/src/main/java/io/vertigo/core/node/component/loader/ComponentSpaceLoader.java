@@ -242,8 +242,8 @@ public final class ComponentSpaceLoader {
 			final Optional<ParamManager> paramManagerOpt,
 			final ComponentUnusedKeysContainer componentContainer,
 			final CoreComponentConfig componentConfig) {
-		Assertion.check()
-				.isTrue(!componentConfig.isAmplifier(), "a no-amplifier component is expected");
+		Assertion.check().isFalse(componentConfig.isAmplifier(),
+				"a no-amplifier component is expected");
 		//---
 		// 1. An instance is created
 		final CoreComponent instance = createInstance(componentContainer, paramManagerOpt, componentConfig);
