@@ -54,8 +54,8 @@ public final class PluginConfig {
 		Assertion.check()
 				.isNotNull(apiClass)
 				.isNotNull(implClass)
-				.argument(Plugin.class.isAssignableFrom(apiClass), "api class {0} must implement {1}", apiClass, Plugin.class)
-				.argument(apiClass.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClass)
+				.isTrue(Plugin.class.isAssignableFrom(apiClass), "api class {0} must implement {1}", apiClass, Plugin.class)
+				.isTrue(apiClass.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClass)
 				.isTrue(apiClass.isInterface(), "api class {0} must be an interface", apiClass)
 				.isNotNull(params);
 		//-----

@@ -49,7 +49,7 @@ public final class JavassistAopPlugin implements AopPlugin {
 		//check : witgh cglib all methods have to bo non-final
 		for (final Method method : joinPoints.keySet()) {
 			Assertion.check()
-					.argument(!Modifier.isFinal(method.getModifiers()), "due to cglib method '" + method.getName() + "' on '" + instance.getClass().getName() + "' can not be markedf as final");
+					.isTrue(!Modifier.isFinal(method.getModifiers()), "due to cglib method '" + method.getName() + "' on '" + instance.getClass().getName() + "' can not be markedf as final");
 		}
 		//-----
 		final Class<? extends CoreComponent> implClass = instance.getClass();

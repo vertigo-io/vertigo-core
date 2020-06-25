@@ -46,7 +46,7 @@ final class ComponentDualContainer implements Container {
 		ids.addAll(container1.keySet());
 		ids.addAll(container2.keySet());
 		Assertion.check()
-				.argument(ids.size() == container1.keySet().size() + container2.keySet().size(), "Ambiguité : il y a des ids en doublon");
+				.isTrue(ids.size() == container1.keySet().size() + container2.keySet().size(), "Ambiguité : il y a des ids en doublon");
 	}
 
 	/** {@inheritDoc} */

@@ -126,8 +126,8 @@ public final class StringUtil {
 	private static String constToCamelCase(final String str, final boolean first2UpperCase) {
 		Assertion.check()
 				.isNotNull(str)
-				.argument(str.length() > 0, "Chaine à modifier invalide (ne doit pas être vide)")
-				.argument(!str.contains("__"), "Chaine à modifier invalide : {0} (__ interdit)", str);
+				.isTrue(str.length() > 0, "Chaine à modifier invalide (ne doit pas être vide)")
+				.isTrue(!str.contains("__"), "Chaine à modifier invalide : {0} (__ interdit)", str);
 		//-----
 		final StringBuilder result = new StringBuilder();
 		boolean upper = first2UpperCase;
@@ -146,7 +146,7 @@ public final class StringUtil {
 				upper = true;
 			} else {
 				if (digit != null) {
-					Assertion.check().argument(digit.equals(Character.isDigit(c)), "Chaine à modifier invalide : {0} (lettres et chiffres doivent toujours être séparés par _)", str);
+					Assertion.check().isTrue(digit.equals(Character.isDigit(c)), "Chaine à modifier invalide : {0} (lettres et chiffres doivent toujours être séparés par _)", str);
 				}
 				digit = Character.isDigit(c);
 
@@ -194,7 +194,7 @@ public final class StringUtil {
 	private static String camelToConstCase(final String str, final boolean lowerCase) {
 		Assertion.check()
 				.isNotNull(str)
-				.argument(str.length() > 0, "Chaine à modifier invalide");
+				.isTrue(str.length() > 0, "Chaine à modifier invalide");
 		//-----
 		final StringBuilder result = new StringBuilder();
 		final int length = str.length();
@@ -278,7 +278,7 @@ public final class StringUtil {
 		Assertion.check()
 				.isNotNull(str)
 				.isNotNull(oldStr)
-				.argument(oldStr.length() > 0, "La chaine a remplacer ne doit pas être vide")
+				.isTrue(oldStr.length() > 0, "La chaine a remplacer ne doit pas être vide")
 				.isNotNull(newStr);
 		//-----
 		int index = str.indexOf(oldStr);

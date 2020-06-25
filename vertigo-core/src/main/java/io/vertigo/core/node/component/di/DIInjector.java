@@ -125,7 +125,7 @@ public final class DIInjector {
 				final boolean match = id.equals(dependency.getName()) || id.startsWith(dependency.getName() + '#');
 				if (match) {
 					final Object injected = container.resolve(id, Object.class);
-					Assertion.check().argument(dependency.getType().isAssignableFrom(injected.getClass()), "type of {0} is incorrect ; expected : {1}", id, dependency.getType().getName());
+					Assertion.check().isTrue(dependency.getType().isAssignableFrom(injected.getClass()), "type of {0} is incorrect ; expected : {1}", id, dependency.getType().getName());
 					list.add(injected);
 				}
 			}

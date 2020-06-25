@@ -48,7 +48,7 @@ final class AmplifierFactory {
 			final Map<Method, List<Aspect>> joinPoints) {
 		Assertion.check()
 				.isNotNull(intf)
-				.argument(intf.isInterface(), "only interface can be amplified")
+				.isTrue(intf.isInterface(), "only interface can be amplified")
 				.isNotNull(proxyMethods)
 				.isNotNull(joinPoints);
 		//---

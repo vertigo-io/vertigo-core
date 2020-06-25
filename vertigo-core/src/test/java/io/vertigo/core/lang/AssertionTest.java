@@ -64,24 +64,24 @@ public final class AssertionTest {
 
 	@Test
 	public void testCheckArgument() {
-		Assertion.check().argument(true, "message");
+		Assertion.check().isTrue(true, "message");
 	}
 
 	@Test
 	public void testCheckArgument2() {
-		Assertion.check().argument(true, "message {0}", "param");
+		Assertion.check().isTrue(true, "message {0}", "param");
 	}
 
 	@Test
 	public void testCheckArgumentFail() {
 		Assertions.assertThrows(IllegalArgumentException.class,
-				() -> Assertion.check().argument(false, "message"));
+				() -> Assertion.check().isTrue(false, "message"));
 	}
 
 	@Test
 	public void testCheckArgument2Fail() {
 		Assertions.assertThrows(IllegalArgumentException.class,
-				() -> Assertion.check().argument(false, "message {0}", "param"));
+				() -> Assertion.check().isTrue(false, "message {0}", "param"));
 	}
 
 	//-----

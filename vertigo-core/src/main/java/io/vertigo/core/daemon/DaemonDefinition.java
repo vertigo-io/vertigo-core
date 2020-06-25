@@ -49,7 +49,7 @@ public final class DaemonDefinition implements Definition {
 		DefinitionUtil.checkName(name, DaemonDefinition.class);
 		Assertion.check()
 				.isNotNull(daemonSupplier)
-				.argument(periodInSeconds > 0, "period {0} must be > 0", periodInSeconds);
+				.isTrue(periodInSeconds > 0, "period {0} must be > 0", periodInSeconds);
 		// -----
 		this.name = name;
 		this.daemonSupplier = daemonSupplier;

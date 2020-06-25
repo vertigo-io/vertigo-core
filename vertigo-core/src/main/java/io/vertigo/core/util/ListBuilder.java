@@ -83,7 +83,7 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 	public ListBuilder<X> sort(final Comparator<? super X> comparator) {
 		Assertion.check()
 				.isNotNull(comparator)
-				.argument(myComparator == null, "comparator already set");
+				.isTrue(myComparator == null, "comparator already set");
 		//---
 		myComparator = comparator;
 		return this;

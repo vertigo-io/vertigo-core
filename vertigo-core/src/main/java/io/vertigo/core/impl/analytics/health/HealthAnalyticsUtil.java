@@ -78,9 +78,9 @@ public final class HealthAnalyticsUtil {
 				.map(method -> {
 					final HealthChecked healthChecked = method.getAnnotation(HealthChecked.class);
 					Assertion.check()
-							.argument(HealthMeasure.class.equals(method.getReturnType()), "health check methods of class {0} must return a HealthMeasure instead of {1}", component.getClass(), method.getReturnType())
-							.argument(method.getName().startsWith("check"), "health check methods of class {0} must start with check", component.getClass())
-							.argument(method.getParameterTypes().length == 0, "health check methods of class {0} must not have any parameter", component.getClass());
+							.isTrue(HealthMeasure.class.equals(method.getReturnType()), "health check methods of class {0} must return a HealthMeasure instead of {1}", component.getClass(), method.getReturnType())
+							.isTrue(method.getName().startsWith("check"), "health check methods of class {0} must start with check", component.getClass())
+							.isTrue(method.getParameterTypes().length == 0, "health check methods of class {0} must not have any parameter", component.getClass());
 					//-----
 					//2. For each method register a listener
 					// we remove # because it doesn't comply with definition naming rule

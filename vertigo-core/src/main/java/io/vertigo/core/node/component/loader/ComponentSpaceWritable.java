@@ -87,7 +87,7 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	 */
 	void registerComponent(final String componentId, final CoreComponent component) {
 		Assertion.check()
-				.isTrue(!locked.get(), "Registration is now closed. A component can be registerd only during the boot phase")
+				.isFalse(locked.get(), "Registration is now closed. A component can be registerd only during the boot phase")
 				.isNotBlank(componentId)
 				.isNotNull(component);
 		//-----
@@ -109,7 +109,7 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	@Override
 	public <C> C resolve(final String id, final Class<C> componentClass) {
 		final String normalizedId = StringUtil.first2LowerCase(id);
-		Assertion.check().argument(contains(normalizedId), "Aucun composant enregistré pour id = {0} parmi {1}", normalizedId, keySet());
+		Assertion.check().isTrue(contains(normalizedId), "Aucun composant enregistré pour id = {0} parmi {1}", normalizedId, keySet());
 		//-----
 		return componentClass.cast(components.get(normalizedId));
 	}

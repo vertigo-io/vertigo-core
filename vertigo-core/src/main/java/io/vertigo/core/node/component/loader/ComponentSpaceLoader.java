@@ -202,9 +202,9 @@ public final class ComponentSpaceLoader {
 	private void registerAspect(final Aspect aspect) {
 		Assertion.check()
 				.isNotNull(aspect)
-				.argument(aspects.stream().noneMatch(a -> a.getClass().equals(aspect.getClass())),
+				.isTrue(aspects.stream().noneMatch(a -> a.getClass().equals(aspect.getClass())),
 						"aspect {0} already registered with the same class", aspect.getClass())
-				.argument(aspects.stream().noneMatch(a -> a.getAnnotationType().equals(aspect.getAnnotationType())),
+				.isTrue(aspects.stream().noneMatch(a -> a.getAnnotationType().equals(aspect.getAnnotationType())),
 						"aspect {0} already registered with the same annotation", aspect.getClass());
 		//-----
 		aspects.add(aspect);
@@ -213,9 +213,9 @@ public final class ComponentSpaceLoader {
 	private void registerProxyMethod(final ProxyMethod proxyMethod) {
 		Assertion.check()
 				.isNotNull(proxyMethod)
-				.argument(proxyMethods.stream().noneMatch(a -> a.getClass().equals(proxyMethod.getClass())),
+				.isTrue(proxyMethods.stream().noneMatch(a -> a.getClass().equals(proxyMethod.getClass())),
 						"proxy {0} already registered with the same class", proxyMethod.getClass())
-				.argument(proxyMethods.stream().noneMatch(p -> p.getAnnotationType().equals(proxyMethod.getAnnotationType())),
+				.isTrue(proxyMethods.stream().noneMatch(p -> p.getAnnotationType().equals(proxyMethod.getAnnotationType())),
 						"proxy {0} already registered with the same annotation", proxyMethod.getClass());
 		//-----
 		proxyMethods.add(proxyMethod);
@@ -243,7 +243,7 @@ public final class ComponentSpaceLoader {
 			final ComponentUnusedKeysContainer componentContainer,
 			final CoreComponentConfig componentConfig) {
 		Assertion.check()
-				.argument(!componentConfig.isAmplifier(), "a no-amplifier component is expected");
+				.isTrue(!componentConfig.isAmplifier(), "a no-amplifier component is expected");
 		//---
 		// 1. An instance is created
 		final CoreComponent instance = createInstance(componentContainer, paramManagerOpt, componentConfig);
@@ -256,7 +256,7 @@ public final class ComponentSpaceLoader {
 			//	final Optional<ParamManager> paramManagerOpt,
 			final CoreComponentConfig coreComponentConfig) {
 		Assertion.check()
-				.argument(coreComponentConfig.isAmplifier(), "an amplifier component is expected");
+				.isTrue(coreComponentConfig.isAmplifier(), "an amplifier component is expected");
 		//---
 		//1. AOP : finds all aspects
 		final Map<Method, List<Aspect>> aspectsByMethod = ComponentAspectUtil.createAspectsByMethod(coreComponentConfig.getApiClass().get(), aspects);

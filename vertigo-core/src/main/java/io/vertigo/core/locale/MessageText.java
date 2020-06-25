@@ -52,7 +52,7 @@ public final class MessageText implements Serializable {
 	private MessageText(final String defaultMsg, final MessageKey key, final Serializable... params) {
 		Assertion.check()
 				.isNotNull(params)
-				.argument(defaultMsg != null || key != null, "key or msg must be defined");
+				.isTrue(defaultMsg != null || key != null, "key or msg must be defined");
 		//---
 		this.key = key;
 		this.defaultMsg = defaultMsg;

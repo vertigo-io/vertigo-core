@@ -63,7 +63,7 @@ public final class Selector {
 
 	private void checkScope() {
 		Assertion.check()
-				.isTrue(!scoped, "Classes cannot be added to scope after filtering");
+				.isFalse(scoped, "Classes cannot be added to scope after filtering");
 	}
 
 	/**

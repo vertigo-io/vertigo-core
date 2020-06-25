@@ -33,8 +33,8 @@ public final class StartedManagerInitializer implements ComponentInitializer {
 	public void init() {
 		Assertion.check()
 				.isTrue(startedManager.isStarted(), "Component StartedManager not Started")
-				.isTrue(!startedManager.isAppPreActivated(), "Component StartedManager already PostStarted")
-				.isTrue(!startedManager.isInitialized(), "Component StartedManager already Initialized");
+				.isFalse(startedManager.isAppPreActivated(), "Component StartedManager already PostStarted")
+				.isFalse(startedManager.isInitialized(), "Component StartedManager already Initialized");
 		startedManager.init();
 	}
 

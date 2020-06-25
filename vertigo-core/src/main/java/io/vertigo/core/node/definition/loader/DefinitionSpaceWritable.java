@@ -55,8 +55,7 @@ public final class DefinitionSpaceWritable implements DefinitionSpace {
 				.isNotNull(definition, "A definition can't be null.");
 		final String name = definition.getName();
 		DefinitionUtil.checkName(name, definition.getClass());
-		Assertion.check()
-				.argument(!definitions.containsKey(name), "this definition '{0}' is already registered", name);
+		Assertion.check().isFalse(definitions.containsKey(name), "this definition '{0}' is already registered", name);
 		//-----
 		definitions.put(name, definition);
 	}
@@ -92,8 +91,7 @@ public final class DefinitionSpaceWritable implements DefinitionSpace {
 	/** {@inheritDoc} */
 	@Override
 	public <C extends Definition> Set<C> getAll(final Class<C> clazz) {
-		Assertion.check()
-				.isNotNull(clazz); // Le type des objets recherchés ne peut pas être null
+		Assertion.check().isNotNull(clazz); // Le type des objets recherchés ne peut pas être null
 		//-----
 		return definitions.values()
 				.stream()

@@ -53,7 +53,7 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 		//-----
 		final Object previous = myMap.put(key, value);
 		Assertion.check()
-				.argument(previous == null, "Data with key '{0}' already registered", key);
+				.isTrue(previous == null, "Data with key '{0}' already registered", key);
 		return this;
 	}
 

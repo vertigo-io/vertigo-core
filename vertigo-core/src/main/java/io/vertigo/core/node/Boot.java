@@ -53,14 +53,14 @@ final class Boot {
 		//-----
 		final String log4jFileName = log4Config.getFileName();
 		Assertion.check()
-				.argument(log4jFileName.endsWith(".xml"), "Use the XML format for log4j configurations (instead of : {0}).", log4jFileName);
+				.isTrue(log4jFileName.endsWith(".xml"), "Use the XML format for log4j configurations (instead of : {0}).", log4jFileName);
 		final URL url = Home.class.getResource(log4jFileName);
 		if (url != null) {
 			Configurator.initialize("definedLog4jContext", Home.class.getClassLoader(), log4jFileName);
 			LogManager.getRootLogger().info("Log4J configuration chargée (resource) : {}", url.getFile());
 		} else {
 			Assertion.check()
-					.argument(new File(log4jFileName).exists(), "Fichier de configuration log4j : {0} est introuvable", log4jFileName);
+					.isTrue(new File(log4jFileName).exists(), "Fichier de configuration log4j : {0} est introuvable", log4jFileName);
 			// Avec configureAndWatch (utilise un anonymous thread)
 			// on peut modifier à chaud le fichier de conf log4j
 			// mais en cas de hot-deploy, le thread reste présent ce qui peut-entrainer des problèmes.

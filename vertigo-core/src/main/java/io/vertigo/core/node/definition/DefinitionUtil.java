@@ -62,7 +62,7 @@ public final class DefinitionUtil {
 		//On vérifie aussi que le prefix est OK
 		final String prefix = getPrefix(definitionClass);
 		Assertion.check()
-				.argument(definitionName.startsWith(prefix), "Le nom de la définition '{0}' ne commence pas par le prefix attendu : '{1}'", definitionName, prefix);
+				.isTrue(definitionName.startsWith(prefix), "Le nom de la définition '{0}' ne commence pas par le prefix attendu : '{1}'", definitionName, prefix);
 		return definitionName.substring(prefix.length());
 	}
 
@@ -79,10 +79,10 @@ public final class DefinitionUtil {
 		//-----
 		final String prefix = DefinitionUtil.getPrefix(definitionClass);
 		Assertion.check()
-				.argument(definitionName.startsWith(prefix), "La définition {0} doit commencer par {1}", definitionName, prefix)
-				.argument(definitionName.length() > prefix.length(), "Le nom de la définition doit être renseigné")
-				.argument(Character.isUpperCase(definitionName.charAt(prefix.length())), "the name of the dtDefinition {0} must be in UpperCamelCase", definitionName)
-				.argument(Definition.REGEX_DEFINITION_NAME.matcher(definitionName).matches(), "urn de définition {0} doit matcher le pattern {1}", definitionName, Definition.REGEX_DEFINITION_NAME);
+				.isTrue(definitionName.startsWith(prefix), "La définition {0} doit commencer par {1}", definitionName, prefix)
+				.isTrue(definitionName.length() > prefix.length(), "Le nom de la définition doit être renseigné")
+				.isTrue(Character.isUpperCase(definitionName.charAt(prefix.length())), "the name of the dtDefinition {0} must be in UpperCamelCase", definitionName)
+				.isTrue(Definition.REGEX_DEFINITION_NAME.matcher(definitionName).matches(), "urn de définition {0} doit matcher le pattern {1}", definitionName, Definition.REGEX_DEFINITION_NAME);
 	}
 
 }

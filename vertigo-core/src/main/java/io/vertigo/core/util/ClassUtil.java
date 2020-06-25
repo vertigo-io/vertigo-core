@@ -435,7 +435,7 @@ public final class ClassUtil {
 		if (type instanceof ParameterizedType) {
 			final ParameterizedType parameterizedType = ParameterizedType.class.cast(type);
 			Assertion.check()
-					.argument(parameterizedType.getActualTypeArguments().length == 1, "Il doit y avoir 1 et 1 seul générique déclaré");
+					.isTrue(parameterizedType.getActualTypeArguments().length == 1, "Il doit y avoir 1 et 1 seul générique déclaré");
 			final Type optionType = parameterizedType.getActualTypeArguments()[0];
 			if (optionType instanceof Class) {
 				return (Class<?>) optionType;
@@ -462,7 +462,7 @@ public final class ClassUtil {
 			property = method.getName().substring("get".length());
 		} else if (method.getName().startsWith("is")) {
 			Assertion.check()
-					.argument(Boolean.class.equals(method.getReturnType()) || boolean.class.equals(method.getReturnType()), "une méthode is concerne un boolean : {0}", method);
+					.isTrue(Boolean.class.equals(method.getReturnType()) || boolean.class.equals(method.getReturnType()), "une méthode is concerne un boolean : {0}", method);
 			property = method.getName().substring("is".length());
 		} else {
 			throw new IllegalArgumentException("Type de Méthode " + method + " non gérée en tant que propriété");

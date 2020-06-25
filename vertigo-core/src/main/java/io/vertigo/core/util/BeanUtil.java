@@ -55,7 +55,7 @@ public final class BeanUtil {
 		Assertion.check()
 				.isNotNull(object)
 				.isNotNull(propertyName)
-				.argument(propertyName.indexOf('.') == -1, "the dot notation is forbidden");
+				.isTrue(propertyName.indexOf('.') == -1, "the dot notation is forbidden");
 		//-----
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method readMethod = pd.getReadMethod();
@@ -76,7 +76,7 @@ public final class BeanUtil {
 		Assertion.check()
 				.isNotNull(object)
 				.isNotNull(propertyName)
-				.argument(propertyName.indexOf('.') == -1, "the dot notation is forbidden");
+				.isTrue(propertyName.indexOf('.') == -1, "the dot notation is forbidden");
 		//-----
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method writeMethod = pd.getWriteMethod();

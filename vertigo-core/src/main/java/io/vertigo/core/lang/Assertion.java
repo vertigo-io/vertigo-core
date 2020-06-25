@@ -79,15 +79,6 @@ public final class Assertion {
 		return this;
 	}
 
-	public Assertion argument(final boolean test, final String msg, final Object... params) {
-		if (enabled) {
-			if (!test) {
-				throw new IllegalArgumentException(StringUtil.format(msg, params));
-			}
-		}
-		return this;
-	}
-
 	public Assertion isTrue(final BooleanSupplier test, final String msg, final Object... params) {
 		if (enabled) {
 			isTrue(test.getAsBoolean(), msg, params);

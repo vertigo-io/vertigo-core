@@ -64,8 +64,8 @@ public final class MetricAnalyticsUtil {
 				.filter(method -> method.isAnnotationPresent(Metrics.class))
 				.map(method -> {
 					Assertion.check()
-							.argument(List.class.isAssignableFrom(method.getReturnType()), "metrics supplier methods of class {0} must return a List of Metric instead of {1}", component.getClass(), method.getReturnType())
-							.argument(method.getParameterTypes().length == 0, "metrics supplier methods of class {0} must not have any parameter", component.getClass());
+							.isTrue(List.class.isAssignableFrom(method.getReturnType()), "metrics supplier methods of class {0} must return a List of Metric instead of {1}", component.getClass(), method.getReturnType())
+							.isTrue(method.getParameterTypes().length == 0, "metrics supplier methods of class {0} must not have any parameter", component.getClass());
 					//-----
 					//2. For each method register a listener
 					// we remove # because it doesn't comply with definition naming rule

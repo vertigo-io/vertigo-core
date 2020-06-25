@@ -44,7 +44,7 @@ public final class Param {
 	private Param(final String name, final String value) {
 		Assertion.check()
 				.isNotBlank(name)
-				.argument(REGEX_PARAM_NAME.matcher(name).matches(), "param '{0}' must match pattern {1}", name, REGEX_PARAM_NAME)
+				.isTrue(REGEX_PARAM_NAME.matcher(name).matches(), "param '{0}' must match pattern {1}", name, REGEX_PARAM_NAME)
 				.isNotBlank(name)
 				.isNotNull(value);
 		//---

@@ -103,7 +103,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 		//-----
 		Assertion.check()
 				.isNotNull(this.locales)
-				.argument(!this.locales.isEmpty(), "Il faut au moins déclarer une locale");
+				.isTrue(!this.locales.isEmpty(), "Il faut au moins déclarer une locale");
 		//-----
 		for (final Locale locale : this.locales) {
 			dictionaries.put(locale, new HashMap<>());
@@ -125,7 +125,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 		String variant;
 		for (final String locale : locales.split(",")) {
 			final String[] loc = locale.trim().split("_");
-			Assertion.check().argument(loc.length > 0, "Locale specifiée vide");
+			Assertion.check().isTrue(loc.length > 0, "Locale specifiée vide");
 			language = loc[0];
 			country = loc.length > 1 ? loc[1] : "";
 			variant = loc.length > 2 ? loc[2] : "";
@@ -138,7 +138,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 	@Override
 	public void registerZoneSupplier(final Supplier<ZoneId> newZoneSupplier) {
 		Assertion.check()
-				.argument(zoneSupplier == null, "zoneSupplier already registered")
+				.isTrue(zoneSupplier == null, "zoneSupplier already registered")
 				.isNotNull(newZoneSupplier);
 		//-----
 		zoneSupplier = newZoneSupplier;
@@ -148,7 +148,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 	@Override
 	public void registerLocaleSupplier(final Supplier<Locale> newLocaleSupplier) {
 		Assertion.check()
-				.argument(localeSupplier == null, "localeSupplier already registered")
+				.isTrue(localeSupplier == null, "localeSupplier already registered")
 				.isNotNull(newLocaleSupplier);
 		//-----
 		localeSupplier = newLocaleSupplier;
@@ -186,7 +186,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 	}
 
 	private Map<String, String> getDictionary(final Locale locale) {
-		Assertion.check().argument(dictionaries.containsKey(locale), "La locale {0} n'est pas gérée", locale);
+		Assertion.check().isTrue(dictionaries.containsKey(locale), "La locale {0} n'est pas gérée", locale);
 		//---
 		return dictionaries.get(locale);
 	}

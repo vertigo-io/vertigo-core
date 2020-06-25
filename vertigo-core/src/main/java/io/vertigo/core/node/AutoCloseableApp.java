@@ -132,7 +132,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	@Override
 	public void registerPreActivateFunction(final Runnable preActivateFunction) {
 		Assertion.check()
-				.argument(state == State.STARTING, "Applisteners can't be registered at runtime")
+				.isTrue(state == State.STARTING, "Applisteners can't be registered at runtime")
 				.isNotNull(preActivateFunction);
 		//-----
 		preActivateFunctions.add(preActivateFunction);
@@ -193,7 +193,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	private void initializeAllComponents() {
 		for (final ComponentInitializerConfig componentInitializerConfig : nodeConfig.getComponentInitializerConfigs()) {
 			Assertion.check()
-					.argument(!Activeable.class.isAssignableFrom(componentInitializerConfig.getInitializerClass()),
+					.isTrue(!Activeable.class.isAssignableFrom(componentInitializerConfig.getInitializerClass()),
 							"The initializer '{0}' can't be activeable", componentInitializerConfig.getInitializerClass());
 			final ComponentInitializer componentInitializer = DIInjector.newInstance(componentInitializerConfig.getInitializerClass(), componentSpaceWritable);
 			componentInitializer.init();

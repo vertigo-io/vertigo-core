@@ -79,7 +79,7 @@ public final class ComponentConfig {
 		Assertion.check()
 				.isNotNull(apiClassOpt)
 				.isNotNull(implClass)
-				.argument(apiClassOpt.orElse(Component.class).isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClassOpt.orElse(Component.class))
+				.isTrue(apiClassOpt.orElse(Component.class).isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClassOpt.orElse(Component.class))
 				.isNotNull(params);
 		Assertion.when(apiClassOpt.isPresent())
 				.isTrue(() -> Component.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, Component.class);

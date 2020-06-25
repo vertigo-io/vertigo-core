@@ -45,7 +45,7 @@ public final class AmplifierConfig {
 	AmplifierConfig(final Class<? extends Amplifier> apiClass, final List<Param> params) {
 		Assertion.check()
 				.isNotNull(apiClass)
-				.argument(Amplifier.class.isAssignableFrom(apiClass), "api class {0} must implement {1}", apiClass, Amplifier.class)
+				.isTrue(Amplifier.class.isAssignableFrom(apiClass), "api class {0} must implement {1}", apiClass, Amplifier.class)
 				.isNotNull(params);
 		//-----
 		this.apiClass = apiClass;

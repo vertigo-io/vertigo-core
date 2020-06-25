@@ -55,7 +55,7 @@ public final class ConnectorConfig {
 		Assertion.check()
 				.isNotNull(apiClassOpt)
 				.isNotNull(implClass)
-				.argument(Connector.class.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, Connector.class)
+				.isTrue(Connector.class.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, Connector.class)
 				.isNotNull(params);
 		Assertion.when(apiClassOpt.isPresent())
 				.isTrue(() -> Connector.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must implement {1}", apiClassOpt, Connector.class)
