@@ -95,6 +95,13 @@ public final class Assertion {
 		return this;
 	}
 
+	public Assertion isFalse(final BooleanSupplier test, final String msg, final Object... params) {
+		if (enabled) {
+			isTrue(!test.getAsBoolean(), msg, params);
+		}
+		return this;
+	}
+
 	public Assertion isTrue(final boolean test, final String msg, final Object... params) {
 		if (enabled) {
 			if (!test) {
@@ -104,14 +111,12 @@ public final class Assertion {
 		return this;
 	}
 
+	public Assertion isFalse(final boolean test, final String msg, final Object... params) {
+		return isTrue(!test, msg, params);
+	}
+
 	public Assertion isNotBlank(final String str) {
-		if (enabled) {
-			isNotNull(str);
-			if (StringUtil.isBlank(str)) {
-				throw new IllegalArgumentException("String must not be empty");
-			}
-		}
-		return this;
+		return isNotBlank(str, "String must not be empty");
 	}
 
 	public Assertion isNotBlank(final String str, final String msg, final Object... params) {
