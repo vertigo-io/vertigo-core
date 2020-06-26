@@ -33,7 +33,6 @@ public final class HealthMeasureBuilder implements Builder<HealthMeasure> {
 
 	HealthMeasureBuilder() {
 		//package : use the builder instead
-		super();
 	}
 
 	/**
