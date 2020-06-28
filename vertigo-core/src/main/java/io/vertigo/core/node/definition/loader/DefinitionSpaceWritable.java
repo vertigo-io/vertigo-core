@@ -46,18 +46,18 @@ public final class DefinitionSpaceWritable implements DefinitionSpace {
 	}
 
 	/**
-	 * Enregistrement d'un nouvel object.
-	 * @param definition Objet à enregistrer
+	 * Register a new definition.
+	 * The definition must be already registered
+	 * @param definition the definition
 	 */
 	void registerDefinition(final Definition definition) {
 		Assertion.check()
 				.isFalse(locked.get(), "Registration is now closed. A definition can be registerd only during the boot phase")
-				.isNotNull(definition, "A definition can't be null.");
-		final String name = definition.getName();
-		DefinitionUtil.checkName(name, definition.getClass());
-		Assertion.check().isFalse(definitions.containsKey(name), "this definition '{0}' is already registered", name);
+				.isNotNull(definition, "A definition can't be null.")
+				.isValid(() -> DefinitionUtil.checkName(definition.getName(), definition.getClass()))
+				.isFalse(definitions.containsKey(definition.getName()), "this definition '{0}' is already registered", definition.getName());
 		//-----
-		definitions.put(name, definition);
+		definitions.put(definition.getName(), definition);
 	}
 
 	/** {@inheritDoc} */
