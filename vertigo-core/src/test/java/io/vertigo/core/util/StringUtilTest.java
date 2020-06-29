@@ -69,7 +69,7 @@ public final class StringUtilTest {
 
 	@Test
 	public void testStringReplaceWithEmptyOldString() {
-		Assertions.assertThrows(IllegalArgumentException.class,
+		Assertions.assertThrows(IllegalStateException.class,
 				() -> StringUtil.replace("azertYYuiop", "", "Y"));
 	}
 
@@ -98,13 +98,13 @@ public final class StringUtilTest {
 
 	@Test
 	public void testCaseTransformWithErrors() {
-		Assertions.assertThrows(IllegalArgumentException.class,
+		Assertions.assertThrows(IllegalStateException.class,
 				() -> StringUtil.constToLowerCamelCase("XXX_YYY12_PPP"));
 	}
 
 	@Test
 	public void testCaseTransformWithErrors2() {
-		Assertions.assertThrows(IllegalArgumentException.class,
+		Assertions.assertThrows(IllegalStateException.class,
 				() -> StringUtil.constToLowerCamelCase("XXX_YYY_12PPP"));
 	}
 

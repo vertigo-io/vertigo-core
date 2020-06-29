@@ -74,13 +74,13 @@ public final class AssertionTest {
 
 	@Test
 	public void testCheckArgumentFail() {
-		Assertions.assertThrows(IllegalArgumentException.class,
+		Assertions.assertThrows(IllegalStateException.class,
 				() -> Assertion.check().isTrue(false, "message"));
 	}
 
 	@Test
 	public void testCheckArgument2Fail() {
-		Assertions.assertThrows(IllegalArgumentException.class,
+		Assertions.assertThrows(IllegalStateException.class,
 				() -> Assertion.check().isTrue(false, "message {0}", "param"));
 	}
 

@@ -101,7 +101,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testUnknown() {
-		Assertions.assertThrows(IllegalArgumentException.class,
+		Assertions.assertThrows(IllegalStateException.class,
 				//On vérifie que l'on ne connait pas le japonais
 				() -> assertNull(localeManager.getMessage(CityGuide.HELLO, Locale.JAPANESE)));
 	}
