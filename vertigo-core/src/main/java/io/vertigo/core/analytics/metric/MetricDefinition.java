@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 
 /**
@@ -31,31 +31,24 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
  * 			- a way to get a list of metrics
  * @author mlaroche, pchretien
  */
-@DefinitionPrefix("Met")
-public final class MetricDefinition implements Definition {
-
-	private final String definitionName;
+@DefinitionPrefix(MetricDefinition.PREFIX)
+public final class MetricDefinition extends AbstractDefinition {
+	public static final String PREFIX = "Met";
 	private final Supplier<List<Metric>> metricSupplier;
 
 	/**
 	 * Constructor
-	 * @param definitionName Definition name
+	 * @param name Definition name
 	 * @param metricSupplier the  method that provides a list of metrics
 	 */
 	public MetricDefinition(
-			final String definitionName,
+			final String name,
 			final Supplier<List<Metric>> metricSupplier) {
-		Assertion.check()
-				.isNotBlank(definitionName)
-				.isNotNull(metricSupplier);
-		//-----
-		this.definitionName = definitionName;
+		super(name);
+		//---
+		Assertion.check().isNotNull(metricSupplier);
+		//---
 		this.metricSupplier = metricSupplier;
-	}
-
-	@Override
-	public String getName() {
-		return definitionName;
 	}
 
 	/**

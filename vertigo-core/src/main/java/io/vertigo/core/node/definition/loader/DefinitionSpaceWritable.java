@@ -29,10 +29,11 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
-import io.vertigo.core.node.definition.DefinitionUtil;
 
 /**
- * Espace de définitions (non threadSafe).
+ * The space to access and register all the definitions.
+ * The registration is only accessible during the boot phase.
+ * Consequently, the registration is not threadSafe. (The boot phase occuring on a single thread)
  *
  * @author pchretien
  */
@@ -46,17 +47,16 @@ public final class DefinitionSpaceWritable implements DefinitionSpace {
 	}
 
 	/**
-	 * Register a new definition.
-	 * The definition must be already registered
+	 * Registers a new definition.
+	 * The definition must not be already registered.
 	 * @param definition the definition
 	 */
 	void registerDefinition(final Definition definition) {
 		Assertion.check()
 				.isFalse(locked.get(), "Registration is now closed. A definition can be registerd only during the boot phase")
 				.isNotNull(definition, "A definition can't be null.")
-				.isValid(() -> DefinitionUtil.checkName(definition.getName(), definition.getClass()))
 				.isFalse(definitions.containsKey(definition.getName()), "this definition '{0}' is already registered", definition.getName());
-		//-----
+		//---
 		definitions.put(definition.getName(), definition);
 	}
 
@@ -102,7 +102,7 @@ public final class DefinitionSpaceWritable implements DefinitionSpace {
 	}
 
 	/**
-	 * Clear all known definitions
+	 * Clears all known definitions
 	 */
 	public void clear() {
 		definitions.clear();

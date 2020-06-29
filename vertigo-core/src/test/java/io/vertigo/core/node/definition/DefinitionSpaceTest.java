@@ -59,8 +59,8 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU5 {
 
 		final SampleDefinition sampleDefinition = definitionSpace.resolve("SampleTheDefinition", SampleDefinition.class);
 		assertNotNull(sampleDefinition);
-		assertEquals("TheDefinition", DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class), "localName must be TheDefinition");
-		assertEquals(sampleDefinition.getName(), DefinitionUtil.getPrefix(SampleDefinition.class) + DefinitionUtil.getLocalName(sampleDefinition.getName(), SampleDefinition.class),
+		assertEquals("TheDefinition", sampleDefinition.getLocalName(), "localName must be TheDefinition");
+		assertEquals(sampleDefinition.getName(), SampleDefinition.PREFIX + sampleDefinition.getLocalName(),
 				"globalName must be SampleTheDefinition");
 
 		final DefinitionReference<SampleDefinition> sampleDefinitionRef = new DefinitionReference<>(sampleDefinition);
@@ -82,12 +82,12 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU5 {
 		assertSame(sampleDefinition, definitionReference.get(), "Definitions must be strictly equals");
 	}
 
-	@DefinitionPrefix("Sample")
-	public static class SampleDefinition implements Definition {
+	@DefinitionPrefix(SampleDefinition.PREFIX)
+	public static class SampleDefinition extends AbstractDefinition {
+		public static final String PREFIX = "Sample";
 
-		@Override
-		public String getName() {
-			return "SampleTheDefinition";
+		SampleDefinition() {
+			super("SampleTheDefinition");
 		}
 	}
 }

@@ -21,7 +21,7 @@ package io.vertigo.core.analytics.health;
 import java.util.function.Supplier;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 
 /**
@@ -32,10 +32,10 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
  * 			- a way to test that provides a HealthMeasure
  * @author mlaroche, pchretien
  */
-@DefinitionPrefix("Hchk")
-public final class HealthCheckDefinition implements Definition {
+@DefinitionPrefix(HealthCheckDefinition.PREFIX)
+public final class HealthCheckDefinition extends AbstractDefinition {
+	public static final String PREFIX = "Hchk";
 
-	private final String definitionName;
 	private final String healthCheckName;
 	private final String checker;
 	private final String module;
@@ -44,37 +44,32 @@ public final class HealthCheckDefinition implements Definition {
 
 	/**
 	 * Constructor
-	 * @param definitionName the definition name (must be unique)
+	 * @param name the definition name (must be unique)
 	 * @param healthCheckName the name of the health check (must be unique)
 	 * @param checker the name of the component that is responsible of providing the measure
 	 * @param checkMethod the check method that provides a health measure
 	 */
 	public HealthCheckDefinition(
-			final String definitionName,
+			final String name,
 			final String healthCheckName,
 			final String checker,
 			final String module,
 			final String feature,
 			final Supplier<HealthMeasure> checkMethod) {
+		super(name);
+		//
 		Assertion.check()
-				.isNotBlank(definitionName)
 				.isNotBlank(healthCheckName)
 				.isNotBlank(checker)
 				.isNotBlank(module)
 				.isNotBlank(feature)
 				.isNotNull(checkMethod);
 		//-----
-		this.definitionName = definitionName;
 		this.healthCheckName = healthCheckName;
 		this.checker = checker;
 		this.module = module;
 		this.feature = feature;
 		this.checkMethod = checkMethod;
-	}
-
-	@Override
-	public String getName() {
-		return definitionName;
 	}
 
 	/**

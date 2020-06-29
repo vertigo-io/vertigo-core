@@ -21,33 +21,34 @@ package io.vertigo.core.node.definition;
 import java.util.regex.Pattern;
 
 /**
- * Définition.
+ * This interface defines a Definition.
  *
- * Les Définitions de service, de DT, les smartTypes, les Formatters sont des définitions.
- * De maniére plus générale tout élément qui sert établir le modèle est une définition.
- * Une définition sert à modéliser le métier.
+ * Each element that defines a part of the business (or tech.) model is a definition.
  *
- * Une définition
- *  - n'est pas serializable.
- *  - est invariante (non mutable) dans le temps.
- *  - est chargée au (re)démarrage du serveur.
- *  - possède un nom unique qui doit vérifier le pattern ci dessous
+ * A definition 
+ *  - has a unique name, starting with a specific prefix
+ *  - is immutable
+ *  - is not serializable.
+ *  - is loaded at the boot.
  *
  * @author  pchretien
  */
 public interface Definition {
 	/**
-	 * Expression réguliére vérifiée par les noms des définitions.
-	 * 2 exemples acceptés :
-	 * ToTo
-	 * ou
-	 * ToTo$tiTi
+	 * A definition must have a unique name, which matches the following patterns : 
+	 * PrefixAaaaBbbb123
+	 * or
+	 * PrefixAaaaBbbb123$abcAbc123
 	 */
 	Pattern REGEX_DEFINITION_NAME = Pattern.compile("[A-Z][a-zA-Z0-9]{2,60}([$][a-z][a-zA-Z0-9]{2,60})?");
 
 	/**
-	 * @return Nom de la définition.
+	 * @return The name of the definition
 	 */
 	String getName();
 
+	/** 
+	 * @return The short name of the definition without prefix
+	 */
+	String getLocalName();
 }

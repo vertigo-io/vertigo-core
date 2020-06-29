@@ -21,20 +21,18 @@ package io.vertigo.core.daemon;
 import java.util.function.Supplier;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.core.node.definition.DefinitionUtil;
 
 /**
  * Daemon's info.
  *
  * @author mlaroche, pchretien, npiedeloup
  */
-@DefinitionPrefix("Dmn")
-public final class DaemonDefinition implements Definition {
+@DefinitionPrefix(DaemonDefinition.PREFIX)
+public final class DaemonDefinition extends AbstractDefinition {
+	public static final String PREFIX = "Dmn";
 
-	/** Name of the daemon. */
-	private final String name;
 	private final int periodInSeconds;
 	private final Supplier<Daemon> daemonSupplier;
 
@@ -46,19 +44,14 @@ public final class DaemonDefinition implements Definition {
 	 * @param periodInSeconds daemon execution period.
 	 */
 	public DaemonDefinition(final String name, final Supplier<Daemon> daemonSupplier, final int periodInSeconds) {
-		DefinitionUtil.checkName(name, DaemonDefinition.class);
+		super(name);
+		//---
 		Assertion.check()
 				.isNotNull(daemonSupplier)
 				.isTrue(periodInSeconds > 0, "period {0} must be > 0", periodInSeconds);
 		// -----
-		this.name = name;
 		this.daemonSupplier = daemonSupplier;
 		this.periodInSeconds = periodInSeconds;
-	}
-
-	@Override
-	public String getName() {
-		return name;
 	}
 
 	/**
