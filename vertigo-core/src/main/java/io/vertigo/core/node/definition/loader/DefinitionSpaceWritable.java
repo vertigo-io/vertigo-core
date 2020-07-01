@@ -51,7 +51,7 @@ public final class DefinitionSpaceWritable implements DefinitionSpace {
 	 * The definition must not be already registered.
 	 * @param definition the definition
 	 */
-	void registerDefinition(final Definition definition) {
+	public void registerDefinition(final Definition definition) {
 		Assertion.check()
 				.isFalse(locked.get(), "Registration is now closed. A definition can be registerd only during the boot phase")
 				.isNotNull(definition, "A definition can't be null.")
