@@ -43,61 +43,62 @@ import io.vertigo.core.util.StringUtil;
  * @author fconstantin
  */
 public final class Assertion {
-	private final boolean enabled;
+	private static final Test ENABLED = new Test(true);
+	private static final Test DISABLED = new Test(false);
 
-	private Assertion(final boolean enabled) {
-		this.enabled = enabled;
+	public static final class Test {
+		private final boolean enabled;
+
+		private Test(final boolean enabled) {
+			this.enabled = enabled;
+		}
+
+		public Test isTrue(final BooleanSupplier test, final String msg, final Object... params) {
+			if (enabled) {
+				INSTANCE.isTrue(test.getAsBoolean(), msg, params);
+			}
+			return this;
+		}
+
+		public Test isFalse(final BooleanSupplier test, final String msg, final Object... params) {
+			if (enabled) {
+				INSTANCE.isFalse(test.getAsBoolean(), msg, params);
+			}
+			return this;
+		}
 	}
 
-	private static final Assertion ENABLED = new Assertion(true);
-	private static final Assertion DISABLED = new Assertion(false);
+	private Assertion() {
+	}
+
+	private static final Assertion INSTANCE = new Assertion();
 
 	/**
 	 * @param ifCondition condition of this assertion
 	 * @return Assertion to check if condition is true
 	 */
-	public static Assertion when(final boolean ifCondition) {
+	public static Test when(final boolean ifCondition) {
 		return ifCondition ? ENABLED : DISABLED;
 	}
 
 	public static Assertion check() {
-		return ENABLED;
+		return INSTANCE;
 	}
 
 	public Assertion isNotNull(final Object o) {
-		if (enabled) {
-			Objects.requireNonNull(o);
-		}
+		Objects.requireNonNull(o);
 		return this;
 	}
 
 	public Assertion isNotNull(final Object o, final String msg, final Object... params) {
-		if (enabled) {
-			//Attention si o est un Boolean : il peut s'agir du resultat d'un test (boolean) qui a été autoboxé en Boolean
-			Objects.requireNonNull(o, () -> StringUtil.format(msg, params));
-		}
-		return this;
-	}
-
-	public Assertion isTrue(final BooleanSupplier test, final String msg, final Object... params) {
-		if (enabled) {
-			isTrue(test.getAsBoolean(), msg, params);
-		}
-		return this;
-	}
-
-	public Assertion isFalse(final BooleanSupplier test, final String msg, final Object... params) {
-		if (enabled) {
-			isTrue(!test.getAsBoolean(), msg, params);
-		}
+		//Attention si o est un Boolean : il peut s'agir du resultat d'un test (boolean) qui a été autoboxé en Boolean
+		Objects.requireNonNull(o, () -> StringUtil.format(msg, params));
 		return this;
 	}
 
 	public Assertion isTrue(final boolean test, final String msg, final Object... params) {
-		if (enabled) {
-			if (!test) {
-				throw new IllegalStateException(StringUtil.format(msg, params));
-			}
+		if (!test) {
+			throw new IllegalStateException(StringUtil.format(msg, params));
 		}
 		return this;
 	}
@@ -111,11 +112,9 @@ public final class Assertion {
 	}
 
 	public Assertion isNotBlank(final String str, final String msg, final Object... params) {
-		if (enabled) {
-			isNotNull(str, msg, params);
-			if (StringUtil.isBlank(str)) {
-				throw new IllegalArgumentException(StringUtil.format(msg, params));
-			}
+		isNotNull(str, msg, params);
+		if (StringUtil.isBlank(str)) {
+			throw new IllegalArgumentException(StringUtil.format(msg, params));
 		}
 		return this;
 	}

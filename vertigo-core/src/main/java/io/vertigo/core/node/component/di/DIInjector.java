@@ -94,7 +94,7 @@ public final class DIInjector {
 
 			//On vérifie que si il s'agit d'un champ non primitif alors ce champs n'avait pas été initialisé
 			Assertion.when(!field.getType().isPrimitive())
-					.isTrue(null == ClassUtil.get(instance, field), "field '{0}' is already initialized", field);
+					.isTrue(() -> null == ClassUtil.get(instance, field), "field '{0}' is already initialized", field);
 			ClassUtil.set(instance, field, injected);
 		}
 	}

@@ -127,12 +127,22 @@ public final class AssertionTest {
 	@Test
 	public void testWhen() {
 		final Optional<String> option1 = Optional.empty();
-		Assertion.when(option1.isPresent())
-				.isTrue(() -> option1.get() != null, "fail");
-
 		final Optional<String> option2 = Optional.of("test");
+		Assertion.when(option1.isPresent())
+				.isTrue(() -> option1.get() != null, "fail")
+				.isTrue(() -> option1.get() == null, "fail");
 		Assertion.when(option2.isPresent())
-				.isTrue(() -> option2.get() != null, "fail");
+				.isTrue(() -> option2.get() != null, "not null")
+				.isTrue(() -> option2.get().startsWith("test"), "invalid prefix")
+				.isFalse(() -> option2.get().length() > 4, "invalid size");
+	}
+
+	@Test
+	public void testWhenFail() {
+		Assertions.assertThrows(IllegalStateException.class,
+				() -> Assertion.when(true)
+						.isTrue(() -> 1 != 2, "success")
+						.isTrue(() -> 1 == 2, "fail"));
 	}
 
 }
