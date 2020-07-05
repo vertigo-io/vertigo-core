@@ -77,8 +77,16 @@ public final class Assertion {
 	 * @param ifCondition condition of this assertion
 	 * @return Assertion to check if condition is true
 	 */
-	public static Test when(final boolean ifCondition) {
-		return ifCondition ? ENABLED : DISABLED;
+	public static Test when(final boolean condition) {
+		return condition ? ENABLED : DISABLED;
+	}
+
+	/**
+	 * @param tets Test
+	 * @return Assertion to check if condition is true
+	 */
+	public Assertion check(final Test test) {
+		return this;
 	}
 
 	public static Assertion check() {
