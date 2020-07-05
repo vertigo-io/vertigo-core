@@ -56,11 +56,11 @@ public final class ConnectorConfig {
 				.isNotNull(apiClassOpt)
 				.isNotNull(implClass)
 				.isTrue(Connector.class.isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, Connector.class)
-				.isNotNull(params);
-		Assertion.when(apiClassOpt.isPresent())
-				.isTrue(() -> Connector.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must implement {1}", apiClassOpt, Connector.class)
-				.isTrue(() -> apiClassOpt.get().isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClassOpt)
-				.isTrue(() -> apiClassOpt.get().isInterface(), "api class {0} must be an interface", apiClassOpt);
+				.isNotNull(params)
+				.when(apiClassOpt.isPresent(), () -> Assertion.test()
+						.isTrue(Connector.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must implement {1}", apiClassOpt, Connector.class)
+						.isTrue(apiClassOpt.get().isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClassOpt)
+						.isTrue(apiClassOpt.get().isInterface(), "api class {0} must be an interface", apiClassOpt));
 		//-----
 		this.apiClassOpt = apiClassOpt;
 		this.implClass = implClass;

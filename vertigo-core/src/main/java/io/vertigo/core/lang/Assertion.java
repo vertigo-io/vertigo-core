@@ -19,7 +19,7 @@
 package io.vertigo.core.lang;
 
 import java.util.Objects;
-import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 import io.vertigo.core.util.StringUtil;
 
@@ -43,27 +43,18 @@ import io.vertigo.core.util.StringUtil;
  * @author fconstantin
  */
 public final class Assertion {
-	private static final Test ENABLED = new Test(true);
-	private static final Test DISABLED = new Test(false);
 
-	public static final class Test {
-		private final boolean enabled;
+	@FunctionalInterface
+	public interface Test {
+		void test();
 
-		private Test(final boolean enabled) {
-			this.enabled = enabled;
-		}
-
-		public Test isTrue(final BooleanSupplier test, final String msg, final Object... params) {
-			if (enabled) {
-				INSTANCE.isTrue(test.getAsBoolean(), msg, params);
-			}
+		default Test isTrue(final boolean test, final String msg, final Object... params) {
+			INSTANCE.isTrue(test, msg, params);
 			return this;
 		}
 
-		public Test isFalse(final BooleanSupplier test, final String msg, final Object... params) {
-			if (enabled) {
-				INSTANCE.isFalse(test.getAsBoolean(), msg, params);
-			}
+		default Test isFalse(final boolean test, final String msg, final Object... params) {
+			INSTANCE.isFalse(test, msg, params);
 			return this;
 		}
 	}
@@ -71,22 +62,23 @@ public final class Assertion {
 	private Assertion() {
 	}
 
+	private static final Test TEST = () -> {
+	};
 	private static final Assertion INSTANCE = new Assertion();
 
 	/**
 	 * @param ifCondition condition of this assertion
 	 * @return Assertion to check if condition is true
 	 */
-	public static Test when(final boolean condition) {
-		return condition ? ENABLED : DISABLED;
+	public Assertion when(final boolean condition, Supplier<Test> testSupplier) {
+		if (condition) {
+			isValid(testSupplier.get());
+		}
+		return INSTANCE;
 	}
 
-	/**
-	 * @param tets Test
-	 * @return Assertion to check if condition is true
-	 */
-	public Assertion check(final Test test) {
-		return this;
+	public static Test test() {
+		return TEST;
 	}
 
 	public static Assertion check() {
@@ -95,6 +87,15 @@ public final class Assertion {
 
 	public Assertion isNotNull(final Object o) {
 		Objects.requireNonNull(o);
+		return this;
+	}
+
+	/**
+	 * @param test Test
+	 * @return Assertion to check if condition is true
+	 */
+	public Assertion isValid(final Test test) {
+		test.test();
 		return this;
 	}
 

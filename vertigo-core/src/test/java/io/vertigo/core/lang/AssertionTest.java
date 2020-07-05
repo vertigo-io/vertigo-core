@@ -125,23 +125,6 @@ public final class AssertionTest {
 	}
 
 	@Test
-	public void testWhenForm1() {
-		final Optional<String> option1 = Optional.empty();
-		final Optional<String> option2 = Optional.of("test");
-		//--
-		Assertion.check()
-				.isNotNull(option1)
-				.isNotNull(option2);
-		Assertion.when(option1.isPresent())
-				.isTrue(() -> option1.get() != null, "fail")
-				.isTrue(() -> option1.get() == null, "fail");
-		Assertion.when(option2.isPresent())
-				.isTrue(() -> option2.get() != null, "not null")
-				.isTrue(() -> option2.get().startsWith("test"), "invalid prefix")
-				.isTrue(() -> option2.get().length() < 5, "invalid size");
-	}
-
-	@Test
 	public void testWhenForm2() {
 		final Optional<String> option1 = Optional.empty();
 		final Optional<String> option2 = Optional.of("test");
@@ -149,35 +132,25 @@ public final class AssertionTest {
 		Assertion.check()
 				.isNotNull(option1)
 				.isNotNull(option2)
-				.check(Assertion.when(option1.isPresent())
-						.isTrue(() -> option1.get() != null, "fail")
-						.isTrue(() -> option1.get() == null, "fail"))
-				.check(Assertion.when(option2.isPresent())
-						.isTrue(() -> option2.get() != null, "not null")
-						.isTrue(() -> option2.get().startsWith("test"), "invalid prefix")
-						.isTrue(() -> option2.get().length() < 5, "invalid size"));
+				//test when(false) 
+				.when(option1.isPresent(), () -> Assertion.test()
+						.isTrue(option1.get() != null, "fail")
+						.isTrue(option1.get() == null, "fail"))
+				//test when(true) 
+				.when(option2.isPresent(), () -> Assertion.test()
+						.isTrue(option2.get() != null, "not null")
+						.isTrue(option2.get().startsWith("test"), "invalid prefix")
+						.isTrue(option2.get().length() < 5, "invalid size"));
 	}
 
 	@Test
-	public void testWhenFailForm1() {
-		Assertions.assertThrows(IllegalStateException.class,
-				() -> {
-					Assertion.check()
-							.isTrue(0 != 1, "no condition => success");
-					Assertion.when(true)
-							.isTrue(() -> 1 != 2, "success")
-							.isTrue(() -> 1 == 2, "fail");
-				});
-	}
-
-	@Test
-	public void testWhenFailForm2() {
+	public void testWhenFail() {
 		Assertions.assertThrows(IllegalStateException.class,
 				() -> Assertion.check()
 						.isTrue(0 != 1, "no condition => success")
-						.check(Assertion.when(true)
-								.isTrue(() -> 1 != 2, "success")
-								.isTrue(() -> 1 == 2, "fail")));
+						.when(true, () -> Assertion.test()
+								.isTrue(1 != 2, "success")
+								.isTrue(1 == 2, "fail")));
 	}
 
 }
