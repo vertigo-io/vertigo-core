@@ -93,7 +93,7 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 		//-----
 		final Object previous = components.put(componentId, component);
 		Assertion.check()
-				.isTrue(previous == null, "component '{0}' already registered", componentId);
+				.isNull(previous , "component '{0}' already registered", componentId);
 	}
 
 	/** {@inheritDoc} */

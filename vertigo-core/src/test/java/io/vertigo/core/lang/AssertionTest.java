@@ -133,11 +133,11 @@ public final class AssertionTest {
 				.isNotNull(option1)
 				.isNotNull(option2)
 				//test when(false) 
-				.when(option1.isPresent(), () -> Assertion.test()
+				.when(option1.isPresent(), () -> Assertion.check()
 						.isTrue(option1.get() != null, "fail")
 						.isTrue(option1.get() == null, "fail"))
 				//test when(true) 
-				.when(option2.isPresent(), () -> Assertion.test()
+				.when(option2.isPresent(), () -> Assertion.check()
 						.isTrue(option2.get() != null, "not null")
 						.isTrue(option2.get().startsWith("test"), "invalid prefix")
 						.isTrue(option2.get().length() < 5, "invalid size"));
@@ -148,7 +148,7 @@ public final class AssertionTest {
 		Assertions.assertThrows(IllegalStateException.class,
 				() -> Assertion.check()
 						.isTrue(0 != 1, "no condition => success")
-						.when(true, () -> Assertion.test()
+						.when(true, () -> Assertion.check()
 								.isTrue(1 != 2, "success")
 								.isTrue(1 == 2, "fail")));
 	}

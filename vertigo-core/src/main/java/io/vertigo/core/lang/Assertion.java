@@ -24,87 +24,118 @@ import java.util.function.Supplier;
 import io.vertigo.core.util.StringUtil;
 
 /**
- * Assertions have been introduced by  B.Meyer with a language called Eiffel.
- *
+ * Assertions have been introduced by  B.Meyer in a language called Eiffel.
+ * 
  * An assertion allows you to design by contract.
- * Each time an assetion fails, an specific exception is thrown.
- * - checkNotNull     throws NullPointerException
- * - checkArgument    throws IllegalArgumentException
- * - checkArgNotEmpty throws IllegalArgumentException
- * - checkState       throws IllegalStateException
+ * Each time an assertion fails, an specific exception is thrown.
+ * 
+ * The following assertions help you to test if 
+ * - an object is non null => isNotNull
+ * - a string is not blank (and not null) =>isNotBlank
+ * - an expression is true or false =>isTrue or isFalse 
+ * 
+ * You can have a condition before running an assertion => when
+ * That's usefull when you want to test a pattern of an object that can be null.
+ *  
+ * This assertion should be written in a fluent style to group all the assertions 
+ * into a single block of code. 
  *
  * Assertion can define a message and args.
  * "hello {0}, an error occured on '{1}'", "foo", "bar"
+ *  returns 
  *  hello foo, an error occured on 'bar'
  *
- * You can use ' inside the message.
+ * You can use the simple quote ' inside the message.
  *
- *
- * @author fconstantin
+ * @author pchretien, fconstantin
  */
 public final class Assertion {
-
-	@FunctionalInterface
-	public interface Test {
-		void test();
-
-		default Test isTrue(final boolean test, final String msg, final Object... params) {
-			INSTANCE.isTrue(test, msg, params);
-			return this;
-		}
-
-		default Test isFalse(final boolean test, final String msg, final Object... params) {
-			INSTANCE.isFalse(test, msg, params);
-			return this;
-		}
-	}
-
 	private Assertion() {
+		super();
 	}
 
-	private static final Test TEST = () -> {
-	};
 	private static final Assertion INSTANCE = new Assertion();
-
-	/**
-	 * @param ifCondition condition of this assertion
-	 * @return Assertion to check if condition is true
-	 */
-	public Assertion when(final boolean condition, Supplier<Test> testSupplier) {
-		if (condition) {
-			isValid(testSupplier.get());
-		}
-		return INSTANCE;
-	}
-
-	public static Test test() {
-		return TEST;
-	}
 
 	public static Assertion check() {
 		return INSTANCE;
 	}
 
+	/**
+	 * Evaluates an assertion when a condition is fulfilled.
+	 * 
+	 * @param condition the condition to check the assertion 
+	 * @param assertionSupplier the assertion to check when the condition is fulfilled
+	 * @return the current assertion
+	 */
+	public Assertion when(final boolean condition, Supplier<Assertion> assertionSupplier) {
+		if (condition) {
+			assertionSupplier.get();
+		}
+		return INSTANCE;
+	}
+
+	/**
+	 * Checks if an object is not null.
+	 * Returns the famous NullPointerException if not.
+	 * 
+	 * @param o the object
+	 * @return the current assertion
+	 */
 	public Assertion isNotNull(final Object o) {
 		Objects.requireNonNull(o);
 		return this;
 	}
 
 	/**
-	 * @param test Test
-	 * @return Assertion to check if condition is true
+	 * Checks if an object is null.
+	 * Returns an IllegalStateException if not 
+	 * @param o the object
+	 * @return the current assertion
 	 */
-	public Assertion isValid(final Test test) {
-		test.test();
-		return this;
+	public Assertion isNull(final Object o) {
+		return isNull(o, "this object must be null");
 	}
 
+	/**
+	 * Checks if an object is not null.
+	 * Returns the famous NullPointerException with a pretty message if not.
+	 * 
+	 * @param o the object
+	 * @param msg the message 
+	 * @param params the params of the message
+	 * @return the current assertion
+	 */
 	public Assertion isNotNull(final Object o, final String msg, final Object... params) {
 		//Attention si o est un Boolean : il peut s'agir du resultat d'un test (boolean) qui a été autoboxé en Boolean
 		Objects.requireNonNull(o, () -> StringUtil.format(msg, params));
 		return this;
 	}
 
+	/**
+	 * Checks if an object is null.
+	 * Returns an illegalStateException with a pretty message if not.
+	 * 
+	 * @param o the object
+	 * @param msg the message 
+	 * @param params the params of the message
+	 * @return the current assertion
+	 */
+	public Assertion isNull(final Object o, final String msg, final Object... params) {
+		if (o != null) {
+			throw new IllegalArgumentException(StringUtil.format(msg, params));
+		}
+		return this;
+	}
+
+	/**
+	 * Checks if a boolean expression is True 
+	 * Returns an IllegalStateException with a pretty message if not.
+	 * 
+	 * @param test the boolean expression
+	 * @param msg the message 
+	 * @param params the params of the message
+	 * @return the current assertion
+	 */
 	public Assertion isTrue(final boolean test, final String msg, final Object... params) {
 		if (!test) {
 			throw new IllegalStateException(StringUtil.format(msg, params));
@@ -112,14 +143,39 @@ public final class Assertion {
 		return this;
 	}
 
+	/**
+	 * Checks if a boolean expression is False 
+	 * Returns an IllegalStateException with a pretty message if not.
+	 * 
+	 * @param test the boolean expression
+	 * @param msg the message 
+	 * @param params the params of the message
+	 * @return the current assertion
+	 */
 	public Assertion isFalse(final boolean test, final String msg, final Object... params) {
 		return isTrue(!test, msg, params);
 	}
 
+	/**
+	 * Checks if a string is not blank (and not empty). 
+	 * Returns an IllegalArgumentException if not.
+	 * 
+	 * @param str the string
+	 * @return the current assertion
+	 */
 	public Assertion isNotBlank(final String str) {
 		return isNotBlank(str, "String must not be empty");
 	}
 
+	/**
+	 * Checks if a string is not blank (and not empty). 
+	 * Returns an IllegalArgumentException with a pretty message if not.
+	 * 
+	 * @param str the string
+	 * @param msg the message 
+	 * @param params the params of the message
+	 * @return the current assertion
+	 */
 	public Assertion isNotBlank(final String str, final String msg, final Object... params) {
 		isNotNull(str, msg, params);
 		if (StringUtil.isBlank(str)) {
