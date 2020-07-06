@@ -69,7 +69,7 @@ public final class Assertion {
 	 */
 	public Assertion when(final boolean condition, Supplier<Assertion> assertionSupplier) {
 		if (condition) {
-			assertionSupplier.get();
+			isValid(assertionSupplier);
 		}
 		return INSTANCE;
 	}
@@ -87,16 +87,6 @@ public final class Assertion {
 	}
 
 	/**
-	 * Checks if an object is null.
-	 * Returns an IllegalStateException if not 
-	 * @param o the object
-	 * @return the current assertion
-	 */
-	public Assertion isNull(final Object o) {
-		return isNull(o, "this object must be null");
-	}
-
-	/**
 	 * Checks if an object is not null.
 	 * Returns the famous NullPointerException with a pretty message if not.
 	 * 
@@ -109,6 +99,16 @@ public final class Assertion {
 		//Attention si o est un Boolean : il peut s'agir du resultat d'un test (boolean) qui a été autoboxé en Boolean
 		Objects.requireNonNull(o, () -> StringUtil.format(msg, params));
 		return this;
+	}
+
+	/**
+	 * Checks if an object is null.
+	 * Returns an IllegalStateException if not 
+	 * @param o the object
+	 * @return the current assertion
+	 */
+	public Assertion isNull(final Object o) {
+		return isNull(o, "this object must be null");
 	}
 
 	/**
@@ -184,4 +184,15 @@ public final class Assertion {
 		return this;
 	}
 
+	/**
+	 * Checks if an assertion supplied is valid.
+	 * Returns the Exception thrown by the assertion if not.
+	 * 
+	 * @param assertionSupplier the assertion supplied
+	 * @return the current assertion
+	 */
+	public Assertion isValid(Supplier<Assertion> assertionSupplier) {
+		assertionSupplier.get();
+		return this;
+	}
 }
