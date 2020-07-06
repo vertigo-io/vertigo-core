@@ -104,27 +104,21 @@ public final class HealthAnalyticsUtil {
 	}
 
 	private static HealthCheck buildHealthCheck(final HealthCheckDefinition healthCheckDefinition) {
+		final HealthMeasure healthMeasure ;
 		try {
-			final HealthMeasure healthMeasure = healthCheckDefinition.getCheckMethod().get();
-			return new HealthCheck(
-					healthCheckDefinition.getHealthCheckName(),
-					healthCheckDefinition.getChecker(),
-					healthCheckDefinition.getModule(),
-					healthCheckDefinition.getFeature(),
-					Instant.now(),
-					healthMeasure);
+			healthMeasure = healthCheckDefinition.getCheckMethod().get();
 		} catch (final Exception e) {
-			final HealthMeasure healthMeasure = HealthMeasure.builder()
+			HealthMeasure healthMeasure = HealthMeasure.builder()
 					.withRedStatus("Impossible to get status", e)
 					.build();
-			return new HealthCheck(
-					healthCheckDefinition.getHealthCheckName(),
-					healthCheckDefinition.getChecker(),
-					healthCheckDefinition.getModule(),
-					healthCheckDefinition.getFeature(),
-					Instant.now(),
-					healthMeasure);
-		}
+		}	
+		return new HealthCheck(
+				healthCheckDefinition.getHealthCheckName(),
+				healthCheckDefinition.getChecker(),
+				healthCheckDefinition.getModule(),
+				healthCheckDefinition.getFeature(),
+				Instant.now(),
+				healthMeasure);
 	}
 
 	public static HealthStatus aggregate(final List<HealthCheck> healthChecks) {
