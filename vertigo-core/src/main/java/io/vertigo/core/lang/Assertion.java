@@ -24,6 +24,8 @@ import java.util.function.Supplier;
 import io.vertigo.core.util.StringUtil;
 
 /**
+ * Assertions help us to build better code, with more robustness.
+ * 
  * Assertions have been introduced by  B.Meyer in a language called Eiffel.
  * 
  * An assertion allows you to design by contract.
@@ -76,7 +78,7 @@ public final class Assertion {
 
 	/**
 	 * Checks if an object is not null.
-	 * Returns the famous NullPointerException if not.
+	 * Throws the famous NullPointerException if not.
 	 * 
 	 * @param o the object
 	 * @return the current assertion
@@ -88,7 +90,7 @@ public final class Assertion {
 
 	/**
 	 * Checks if an object is not null.
-	 * Returns the famous NullPointerException with a pretty message if not.
+	 * Throws the famous NullPointerException with a pretty message if not.
 	 * 
 	 * @param o the object
 	 * @param msg the message 
@@ -103,7 +105,7 @@ public final class Assertion {
 
 	/**
 	 * Checks if an object is null.
-	 * Returns an IllegalStateException if not 
+	 * Throws an IllegalStateException if not 
 	 * @param o the object
 	 * @return the current assertion
 	 */
@@ -113,7 +115,7 @@ public final class Assertion {
 
 	/**
 	 * Checks if an object is null.
-	 * Returns an illegalStateException with a pretty message if not.
+	 * Throws an illegalStateException with a pretty message if not.
 	 * 
 	 * @param o the object
 	 * @param msg the message 
@@ -129,7 +131,7 @@ public final class Assertion {
 
 	/**
 	 * Checks if a boolean expression is True 
-	 * Returns an IllegalStateException with a pretty message if not.
+	 * Throws an IllegalStateException with a pretty message if not.
 	 * 
 	 * @param test the boolean expression
 	 * @param msg the message 
@@ -145,7 +147,7 @@ public final class Assertion {
 
 	/**
 	 * Checks if a boolean expression is False 
-	 * Returns an IllegalStateException with a pretty message if not.
+	 * Throws an IllegalStateException with a pretty message if not.
 	 * 
 	 * @param test the boolean expression
 	 * @param msg the message 
@@ -158,7 +160,7 @@ public final class Assertion {
 
 	/**
 	 * Checks if a string is not blank (and not empty). 
-	 * Returns an IllegalArgumentException if not.
+	 * Throws an IllegalArgumentException if not.
 	 * 
 	 * @param str the string
 	 * @return the current assertion
@@ -169,7 +171,7 @@ public final class Assertion {
 
 	/**
 	 * Checks if a string is not blank (and not empty). 
-	 * Returns an IllegalArgumentException with a pretty message if not.
+	 * Throws an IllegalArgumentException with a pretty message if not.
 	 * 
 	 * @param str the string
 	 * @param msg the message 
@@ -186,7 +188,7 @@ public final class Assertion {
 
 	/**
 	 * Checks if an assertion supplied is valid.
-	 * Returns the Exception thrown by the assertion if not.
+	 * Throws the Exception thrown by the assertion if not.
 	 * 
 	 * @param assertionSupplier the assertion supplied
 	 * @return the current assertion
