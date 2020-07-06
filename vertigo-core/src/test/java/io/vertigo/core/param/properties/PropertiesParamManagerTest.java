@@ -18,6 +18,7 @@
  */
 package io.vertigo.core.param.properties;
 
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.AbstractParamManagerTest;
 import io.vertigo.core.param.Param;
@@ -32,16 +33,14 @@ public final class PropertiesParamManagerTest extends AbstractParamManagerTest {
 	protected NodeConfig buildNodeConfig() {
 		final String locales = "fr_FR";
 
-		// @formatter:off
 		return NodeConfig.builder()
-			.beginBoot()
-				.withLocales(locales)
-				.addPlugin( ClassPathResourceResolverPlugin.class)
-				.addPlugin( PropertiesParamPlugin.class,
-						Param.of("url", "io/vertigo/core/param/properties/app-config.properties"))
-			.endBoot()
-			.build();
-		// @formatter:on
+				.withBoot(BootConfig.builder()
+						.withLocales(locales)
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.addPlugin(PropertiesParamPlugin.class,
+								Param.of("url", "io/vertigo/core/param/properties/app-config.properties"))
+						.build())
+				.build();
 	}
 
 }

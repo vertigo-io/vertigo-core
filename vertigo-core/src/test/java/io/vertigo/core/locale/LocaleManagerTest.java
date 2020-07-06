@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.locale.data.CityGuide;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 
 /**
@@ -45,9 +46,9 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 		//les locales doivent être séparées par des virgules
 		final String locales = "fr_FR, en , de_DE";
 		return NodeConfig.builder()
-				.beginBoot()
-				.withLocales(locales)
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.withLocales(locales)
+						.build())
 				.build();
 	}
 
@@ -58,7 +59,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testDictionary() {
-		Assertions.assertThrows(IllegalStateException.class,
+		Assertions.assertThrows(IllegalArgumentException.class,
 				//On ne charge pas deux fois un dictionnaire
 				() -> localeManager.add("io.vertigo.core.locale.data.city-guide", CityGuide.values()));
 	}

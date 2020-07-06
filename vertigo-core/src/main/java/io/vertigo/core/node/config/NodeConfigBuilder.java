@@ -38,15 +38,13 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	private String myEndPoint;
 	//---
 	private final ListBuilder<ModuleConfig> myModuleConfigsBuilder = new ListBuilder<>();
-	private final BootConfigBuilder myBootConfigBuilder;
+	private BootConfig myBootConfig;
 	private final ListBuilder<ComponentInitializerConfig> myComponentInitializerConfigsBuilder = new ListBuilder<>();
 
 	/**
 	 * Constructor.
 	 */
 	NodeConfigBuilder() {
-		myBootConfigBuilder = BootConfig.builder(this);
-
 	}
 
 	/**
@@ -54,8 +52,11 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	 * There is exactly one BootConfig per NodeConfig.
 	 * @return this builder
 	 */
-	public BootConfigBuilder beginBoot() {
-		return myBootConfigBuilder;
+	public NodeConfigBuilder withBoot(BootConfig bootConfig) {
+		Assertion.check().isNotNull(bootConfig);
+		//---
+		this.myBootConfig = bootConfig;
+		return this;
 	}
 
 	/**
@@ -65,7 +66,7 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	 */
 	public NodeConfigBuilder withAppName(final String appName) {
 		Assertion.check()
-				.isNull(myAppName , "appName '{0}' is not allowed. appName is already defined as '{1}'", appName, myAppName)
+				.isNull(myAppName, "appName '{0}' is not allowed. appName is already defined as '{1}'", appName, myAppName)
 				.isNotBlank(appName);
 		// ---
 		myAppName = appName;
@@ -80,7 +81,7 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	 */
 	public NodeConfigBuilder withNodeId(final String nodeId) {
 		Assertion.check()
-				.isNull(myNodeId , "nodeId '{0}' is not allowed. nodeId is already defined as '{1}'", nodeId, myNodeId)
+				.isNull(myNodeId, "nodeId '{0}' is not allowed. nodeId is already defined as '{1}'", nodeId, myNodeId)
 				.isNotBlank(nodeId);
 		// ---
 		myNodeId = nodeId;
@@ -95,7 +96,7 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	 */
 	public NodeConfigBuilder withEndPoint(final String endPoint) {
 		Assertion.check()
-				.isNull(myEndPoint , "endPoint '{0}' is not allowed. endPoint is already defined as '{1}'", endPoint, myEndPoint)
+				.isNull(myEndPoint, "endPoint '{0}' is not allowed. endPoint is already defined as '{1}'", endPoint, myEndPoint)
 				.isNotBlank(endPoint);
 		// ---
 		myEndPoint = endPoint;
@@ -143,7 +144,7 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 				myAppName,
 				myNodeId,
 				Optional.ofNullable(myEndPoint),
-				myBootConfigBuilder.build(),
+				myBootConfig == null ? BootConfig.builder().build() : myBootConfig,
 				myModuleConfigsBuilder.unmodifiable().build(),
 				myComponentInitializerConfigsBuilder.unmodifiable().build());
 	}

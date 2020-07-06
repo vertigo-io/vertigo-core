@@ -51,7 +51,6 @@ import io.vertigo.core.resource.ResourceManager;
  */
 public final class BootConfigBuilder implements Builder<BootConfig> {
 	private Optional<LogConfig> myLogConfigOpt = Optional.empty(); //par défaut
-	private final NodeConfigBuilder nodeConfigBuilder;
 	private boolean myVerbose;
 	private AopPlugin myAopPlugin = new JavassistAopPlugin(); //By default
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
@@ -60,11 +59,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	/**
 	 * @param nodeConfigBuilder Parent NodeConfig builder
 	 */
-	BootConfigBuilder(final NodeConfigBuilder nodeConfigBuilder) {
-		Assertion.check()
-				.isNotNull(nodeConfigBuilder);
-		//-----
-		this.nodeConfigBuilder = nodeConfigBuilder;
+	BootConfigBuilder() {
 	}
 
 	/**
@@ -155,13 +150,6 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 */
 	public BootConfigBuilder addAnalyticsConnectorPlugin(final Class<? extends AnalyticsConnectorPlugin> analyticsConnectorPluginClass, final Param... params) {
 		return addPlugin(analyticsConnectorPluginClass, params);
-	}
-
-	/**
-	 * @return NodeConfig builder
-	 */
-	public NodeConfigBuilder endBoot() {
-		return nodeConfigBuilder;
 	}
 
 	/**

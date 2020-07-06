@@ -47,8 +47,6 @@ public final class DaemonManagerTest extends AbstractTestCaseJU5 {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.endBoot()
 				.addModule(ModuleConfig.builder("myAspects")
 						.addAspect(DaemonFakeAspect.class)
 						.build())

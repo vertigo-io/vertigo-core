@@ -40,6 +40,7 @@ import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.ComponentInitializer;
 import io.vertigo.core.node.component.Plugin;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.BootConfigBuilder;
 import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
@@ -60,13 +61,12 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 	private static final Object[] EMPTY_ARRAY = new Object[0];
 
 	private final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder();
-
+	private final BootConfigBuilder bootConfigBuilder = BootConfig.builder();
 	private final List<String> activeFlags;
 	private final YamlConfigParams params;
 
 	public YamlAppConfigBuilder(final Properties params) {
-		Assertion.check()
-				.isNotNull(params);
+		Assertion.check().isNotNull(params);
 		//---
 		if (params.containsKey("boot.activeFlags")) {
 			activeFlags = Arrays.asList(params.getProperty("boot.activeFlags").split(";"));
@@ -75,14 +75,6 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 			activeFlags = Collections.emptyList();
 		}
 		this.params = new YamlConfigParams(params);
-	}
-
-	/**
-	 * Begin the boot config of the app.
-	 * @return the bootConfig builder
-	 */
-	public BootConfigBuilder beginBoot() {
-		return nodeConfigBuilder.beginBoot();
 	}
 
 	/**
@@ -154,12 +146,10 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 				final String defaultZoneId = yamlAppConfig.boot.params.get("defaultZoneId");
 				if (locales != null) {
 					if (defaultZoneId == null) {
-						nodeConfigBuilder
-								.beginBoot()
+						bootConfigBuilder
 								.withLocales(locales);
 					} else {
-						nodeConfigBuilder
-								.beginBoot()
+						bootConfigBuilder
 								.withLocalesAndDefaultZoneId(locales, defaultZoneId);
 					}
 				}
@@ -171,7 +161,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 						// ---
 						final Map.Entry<String, Map<String, Object>> pluginEntry = plugin.entrySet().iterator().next();
 						if (isEnabledByFlag(getFlagsOfMapParams(pluginEntry.getValue()))) {
-							nodeConfigBuilder.beginBoot()
+							bootConfigBuilder
 									.addPlugin(
 											ClassUtil.classForName(pluginEntry.getKey(), Plugin.class),
 											pluginEntry.getValue().entrySet().stream()
@@ -307,17 +297,18 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 	 * @return  this builder
 	 */
 	public YamlAppConfigBuilder withLogConfig(final LogConfig logConfig) {
-		Assertion.check()
-				.isNotNull(logConfig);
+		Assertion.check().isNotNull(logConfig);
 		//-----
-		nodeConfigBuilder.beginBoot().withLogConfig(logConfig).endBoot();
+		bootConfigBuilder.withLogConfig(logConfig);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public NodeConfig build() {
-		return nodeConfigBuilder.build();
+		return nodeConfigBuilder
+				.withBoot(bootConfigBuilder.build())
+				.build();
 	}
 
 	/**
@@ -327,16 +318,14 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 	 * @return URL non null
 	 */
 	private static URL createURL(final String fileName, final Class<?> relativeRootClass) {
-		Assertion.check()
-				.isNotBlank(fileName);
+		Assertion.check().isNotBlank(fileName);
 		//-----
 		try {
 			return new URL(fileName);
 		} catch (final MalformedURLException e) {
 			//Si fileName non trouvé, on recherche dans le classPath
 			final URL url = relativeRootClass.getResource(fileName);
-			Assertion.check()
-					.isNotNull(url, "Impossible de récupérer le fichier [" + fileName + "]");
+			Assertion.check().isNotNull(url, "Impossible de récupérer le fichier [" + fileName + "]");
 			return url;
 		}
 	}

@@ -31,8 +31,6 @@ public final class Aspect2Test {
 
 	protected static NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.endBoot()
 				.addModule(ModuleConfig.builder("aspects")
 						.addAspect(OneMoreAspect.class)
 						.build())

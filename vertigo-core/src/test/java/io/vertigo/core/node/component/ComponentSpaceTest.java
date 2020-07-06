@@ -37,6 +37,7 @@ import io.vertigo.core.node.component.data.SomeManager;
 import io.vertigo.core.node.component.data.SomeMonoConnectorPlugin;
 import io.vertigo.core.node.component.data.SomeMultiConnectorPlugin;
 import io.vertigo.core.node.component.data.SomeOptionalPlugin;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.LogConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -47,9 +48,9 @@ public final class ComponentSpaceTest {
 	@Test
 	public void testHome() {
 		final NodeConfig nodeConfig = NodeConfig.builder()
-				.beginBoot()
-				.withLogConfig(new LogConfig("/log4j.xml"))
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.withLogConfig(new LogConfig("/log4j.xml"))
+						.build())
 				.addModule(ModuleConfig.builder("Bio")
 						.addComponent(BioManager.class, BioManagerImpl.class)
 						.addComponent(MathManager.class, MathManagerImpl.class,
@@ -70,9 +71,9 @@ public final class ComponentSpaceTest {
 	@Test
 	public void testHome2() {
 		final NodeConfig nodeConfig = NodeConfig.builder()
-				.beginBoot()
-				.withLogConfig(new LogConfig("/log4j.xml"))
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.withLogConfig(new LogConfig("/log4j.xml"))
+						.build())
 				.addModule(ModuleConfig.builder("Bio")
 						.addComponent(BioManager.class, BioManagerImpl.class)
 						//This plugin DummyPlugin is not used By BioManager !!
@@ -95,9 +96,9 @@ public final class ComponentSpaceTest {
 	@Test
 	public void testHome3() {
 		final NodeConfig nodeConfig = NodeConfig.builder()
-				.beginBoot()
-				.withLogConfig(new LogConfig("/log4j.xml"))
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.withLogConfig(new LogConfig("/log4j.xml"))
+						.build())
 				.addModule(ModuleConfig.builder("Bio-core")
 						.addComponent(MathManager.class, MathManagerImpl.class,
 								Param.of("start", "100"))
@@ -117,8 +118,6 @@ public final class ComponentSpaceTest {
 	@Test
 	public void testOneConnector() {
 		final NodeConfig nodeConfig = NodeConfig.builder()
-				.beginBoot()
-				.endBoot()
 				.addModule(ModuleConfig.builder("Bio")
 						.addComponent(SomeManager.class)
 						.addConnector(SomeConnector.class, Param.of("name", "main"))
@@ -135,8 +134,6 @@ public final class ComponentSpaceTest {
 	@Test
 	public void testTwoConnectors() {
 		final NodeConfig nodeConfig = NodeConfig.builder()
-				.beginBoot()
-				.endBoot()
 				.addModule(ModuleConfig.builder("Bio")
 						.addComponent(SomeManager.class)
 						.addConnector(SomeConnector.class, Param.of("name", "first"))
@@ -154,8 +151,6 @@ public final class ComponentSpaceTest {
 	@Test
 	public void testOutsideModuleConnectors() {
 		final NodeConfig nodeConfig = NodeConfig.builder()
-				.beginBoot()
-				.endBoot()
 				.addModule(ModuleConfig.builder("Connector")
 						.addConnector(SomeConnector.class, Param.of("name", "first"))
 						.addConnector(SomeConnector.class, Param.of("name", "second"))
@@ -175,8 +170,6 @@ public final class ComponentSpaceTest {
 	@Test
 	public void testOutsideModuleOptionalConnector() {
 		final NodeConfig nodeConfig = NodeConfig.builder()
-				.beginBoot()
-				.endBoot()
 				.addModule(ModuleConfig.builder("Connector")
 						.addConnector(SomeConnector.class, Param.of("name", "first"))
 						.build())
@@ -195,8 +188,6 @@ public final class ComponentSpaceTest {
 	@Test
 	public void testOutsideModuleOptionalConnector2() {
 		final NodeConfig nodeConfig = NodeConfig.builder()
-				.beginBoot()
-				.endBoot()
 				.addModule(ModuleConfig.builder("Bio")
 						.addComponent(SomeManager.class)
 						.addPlugin(SomeOptionalPlugin.class)

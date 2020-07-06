@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.plugins.resource.local.LocalResourceResolverPlugin;
@@ -44,16 +45,14 @@ public final class ResourceManagerTest extends AbstractTestCaseJU5 {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
-		//@formatter:off
 		return NodeConfig.builder()
-			.beginBoot()
-				.withLocales(locales)
-				.addPlugin(LocalResourceResolverPlugin.class)
-				.addPlugin(URLResourceResolverPlugin.class)
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-			.endBoot()
-			.build();
-		// @formatter:on
+				.withBoot(BootConfig.builder()
+						.withLocales(locales)
+						.addPlugin(LocalResourceResolverPlugin.class)
+						.addPlugin(URLResourceResolverPlugin.class)
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.build())
+				.build();
 	}
 
 	@Test

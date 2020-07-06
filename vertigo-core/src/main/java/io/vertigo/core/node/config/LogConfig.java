@@ -35,8 +35,7 @@ public final class LogConfig {
 	 * @param fileName the log4J.xml fileName
 	 */
 	public LogConfig(final String fileName) {
-		Assertion.check()
-				.isNotBlank(fileName);
+		Assertion.check().isNotBlank(fileName);
 		//-----
 		this.fileName = fileName;
 

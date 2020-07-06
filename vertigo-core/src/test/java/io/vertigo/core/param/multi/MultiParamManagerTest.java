@@ -18,6 +18,7 @@
  */
 package io.vertigo.core.param.multi;
 
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.AbstractParamManagerTest;
 import io.vertigo.core.param.Param;
@@ -35,18 +36,18 @@ public final class MultiParamManagerTest extends AbstractParamManagerTest {
 		final String locales = "fr_FR";
 
 		return NodeConfig.builder()
-				.beginBoot()
-				.withLocales(locales)
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.addPlugin(XmlParamPlugin.class,
-						Param.of("url", "io/vertigo/core/param/multi/app-config.xml"))
-				.addPlugin(PropertiesParamPlugin.class,
-						Param.of("url", "io/vertigo/core/param/multi/app-config.properties"))
-				.addPlugin(PropertiesParamPlugin.class,
-						Param.of("url", "io/vertigo/core/param/multi/app-config2.properties"))
-				.addPlugin(XmlParamPlugin.class,
-						Param.of("url", "io/vertigo/core/param/multi/app-config2.xml"))
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.withLocales(locales)
+						.addPlugin(ClassPathResourceResolverPlugin.class)
+						.addPlugin(XmlParamPlugin.class,
+								Param.of("url", "io/vertigo/core/param/multi/app-config.xml"))
+						.addPlugin(PropertiesParamPlugin.class,
+								Param.of("url", "io/vertigo/core/param/multi/app-config.properties"))
+						.addPlugin(PropertiesParamPlugin.class,
+								Param.of("url", "io/vertigo/core/param/multi/app-config2.properties"))
+						.addPlugin(XmlParamPlugin.class,
+								Param.of("url", "io/vertigo/core/param/multi/app-config2.xml"))
+						.build())
 				.build();
 	}
 }

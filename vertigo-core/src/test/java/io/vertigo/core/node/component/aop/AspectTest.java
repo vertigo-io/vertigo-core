@@ -49,8 +49,6 @@ public final class AspectTest extends AbstractTestCaseJU5 {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.endBoot()
 				.addModule(ModuleConfig.builder("aspects")
 						.addAspect(OneMoreAspect.class)
 						.addAspect(TenMoreAspect.class)

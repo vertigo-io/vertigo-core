@@ -31,6 +31,7 @@ import io.vertigo.core.analytics.process.data.TestAProcessConnectorPlugin;
 import io.vertigo.core.analytics.process.data.TestAnalyticsAspectServices;
 import io.vertigo.core.impl.analytics.process.AnalyticsAspect;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
@@ -61,12 +62,12 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU5 {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.withSmartLoggerAnalyticsConnector(Param.of("aggregatedBy", "test"))
-				.withSocketLoggerAnalyticsConnector()
-				.addAnalyticsConnectorPlugin(TestAProcessConnectorPlugin.class)
-				.addAnalyticsConnectorPlugin(LoggerAnalyticsConnectorPlugin.class)
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.withSmartLoggerAnalyticsConnector(Param.of("aggregatedBy", "test"))
+						.withSocketLoggerAnalyticsConnector()
+						.addAnalyticsConnectorPlugin(TestAProcessConnectorPlugin.class)
+						.addAnalyticsConnectorPlugin(LoggerAnalyticsConnectorPlugin.class)
+						.build())
 				.addModule(ModuleConfig.builder("vertigo-core-aspect")
 						.addAspect(AnalyticsAspect.class)
 						.build())

@@ -27,6 +27,7 @@ import io.vertigo.core.node.component.data.FunctionManager;
 import io.vertigo.core.node.component.data.FunctionManager1Impl;
 import io.vertigo.core.node.component.data.FunctionManager2Impl;
 import io.vertigo.core.node.component.data.SimpleFunctionPlugin;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.LogConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -91,9 +92,9 @@ public final class ComponentSpace3Test {
 	private static NodeConfig startHomeWithFunctionManager(final Class<? extends FunctionManager> implClass, final boolean withNullMult) {
 
 		return NodeConfig.builder()
-				.beginBoot()
-				.withLogConfig(new LogConfig("/log4j.xml"))
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.withLogConfig(new LogConfig("/log4j.xml"))
+						.build())
 				.addModule(ModuleConfig.builder("Function")
 						.addComponent(FunctionManager.class, implClass)
 						.addPlugin(SimpleFunctionPlugin.class,

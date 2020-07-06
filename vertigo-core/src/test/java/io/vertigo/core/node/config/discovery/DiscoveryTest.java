@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.ComponentSpace;
+import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.config.discovery.data.DiscoveryA;
@@ -41,9 +42,9 @@ public final class DiscoveryTest extends AbstractTestCaseJU5 {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.beginBoot()
-				.verbose()
-				.endBoot()
+				.withBoot(BootConfig.builder()
+						.verbose()
+						.build())
 				.addModule(ModuleConfig.builder("proxyMethod")
 						.addProxyMethod(TrueProxyMethod.class)
 						.build())
