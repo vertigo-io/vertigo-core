@@ -104,14 +104,14 @@ public final class HealthAnalyticsUtil {
 	}
 
 	private static HealthCheck buildHealthCheck(final HealthCheckDefinition healthCheckDefinition) {
-		final HealthMeasure healthMeasure ;
+		HealthMeasure healthMeasure;
 		try {
 			healthMeasure = healthCheckDefinition.getCheckMethod().get();
 		} catch (final Exception e) {
-			HealthMeasure healthMeasure = HealthMeasure.builder()
+			healthMeasure = HealthMeasure.builder()
 					.withRedStatus("Impossible to get status", e)
 					.build();
-		}	
+		}
 		return new HealthCheck(
 				healthCheckDefinition.getHealthCheckName(),
 				healthCheckDefinition.getChecker(),
