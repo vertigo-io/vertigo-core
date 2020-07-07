@@ -182,7 +182,8 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 			// more complexe module with flags and flipped features
 			if (isEnabledByFlag(yamlModuleConfig.__flags__)) {
 				final Features moduleConfigByFeatures = ClassUtil.newInstance(featuresClassName, Features.class);
-				final Map<String, Method> featureMethods = new Selector().from(moduleConfigByFeatures.getClass())
+				final Map<String, Method> featureMethods = Selector
+						.from(moduleConfigByFeatures.getClass())
 						.filterMethods(MethodConditions.annotatedWith(Feature.class))
 						.findMethods()
 						.stream()

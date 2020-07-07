@@ -52,64 +52,60 @@ import javassist.Modifier;
  */
 public final class Selector {
 	private static final Predicate ALWAYS_TRUE = o -> true;
-	private final Set<Class> classes = new HashSet<>();
+	private final Set<Class> classes;
 
 	private Predicate<Method> methodPredicates = ALWAYS_TRUE;
 	private Predicate<Class> classPredicates = ALWAYS_TRUE;
 	private Predicate<Field> fieldPredicates = ALWAYS_TRUE;
 
-	private boolean scoped;
+	private Selector(final Set<Class> classes) {
+		Assertion.check().isNotNull(classes);
+		//---
+		this.classes = classes;
+	}
 
-	private void checkScope() {
-		Assertion.check()
-				.isFalse(scoped, "Classes cannot be added to scope after filtering");
+	/**
+	 * Adds a set of classes to the scope.
+	 * 
+	 * @param classes a supplier of classes
+	 * @return the selector
+	 */
+	public static Selector from(final Collection<Class> classes) {
+		Assertion.check().isNotNull(classes);
+		//---
+		return new Selector(new HashSet(classes));
 	}
 
 	/**
 	 * Adds a class to the scope.
+	 * 
 	 * @param clazz the class to add
 	 * @return the selector
 	 */
-	public Selector from(final Class clazz) {
-		Assertion.check()
-				.isNotNull(clazz);
-		checkScope();
-		// ---
-		classes.add(clazz);
-		return this;
-	}
-
-	/**
-	 * Adds a collection of classes to the scope.
-	 * @param classes a supplier of classes
-	 * @return the selector
-	 */
-	public Selector from(final Iterable<Class> classes) {
-		Assertion.check()
-				.isNotNull(classes);
-		checkScope();
-		// ---
-		classes.forEach(this::from);
-		return this;
+	public static Selector from(final Class clazz) {
+		Assertion.check().isNotNull(clazz);
+		//---
+		return from(Set.of(clazz));
 	}
 
 	/**
 	 * Adds all the classes with a package prefix in the scope.
+	 * 
 	 * @param packageName the root package
 	 * @return the selector
 	 */
-	public Selector from(final String packageName) {
-		Assertion.check()
-				.isNotBlank(packageName);
-		checkScope();
+	public static Selector from(final String packageName) {
+		Assertion.check().isNotBlank(packageName);
 		// ---
-		new Reflections(packageName,
+		Set<Class> classes = new Reflections(packageName,
 				new TypeElementsScanner().includeAnnotations(false).includeFields(false).includeMethods(false))
 						.getStore()
 						.get(TypeElementsScanner.class.getSimpleName())
-						.keys()
-						.forEach(className -> from(ClassUtil.classForName(className)));
-		return this;
+						.keySet()
+						.stream()
+						.map(className -> ClassUtil.classForName(className))
+						.collect(Collectors.toSet());
+		return from(classes);
 	}
 
 	/**
@@ -118,9 +114,7 @@ public final class Selector {
 	 * @return the selector
 	 */
 	public Selector filterFields(final Predicate<Field> fieldPredicate) {
-		Assertion.check()
-				.isNotNull(fieldPredicate);
-		scoped = true;
+		Assertion.check().isNotNull(fieldPredicate);
 		// ---
 		fieldPredicates = fieldPredicates.and(fieldPredicate);
 		return this;
@@ -132,9 +126,7 @@ public final class Selector {
 	 * @return the selector
 	 */
 	public Selector filterMethods(final Predicate<Method> methodPredicate) {
-		Assertion.check()
-				.isNotNull(methodPredicate);
-		scoped = true;
+		Assertion.check().isNotNull(methodPredicate);
 		// ---
 		methodPredicates = methodPredicates.and(methodPredicate);
 		return this;
@@ -146,9 +138,7 @@ public final class Selector {
 	 * @return the selector
 	 */
 	public Selector filterClasses(final Predicate<Class> classPredicate) {
-		Assertion.check()
-				.isNotNull(classPredicate);
-		scoped = true;
+		Assertion.check().isNotNull(classPredicate);
 		// ---
 		classPredicates = classPredicates.and(classPredicate);
 		return this;
@@ -239,8 +229,7 @@ public final class Selector {
 		 * @return the predicate
 		 */
 		public static Predicate<Method> annotatedWith(final Class<? extends Annotation> annotationClass) {
-			Assertion.check()
-					.isNotNull(annotationClass);
+			Assertion.check().isNotNull(annotationClass);
 			//---
 			return method -> method.getAnnotationsByType(annotationClass).length > 0;
 		}
@@ -260,8 +249,7 @@ public final class Selector {
 		 * @return the predicate
 		 */
 		public static Predicate<Field> annotatedWith(final Class<? extends Annotation> annotationClass) {
-			Assertion.check()
-					.isNotNull(annotationClass);
+			Assertion.check().isNotNull(annotationClass);
 			//---
 			return field -> field.getAnnotationsByType(annotationClass).length > 0;
 		}
@@ -281,8 +269,7 @@ public final class Selector {
 		 * @return the predicate
 		 */
 		public static Predicate<Class> annotatedWith(final Class<? extends Annotation> annotationClass) {
-			Assertion.check()
-					.isNotNull(annotationClass);
+			Assertion.check().isNotNull(annotationClass);
 			//---
 			return clazz -> clazz.getAnnotationsByType(annotationClass).length > 0;
 		}
@@ -293,8 +280,7 @@ public final class Selector {
 		 * @return the predicate
 		 */
 		public static Predicate<Class> subTypeOf(final Class clazz) {
-			Assertion.check()
-					.isNotNull(clazz);
+			Assertion.check().isNotNull(clazz);
 			//---
 			return clazz::isAssignableFrom;
 		}

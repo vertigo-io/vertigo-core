@@ -58,7 +58,7 @@ final class ComponentDiscovery {
 				.isNotBlank(packagePrefix)
 				.isNotNull(moduleConfigBuilder);
 		//---
-		final Collection<Class> components = new Selector()
+		final Collection<Class> components = Selector
 				.from(packagePrefix)
 				.filterClasses(ClassConditions.subTypeOf(CoreComponent.class))
 				.filterClasses(ClassConditions.isAbstract().negate())// we filter abstract classes
@@ -74,7 +74,7 @@ final class ComponentDiscovery {
 				.isNotNull(moduleConfigBuilder);
 		// ---
 		//API
-		final Collection<Class> allApiClasses = new Selector()
+		final Collection<Class> allApiClasses = Selector
 				.from(components)
 				.filterClasses(ClassConditions.interfaces())
 				// we dont check api for plugins
@@ -84,32 +84,32 @@ final class ComponentDiscovery {
 		final Predicate<Method> proxyMethodPredicate = method -> Stream.of(method.getAnnotations())
 				.anyMatch(annotation -> ClassConditions.annotatedWith(ProxyMethodAnnotation.class).test(annotation.annotationType()));
 
-		final Collection<Class> proxyClasses = new Selector()
+		final Collection<Class> proxyClasses = Selector
 				.from(allApiClasses)
 				.filterClasses(clazz -> clazz.getDeclaredMethods().length != 0)// to be a proxy you need to have at least one method
 				.filterMethods(proxyMethodPredicate)
 				.findClasses();
 
-		final Collection<Class> apiClasses = new Selector()
+		final Collection<Class> apiClasses = Selector
 				.from(allApiClasses)
 				.filterMethods(proxyMethodPredicate.negate())
 				.findClasses();
 
 		//Impl
-		final Collection<Class> implClasses = new Selector()
+		final Collection<Class> implClasses = Selector
 				.from(components)
 				.filterClasses(ClassConditions.interfaces().negate())
 				.findClasses();
 
 		//ComponentsImpl
-		final Collection<Class> componentsImplClasses = new Selector()
+		final Collection<Class> componentsImplClasses = Selector
 				.from(implClasses)
 				//Plugins are handled separately
 				.filterClasses(ClassConditions.subTypeOf(Plugin.class).negate())
 				.findClasses();
 
 		//PluginsImpl
-		final Collection<Class> pluginsImplClasses = new Selector()
+		final Collection<Class> pluginsImplClasses = Selector
 				.from(implClasses)
 				.filterClasses(ClassConditions.subTypeOf(Plugin.class))
 				.findClasses();
@@ -118,7 +118,7 @@ final class ComponentDiscovery {
 		final Collection<Class> myImplClasses = new ArrayList<>(componentsImplClasses);
 		//---
 		for (final Class apiClazz : apiClasses) {
-			final Collection<Class> candidates = new Selector()
+			final Collection<Class> candidates = Selector
 					.from(componentsImplClasses)
 					.filterClasses(ClassConditions.subTypeOf(apiClazz))
 					.findClasses();
