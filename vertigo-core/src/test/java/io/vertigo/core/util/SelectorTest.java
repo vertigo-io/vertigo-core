@@ -67,13 +67,6 @@ public final class SelectorTest {
 		Assertions.assertEquals(7, result.size());
 	}
 
-	@Test
-	public void testFromSupplier() {
-		final Collection<Class> result = new Selector().from(() -> List.of(SA.class,SB.class)).findClasses();
-		// ---
-		Assertions.assertEquals(2, result.size());
-	}
-
 	//-----
 	//---Filter
 	//-----

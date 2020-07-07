@@ -22,10 +22,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -53,7 +52,7 @@ import javassist.Modifier;
  */
 public final class Selector {
 	private static final Predicate ALWAYS_TRUE = o -> true;
-	private final Map<String, Class> scope = new HashMap<>();
+	private final Set<Class> classes = new HashSet<>();
 
 	private Predicate<Method> methodPredicates = ALWAYS_TRUE;
 	private Predicate<Class> classPredicates = ALWAYS_TRUE;
@@ -76,21 +75,7 @@ public final class Selector {
 				.isNotNull(clazz);
 		checkScope();
 		// ---
-		scope.put(clazz.getName(), clazz);
-		return this;
-	}
-
-	/**
-	 * Adds a collection of classes to the scope provided by the given supplier.
-	 * @param classesSupplier a supplier of classes
-	 * @return the selector
-	 */
-	public Selector from(final Supplier<Collection<Class>> classesSupplier) {
-		Assertion.check()
-				.isNotNull(classesSupplier);
-		checkScope();
-		// ---
-		from(classesSupplier.get());
+		classes.add(clazz);
 		return this;
 	}
 
@@ -174,7 +159,7 @@ public final class Selector {
 	 * @return the classes matching the selector
 	 */
 	public Collection<Class> findClasses() {
-		return scope.values()
+		return classes
 				.stream()
 				.filter(classPredicates)
 				.filter(filterClassesBasedOnMethods())
@@ -187,8 +172,7 @@ public final class Selector {
 	 * @return the classes matching the selector
 	 */
 	public Collection<Tuple<Class, Method>> findMethods() {
-
-		return scope.values()
+		return classes
 				.stream()
 				.filter(classPredicates)
 				.filter(filterClassesBasedOnFields())
@@ -203,7 +187,7 @@ public final class Selector {
 	 * @return the classes matching the selector
 	 */
 	public Collection<Tuple<Class, Field>> findFields() {
-		return scope.values()
+		return classes
 				.stream()
 				.filter(classPredicates)
 				.filter(filterClassesBasedOnMethods())
