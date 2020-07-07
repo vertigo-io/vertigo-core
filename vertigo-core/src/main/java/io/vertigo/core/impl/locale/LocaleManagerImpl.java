@@ -138,9 +138,9 @@ public final class LocaleManagerImpl implements LocaleManager {
 	@Override
 	public void registerZoneSupplier(final Supplier<ZoneId> newZoneSupplier) {
 		Assertion.check()
-				.isNull(zoneSupplier , "zoneSupplier already registered")
+				.isNull(zoneSupplier, "zoneSupplier already registered")
 				.isNotNull(newZoneSupplier);
-		//-----
+		//---
 		zoneSupplier = newZoneSupplier;
 	}
 
@@ -148,9 +148,9 @@ public final class LocaleManagerImpl implements LocaleManager {
 	@Override
 	public void registerLocaleSupplier(final Supplier<Locale> newLocaleSupplier) {
 		Assertion.check()
-				.isNull(localeSupplier , "localeSupplier already registered")
+				.isNull(localeSupplier, "localeSupplier already registered")
 				.isNotNull(newLocaleSupplier);
-		//-----
+		//---
 		localeSupplier = newLocaleSupplier;
 	}
 
@@ -197,7 +197,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 			Assertion.check().isNotNull(value);
 			final String oldValue = getDictionary(locale).put(key, value);
 			if (!override) {
-				Assertion.check().isNull(oldValue , "Valeur deja renseignée pour{0}", key);
+				Assertion.check().isNull(oldValue, "Valeur deja renseignée pour{0}", key);
 			}
 		}
 	}

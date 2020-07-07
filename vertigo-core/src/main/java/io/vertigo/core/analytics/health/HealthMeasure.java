@@ -48,18 +48,19 @@ public final class HealthMeasure {
 	 *
 	 * @param status the status returned by the test
 	 * @param message a message that explains the status (should be required whenever the status is not GREEN)
-	 * @param cause the exception throwed during status checking (Should be empty with a GREEN status)
+	 * @param cause the exception thrown during status checking (Should be empty with a GREEN status)
 	 */
 	HealthMeasure(
 			final HealthStatus status,
 			final String message,
 			final Exception cause) {
 		Assertion.check().isNotNull(status);
-		//-----
-		this.status = status;
-		/*
-		 * message and cause can ne null or non null.
+		/* 
+		 * message can be null
+		 * cause can be null
 		 */
+		//---
+		this.status = status;
 		this.message = message;
 		this.cause = cause;
 	}

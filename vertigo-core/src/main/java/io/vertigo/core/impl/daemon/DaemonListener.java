@@ -35,7 +35,7 @@ final class DaemonListener {
 	private final DaemonDefinition daemonDefinition;
 	private final boolean verbose;
 
-	public DaemonListener(final DaemonDefinition daemonDefinition, final boolean verbose) {
+	DaemonListener(final DaemonDefinition daemonDefinition, final boolean verbose) {
 		Assertion.check().isNotNull(daemonDefinition);
 		//---
 		this.daemonDefinition = daemonDefinition;
