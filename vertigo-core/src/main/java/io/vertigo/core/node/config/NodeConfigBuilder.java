@@ -53,7 +53,9 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	 * @return this builder
 	 */
 	public NodeConfigBuilder withBoot(BootConfig bootConfig) {
-		Assertion.check().isNotNull(bootConfig);
+		Assertion.check()
+				.isNull(myBootConfig, "boot is already set")
+				.isNotNull(bootConfig);
 		//---
 		this.myBootConfig = bootConfig;
 		return this;
@@ -120,8 +122,7 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	 * @return this builder
 	 */
 	public NodeConfigBuilder addModule(final ModuleConfig moduleConfig) {
-		Assertion.check()
-				.isNotNull(moduleConfig);
+		Assertion.check().isNotNull(moduleConfig);
 		//-----
 		myModuleConfigsBuilder.add(moduleConfig);
 		return this;
@@ -139,12 +140,15 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 		if (myNodeId == null) {
 			myNodeId = UUID.randomUUID().toString();
 		}
+		if (myBootConfig == null) {
+			myBootConfig = BootConfig.builder().build();
+		}
 		//---
 		return new NodeConfig(
 				myAppName,
 				myNodeId,
 				Optional.ofNullable(myEndPoint),
-				myBootConfig == null ? BootConfig.builder().build() : myBootConfig,
+				myBootConfig,
 				myModuleConfigsBuilder.unmodifiable().build(),
 				myComponentInitializerConfigsBuilder.unmodifiable().build());
 	}

@@ -37,8 +37,7 @@ public final class ProxyMethodConfig {
 	 * Constructor.
 	 */
 	ProxyMethodConfig(final Class<? extends ProxyMethod> proxyMethodClass) {
-		Assertion.check()
-				.isNotNull(proxyMethodClass);
+		Assertion.check().isNotNull(proxyMethodClass);
 		//-----
 		this.proxyMethodClass = proxyMethodClass;
 	}
