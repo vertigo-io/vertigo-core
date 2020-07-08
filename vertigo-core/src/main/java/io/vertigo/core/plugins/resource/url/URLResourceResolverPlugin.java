@@ -41,13 +41,13 @@ public final class URLResourceResolverPlugin implements ResourceResolverPlugin {
 		//-----
 		try {
 			final URL url = new URL(resource);
-			return checkUrlAvailable(url) ? Optional.of(url) : Optional.empty();
+			return isUrlAvailable(url) ? Optional.of(url) : Optional.empty();
 		} catch (final MalformedURLException e) {
 			return Optional.empty();
 		}
 	}
 
-	private static boolean checkUrlAvailable(final URL url) {
+	private static boolean isUrlAvailable(final URL url) {
 		try (InputStream is = url.openStream()) {
 			return is.read() > 0;
 		} catch (final IOException e) {

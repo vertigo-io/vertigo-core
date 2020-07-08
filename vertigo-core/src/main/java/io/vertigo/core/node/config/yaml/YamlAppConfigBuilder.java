@@ -21,6 +21,7 @@ package io.vertigo.core.node.config.yaml;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
@@ -334,7 +335,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 	private static String parseFile(final URL url) {
 		try {
 			return FileUtil.read(url);
-		} catch (final IOException e) {
+		} catch (final IOException | URISyntaxException e) {
 			throw WrappedException.wrap(e, "Error reading json file : '{0}'", url);
 		}
 	}
