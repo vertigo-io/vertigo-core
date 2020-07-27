@@ -42,6 +42,10 @@ final class DaemonExecutor implements Activeable {
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 	private final List<DaemonListener> daemonListeners = new ArrayList<>();
 
+	private static Daemon createDaemon(final DaemonDefinition daemonDefinition) {
+		return daemonDefinition.getDaemonSupplier().get();
+	}
+
 	/**
 	* Registers a new daemon.
 	* It will be executed after the delay (in milliseconds)
@@ -50,11 +54,12 @@ final class DaemonExecutor implements Activeable {
 	* @param daemonDefinition the daemon definition
 	* @param daemon Daemon to schedule.
 	*/
-	void scheduleDaemon(final DaemonDefinition daemonDefinition, final Daemon daemon) {
+	void scheduleDaemon(final DaemonDefinition daemonDefinition) {
 		Assertion.check()
 				.isNotNull(daemonDefinition)
 				.isTrue(isActive, "Manager must be active to schedule a daemon");
 		// -----
+		final Daemon daemon = createDaemon(daemonDefinition);
 		final DaemonListener daemonListener = new DaemonListener(daemonDefinition, daemon.verbose());
 		final DaemonTimerTask timerTask = new DaemonTimerTask(daemonListener, daemon);
 		daemonListeners.add(daemonListener);

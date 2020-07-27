@@ -32,7 +32,7 @@ import io.vertigo.core.util.StringUtil;
  * Each time an assertion fails, an specific exception is thrown.
  * 
  * The following assertions help you to test if 
- * - an object is non null => isNotNull
+ * - an object is noT null => isNotNull
  * - a string is not blank (and not null) =>isNotBlank
  * - an expression is true or false =>isTrue or isFalse 
  * 

@@ -133,16 +133,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	private void startDaemon(final DaemonDefinition daemonDefinition) {
 		Assertion.check().isNotNull(daemonDefinition);
 		// -----
-		final Daemon daemon = createDaemon(daemonDefinition);
-		daemonExecutor.scheduleDaemon(daemonDefinition, daemon);
-	}
-
-	/**
-	 * @param daemonDefinition
-	 * @return Daemon
-	 */
-	private static Daemon createDaemon(final DaemonDefinition daemonDefinition) {
-		return daemonDefinition.getDaemonSupplier().get();
+		daemonExecutor.scheduleDaemon(daemonDefinition);
 	}
 
 	/**
