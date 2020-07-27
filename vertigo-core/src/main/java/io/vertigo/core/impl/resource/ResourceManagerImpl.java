@@ -53,13 +53,13 @@ public final class ResourceManagerImpl implements ResourceManager {
 	/** {@inheritDoc} */
 	@Override
 	public URL resolve(final String resource) {
-		for (final ResourceResolverPlugin resourceResolver : resourceResolverPlugins) {
-			final Optional<URL> url = resourceResolver.resolve(resource);
-			if (url.isPresent()) {
-				return url.get();
-			}
-		}
-		/* We have not found any resolver for this resource */
-		throw new VSystemException("Resource '{0}' not found", resource);
+		return resourceResolverPlugins.stream()
+				.map(resourceResolverPlugin -> resourceResolverPlugin.resolve(resource))
+				.filter(Optional::isPresent)
+				.map(Optional::get)
+				/* We take the first url found.*/
+				.findFirst()
+				/* If we have not found any resolver for this resource we throw an exception*/
+				.orElseThrow(() -> new VSystemException("Resource '{0}' not found", resource));
 	}
 }
