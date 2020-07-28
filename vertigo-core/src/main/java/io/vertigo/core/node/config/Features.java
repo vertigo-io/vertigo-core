@@ -39,7 +39,7 @@ public abstract class Features<F> implements Builder<ModuleConfig> {
 		return moduleConfigBuilder;
 	}
 
-	public F addPlugin(final Class<? extends Plugin> pluginImplClass, final Param... params) {
+	public final F addPlugin(final Class<? extends Plugin> pluginImplClass, final Param... params) {
 		moduleConfigBuilder.addPlugin(pluginImplClass, params);
 		return (F) this;
 	}
