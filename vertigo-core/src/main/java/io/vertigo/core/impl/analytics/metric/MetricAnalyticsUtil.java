@@ -28,7 +28,7 @@ import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.analytics.metric.MetricDefinition;
 import io.vertigo.core.analytics.metric.Metrics;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.node.component.AopPlugin;
 import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.util.ClassUtil;
@@ -55,7 +55,7 @@ public final class MetricAnalyticsUtil {
 
 		//-- we construct a map of feature by componentId
 		final Map<String, String> featureByComponentId = new HashMap<>();
-		Home.getApp().getNodeConfig().getModuleConfigs()
+		App.getApp().getNodeConfig().getModuleConfigs()
 				.forEach(moduleConfig -> moduleConfig.getComponentConfigs()
 						.forEach(componentConfig -> featureByComponentId.put(componentConfig.getId(), moduleConfig.getName())));
 		//-----
@@ -79,7 +79,7 @@ public final class MetricAnalyticsUtil {
 	}
 
 	public static List<Metric> getMetrics() {
-		return Home.getApp().getDefinitionSpace().getAll(MetricDefinition.class).stream()
+		return App.getApp().getDefinitionSpace().getAll(MetricDefinition.class).stream()
 				.flatMap(metricDefinition -> metricDefinition.getMetricSupplier().get().stream())
 				.collect(Collectors.toList());
 	}

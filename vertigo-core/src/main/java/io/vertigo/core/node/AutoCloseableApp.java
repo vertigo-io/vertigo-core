@@ -18,12 +18,16 @@
  */
 package io.vertigo.core.node;
 
+import java.io.File;
+import java.net.URL;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
@@ -34,6 +38,7 @@ import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.component.loader.ComponentSpaceLoader;
 import io.vertigo.core.node.component.loader.ComponentSpaceWritable;
 import io.vertigo.core.node.config.ComponentInitializerConfig;
+import io.vertigo.core.node.config.LogConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.loader.DefinitionSpaceLoader;
@@ -57,6 +62,8 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 
 	private static final Logger LOGGER = LogManager.getLogger(AutoCloseableApp.class);
 
+	private static final AtomicReference<App> CURRENT_APP_REF = new AtomicReference<>();
+
 	//Start : used to have 'uptime'
 	private final Instant start;
 	private final NodeConfig nodeConfig;
@@ -78,19 +85,20 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 		//-----
 		start = Instant.now();
 		this.nodeConfig = nodeConfig;
-		Home.setApp(this);
+		setCurrentApp(this);
 		state = State.STARTING;
 		//--
 		try {
-			//--0. BootStrap : create native components : ResourceManager, ParamManager, LocaleManager
-			final Boot boot = new Boot(nodeConfig.getBootConfig());
-			boot.init(); //A faire créer par Boot : stratégie de chargement des composants à partir de ...
+			//-- 0. Start logger
+			nodeConfig.getBootConfig().getLogConfig().ifPresent(AutoCloseableApp::initLog);
 
 			//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
 			//Creates and register all components (and aspects and Proxies).
 			//all components can be parameterized
 			ComponentSpaceLoader.startLoading(componentSpaceWritable, nodeConfig.getBootConfig().getAopPlugin())
+					//-- 1.a - BootStrap : create native components : ResourceManager, ParamManager, LocaleManager
 					.loadBootComponents(nodeConfig.getBootConfig().getComponentConfigs())
+					//-- 1.b - other components
 					.loadAllComponentsAndAspects(nodeConfig.getModuleConfigs())
 					.endLoading();
 			//---- Print components
@@ -164,7 +172,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			throw WrappedException.wrap(e, "an error occured when stopping");
 		} finally {
 			state = State.CLOSED;
-			Home.resetApp();
+			resetCurrentApp();
 		}
 	}
 
@@ -198,6 +206,53 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 			final ComponentInitializer componentInitializer = DIInjector.newInstance(componentInitializerConfig.getInitializerClass(), componentSpaceWritable);
 			componentInitializer.init();
 		}
+	}
+
+	private static void initLog(final LogConfig log4Config) {
+		Assertion.check()
+				.isNotNull(log4Config);
+		//-----
+		final String log4jFileName = log4Config.getFileName();
+		Assertion.check()
+				.isTrue(log4jFileName.endsWith(".xml"), "Use the XML format for log4j configurations (instead of : {0}).", log4jFileName);
+		final URL url = App.class.getResource(log4jFileName);
+		if (url != null) {
+			Configurator.initialize("definedLog4jContext", App.class.getClassLoader(), log4jFileName);
+			LogManager.getRootLogger().info("Log4J configuration chargée (resource) : {}", url.getFile());
+		} else {
+			Assertion.check()
+					.isTrue(new File(log4jFileName).exists(), "Fichier de configuration log4j : {0} est introuvable", log4jFileName);
+			// Avec configureAndWatch (utilise un anonymous thread)
+			// on peut modifier à chaud le fichier de conf log4j
+			// mais en cas de hot-deploy, le thread reste présent ce qui peut-entrainer des problèmes.
+			Configurator.initialize("definedLog4jContext", null, log4jFileName);
+			LogManager.getRootLogger().info("Log4J configuration chargée (fichier) : {}", log4jFileName);
+		}
+	}
+
+	private static void setCurrentApp(final App app) {
+		Assertion.check()
+				.isNotNull(app);
+		//--
+		final boolean success = CURRENT_APP_REF.compareAndSet(null, app);
+		//--
+		Assertion.check()
+				.isTrue(success, "current App is already set");
+	}
+
+	private static void resetCurrentApp() {
+		CURRENT_APP_REF.set(null);
+	}
+
+	/**
+	 * @return Application
+	 */
+	static App getCurrentApp() {
+		final App app = CURRENT_APP_REF.get();
+		Assertion.check()
+				.isNotNull(app, "app has not been started");
+		//no synchronized for perf purpose
+		return app;
 	}
 
 }

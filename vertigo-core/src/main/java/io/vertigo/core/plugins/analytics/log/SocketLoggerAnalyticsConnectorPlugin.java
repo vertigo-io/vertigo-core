@@ -47,7 +47,7 @@ import io.vertigo.core.analytics.process.AProcess;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 
@@ -90,7 +90,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 				.isNotNull(hostNameOpt)
 				.isNotNull(portOpt);
 		// ---
-		appName = appNameOpt.orElseGet(() -> Home.getApp().getNodeConfig().getAppName());
+		appName = appNameOpt.orElseGet(() -> App.getApp().getNodeConfig().getAppName());
 		hostName = hostNameOpt.orElse("analytica.part.klee.lan.net");
 		port = portOpt.orElse(DEFAULT_SERVER_PORT);
 		localHostName = retrieveHostName();

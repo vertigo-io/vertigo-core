@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.util.StringUtil;
 
 /**
@@ -120,7 +120,7 @@ public final class MessageText implements Serializable {
 			try {
 				//Il est nécessaire que LocaleManager soit enregistré.
 				//Si pas d'utilisateur on prend la première langue déclarée.
-				localeManager = Home.getApp().getComponentSpace().resolve(LocaleManager.class);
+				localeManager = App.getApp().getComponentSpace().resolve(LocaleManager.class);
 				locale = localeManager.getCurrentLocale();
 				msg = localeManager.getMessage(key, locale);
 			} catch (final Exception e) {

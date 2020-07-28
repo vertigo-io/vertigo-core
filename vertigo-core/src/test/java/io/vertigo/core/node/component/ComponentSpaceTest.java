@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.node.AutoCloseableApp;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.node.component.data.BioManager;
 import io.vertigo.core.node.component.data.BioManagerImpl;
 import io.vertigo.core.node.component.data.MathManager;
@@ -126,7 +126,7 @@ public final class ComponentSpaceTest {
 				.build();
 
 		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final SomeManager manager = Home.getApp().getComponentSpace().resolve(SomeManager.class);
+			final SomeManager manager = App.getApp().getComponentSpace().resolve(SomeManager.class);
 			Assertions.assertEquals("main", manager.getSomeNames());
 		}
 	}
@@ -143,7 +143,7 @@ public final class ComponentSpaceTest {
 				.build();
 
 		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final SomeManager manager = Home.getApp().getComponentSpace().resolve(SomeManager.class);
+			final SomeManager manager = App.getApp().getComponentSpace().resolve(SomeManager.class);
 			Assertions.assertEquals("first,second", manager.getSomeNames());
 		}
 	}
@@ -162,7 +162,7 @@ public final class ComponentSpaceTest {
 				.build();
 
 		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final SomeManager manager = Home.getApp().getComponentSpace().resolve(SomeManager.class);
+			final SomeManager manager = App.getApp().getComponentSpace().resolve(SomeManager.class);
 			Assertions.assertEquals("first,second", manager.getSomeNames());
 		}
 	}
@@ -180,7 +180,7 @@ public final class ComponentSpaceTest {
 				.build();
 
 		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final SomeManager manager = Home.getApp().getComponentSpace().resolve(SomeManager.class);
+			final SomeManager manager = App.getApp().getComponentSpace().resolve(SomeManager.class);
 			Assertions.assertEquals("first", manager.getSomeNames());
 		}
 	}
@@ -195,7 +195,7 @@ public final class ComponentSpaceTest {
 				.build();
 
 		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final SomeManager manager = Home.getApp().getComponentSpace().resolve(SomeManager.class);
+			final SomeManager manager = App.getApp().getComponentSpace().resolve(SomeManager.class);
 			Assertions.assertEquals("none", manager.getSomeNames());
 		}
 	}

@@ -24,7 +24,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 
 /**
  * Référence SERIALIZABLE vers les definitions.
@@ -76,6 +76,6 @@ public final class DefinitionReference<D extends Definition> implements Serializ
 	private void readObject(final ObjectInputStream ois) throws ClassNotFoundException, IOException {
 		//On récupère le nom de la définition
 		definitionName = (String) ois.readObject();
-		definition = (D) Home.getApp().getDefinitionSpace().resolve(definitionName, Definition.class);
+		definition = (D) App.getApp().getDefinitionSpace().resolve(definitionName, Definition.class);
 	}
 }

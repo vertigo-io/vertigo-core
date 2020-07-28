@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.AbstractTestCaseJU5;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.node.component.ComponentSpace;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.ModuleConfig;
@@ -54,7 +54,7 @@ public final class DiscoveryTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testComponentSpace() {
-		final ComponentSpace componentSpace = Home.getApp().getComponentSpace();
+		final ComponentSpace componentSpace = App.getApp().getComponentSpace();
 		assertEquals(componentSpace.keySet().size(), 4 + 3); //ParamManager, ResourceManager, DaemonManager and AnalyticsManager are automaticaly declared
 		final DiscoveryB discoveryB = componentSpace.resolve(DiscoveryB.class);
 		//---

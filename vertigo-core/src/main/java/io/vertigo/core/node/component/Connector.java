@@ -32,6 +32,8 @@ package io.vertigo.core.node.component;
  */
 public interface Connector<C> extends CoreComponent {
 
+	public static final String DEFAULT_CONNECTOR_NAME = "main";
+
 	/**
 	 * A connector might need to define it's name to be findable by plugin and to differentiate multiple instance of the same connector.
 	 * For example, I know that my plugin needs a connection to the "secondary" database.
@@ -39,7 +41,7 @@ public interface Connector<C> extends CoreComponent {
 	 * @return the name of the connector
 	 */
 	default String getName() {
-		return "main";
+		return DEFAULT_CONNECTOR_NAME;
 	}
 
 	C getClient();

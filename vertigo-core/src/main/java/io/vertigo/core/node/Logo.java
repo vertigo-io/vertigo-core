@@ -43,7 +43,7 @@ final class Logo {
 		out.println("|  |  __\\ /__/ / |                                 |");
 		out.println("|  | / _      /  |                                 |");
 		out.println("|  |/ / \\  ()/  *|                                 |");
-		out.println("|  | /  |   |    |  www.kleegroup.com              |");
+		out.println("|  | /  |   |    |  vertigo.io                     |");
 		out.println("|  |/___|____\\___|                                 |");
 		out.println("+--------------------------------------------------+");
 	}

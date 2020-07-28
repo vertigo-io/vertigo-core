@@ -47,6 +47,10 @@ import io.vertigo.core.node.definition.DefinitionSpace;
  */
 public interface App {
 
+	public static App getApp() {
+		return AutoCloseableApp.getCurrentApp();
+	}
+
 	/**
 	 * @param postStartFunction Runnable function post start
 	 */

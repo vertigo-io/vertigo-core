@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.Home;
+import io.vertigo.core.node.App;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.node.component.loader.ComponentSpaceLoader;
 
@@ -44,7 +44,7 @@ public final class InjectorUtil {
 				.isNotNull(clazz)
 				.isFalse(clazz.isAssignableFrom(Activeable.class), " {0} is an Activeable component and must be registred in the NodeConfig for creation at the application startup", clazz);
 		// ---
-		return ComponentSpaceLoader.createInstance(clazz, Home.getApp().getComponentSpace(), Optional.empty(), Collections.emptyMap());
+		return ComponentSpaceLoader.createInstance(clazz, App.getApp().getComponentSpace(), Optional.empty(), Collections.emptyMap());
 	}
 
 	/**
@@ -56,7 +56,7 @@ public final class InjectorUtil {
 		Assertion.check()
 				.isNotNull(instance);
 		//-----
-		ComponentSpaceLoader.injectMembers(instance, Home.getApp().getComponentSpace(), Optional.empty(), Collections.emptyMap());
+		ComponentSpaceLoader.injectMembers(instance, App.getApp().getComponentSpace(), Optional.empty(), Collections.emptyMap());
 	}
 
 }
