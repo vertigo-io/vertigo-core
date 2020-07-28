@@ -42,13 +42,13 @@ package io.vertigo.core.node.component;
  *              +----------+----------+--------+------------------------
  *              |    API   |  IMPL    | Scope  | ...can be injected 
  *  +-----------+----------+----------+--------+------------------------
- *  | Component | optional | required | app    | in all core-components
+ *  | Component | optional | required | node    | in all core-components
  *  +-----------+----------+----------+--------+------------------------
- *  | Amplifier | required | no       | app    | in all core-components
+ *  | Amplifier | required | no       | node    | in all core-components
  *  +-----------+----------+----------+---------------------------------
  *  | Plugin    | required | required | module | only in components
  *  +-----------+----------+----------+--------+------------------------
- *  | Connector | no       | required | app    | in all core-components 
+ *  | Connector | no       | required | node    | in all core-components 
  *  +-----------+----------+----------+---------------------------------
  *  
  *  Each core-component must be defined in a specific module.

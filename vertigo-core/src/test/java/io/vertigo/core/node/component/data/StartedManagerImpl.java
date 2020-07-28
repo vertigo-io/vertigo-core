@@ -20,7 +20,7 @@ package io.vertigo.core.node.component.data;
 
 import javax.inject.Inject;
 
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 
 public final class StartedManagerImpl implements StartedManager, Activeable {
@@ -33,7 +33,7 @@ public final class StartedManagerImpl implements StartedManager, Activeable {
 	 */
 	@Inject
 	public StartedManagerImpl() {
-		App.getApp().registerPreActivateFunction(() -> appPreActivated = true);
+		Node.getNode().registerPreActivateFunction(() -> appPreActivated = true);
 	}
 
 	@Override

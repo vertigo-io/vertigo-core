@@ -47,7 +47,7 @@ import io.vertigo.core.analytics.process.AProcess;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 
@@ -76,7 +76,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	/**
 	 * Constructor.
-	 * @param appNameOpt the app name
+	 * @param appNameOpt the node name
 	 * @param hostNameOpt hostName of the remote server
 	 * @param portOpt port of the remote server
 	 */
@@ -90,7 +90,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 				.isNotNull(hostNameOpt)
 				.isNotNull(portOpt);
 		// ---
-		appName = appNameOpt.orElseGet(() -> App.getApp().getNodeConfig().getAppName());
+		appName = appNameOpt.orElseGet(() -> Node.getNode().getNodeConfig().getAppName());
 		hostName = hostNameOpt.orElse("analytica.part.klee.lan.net");
 		port = portOpt.orElse(DEFAULT_SERVER_PORT);
 		localHostName = retrieveHostName();
@@ -164,7 +164,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	private Logger createLogger(final String loggerName) {
 		Assertion.check()
-				.isNotNull(appender, "SocketLogger is not started, cannot create logger and send analytics data. Wait until app is started.");
+				.isNotNull(appender, "SocketLogger is not started, cannot create logger and send analytics data. Wait until node is started.");
 		// If it doesn't exist we create it with the right appender
 
 		final LoggerContext context = (LoggerContext) LogManager.getContext(false); //on ne close pas : car ca stop le context

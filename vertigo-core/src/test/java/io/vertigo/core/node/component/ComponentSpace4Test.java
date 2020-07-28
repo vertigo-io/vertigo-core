@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.data.StartedManager;
 import io.vertigo.core.node.component.data.StartedManagerImpl;
 import io.vertigo.core.node.component.data.StartedManagerInitializer;
@@ -46,8 +46,8 @@ public final class ComponentSpace4Test {
 				.addInitializer(StartedManagerInitializer.class)
 				.build();
 		final StartedManager startedManager;
-		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			startedManager = app.getComponentSpace().resolve(StartedManager.class);
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			startedManager = node.getComponentSpace().resolve(StartedManager.class);
 			assertTrue(startedManager.isInitialized(), "Component StartedManager not Initialized");
 			assertTrue(startedManager.isStarted(), "Component StartedManager not Started");
 			assertTrue(startedManager.isAppPreActivated(), "Component StartedManager not PostStarted");

@@ -38,7 +38,7 @@ import io.vertigo.core.impl.analytics.health.HealthAnalyticsUtil;
 import io.vertigo.core.impl.analytics.metric.MetricAnalyticsUtil;
 import io.vertigo.core.impl.analytics.process.ProcessAnalyticsImpl;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.AopPlugin;
 import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.definition.Definition;
@@ -76,14 +76,14 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		// here all
 		// we need to unwrap the component to scan the real class and not the enhanced version
-		final AopPlugin aopPlugin = App.getApp().getNodeConfig().getBootConfig().getAopPlugin();
-		return App.getApp().getComponentSpace().keySet()
+		final AopPlugin aopPlugin = Node.getNode().getNodeConfig().getBootConfig().getAopPlugin();
+		return Node.getNode().getComponentSpace().keySet()
 				.stream()
 				.flatMap(id -> Stream.concat(
 						//health
-						HealthAnalyticsUtil.createHealthCheckDefinitions(id, App.getApp().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream(),
+						HealthAnalyticsUtil.createHealthCheckDefinitions(id, Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream(),
 						//metrics
-						MetricAnalyticsUtil.createMetricDefinitions(id, App.getApp().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream()))
+						MetricAnalyticsUtil.createMetricDefinitions(id, Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream()))
 				.collect(Collectors.toList());
 	}
 

@@ -21,7 +21,7 @@ package io.vertigo.core.node.component.aop;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.aop.data.aspects.OneMoreAspect;
 import io.vertigo.core.node.component.aop.data.components.ComputerImpl;
 import io.vertigo.core.node.config.ModuleConfig;
@@ -44,7 +44,7 @@ public final class Aspect2Test {
 	public final void testLoadComponentsWithoutDeclaredAspects() {
 		Assertions.assertThrows(IllegalStateException.class,
 				() -> {
-					try (final AutoCloseableApp app = new AutoCloseableApp(buildNodeConfig())) {
+					try (final AutoCloseableNode node = new AutoCloseableNode(buildNodeConfig())) {
 						//nop
 					}
 				});

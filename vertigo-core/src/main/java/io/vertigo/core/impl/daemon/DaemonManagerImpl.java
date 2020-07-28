@@ -35,7 +35,7 @@ import io.vertigo.core.daemon.DaemonManager;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.daemon.DaemonStat;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.node.component.AopPlugin;
 import io.vertigo.core.node.component.CoreComponent;
@@ -62,17 +62,17 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 		Assertion.check().isNotNull(analyticsManager);
 		//---
 		this.analyticsManager = analyticsManager;
-		App.getApp().registerPreActivateFunction(this::startAllDaemons);
+		Node.getNode().registerPreActivateFunction(this::startAllDaemons);
 
 	}
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		// we need to unwrap the component to scan the real class and not the enhanced version
-		final AopPlugin aopPlugin = App.getApp().getNodeConfig().getBootConfig().getAopPlugin();
-		return App.getApp().getComponentSpace().keySet()
+		final AopPlugin aopPlugin = Node.getNode().getNodeConfig().getBootConfig().getAopPlugin();
+		return Node.getNode().getComponentSpace().keySet()
 				.stream()
-				.flatMap(id -> createDaemonDefinitions(App.getApp().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream())
+				.flatMap(id -> createDaemonDefinitions(Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream())
 				.collect(Collectors.toList());
 	}
 
@@ -140,7 +140,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	 * Démarre l'ensemble des démons préalablement enregistré dans le spaceDefinition.
 	 */
 	private void startAllDaemons() {
-		App.getApp().getDefinitionSpace().getAll(DaemonDefinition.class).stream()
+		Node.getNode().getDefinitionSpace().getAll(DaemonDefinition.class).stream()
 				.forEach(this::startDaemon);
 	}
 

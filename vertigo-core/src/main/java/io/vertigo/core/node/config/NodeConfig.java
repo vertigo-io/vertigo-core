@@ -28,7 +28,7 @@ import io.vertigo.core.lang.Assertion;
 
 /**
  * The NodeConfig class defines the config.
- * The app is built from this config.
+ * The node is built from this config.
  *
  * NodeConfig must be created using the NodeConfigBuilder.
  * @author pchretien
@@ -99,7 +99,7 @@ public final class NodeConfig {
 	}
 
 	/**
-	 * An app is composed of multiple nodes.
+	 * An node is composed of multiple nodes.
 	 * AppName is the common name that define the application as a whole. (ex: Facebook, Pharos...)
 	 * @return the logical name of the app
 	 */
@@ -108,7 +108,7 @@ public final class NodeConfig {
 	}
 
 	/**
-	 * An app is composed of multiple nodes.
+	 * An node is composed of multiple nodes.
 	 * @return the random uuid of a node
 	 */
 	public String getNodeId() {

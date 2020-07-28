@@ -25,7 +25,7 @@ import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.data.BioManager;
 import io.vertigo.core.node.config.NodeConfig;
 
@@ -84,10 +84,10 @@ public final class YamlAppConfigTest {
 				.withFiles(getClass(), "bio-flags.yaml")
 				.build();
 
-		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			assertEquals(app, app);
-			assertTrue(app.getComponentSpace().contains("bioManager"));
-			final BioManager bioManager = app.getComponentSpace().resolve(BioManager.class);
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			assertEquals(node, node);
+			assertTrue(node.getComponentSpace().contains("bioManager"));
+			final BioManager bioManager = node.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
 			assertEquals(336, res);
 			assertTrue(bioManager.isActive());
@@ -102,10 +102,10 @@ public final class YamlAppConfigTest {
 				.withFiles(getClass(), "bio-flags.yaml")
 				.build();
 
-		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			assertEquals(app, app);
-			assertTrue(app.getComponentSpace().contains("bioManager"));
-			final BioManager bioManager = app.getComponentSpace().resolve(BioManager.class);
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			assertEquals(node, node);
+			assertTrue(node.getComponentSpace().contains("bioManager"));
+			final BioManager bioManager = node.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
 			assertEquals(666, res);
 			assertTrue(bioManager.isActive());
@@ -121,10 +121,10 @@ public final class YamlAppConfigTest {
 	}
 
 	private void testBioManager(final NodeConfig nodeConfig) {
-		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			assertEquals(app, app);
-			assertTrue(app.getComponentSpace().contains("bioManager"));
-			final BioManager bioManager = app.getComponentSpace().resolve(BioManager.class);
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			assertEquals(node, node);
+			assertTrue(node.getComponentSpace().contains("bioManager"));
+			final BioManager bioManager = node.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
 			assertEquals(366, res);
 			assertTrue(bioManager.isActive());

@@ -25,9 +25,9 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 
 /**
- * The app class is the core of vertigo.
+ * The node class is the core of vertigo.
  *
- * An app has a structure and contains all the components and definitions that provides services.
+ * An node has a structure and contains all the components and definitions that provides services.
  *
  * Structure
  * |
@@ -36,19 +36,19 @@ import io.vertigo.core.node.definition.DefinitionSpace;
  * |---ComponentSpace
  * |     contains all the components including plugins and aspects
  *
- * An app has an internal lifecycle.
+ * An node has an internal lifecycle.
  *
  *
  * o--->[starting]--->[active]--->[stopping]--->[closed]
  *
- * If an error occured during the starting process then all the started components are stopped and the app is closed
+ * If an error occured during the starting process then all the started components are stopped and the node is closed
  *
  * @author pchretien
  */
-public interface App {
+public interface Node {
 
-	public static App getApp() {
-		return AutoCloseableApp.getCurrentApp();
+	public static Node getNode() {
+		return AutoCloseableNode.getCurrentApp();
 	}
 
 	/**

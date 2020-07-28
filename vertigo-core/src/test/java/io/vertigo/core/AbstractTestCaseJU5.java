@@ -21,8 +21,8 @@ package io.vertigo.core;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-import io.vertigo.core.node.App;
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 
@@ -32,10 +32,10 @@ import io.vertigo.core.node.config.NodeConfig;
  * @author jmforhan
  */
 public abstract class AbstractTestCaseJU5 {
-	private AutoCloseableApp app;
+	private AutoCloseableNode node;
 
-	protected final App getApp() {
-		return app;
+	protected final Node getApp() {
+		return node;
 	}
 
 	/**
@@ -73,13 +73,13 @@ public abstract class AbstractTestCaseJU5 {
 	}
 
 	private void openApp() {
-		app = new AutoCloseableApp(buildNodeConfig());
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		node = new AutoCloseableNode(buildNodeConfig());
+		DIInjector.injectMembers(this, node.getComponentSpace());
 	}
 
 	private void closeApp() {
-		if (app != null) {
-			app.close();
+		if (node != null) {
+			node.close();
 		}
 	}
 

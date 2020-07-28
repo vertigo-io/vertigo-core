@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.data.FunctionManager;
 import io.vertigo.core.node.component.data.FunctionManager1Impl;
 import io.vertigo.core.node.component.data.FunctionManager2Impl;
@@ -38,8 +38,8 @@ public final class ComponentSpace3Test {
 	@Test
 	public void testInjectPluginsAttribute() {
 		final NodeConfig nodeConfig = createHomeWithInjectPluginsAttribute(true);
-		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final FunctionManager functionManager = app.getComponentSpace().resolve(FunctionManager.class);
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			final FunctionManager functionManager = node.getComponentSpace().resolve(FunctionManager.class);
 			assertEquals(4, functionManager.compute("x+1", 3));
 			assertEquals(6, functionManager.compute("2x", 3));
 			assertEquals(15, functionManager.compute("4x+3", 3));
@@ -52,8 +52,8 @@ public final class ComponentSpace3Test {
 	@Test
 	public void testInjectPluginsAttributeOrder() {
 		final NodeConfig nodeConfig = createHomeWithInjectPluginsAttribute(false);
-		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final FunctionManager functionManager = app.getComponentSpace().resolve(FunctionManager.class);
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			final FunctionManager functionManager = node.getComponentSpace().resolve(FunctionManager.class);
 			assertEquals(26, functionManager.computeAll(3));
 		}
 	}
@@ -61,8 +61,8 @@ public final class ComponentSpace3Test {
 	@Test
 	public void testInjectPluginsConstructor() {
 		final NodeConfig nodeConfig = createHomeWithInjectPluginsConstructor(true);
-		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final FunctionManager functionManager = app.getComponentSpace().resolve(FunctionManager.class);
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			final FunctionManager functionManager = node.getComponentSpace().resolve(FunctionManager.class);
 			assertEquals(4, functionManager.compute("x+1", 3));
 			assertEquals(6, functionManager.compute("2x", 3));
 			assertEquals(15, functionManager.compute("4x+3", 3));
@@ -75,8 +75,8 @@ public final class ComponentSpace3Test {
 	@Test
 	public void testInjectPluginsConstructorOrder() {
 		final NodeConfig nodeConfig = createHomeWithInjectPluginsConstructor(false);
-		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final FunctionManager functionManager = app.getComponentSpace().resolve(FunctionManager.class);
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			final FunctionManager functionManager = node.getComponentSpace().resolve(FunctionManager.class);
 			assertEquals(26, functionManager.computeAll(3));
 		}
 	}

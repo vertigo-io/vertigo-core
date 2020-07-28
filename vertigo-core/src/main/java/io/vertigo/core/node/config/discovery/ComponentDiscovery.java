@@ -35,7 +35,7 @@ import io.vertigo.core.util.Selector;
 import io.vertigo.core.util.Selector.ClassConditions;
 
 /**
- * Tool for registering components in an app based on discovery in a package tree.
+ * Tool for registering components in an node based on discovery in a package tree.
  * @author mlaroche
  *
  */

@@ -24,8 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.node.AutoCloseableApp;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.AutoCloseableNode;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.data.BioManager;
 import io.vertigo.core.node.component.data.BioManagerImpl;
 import io.vertigo.core.node.component.data.MathManager;
@@ -60,8 +60,8 @@ public final class ComponentSpaceTest {
 						.build())
 				.build();
 
-		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final BioManager bioManager = app.getComponentSpace().resolve(BioManager.class);
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			final BioManager bioManager = node.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
 			assertEquals(366, res);
 			assertTrue(bioManager.isActive());
@@ -87,7 +87,7 @@ public final class ComponentSpaceTest {
 
 		Assertions.assertThrows(RuntimeException.class,
 				() -> {
-					try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
+					try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
 						//
 					}
 				});
@@ -110,7 +110,7 @@ public final class ComponentSpaceTest {
 						.build())
 				.build();
 
-		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
 			//
 		}
 	}
@@ -125,8 +125,8 @@ public final class ComponentSpaceTest {
 						.build())
 				.build();
 
-		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final SomeManager manager = App.getApp().getComponentSpace().resolve(SomeManager.class);
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			final SomeManager manager = Node.getNode().getComponentSpace().resolve(SomeManager.class);
 			Assertions.assertEquals("main", manager.getSomeNames());
 		}
 	}
@@ -142,8 +142,8 @@ public final class ComponentSpaceTest {
 						.build())
 				.build();
 
-		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final SomeManager manager = App.getApp().getComponentSpace().resolve(SomeManager.class);
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			final SomeManager manager = Node.getNode().getComponentSpace().resolve(SomeManager.class);
 			Assertions.assertEquals("first,second", manager.getSomeNames());
 		}
 	}
@@ -161,8 +161,8 @@ public final class ComponentSpaceTest {
 						.build())
 				.build();
 
-		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final SomeManager manager = App.getApp().getComponentSpace().resolve(SomeManager.class);
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			final SomeManager manager = Node.getNode().getComponentSpace().resolve(SomeManager.class);
 			Assertions.assertEquals("first,second", manager.getSomeNames());
 		}
 	}
@@ -179,8 +179,8 @@ public final class ComponentSpaceTest {
 						.build())
 				.build();
 
-		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final SomeManager manager = App.getApp().getComponentSpace().resolve(SomeManager.class);
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			final SomeManager manager = Node.getNode().getComponentSpace().resolve(SomeManager.class);
 			Assertions.assertEquals("first", manager.getSomeNames());
 		}
 	}
@@ -194,8 +194,8 @@ public final class ComponentSpaceTest {
 						.build())
 				.build();
 
-		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			final SomeManager manager = App.getApp().getComponentSpace().resolve(SomeManager.class);
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			final SomeManager manager = Node.getNode().getComponentSpace().resolve(SomeManager.class);
 			Assertions.assertEquals("none", manager.getSomeNames());
 		}
 	}

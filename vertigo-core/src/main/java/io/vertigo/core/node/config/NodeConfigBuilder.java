@@ -63,7 +63,7 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 
 	/**
 	 * Associate a common name that define the application as a whole. (ex: Facebook, Pharos...) (myApp by default)
-	 * @param appName the app name
+	 * @param appName the node name
 	 * @return this builder
 	 */
 	public NodeConfigBuilder withAppName(final String appName) {

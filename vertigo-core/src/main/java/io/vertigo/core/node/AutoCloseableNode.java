@@ -45,10 +45,10 @@ import io.vertigo.core.node.definition.loader.DefinitionSpaceLoader;
 import io.vertigo.core.node.definition.loader.DefinitionSpaceWritable;
 
 /**
- * The app class is the core of vertigo.
+ * The node class is the core of vertigo.
  * @author pchretien
  */
-public final class AutoCloseableApp implements App, AutoCloseable {
+public final class AutoCloseableNode implements Node, AutoCloseable {
 	private enum State {
 		/** Components are starting*/
 		STARTING,
@@ -60,9 +60,9 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 		CLOSED
 	}
 
-	private static final Logger LOGGER = LogManager.getLogger(AutoCloseableApp.class);
+	private static final Logger LOGGER = LogManager.getLogger(AutoCloseableNode.class);
 
-	private static final AtomicReference<App> CURRENT_APP_REF = new AtomicReference<>();
+	private static final AtomicReference<Node> CURRENT_APP_REF = new AtomicReference<>();
 
 	//Start : used to have 'uptime'
 	private final Instant start;
@@ -79,7 +79,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	 * Constructor.
 	 * @param nodeConfig Application configuration
 	 */
-	public AutoCloseableApp(final NodeConfig nodeConfig) {
+	public AutoCloseableNode(final NodeConfig nodeConfig) {
 		Assertion.check()
 				.isNotNull(nodeConfig);
 		//-----
@@ -90,7 +90,7 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 		//--
 		try {
 			//-- 0. Start logger
-			nodeConfig.getBootConfig().getLogConfig().ifPresent(AutoCloseableApp::initLog);
+			nodeConfig.getBootConfig().getLogConfig().ifPresent(AutoCloseableNode::initLog);
 
 			//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
 			//Creates and register all components (and aspects and Proxies).
@@ -215,9 +215,9 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 		final String log4jFileName = log4Config.getFileName();
 		Assertion.check()
 				.isTrue(log4jFileName.endsWith(".xml"), "Use the XML format for log4j configurations (instead of : {0}).", log4jFileName);
-		final URL url = App.class.getResource(log4jFileName);
+		final URL url = Node.class.getResource(log4jFileName);
 		if (url != null) {
-			Configurator.initialize("definedLog4jContext", App.class.getClassLoader(), log4jFileName);
+			Configurator.initialize("definedLog4jContext", Node.class.getClassLoader(), log4jFileName);
 			LogManager.getRootLogger().info("Log4J configuration chargée (resource) : {}", url.getFile());
 		} else {
 			Assertion.check()
@@ -230,11 +230,11 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 		}
 	}
 
-	private static void setCurrentApp(final App app) {
+	private static void setCurrentApp(final Node node) {
 		Assertion.check()
-				.isNotNull(app);
+				.isNotNull(node);
 		//--
-		final boolean success = CURRENT_APP_REF.compareAndSet(null, app);
+		final boolean success = CURRENT_APP_REF.compareAndSet(null, node);
 		//--
 		Assertion.check()
 				.isTrue(success, "current App is already set");
@@ -247,12 +247,12 @@ public final class AutoCloseableApp implements App, AutoCloseable {
 	/**
 	 * @return Application
 	 */
-	static App getCurrentApp() {
-		final App app = CURRENT_APP_REF.get();
+	static Node getCurrentApp() {
+		final Node node = CURRENT_APP_REF.get();
 		Assertion.check()
-				.isNotNull(app, "app has not been started");
+				.isNotNull(node, "node has not been started");
 		//no synchronized for perf purpose
-		return app;
+		return node;
 	}
 
 }

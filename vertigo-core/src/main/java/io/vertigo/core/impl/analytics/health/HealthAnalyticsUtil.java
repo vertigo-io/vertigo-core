@@ -34,7 +34,7 @@ import io.vertigo.core.analytics.health.HealthChecked;
 import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.analytics.health.HealthStatus;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.App;
+import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.AopPlugin;
 import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.util.ClassUtil;
@@ -65,10 +65,10 @@ public final class HealthAnalyticsUtil {
 
 		//-- we construct a map of feature by componentId
 		final Map<String, String> featureByComponentId = new HashMap<>();
-		App.getApp().getNodeConfig().getBootConfig().getComponentConfigs()
+		Node.getNode().getNodeConfig().getBootConfig().getComponentConfigs()
 				.forEach(componentConfig -> featureByComponentId.put(componentConfig.getId(), "vertigo-boot"));
 
-		App.getApp().getNodeConfig().getModuleConfigs()
+		Node.getNode().getNodeConfig().getModuleConfigs()
 				.forEach(moduleConfig -> moduleConfig.getComponentConfigs()
 						.forEach(componentConfig -> featureByComponentId.put(componentConfig.getId(), moduleConfig.getName())));
 		//-----
@@ -98,7 +98,7 @@ public final class HealthAnalyticsUtil {
 	}
 
 	public static List<HealthCheck> getHealthChecks() {
-		return App.getApp().getDefinitionSpace().getAll(HealthCheckDefinition.class).stream()
+		return Node.getNode().getDefinitionSpace().getAll(HealthCheckDefinition.class).stream()
 				.map(HealthAnalyticsUtil::buildHealthCheck)
 				.collect(Collectors.toList());
 	}
