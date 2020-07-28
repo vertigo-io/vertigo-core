@@ -115,21 +115,21 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 
 	private void logProcess(final AProcess process) {
 		if (logger.isInfoEnabled()) {
-			final StringBuilder sb = new StringBuilder()
+			boolean hasMeasures = !process.getMeasures().isEmpty();
+			boolean hasTags = !process.getTags().isEmpty();
+			final String info = new StringBuilder()
 					.append("Finish ")
 					.append(process.getName())
 					.append(succeeded != null ? (succeeded ? " successfully" : " with error") : "with internal error")
 					.append(" in ( ")
 					.append(process.getDurationMillis())
-					.append(" ms)");
-			if (!process.getMeasures().isEmpty()) {
-				sb.append(" measures:").append(process.getMeasures());
-			}
-			if (!process.getTags().isEmpty()) {
-				sb.append(" metaData:").append(process.getTags());
-			}
-			logger.info(sb.toString());
+					.append(" ms)")
+					.append(hasMeasures ? " measures:" + process.getMeasures() : "")
+					.append(hasTags ? " metaData:" + process.getTags() : "")
+					.toString();
+			logger.info(info);
 		}
+
 	}
 
 	/**
