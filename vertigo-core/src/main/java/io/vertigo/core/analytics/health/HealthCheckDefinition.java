@@ -25,7 +25,7 @@ import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 
 /**
- * This definition defines a health check
+ * This defines a health check with
  * 			- a definition name
  * 			- a health check name
  * 			- a checker

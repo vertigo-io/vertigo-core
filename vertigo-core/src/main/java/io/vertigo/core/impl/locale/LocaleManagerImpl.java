@@ -110,11 +110,10 @@ public final class LocaleManagerImpl implements LocaleManager {
 		}
 	}
 
-	private static ZoneId createDefaultZoneId(final Optional<String> defaultZoneId) {
-		if (defaultZoneId.isPresent()) {
-			return ZoneId.of(defaultZoneId.get());
-		}
-		return ZoneId.systemDefault();
+	private static ZoneId createDefaultZoneId(final Optional<String> defaultZoneIdOpt) {
+		return defaultZoneIdOpt
+				.map(defaultZoneId -> ZoneId.of(defaultZoneId))
+				.orElse(ZoneId.systemDefault());
 	}
 
 	private static List<Locale> createLocales(final String locales) {

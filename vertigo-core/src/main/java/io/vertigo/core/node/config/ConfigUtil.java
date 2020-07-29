@@ -71,9 +71,8 @@ final class ConfigUtil {
 		int index = 1;
 		for (final ConnectorConfig connectorConfig : connectorConfigs) {
 			final String connectorType = DIAnnotationUtil.buildId(
-					connectorConfig.getApiClassOpt().isPresent() ?
-					connectorConfig.getApiClassOpt().get()
-					:connectorConfig.getImplClass());
+					connectorConfig.getApiClassOpt()
+							.orElse(connectorConfig.getImplClass()));
 
 			final boolean added = connectorTypes.add(connectorType);
 			final String id;
