@@ -56,24 +56,22 @@ final class DateQueryParserUtil {
 	}
 
 	private static Map<String, Integer> createCalendarUnitsInstant() {
-		return new MapBuilder<String, Integer>()
-				.put("y", Calendar.YEAR)
-				.put("M", Calendar.MONTH)
-				.put("w", Calendar.WEEK_OF_YEAR)
-				.put("d", Calendar.DAY_OF_YEAR)
-				.put("h", Calendar.HOUR_OF_DAY)
-				.put("m", Calendar.MINUTE)
-				.put("s", Calendar.SECOND)
-				.build();
+		return Map.of(
+				"y", Calendar.YEAR,
+				"M", Calendar.MONTH,
+				"w", Calendar.WEEK_OF_YEAR,
+				"d", Calendar.DAY_OF_YEAR,
+				"h", Calendar.HOUR_OF_DAY,
+				"m", Calendar.MINUTE,
+				"s", Calendar.SECOND);
 	}
 
 	private static Map<String, Integer> createCalendarUnitsLocalDate() {
-		return new MapBuilder<String, Integer>()
-				.put("y", Calendar.YEAR)
-				.put("M", Calendar.MONTH)
-				.put("w", Calendar.WEEK_OF_YEAR)
-				.put("d", Calendar.DAY_OF_YEAR)
-				.build();
+		return Map.of(
+				"y", Calendar.YEAR,
+				"M", Calendar.MONTH,
+				"w", Calendar.WEEK_OF_YEAR,
+				"d", Calendar.DAY_OF_YEAR);
 	}
 
 	/**
