@@ -36,7 +36,7 @@ import io.vertigo.core.node.definition.DefinitionSpace;
  * |---ComponentSpace
  * |     contains all the components including plugins and aspects
  *
- * An node has an internal lifecycle.
+ * A node has an internal lifecycle.
  *
  *
  * o--->[starting]--->[active]--->[stopping]--->[closed]
@@ -62,7 +62,7 @@ public interface Node {
 	Instant getStart();
 
 	/**
-	 * @return Application configuration
+	 * @return the node configuration
 	 */
 	NodeConfig getNodeConfig();
 
