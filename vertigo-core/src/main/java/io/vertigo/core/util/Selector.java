@@ -66,7 +66,7 @@ public final class Selector {
 
 	/**
 	 * Adds a set of classes to the scope.
-	 * 
+	 *
 	 * @param classes a supplier of classes
 	 * @return the selector
 	 */
@@ -78,7 +78,7 @@ public final class Selector {
 
 	/**
 	 * Adds a class to the scope.
-	 * 
+	 *
 	 * @param clazz the class to add
 	 * @return the selector
 	 */
@@ -90,18 +90,17 @@ public final class Selector {
 
 	/**
 	 * Adds all the classes with a package prefix in the scope.
-	 * 
+	 *
 	 * @param packageName the root package
 	 * @return the selector
 	 */
 	public static Selector from(final String packageName) {
 		Assertion.check().isNotBlank(packageName);
 		// ---
-		Set<Class> classes = new Reflections(packageName,
+		final Set<Class> classes = new Reflections(packageName,
 				new TypeElementsScanner().includeAnnotations(false).includeFields(false).includeMethods(false))
 						.getStore()
-						.get(TypeElementsScanner.class.getSimpleName())
-						.keySet()
+						.keys(TypeElementsScanner.class.getSimpleName())
 						.stream()
 						.map(className -> ClassUtil.classForName(className))
 						.collect(Collectors.toSet());
