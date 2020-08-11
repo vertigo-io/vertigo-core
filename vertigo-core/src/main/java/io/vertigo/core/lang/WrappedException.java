@@ -71,7 +71,7 @@ public final class WrappedException extends RuntimeException {
 			t = th;
 		}
 
-		final String message = msg != null ? StringUtil.format(msg, params) : null;
+		final String message = StringUtil.format(msg, params);
 		if (t instanceof RuntimeException) {
 			t.addSuppressed(new VSystemException(message));
 			throw (RuntimeException) t;

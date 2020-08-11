@@ -6,12 +6,12 @@ public abstract class AbstractDefinition implements Definition {
 	private final String prefix;
 	private final String name;
 
-	protected AbstractDefinition(String name) {
+	protected AbstractDefinition(final String name) {
 		final DefinitionPrefix definitionPrefix = this.getClass().getAnnotation(DefinitionPrefix.class);
-		prefix = definitionPrefix == null ? null : definitionPrefix.value();
+		Assertion.check().isNotNull(definitionPrefix, "Annotation '@DefinitionPrefix' not found on {0}", this.getClass().getName());
+		prefix = definitionPrefix.value();
 		//---
 		Assertion.check()
-				.isNotNull(prefix, "Annotation '@DefinitionPrefix' not found on {0}", this.getClass().getName())
 				.isNotBlank(prefix)
 				.isNotBlank(name)
 				.isTrue(name.startsWith(prefix), "La définition {0} doit commencer par {1}", name, prefix)

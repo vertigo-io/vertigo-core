@@ -32,6 +32,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -43,7 +44,6 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.MessageKey;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.core.util.ListBuilder;
 
 /**
  * @author pchretien
@@ -113,24 +113,20 @@ public final class LocaleManagerImpl implements LocaleManager {
 	private static ZoneId createDefaultZoneId(final Optional<String> defaultZoneIdOpt) {
 		return defaultZoneIdOpt
 				.map(defaultZoneId -> ZoneId.of(defaultZoneId))
-				.orElse(ZoneId.systemDefault());
+				.orElseGet(ZoneId::systemDefault);
 	}
 
 	private static List<Locale> createLocales(final String locales) {
-		final ListBuilder<Locale> listBuilder = new ListBuilder<>();
-		//Liste des variables utilisées dans la boucle
-		String language;
-		String country;
-		String variant;
-		for (final String locale : locales.split(",")) {
-			final String[] loc = locale.trim().split("_");
-			Assertion.check().isTrue(loc.length > 0, "Locale specifiée vide");
-			language = loc[0];
-			country = loc.length > 1 ? loc[1] : "";
-			variant = loc.length > 2 ? loc[2] : "";
-			listBuilder.add(new Locale(language, country, variant));
-		}
-		return listBuilder.unmodifiable().build();
+		return Stream.of(locales.split(","))
+				.map((locale) -> {
+					final String[] loc = locale.trim().split("_");
+					Assertion.check().isTrue(loc.length > 0, "Locale specifiée vide");
+					final String country = loc.length > 1 ? loc[1] : "";
+					final String variant = loc.length > 2 ? loc[2] : "";
+					return new Locale(loc[0], country, variant);
+				})
+				.collect(Collectors.toUnmodifiableList());
+
 	}
 
 	/** {@inheritDoc} */

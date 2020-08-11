@@ -54,7 +54,7 @@ final class AmplifierFactory {
 		//---
 		final InvocationHandler handler = new MyInvocationHandler(intf, proxyMethods, joinPoints);
 		return (C) java.lang.reflect.Proxy.newProxyInstance(
-				intf.getClassLoader(),
+				Thread.currentThread().getContextClassLoader(),
 				new Class[] { intf },
 				handler);
 	}

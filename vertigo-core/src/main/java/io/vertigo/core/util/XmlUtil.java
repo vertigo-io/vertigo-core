@@ -58,7 +58,7 @@ public final class XmlUtil {
 				.isNotNull(xml)
 				.isNotNull(xsd);
 		//---
-		final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI, INTERNAL_XML_SCHEMA_FACTORY, XmlUtil.class.getClassLoader());
+		final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI, INTERNAL_XML_SCHEMA_FACTORY, Thread.currentThread().getContextClassLoader());
 		try {
 			schemaFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 			final Validator validator = schemaFactory

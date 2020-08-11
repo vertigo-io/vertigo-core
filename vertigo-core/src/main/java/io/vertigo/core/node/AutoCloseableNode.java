@@ -217,7 +217,7 @@ public final class AutoCloseableNode implements Node, AutoCloseable {
 				.isTrue(log4jFileName.endsWith(".xml"), "Use the XML format for log4j configurations (instead of : {0}).", log4jFileName);
 		final URL url = Node.class.getResource(log4jFileName);
 		if (url != null) {
-			Configurator.initialize("definedLog4jContext", Node.class.getClassLoader(), log4jFileName);
+			Configurator.initialize("definedLog4jContext", Thread.currentThread().getContextClassLoader(), log4jFileName);
 			LogManager.getRootLogger().info("Log4J configuration chargée (resource) : {}", url.getFile());
 		} else {
 			Assertion.check()

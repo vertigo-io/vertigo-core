@@ -72,7 +72,7 @@ final class ConfigUtil {
 		for (final ConnectorConfig connectorConfig : connectorConfigs) {
 			final String connectorType = DIAnnotationUtil.buildId(
 					connectorConfig.getApiClassOpt()
-							.orElse(connectorConfig.getImplClass()));
+							.orElseGet(() -> connectorConfig.getImplClass()));
 
 			final boolean added = connectorTypes.add(connectorType);
 			final String id;
@@ -96,7 +96,7 @@ final class ConfigUtil {
 		final List<CoreComponentConfig> coreComponentConfigs = new ArrayList<>();
 		for (final ComponentConfig componentConfig : componentConfigs) {
 			//By convention the component id is the simpleName of the api or the impl
-			final String id = DIAnnotationUtil.buildId(componentConfig.getApiClassOpt().orElse(componentConfig.getImplClass()));
+			final String id = DIAnnotationUtil.buildId(componentConfig.getApiClassOpt().orElseGet(() -> componentConfig.getImplClass()));
 
 			final CoreComponentConfig coreComponentConfig = CoreComponentConfig.createComponent(id,
 					componentConfig.getApiClassOpt(),
@@ -107,7 +107,7 @@ final class ConfigUtil {
 		return coreComponentConfigs;
 	}
 
-	private static <C> Optional<Class<? extends C>> getApiOpt(final Class<? extends C> implClass, Class<C> superApi) {
+	private static <C> Optional<Class<? extends C>> getApiOpt(final Class<? extends C> implClass, final Class<C> superApi) {
 		Assertion.check()
 				.isNotNull(implClass);
 		//---
@@ -139,7 +139,7 @@ final class ConfigUtil {
 				.isNotNull(amplifierConfigs);
 		//---
 		final List<CoreComponentConfig> componentConfigs = new ArrayList<>();
-		for (AmplifierConfig amplifierConfig : amplifierConfigs) {
+		for (final AmplifierConfig amplifierConfig : amplifierConfigs) {
 			final String id = DIAnnotationUtil.buildId(amplifierConfig.getApiClass());
 			final CoreComponentConfig coreComponentConfig = CoreComponentConfig.createAmplifier(id, amplifierConfig.getApiClass(), amplifierConfig.getParams());
 			componentConfigs.add(coreComponentConfig);
