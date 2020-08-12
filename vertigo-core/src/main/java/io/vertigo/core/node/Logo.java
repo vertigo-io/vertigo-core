@@ -39,7 +39,7 @@ final class Logo {
 		out.println("+--------------------------------------------------+");
 		out.println("|   _____________                                  |");
 		out.println("|  |     _     / |                                 |");
-		out.println("|  |#   / \\   / /|  Vertigo v2.1.0 - 2019          |");
+		out.println("|  |#   / \\   / /|  Vertigo v3.0.0 - 2020          |");
 		out.println("|  |  __\\ /__/ / |                                 |");
 		out.println("|  | / _      /  |                                 |");
 		out.println("|  |/ / \\  ()/  *|                                 |");
