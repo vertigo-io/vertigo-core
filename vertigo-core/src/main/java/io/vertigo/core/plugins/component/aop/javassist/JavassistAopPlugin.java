@@ -40,6 +40,10 @@ import javassist.util.proxy.ProxyFactory;
  */
 public final class JavassistAopPlugin implements AopPlugin {
 
+	private static void setProxyOnlyPublicMethods() {
+		ProxyFactory.onlyPublicMethods = Boolean.TRUE;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public <C extends CoreComponent> C wrap(final C instance, final Map<Method, List<Aspect>> joinPoints) {
@@ -56,7 +60,7 @@ public final class JavassistAopPlugin implements AopPlugin {
 		final Class[] intfs = ClassUtil.getAllInterfaces(implClass).toArray(new Class[0]);
 
 		final ProxyFactory f = new ProxyFactory();
-		ProxyFactory.onlyPublicMethods = Boolean.TRUE;
+		setProxyOnlyPublicMethods();
 		f.setInterfaces(intfs);
 		f.setSuperclass(implClass);
 

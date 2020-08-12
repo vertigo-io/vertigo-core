@@ -44,7 +44,7 @@ import io.vertigo.core.param.Param;
  * @author npiedeloup, pchretien
  */
 public final class CoreComponentConfig {
-	private static enum Type {
+	private enum Type {
 		COMPONENT, PLUGIN, AMPLIFIER, CONNECTOR
 	}
 
@@ -54,27 +54,27 @@ public final class CoreComponentConfig {
 	private final Optional<Class<? extends CoreComponent>> apiClassOpt;
 	private final Map<String, String> params;
 
-	static CoreComponentConfig createComponent(String id, Optional<Class<? extends Component>> apiClassOpt, final Class<? extends Component> implClass, List<Param> params) {
-		Optional<Class<? extends CoreComponent>> implClassOpt = Optional.of(implClass);
-		Optional<Class<? extends CoreComponent>> myApiClassOpt = Optional.ofNullable(apiClassOpt.orElse(null));
+	static CoreComponentConfig createComponent(final String id, final Optional<Class<? extends Component>> apiClassOpt, final Class<? extends Component> implClass, final List<Param> params) {
+		final Optional<Class<? extends CoreComponent>> implClassOpt = Optional.of(implClass);
+		final Optional<Class<? extends CoreComponent>> myApiClassOpt = Optional.ofNullable(apiClassOpt.orElse(null));
 		return new CoreComponentConfig(Type.COMPONENT, id, myApiClassOpt, implClassOpt, params);
 	}
 
-	static CoreComponentConfig createPlugin(String id, final Class<? extends Plugin> implClass, List<Param> params) {
+	static CoreComponentConfig createPlugin(final String id, final Class<? extends Plugin> implClass, final List<Param> params) {
 		final Optional<Class<? extends CoreComponent>> apiClassOpt = Optional.empty();
-		Optional<Class<? extends CoreComponent>> implClassOpt = Optional.of(implClass);
+		final Optional<Class<? extends CoreComponent>> implClassOpt = Optional.of(implClass);
 		return new CoreComponentConfig(Type.PLUGIN, id, apiClassOpt, implClassOpt, params);
 	}
 
-	static CoreComponentConfig createAmplifier(String id, final Class<? extends Amplifier> apiClass, List<Param> params) {
+	static CoreComponentConfig createAmplifier(final String id, final Class<? extends Amplifier> apiClass, final List<Param> params) {
 		final Optional<Class<? extends CoreComponent>> apiClassOpt = Optional.of(apiClass);
-		Optional<Class<? extends CoreComponent>> implClassOpt = Optional.empty();
+		final Optional<Class<? extends CoreComponent>> implClassOpt = Optional.empty();
 		return new CoreComponentConfig(Type.AMPLIFIER, id, apiClassOpt, implClassOpt, params);
 	}
 
-	static CoreComponentConfig createConnector(String id, final Class<? extends Connector> implClass, List<Param> params) {
+	static CoreComponentConfig createConnector(final String id, final Class<? extends Connector> implClass, final List<Param> params) {
 		final Optional<Class<? extends CoreComponent>> apiClassOpt = Optional.empty();
-		Optional<Class<? extends CoreComponent>> implClassOpt = Optional.of(implClass);
+		final Optional<Class<? extends CoreComponent>> implClassOpt = Optional.of(implClass);
 		return new CoreComponentConfig(Type.CONNECTOR, id, apiClassOpt, implClassOpt, params);
 	}
 
@@ -154,7 +154,7 @@ public final class CoreComponentConfig {
 	 * @return impl class of the component
 	 */
 	public Class<? extends CoreComponent> getImplClass() {
-		//Assertion.check().state(!proxy, "a proxy has no impl");
+		Assertion.check().state(!proxy, "a proxy has no impl");
 		//---
 		return implClassOpt.get();
 	}

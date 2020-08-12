@@ -81,7 +81,8 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 				.filter(method -> method.isAnnotationPresent(DaemonScheduled.class))
 				.map(
 						method -> {
-							Assertion.check().isTrue(method.getParameterTypes().length == 0, "Method {0} on component {1} cannot have any parameter to be used as a daemon", method.getName(), component.getClass().getName());
+							Assertion.check().isTrue(method.getParameterTypes().length == 0,
+									"Method {0} on component {1} cannot have any parameter to be used as a daemon", method.getName(), component.getClass().getName());
 							//---
 							final DaemonScheduled daemonSchedule = method.getAnnotation(DaemonScheduled.class);
 							final Supplier<Daemon> daemonSupplier;
