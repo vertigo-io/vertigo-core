@@ -112,7 +112,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 
 	private static ZoneId createDefaultZoneId(final Optional<String> defaultZoneIdOpt) {
 		return defaultZoneIdOpt
-				.map(defaultZoneId -> ZoneId.of(defaultZoneId))
+				.map(ZoneId::of)
 				.orElseGet(ZoneId::systemDefault);
 	}
 

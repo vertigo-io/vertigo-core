@@ -148,7 +148,7 @@ public final class AutoCloseableNode implements Node, AutoCloseable {
 
 	private void appPreActivate() {
 		preActivateFunctions
-				.forEach(postStartFunction -> postStartFunction.run());
+				.forEach(Runnable::run);
 	}
 
 	private void appStop() {

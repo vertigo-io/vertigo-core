@@ -102,7 +102,7 @@ public final class Selector {
 						.getStore()
 						.keys(TypeElementsScanner.class.getSimpleName())
 						.stream()
-						.map(className -> ClassUtil.classForName(className))
+						.map(ClassUtil::classForName)
 						.collect(Collectors.toSet());
 		return from(classes);
 	}
