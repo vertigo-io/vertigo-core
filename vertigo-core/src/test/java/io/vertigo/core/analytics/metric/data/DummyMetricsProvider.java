@@ -18,6 +18,7 @@
  */
 package io.vertigo.core.analytics.metric.data;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,7 +35,9 @@ public class DummyMetricsProvider implements Component {
 						.builder()
 						.withName("type")
 						.withFeature("subject")
+						.withModule("test")
 						.withValue(0.00)
+						.withMeasureInstant(Instant.now())
 						.withSuccess()
 						.build());
 	}

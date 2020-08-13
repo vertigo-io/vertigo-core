@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.metric.data.DummyMetricsProvider;
+import io.vertigo.core.analytics.metric.data.SystemMetricsProvider;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 
@@ -42,6 +43,9 @@ public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
 				.addModule(ModuleConfig.builder("test-metric")
 						.addComponent(DummyMetricsProvider.class)
 						.build())
+				.addModule(ModuleConfig.builder("test-system-metric")
+						.addComponent(SystemMetricsProvider.class)
+						.build())
 				.build();
 	}
 
@@ -52,6 +56,6 @@ public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
 	public void testAnalyze() {
 		final List<Metric> metrics = analyticsManager.getMetrics();
 		//---
-		Assertions.assertEquals(1, metrics.size());
+		Assertions.assertEquals(4, metrics.size()); //1 from DummyMetricsProvider + 3 from SystemMetricsProvider
 	}
 }
