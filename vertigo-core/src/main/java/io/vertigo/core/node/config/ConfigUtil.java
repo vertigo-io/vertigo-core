@@ -72,7 +72,7 @@ final class ConfigUtil {
 		for (final ConnectorConfig connectorConfig : connectorConfigs) {
 			final String connectorType = DIAnnotationUtil.buildId(
 					connectorConfig.getApiClassOpt()
-							.orElseGet(() -> connectorConfig.getImplClass()));
+							.orElseGet(connectorConfig::getImplClass));
 
 			final boolean added = connectorTypes.add(connectorType);
 			final String id;
@@ -96,7 +96,9 @@ final class ConfigUtil {
 		final List<CoreComponentConfig> coreComponentConfigs = new ArrayList<>();
 		for (final ComponentConfig componentConfig : componentConfigs) {
 			//By convention the component id is the simpleName of the api or the impl
-			final String id = DIAnnotationUtil.buildId(componentConfig.getApiClassOpt().orElseGet(() -> componentConfig.getImplClass()));
+			final String id = DIAnnotationUtil.buildId(
+					componentConfig.getApiClassOpt()
+							.orElseGet(componentConfig::getImplClass));
 
 			final CoreComponentConfig coreComponentConfig = CoreComponentConfig.createComponent(id,
 					componentConfig.getApiClassOpt(),
