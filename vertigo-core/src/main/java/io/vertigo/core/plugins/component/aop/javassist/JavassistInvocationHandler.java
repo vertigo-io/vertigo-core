@@ -80,8 +80,7 @@ final class JavassistInvocationHandler implements MethodHandler {
 		@Override
 		public Object proceed(final Object[] args) {
 			if (index < aspects.size()) {
-				index++;
-				return aspects.get(index).invoke(args, this);
+				return aspects.get(index++).invoke(args, this);
 			}
 			return ClassUtil.invoke(instance, method, args);
 		}
