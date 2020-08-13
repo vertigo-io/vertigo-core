@@ -129,8 +129,12 @@ public final class ComponentSpaceLoader {
 		final Map<String, CoreComponentConfig> componentConfigById = componentConfigs
 				.stream()
 				.filter(componentConfig -> !componentConfig.isAmplifier())
-				.peek(componentConfig -> reactor.addComponent(componentConfig.getId(), componentConfig.getImplClass(), componentConfig.getParams().keySet()))
+				//can't use peek (Sonar : peek is for debug purpose)
 				.collect(Collectors.toMap(CoreComponentConfig::getId, Function.identity()));
+
+		componentConfigs.stream()//if we use componentConfigById componentConfig's order may changed
+				.filter(componentConfig -> !componentConfig.isAmplifier())
+				.forEach(componentConfig -> reactor.addComponent(componentConfig.getId(), componentConfig.getImplClass(), componentConfig.getParams().keySet()));
 
 		//Comment trouver des plugins orphenlins ?
 

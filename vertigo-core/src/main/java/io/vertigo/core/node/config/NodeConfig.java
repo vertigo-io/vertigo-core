@@ -35,6 +35,10 @@ import io.vertigo.core.lang.Assertion;
  */
 public final class NodeConfig {
 
+	private static final int PRINT_MODULE_SIZE = 24;
+	private static final int PRINT_COMPONENT_SIZE = 22;
+	private static final int PRINT_PLUGIN_SIZE = 44;
+
 	private final String appName;
 	private final String nodeId;
 	private final Optional<String> endPointOpt;
@@ -168,7 +172,7 @@ public final class NodeConfig {
 	}
 
 	private static void printComponent(final PrintStream out, final String column1, final String column2, final String column3) {
-		out.println("|" + truncate(column1, 24) + " | " + truncate(column2, 22) + " | " + truncate(column3, 44) + " |");
+		out.println("|" + truncate(column1, PRINT_MODULE_SIZE) + " | " + truncate(column2, PRINT_COMPONENT_SIZE) + " | " + truncate(column3, PRINT_PLUGIN_SIZE) + " |");
 	}
 
 	private static String truncate(final String value, final int size) {

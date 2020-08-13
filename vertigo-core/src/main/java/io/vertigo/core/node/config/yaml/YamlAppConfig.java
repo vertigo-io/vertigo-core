@@ -27,7 +27,7 @@ public final class YamlAppConfig {
 
 	public YamlNodeConfig node;
 	public YamlBootConfig boot;
-	public final LinkedHashMap<String, YamlModuleConfig> modules = new LinkedHashMap<>();
+	public final Map<String, YamlModuleConfig> modules = new LinkedHashMap<>();
 	public final List<YamlInitializerConfig> initializers = new ArrayList<>();
 
 	public static final class YamlNodeConfig {

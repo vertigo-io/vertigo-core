@@ -42,6 +42,28 @@ public final class YamlAppConfigTest {
 	}
 
 	@Test
+	public void testBootParams() {
+		final Properties params = new Properties();
+		params.setProperty("boot.testProperties", "io/vertigo/core/node/config/yaml/test-params.properties");
+		final NodeConfig nodeConfig = new YamlAppConfigBuilder(params)
+				.withFiles(getClass(), "bio-boot-params.yaml")
+				.build();
+
+		testBioManager(nodeConfig);
+	}
+
+	@Test
+	public void testUnusedBootParams() {
+		org.junit.jupiter.api.Assertions.assertThrows(IllegalStateException.class, () -> {
+			final Properties params = new Properties();
+			params.setProperty("boot.testProperties", "io/vertigo/core/node/config/yaml/test-params.properties");
+			new YamlAppConfigBuilder(params)
+					.withFiles(getClass(), "bio-boot.yaml")
+					.build();
+		});
+	}
+
+	@Test
 	public void testNoBoot() {
 
 		final NodeConfig nodeConfig = new YamlAppConfigBuilder(new Properties())

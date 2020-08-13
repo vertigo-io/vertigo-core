@@ -9,6 +9,13 @@ import java.nio.file.Paths;
 import io.vertigo.core.lang.Assertion;
 
 public final class FileUtil {
+	/**
+	 * Constructeur privé pour classe utilitaire
+	 */
+	private FileUtil() {
+		//rien
+	}
+
 	public static String read(final URL url) throws IOException, URISyntaxException {
 		Assertion.check().isNotNull(url);
 		//---

@@ -62,6 +62,8 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU5 {
 		assertEquals("TheDefinition", sampleDefinition.getLocalName(), "localName must be TheDefinition");
 		assertEquals(sampleDefinition.getName(), SampleDefinition.PREFIX + sampleDefinition.getLocalName(),
 				"globalName must be SampleTheDefinition");
+		assertEquals(sampleDefinition.toString(), sampleDefinition.getName(),
+				"toString must be SampleTheDefinition");
 
 		final DefinitionReference<SampleDefinition> sampleDefinitionRef = new DefinitionReference<>(sampleDefinition);
 
