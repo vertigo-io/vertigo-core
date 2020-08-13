@@ -47,7 +47,7 @@ import io.vertigo.core.node.definition.DefinitionSpace;
  */
 public interface Node {
 
-	public static Node getNode() {
+	static Node getNode() {
 		return AutoCloseableNode.getCurrentApp();
 	}
 
