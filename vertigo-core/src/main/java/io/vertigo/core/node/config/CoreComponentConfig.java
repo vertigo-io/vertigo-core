@@ -154,8 +154,6 @@ public final class CoreComponentConfig {
 	 * @return impl class of the component
 	 */
 	public Class<? extends CoreComponent> getImplClass() {
-		Assertion.check().state(!proxy, "a proxy has no impl");
-		//---
 		return implClassOpt.get();
 	}
 
