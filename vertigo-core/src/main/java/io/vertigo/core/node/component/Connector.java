@@ -19,7 +19,7 @@
 package io.vertigo.core.node.component;
 
 /**
- * A connecotr is a particular core-component.
+ * A connector is a particular core-component.
  * A connector bridge to dedicated library or product but with no purpose in mind.
  * A connector is only used by plugins to implement specific functions via the dedicated library.
  *
@@ -32,7 +32,7 @@ package io.vertigo.core.node.component;
  */
 public interface Connector<C> extends CoreComponent {
 
-	public static final String DEFAULT_CONNECTOR_NAME = "main";
+	String DEFAULT_CONNECTOR_NAME = "main";
 
 	/**
 	 * A connector might need to define it's name to be findable by plugin and to differentiate multiple instance of the same connector.
