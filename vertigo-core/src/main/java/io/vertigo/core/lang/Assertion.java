@@ -25,26 +25,26 @@ import io.vertigo.core.util.StringUtil;
 
 /**
  * Assertions help us to build better code, with more robustness.
- * 
+ *
  * Assertions have been introduced by  B.Meyer in a language called Eiffel.
- * 
+ *
  * An assertion allows you to design by contract.
  * Each time an assertion fails, an specific exception is thrown.
- * 
- * The following assertions help you to test if 
+ *
+ * The following assertions help you to test if
  * - an object is noT null => isNotNull
  * - a string is not blank (and not null) =>isNotBlank
- * - an expression is true or false =>isTrue or isFalse 
- * 
+ * - an expression is true or false =>isTrue or isFalse
+ *
  * You can have a condition before running an assertion => when
  * That's usefull when you want to test a pattern of an object that can be null.
- *  
- * This assertion should be written in a fluent style to group all the assertions 
- * into a single block of code. 
+ *
+ * This assertion should be written in a fluent style to group all the assertions
+ * into a single block of code.
  *
  * Assertion can define a message and args.
  * "hello {0}, an error occured on '{1}'", "foo", "bar"
- *  returns 
+ *  returns
  *  hello foo, an error occured on 'bar'
  *
  * You can use the simple quote ' inside the message.
@@ -52,11 +52,11 @@ import io.vertigo.core.util.StringUtil;
  * @author pchretien, fconstantin
  */
 public final class Assertion {
+	private static final Assertion INSTANCE = new Assertion();
+
 	private Assertion() {
 		super();
 	}
-
-	private static final Assertion INSTANCE = new Assertion();
 
 	public static Assertion check() {
 		return INSTANCE;
@@ -64,12 +64,12 @@ public final class Assertion {
 
 	/**
 	 * Evaluates an assertion when a condition is fulfilled.
-	 * 
-	 * @param condition the condition to check the assertion 
+	 *
+	 * @param condition the condition to check the assertion
 	 * @param assertionSupplier the assertion to check when the condition is fulfilled
 	 * @return the current assertion
 	 */
-	public Assertion when(final boolean condition, Supplier<Assertion> assertionSupplier) {
+	public Assertion when(final boolean condition, final Supplier<Assertion> assertionSupplier) {
 		if (condition) {
 			isValid(assertionSupplier);
 		}
@@ -79,7 +79,7 @@ public final class Assertion {
 	/**
 	 * Checks if an object is not null.
 	 * Throws the famous NullPointerException if not.
-	 * 
+	 *
 	 * @param o the object
 	 * @return the current assertion
 	 */
@@ -91,9 +91,9 @@ public final class Assertion {
 	/**
 	 * Checks if an object is not null.
 	 * Throws the famous NullPointerException with a pretty message if not.
-	 * 
+	 *
 	 * @param o the object
-	 * @param msg the message 
+	 * @param msg the message
 	 * @param params the params of the message
 	 * @return the current assertion
 	 */
@@ -105,7 +105,7 @@ public final class Assertion {
 
 	/**
 	 * Checks if an object is null.
-	 * Throws an IllegalStateException if not 
+	 * Throws an IllegalStateException if not
 	 * @param o the object
 	 * @return the current assertion
 	 */
@@ -116,9 +116,9 @@ public final class Assertion {
 	/**
 	 * Checks if an object is null.
 	 * Throws an illegalStateException with a pretty message if not.
-	 * 
+	 *
 	 * @param o the object
-	 * @param msg the message 
+	 * @param msg the message
 	 * @param params the params of the message
 	 * @return the current assertion
 	 */
@@ -130,11 +130,11 @@ public final class Assertion {
 	}
 
 	/**
-	 * Checks if a boolean expression is True 
+	 * Checks if a boolean expression is True
 	 * Throws an IllegalStateException with a pretty message if not.
-	 * 
+	 *
 	 * @param test the boolean expression
-	 * @param msg the message 
+	 * @param msg the message
 	 * @param params the params of the message
 	 * @return the current assertion
 	 */
@@ -146,11 +146,11 @@ public final class Assertion {
 	}
 
 	/**
-	 * Checks if a boolean expression is False 
+	 * Checks if a boolean expression is False
 	 * Throws an IllegalStateException with a pretty message if not.
-	 * 
+	 *
 	 * @param test the boolean expression
-	 * @param msg the message 
+	 * @param msg the message
 	 * @param params the params of the message
 	 * @return the current assertion
 	 */
@@ -159,9 +159,9 @@ public final class Assertion {
 	}
 
 	/**
-	 * Checks if a string is not blank (and not empty). 
+	 * Checks if a string is not blank (and not empty).
 	 * Throws an IllegalArgumentException if not.
-	 * 
+	 *
 	 * @param str the string
 	 * @return the current assertion
 	 */
@@ -170,11 +170,11 @@ public final class Assertion {
 	}
 
 	/**
-	 * Checks if a string is not blank (and not empty). 
+	 * Checks if a string is not blank (and not empty).
 	 * Throws an IllegalArgumentException with a pretty message if not.
-	 * 
+	 *
 	 * @param str the string
-	 * @param msg the message 
+	 * @param msg the message
 	 * @param params the params of the message
 	 * @return the current assertion
 	 */
@@ -189,11 +189,11 @@ public final class Assertion {
 	/**
 	 * Checks if an assertion supplied is valid.
 	 * Throws the Exception thrown by the assertion if not.
-	 * 
+	 *
 	 * @param assertionSupplier the assertion supplied
 	 * @return the current assertion
 	 */
-	public Assertion isValid(Supplier<Assertion> assertionSupplier) {
+	public Assertion isValid(final Supplier<Assertion> assertionSupplier) {
 		assertionSupplier.get();
 		return this;
 	}

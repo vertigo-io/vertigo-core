@@ -118,7 +118,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 
 	private static List<Locale> createLocales(final String locales) {
 		return Stream.of(locales.split(","))
-				.map((locale) -> {
+				.map(locale -> {
 					final String[] loc = locale.trim().split("_");
 					Assertion.check().isTrue(loc.length > 0, "Locale specifiée vide");
 					final String country = loc.length > 1 ? loc[1] : "";
