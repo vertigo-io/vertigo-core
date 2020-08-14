@@ -105,8 +105,6 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 		handleNodeConfig(yamlNodeConfig);
 		//--- boot
 		handleBoot(yamlNodeConfig);
-		//--- check all boots params are read
-		Assertion.check().isTrue(params.unreadProperties().isEmpty(), "Some boot properties are unused {0}; Check they must starts with 'boot.'", params.unreadProperties());
 		//--- modules
 		yamlNodeConfig.modules
 				.entrySet()
