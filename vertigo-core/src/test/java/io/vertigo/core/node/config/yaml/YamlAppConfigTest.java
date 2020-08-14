@@ -34,7 +34,7 @@ public final class YamlAppConfigTest {
 	@Test
 	public void testBoot() {
 
-		final NodeConfig nodeConfig = new YamlAppConfigBuilder(new Properties())
+		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(new Properties())
 				.withFiles(getClass(), "bio-boot.yaml")
 				.build();
 
@@ -45,7 +45,7 @@ public final class YamlAppConfigTest {
 	public void testBootParams() {
 		final Properties params = new Properties();
 		params.setProperty("boot.testProperties", "io/vertigo/core/node/config/yaml/test-params.properties");
-		final NodeConfig nodeConfig = new YamlAppConfigBuilder(params)
+		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(params)
 				.withFiles(getClass(), "bio-boot-params.yaml")
 				.build();
 
@@ -55,7 +55,7 @@ public final class YamlAppConfigTest {
 	@Test
 	public void testNoBoot() {
 
-		final NodeConfig nodeConfig = new YamlAppConfigBuilder(new Properties())
+		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(new Properties())
 				.withFiles(getClass(), "bio.yaml")
 				.build();
 
@@ -65,7 +65,7 @@ public final class YamlAppConfigTest {
 	@Test
 	public void testNodeConfig() {
 
-		final NodeConfig nodeConfig = new YamlAppConfigBuilder(new Properties())
+		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(new Properties())
 				.withFiles(getClass(), "bio-node.yaml")
 				.build();
 
@@ -80,7 +80,7 @@ public final class YamlAppConfigTest {
 	public void testActiveFlagsMainConfig() {
 		final Properties params = new Properties();
 		params.setProperty("boot.activeFlags", "main");
-		final NodeConfig nodeConfig = new YamlAppConfigBuilder(params)
+		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(params)
 				.withFiles(getClass(), "bio-flags.yaml")
 				.build();
 
@@ -91,7 +91,7 @@ public final class YamlAppConfigTest {
 	public void testActiveFlagsSecondaryConfig() {
 		final Properties params = new Properties();
 		params.setProperty("boot.activeFlags", "secondary");
-		final NodeConfig nodeConfig = new YamlAppConfigBuilder(params)
+		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(params)
 				.withFiles(getClass(), "bio-flags.yaml")
 				.build();
 
@@ -109,7 +109,7 @@ public final class YamlAppConfigTest {
 	public void testNegateFlagsConfig() {
 		final Properties params = new Properties();
 		params.setProperty("boot.activeFlags", "main;customStart");
-		final NodeConfig nodeConfig = new YamlAppConfigBuilder(params)
+		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(params)
 				.withFiles(getClass(), "bio-flags.yaml")
 				.build();
 
@@ -125,7 +125,7 @@ public final class YamlAppConfigTest {
 
 	@Test
 	public void testFull() {
-		final NodeConfig nodeConfig = new YamlAppConfigBuilder(new Properties())
+		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(new Properties())
 				.withFiles(getClass(), "bio-full.yaml")
 				.build();
 		testBioManager(nodeConfig);

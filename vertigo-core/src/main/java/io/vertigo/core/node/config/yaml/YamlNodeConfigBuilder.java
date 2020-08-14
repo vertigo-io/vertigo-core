@@ -55,7 +55,12 @@ import io.vertigo.core.util.FileUtil;
 import io.vertigo.core.util.Selector;
 import io.vertigo.core.util.Selector.MethodConditions;
 
-public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
+/**
+ * Builds the NodeConfig for the current node based on the provided YamlAppConfig.
+ * @author mlaroche
+ *
+ */
+public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 
 	private static final String FLAGS = "__flags__";
 
@@ -66,7 +71,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 	private final List<String> activeFlags;
 	private final YamlConfigParams params;
 
-	public YamlAppConfigBuilder(final Properties params) {
+	public YamlNodeConfigBuilder(final Properties params) {
 		Assertion.check().isNotNull(params);
 		//---
 		if (params.containsKey("boot.activeFlags")) {
@@ -86,7 +91,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 	*
 	* @return this builder
 	*/
-	public YamlAppConfigBuilder withFiles(final Class relativeRootClass, final String... jsonFileNames) {
+	public YamlNodeConfigBuilder withFiles(final Class relativeRootClass, final String... jsonFileNames) {
 		Assertion.check()
 				.isNotNull(relativeRootClass)
 				.isNotNull(jsonFileNames);
@@ -298,7 +303,7 @@ public final class YamlAppConfigBuilder implements Builder<NodeConfig> {
 	 * @param logConfig Config of logs
 	 * @return  this builder
 	 */
-	public YamlAppConfigBuilder withLogConfig(final LogConfig logConfig) {
+	public YamlNodeConfigBuilder withLogConfig(final LogConfig logConfig) {
 		Assertion.check().isNotNull(logConfig);
 		//-----
 		bootConfigBuilder.withLogConfig(logConfig);
