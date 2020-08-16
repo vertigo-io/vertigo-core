@@ -20,6 +20,7 @@ package io.vertigo.core.node.config;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -154,7 +155,8 @@ public final class CoreComponentConfig {
 	 * @return impl class of the component
 	 */
 	public Class<? extends CoreComponent> getImplClass() {
-		return implClassOpt.get();
+		return implClassOpt
+				.orElseThrow(() -> new NoSuchElementException("No impl class deined for this type of component :" + type));
 	}
 
 	/**
