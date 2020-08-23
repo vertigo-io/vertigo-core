@@ -18,10 +18,8 @@
  */
 package io.vertigo.core.node.config.yaml;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,7 +36,6 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.Tuple;
-import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.ComponentInitializer;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.node.config.BootConfig;
@@ -105,7 +102,7 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 	private void handleJsonFileConfig(final URL yamlConfigURL) {
 
 		final Yaml yaml = new Yaml(new Constructor(YamlAppConfig.class));
-		final YamlAppConfig yamlNodeConfig = yaml.loadAs(parseFile(yamlConfigURL), YamlAppConfig.class);
+		final YamlAppConfig yamlNodeConfig = yaml.loadAs(FileUtil.read(yamlConfigURL), YamlAppConfig.class);
 		//--- node
 		handleNodeConfig(yamlNodeConfig);
 		//--- boot
@@ -334,14 +331,6 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 			final URL url = relativeRootClass.getResource(fileName);
 			Assertion.check().isNotNull(url, "Impossible de récupérer le fichier [" + fileName + "]");
 			return url;
-		}
-	}
-
-	private static String parseFile(final URL url) {
-		try {
-			return FileUtil.read(url);
-		} catch (final IOException | URISyntaxException e) {
-			throw WrappedException.wrap(e, "Error reading json file : '{0}'", url);
 		}
 	}
 

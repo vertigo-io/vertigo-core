@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 
 public final class FileUtil {
 	/**
@@ -16,9 +17,13 @@ public final class FileUtil {
 		//rien
 	}
 
-	public static String read(final URL url) throws IOException, URISyntaxException {
+	public static String read(final URL url) {
 		Assertion.check().isNotNull(url);
 		//---
-		return Files.readString(Paths.get(url.toURI()));
+		try {
+			return Files.readString(Paths.get(url.toURI()));
+		} catch (final IOException | URISyntaxException e) {
+			throw WrappedException.wrap(e, "Error when reading file : '{0}'", url);
+		}
 	}
 }
