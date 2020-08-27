@@ -54,6 +54,16 @@ public final class Param {
 	}
 
 	/***
+	 * Creates a new Integer param
+	 * @param name the name of the param
+	 * @param value the value of the param
+	 * @return new param
+	 */
+	public static Param of(final String name, final Integer value) {
+		return new Param(name, Integer.toString(value));
+	}
+
+	/***
 	 * Creates a new param
 	 * @param name the name of the param
 	 * @param value the value of the param
