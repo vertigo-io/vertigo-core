@@ -81,9 +81,8 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 	}
 
 	/**
-	* Append Config of a set of modules.
-	 * @param relativeRootClass Class used to access files in a relative way.
-	* @param params properties used to configure the app
+	* Appends Config of a set of modules.
+	* @param relativeRootClass Class used to access files in a relative way.
 	* @param jsonFileNames fileNames of the different json files
 	*
 	* @return this builder

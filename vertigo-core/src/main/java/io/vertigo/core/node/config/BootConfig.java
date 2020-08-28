@@ -66,7 +66,6 @@ public final class BootConfig {
 
 	/**
 	 * Static method factory for NodeConfigBuilder
-	 * @param nodeConfigBuilder Parent NodeConfig builder
 	 * @return NodeConfigBuilder
 	 */
 	public static BootConfigBuilder builder() {

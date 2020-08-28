@@ -36,7 +36,7 @@ package io.vertigo.core.lang;
  *
  * @author pchretien
  * @param <J> JavaDataType (ex : Mail, Point)
- * @param <S> PrimitiveDataType (ex : String, Integer)
+ * @param <B> PrimitiveDataType (ex : String, Integer)
  */
 public interface BasicTypeAdapter<J, B> {
 	/**

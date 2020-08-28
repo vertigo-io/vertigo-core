@@ -87,7 +87,6 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU5 {
 	 * Test simple avec deux compteurs.
 	 * Test sur l'envoi de 1000 articles d'un poids de 25 kg.
 	 * Chaque article coute 10€.
-	 * @throws InterruptedException for sleep
 	 */
 	@Test
 	public void test1000Articles() {

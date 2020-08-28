@@ -91,11 +91,11 @@ public final class AProcessBuilder implements Builder<AProcess> {
 	 * @param value  the measure value to increment
 	 * @return this builder
 	 */
-	public AProcessBuilder incMeasure(final String measureName, final double measureValue) {
-		Assertion.check().isNotNull(measureName, "Measure name is required");
+	public AProcessBuilder incMeasure(final String name, final double value) {
+		Assertion.check().isNotNull(name, "Measure name is required");
 		//---------------------------------------------------------------------
-		final Double lastmValue = measures.get(measureName);
-		measures.put(measureName, lastmValue == null ? measureValue : measureValue + lastmValue);
+		final Double lastmValue = measures.get(name);
+		measures.put(name, lastmValue == null ? value : value + lastmValue);
 		return this;
 	}
 
