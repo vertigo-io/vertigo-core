@@ -50,7 +50,6 @@ public final class InjectorUtil {
 	/**
 	 * Inject dependencies in the instance using the current App ComponentSpace as container.
 	 * @param instance the object your want to get it's member injected.
-	 * @return the enhanced object.
 	 */
 	public static void injectMembers(final Object instance) {
 		Assertion.check()

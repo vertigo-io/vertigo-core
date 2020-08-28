@@ -32,7 +32,7 @@ public interface DaemonStat {
 		/** Waiting for next execution. */
 		pending,
 		/** Running. */
-		running;
+		running
 	}
 
 	/**

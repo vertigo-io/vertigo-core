@@ -90,7 +90,8 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 		addComponent(
 				LocaleManager.class,
 				LocaleManagerImpl.class,
-				Param.of("locales", locales), Param.of("defaultZoneId", defaultZoneId));
+				Param.of("locales", locales),
+				Param.of("defaultZoneId", defaultZoneId));
 		return this;
 	}
 
