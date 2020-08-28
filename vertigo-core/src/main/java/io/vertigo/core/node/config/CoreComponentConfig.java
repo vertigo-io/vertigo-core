@@ -113,12 +113,6 @@ public final class CoreComponentConfig {
 						.isTrue(apiClassOpt.orElse(CoreComponent.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(CoreComponent.class));
 				break;
 			case CONNECTOR:
-				Assertion.check()
-						.when(apiClassOpt.isPresent(), () -> Assertion.check()
-								.isTrue(CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class)
-								.isTrue(CoreComponent.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, CoreComponent.class))
-						.isTrue(apiClassOpt.orElse(CoreComponent.class).isAssignableFrom(implClassOpt.get()), "impl class {0} must implement {1}", implClassOpt.get(), apiClassOpt.orElse(CoreComponent.class));
-				break;
 			case PLUGIN:
 				Assertion.check()
 						.when(apiClassOpt.isPresent(), () -> Assertion.check()

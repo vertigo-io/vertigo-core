@@ -38,14 +38,14 @@ public final class YamlAppConfig {
 
 	public static final class YamlBootConfig {
 		public YamlParamsConfig params;
-		public List<YamlPluginConfig> plugins = new ArrayList<>();
+		public final List<YamlPluginConfig> plugins = new ArrayList<>();
 	}
 
 	public static class YamlModuleConfig {
 		public List<YamlFeatureConfig> features;
 		public List<YamlFeatureConfig> featuresConfig;
-		public List<String> __flags__ = new ArrayList<>();
-		public List<YamlPluginConfig> plugins = new ArrayList<>();
+		public final List<String> __flags__ = new ArrayList<>();
+		public final List<YamlPluginConfig> plugins = new ArrayList<>();
 	}
 
 	public static class YamlFeatureConfig extends LinkedHashMap<String, Map<String, Object>> {
