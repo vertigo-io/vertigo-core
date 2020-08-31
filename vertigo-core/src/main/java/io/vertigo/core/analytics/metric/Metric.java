@@ -33,7 +33,7 @@ public final class Metric {
 		/** Exécution OK*/
 		SUCCESS,
 		/** Erreur lors de l'exécution*/
-		ERROR;
+		ERROR
 	}
 
 	private final Instant measureInstant;
