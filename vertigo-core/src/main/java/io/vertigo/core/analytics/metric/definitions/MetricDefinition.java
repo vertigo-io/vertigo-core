@@ -16,11 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.analytics.metric;
+package io.vertigo.core.analytics.metric.definitions;
 
 import java.util.List;
 import java.util.function.Supplier;
 
+import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;

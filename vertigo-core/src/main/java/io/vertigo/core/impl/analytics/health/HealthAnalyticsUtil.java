@@ -29,10 +29,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.vertigo.core.analytics.health.HealthCheck;
-import io.vertigo.core.analytics.health.HealthCheckDefinition;
 import io.vertigo.core.analytics.health.HealthChecked;
 import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.analytics.health.HealthStatus;
+import io.vertigo.core.analytics.health.definitions.HealthCheckDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.AopPlugin;

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.node.definition;
+package io.vertigo.core.node.definitions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -35,6 +35,10 @@ import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
+import io.vertigo.core.node.definition.AbstractDefinition;
+import io.vertigo.core.node.definition.DefinitionPrefix;
+import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.param.Param;
 
 public final class DefinitionSpaceTest extends AbstractTestCaseJU5 {

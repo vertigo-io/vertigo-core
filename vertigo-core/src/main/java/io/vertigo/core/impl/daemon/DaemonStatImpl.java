@@ -18,8 +18,8 @@
  */
 package io.vertigo.core.impl.daemon;
 
-import io.vertigo.core.daemon.DaemonDefinition;
 import io.vertigo.core.daemon.DaemonStat;
+import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 
 /**

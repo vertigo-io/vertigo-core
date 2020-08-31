@@ -16,10 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.daemon;
+package io.vertigo.core.daemon.definitions;
 
 import java.util.function.Supplier;
 
+import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;

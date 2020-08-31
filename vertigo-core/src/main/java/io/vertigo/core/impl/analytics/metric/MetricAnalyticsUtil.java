@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.vertigo.core.analytics.metric.Metric;
-import io.vertigo.core.analytics.metric.MetricDefinition;
 import io.vertigo.core.analytics.metric.Metrics;
+import io.vertigo.core.analytics.metric.definitions.MetricDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.AopPlugin;

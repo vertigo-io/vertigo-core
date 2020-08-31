@@ -21,8 +21,8 @@ package io.vertigo.core.impl.daemon;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.core.daemon.DaemonDefinition;
 import io.vertigo.core.daemon.DaemonStat;
+import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 
 final class DaemonListener {
