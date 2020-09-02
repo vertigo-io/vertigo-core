@@ -26,11 +26,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tuples.
+ * Tuple.
  *
  * @author pchretien
  */
-public final class TuplesTest {
+public final class TupleTest {
 	@Test
 	public void testTuple() {
 		final Tuple<String, String> homer = Tuple.of("homer", "simpson");
