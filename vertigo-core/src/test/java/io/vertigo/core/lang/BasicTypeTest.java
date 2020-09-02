@@ -32,9 +32,9 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test de l'utilitaire des assertions.
+ * Basic Type.
  *
- * @author pchretien
+ * @author mlaroche
  */
 public final class BasicTypeTest {
 

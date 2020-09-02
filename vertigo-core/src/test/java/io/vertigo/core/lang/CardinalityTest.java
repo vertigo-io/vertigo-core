@@ -25,9 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test de l'utilitaire des assertions.
+ * Cardinality.
  *
- * @author pchretien
+ * @author mlaroche.
  */
 public final class CardinalityTest {
 

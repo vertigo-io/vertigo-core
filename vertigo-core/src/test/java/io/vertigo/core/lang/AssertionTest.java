@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test de l'utilitaire des assertions.
+ *  Assertion.
  *
  * @author pchretien
  */
