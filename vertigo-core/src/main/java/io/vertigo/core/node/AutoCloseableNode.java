@@ -102,8 +102,8 @@ public final class AutoCloseableNode implements Node, AutoCloseable {
 					.loadAllComponentsAndAspects(nodeConfig.getModuleConfigs())
 					.endLoading();
 			//---- Print components
+			Logo.printCredits(System.out);
 			if (nodeConfig.getBootConfig().isVerbose()) {
-				Logo.printCredits(System.out);
 				nodeConfig.print(System.out);
 			}
 			//--2 Loads all definitions
