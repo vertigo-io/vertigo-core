@@ -30,6 +30,10 @@ final class Logo {
 		//constructor is protected
 	}
 
+	public static void main(final String[] args) {
+		printCredits(System.out);
+	}
+
 	/**
 	 * Displays logo in console.
 	 * @param out Out
@@ -37,14 +41,14 @@ final class Logo {
 	static void printCredits(final PrintStream out) {
 		out.println();
 		out.println("+--------------------------------------------------+");
-		out.println("|   _____________                                  |");
-		out.println("|  |     _     / |                                 |");
-		out.println("|  |#   / \\   / /|  Vertigo v3.0.0 - 2020          |");
-		out.println("|  |  __\\ /__/ / |                                 |");
-		out.println("|  | / _      /  |                                 |");
-		out.println("|  |/ / \\  ()/  *|                                 |");
-		out.println("|  | /  |   |    |  vertigo.io                     |");
-		out.println("|  |/___|____\\___|                                 |");
+		out.println("|   ________________                            |");
+		out.println("|  |\\#\\          /#/|                                 |");
+		out.println("|  | \\#\\        /#/ |  Vertigo v3.0.0 - 2020          |");
+		out.println("|  |  \\#\\      /#/  |                                 |");
+		out.println("|  |   \\#\\____/#/   |                                 |");
+		out.println("|  |    \\#\\##/#/    |                                 |");
+		out.println("|  |     \\####/     |  vertigo.io                     |");
+		out.println("|  |______\\##/______|                                 |");
 		out.println("+--------------------------------------------------+");
 	}
 }
