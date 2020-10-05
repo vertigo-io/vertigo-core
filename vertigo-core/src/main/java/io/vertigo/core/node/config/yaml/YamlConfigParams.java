@@ -42,22 +42,10 @@ final class YamlConfigParams {
 	String getParam(final String paramName) {
 		Assertion.check()
 				.isNotBlank(paramName)
-				.isTrue(paramName.startsWith("boot."), "Param resolved in boot must start with the prefix 'boot.'");
-
-		if (paramName.startsWith("boot.env.")) {
-			// try in ENV (mainly for docker environments)
-			final String paramNameWithoutPrefix = paramName.substring("boot.env.".length());
-			final String paramValue = System.getenv(paramNameWithoutPrefix);
-			if (paramValue != null) {
-				readKeys.add(paramName);
-				return paramValue;
-			}
-		}
-
-		Assertion.check().isTrue(properties.containsKey(paramName), "property '{0}' not found", paramName);
+				.isTrue(properties.containsKey(paramName), "property '{0}' not found", paramName);
+		//-----
 		readKeys.add(paramName);
 		return properties.getProperty(paramName);
-
 	}
 
 	Set<String> unreadProperties() {
