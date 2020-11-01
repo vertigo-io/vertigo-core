@@ -18,23 +18,23 @@
 package io.vertigo.core.util;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Locale;
-import java.util.regex.Pattern; 
+import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 
 public final class FileUtil {
-	
-	
+
 	private static final String USER_CHECK_ERROR_MSG = "User try to use illegal fileName";
 
 	private static final String USER_HOME = "user.home";
@@ -52,7 +52,7 @@ public final class FileUtil {
 	private static final Pattern PATTERN_USER_HOME = Pattern.compile(KEY_USER_HOME);
 	private static final Pattern PATTERN_USER_DIR = Pattern.compile(KEY_USER_DIR);
 	private static final Pattern PATTERN_JAVA_IO_TMPDIR = Pattern.compile(KEY_JAVA_IO_TMPDIR);
-	
+
 	/**
 	 * Constructeur privé pour classe utilitaire
 	 */
@@ -64,12 +64,22 @@ public final class FileUtil {
 		Assertion.check().isNotNull(url);
 		//---
 		try {
-			return Files.readString(Paths.get(url.toURI()));
-		} catch (final IOException | URISyntaxException e) {
+			try (final BufferedReader reader = new BufferedReader(
+					new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
+				final StringBuilder buff = new StringBuilder();
+				String line = reader.readLine();
+				while (line != null) {
+					buff.append(line);
+					line = reader.readLine();
+					buff.append("\r\n");
+				}
+				return buff.toString();
+			}
+		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error when reading file : '{0}'", url);
 		}
 	}
-	
+
 	/**
 	 * Copie le contenu d'un flux d'entrée vers un flux de sortie.
 	 * @param in flux d'entrée
@@ -170,6 +180,5 @@ public final class FileUtil {
 				&& userFileName.indexOf((char) 0) == -1, //char 0
 				USER_CHECK_ERROR_MSG);
 	}
-
 
 }
