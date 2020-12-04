@@ -9,7 +9,7 @@ more to come :)
 
 Release 3.0.0 - 2020/11/20
 ----------------------
-
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-210-to-300)
 * __[All] Moved modules to vertigo-extensions git repository__
 * [Core] Removed Node module, Added Daemon module
 * [Core] Added CoreFeatures
