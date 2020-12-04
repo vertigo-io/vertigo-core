@@ -1,10 +1,58 @@
 Version history
 ===============
 
-Running 3.0.0
+Running 3.1.0
 ----------------------
 
 more to come :)
+
+
+Release 3.0.0 - 2020/11/20
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-210-to-300)
+* __[All] Moved modules to vertigo-extensions git repository__
+* [Core] Removed Node module, Added Daemon module
+* [Core] Added CoreFeatures
+* [Core] Moved DaemonManager, AnalyticsManager from CoreFeatures to BootConfig
+* [core] First impl of connectors
+* [Core] Analytics : socket logger close on stop
+* [Core] TempFile with nio Api
+* [core] Fix FileUtil read : not all url are in the filesystem (path) for example inside a jar
+* [core] Moved TempFile purge daemon (now supported by ResourceManager)
+* [Core] Some coverage tests
+* [Core] Fix TempFile if dir was removed
+* [core] Add ability to have a common interface between connectors
+* [core] Add the general concept of cardinality
+* [core] Add to Symbol on cardinality
+* [core] Initializer is after start of components
+* [core] Replace LocaleProvider by native supplier
+* [core] Remove check of unused boot params to ease the use of feature flipping in config
+* [core] Rename app -> node
+* [core] Changed Wrapped exception to accept message null
+* [core] Add ability to resolve boot param from Environnement Variable (for docker)
+* [parent] update owasp plugin
+* [Core] Updated libs
+  - Java 11
+  - org.apache.logging.log4j 2.12.1 -> 2.13.3
+  - org.reflections 0.9.11 -> 0.9.12
+  - org.yaml 1.25 -> 1.26
+  - junit 5.6.0 -> 5.6.2
+  - es 7.9.0 -> 7.9.3
+  - jersey-client 2.31 -> 2.32
+  - javalin 3.11.0 -> 3.11.2
+  - keycloak-servlet-filter-adapter 11.0.2 -> 11.0.3
+  - neo4j 4.1.1 -> 4.1.3
+  - spring 5.2.8.RELEASE -> 5.2..RELEASE
+  - snakeyaml 1.26 -> 1.27
+  - junit-jupiter-engine 5.6.2 -> 5.7.0
+  - lucene 8.6.0 -> 8.6.2
+  - rest-assured 4.3.1 -> 4.3.2
+  - liquibase 4.0.0 -> 4.1.1
+  - ojdbc10 19.7.0.0 -> 19.8.0.0
+  - postgresql 42.2.14 -> 42.2.18
+  - thymeleaf-layout-dialect 2.4.1 -> 2.5.1
+  - htmlunit-driver 2.42.0 -> 2.44.0
+
 
 Release 2.1.0 - 2019/11/12
 ----------------------
