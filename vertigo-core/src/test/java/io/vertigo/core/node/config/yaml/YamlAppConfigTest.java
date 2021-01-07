@@ -130,6 +130,15 @@ public final class YamlAppConfigTest {
 		testBioManager(nodeConfig);
 	}
 
+	@Test
+	public void testParts() {
+		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(new Properties())
+				.withFiles(getClass(), "bio-part-1.yaml")
+				.withFiles(getClass(), "bio-part-2.yaml")
+				.build();
+		testBioManager(nodeConfig);
+	}
+
 	private void testBioManager(final NodeConfig nodeConfig) {
 		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
 			assertEquals(node, node);
