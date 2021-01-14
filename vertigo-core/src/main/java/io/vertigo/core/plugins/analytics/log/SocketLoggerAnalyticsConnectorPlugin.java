@@ -32,7 +32,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 
@@ -66,7 +65,6 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	private final String hostName;
 	private final int port;
 	private SocketAppender appender;
-	private AppenderRef[] appenderRefs;
 
 	private final String appName;
 	private final String localHostName;
@@ -151,8 +149,6 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
 		final Configuration config = ctx.getConfiguration();
 		config.addAppender(appender);
-		final AppenderRef ref = AppenderRef.createAppenderRef("socketAnalytics", null, null);
-		appenderRefs = new AppenderRef[] { ref };
 	}
 
 	@Override
@@ -168,10 +164,9 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 		final LoggerContext context = (LoggerContext) LogManager.getContext(false); //on ne close pas : car ca stop le context
 		final Configuration config = context.getConfiguration();
-		final LoggerConfig loggerConfig = LoggerConfig.createLogger(false, Level.INFO, loggerName, "true", appenderRefs, null, config, null);
+		final LoggerConfig loggerConfig = LoggerConfig.createLogger(false, Level.INFO, loggerName, "true", new AppenderRef[] {}, null, config, null);
 
 		loggerConfig.addAppender(appender, null, null);
-		Configurator.setLevel(loggerName, Level.INFO);
 		config.addLogger(loggerName, loggerConfig);
 		context.updateLoggers();
 		return LogManager.getLogger(loggerName);
