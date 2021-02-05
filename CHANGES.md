@@ -1,11 +1,17 @@
 Version history
 ===============
 
-Running 3.1.0
+Running 3.2.0
 ----------------------
 
 more to come :)
 
+Release 3.1.0 - 2021/02/05
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-300-to-210)
+* [Core] Fix the log4j2 configuration, the socketAppender was lost and nothing was sent to analytics server (thanks @skerdudou)
+* [Core] Updated libs
+  - log4j 2.13.3 -> 2.14.0
 
 Release 3.0.0 - 2020/11/20
 ----------------------
