@@ -1,11 +1,17 @@
 Version history
 ===============
 
-Running 3.1.0
+Running 3.2.0
 ----------------------
 
 more to come :)
 
+Release 3.1.0 - 2021/02/05
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-300-to-210)
+* [Core] Fix the log4j2 configuration, the socketAppender was lost and nothing was sent to analytics server (thanks @skerdudou)
+* [Core] Updated libs
+  - log4j 2.13.3 -> 2.14.0
 
 Release 3.0.0 - 2020/11/20
 ----------------------
@@ -163,7 +169,7 @@ Release 2.0.0 - 2019/05/16
 * [studio] created a SearchClient component dedicated to search access
 * [studio] Drop if exists
 * [studio] Removed sequences for non numeric PK
-* [all] update dependencies log4j2 2.11.0 -> 2.11.2 ; cglib-nodep 3.2.6 -> 3.2.10 ; gson 2.8.2 -> 2.8.5 ; c3p0 0.9.5.2 -> 0.9.5.3 ; janino	3.0.8 -> 3.0.12 ; ehcache 2.10.4 -> 2.10.6 ; berkleydb sleepycat je 7.5.11 -> 18.3.12 ; rest-assured 3.0.7 -> 3.3.0 ; freemarker 2.3.23 -> 2.3.28 ; javax-mail 1.6.0 -> 1.6.2 ; h2 1.4.196 -> 1.4.199 ; struts2 2.5.16 -> 2.5.20 ; fr.opensagres.xdocreport.converter.odt.odfdom 2.0.1 -> 2.0.2 ; fr.opensagres.xdocreport.converter.docx.xwpf 2.0.1 -> 2.0.2 ; org.apache.poi 3.16 -> 4.0.1
+* [all] update dependencies log4j2 2.11.0 -> 2.11.2 ; cglib-nodep 3.2.6 -> 3.2.10 ; gson 2.8.2 -> 2.8.5 ; c3p0 0.9.5.2 -> 0.9.5.3 ; janino   3.0.8 -> 3.0.12 ; ehcache 2.10.4 -> 2.10.6 ; berkleydb sleepycat je 7.5.11 -> 18.3.12 ; rest-assured 3.0.7 -> 3.3.0 ; freemarker 2.3.23 -> 2.3.28 ; javax-mail 1.6.0 -> 1.6.2 ; h2 1.4.196 -> 1.4.199 ; struts2 2.5.16 -> 2.5.20 ; fr.opensagres.xdocreport.converter.odt.odfdom 2.0.1 -> 2.0.2 ; fr.opensagres.xdocreport.converter.docx.xwpf 2.0.1 -> 2.0.2 ; org.apache.poi 3.16 -> 4.0.1
 
 Release 1.1.3 - 2019/03/21
 ----------------------
@@ -272,99 +278,100 @@ Release 1.0.0 - 2017/07/07
 __In Bold__ : Potential compatibility problems 
 
 * [all] Code cleaning, refactoring and documenting 
-*	[all] Added Dependency-check maven plugin
-*	[vertigo] Builder Refactoring (General use is now : ObjectToBuild.builder() )
+*   [all] Added Dependency-check maven plugin
+*   [vertigo] Builder Refactoring (General use is now : ObjectToBuild.builder() )
 * [core] refactoring
 * [core] silent => verbose (silently mode by default)
 * [core] Params.of
-*	[core] Introduced Proxy (+refactoring componentConfigBuilder)
+*   [core] Introduced Proxy (+refactoring componentConfigBuilder)
 * [core] Better exception if a looking for class don't extends the class
 * [core] removed withApi(boolean) on moduleConfigBuilder
-*	[core] replaced long by Instant (start date of app)
-*	[core] refactoring MessageText (+ deprecated old api for migration ease)
-*	[core] rem describable
+*   [core] replaced long by Instant (start date of app)
+*   [core] refactoring MessageText (+ deprecated old api for migration ease)
+*   [core] rem describable
 * [core] first impl of a NodeManager (still a work in progress)
 * [core] refactored LifeCycle
-*	[core] components are now definition providers
-*	[core] move classes from lang to components and locale
-*	[core] definitionProvider +simple in features
+*   [core] components are now definition providers
+*   [core] move classes from lang to components and locale
+*   [core] definitionProvider +simple in features
 * [account] introduced new module to handle security (authentication, authorization...)  
 * [account] introduced a multi dimensions protection of entities (first impl ie still a work in progress)
-*	[account] Added grants and overrides on advanced security
-*	[account] Added support to security enum dimension
-*	[account] Added support of tree security dimensions
-*	[account] Splited UserSession to simpler UserSession and PersonaUserSession
-*	[account] Added Store Realms Authentification and Identity
-*	[account] Used salted-PBKDF2 hash algo for password instead of salted-SHA256
+*   [account] Added grants and overrides on advanced security
+*   [account] Added support to security enum dimension
+*   [account] Added support of tree security dimensions
+*   [account] Splited UserSession to simpler UserSession and PersonaUserSession
+*   [account] Added Store Realms Authentification and Identity
+*   [account] Used salted-PBKDF2 hash algo for password instead of salted-SHA256
 * [commons] replaced Listener by Consumer (Java8 style) (EventBus)
-*	[commons] Added RedisCachePlugin
-*	[commons] refactored eventbusManager
-*	[commons] introduced CacheDefinition, EventBusSubscriptionDefinition, DaemonDefinition
-*	[commons] introduced @EventSubscribed to register to a event on a component
-*	[commons] introduced @DaemonScheduled to register a daemon on a component
-*	[commons] Added VTransactionManager as default feature
+*   [commons] Added RedisCachePlugin
+*   [commons] refactored eventbusManager
+*   [commons] introduced CacheDefinition, EventBusSubscriptionDefinition, DaemonDefinition
+*   [commons] introduced @EventSubscribed to register to a event on a component
+*   [commons] introduced @DaemonScheduled to register a daemon on a component
+*   [commons] Added VTransactionManager as default feature
 * [commons] Refactored AnalyticsTracer : ever logs, no stack
 * [commons] eventbus and daemon are now registered with annotations
 * [database] introduced new module for handling databases (especially sql)
-*	[database] refac Sql (use java type instead of DataType)
+*   [database] refac Sql (use java type instead of DataType)
 * [database] added tests for all databases (Oracle, Postgre, H2, SQLServer) 
 * [database] added tests for batchs
 * [database] insertions in Oracle databases now uses generated keys (no more callableStatements)
 * [database] Hsql-> HSql
-*	[database] added Java 8 LocalDate
+*   [database] added Java 8 LocalDate
 * [database] added test on sql / blob --- java / dataStream
-*	[database] sql -> functional style
-*	[database] refac generatedKeys
-*	[database] Declared ZonedDateTime and LocalDate as primitive types
+*   [database] sql -> functional style
+*   [database] refac generatedKeys
+*   [database] Declared ZonedDateTime and LocalDate as primitive types
+* [dynamo] Removed deprecated getListByDtField, use getListByDtFieldName instead
 * [dynamo] removed dynamic behaviour on DtDefinition
-*	[dynamo] Made search highlight optional and desactivated by default
-*	[dynamo] Show fluent sorting with generics
-*	[dynamo] Added markAsDirty one uri for common usage case
+*   [dynamo] Made search highlight optional and desactivated by default
+*   [dynamo] Show fluent sorting with generics
+*   [dynamo] Added markAsDirty one uri for common usage case
 * [dynamo] added convenient method .of to build DtList (DtList.of(dt1,dt2,...)
-*	[dynamo] added a filter method on VCollectors
-*	[dynamo] only true and false for a boolean property
+*   [dynamo] added a filter method on VCollectors
+*   [dynamo] only true and false for a boolean property
 * [dynamo] replaced with by add in FacetedQueryResultBuilder
-*	[dynamo] introduced VAccessor concept
+*   [dynamo] introduced VAccessor concept
 * [dynamo] refac CollectionsManager (replaced by java8 equivalents)
-*	[dynamo] used Criterions instead Of CollectionsManager
+*   [dynamo] used Criterions instead Of CollectionsManager
 * [dynamo] Renamed FacetedQueryResultBuilder to FacetedQueryResultMerger
 * [dynamo] Added sort order support to range facet definition
 * [dyanmo] moved criteria from dynamo/store to dynamo/criteria
 * [dynamo] _Removed elasticSearch1_7 plugin_
-*	[dynamo] removed DtListRangeFilter
-*	[dynamo] replaced filterByRange by Criterion.isBetween
-*	[dynamo] replaced Collections.filterValue by Criterions.isEqualTo
-*	[dynamo] replaced CollectionsManager by Criterions
-*	[dynamo] remove SqlCallableStatement and out parameters in sql
-*	[dynamo] created object are returned (FileStore, DataStore)
-*	[dynamo] lucene index plugins are stored in a map in a fix cache context
-*	[dynamo] move database in new module, move transaction in commons
-*	[dynamo] added Java 8 LocalDate
+*   [dynamo] removed DtListRangeFilter
+*   [dynamo] replaced filterByRange by Criterion.isBetween
+*   [dynamo] replaced Collections.filterValue by Criterions.isEqualTo
+*   [dynamo] replaced CollectionsManager by Criterions
+*   [dynamo] remove SqlCallableStatement and out parameters in sql
+*   [dynamo] created object are returned (FileStore, DataStore)
+*   [dynamo] lucene index plugins are stored in a map in a fix cache context
+*   [dynamo] move database in new module, move transaction in commons
+*   [dynamo] added Java 8 LocalDate
 * [dynamo] moved parser fom dynamo to database (bound statement)
-*	[dynamo] Oracle Unit Tests
+*   [dynamo] Oracle Unit Tests
 * [dynamo] Removed HSQL from tests / used H2 instead
-*	[dynamo] Added LocalDate and ZonedDateTime support ot FormatterDate
+*   [dynamo] Added LocalDate and ZonedDateTime support ot FormatterDate
 * [dynamo] Use lambda for comparator
-*	[vega] Fixed #88
-*	[vega] Added WebServiceDefinitionProvider using ClassSelector
-*	[vega] Deprectaed UiListState by DtListState
+*   [vega] Fixed #88
+*   [vega] Added WebServiceDefinitionProvider using ClassSelector
+*   [vega] Deprectaed UiListState by DtListState
 * [vega] fix for #89
 * [vega] added simple healthcheck webservice
 * [vega] Fixed #92
-*	[vega] Fixed facets term count and streamed it
+*   [vega] Fixed facets term count and streamed it
 * [vega] Added json empty property deserialized as null (and add tests)
-*	[vega] Added json converter for LocalDate and ZonedDateTime
-*	[vega] Added some ZonedDateTime tests
-*	[vega] fix validator with server state
+*   [vega] Added json converter for LocalDate and ZonedDateTime
+*   [vega] Added some ZonedDateTime tests
+*   [vega] fix validator with server state
 * [studio] move in vertigo repo
-*	[studio] refactored freemarker
-*	[studio] refactored all models (models, source objects and templates are completely independants)
-*	[studio] Fixed JPA annotations for Hibernate and its "special" sequences
-*	[studio] Added TS generator
+*   [studio] refactored freemarker
+*   [studio] refactored all models (models, source objects and templates are completely independants)
+*   [studio] Fixed JPA annotations for Hibernate and its "special" sequences
+*   [studio] Added TS generator
 * [persona] deprecated module (use accoount for new projects)
-*	[tempo] _remove module_ (use vertigo-mail and vertigo-orchestra extensions)
+*   [tempo] _remove module_ (use vertigo-mail and vertigo-orchestra extensions)
 
-*	[all] Updated dependencies versions  …
+*   [all] Updated dependencies versions  …
  org.codehaus.janino janino 2.7.8 -> 3.0.7
  net.sf.ehcache ehcache 2.10.3 -> 2.10.4
  org.slf4j slf4j-api 1.7.22 -> 1.7.25

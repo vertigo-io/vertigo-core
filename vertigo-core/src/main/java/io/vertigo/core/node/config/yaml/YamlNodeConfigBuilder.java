@@ -82,22 +82,22 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 	/**
 	* Appends Config of a set of modules.
 	* @param relativeRootClass Class used to access files in a relative way.
-	* @param jsonFileNames fileNames of the different json files
+	* @param yamlFileNames fileNames of the different yaml files
 	*
 	* @return this builder
 	*/
-	public YamlNodeConfigBuilder withFiles(final Class relativeRootClass, final String... jsonFileNames) {
+	public YamlNodeConfigBuilder withFiles(final Class relativeRootClass, final String... yamlFileNames) {
 		Assertion.check()
 				.isNotNull(relativeRootClass)
-				.isNotNull(jsonFileNames);
+				.isNotNull(yamlFileNames);
 		//---
-		Stream.of(jsonFileNames)
+		Stream.of(yamlFileNames)
 				.map(xmlModulesFileName -> createURL(xmlModulesFileName, relativeRootClass))
-				.forEach(this::handleJsonFileConfig);
+				.forEach(this::handleYamlFileConfig);
 		return this;
 	}
 
-	private void handleJsonFileConfig(final URL yamlConfigURL) {
+	private void handleYamlFileConfig(final URL yamlConfigURL) {
 
 		final Yaml yaml = new Yaml(new Constructor(YamlAppConfig.class));
 		final YamlAppConfig yamlNodeConfig = yaml.loadAs(FileUtil.read(yamlConfigURL), YamlAppConfig.class);
@@ -109,7 +109,7 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 		yamlNodeConfig.modules
 				.entrySet()
 				.stream()
-				.forEach(entry -> handleJsonModuleConfig(entry.getKey(), entry.getValue()));
+				.forEach(entry -> handleYamlModuleConfig(entry.getKey(), entry.getValue()));
 		//--- initializers
 		yamlNodeConfig.initializers
 				.forEach(initializerConfig -> {
@@ -174,7 +174,7 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 		}
 	}
 
-	private void handleJsonModuleConfig(final String featuresClassName, final YamlModuleConfig yamlModuleConfig) {
+	private void handleYamlModuleConfig(final String featuresClassName, final YamlModuleConfig yamlModuleConfig) {
 		if (yamlModuleConfig == null) {
 			// we have no params so no flag
 			// just a simple module

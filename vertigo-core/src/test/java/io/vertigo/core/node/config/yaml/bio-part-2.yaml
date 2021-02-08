@@ -1,0 +1,7 @@
+modules:
+  io.vertigo.core.node.config.yaml.YamlBioFeatures:
+      features:
+        - bio:
+initializers:
+  - io.vertigo.core.node.component.data.DataInitializer:
+        
