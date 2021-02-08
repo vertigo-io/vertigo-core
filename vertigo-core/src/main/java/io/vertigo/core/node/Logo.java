@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2020, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,6 @@ final class Logo {
 				"    \\~%~~/  __/ |  | |_| | (_| | (_) |   | | (_) |\n" +
 				"     \\%%/ \\___|_|   \\__|_|\\__, |\\___/ (@)|_|\\___/ \n" +
 				"      \\/                   __/ |                  \n" +
-				"          v3.0.0 - 2020   |___/  \n");
+				"          v3.1.0 - 2021   |___/  \n");
 	}
 }
