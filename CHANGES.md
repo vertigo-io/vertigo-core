@@ -6,9 +6,14 @@ Running 3.2.0
 
 more to come :)
 
+Release 3.1.1 - 2021/02/22
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-310-to-311)
+* Release some fixes for vertigo ui, no changes in vertigo-core
+
 Release 3.1.0 - 2021/02/05
 ----------------------
-[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-300-to-210)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-300-to-310)
 * [Core] Fix the log4j2 configuration, the socketAppender was lost and nothing was sent to analytics server (thanks @skerdudou)
 * [Core] Updated libs
   - log4j 2.13.3 -> 2.14.0
