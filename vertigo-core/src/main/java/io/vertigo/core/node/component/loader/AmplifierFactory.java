@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Amplifier;
@@ -94,7 +95,9 @@ final class AmplifierFactory {
 	private static ProxyMethod findProxyMethod(
 			final Method method,
 			final List<ProxyMethod> proxyMethods) {
-		final Annotation annotation = Arrays.stream(method.getAnnotations())
+		final Annotation annotation = Stream.concat(
+				Arrays.stream(method.getAnnotations()),
+				Arrays.stream(method.getDeclaringClass().getAnnotations()))
 				.filter(a -> a.annotationType().isAnnotationPresent(ProxyMethodAnnotation.class))
 				.findFirst()
 				.orElseThrow(() -> new IllegalStateException("No way to find a proxy annotation on method : " + method));
