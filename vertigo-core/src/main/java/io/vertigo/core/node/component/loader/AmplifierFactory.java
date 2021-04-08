@@ -97,13 +97,13 @@ final class AmplifierFactory {
 		final Annotation annotation = Arrays.stream(method.getAnnotations())
 				.filter(a -> a.annotationType().isAnnotationPresent(ProxyMethodAnnotation.class))
 				.findFirst()
-				.orElseThrow(() -> new IllegalStateException("No way to find a proxy annotaion on method : " + method));
+				.orElseThrow(() -> new IllegalStateException("No way to find a proxy annotation on method : " + method));
 
 		return proxyMethods
 				.stream()
 				.filter(p -> annotation.annotationType().equals(p.getAnnotationType()))
 				.findFirst()
-				.orElseThrow(() -> new IllegalStateException("No way to find a proxy annotation on method : " + method));
+				.orElseThrow(() -> new IllegalStateException("No way to find a proxyMethod for this method : " + method));
 	}
 
 	private static final class MyMethodInvocation implements AspectMethodInvocation {
