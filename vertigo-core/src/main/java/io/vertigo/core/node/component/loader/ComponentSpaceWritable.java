@@ -120,14 +120,14 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	}
 
 	private static void startComponent(final CoreComponent component) {
-		if (component instanceof Activeable) {
-			Activeable.class.cast(component).start();
+		if (component instanceof Activeable activeable) {
+			activeable.start();
 		}
 	}
 
 	private static void stopComponent(final CoreComponent component) {
-		if (component instanceof Activeable) {
-			Activeable.class.cast(component).stop();
+		if (component instanceof Activeable activeable) {
+			activeable.stop();
 		}
 	}
 
