@@ -65,18 +65,21 @@ public final class WrappedException extends RuntimeException {
 	public static RuntimeException wrap(final Throwable th, final String msg, final Object... params) {
 		Assertion.check().isNotBlank(msg);
 		//---
-		final Throwable t = (th instanceof InvocationTargetException ite)
-				? ite.getTargetException()
-				: th;
+		final Throwable t;
+		if (th instanceof InvocationTargetException) {
+			t = ((InvocationTargetException) th).getTargetException();
+		} else {
+			t = th;
+		}
 
 		final String message = StringUtil.format(msg, params);
-		if (t instanceof RuntimeException rte) {
-			rte.addSuppressed(new VSystemException(message));
-			throw rte;
+		if (t instanceof RuntimeException) {
+			t.addSuppressed(new VSystemException(message));
+			throw (RuntimeException) t;
 		}
-		if (t instanceof Error error) {
-			error.addSuppressed(new VSystemException(message));
-			throw error;
+		if (t instanceof Error) {
+			t.addSuppressed(new VSystemException(message));
+			throw (Error) t;
 		}
 		throw new WrappedException(message, t);
 	}

@@ -78,9 +78,9 @@ public final class Tuple<A, B> {
 		if (this == object) {
 			return true;
 		}
-		if (object instanceof Tuple that) {
-			return Objects.equals(val1, that.val1) 
-					&& Objects.equals(val2, that.val2);
+		if (object instanceof Tuple) {
+			final Tuple<?, ?> that = Tuple.class.cast(object);
+			return Objects.equals(val1, that.val1) && Objects.equals(val2, that.val2);
 		}
 		return false;
 	}

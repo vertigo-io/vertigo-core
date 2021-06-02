@@ -431,7 +431,8 @@ public final class ClassUtil {
 				.isNotNull(type)
 				.isNotNull(exceptionSupplier);
 		//---
-		if (type instanceof ParameterizedType parameterizedType) {
+		if (type instanceof ParameterizedType) {
+			final ParameterizedType parameterizedType = ParameterizedType.class.cast(type);
 			Assertion.check()
 					.isTrue(parameterizedType.getActualTypeArguments().length == 1, "Il doit y avoir 1 et 1 seul générique déclaré");
 			final Type optionType = parameterizedType.getActualTypeArguments()[0];
