@@ -17,6 +17,8 @@
  */
 package io.vertigo.core.lang;
 
+import java.util.Objects;
+
 /**
  * Tuples are immutable objects.
  * Tuple with 2 Objects.
@@ -25,7 +27,21 @@ package io.vertigo.core.lang;
  *
  * @author pchretien
  */
-public record Tuple<A, B> (A val1, B val2) {
+public final class Tuple<A, B> {
+	private final A val1;
+	private final B val2;
+
+	/**
+	* Creates a new instance of Tuple.
+	*
+	* @param val1 Value 1.
+	* @param val2 Value 2.
+	*/
+	private Tuple(final A val1, final B val2) {
+		this.val1 = val1;
+		this.val2 = val2;
+	}
+
 	/**
 	 * Creates a Tuple with 2 objects
 	 * @param val1 the first object
@@ -34,5 +50,38 @@ public record Tuple<A, B> (A val1, B val2) {
 	 */
 	public static <A, B> Tuple<A, B> of(final A val1, final B val2) {
 		return new Tuple<>(val1, val2);
+	}
+
+	/**
+	* @return  Value#1.
+	*/
+	public A getVal1() {
+		return val1;
+	}
+
+	/**
+	* @return  Value#2.
+	 */
+	public B getVal2() {
+		return val2;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int hashCode() {
+		return Objects.hash(val1, val2);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean equals(final Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (object instanceof Tuple that) {
+			return Objects.equals(val1, that.val1) 
+					&& Objects.equals(val2, that.val2);
+		}
+		return false;
 	}
 }

@@ -48,10 +48,10 @@ public final class TupleTest {
 		assertNotEquals(homer2, marge);
 
 		//---getVal
-		assertEquals("homer", homer.val1());
-		assertEquals("simpson", homer.val2());
+		assertEquals("homer", homer.getVal1());
+		assertEquals("simpson", homer.getVal2());
 
-		assertEquals("marge", marge.val1());
-		assertEquals("simpson", marge.val2());
+		assertEquals("marge", marge.getVal1());
+		assertEquals("simpson", marge.getVal2());
 	}
 }
