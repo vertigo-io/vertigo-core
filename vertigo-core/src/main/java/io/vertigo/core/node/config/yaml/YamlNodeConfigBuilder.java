@@ -188,7 +188,7 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 						.filterMethods(MethodConditions.annotatedWith(Feature.class))
 						.findMethods()
 						.stream()
-						.map(Tuple::getVal2)
+						.map(Tuple::val2)
 						.collect(Collectors.toMap(method -> method.getAnnotation(Feature.class).value(), Function.identity()));
 
 				if (yamlModuleConfig.features != null) {
