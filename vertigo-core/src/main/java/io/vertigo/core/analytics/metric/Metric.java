@@ -43,19 +43,19 @@ public final class Metric {
 	private final Status status;
 
 	Metric(
-			final Instant measureTime,
+			final Instant measureInstant,
 			final String name,
 			final String module,
 			final String feature,
 			final Double value,
 			final Status status) {
 		Assertion.check()
-				.isNotNull(measureTime)
+				.isNotNull(measureInstant)
 				.isNotBlank(name)
 				.isNotBlank(feature)
 				.isNotNull(status);
 		//-----
-		measureInstant = measureTime;
+		this.measureInstant = measureInstant;
 		this.name = name;
 		this.module = module;
 		this.feature = feature;
