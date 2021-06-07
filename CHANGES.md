@@ -1,10 +1,21 @@
 Version history
 ===============
 
-Running 3.2.0
+Running 4.0.0
 ----------------------
 
 more to come :)
+
+Release 3.2.0 - 2021/06/21
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-311-to-320)
+[Core] Better error message if no proxyMethod found
+[Core] Amplifier annotation support on method or on class
+* [Core] Updated libs
+  - log4j 2.14.0 -> 2.14.1
+  - gson 2.8.6 -> 2.8.7
+  - snakeyaml  1.27 -> 1.28
+  - javassist 3.27.0 -> 3.28.0  
 
 Release 3.1.1 - 2021/02/22
 ----------------------
