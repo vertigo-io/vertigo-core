@@ -27,13 +27,13 @@ import java.io.InputStream;
  */
 public interface DataStream {
 	/**
-	 * @return Flux
+	 * @return Stream
 	 * @throws IOException Erreur d'entrée/sortie
 	 */
 	InputStream createInputStream() throws IOException;
 
 	/**
-	 * @return Longueur
+	 * @return Length
 	 */
 	long getLength();
 }

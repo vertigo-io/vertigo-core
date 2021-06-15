@@ -25,6 +25,9 @@ import java.util.Optional;
  * Basic types.
  * This class defines ALL the basic types, used by Vertigo.
  * This set is limited to only a few types.
+ * 
+ * You can extend this set with the basicTypeAdapter.
+ * 
  * @author  pchretien
  */
 public enum BasicType {
@@ -63,13 +66,11 @@ public enum BasicType {
 	}
 
 	/**
-	 * Teste si la valeur passée en paramétre est est conforme au type.
-	 * Lance une exception avec message adequat si pb.
-	 * @param value Valeur é tester
+	 * Checks if the value matched this basic type
+	 * Throws an exception if the value is not well typed.
+	 * @param value the value
 	 */
 	public void checkValue(final Object value) {
-		//Il suffit de vérifier que la valeur passée est une instance de la classe java définie pour le type Dynamo.
-		//Le test doit être effectué car le cast est non fiable par les generics
 		if (value != null && !javaClass.isInstance(value)) {
 			throw new ClassCastException("Value " + value + " doesn't match :" + this);
 		}
@@ -128,7 +129,7 @@ public enum BasicType {
 		} else if (DataStream.class.equals(type)) {
 			basicType = BasicType.DataStream;
 		} else {
-			//not a well known basicType
+			//not a basicType
 			basicType = null;
 		}
 		return Optional.ofNullable(basicType);
