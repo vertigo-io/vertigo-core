@@ -27,7 +27,7 @@ import io.vertigo.core.lang.Assertion;
 /**
  * Health check.
  *  example :
- *  dataStorePlugin.ping : Ping to a Database produces a specific health check with the actual measure of it
+ *  dataStorePlugin.ping : Ping a Database produces a specific health check with the actual measure of it
  *  {plugin/component}.{test} :
  *
  * @author mlaroche
