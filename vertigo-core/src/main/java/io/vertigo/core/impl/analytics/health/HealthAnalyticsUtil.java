@@ -127,7 +127,7 @@ public final class HealthAnalyticsUtil {
 		int nbYellow = 0;
 		int nbRed = 0;
 		for (final HealthCheck healthCheck : healthChecks) {
-			switch (healthCheck.getMeasure().status()) {
+			switch (healthCheck.healthMeasure().status()) {
 				case GREEN:
 					nbGreen++;
 					break;

@@ -54,8 +54,8 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU5 {
 		final List<HealthCheck> failedHealthChecks = findHealthChecksByName("failure");
 		//---
 		Assertions.assertEquals(1, failedHealthChecks.size());
-		Assertions.assertEquals(HealthStatus.RED, failedHealthChecks.get(0).getMeasure().status());
-		Assertions.assertTrue(failedHealthChecks.get(0).getMeasure().cause() instanceof VSystemException);
+		Assertions.assertEquals(HealthStatus.RED, failedHealthChecks.get(0).healthMeasure().status());
+		Assertions.assertTrue(failedHealthChecks.get(0).healthMeasure().cause() instanceof VSystemException);
 	}
 
 	@Test
@@ -63,7 +63,7 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU5 {
 		final List<HealthCheck> successHealthChecks = findHealthChecksByName("success");
 		//---
 		Assertions.assertEquals(1, successHealthChecks.size());
-		Assertions.assertEquals(HealthStatus.GREEN, successHealthChecks.get(0).getMeasure().status());
+		Assertions.assertEquals(HealthStatus.GREEN, successHealthChecks.get(0).healthMeasure().status());
 	}
 
 	@Test
@@ -81,7 +81,7 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU5 {
 		//---
 		return analyticsManager.getHealthChecks()
 				.stream()
-				.filter(healthCheck -> name.equals(healthCheck.getName()))
+				.filter(healthCheck -> name.equals(healthCheck.name()))
 				.collect(Collectors.toList());
 	}
 }

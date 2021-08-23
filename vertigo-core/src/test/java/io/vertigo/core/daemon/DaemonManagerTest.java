@@ -81,11 +81,11 @@ public final class DaemonManagerTest extends AbstractTestCaseJU5 {
 
 		final HealthCheck daemonsExecHealthCheck = analyticsManager.getHealthChecks()
 				.stream()
-				.filter(healtChk -> "daemons".equals(healtChk.getFeature()) && "lastExecs".equals(healtChk.getName()))
+				.filter(healtChk -> "daemons".equals(healtChk.feature()) && "lastExecs".equals(healtChk.name()))
 				.findFirst()
 				.get();
 
-		assertTrue(daemonsExecHealthCheck.getMeasure().status() == HealthStatus.GREEN);
+		assertTrue(daemonsExecHealthCheck.healthMeasure().status() == HealthStatus.GREEN);
 
 	}
 
