@@ -86,8 +86,8 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 				.isNotNull(appNameOpt)
 				.isNotNull(hostNameOpt)
 				.isNotNull(portOpt);
-		// ---
-		appName = appNameOpt.orElseGet(() -> Node.getNode().getNodeConfig().getAppName());
+		// --- 
+		appName = appNameOpt.orElseGet(() -> Node.getNode().getNodeConfig().appName());
 		hostName = hostNameOpt.orElse("analytica.part.klee.lan.net");
 		port = portOpt.orElse(DEFAULT_SERVER_PORT);
 		localHostName = retrieveHostName();

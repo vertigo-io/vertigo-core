@@ -64,12 +64,12 @@ public final class HealthAnalyticsUtil {
 
 		//-- we construct a map of feature by componentId
 		final Map<String, String> featureByComponentId = new HashMap<>();
-		Node.getNode().getNodeConfig().getBootConfig().getComponentConfigs()
+		Node.getNode().getNodeConfig().bootConfig().getComponentConfigs()
 				.forEach(componentConfig -> featureByComponentId.put(componentConfig.getId(), "vertigo-boot"));
 
-		Node.getNode().getNodeConfig().getModuleConfigs()
+		Node.getNode().getNodeConfig().moduleConfigs()
 				.forEach(moduleConfig -> moduleConfig.getComponentConfigs()
-						.forEach(componentConfig -> featureByComponentId.put(componentConfig.getId(), moduleConfig.getName())));
+						.forEach(componentConfig -> featureByComponentId.put(componentConfig.getId(), moduleConfig.name())));
 		//-----
 		//1. search all methods
 		return Stream.of(aopPlugin.unwrap(component).getClass().getMethods())

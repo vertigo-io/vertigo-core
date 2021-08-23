@@ -74,7 +74,7 @@ public final class DefinitionSpaceLoader {
 		//--
 		final Stream<Definition> definitions = moduleConfigs
 				.stream()
-				.flatMap(moduleConfig -> provide(moduleConfig.getDefinitionProviderConfigs()))
+				.flatMap(moduleConfig -> provide(moduleConfig.definitionProviderConfigs()))
 				.map(supplier -> supplier.get(definitionSpaceWritable));
 
 		definitions.forEach(definitionSpaceWritable::registerDefinition);

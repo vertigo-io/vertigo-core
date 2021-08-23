@@ -89,27 +89,27 @@ public final class AutoCloseableNode implements Node, AutoCloseable {
 		//--
 		try {
 			//-- 0. Start logger
-			nodeConfig.getBootConfig().getLogConfig().ifPresent(AutoCloseableNode::initLog);
+			nodeConfig.bootConfig().getLogConfig().ifPresent(AutoCloseableNode::initLog);
 
 			//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
 			//Creates and register all components (and aspects and Proxies).
 			//all components can be parameterized
-			ComponentSpaceLoader.startLoading(componentSpaceWritable, nodeConfig.getBootConfig().getAopPlugin())
+			ComponentSpaceLoader.startLoading(componentSpaceWritable, nodeConfig.bootConfig().getAopPlugin())
 					//-- 1.a - BootStrap : create native components : ResourceManager, ParamManager, LocaleManager
-					.loadBootComponents(nodeConfig.getBootConfig().getComponentConfigs())
+					.loadBootComponents(nodeConfig.bootConfig().getComponentConfigs())
 					//-- 1.b - other components
-					.loadAllComponentsAndAspects(nodeConfig.getModuleConfigs())
+					.loadAllComponentsAndAspects(nodeConfig.moduleConfigs())
 					.endLoading();
 			//---- Print components
 			Logo.printCredits(System.out);
-			if (nodeConfig.getBootConfig().isVerbose()) {
+			if (nodeConfig.bootConfig().isVerbose()) {
 				nodeConfig.print(System.out);
 			}
 			//--2 Loads all definitions
 			//-----a Loads all definitions provided by DefinitionProvider
 			//-----b Loads all definitions provided by components
 			DefinitionSpaceLoader.startLoading(definitionSpaceWritable, componentSpaceWritable)
-					.loadDefinitions(nodeConfig.getModuleConfigs())
+					.loadDefinitions(nodeConfig.moduleConfigs())
 					.loadDefinitionsFromComponents()
 					.endLoading();
 
@@ -198,7 +198,7 @@ public final class AutoCloseableNode implements Node, AutoCloseable {
 	}
 
 	private void initializeAllComponents() {
-		for (final ComponentInitializerConfig componentInitializerConfig : nodeConfig.getComponentInitializerConfigs()) {
+		for (final ComponentInitializerConfig componentInitializerConfig : nodeConfig.componentInitializerConfigs()) {
 			Assertion.check()
 					.isFalse(Activeable.class.isAssignableFrom(componentInitializerConfig.componentInitializerClass()),
 							"The initializer '{0}' can't be activeable", componentInitializerConfig.componentInitializerClass());

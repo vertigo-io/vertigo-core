@@ -70,9 +70,9 @@ public final class YamlAppConfigTest {
 
 		testBioManager(nodeConfig);
 
-		assertEquals("bio", nodeConfig.getAppName());
-		assertEquals("myFirstNodeId", nodeConfig.getNodeId());
-		assertEquals("http://localhost/", nodeConfig.getEndPoint().get());
+		assertEquals("bio", nodeConfig.appName());
+		assertEquals("myFirstNodeId", nodeConfig.nodeId());
+		assertEquals("http://localhost/", nodeConfig.endPointOpt().get());
 	}
 
 	@Test

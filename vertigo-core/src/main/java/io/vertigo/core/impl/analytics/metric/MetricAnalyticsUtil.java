@@ -54,9 +54,9 @@ public final class MetricAnalyticsUtil {
 
 		//-- we construct a map of feature by componentId
 		final Map<String, String> featureByComponentId = new HashMap<>();
-		Node.getNode().getNodeConfig().getModuleConfigs()
+		Node.getNode().getNodeConfig().moduleConfigs()
 				.forEach(moduleConfig -> moduleConfig.getComponentConfigs()
-						.forEach(componentConfig -> featureByComponentId.put(componentConfig.getId(), moduleConfig.getName())));
+						.forEach(componentConfig -> featureByComponentId.put(componentConfig.getId(), moduleConfig.name())));
 		//-----
 		//1. search all methods
 		return Stream.of(aopPlugin.unwrap(component).getClass().getMethods())

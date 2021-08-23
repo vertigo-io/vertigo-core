@@ -90,10 +90,10 @@ public final class ComponentSpaceLoader {
 		final ParamManager paramManager = componentSpaceWritable.resolve(ParamManager.class);
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
 			registerComponents(Optional.of(paramManager),
-					moduleConfig.getName(),
+					moduleConfig.name(),
 					moduleConfig.getComponentConfigs());
-			registerAspects(moduleConfig.getAspectConfigs());
-			registerProxyMethods(moduleConfig.getProxyMethodConfigs());
+			registerAspects(moduleConfig.aspectConfigs());
+			registerProxyMethods(moduleConfig.proxyMethodConfigs());
 		}
 		return this;
 	}
