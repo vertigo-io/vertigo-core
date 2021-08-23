@@ -186,7 +186,7 @@ public final class ComponentSpaceLoader {
 
 	private static Aspect createAspect(final Container container, final AspectConfig aspectConfig) {
 		// création de l'instance du composant
-		final Aspect aspect = DIInjector.newInstance(aspectConfig.getAspectClass(), container);
+		final Aspect aspect = DIInjector.newInstance(aspectConfig.aspectClass(), container);
 		//---
 		Assertion.check()
 				.isNotNull(aspect.getAnnotationType());
@@ -195,7 +195,7 @@ public final class ComponentSpaceLoader {
 
 	private static ProxyMethod createProxyMethod(final Container container, final ProxyMethodConfig proxyMethodConfig) {
 		// création de l'instance du composant
-		final ProxyMethod proxyMethod = DIInjector.newInstance(proxyMethodConfig.getProxyMethodClass(), container);
+		final ProxyMethod proxyMethod = DIInjector.newInstance(proxyMethodConfig.proxyMethodClass(), container);
 		//---
 		Assertion.check()
 				.isNotNull(proxyMethod.getAnnotationType());

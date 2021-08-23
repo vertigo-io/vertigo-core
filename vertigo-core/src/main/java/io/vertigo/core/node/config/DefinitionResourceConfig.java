@@ -28,25 +28,14 @@ import io.vertigo.core.lang.Assertion;
  *
  * @author pchretien
  */
-public final class DefinitionResourceConfig {
-	private final String type;
-	private final String path;
+public record DefinitionResourceConfig(
+		String type,
+		String path) {
 
-	DefinitionResourceConfig(final String type, final String path) {
+	public DefinitionResourceConfig {
 		Assertion.check()
 				.isNotBlank(type)
 				.isNotBlank(path);
-		//-----
-		this.type = type;
-		this.path = path;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public String getPath() {
-		return path;
 	}
 
 	@Override

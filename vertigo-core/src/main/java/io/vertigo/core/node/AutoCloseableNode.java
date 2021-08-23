@@ -200,9 +200,9 @@ public final class AutoCloseableNode implements Node, AutoCloseable {
 	private void initializeAllComponents() {
 		for (final ComponentInitializerConfig componentInitializerConfig : nodeConfig.getComponentInitializerConfigs()) {
 			Assertion.check()
-					.isFalse(Activeable.class.isAssignableFrom(componentInitializerConfig.getInitializerClass()),
-							"The initializer '{0}' can't be activeable", componentInitializerConfig.getInitializerClass());
-			final ComponentInitializer componentInitializer = DIInjector.newInstance(componentInitializerConfig.getInitializerClass(), componentSpaceWritable);
+					.isFalse(Activeable.class.isAssignableFrom(componentInitializerConfig.componentInitializerClass()),
+							"The initializer '{0}' can't be activeable", componentInitializerConfig.componentInitializerClass());
+			final ComponentInitializer componentInitializer = DIInjector.newInstance(componentInitializerConfig.componentInitializerClass(), componentSpaceWritable);
 			componentInitializer.init();
 		}
 	}
@@ -211,7 +211,7 @@ public final class AutoCloseableNode implements Node, AutoCloseable {
 		Assertion.check()
 				.isNotNull(log4Config);
 		//-----
-		final String log4jFileName = log4Config.getFileName();
+		final String log4jFileName = log4Config.fileName();
 		Assertion.check()
 				.isTrue(log4jFileName.endsWith(".xml"), "Use the XML format for log4j configurations (instead of : {0}).", log4jFileName);
 		final URL url = Node.class.getResource(log4jFileName);

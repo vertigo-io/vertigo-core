@@ -28,23 +28,13 @@ import io.vertigo.core.node.component.amplifier.ProxyMethod;
  *  - a proxy method used to build a dynamic the proxy
  *
  * @author pchretien
+ * 
+ * @papram proxyMethodClass the proxy method class
  */
-public final class ProxyMethodConfig {
-	private final Class<? extends ProxyMethod> proxyMethodClass;
+public record ProxyMethodConfig(
+		Class<? extends ProxyMethod> proxyMethodClass) {
 
-	/**
-	 * Constructor.
-	 */
-	ProxyMethodConfig(final Class<? extends ProxyMethod> proxyMethodClass) {
+	public ProxyMethodConfig {
 		Assertion.check().isNotNull(proxyMethodClass);
-		//-----
-		this.proxyMethodClass = proxyMethodClass;
-	}
-
-	/**
-	 * @return the proxy method class
-	 */
-	public Class<? extends ProxyMethod> getProxyMethodClass() {
-		return proxyMethodClass;
 	}
 }

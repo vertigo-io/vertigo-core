@@ -26,24 +26,9 @@ import io.vertigo.core.lang.Assertion;
  *
  * @author pchretien
  */
-public final class LogConfig {
-	private final String fileName;
+public record LogConfig(String fileName) {
 
-	/**
-	 * Constructor.
-	 * @param fileName the log4J.xml fileName
-	 */
-	public LogConfig(final String fileName) {
+	public LogConfig {
 		Assertion.check().isNotBlank(fileName);
-		//-----
-		this.fileName = fileName;
-
-	}
-
-	/**
-	 * @return the log4J.xml fileName
-	 */
-	public String getFileName() {
-		return fileName;
 	}
 }

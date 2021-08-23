@@ -24,23 +24,12 @@ import io.vertigo.core.node.component.ComponentInitializer;
  * Configuration of an initializer.
  * @author pchretien
  *
+ * @param componentInitializerClass Class de l'initialiseur du composant
  */
-public final class ComponentInitializerConfig {
-	private final Class<? extends ComponentInitializer> componentInitializerClass;
+public record ComponentInitializerConfig(
+		Class<? extends ComponentInitializer> componentInitializerClass) {
 
-	/**
-	 * @param componentInitializerClass Class de l'initialiseur du composant
-	 */
-	ComponentInitializerConfig(final Class<? extends ComponentInitializer> componentInitializerClass) {
+	public ComponentInitializerConfig {
 		Assertion.check().isNotNull(componentInitializerClass);
-		//-----
-		this.componentInitializerClass = componentInitializerClass;
-	}
-
-	/**
-	 * @return Classe d'initialisation du composant. (Nullable)
-	 */
-	public Class<? extends ComponentInitializer> getInitializerClass() {
-		return componentInitializerClass;
 	}
 }

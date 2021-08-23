@@ -36,11 +36,27 @@ import io.vertigo.core.param.Param;
  *  - a map of params
  *
  * @author npiedeloup, pchretien
+ * 
+ * @param apiClassOpt api of the component
+ * @param implClass impl class of the component
+ * @param params params
  */
-public final class ComponentConfig {
-	private final Class<? extends Component> implClass;
-	private final Optional<Class<? extends Component>> apiClassOpt;
-	private final List<Param> params;
+public record ComponentConfig(
+		Optional<Class<? extends Component>> apiClassOpt,
+		Class<? extends Component> implClass,
+		List<Param> params) {
+
+	public ComponentConfig {
+		Assertion.check()
+				.isNotNull(apiClassOpt)
+				.isNotNull(implClass)
+				.isTrue(apiClassOpt.orElse(Component.class).isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClassOpt.orElse(Component.class))
+				.isNotNull(params)
+				.when(apiClassOpt.isPresent(), () -> Assertion.check()
+						.isTrue(Component.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, Component.class));
+		//---
+		params = List.copyOf(params);
+	}
 
 	/**
 	 * Short in-line builder.
@@ -63,49 +79,5 @@ public final class ComponentConfig {
 			final Class<? extends Component> implClass,
 			final Param[] params) {
 		return new ComponentConfig(Optional.empty(), implClass, Arrays.asList(params));
-	}
-
-	/**
-	 * Constructor.
-	 * @param apiClassOpt api of the component
-	 * @param implClass impl class of the component
-	 * @param params params
-	 */
-	private ComponentConfig(
-			final Optional<Class<? extends Component>> apiClassOpt,
-			final Class<? extends Component> implClass,
-			final List<Param> params) {
-		Assertion.check()
-				.isNotNull(apiClassOpt)
-				.isNotNull(implClass)
-				.isTrue(apiClassOpt.orElse(Component.class).isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClassOpt.orElse(Component.class))
-				.isNotNull(params)
-				.when(apiClassOpt.isPresent(), () -> Assertion.check()
-						.isTrue(Component.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must extend {1}", apiClassOpt, Component.class));
-		//-----
-		this.apiClassOpt = apiClassOpt;
-		this.implClass = implClass;
-		this.params = params;
-	}
-
-	/**
-	 * @return impl class of the component
-	 */
-	public Class<? extends Component> getImplClass() {
-		return implClass;
-	}
-
-	/**
-	 * @return api of the component
-	 */
-	public Optional<Class<? extends Component>> getApiClassOpt() {
-		return apiClassOpt;
-	}
-
-	/**
-	 * @return params
-	 */
-	public List<Param> getParams() {
-		return params;
 	}
 }
