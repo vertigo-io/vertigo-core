@@ -85,7 +85,7 @@ public final class DaemonManagerTest extends AbstractTestCaseJU5 {
 				.findFirst()
 				.get();
 
-		assertTrue(daemonsExecHealthCheck.getMeasure().getStatus() == HealthStatus.GREEN);
+		assertTrue(daemonsExecHealthCheck.getMeasure().status() == HealthStatus.GREEN);
 
 	}
 
