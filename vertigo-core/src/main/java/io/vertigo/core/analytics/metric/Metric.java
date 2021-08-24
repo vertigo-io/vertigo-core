@@ -19,7 +19,6 @@ package io.vertigo.core.analytics.metric;
 
 import java.time.Instant;
 
-import io.vertigo.core.analytics.metric.Metric.Status;
 import io.vertigo.core.lang.Assertion;
 
 /**
