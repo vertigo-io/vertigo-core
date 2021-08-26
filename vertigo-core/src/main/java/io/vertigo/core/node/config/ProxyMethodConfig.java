@@ -31,8 +31,7 @@ import io.vertigo.core.node.component.amplifier.ProxyMethod;
  * 
  * @papram proxyMethodClass the proxy method class
  */
-public record ProxyMethodConfig(
-		Class<? extends ProxyMethod> proxyMethodClass) {
+public record ProxyMethodConfig(Class<? extends ProxyMethod> proxyMethodClass) {
 
 	public ProxyMethodConfig {
 		Assertion.check().isNotNull(proxyMethodClass);

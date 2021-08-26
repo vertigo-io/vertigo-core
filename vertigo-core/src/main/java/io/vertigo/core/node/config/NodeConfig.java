@@ -99,7 +99,7 @@ public record NodeConfig(
 		doPrintLine(out);
 		printComponent(out, "modules", "components", "plugins");
 		doPrintLine(out);
-		printComponents(out, "boot", bootConfig.getComponentConfigs());
+		printComponents(out, "boot", bootConfig.coreComponentConfigs());
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
 			doPrintLine(out);
 			printModule(out, moduleConfig);

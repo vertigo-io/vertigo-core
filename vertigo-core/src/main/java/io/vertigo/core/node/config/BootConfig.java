@@ -32,7 +32,7 @@ import io.vertigo.core.util.ListBuilder;
  */
 public final class BootConfig {
 	private final Optional<LogConfig> logConfigOpt;
-	private final boolean verbose;
+	private final boolean isVerbose;
 	@JsonExclude
 	private final AopPlugin aopPlugin;
 
@@ -42,14 +42,14 @@ public final class BootConfig {
 	/**
 	 * Constructor.
 	 * @param aopPlugin AopPlugin
-	 * @param verbose if logs are enabled during startup
+	 * @param isVerbose if logs are enabled during startup
 	 */
 	BootConfig(
 			final Optional<LogConfig> logConfigOpt,
 			final List<ComponentConfig> componentConfigs,
 			final List<PluginConfig> pluginConfigs,
 			final AopPlugin aopPlugin,
-			final boolean verbose) {
+			final boolean isVerbose) {
 		Assertion.check()
 				.isNotNull(logConfigOpt)
 				.isNotNull(componentConfigs)
@@ -59,7 +59,7 @@ public final class BootConfig {
 		this.logConfigOpt = logConfigOpt;
 		this.componentConfigs = componentConfigs;
 		this.pluginConfigs = pluginConfigs;
-		this.verbose = verbose;
+		this.isVerbose = isVerbose;
 		this.aopPlugin = aopPlugin;
 	}
 
@@ -74,14 +74,14 @@ public final class BootConfig {
 	/**
 	 * @return the logconfig
 	 */
-	public Optional<LogConfig> getLogConfig() {
+	public Optional<LogConfig> logConfigOpt() {
 		return logConfigOpt;
 	}
 
 	/**
 	 * @return the list of component-configs
 	 */
-	public List<CoreComponentConfig> getComponentConfigs() {
+	public List<CoreComponentConfig> coreComponentConfigs() {
 		return new ListBuilder<CoreComponentConfig>()
 				.addAll(ConfigUtil.buildComponentConfigs(componentConfigs))
 				.addAll(ConfigUtil.buildPluginsComponentConfigs(pluginConfigs))
@@ -89,16 +89,16 @@ public final class BootConfig {
 	}
 
 	/**
-	 * @return if the startup is verbose
+	 * @return if the startup is isVerbose
 	 */
 	public boolean isVerbose() {
-		return verbose;
+		return isVerbose;
 	}
 
 	/**
 	 * @return AopEngine
 	 */
-	public AopPlugin getAopPlugin() {
+	public AopPlugin aopPlugin() {
 		return aopPlugin;
 	}
 }

@@ -56,6 +56,7 @@ public final record ConnectorConfig(
 						.isTrue(Connector.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must implement {1}", apiClassOpt, Connector.class)
 						.isTrue(apiClassOpt.get().isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClassOpt)
 						.isTrue(apiClassOpt.get().isInterface(), "api class {0} must be an interface", apiClassOpt));
+		//---
 		params = List.copyOf(params);
 	}
 }

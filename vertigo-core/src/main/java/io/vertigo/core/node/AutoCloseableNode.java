@@ -89,14 +89,14 @@ public final class AutoCloseableNode implements Node, AutoCloseable {
 		//--
 		try {
 			//-- 0. Start logger
-			nodeConfig.bootConfig().getLogConfig().ifPresent(AutoCloseableNode::initLog);
+			nodeConfig.bootConfig().logConfigOpt().ifPresent(AutoCloseableNode::initLog);
 
 			//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
 			//Creates and register all components (and aspects and Proxies).
 			//all components can be parameterized
-			ComponentSpaceLoader.startLoading(componentSpaceWritable, nodeConfig.bootConfig().getAopPlugin())
+			ComponentSpaceLoader.startLoading(componentSpaceWritable, nodeConfig.bootConfig().aopPlugin())
 					//-- 1.a - BootStrap : create native components : ResourceManager, ParamManager, LocaleManager
-					.loadBootComponents(nodeConfig.bootConfig().getComponentConfigs())
+					.loadBootComponents(nodeConfig.bootConfig().coreComponentConfigs())
 					//-- 1.b - other components
 					.loadAllComponentsAndAspects(nodeConfig.moduleConfigs())
 					.endLoading();

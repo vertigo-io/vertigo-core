@@ -46,6 +46,5 @@ public record AmplifierConfig(
 				.isNotNull(params);
 		//---
 		params = List.copyOf(params);
-
 	}
 }

@@ -64,7 +64,7 @@ public final class HealthAnalyticsUtil {
 
 		//-- we construct a map of feature by componentId
 		final Map<String, String> featureByComponentId = new HashMap<>();
-		Node.getNode().getNodeConfig().bootConfig().getComponentConfigs()
+		Node.getNode().getNodeConfig().bootConfig().coreComponentConfigs()
 				.forEach(componentConfig -> featureByComponentId.put(componentConfig.getId(), "vertigo-boot"));
 
 		Node.getNode().getNodeConfig().moduleConfigs()

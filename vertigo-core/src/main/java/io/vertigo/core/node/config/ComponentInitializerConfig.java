@@ -26,8 +26,7 @@ import io.vertigo.core.node.component.ComponentInitializer;
  *
  * @param componentInitializerClass Class de l'initialiseur du composant
  */
-public record ComponentInitializerConfig(
-		Class<? extends ComponentInitializer> componentInitializerClass) {
+public record ComponentInitializerConfig(Class<? extends ComponentInitializer> componentInitializerClass) {
 
 	public ComponentInitializerConfig {
 		Assertion.check().isNotNull(componentInitializerClass);

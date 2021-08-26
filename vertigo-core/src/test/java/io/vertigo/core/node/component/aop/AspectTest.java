@@ -94,7 +94,7 @@ public final class AspectTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testUnwrapp() {
-		final AopPlugin aopPlugin = getApp().getNodeConfig().bootConfig().getAopPlugin();
+		final AopPlugin aopPlugin = getApp().getNodeConfig().bootConfig().aopPlugin();
 		final F f = getApp().getComponentSpace().resolve(F.class);
 		// Il y a des aspects sur la classe donc elle doit être dewrappable
 		assertNotEquals(F.class.getName(), f.getClass().getName());

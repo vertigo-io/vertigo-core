@@ -60,7 +60,7 @@ public final class DefinitionProviderConfig {
 		return new DefinitionProviderConfigBuilder(definitionProviderClass);
 	}
 
-	public Class<? extends DefinitionProvider> getDefinitionProviderClass() {
+	public Class<? extends DefinitionProvider> definitionProviderClass() {
 		return definitionProviderClass;
 	}
 
