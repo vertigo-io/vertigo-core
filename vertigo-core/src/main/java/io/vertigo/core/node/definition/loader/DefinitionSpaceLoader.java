@@ -106,9 +106,9 @@ public final class DefinitionSpaceLoader {
 
 	private DefinitionProvider createDefinitionProvider(final DefinitionProviderConfig definitionProviderConfig) {
 		final DefinitionProvider definitionProvider = ComponentSpaceLoader.createInstance(definitionProviderConfig.definitionProviderClass(), componentSpace, Optional.empty(),
-				definitionProviderConfig.getParams());
+				definitionProviderConfig.params());
 
-		definitionProviderConfig.getDefinitionResourceConfigs()
+		definitionProviderConfig.definitionResourceConfigs()
 				.forEach(definitionProvider::addDefinitionResourceConfig);
 
 		return definitionProvider;
