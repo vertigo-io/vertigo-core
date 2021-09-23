@@ -85,7 +85,7 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 
 	/** {@inheritDoc} */
 	@Override
-	public AnalyticsTracer addTag(final String name, final String value) {
+	public AnalyticsTracer setTag(final String name, final String value) {
 		spanBuilder.withTag(name, value);
 		return this;
 	}
@@ -97,7 +97,7 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 			setMeasure("success", succeeded ? 100 : 0);
 		}
 		if (causeException != null) {
-			addTag("exception", causeException.getClass().getName());
+			setTag("exception", causeException.getClass().getName());
 		}
 		final AnalyticsSpan span = spanBuilder.build();
 		logSpan(span);

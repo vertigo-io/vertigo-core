@@ -19,15 +19,15 @@ package io.vertigo.core.analytics.trace;
 
 /**
  * This interface defines a collect tracer.
- * This tracer must be used to collect data during a process.
+ * This tracer must be used to collect data traces.
  *
  * @author pchretien, npiedeloup
  */
 public interface AnalyticsTracer {
 	/**
 	 * Increments a measure (creates if not exists).
-	 * @param name the name of the measure
-	 * @param value the increment of the measure
+	 * @param name the measure name
+	 * @param value the measure increment
 	 * @return this tracer
 	 */
 	AnalyticsTracer incMeasure(final String name, final double value);
@@ -49,5 +49,5 @@ public interface AnalyticsTracer {
 	 * @param value the value of the tag
 	 * @return this tracer
 	 */
-	AnalyticsTracer addTag(final String name, final String value);
+	AnalyticsTracer setTag(final String name, final String value);
 }

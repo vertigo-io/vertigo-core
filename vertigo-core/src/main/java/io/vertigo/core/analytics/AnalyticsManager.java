@@ -61,6 +61,13 @@ public interface AnalyticsManager extends Manager {
 	Optional<AnalyticsTracer> getCurrentTracer();
 
 	/**
+	 * Adds an already built AProcess (via the builder) for tracking process that are not executed in a single thread environnement.
+	 * Prefer the use of method trace and traceWithReturn for commons cases (easier)
+	 * @param span the built process
+	 */
+	void addSpan(AnalyticsSpan span);
+
+	/**
 	 * @return the list of health checks
 	 */
 	List<HealthCheck> getHealthChecks();
@@ -77,12 +84,4 @@ public interface AnalyticsManager extends Manager {
 	 * @return the list of metrics
 	 */
 	List<Metric> getMetrics();
-
-	/**
-	 * Adds an already built AProcess (via the builder) for tracking process that are not executed in a single thread environnement.
-	 * Prefer the use of method trace and traceWithReturn for commons cases (easier)
-	 * @param span the built process
-	 */
-	void addSpan(AnalyticsSpan span);
-
 }
