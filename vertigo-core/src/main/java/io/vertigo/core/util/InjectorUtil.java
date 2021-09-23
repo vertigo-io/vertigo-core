@@ -28,7 +28,7 @@ import io.vertigo.core.node.component.loader.ComponentSpaceLoader;
 public final class InjectorUtil {
 
 	private InjectorUtil() {
-		// util
+		//Private
 	}
 
 	/**
@@ -42,7 +42,7 @@ public final class InjectorUtil {
 		Assertion.check()
 				.isNotNull(clazz)
 				.isFalse(clazz.isAssignableFrom(Activeable.class), " {0} is an Activeable component and must be registred in the NodeConfig for creation at the application startup", clazz);
-		// ---
+		//---
 		return ComponentSpaceLoader.createInstance(clazz, Node.getNode().getComponentSpace(), Optional.empty(), Collections.emptyMap());
 	}
 
@@ -53,7 +53,7 @@ public final class InjectorUtil {
 	public static void injectMembers(final Object instance) {
 		Assertion.check()
 				.isNotNull(instance);
-		//-----
+		//---
 		ComponentSpaceLoader.injectMembers(instance, Node.getNode().getComponentSpace(), Optional.empty(), Collections.emptyMap());
 	}
 

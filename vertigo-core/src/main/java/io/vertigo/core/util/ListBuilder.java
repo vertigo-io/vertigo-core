@@ -19,7 +19,6 @@ package io.vertigo.core.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -82,7 +81,7 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 	public ListBuilder<X> sort(final Comparator<? super X> comparator) {
 		Assertion.check()
 				.isNotNull(comparator)
-				.isNull(myComparator , "comparator already set");
+				.isNull(myComparator, "comparator already set");
 		//---
 		myComparator = comparator;
 		return this;
@@ -93,6 +92,6 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 		if (myComparator != null) {
 			list.sort(myComparator);
 		}
-		return unmodifiable ? Collections.unmodifiableList(list) : list;
+		return unmodifiable ? List.copyOf(list) : list;
 	}
 }

@@ -17,7 +17,6 @@
  */
 package io.vertigo.core.util;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,7 +51,7 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 		//-----
 		final Object previous = myMap.put(key, value);
 		Assertion.check()
-				.isNull(previous , "Data with key '{0}' already registered", key);
+				.isNull(previous, "Data with key '{0}' already registered", key);
 		return this;
 	}
 
@@ -114,6 +113,6 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	/** {@inheritDoc} */
 	@Override
 	public Map<K, V> build() {
-		return unmodifiable ? Collections.unmodifiableMap(myMap) : myMap;
+		return unmodifiable ? Map.copyOf(myMap) : myMap;
 	}
 }
