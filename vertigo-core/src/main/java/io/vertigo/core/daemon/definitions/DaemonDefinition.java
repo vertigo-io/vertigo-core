@@ -39,7 +39,7 @@ public final class DaemonDefinition extends AbstractDefinition {
 	/**
 	 * Constructor.
 	 *
-	 * @param name the daemon Name
+	 * @param name the daemon name
 	 * @param daemonSupplier the daemon supplier.
 	 * @param periodInSeconds daemon execution period.
 	 */
@@ -49,13 +49,13 @@ public final class DaemonDefinition extends AbstractDefinition {
 		Assertion.check()
 				.isNotNull(daemonSupplier)
 				.isTrue(periodInSeconds > 0, "period {0} must be > 0", periodInSeconds);
-		// -----
+		//---
 		this.daemonSupplier = daemonSupplier;
 		this.periodInSeconds = periodInSeconds;
 	}
 
 	/**
-	 * Give the value of periodInSeconds.
+	 * the period value in seconds.
 	 *
 	 * @return PeriodInSeconds.
 	 */

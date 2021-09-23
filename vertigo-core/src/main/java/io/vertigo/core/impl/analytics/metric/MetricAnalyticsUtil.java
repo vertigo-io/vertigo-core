@@ -68,7 +68,7 @@ public final class MetricAnalyticsUtil {
 					//-----
 					//2. For each method register a listener
 					// we remove # because it doesn't comply with definition naming rule
-					final String metricDefinitionName = "Met" + StringUtil.first2UpperCase(componentId.replaceAll(pluginCounterChar, "")) + "$" + method.getName();
+					final String metricDefinitionName = MetricDefinition.PREFIX + StringUtil.first2UpperCase(componentId.replaceAll(pluginCounterChar, "")) + "$" + method.getName();
 					return new MetricDefinition(
 							metricDefinitionName,
 							() -> (List<Metric>) ClassUtil.invoke(component, method));
