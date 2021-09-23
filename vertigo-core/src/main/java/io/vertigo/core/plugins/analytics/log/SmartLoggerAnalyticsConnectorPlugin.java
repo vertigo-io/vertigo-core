@@ -28,7 +28,7 @@ import com.google.gson.JsonObject;
 
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.metric.Metric;
-import io.vertigo.core.analytics.process.AProcess;
+import io.vertigo.core.analytics.trace.AnalyticsSpan;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
@@ -62,14 +62,14 @@ public final class SmartLoggerAnalyticsConnectorPlugin implements AnalyticsConne
 
 	/** {@inheritDoc} */
 	@Override
-	public void add(final AProcess process) {
+	public void add(final AnalyticsSpan span) {
 		final JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty("name", process.getName());
-		jsonObject.addProperty("durationMillis", process.getDurationMillis());
+		jsonObject.addProperty("name", span.getName());
+		jsonObject.addProperty("durationMillis", span.getDurationMillis());
 
 		if (aggregatedByOpt.isPresent()) {
 			final AggregatedResult result = new AggregatedResult();
-			buildCountAndFullDurationByCategory(process, aggregatedByOpt.get(), result);
+			buildCountAndFullDurationByCategory(span, aggregatedByOpt.get(), result);
 			if (result.count != 0) {
 				final JsonObject aggregatedObject = new JsonObject();
 				aggregatedObject.addProperty("count", result.count);
@@ -79,16 +79,16 @@ public final class SmartLoggerAnalyticsConnectorPlugin implements AnalyticsConne
 			}
 		}
 
-		final Logger logger = LogManager.getLogger(process.getCategory());
-		if (process.getDurationMillis() > durationThreshold) {
+		final Logger logger = LogManager.getLogger(span.getCategory());
+		if (span.getDurationMillis() > durationThreshold) {
 			logger.error(jsonObject.toString());
 		} else if (logger.isInfoEnabled()) {
 			logger.info(jsonObject.toString());
 		}
 	}
 
-	private static void buildCountAndFullDurationByCategory(final AProcess process, final String category, final AggregatedResult aggregatedResult) {
-		process.getSubProcesses()
+	private static void buildCountAndFullDurationByCategory(final AnalyticsSpan span, final String category, final AggregatedResult aggregatedResult) {
+		span.getChildSpans()
 				.stream()
 				.filter(subprocess -> category.equals(subprocess.getCategory()))
 				.forEach(subprocess -> {
@@ -97,7 +97,7 @@ public final class SmartLoggerAnalyticsConnectorPlugin implements AnalyticsConne
 				});
 
 		//---
-		process.getSubProcesses()
+		span.getChildSpans()
 				.stream()
 				.filter(subprocess -> !category.equals(subprocess.getCategory()))
 				.forEach(subprocess -> buildCountAndFullDurationByCategory(subprocess, category, aggregatedResult));

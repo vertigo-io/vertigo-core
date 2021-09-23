@@ -27,7 +27,7 @@ import com.google.gson.GsonBuilder;
 
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.metric.Metric;
-import io.vertigo.core.analytics.process.AProcess;
+import io.vertigo.core.analytics.trace.AnalyticsSpan;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 
 /**
@@ -43,10 +43,10 @@ public final class LoggerAnalyticsConnectorPlugin implements AnalyticsConnectorP
 
 	/** {@inheritDoc} */
 	@Override
-	public void add(final AProcess process) {
-		final Logger logger = LogManager.getLogger(process.getCategory());
+	public void add(final AnalyticsSpan span) {
+		final Logger logger = LogManager.getLogger(span.getCategory());
 		if (logger.isInfoEnabled()) {
-			final String json = GSON.toJson(Collections.singletonList(process));
+			final String json = GSON.toJson(Collections.singletonList(span));
 			logger.info(json);
 		}
 	}

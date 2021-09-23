@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.analytics.process;
+package io.vertigo.core.analytics.trace;
 
 /**
  * This interface defines a collect tracer.
@@ -23,14 +23,14 @@ package io.vertigo.core.analytics.process;
  *
  * @author pchretien, npiedeloup
  */
-public interface ProcessAnalyticsTracer {
+public interface AnalyticsTracer {
 	/**
 	 * Increments a measure (creates if not exists).
 	 * @param name the name of the measure
 	 * @param value the increment of the measure
 	 * @return this tracer
 	 */
-	ProcessAnalyticsTracer incMeasure(final String name, final double value);
+	AnalyticsTracer incMeasure(final String name, final double value);
 
 	/**
 	* Sets a value to the measure. (cleans if exists)
@@ -40,7 +40,7 @@ public interface ProcessAnalyticsTracer {
 	* @param value the value of the measure
 	 * @return this tracer
 	*/
-	ProcessAnalyticsTracer setMeasure(final String name, final double value);
+	AnalyticsTracer setMeasure(final String name, final double value);
 
 	/**
 	 * Sets a value to a specific tag. (cleans if exists)
@@ -49,5 +49,5 @@ public interface ProcessAnalyticsTracer {
 	 * @param value the value of the tag
 	 * @return this tracer
 	 */
-	ProcessAnalyticsTracer addTag(final String name, final String value);
+	AnalyticsTracer addTag(final String name, final String value);
 }

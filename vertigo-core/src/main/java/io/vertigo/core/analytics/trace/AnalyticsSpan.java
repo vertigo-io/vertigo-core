@@ -15,11 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.analytics.process;
+package io.vertigo.core.analytics.trace;
 
 import java.time.Instant;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -27,36 +25,38 @@ import java.util.regex.Pattern;
 import io.vertigo.core.lang.Assertion;
 
 /**
- * Un processus est un evenement
- *   - declenche dans une application specifique
- *   - relatif a un type d'evenement (exemple : metrics des pages, des requetes sql, des mails envoyés, des services ...)
+ * A trace is composed of spans
+ * A trace is trIggered by an app
  *
- *	Un evenement est defini selon 3 axes
- *	 - when, quand a eu lieu l'evenement
- *	 - what, de quoi s'agit-il ?
- *	 - where, ou s'est passe l'evenement  ? sur quel serveur ?
+ *	A span contains
+ *	 - when : start, end, duration
+ *	 - what : name, category
+ *	 - data : measures, tags
+ *   - a list of child spans
  *
- *	[what]
- * - category (examples : sql, tasks)
- * - name (examples : /create/movies)
-
  * 	[when]
  * - start timestamp
  * - end   timestamp
  *
+ *	[what]
+ * - category (examples : sql, tasks)
+ * - name (examples : /create/movies)
+ *
  * 	[data]
- * - list of measures
- * - list of tagss
- * - list of sub processes (0..*)
+ * - measures
+ * - tags
+ *
+ *  [span hierarchy]
+ * - list of child spans (0..*)
  *
  * @author pchretien, npiedeloup
  * @version $Id: KProcess.java,v 1.8 2012/10/16 17:18:26 pchretien Exp $
  */
-public final class AProcess {
+public final class AnalyticsSpan {
 	/**
-	 * REGEX used to define rules on category, mesaures and tags.
+	 * REGEX used to define rules on category, measures and tags.
 	 */
-	private static final Pattern PROCESS_CATEGORY_REGEX = Pattern.compile("[a-z]+");
+	private static final Pattern CATEGORY_REGEX = Pattern.compile("[a-z]+");
 	private static final Pattern MEASURE_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
 	private static final Pattern TAG_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
 
@@ -70,7 +70,7 @@ public final class AProcess {
 
 	private final Map<String, Double> measures;
 	private final Map<String, String> tags;
-	private final List<AProcess> subProcesses;
+	private final List<AnalyticsSpan> childSpans;
 
 	/**
 	 * Constructor.
@@ -80,60 +80,62 @@ public final class AProcess {
 	 * @param end the end instant
 	 * @param measures the measures
 	 * @param tags the tags
-	 * @param subProcesses the list of sub processes (0..*)
+	 * @param childSpans the list of child spans (0..*)
 	 */
-	AProcess(
+	AnalyticsSpan(
 			final String category,
 			final String name,
 			final Instant start,
 			final Instant end,
 			final Map<String, Double> measures,
 			final Map<String, String> tags,
-			final List<AProcess> subProcesses) {
+			final List<AnalyticsSpan> childSpans) {
 		Assertion.check()
-				.isNotNull(category, "the category of the process is required")
-				.isNotNull(name, "the name of the process is required")
+				.isNotNull(category, "the category is required")
+				.isNotNull(name, "the name is required")
 				.isNotNull(start, "the start is required")
 				.isNotNull(end, "the end is required")
 				.isNotNull(measures, "the measures are required")
 				.isNotNull(tags, "the tags are required")
-				.isNotNull(subProcesses, "the subProcesses are required");
+				.isNotNull(childSpans, "the child spans are required");
 		//---
-		checkRegex(category, PROCESS_CATEGORY_REGEX, "process type");
+		checkRegex(category, CATEGORY_REGEX, "process type");
 		measures.keySet()
 				.forEach(measureName -> checkRegex(measureName, MEASURE_REGEX, "measure name"));
 		tags.keySet()
 				.forEach(tagName -> checkRegex(tagName, TAG_REGEX, "metadata name"));
-		//---------------------------------------------------------------------
+		//---
 		this.category = category;
 		this.name = name;
 		this.start = start.toEpochMilli();
 		this.end = end.toEpochMilli();
-		this.measures = Collections.unmodifiableMap(new HashMap<>(measures));
-		this.tags = Collections.unmodifiableMap(new HashMap<>(tags));
-		this.subProcesses = subProcesses;
+		this.measures = Map.copyOf(measures);
+		this.tags = Map.copyOf(tags);
+		this.childSpans = List.copyOf(childSpans);
 	}
 
 	/**
-	 * Static method factory for NodeConfigBuilder
-	 * @param category Categorie
-	 * @param name Name
-	 * @return AProcessBuilder
+	 * Static method factory for the span builder
+	 *
+	 * @param category the category
+	 * @param name the name
+	 * @return the span builder
 	 */
-	public static AProcessBuilder builder(final String category, final String name) {
-		return new AProcessBuilder(category, name);
+	public static AnalyticsSpanBuilder builder(final String category, final String name) {
+		return new AnalyticsSpanBuilder(category, name);
 	}
 
 	/**
-	 * Static method factory for NodeConfigBuilder
-	 * @param category category of the processus
-	 * @param name name of the process, used for agregation
-	 * @param start beginning of the process
-	 * @param end end of the process
-	 * @return AProcessBuilder
+	 * Static method factory for the span builder
+	 *
+	 * @param category the category
+	 * @param name the name
+	 * @param start the span start
+	 * @param end the span end
+	 * @return the span builder
 	 */
-	public static AProcessBuilder builder(final String category, final String name, final Instant start, final Instant end) {
-		return new AProcessBuilder(category, name, start, end);
+	public static AnalyticsSpanBuilder builder(final String category, final String name, final Instant start, final Instant end) {
+		return new AnalyticsSpanBuilder(category, name, start, end);
 	}
 
 	private static void checkRegex(final String s, final Pattern pattern, final String info) {
@@ -144,7 +146,7 @@ public final class AProcess {
 
 	/**
 	 * [what]
-	 * @return name
+	 * @return the name
 	 */
 	public String getName() {
 		return name;
@@ -158,7 +160,7 @@ public final class AProcess {
 	}
 
 	/**
-	 * @return the duration of the process (in milliseconds)
+	 * @return the span duration (in milliseconds)
 	 */
 	public long getDurationMillis() {
 		return end - start;
@@ -166,7 +168,7 @@ public final class AProcess {
 
 	/**
 	 * [when]
-	 * @return the start timestamp in Millis
+	 * @return the span start timestamp in Millis
 	 */
 	public long getStart() {
 		return start;
@@ -174,31 +176,31 @@ public final class AProcess {
 
 	/**
 	 * [when]
-	 * @return the end timestamp in Millis
+	 * @return the span end timestamp in Millis
 	 */
 	public long getEnd() {
 		return end;
 	}
 
 	/**
-	 * @return the measures of the process
+	 * @return the span measures
 	 */
 	public Map<String, Double> getMeasures() {
 		return measures;
 	}
 
 	/**
-	 * @return the tags of the process
+	 * @return the span tags
 	 */
 	public Map<String, String> getTags() {
 		return tags;
 	}
 
 	/**
-	 * @return the list of sub processes
+	 * @return the list of child spans
 	 */
-	public List<AProcess> getSubProcesses() {
-		return subProcesses;
+	public List<AnalyticsSpan> getChildSpans() {
+		return childSpans;
 	}
 
 	/** {@inheritDoc} */

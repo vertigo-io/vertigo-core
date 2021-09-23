@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.analytics.process;
+package io.vertigo.core.analytics.trace;
 
 import javax.inject.Inject;
 
@@ -26,9 +26,9 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.analytics.AnalyticsManager;
-import io.vertigo.core.analytics.process.data.TestAProcessConnectorPlugin;
-import io.vertigo.core.analytics.process.data.TestAnalyticsAspectServices;
-import io.vertigo.core.impl.analytics.process.AnalyticsAspect;
+import io.vertigo.core.analytics.trace.data.TestAProcessConnectorPlugin;
+import io.vertigo.core.analytics.trace.data.TestAnalyticsAspectServices;
+import io.vertigo.core.impl.analytics.trace.AnalyticsAspect;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.ModuleConfig;

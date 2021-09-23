@@ -41,7 +41,7 @@ import com.google.gson.JsonObject;
 
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.metric.Metric;
-import io.vertigo.core.analytics.process.AProcess;
+import io.vertigo.core.analytics.trace.AnalyticsSpan;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.core.lang.Assertion;
@@ -69,7 +69,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	private final String appName;
 	private final String localHostName;
 
-	private final ConcurrentLinkedQueue<AProcess> processQueue = new ConcurrentLinkedQueue<>();
+	private final ConcurrentLinkedQueue<AnalyticsSpan> spanQueue = new ConcurrentLinkedQueue<>();
 
 	/**
 	 * Constructor.
@@ -95,11 +95,11 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	/** {@inheritDoc} */
 	@Override
-	public void add(final AProcess process) {
+	public void add(final AnalyticsSpan span) {
 		Assertion.check()
-				.isNotNull(process);
+				.isNotNull(span);
 		//---
-		processQueue.add(process);
+		spanQueue.add(span);
 	}
 
 	/** {@inheritDoc} */
@@ -177,20 +177,20 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	 */
 	@DaemonScheduled(name = "DmnRemoteLogger", periodInSeconds = 1, analytics = false)
 	public void pollQueue() {
-		while (!processQueue.isEmpty()) {
-			final AProcess head = processQueue.poll();
+		while (!spanQueue.isEmpty()) {
+			final AnalyticsSpan head = spanQueue.poll();
 			if (head != null) {
-				sendProcess(head);
+				sendSpan(head);
 			}
 		}
 
 	}
 
-	private void sendProcess(final AProcess process) {
+	private void sendSpan(final AnalyticsSpan span) {
 		if (socketProcessLogger == null) {
 			socketProcessLogger = createLogger("vertigo-analytics-process");
 		}
-		sendObject(process, socketProcessLogger);
+		sendObject(span, socketProcessLogger);
 	}
 
 	private void sendObject(final Object object, final Logger logger) {

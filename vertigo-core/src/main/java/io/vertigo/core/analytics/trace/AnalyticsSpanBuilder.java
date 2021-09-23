@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.analytics.process;
+package io.vertigo.core.analytics.trace;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -27,12 +27,12 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 
 /**
- * This builder allows  to build a process in a fluent way.
+ * This builder allows to build a span in a fluent way.
  *
  * @author pchretien, npiedeloup
  * @version $Id: KProcessBuilder.java,v 1.18 2012/11/08 17:06:27 pchretien Exp $
  */
-public final class AProcessBuilder implements Builder<AProcess> {
+public final class AnalyticsSpanBuilder implements Builder<AnalyticsSpan> {
 	private final String myCategory;
 	private final Instant start;
 	private Instant myEnd;
@@ -42,18 +42,19 @@ public final class AProcessBuilder implements Builder<AProcess> {
 	private final Map<String, Double> measures = new HashMap<>();
 	private final Map<String, String> tags = new HashMap<>();
 
-	private final List<AProcess> subProcesses = new ArrayList<>();
+	private final List<AnalyticsSpan> childSpans = new ArrayList<>();
 
 	/**
 	 * Constructor.
-	 * La duree du processus sera obtenue lors de l'appel a la methode build().
-	 * @param category category of the processus
-	 * @param name name of the process, used for agregation
+	 *
+	 * the duration will be computed when the build() method will be called.
+	 * @param category  the span category
+	 * @param name the span name
 	 */
-	AProcessBuilder(final String category, final String name) {
+	AnalyticsSpanBuilder(final String category, final String name) {
 		Assertion.check()
-				.isNotBlank(category, "the process category is required")
-				.isNotBlank(name, "the process name is required");
+				.isNotBlank(category, "the span category is required")
+				.isNotBlank(name, "the span name is required");
 		//---
 		myCategory = category;
 		myName = name;
@@ -63,18 +64,18 @@ public final class AProcessBuilder implements Builder<AProcess> {
 
 	/**
 	 * Constructor.
-	 * La duree du processus sera obtenue lors de l'appel a la methode build().
-	 * @param category category of the processus
-	 * @param name name of the process, used for agregation
-	 * @param start beginning of the process
-	 * @param end end of the process
+	 *
+	 * @param category the span category
+	 * @param name the span name
+	 * @param start the span start
+	 * @param end the span end
 	 */
-	AProcessBuilder(final String category, final String name, final Instant start, final Instant end) {
+	AnalyticsSpanBuilder(final String category, final String name, final Instant start, final Instant end) {
 		Assertion.check()
-				.isNotBlank(category, "the process category is required")
-				.isNotBlank(name, "the process name is required")
-				.isNotNull(start, "the process start is required")
-				.isNotNull(end, "the process end is required");
+				.isNotBlank(category, "the span category is required")
+				.isNotBlank(name, "the span name is required")
+				.isNotNull(start, "the span start is required")
+				.isNotNull(end, "the span end is required");
 		//---
 		myCategory = category;
 		myName = name;
@@ -86,69 +87,74 @@ public final class AProcessBuilder implements Builder<AProcess> {
 	/**
 	 * Increments a measure.
 	 * if the measure is new,  it's automatically created with the value.
+	 *
 	 * @param name the measure name
 	 * @param value  the measure value to increment
 	 * @return this builder
 	 */
-	public AProcessBuilder incMeasure(final String name, final double value) {
+	public AnalyticsSpanBuilder incMeasure(final String name, final double value) {
 		Assertion.check().isNotNull(name, "Measure name is required");
-		//---------------------------------------------------------------------
+		//---
 		final Double lastmValue = measures.get(name);
 		measures.put(name, lastmValue == null ? value : value + lastmValue);
 		return this;
 	}
 
 	/**
-	 * Upserts a mesaure defined by a name and a value.
+	 * Initializes a measure defined by a name and a value.
+	 *
 	 * @param name  the measure name
 	 * @param value  the value measure
 	 * @return this builder
 	 */
-	public AProcessBuilder setMeasure(final String name, final double value) {
-		Assertion.check().isNotNull(name, "measure name is required");
-		//---------------------------------------------------------------------
+	public AnalyticsSpanBuilder withMeasure(final String name, final double value) {
+		Assertion.check()
+				.isNotNull(name, "measure name is required");
+		//---
 		measures.put(name, value);
 		return this;
 	}
 
 	/**
-	 * Adds a tag defined by a name and a value.
+	 * Sets a tag defined by a name and a value.
+	 *
 	 * @param name the tag name
-	 * @param value  the tag value
+	 * @param value the tag value
 	 * @return this builder
 	 */
-	public AProcessBuilder addTag(final String name, final String value) {
+	public AnalyticsSpanBuilder withTag(final String name, final String value) {
 		Assertion.check()
 				.isNotNull(name, "tag name is required")
 				.isNotNull(value, "tag value is required");
-		//---------------------------------------------------------------------
+		//---
 		tags.put(name, value);
 		return this;
 	}
 
 	/**
-	 * adds a sub process d'un sous processus.
-	 * @param subProcess the sub process to add
+	 * Adds a child span.
+	 *
+	 * @param childSpan the child span to add
 	 * @return this builder
 	 */
-	public AProcessBuilder addSubProcess(final AProcess subProcess) {
-		Assertion.check().isNotNull(subProcess, "sub process is required ");
-		//---------------------------------------------------------------------
-		subProcesses.add(subProcess);
+	public AnalyticsSpanBuilder addChildSpan(final AnalyticsSpan childSpan) {
+		Assertion.check().isNotNull(childSpan, "the child span is required ");
+		//---
+		childSpans.add(childSpan);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public AProcess build() {
+	public AnalyticsSpan build() {
 		final Instant end = myEnd != null ? myEnd : Instant.now();
-		return new AProcess(
+		return new AnalyticsSpan(
 				myCategory,
 				myName,
 				start,
 				end,
 				measures,
 				tags,
-				subProcesses);
+				childSpans);
 	}
 }

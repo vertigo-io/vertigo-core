@@ -15,11 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.analytics.process.data;
+package io.vertigo.core.analytics.trace.data;
 
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.metric.Metric;
-import io.vertigo.core.analytics.process.AProcess;
+import io.vertigo.core.analytics.trace.AnalyticsSpan;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 
 public class TestAProcessConnectorPlugin implements AnalyticsConnectorPlugin {
@@ -28,10 +28,10 @@ public class TestAProcessConnectorPlugin implements AnalyticsConnectorPlugin {
 	private static Double lastPrice;
 
 	@Override
-	public void add(final AProcess process) {
+	public void add(final AnalyticsSpan span) {
 		count++;
-		lastCategory = process.getCategory();
-		lastPrice = process.getMeasures().get("price");
+		lastCategory = span.getCategory();
+		lastPrice = span.getMeasures().get("price");
 	}
 
 	@Override

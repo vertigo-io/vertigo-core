@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.impl.analytics.process;
+package io.vertigo.core.impl.analytics.trace;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -24,23 +24,23 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.core.analytics.process.AProcess;
-import io.vertigo.core.analytics.process.AProcessBuilder;
-import io.vertigo.core.analytics.process.ProcessAnalyticsTracer;
+import io.vertigo.core.analytics.trace.AnalyticsSpan;
+import io.vertigo.core.analytics.trace.AnalyticsSpanBuilder;
+import io.vertigo.core.analytics.trace.AnalyticsTracer;
 import io.vertigo.core.lang.Assertion;
 
 /**
  * A tracer collectes information durint the execution of a process.
  * @author npiedeloup
  */
-final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCloseable {
+final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 	private final Logger logger;
 
 	private Boolean succeeded; //default no info
 	private Throwable causeException; //default no info
-	private final Consumer<AProcess> consumer;
-	private final Supplier<Optional<ProcessAnalyticsTracerImpl>> parentOptSupplier;
-	private final AProcessBuilder processBuilder;
+	private final Consumer<AnalyticsSpan> consumer;
+	private final Supplier<Optional<AnalyticsTracerImpl>> parentOptSupplier;
+	private final AnalyticsSpanBuilder spanBuilder;
 
 	/**
 	 * Constructor.
@@ -49,11 +49,11 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 	 * @param name the name that identified the process
 	 * @param consumer Consumer of this process after closing
 	 */
-	ProcessAnalyticsTracerImpl(
+	AnalyticsTracerImpl(
 			final String category,
 			final String name,
-			final Consumer<AProcess> consumer,
-			final Supplier<Optional<ProcessAnalyticsTracerImpl>> parentOptSupplier) {
+			final Consumer<AnalyticsSpan> consumer,
+			final Supplier<Optional<AnalyticsTracerImpl>> parentOptSupplier) {
 		Assertion.check()
 				.isNotBlank(category)
 				.isNotBlank(name)
@@ -63,7 +63,7 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 		this.consumer = consumer;
 		this.parentOptSupplier = parentOptSupplier;
 
-		processBuilder = AProcess.builder(category, name);
+		spanBuilder = AnalyticsSpan.builder(category, name);
 		if (logger.isDebugEnabled()) {
 			logger.debug("Start {}", name);
 		}
@@ -71,22 +71,22 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 
 	/** {@inheritDoc} */
 	@Override
-	public ProcessAnalyticsTracer incMeasure(final String name, final double value) {
-		processBuilder.incMeasure(name, value);
+	public AnalyticsTracer incMeasure(final String name, final double value) {
+		spanBuilder.incMeasure(name, value);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public ProcessAnalyticsTracer setMeasure(final String name, final double value) {
-		processBuilder.setMeasure(name, value);
+	public AnalyticsTracer setMeasure(final String name, final double value) {
+		spanBuilder.withMeasure(name, value);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public ProcessAnalyticsTracer addTag(final String name, final String value) {
-		processBuilder.addTag(name, value);
+	public AnalyticsTracer addTag(final String name, final String value) {
+		spanBuilder.withTag(name, value);
 		return this;
 	}
 
@@ -99,32 +99,32 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 		if (causeException != null) {
 			addTag("exception", causeException.getClass().getName());
 		}
-		final AProcess process = processBuilder.build();
-		logProcess(process);
+		final AnalyticsSpan span = spanBuilder.build();
+		logSpan(span);
 
-		final Optional<ProcessAnalyticsTracerImpl> parentOpt = parentOptSupplier.get();
+		final Optional<AnalyticsTracerImpl> parentOpt = parentOptSupplier.get();
 		if (parentOpt.isPresent()) {
 			//when the current process is a subProcess, it's finished and must be added to the parent
-			parentOpt.get().processBuilder.addSubProcess(process);
+			parentOpt.get().spanBuilder.addChildSpan(span);
 		} else {
 			//when the current process is the root process, it's finished and must be sent to the connector
-			consumer.accept(process);
+			consumer.accept(span);
 		}
 	}
 
-	private void logProcess(final AProcess process) {
+	private void logSpan(final AnalyticsSpan span) {
 		if (logger.isInfoEnabled()) {
-			boolean hasMeasures = !process.getMeasures().isEmpty();
-			boolean hasTags = !process.getTags().isEmpty();
+			final boolean hasMeasures = !span.getMeasures().isEmpty();
+			final boolean hasTags = !span.getTags().isEmpty();
 			final String info = new StringBuilder()
 					.append("Finish ")
-					.append(process.getName())
-					.append(succeeded != null ? (succeeded ? " successfully" : " with error") : "with internal error")
+					.append(span.getName())
+					.append(succeeded != null ? succeeded ? " successfully" : " with error" : "with internal error")
 					.append(" in ( ")
-					.append(process.getDurationMillis())
+					.append(span.getDurationMillis())
 					.append(" ms)")
-					.append(hasMeasures ? " measures:" + process.getMeasures() : "")
-					.append(hasTags ? " metaData:" + process.getTags() : "")
+					.append(hasMeasures ? " measures:" + span.getMeasures() : "")
+					.append(hasTags ? " metaData:" + span.getTags() : "")
 					.toString();
 			logger.info(info);
 		}
@@ -135,7 +135,7 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 	 * Marks this tracer as succeeded.
 	 * @return this tracer
 	 */
-	ProcessAnalyticsTracer markAsSucceeded() {
+	AnalyticsTracer markAsSucceeded() {
 		//the last mark wins
 		//so we prefer to reset causeException
 		causeException = null;
@@ -147,7 +147,7 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 	 * Marks this tracer as Failed.
 	 * @return this tracer
 	 */
-	ProcessAnalyticsTracer markAsFailed(final Throwable t) {
+	AnalyticsTracer markAsFailed(final Throwable t) {
 		//We don't check the nullability of e
 		//the last mark wins
 		//so we prefer to put the flag 'succeeded' to false
