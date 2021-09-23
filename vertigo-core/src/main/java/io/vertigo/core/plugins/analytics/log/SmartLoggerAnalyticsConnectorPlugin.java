@@ -28,7 +28,7 @@ import com.google.gson.JsonObject;
 
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.metric.Metric;
-import io.vertigo.core.analytics.trace.AnalyticsSpan;
+import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
@@ -62,7 +62,7 @@ public final class SmartLoggerAnalyticsConnectorPlugin implements AnalyticsConne
 
 	/** {@inheritDoc} */
 	@Override
-	public void add(final AnalyticsSpan span) {
+	public void add(final TraceSpan span) {
 		final JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("name", span.getName());
 		jsonObject.addProperty("durationMillis", span.getDurationMillis());
@@ -87,7 +87,7 @@ public final class SmartLoggerAnalyticsConnectorPlugin implements AnalyticsConne
 		}
 	}
 
-	private static void buildCountAndFullDurationByCategory(final AnalyticsSpan span, final String category, final AggregatedResult aggregatedResult) {
+	private static void buildCountAndFullDurationByCategory(final TraceSpan span, final String category, final AggregatedResult aggregatedResult) {
 		span.getChildSpans()
 				.stream()
 				.filter(subprocess -> category.equals(subprocess.getCategory()))

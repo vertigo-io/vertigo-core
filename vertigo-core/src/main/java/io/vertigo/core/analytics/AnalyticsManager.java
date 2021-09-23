@@ -25,8 +25,8 @@ import java.util.function.Function;
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.health.HealthStatus;
 import io.vertigo.core.analytics.metric.Metric;
-import io.vertigo.core.analytics.trace.AnalyticsSpan;
-import io.vertigo.core.analytics.trace.AnalyticsTracer;
+import io.vertigo.core.analytics.trace.TraceSpan;
+import io.vertigo.core.analytics.trace.Tracer;
 import io.vertigo.core.node.component.Manager;
 
 /**
@@ -43,7 +43,7 @@ public interface AnalyticsManager extends Manager {
 	 * @param name the name of the process
 	 * @param consumer the function to execute within the tracer
 	 */
-	void trace(final String category, final String name, Consumer<AnalyticsTracer> consumer);
+	void trace(final String category, final String name, Consumer<Tracer> consumer);
 
 	/**
 	 * Traces a process that has a return value (and collects metrics during its execution).
@@ -53,19 +53,19 @@ public interface AnalyticsManager extends Manager {
 	 * @param function the function to execute within the tracer
 	 * @return the result of the traced function
 	 */
-	<O> O traceWithReturn(final String category, final String name, Function<AnalyticsTracer, O> function);
+	<O> O traceWithReturn(final String category, final String name, Function<Tracer, O> function);
 
 	/**
 	 * @return the current tracer if it has been created before
 	 */
-	Optional<AnalyticsTracer> getCurrentTracer();
+	Optional<Tracer> getCurrentTracer();
 
 	/**
 	 * Adds an already built AProcess (via the builder) for tracking process that are not executed in a single thread environnement.
 	 * Prefer the use of method trace and traceWithReturn for commons cases (easier)
 	 * @param span the built process
 	 */
-	void addSpan(AnalyticsSpan span);
+	void addSpan(TraceSpan span);
 
 	/**
 	 * @return the list of health checks

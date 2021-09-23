@@ -32,7 +32,7 @@ import io.vertigo.core.node.component.aop.AspectAnnotation;
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @AspectAnnotation
-public @interface Analytics {
+public @interface Trace {
 	/**
 	 * The category where the traced process will be stored.
 	 * @return the category of the process

@@ -41,7 +41,7 @@ import com.google.gson.JsonObject;
 
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.metric.Metric;
-import io.vertigo.core.analytics.trace.AnalyticsSpan;
+import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.core.lang.Assertion;
@@ -69,7 +69,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	private final String appName;
 	private final String localHostName;
 
-	private final ConcurrentLinkedQueue<AnalyticsSpan> spanQueue = new ConcurrentLinkedQueue<>();
+	private final ConcurrentLinkedQueue<TraceSpan> spanQueue = new ConcurrentLinkedQueue<>();
 
 	/**
 	 * Constructor.
@@ -95,7 +95,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	/** {@inheritDoc} */
 	@Override
-	public void add(final AnalyticsSpan span) {
+	public void add(final TraceSpan span) {
 		Assertion.check()
 				.isNotNull(span);
 		//---
@@ -178,7 +178,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	@DaemonScheduled(name = "DmnRemoteLogger", periodInSeconds = 1, analytics = false)
 	public void pollQueue() {
 		while (!spanQueue.isEmpty()) {
-			final AnalyticsSpan head = spanQueue.poll();
+			final TraceSpan head = spanQueue.poll();
 			if (head != null) {
 				sendSpan(head);
 			}
@@ -186,7 +186,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	}
 
-	private void sendSpan(final AnalyticsSpan span) {
+	private void sendSpan(final TraceSpan span) {
 		if (socketProcessLogger == null) {
 			socketProcessLogger = createLogger("vertigo-analytics-process");
 		}

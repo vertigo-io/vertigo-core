@@ -19,16 +19,16 @@ package io.vertigo.core.analytics.trace.data;
 
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.metric.Metric;
-import io.vertigo.core.analytics.trace.AnalyticsSpan;
+import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 
-public class TestAProcessConnectorPlugin implements AnalyticsConnectorPlugin {
+public class TestAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin {
 	private static int count = 0;
 	private static String lastCategory;
 	private static Double lastPrice;
 
 	@Override
-	public void add(final AnalyticsSpan span) {
+	public void add(final TraceSpan span) {
 		count++;
 		lastCategory = span.getCategory();
 		lastPrice = span.getMeasures().get("price");

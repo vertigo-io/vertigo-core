@@ -30,12 +30,12 @@ import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.health.HealthStatus;
 import io.vertigo.core.analytics.metric.Metric;
-import io.vertigo.core.analytics.trace.AnalyticsSpan;
-import io.vertigo.core.analytics.trace.AnalyticsTracer;
+import io.vertigo.core.analytics.trace.TraceSpan;
+import io.vertigo.core.analytics.trace.Tracer;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.impl.analytics.health.HealthAnalyticsUtil;
 import io.vertigo.core.impl.analytics.metric.MetricAnalyticsUtil;
-import io.vertigo.core.impl.analytics.trace.AnalyticsStaticTracer;
+import io.vertigo.core.impl.analytics.trace.TracerProvider;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.AopPlugin;
@@ -51,7 +51,7 @@ import io.vertigo.core.node.definition.SimpleDefinitionProvider;
  */
 public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefinitionProvider {
 
-	private final AnalyticsStaticTracer processAnalyticsImpl;
+	private final TracerProvider processAnalyticsImpl;
 	private final List<AnalyticsConnectorPlugin> processConnectorPlugins;
 
 	private final boolean enabled;
@@ -65,7 +65,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 			final List<AnalyticsConnectorPlugin> processConnectorPlugins) {
 		Assertion.check().isNotNull(processConnectorPlugins);
 		//---
-		processAnalyticsImpl = new AnalyticsStaticTracer();
+		processAnalyticsImpl = new TracerProvider();
 		this.processConnectorPlugins = processConnectorPlugins;
 		// by default if no connector is defined we disable the collect
 		enabled = !this.processConnectorPlugins.isEmpty();
@@ -90,25 +90,25 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 
 	/** {@inheritDoc} */
 	@Override
-	public void trace(final String category, final String name, final Consumer<AnalyticsTracer> consumer) {
+	public void trace(final String category, final String name, final Consumer<Tracer> consumer) {
 		processAnalyticsImpl.trace(category, name, consumer, this::onClose);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <O> O traceWithReturn(final String category, final String name, final Function<AnalyticsTracer, O> function) {
+	public <O> O traceWithReturn(final String category, final String name, final Function<Tracer, O> function) {
 		return processAnalyticsImpl.traceWithReturn(category, name, function, this::onClose);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void addSpan(final AnalyticsSpan process) {
+	public void addSpan(final TraceSpan process) {
 		onClose(process);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<AnalyticsTracer> getCurrentTracer() {
+	public Optional<Tracer> getCurrentTracer() {
 		if (!enabled) {
 			return Optional.empty();
 		}
@@ -116,7 +116,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 		return processAnalyticsImpl.getCurrentTracer();
 	}
 
-	private void onClose(final AnalyticsSpan span) {
+	private void onClose(final TraceSpan span) {
 		Assertion.check().isNotNull(span);
 		//---
 		processConnectorPlugins.forEach(

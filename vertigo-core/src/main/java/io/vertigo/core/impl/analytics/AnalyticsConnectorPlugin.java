@@ -19,7 +19,7 @@ package io.vertigo.core.impl.analytics;
 
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.metric.Metric;
-import io.vertigo.core.analytics.trace.AnalyticsSpan;
+import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.node.component.Plugin;
 
 /**
@@ -34,7 +34,7 @@ public interface AnalyticsConnectorPlugin extends Plugin {
 	 * Adds a span to a connector which acts as a consumer.
 	 * @param span the span
 	 */
-	void add(AnalyticsSpan span);
+	void add(TraceSpan span);
 
 	/**
 	 * Adds a metric to a connector which acts as a consumer.

@@ -26,9 +26,9 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.analytics.AnalyticsManager;
-import io.vertigo.core.analytics.trace.data.TestAProcessConnectorPlugin;
+import io.vertigo.core.analytics.trace.data.TestAnalyticsConnectorPlugin;
 import io.vertigo.core.analytics.trace.data.TestAnalyticsAspectServices;
-import io.vertigo.core.impl.analytics.trace.AnalyticsAspect;
+import io.vertigo.core.impl.analytics.trace.TraceAspect;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.ModuleConfig;
@@ -41,7 +41,7 @@ import io.vertigo.core.plugins.analytics.log.LoggerAnalyticsConnectorPlugin;
  *
  * @author pchretien, npiedeloup
  */
-public final class ProcessAnalyticsTest extends AbstractTestCaseJU5 {
+public final class TraceAnalyticsTest extends AbstractTestCaseJU5 {
 	private static final String PRICE = "PRICE";
 
 	private static final String WEIGHT = "WEIGHT";
@@ -64,11 +64,11 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU5 {
 				.withBoot(BootConfig.builder()
 						.withSmartLoggerAnalyticsConnector(Param.of("aggregatedBy", "test"))
 						.withSocketLoggerAnalyticsConnector()
-						.addAnalyticsConnectorPlugin(TestAProcessConnectorPlugin.class)
+						.addAnalyticsConnectorPlugin(TestAnalyticsConnectorPlugin.class)
 						.addAnalyticsConnectorPlugin(LoggerAnalyticsConnectorPlugin.class)
 						.build())
 				.addModule(ModuleConfig.builder("vertigo-core-aspect")
-						.addAspect(AnalyticsAspect.class)
+						.addAspect(TraceAspect.class)
 						.build())
 				.addModule(ModuleConfig.builder("vertigo-test")
 						.addComponent(TestAnalyticsAspectServices.class)
@@ -117,17 +117,17 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testAspect() {
-		TestAProcessConnectorPlugin.reset();
+		TestAnalyticsConnectorPlugin.reset();
 		final int result = analyticsAspectServices.add(1, 2);
 		Assertions.assertEquals(3, result);
 		//---
-		Assertions.assertEquals(1, TestAProcessConnectorPlugin.getCount());
-		Assertions.assertEquals("test", TestAProcessConnectorPlugin.getLastcategory());
+		Assertions.assertEquals(1, TestAnalyticsConnectorPlugin.getCount());
+		Assertions.assertEquals("test", TestAnalyticsConnectorPlugin.getLastcategory());
 	}
 
 	@Test
 	public void testConnectors() {
-		TestAProcessConnectorPlugin.reset();
+		TestAnalyticsConnectorPlugin.reset();
 		for (int i = 0; i < 50; i++) {
 			final int result = analyticsAspectServices.add(i, 2 * i);
 			Assertions.assertEquals(3 * i, result);
@@ -135,20 +135,20 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU5 {
 		for (int i = 0; i < 50; i++) {
 			analyticsAspectServices.checkPositive(i);
 		}
-		Assertions.assertEquals(100, TestAProcessConnectorPlugin.getCount());
-		Assertions.assertEquals("test", TestAProcessConnectorPlugin.getLastcategory());
+		Assertions.assertEquals(100, TestAnalyticsConnectorPlugin.getCount());
+		Assertions.assertEquals("test", TestAnalyticsConnectorPlugin.getLastcategory());
 
 	}
 
 	@Test
 	public void testFail() {
 		Assertions.assertThrows(IllegalStateException.class, () -> {
-			TestAProcessConnectorPlugin.reset();
+			TestAnalyticsConnectorPlugin.reset();
 			try {
 				analyticsAspectServices.checkPositive(-1);
 			} catch (final IllegalStateException e) {
-				Assertions.assertEquals(1, TestAProcessConnectorPlugin.getCount());
-				Assertions.assertEquals("test", TestAProcessConnectorPlugin.getLastcategory());
+				Assertions.assertEquals(1, TestAnalyticsConnectorPlugin.getCount());
+				Assertions.assertEquals("test", TestAnalyticsConnectorPlugin.getLastcategory());
 				throw e;
 			}
 		});
@@ -157,24 +157,24 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testSetMeasures() {
-		TestAProcessConnectorPlugin.reset();
-		Assertions.assertEquals(null, TestAProcessConnectorPlugin.getLastPrice());
+		TestAnalyticsConnectorPlugin.reset();
+		Assertions.assertEquals(null, TestAnalyticsConnectorPlugin.getLastPrice());
 		analyticsAspectServices.setMeasure();
-		Assertions.assertEquals(100D, TestAProcessConnectorPlugin.getLastPrice().doubleValue());
+		Assertions.assertEquals(100D, TestAnalyticsConnectorPlugin.getLastPrice().doubleValue());
 	}
 
 	@Test
 	public void testSetAndIncMeasures() {
-		TestAProcessConnectorPlugin.reset();
+		TestAnalyticsConnectorPlugin.reset();
 		analyticsAspectServices.setAndIncMeasure();
-		Assertions.assertEquals(120D, TestAProcessConnectorPlugin.getLastPrice().doubleValue());
+		Assertions.assertEquals(120D, TestAnalyticsConnectorPlugin.getLastPrice().doubleValue());
 	}
 
 	@Test
 	public void testIncMeasures() {
-		TestAProcessConnectorPlugin.reset();
+		TestAnalyticsConnectorPlugin.reset();
 		analyticsAspectServices.incMeasure();
-		Assertions.assertEquals(10D, TestAProcessConnectorPlugin.getLastPrice().doubleValue());
+		Assertions.assertEquals(10D, TestAnalyticsConnectorPlugin.getLastPrice().doubleValue());
 	}
 
 	/**

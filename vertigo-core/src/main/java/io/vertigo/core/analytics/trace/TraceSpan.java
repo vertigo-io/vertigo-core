@@ -52,7 +52,7 @@ import io.vertigo.core.lang.Assertion;
  * @author pchretien, npiedeloup
  * @version $Id: KProcess.java,v 1.8 2012/10/16 17:18:26 pchretien Exp $
  */
-public final class AnalyticsSpan {
+public final class TraceSpan {
 	/**
 	 * REGEX used to define rules on category, measures and tags.
 	 */
@@ -70,7 +70,7 @@ public final class AnalyticsSpan {
 
 	private final Map<String, Double> measures;
 	private final Map<String, String> tags;
-	private final List<AnalyticsSpan> childSpans;
+	private final List<TraceSpan> childSpans;
 
 	/**
 	 * Constructor.
@@ -82,14 +82,14 @@ public final class AnalyticsSpan {
 	 * @param tags the tags
 	 * @param childSpans the list of child spans (0..*)
 	 */
-	AnalyticsSpan(
+	TraceSpan(
 			final String category,
 			final String name,
 			final Instant start,
 			final Instant end,
 			final Map<String, Double> measures,
 			final Map<String, String> tags,
-			final List<AnalyticsSpan> childSpans) {
+			final List<TraceSpan> childSpans) {
 		Assertion.check()
 				.isNotNull(category, "the category is required")
 				.isNotNull(name, "the name is required")
@@ -121,8 +121,8 @@ public final class AnalyticsSpan {
 	 * @param name the name
 	 * @return the span builder
 	 */
-	public static AnalyticsSpanBuilder builder(final String category, final String name) {
-		return new AnalyticsSpanBuilder(category, name);
+	public static TraceSpanBuilder builder(final String category, final String name) {
+		return new TraceSpanBuilder(category, name);
 	}
 
 	/**
@@ -134,8 +134,8 @@ public final class AnalyticsSpan {
 	 * @param end the span end
 	 * @return the span builder
 	 */
-	public static AnalyticsSpanBuilder builder(final String category, final String name, final Instant start, final Instant end) {
-		return new AnalyticsSpanBuilder(category, name, start, end);
+	public static TraceSpanBuilder builder(final String category, final String name, final Instant start, final Instant end) {
+		return new TraceSpanBuilder(category, name, start, end);
 	}
 
 	private static void checkRegex(final String s, final Pattern pattern, final String info) {
@@ -199,7 +199,7 @@ public final class AnalyticsSpan {
 	/**
 	 * @return the list of child spans
 	 */
-	public List<AnalyticsSpan> getChildSpans() {
+	public List<TraceSpan> getChildSpans() {
 		return childSpans;
 	}
 

@@ -20,7 +20,7 @@ package io.vertigo.core.impl.analytics.trace;
 import javax.inject.Inject;
 
 import io.vertigo.core.analytics.AnalyticsManager;
-import io.vertigo.core.analytics.trace.Analytics;
+import io.vertigo.core.analytics.trace.Trace;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.aop.Aspect;
 import io.vertigo.core.node.component.aop.AspectMethodInvocation;
@@ -31,7 +31,7 @@ import io.vertigo.core.util.StringUtil;
  *
  * @author jmforhan
  */
-public final class AnalyticsAspect implements Aspect {
+public final class TraceAspect implements Aspect {
 	private final AnalyticsManager analyticsManager;
 
 	/**
@@ -39,7 +39,7 @@ public final class AnalyticsAspect implements Aspect {
 	 * @param analyticsManager the component responsible of managing analytics
 	 */
 	@Inject
-	public AnalyticsAspect(final AnalyticsManager analyticsManager) {
+	public TraceAspect(final AnalyticsManager analyticsManager) {
 		Assertion.check().isNotNull(analyticsManager);
 		//---
 		this.analyticsManager = analyticsManager;
@@ -47,16 +47,16 @@ public final class AnalyticsAspect implements Aspect {
 
 	/** {@inheritDoc} */
 	@Override
-	public Class<Analytics> getAnnotationType() {
-		return Analytics.class;
+	public Class<Trace> getAnnotationType() {
+		return Trace.class;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Object invoke(final Object[] args, final AspectMethodInvocation invocation) {
 		//Aspect must be declared on methods or on the class.
-		final Analytics analytics = invocation.getMethod().getAnnotation(Analytics.class) == null ? invocation.getMethod().getDeclaringClass().getAnnotation(Analytics.class)
-				: invocation.getMethod().getAnnotation(Analytics.class);
+		final Trace analytics = invocation.getMethod().getAnnotation(Trace.class) == null ? invocation.getMethod().getDeclaringClass().getAnnotation(Trace.class)
+				: invocation.getMethod().getAnnotation(Trace.class);
 
 		final String name = StringUtil.isBlank(analytics.name()) ? invocation.getMethod().getDeclaringClass().getSimpleName() + "::" + invocation.getMethod().getName() : analytics.name();
 		return analyticsManager.traceWithReturn(

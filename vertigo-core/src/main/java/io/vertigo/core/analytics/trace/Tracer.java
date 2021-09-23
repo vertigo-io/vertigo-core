@@ -23,14 +23,14 @@ package io.vertigo.core.analytics.trace;
  *
  * @author pchretien, npiedeloup
  */
-public interface AnalyticsTracer {
+public interface Tracer {
 	/**
 	 * Increments a measure (creates if not exists).
 	 * @param name the measure name
 	 * @param value the measure increment
 	 * @return this tracer
 	 */
-	AnalyticsTracer incMeasure(final String name, final double value);
+	Tracer incMeasure(final String name, final double value);
 
 	/**
 	* Sets a value to the measure. (cleans if exists)
@@ -40,7 +40,7 @@ public interface AnalyticsTracer {
 	* @param value the value of the measure
 	 * @return this tracer
 	*/
-	AnalyticsTracer setMeasure(final String name, final double value);
+	Tracer setMeasure(final String name, final double value);
 
 	/**
 	 * Sets a value to a specific tag. (cleans if exists)
@@ -49,5 +49,5 @@ public interface AnalyticsTracer {
 	 * @param value the value of the tag
 	 * @return this tracer
 	 */
-	AnalyticsTracer setTag(final String name, final String value);
+	Tracer setTag(final String name, final String value);
 }

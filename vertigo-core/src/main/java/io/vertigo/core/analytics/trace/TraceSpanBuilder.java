@@ -32,7 +32,7 @@ import io.vertigo.core.lang.Builder;
  * @author pchretien, npiedeloup
  * @version $Id: KProcessBuilder.java,v 1.18 2012/11/08 17:06:27 pchretien Exp $
  */
-public final class AnalyticsSpanBuilder implements Builder<AnalyticsSpan> {
+public final class TraceSpanBuilder implements Builder<TraceSpan> {
 	private final String myCategory;
 	private final Instant start;
 	private Instant myEnd;
@@ -42,7 +42,7 @@ public final class AnalyticsSpanBuilder implements Builder<AnalyticsSpan> {
 	private final Map<String, Double> measures = new HashMap<>();
 	private final Map<String, String> tags = new HashMap<>();
 
-	private final List<AnalyticsSpan> childSpans = new ArrayList<>();
+	private final List<TraceSpan> childSpans = new ArrayList<>();
 
 	/**
 	 * Constructor.
@@ -51,7 +51,7 @@ public final class AnalyticsSpanBuilder implements Builder<AnalyticsSpan> {
 	 * @param category  the span category
 	 * @param name the span name
 	 */
-	AnalyticsSpanBuilder(final String category, final String name) {
+	TraceSpanBuilder(final String category, final String name) {
 		Assertion.check()
 				.isNotBlank(category, "the span category is required")
 				.isNotBlank(name, "the span name is required");
@@ -70,7 +70,7 @@ public final class AnalyticsSpanBuilder implements Builder<AnalyticsSpan> {
 	 * @param start the span start
 	 * @param end the span end
 	 */
-	AnalyticsSpanBuilder(final String category, final String name, final Instant start, final Instant end) {
+	TraceSpanBuilder(final String category, final String name, final Instant start, final Instant end) {
 		Assertion.check()
 				.isNotBlank(category, "the span category is required")
 				.isNotBlank(name, "the span name is required")
@@ -92,7 +92,7 @@ public final class AnalyticsSpanBuilder implements Builder<AnalyticsSpan> {
 	 * @param value  the measure value to increment
 	 * @return this builder
 	 */
-	public AnalyticsSpanBuilder incMeasure(final String name, final double value) {
+	public TraceSpanBuilder incMeasure(final String name, final double value) {
 		Assertion.check().isNotNull(name, "Measure name is required");
 		//---
 		final Double lastmValue = measures.get(name);
@@ -107,7 +107,7 @@ public final class AnalyticsSpanBuilder implements Builder<AnalyticsSpan> {
 	 * @param value  the value measure
 	 * @return this builder
 	 */
-	public AnalyticsSpanBuilder withMeasure(final String name, final double value) {
+	public TraceSpanBuilder withMeasure(final String name, final double value) {
 		Assertion.check()
 				.isNotNull(name, "measure name is required");
 		//---
@@ -122,7 +122,7 @@ public final class AnalyticsSpanBuilder implements Builder<AnalyticsSpan> {
 	 * @param value the tag value
 	 * @return this builder
 	 */
-	public AnalyticsSpanBuilder withTag(final String name, final String value) {
+	public TraceSpanBuilder withTag(final String name, final String value) {
 		Assertion.check()
 				.isNotNull(name, "tag name is required")
 				.isNotNull(value, "tag value is required");
@@ -137,7 +137,7 @@ public final class AnalyticsSpanBuilder implements Builder<AnalyticsSpan> {
 	 * @param childSpan the child span to add
 	 * @return this builder
 	 */
-	public AnalyticsSpanBuilder addChildSpan(final AnalyticsSpan childSpan) {
+	public TraceSpanBuilder addChildSpan(final TraceSpan childSpan) {
 		Assertion.check().isNotNull(childSpan, "the child span is required ");
 		//---
 		childSpans.add(childSpan);
@@ -146,9 +146,9 @@ public final class AnalyticsSpanBuilder implements Builder<AnalyticsSpan> {
 
 	/** {@inheritDoc} */
 	@Override
-	public AnalyticsSpan build() {
+	public TraceSpan build() {
 		final Instant end = myEnd != null ? myEnd : Instant.now();
-		return new AnalyticsSpan(
+		return new TraceSpan(
 				myCategory,
 				myName,
 				start,

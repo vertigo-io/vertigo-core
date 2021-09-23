@@ -24,23 +24,23 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.core.analytics.trace.AnalyticsSpan;
-import io.vertigo.core.analytics.trace.AnalyticsSpanBuilder;
-import io.vertigo.core.analytics.trace.AnalyticsTracer;
+import io.vertigo.core.analytics.trace.TraceSpan;
+import io.vertigo.core.analytics.trace.TraceSpanBuilder;
+import io.vertigo.core.analytics.trace.Tracer;
 import io.vertigo.core.lang.Assertion;
 
 /**
  * A tracer collectes information durint the execution of a process.
  * @author npiedeloup
  */
-final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
+final class TracerImpl implements Tracer, AutoCloseable {
 	private final Logger logger;
 
 	private Boolean succeeded; //default no info
 	private Throwable causeException; //default no info
-	private final Consumer<AnalyticsSpan> consumer;
-	private final Supplier<Optional<AnalyticsTracerImpl>> parentOptSupplier;
-	private final AnalyticsSpanBuilder spanBuilder;
+	private final Consumer<TraceSpan> consumer;
+	private final Supplier<Optional<TracerImpl>> parentOptSupplier;
+	private final TraceSpanBuilder spanBuilder;
 
 	/**
 	 * Constructor.
@@ -49,11 +49,11 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 	 * @param name the name that identified the process
 	 * @param consumer Consumer of this process after closing
 	 */
-	AnalyticsTracerImpl(
+	TracerImpl(
 			final String category,
 			final String name,
-			final Consumer<AnalyticsSpan> consumer,
-			final Supplier<Optional<AnalyticsTracerImpl>> parentOptSupplier) {
+			final Consumer<TraceSpan> consumer,
+			final Supplier<Optional<TracerImpl>> parentOptSupplier) {
 		Assertion.check()
 				.isNotBlank(category)
 				.isNotBlank(name)
@@ -63,7 +63,7 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 		this.consumer = consumer;
 		this.parentOptSupplier = parentOptSupplier;
 
-		spanBuilder = AnalyticsSpan.builder(category, name);
+		spanBuilder = TraceSpan.builder(category, name);
 		if (logger.isDebugEnabled()) {
 			logger.debug("Start {}", name);
 		}
@@ -71,21 +71,21 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 
 	/** {@inheritDoc} */
 	@Override
-	public AnalyticsTracer incMeasure(final String name, final double value) {
+	public Tracer incMeasure(final String name, final double value) {
 		spanBuilder.incMeasure(name, value);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public AnalyticsTracer setMeasure(final String name, final double value) {
+	public Tracer setMeasure(final String name, final double value) {
 		spanBuilder.withMeasure(name, value);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public AnalyticsTracer setTag(final String name, final String value) {
+	public Tracer setTag(final String name, final String value) {
 		spanBuilder.withTag(name, value);
 		return this;
 	}
@@ -99,10 +99,10 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 		if (causeException != null) {
 			setTag("exception", causeException.getClass().getName());
 		}
-		final AnalyticsSpan span = spanBuilder.build();
+		final TraceSpan span = spanBuilder.build();
 		logSpan(span);
 
-		final Optional<AnalyticsTracerImpl> parentOpt = parentOptSupplier.get();
+		final Optional<TracerImpl> parentOpt = parentOptSupplier.get();
 		if (parentOpt.isPresent()) {
 			//when the current process is a subProcess, it's finished and must be added to the parent
 			parentOpt.get().spanBuilder.addChildSpan(span);
@@ -112,7 +112,7 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 		}
 	}
 
-	private void logSpan(final AnalyticsSpan span) {
+	private void logSpan(final TraceSpan span) {
 		if (logger.isInfoEnabled()) {
 			final boolean hasMeasures = !span.getMeasures().isEmpty();
 			final boolean hasTags = !span.getTags().isEmpty();
@@ -135,7 +135,7 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 	 * Marks this tracer as succeeded.
 	 * @return this tracer
 	 */
-	AnalyticsTracer markAsSucceeded() {
+	Tracer markAsSucceeded() {
 		//the last mark wins
 		//so we prefer to reset causeException
 		causeException = null;
@@ -147,7 +147,7 @@ final class AnalyticsTracerImpl implements AnalyticsTracer, AutoCloseable {
 	 * Marks this tracer as Failed.
 	 * @return this tracer
 	 */
-	AnalyticsTracer markAsFailed(final Throwable t) {
+	Tracer markAsFailed(final Throwable t) {
 		//We don't check the nullability of e
 		//the last mark wins
 		//so we prefer to put the flag 'succeeded' to false

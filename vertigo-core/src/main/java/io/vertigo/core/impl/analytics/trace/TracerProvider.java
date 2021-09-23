@@ -22,20 +22,20 @@ import java.util.Stack;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import io.vertigo.core.analytics.trace.AnalyticsSpan;
-import io.vertigo.core.analytics.trace.AnalyticsTracer;
+import io.vertigo.core.analytics.trace.TraceSpan;
+import io.vertigo.core.analytics.trace.Tracer;
 import io.vertigo.core.lang.Assertion;
 
-public class AnalyticsStaticTracer {
+public class TracerProvider {
 
 	/**
 	 * Processus binde sur le thread courant. Le processus , recoit les notifications des sondes placees dans le code de
 	 * l'application pendant le traitement d'une requete (thread).
 	 */
-	private static final ThreadLocal<Stack<AnalyticsTracerImpl>> THREAD_LOCAL_PROCESS = new ThreadLocal<>();
+	private static final ThreadLocal<Stack<TracerImpl>> THREAD_LOCAL_PROCESS = new ThreadLocal<>();
 
-	public static void trace(final String category, final String name, final Consumer<AnalyticsTracer> consumer, final Consumer<AnalyticsSpan> onCloseConsumer) {
-		try (AnalyticsTracerImpl tracer = createTracer(category, name, onCloseConsumer)) {
+	public static void trace(final String category, final String name, final Consumer<Tracer> consumer, final Consumer<TraceSpan> onCloseConsumer) {
+		try (TracerImpl tracer = createTracer(category, name, onCloseConsumer)) {
 			try {
 				consumer.accept(tracer);
 				tracer.markAsSucceeded();
@@ -46,8 +46,8 @@ public class AnalyticsStaticTracer {
 		}
 	}
 
-	public static <O> O traceWithReturn(final String category, final String name, final Function<AnalyticsTracer, O> function, final Consumer<AnalyticsSpan> onCloseConsumer) {
-		try (AnalyticsTracerImpl tracer = createTracer(category, name, onCloseConsumer)) {
+	public static <O> O traceWithReturn(final String category, final String name, final Function<Tracer, O> function, final Consumer<TraceSpan> onCloseConsumer) {
+		try (TracerImpl tracer = createTracer(category, name, onCloseConsumer)) {
 			try {
 				final O result = function.apply(tracer);
 				tracer.markAsSucceeded();
@@ -59,19 +59,19 @@ public class AnalyticsStaticTracer {
 		}
 	}
 
-	public static Optional<AnalyticsTracer> getCurrentTracer() {
+	public static Optional<Tracer> getCurrentTracer() {
 		// When collect feature is enabled
 		return doGetCurrentTracer().map(Function.identity()); // convert impl to api
 	}
 
-	private static Optional<AnalyticsTracerImpl> doGetCurrentTracer() {
+	private static Optional<TracerImpl> doGetCurrentTracer() {
 		if (THREAD_LOCAL_PROCESS.get() == null || THREAD_LOCAL_PROCESS.get().isEmpty()) {
 			return Optional.empty();
 		}
 		return Optional.of(THREAD_LOCAL_PROCESS.get().peek());
 	}
 
-	private static void push(final AnalyticsTracerImpl analyticstracer) {
+	private static void push(final TracerImpl analyticstracer) {
 		Assertion.check().isNotNull(analyticstracer);
 		//---
 		if (THREAD_LOCAL_PROCESS.get() == null) {
@@ -81,17 +81,17 @@ public class AnalyticsStaticTracer {
 		THREAD_LOCAL_PROCESS.get().push(analyticstracer);
 	}
 
-	private static Optional<AnalyticsTracerImpl> removeCurrentAndGetParentTracer() {
+	private static Optional<TracerImpl> removeCurrentAndGetParentTracer() {
 		THREAD_LOCAL_PROCESS.get().pop();
-		final Optional<AnalyticsTracerImpl> parentOpt = doGetCurrentTracer();
+		final Optional<TracerImpl> parentOpt = doGetCurrentTracer();
 		if (parentOpt.isEmpty()) {
 			THREAD_LOCAL_PROCESS.remove();
 		}
 		return parentOpt;
 	}
 
-	private static AnalyticsTracerImpl createTracer(final String category, final String name, final Consumer<AnalyticsSpan> onCloseConsumer) {
-		final AnalyticsTracerImpl analyticsTracer = new AnalyticsTracerImpl(category, name, onCloseConsumer, AnalyticsStaticTracer::removeCurrentAndGetParentTracer);
+	private static TracerImpl createTracer(final String category, final String name, final Consumer<TraceSpan> onCloseConsumer) {
+		final TracerImpl analyticsTracer = new TracerImpl(category, name, onCloseConsumer, TracerProvider::removeCurrentAndGetParentTracer);
 		push(analyticsTracer);
 		return analyticsTracer;
 	}
