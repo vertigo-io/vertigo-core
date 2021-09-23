@@ -24,12 +24,11 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 
 /**
- * Builder de metric.
+ * The metric builder.
  *
  * @author pchretien
  */
 public final class MetricBuilder implements Builder<Metric> {
-
 	private Instant myMeasureInstant;
 	private String myName;
 	private String myModule;
@@ -91,9 +90,6 @@ public final class MetricBuilder implements Builder<Metric> {
 
 	@Override
 	public Metric build() {
-		if (myMeasureInstant == null) {
-			myMeasureInstant = Instant.now();
-		}
 		return new Metric(
 				myMeasureInstant != null ? myMeasureInstant : Instant.now(),
 				myName,
