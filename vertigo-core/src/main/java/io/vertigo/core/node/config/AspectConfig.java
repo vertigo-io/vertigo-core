@@ -18,7 +18,7 @@
 package io.vertigo.core.node.config;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.component.aop.Aspect;
+import io.vertigo.core.node.component.aspect.Aspect;
 
 /**
  * The AspectConfig class defines an aspect.

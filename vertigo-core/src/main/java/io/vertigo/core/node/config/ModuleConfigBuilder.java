@@ -28,7 +28,7 @@ import io.vertigo.core.node.component.Component;
 import io.vertigo.core.node.component.Connector;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.node.component.amplifier.ProxyMethod;
-import io.vertigo.core.node.component.aop.Aspect;
+import io.vertigo.core.node.component.aspect.Aspect;
 import io.vertigo.core.node.definition.DefinitionProvider;
 import io.vertigo.core.param.Param;
 

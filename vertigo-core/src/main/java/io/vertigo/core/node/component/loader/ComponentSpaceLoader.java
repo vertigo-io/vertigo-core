@@ -32,7 +32,7 @@ import io.vertigo.core.node.component.AopPlugin;
 import io.vertigo.core.node.component.Container;
 import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.amplifier.ProxyMethod;
-import io.vertigo.core.node.component.aop.Aspect;
+import io.vertigo.core.node.component.aspect.Aspect;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.component.di.DIReactor;
 import io.vertigo.core.node.config.AspectConfig;

@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
-import io.vertigo.core.node.component.aop.Aspect;
+import io.vertigo.core.node.component.aspect.Aspect;
 
 /**
  * Create proxy-reference from component's instance.

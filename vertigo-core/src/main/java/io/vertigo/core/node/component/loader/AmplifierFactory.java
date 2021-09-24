@@ -33,8 +33,8 @@ import io.vertigo.core.node.component.Amplifier;
 import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.amplifier.ProxyMethod;
 import io.vertigo.core.node.component.amplifier.ProxyMethodAnnotation;
-import io.vertigo.core.node.component.aop.Aspect;
-import io.vertigo.core.node.component.aop.AspectMethodInvocation;
+import io.vertigo.core.node.component.aspect.Aspect;
+import io.vertigo.core.node.component.aspect.AspectMethodInvocation;
 
 final class AmplifierFactory {
 

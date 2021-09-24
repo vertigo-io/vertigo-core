@@ -30,7 +30,7 @@ import io.vertigo.core.analytics.trace.Tracer;
 import io.vertigo.core.lang.Assertion;
 
 /**
- * A tracer collectes information durint the execution of a process.
+ * A tracer collects information during the execution of a process.
  * @author npiedeloup
  */
 final class TracerImpl implements Tracer, AutoCloseable {

@@ -28,7 +28,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.AopPlugin;
 import io.vertigo.core.node.component.CoreComponent;
-import io.vertigo.core.node.component.aop.Aspect;
+import io.vertigo.core.node.component.aspect.Aspect;
 import io.vertigo.core.util.ClassUtil;
 import javassist.util.proxy.Proxy;
 import javassist.util.proxy.ProxyFactory;

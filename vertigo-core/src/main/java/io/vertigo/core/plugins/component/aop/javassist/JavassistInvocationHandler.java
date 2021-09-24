@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.component.aop.Aspect;
-import io.vertigo.core.node.component.aop.AspectMethodInvocation;
+import io.vertigo.core.node.component.aspect.Aspect;
+import io.vertigo.core.node.component.aspect.AspectMethodInvocation;
 import io.vertigo.core.util.ClassUtil;
 import javassist.util.proxy.MethodHandler;
 
