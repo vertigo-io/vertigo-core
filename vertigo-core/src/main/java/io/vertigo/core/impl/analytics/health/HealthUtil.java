@@ -44,11 +44,11 @@ import io.vertigo.core.util.StringUtil;
  *
  * @author jmforhan, mlaroche
  */
-public final class HealthAnalyticsUtil {
+public final class HealthUtil {
 
 	private static final String PLUGIN_COUNTER_CHAR = "#";// char used in plugins for counting them plugin#1, plugin#2
 
-	private HealthAnalyticsUtil() {
+	private HealthUtil() {
 		//private constructor for util classes
 	}
 
@@ -98,7 +98,7 @@ public final class HealthAnalyticsUtil {
 
 	public static List<HealthCheck> getHealthChecks() {
 		return Node.getNode().getDefinitionSpace().getAll(HealthCheckDefinition.class).stream()
-				.map(HealthAnalyticsUtil::buildHealthCheck)
+				.map(HealthUtil::buildHealthCheck)
 				.collect(Collectors.toList());
 	}
 
@@ -150,7 +150,8 @@ public final class HealthAnalyticsUtil {
 			final int nbRed) {
 		if (nbRed > 0) {
 			return HealthStatus.RED;
-		} else if (nbYellow > 0) {
+		}
+		if (nbYellow > 0) {
 			return HealthStatus.YELLOW;
 		}
 		return HealthStatus.GREEN;

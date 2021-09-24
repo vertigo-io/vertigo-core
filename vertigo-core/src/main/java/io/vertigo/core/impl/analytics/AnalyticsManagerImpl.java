@@ -33,8 +33,8 @@ import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.analytics.trace.Tracer;
 import io.vertigo.core.daemon.DaemonScheduled;
-import io.vertigo.core.impl.analytics.health.HealthAnalyticsUtil;
-import io.vertigo.core.impl.analytics.metric.MetricAnalyticsUtil;
+import io.vertigo.core.impl.analytics.health.HealthUtil;
+import io.vertigo.core.impl.analytics.metric.MetricUtil;
 import io.vertigo.core.impl.analytics.trace.TracerProvider;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
@@ -80,9 +80,9 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 				.stream()
 				.flatMap(id -> Stream.concat(
 						//health
-						HealthAnalyticsUtil.createHealthCheckDefinitions(id, Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream(),
+						HealthUtil.createHealthCheckDefinitions(id, Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream(),
 						//metrics
-						MetricAnalyticsUtil.createMetricDefinitions(id, Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream()))
+						MetricUtil.createMetricDefinitions(id, Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream()))
 				.collect(Collectors.toList());
 	}
 
@@ -139,12 +139,12 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 
 	@Override
 	public List<HealthCheck> getHealthChecks() {
-		return HealthAnalyticsUtil.getHealthChecks();
+		return HealthUtil.getHealthChecks();
 	}
 
 	@Override
 	public HealthStatus aggregate(final List<HealthCheck> healthChecks) {
-		return HealthAnalyticsUtil.aggregate(healthChecks);
+		return HealthUtil.aggregate(healthChecks);
 	}
 
 	/*----------------- Metrics ------------------*/
@@ -163,7 +163,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 
 	@Override
 	public List<Metric> getMetrics() {
-		return MetricAnalyticsUtil.getMetrics();
+		return MetricUtil.getMetrics();
 	}
 
 }

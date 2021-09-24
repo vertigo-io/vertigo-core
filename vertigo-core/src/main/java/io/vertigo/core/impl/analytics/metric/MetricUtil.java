@@ -38,11 +38,11 @@ import io.vertigo.core.util.StringUtil;
  *
  * @author pchretien
  */
-public final class MetricAnalyticsUtil {
+public final class MetricUtil {
 
 	private static final String pluginCounterChar = "#";// char used in plugins for counting them plugin#1, plugin#2
 
-	private MetricAnalyticsUtil() {
+	private MetricUtil() {
 		//private
 	}
 
