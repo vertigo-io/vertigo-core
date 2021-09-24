@@ -34,7 +34,7 @@ import io.vertigo.core.analytics.health.HealthStatus;
 import io.vertigo.core.analytics.health.definitions.HealthCheckDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
-import io.vertigo.core.node.component.AopPlugin;
+import io.vertigo.core.node.component.AspectPlugin;
 import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
@@ -59,7 +59,7 @@ public final class HealthUtil {
 	 * @param aopPlugin Aop plugin use for unwrap
 	 * @return List of HealthCheckDefinition
 	 */
-	public static List<HealthCheckDefinition> createHealthCheckDefinitions(final String componentId, final CoreComponent component, final AopPlugin aopPlugin) {
+	public static List<HealthCheckDefinition> createHealthCheckDefinitions(final String componentId, final CoreComponent component, final AspectPlugin aopPlugin) {
 		Assertion.check().isNotNull(component);
 
 		//-- we construct a map of feature by componentId

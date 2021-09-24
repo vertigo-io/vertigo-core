@@ -15,15 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.util;
+package io.vertigo.core.lang;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import io.vertigo.core.lang.WrappedException;
 
 /**
  * Fichier temporaire supprimé automatiquement après utilisation.

@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.core.node.component.AopPlugin;
+import io.vertigo.core.node.component.AspectPlugin;
 import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.aspect.Aspect;
 import io.vertigo.core.util.ClassUtil;
@@ -37,7 +37,7 @@ import javassist.util.proxy.ProxyFactory;
  * This class implements the aspects using the javassist library.
  * @author pchretien
  */
-public final class JavassistAopPlugin implements AopPlugin {
+public final class JavassistAopPlugin implements AspectPlugin {
 
 	private static void setProxyOnlyPublicMethods() {
 		ProxyFactory.onlyPublicMethods = Boolean.TRUE;

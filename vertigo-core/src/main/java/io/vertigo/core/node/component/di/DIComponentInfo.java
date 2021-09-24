@@ -25,8 +25,8 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.ListBuilder;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.core.util.ListBuilder;
 
 /**
  * Modèle d'un composant.

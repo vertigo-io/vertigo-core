@@ -20,7 +20,7 @@ package io.vertigo.core.node.config;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.ListBuilder;
+import io.vertigo.core.lang.ListBuilder;
 
 /**
  * Configuration of a module.

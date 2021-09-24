@@ -31,10 +31,10 @@ import io.vertigo.core.util.StringUtil;
  * Si le libelle n'est pas trouvé, l'affichage est
  * @author npiedeloup, pchretien
  */
-public final class MessageText implements Serializable {
+public final class LocaleMessageText implements Serializable {
 	private static final long serialVersionUID = 4723023230514051954L;
 	/**Clé du libellé dans le dictionnaire. */
-	private final MessageKey key;
+	private final LocaleMessageKey key;
 	/**Libellé non formatté. */
 	private final String defaultMsg;
 	/**paramètres permettant de formatter le libellé. */
@@ -48,7 +48,7 @@ public final class MessageText implements Serializable {
 	 * @param key Clé de la ressource
 	 * @param params paramètres de la ressource
 	 */
-	private MessageText(final String defaultMsg, final MessageKey key, final Serializable... params) {
+	private LocaleMessageText(final String defaultMsg, final LocaleMessageKey key, final Serializable... params) {
 		Assertion.check()
 				.isNotNull(params)
 				.isTrue(defaultMsg != null || key != null, "key or msg must be defined");
@@ -63,10 +63,10 @@ public final class MessageText implements Serializable {
 	 * @param key Clé de la ressource
 	 * @return the messageText
 	 */
-	public static MessageText of(final MessageKey key, final Serializable... params) {
+	public static LocaleMessageText of(final LocaleMessageKey key, final Serializable... params) {
 		Assertion.check().isNotNull(key, "the message key is required");
 		//---
-		return new MessageText(null, key, params);
+		return new LocaleMessageText(null, key, params);
 	}
 
 	/**
@@ -74,10 +74,10 @@ public final class MessageText implements Serializable {
 	 * @param msg Message par défaut (non formatté) de la ressource
 	 * @return the messageText
 	 */
-	public static MessageText of(final String msg, final Serializable... params) {
+	public static LocaleMessageText of(final String msg, final Serializable... params) {
 		Assertion.check().isNotBlank(msg, "the message is required");
 		//---
-		return new MessageText(msg, null, params);
+		return new LocaleMessageText(msg, null, params);
 	}
 
 	/**
@@ -85,12 +85,12 @@ public final class MessageText implements Serializable {
 	 * @param defaultMsg Message par défaut (non formatté) de la ressource
 	 * @return the messageText
 	 */
-	public static MessageText ofDefaultMsg(final String defaultMsg, final MessageKey key, final Serializable... params) {
+	public static LocaleMessageText ofDefaultMsg(final String defaultMsg, final LocaleMessageKey key, final Serializable... params) {
 		Assertion.check()
 				.isNotBlank(defaultMsg, "the default message is required")
 				.isNotNull(key, "the message key is required");
 		//---
-		return new MessageText(defaultMsg, key, params);
+		return new LocaleMessageText(defaultMsg, key, params);
 	}
 
 	/**

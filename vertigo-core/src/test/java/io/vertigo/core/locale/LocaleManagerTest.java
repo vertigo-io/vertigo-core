@@ -65,7 +65,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testDefaultDisplay() {
-		final MessageText helloTxt = MessageText.of(CityGuide.HELLO);
+		final LocaleMessageText helloTxt = LocaleMessageText.of(CityGuide.HELLO);
 		assertEquals("bonjour", helloTxt.getDisplay());
 	}
 
@@ -74,7 +74,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 		//On surcharge le dictionnaire city-guide avec un dictionnaire partiel
 		localeManager.override("io.vertigo.core.locale.data.popular-guide", CityGuide.values());
 
-		final MessageText helloTxt = MessageText.of(CityGuide.HELLO);
+		final LocaleMessageText helloTxt = LocaleMessageText.of(CityGuide.HELLO);
 		assertEquals("salut", helloTxt.getDisplay());
 	}
 
@@ -94,7 +94,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 	public void testLocaleProvider() {
 		localeManager.registerLocaleSupplier(() -> Locale.GERMANY);
 		assertEquals(Locale.GERMANY, localeManager.getCurrentLocale());
-		final MessageText helloTxt = MessageText.of(CityGuide.HELLO);
+		final LocaleMessageText helloTxt = LocaleMessageText.of(CityGuide.HELLO);
 		assertEquals("guten tag", helloTxt.getDisplay());
 
 	}
@@ -110,7 +110,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 	public void testJapanese() {
 		localeManager.registerLocaleSupplier(() -> Locale.JAPANESE);
 		//On vérifie que l'on ne connait pas le japonais et que l'on retombe sur la langue par défaut
-		final MessageText helloTxt = MessageText.of(CityGuide.HELLO);
+		final LocaleMessageText helloTxt = LocaleMessageText.of(CityGuide.HELLO);
 		assertEquals("bonjour", helloTxt.getDisplay());
 	}
 
@@ -119,7 +119,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 		/*
 		 * On teste que l'on accède au dictionnaire par une clé sous forme de chaine de caractères.
 		 */
-		final MessageKey key = new MessageKey() {
+		final LocaleMessageKey key = new LocaleMessageKey() {
 			private static final long serialVersionUID = 4654362997955319282L;
 
 			@Override
@@ -134,7 +134,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testDefaultDynamicMessageKey() {
-		final MessageKey key = new MessageKey() {
+		final LocaleMessageKey key = new LocaleMessageKey() {
 			private static final long serialVersionUID = 4654362997955319282L;
 
 			@Override
@@ -142,13 +142,13 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 				return "UNKNOWN KEY";
 			}
 		};
-		final MessageText helloTxt = MessageText.ofDefaultMsg("bonjour par défaut", key);
+		final LocaleMessageText helloTxt = LocaleMessageText.ofDefaultMsg("bonjour par défaut", key);
 		assertEquals("bonjour par défaut", helloTxt.getDisplay());
 	}
 
 	@Test
 	public void testUnknownDynamicMessageKey() {
-		final MessageKey key = new MessageKey() {
+		final LocaleMessageKey key = new LocaleMessageKey() {
 			private static final long serialVersionUID = 4654362997955319282L;
 
 			@Override
@@ -156,13 +156,13 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 				return "UNKNOWN KEY";
 			}
 		};
-		final MessageText helloTxt = MessageText.of(key);
+		final LocaleMessageText helloTxt = LocaleMessageText.of(key);
 		assertEquals("<<fr:UNKNOWN KEY>>", helloTxt.getDisplay());
 	}
 
 	@Test
 	public void testMessageTextParams() {
-		final MessageKey key = new MessageKey() {
+		final LocaleMessageKey key = new LocaleMessageKey() {
 			private static final long serialVersionUID = 4654362997955319282L;
 
 			@Override
@@ -171,19 +171,19 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 			}
 		};
 		final Serializable param = null;
-		MessageText helloTxt = MessageText.of(key);
+		LocaleMessageText helloTxt = LocaleMessageText.of(key);
 		assertEquals("<<fr:UNKNOWN KEY>>", helloTxt.getDisplay());
 
-		helloTxt = MessageText.of(key, param);
+		helloTxt = LocaleMessageText.of(key, param);
 		assertEquals("<<fr:UNKNOWN KEY[null]>>", helloTxt.getDisplay());
 
 		//		helloTxt = new MessageText(key, null);
 		//		assertEquals("<<fr:UNKNOWN KEY[null]>>", helloTxt.getDisplay());
 
-		helloTxt = MessageText.of(key, null, null);
+		helloTxt = LocaleMessageText.of(key, null, null);
 		assertEquals("<<fr:UNKNOWN KEY[null, null]>>", helloTxt.getDisplay());
 
-		helloTxt = MessageText.of("default");
+		helloTxt = LocaleMessageText.of("default");
 		assertEquals("default", helloTxt.getDisplay());
 
 		//		helloTxt = new MessageText("default", null, null);

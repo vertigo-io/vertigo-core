@@ -19,8 +19,8 @@ package io.vertigo.core.lang;
 
 import java.io.Serializable;
 
-import io.vertigo.core.locale.MessageKey;
-import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.locale.LocaleMessageKey;
+import io.vertigo.core.locale.LocaleMessageText;
 
 /**
  * Root Class for all user exceptions.
@@ -32,13 +32,13 @@ import io.vertigo.core.locale.MessageText;
  */
 public class VUserException extends RuntimeException {
 	private static final long serialVersionUID = 33066445931128456L;
-	private final MessageText messageText;
+	private final LocaleMessageText messageText;
 
 	/**
 	 * Constructor.
 	 * @param messageText Message de l'exception
 	 */
-	public VUserException(final MessageText messageText) {
+	public VUserException(final LocaleMessageText messageText) {
 		//Attention il convient d'utiliser une méthode qui ne remonte d'exception.
 		super(messageText.getDisplay());
 		// On rerentre sur l'API des Exception en passant le message.
@@ -51,7 +51,7 @@ public class VUserException extends RuntimeException {
 	 * @param params  list of params (optional)
 	 */
 	public VUserException(final String defaultMsg, final Serializable... params) {
-		this((MessageText.of(defaultMsg, params)));
+		this((LocaleMessageText.of(defaultMsg, params)));
 	}
 
 	/**
@@ -59,15 +59,15 @@ public class VUserException extends RuntimeException {
 	 * @param key  the msg key (required)
 	 * @param params  list of params (optional)
 	 */
-	public VUserException(final MessageKey key, final Serializable... params) {
-		this((MessageText.of(key, params)));
+	public VUserException(final LocaleMessageKey key, final Serializable... params) {
+		this((LocaleMessageText.of(key, params)));
 	}
 
 	/**
 	 * Gestion des messages d'erreur externalisés.
 	 * @return messageText.
 	 */
-	public final MessageText getMessageText() {
+	public final LocaleMessageText getMessageText() {
 		return messageText;
 	}
 }

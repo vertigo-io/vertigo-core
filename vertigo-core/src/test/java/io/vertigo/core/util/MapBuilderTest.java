@@ -25,6 +25,8 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.core.lang.MapBuilder;
+
 public final class MapBuilderTest {
 	@Test
 	public void testMap() {

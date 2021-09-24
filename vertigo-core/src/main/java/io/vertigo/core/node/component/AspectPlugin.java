@@ -29,7 +29,7 @@ import io.vertigo.core.node.component.aspect.Aspect;
  *
  * @author pchretien
  */
-public interface AopPlugin extends Plugin {
+public interface AspectPlugin extends Plugin {
 
 	/**
 	 * Create a proxy-reference.

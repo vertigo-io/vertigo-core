@@ -22,8 +22,8 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.JsonExclude;
-import io.vertigo.core.node.component.AopPlugin;
-import io.vertigo.core.util.ListBuilder;
+import io.vertigo.core.lang.ListBuilder;
+import io.vertigo.core.node.component.AspectPlugin;
 
 /**
  * This Class defines the properties of ComponentSpace and DefinitionSpace.
@@ -34,7 +34,7 @@ public final class BootConfig {
 	private final Optional<LogConfig> logConfigOpt;
 	private final boolean isVerbose;
 	@JsonExclude
-	private final AopPlugin aopPlugin;
+	private final AspectPlugin aopPlugin;
 
 	private final List<ComponentConfig> componentConfigs;
 	private final List<PluginConfig> pluginConfigs;
@@ -48,7 +48,7 @@ public final class BootConfig {
 			final Optional<LogConfig> logConfigOpt,
 			final List<ComponentConfig> componentConfigs,
 			final List<PluginConfig> pluginConfigs,
-			final AopPlugin aopPlugin,
+			final AspectPlugin aopPlugin,
 			final boolean isVerbose) {
 		Assertion.check()
 				.isNotNull(logConfigOpt)
@@ -98,7 +98,7 @@ public final class BootConfig {
 	/**
 	 * @return AopEngine
 	 */
-	public AopPlugin aopPlugin() {
+	public AspectPlugin aopPlugin() {
 		return aopPlugin;
 	}
 }

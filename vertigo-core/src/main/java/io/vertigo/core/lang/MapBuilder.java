@@ -15,13 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.util;
+package io.vertigo.core.lang;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Builder;
 
 /**
  * The MapBuilder class allows to build a map.

@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.AbstractTestCaseJU5;
-import io.vertigo.core.node.component.AopPlugin;
+import io.vertigo.core.node.component.AspectPlugin;
 import io.vertigo.core.node.component.aop.data.MyException;
 import io.vertigo.core.node.component.aop.data.aspects.OneMoreAspect;
 import io.vertigo.core.node.component.aop.data.aspects.TenMoreAspect;
@@ -94,7 +94,7 @@ public final class AspectTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testUnwrapp() {
-		final AopPlugin aopPlugin = getApp().getNodeConfig().bootConfig().aopPlugin();
+		final AspectPlugin aopPlugin = getApp().getNodeConfig().bootConfig().aopPlugin();
 		final F f = getApp().getComponentSpace().resolve(F.class);
 		// Il y a des aspects sur la classe donc elle doit être dewrappable
 		assertNotEquals(F.class.getName(), f.getClass().getName());

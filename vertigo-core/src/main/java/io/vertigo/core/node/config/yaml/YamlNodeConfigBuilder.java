@@ -34,7 +34,9 @@ import org.yaml.snakeyaml.constructor.Constructor;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
+import io.vertigo.core.lang.Selector;
 import io.vertigo.core.lang.Tuple;
+import io.vertigo.core.lang.Selector.MethodConditions;
 import io.vertigo.core.node.component.ComponentInitializer;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.node.config.BootConfig;
@@ -48,8 +50,6 @@ import io.vertigo.core.node.config.yaml.YamlAppConfig.YamlModuleConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.FileUtil;
-import io.vertigo.core.util.Selector;
-import io.vertigo.core.util.Selector.MethodConditions;
 
 /**
  * Builds the NodeConfig for the current node based on the provided YamlAppConfig.

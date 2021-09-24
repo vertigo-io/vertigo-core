@@ -26,12 +26,12 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Selector;
+import io.vertigo.core.lang.Selector.ClassConditions;
 import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.node.component.amplifier.ProxyMethodAnnotation;
 import io.vertigo.core.node.config.ModuleConfigBuilder;
-import io.vertigo.core.util.Selector;
-import io.vertigo.core.util.Selector.ClassConditions;
 
 /**
  * Tool for registering components in an node based on discovery in a package tree.

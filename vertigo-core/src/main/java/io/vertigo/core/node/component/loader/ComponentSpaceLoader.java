@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.component.Amplifier;
-import io.vertigo.core.node.component.AopPlugin;
+import io.vertigo.core.node.component.AspectPlugin;
 import io.vertigo.core.node.component.Container;
 import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.amplifier.ProxyMethod;
@@ -46,7 +46,7 @@ import io.vertigo.core.param.ParamManager;
  * @author pchretien
  */
 public final class ComponentSpaceLoader {
-	private final AopPlugin aopPlugin;
+	private final AspectPlugin aopPlugin;
 	/** Aspects.*/
 	private final List<Aspect> aspects = new ArrayList<>();
 
@@ -58,7 +58,7 @@ public final class ComponentSpaceLoader {
 	* Constructor.
 	* @param aopPlugin the plugin which is reponsible for the aop strategy
 	*/
-	private ComponentSpaceLoader(final ComponentSpaceWritable componentSpaceWritable, final AopPlugin aopPlugin) {
+	private ComponentSpaceLoader(final ComponentSpaceWritable componentSpaceWritable, final AspectPlugin aopPlugin) {
 		Assertion.check()
 				.isNotNull(componentSpaceWritable)
 				.isNotNull(aopPlugin);
@@ -67,7 +67,7 @@ public final class ComponentSpaceLoader {
 		this.aopPlugin = aopPlugin;
 	}
 
-	public static ComponentSpaceLoader startLoading(final ComponentSpaceWritable componentSpaceWritable, final AopPlugin aopPlugin) {
+	public static ComponentSpaceLoader startLoading(final ComponentSpaceWritable componentSpaceWritable, final AspectPlugin aopPlugin) {
 		return new ComponentSpaceLoader(componentSpaceWritable, aopPlugin);
 	}
 

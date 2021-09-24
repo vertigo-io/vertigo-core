@@ -38,7 +38,7 @@ import io.vertigo.core.impl.analytics.metric.MetricUtil;
 import io.vertigo.core.impl.analytics.trace.TracerProvider;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
-import io.vertigo.core.node.component.AopPlugin;
+import io.vertigo.core.node.component.AspectPlugin;
 import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
@@ -75,7 +75,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		// here all
 		// we need to unwrap the component to scan the real class and not the enhanced version
-		final AopPlugin aopPlugin = Node.getNode().getNodeConfig().bootConfig().aopPlugin();
+		final AspectPlugin aopPlugin = Node.getNode().getNodeConfig().bootConfig().aopPlugin();
 		return Node.getNode().getComponentSpace().keySet()
 				.stream()
 				.flatMap(id -> Stream.concat(

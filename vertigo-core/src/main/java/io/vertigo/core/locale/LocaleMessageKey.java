@@ -24,7 +24,7 @@ import java.io.Serializable;
 *
 * @author  pchretien, npiedeloup
 */
-public interface MessageKey extends Serializable {
+public interface LocaleMessageKey extends Serializable {
 	/**
 	 * @return nom de la clé.
 	 */

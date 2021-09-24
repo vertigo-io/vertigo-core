@@ -17,14 +17,14 @@
  */
 package io.vertigo.core.locale.data;
 
-import io.vertigo.core.locale.MessageKey;
+import io.vertigo.core.locale.LocaleMessageKey;
 
 /**
  * Dictionnaire des ressources.
  *
  * @author  pchretien
 */
-public enum CityGuide implements MessageKey {
+public enum CityGuide implements LocaleMessageKey {
 	/** Bonjour. */
 	HELLO,
 
