@@ -37,7 +37,7 @@ import javassist.util.proxy.ProxyFactory;
  * This class implements the aspects using the javassist library.
  * @author pchretien
  */
-public final class JavassistAopPlugin implements AspectPlugin {
+public final class JavassistAspectPlugin implements AspectPlugin {
 
 	private static void setProxyOnlyPublicMethods() {
 		ProxyFactory.onlyPublicMethods = Boolean.TRUE;
