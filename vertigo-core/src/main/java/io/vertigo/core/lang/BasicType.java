@@ -47,8 +47,8 @@ public enum BasicType {
 	BigDecimal(java.math.BigDecimal.class),
 	/** Long. */
 	Long(Long.class),
-	/** Bytes. */
-	Bytes(DataStream.class);
+	/** DataStream. */
+	DataStream(DataStream.class);
 
 	/**
 	 * The java class wrapped by this basic type.
@@ -127,7 +127,7 @@ public enum BasicType {
 		} else if (Long.class.equals(type) || long.class.equals(type)) {
 			basicType = BasicType.Long;
 		} else if (DataStream.class.equals(type)) {
-			basicType = BasicType.Bytes;
+			basicType = BasicType.DataStream;
 		} else {
 			//not a basicType
 			basicType = null;
