@@ -25,9 +25,9 @@ import java.util.Optional;
  * Basic types.
  * This class defines ALL the basic types, used by Vertigo.
  * This set is limited to only a few types.
- * 
+ *
  * You can extend this set with the basicTypeAdapter.
- * 
+ *
  * @author  pchretien
  */
 public enum BasicType {
@@ -47,8 +47,8 @@ public enum BasicType {
 	BigDecimal(java.math.BigDecimal.class),
 	/** Long. */
 	Long(Long.class),
-	/** DataStream. */
-	DataStream(DataStream.class);
+	/** Bytes. */
+	Bytes(DataStream.class);
 
 	/**
 	 * The java class wrapped by this basic type.
@@ -127,7 +127,7 @@ public enum BasicType {
 		} else if (Long.class.equals(type) || long.class.equals(type)) {
 			basicType = BasicType.Long;
 		} else if (DataStream.class.equals(type)) {
-			basicType = BasicType.DataStream;
+			basicType = BasicType.Bytes;
 		} else {
 			//not a basicType
 			basicType = null;
