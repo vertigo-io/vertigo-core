@@ -195,7 +195,7 @@ public final class ComponentSpaceLoader {
 
 	private static AmplifierMethod createAmplifierMethod(final Container container, final AmplifierMethodConfig proxyMethodConfig) {
 		// création de l'instance du composant
-		final AmplifierMethod amplifierMethod = DIInjector.newInstance(proxyMethodConfig.proxyMethodClass(), container);
+		final AmplifierMethod amplifierMethod = DIInjector.newInstance(proxyMethodConfig.amplifierMethodClass(), container);
 		//---
 		Assertion.check()
 				.isNotNull(amplifierMethod.getAnnotationType());

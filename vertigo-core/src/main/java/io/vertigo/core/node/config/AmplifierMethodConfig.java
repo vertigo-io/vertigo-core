@@ -28,12 +28,13 @@ import io.vertigo.core.node.component.amplifier.AmplifierMethod;
  *  - a proxy method used to build a dynamic the proxy
  *
  * @author pchretien
- * 
+ *
  * @papram proxyMethodClass the proxy method class
  */
-public record AmplifierMethodConfig(Class<? extends AmplifierMethod> proxyMethodClass) {
+public record AmplifierMethodConfig(
+		Class<? extends AmplifierMethod> amplifierMethodClass) {
 
 	public AmplifierMethodConfig {
-		Assertion.check().isNotNull(proxyMethodClass);
+		Assertion.check().isNotNull(amplifierMethodClass);
 	}
 }
