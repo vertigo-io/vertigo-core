@@ -31,7 +31,7 @@ import io.vertigo.core.node.component.Amplifier;
 import io.vertigo.core.node.component.AspectPlugin;
 import io.vertigo.core.node.component.Container;
 import io.vertigo.core.node.component.CoreComponent;
-import io.vertigo.core.node.component.amplifier.ProxyMethod;
+import io.vertigo.core.node.component.amplifier.AmplifierMethod;
 import io.vertigo.core.node.component.aspect.Aspect;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.component.di.DIReactor;
@@ -51,7 +51,7 @@ public final class ComponentSpaceLoader {
 	private final List<Aspect> aspects = new ArrayList<>();
 
 	/** Proxies.*/
-	private final List<ProxyMethod> proxyMethods = new ArrayList<>();
+	private final List<AmplifierMethod> proxyMethods = new ArrayList<>();
 	private final ComponentSpaceWritable componentSpaceWritable;
 
 	/**
@@ -193,9 +193,9 @@ public final class ComponentSpaceLoader {
 		return aspect;
 	}
 
-	private static ProxyMethod createProxyMethod(final Container container, final ProxyMethodConfig proxyMethodConfig) {
+	private static AmplifierMethod createProxyMethod(final Container container, final ProxyMethodConfig proxyMethodConfig) {
 		// création de l'instance du composant
-		final ProxyMethod proxyMethod = DIInjector.newInstance(proxyMethodConfig.proxyMethodClass(), container);
+		final AmplifierMethod proxyMethod = DIInjector.newInstance(proxyMethodConfig.proxyMethodClass(), container);
 		//---
 		Assertion.check()
 				.isNotNull(proxyMethod.getAnnotationType());
@@ -213,7 +213,7 @@ public final class ComponentSpaceLoader {
 		aspects.add(aspect);
 	}
 
-	private void registerProxyMethod(final ProxyMethod proxyMethod) {
+	private void registerProxyMethod(final AmplifierMethod proxyMethod) {
 		Assertion.check()
 				.isNotNull(proxyMethod)
 				.isTrue(proxyMethods.stream().noneMatch(a -> a.getClass().equals(proxyMethod.getClass())),

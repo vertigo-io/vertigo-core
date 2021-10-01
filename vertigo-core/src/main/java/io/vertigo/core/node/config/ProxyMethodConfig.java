@@ -18,7 +18,7 @@
 package io.vertigo.core.node.config;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.component.amplifier.ProxyMethod;
+import io.vertigo.core.node.component.amplifier.AmplifierMethod;
 
 /**
  * The ProxyMethodConfig class defines the way to create a new proxy on an interface using small proxy methods.
@@ -31,7 +31,7 @@ import io.vertigo.core.node.component.amplifier.ProxyMethod;
  * 
  * @papram proxyMethodClass the proxy method class
  */
-public record ProxyMethodConfig(Class<? extends ProxyMethod> proxyMethodClass) {
+public record ProxyMethodConfig(Class<? extends AmplifierMethod> proxyMethodClass) {
 
 	public ProxyMethodConfig {
 		Assertion.check().isNotNull(proxyMethodClass);

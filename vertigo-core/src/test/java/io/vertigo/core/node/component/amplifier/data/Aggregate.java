@@ -23,7 +23,6 @@ import io.vertigo.core.node.component.Amplifier;
  * Example of a component defined as a proxy.
  * each method is marked with a specific annotation that explains what to do.
  * @author pchretien
- *
  */
 public interface Aggregate extends Amplifier {
 

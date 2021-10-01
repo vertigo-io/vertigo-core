@@ -23,13 +23,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks a method to be proxied by a simple annotation
+ * Marks a method to be a client by a simple annotation
  * This method can only be used on method
- * and must be used on each method of a proxy.
  * @author pchretien
  */
 @Target({ ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ProxyMethodAnnotation {
+public @interface AmplifierMethodAnnotation {
 	//
 }

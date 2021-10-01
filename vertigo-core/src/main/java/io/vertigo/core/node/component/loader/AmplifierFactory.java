@@ -31,8 +31,8 @@ import java.util.stream.Stream;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Amplifier;
 import io.vertigo.core.node.component.CoreComponent;
-import io.vertigo.core.node.component.amplifier.ProxyMethod;
-import io.vertigo.core.node.component.amplifier.ProxyMethodAnnotation;
+import io.vertigo.core.node.component.amplifier.AmplifierMethod;
+import io.vertigo.core.node.component.amplifier.AmplifierMethodAnnotation;
 import io.vertigo.core.node.component.aspect.Aspect;
 import io.vertigo.core.node.component.aspect.AspectMethodInvocation;
 
@@ -44,7 +44,7 @@ final class AmplifierFactory {
 
 	static <C extends Amplifier> C createAmplifier(
 			final Class<C> intf,
-			final List<ProxyMethod> proxyMethods,
+			final List<AmplifierMethod> proxyMethods,
 			final Map<Method, List<Aspect>> joinPoints) {
 		Assertion.check()
 				.isNotNull(intf)
@@ -60,12 +60,12 @@ final class AmplifierFactory {
 	}
 
 	private static final class MyInvocationHandler implements InvocationHandler {
-		private final Map<Method, ProxyMethod> proxyMethodsByMethod;
+		private final Map<Method, AmplifierMethod> proxyMethodsByMethod;
 		private final Map<Method, List<Aspect>> aspectsByMethod;
 
 		MyInvocationHandler(
 				final Class<? extends CoreComponent> intf,
-				final List<ProxyMethod> proxyMethods,
+				final List<AmplifierMethod> proxyMethods,
 				final Map<Method, List<Aspect>> aspectsByMethod) {
 			Assertion.check()
 					.isNotNull(proxyMethods);
@@ -92,13 +92,13 @@ final class AmplifierFactory {
 		}
 	}
 
-	private static ProxyMethod findProxyMethod(
+	private static AmplifierMethod findProxyMethod(
 			final Method method,
-			final List<ProxyMethod> proxyMethods) {
+			final List<AmplifierMethod> proxyMethods) {
 		final Annotation annotation = Stream.concat(
 				Arrays.stream(method.getAnnotations()),
 				Arrays.stream(method.getDeclaringClass().getAnnotations()))
-				.filter(a -> a.annotationType().isAnnotationPresent(ProxyMethodAnnotation.class))
+				.filter(a -> a.annotationType().isAnnotationPresent(AmplifierMethodAnnotation.class))
 				.findFirst()
 				.orElseThrow(() -> new IllegalStateException("No way to find a proxy annotation on method : " + method));
 
@@ -113,20 +113,20 @@ final class AmplifierFactory {
 		private final List<Aspect> aspects;
 		private final Method method;
 		private int index;
-		private final ProxyMethod proxyMethod;
+		private final AmplifierMethod proxyMethod;
 
 		private MyMethodInvocation(
 				final Method method,
 				final List<Aspect> aspects,
-				final ProxyMethod proxyMethod) {
+				final AmplifierMethod amplifierMethod) {
 			Assertion.check()
 					.isNotNull(method)
 					.isNotNull(aspects)
-					.isNotNull(proxyMethod);
+					.isNotNull(amplifierMethod);
 			//-----
 			this.method = method;
 			this.aspects = aspects;
-			this.proxyMethod = proxyMethod;
+			this.proxyMethod = amplifierMethod;
 		}
 
 		/** {@inheritDoc} */

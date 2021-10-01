@@ -27,7 +27,7 @@ import io.vertigo.core.node.component.Amplifier;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.core.node.component.Connector;
 import io.vertigo.core.node.component.Plugin;
-import io.vertigo.core.node.component.amplifier.ProxyMethod;
+import io.vertigo.core.node.component.amplifier.AmplifierMethod;
 import io.vertigo.core.node.component.aspect.Aspect;
 import io.vertigo.core.node.definition.DefinitionProvider;
 import io.vertigo.core.param.Param;
@@ -80,7 +80,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @param proxyMethodClass the proxy method class
 	 * @return this builder
 	 */
-	public ModuleConfigBuilder addProxyMethod(final Class<? extends ProxyMethod> proxyMethodClass) {
+	public ModuleConfigBuilder addProxyMethod(final Class<? extends AmplifierMethod> proxyMethodClass) {
 		myProxyMethodConfigs.add(new ProxyMethodConfig(proxyMethodClass));
 		return this;
 	}

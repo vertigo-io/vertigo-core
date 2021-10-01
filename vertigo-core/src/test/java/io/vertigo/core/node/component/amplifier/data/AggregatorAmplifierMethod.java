@@ -21,9 +21,9 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-import io.vertigo.core.node.component.amplifier.ProxyMethod;
+import io.vertigo.core.node.component.amplifier.AmplifierMethod;
 
-public final class AggregatorProxyMethod implements ProxyMethod {
+public final class AggregatorAmplifierMethod implements AmplifierMethod {
 
 	@Override
 	public Class<AggregatorAnnotation> getAnnotationType() {

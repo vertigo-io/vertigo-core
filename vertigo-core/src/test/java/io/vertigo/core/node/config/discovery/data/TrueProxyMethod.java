@@ -19,9 +19,9 @@ package io.vertigo.core.node.config.discovery.data;
 
 import java.lang.reflect.Method;
 
-import io.vertigo.core.node.component.amplifier.ProxyMethod;
+import io.vertigo.core.node.component.amplifier.AmplifierMethod;
 
-public final class TrueProxyMethod implements ProxyMethod {
+public final class TrueProxyMethod implements AmplifierMethod {
 
 	@Override
 	public Class<TrueProxyAnnotation> getAnnotationType() {

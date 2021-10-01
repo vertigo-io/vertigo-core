@@ -30,7 +30,7 @@ import io.vertigo.core.lang.Selector;
 import io.vertigo.core.lang.Selector.ClassConditions;
 import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.Plugin;
-import io.vertigo.core.node.component.amplifier.ProxyMethodAnnotation;
+import io.vertigo.core.node.component.amplifier.AmplifierMethodAnnotation;
 import io.vertigo.core.node.config.ModuleConfigBuilder;
 
 /**
@@ -80,18 +80,18 @@ final class ComponentDiscovery {
 				.filterClasses(ClassConditions.subTypeOf(Plugin.class).negate())
 				.findClasses();
 
-		final Predicate<Method> proxyMethodPredicate = method -> Stream.of(method.getAnnotations())
-				.anyMatch(annotation -> ClassConditions.annotatedWith(ProxyMethodAnnotation.class).test(annotation.annotationType()));
+		final Predicate<Method> amplifierMethodPredicate = method -> Stream.of(method.getAnnotations())
+				.anyMatch(annotation -> ClassConditions.annotatedWith(AmplifierMethodAnnotation.class).test(annotation.annotationType()));
 
 		final Collection<Class> proxyClasses = Selector
 				.from(allApiClasses)
 				.filterClasses(clazz -> clazz.getDeclaredMethods().length != 0)// to be a proxy you need to have at least one method
-				.filterMethods(proxyMethodPredicate)
+				.filterMethods(amplifierMethodPredicate)
 				.findClasses();
 
 		final Collection<Class> apiClasses = Selector
 				.from(allApiClasses)
-				.filterMethods(proxyMethodPredicate.negate())
+				.filterMethods(amplifierMethodPredicate.negate())
 				.findClasses();
 
 		//Impl

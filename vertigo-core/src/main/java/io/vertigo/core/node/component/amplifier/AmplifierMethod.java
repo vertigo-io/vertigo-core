@@ -21,11 +21,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 /**
- * Marks a method to be proxied a simple annotation
+ * Transforms a method to a parameterized client by a simple annotation
  *
  * @author pchretien
  */
-public interface ProxyMethod {
+public interface AmplifierMethod {
 	/**
 	 * Executes the methods with args as a function
 	 * @param method the method
