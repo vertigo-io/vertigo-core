@@ -45,7 +45,7 @@ public final class DiscoveryTest extends AbstractTestCaseJU5 {
 						.verbose()
 						.build())
 				.addModule(ModuleConfig.builder("proxyMethod")
-						.addProxyMethod(TrueProxyMethod.class)
+						.addAmplifierMethod(TrueProxyMethod.class)
 						.build())
 				.addModule(new TestModuleDiscoveryFeatures().build())
 				.build();

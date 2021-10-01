@@ -38,7 +38,7 @@ import io.vertigo.core.node.component.di.DIReactor;
 import io.vertigo.core.node.config.AspectConfig;
 import io.vertigo.core.node.config.CoreComponentConfig;
 import io.vertigo.core.node.config.ModuleConfig;
-import io.vertigo.core.node.config.ProxyMethodConfig;
+import io.vertigo.core.node.config.AmplifierMethodConfig;
 import io.vertigo.core.param.ParamManager;
 
 /**
@@ -93,7 +93,7 @@ public final class ComponentSpaceLoader {
 					moduleConfig.name(),
 					moduleConfig.getComponentConfigs());
 			registerAspects(moduleConfig.aspectConfigs());
-			registerProxyMethods(moduleConfig.proxyMethodConfigs());
+			registerAmplifierMethods(moduleConfig.amplifierMethodConfigs());
 		}
 		return this;
 	}
@@ -177,10 +177,10 @@ public final class ComponentSpaceLoader {
 				.forEach(this::registerAspect);
 	}
 
-	private void registerProxyMethods(final List<ProxyMethodConfig> proxyMethodConfigs) {
-		proxyMethodConfigs
+	private void registerAmplifierMethods(final List<AmplifierMethodConfig> amplifierMethodConfigs) {
+		amplifierMethodConfigs
 				.stream()
-				.map(proxyMethodConfig -> createProxyMethod(componentSpaceWritable, proxyMethodConfig))
+				.map(proxyMethodConfig -> createAmplifierMethod(componentSpaceWritable, proxyMethodConfig))
 				.forEach(this::registerProxyMethod);
 	}
 
@@ -193,13 +193,13 @@ public final class ComponentSpaceLoader {
 		return aspect;
 	}
 
-	private static AmplifierMethod createProxyMethod(final Container container, final ProxyMethodConfig proxyMethodConfig) {
+	private static AmplifierMethod createAmplifierMethod(final Container container, final AmplifierMethodConfig proxyMethodConfig) {
 		// création de l'instance du composant
-		final AmplifierMethod proxyMethod = DIInjector.newInstance(proxyMethodConfig.proxyMethodClass(), container);
+		final AmplifierMethod amplifierMethod = DIInjector.newInstance(proxyMethodConfig.proxyMethodClass(), container);
 		//---
 		Assertion.check()
-				.isNotNull(proxyMethod.getAnnotationType());
-		return proxyMethod;
+				.isNotNull(amplifierMethod.getAnnotationType());
+		return amplifierMethod;
 	}
 
 	private void registerAspect(final Aspect aspect) {

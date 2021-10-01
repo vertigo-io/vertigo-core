@@ -40,7 +40,7 @@ public record ModuleConfig(
 		List<ConnectorConfig> connectorConfigs,
 		List<AmplifierConfig> amplifierConfigs,
 		List<AspectConfig> aspectConfigs,
-		List<ProxyMethodConfig> proxyMethodConfigs) {
+		List<AmplifierMethodConfig> amplifierMethodConfigs) {
 
 	public ModuleConfig {
 		Assertion.check()
@@ -51,7 +51,7 @@ public record ModuleConfig(
 				.isNotNull(connectorConfigs)
 				.isNotNull(amplifierConfigs)
 				.isNotNull(aspectConfigs)
-				.isNotNull(proxyMethodConfigs);
+				.isNotNull(amplifierMethodConfigs);
 		//-----
 		definitionProviderConfigs = List.copyOf(definitionProviderConfigs);
 		componentConfigs = List.copyOf(componentConfigs);
@@ -59,7 +59,7 @@ public record ModuleConfig(
 		connectorConfigs = List.copyOf(connectorConfigs);
 		amplifierConfigs = List.copyOf(amplifierConfigs);
 		aspectConfigs = List.copyOf(aspectConfigs);
-		proxyMethodConfigs = List.copyOf(proxyMethodConfigs);
+		amplifierMethodConfigs = List.copyOf(amplifierMethodConfigs);
 	}
 
 	/**

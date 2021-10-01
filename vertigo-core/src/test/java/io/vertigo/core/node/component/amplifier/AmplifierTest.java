@@ -55,7 +55,7 @@ public class AmplifierTest {
 	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.addModule(ModuleConfig.builder("proxies")
-						.addProxyMethod(AggregatorAmplifierMethod.class)
+						.addAmplifierMethod(AggregatorAmplifierMethod.class)
 						.build())
 				.addModule(ModuleConfig.builder("components")
 						.addAmplifier(Aggregate.class)
