@@ -33,7 +33,7 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
  * @author mlaroche, pchretien
  */
 @DefinitionPrefix(HealthCheckDefinition.PREFIX)
-public final class HealthCheckDefinition extends AbstractDefinition {
+public final class HealthCheckDefinition extends AbstractDefinition<HealthCheckDefinition> {
 	public static final String PREFIX = "Hchk";
 
 	private final String healthCheckName;

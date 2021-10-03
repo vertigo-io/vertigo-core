@@ -86,7 +86,7 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU5 {
 	}
 
 	@DefinitionPrefix(SampleDefinition.PREFIX)
-	public static class SampleDefinition extends AbstractDefinition {
+	public static class SampleDefinition extends AbstractDefinition<SampleDefinition> {
 		public static final String PREFIX = "Sample";
 
 		SampleDefinition() {

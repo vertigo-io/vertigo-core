@@ -109,4 +109,9 @@ public final class DefinitionId<D extends Definition> implements Serializable {
 	public int hashCode() {
 		return fullName.hashCode();
 	}
+
+	@Override
+	public String toString() {
+		return fullName;
+	}
 }

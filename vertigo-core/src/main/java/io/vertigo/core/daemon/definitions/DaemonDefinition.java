@@ -30,7 +30,7 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
  * @author mlaroche, pchretien, npiedeloup
  */
 @DefinitionPrefix(DaemonDefinition.PREFIX)
-public final class DaemonDefinition extends AbstractDefinition {
+public final class DaemonDefinition extends AbstractDefinition<DaemonDefinition> {
 	public static final String PREFIX = "Dmn";
 
 	private final int periodInSeconds;
