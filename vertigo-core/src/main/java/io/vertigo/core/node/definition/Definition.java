@@ -17,15 +17,13 @@
  */
 package io.vertigo.core.node.definition;
 
-import java.util.regex.Pattern;
-
 /**
  * This interface defines a Definition.
  *
  * Each element that defines a part of the business (or tech.) model is a definition.
  *
- * A definition 
- *  - has a unique name, starting with a specific prefix
+ * A definition
+ *  - has an id  (composed of a unique name, starting with a specific prefix)
  *  - is immutable
  *  - is not serializable.
  *  - is loaded at the boot.
@@ -33,21 +31,9 @@ import java.util.regex.Pattern;
  * @author  pchretien
  */
 public interface Definition {
-	/**
-	 * A definition must have a unique name, which matches the following patterns : 
-	 * PrefixAaaaBbbb123
-	 * or
-	 * PrefixAaaaBbbb123$abcAbc123
-	 */
-	Pattern REGEX_DEFINITION_NAME = Pattern.compile("[A-Z][a-zA-Z0-9]{2,60}([$][a-z][a-zA-Z0-9]{2,60})?");
+	DefinitionId id();
 
-	/**
-	 * @return The name of the definition
-	 */
-	String getName();
-
-	/** 
-	 * @return The short name of the definition without prefix
-	 */
-	String getLocalName();
+	default String getName() {
+		return id().fullName();
+	}
 }
