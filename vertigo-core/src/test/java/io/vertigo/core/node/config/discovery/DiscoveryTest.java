@@ -31,7 +31,7 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.config.discovery.data.DiscoveryA;
 import io.vertigo.core.node.config.discovery.data.DiscoveryB;
 import io.vertigo.core.node.config.discovery.data.DiscoveryD;
-import io.vertigo.core.node.config.discovery.data.TrueProxyMethod;
+import io.vertigo.core.node.config.discovery.data.TrueAmplifierMethod;
 
 /**
 * @author pchretien
@@ -45,7 +45,7 @@ public final class DiscoveryTest extends AbstractTestCaseJU5 {
 						.verbose()
 						.build())
 				.addModule(ModuleConfig.builder("proxyMethod")
-						.addAmplifierMethod(TrueProxyMethod.class)
+						.addAmplifierMethod(TrueAmplifierMethod.class)
 						.build())
 				.addModule(new TestModuleDiscoveryFeatures().build())
 				.build();

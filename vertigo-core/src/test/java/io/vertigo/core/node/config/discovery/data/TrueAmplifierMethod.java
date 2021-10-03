@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 
 import io.vertigo.core.node.component.amplifier.AmplifierMethod;
 
-public final class TrueProxyMethod implements AmplifierMethod {
+public final class TrueAmplifierMethod implements AmplifierMethod {
 
 	@Override
 	public Class<TrueProxyAnnotation> getAnnotationType() {
