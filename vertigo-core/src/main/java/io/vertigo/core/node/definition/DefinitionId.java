@@ -53,11 +53,7 @@ public final class DefinitionId<D extends Definition> implements Serializable {
 	private static final Pattern REGEX_DEFINITION_NAME = Pattern.compile("[A-Z][a-zA-Z0-9]{2,60}([$][a-z][a-zA-Z0-9]{2,60})?");
 
 	DefinitionId(final String fullName, final D definition) {
-		this(fullName, definition.getClass());
-	}
-
-	DefinitionId(final String fullName, final Class<?> definitionClass) {
-		final DefinitionPrefix definitionPrefix = definitionClass.getAnnotation(DefinitionPrefix.class);
+		final DefinitionPrefix definitionPrefix = definition.getClass().getAnnotation(DefinitionPrefix.class);
 		Assertion.check().isNotNull(definitionPrefix, "Annotation '@DefinitionPrefix' not found on {0}", definition.getClass().getName());
 		this.prefix = definitionPrefix.value();
 
