@@ -66,17 +66,6 @@ public enum BasicType {
 	}
 
 	/**
-	 * Checks if the value matched this basic type
-	 * Throws an exception if the value is not well typed.
-	 * @param value the value
-	 */
-	public void checkValue(final Object value) {
-		if (value != null && !javaClass.isInstance(value)) {
-			throw new ClassCastException("Value " + value + " doesn't match :" + this);
-		}
-	}
-
-	/**
 	 * @return if the dataType talks about a date
 	 */
 	public boolean isAboutDate() {
