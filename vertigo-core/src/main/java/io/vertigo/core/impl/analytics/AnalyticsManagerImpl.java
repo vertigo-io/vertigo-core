@@ -75,7 +75,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		// here all
 		// we need to unwrap the component to scan the real class and not the enhanced version
-		final AspectPlugin aopPlugin = Node.getNode().getNodeConfig().bootConfig().aopPlugin();
+		final AspectPlugin aopPlugin = Node.getNode().getNodeConfig().bootConfig().aspectPlugin();
 		return Node.getNode().getComponentSpace().keySet()
 				.stream()
 				.flatMap(id -> Stream.concat(

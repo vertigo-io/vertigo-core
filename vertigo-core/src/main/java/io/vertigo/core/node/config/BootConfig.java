@@ -34,33 +34,33 @@ public final class BootConfig {
 	private final Optional<LogConfig> logConfigOpt;
 	private final boolean isVerbose;
 	@JsonExclude
-	private final AspectPlugin aopPlugin;
+	private final AspectPlugin aspectPlugin;
 
 	private final List<ComponentConfig> componentConfigs;
 	private final List<PluginConfig> pluginConfigs;
 
 	/**
 	 * Constructor.
-	 * @param aopPlugin AopPlugin
+	 * @param aspectPlugin AopPlugin
 	 * @param isVerbose if logs are enabled during startup
 	 */
 	BootConfig(
 			final Optional<LogConfig> logConfigOpt,
 			final List<ComponentConfig> componentConfigs,
 			final List<PluginConfig> pluginConfigs,
-			final AspectPlugin aopPlugin,
+			final AspectPlugin aspectPlugin,
 			final boolean isVerbose) {
 		Assertion.check()
 				.isNotNull(logConfigOpt)
 				.isNotNull(componentConfigs)
 				.isNotNull(pluginConfigs)
-				.isNotNull(aopPlugin);
+				.isNotNull(aspectPlugin);
 		//-----
 		this.logConfigOpt = logConfigOpt;
 		this.componentConfigs = componentConfigs;
 		this.pluginConfigs = pluginConfigs;
 		this.isVerbose = isVerbose;
-		this.aopPlugin = aopPlugin;
+		this.aspectPlugin = aspectPlugin;
 	}
 
 	/**
@@ -98,7 +98,7 @@ public final class BootConfig {
 	/**
 	 * @return AopEngine
 	 */
-	public AspectPlugin aopPlugin() {
-		return aopPlugin;
+	public AspectPlugin aspectPlugin() {
+		return aspectPlugin;
 	}
 }

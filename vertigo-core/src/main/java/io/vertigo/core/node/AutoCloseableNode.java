@@ -94,7 +94,7 @@ public final class AutoCloseableNode implements Node, AutoCloseable {
 			//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
 			//Creates and register all components (and aspects and Proxies).
 			//all components can be parameterized
-			ComponentSpaceLoader.startLoading(componentSpaceWritable, nodeConfig.bootConfig().aopPlugin())
+			ComponentSpaceLoader.startLoading(componentSpaceWritable, nodeConfig.bootConfig().aspectPlugin())
 					//-- 1.a - BootStrap : create native components : ResourceManager, ParamManager, LocaleManager
 					.loadBootComponents(nodeConfig.bootConfig().coreComponentConfigs())
 					//-- 1.b - other components
