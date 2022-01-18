@@ -28,7 +28,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.reflections.Reflections;
+import org.reflections.scanners.Scanner;
 import org.reflections.scanners.TypeElementsScanner;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
@@ -96,11 +99,14 @@ public final class Selector {
 	public static Selector from(final String packageName) {
 		Assertion.check().isNotBlank(packageName);
 		// ---
-		final Set<Class> classes = new Reflections(packageName,
-				new TypeElementsScanner().includeAnnotations(false).includeFields(false).includeMethods(false))
-						.getStore()
-						.keys(TypeElementsScanner.class.getSimpleName())
+		final Scanner allScanner = new TypeElementsScanner().includeAnnotations(false).includeFields(false).includeMethods(false);
+		final Set<Class> classes = new Reflections(new ConfigurationBuilder()
+				.forPackage(packageName)
+				.filterInputsBy(new FilterBuilder().includePackage(packageName))
+				.setScanners(allScanner))
+						.getAll(allScanner)
 						.stream()
+						.filter((key) -> !StringUtil.isBlank(key))
 						.map(ClassUtil::classForName)
 						.collect(Collectors.toSet());
 		return from(classes);
