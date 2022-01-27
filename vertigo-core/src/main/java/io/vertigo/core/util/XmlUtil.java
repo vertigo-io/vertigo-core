@@ -24,6 +24,7 @@ import java.net.URL;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
@@ -62,9 +63,24 @@ public final class XmlUtil {
 	 * @throws SAXNotSupportedException
 	 */
 	public static void secureXmlXXEByOwasp(final SchemaFactory schemaFactory) throws SAXNotRecognizedException, SAXNotSupportedException {
-		schemaFactory.setFeature(FEATURE_DISABLE_DTD, true);
 		schemaFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-		schemaFactory.setFeature(FEATURE_LOAD_EXTERNAL_DTD, false);
+		schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+		schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+	}
+
+	/**
+	 * Secure XML parser with OWASP recommendations.
+	 * @see https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html#java
+	 * @param schemaFactory SchemaFactory
+	 * @throws ParserConfigurationException
+	 * @throws SAXNotRecognizedException
+	 * @throws SAXNotSupportedException
+	 */
+	public static void secureXmlXXEByOwasp(final SAXParserFactory factory) throws SAXNotRecognizedException, SAXNotSupportedException, ParserConfigurationException {
+		factory.setFeature(FEATURE_DISABLE_DTD, true);
+		factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+		factory.setFeature(FEATURE_LOAD_EXTERNAL_DTD, false);
+		factory.setXIncludeAware(false);
 	}
 
 	/**
@@ -74,9 +90,9 @@ public final class XmlUtil {
 	 * @throws TransformerConfigurationException
 	 */
 	public static void secureXmlXXEByOwasp(final TransformerFactory tf) throws TransformerConfigurationException {
-		tf.setFeature(FEATURE_DISABLE_DTD, true);
 		tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-		tf.setFeature(FEATURE_LOAD_EXTERNAL_DTD, false);
+		tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+		tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 	}
 
 	/**
