@@ -9,8 +9,8 @@ more to come :)
 Release 3.2.0 - 2021/06/21
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-311-to-320)
-[Core] Better error message if no proxyMethod found
-[Core] Amplifier annotation support on method or on class
+* [Core] Better error message if no proxyMethod found
+* [Core] Amplifier annotation support on method or on class
 * [Core] Updated libs
   - log4j 2.14.0 -> 2.14.1
   - gson 2.8.6 -> 2.8.7
