@@ -127,7 +127,7 @@ public final class XmlUtil {
 					.newValidator();
 			validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
 			validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-			validator.setProperty(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+			//unsupported by xerces : validator.setProperty(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 			final Source source = new StreamSource(xml.openStream());
 			validate(xml, validator, source);
 		} catch (final SocketException e) {
