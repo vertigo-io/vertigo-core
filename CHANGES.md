@@ -6,6 +6,17 @@ Running 4.0.0
 
 more to come :)
 
+Release 3.3.0 - 2021/02/..
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-320-to-330)
+* [Core] Centralize XML Owasp recommendations
+* [Core] Updated libs
+  - log4j-api 2.14.1 -> 2.17.1
+  - log4j-core 2.14.1 -> 2.17.1
+  - org.reflections 0.9.12 -> 0.10.2
+  - gson 2.8.7 -> 2.8.9
+  - snakeyaml 1.28 -> 1.30
+
 Release 3.2.0 - 2021/06/21
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-311-to-320)

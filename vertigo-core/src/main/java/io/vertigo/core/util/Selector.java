@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2021, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.reflections.Reflections;
+import org.reflections.scanners.Scanner;
 import org.reflections.scanners.TypeElementsScanner;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
@@ -96,11 +99,14 @@ public final class Selector {
 	public static Selector from(final String packageName) {
 		Assertion.check().isNotBlank(packageName);
 		// ---
-		final Set<Class> classes = new Reflections(packageName,
-				new TypeElementsScanner().includeAnnotations(false).includeFields(false).includeMethods(false))
-						.getStore()
-						.keys(TypeElementsScanner.class.getSimpleName())
+		final Scanner allScanner = new TypeElementsScanner().includeAnnotations(false).includeFields(false).includeMethods(false);
+		final Set<Class> classes = new Reflections(new ConfigurationBuilder()
+				.forPackage(packageName)
+				.filterInputsBy(new FilterBuilder().includePackage(packageName))
+				.setScanners(allScanner))
+						.getAll(allScanner)
 						.stream()
+						.filter((key) -> !StringUtil.isBlank(key))
 						.map(ClassUtil::classForName)
 						.collect(Collectors.toSet());
 		return from(classes);
