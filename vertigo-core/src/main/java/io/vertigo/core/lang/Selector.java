@@ -34,6 +34,7 @@ import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
 import io.vertigo.core.util.ClassUtil;
+import io.vertigo.core.util.StringUtil;
 import javassist.Modifier;
 
 /**
