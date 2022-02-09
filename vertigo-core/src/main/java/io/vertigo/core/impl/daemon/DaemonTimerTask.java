@@ -57,8 +57,10 @@ final class DaemonTimerTask implements Runnable {
 	private static void clearAllThreadLocals() {
 		try {
 			final Field threadLocals = Thread.class.getDeclaredField("threadLocals");
-			threadLocals.setAccessible(true);
-			threadLocals.set(Thread.currentThread(), null);
+			if (threadLocals.trySetAccessible()) {
+				threadLocals.setAccessible(true);
+				threadLocals.set(Thread.currentThread(), null);
+			}
 		} catch (final Exception e) {
 			throw new AssertionError(e);
 		}
