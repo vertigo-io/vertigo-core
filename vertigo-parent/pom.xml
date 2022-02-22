@@ -274,11 +274,11 @@
 		<profile>
 			<id>Github</id>
 			<distributionManagement>
-				<repository>
+				<snapshotRepository>
 					<id>github</id>
 					<name>GitHub Vertigo-io Apache Maven Packages</name>
 					<url>https://maven.pkg.github.com/vertigo-io/vertigo</url>
-				</repository>
+				</snapshotRepository>
 			</distributionManagement>
 		</profile>
 		<profile>
