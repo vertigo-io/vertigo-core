@@ -11,21 +11,21 @@ jobs:
         influxdb:
             image: influxdb:2.0
             env:
-              DOCKER_INFLUXDB_INIT_MODE=setup
-              DOCKER_INFLUXDB_INIT_USERNAME=vertigo
-              DOCKER_INFLUXDB_INIT_PASSWORD=vertigo-password
-              DOCKER_INFLUXDB_INIT_ORG=vertigo
-              DOCKER_INFLUXDB_INIT_BUCKET=myApp
-              DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=is4DQpHF8XkvNJRm5KNJOtjlKIpfVc2G
+              DOCKER_INFLUXDB_INIT_MODE:setup
+              DOCKER_INFLUXDB_INIT_USERNAME:vertigo
+              DOCKER_INFLUXDB_INIT_PASSWORD:vertigo-password
+              DOCKER_INFLUXDB_INIT_ORG:vertigo
+              DOCKER_INFLUXDB_INIT_BUCKET:myApp
+              DOCKER_INFLUXDB_INIT_ADMIN_TOKEN:is4DQpHF8XkvNJRm5KNJOtjlKIpfVc2G
             ports:
-                - 8086:8086
+              - 8086:8086
         analytics:
             image: vertigoio/vertigo-analytics-server
             env:
-              INFLUXDB_URL=http://influxdb:8086
-              INFLUXDB_TOKEN=is4DQpHF8XkvNJRm5KNJOtjlKIpfVc2G
+              INFLUXDB_URL:http://influxdb:8086
+              INFLUXDB_TOKEN:is4DQpHF8XkvNJRm5KNJOtjlKIpfVc2G
             ports:
-                - 4562:4562
+              - 4562:4562
     steps:
       - uses: actions/checkout@v2
         with:
