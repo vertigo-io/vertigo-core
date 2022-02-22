@@ -26,8 +26,8 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.analytics.AnalyticsManager;
-import io.vertigo.core.analytics.trace.data.TestAnalyticsConnectorPlugin;
 import io.vertigo.core.analytics.trace.data.TestAnalyticsAspectServices;
+import io.vertigo.core.analytics.trace.data.TestAnalyticsConnectorPlugin;
 import io.vertigo.core.impl.analytics.trace.TraceAspect;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.config.BootConfig;
@@ -63,7 +63,7 @@ public final class TraceAnalyticsTest extends AbstractTestCaseJU5 {
 		return NodeConfig.builder()
 				.withBoot(BootConfig.builder()
 						.withSmartLoggerAnalyticsConnector(Param.of("aggregatedBy", "test"))
-						.withSocketLoggerAnalyticsConnector()
+						.withSocketLoggerAnalyticsConnector(Param.of("hostName", "http://localhost"))
 						.addAnalyticsConnectorPlugin(TestAnalyticsConnectorPlugin.class)
 						.addAnalyticsConnectorPlugin(LoggerAnalyticsConnectorPlugin.class)
 						.build())
