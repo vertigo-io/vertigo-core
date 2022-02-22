@@ -63,7 +63,7 @@ public final class TraceAnalyticsTest extends AbstractTestCaseJU5 {
 		return NodeConfig.builder()
 				.withBoot(BootConfig.builder()
 						.withSmartLoggerAnalyticsConnector(Param.of("aggregatedBy", "test"))
-						.withSocketLoggerAnalyticsConnector(Param.of("hostName", "http://localhost"))
+						.withSocketLoggerAnalyticsConnector(Param.of("hostName", "localhost"))
 						.addAnalyticsConnectorPlugin(TestAnalyticsConnectorPlugin.class)
 						.addAnalyticsConnectorPlugin(LoggerAnalyticsConnectorPlugin.class)
 						.build())
