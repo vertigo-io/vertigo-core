@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.vertigo</groupId>
@@ -17,7 +19,7 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	
+
 	<developers>
 		<developer>
 			<id>phlppchrtn</id>
@@ -35,7 +37,7 @@
 			<email>matthieu dot laroche at kleegroup dot com</email>
 		</developer>
 	</developers>
-	
+
 	<scm>
 		<connection>scm:git:https://github.com/vertigo-io/vertigo.git</connection>
 		<developerConnection>scm:git:https://github.com/vertigo-io/vertigo.git</developerConnection>
@@ -57,14 +59,12 @@
 			<url>http://kleegroup-nexus:8080/nexus/content/repositories/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
-	
+
 	<properties>
 		<maven.compiler.source>16</maven.compiler.source>
 		<maven.compiler.target>16</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<vertigo.version>4.0.0-SNAPSHOT</vertigo.version>
-		<!-- For global junit test coverage -->
-		<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../target/jacoco-it.xml</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 
 	<dependencies>
@@ -81,7 +81,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<resources>
 			<resource>
@@ -157,8 +157,8 @@
 						<include>**/*.java</include>
 					</includes>
 				</configuration>
-				<!-- executions> <execution> <phase>package</phase> <goals> <goal>license</goal> </goals> </execution> 
-					</executions -->
+				<!-- executions> <execution> <phase>package</phase> <goals> <goal>license</goal> 
+					</goals> </execution> </executions -->
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -171,10 +171,10 @@
 						<version>1.11.2</version>
 					</dependency>
 					<dependency>
-				    	<groupId>org.apache.maven.scm</groupId>
-				    	<artifactId>maven-scm-api</artifactId>
-				    	<version>1.11.2</version>
-				    </dependency>
+						<groupId>org.apache.maven.scm</groupId>
+						<artifactId>maven-scm-api</artifactId>
+						<version>1.11.2</version>
+					</dependency>
 				</dependencies>
 			</plugin>
 			<plugin>
