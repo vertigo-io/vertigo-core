@@ -1,0 +1,55 @@
+name: Build Develop
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    services:
+        influxdb:
+            image: influxdb:2.0
+            env:
+              DOCKER_INFLUXDB_INIT_MODE: setup
+              DOCKER_INFLUXDB_INIT_USERNAME: vertigo
+              DOCKER_INFLUXDB_INIT_PASSWORD: vertigo-password
+              DOCKER_INFLUXDB_INIT_ORG: vertigo
+              DOCKER_INFLUXDB_INIT_BUCKET: myApp
+              DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: rytuvFE1f5JR4CPD1cOfr-74W2rL7tu1by-6DnO6zbTxMQy6foj7qtBMYSkFGT15Y1vjJCr5OP01Uci_ZdIlIA==
+            ports:
+              - 8086:8086
+        analytics:
+            image: vertigoio/vertigo-analytics-server
+            env:
+              INFLUXDB_URL: http://influxdb:8086
+              INFLUXDB_TOKEN: rytuvFE1f5JR4CPD1cOfr-74W2rL7tu1by-6DnO6zbTxMQy6foj7qtBMYSkFGT15Y1vjJCr5OP01Uci_ZdIlIA==
+            ports:
+              - 4562:4562
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          ref: develop
+      - name: Set up JDK 16
+        uses: actions/setup-java@v1
+        with:
+          java-version: 16
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn clean source:jar org.jacoco:jacoco-maven-plugin:prepare-agent deploy org.jacoco:jacoco-maven-plugin:report org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar -Dsonar.projectKey=vertigo-io_vertigo -Dsonar.organization=vertigo-io -Dsonar.host.url=https://sonarcloud.io -Dsonar.branch.name="develop"  -P Github
