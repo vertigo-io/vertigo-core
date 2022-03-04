@@ -126,7 +126,7 @@ final class ComponentDiscovery {
 					.isFalse(candidates.isEmpty(), "No implentation found for the api {0}", apiClazz)
 					.isTrue(candidates.size() == 1, "Multiple implentations found for the api {0}", apiClazz);
 			// ---
-			final Class implClass = candidates.stream().findFirst().get();
+			final Class implClass = candidates.stream().findFirst().orElseThrow();
 			myImplClasses.remove(implClass);
 			apiImplMap.put(apiClazz, implClass);
 		}
