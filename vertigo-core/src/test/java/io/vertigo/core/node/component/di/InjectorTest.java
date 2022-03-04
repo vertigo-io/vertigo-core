@@ -19,6 +19,7 @@ package io.vertigo.core.node.component.di;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
@@ -104,7 +105,7 @@ public final class InjectorTest {
 				return Collections.emptySet();
 			}
 		});
-		nop(a);
+		assertNotNull(a);
 	}
 
 	@Test
