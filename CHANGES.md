@@ -6,7 +6,7 @@ Running 4.0.0
 
 more to come :)
 
-Release 3.3.0 - 2021/02/..
+Release 3.3.0 - 2021/02/03
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-320-to-330)
 * [Core] Centralize XML Owasp recommendations
