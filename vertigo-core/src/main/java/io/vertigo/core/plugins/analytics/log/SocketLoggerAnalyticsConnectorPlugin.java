@@ -48,9 +48,12 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.plugins.analytics.log.log4j.AnalyticsSocketAppender;
+import io.vertigo.core.plugins.analytics.log.log4j.AnalyticsSocketAppender.Builder;
 
 /**
  * Processes connector which use the log4j SocketAppender.
+ *
  * @author mlaroche, pchretien, npiedeloup
  */
 public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin, Activeable {
@@ -68,29 +71,37 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	private final String appName;
 	private final String localHostName;
+	private final int bufferSize;
+	private final boolean devConfig;
 
 	private final ConcurrentLinkedQueue<TraceSpan> spanQueue = new ConcurrentLinkedQueue<>();
 
 	/**
 	 * Constructor.
+	 *
 	 * @param appNameOpt the node name
 	 * @param hostNameOpt hostName of the remote server
 	 * @param portOpt port of the remote server
+	 * @param bufferSizeOpt size of the offline buffer in Mo
 	 */
 	@Inject
 	public SocketLoggerAnalyticsConnectorPlugin(
 			@ParamValue("appName") final Optional<String> appNameOpt,
 			@ParamValue("hostName") final Optional<String> hostNameOpt,
-			@ParamValue("port") final Optional<Integer> portOpt) {
+			@ParamValue("port") final Optional<Integer> portOpt,
+			@ParamValue("bufferSize") final Optional<Integer> bufferSizeOpt) {
 		Assertion.check()
 				.isNotNull(appNameOpt)
 				.isNotNull(hostNameOpt)
-				.isNotNull(portOpt);
-		// --- 
+				.isNotNull(portOpt)
+				.isNotNull(bufferSizeOpt);
+		// ---
 		appName = appNameOpt.orElseGet(() -> Node.getNode().getNodeConfig().appName());
-		hostName = hostNameOpt.orElse("analytica.part.klee.lan.net");
+		hostName = hostNameOpt.orElse("Analytics.part.klee.lan.net");
+		devConfig = hostNameOpt.isEmpty();
 		port = portOpt.orElse(DEFAULT_SERVER_PORT);
 		localHostName = retrieveHostName();
+		bufferSize = bufferSizeOpt.orElse(50);
 	}
 
 	/** {@inheritDoc} */
@@ -133,18 +144,28 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	@Override
 	public void start() {
-
-		//we create appender (like a resource it must be close on stop)
-		appender = SocketAppender.newBuilder()
+		final Builder appenderBuilder = AnalyticsSocketAppender.newAnalyticsBuilder()
 				.setName("socketAnalytics")
 				.setLayout(SerializedLayout.createLayout())
 				.withHost(hostName)
 				.withPort(port)
-				.withConnectTimeoutMillis(DEFAULT_CONNECT_TIMEOUT)
-				.withImmediateFail(true)
-				.withReconnectDelayMillis(0)// we make only one try
-				.build();
+				.withConnectTimeoutMillis(DEFAULT_CONNECT_TIMEOUT);
 
+		if (devConfig) {
+			appenderBuilder
+					.withImmediateFail(true)
+					.withReconnectDelayMillis(-1)// we make only one try (documentation is incorrect 0 => defaults to 30s)
+			;
+		} else {
+			appenderBuilder
+					.withImmediateFail(false)
+					.withReconnectDelayMillis(10000) // 10s
+					.withBufferSize(bufferSize * 1024 * 1024) // in Mo, used for keeping logs while disconnected
+			;
+		}
+
+		//we create appender (like a resource it must be close on stop)
+		appender = appenderBuilder.build();
 		appender.start();
 		final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
 		final Configuration config = ctx.getConfiguration();
