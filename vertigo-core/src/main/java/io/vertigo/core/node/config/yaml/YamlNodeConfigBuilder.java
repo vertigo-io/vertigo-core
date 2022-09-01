@@ -35,8 +35,8 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.Selector;
-import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.Selector.MethodConditions;
+import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.component.ComponentInitializer;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.node.config.BootConfig;
@@ -162,6 +162,8 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 						// ---
 						final Map.Entry<String, Map<String, Object>> pluginEntry = plugin.entrySet().iterator().next();
 						if (isEnabledByFlag(getFlagsOfMapParams(pluginEntry.getValue()))) {
+							Assertion.check().isNotNull(pluginEntry.getValue(), "boot plugin {0} need params or \\{\\}", pluginEntry.getKey());
+
 							bootConfigBuilder
 									.addPlugin(
 											ClassUtil.classForName(pluginEntry.getKey(), Plugin.class),
