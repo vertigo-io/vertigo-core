@@ -66,7 +66,7 @@ final class ComponentParamsContainer implements Container {
 				.isTrue(params.containsKey(id), "param '{0}' of type '{1}' has not be registered.", id, clazz.getSimpleName());
 		//-----
 		unusedKeys.remove(id);
-		return getParam(id).getValue(clazz);
+		return getParam(id).map(p -> p.getValue(clazz)).orElse(null);
 	}
 
 	/** {@inheritDoc} */
@@ -80,7 +80,7 @@ final class ComponentParamsContainer implements Container {
 	 * @param paramName Nom du paramètre
 	 * @return Valeur sous forme texte du paramètre
 	 */
-	private Param getParam(final String paramName) {
+	private Optional<Param> getParam(final String paramName) {
 		Assertion.check()
 				.isNotNull(paramName);
 		//-----
@@ -88,9 +88,9 @@ final class ComponentParamsContainer implements Container {
 		if (paramValue != null && paramValue.startsWith("${") && paramValue.endsWith("}")) {
 			final String property = paramValue.substring("${".length(), paramValue.length() - "}".length());
 			return paramManagerOpt.orElseThrow(() -> new IllegalArgumentException("config is not allowed here"))
-					.getParam(property);
+					.getOptionalParam(property);
 		}
-		return Param.of(paramName, paramValue);
+		return Optional.of(Param.of(paramName, paramValue));
 	}
 
 	/*
