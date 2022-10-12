@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+import javax.net.ssl.KeyManagerFactory;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -33,7 +34,9 @@ import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.layout.SerializedLayout;
+import org.apache.logging.log4j.core.layout.JsonLayout;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -45,19 +48,22 @@ import io.vertigo.core.analytics.process.AProcess;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.param.ParamValue;
 
 /**
  * Processes connector which use the log4j SocketAppender.
  * @author mlaroche, pchretien, npiedeloup
  */
-public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin, Activeable {
+public final class SocketLoggerJsonAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin, Activeable {
 	private static final Gson GSON = new GsonBuilder().create();
 	private static final int DEFAULT_CONNECT_TIMEOUT = 250;// 250ms for connection to log4j server
 	private static final int DEFAULT_DISCONNECT_TIMEOUT = 5000;// 5s for disconnection to log4j server
-	private static final int DEFAULT_SERVER_PORT = 4562;// DefaultPort of SocketAppender 4650 for log4j and 4562 for log4j2
+	private static final int DEFAULT_SERVER_PORT = 4563;// DefaultPort of SocketAppender 4562 for log4j2 and 4563 for json over tls
 
 	private Logger socketProcessLogger;
 	private Logger socketHealthLogger;
@@ -71,6 +77,9 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	private final ConcurrentLinkedQueue<AProcess> processQueue = new ConcurrentLinkedQueue<>();
 
+	private final Optional<String> trustStoreUrl;
+	private final Optional<String> trustStorePassword;
+
 	/**
 	 * Constructor.
 	 * @param appNameOpt the node name
@@ -78,10 +87,13 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	 * @param portOpt port of the remote server
 	 */
 	@Inject
-	public SocketLoggerAnalyticsConnectorPlugin(
+	public SocketLoggerJsonAnalyticsConnectorPlugin(
+			final ParamManager paramManager,
 			@ParamValue("appName") final Optional<String> appNameOpt,
 			@ParamValue("hostName") final Optional<String> hostNameOpt,
-			@ParamValue("port") final Optional<Integer> portOpt) {
+			@ParamValue("port") final Optional<Integer> portOpt,
+			@ParamValue("trustStoreUrl") final Optional<String> trustStoreUrlOpt,
+			@ParamValue("trustStorePassword") final Optional<String> trustStorePasswordOpt) {
 		Assertion.check()
 				.isNotNull(appNameOpt)
 				.isNotNull(hostNameOpt)
@@ -91,6 +103,9 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		hostName = hostNameOpt.orElse("analytica.part.klee.lan.net");
 		port = portOpt.orElse(DEFAULT_SERVER_PORT);
 		localHostName = retrieveHostName();
+
+		trustStoreUrl = trustStoreUrlOpt.isPresent() ? trustStoreUrlOpt : paramManager.getOptionalParam("VERTIGO_ANALYTICS_TRUSTSTORE_URL").map(Param::getValueAsString);
+		trustStorePassword = trustStorePasswordOpt.isPresent() ? trustStorePasswordOpt : paramManager.getOptionalParam("VERTIGO_ANALYTICS_TRUSTSTORE_PASSWORD").map(Param::getValueAsString);
 	}
 
 	/** {@inheritDoc} */
@@ -135,20 +150,32 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	public void start() {
 
 		//we create appender (like a resource it must be close on stop)
-		appender = SocketAppender.newBuilder()
-				.setName("socketAnalytics")
-				.setLayout(SerializedLayout.createLayout())
-				.setHost(hostName)
-				.setPort(port)
-				.setConnectTimeoutMillis(DEFAULT_CONNECT_TIMEOUT)
-				.setImmediateFail(true)
-				.setReconnectDelayMillis(0)// we make only one try
-				.build();
+		try {
+			final var trutsStoreConfig = trustStoreUrl.isPresent() ? TrustStoreConfiguration.createKeyStoreConfiguration(trustStoreUrl.get(), trustStorePassword.get().toCharArray(), null, null, "PKCS12", KeyManagerFactory
+					.getDefaultAlgorithm()) : null;
 
-		appender.start();
-		final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-		final Configuration config = ctx.getConfiguration();
-		config.addAppender(appender);
+			appender = SocketAppender.newBuilder()
+					.setName("socketAnalytics")
+					.setLayout(JsonLayout.createDefaultLayout())
+					.setHost(hostName)
+					.setPort(port)
+					.setConnectTimeoutMillis(DEFAULT_CONNECT_TIMEOUT)
+					.setImmediateFail(true)
+					.setReconnectDelayMillis(0)// we make only one try
+					.setSslConfiguration(
+							SslConfiguration.createSSLConfiguration(
+									"TLSv1.2",
+									null,
+									trutsStoreConfig))
+					.build();
+
+			appender.start();
+			final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+			final Configuration config = ctx.getConfiguration();
+			config.addAppender(appender);
+		} catch (final Exception e) {
+			throw WrappedException.wrap(e);
+		}
 	}
 
 	@Override
