@@ -44,7 +44,7 @@ import com.google.gson.JsonObject;
 
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.metric.Metric;
-import io.vertigo.core.analytics.process.AProcess;
+import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.core.lang.Assertion;
@@ -75,7 +75,7 @@ public final class SocketLoggerJsonAnalyticsConnectorPlugin implements Analytics
 	private final String appName;
 	private final String localHostName;
 
-	private final ConcurrentLinkedQueue<AProcess> processQueue = new ConcurrentLinkedQueue<>();
+	private final ConcurrentLinkedQueue<TraceSpan> processQueue = new ConcurrentLinkedQueue<>();
 
 	private final Optional<String> trustStoreUrl;
 	private final Optional<String> trustStorePassword;
@@ -99,7 +99,7 @@ public final class SocketLoggerJsonAnalyticsConnectorPlugin implements Analytics
 				.isNotNull(hostNameOpt)
 				.isNotNull(portOpt);
 		// ---
-		appName = appNameOpt.orElseGet(() -> Node.getNode().getNodeConfig().getAppName());
+		appName = appNameOpt.orElseGet(() -> Node.getNode().getNodeConfig().appName());
 		hostName = hostNameOpt.orElse("analytica.part.klee.lan.net");
 		port = portOpt.orElse(DEFAULT_SERVER_PORT);
 		localHostName = retrieveHostName();
@@ -110,7 +110,7 @@ public final class SocketLoggerJsonAnalyticsConnectorPlugin implements Analytics
 
 	/** {@inheritDoc} */
 	@Override
-	public void add(final AProcess process) {
+	public void add(final TraceSpan process) {
 		Assertion.check()
 				.isNotNull(process);
 		//---
@@ -205,7 +205,7 @@ public final class SocketLoggerJsonAnalyticsConnectorPlugin implements Analytics
 	@DaemonScheduled(name = "DmnRemoteLogger", periodInSeconds = 1, analytics = false)
 	public void pollQueue() {
 		while (!processQueue.isEmpty()) {
-			final AProcess head = processQueue.poll();
+			final TraceSpan head = processQueue.poll();
 			if (head != null) {
 				sendProcess(head);
 			}
@@ -213,7 +213,7 @@ public final class SocketLoggerJsonAnalyticsConnectorPlugin implements Analytics
 
 	}
 
-	private void sendProcess(final AProcess process) {
+	private void sendProcess(final TraceSpan process) {
 		if (socketProcessLogger == null) {
 			socketProcessLogger = createLogger("vertigo-analytics-process");
 		}

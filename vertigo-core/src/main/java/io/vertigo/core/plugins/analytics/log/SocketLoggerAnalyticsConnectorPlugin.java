@@ -147,12 +147,9 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		final Builder appenderBuilder = AnalyticsSocketAppender.newAnalyticsBuilder()
 				.setName("socketAnalytics")
 				.setLayout(SerializedLayout.createLayout())
-				.setHost(hostName)
-				.setPort(port)
-				.setConnectTimeoutMillis(DEFAULT_CONNECT_TIMEOUT)
-				.setImmediateFail(true)
-				.setReconnectDelayMillis(0)// we make only one try
-				.build();
+				.withHost(hostName)
+				.withPort(port)
+				.withConnectTimeoutMillis(DEFAULT_CONNECT_TIMEOUT);
 
 		if (devConfig) {
 			appenderBuilder
