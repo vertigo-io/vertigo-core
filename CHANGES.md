@@ -8,7 +8,7 @@ more to come :)
 
 Release 3.4.0 - 2022/10/12
 ----------------------
-[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-320-to-330)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-330-to-340)
 * **[Core] ParamManager return Optional param values**
 * [analytics] Add json socketLogger (with https)
 * [param] Add a plugin to retrieve params from SystemProperties
