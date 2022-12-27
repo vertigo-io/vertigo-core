@@ -85,6 +85,13 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 
 	/** {@inheritDoc} */
 	@Override
+	public ProcessAnalyticsTracer addMetadata(final String name, final String value) {
+		processBuilder.addMetadata(name, value);
+		return this;
+	}
+
+	/** {@inheritDoc} */
+	@Override
 	public ProcessAnalyticsTracer addTag(final String name, final String value) {
 		processBuilder.addTag(name, value);
 		return this;
@@ -114,8 +121,9 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 
 	private void logProcess(final AProcess process) {
 		if (logger.isInfoEnabled()) {
-			boolean hasMeasures = !process.getMeasures().isEmpty();
-			boolean hasTags = !process.getTags().isEmpty();
+			final boolean hasMeasures = !process.getMeasures().isEmpty();
+			final boolean hasMetadatas = !process.getMetadatas().isEmpty();
+			final boolean hasTags = !process.getTags().isEmpty();
 			final String info = new StringBuilder()
 					.append("Finish ")
 					.append(process.getName())
@@ -124,7 +132,8 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 					.append(process.getDurationMillis())
 					.append(" ms)")
 					.append(hasMeasures ? " measures:" + process.getMeasures() : "")
-					.append(hasTags ? " metaData:" + process.getTags() : "")
+					.append(hasMetadatas ? " metadatas:" + process.getMetadatas() : "")
+					.append(hasTags ? " tags:" + process.getTags() : "")
 					.toString();
 			logger.info(info);
 		}

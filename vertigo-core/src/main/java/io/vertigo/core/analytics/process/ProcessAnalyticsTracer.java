@@ -43,6 +43,15 @@ public interface ProcessAnalyticsTracer {
 	ProcessAnalyticsTracer setMeasure(final String name, final double value);
 
 	/**
+	 * Sets a value to a specific metadata. (cleans if exists)
+	 *
+	 * @param name the name of the metadata
+	 * @param value the value of the metadata
+	 * @return this tracer
+	 */
+	ProcessAnalyticsTracer addMetadata(final String name, final String value);
+
+	/**
 	 * Sets a value to a specific tag. (cleans if exists)
 	 *
 	 * @param name the name of the tag
