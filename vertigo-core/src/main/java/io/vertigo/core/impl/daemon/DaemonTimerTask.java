@@ -19,6 +19,9 @@ package io.vertigo.core.impl.daemon;
 
 import java.lang.reflect.Field;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.lang.Assertion;
 
@@ -26,6 +29,8 @@ import io.vertigo.core.lang.Assertion;
  * @author mlaroche, pchretien, npiedeloup
  */
 final class DaemonTimerTask implements Runnable {
+	private static final Logger LOG = LogManager.getLogger(DaemonTimerTask.class);
+
 	private final Daemon daemon;
 	private final DaemonListener daemonListener;
 
@@ -60,7 +65,8 @@ final class DaemonTimerTask implements Runnable {
 			threadLocals.setAccessible(true);
 			threadLocals.set(Thread.currentThread(), null);
 		} catch (final Exception e) {
-			throw new AssertionError(e);
+			LOG.error("Can't fully clean TreadLocals, you may add --add-opens=java.base/java.lang=ALL-UNNAMED to your java cli");
+			//can't throw Assertion : task will be terminated; throw new AssertionError(e);
 		}
 	}
 }
