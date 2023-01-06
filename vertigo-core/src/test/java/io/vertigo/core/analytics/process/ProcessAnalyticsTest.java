@@ -205,4 +205,24 @@ public final class ProcessAnalyticsTest extends AbstractTestCaseJU5 {
 				});
 		log.trace("elapsed = " + (System.currentTimeMillis() - start));
 	}
+
+	@Test
+	public void testAddTag() {
+		analyticsManager.trace(
+				TEST_CATEGORY,
+				"/create/orders",
+				tracer -> {
+					tracer.addTag("testTag", "MyTag");
+				});
+	}
+
+	@Test
+	public void testAddMetadata() {
+		analyticsManager.trace(
+				TEST_CATEGORY,
+				"/create/orders",
+				tracer -> {
+					tracer.addMetadata("testMetaData", "MyMetaData");
+				});
+	}
 }
