@@ -196,7 +196,7 @@ public final class AProcess {
 	 * @return the metadatas of the process
 	 */
 	public Map<String, String> getMetadatas() {
-		return metadatas != null ? metadatas : Collections.emptyMap();
+		return metadatas;
 	}
 
 	/**
