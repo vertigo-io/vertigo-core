@@ -93,7 +93,6 @@ final class DateQueryParserUtil {
 		}
 		final int index = NOW.length();
 		final char operator = dateExpression.charAt(index);
-		final int sign = buildSign(dateExpression, operator);
 		//---
 		//operand = 21d
 		final String operand = dateExpression.substring(index + 1);
@@ -109,6 +108,7 @@ final class DateQueryParserUtil {
 		}
 		//---
 		final Calendar calendar = new GregorianCalendar();
+		final int sign = buildSign(dateExpression, operator);
 		final int unitCount = sign * Integer.parseInt(matcher.group(1));
 		calendar.add(CALENDAR_UNITS_INSTANT.get(calendarUnit), unitCount);
 		return calendar.toInstant();
@@ -127,7 +127,6 @@ final class DateQueryParserUtil {
 		if (dateExpression.startsWith(NOW)) {
 			final int index = NOW.length();
 			final char operator = dateExpression.charAt(index);
-			final int sign = buildSign(dateExpression, operator);
 			//---
 			//operand = 21d
 			final String operand = dateExpression.substring(index + 1);
@@ -143,6 +142,7 @@ final class DateQueryParserUtil {
 			}
 			//---
 			final Calendar calendar = new GregorianCalendar();
+			final int sign = buildSign(dateExpression, operator);
 			final int unitCount = sign * Integer.parseInt(matcher.group(1));
 			calendar.add(CALENDAR_UNITS_LOCAL_DATE.get(calendarUnit), unitCount);
 			return LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
