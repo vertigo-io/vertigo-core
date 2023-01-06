@@ -6,7 +6,8 @@ Running 4.0.0
 
 more to come :)
 
-Release 3.5.0 - 2022/01/??
+
+Release 3.5.0 - 2023/01/06
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-340-to-350)
 * [Core] Add Analytics MetaData (store as fields, not as tags)
