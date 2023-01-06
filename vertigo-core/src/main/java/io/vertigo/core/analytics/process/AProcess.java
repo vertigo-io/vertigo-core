@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,8 @@ import io.vertigo.core.lang.Assertion;
  *
  * 	[data]
  * - list of measures
- * - list of tagss
+ * - list of metadatas
+ * - list of tags
  * - list of sub processes (0..*)
  *
  * @author pchretien, npiedeloup
@@ -70,6 +71,7 @@ public final class AProcess {
 
 	private final Map<String, Double> measures;
 	private final Map<String, String> tags;
+	private final Map<String, String> metadatas;
 	private final List<AProcess> subProcesses;
 
 	/**
@@ -88,6 +90,7 @@ public final class AProcess {
 			final Instant start,
 			final Instant end,
 			final Map<String, Double> measures,
+			final Map<String, String> metadatas,
 			final Map<String, String> tags,
 			final List<AProcess> subProcesses) {
 		Assertion.check()
@@ -96,6 +99,7 @@ public final class AProcess {
 				.isNotNull(start, "the start is required")
 				.isNotNull(end, "the end is required")
 				.isNotNull(measures, "the measures are required")
+				.isNotNull(metadatas, "the metadatas are required")
 				.isNotNull(tags, "the tags are required")
 				.isNotNull(subProcesses, "the subProcesses are required");
 		//---
@@ -110,6 +114,7 @@ public final class AProcess {
 		this.start = start.toEpochMilli();
 		this.end = end.toEpochMilli();
 		this.measures = Collections.unmodifiableMap(new HashMap<>(measures));
+		this.metadatas = Collections.unmodifiableMap(new HashMap<>(metadatas));
 		this.tags = Collections.unmodifiableMap(new HashMap<>(tags));
 		this.subProcesses = subProcesses;
 	}
@@ -185,6 +190,13 @@ public final class AProcess {
 	 */
 	public Map<String, Double> getMeasures() {
 		return measures;
+	}
+
+	/**
+	 * @return the metadatas of the process
+	 */
+	public Map<String, String> getMetadatas() {
+		return metadatas;
 	}
 
 	/**
