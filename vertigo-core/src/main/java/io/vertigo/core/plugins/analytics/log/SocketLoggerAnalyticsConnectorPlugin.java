@@ -25,6 +25,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
 
@@ -82,11 +83,11 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	private final ConcurrentLinkedQueue<Object> sendQueue = new ConcurrentLinkedQueue<>();
 
 	static class SocketLoggerAnalyticsThreadFactory implements ThreadFactory {
-		private static int threadCounter = 0;
+		private static AtomicInteger threadCounter = new AtomicInteger();
 
 		@Override
 		public Thread newThread(final Runnable r) {
-			return new Thread(r, "SocketLoggerAnalyticsExecutor-" + (++threadCounter));
+			return new Thread(r, "SocketLoggerAnalyticsExecutor-" + threadCounter.incrementAndGet());
 		}
 	}
 
