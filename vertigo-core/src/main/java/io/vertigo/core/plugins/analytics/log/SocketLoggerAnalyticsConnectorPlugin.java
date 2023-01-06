@@ -63,6 +63,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	private static final Logger LOGGER = LogManager.getLogger(SocketLoggerAnalyticsConnectorPlugin.class);
 	private static final Gson GSON = new GsonBuilder().create();
 	private static final int DEFAULT_CONNECT_TIMEOUT = 250;// 250ms for connection to log4j server
+	private static final int DEFAULT_SOCKET_TIMEOUT = 5000;// 5s for socket to log4j server
 	private static final int DEFAULT_DISCONNECT_TIMEOUT = 5000;// 5s for disconnection to log4j server
 	private static final int DEFAULT_SERVER_PORT = 4562;// DefaultPort of SocketAppender 4650 for log4j and 4562 for log4j2
 
@@ -113,7 +114,8 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		appName = Node.getNode().getNodeConfig().getAppName() + envNameParamOpt.map(paramManager::getParam).map(Param::getValueAsString).map(env -> '-' + env.toLowerCase()).orElse("");
 		hostName = hostNameParamOpt.map(paramManager::getParam).map(Param::getValueAsString).orElse("analytica.part.klee.lan.net");
 		port = portParamOpt.map(paramManager::getParam).map(Param::getValueAsInt).orElse(DEFAULT_SERVER_PORT);
-		nodeName = nodeNameParamOpt.map(paramManager::getOptionalParam).map(opt -> opt.map(Param::getValueAsString)).orElseGet(() -> Optional.of(SocketLoggerAnalyticsConnectorPlugin.retrieveHostName())).get();
+		nodeName = nodeNameParamOpt.map(paramManager::getOptionalParam).map(opt -> opt.map(Param::getValueAsString))
+				.orElseGet(() -> Optional.of(SocketLoggerAnalyticsConnectorPlugin.retrieveHostName())).get();
 	}
 
 	/** {@inheritDoc} */
@@ -126,7 +128,8 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 			if (logCounterEvery100 == 0) {
 				LOGGER.error("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose process ");
 			}
-			logCounterEvery100 = ++logCounterEvery100 % 100;
+			++logCounterEvery100;
+			logCounterEvery100 = logCounterEvery100 % 100;
 		} else {
 			logCounterEvery100 = 0;
 			sendQueue.add(process);
@@ -143,7 +146,8 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 			if (logCounterEvery100 == 0) {
 				LOGGER.error("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose metrics ");
 			}
-			logCounterEvery100 = ++logCounterEvery100 % 100;
+			++logCounterEvery100;
+			logCounterEvery100 = logCounterEvery100 % 100;
 		} else {
 			logCounterEvery100 = 0;
 			sendQueue.add(metric);
@@ -160,7 +164,8 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 			if (logCounterEvery100 == 0) {
 				LOGGER.error("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose healthChecks ");
 			}
-			logCounterEvery100 = ++logCounterEvery100 % 100;
+			++logCounterEvery100;
+			logCounterEvery100 = logCounterEvery100 % 100;
 		} else {
 			logCounterEvery100 = 0;
 			sendQueue.add(healthCheck);
@@ -186,7 +191,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 					.withHost(hostName)
 					.withPort(port)
 					.withConnectTimeoutMillis(DEFAULT_CONNECT_TIMEOUT)
-					.withSocketOptions(SocketOptions.newBuilder().setSoTimeout(5000).build())
+					.withSocketOptions(SocketOptions.newBuilder().setSoTimeout(DEFAULT_SOCKET_TIMEOUT).build())
 					.withImmediateFail(true)
 					.withReconnectDelayMillis(-1)// we make only one try
 					.build();
