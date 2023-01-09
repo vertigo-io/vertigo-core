@@ -32,6 +32,7 @@ import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.plugins.resource.local.LocalResourceResolverPlugin;
+import io.vertigo.core.plugins.resource.unsafeurl.UnsafeURLResourceResolverPlugin;
 import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
 
 /**
@@ -49,6 +50,7 @@ public final class ResourceManagerTest extends AbstractTestCaseJU5 {
 						.withLocales(locales)
 						.addPlugin(LocalResourceResolverPlugin.class)
 						.addPlugin(URLResourceResolverPlugin.class)
+						.addPlugin(UnsafeURLResourceResolverPlugin.class)
 						.addPlugin(ClassPathResourceResolverPlugin.class)
 						.build())
 				.build();
