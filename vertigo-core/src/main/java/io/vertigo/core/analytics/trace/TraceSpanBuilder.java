@@ -122,7 +122,7 @@ public final class TraceSpanBuilder implements Builder<TraceSpan> {
 	 * @param value  the metadata value
 	 * @return this builder
 	 */
-	public TraceSpanBuilder addMetadata(final String name, final String value) {
+	public TraceSpanBuilder withMetadata(final String name, final String value) {
 		Assertion.check()
 				.isNotNull(name, "metadata name is required")
 				.isNotNull(value, "metadata value is required");

@@ -85,15 +85,15 @@ final class TracerImpl implements Tracer, AutoCloseable {
 
 	/** {@inheritDoc} */
 	@Override
-	public Tracer addMetadata(final String name, final String value) {
-		spanBuilder.addMetadata(name, value);
+	public Tracer setMetadata(final String name, final String value) {
+		spanBuilder.withMetadata(name, value);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Tracer addTag(final String name, final String value) {
-		spanBuilder.addTag(name, value);
+	public Tracer setTag(final String name, final String value) {
+		spanBuilder.withTag(name, value);
 		return this;
 	}
 

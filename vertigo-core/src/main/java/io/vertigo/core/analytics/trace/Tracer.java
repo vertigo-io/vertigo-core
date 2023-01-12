@@ -49,7 +49,7 @@ public interface Tracer {
 	 * @param value the value of the metadata
 	 * @return this tracer
 	 */
-	ProcessAnalyticsTracer addMetadata(final String name, final String value);
+	Tracer setMetadata(final String name, final String value);
 
 	/**
 	 * Sets a value to a specific tag. (cleans if exists)

@@ -216,7 +216,7 @@ public final class TraceAnalyticsTest extends AbstractTestCaseJU5 {
 				TEST_CATEGORY,
 				"/create/orders",
 				tracer -> {
-					tracer.addTag("testTag", "MyTag");
+					tracer.setTag("testTag", "MyTag");
 				});
 	}
 
@@ -226,7 +226,7 @@ public final class TraceAnalyticsTest extends AbstractTestCaseJU5 {
 				TEST_CATEGORY,
 				"/create/orders",
 				tracer -> {
-					tracer.addMetadata("testMetaData", "MyMetaData");
+					tracer.setMetadata("testMetaData", "MyMetaData");
 				});
 	}
 }
