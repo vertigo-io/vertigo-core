@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,9 @@ package io.vertigo.core.impl.daemon;
 
 import java.lang.reflect.Field;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.lang.Assertion;
 
@@ -26,6 +29,8 @@ import io.vertigo.core.lang.Assertion;
  * @author mlaroche, pchretien, npiedeloup
  */
 final class DaemonTimerTask implements Runnable {
+	private static final Logger LOG = LogManager.getLogger(DaemonTimerTask.class);
+
 	private final Daemon daemon;
 	private final DaemonListener daemonListener;
 
@@ -62,7 +67,8 @@ final class DaemonTimerTask implements Runnable {
 				threadLocals.set(Thread.currentThread(), null);
 			}
 		} catch (final Exception e) {
-			throw new AssertionError(e);
+			LOG.error("Can't fully clean TreadLocals, you may add --add-opens=java.base/java.lang=ALL-UNNAMED to your java cli", e);
+			//can't throw Assertion : task will be terminated; throw new AssertionError(e);
 		}
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,8 +85,15 @@ final class TracerImpl implements Tracer, AutoCloseable {
 
 	/** {@inheritDoc} */
 	@Override
-	public Tracer setTag(final String name, final String value) {
-		spanBuilder.withTag(name, value);
+	public Tracer addMetadata(final String name, final String value) {
+		spanBuilder.addMetadata(name, value);
+		return this;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Tracer addTag(final String name, final String value) {
+		spanBuilder.addTag(name, value);
 		return this;
 	}
 
@@ -115,6 +122,7 @@ final class TracerImpl implements Tracer, AutoCloseable {
 	private void logSpan(final TraceSpan span) {
 		if (logger.isInfoEnabled()) {
 			final boolean hasMeasures = !span.getMeasures().isEmpty();
+			final boolean hasMetadatas = !span.getMetadatas().isEmpty();
 			final boolean hasTags = !span.getTags().isEmpty();
 			final String info = new StringBuilder()
 					.append("Finish ")
@@ -124,7 +132,8 @@ final class TracerImpl implements Tracer, AutoCloseable {
 					.append(span.getDurationMillis())
 					.append(" ms)")
 					.append(hasMeasures ? " measures:" + span.getMeasures() : "")
-					.append(hasTags ? " metaData:" + span.getTags() : "")
+					.append(hasMetadatas ? " metadatas:" + span.getMetadatas() : "")
+					.append(hasTags ? " tags:" + span.getTags() : "")
 					.toString();
 			logger.info(info);
 		}

@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,7 @@ public final class TraceSpanBuilder implements Builder<TraceSpan> {
 	private final String myName;
 
 	private final Map<String, Double> measures = new HashMap<>();
+	private final Map<String, String> metadatas = new HashMap<>();
 	private final Map<String, String> tags = new HashMap<>();
 
 	private final List<TraceSpan> childSpans = new ArrayList<>();
@@ -116,8 +117,22 @@ public final class TraceSpanBuilder implements Builder<TraceSpan> {
 	}
 
 	/**
-	 * Sets a tag defined by a name and a value.
-	 *
+	 * Adds a metadata defined by a name and a value.
+	 * @param name the metadata name
+	 * @param value  the metadata value
+	 * @return this builder
+	 */
+	public TraceSpanBuilder addMetadata(final String name, final String value) {
+		Assertion.check()
+				.isNotNull(name, "metadata name is required")
+				.isNotNull(value, "metadata value is required");
+		//---------------------------------------------------------------------
+		metadatas.put(name, value);
+		return this;
+	}
+
+	/**
+	 * Adds a tag defined by a name and a value.
 	 * @param name the tag name
 	 * @param value the tag value
 	 * @return this builder
@@ -154,6 +169,7 @@ public final class TraceSpanBuilder implements Builder<TraceSpan> {
 				start,
 				end,
 				measures,
+				metadatas,
 				tags,
 				childSpans);
 	}

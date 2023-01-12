@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,11 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
 
@@ -34,6 +38,7 @@ import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
+import org.apache.logging.log4j.core.net.SocketOptions;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -43,10 +48,13 @@ import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.daemon.DaemonScheduled;
+import io.vertigo.core.analytics.process.AProcess;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.plugins.analytics.log.log4j.AnalyticsSocketAppender;
 import io.vertigo.core.plugins.analytics.log.log4j.AnalyticsSocketAppender.Builder;
@@ -57,10 +65,16 @@ import io.vertigo.core.plugins.analytics.log.log4j.AnalyticsSocketAppender.Build
  * @author mlaroche, pchretien, npiedeloup
  */
 public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin, Activeable {
+	private static final Logger LOGGER = LogManager.getLogger(SocketLoggerAnalyticsConnectorPlugin.class);
 	private static final Gson GSON = new GsonBuilder().create();
 	private static final int DEFAULT_CONNECT_TIMEOUT = 250;// 250ms for connection to log4j server
+	private static final int DEFAULT_SOCKET_TIMEOUT = 5000;// 5s for socket to log4j server
 	private static final int DEFAULT_DISCONNECT_TIMEOUT = 5000;// 5s for disconnection to log4j server
 	private static final int DEFAULT_SERVER_PORT = 4562;// DefaultPort of SocketAppender 4650 for log4j and 4562 for log4j2
+
+	private static final int SEND_QUEUE_MAX_SIZE = 10_000;// 10k elements
+	private int logCounterEvery100 = 0;
+	private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(new SocketLoggerAnalyticsThreadFactory());
 
 	private Logger socketProcessLogger;
 	private Logger socketHealthLogger;
@@ -69,12 +83,19 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	private final int port;
 	private SocketAppender appender;
 
-	private final String appName;
-	private final String localHostName;
-	private final int bufferSize;
-	private final boolean devConfig;
-
 	private final ConcurrentLinkedQueue<TraceSpan> spanQueue = new ConcurrentLinkedQueue<>();
+	private final String nodeName;
+
+	private final ConcurrentLinkedQueue<Object> sendQueue = new ConcurrentLinkedQueue<>();
+
+	static class SocketLoggerAnalyticsThreadFactory implements ThreadFactory {
+		private static AtomicInteger threadCounter = new AtomicInteger();
+
+		@Override
+		public Thread newThread(final Runnable r) {
+			return new Thread(r, "SocketLoggerAnalyticsExecutor-" + threadCounter.incrementAndGet());
+		}
+	}
 
 	/**
 	 * Constructor.
@@ -86,22 +107,22 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	 */
 	@Inject
 	public SocketLoggerAnalyticsConnectorPlugin(
-			@ParamValue("appName") final Optional<String> appNameOpt,
-			@ParamValue("hostName") final Optional<String> hostNameOpt,
-			@ParamValue("port") final Optional<Integer> portOpt,
-			@ParamValue("bufferSize") final Optional<Integer> bufferSizeOpt) {
+			final ParamManager paramManager,
+			@ParamValue("hostNameParam") final Optional<String> hostNameParamOpt,
+			@ParamValue("portParam") final Optional<String> portParamOpt,
+			@ParamValue("nodeNameParam") final Optional<String> nodeNameParamOpt,
+			@ParamValue("envNameParam") final Optional<String> envNameParamOpt) {
 		Assertion.check()
-				.isNotNull(appNameOpt)
-				.isNotNull(hostNameOpt)
-				.isNotNull(portOpt)
-				.isNotNull(bufferSizeOpt);
+				.isNotNull(hostNameParamOpt)
+				.isNotNull(portParamOpt)
+				.isNotNull(nodeNameParamOpt)
+				.isNotNull(envNameParamOpt);
 		// ---
-		appName = appNameOpt.orElseGet(() -> Node.getNode().getNodeConfig().appName());
-		hostName = hostNameOpt.orElse("analytica.part.klee.lan.net");
-		devConfig = hostNameOpt.isEmpty();
-		port = portOpt.orElse(DEFAULT_SERVER_PORT);
-		localHostName = retrieveHostName();
-		bufferSize = bufferSizeOpt.orElse(50);
+		appName = Node.getNode().getNodeConfig().getAppName() + envNameParamOpt.map(paramManager::getParam).map(Param::getValueAsString).map(env -> '-' + env.toLowerCase()).orElse("");
+		hostName = hostNameParamOpt.map(paramManager::getParam).map(Param::getValueAsString).orElse("analytica.part.klee.lan.net");
+		port = portParamOpt.map(paramManager::getParam).map(Param::getValueAsInt).orElse(DEFAULT_SERVER_PORT);
+		nodeName = nodeNameParamOpt.map(paramManager::getOptionalParam).map(opt -> opt.map(Param::getValueAsString))
+				.orElseGet(() -> Optional.of(SocketLoggerAnalyticsConnectorPlugin.retrieveHostName())).get();
 	}
 
 	/** {@inheritDoc} */
@@ -110,27 +131,52 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		Assertion.check()
 				.isNotNull(span);
 		//---
-		spanQueue.add(span);
+		if (sendQueue.size() > SEND_QUEUE_MAX_SIZE) {
+			if (logCounterEvery100 == 0) {
+				LOGGER.error("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose process ");
+			}
+			++logCounterEvery100;
+			logCounterEvery100 = logCounterEvery100 % 100;
+		} else {
+			logCounterEvery100 = 0;
+			sendQueue.add(process);
+		}
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void add(final Metric metric) {
-		if (socketMetricLogger == null) {
-			socketMetricLogger = createLogger("vertigo-analytics-metric");
+		Assertion.check()
+				.isNotNull(metric);
+		//---
+		if (sendQueue.size() > SEND_QUEUE_MAX_SIZE) {
+			if (logCounterEvery100 == 0) {
+				LOGGER.error("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose metrics ");
+			}
+			++logCounterEvery100;
+			logCounterEvery100 = logCounterEvery100 % 100;
+		} else {
+			logCounterEvery100 = 0;
+			sendQueue.add(metric);
 		}
-		sendObject(metric, socketMetricLogger);
-
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void add(final HealthCheck healthCheck) {
-		if (socketHealthLogger == null) {
-			socketHealthLogger = createLogger("vertigo-analytics-health");
+		Assertion.check()
+				.isNotNull(healthCheck);
+		//---
+		if (sendQueue.size() > SEND_QUEUE_MAX_SIZE) {
+			if (logCounterEvery100 == 0) {
+				LOGGER.error("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose healthChecks ");
+			}
+			++logCounterEvery100;
+			logCounterEvery100 = logCounterEvery100 % 100;
+		} else {
+			logCounterEvery100 = 0;
+			sendQueue.add(healthCheck);
 		}
-		sendObject(healthCheck, socketHealthLogger);
-
 	}
 
 	private static String retrieveHostName() {
@@ -170,6 +216,9 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
 		final Configuration config = ctx.getConfiguration();
 		config.addAppender(appender);
+
+		final PoolerTimerTask timerTask = new PoolerTimerTask(this);
+		scheduler.scheduleWithFixedDelay(timerTask, 1, 1, TimeUnit.SECONDS);
 	}
 
 	@Override
@@ -196,32 +245,84 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	/**
 	 * Daemon to unstack processes to end them
 	 */
-	@DaemonScheduled(name = "DmnRemoteLogger", periodInSeconds = 1, analytics = false)
+	//@DaemonScheduled(name = "DmnRemoteLogger", periodInSeconds = 1, analytics = false)
 	public void pollQueue() {
-		while (!spanQueue.isEmpty()) {
-			final TraceSpan head = spanQueue.poll();
+		while (!sendQueue.isEmpty()) {
+			final Object head = sendQueue.peek();
+
 			if (head != null) {
-				sendSpan(head);
+				try {
+					if (head instanceof AProcess) {
+						sendProcess((AProcess) head);
+					} else if (head instanceof Metric) {
+						sendMetric((Metric) head);
+					} else if (head instanceof HealthCheck) {
+						sendHealthCheck((HealthCheck) head);
+					}
+					sendQueue.remove(head);
+				} catch (final Exception e) {
+					LOGGER.error("Can't send " + head.getClass().getSimpleName() + " to analytics server (sendQueueSize:" + sendQueue.size() + ")", e);
+				}
 			}
 		}
-
 	}
 
 	private void sendSpan(final TraceSpan span) {
-		if (socketProcessLogger == null) {
+		if (appender != null && socketProcessLogger == null) {
 			socketProcessLogger = createLogger("vertigo-analytics-process");
 		}
 		sendObject(span, socketProcessLogger);
 	}
 
+	private void sendMetric(final Metric metric) {
+		if (appender != null && socketMetricLogger == null) {
+			socketMetricLogger = createLogger("vertigo-analytics-metric");
+		}
+		sendObject(metric, socketMetricLogger);
+	}
+
+	private void sendHealthCheck(final HealthCheck healthCheck) {
+		if (appender != null && socketHealthLogger == null) {
+			socketHealthLogger = createLogger("vertigo-analytics-health");
+		}
+		sendObject(healthCheck, socketHealthLogger);
+
+	}
+
 	private void sendObject(final Object object, final Logger logger) {
 
-		if (logger.isInfoEnabled()) {
+		if (appender != null && logger.isInfoEnabled()) {
 			final JsonObject log = new JsonObject();
 			log.addProperty("appName", appName);
-			log.addProperty("host", localHostName);
+			log.addProperty("host", nodeName);
 			log.add("event", GSON.toJsonTree(object));
 			logger.info(GSON.toJson(log));
+		}
+	}
+
+	/**
+	 * @author npiedeloup
+	 */
+	static final class PoolerTimerTask implements Runnable {
+		private static final Logger LOG = LogManager.getLogger(PoolerTimerTask.class);
+
+		private final SocketLoggerAnalyticsConnectorPlugin socketLoggerAnalyticsConnectorPlugin;
+
+		PoolerTimerTask(final SocketLoggerAnalyticsConnectorPlugin socketLoggerAnalyticsConnectorPlugin) {
+			Assertion.check()
+					.isNotNull(socketLoggerAnalyticsConnectorPlugin);
+			//---
+			this.socketLoggerAnalyticsConnectorPlugin = socketLoggerAnalyticsConnectorPlugin;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public void run() {
+			try {//try catch needed to ensure execution aren't suppressed
+				socketLoggerAnalyticsConnectorPlugin.pollQueue();
+			} catch (final Throwable th) { //catch Throwable to not stop daemon task silently
+				LOG.error("Can't pollQueue", th);
+			}
 		}
 	}
 

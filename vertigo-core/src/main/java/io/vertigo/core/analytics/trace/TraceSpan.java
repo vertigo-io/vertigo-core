@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@ import io.vertigo.core.lang.Assertion;
  * 	[data]
  * - measures
  * - tags
+ * - metadatas
  *
  *  [span hierarchy]
  * - list of child spans (0..*)
@@ -69,6 +70,7 @@ public final class TraceSpan {
 	private final long end; //when
 
 	private final Map<String, Double> measures;
+	private final Map<String, String> metadatas;
 	private final Map<String, String> tags;
 	private final List<TraceSpan> childSpans;
 
@@ -88,6 +90,7 @@ public final class TraceSpan {
 			final Instant start,
 			final Instant end,
 			final Map<String, Double> measures,
+			final Map<String, String> metadatas,
 			final Map<String, String> tags,
 			final List<TraceSpan> childSpans) {
 		Assertion.check()
@@ -96,6 +99,7 @@ public final class TraceSpan {
 				.isNotNull(start, "the start is required")
 				.isNotNull(end, "the end is required")
 				.isNotNull(measures, "the measures are required")
+				.isNotNull(metadatas, "the metadatas are required")
 				.isNotNull(tags, "the tags are required")
 				.isNotNull(childSpans, "the child spans are required");
 		//---
@@ -110,6 +114,7 @@ public final class TraceSpan {
 		this.start = start.toEpochMilli();
 		this.end = end.toEpochMilli();
 		this.measures = Map.copyOf(measures);
+		this.metadatas = Map.copyOf(metadatas);
 		this.tags = Map.copyOf(tags);
 		this.childSpans = List.copyOf(childSpans);
 	}
@@ -187,6 +192,13 @@ public final class TraceSpan {
 	 */
 	public Map<String, Double> getMeasures() {
 		return measures;
+	}
+
+	/**
+	 * @return the span metadatas
+	 */
+	public Map<String, String> getMetadatas() {
+		return metadatas;
 	}
 
 	/**

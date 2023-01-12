@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,15 @@ public interface Tracer {
 	 * @return this tracer
 	*/
 	Tracer setMeasure(final String name, final double value);
+
+	/**
+	 * Sets a value to a specific metadata. (cleans if exists)
+	 *
+	 * @param name the name of the metadata
+	 * @param value the value of the metadata
+	 * @return this tracer
+	 */
+	ProcessAnalyticsTracer addMetadata(final String name, final String value);
 
 	/**
 	 * Sets a value to a specific tag. (cleans if exists)

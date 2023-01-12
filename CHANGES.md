@@ -6,7 +6,31 @@ Running 4.0.0
 
 more to come :)
 
-Release 3.3.0 - 2021/02/03
+
+Release 3.5.0 - 2023/01/06
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-340-to-350)
+* [Core] Add Analytics MetaData (store as fields, not as tags)
+* [Core] Log error if threadLocal can't be clear after Daemon exec; Can't throw Assertion : task will be terminated
+* [Core] Analytics add into a single queue and a dedicated thread used for sending to analytics server
+* [Core] Updated libs
+  - gson 2.9.1 -> 2.10
+  - junit 5.7.0 -> 5.9.1
+  
+
+Release 3.4.0 - 2022/10/12
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-330-to-340)
+* **[Core] ParamManager return Optional param values**
+* [analytics] Add json socketLogger (with https)
+* [param] Add a plugin to retrieve params from SystemProperties
+* [Core] Updated libs
+  - log4j-core 2.17.1 -> 2.19.0
+  - gson 2.8.9 -> 2.9.1
+  - snakeyaml 1.30 -> 1.33
+  - javassist 3.28.0-GA -> 3.29.2-GA
+
+Release 3.3.0 - 2022/02/03
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-320-to-330)
 * [Core] Centralize XML Owasp recommendations
