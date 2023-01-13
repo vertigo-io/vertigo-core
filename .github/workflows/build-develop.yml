@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
         influxdb:
-            image: influxdb:2.0
+            image: influxdb:2.4
             env:
               DOCKER_INFLUXDB_INIT_MODE: setup
               DOCKER_INFLUXDB_INIT_USERNAME: vertigo
@@ -21,7 +21,7 @@ jobs:
             ports:
               - 8086:8086
         analytics:
-            image: vertigoio/vertigo-analytics-server
+            image: vertigoio/vertigo-analytics-server:0.9.2
             env:
               INFLUXDB_URL: http://influxdb:8086
               INFLUXDB_TOKEN: rytuvFE1f5JR4CPD1cOfr-74W2rL7tu1by-6DnO6zbTxMQy6foj7qtBMYSkFGT15Y1vjJCr5OP01Uci_ZdIlIA==
@@ -32,10 +32,10 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
           ref: develop
-      - name: Set up JDK 16
+      - name: Set up JDK 17
         uses: actions/setup-java@v1
         with:
-          java-version: 16
+          java-version: 17
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:
