@@ -30,7 +30,6 @@ import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.health.data.FailedComponentChecker;
 import io.vertigo.core.analytics.health.data.SuccessComponentChecker;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 
@@ -55,7 +54,7 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU5 {
 		//---
 		Assertions.assertEquals(1, failedHealthChecks.size());
 		Assertions.assertEquals(HealthStatus.RED, failedHealthChecks.get(0).healthMeasure().status());
-		Assertions.assertTrue(failedHealthChecks.get(0).healthMeasure().cause() instanceof VSystemException);
+		Assertions.assertTrue(failedHealthChecks.get(0).healthMeasure().message() != null);
 	}
 
 	@Test

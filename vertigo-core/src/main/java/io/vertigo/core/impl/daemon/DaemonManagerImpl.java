@@ -159,11 +159,11 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 					.build();
 		} else if (failureCount < daemonStats.size()) {
 			return healthMeasure
-					.withYellowStatus("At least one daemon failed", null)
+					.withYellowStatus("At least one daemon failed")
 					.build();
 		}
 		return healthMeasure
-				.withRedStatus("All daemons failed", null)
+				.withRedStatus("All daemons failed")
 				.build();
 
 	}

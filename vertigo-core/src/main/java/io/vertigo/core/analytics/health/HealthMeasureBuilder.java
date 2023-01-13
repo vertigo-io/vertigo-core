@@ -28,7 +28,6 @@ import io.vertigo.core.lang.Builder;
 public final class HealthMeasureBuilder implements Builder<HealthMeasure> {
 	private HealthStatus myStatus;
 	private String myMessage; //may be null
-	private Exception myCause; //may be null
 
 	HealthMeasureBuilder() {
 		//package : use the builder instead
@@ -45,7 +44,7 @@ public final class HealthMeasureBuilder implements Builder<HealthMeasure> {
 	 * @return this builder
 	 */
 	public HealthMeasureBuilder withGreenStatus(final String message) {
-		return withStatus(HealthStatus.GREEN, message, null);
+		return withStatus(HealthStatus.GREEN, message);
 	}
 
 	/**
@@ -54,32 +53,30 @@ public final class HealthMeasureBuilder implements Builder<HealthMeasure> {
 	 * @param cause the exception throwed during status test
 	 * @return this builder
 	 */
-	public HealthMeasureBuilder withYellowStatus(final String message, final Exception cause) {
-		return withStatus(HealthStatus.YELLOW, message, cause);
+	public HealthMeasureBuilder withYellowStatus(final String message) {
+		return withStatus(HealthStatus.YELLOW, message);
 	}
 
 	/**
 	 * @param message a message that explains the status
-	 * @param cause the exception throwed during status test
 	 * @return this builder
 	*/
-	public HealthMeasureBuilder withRedStatus(final String message, final Exception cause) {
-		return withStatus(HealthStatus.RED, message, cause);
+	public HealthMeasureBuilder withRedStatus(final String message) {
+		return withStatus(HealthStatus.RED, message);
 	}
 
-	private HealthMeasureBuilder withStatus(final HealthStatus healthStatus, final String message, final Exception cause) {
+	private HealthMeasureBuilder withStatus(final HealthStatus healthStatus, final String message) {
 		Assertion.check()
 				.isNull(myStatus, "status already set")
 				.isNotNull(healthStatus);
 		//---
 		myStatus = healthStatus;
 		myMessage = message;
-		myCause = cause;
 		return this;
 	}
 
 	@Override
 	public HealthMeasure build() {
-		return new HealthMeasure(myStatus, myMessage, myCause);
+		return new HealthMeasure(myStatus, myMessage);
 	}
 }

@@ -28,16 +28,15 @@ import io.vertigo.core.lang.Assertion;
  * Ping to a Database produces a specific Measure
  *
  * @author jmforhan
- * 
+ *
  * @param status the status returned by the test
  * @param message a nullable message that explains the status (should be required whenever the status is not GREEN)
- * @param cause the exception thrown during status checking (Should be empty with a GREEN status)
  */
 public record HealthMeasure(
 		HealthStatus status,
-		String message, //may be null
-		Exception cause //may be null
+		String message //may be null
 ) {
+
 	/**
 	 * Creates the builder.
 	 * @return the builder
@@ -46,11 +45,12 @@ public record HealthMeasure(
 		return new HealthMeasureBuilder();
 	}
 
-	public HealthMeasure {
+	public HealthMeasure
+
+	{
 		Assertion.check().isNotNull(status);
-		/* 
+		/*
 		 * message can be null
-		 * cause can be null
 		 */
 	}
 }

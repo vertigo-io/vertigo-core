@@ -108,7 +108,7 @@ public final class HealthUtil {
 			healthMeasure = healthCheckDefinition.getCheckMethod().get();
 		} catch (final Exception e) {
 			healthMeasure = HealthMeasure.builder()
-					.withRedStatus("Impossible to get status", e)
+					.withRedStatus(e.getMessage())
 					.build();
 		}
 		return new HealthCheck(
