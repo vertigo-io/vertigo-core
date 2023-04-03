@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2022, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.plugins.resource.url;
+package io.vertigo.core.plugins.resource.unsafeurl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,25 +31,17 @@ import io.vertigo.core.lang.Assertion;
  *
  * @author npiedeloup
  */
-public final class URLResourceResolverPlugin implements ResourceResolverPlugin {
+public final class UnsafeURLResourceResolverPlugin implements ResourceResolverPlugin {
 
 	/** {@inheritDoc} */
 	@Override
 	public Optional<URL> resolve(final String resource) {
 		Assertion.check().isNotNull(resource);
-
-		if (!resource.contains("://")
-				|| resource.startsWith("file://")
-				|| resource.startsWith("classpath://")
-				|| resource.startsWith("jar://")) {
-			try {
-				final URL url = new URL(resource);
-				return isUrlAvailable(url) ? Optional.of(url) : Optional.empty();
-			} catch (final MalformedURLException e) {
-				return Optional.empty();
-			}
-		} else {
-			//Only protocol file, jar, classpath are supported. You may use UnsafeURLResourceResolverPlugin.
+		//-----
+		try {
+			final URL url = new URL(resource);
+			return isUrlAvailable(url) ? Optional.of(url) : Optional.empty();
+		} catch (final MalformedURLException e) {
 			return Optional.empty();
 		}
 	}

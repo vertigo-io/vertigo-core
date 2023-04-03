@@ -36,6 +36,8 @@ import io.vertigo.core.lang.Assertion;
 final class TracerImpl implements Tracer, AutoCloseable {
 	private final Logger logger;
 
+	private int logStackTraceCounter = 0;
+
 	private Boolean succeeded; //default no info
 	private Throwable causeException; //default no info
 	private final Consumer<TraceSpan> consumer;
@@ -57,7 +59,8 @@ final class TracerImpl implements Tracer, AutoCloseable {
 		Assertion.check()
 				.isNotBlank(category)
 				.isNotBlank(name)
-				.isNotNull(consumer);
+				.isNotNull(consumer)
+				.isNotNull(parentOptSupplier);
 		//---
 		logger = LogManager.getLogger(category);
 		this.consumer = consumer;
@@ -114,8 +117,17 @@ final class TracerImpl implements Tracer, AutoCloseable {
 			//when the current process is a subProcess, it's finished and must be added to the parent
 			parentOpt.get().spanBuilder.addChildSpan(span);
 		} else {
-			//when the current process is the root process, it's finished and must be sent to the connector
-			consumer.accept(span);
+			try {
+				//when the current process is the root process, it's finished and must be sent to the connector
+				consumer.accept(span);
+			} catch (final Throwable th) {//catch Throwable : We must ensure there is no exception here : it will be loose
+				if (logStackTraceCounter % 100 == 0) {
+					logger.warn("Error while closing process (error in consumer " + consumer.getClass().getName() + ").", th);
+				} else {
+					logger.warn("Error while closing process (error in consumer {0}).", consumer.getClass().getName());
+				}
+				logStackTraceCounter = logStackTraceCounter++ % 100;
+			}
 		}
 	}
 
