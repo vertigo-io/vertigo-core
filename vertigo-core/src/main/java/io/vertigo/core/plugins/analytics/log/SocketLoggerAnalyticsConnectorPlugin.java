@@ -123,9 +123,10 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		hostName = hostNameParamOpt.map(paramManager::getParam).map(Param::getValueAsString).orElse("analytica.part.klee.lan.net");
 		devConfig = hostNameParamOpt.isEmpty();
 		port = portParamOpt.map(paramManager::getParam).map(Param::getValueAsInt).orElse(DEFAULT_SERVER_PORT);
-		nodeName = nodeNameParamOpt.map(paramManager::getOptionalParam).map(opt -> opt.map(Param::getValueAsString)
-				.orElseGet(SocketLoggerAnalyticsConnectorPlugin::retrieveHostName)).get();	
-		bufferSize = bufferSizeOpt.orElse(50);	
+		nodeName = nodeNameParamOpt
+				.map(paramName -> paramManager.getOptionalParam(paramName).map(Param::getValueAsString).orElseGet(SocketLoggerAnalyticsConnectorPlugin::retrieveHostName))
+				.orElseGet(SocketLoggerAnalyticsConnectorPlugin::retrieveHostName);
+		bufferSize = bufferSizeOpt.orElse(50);
 	}
 
 	/** {@inheritDoc} */
