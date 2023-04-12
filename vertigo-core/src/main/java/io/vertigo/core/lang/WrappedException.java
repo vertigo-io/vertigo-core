@@ -48,9 +48,7 @@ public final class WrappedException extends RuntimeException {
 	 * @return RuntimeException runtime
 	 */
 	public static RuntimeException wrap(final Throwable th) {
-		//WrapException are use to wrap unkowned exception the message can be null.
-		//But we check a dev's exception have got a message, so in this api (with just th) we send "null" if message is null
-		return wrap(th, String.valueOf(th.getMessage()));
+		return wrap(th, th.getMessage());
 	}
 
 	/**
@@ -63,13 +61,13 @@ public final class WrappedException extends RuntimeException {
 	 * @return RuntimeException runtime
 	 */
 	public static RuntimeException wrap(final Throwable th, final String msg, final Object... params) {
-		Assertion.check().isNotBlank(msg);
-		//---
 		final Throwable t = (th instanceof InvocationTargetException ite)
 				? ite.getTargetException()
 				: th;
 
-		final String message = StringUtil.format(msg, params);
+		//WrapException are use to wrap unkowned exception the message can be null.
+		//But we check a dev's exception have got a message, so in this api (with just th) we send "no message provided" if message is null
+		final String message = StringUtil.isBlank(msg) ? "no message provided" : StringUtil.format(msg, params);
 		if (t instanceof RuntimeException rte) {
 			rte.addSuppressed(new VSystemException(message));
 			throw rte;
