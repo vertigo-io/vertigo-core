@@ -39,7 +39,6 @@ import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import io.vertigo.core.analytics.health.HealthCheck;
@@ -49,6 +48,7 @@ import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.lang.json.CoreJsonAdapters;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.Param;
@@ -60,7 +60,7 @@ import io.vertigo.core.param.ParamValue;
  * @author mlaroche, pchretien, npiedeloup
  */
 public final class SocketLoggerJsonAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin, Activeable {
-	private static final Gson GSON = new GsonBuilder().create();
+	private static final Gson GSON = CoreJsonAdapters.V_CORE_GSON;
 	private static final int DEFAULT_CONNECT_TIMEOUT = 250;// 250ms for connection to log4j server
 	private static final int DEFAULT_DISCONNECT_TIMEOUT = 5000;// 5s for disconnection to log4j server
 	private static final int DEFAULT_SERVER_PORT = 4563;// DefaultPort of SocketAppender 4562 for log4j2 and 4563 for json over tls

@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.lang.ListBuilder;
+import io.vertigo.core.lang.json.JsonExclude;
 import io.vertigo.core.node.component.AspectPlugin;
 
 /**
