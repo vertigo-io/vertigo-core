@@ -35,7 +35,7 @@ import io.vertigo.core.AbstractTestCaseJU5;
  */
 public abstract class AbstractParamManagerTest extends AbstractTestCaseJU5 {
 	@Inject
-	private ParamManager paramManager;
+	protected ParamManager paramManager;
 
 	@Test
 	public void test1() {
@@ -96,4 +96,5 @@ public abstract class AbstractParamManagerTest extends AbstractTestCaseJU5 {
 		final Optional<Param> optionalParam = paramManager.getOptionalParam("server.host");
 		assertEquals("wiki", optionalParam.get().getValueAsString());
 	}
+
 }

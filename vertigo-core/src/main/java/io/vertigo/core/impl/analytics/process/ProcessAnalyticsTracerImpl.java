@@ -36,6 +36,8 @@ import io.vertigo.core.lang.Assertion;
 final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCloseable {
 	private final Logger logger;
 
+	private int logStackTraceCounter = 0;
+
 	private Boolean succeeded; //default no info
 	private Throwable causeException; //default no info
 	private final Consumer<AProcess> consumer;
@@ -57,7 +59,8 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 		Assertion.check()
 				.isNotBlank(category)
 				.isNotBlank(name)
-				.isNotNull(consumer);
+				.isNotNull(consumer)
+				.isNotNull(parentOptSupplier);
 		//---
 		logger = LogManager.getLogger(category);
 		this.consumer = consumer;
@@ -114,8 +117,17 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 			//when the current process is a subProcess, it's finished and must be added to the parent
 			parentOpt.get().processBuilder.addSubProcess(process);
 		} else {
-			//when the current process is the root process, it's finished and must be sent to the connector
-			consumer.accept(process);
+			try {
+				//when the current process is the root process, it's finished and must be sent to the connector
+				consumer.accept(process);
+			} catch (final Throwable th) {//catch Throwable : We must ensure there is no exception here : it will be loose
+				if (logStackTraceCounter % 100 == 0) {
+					logger.warn("Error while closing process (error in consumer " + consumer.getClass().getName() + ").", th);
+				} else {
+					logger.warn("Error while closing process (error in consumer {}).", consumer.getClass().getName());
+				}
+				logStackTraceCounter = logStackTraceCounter++ % 100;
+			}
 		}
 	}
 
@@ -127,7 +139,7 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 			final String info = new StringBuilder()
 					.append("Finish ")
 					.append(process.getName())
-					.append(succeeded != null ? (succeeded ? " successfully" : " with error") : "with internal error")
+					.append(succeeded != null ? succeeded ? " successfully" : " with error" : "with internal error")
 					.append(" in ( ")
 					.append(process.getDurationMillis())
 					.append(" ms)")

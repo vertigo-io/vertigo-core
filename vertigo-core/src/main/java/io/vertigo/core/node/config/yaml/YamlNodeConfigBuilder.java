@@ -29,6 +29,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -99,7 +100,7 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 
 	private void handleYamlFileConfig(final URL yamlConfigURL) {
 
-		final Yaml yaml = new Yaml(new Constructor(YamlAppConfig.class));
+		final Yaml yaml = new Yaml(new Constructor(YamlAppConfig.class, new LoaderOptions()));
 		final YamlAppConfig yamlNodeConfig = yaml.loadAs(FileUtil.read(yamlConfigURL), YamlAppConfig.class);
 		//--- node
 		handleNodeConfig(yamlNodeConfig);
