@@ -124,7 +124,7 @@ final class ProcessAnalyticsTracerImpl implements ProcessAnalyticsTracer, AutoCl
 				if (logStackTraceCounter % 100 == 0) {
 					logger.warn("Error while closing process (error in consumer " + consumer.getClass().getName() + ").", th);
 				} else {
-					logger.warn("Error while closing process (error in consumer {0}).", consumer.getClass().getName());
+					logger.warn("Error while closing process (error in consumer {}).", consumer.getClass().getName());
 				}
 				logStackTraceCounter = logStackTraceCounter++ % 100;
 			}
