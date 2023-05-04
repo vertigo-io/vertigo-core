@@ -17,10 +17,15 @@
  */
 package io.vertigo.core.param.multi;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.AbstractParamManagerTest;
 import io.vertigo.core.param.Param;
+import io.vertigo.core.plugins.param.manifest.ManifestParamPlugin;
 import io.vertigo.core.plugins.param.properties.PropertiesParamPlugin;
 import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -46,7 +51,14 @@ public final class MultiParamManagerTest extends AbstractParamManagerTest {
 								Param.of("url", "io/vertigo/core/param/multi/app-config2.properties"))
 						.addPlugin(XmlParamPlugin.class,
 								Param.of("url", "io/vertigo/core/param/multi/app-config2.xml"))
+						.addPlugin(ManifestParamPlugin.class)
 						.build())
 				.build();
+	}
+
+	@Test
+	public void testManifest() {
+		final Param param = paramManager.getParam("App-Version");
+		assertEquals("3.x.x", param.getValueAsString());
 	}
 }

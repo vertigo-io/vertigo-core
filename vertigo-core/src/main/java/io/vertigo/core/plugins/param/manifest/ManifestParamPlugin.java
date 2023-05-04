@@ -78,7 +78,7 @@ public final class ManifestParamPlugin implements ParamPlugin {
 		return value != null ? Optional.of(Param.of(paramName, value)) : Optional.empty();
 	}
 
-	private boolean isValidParamName(final String paramName) {
+	private static boolean isValidParamName(final String paramName) {
 		return PARAM_NAME_PATTERN.matcher(paramName).find();
 	}
 }
