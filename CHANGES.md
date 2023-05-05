@@ -7,6 +7,21 @@ Running 4.0.0
 more to come :)
 
 
+Release 3.6.0 - 2023/05/04
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-350-to-360)
+* *[Core] Protect URL resolver* only accept file, classpath or jar url.
+* [Core] Add UnsafeURLResourceResolverPlugin for other protocols
+* [Analytics] Fix default nodeName
+* [Analytics] Add catch on "consumer after closing", and log stackTrace evry 100th logs
+* [Core] Wrapping exception cannot make assertions and throw an exception
+* [Param] add a plugin to retrieve parameters in MANIFEST.MF file
+* [Core] Updated libs
+  - log4j 2.19.0 -> 2.20.0
+  - gson 2.10 -> 2.10.0
+  - snakeyaml 1.33 -> 2.0
+  
+
 Release 3.5.0 - 2023/01/06
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-340-to-350)
