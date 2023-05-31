@@ -63,7 +63,6 @@ public enum Cardinality {
 			case OPTIONAL_OR_NULLABLE -> "?";
 			case ONE -> "1";
 			case MANY -> "*";
-			default -> throw new VSystemException("Unknown cardinality : '{0}'. Supported cardinalities are optional, one and many ", this);
 		};
 	}
 

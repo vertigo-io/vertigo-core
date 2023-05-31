@@ -27,7 +27,7 @@ import java.util.Optional;
  *
  * @author pchretien
  */
-public final record Either<L, R> (Optional<L> left, Optional<R> right) {
+public record Either<L, R> (Optional<L> left, Optional<R> right) {
 	public Either {
 		Assertion.check()
 				.isNotNull(left)

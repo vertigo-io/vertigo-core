@@ -35,7 +35,7 @@ import io.vertigo.core.analytics.trace.Tracer;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.impl.analytics.health.HealthUtil;
 import io.vertigo.core.impl.analytics.metric.MetricUtil;
-import io.vertigo.core.impl.analytics.trace.TracerProvider;
+import io.vertigo.core.impl.analytics.trace.TracerProviderUtil;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.AspectPlugin;
@@ -51,7 +51,6 @@ import io.vertigo.core.node.definition.SimpleDefinitionProvider;
  */
 public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefinitionProvider {
 
-	private final TracerProvider processAnalyticsImpl;
 	private final List<AnalyticsConnectorPlugin> processConnectorPlugins;
 
 	private final boolean enabled;
@@ -65,7 +64,6 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 			final List<AnalyticsConnectorPlugin> processConnectorPlugins) {
 		Assertion.check().isNotNull(processConnectorPlugins);
 		//---
-		processAnalyticsImpl = new TracerProvider();
 		this.processConnectorPlugins = processConnectorPlugins;
 		// by default if no connector is defined we disable the collect
 		enabled = !this.processConnectorPlugins.isEmpty();
@@ -91,13 +89,13 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 	/** {@inheritDoc} */
 	@Override
 	public void trace(final String category, final String name, final Consumer<Tracer> consumer) {
-		processAnalyticsImpl.trace(category, name, consumer, this::onClose);
+		TracerProviderUtil.trace(category, name, consumer, this::onClose);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <O> O traceWithReturn(final String category, final String name, final Function<Tracer, O> function) {
-		return processAnalyticsImpl.traceWithReturn(category, name, function, this::onClose);
+		return TracerProviderUtil.traceWithReturn(category, name, function, this::onClose);
 	}
 
 	/** {@inheritDoc} */
@@ -113,7 +111,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 			return Optional.empty();
 		}
 		// When collect feature is enabled
-		return processAnalyticsImpl.getCurrentTracer();
+		return TracerProviderUtil.getCurrentTracer();
 	}
 
 	private void onClose(final TraceSpan span) {

@@ -41,7 +41,7 @@ import io.vertigo.core.param.Param;
  * @param implClass the impl class of the connector
  * @param params the params
  */
-public final record ConnectorConfig(
+public record ConnectorConfig(
 		Optional<Class<? extends Connector>> apiClassOpt,
 		Class<? extends Connector> implClass,
 		List<Param> params) {

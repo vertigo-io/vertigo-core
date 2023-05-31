@@ -26,7 +26,11 @@ import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.analytics.trace.Tracer;
 import io.vertigo.core.lang.Assertion;
 
-public class TracerProvider {
+public final class TracerProviderUtil {
+
+	private TracerProviderUtil() {
+		//private
+	}
 
 	/**
 	 * Processus binde sur le thread courant. Le processus , recoit les notifications des sondes placees dans le code de
@@ -91,7 +95,7 @@ public class TracerProvider {
 	}
 
 	private static TracerImpl createTracer(final String category, final String name, final Consumer<TraceSpan> onCloseConsumer) {
-		final TracerImpl analyticsTracer = new TracerImpl(category, name, onCloseConsumer, TracerProvider::removeCurrentAndGetParentTracer);
+		final TracerImpl analyticsTracer = new TracerImpl(category, name, onCloseConsumer, TracerProviderUtil::removeCurrentAndGetParentTracer);
 		push(analyticsTracer);
 		return analyticsTracer;
 	}
