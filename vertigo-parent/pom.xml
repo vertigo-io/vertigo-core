@@ -71,13 +71,13 @@
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.9.1</version>
+			<version>5.10.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.9.1</version>
+			<version>5.10.0</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -115,7 +115,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.8.1</version>
+					<version>3.11.0</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -128,7 +128,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M3</version>
+				<version>3.1.2</version>
 				<configuration>
 					<testFailureIgnore>true</testFailureIgnore>
 					<junitArtifactName>junit:junit</junitArtifactName>
@@ -141,7 +141,7 @@
 				<!-- We need a test jar too -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.1.1</version>
+				<version>3.3.0</version>
 				<configuration>
 					<forceCreation>true</forceCreation>
 					<skipIfEmpty>true</skipIfEmpty>
@@ -150,7 +150,7 @@
 			<plugin><!-- license:format -->
 				<groupId>com.mycila</groupId>
 				<artifactId>license-maven-plugin</artifactId>
-				<version>3.0</version>
+				<version>4.2</version>
 				<configuration>
 					<header>license.txt</header>
 					<includes>
@@ -163,24 +163,24 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.5.3</version>
+				<version>3.0.1</version>
 				<dependencies>
 					<dependency>
 						<groupId>org.apache.maven.scm</groupId>
 						<artifactId>maven-scm-provider-gitexe</artifactId>
-						<version>1.11.2</version>
+						<version>2.0.1</version>
 					</dependency>
 					<dependency>
 						<groupId>org.apache.maven.scm</groupId>
 						<artifactId>maven-scm-api</artifactId>
-						<version>1.11.2</version>
+						<version>2.0.1</version>
 					</dependency>
 				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>3.5.0</version>
 				<configuration>
 					<doclint>none</doclint>
 				</configuration>
@@ -188,7 +188,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
-				<version>3.0.0-M1</version>
+				<version>3.1.1</version>
 			</plugin>
 		</plugins>
 
@@ -207,7 +207,7 @@
 					<plugin><!--Config pour déployer les sources et la javadoc :http://stackoverflow.com/questions/4725668/how-to-deploy-snapshot-with-sources-and-javadoc -->
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
-						<version>3.1.0</version>
+						<version>3.3.0</version>
 						<executions>
 							<execution>
 								<id>attach-sources</id>
@@ -220,7 +220,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>3.1.1</version>
+						<version>3.5.0</version>
 						<executions>
 							<execution>
 								<id>attach-javadocs</id>
@@ -233,7 +233,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.6</version>
+						<version>3.1.0</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -254,7 +254,7 @@
 					<plugin>
 						<groupId>org.owasp</groupId>
 						<artifactId>dependency-check-maven</artifactId>
-						<version>6.1.6</version>
+						<version>8.3.1</version>
 						<executions>
 							<execution>
 								<goals>
