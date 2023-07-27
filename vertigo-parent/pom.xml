@@ -264,7 +264,7 @@
 						</executions>
 						<configuration>
 							<!-- update will be done in a dedicated task -->
-							<autoUpdate>false</autoUpdate>
+							<autoUpdate>true</autoUpdate>
 							<format>ALL</format>
 						</configuration>
 					</plugin>
