@@ -63,6 +63,8 @@ final class DaemonExecutor implements Activeable {
 		final DaemonTimerTask timerTask = new DaemonTimerTask(daemonListener, daemon);
 		daemonListeners.add(daemonListener);
 		scheduler.scheduleWithFixedDelay(timerTask, daemonDefinition.getPeriodInSeconds(), daemonDefinition.getPeriodInSeconds(), TimeUnit.SECONDS);
+
+		//look at https://stackoverflow.com/questions/20279736/java-scheduleexecutorservice-timeout-task
 	}
 
 	/**
