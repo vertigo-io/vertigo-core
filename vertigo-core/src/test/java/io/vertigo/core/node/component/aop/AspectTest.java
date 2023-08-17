@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.AbstractTestCaseJU5;
-import io.vertigo.core.node.component.AopPlugin;
+import io.vertigo.core.node.component.AspectPlugin;
 import io.vertigo.core.node.component.aop.data.MyException;
 import io.vertigo.core.node.component.aop.data.aspects.OneMoreAspect;
 import io.vertigo.core.node.component.aop.data.aspects.TenMoreAspect;
@@ -63,20 +63,20 @@ public final class AspectTest extends AbstractTestCaseJU5 {
 	}
 
 	@Test
-	public final void testNo() {
+	public void testNo() {
 		final Computer computer = getApp().getComponentSpace().resolve(Computer.class);
 		assertEquals(66, computer.no(66));
 	}
 
 	@Test
-	public final void testOneMoreOnMethod() {
+	public void testOneMoreOnMethod() {
 		final Computer comp = getApp().getComponentSpace().resolve(Computer.class);
 		//On vérifie que l'intercepteur ajoute bien 1 à la somme de 2+3
 		assertEquals(6, comp.sum(2, 3));
 	}
 
 	@Test
-	public final void testOneMoreOnClass() {
+	public void testOneMoreOnClass() {
 		final F f = getApp().getComponentSpace().resolve(F.class);
 		//On vérifie que l'intercepteur ajoute bien 1 à la somme de 2+3
 		assertEquals(11, f.getValue(10));
@@ -86,15 +86,15 @@ public final class AspectTest extends AbstractTestCaseJU5 {
 	}
 
 	@Test
-	public final void testOneMoreTenMore() {
+	public void testOneMoreTenMore() {
 		final Computer comp = getApp().getComponentSpace().resolve(Computer.class);
 		//On vérifie que l'intercepteur ajoute bien 1 à la somme de 2+3
 		assertEquals(17, comp.multi(2, 3));
 	}
 
 	@Test
-	public final void testUnwrapp() {
-		final AopPlugin aopPlugin = getApp().getNodeConfig().getBootConfig().getAopPlugin();
+	public void testUnwrapp() {
+		final AspectPlugin aopPlugin = getApp().getNodeConfig().bootConfig().aspectPlugin();
 		final F f = getApp().getComponentSpace().resolve(F.class);
 		// Il y a des aspects sur la classe donc elle doit être dewrappable
 		assertNotEquals(F.class.getName(), f.getClass().getName());

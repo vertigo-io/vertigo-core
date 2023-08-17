@@ -28,29 +28,25 @@ import io.vertigo.core.param.Param;
  * This class defines the configuration of a connector.
  *
  * A connector is defined by
- *  - a implemenation class
- *  - a map of params
+ *  - an api class
+ *  - a implementation class
+ *  - a list of params
  *
  * The same connector can be used many times with distincts params
  *  - for example : two connections to differents timeseries databases
  *
  * @author mlaroche
+ * 
+ * @param apiClassOpt the api class of the connector
+ * @param implClass the impl class of the connector
+ * @param params the params
  */
-public final class ConnectorConfig {
-	private final Optional<Class<? extends Connector>> apiClassOpt;
-	private final Class<? extends Connector> implClass;
-	private final List<Param> params;
+public record ConnectorConfig(
+		Optional<Class<? extends Connector>> apiClassOpt,
+		Class<? extends Connector> implClass,
+		List<Param> params) {
 
-	/**
-	 * Constructor.
-	 * @param apiClassOpt the api class of the connector
-	 * @param implClass the impl class of the connector
-	 * @param params the params
-	 */
-	ConnectorConfig(
-			final Optional<Class<? extends Connector>> apiClassOpt,
-			final Class<? extends Connector> implClass,
-			final List<Param> params) {
+	public ConnectorConfig {
 		Assertion.check()
 				.isNotNull(apiClassOpt)
 				.isNotNull(implClass)
@@ -60,30 +56,7 @@ public final class ConnectorConfig {
 						.isTrue(Connector.class.isAssignableFrom(apiClassOpt.get()), "api class {0} must implement {1}", apiClassOpt, Connector.class)
 						.isTrue(apiClassOpt.get().isAssignableFrom(implClass), "impl class {0} must implement {1}", implClass, apiClassOpt)
 						.isTrue(apiClassOpt.get().isInterface(), "api class {0} must be an interface", apiClassOpt));
-		//-----
-		this.apiClassOpt = apiClassOpt;
-		this.implClass = implClass;
-		this.params = params;
-	}
-
-	/**
-	 * @return the api class
-	 */
-	public Optional<Class<? extends Connector>> getApiClassOpt() {
-		return apiClassOpt;
-	}
-
-	/**
-	 * @return the impl class
-	 */
-	public Class<? extends Connector> getImplClass() {
-		return implClass;
-	}
-
-	/**
-	 * @return the params
-	 */
-	public List<Param> getParams() {
-		return params;
+		//---
+		params = List.copyOf(params);
 	}
 }

@@ -33,14 +33,14 @@ import io.vertigo.core.impl.resource.ResourceManagerImpl;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.core.node.component.AopPlugin;
+import io.vertigo.core.node.component.AspectPlugin;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.plugins.analytics.log.SmartLoggerAnalyticsConnectorPlugin;
 import io.vertigo.core.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin;
-import io.vertigo.core.plugins.component.aop.javassist.JavassistAopPlugin;
+import io.vertigo.core.plugins.component.aop.javassist.JavassistAspectPlugin;
 import io.vertigo.core.resource.ResourceManager;
 
 /**
@@ -51,7 +51,7 @@ import io.vertigo.core.resource.ResourceManager;
 public final class BootConfigBuilder implements Builder<BootConfig> {
 	private Optional<LogConfig> myLogConfigOpt = Optional.empty(); //par défaut
 	private boolean myVerbose;
-	private AopPlugin myAopPlugin = new JavassistAopPlugin(); //By default
+	private AspectPlugin myAopPlugin = new JavassistAspectPlugin(); //By default
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
 	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
 
@@ -120,7 +120,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 * @param aopPlugin AopPlugin
 	 * @return this builder
 	 */
-	public BootConfigBuilder withAopEngine(final AopPlugin aopPlugin) {
+	public BootConfigBuilder withAopEngine(final AspectPlugin aopPlugin) {
 		Assertion.check()
 				.isNotNull(aopPlugin);
 		//-----

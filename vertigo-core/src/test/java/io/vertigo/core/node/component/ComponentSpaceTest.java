@@ -110,7 +110,7 @@ public final class ComponentSpaceTest {
 				.build();
 
 		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
-			//
+			assertTrue(node.getComponentSpace().resolve(BioManager.class).isActive());
 		}
 	}
 

@@ -19,7 +19,7 @@ package io.vertigo.core.impl.analytics;
 
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.metric.Metric;
-import io.vertigo.core.analytics.process.AProcess;
+import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.node.component.Plugin;
 
 /**
@@ -31,10 +31,10 @@ import io.vertigo.core.node.component.Plugin;
  */
 public interface AnalyticsConnectorPlugin extends Plugin {
 	/**
-	 * Adds a process to a connector which acts as a consumer.
-	 * @param process the process
+	 * Adds a span to a connector which acts as a consumer.
+	 * @param span the span
 	 */
-	void add(AProcess process);
+	void add(TraceSpan span);
 
 	/**
 	 * Adds a metric to a connector which acts as a consumer.

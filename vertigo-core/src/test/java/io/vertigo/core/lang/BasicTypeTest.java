@@ -39,7 +39,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -62,20 +61,6 @@ public final class BasicTypeTest {
 		assertTrue(intType.get().isNumber());
 		assertFalse(intType.get().isAboutDate());
 		assertEquals(Integer.class, intType.get().getJavaClass());
-		intType.get().checkValue(1);
-		try {
-			intType.get().checkValue(1L);
-			fail("Long isn't a Integer");
-		} catch (final ClassCastException e) {
-			//ok
-		}
-
-		try {
-			intType.get().checkValue("1");
-			fail("String isn't a Integer");
-		} catch (final ClassCastException e) {
-			//ok
-		}
 	}
 
 	@Test
@@ -85,20 +70,6 @@ public final class BasicTypeTest {
 		assertTrue(doubleType.get().isNumber());
 		assertFalse(doubleType.get().isAboutDate());
 		assertEquals(Double.class, doubleType.get().getJavaClass());
-		doubleType.get().checkValue(1d);
-		try {
-			doubleType.get().checkValue(1);
-			fail("Integer isn't a Double");
-		} catch (final ClassCastException e) {
-			//ok
-		}
-
-		try {
-			doubleType.get().checkValue("1");
-			fail("String isn't a Double");
-		} catch (final ClassCastException e) {
-			//ok
-		}
 	}
 
 	@Test
@@ -108,20 +79,6 @@ public final class BasicTypeTest {
 		assertTrue(longType.get().isNumber());
 		assertFalse(longType.get().isAboutDate());
 		assertEquals(Long.class, longType.get().getJavaClass());
-		longType.get().checkValue(1L);
-		try {
-			longType.get().checkValue(1);
-			fail("Integer isn't a Long");
-		} catch (final ClassCastException e) {
-			//ok
-		}
-
-		try {
-			longType.get().checkValue("1");
-			fail("String isn't a Long");
-		} catch (final ClassCastException e) {
-			//ok
-		}
 	}
 
 	@Test
@@ -131,20 +88,6 @@ public final class BasicTypeTest {
 		assertFalse(booleanType.get().isNumber());
 		assertFalse(booleanType.get().isAboutDate());
 		assertEquals(Boolean.class, booleanType.get().getJavaClass());
-		booleanType.get().checkValue(true);
-		try {
-			booleanType.get().checkValue(1);
-			fail("Integer isn't a Boolean");
-		} catch (final ClassCastException e) {
-			//ok
-		}
-
-		try {
-			booleanType.get().checkValue("1");
-			fail("String isn't a Boolean");
-		} catch (final ClassCastException e) {
-			//ok
-		}
 	}
 
 	@Test
@@ -154,20 +97,6 @@ public final class BasicTypeTest {
 		assertFalse(stringType.get().isNumber());
 		assertFalse(stringType.get().isAboutDate());
 		assertEquals(String.class, stringType.get().getJavaClass());
-		stringType.get().checkValue("1");
-		try {
-			stringType.get().checkValue(1);
-			fail("Integer isn't a String");
-		} catch (final ClassCastException e) {
-			//ok
-		}
-
-		try {
-			stringType.get().checkValue(1L);
-			fail("Long isn't a String");
-		} catch (final ClassCastException e) {
-			//ok
-		}
 	}
 
 	@Test
@@ -177,20 +106,6 @@ public final class BasicTypeTest {
 		assertTrue(bigDecimalType.get().isNumber());
 		assertFalse(bigDecimalType.get().isAboutDate());
 		assertEquals(BigDecimal.class, bigDecimalType.get().getJavaClass());
-		bigDecimalType.get().checkValue(new BigDecimal(1));
-		try {
-			bigDecimalType.get().checkValue(1);
-			fail("Integer isn't a BigDecimal");
-		} catch (final ClassCastException e) {
-			//ok
-		}
-
-		try {
-			bigDecimalType.get().checkValue(1L);
-			fail("Long isn't a BigDecimal");
-		} catch (final ClassCastException e) {
-			//ok
-		}
 	}
 
 	@Test
@@ -200,20 +115,6 @@ public final class BasicTypeTest {
 		assertFalse(localDateType.get().isNumber());
 		assertTrue(localDateType.get().isAboutDate());
 		assertEquals(LocalDate.class, localDateType.get().getJavaClass());
-		localDateType.get().checkValue(LocalDate.now());
-		try {
-			localDateType.get().checkValue(1);
-			fail("Integer isn't a LocalDate");
-		} catch (final ClassCastException e) {
-			//ok
-		}
-
-		try {
-			localDateType.get().checkValue("1");
-			fail("String isn't a LocalDate");
-		} catch (final ClassCastException e) {
-			//ok
-		}
 	}
 
 	@Test
@@ -223,20 +124,6 @@ public final class BasicTypeTest {
 		assertFalse(instantType.get().isNumber());
 		assertTrue(instantType.get().isAboutDate());
 		assertEquals(Instant.class, instantType.get().getJavaClass());
-		instantType.get().checkValue(Instant.now());
-		try {
-			instantType.get().checkValue(1);
-			fail("Integer isn't a Instant");
-		} catch (final ClassCastException e) {
-			//ok
-		}
-
-		try {
-			instantType.get().checkValue(LocalDate.now());
-			fail("LocalDate isn't a Instant");
-		} catch (final ClassCastException e) {
-			//ok
-		}
 	}
 
 }

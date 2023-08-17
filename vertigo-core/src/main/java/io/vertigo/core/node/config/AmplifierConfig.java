@@ -31,37 +31,20 @@ import io.vertigo.core.param.Param;
  *  - a map of params
  *
  * @author pchretien
+ * 
+ * @param apiClass the api class of the amlifier 
+ * @param params the params
  */
-public final class AmplifierConfig {
-	private final Class<? extends Amplifier> apiClass;
-	private final List<Param> params;
+public record AmplifierConfig(
+		Class<? extends Amplifier> apiClass,
+		List<Param> params) {
 
-	/**
-	 * Constructor.
-	 * @param apiClass the api class of the amlifier 
-	 * @param params the params
-	 */
-	AmplifierConfig(final Class<? extends Amplifier> apiClass, final List<Param> params) {
+	public AmplifierConfig {
 		Assertion.check()
 				.isNotNull(apiClass)
 				.isTrue(Amplifier.class.isAssignableFrom(apiClass), "api class {0} must implement {1}", apiClass, Amplifier.class)
 				.isNotNull(params);
-		//-----
-		this.apiClass = apiClass;
-		this.params = params;
-	}
-
-	/**
-	 * @return the api class of the component
-	 */
-	public Class<? extends Amplifier> getApiClass() {
-		return apiClass;
-	}
-
-	/**
-	 * @return the params
-	 */
-	public List<Param> getParams() {
-		return params;
+		//---
+		params = List.copyOf(params);
 	}
 }

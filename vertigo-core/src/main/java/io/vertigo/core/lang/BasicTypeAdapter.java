@@ -34,8 +34,8 @@ package io.vertigo.core.lang;
  *  This Adapter MUST handle null value.
  *
  * @author pchretien
- * @param <J> JavaDataType (ex : Mail, Point)
- * @param <B> PrimitiveDataType (ex : String, Integer)
+ * @param <J> JavaType (ex : Mail, Point)
+ * @param <B> BasicType (ex : String, Integer)
  */
 public interface BasicTypeAdapter<J, B> {
 	/**

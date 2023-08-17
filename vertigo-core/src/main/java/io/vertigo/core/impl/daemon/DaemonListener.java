@@ -60,7 +60,7 @@ final class DaemonListener {
 		status = DaemonStat.Status.pending;
 		failures++;
 		lastExecSucceed = false;
-		LOG.error("Daemon :  an error has occured during the execution of the daemon: " + daemonDefinition.getName(), e);
+		LOG.error("Daemon :  an error has occured during the execution of the daemon: " + daemonDefinition.id(), e);
 	}
 
 	synchronized void onSuccess() {
@@ -68,7 +68,7 @@ final class DaemonListener {
 		successes++;
 		lastExecSucceed = true;
 		if (verbose) {
-			LOG.info("Execution succeeded on daemon: {}", daemonDefinition.getName());
+			LOG.info("Execution succeeded on daemon: {}", daemonDefinition.id());
 		}
 	}
 }

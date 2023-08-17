@@ -3,6 +3,10 @@ Version history
 
 Running 4.0.0
 ----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-360-to-400)
+* [Core] Rename MessageText to LocaleMessageText
+* [Core] Rename @Analytics to @Trace
+* [Core] Rename Tuple.getValX() to Tuple.valX()
 
 more to come :)
 

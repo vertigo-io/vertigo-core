@@ -41,46 +41,51 @@ import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.SocketOptions;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.metric.Metric;
-import io.vertigo.core.analytics.process.AProcess;
+import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.json.CoreJsonAdapters;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.plugins.analytics.log.log4j.AnalyticsSocketAppender;
+import io.vertigo.core.plugins.analytics.log.log4j.AnalyticsSocketAppender.Builder;
 
 /**
  * Processes connector which use the log4j SocketAppender.
+ *
  * @author mlaroche, pchretien, npiedeloup
  */
 public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin, Activeable {
 	private static final Logger LOGGER = LogManager.getLogger(SocketLoggerAnalyticsConnectorPlugin.class);
-	private static final Gson GSON = new GsonBuilder().create();
+	private static final Gson GSON = CoreJsonAdapters.V_CORE_GSON;
 	private static final int DEFAULT_CONNECT_TIMEOUT = 250;// 250ms for connection to log4j server
 	private static final int DEFAULT_SOCKET_TIMEOUT = 5000;// 5s for socket to log4j server
 	private static final int DEFAULT_DISCONNECT_TIMEOUT = 5000;// 5s for disconnection to log4j server
 	private static final int DEFAULT_SERVER_PORT = 4562;// DefaultPort of SocketAppender 4650 for log4j and 4562 for log4j2
-
 	private static final int SEND_QUEUE_MAX_SIZE = 10_000;// 10k elements
-	private int logCounterEvery100 = 0;
-	private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(new SocketLoggerAnalyticsThreadFactory());
 
 	private Logger socketProcessLogger;
 	private Logger socketHealthLogger;
 	private Logger socketMetricLogger;
-	private final String hostName;
-	private final int port;
-	private SocketAppender appender;
 
 	private final String appName;
 	private final String nodeName;
 
+	private final String hostName;
+	private final int port;
+	private SocketAppender appender;
+	private final boolean devConfig;
+	private final Integer bufferSize;
+
+	private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(new SocketLoggerAnalyticsThreadFactory());
+	private int logCounterEvery100 = 0;
 	private final ConcurrentLinkedQueue<Object> sendQueue = new ConcurrentLinkedQueue<>();
 
 	static class SocketLoggerAnalyticsThreadFactory implements ThreadFactory {
@@ -94,9 +99,11 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	/**
 	 * Constructor.
+	 *
 	 * @param appNameOpt the node name
 	 * @param hostNameOpt hostName of the remote server
 	 * @param portOpt port of the remote server
+	 * @param bufferSizeOpt size of the offline buffer in Mo
 	 */
 	@Inject
 	public SocketLoggerAnalyticsConnectorPlugin(
@@ -104,26 +111,29 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 			@ParamValue("hostNameParam") final Optional<String> hostNameParamOpt,
 			@ParamValue("portParam") final Optional<String> portParamOpt,
 			@ParamValue("nodeNameParam") final Optional<String> nodeNameParamOpt,
-			@ParamValue("envNameParam") final Optional<String> envNameParamOpt) {
+			@ParamValue("envNameParam") final Optional<String> envNameParamOpt,
+			@ParamValue("bufferSize") final Optional<Integer> bufferSizeOpt) {
 		Assertion.check()
 				.isNotNull(hostNameParamOpt)
 				.isNotNull(portParamOpt)
 				.isNotNull(nodeNameParamOpt)
 				.isNotNull(envNameParamOpt);
 		// ---
-		appName = Node.getNode().getNodeConfig().getAppName() + envNameParamOpt.map(paramManager::getParam).map(Param::getValueAsString).map(env -> '-' + env.toLowerCase()).orElse("");
+		appName = Node.getNode().getNodeConfig().appName() + envNameParamOpt.map(paramManager::getParam).map(Param::getValueAsString).map(env -> '-' + env.toLowerCase()).orElse("");
 		hostName = hostNameParamOpt.map(paramManager::getParam).map(Param::getValueAsString).orElse("analytica.part.klee.lan.net");
+		devConfig = hostNameParamOpt.isEmpty();
 		port = portParamOpt.map(paramManager::getParam).map(Param::getValueAsInt).orElse(DEFAULT_SERVER_PORT);
 		nodeName = nodeNameParamOpt
 				.map(paramName -> paramManager.getOptionalParam(paramName).map(Param::getValueAsString).orElseGet(SocketLoggerAnalyticsConnectorPlugin::retrieveHostName))
 				.orElseGet(SocketLoggerAnalyticsConnectorPlugin::retrieveHostName);
+		bufferSize = bufferSizeOpt.orElse(50);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void add(final AProcess process) {
+	public void add(final TraceSpan span) {
 		Assertion.check()
-				.isNotNull(process);
+				.isNotNull(span);
 		//---
 		if (sendQueue.size() > SEND_QUEUE_MAX_SIZE) {
 			if (logCounterEvery100 == 0) {
@@ -133,7 +143,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 			logCounterEvery100 = logCounterEvery100 % 100;
 		} else {
 			logCounterEvery100 = 0;
-			sendQueue.add(process);
+			sendQueue.add(span);
 		}
 	}
 
@@ -184,26 +194,33 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	@Override
 	public void start() {
-		try {
-			//we create appender (like a resource it must be close on stop)
-			appender = SocketAppender.newBuilder()
-					.setName("socketAnalytics")
-					.setLayout(SerializedLayout.createLayout())
-					.withHost(hostName)
-					.withPort(port)
-					.withConnectTimeoutMillis(DEFAULT_CONNECT_TIMEOUT)
-					.withSocketOptions(SocketOptions.newBuilder().setSoTimeout(DEFAULT_SOCKET_TIMEOUT).build())
-					.withImmediateFail(true)
-					.withReconnectDelayMillis(-1)// we make only one try
-					.build();
+		final Builder appenderBuilder = AnalyticsSocketAppender.newAnalyticsBuilder()
+				.setName("socketAnalytics")
+				.setLayout(SerializedLayout.createLayout())
+				.setHost(hostName)
+				.setPort(port)
+				.setConnectTimeoutMillis(DEFAULT_CONNECT_TIMEOUT)
+				.setSocketOptions(SocketOptions.newBuilder().setSoTimeout(DEFAULT_SOCKET_TIMEOUT).build());
 
-			appender.start();
-			final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-			final Configuration config = ctx.getConfiguration();
-			config.addAppender(appender);
-		} catch (final Exception e) {
-			LOGGER.info("Unable to connect to analytics server", e);
+		if (devConfig) {
+			appenderBuilder
+					.setImmediateFail(true)
+					.setReconnectDelayMillis(-1)// we make only one try (documentation is incorrect 0 => defaults to 30s)
+			;
+		} else {
+			appenderBuilder
+					.setImmediateFail(false)
+					.setReconnectDelayMillis(10000) // 10s
+					.setBufferSize(bufferSize * 1024 * 1024) // in Mo, used for keeping logs while disconnected
+			;
 		}
+
+		//we create appender (like a resource it must be close on stop)
+		appender = appenderBuilder.build();
+		appender.start();
+		final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+		final Configuration config = ctx.getConfiguration();
+		config.addAppender(appender);
 
 		final PoolerTimerTask timerTask = new PoolerTimerTask(this);
 		scheduler.scheduleWithFixedDelay(timerTask, 1, 1, TimeUnit.SECONDS);
@@ -233,15 +250,14 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	/**
 	 * Daemon to unstack processes to end them
 	 */
-	//@DaemonScheduled(name = "DmnRemoteLogger", periodInSeconds = 1, analytics = false)
 	public void pollQueue() {
 		while (!sendQueue.isEmpty()) {
 			final Object head = sendQueue.peek();
 
 			if (head != null) {
 				try {
-					if (head instanceof AProcess) {
-						sendProcess((AProcess) head);
+					if (head instanceof TraceSpan) {
+						sendSpan((TraceSpan) head);
 					} else if (head instanceof Metric) {
 						sendMetric((Metric) head);
 					} else if (head instanceof HealthCheck) {
@@ -255,11 +271,11 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		}
 	}
 
-	private void sendProcess(final AProcess process) {
+	private void sendSpan(final TraceSpan span) {
 		if (appender != null && socketProcessLogger == null) {
 			socketProcessLogger = createLogger("vertigo-analytics-process");
 		}
-		sendObject(process, socketProcessLogger);
+		sendObject(span, socketProcessLogger);
 	}
 
 	private void sendMetric(final Metric metric) {

@@ -41,7 +41,7 @@ import org.apache.logging.log4j.Logger;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.core.locale.MessageKey;
+import io.vertigo.core.locale.LocaleMessageKey;
 import io.vertigo.core.param.ParamValue;
 
 /**
@@ -150,17 +150,17 @@ public final class LocaleManagerImpl implements LocaleManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void add(final String baseName, final MessageKey[] enums) {
+	public void add(final String baseName, final LocaleMessageKey[] enums) {
 		add(baseName, enums, false);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void override(final String baseName, final MessageKey[] enums) {
+	public void override(final String baseName, final LocaleMessageKey[] enums) {
 		add(baseName, enums, true);
 	}
 
-	private void add(final String baseName, final MessageKey[] enums, final boolean override) {
+	private void add(final String baseName, final LocaleMessageKey[] enums, final boolean override) {
 		for (final Locale locale : locales) {
 			//Pour chaque locale gérée on charge le dictionnaire correspondant
 			final ResourceBundle resourceBundle;
@@ -196,12 +196,12 @@ public final class LocaleManagerImpl implements LocaleManager {
 		}
 	}
 
-	private void check(final ResourceBundle resourceBundle, final MessageKey[] enums, final boolean override) {
+	private void check(final ResourceBundle resourceBundle, final LocaleMessageKey[] enums, final boolean override) {
 		//============================================
 		//==On vérifie que les listes sont complètes==
 		//============================================
 		final List<String> resourcesKeys = Arrays.stream(enums)
-				.map(MessageKey::name)
+				.map(LocaleMessageKey::name)
 				.collect(Collectors.toList());
 
 		//1- Toutes les clés du fichier properties sont dans l'enum des resources
@@ -225,7 +225,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public String getMessage(final MessageKey messageKey, final Locale locale) {
+	public String getMessage(final LocaleMessageKey messageKey, final Locale locale) {
 		Assertion.check()
 				.isNotNull(messageKey)
 				.isNotNull(locale);

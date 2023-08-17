@@ -17,12 +17,10 @@
  */
 package io.vertigo.core.node.config;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.ListBuilder;
+import io.vertigo.core.lang.ListBuilder;
 
 /**
  * Configuration of a module.
@@ -34,25 +32,17 @@ import io.vertigo.core.util.ListBuilder;
  *
  * @author npiedeloup, pchretien
  */
-public final class ModuleConfig {
-	private final String name;
-	private final List<DefinitionProviderConfig> definitionProviders;
-	private final List<ComponentConfig> components;
-	private final List<PluginConfig> plugins;
-	private final List<ConnectorConfig> connectors;
-	private final List<AmplifierConfig> amplifiers;
-	private final List<AspectConfig> aspects;
-	private final List<ProxyMethodConfig> proxyMethods;
+public record ModuleConfig(
+		String name,
+		List<DefinitionProviderConfig> definitionProviderConfigs,
+		List<ComponentConfig> componentConfigs,
+		List<PluginConfig> pluginConfigs,
+		List<ConnectorConfig> connectorConfigs,
+		List<AmplifierConfig> amplifierConfigs,
+		List<AspectConfig> aspectConfigs,
+		List<AmplifierMethodConfig> amplifierMethodConfigs) {
 
-	ModuleConfig(
-			final String name,
-			final List<DefinitionProviderConfig> definitionProviderConfigs,
-			final List<ComponentConfig> componentConfigs,
-			final List<PluginConfig> pluginConfigs,
-			final List<ConnectorConfig> connectorConfigs,
-			final List<AmplifierConfig> amplifierConfigs,
-			final List<AspectConfig> aspectConfigs,
-			final List<ProxyMethodConfig> proxyMethods) {
+	public ModuleConfig {
 		Assertion.check()
 				.isNotBlank(name)
 				.isNotNull(definitionProviderConfigs)
@@ -61,16 +51,15 @@ public final class ModuleConfig {
 				.isNotNull(connectorConfigs)
 				.isNotNull(amplifierConfigs)
 				.isNotNull(aspectConfigs)
-				.isNotNull(proxyMethods);
+				.isNotNull(amplifierMethodConfigs);
 		//-----
-		this.name = name;
-		definitionProviders = Collections.unmodifiableList(new ArrayList<>(definitionProviderConfigs));
-		components = Collections.unmodifiableList(new ArrayList<>(componentConfigs));
-		plugins = Collections.unmodifiableList(new ArrayList<>(pluginConfigs));
-		connectors = Collections.unmodifiableList(new ArrayList<>(connectorConfigs));
-		amplifiers = Collections.unmodifiableList(new ArrayList<>(amplifierConfigs));
-		aspects = aspectConfigs;
-		this.proxyMethods = proxyMethods;
+		definitionProviderConfigs = List.copyOf(definitionProviderConfigs);
+		componentConfigs = List.copyOf(componentConfigs);
+		pluginConfigs = List.copyOf(pluginConfigs);
+		connectorConfigs = List.copyOf(connectorConfigs);
+		amplifierConfigs = List.copyOf(amplifierConfigs);
+		aspectConfigs = List.copyOf(aspectConfigs);
+		amplifierMethodConfigs = List.copyOf(amplifierMethodConfigs);
 	}
 
 	/**
@@ -82,41 +71,16 @@ public final class ModuleConfig {
 		return new ModuleConfigBuilder(name);
 	}
 
-	public List<DefinitionProviderConfig> getDefinitionProviderConfigs() {
-		return definitionProviders;
-	}
-
 	/**
 	 * @return the list of the component-configs
 	 */
 	public List<CoreComponentConfig> getComponentConfigs() {
 		return new ListBuilder<CoreComponentConfig>()
-				.addAll(ConfigUtil.buildComponentConfigs(components))
-				.addAll(ConfigUtil.buildPluginsComponentConfigs(plugins))
-				.addAll(ConfigUtil.buildConnectorsComponentConfigs(connectors))
-				.addAll(ConfigUtil.buildAmplifiersComponentConfigs(amplifiers))
+				.addAll(ConfigUtil.buildComponentConfigs(componentConfigs()))
+				.addAll(ConfigUtil.buildPluginsComponentConfigs(pluginConfigs()))
+				.addAll(ConfigUtil.buildConnectorsComponentConfigs(connectorConfigs()))
+				.addAll(ConfigUtil.buildAmplifiersComponentConfigs(amplifierConfigs()))
 				.build();
-	}
-
-	/**
-	 * @return the list of the aspect-configs
-	 */
-	public List<AspectConfig> getAspectConfigs() {
-		return aspects;
-	}
-
-	/**
-	 * @return the list of the proxy configs
-	 */
-	public List<ProxyMethodConfig> getProxyMethodConfigs() {
-		return proxyMethods;
-	}
-
-	/**
-	 * @return Nom du module.
-	 */
-	public String getName() {
-		return name;
 	}
 
 	@Override

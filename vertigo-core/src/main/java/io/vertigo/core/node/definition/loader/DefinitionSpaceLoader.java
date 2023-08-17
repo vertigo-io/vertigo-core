@@ -74,7 +74,7 @@ public final class DefinitionSpaceLoader {
 		//--
 		final Stream<Definition> definitions = moduleConfigs
 				.stream()
-				.flatMap(moduleConfig -> provide(moduleConfig.getDefinitionProviderConfigs()))
+				.flatMap(moduleConfig -> provide(moduleConfig.definitionProviderConfigs()))
 				.map(supplier -> supplier.get(definitionSpaceWritable));
 
 		definitions.forEach(definitionSpaceWritable::registerDefinition);
@@ -105,10 +105,10 @@ public final class DefinitionSpaceLoader {
 	}
 
 	private DefinitionProvider createDefinitionProvider(final DefinitionProviderConfig definitionProviderConfig) {
-		final DefinitionProvider definitionProvider = ComponentSpaceLoader.createInstance(definitionProviderConfig.getDefinitionProviderClass(), componentSpace, Optional.empty(),
-				definitionProviderConfig.getParams());
+		final DefinitionProvider definitionProvider = ComponentSpaceLoader.createInstance(definitionProviderConfig.definitionProviderClass(), componentSpace, Optional.empty(),
+				definitionProviderConfig.params());
 
-		definitionProviderConfig.getDefinitionResourceConfigs()
+		definitionProviderConfig.definitionResourceConfigs()
 				.forEach(definitionProvider::addDefinitionResourceConfig);
 
 		return definitionProvider;

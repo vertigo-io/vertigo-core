@@ -18,8 +18,6 @@
 package io.vertigo.core.node.config;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,29 +28,32 @@ import io.vertigo.core.lang.Assertion;
  * The node is built from this config.
  *
  * NodeConfig must be created using the NodeConfigBuilder.
+ * 
+ * An node is composed of multiple nodes.
+* AppName is the common name that define the application as a whole. (ex: Facebook, Pharos...)
+
  * @author pchretien
+ * 
+ * @param appName the logical name of the app
+ * @param nodeId the random uuid of a node
+
+ * @param componentInitializerConfigs List of the configs of the initializers
+
  */
-public final class NodeConfig {
+public record NodeConfig(
+		String appName,
+		String nodeId,
+		Optional<String> endPointOpt,
+		//---
+		BootConfig bootConfig,
+		List<ModuleConfig> moduleConfigs,
+		List<ComponentInitializerConfig> componentInitializerConfigs) {
 
 	private static final int PRINT_MODULE_SIZE = 24;
 	private static final int PRINT_COMPONENT_SIZE = 22;
 	private static final int PRINT_PLUGIN_SIZE = 44;
 
-	private final String appName;
-	private final String nodeId;
-	private final Optional<String> endPointOpt;
-	//---
-	private final BootConfig bootConfig;
-	private final List<ModuleConfig> modules;
-	private final List<ComponentInitializerConfig> initializers;
-
-	NodeConfig(
-			final String appName,
-			final String nodeId,
-			final Optional<String> endPointOpt,
-			final BootConfig bootConfig,
-			final List<ModuleConfig> moduleConfigs,
-			final List<ComponentInitializerConfig> componentInitializerConfigs) {
+	public NodeConfig {
 		Assertion.check()
 				.isNotBlank(appName)
 				.isNotBlank(nodeId)
@@ -61,13 +62,8 @@ public final class NodeConfig {
 				.isNotNull(moduleConfigs)
 				.isNotNull(componentInitializerConfigs);
 		//---
-		this.appName = appName;
-		this.nodeId = nodeId;
-		this.endPointOpt = endPointOpt;
-		//---
-		this.bootConfig = bootConfig;
-		modules = Collections.unmodifiableList(new ArrayList<>(moduleConfigs));
-		initializers = Collections.unmodifiableList(new ArrayList<>(componentInitializerConfigs));
+		moduleConfigs = List.copyOf(moduleConfigs);
+		componentInitializerConfigs = List.copyOf(componentInitializerConfigs);
 	}
 
 	/**
@@ -76,50 +72,6 @@ public final class NodeConfig {
 	 */
 	public static NodeConfigBuilder builder() {
 		return new NodeConfigBuilder();
-	}
-
-	/**
-	 *
-	 * @return the config of the boot
-	 */
-	public BootConfig getBootConfig() {
-		return bootConfig;
-	}
-
-	/**
-	 * @return list of the configs of the modules
-	 */
-	public List<ModuleConfig> getModuleConfigs() {
-		return modules;
-	}
-
-	/**
-	 *
-	 * @return List of the config of the initializers
-	 */
-	public List<ComponentInitializerConfig> getComponentInitializerConfigs() {
-		return initializers;
-	}
-
-	/**
-	 * An node is composed of multiple nodes.
-	 * AppName is the common name that define the application as a whole. (ex: Facebook, Pharos...)
-	 * @return the logical name of the app
-	 */
-	public String getAppName() {
-		return appName;
-	}
-
-	/**
-	 * An node is composed of multiple nodes.
-	 * @return the random uuid of a node
-	 */
-	public String getNodeId() {
-		return nodeId;
-	}
-
-	public Optional<String> getEndPoint() {
-		return endPointOpt;
 	}
 
 	//=========================================================================
@@ -147,8 +99,8 @@ public final class NodeConfig {
 		doPrintLine(out);
 		printComponent(out, "modules", "components", "plugins");
 		doPrintLine(out);
-		printComponents(out, "boot", bootConfig.getComponentConfigs());
-		for (final ModuleConfig moduleConfig : modules) {
+		printComponents(out, "boot", bootConfig.coreComponentConfigs());
+		for (final ModuleConfig moduleConfig : moduleConfigs) {
 			doPrintLine(out);
 			printModule(out, moduleConfig);
 		}
@@ -156,7 +108,7 @@ public final class NodeConfig {
 	}
 
 	private static void printModule(final PrintStream out, final ModuleConfig moduleConfig) {
-		printComponents(out, moduleConfig.getName(), moduleConfig.getComponentConfigs());
+		printComponents(out, moduleConfig.name(), moduleConfig.getComponentConfigs());
 	}
 
 	private static void printComponents(final PrintStream out, final String moduleName, final List<CoreComponentConfig> componentConfigs) {

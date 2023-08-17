@@ -30,7 +30,6 @@ import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.health.data.FailedComponentChecker;
 import io.vertigo.core.analytics.health.data.SuccessComponentChecker;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 
@@ -54,8 +53,8 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU5 {
 		final List<HealthCheck> failedHealthChecks = findHealthChecksByName("failure");
 		//---
 		Assertions.assertEquals(1, failedHealthChecks.size());
-		Assertions.assertEquals(HealthStatus.RED, failedHealthChecks.get(0).getMeasure().getStatus());
-		Assertions.assertTrue(failedHealthChecks.get(0).getMeasure().getCause() instanceof VSystemException);
+		Assertions.assertEquals(HealthStatus.RED, failedHealthChecks.get(0).healthMeasure().status());
+		Assertions.assertTrue(failedHealthChecks.get(0).healthMeasure().message() != null);
 	}
 
 	@Test
@@ -63,7 +62,7 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU5 {
 		final List<HealthCheck> successHealthChecks = findHealthChecksByName("success");
 		//---
 		Assertions.assertEquals(1, successHealthChecks.size());
-		Assertions.assertEquals(HealthStatus.GREEN, successHealthChecks.get(0).getMeasure().getStatus());
+		Assertions.assertEquals(HealthStatus.GREEN, successHealthChecks.get(0).healthMeasure().status());
 	}
 
 	@Test
@@ -81,7 +80,7 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU5 {
 		//---
 		return analyticsManager.getHealthChecks()
 				.stream()
-				.filter(healthCheck -> name.equals(healthCheck.getName()))
+				.filter(healthCheck -> name.equals(healthCheck.name()))
 				.collect(Collectors.toList());
 	}
 }

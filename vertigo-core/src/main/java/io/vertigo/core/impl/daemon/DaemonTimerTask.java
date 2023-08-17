@@ -62,8 +62,10 @@ final class DaemonTimerTask implements Runnable {
 	private static void clearAllThreadLocals() {
 		try {
 			final Field threadLocals = Thread.class.getDeclaredField("threadLocals");
-			threadLocals.setAccessible(true);
-			threadLocals.set(Thread.currentThread(), null);
+			if (threadLocals.trySetAccessible()) {
+				threadLocals.setAccessible(true);
+				threadLocals.set(Thread.currentThread(), null);
+			}
 		} catch (final Exception e) {
 			LOG.error("Can't fully clean TreadLocals, you may add --add-opens=java.base/java.lang=ALL-UNNAMED to your java cli", e);
 			//can't throw Assertion : task will be terminated; throw new AssertionError(e);

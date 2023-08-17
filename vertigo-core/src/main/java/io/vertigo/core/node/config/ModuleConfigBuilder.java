@@ -27,8 +27,8 @@ import io.vertigo.core.node.component.Amplifier;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.core.node.component.Connector;
 import io.vertigo.core.node.component.Plugin;
-import io.vertigo.core.node.component.amplifier.ProxyMethod;
-import io.vertigo.core.node.component.aop.Aspect;
+import io.vertigo.core.node.component.amplifier.AmplifierMethod;
+import io.vertigo.core.node.component.aspect.Aspect;
 import io.vertigo.core.node.definition.DefinitionProvider;
 import io.vertigo.core.param.Param;
 
@@ -50,7 +50,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
 	private final List<ConnectorConfig> myConnectorConfigs = new ArrayList<>();
 	private final List<AspectConfig> myAspectConfigs = new ArrayList<>();
-	private final List<ProxyMethodConfig> myProxyMethodConfigs = new ArrayList<>();
+	private final List<AmplifierMethodConfig> myAmplifierMethodConfigs = new ArrayList<>();
 	private final List<DefinitionProviderConfig> myDefinitionProviderConfigs = new ArrayList<>();
 
 	/**
@@ -76,12 +76,12 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	/**
-	 * Adds a proxy method.
-	 * @param proxyMethodClass the proxy method class
+	 * Adds a amplifier method.
+	 * @param amplifierMethodClass the amplifier method class
 	 * @return this builder
 	 */
-	public ModuleConfigBuilder addProxyMethod(final Class<? extends ProxyMethod> proxyMethodClass) {
-		myProxyMethodConfigs.add(new ProxyMethodConfig(proxyMethodClass));
+	public ModuleConfigBuilder addAmplifierMethod(final Class<? extends AmplifierMethod> proxyMethodClass) {
+		myAmplifierMethodConfigs.add(new AmplifierMethodConfig(proxyMethodClass));
 		return this;
 	}
 
@@ -118,7 +118,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 
 	/**
 	 * Adds aa amplifier defined by an interface.
-	 * @param apiClass api of the amplifie 
+	 * @param apiClass api of the amplifie
 	 * @param params the list of params
 	 * @return this builder
 	 */
@@ -228,7 +228,7 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 				myConnectorConfigs,
 				myAmplifierConfigs,
 				myAspectConfigs,
-				myProxyMethodConfigs);
+				myAmplifierMethodConfigs);
 	}
 
 }

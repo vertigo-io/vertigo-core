@@ -41,7 +41,7 @@ import io.vertigo.core.node.component.Manager;
  *
  * Un libellé peut être paramétré.
  *
- * @see MessageText permet de créer des libellés connecté au dictionnaire.
+ * @see LocaleMessageText permet de créer des libellés connecté au dictionnaire.
  *
  *
  * @author pchretien
@@ -66,7 +66,7 @@ public interface LocaleManager extends Manager {
 	 * @param baseName Nom et chemin du fichier properties
 	 * @param enums Enumération (enum) de contrôle des ressources géréees
 	 */
-	void add(String baseName, MessageKey[] enums);
+	void add(String baseName, LocaleMessageKey[] enums);
 
 	/**
 	 * Surcharge d'un dictionnaire de ressources.
@@ -76,7 +76,7 @@ public interface LocaleManager extends Manager {
 	 * @param baseName Nom et chemin du fichier properties
 	 * @param enums Enumération (enum) de contrôle des ressources géréees
 	 */
-	void override(String baseName, MessageKey[] enums);
+	void override(String baseName, LocaleMessageKey[] enums);
 
 	/**
 	 * Retourne le libellé non formatté d'un message identifié par sa clé.
@@ -86,7 +86,7 @@ public interface LocaleManager extends Manager {
 	 * @param locale Locale
 	 * @return Message non formatté dans la langue de la locale.
 	  */
-	String getMessage(MessageKey messageKey, Locale locale);
+	String getMessage(LocaleMessageKey messageKey, Locale locale);
 
 	/**
 	 * Retourne la locale courante.

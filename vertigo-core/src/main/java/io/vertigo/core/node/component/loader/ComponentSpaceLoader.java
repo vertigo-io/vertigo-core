@@ -28,17 +28,17 @@ import java.util.stream.Collectors;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.component.Amplifier;
-import io.vertigo.core.node.component.AopPlugin;
+import io.vertigo.core.node.component.AspectPlugin;
 import io.vertigo.core.node.component.Container;
 import io.vertigo.core.node.component.CoreComponent;
-import io.vertigo.core.node.component.amplifier.ProxyMethod;
-import io.vertigo.core.node.component.aop.Aspect;
+import io.vertigo.core.node.component.amplifier.AmplifierMethod;
+import io.vertigo.core.node.component.aspect.Aspect;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.component.di.DIReactor;
 import io.vertigo.core.node.config.AspectConfig;
 import io.vertigo.core.node.config.CoreComponentConfig;
 import io.vertigo.core.node.config.ModuleConfig;
-import io.vertigo.core.node.config.ProxyMethodConfig;
+import io.vertigo.core.node.config.AmplifierMethodConfig;
 import io.vertigo.core.param.ParamManager;
 
 /**
@@ -46,19 +46,19 @@ import io.vertigo.core.param.ParamManager;
  * @author pchretien
  */
 public final class ComponentSpaceLoader {
-	private final AopPlugin aopPlugin;
+	private final AspectPlugin aopPlugin;
 	/** Aspects.*/
 	private final List<Aspect> aspects = new ArrayList<>();
 
 	/** Proxies.*/
-	private final List<ProxyMethod> proxyMethods = new ArrayList<>();
+	private final List<AmplifierMethod> proxyMethods = new ArrayList<>();
 	private final ComponentSpaceWritable componentSpaceWritable;
 
 	/**
 	* Constructor.
 	* @param aopPlugin the plugin which is reponsible for the aop strategy
 	*/
-	private ComponentSpaceLoader(final ComponentSpaceWritable componentSpaceWritable, final AopPlugin aopPlugin) {
+	private ComponentSpaceLoader(final ComponentSpaceWritable componentSpaceWritable, final AspectPlugin aopPlugin) {
 		Assertion.check()
 				.isNotNull(componentSpaceWritable)
 				.isNotNull(aopPlugin);
@@ -67,7 +67,7 @@ public final class ComponentSpaceLoader {
 		this.aopPlugin = aopPlugin;
 	}
 
-	public static ComponentSpaceLoader startLoading(final ComponentSpaceWritable componentSpaceWritable, final AopPlugin aopPlugin) {
+	public static ComponentSpaceLoader startLoading(final ComponentSpaceWritable componentSpaceWritable, final AspectPlugin aopPlugin) {
 		return new ComponentSpaceLoader(componentSpaceWritable, aopPlugin);
 	}
 
@@ -90,10 +90,10 @@ public final class ComponentSpaceLoader {
 		final ParamManager paramManager = componentSpaceWritable.resolve(ParamManager.class);
 		for (final ModuleConfig moduleConfig : moduleConfigs) {
 			registerComponents(Optional.of(paramManager),
-					moduleConfig.getName(),
+					moduleConfig.name(),
 					moduleConfig.getComponentConfigs());
-			registerAspects(moduleConfig.getAspectConfigs());
-			registerProxyMethods(moduleConfig.getProxyMethodConfigs());
+			registerAspects(moduleConfig.aspectConfigs());
+			registerAmplifierMethods(moduleConfig.amplifierMethodConfigs());
 		}
 		return this;
 	}
@@ -177,29 +177,29 @@ public final class ComponentSpaceLoader {
 				.forEach(this::registerAspect);
 	}
 
-	private void registerProxyMethods(final List<ProxyMethodConfig> proxyMethodConfigs) {
-		proxyMethodConfigs
+	private void registerAmplifierMethods(final List<AmplifierMethodConfig> amplifierMethodConfigs) {
+		amplifierMethodConfigs
 				.stream()
-				.map(proxyMethodConfig -> createProxyMethod(componentSpaceWritable, proxyMethodConfig))
+				.map(proxyMethodConfig -> createAmplifierMethod(componentSpaceWritable, proxyMethodConfig))
 				.forEach(this::registerProxyMethod);
 	}
 
 	private static Aspect createAspect(final Container container, final AspectConfig aspectConfig) {
 		// création de l'instance du composant
-		final Aspect aspect = DIInjector.newInstance(aspectConfig.getAspectClass(), container);
+		final Aspect aspect = DIInjector.newInstance(aspectConfig.aspectClass(), container);
 		//---
 		Assertion.check()
 				.isNotNull(aspect.getAnnotationType());
 		return aspect;
 	}
 
-	private static ProxyMethod createProxyMethod(final Container container, final ProxyMethodConfig proxyMethodConfig) {
+	private static AmplifierMethod createAmplifierMethod(final Container container, final AmplifierMethodConfig proxyMethodConfig) {
 		// création de l'instance du composant
-		final ProxyMethod proxyMethod = DIInjector.newInstance(proxyMethodConfig.getProxyMethodClass(), container);
+		final AmplifierMethod amplifierMethod = DIInjector.newInstance(proxyMethodConfig.amplifierMethodClass(), container);
 		//---
 		Assertion.check()
-				.isNotNull(proxyMethod.getAnnotationType());
-		return proxyMethod;
+				.isNotNull(amplifierMethod.getAnnotationType());
+		return amplifierMethod;
 	}
 
 	private void registerAspect(final Aspect aspect) {
@@ -213,7 +213,7 @@ public final class ComponentSpaceLoader {
 		aspects.add(aspect);
 	}
 
-	private void registerProxyMethod(final ProxyMethod proxyMethod) {
+	private void registerProxyMethod(final AmplifierMethod proxyMethod) {
 		Assertion.check()
 				.isNotNull(proxyMethod)
 				.isTrue(proxyMethods.stream().noneMatch(a -> a.getClass().equals(proxyMethod.getClass())),

@@ -27,36 +27,27 @@ import io.vertigo.core.lang.Assertion;
 /**
  * Health check.
  *  example :
- *  dataStorePlugin.ping : Ping to a Database produces a specific health check with the actual measure of it
+ *  dataStorePlugin.ping : Ping a Database produces a specific health check with the actual measure of it
  *  {plugin/component}.{test} :
  *
  * @author mlaroche
+ * 
+ * @param name the health check name
+ * @param checker who  created the measure
+ * @param module the module (either technical or functional) the healthcheck is relative to (ex: commons, administration...)
+ * @param feature the feature (a semantic one) to link healthchecks that concern the same subject (ex: database, billing...)
+ * @param checkInstant when the check was performed
+ * @param healthMeasure the measure
  */
-public final class HealthCheck {
-	private final String name;
-	private final String checker;
-	private final String module;
-	private final String feature;
-	private final HealthMeasure healthMeasure;
-	private final Instant checkInstant;
+public record HealthCheck(
+		String name,
+		String checker,
+		String module,
+		String feature,
+		Instant checkInstant,
+		HealthMeasure healthMeasure) {
 
-	/**
-	 * Constructor.
-	 *
-	 * @param name the health check name
-	 * @param checker who  created the measure
-	 * @param module the module (either technical or functional) the healthcheck is relative to (ex: commons, administration...)
-	 * @param feature the feature (a semantic one) to link healthchecks that concern the same subject (ex: database, billing...)
-	 * @param checkInstant when the check was performed
-	 * @param healthMeasure the measure
-	 */
-	public HealthCheck(
-			final String name,
-			final String checker,
-			final String module,
-			final String feature,
-			final Instant checkInstant,
-			final HealthMeasure healthMeasure) {
+	public HealthCheck {
 		Assertion.check()
 				.isNotBlank(name)
 				.isNotBlank(checker)
@@ -64,49 +55,5 @@ public final class HealthCheck {
 				.isNotBlank(feature)
 				.isNotNull(checkInstant)
 				.isNotNull(healthMeasure);
-		//-----
-		this.name = name;
-		this.checker = checker;
-		this.module = module;
-		this.feature = feature;
-		this.checkInstant = checkInstant;
-		this.healthMeasure = healthMeasure;
 	}
-
-	/**
-	 * @return the health check name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @return the checker
-	 */
-	public String getChecker() {
-		return checker;
-	}
-
-	public String getModule() {
-		return module;
-	}
-
-	public String getFeature() {
-		return feature;
-	}
-
-	/**
-	 * @return the instant when the check was performed
-	 */
-	public Instant getCheckInstant() {
-		return checkInstant;
-	}
-
-	/**
-	 * @return the measure
-	 */
-	public HealthMeasure getMeasure() {
-		return healthMeasure;
-	}
-
 }

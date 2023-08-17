@@ -35,6 +35,8 @@ import org.yaml.snakeyaml.constructor.Constructor;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
+import io.vertigo.core.lang.Selector;
+import io.vertigo.core.lang.Selector.MethodConditions;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.component.ComponentInitializer;
 import io.vertigo.core.node.component.Plugin;
@@ -49,8 +51,6 @@ import io.vertigo.core.node.config.yaml.YamlAppConfig.YamlModuleConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.FileUtil;
-import io.vertigo.core.util.Selector;
-import io.vertigo.core.util.Selector.MethodConditions;
 
 /**
  * Builds the NodeConfig for the current node based on the provided YamlAppConfig.
@@ -163,6 +163,8 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 						// ---
 						final Map.Entry<String, Map<String, Object>> pluginEntry = plugin.entrySet().iterator().next();
 						if (isEnabledByFlag(getFlagsOfMapParams(pluginEntry.getValue()))) {
+							Assertion.check().isNotNull(pluginEntry.getValue(), "boot plugin {0} need params or \\{\\}", pluginEntry.getKey());
+
 							bootConfigBuilder
 									.addPlugin(
 											ClassUtil.classForName(pluginEntry.getKey(), Plugin.class),
@@ -189,7 +191,7 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 						.filterMethods(MethodConditions.annotatedWith(Feature.class))
 						.findMethods()
 						.stream()
-						.map(Tuple::getVal2)
+						.map(Tuple::val2)
 						.collect(Collectors.toMap(method -> method.getAnnotation(Feature.class).value(), Function.identity()));
 
 				if (yamlModuleConfig.features != null) {

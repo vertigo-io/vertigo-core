@@ -22,11 +22,17 @@ import java.time.Instant;
 import io.vertigo.core.lang.Assertion;
 
 /**
- * Interface décrivant un résultat de metric.
+ * Metric.
  *
  * @author mlaroche, pchretien
  */
-public final class Metric {
+public record Metric(
+		Instant measureInstant,
+		String name,
+		String module, // may be null for now
+		String feature,
+		Double value, //migth be null
+		Status status) {
 
 	public enum Status {
 		/** Exécution OK*/
@@ -35,33 +41,12 @@ public final class Metric {
 		ERROR
 	}
 
-	private final Instant measureInstant;
-	private final String name;
-	private final String module;// may be null for now
-	private final String feature;
-	private final Double value;//migth be null
-	private final Status status;
-
-	Metric(
-			final Instant measureTime,
-			final String name,
-			final String module,
-			final String feature,
-			final Double value,
-			final Status status) {
+	public Metric {
 		Assertion.check()
-				.isNotNull(measureTime)
+				.isNotNull(measureInstant)
 				.isNotBlank(name)
 				.isNotBlank(feature)
 				.isNotNull(status);
-		//-----
-		measureInstant = measureTime;
-		this.name = name;
-		this.module = module;
-		this.feature = feature;
-		this.value = value;
-		this.status = status;
-
 	}
 
 	/**
@@ -71,29 +56,4 @@ public final class Metric {
 	public static MetricBuilder builder() {
 		return new MetricBuilder();
 	}
-
-	public Instant getMeasureInstant() {
-		return measureInstant;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getModule() {
-		return module;
-	}
-
-	public String getFeature() {
-		return feature;
-	}
-
-	public Double getValue() {
-		return value;
-	}
-
-	public Status getStatus() {
-		return status;
-	}
-
 }

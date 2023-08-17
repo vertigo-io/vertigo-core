@@ -48,11 +48,15 @@ public final class DIAnnotationUtil {
 				.isTrue(constructors.length == 1, "Un seul constructeur public doit être déclaré sur {0}", clazz.getName())
 				.isTrue(isInjectable(constructors[0]), "Le constructeur public de {0} doit être marqué avec l'annotation @Inject ou bien être vide", clazz.getName());
 		//-----
-
 		//On a un et un seul constructeur.
 		return constructors[0];
 	}
 
+	/*
+	 * A constructor is "injectable" if
+	 * - it has no param  - default constructor-
+	 * - it is annotated with @Inject
+	 */
 	private static boolean isInjectable(final Constructor<?> constructor) {
 		return constructor.getParameterTypes().length == 0 || constructor.isAnnotationPresent(Inject.class);
 	}

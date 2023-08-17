@@ -35,8 +35,8 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.AbstractDefinition;
+import io.vertigo.core.node.definition.DefinitionId;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.param.Param;
 
@@ -62,33 +62,31 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU5 {
 
 		final SampleDefinition sampleDefinition = definitionSpace.resolve("SampleTheDefinition", SampleDefinition.class);
 		assertNotNull(sampleDefinition);
-		assertEquals("TheDefinition", sampleDefinition.getLocalName(), "localName must be TheDefinition");
-		assertEquals(sampleDefinition.getName(), SampleDefinition.PREFIX + sampleDefinition.getLocalName(),
+		assertEquals("TheDefinition", sampleDefinition.id().shortName(), "localName must be TheDefinition");
+		assertEquals(sampleDefinition.getName(), SampleDefinition.PREFIX + sampleDefinition.id().shortName(),
 				"globalName must be SampleTheDefinition");
-		assertEquals(sampleDefinition.toString(), sampleDefinition.getName(),
-				"toString must be SampleTheDefinition");
 
-		final DefinitionReference<SampleDefinition> sampleDefinitionRef = new DefinitionReference<>(sampleDefinition);
+		final DefinitionId<SampleDefinition> sampleDefinitionId = sampleDefinition.id();
 
 		byte[] serialized;
 		try (final ByteArrayOutputStream bos = new ByteArrayOutputStream(); final ObjectOutputStream oos = new ObjectOutputStream(bos)) {
-			oos.writeObject(sampleDefinitionRef);
+			oos.writeObject(sampleDefinitionId);
 			oos.flush();
 			serialized = bos.toByteArray();
 		}
 
 		//---
-		DefinitionReference definitionReference;
+		final DefinitionId definitionId2;
 		try (final ByteArrayInputStream bis = new ByteArrayInputStream(serialized); final ObjectInputStream ios = new ObjectInputStream(bis)) {
-			definitionReference = DefinitionReference.class.cast(ios.readObject());
+			definitionId2 = DefinitionId.class.cast(ios.readObject());
 		}
 
-		assertNotSame(sampleDefinitionRef, definitionReference, "DefinitionReferences must be not strictly equals");
-		assertSame(sampleDefinition, definitionReference.get(), "Definitions must be strictly equals");
+		assertNotSame(sampleDefinitionId, definitionId2, "DefinitionIds must be not strictly equals");
+		assertSame(sampleDefinition, definitionId2.get(), "Definitions must be strictly equals");
 	}
 
 	@DefinitionPrefix(SampleDefinition.PREFIX)
-	public static class SampleDefinition extends AbstractDefinition {
+	public static class SampleDefinition extends AbstractDefinition<SampleDefinition> {
 		public static final String PREFIX = "Sample";
 
 		SampleDefinition() {

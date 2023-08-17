@@ -36,7 +36,7 @@ import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
-import io.vertigo.core.node.component.AopPlugin;
+import io.vertigo.core.node.component.AspectPlugin;
 import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
@@ -68,14 +68,14 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		// we need to unwrap the component to scan the real class and not the enhanced version
-		final AopPlugin aopPlugin = Node.getNode().getNodeConfig().getBootConfig().getAopPlugin();
+		final AspectPlugin aopPlugin = Node.getNode().getNodeConfig().bootConfig().aspectPlugin();
 		return Node.getNode().getComponentSpace().keySet()
 				.stream()
 				.flatMap(id -> createDaemonDefinitions(Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream())
 				.collect(Collectors.toList());
 	}
 
-	private List<DaemonDefinition> createDaemonDefinitions(final CoreComponent component, final AopPlugin aopPlugin) {
+	private List<DaemonDefinition> createDaemonDefinitions(final CoreComponent component, final AspectPlugin aopPlugin) {
 		return Stream.of(aopPlugin.unwrap(component).getClass().getMethods())
 				.filter(method -> method.isAnnotationPresent(DaemonScheduled.class))
 				.map(
@@ -159,11 +159,11 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 					.build();
 		} else if (failureCount < daemonStats.size()) {
 			return healthMeasure
-					.withYellowStatus("At least one daemon failed", null)
+					.withYellowStatus("At least one daemon failed")
 					.build();
 		}
 		return healthMeasure
-				.withRedStatus("All daemons failed", null)
+				.withRedStatus("All daemons failed")
 				.build();
 
 	}

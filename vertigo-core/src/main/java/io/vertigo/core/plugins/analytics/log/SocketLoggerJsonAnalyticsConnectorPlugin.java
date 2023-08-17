@@ -39,16 +39,16 @@ import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.metric.Metric;
-import io.vertigo.core.analytics.process.AProcess;
+import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.lang.json.CoreJsonAdapters;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.Param;
@@ -60,7 +60,7 @@ import io.vertigo.core.param.ParamValue;
  * @author mlaroche, pchretien, npiedeloup
  */
 public final class SocketLoggerJsonAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin, Activeable {
-	private static final Gson GSON = new GsonBuilder().create();
+	private static final Gson GSON = CoreJsonAdapters.V_CORE_GSON;
 	private static final int DEFAULT_CONNECT_TIMEOUT = 250;// 250ms for connection to log4j server
 	private static final int DEFAULT_DISCONNECT_TIMEOUT = 5000;// 5s for disconnection to log4j server
 	private static final int DEFAULT_SERVER_PORT = 4563;// DefaultPort of SocketAppender 4562 for log4j2 and 4563 for json over tls
@@ -75,7 +75,7 @@ public final class SocketLoggerJsonAnalyticsConnectorPlugin implements Analytics
 	private final String appName;
 	private final String localHostName;
 
-	private final ConcurrentLinkedQueue<AProcess> processQueue = new ConcurrentLinkedQueue<>();
+	private final ConcurrentLinkedQueue<TraceSpan> processQueue = new ConcurrentLinkedQueue<>();
 
 	private final Optional<String> trustStoreUrl;
 	private final Optional<String> trustStorePassword;
@@ -99,7 +99,7 @@ public final class SocketLoggerJsonAnalyticsConnectorPlugin implements Analytics
 				.isNotNull(hostNameOpt)
 				.isNotNull(portOpt);
 		// ---
-		appName = appNameOpt.orElseGet(() -> Node.getNode().getNodeConfig().getAppName());
+		appName = appNameOpt.orElseGet(() -> Node.getNode().getNodeConfig().appName());
 		hostName = hostNameOpt.orElse("analytica.part.klee.lan.net");
 		port = portOpt.orElse(DEFAULT_SERVER_PORT);
 		localHostName = retrieveHostName();
@@ -110,7 +110,7 @@ public final class SocketLoggerJsonAnalyticsConnectorPlugin implements Analytics
 
 	/** {@inheritDoc} */
 	@Override
-	public void add(final AProcess process) {
+	public void add(final TraceSpan process) {
 		Assertion.check()
 				.isNotNull(process);
 		//---
@@ -205,7 +205,7 @@ public final class SocketLoggerJsonAnalyticsConnectorPlugin implements Analytics
 	@DaemonScheduled(name = "DmnRemoteLogger", periodInSeconds = 1, analytics = false)
 	public void pollQueue() {
 		while (!processQueue.isEmpty()) {
-			final AProcess head = processQueue.poll();
+			final TraceSpan head = processQueue.poll();
 			if (head != null) {
 				sendProcess(head);
 			}
@@ -213,7 +213,7 @@ public final class SocketLoggerJsonAnalyticsConnectorPlugin implements Analytics
 
 	}
 
-	private void sendProcess(final AProcess process) {
+	private void sendProcess(final TraceSpan process) {
 		if (socketProcessLogger == null) {
 			socketProcessLogger = createLogger("vertigo-analytics-process");
 		}

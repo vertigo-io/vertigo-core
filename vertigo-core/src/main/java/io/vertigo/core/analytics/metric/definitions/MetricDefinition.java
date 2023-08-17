@@ -32,7 +32,7 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
  * @author mlaroche, pchretien
  */
 @DefinitionPrefix(MetricDefinition.PREFIX)
-public final class MetricDefinition extends AbstractDefinition {
+public final class MetricDefinition extends AbstractDefinition<MetricDefinition> {
 	public static final String PREFIX = "Met";
 	private final Supplier<List<Metric>> metricSupplier;
 

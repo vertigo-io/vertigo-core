@@ -27,8 +27,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.node.component.aop.Aspect;
-import io.vertigo.core.node.component.aop.AspectAnnotation;
+import io.vertigo.core.node.component.aspect.Aspect;
+import io.vertigo.core.node.component.aspect.AspectAnnotation;
 
 /**
  * Classe permettant d'injecter les intercepteurs sur les points d'exécutions définis dans les aspects.

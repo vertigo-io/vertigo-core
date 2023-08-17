@@ -89,27 +89,27 @@ public final class AutoCloseableNode implements Node, AutoCloseable {
 		//--
 		try {
 			//-- 0. Start logger
-			nodeConfig.getBootConfig().getLogConfig().ifPresent(AutoCloseableNode::initLog);
+			nodeConfig.bootConfig().logConfigOpt().ifPresent(AutoCloseableNode::initLog);
 
 			//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
 			//Creates and register all components (and aspects and Proxies).
 			//all components can be parameterized
-			ComponentSpaceLoader.startLoading(componentSpaceWritable, nodeConfig.getBootConfig().getAopPlugin())
+			ComponentSpaceLoader.startLoading(componentSpaceWritable, nodeConfig.bootConfig().aspectPlugin())
 					//-- 1.a - BootStrap : create native components : ResourceManager, ParamManager, LocaleManager
-					.loadBootComponents(nodeConfig.getBootConfig().getComponentConfigs())
+					.loadBootComponents(nodeConfig.bootConfig().coreComponentConfigs())
 					//-- 1.b - other components
-					.loadAllComponentsAndAspects(nodeConfig.getModuleConfigs())
+					.loadAllComponentsAndAspects(nodeConfig.moduleConfigs())
 					.endLoading();
 			//---- Print components
 			Logo.printCredits(System.out);
-			if (nodeConfig.getBootConfig().isVerbose()) {
+			if (nodeConfig.bootConfig().isVerbose()) {
 				nodeConfig.print(System.out);
 			}
 			//--2 Loads all definitions
 			//-----a Loads all definitions provided by DefinitionProvider
 			//-----b Loads all definitions provided by components
 			DefinitionSpaceLoader.startLoading(definitionSpaceWritable, componentSpaceWritable)
-					.loadDefinitions(nodeConfig.getModuleConfigs())
+					.loadDefinitions(nodeConfig.moduleConfigs())
 					.loadDefinitionsFromComponents()
 					.endLoading();
 
@@ -198,11 +198,11 @@ public final class AutoCloseableNode implements Node, AutoCloseable {
 	}
 
 	private void initializeAllComponents() {
-		for (final ComponentInitializerConfig componentInitializerConfig : nodeConfig.getComponentInitializerConfigs()) {
+		for (final ComponentInitializerConfig componentInitializerConfig : nodeConfig.componentInitializerConfigs()) {
 			Assertion.check()
-					.isFalse(Activeable.class.isAssignableFrom(componentInitializerConfig.getInitializerClass()),
-							"The initializer '{0}' can't be activeable", componentInitializerConfig.getInitializerClass());
-			final ComponentInitializer componentInitializer = DIInjector.newInstance(componentInitializerConfig.getInitializerClass(), componentSpaceWritable);
+					.isFalse(Activeable.class.isAssignableFrom(componentInitializerConfig.componentInitializerClass()),
+							"The initializer '{0}' can't be activeable", componentInitializerConfig.componentInitializerClass());
+			final ComponentInitializer componentInitializer = DIInjector.newInstance(componentInitializerConfig.componentInitializerClass(), componentSpaceWritable);
 			componentInitializer.init();
 		}
 	}
@@ -211,7 +211,7 @@ public final class AutoCloseableNode implements Node, AutoCloseable {
 		Assertion.check()
 				.isNotNull(log4Config);
 		//-----
-		final String log4jFileName = log4Config.getFileName();
+		final String log4jFileName = log4Config.fileName();
 		Assertion.check()
 				.isTrue(log4jFileName.endsWith(".xml"), "Use the XML format for log4j configurations (instead of : {0}).", log4jFileName);
 		final URL url = Node.class.getResource(log4jFileName);

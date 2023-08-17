@@ -26,8 +26,8 @@ import java.util.Set;
 
 /**
  * Reactor.
- * - add components in any order with their id, their class
- * - add ids for components that are already existing.
+ * - adds components in any order with their id, their class
+ * - adds ids for components that are already existing.
  * - then 'proceed' and you obtain an ORDERED list of components, taking account of their dependencies.
  *
  * @author pchretien
@@ -39,14 +39,14 @@ public final class DIReactor {
 	private final Set<String> parentComponentInfos = new HashSet<>();
 
 	private void check(final String id) {
-		//On vérifie que l'on n'insère pas deux composants avec le même id.
+		//The id must be unique
 		if (allComponentInfos.contains(id)) {
-			throw new DIException("deux composants insérés avec le même id :'" + id + "'");
+			throw new DIException("Two components with the same id :'" + id + "'");
 		}
 	}
 
 	/**
-	 * Add a component
+	 * Adds a component
 	 * @param id ID f the component
 	 * @param implClass Impl class of the component
 	 * @return this reactor
@@ -57,7 +57,7 @@ public final class DIReactor {
 
 	/**
 	 *
-	 * Add a component
+	 * Adds a component
 	 * @param id ID f the component
 	 * @param implClass Impl class of the component
 	 * @param params List of ID of all local params - which will be automatically injected-
@@ -72,7 +72,7 @@ public final class DIReactor {
 	}
 
 	/**
-	 * Add a component identified by its ID.
+	 * Adds a component identified by its ID.
 	 * This component is ready to be injected in other components (and it does not need to be resolved).
 	 * @param id ID of the component
 	 * @return this reactor

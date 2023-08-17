@@ -19,7 +19,6 @@ package io.vertigo.core.analytics.health.data;
 
 import io.vertigo.core.analytics.health.HealthChecked;
 import io.vertigo.core.analytics.health.HealthMeasure;
-import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.component.Component;
 
 public class FailedComponentChecker implements Component {
@@ -27,7 +26,7 @@ public class FailedComponentChecker implements Component {
 	@HealthChecked(name = "failure", feature = "failedOnes")
 	public HealthMeasure checkFails() {
 		return HealthMeasure.builder()
-				.withRedStatus("an error", new VSystemException("an error"))
+				.withRedStatus("an error")
 				.build();
 	}
 

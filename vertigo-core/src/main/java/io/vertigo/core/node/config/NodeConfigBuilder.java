@@ -22,8 +22,8 @@ import java.util.UUID;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
+import io.vertigo.core.lang.ListBuilder;
 import io.vertigo.core.node.component.ComponentInitializer;
-import io.vertigo.core.util.ListBuilder;
 
 /**
  * The NodeConfigBuilder builder allows you to create an NodeConfig using a fluent, simple style .

@@ -20,6 +20,7 @@ package io.vertigo.core.node.config;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
@@ -99,7 +100,9 @@ public final class DefinitionProviderConfigBuilder implements Builder<Definition
 	public DefinitionProviderConfig build() {
 		return new DefinitionProviderConfig(
 				myClass,
-				myParams,
+				myParams
+						.stream()
+						.collect(Collectors.toMap(Param::getName, Param::getValue)),
 				myDefinitionResourceConfigs);
 	}
 

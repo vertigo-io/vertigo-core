@@ -34,10 +34,10 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.TempFile;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.core.util.TempFile;
 
 /**
  * Standard implementation for the resourceManager.

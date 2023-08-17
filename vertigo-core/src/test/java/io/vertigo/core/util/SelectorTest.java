@@ -25,11 +25,12 @@ import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.core.lang.Selector;
 import io.vertigo.core.lang.Tuple;
+import io.vertigo.core.lang.Selector.ClassConditions;
+import io.vertigo.core.lang.Selector.FieldConditions;
+import io.vertigo.core.lang.Selector.MethodConditions;
 import io.vertigo.core.node.component.Component;
-import io.vertigo.core.util.Selector.ClassConditions;
-import io.vertigo.core.util.Selector.FieldConditions;
-import io.vertigo.core.util.Selector.MethodConditions;
 import io.vertigo.core.util.data.ARandomAnnotation;
 import io.vertigo.core.util.data.SA;
 import io.vertigo.core.util.data.SAbstractD;

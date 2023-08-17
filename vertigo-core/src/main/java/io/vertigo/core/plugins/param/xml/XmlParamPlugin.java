@@ -94,6 +94,8 @@ public final class XmlParamPlugin implements ParamPlugin {
 		final XmlConfigHandler handler = new XmlConfigHandler();
 		final SAXParserFactory factory = SAXParserFactory.newInstance();
 		factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+		factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+		factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
 
 		final SAXParser saxParser = factory.newSAXParser();
 		saxParser.parse(new BufferedInputStream(configURL.openStream()), handler);

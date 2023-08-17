@@ -18,6 +18,7 @@
 package io.vertigo.core.node.config.yaml;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Properties;
@@ -70,9 +71,9 @@ public final class YamlAppConfigTest {
 
 		testBioManager(nodeConfig);
 
-		assertEquals("bio", nodeConfig.getAppName());
-		assertEquals("myFirstNodeId", nodeConfig.getNodeId());
-		assertEquals("http://localhost/", nodeConfig.getEndPoint().get());
+		assertEquals("bio", nodeConfig.appName());
+		assertEquals("myFirstNodeId", nodeConfig.nodeId());
+		assertEquals("http://localhost/", nodeConfig.endPointOpt().get());
 	}
 
 	@Test
@@ -95,7 +96,7 @@ public final class YamlAppConfigTest {
 				.build();
 
 		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
-			assertEquals(node, node);
+			assertNotNull(node);
 			assertTrue(node.getComponentSpace().contains("bioManager"));
 			final BioManager bioManager = node.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
@@ -113,7 +114,7 @@ public final class YamlAppConfigTest {
 				.build();
 
 		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
-			assertEquals(node, node);
+			assertNotNull(node);
 			assertTrue(node.getComponentSpace().contains("bioManager"));
 			final BioManager bioManager = node.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
@@ -141,7 +142,7 @@ public final class YamlAppConfigTest {
 
 	private void testBioManager(final NodeConfig nodeConfig) {
 		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
-			assertEquals(node, node);
+			assertNotNull(node);
 			assertTrue(node.getComponentSpace().contains("bioManager"));
 			final BioManager bioManager = node.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);

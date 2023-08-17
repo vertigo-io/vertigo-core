@@ -26,6 +26,8 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.core.lang.TempFile;
+
 /**
  * Test de l'utilitaitre de TempFile.
  * @author pchretien

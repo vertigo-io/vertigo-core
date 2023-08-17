@@ -23,12 +23,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.metric.Metric;
-import io.vertigo.core.analytics.process.AProcess;
+import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
+import io.vertigo.core.lang.json.CoreJsonAdapters;
 
 /**
  * Processes connector which only use a log4j logger.
@@ -39,14 +39,14 @@ public final class LoggerAnalyticsConnectorPlugin implements AnalyticsConnectorP
 	private static final Logger LOGGER_HEALTH = LogManager.getLogger("health");
 	private static final Logger LOGGER_METRIC = LogManager.getLogger("metric");
 
-	private static final Gson GSON = new GsonBuilder().create();
+	private static final Gson GSON = CoreJsonAdapters.V_CORE_GSON;
 
 	/** {@inheritDoc} */
 	@Override
-	public void add(final AProcess process) {
-		final Logger logger = LogManager.getLogger(process.getCategory());
+	public void add(final TraceSpan span) {
+		final Logger logger = LogManager.getLogger(span.getCategory());
 		if (logger.isInfoEnabled()) {
-			final String json = GSON.toJson(Collections.singletonList(process));
+			final String json = GSON.toJson(Collections.singletonList(span));
 			logger.info(json);
 		}
 	}

@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.amplifier.data.Aggregate;
-import io.vertigo.core.node.component.amplifier.data.AggregatorProxyMethod;
+import io.vertigo.core.node.component.amplifier.data.AggregatorAmplifierMethod;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -55,7 +55,7 @@ public class AmplifierTest {
 	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.addModule(ModuleConfig.builder("proxies")
-						.addProxyMethod(AggregatorProxyMethod.class)
+						.addAmplifierMethod(AggregatorAmplifierMethod.class)
 						.build())
 				.addModule(ModuleConfig.builder("components")
 						.addAmplifier(Aggregate.class)
