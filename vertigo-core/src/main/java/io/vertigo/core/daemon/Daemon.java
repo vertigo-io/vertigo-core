@@ -1,4 +1,4 @@
-/**
+/*
  * vertigo - application development platform
  *
  * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
