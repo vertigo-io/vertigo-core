@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -270,12 +271,18 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 		}
 		return flags.stream()
 				.anyMatch(flag -> {
-					Assertion.check()
-							.isNotBlank(flag, "A flag cannot be empty");
-					if (flag.charAt(0) == '!') {
-						return !activeFlags.contains(flag.substring(1));
-					}
-					return activeFlags.contains(flag);
+					Assertion.check().isNotBlank(flag, "A flag cannot be empty");
+
+					return Pattern.compile("\s+((and)|(&&))\\s+", Pattern.CASE_INSENSITIVE).splitAsStream(flag) //prefix (?) for case insensitive regexp
+							.allMatch(andflag -> {
+								Assertion.check()
+										.isNotBlank(andflag, "Missing member of 'AND' flag clause")
+										.isFalse(andflag.indexOf(' ') >= 0, "flags can't contains spaces ({0})", flag);
+								if (andflag.charAt(0) == '!') {
+									return !activeFlags.contains(andflag.substring(1));
+								}
+								return activeFlags.contains(andflag);
+							});
 				});
 	}
 
