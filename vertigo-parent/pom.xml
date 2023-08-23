@@ -62,7 +62,7 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<vertigo.version>4.0.0</vertigo.version>
+		<vertigo.version>4.1.0-SNAPSHOT</vertigo.version>
 	</properties>
 
 	<dependencies>
