@@ -14,7 +14,8 @@ Release 4.0.0 -2023/08/17
 * [Core] Rename MessageText to LocaleMessageText
 * [Core] Rename @Analytics to @Trace
 * [Core] Rename Tuple.getValX() to Tuple.valX()
-* [Core] Replace ValueObject class to record when possible
+* [Core] Replace value object class to record when possible
+* [Core] Rename record's getter from getMyProperty to myProperty()
 * [Core] Rename Aop to Aspect (package io.vertigo.core.node.component.aop to io.vertigo.core.node.component.aspect and Class AopPlugin -> AspectPlugin)
 * [Core] Rename ProxyMethodAnnotation to AmplifierMethodAnnotation
 * [Core] Add DefinitionId notion, used in Definition to replace localName by Id and replace DefinitionReference
