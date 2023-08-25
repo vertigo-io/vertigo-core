@@ -199,8 +199,8 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 					yamlModuleConfig.features
 							.forEach(feature -> {
 								Assertion.check()
-										.isFalse(feature.containsKey(FLAGS), "can't read flags as intended in feature (module {0} flags: {1}). You may check yaml indentations (2 spaces more than the parent's name)", featuresClassName, yamlModuleConfig.__flags__)
-										.isTrue(feature.size() == 1, "a feature is designed by it's class. You may check yaml indentations (2 spaces more than the parent's name)");
+										.isFalse(feature.containsKey(FLAGS), "can't read flags as intended in feature {0} (module's flags: {1})", featuresClassName, yamlModuleConfig.__flags__)
+										.isTrue(feature.size() == 1, "a feature is designed by it's class");
 								final Map.Entry<String, Map<String, Object>> featureEntry = feature.entrySet().iterator().next();
 								final String featureClassName = featureEntry.getKey();
 								final Method methodForFeature = featureMethods.get(featureClassName);
@@ -217,8 +217,8 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 					yamlModuleConfig.featuresConfig
 							.forEach(featureConfig -> {
 								Assertion.check()
-										.isFalse(featureConfig.containsKey(FLAGS), "can't read flags as intended in featureConfig (module {0} flags: {1}). You may check yaml indentations (2 spaces more than the parent's name)", featuresClassName, yamlModuleConfig.__flags__)
-										.isTrue(featureConfig.size() == 1, "a feature is designed by it's class. You may check yaml indentations (2 spaces more than the parent's name)");
+										.isFalse(featureConfig.containsKey(FLAGS), "can't read flags as intended in featureConfig {0} (module's flags: {1})", featuresClassName, yamlModuleConfig.__flags__)
+										.isTrue(featureConfig.size() == 1, "a feature is designed by it's class");
 								final Map.Entry<String, Map<String, Object>> featureEntry = featureConfig.entrySet().iterator().next();
 								final String featureClassName = featureEntry.getKey();
 								final Method methodForFeature = featureMethods.get(featureClassName);
@@ -234,8 +234,7 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 				yamlModuleConfig.plugins.forEach(
 						plugin -> {
 							Assertion.check()
-									.isFalse(plugin.containsKey(FLAGS), "can't read flags as intended in plugin (module {0} flags: {1}). You may check yaml indentations (2 spaces more than the parent's name)", featuresClassName, yamlModuleConfig.__flags__)
-									.isTrue(plugin.size() == 1, "a plugin is defined by it's class. You may check yaml indentations (2 spaces more than the parent's name)");
+									.isTrue(plugin.size() == 1, "a plugin is defined by it's class");
 							// ---
 							final Map.Entry<String, Map<String, Object>> pluginEntry = plugin.entrySet().iterator().next();
 							final String pluginClassName = pluginEntry.getKey();
