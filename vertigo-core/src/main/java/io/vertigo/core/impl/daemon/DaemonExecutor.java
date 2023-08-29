@@ -38,8 +38,16 @@ import io.vertigo.core.node.component.Activeable;
  */
 final class DaemonExecutor implements Activeable {
 	private boolean isActive;
-	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+	private final ScheduledExecutorService scheduler;
 	private final List<DaemonListener> daemonListeners = new ArrayList<>();
+
+	/**
+	 * Constructor.
+	 * @param threadPoolSize thread pool size
+	 */
+	public DaemonExecutor(final int threadPoolSize) {
+		scheduler = Executors.newScheduledThreadPool(threadPoolSize);
+	}
 
 	private static Daemon createDaemon(final DaemonDefinition daemonDefinition) {
 		return daemonDefinition.getDaemonSupplier().get();
