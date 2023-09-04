@@ -30,6 +30,7 @@ import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.util.NamedThreadFactory;
 
 /**
  * This class executes the daemons that have been previously registered.
@@ -46,7 +47,7 @@ final class DaemonExecutor implements Activeable {
 	 * @param threadPoolSize thread pool size
 	 */
 	public DaemonExecutor(final int threadPoolSize) {
-		scheduler = Executors.newScheduledThreadPool(threadPoolSize);
+		scheduler = Executors.newScheduledThreadPool(threadPoolSize, new NamedThreadFactory("v-daemon-"));
 	}
 
 	private static Daemon createDaemon(final DaemonDefinition daemonDefinition) {

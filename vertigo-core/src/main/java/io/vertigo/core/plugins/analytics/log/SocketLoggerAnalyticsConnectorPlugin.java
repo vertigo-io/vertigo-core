@@ -23,9 +23,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
 
@@ -56,6 +54,7 @@ import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.plugins.analytics.log.log4j.AnalyticsSocketAppender;
 import io.vertigo.core.plugins.analytics.log.log4j.AnalyticsSocketAppender.Builder;
+import io.vertigo.core.util.NamedThreadFactory;
 
 /**
  * Processes connector which use the log4j SocketAppender.
@@ -84,18 +83,9 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	private final boolean devConfig;
 	private final Integer bufferSize;
 
-	private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(new SocketLoggerAnalyticsThreadFactory());
+	private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("v-socketLoggerAnalytics-"));
 	private int logCounterEvery100 = 0;
 	private final ConcurrentLinkedQueue<Object> sendQueue = new ConcurrentLinkedQueue<>();
-
-	static class SocketLoggerAnalyticsThreadFactory implements ThreadFactory {
-		private static AtomicInteger threadCounter = new AtomicInteger();
-
-		@Override
-		public Thread newThread(final Runnable r) {
-			return new Thread(r, "SocketLoggerAnalyticsExecutor-" + threadCounter.incrementAndGet());
-		}
-	}
 
 	/**
 	 * Constructor.
