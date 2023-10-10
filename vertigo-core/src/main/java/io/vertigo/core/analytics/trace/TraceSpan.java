@@ -72,7 +72,7 @@ public final class TraceSpan {
 	private final Map<String, Double> measures;
 	private final Map<String, String> metadatas;
 	private final Map<String, String> tags;
-	private final List<TraceSpan> childSpans;
+	private final List<TraceSpan> childSpans; //previously subProcesses
 
 	/**
 	 * Constructor.
