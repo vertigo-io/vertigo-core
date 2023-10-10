@@ -19,11 +19,15 @@ package io.vertigo.core.plugins.analytics.log;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Queue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
@@ -39,6 +43,7 @@ import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.SocketOptions;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import io.vertigo.core.analytics.health.HealthCheck;
@@ -46,7 +51,6 @@ import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.json.CoreJsonAdapters;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.Param;
@@ -62,8 +66,10 @@ import io.vertigo.core.util.NamedThreadFactory;
  * @author mlaroche, pchretien, npiedeloup
  */
 public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin, Activeable {
+	private static final int EVENT_BATCH_SIZE = 1; //right now : batch dont gain enought
+	private static final int TEN_SECONDS = 10 * 1000;
 	private static final Logger LOGGER = LogManager.getLogger(SocketLoggerAnalyticsConnectorPlugin.class);
-	private static final Gson GSON = CoreJsonAdapters.V_CORE_GSON;
+	private static final Gson GSON = new GsonBuilder().create();//CoreJsonAdapters.V_CORE_GSON;
 	private static final int DEFAULT_CONNECT_TIMEOUT = 250;// 250ms for connection to log4j server
 	private static final int DEFAULT_SOCKET_TIMEOUT = 5000;// 5s for socket to log4j server
 	private static final int DEFAULT_DISCONNECT_TIMEOUT = 5000;// 5s for disconnection to log4j server
@@ -84,8 +90,12 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	private final Integer bufferSize;
 
 	private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("v-socketLoggerAnalytics-"));
-	private int logCounterEvery100 = 0;
-	private final ConcurrentLinkedQueue<Object> sendQueue = new ConcurrentLinkedQueue<>();
+
+	private volatile int logSendCount = 0;
+	private volatile int logErrorCount = 0;
+	private volatile long logErrorEvery10sTime = 0;
+	//private final ConcurrentLinkedQueue<Object> sendQueue = new ConcurrentLinkedQueue<>();
+	private final Queue<Object> sendQueue = new LinkedBlockingQueue<>(SEND_QUEUE_MAX_SIZE + 1);
 
 	/**
 	 * Constructor.
@@ -126,13 +136,15 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 				.isNotNull(span);
 		//---
 		if (sendQueue.size() > SEND_QUEUE_MAX_SIZE) {
-			if (logCounterEvery100 == 0) {
-				LOGGER.error("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose process ");
+			logErrorCount++;
+			if (System.currentTimeMillis() - logErrorEvery10sTime > TEN_SECONDS) {
+				LOGGER.error("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose " + logErrorCount + " process (in:" + logErrorCount / 10 + "/s ; out:" + logSendCount / 10 + "/s)");
+				logErrorCount = 0;
+				logSendCount = 0;
+				logErrorEvery10sTime = System.currentTimeMillis();
 			}
-			++logCounterEvery100;
-			logCounterEvery100 = logCounterEvery100 % 100;
 		} else {
-			logCounterEvery100 = 0;
+			//logCounterEvery100 = 0;
 			sendQueue.add(span);
 		}
 	}
@@ -144,13 +156,14 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 				.isNotNull(metric);
 		//---
 		if (sendQueue.size() > SEND_QUEUE_MAX_SIZE) {
-			if (logCounterEvery100 == 0) {
-				LOGGER.error("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose metrics ");
+			logErrorCount++;
+			if (System.currentTimeMillis() - logErrorEvery10sTime > TEN_SECONDS) {
+				LOGGER.error("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose " + logErrorCount + " metrics (in:" + logErrorCount / 10 + "/s ; out:" + logSendCount / 10 + "/s)");
+				logErrorCount = 0;
+				logSendCount = 0;
+				logErrorEvery10sTime = System.currentTimeMillis();
 			}
-			++logCounterEvery100;
-			logCounterEvery100 = logCounterEvery100 % 100;
 		} else {
-			logCounterEvery100 = 0;
 			sendQueue.add(metric);
 		}
 	}
@@ -162,13 +175,14 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 				.isNotNull(healthCheck);
 		//---
 		if (sendQueue.size() > SEND_QUEUE_MAX_SIZE) {
-			if (logCounterEvery100 == 0) {
-				LOGGER.error("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose healthChecks ");
+			logErrorCount++;
+			if (System.currentTimeMillis() - logErrorEvery10sTime > TEN_SECONDS) {
+				LOGGER.error("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose " + logErrorCount + " healthChecks (in:" + logErrorCount / 10 + "/s ; out:" + logSendCount / 10 + "/s)");
+				logErrorCount = 0;
+				logSendCount = 0;
+				logErrorEvery10sTime = System.currentTimeMillis();
 			}
-			++logCounterEvery100;
-			logCounterEvery100 = logCounterEvery100 % 100;
 		} else {
-			logCounterEvery100 = 0;
 			sendQueue.add(healthCheck);
 		}
 	}
@@ -241,55 +255,82 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	 * Daemon to unstack processes to end them
 	 */
 	public void pollQueue() {
-		while (!sendQueue.isEmpty()) {
-			final Object head = sendQueue.peek();
+		//checkAppenders exists
+		checkSocketProcessLogger();
+		try {
+			//check each run, if its time to send
+			checkAndSendBatchIfNeeded();
 
-			if (head != null) {
-				try {
+			while (!sendQueue.isEmpty()) {
+				final Object head = sendQueue.peek();
+				if (head != null) {
 					if (head instanceof TraceSpan) {
-						sendSpan((TraceSpan) head);
+						spanBatch.add((TraceSpan) head);
 					} else if (head instanceof Metric) {
-						sendMetric((Metric) head);
+						metricBatch.add((Metric) head);
 					} else if (head instanceof HealthCheck) {
-						sendHealthCheck((HealthCheck) head);
+						healthCheckBatch.add((HealthCheck) head);
 					}
 					sendQueue.remove(head);
-				} catch (final Exception e) {
-					LOGGER.error("Can't send " + head.getClass().getSimpleName() + " to analytics server (sendQueueSize:" + sendQueue.size() + ")", e);
+					logSendCount++;
 				}
+				//check each loop, if batchs were full
+				checkAndSendBatchIfNeeded();
+			}
+		} catch (final Exception e) {
+			LOGGER.error("Can't send data to analytics server (sendQueueSize:" + sendQueue.size() + ")", e);
+			//stop and wait next loop
+		}
+	}
+
+	private long spanBatchSend = 0;
+	private final List<TraceSpan> spanBatch = new ArrayList<>();
+	private long metricBatchSend = 0;
+	private final List<Metric> metricBatch = new ArrayList<>();
+	private long healthCheckBatchSend = 0;
+	private final List<HealthCheck> healthCheckBatch = new ArrayList<>();
+
+	private void checkSocketProcessLogger() {
+		if (appender != null) {
+			if (socketProcessLogger == null) {
+				socketProcessLogger = createLogger("vertigo-analytics-process");
+			}
+			if (socketMetricLogger == null) {
+				socketMetricLogger = createLogger("vertigo-analytics-metric");
+			}
+			if (socketHealthLogger == null) {
+				socketHealthLogger = createLogger("vertigo-analytics-health");
 			}
 		}
 	}
 
-	private void sendSpan(final TraceSpan span) {
-		if (appender != null && socketProcessLogger == null) {
-			socketProcessLogger = createLogger("vertigo-analytics-process");
-		}
-		sendObject(span, socketProcessLogger);
+	private void checkAndSendBatchIfNeeded() {
+		checkAndSendBatchIfNeeded(spanBatch, spanBatchSend, (time) -> spanBatchSend = time, socketProcessLogger);
+		checkAndSendBatchIfNeeded(metricBatch, metricBatchSend, (time) -> metricBatchSend = time, socketMetricLogger);
+		checkAndSendBatchIfNeeded(healthCheckBatch, healthCheckBatchSend, (time) -> healthCheckBatchSend = time, socketHealthLogger);
 	}
 
-	private void sendMetric(final Metric metric) {
-		if (appender != null && socketMetricLogger == null) {
-			socketMetricLogger = createLogger("vertigo-analytics-metric");
+	private void checkAndSendBatchIfNeeded(final List<?> items, final long batchTime, final Consumer<Long> batchTimeSetter, final Logger logger) {
+		if (!items.isEmpty()) {
+			if (EVENT_BATCH_SIZE > 1 && items.size() == 1) {
+				batchTimeSetter.accept(System.currentTimeMillis());
+			} else if (items.size() >= EVENT_BATCH_SIZE || System.currentTimeMillis() - batchTime > TEN_SECONDS) {
+				sendObjects(items, logger);
+				items.clear();
+			}
 		}
-		sendObject(metric, socketMetricLogger);
 	}
 
-	private void sendHealthCheck(final HealthCheck healthCheck) {
-		if (appender != null && socketHealthLogger == null) {
-			socketHealthLogger = createLogger("vertigo-analytics-health");
-		}
-		sendObject(healthCheck, socketHealthLogger);
-
-	}
-
-	private void sendObject(final Object object, final Logger logger) {
-
+	private void sendObjects(final List<?> list, final Logger logger) {
 		if (appender != null && logger.isInfoEnabled()) {
 			final JsonObject log = new JsonObject();
 			log.addProperty("appName", appName);
 			log.addProperty("host", nodeName);
-			log.add("event", GSON.toJsonTree(object));
+			if (list.size() == 1) {
+				log.add("event", GSON.toJsonTree(list.get(0)));
+			} else {
+				log.add("events", GSON.toJsonTree(list));
+			}
 			logger.info(GSON.toJson(log));
 		}
 	}
