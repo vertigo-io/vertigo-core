@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Supplier;
+import java.util.zip.GZIPOutputStream;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
@@ -60,7 +61,8 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 	 */
 	private static final int DEFAULT_PORT = 4560;
 
-	private static final TcpSocketManagerFactory<AnalyticsTcpSocketManager, FactoryData> FACTORY = new TcpSocketManagerFactory<>();
+	//rebuild instead of static ref : needed to set compress mode or not
+	//private static final TcpSocketManagerFactory<AnalyticsTcpSocketManager, FactoryData> FACTORY = new TcpSocketManagerFactory<>();
 
 	private final int reconnectionDelayMillis;
 
@@ -170,34 +172,10 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 	 * @param bufferSize
 	 * The buffer size.
 	 * @return A TcpSocketManager.
-	 * @deprecated Use {@link #getSocketManager(String, int, int, int, boolean, Layout, int, SocketOptions)}.
-	 */
-	@Deprecated
-	public static AnalyticsTcpSocketManager getSocketManager(final String host, final int port, final int connectTimeoutMillis,
-			final int reconnectDelayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout,
-			final int bufferSize) {
-		return getSocketManager(host, port, connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout,
-				bufferSize, null);
-	}
-
-	/**
-	 * Obtains a TcpSocketManager.
-	 *
-	 * @param host
-	 * The host to connect to.
-	 * @param port
-	 * The port on the host.
-	 * @param connectTimeoutMillis
-	 * the connect timeout in milliseconds
-	 * @param reconnectDelayMillis
-	 * The interval to pause between retries.
-	 * @param bufferSize
-	 * The buffer size.
-	 * @return A TcpSocketManager.
 	 */
 	public static AnalyticsTcpSocketManager getSocketManager(final String host, int port, final int connectTimeoutMillis,
 			int reconnectDelayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout,
-			final int bufferSize, final SocketOptions socketOptions) {
+			final int bufferSize, final SocketOptions socketOptions, final boolean compress) {
 		if (Strings.isEmpty(host)) {
 			throw new IllegalArgumentException("A host name is required");
 		}
@@ -208,7 +186,8 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 			reconnectDelayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
 		}
 		return (AnalyticsTcpSocketManager) getManager("TCP:" + host + ':' + port, new FactoryData(host, port,
-				connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout, bufferSize, socketOptions), FACTORY);
+				connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout, bufferSize, socketOptions),
+				new TcpSocketManagerFactory<>(compress));
 	}
 
 	@SuppressWarnings("sync-override") // synchronization on "this" is done within the method
@@ -266,7 +245,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 			if (length <= byteBuffer.remaining()) {
 				byteBuffer.put(bytes);
 				LOGGER.debug("Buffering data. Usage : {}/{} ({}%)",
-						byteBuffer.position(), byteBuffer.capacity(), Math.round((byteBuffer.position() / (float) byteBuffer.capacity()) * 1000) / 10.0);
+						byteBuffer.position(), byteBuffer.capacity(), Math.round(byteBuffer.position() / (float) byteBuffer.capacity() * 1000) / 10.0);
 				return;
 			}
 			LOGGER.warn("Buffer full, droping data");
@@ -373,7 +352,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 		}
 
 		void reconnect() throws IOException {
-			final List<InetSocketAddress> socketAddresses = FACTORY.resolver.resolveHost(host, port);
+			final List<InetSocketAddress> socketAddresses = TcpSocketManagerFactory.resolver.resolveHost(host, port);
 			if (socketAddresses.size() == 1) {
 				LOGGER.debug("Reconnecting " + socketAddresses.get(0));
 				connect(socketAddresses.get(0));
@@ -492,6 +471,11 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 			implements ManagerFactory<M, T> {
 
 		static HostResolver resolver = new HostResolver();
+		private final boolean compress;
+
+		TcpSocketManagerFactory(final boolean compress) {
+			this.compress = compress;
+		}
 
 		@SuppressWarnings("resource")
 		@Override
@@ -509,6 +493,9 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 				// LOG4J2-1042
 				socket = createSocket(data);
 				os = socket.getOutputStream();
+				if (compress) {
+					os = new GZIPOutputStream(os, true);
+				} //LZF needs an extra lib
 				return createManager(name, os, socket, inetAddress, data);
 			} catch (final IOException ex) {
 				LOGGER.error("TcpSocketManager ({}) caught exception and will continue:", name, ex);
