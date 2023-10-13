@@ -75,7 +75,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	private static final int DEFAULT_CONNECT_TIMEOUT = 250;// 250ms for connection to log4j server
 	private static final int DEFAULT_SOCKET_TIMEOUT = 5000;// 5s for socket to log4j server
 	private static final int DEFAULT_DISCONNECT_TIMEOUT = 5000;// 5s for disconnection to log4j server
-	private static final int DEFAULT_SERVER_PORT = 4562;// DefaultPort of SocketAppender 4650 for log4j and 4562 for log4j2
+	private static final int DEFAULT_SERVER_PORT = 4563;// DefaultPort of SocketAppender 4650 for log4j and 4562 for log4j2 and 4563 for log4j2json
 	private static final int SEND_QUEUE_MAX_SIZE = 10_000;// 10k elements
 
 	private Logger socketProcessLogger;
@@ -123,6 +123,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 			@ParamValue("bufferSize") final Optional<Integer> bufferSizeOpt,
 			@ParamValue("batchSize") final Optional<Integer> batchSizeOpt,
 			@ParamValue("jsonLayout") final Optional<Boolean> jsonLayoutOpt,
+			@ParamValue("jsonLayoutParam") final Optional<String> jsonLayoutParamOpt,
 			@ParamValue("compressPayload") final Optional<Boolean> compressPayloadOpt, //may be removed soon : not usefull
 			@ParamValue("compressOutputStream") final Optional<Boolean> compressOutputStreamOpt) {
 		Assertion.check()
@@ -132,11 +133,12 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 				.isNotNull(portParamOpt)
 				.isNotNull(nodeNameParamOpt)
 				.isNotNull(envNameParamOpt)
-				.when(hostNameOpt.isPresent(), () -> Assertion.check().isTrue(hostNameParamOpt.isEmpty(), "hostName and hostNameParam are exclusive"))
+				.isNotNull(jsonLayoutParamOpt)
+				.isNotNull(jsonLayoutOpt)
 				.when(hostNameParamOpt.isPresent(), () -> Assertion.check().isTrue(hostNameOpt.isEmpty(), "hostName and hostNameParam are exclusive"))
-				.when(portOpt.isPresent(), () -> Assertion.check().isTrue(portParamOpt.isEmpty(), "port and portParam are exclusive"))
 				.when(portParamOpt.isPresent(), () -> Assertion.check().isTrue(portOpt.isEmpty(), "port and portParam are exclusive"))
-				.when(jsonLayoutOpt.orElse(true), () -> Assertion.check().isFalse(compressPayloadOpt.orElse(false), "jsonLayout doesn't support compressPayload"));
+				.when(jsonLayoutParamOpt.isPresent(), () -> Assertion.check().isTrue(jsonLayoutOpt.isEmpty(), "jsonLayout and jsonLayoutParam are exclusive"));
+
 		// ---
 		appName = Node.getNode().getNodeConfig().appName() + envNameParamOpt.map(paramManager::getParam).map(Param::getValueAsString).map(env -> '-' + env.toLowerCase()).orElse("");
 		hostName = hostNameOpt.orElseGet(() -> hostNameParamOpt.map(paramManager::getParam).map(Param::getValueAsString).orElse("analytica.part.klee.lan.net"));
@@ -146,10 +148,14 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 				.map(paramName -> paramManager.getOptionalParam(paramName).map(Param::getValueAsString).orElseGet(SocketLoggerAnalyticsConnectorPlugin::retrieveHostName))
 				.orElseGet(SocketLoggerAnalyticsConnectorPlugin::retrieveHostName);
 		bufferSize = bufferSizeOpt.orElse(50);
-		batchSize = batchSizeOpt.orElse(1);
-		jsonLayout = jsonLayoutOpt.orElse(true);
+		batchSize = batchSizeOpt.orElse(5);
+		jsonLayout = jsonLayoutOpt.orElseGet(() -> jsonLayoutParamOpt.map(paramManager::getParam).map(Param::getValueAsBoolean).orElse(true));
 		compressPayload = compressPayloadOpt.orElse(false);
 		compressOutputStream = compressOutputStreamOpt.orElse(true);
+		Assertion.check()
+				.when(!jsonLayout, () -> Assertion.check().isTrue(port != DEFAULT_SERVER_PORT, "default port " + DEFAULT_SERVER_PORT + " doesn't support serialized logs, change port (may use 4562)"))
+				.when(jsonLayout, () -> Assertion.check().isFalse(compressPayloadOpt.orElse(false), "jsonLayout doesn't support compressPayload"));
+
 	}
 
 	/** {@inheritDoc} */
@@ -234,7 +240,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		} else {
 			appenderBuilder
 					.setImmediateFail(false)
-					.setImmediateFlush(false)
+					.setImmediateFlush(true) //needed when compressed
 					.setReconnectDelayMillis(10000) // 10s
 					.setBufferSize(bufferSize * 1024 * 1024) // in Mo, used for keeping logs while disconnected
 			;
@@ -256,7 +262,9 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		scheduler.shutdown();
 		pollQueue();
 		forceSendBatch();
-		appender.stop(DEFAULT_DISCONNECT_TIMEOUT, TimeUnit.MILLISECONDS);
+		if (appender != null) {
+			appender.stop(DEFAULT_DISCONNECT_TIMEOUT, TimeUnit.MILLISECONDS);
+		}
 		appender = null;
 	}
 
