@@ -17,6 +17,7 @@
  */
 package io.vertigo.core.plugins.analytics.log.log4j;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -526,6 +527,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 				// LOG4J2-1042
 				socket = createSocket(data);
 				os = socket.getOutputStream();
+				os = new BufferedOutputStream(os);
 				return createManager(name, os, socket, inetAddress, data);
 			} catch (final IOException ex) {
 				LOGGER.error("TcpSocketManager ({}) caught exception and will continue:", name, ex);
