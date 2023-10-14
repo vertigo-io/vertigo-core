@@ -72,8 +72,8 @@ public class AnalyticsSocketAppender extends SocketAppender {
 				throw new VSystemException("Only TCP protocol is supported");
 			}
 
-			final AbstractSocketManager manager = AnalyticsTcpSocketManager.getSocketManager(getHost(), getPort(), getConnectTimeoutMillis(), getReconnectDelayMillis(), getImmediateFail(), layout,
-					getBufferSize(), getSocketOptions(), compress);
+			final AbstractSocketManager manager = AnalyticsTcpSocketManager.getSocketManager(getHost(), getPort(), getConnectTimeoutMillis(), getReconnectDelayMillis(), getImmediateFail(), compress, layout,
+					getBufferSize(), getSocketOptions());
 
 			return new AnalyticsSocketAppender(name, layout, getFilter(), manager, isIgnoreExceptions(),
 					!bufferedIo || immediateFlush, getAdvertise() ? getConfiguration().getAdvertiser() : null,

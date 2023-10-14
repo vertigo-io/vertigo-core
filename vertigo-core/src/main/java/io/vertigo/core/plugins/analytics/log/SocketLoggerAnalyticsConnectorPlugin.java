@@ -240,7 +240,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		} else {
 			appenderBuilder
 					.setImmediateFail(false)
-					.setImmediateFlush(true) //needed when compressed
+					.setImmediateFlush(false)
 					.setReconnectDelayMillis(10000) // 10s
 					.setBufferSize(bufferSize * 1024 * 1024) // in Mo, used for keeping logs while disconnected
 			;
