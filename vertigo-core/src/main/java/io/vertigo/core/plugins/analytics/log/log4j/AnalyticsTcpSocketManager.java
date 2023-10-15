@@ -261,16 +261,18 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 			throws IOException {
 		@SuppressWarnings("resource") // outputStream is managed by this class
 		final OutputStream outputStream = getOutputStream();
-		if (compress && length > 256) {
+		if (compress) {
 			final byte[] compressed = gzip(bytes, offset, length);
-			final byte[] prefix = new byte[] {
+			/*final byte[] prefix = new byte[] {
 					(byte) 0xf1, (byte) 0xb8, //magic header for this mode type
 					(byte) (compressed.length >> 16 & 0xff),
 					(byte) (compressed.length >> 8 & 0xff),
 					(byte) (compressed.length >> 0 & 0xff),
 			};
-			outputStream.write(prefix);
+			outputStream.write(prefix);*/
+			//LOGGER.trace("send : " + compressed.length + " " + byteArrayToHex(compressed));
 			outputStream.write(compressed);
+			//outputStream.write(-1); //EOF
 		} else {
 			outputStream.write(bytes, offset, length);
 		}

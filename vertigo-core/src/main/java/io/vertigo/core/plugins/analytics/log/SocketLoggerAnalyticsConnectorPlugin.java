@@ -92,7 +92,6 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	private final int bufferSize;
 	private final int batchSize;
 	private final boolean jsonLayout;
-	private final boolean compressPayload;
 	private final boolean compressOutputStream;
 
 	private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("v-socketLoggerAnalytics-"));
@@ -124,7 +123,6 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 			@ParamValue("batchSize") final Optional<Integer> batchSizeOpt,
 			@ParamValue("jsonLayout") final Optional<Boolean> jsonLayoutOpt,
 			@ParamValue("jsonLayoutParam") final Optional<String> jsonLayoutParamOpt,
-			@ParamValue("compressPayload") final Optional<Boolean> compressPayloadOpt, //may be removed soon : not usefull
 			@ParamValue("compressOutputStream") final Optional<Boolean> compressOutputStreamOpt) {
 		Assertion.check()
 				.isNotNull(hostNameOpt)
@@ -150,12 +148,9 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		bufferSize = bufferSizeOpt.orElse(50);
 		batchSize = batchSizeOpt.orElse(5);
 		jsonLayout = jsonLayoutOpt.orElseGet(() -> jsonLayoutParamOpt.map(paramManager::getParam).map(Param::getValueAsBoolean).orElse(true));
-		compressPayload = compressPayloadOpt.orElse(false);
 		compressOutputStream = compressOutputStreamOpt.orElse(true);
 		Assertion.check()
-				.when(!jsonLayout, () -> Assertion.check().isTrue(port != DEFAULT_SERVER_PORT, "default port " + DEFAULT_SERVER_PORT + " doesn't support serialized logs, change port (may use 4562)"))
-				.when(jsonLayout, () -> Assertion.check().isFalse(compressPayloadOpt.orElse(false), "jsonLayout doesn't support compressPayload"));
-
+				.when(!jsonLayout, () -> Assertion.check().isTrue(port != DEFAULT_SERVER_PORT, "default port " + DEFAULT_SERVER_PORT + " doesn't support serialized logs, change port (may use 4562)"));
 	}
 
 	/** {@inheritDoc} */
@@ -370,11 +365,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 				log.add("events", GSON.toJsonTree(list));
 			}
 			final String jsonEvent = GSON.toJson(log);
-			if (compressPayload) {
-				logger.info(new JsonCompressedByteMessage(jsonEvent));
-			} else {
-				logger.info(jsonEvent);
-			}
+			logger.info(jsonEvent);
 		}
 	}
 
