@@ -255,6 +255,13 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	@Override
 	public void stop() {
 		scheduler.shutdown();
+		try {
+			scheduler.awaitTermination(10, TimeUnit.SECONDS);
+		} catch (final InterruptedException e) {
+			//we are already stoping
+			// Restore interrupted state...
+			Thread.currentThread().interrupt();
+		}
 		pollQueue();
 		forceSendBatch();
 		if (appender != null) {
