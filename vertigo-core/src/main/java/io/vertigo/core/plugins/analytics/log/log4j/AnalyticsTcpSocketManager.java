@@ -196,7 +196,22 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 
 	@SuppressWarnings("sync-override") // synchronization on "this" is done within the method
 	@Override
-	protected void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
+	protected void write(final byte[] originBytes, final int originOffset, final int originLength, final boolean immediateFlush) {
+		byte[] bytes = originBytes;
+		int offset = originOffset;
+		int length = originLength;
+		if (compress) {
+			try {
+				bytes = gzip(originBytes, originOffset, originLength);
+				offset = 0;
+				length = bytes.length;
+			} catch (final IOException e) {
+				LOGGER.warn("Cannot gzip data (offset:{} length:{}), fallback to full data (might be accepted)", originOffset, originLength);
+				bytes = originBytes;
+				offset = originOffset;
+				length = originLength;
+			}
+		}
 		if (socket == null) {
 			if (reconnector != null && !immediateFail) {
 				reconnector.latch();
@@ -261,21 +276,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 			throws IOException {
 		@SuppressWarnings("resource") // outputStream is managed by this class
 		final OutputStream outputStream = getOutputStream();
-		if (compress) {
-			final byte[] compressed = gzip(bytes, offset, length);
-			/*final byte[] prefix = new byte[] {
-					(byte) 0xf1, (byte) 0xb8, //magic header for this mode type
-					(byte) (compressed.length >> 16 & 0xff),
-					(byte) (compressed.length >> 8 & 0xff),
-					(byte) (compressed.length >> 0 & 0xff),
-			};
-			outputStream.write(prefix);*/
-			//LOGGER.trace("send : " + compressed.length + " " + byteArrayToHex(compressed));
-			outputStream.write(compressed);
-			//outputStream.write(-1); //EOF
-		} else {
-			outputStream.write(bytes, offset, length);
-		}
+		outputStream.write(bytes, offset, length);
 		if (immediateFlush) {
 			outputStream.flush();
 		}
@@ -529,7 +530,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 				// LOG4J2-1042
 				socket = createSocket(data);
 				os = socket.getOutputStream();
-				os = new BufferedOutputStream(os);
+				os = new BufferedOutputStream(os); //without buffer, sockets will send data as soon as possible: resulting in more small packets
 				return createManager(name, os, socket, inetAddress, data);
 			} catch (final IOException ex) {
 				LOGGER.error("TcpSocketManager ({}) caught exception and will continue:", name, ex);

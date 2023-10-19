@@ -165,14 +165,20 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	private boolean sendQueueFull() {
 		final boolean isFull = sendQueue.size() >= SEND_QUEUE_MAX_SIZE;
+		final long timeSincePreviousLog = System.currentTimeMillis() - logErrorEvery10sTime;
 		if (isFull) {
 			logErrorCount++;
-			if (System.currentTimeMillis() - logErrorEvery10sTime > TEN_SECONDS) {
-				LOGGER.error("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose " + logErrorCount + " events (in:" + (logSendCount + logErrorCount) / 10 + "/s ; out:" + logSendCount / 10 + "/s)");
+			if (timeSincePreviousLog > TEN_SECONDS) {
+				LOGGER.warn("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose " + logErrorCount + " events (in:" + (logSendCount + logErrorCount) / (timeSincePreviousLog / 1000) + "/s ; out:" + logSendCount / (timeSincePreviousLog / 1000) + "/s)");
 				logErrorCount = 0;
 				logSendCount = 0;
 				logErrorEvery10sTime = System.currentTimeMillis();
 			}
+		} else if (logErrorCount > 0 && timeSincePreviousLog > TEN_SECONDS * 2) {
+			LOGGER.warn("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose " + logErrorCount + " events (in:" + (logSendCount + logErrorCount) / (timeSincePreviousLog / 1000) + "/s ; out:" + logSendCount / (timeSincePreviousLog / 1000) + "/s)");
+			logErrorCount = 0;
+			logSendCount = 0;
+			logErrorEvery10sTime = System.currentTimeMillis();
 		}
 		return isFull;
 	}
