@@ -27,6 +27,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import javax.inject.Inject;
@@ -96,8 +97,8 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("v-socketLoggerAnalytics-"));
 
-	private volatile int logSendCount = 0;
-	private volatile int logErrorCount = 0;
+	private final AtomicInteger logSendCount = new AtomicInteger(0);
+	private final AtomicInteger logErrorCount = new AtomicInteger(0);
 	private volatile long logErrorEvery10sTime = 0;
 	//private final ConcurrentLinkedQueue<Object> sendQueue = new ConcurrentLinkedQueue<>();
 	private final Queue<Object> sendQueue = new LinkedBlockingQueue<>(SEND_QUEUE_MAX_SIZE + 1);
@@ -167,17 +168,17 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		final boolean isFull = sendQueue.size() >= SEND_QUEUE_MAX_SIZE;
 		final long timeSincePreviousLog = System.currentTimeMillis() - logErrorEvery10sTime;
 		if (isFull) {
-			logErrorCount++;
+			logErrorCount.addAndGet(1);
 			if (timeSincePreviousLog > TEN_SECONDS) {
-				LOGGER.warn("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose " + logErrorCount + " events (in:" + (logSendCount + logErrorCount) / (timeSincePreviousLog / 1000) + "/s ; out:" + logSendCount / (timeSincePreviousLog / 1000) + "/s)");
-				logErrorCount = 0;
-				logSendCount = 0;
+				LOGGER.warn("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose " + logErrorCount + " events (in:" + (logSendCount.get() + logErrorCount.get()) / (timeSincePreviousLog / 1000) + "/s ; out:" + logSendCount.get() / (timeSincePreviousLog / 1000) + "/s)");
+				logErrorCount.set(0);
+				logSendCount.set(0);
 				logErrorEvery10sTime = System.currentTimeMillis();
 			}
-		} else if (logErrorCount > 0 && timeSincePreviousLog > TEN_SECONDS * 2) {
-			LOGGER.warn("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose " + logErrorCount + " events (in:" + (logSendCount + logErrorCount) / (timeSincePreviousLog / 1000) + "/s ; out:" + logSendCount / (timeSincePreviousLog / 1000) + "/s)");
-			logErrorCount = 0;
-			logSendCount = 0;
+		} else if (logErrorCount.get() > 0 && timeSincePreviousLog > TEN_SECONDS * 2) {
+			LOGGER.warn("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose " + logErrorCount + " events (in:" + (logSendCount.get() + logErrorCount.get()) / (timeSincePreviousLog / 1000) + "/s ; out:" + logSendCount.get() / (timeSincePreviousLog / 1000) + "/s)");
+			logErrorCount.set(0);
+			logSendCount.set(0);
 			logErrorEvery10sTime = System.currentTimeMillis();
 		}
 		return isFull;
@@ -312,7 +313,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 						healthCheckBatch.add((HealthCheck) head);
 					}
 					sendQueue.remove(head);
-					logSendCount++;
+					logSendCount.addAndGet(1);
 				}
 				//check each loop, if batchs were full
 				checkAndSendBatchIfNeeded();

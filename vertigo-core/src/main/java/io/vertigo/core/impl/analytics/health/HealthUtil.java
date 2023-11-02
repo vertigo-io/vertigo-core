@@ -83,7 +83,7 @@ public final class HealthUtil {
 					//-----
 					//2. For each method register a listener
 					// we remove # because it doesn't comply with definition naming rule
-					final String healthCheckDefinitionName = "Hchk" + StringUtil.first2UpperCase(componentId.replaceAll(PLUGIN_COUNTER_CHAR, "")) + "$" + method.getName();
+					final String healthCheckDefinitionName = "Hchk" + StringUtil.first2UpperCase(componentId.replace(PLUGIN_COUNTER_CHAR, "")) + "$" + method.getName();
 					return new HealthCheckDefinition(
 							healthCheckDefinitionName,
 							healthChecked.name(),
