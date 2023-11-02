@@ -40,7 +40,7 @@
 		<connection>scm:git:https://github.com/vertigo-io/vertigo.git</connection>
 		<developerConnection>scm:git:https://github.com/vertigo-io/vertigo.git</developerConnection>
 		<url>scm:git:https://github.com/vertigo-io/vertigo.git</url>
-		<tag>vertigo-3.4.0</tag>
+		<tag>vertigo-4.1.0</tag>
 	</scm>
 
 	<distributionManagement>
