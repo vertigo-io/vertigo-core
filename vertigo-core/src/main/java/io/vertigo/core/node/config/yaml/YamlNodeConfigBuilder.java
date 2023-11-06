@@ -22,9 +22,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -66,17 +68,17 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 
 	private final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder();
 	private final BootConfigBuilder bootConfigBuilder = BootConfig.builder();
-	private final List<String> activeFlags;
+	private final Set<String> activeFlags;
 	private final YamlConfigParams params;
 
 	public YamlNodeConfigBuilder(final Properties params) {
 		Assertion.check().isNotNull(params);
 		//---
 		if (params.containsKey("boot.activeFlags")) {
-			activeFlags = Arrays.asList(params.getProperty("boot.activeFlags").split(";"));
+			activeFlags = new HashSet<>(Arrays.asList(params.getProperty("boot.activeFlags").split(";")));
 			params.remove("boot.activeFlags");
 		} else {
-			activeFlags = Collections.emptyList();
+			activeFlags = Collections.emptySet();
 		}
 		this.params = new YamlConfigParams(params);
 	}
@@ -275,7 +277,7 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 				.anyMatch(flag -> {
 					Assertion.check().isNotBlank(flag, "A flag cannot be empty");
 
-					return Pattern.compile("\s+((and)|(&&))\\s+", Pattern.CASE_INSENSITIVE).splitAsStream(flag) //prefix (?) for case insensitive regexp
+					return Pattern.compile("\s+((and)|(&&))\s+", Pattern.CASE_INSENSITIVE).splitAsStream(flag) //prefix (?) for case insensitive regexp
 							.allMatch(andflag -> {
 								Assertion.check()
 										.isNotBlank(andflag, "Missing member of 'AND' flag clause")
