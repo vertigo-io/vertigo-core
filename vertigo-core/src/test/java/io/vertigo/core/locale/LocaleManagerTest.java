@@ -120,7 +120,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 		 * On teste que l'on accède au dictionnaire par une clé sous forme de chaine de caractères.
 		 */
 		final LocaleMessageKey key = new LocaleMessageKey() {
-			private static final long serialVersionUID = 4654362997955319282L;
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public String name() {
@@ -135,7 +135,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testDefaultDynamicMessageKey() {
 		final LocaleMessageKey key = new LocaleMessageKey() {
-			private static final long serialVersionUID = 4654362997955319282L;
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public String name() {
@@ -149,7 +149,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testUnknownDynamicMessageKey() {
 		final LocaleMessageKey key = new LocaleMessageKey() {
-			private static final long serialVersionUID = 4654362997955319282L;
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public String name() {
@@ -163,7 +163,7 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testMessageTextParams() {
 		final LocaleMessageKey key = new LocaleMessageKey() {
-			private static final long serialVersionUID = 4654362997955319282L;
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public String name() {
