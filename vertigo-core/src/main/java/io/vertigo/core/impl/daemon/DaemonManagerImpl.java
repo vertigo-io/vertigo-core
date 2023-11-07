@@ -20,7 +20,6 @@ package io.vertigo.core.impl.daemon;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -78,7 +77,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 		return Node.getNode().getComponentSpace().keySet()
 				.stream()
 				.flatMap(id -> createDaemonDefinitions(Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream())
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private List<DaemonDefinition> createDaemonDefinitions(final CoreComponent component, final AspectPlugin aopPlugin) {
@@ -106,7 +105,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 									daemonSupplier,
 									daemonSchedule.periodInSeconds());
 						})
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 

@@ -64,7 +64,7 @@ final class ComponentAspectUtil {
 				.filter(annotation -> annotation.annotationType().isAnnotationPresent(AspectAnnotation.class))
 				//for all this kind of AspectAnnotation we search THE corresponding aspect
 				.map(annotation -> findAspect(annotation, aspects))
-				.collect(Collectors.toList());
+				.toList();
 
 		//2 - Annotated methods
 		final Map<Method, List<Aspect>> joinPoints = new HashMap<>();
@@ -74,7 +74,7 @@ final class ComponentAspectUtil {
 					.filter(annotation -> annotation.annotationType().isAnnotationPresent(AspectAnnotation.class))
 					//for all this kind of AspectAnnotation we search THE corresponding aspect
 					.map(annotation -> findAspect(annotation, aspects))
-					.collect(Collectors.toList());
+					.toList();
 
 			if (!classBasedInterceptors.isEmpty()
 					&& !Object.class.equals(method.getDeclaringClass())) {

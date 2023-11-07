@@ -20,7 +20,6 @@ package io.vertigo.core.impl.analytics.metric;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.vertigo.core.analytics.metric.Metric;
@@ -73,14 +72,14 @@ public final class MetricUtil {
 							metricDefinitionName,
 							() -> (List<Metric>) ClassUtil.invoke(component, method));
 				})
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 
 	public static List<Metric> getMetrics() {
 		return Node.getNode().getDefinitionSpace().getAll(MetricDefinition.class).stream()
 				.flatMap(metricDefinition -> metricDefinition.getMetricSupplier().get().stream())
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 }

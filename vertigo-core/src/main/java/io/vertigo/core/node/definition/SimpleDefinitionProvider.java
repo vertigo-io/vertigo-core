@@ -37,7 +37,7 @@ public interface SimpleDefinitionProvider extends DefinitionProvider {
 		return provideDefinitions(definitionSpace)
 				.stream()
 				.map(definition -> (DefinitionSupplier) (dS) -> definition)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/**

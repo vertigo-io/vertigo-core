@@ -281,7 +281,7 @@ public final class ClassUtil {
 		return ClassUtil.getAllFields(clazz)
 				.stream()
 				.filter(field -> field.isAnnotationPresent(annotation))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/**
@@ -298,7 +298,7 @@ public final class ClassUtil {
 		return ClassUtil.getAllMethods(clazz)
 				.stream()
 				.filter(method -> method.isAnnotationPresent(annotation))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/**

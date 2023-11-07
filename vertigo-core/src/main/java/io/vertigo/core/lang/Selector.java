@@ -158,7 +158,7 @@ public final class Selector {
 				.filter(classPredicates)
 				.filter(filterClassesBasedOnMethods())
 				.filter(filterClassesBasedOnFields())
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/**
@@ -173,7 +173,7 @@ public final class Selector {
 				.flatMap(clazz -> Stream.of(clazz.getDeclaredMethods()))
 				.filter(methodPredicates)
 				.map(method -> Tuple.of(Class.class.cast(method.getDeclaringClass()), method))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/**
@@ -188,7 +188,7 @@ public final class Selector {
 				.flatMap(clazz -> Stream.of(clazz.getDeclaredFields()))
 				.filter(fieldPredicates)
 				.map(field -> Tuple.of(Class.class.cast(field.getDeclaringClass()), field))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private Predicate<Class> filterClassesBasedOnMethods() {

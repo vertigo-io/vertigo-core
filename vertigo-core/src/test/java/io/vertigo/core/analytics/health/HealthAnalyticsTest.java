@@ -81,6 +81,6 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU5 {
 		return analyticsManager.getHealthChecks()
 				.stream()
 				.filter(healthCheck -> name.equals(healthCheck.name()))
-				.collect(Collectors.toList());
+				.toList();
 	}
 }
