@@ -55,12 +55,13 @@ import io.vertigo.core.node.definition.DefinitionId;
  */
 public class CoreJsonAdapters {
 
-	public static final Gson V_CORE_GSON = addCoreGsonConfig(new GsonBuilder(), false).create();
+	public static final Gson V_CORE_GSON = addCoreGsonConfig(new GsonBuilder(), false)
+			.setPrettyPrinting()
+			.create();
 
 	public static GsonBuilder addCoreGsonConfig(final GsonBuilder gsonBuilder, final boolean serializeNulls) {
 
 		gsonBuilder
-				.setPrettyPrinting()
 				//.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 				.registerTypeAdapter(Date.class, new UTCDateAdapter())
 				.registerTypeAdapter(LocalDate.class, new LocalDateAdapter())

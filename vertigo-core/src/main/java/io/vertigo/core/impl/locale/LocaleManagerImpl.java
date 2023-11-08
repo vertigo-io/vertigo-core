@@ -202,7 +202,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 		//============================================
 		final List<String> resourcesKeys = Arrays.stream(enums)
 				.map(LocaleMessageKey::name)
-				.collect(Collectors.toList());
+				.toList();
 
 		//1- Toutes les clés du fichier properties sont dans l'enum des resources
 		for (final String key : Collections.list(resourceBundle.getKeys())) {

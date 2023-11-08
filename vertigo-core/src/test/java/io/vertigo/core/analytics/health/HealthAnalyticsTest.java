@@ -18,7 +18,6 @@
 package io.vertigo.core.analytics.health;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -81,6 +80,6 @@ public class HealthAnalyticsTest extends AbstractTestCaseJU5 {
 		return analyticsManager.getHealthChecks()
 				.stream()
 				.filter(healthCheck -> name.equals(healthCheck.name()))
-				.collect(Collectors.toList());
+				.toList();
 	}
 }

@@ -24,7 +24,6 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.vertigo.core.analytics.health.HealthCheck;
@@ -83,7 +82,7 @@ public final class HealthUtil {
 					//-----
 					//2. For each method register a listener
 					// we remove # because it doesn't comply with definition naming rule
-					final String healthCheckDefinitionName = "Hchk" + StringUtil.first2UpperCase(componentId.replaceAll(PLUGIN_COUNTER_CHAR, "")) + "$" + method.getName();
+					final String healthCheckDefinitionName = "Hchk" + StringUtil.first2UpperCase(componentId.replace(PLUGIN_COUNTER_CHAR, "")) + "$" + method.getName();
 					return new HealthCheckDefinition(
 							healthCheckDefinitionName,
 							healthChecked.name(),
@@ -92,14 +91,14 @@ public final class HealthUtil {
 							healthChecked.feature(),
 							() -> (HealthMeasure) ClassUtil.invoke(component, method));
 				})
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 
 	public static List<HealthCheck> getHealthChecks() {
 		return Node.getNode().getDefinitionSpace().getAll(HealthCheckDefinition.class).stream()
 				.map(HealthUtil::buildHealthCheck)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private static HealthCheck buildHealthCheck(final HealthCheckDefinition healthCheckDefinition) {
@@ -154,6 +153,9 @@ public final class HealthUtil {
 		if (nbYellow > 0) {
 			return HealthStatus.YELLOW;
 		}
-		return HealthStatus.GREEN;
+		if (nbGreen > 0) {
+			return HealthStatus.GREEN;
+		}
+		return HealthStatus.GREEN; //by default
 	}
 }

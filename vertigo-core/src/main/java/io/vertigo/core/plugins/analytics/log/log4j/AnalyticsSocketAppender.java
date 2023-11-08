@@ -48,6 +48,7 @@ public class AnalyticsSocketAppender extends SocketAppender {
 	 */
 	public static class Builder extends AbstractBuilder<Builder>
 			implements org.apache.logging.log4j.core.util.Builder<AnalyticsSocketAppender> {
+		private boolean compress;
 
 		@SuppressWarnings("resource")
 		@Override
@@ -71,12 +72,17 @@ public class AnalyticsSocketAppender extends SocketAppender {
 				throw new VSystemException("Only TCP protocol is supported");
 			}
 
-			final AbstractSocketManager manager = AnalyticsTcpSocketManager.getSocketManager(getHost(), getPort(), getConnectTimeoutMillis(), getReconnectDelayMillis(), getImmediateFail(), layout,
+			final AbstractSocketManager manager = AnalyticsTcpSocketManager.getSocketManager(getHost(), getPort(), getConnectTimeoutMillis(), getReconnectDelayMillis(), getImmediateFail(), compress, layout,
 					getBufferSize(), getSocketOptions());
 
 			return new AnalyticsSocketAppender(name, layout, getFilter(), manager, isIgnoreExceptions(),
 					!bufferedIo || immediateFlush, getAdvertise() ? getConfiguration().getAdvertiser() : null,
 					getPropertyArray());
+		}
+
+		public Builder setCompress(final boolean compress) {
+			this.compress = compress;
+			return this;
 		}
 	}
 

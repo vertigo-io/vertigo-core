@@ -45,9 +45,7 @@ public record HealthMeasure(
 		return new HealthMeasureBuilder();
 	}
 
-	public HealthMeasure
-
-	{
+	public HealthMeasure {
 		Assertion.check().isNotNull(status);
 		/*
 		 * message can be null

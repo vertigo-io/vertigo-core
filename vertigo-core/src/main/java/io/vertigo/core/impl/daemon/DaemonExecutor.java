@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.daemon.DaemonStat;
@@ -30,6 +29,7 @@ import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.util.NamedThreadFactory;
 
 /**
  * This class executes the daemons that have been previously registered.
@@ -37,9 +37,18 @@ import io.vertigo.core.node.component.Activeable;
  * @author mlaroche, pchretien, npiedeloup
  */
 final class DaemonExecutor implements Activeable {
+	private static final int STOP_TIMEOUT = 30; //30s
 	private boolean isActive;
-	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+	private final ScheduledExecutorService scheduler;
 	private final List<DaemonListener> daemonListeners = new ArrayList<>();
+
+	/**
+	 * Constructor.
+	 * @param threadPoolSize thread pool size
+	 */
+	public DaemonExecutor(final int threadPoolSize) {
+		scheduler = Executors.newScheduledThreadPool(threadPoolSize, new NamedThreadFactory("v-daemon-"));
+	}
 
 	private static Daemon createDaemon(final DaemonDefinition daemonDefinition) {
 		return daemonDefinition.getDaemonSupplier().get();
@@ -74,7 +83,7 @@ final class DaemonExecutor implements Activeable {
 		return daemonListeners
 				.stream()
 				.map(DaemonListener::getStat)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/** {@inheritDoc} */
@@ -89,7 +98,7 @@ final class DaemonExecutor implements Activeable {
 		scheduler.shutdown();
 		isActive = false;
 		try {
-			scheduler.awaitTermination(5000, TimeUnit.SECONDS);
+			scheduler.awaitTermination(STOP_TIMEOUT, TimeUnit.SECONDS);
 		} catch (final InterruptedException e) {
 			// Restore interrupted state...
 			Thread.currentThread().interrupt();

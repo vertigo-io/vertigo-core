@@ -17,6 +17,8 @@
  */
 package io.vertigo.core.plugins.analytics.log.log4j;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
@@ -31,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Supplier;
+import java.util.zip.GZIPOutputStream;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
@@ -74,6 +77,8 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 
 	private final boolean immediateFail;
 
+	private final boolean compress;
+
 	private final int connectTimeoutMillis;
 
 	/**
@@ -107,9 +112,9 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 	@Deprecated
 	public AnalyticsTcpSocketManager(final String name, final OutputStream os, final Socket socket,
 			final InetAddress inetAddress, final String host, final int port, final int connectTimeoutMillis,
-			final int reconnectionDelayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout,
+			final int reconnectionDelayMillis, final boolean immediateFail, final boolean compress, final Layout<? extends Serializable> layout,
 			final int bufferSize) {
-		this(name, os, socket, inetAddress, host, port, connectTimeoutMillis, reconnectionDelayMillis, immediateFail,
+		this(name, os, socket, inetAddress, host, port, connectTimeoutMillis, reconnectionDelayMillis, immediateFail, compress,
 				layout, bufferSize, null);
 	}
 
@@ -141,13 +146,14 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 	 */
 	public AnalyticsTcpSocketManager(final String name, final OutputStream os, final Socket socket,
 			final InetAddress inetAddress, final String host, final int port, final int connectTimeoutMillis,
-			final int reconnectionDelayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout,
+			final int reconnectionDelayMillis, final boolean immediateFail, final boolean compress, final Layout<? extends Serializable> layout,
 			final int bufferSize, final SocketOptions socketOptions) {
 		super(name, os, inetAddress, host, port, layout, true, bufferSize);
 		this.connectTimeoutMillis = connectTimeoutMillis;
 		this.reconnectionDelayMillis = reconnectionDelayMillis;
 		this.socket = socket;
 		this.immediateFail = immediateFail;
+		this.compress = compress;
 		retry = reconnectionDelayMillis > 0;
 		if (socket == null) {
 			reconnector = createReconnector();
@@ -170,33 +176,9 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 	 * @param bufferSize
 	 * The buffer size.
 	 * @return A TcpSocketManager.
-	 * @deprecated Use {@link #getSocketManager(String, int, int, int, boolean, Layout, int, SocketOptions)}.
-	 */
-	@Deprecated
-	public static AnalyticsTcpSocketManager getSocketManager(final String host, final int port, final int connectTimeoutMillis,
-			final int reconnectDelayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout,
-			final int bufferSize) {
-		return getSocketManager(host, port, connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout,
-				bufferSize, null);
-	}
-
-	/**
-	 * Obtains a TcpSocketManager.
-	 *
-	 * @param host
-	 * The host to connect to.
-	 * @param port
-	 * The port on the host.
-	 * @param connectTimeoutMillis
-	 * the connect timeout in milliseconds
-	 * @param reconnectDelayMillis
-	 * The interval to pause between retries.
-	 * @param bufferSize
-	 * The buffer size.
-	 * @return A TcpSocketManager.
 	 */
 	public static AnalyticsTcpSocketManager getSocketManager(final String host, int port, final int connectTimeoutMillis,
-			int reconnectDelayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout,
+			int reconnectDelayMillis, final boolean immediateFail, final boolean compress, final Layout<? extends Serializable> layout,
 			final int bufferSize, final SocketOptions socketOptions) {
 		if (Strings.isEmpty(host)) {
 			throw new IllegalArgumentException("A host name is required");
@@ -208,12 +190,28 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 			reconnectDelayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
 		}
 		return (AnalyticsTcpSocketManager) getManager("TCP:" + host + ':' + port, new FactoryData(host, port,
-				connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout, bufferSize, socketOptions), FACTORY);
+				connectTimeoutMillis, reconnectDelayMillis, immediateFail, compress, layout, bufferSize, socketOptions),
+				FACTORY);
 	}
 
 	@SuppressWarnings("sync-override") // synchronization on "this" is done within the method
 	@Override
-	protected void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
+	protected void write(final byte[] originBytes, final int originOffset, final int originLength, final boolean immediateFlush) {
+		byte[] bytes = originBytes;
+		int offset = originOffset;
+		int length = originLength;
+		if (compress) {
+			try {
+				bytes = gzip(originBytes, originOffset, originLength);
+				offset = 0;
+				length = bytes.length;
+			} catch (final IOException e) {
+				LOGGER.warn("Cannot gzip data (offset:{} length:{}), fallback to full data (might be accepted)", originOffset, originLength);
+				bytes = originBytes;
+				offset = originOffset;
+				length = originLength;
+			}
+		}
 		if (socket == null) {
 			if (reconnector != null && !immediateFail) {
 				reconnector.latch();
@@ -266,7 +264,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 			if (length <= byteBuffer.remaining()) {
 				byteBuffer.put(bytes);
 				LOGGER.debug("Buffering data. Usage : {}/{} ({}%)",
-						byteBuffer.position(), byteBuffer.capacity(), Math.round((byteBuffer.position() / (float) byteBuffer.capacity()) * 1000) / 10.0);
+						byteBuffer.position(), byteBuffer.capacity(), Math.round(byteBuffer.position() / (float) byteBuffer.capacity() * 1000) / 10.0);
 				return;
 			}
 			LOGGER.warn("Buffer full, droping data");
@@ -282,6 +280,27 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 		if (immediateFlush) {
 			outputStream.flush();
 		}
+	}
+
+	/*private static String byteArrayToHex(final byte[] a) {
+		final StringBuilder sb = new StringBuilder(a.length * 3);
+		for (final byte b : a) {
+			sb.append(String.format("%02x ", b));
+		}
+		return sb.toString();
+	}*/
+
+	public static byte[] gzip(byte[] val, final int offset, final int length) throws IOException {
+		try (ByteArrayOutputStream bos = new ByteArrayOutputStream(val.length)) {
+			try (GZIPOutputStream gos = new GZIPOutputStream(bos)) {
+				gos.write(val, offset, length);
+				gos.finish();
+				gos.flush();
+				bos.flush();
+				val = bos.toByteArray();
+			}
+		}
+		return val;
 	}
 
 	@Override
@@ -373,7 +392,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 		}
 
 		void reconnect() throws IOException {
-			final List<InetSocketAddress> socketAddresses = FACTORY.resolver.resolveHost(host, port);
+			final List<InetSocketAddress> socketAddresses = TcpSocketManagerFactory.resolver.resolveHost(host, port);
 			if (socketAddresses.size() == 1) {
 				LOGGER.debug("Reconnecting " + socketAddresses.get(0));
 				connect(socketAddresses.get(0));
@@ -455,18 +474,20 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 		protected final int connectTimeoutMillis;
 		protected final int reconnectDelayMillis;
 		protected final boolean immediateFail;
+		protected final boolean compress;
 		protected final Layout<? extends Serializable> layout;
 		protected final int bufferSize;
 		protected final SocketOptions socketOptions;
 
 		public FactoryData(final String host, final int port, final int connectTimeoutMillis,
-				final int reconnectDelayMillis, final boolean immediateFail,
+				final int reconnectDelayMillis, final boolean immediateFail, final boolean compress,
 				final Layout<? extends Serializable> layout, final int bufferSize, final SocketOptions socketOptions) {
 			this.host = host;
 			this.port = port;
 			this.connectTimeoutMillis = connectTimeoutMillis;
 			this.reconnectDelayMillis = reconnectDelayMillis;
 			this.immediateFail = immediateFail;
+			this.compress = compress;
 			this.layout = layout;
 			this.bufferSize = bufferSize;
 			this.socketOptions = socketOptions;
@@ -475,7 +496,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 		@Override
 		public String toString() {
 			return "FactoryData [host=" + host + ", port=" + port + ", connectTimeoutMillis=" + connectTimeoutMillis
-					+ ", reconnectDelayMillis=" + reconnectDelayMillis + ", immediateFail=" + immediateFail
+					+ ", reconnectDelayMillis=" + reconnectDelayMillis + ", immediateFail=" + immediateFail + ", compress=" + compress
 					+ ", layout=" + layout + ", bufferSize=" + bufferSize + ", socketOptions=" + socketOptions + "]";
 		}
 	}
@@ -509,6 +530,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 				// LOG4J2-1042
 				socket = createSocket(data);
 				os = socket.getOutputStream();
+				os = new BufferedOutputStream(os); //without buffer, sockets will send data as soon as possible: resulting in more small packets
 				return createManager(name, os, socket, inetAddress, data);
 			} catch (final IOException ex) {
 				LOGGER.error("TcpSocketManager ({}) caught exception and will continue:", name, ex);
@@ -524,7 +546,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 		@SuppressWarnings("unchecked")
 		M createManager(final String name, final OutputStream os, final Socket socket, final InetAddress inetAddress, final T data) {
 			return (M) new AnalyticsTcpSocketManager(name, os, socket, inetAddress, data.host, data.port,
-					data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout,
+					data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.compress, data.layout,
 					data.bufferSize, data.socketOptions);
 		}
 

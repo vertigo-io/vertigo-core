@@ -22,10 +22,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -65,17 +68,17 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 
 	private final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder();
 	private final BootConfigBuilder bootConfigBuilder = BootConfig.builder();
-	private final List<String> activeFlags;
+	private final Set<String> activeFlags;
 	private final YamlConfigParams params;
 
 	public YamlNodeConfigBuilder(final Properties params) {
 		Assertion.check().isNotNull(params);
 		//---
 		if (params.containsKey("boot.activeFlags")) {
-			activeFlags = Arrays.asList(params.getProperty("boot.activeFlags").split(";"));
+			activeFlags = new HashSet<>(Arrays.asList(params.getProperty("boot.activeFlags").split(";")));
 			params.remove("boot.activeFlags");
 		} else {
-			activeFlags = Collections.emptyList();
+			activeFlags = Collections.emptySet();
 		}
 		this.params = new YamlConfigParams(params);
 	}
@@ -196,10 +199,11 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 
 				if (yamlModuleConfig.features != null) {
 					yamlModuleConfig.features
-							.forEach(featureConfig -> {
+							.forEach(feature -> {
 								Assertion.check()
-										.isTrue(featureConfig.size() == 1, "a feature is designed by it's class");
-								final Map.Entry<String, Map<String, Object>> featureEntry = featureConfig.entrySet().iterator().next();
+										.isFalse(feature.containsKey(FLAGS), "can't read flags as intended in feature {0} (module's flags: {1})", featuresClassName, yamlModuleConfig.__flags__)
+										.isTrue(feature.size() == 1, "a feature is designed by it's class");
+								final Map.Entry<String, Map<String, Object>> featureEntry = feature.entrySet().iterator().next();
 								final String featureClassName = featureEntry.getKey();
 								final Method methodForFeature = featureMethods.get(featureClassName);
 								Assertion.check()
@@ -215,6 +219,7 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 					yamlModuleConfig.featuresConfig
 							.forEach(featureConfig -> {
 								Assertion.check()
+										.isFalse(featureConfig.containsKey(FLAGS), "can't read flags as intended in featureConfig {0} (module's flags: {1})", featuresClassName, yamlModuleConfig.__flags__)
 										.isTrue(featureConfig.size() == 1, "a feature is designed by it's class");
 								final Map.Entry<String, Map<String, Object>> featureEntry = featureConfig.entrySet().iterator().next();
 								final String featureClassName = featureEntry.getKey();
@@ -270,12 +275,18 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 		}
 		return flags.stream()
 				.anyMatch(flag -> {
-					Assertion.check()
-							.isNotBlank(flag, "A flag cannot be empty");
-					if (flag.charAt(0) == '!') {
-						return !activeFlags.contains(flag.substring(1));
-					}
-					return activeFlags.contains(flag);
+					Assertion.check().isNotBlank(flag, "A flag cannot be empty");
+
+					return Pattern.compile("\s+((and)|(&&))\s+", Pattern.CASE_INSENSITIVE).splitAsStream(flag) //prefix (?) for case insensitive regexp
+							.allMatch(andflag -> {
+								Assertion.check()
+										.isNotBlank(andflag, "Missing member of 'AND' flag clause")
+										.isFalse(andflag.indexOf(' ') >= 0, "flags can't contains spaces ({0})", flag);
+								if (andflag.charAt(0) == '!') {
+									return !activeFlags.contains(andflag.substring(1));
+								}
+								return activeFlags.contains(andflag);
+							});
 				});
 	}
 

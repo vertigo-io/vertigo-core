@@ -32,7 +32,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
@@ -281,7 +280,7 @@ public final class ClassUtil {
 		return ClassUtil.getAllFields(clazz)
 				.stream()
 				.filter(field -> field.isAnnotationPresent(annotation))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/**
@@ -298,7 +297,7 @@ public final class ClassUtil {
 		return ClassUtil.getAllMethods(clazz)
 				.stream()
 				.filter(method -> method.isAnnotationPresent(annotation))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/**
@@ -431,7 +430,7 @@ public final class ClassUtil {
 				.isNotNull(type)
 				.isNotNull(exceptionSupplier);
 		//---
-		if (type instanceof ParameterizedType parameterizedType) {
+		if (type instanceof final ParameterizedType parameterizedType) {
 			Assertion.check()
 					.isTrue(parameterizedType.getActualTypeArguments().length == 1, "Il doit y avoir 1 et 1 seul générique déclaré");
 			final Type optionType = parameterizedType.getActualTypeArguments()[0];

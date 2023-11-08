@@ -124,6 +124,114 @@ public final class YamlAppConfigTest {
 	}
 
 	@Test
+	public void testAndFlagsConfig1() {
+		final Properties params = new Properties();
+		params.setProperty("boot.activeFlags", "andFlag;customStart");
+		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(params)
+				.withFiles(getClass(), "bio-and-flags.yaml")
+				.build();
+
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			assertNotNull(node);
+			assertTrue(node.getComponentSpace().contains("bioManager"));
+			final BioManager bioManager = node.getComponentSpace().resolve(BioManager.class);
+			final int res = bioManager.add(1, 2, 3);
+			assertEquals(366, res);
+			assertTrue(bioManager.isActive());
+		}
+	}
+
+	@Test
+	public void testAndFlagsConfig2() {
+		final Properties params = new Properties();
+		params.setProperty("boot.activeFlags", "andFlag");
+		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(params)
+				.withFiles(getClass(), "bio-and-flags.yaml")
+				.build();
+
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			assertNotNull(node);
+			assertTrue(node.getComponentSpace().contains("bioManager"));
+			final BioManager bioManager = node.getComponentSpace().resolve(BioManager.class);
+			final int res = bioManager.add(1, 2, 3);
+			assertEquals(666, res);
+			assertTrue(bioManager.isActive());
+		}
+	}
+
+	@Test
+	public void testAndFlagsConfig3() {
+		final Properties params = new Properties();
+		params.setProperty("boot.activeFlags", "andFlag;secondary");
+		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(params)
+				.withFiles(getClass(), "bio-and-flags.yaml")
+				.build();
+
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			assertNotNull(node);
+			assertTrue(node.getComponentSpace().contains("bioManager"));
+			final BioManager bioManager = node.getComponentSpace().resolve(BioManager.class);
+			final int res = bioManager.add(1, 2, 3);
+			assertEquals(636, res);
+			assertTrue(bioManager.isActive());
+		}
+	}
+
+	@Test
+	public void testAndFlagsConfig4() {
+		final Properties params = new Properties();
+		params.setProperty("boot.activeFlags", "andFlag;main");
+		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(params)
+				.withFiles(getClass(), "bio-and-flags.yaml")
+				.build();
+
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			assertNotNull(node);
+			assertTrue(node.getComponentSpace().contains("bioManager"));
+			final BioManager bioManager = node.getComponentSpace().resolve(BioManager.class);
+			final int res = bioManager.add(1, 2, 3);
+			assertEquals(666, res);
+			assertTrue(bioManager.isActive());
+		}
+	}
+
+	@Test
+	public void testAndFlagsConfig5() {
+		final Properties params = new Properties();
+		params.setProperty("boot.activeFlags", "customStart");
+		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(params)
+				.withFiles(getClass(), "bio-and-flags.yaml")
+				.build();
+
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			assertNotNull(node);
+			assertTrue(node.getComponentSpace().contains("bioManager"));
+			final BioManager bioManager = node.getComponentSpace().resolve(BioManager.class);
+			final int res = bioManager.add(1, 2, 3);
+			assertEquals(936, res);
+			assertTrue(bioManager.isActive());
+		}
+	}
+
+	@Test
+	public void testAndFlagsConfig6() {
+		final Properties params = new Properties();
+		params.setProperty("boot.activeFlags", "main");
+		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(params)
+				.withFiles(getClass(), "bio-and-flags.yaml")
+				.build();
+
+		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			assertNotNull(node);
+			assertTrue(node.getComponentSpace().contains("bioManager"));
+			final BioManager bioManager = node.getComponentSpace().resolve(BioManager.class);
+			final int res = bioManager.add(1, 2, 3);
+			assertEquals(1266, res);
+			assertTrue(bioManager.isActive());
+		}
+	}
+
+	@Test
 	public void testFull() {
 		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(new Properties())
 				.withFiles(getClass(), "bio-full.yaml")

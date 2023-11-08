@@ -19,13 +19,16 @@ package io.vertigo.core.plugins.analytics.log;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Queue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
@@ -36,11 +39,14 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
 import org.apache.logging.log4j.core.net.SocketOptions;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 import io.vertigo.core.analytics.health.HealthCheck;
@@ -56,6 +62,7 @@ import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.plugins.analytics.log.log4j.AnalyticsSocketAppender;
 import io.vertigo.core.plugins.analytics.log.log4j.AnalyticsSocketAppender.Builder;
+import io.vertigo.core.util.NamedThreadFactory;
 
 /**
  * Processes connector which use the log4j SocketAppender.
@@ -63,12 +70,13 @@ import io.vertigo.core.plugins.analytics.log.log4j.AnalyticsSocketAppender.Build
  * @author mlaroche, pchretien, npiedeloup
  */
 public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin, Activeable {
+	private static final int TEN_SECONDS = 10 * 1000;
 	private static final Logger LOGGER = LogManager.getLogger(SocketLoggerAnalyticsConnectorPlugin.class);
-	private static final Gson GSON = CoreJsonAdapters.V_CORE_GSON;
+	private static final Gson GSON = CoreJsonAdapters.addCoreGsonConfig(new GsonBuilder(), false).create();
 	private static final int DEFAULT_CONNECT_TIMEOUT = 250;// 250ms for connection to log4j server
 	private static final int DEFAULT_SOCKET_TIMEOUT = 5000;// 5s for socket to log4j server
 	private static final int DEFAULT_DISCONNECT_TIMEOUT = 5000;// 5s for disconnection to log4j server
-	private static final int DEFAULT_SERVER_PORT = 4562;// DefaultPort of SocketAppender 4650 for log4j and 4562 for log4j2
+	private static final int DEFAULT_SERVER_PORT = 4563;// DefaultPort of SocketAppender 4650 for log4j and 4562 for log4j2 and 4563 for log4j2json
 	private static final int SEND_QUEUE_MAX_SIZE = 10_000;// 10k elements
 
 	private Logger socketProcessLogger;
@@ -82,20 +90,18 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	private final int port;
 	private SocketAppender appender;
 	private final boolean devConfig;
-	private final Integer bufferSize;
+	private final int bufferSize;
+	private final int batchSize;
+	private final boolean jsonLayout;
+	private final boolean compressOutputStream;
 
-	private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(new SocketLoggerAnalyticsThreadFactory());
-	private int logCounterEvery100 = 0;
-	private final ConcurrentLinkedQueue<Object> sendQueue = new ConcurrentLinkedQueue<>();
+	private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(new NamedThreadFactory("v-socketLoggerAnalytics-"));
 
-	static class SocketLoggerAnalyticsThreadFactory implements ThreadFactory {
-		private static AtomicInteger threadCounter = new AtomicInteger();
-
-		@Override
-		public Thread newThread(final Runnable r) {
-			return new Thread(r, "SocketLoggerAnalyticsExecutor-" + threadCounter.incrementAndGet());
-		}
-	}
+	private final AtomicInteger logSendCount = new AtomicInteger(0);
+	private final AtomicInteger logErrorCount = new AtomicInteger(0);
+	private volatile long logErrorEvery10sTime = 0;
+	//private final ConcurrentLinkedQueue<Object> sendQueue = new ConcurrentLinkedQueue<>();
+	private final Queue<Object> sendQueue = new LinkedBlockingQueue<>(SEND_QUEUE_MAX_SIZE + 1);
 
 	/**
 	 * Constructor.
@@ -108,43 +114,74 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	@Inject
 	public SocketLoggerAnalyticsConnectorPlugin(
 			final ParamManager paramManager,
+			@ParamValue("hostName") final Optional<String> hostNameOpt,
+			@ParamValue("port") final Optional<Integer> portOpt,
 			@ParamValue("hostNameParam") final Optional<String> hostNameParamOpt,
 			@ParamValue("portParam") final Optional<String> portParamOpt,
 			@ParamValue("nodeNameParam") final Optional<String> nodeNameParamOpt,
 			@ParamValue("envNameParam") final Optional<String> envNameParamOpt,
-			@ParamValue("bufferSize") final Optional<Integer> bufferSizeOpt) {
+			@ParamValue("bufferSize") final Optional<Integer> bufferSizeOpt,
+			@ParamValue("batchSize") final Optional<Integer> batchSizeOpt,
+			@ParamValue("jsonLayout") final Optional<Boolean> jsonLayoutOpt,
+			@ParamValue("jsonLayoutParam") final Optional<String> jsonLayoutParamOpt,
+			@ParamValue("compressOutputStream") final Optional<Boolean> compressOutputStreamOpt) {
 		Assertion.check()
+				.isNotNull(hostNameOpt)
+				.isNotNull(portOpt)
 				.isNotNull(hostNameParamOpt)
 				.isNotNull(portParamOpt)
 				.isNotNull(nodeNameParamOpt)
-				.isNotNull(envNameParamOpt);
+				.isNotNull(envNameParamOpt)
+				.isNotNull(jsonLayoutParamOpt)
+				.isNotNull(jsonLayoutOpt)
+				.when(hostNameParamOpt.isPresent(), () -> Assertion.check().isTrue(hostNameOpt.isEmpty(), "hostName and hostNameParam are exclusive"))
+				.when(portParamOpt.isPresent(), () -> Assertion.check().isTrue(portOpt.isEmpty(), "port and portParam are exclusive"))
+				.when(jsonLayoutParamOpt.isPresent(), () -> Assertion.check().isTrue(jsonLayoutOpt.isEmpty(), "jsonLayout and jsonLayoutParam are exclusive"));
+
 		// ---
 		appName = Node.getNode().getNodeConfig().appName() + envNameParamOpt.map(paramManager::getParam).map(Param::getValueAsString).map(env -> '-' + env.toLowerCase()).orElse("");
-		hostName = hostNameParamOpt.map(paramManager::getParam).map(Param::getValueAsString).orElse("analytica.part.klee.lan.net");
+		hostName = hostNameOpt.orElseGet(() -> hostNameParamOpt.map(paramManager::getParam).map(Param::getValueAsString).orElse("analytica.part.klee.lan.net"));
 		devConfig = hostNameParamOpt.isEmpty();
-		port = portParamOpt.map(paramManager::getParam).map(Param::getValueAsInt).orElse(DEFAULT_SERVER_PORT);
+		port = portOpt.orElseGet(() -> portParamOpt.map(paramManager::getParam).map(Param::getValueAsInt).orElse(DEFAULT_SERVER_PORT));
 		nodeName = nodeNameParamOpt
 				.map(paramName -> paramManager.getOptionalParam(paramName).map(Param::getValueAsString).orElseGet(SocketLoggerAnalyticsConnectorPlugin::retrieveHostName))
 				.orElseGet(SocketLoggerAnalyticsConnectorPlugin::retrieveHostName);
 		bufferSize = bufferSizeOpt.orElse(50);
+		batchSize = batchSizeOpt.orElse(5);
+		jsonLayout = jsonLayoutOpt.orElseGet(() -> jsonLayoutParamOpt.map(paramManager::getParam).map(Param::getValueAsBoolean).orElse(true));
+		compressOutputStream = compressOutputStreamOpt.orElse(true);
+		Assertion.check()
+				.when(!jsonLayout, () -> Assertion.check().isTrue(port != DEFAULT_SERVER_PORT, "default port " + DEFAULT_SERVER_PORT + " doesn't support serialized logs, change port (may use 4562)"));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void add(final TraceSpan span) {
-		Assertion.check()
-				.isNotNull(span);
+		Assertion.check().isNotNull(span);
 		//---
-		if (sendQueue.size() > SEND_QUEUE_MAX_SIZE) {
-			if (logCounterEvery100 == 0) {
-				LOGGER.error("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose process ");
-			}
-			++logCounterEvery100;
-			logCounterEvery100 = logCounterEvery100 % 100;
-		} else {
-			logCounterEvery100 = 0;
+		if (!sendQueueFull()) {
 			sendQueue.add(span);
 		}
+	}
+
+	private boolean sendQueueFull() {
+		final boolean isFull = sendQueue.size() >= SEND_QUEUE_MAX_SIZE;
+		final long timeSincePreviousLog = System.currentTimeMillis() - logErrorEvery10sTime;
+		if (isFull) {
+			logErrorCount.addAndGet(1);
+			if (timeSincePreviousLog > TEN_SECONDS) {
+				LOGGER.warn("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose " + logErrorCount + " events (in:" + (logSendCount.get() + logErrorCount.get()) / (timeSincePreviousLog / 1000) + "/s ; out:" + logSendCount.get() / (timeSincePreviousLog / 1000) + "/s)");
+				logErrorCount.set(0);
+				logSendCount.set(0);
+				logErrorEvery10sTime = System.currentTimeMillis();
+			}
+		} else if (logErrorCount.get() > 0 && timeSincePreviousLog > TEN_SECONDS * 2) {
+			LOGGER.warn("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose " + logErrorCount + " events (in:" + (logSendCount.get() + logErrorCount.get()) / (timeSincePreviousLog / 1000) + "/s ; out:" + logSendCount.get() / (timeSincePreviousLog / 1000) + "/s)");
+			logErrorCount.set(0);
+			logSendCount.set(0);
+			logErrorEvery10sTime = System.currentTimeMillis();
+		}
+		return isFull;
 	}
 
 	/** {@inheritDoc} */
@@ -153,14 +190,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		Assertion.check()
 				.isNotNull(metric);
 		//---
-		if (sendQueue.size() > SEND_QUEUE_MAX_SIZE) {
-			if (logCounterEvery100 == 0) {
-				LOGGER.error("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose metrics ");
-			}
-			++logCounterEvery100;
-			logCounterEvery100 = logCounterEvery100 % 100;
-		} else {
-			logCounterEvery100 = 0;
+		if (!sendQueueFull()) {
 			sendQueue.add(metric);
 		}
 	}
@@ -171,14 +201,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		Assertion.check()
 				.isNotNull(healthCheck);
 		//---
-		if (sendQueue.size() > SEND_QUEUE_MAX_SIZE) {
-			if (logCounterEvery100 == 0) {
-				LOGGER.error("sendQueue full (" + SEND_QUEUE_MAX_SIZE + "), loose healthChecks ");
-			}
-			++logCounterEvery100;
-			logCounterEvery100 = logCounterEvery100 % 100;
-		} else {
-			logCounterEvery100 = 0;
+		if (!sendQueueFull()) {
 			sendQueue.add(healthCheck);
 		}
 	}
@@ -195,21 +218,31 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	@Override
 	public void start() {
 		final Builder appenderBuilder = AnalyticsSocketAppender.newAnalyticsBuilder()
-				.setName("socketAnalytics")
-				.setLayout(SerializedLayout.createLayout())
-				.setHost(hostName)
+				.setName("socketAnalytics");
+		if (jsonLayout) {
+			appenderBuilder.setLayout(JsonTemplateLayout.newBuilder()
+					.setConfiguration(new DefaultConfiguration()).build());
+		} else {
+			appenderBuilder.setLayout(SerializedLayout.createLayout());
+		}
+		appenderBuilder.setHost(hostName)
 				.setPort(port)
+				.setCompress(compressOutputStream)
 				.setConnectTimeoutMillis(DEFAULT_CONNECT_TIMEOUT)
-				.setSocketOptions(SocketOptions.newBuilder().setSoTimeout(DEFAULT_SOCKET_TIMEOUT).build());
+				.setSocketOptions(SocketOptions.newBuilder()
+						.setSoTimeout(DEFAULT_SOCKET_TIMEOUT).build());
 
 		if (devConfig) {
 			appenderBuilder
 					.setImmediateFail(true)
+					.setImmediateFlush(true)
 					.setReconnectDelayMillis(-1)// we make only one try (documentation is incorrect 0 => defaults to 30s)
+					.setBufferSize(bufferSize * 1024 * 1024) // in Mo, used for keeping logs while disconnected
 			;
 		} else {
 			appenderBuilder
 					.setImmediateFail(false)
+					.setImmediateFlush(false)
 					.setReconnectDelayMillis(10000) // 10s
 					.setBufferSize(bufferSize * 1024 * 1024) // in Mo, used for keeping logs while disconnected
 			;
@@ -228,7 +261,19 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 
 	@Override
 	public void stop() {
-		appender.stop(DEFAULT_DISCONNECT_TIMEOUT, TimeUnit.MILLISECONDS);
+		scheduler.shutdown();
+		try {
+			scheduler.awaitTermination(10, TimeUnit.SECONDS);
+		} catch (final InterruptedException e) {
+			//we are already stoping
+			// Restore interrupted state...
+			Thread.currentThread().interrupt();
+		}
+		pollQueue();
+		forceSendBatch();
+		if (appender != null) {
+			appender.stop(DEFAULT_DISCONNECT_TIMEOUT, TimeUnit.MILLISECONDS);
+		}
 		appender = null;
 	}
 
@@ -251,56 +296,90 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	 * Daemon to unstack processes to end them
 	 */
 	public void pollQueue() {
-		while (!sendQueue.isEmpty()) {
-			final Object head = sendQueue.peek();
+		//checkAppenders exists
+		checkSocketProcessLogger();
+		try {
+			//check each run, if its time to send
+			checkAndSendBatchIfNeeded();
 
-			if (head != null) {
-				try {
+			while (!sendQueue.isEmpty()) {
+				final Object head = sendQueue.peek();
+				if (head != null) {
 					if (head instanceof TraceSpan) {
-						sendSpan((TraceSpan) head);
+						spanBatch.add((TraceSpan) head);
 					} else if (head instanceof Metric) {
-						sendMetric((Metric) head);
+						metricBatch.add((Metric) head);
 					} else if (head instanceof HealthCheck) {
-						sendHealthCheck((HealthCheck) head);
+						healthCheckBatch.add((HealthCheck) head);
 					}
 					sendQueue.remove(head);
-				} catch (final Exception e) {
-					LOGGER.error("Can't send " + head.getClass().getSimpleName() + " to analytics server (sendQueueSize:" + sendQueue.size() + ")", e);
+					logSendCount.addAndGet(1);
 				}
+				//check each loop, if batchs were full
+				checkAndSendBatchIfNeeded();
+			}
+		} catch (final Exception e) {
+			LOGGER.error("Can't send data to analytics server (sendQueueSize:" + sendQueue.size() + ")", e);
+			//stop and wait next loop
+		}
+	}
+
+	private long spanBatchSend = 0;
+	private final List<TraceSpan> spanBatch = new ArrayList<>();
+	private long metricBatchSend = 0;
+	private final List<Metric> metricBatch = new ArrayList<>();
+	private long healthCheckBatchSend = 0;
+	private final List<HealthCheck> healthCheckBatch = new ArrayList<>();
+
+	private void checkSocketProcessLogger() {
+		if (appender != null) {
+			if (socketProcessLogger == null) {
+				socketProcessLogger = createLogger("vertigo-analytics-process");
+			}
+			if (socketMetricLogger == null) {
+				socketMetricLogger = createLogger("vertigo-analytics-metric");
+			}
+			if (socketHealthLogger == null) {
+				socketHealthLogger = createLogger("vertigo-analytics-health");
 			}
 		}
 	}
 
-	private void sendSpan(final TraceSpan span) {
-		if (appender != null && socketProcessLogger == null) {
-			socketProcessLogger = createLogger("vertigo-analytics-process");
-		}
-		sendObject(span, socketProcessLogger);
+	private void checkAndSendBatchIfNeeded() {
+		checkAndSendBatchIfNeeded(spanBatch, spanBatchSend, (time) -> spanBatchSend = time, socketProcessLogger);
+		checkAndSendBatchIfNeeded(metricBatch, metricBatchSend, (time) -> metricBatchSend = time, socketMetricLogger);
+		checkAndSendBatchIfNeeded(healthCheckBatch, healthCheckBatchSend, (time) -> healthCheckBatchSend = time, socketHealthLogger);
 	}
 
-	private void sendMetric(final Metric metric) {
-		if (appender != null && socketMetricLogger == null) {
-			socketMetricLogger = createLogger("vertigo-analytics-metric");
+	private void checkAndSendBatchIfNeeded(final List<?> items, final long batchTime, final Consumer<Long> batchTimeSetter, final Logger logger) {
+		if (!items.isEmpty()) {
+			if (batchSize > 1 && items.size() == 1) {
+				batchTimeSetter.accept(System.currentTimeMillis());
+			} else if (items.size() >= batchSize || System.currentTimeMillis() - batchTime > TEN_SECONDS) {
+				sendObjects(items, logger);
+				items.clear();
+			}
 		}
-		sendObject(metric, socketMetricLogger);
 	}
 
-	private void sendHealthCheck(final HealthCheck healthCheck) {
-		if (appender != null && socketHealthLogger == null) {
-			socketHealthLogger = createLogger("vertigo-analytics-health");
-		}
-		sendObject(healthCheck, socketHealthLogger);
-
+	private void forceSendBatch() {
+		sendObjects(spanBatch, socketProcessLogger);
+		sendObjects(metricBatch, socketMetricLogger);
+		sendObjects(healthCheckBatch, socketHealthLogger);
 	}
 
-	private void sendObject(final Object object, final Logger logger) {
-
-		if (appender != null && logger.isInfoEnabled()) {
+	private void sendObjects(final List<?> list, final Logger logger) {
+		if (appender != null && logger.isInfoEnabled() && !list.isEmpty()) {
 			final JsonObject log = new JsonObject();
 			log.addProperty("appName", appName);
 			log.addProperty("host", nodeName);
-			log.add("event", GSON.toJsonTree(object));
-			logger.info(GSON.toJson(log));
+			if (list.size() == 1) {
+				log.add("event", GSON.toJsonTree(list.get(0)));
+			} else {
+				log.add("events", GSON.toJsonTree(list));
+			}
+			final String jsonEvent = GSON.toJson(log);
+			logger.info(jsonEvent);
 		}
 	}
 

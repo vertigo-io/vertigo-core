@@ -162,7 +162,7 @@ public final class ComponentSpaceLoader {
 				.map(CoreComponentConfig::getId)
 				//used keys are removed
 				.filter(pluginId -> !componentProxyContainer.getUsedKeys().contains(pluginId))
-				.collect(Collectors.toList());
+				.toList();
 
 		if (!unusedPluginIds.isEmpty()) {
 			throw new VSystemException("plugins '{0}' in module'{1}' are not used by injection", unusedPluginIds, moduleName);

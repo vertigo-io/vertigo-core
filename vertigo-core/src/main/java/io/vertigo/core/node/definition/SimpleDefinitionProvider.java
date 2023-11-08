@@ -18,7 +18,6 @@
 package io.vertigo.core.node.definition;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Provides a list of definitions through an iterable.
@@ -37,7 +36,7 @@ public interface SimpleDefinitionProvider extends DefinitionProvider {
 		return provideDefinitions(definitionSpace)
 				.stream()
 				.map(definition -> (DefinitionSupplier) (dS) -> definition)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	/**

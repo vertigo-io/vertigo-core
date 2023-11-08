@@ -18,8 +18,8 @@
 package io.vertigo.core.impl.daemon;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -41,6 +41,7 @@ import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
 
 /**
@@ -50,19 +51,23 @@ import io.vertigo.core.util.ClassUtil;
  */
 public final class DaemonManagerImpl implements DaemonManager, Activeable, SimpleDefinitionProvider {
 
-	private final DaemonExecutor daemonExecutor = new DaemonExecutor();
+	private final DaemonExecutor daemonExecutor;
 	private final AnalyticsManager analyticsManager;
 
 	/**
 	 * Construct an instance of DaemonManagerImpl.
+	 * @param analyticsManager AnalyticsManager
+	 * @param threadPoolSize thread pool size (optional, default 2)
 	 */
 	@Inject
-	public DaemonManagerImpl(final AnalyticsManager analyticsManager) {
+	public DaemonManagerImpl(final AnalyticsManager analyticsManager,
+			@ParamValue("threadPoolSize") final Optional<Integer> threadPoolSize) {
 		Assertion.check().isNotNull(analyticsManager);
 		//---
 		this.analyticsManager = analyticsManager;
+		daemonExecutor = new DaemonExecutor(threadPoolSize.orElse(2));
+		//--
 		Node.getNode().registerPreActivateFunction(this::startAllDaemons);
-
 	}
 
 	@Override
@@ -72,7 +77,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 		return Node.getNode().getComponentSpace().keySet()
 				.stream()
 				.flatMap(id -> createDaemonDefinitions(Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream())
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private List<DaemonDefinition> createDaemonDefinitions(final CoreComponent component, final AspectPlugin aopPlugin) {
@@ -100,7 +105,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 									daemonSupplier,
 									daemonSchedule.periodInSeconds());
 						})
-				.collect(Collectors.toList());
+				.toList();
 
 	}
 
