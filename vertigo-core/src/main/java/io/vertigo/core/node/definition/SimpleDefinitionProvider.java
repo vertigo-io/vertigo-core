@@ -18,7 +18,6 @@
 package io.vertigo.core.node.definition;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Provides a list of definitions through an iterable.

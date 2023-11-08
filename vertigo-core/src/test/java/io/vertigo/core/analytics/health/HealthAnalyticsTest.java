@@ -18,7 +18,6 @@
 package io.vertigo.core.analytics.health;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
