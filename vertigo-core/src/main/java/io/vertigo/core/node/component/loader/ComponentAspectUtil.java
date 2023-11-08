@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
@@ -73,7 +74,7 @@ final class ComponentAspectUtil {
 					.filter(annotation -> annotation.annotationType().isAnnotationPresent(AspectAnnotation.class))
 					//for all this kind of AspectAnnotation we search THE corresponding aspect
 					.map(annotation -> findAspect(annotation, aspects))
-					.toList();
+					.collect(Collectors.toList());
 
 			if (!classBasedInterceptors.isEmpty()
 					&& !Object.class.equals(method.getDeclaringClass())) {
