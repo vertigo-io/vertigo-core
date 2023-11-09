@@ -1,14 +1,30 @@
 Version history
 ===============
 
-Running 4.0.0
+Running 4.1.0
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-400-to-410)
+
+more to come :)
+
+Release 4.0.0 -2023/08/17
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-360-to-400)
+* **[Core] Update to JDK17**
 * [Core] Rename MessageText to LocaleMessageText
 * [Core] Rename @Analytics to @Trace
 * [Core] Rename Tuple.getValX() to Tuple.valX()
-
-more to come :)
+* [Core] Replace value object class to record when possible
+* [Core] Rename record's getter from getMyProperty to myProperty()
+* [Core] Rename Aop to Aspect (package io.vertigo.core.node.component.aop to io.vertigo.core.node.component.aspect and Class AopPlugin -> AspectPlugin)
+* [Core] Rename ProxyMethodAnnotation to AmplifierMethodAnnotation
+* [Core] Add DefinitionId notion, used in Definition to replace localName by Id and replace DefinitionReference
+* [Core] Updated maven build plugins
+* [Core] Updated libs
+  - log4j 2.19.0 -> 2.20.0
+  - gson 2.10 -> 2.10.0
+  - snakeyaml 1.33 -> 2.0
+  - junit 5.9.1 -> 5.10.0
 
 Release 3.6.0 - 2023/05/04
 ----------------------

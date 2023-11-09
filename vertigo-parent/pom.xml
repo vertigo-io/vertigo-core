@@ -4,7 +4,7 @@
 
 	<groupId>io.vertigo</groupId>
 	<artifactId>vertigo-parent</artifactId>
-	<version>4.1.0-SNAPSHOT</version>
+	<version>4.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>vertigo-parent</name>
 	<description>Vertigo is a simple java project starter</description>
@@ -62,7 +62,7 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<vertigo.version>4.1.0-SNAPSHOT</vertigo.version>
+		<vertigo.version>4.2.0-SNAPSHOT</vertigo.version>
 	</properties>
 
 	<dependencies>
