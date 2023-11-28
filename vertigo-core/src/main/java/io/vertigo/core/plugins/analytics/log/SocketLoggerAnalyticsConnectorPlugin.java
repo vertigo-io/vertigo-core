@@ -249,14 +249,22 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		}
 
 		//we create appender (like a resource it must be close on stop)
-		appender = appenderBuilder.build();
-		appender.start();
-		final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-		final Configuration config = ctx.getConfiguration();
-		config.addAppender(appender);
+		try {
+			appender = appenderBuilder.build();
+			appender.start();
+			final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+			final Configuration config = ctx.getConfiguration();
+			config.addAppender(appender);
 
-		final PoolerTimerTask timerTask = new PoolerTimerTask(this);
-		scheduler.scheduleWithFixedDelay(timerTask, 1, 1, TimeUnit.SECONDS);
+			final PoolerTimerTask timerTask = new PoolerTimerTask(this);
+			scheduler.scheduleWithFixedDelay(timerTask, 1, 1, TimeUnit.SECONDS);
+		} catch (final IllegalStateException e) { //can't connect AnalyticsManager
+			if (devConfig) {
+				LOGGER.info("Unable to connect to analytics server", e);
+			} else {
+				throw e;
+			}
+		}
 	}
 
 	@Override
