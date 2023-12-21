@@ -153,10 +153,11 @@ public final class SocketLoggerJsonAnalyticsConnectorPlugin implements Analytics
 		try {
 			final var trutsStoreConfig = trustStoreUrl.isPresent() ? TrustStoreConfiguration.createKeyStoreConfiguration(trustStoreUrl.get(), trustStorePassword.get().toCharArray(), null, null, "PKCS12", KeyManagerFactory
 					.getDefaultAlgorithm()) : null;
-
+			final var jsonLayout = JsonLayout.createDefaultLayout();
+			jsonLayout.getConfiguration().getProperties().put("log4j.layout.jsonTemplate.maxStringLength", "50000");
 			appender = SocketAppender.newBuilder()
 					.setName("socketAnalytics")
-					.setLayout(JsonLayout.createDefaultLayout())
+					.setLayout(jsonLayout)
 					.setHost(hostName)
 					.setPort(port)
 					.setConnectTimeoutMillis(DEFAULT_CONNECT_TIMEOUT)

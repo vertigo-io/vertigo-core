@@ -19,6 +19,7 @@ package io.vertigo.core.plugins.analytics.log;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -78,6 +79,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	private static final int DEFAULT_DISCONNECT_TIMEOUT = 5000;// 5s for disconnection to log4j server
 	private static final int DEFAULT_SERVER_PORT = 4563;// DefaultPort of SocketAppender 4650 for log4j and 4562 for log4j2 and 4563 for log4j2json
 	private static final int SEND_QUEUE_MAX_SIZE = 10_000;// 10k elements
+	private static final int JSON_TEMPLATE_MAX_STRING_LENGTH_PER_EVENT = 500 * 1024;// max 500Ko per event (* batchSize for true limit)
 
 	private Logger socketProcessLogger;
 	private Logger socketHealthLogger;
@@ -221,7 +223,9 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 				.setName("socketAnalytics");
 		if (jsonLayout) {
 			appenderBuilder.setLayout(JsonTemplateLayout.newBuilder()
-					.setConfiguration(new DefaultConfiguration()).build());
+					.setConfiguration(new DefaultConfiguration())
+					.setCharset(StandardCharsets.UTF_8)
+					.setMaxStringLength(JSON_TEMPLATE_MAX_STRING_LENGTH_PER_EVENT * batchSize).build());
 		} else {
 			appenderBuilder.setLayout(SerializedLayout.createLayout());
 		}
