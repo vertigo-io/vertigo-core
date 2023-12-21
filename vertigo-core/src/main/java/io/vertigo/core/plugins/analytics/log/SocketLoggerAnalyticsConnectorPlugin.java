@@ -77,7 +77,8 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	private static final int DEFAULT_CONNECT_TIMEOUT = 250;// 250ms for connection to log4j server
 	private static final int DEFAULT_SOCKET_TIMEOUT = 5000;// 5s for socket to log4j server
 	private static final int DEFAULT_DISCONNECT_TIMEOUT = 5000;// 5s for disconnection to log4j server
-	private static final int DEFAULT_SERVER_PORT = 4563;// DefaultPort of SocketAppender 4650 for log4j and 4562 for log4j2 and 4563 for log4j2json
+	private static final int DEFAULT_SERVER_PORT = 4563;// DefaultPort of SocketAppender 4650 for log4j and 4562 for log4j2 and 4563 for log4j2json-gz
+	private static final int LEGACY_SERVER_PORT = 4562;// LegacyPort 4562 for log4j2
 	private static final int SEND_QUEUE_MAX_SIZE = 10_000;// 10k elements
 	private static final int JSON_TEMPLATE_MAX_STRING_LENGTH_PER_EVENT = 500 * 1024;// max 500Ko per event (* batchSize for true limit)
 
@@ -126,7 +127,8 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 			@ParamValue("batchSize") final Optional<Integer> batchSizeOpt,
 			@ParamValue("jsonLayout") final Optional<Boolean> jsonLayoutOpt,
 			@ParamValue("jsonLayoutParam") final Optional<String> jsonLayoutParamOpt,
-			@ParamValue("compressOutputStream") final Optional<Boolean> compressOutputStreamOpt) {
+			@ParamValue("compressOutputStream") final Optional<Boolean> compressOutputStreamOpt,
+			@ParamValue("compressOutputStreamParam") final Optional<String> compressOutputStreamParamOpt) {
 		Assertion.check()
 				.isNotNull(hostNameOpt)
 				.isNotNull(portOpt)
@@ -136,9 +138,12 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 				.isNotNull(envNameParamOpt)
 				.isNotNull(jsonLayoutParamOpt)
 				.isNotNull(jsonLayoutOpt)
+				.isNotNull(compressOutputStreamOpt)
+				.isNotNull(compressOutputStreamParamOpt)
 				.when(hostNameParamOpt.isPresent(), () -> Assertion.check().isTrue(hostNameOpt.isEmpty(), "hostName and hostNameParam are exclusive"))
 				.when(portParamOpt.isPresent(), () -> Assertion.check().isTrue(portOpt.isEmpty(), "port and portParam are exclusive"))
-				.when(jsonLayoutParamOpt.isPresent(), () -> Assertion.check().isTrue(jsonLayoutOpt.isEmpty(), "jsonLayout and jsonLayoutParam are exclusive"));
+				.when(jsonLayoutParamOpt.isPresent(), () -> Assertion.check().isTrue(jsonLayoutOpt.isEmpty(), "jsonLayout and jsonLayoutParam are exclusive"))
+				.when(compressOutputStreamParamOpt.isPresent(), () -> Assertion.check().isTrue(compressOutputStreamOpt.isEmpty(), "compressOutputStream and compressOutputStreamParam are exclusive"));
 
 		// ---
 		appName = Node.getNode().getNodeConfig().appName() + envNameParamOpt.map(paramManager::getParam).map(Param::getValueAsString).map(env -> '-' + env.toLowerCase()).orElse("");
@@ -151,9 +156,10 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		bufferSize = bufferSizeOpt.orElse(50);
 		batchSize = batchSizeOpt.orElse(5);
 		jsonLayout = jsonLayoutOpt.orElseGet(() -> jsonLayoutParamOpt.map(paramManager::getParam).map(Param::getValueAsBoolean).orElse(true));
-		compressOutputStream = compressOutputStreamOpt.orElse(true);
+		compressOutputStream = compressOutputStreamOpt.orElseGet(() -> compressOutputStreamParamOpt.map(paramManager::getParam).map(Param::getValueAsBoolean).orElse(true));
 		Assertion.check()
-				.when(!jsonLayout, () -> Assertion.check().isTrue(port != DEFAULT_SERVER_PORT, "default port " + DEFAULT_SERVER_PORT + " doesn't support serialized logs, change port (may use 4562)"));
+				.when(!jsonLayout, () -> Assertion.check().isTrue(port != DEFAULT_SERVER_PORT && port != DEFAULT_SERVER_PORT + 26000, "default port " + DEFAULT_SERVER_PORT + " (or " + (DEFAULT_SERVER_PORT + 26000) + ") doesn't support serialized logs, change port (may use " + DEFAULT_SERVER_PORT + ")"))
+				.when(port == LEGACY_SERVER_PORT || port == LEGACY_SERVER_PORT + 26000, () -> Assertion.check().isTrue(!jsonLayout && !compressOutputStream, "legacy port " + LEGACY_SERVER_PORT + " (or " + (LEGACY_SERVER_PORT + 26000) + ") doesn't support json nor compressed logs, change port (may use " + DEFAULT_SERVER_PORT + ")"));
 	}
 
 	/** {@inheritDoc} */
@@ -392,6 +398,9 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 			}
 			final String jsonEvent = GSON.toJson(log);
 			logger.info(jsonEvent);
+			LOGGER.trace(jsonEvent);
+		} else if (!list.isEmpty()) {
+			LOGGER.warn("Inactive logger " + logger.getName());
 		}
 	}
 
