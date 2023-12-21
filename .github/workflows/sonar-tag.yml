@@ -55,4 +55,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn clean source:jar org.jacoco:jacoco-maven-plugin:prepare-agent package org.jacoco:jacoco-maven-plugin:report org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar -Dsonar.projectKey=vertigo-io_vertigo-core -Dsonar.organization=vertigo-io -Dsonar.host.url=https://sonarcloud.io -Dsonar.branch.name="master" -Djacoco.destFile="\${project.build.directory}/jacoco.exec" -Dsonar.jacoco.reportPath=
+        run: mvn clean source:jar org.jacoco:jacoco-maven-plugin:prepare-agent package org.jacoco:jacoco-maven-plugin:report org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar -Dsonar.projectKey=vertigo-io_vertigo -Dsonar.organization=vertigo-io -Dsonar.host.url=https://sonarcloud.io -Dsonar.branch.name="master" -Djacoco.destFile="\${project.build.directory}/jacoco.exec" -Dsonar.jacoco.reportPath=
