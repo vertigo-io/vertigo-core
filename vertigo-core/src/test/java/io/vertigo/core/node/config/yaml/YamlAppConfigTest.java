@@ -53,6 +53,16 @@ public final class YamlAppConfigTest {
 	}
 
 	@Test
+	public void testBootParamsDefault() {
+		final Properties params = new Properties();
+		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(params)
+				.withFiles(getClass(), "bio-boot-params-default.yaml")
+				.build();
+
+		testBioManager(nodeConfig);
+	}
+
+	@Test
 	public void testNoBoot() {
 
 		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(new Properties())
