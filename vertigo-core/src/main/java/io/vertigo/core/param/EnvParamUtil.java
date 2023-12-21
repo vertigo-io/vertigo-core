@@ -43,11 +43,11 @@ public final class EnvParamUtil {
 			if (paramManagerOpt.isPresent()) {
 				return paramManagerOpt.get().getOptionalParam(property)
 						.or(() -> Optional.of(Param.of(paramName, defaultValueOpt
-								.orElseThrow(() -> new IllegalArgumentException("Param '" + paramName + "' not found (paramManager)")))));
+								.orElseThrow(() -> new IllegalArgumentException("Param '" + property + "' not found (paramManager)")))));
 			} else {
 				return getOptionalSysEnvParam(paramName, property)
 						.or(() -> Optional.of(Param.of(paramName, defaultValueOpt
-								.orElseThrow(() -> new IllegalArgumentException("Param '" + paramName + "' not found (system and env)")))));
+								.orElseThrow(() -> new IllegalArgumentException("Param '" + property + "' not found (system and env)")))));
 			}
 		}
 		return Optional.of(Param.of(paramName, paramValue));
