@@ -23,14 +23,24 @@ import io.vertigo.core.node.component.Manager;
 
 /**
  * Manages daemons.
- * A daemon is technical (vs job or batch).
+ * A daemon is a technical component as opposed to a job or batch.
+ * DaemonManager extends the functionality of the Manager interface.
  *
- * @author mlaroche, pchretien, npiedeloup
+ * This interface defines methods for managing and interacting with daemons.
+ * Daemons are technical components that are expected to run continuously in the background.
+ *
+ * Authors: mlaroche, pchretien, npiedeloup
+ *
+ * @see Manager
  */
 public interface DaemonManager extends Manager {
 	/**
-	 * Provides a snapshot/copy of execution's stats.
-	 * @return Stats
-	 */
+     * Provides a snapshot or copy of the execution statistics for all managed daemons.
+     *
+     * The returned list of DaemonStat objects contains information about the current
+     * execution statistics of each daemon managed by this DaemonManager.
+     *
+     * @return a list of DaemonStat objects representing the execution statistics of managed daemons.
+     */
 	List<DaemonStat> getStats();
 }

@@ -18,14 +18,24 @@
 package io.vertigo.core.daemon;
 
 /**
- * This interface is a marker to identify the daemons (from the simple other runnables)
+ * This interface serves as a marker to identify daemons, distinguishing them from simple other runnables.
+ * Daemons are typically used for background tasks and are expected to run continuously.
  *
- * @author mlaroche, pchretien, npiedeloup
+ * Implementing this interface indicates that a class represents a daemon.
+ *
+ * Authors: mlaroche, pchretien, npiedeloup
+ *
+ * @see Runnable
  */
 public interface Daemon extends Runnable {
 	/**
-	 * @return if the logs are activated or not.
-	 */
+     * Determines whether verbose logging is activated for this daemon.
+     *
+     * Verbose logging provides detailed information about the daemon's activities and can be
+     * useful for debugging or monitoring purposes.
+     *
+     * @return {@code true} if verbose logging is activated, {@code false} otherwise.
+     */
 	default boolean verbose() {
 		return false;
 	}
