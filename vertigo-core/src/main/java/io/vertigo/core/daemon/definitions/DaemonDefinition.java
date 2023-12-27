@@ -29,7 +29,7 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
  *
  * This class provides information and configuration for a specific daemon.
  *
- * Authors: mlaroche, pchretien, npiedeloup
+ * @author: mlaroche, pchretien, npiedeloup
  *
  * @see io.vertigo.core.daemon.Daemon
  * @see io.vertigo.core.node.definition.AbstractDefinition

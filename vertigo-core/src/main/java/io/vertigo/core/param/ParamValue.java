@@ -22,10 +22,29 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Annotation to specify the name of a parameter.
+ *
+ * This annotation can be used on fields or parameters to indicate the name of a configuration parameter.
+ * The value of the annotation represents the name of the parameter.
+ *
+ * Example usage:
+ *
+ * @ParamValue("connectionName")
+ * private String connectionName;
+ *
+ * @author: pchretien
+ *
+ * @see io.vertigo.core.param.ParamManager
+ */
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ParamValue {
 
-	/** The name. */
+	/**
+     * The name of the configuration parameter.
+     *
+     * @return the name of the parameter
+     */
 	String value() default "";
 }

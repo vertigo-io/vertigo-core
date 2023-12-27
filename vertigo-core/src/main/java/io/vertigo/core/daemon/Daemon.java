@@ -23,7 +23,7 @@ package io.vertigo.core.daemon;
  *
  * Implementing this interface indicates that a class represents a daemon.
  *
- * Authors: mlaroche, pchretien, npiedeloup
+ * @author: mlaroche, pchretien, npiedeloup
  *
  * @see Runnable
  */

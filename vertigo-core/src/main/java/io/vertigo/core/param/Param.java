@@ -23,119 +23,131 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 
 /**
- * Param.
- * @author pchretien
+ * Represents a configuration parameter.
+ *
+ * This class allows the creation of configuration parameters, where each
+ * parameter is identified by a name and has a corresponding value. The name of
+ * a parameter must match a specified pattern, and the value can be of type
+ * String, Integer, or boolean.
+ *
+ * @author: pchretien
  */
 public final class Param {
 	private static final String TRUE = "true";
 	private static final String FALSE = "false";
 
-	/** Regexp paramName. */
-	private static final Pattern REGEX_PARAM_NAME = Pattern.compile("([a-zA-Z][a-zA-Z0-9]*)([\\._-][a-zA-Z][a-zA-Z0-9]*){0,200}");
+	/** Regular expression for paramName. */
+	private static final Pattern REGEX_PARAM_NAME = Pattern
+			.compile("([a-zA-Z][a-zA-Z0-9]*)([\\._-][a-zA-Z][a-zA-Z0-9]*){0,200}");
 	private final String name;
 	private final String value;
 
 	/**
-	 * Constructor
-	 * @param name the name of the param
-	 * @param value the value of the param
+	 * Constructor.
+	 *
+	 * @param name  the name of the parameter
+	 * @param value the value of the parameter
 	 */
 	private Param(final String name, final String value) {
-		Assertion.check()
-				.isNotBlank(name)
-				.isTrue(REGEX_PARAM_NAME.matcher(name).matches(), "param '{0}' must match pattern {1}", name, REGEX_PARAM_NAME)
-				.isNotBlank(name)
-				.isNotNull(value);
-		//---
+		Assertion.check().isNotBlank(name).isTrue(REGEX_PARAM_NAME.matcher(name).matches(),
+				"param '{0}' must match pattern {1}", name, REGEX_PARAM_NAME).isNotBlank(name).isNotNull(value);
+		// ---
 		this.name = name;
 		this.value = value;
 
 	}
 
-	/***
-	 * Creates a new Integer param
-	 * @param name the name of the param
-	 * @param value the value of the param
-	 * @return new param
+	/**
+	 * Creates a new Integer parameter.
+	 *
+	 * @param name  the name of the parameter
+	 * @param value the value of the parameter
+	 * @return a new parameter
 	 */
 	public static Param of(final String name, final Integer value) {
 		return new Param(name, Integer.toString(value));
 	}
 
-	/***
-	 * Creates a new param
-	 * @param name the name of the param
-	 * @param value the value of the param
-	 * @return new param
+	/**
+	 * Creates a new parameter.
+	 *
+	 * @param name  the name of the parameter
+	 * @param value the value of the parameter
+	 * @return a new parameter
 	 */
 	public static Param of(final String name, final String value) {
 		return new Param(name, value);
 	}
 
 	/**
-	 * @return the value of the param
+	 * Gets the value of the parameter.
+	 *
+	 * @return the value of the parameter
 	 */
 	public String getValue() {
 		return value;
 	}
 
 	/**
-	 * @return the name of the param
+	 * Gets the name of the parameter.
+	 *
+	 * @return the name of the parameter
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * Returns the param ad a typed value .
-	 * @param paramType Type of the param
-	 * @return the value of the param
+	 * Returns the parameter as a typed value.
+	 *
+	 * @param paramType the type of the parameter
+	 * @return the value of the parameter
 	 */
 	public <O> O getValue(final Class<O> paramType) {
-		Assertion.check()
-				.isNotNull(paramType);
-		//-----
+		Assertion.check().isNotNull(paramType);
+		// -----
 		return (O) parse(name, paramType, value);
 	}
 
 	/**
-	 * Returns the param as a String.
-	 * @return the value of the param
+	 * Returns the parameter as a String.
+	 *
+	 * @return the value of the parameter
 	 */
 	public String getValueAsString() {
 		return getValue(String.class);
 	}
 
 	/**
-	 * Returns the param as an int.
-	 * @return the value of the param
+	 * Returns the parameter as an int.
+	 *
+	 * @return the value of the parameter
 	 */
 	public int getValueAsInt() {
 		return getValue(int.class);
 	}
 
 	/**
-	 * Returns the param as a long.
-	 * @return the value of the param
+	 * Returns the parameter as a long.
+	 *
+	 * @return the value of the parameter
 	 */
 	public long getValueAsLong() {
 		return getValue(long.class);
 	}
 
 	/**
-	 * Returns the param as a boolean .
-	 * @return the value of the param
+	 * Returns the parameter as a boolean.
+	 *
+	 * @return the value of the parameter
 	 */
 	public boolean getValueAsBoolean() {
 		return getValue(boolean.class);
 	}
 
 	private static Object parse(final String paramName, final Class<?> paramType, final String paramValue) {
-		Assertion.check()
-				.isNotNull(paramName)
-				.isNotNull(paramType)
-				.isNotNull(paramValue);
-		//-----
+		Assertion.check().isNotNull(paramName).isNotNull(paramType).isNotNull(paramValue);
+		// -----
 		try {
 			if (String.class.equals(paramType)) {
 				return paramValue;
@@ -149,13 +161,15 @@ public final class Param {
 				throw new IllegalArgumentException("type '" + paramType + "' unsupported");
 			}
 		} catch (final Exception e) {
-			throw new VSystemException(e, "Param :{0} with value :{1} can't be cast into '{2}'", paramName, paramValue, paramType);
+			throw new VSystemException(e, "Param :{0} with value :{1} can't be cast into '{2}'", paramName, paramValue,
+					paramType);
 		}
 	}
 
 	private static boolean toBoolean(final String paramName, final String paramValue) {
 		if (!(TRUE.equalsIgnoreCase(paramValue) || FALSE.equalsIgnoreCase(paramValue))) {
-			throw new VSystemException("Param :{0} with value :{1} can't be cast into 'boolean'", paramName, paramValue);
+			throw new VSystemException("Param :{0} with value :{1} can't be cast into 'boolean'", paramName,
+					paramValue);
 		}
 		return Boolean.parseBoolean(paramValue);
 	}

@@ -22,41 +22,71 @@ import java.util.Optional;
 import io.vertigo.core.lang.Assertion;
 
 /**
- * Util to get params from Env or System.
- * Could be use, every where ParamManager wasn't load yet.
+ * Utility class for retrieving parameters from the environment or system. Can
+ * be used everywhere the ParamManager has not been loaded yet.
  *
- * @author npiedeloup
+ * @author: npiedeloup
  */
 public final class EnvParamUtil {
 
+	/**
+	 * Private constructor to prevent instantiation of the utility class.
+	 */
 	private EnvParamUtil() {
-		//empty for util class
+		// Empty for utility class
 	}
 
-	public static Optional<Param> getParam(final String paramName, final String paramValue, final Optional<ParamManager> paramManagerOpt) {
-		Assertion.check().isNotBlank(paramName);
-		//-----
+	/**
+	 * Retrieves a parameter based on the specified name, value, and an optional
+	 * ParamManager.
+	 *
+	 * @param paramName       The name of the parameter
+	 * @param paramValue      The value of the parameter
+	 * @param paramManagerOpt An optional ParamManager
+	 * @return An Optional containing the retrieved Param, if available
+	 * @throws IllegalArgumentException If the parameter is not found in either the
+	 *                                  ParamManager or the system and environment
+	 */
+	public static Optional<Param> getParam(final String paramName, final String paramValue,
+			final Optional<ParamManager> paramManagerOpt) {
+		Assertion.check()
+		.isNotBlank(paramName)
+		.isNotNull(paramManagerOpt);
+		// -----
 		if (paramValue != null && paramValue.startsWith("${") && paramValue.endsWith("}")) {
 			final int defaultValueIdx = paramValue.indexOf("!");
-			final String property = paramValue.substring("${".length(), defaultValueIdx > 0 ? defaultValueIdx : paramValue.length() - "}".length());
-			final Optional<String> defaultValueOpt = defaultValueIdx > 0 ? Optional.of(paramValue.substring(defaultValueIdx + 1, paramValue.length() - "}".length())) : Optional.empty();
+			final String property = paramValue.substring("${".length(),
+					defaultValueIdx > 0 ? defaultValueIdx : paramValue.length() - "}".length());
+			final Optional<String> defaultValueOpt = defaultValueIdx > 0
+					? Optional.of(paramValue.substring(defaultValueIdx + 1, paramValue.length() - "}".length()))
+					: Optional.empty();
 			if (paramManagerOpt.isPresent()) {
 				return paramManagerOpt.get().getOptionalParam(property)
-						.or(() -> Optional.of(Param.of(paramName, defaultValueOpt
-								.orElseThrow(() -> new IllegalArgumentException("Param '" + property + "' not found (paramManager)")))));
+						.or(() -> Optional
+								.of(Param.of(paramName, defaultValueOpt.orElseThrow(() -> new IllegalArgumentException(
+										"Param '" + property + "' not found (paramManager)")))));
 			} else {
-				return getOptionalSysEnvParam(paramName, property)
-						.or(() -> Optional.of(Param.of(paramName, defaultValueOpt
-								.orElseThrow(() -> new IllegalArgumentException("Param '" + property + "' not found (system and env)")))));
+				return getOptionalSysEnvParam(paramName, property).or(() -> Optional
+						.of(Param.of(paramName, defaultValueOpt.orElseThrow(() -> new IllegalArgumentException(
+								"Param '" + property + "' not found (system and env)")))));
 			}
 		}
 		return Optional.of(Param.of(paramName, paramValue));
 	}
 
+	/**
+	 * Retrieves an optional system or environment parameter based on the specified
+	 * parameter name.
+	 *
+	 * @param paramName The name of the parameter
+	 * @param property  The property associated with the parameter
+	 * @return An Optional containing the retrieved Param, if available
+	 */
 	private static Optional<Param> getOptionalSysEnvParam(final String paramName, final String property) {
-		Assertion.check().isNotBlank(paramName);
-		Assertion.check().isNotBlank(property);
-		//-----
+		Assertion.check()
+		.isNotBlank(paramName)
+		.isNotBlank(property);
+		// -----
 		String paramValue = System.getProperty(property);
 		if (paramValue == null) {
 			paramValue = System.getenv().get(property);

@@ -20,12 +20,14 @@ package io.vertigo.core.lang;
 import java.util.Optional;
 
 /**
- * Either is an immutable object, it contains left XOR right element.
- * 
- * @param <L> Type left
- * @param <R> Type right
+ * Immutable object representing an Either, containing a left or a right element.
+ *
+ * An Either is an immutable object that represents a choice between two types of elements: left or right.
  *
  * @author pchretien
+ *
+ * @param <L> the type of the left element
+ * @param <R> the type of the right element
  */
 public record Either<L, R> (Optional<L> left, Optional<R> right) {
 	public Either {
@@ -35,25 +37,25 @@ public record Either<L, R> (Optional<L> left, Optional<R> right) {
 	}
 
 	/**
-	 * Creates an Either with a right element.
-	 * @param <L> the left type element 
-	 * @param <R> the right type element 
-	 * @param right the right element 
-	 * 
-	 * the left element is empty.
-	 * @return the created Either object
-	 */
+     * Creates an Either with a right element.
+     *
+     * @param <L>   the type of the left element
+     * @param <R>   the type of the right element
+     * @param right the right element
+     * @return the created Either object with the right element
+     */
 	public static <L, R> Either<L, R> right(final R right) {
 		return new Either<>(Optional.empty(), Optional.of(right));
 	}
 
 	/**
-	 * Creates an Either with a left element.
-	 * @param <L> the left type element 
-	 * @param <R> the right type element 
-	 * @param left the left element 
-	 * @return the created Either object
-	 */
+     * Creates an Either with a left element.
+     *
+     * @param <L>  the type of the left element
+     * @param <R>  the type of the right element
+     * @param left the left element
+     * @return the created Either object with the left element
+     */
 	public static <L, R> Either<L, R> left(final L left) {
 		return new Either<>(Optional.of(left), Optional.empty());
 	}

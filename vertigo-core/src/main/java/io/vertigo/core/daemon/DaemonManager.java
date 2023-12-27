@@ -29,7 +29,7 @@ import io.vertigo.core.node.component.Manager;
  * This interface defines methods for managing and interacting with daemons.
  * Daemons are technical components that are expected to run continuously in the background.
  *
- * Authors: mlaroche, pchretien, npiedeloup
+ * @author: mlaroche, pchretien, npiedeloup
  *
  * @see Manager
  */
