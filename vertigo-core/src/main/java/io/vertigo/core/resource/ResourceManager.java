@@ -22,33 +22,33 @@ import java.net.URL;
 import io.vertigo.core.node.component.Manager;
 
 /**
- * Selecteurs de ressources.
- * Les ressources sont identifiées par une URL.
- * Cette URL peut être
- *  - relative au classpath de l'application dans le cas d'une application JAVA
- *  - relative au context de l'application WEB
+ * Resource Managers for resource selection.
+ * Resources are identified by a URL.
+ * This URL can be
+ *  - relative to the application's classpath in the case of a Java application
+ *  - relative to the context of the WEB application
  *
- * La ressource peut aussi être résolue de façon ad-hoc par la création d'un plugin de résolution spécifique.
+ * The resource can also be resolved ad-hoc by creating a specific resolution plugin.
  *
- * Les fichiers de configuration sont à considérer comme des ressources.
- * Ex:
- * 	classpath:
- * 		/myproject/components/components-config.dtd
- * 	web:
- *     /WEB-INF/components-config.xml
+ * Configuration files are to be considered as resources.
+ * Example:
+ *   classpath:
+ *       /myproject/components/components-config.dtd
+ *   web:
+ *       /WEB-INF/components-config.xml
  *
- * L'implémentation permet de définir une liste de plusieurs plugins de résolutions de ressources.
- * Il est aussi possible d'enregistrer des @see ResourceResolverPlugin spécifique. (Par exemple pour stocker les ressources en BDD)
+ * The implementation allows defining a list of several resource resolution plugins.
+ * It is also possible to register specific @see ResourceResolverPlugin. (For example, to store resources in a database)
  *
- * @author pchretien
+ * @author: pchretien
  */
 public interface ResourceManager extends Manager {
-	/**
-	 * Retourne une URL à partir de sa représentation 'chaîne de caractères'
-	 *
-	 * @param resource Url de la ressource(chaîne de caractères)
-	 * @return URL associée à la ressource (Not Null)
-	 */
+    /**
+     * Returns a URL from its 'string' representation.
+     *
+     * @param resource URL of the resource (string representation)
+     * @return URL associated with the resource (NotNull)
+     */
 	URL resolve(final String resource);
 
 }

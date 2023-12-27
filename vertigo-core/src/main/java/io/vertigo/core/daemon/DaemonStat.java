@@ -22,7 +22,7 @@ package io.vertigo.core.daemon;
  *
  * This interface provides detailed statistics about the execution of registered daemons.
  * 
- * Author: pchretien
+ * @author: pchretien
  */
 public interface DaemonStat {
 	/**
