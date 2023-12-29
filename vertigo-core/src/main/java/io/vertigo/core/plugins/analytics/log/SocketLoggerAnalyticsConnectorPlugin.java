@@ -55,6 +55,7 @@ import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.NamedThreadFactory;
 import io.vertigo.core.lang.json.CoreJsonAdapters;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
@@ -63,7 +64,6 @@ import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.plugins.analytics.log.log4j.AnalyticsSocketAppender;
 import io.vertigo.core.plugins.analytics.log.log4j.AnalyticsSocketAppender.Builder;
-import io.vertigo.core.util.NamedThreadFactory;
 
 /**
  * Processes connector which use the log4j SocketAppender.

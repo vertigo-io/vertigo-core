@@ -27,9 +27,9 @@ import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.daemon.DaemonStat;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.NamedThreadFactory;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
-import io.vertigo.core.util.NamedThreadFactory;
 
 /**
  * This class executes the daemons that have been previously registered.
