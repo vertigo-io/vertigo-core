@@ -26,7 +26,7 @@ import io.vertigo.core.lang.Builder;
  *
  */
 public final class HealthMeasureBuilder implements Builder<HealthMeasure> {
-	private HealthStatus myStatus;
+	private HealthStatus myHealthStatus;
 	private String myMessage; //may be null
 
 	HealthMeasureBuilder() {
@@ -67,16 +67,16 @@ public final class HealthMeasureBuilder implements Builder<HealthMeasure> {
 
 	private HealthMeasureBuilder withStatus(final HealthStatus healthStatus, final String message) {
 		Assertion.check()
-				.isNull(myStatus, "status already set")
+				.isNull(myHealthStatus, "status already set")
 				.isNotNull(healthStatus);
 		//---
-		myStatus = healthStatus;
+		myHealthStatus = healthStatus;
 		myMessage = message;
 		return this;
 	}
 
 	@Override
 	public HealthMeasure build() {
-		return new HealthMeasure(myStatus, myMessage);
+		return new HealthMeasure(myHealthStatus, myMessage);
 	}
 }
