@@ -18,21 +18,25 @@
 package io.vertigo.core.node.definition;
 
 /**
- * This interface defines a Definition.
+ * The Definition interface defines an element that represents a part of the business or technical model.
+ * Each definition has a unique identifier, has a unique name which is composed of a specific prefix.
+ * Definitions are immutable, not serializable, and are loaded at boot time.
  *
- * Each element that defines a part of the business (or tech.) model is a definition.
- *
- * A definition
- *  - has an id  (composed of a unique name, starting with a specific prefix)
- *  - is immutable
- *  - is not serializable.
- *  - is loaded at the boot.
- *
- * @author  pchretien
+ * @author pchretien
  */
 public interface Definition {
+	/**
+	 * Gets the identifier of the definition.
+	 *
+	 * @return the unique identifier of the definition
+	 */
 	DefinitionId id();
 
+	/**
+	 * Gets the name of the definition.
+	 *
+	 * @return the name of the definition
+	 */
 	default String getName() {
 		return id().fullName();
 	}
