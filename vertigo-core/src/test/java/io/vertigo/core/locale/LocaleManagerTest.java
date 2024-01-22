@@ -119,14 +119,8 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 		/*
 		 * On teste que l'on accède au dictionnaire par une clé sous forme de chaine de caractères.
 		 */
-		final LocaleMessageKey key = new LocaleMessageKey() {
-			private static final long serialVersionUID = 1L;
+		final LocaleMessageKey key = () -> "HELLO";
 
-			@Override
-			public String name() {
-				return "HELLO";
-			}
-		};
 		assertEquals("bonjour", localeManager.getMessage(key, Locale.FRANCE));
 		assertEquals("guten tag", localeManager.getMessage(key, Locale.GERMANY));
 		assertEquals("hello", localeManager.getMessage(key, Locale.ENGLISH));
@@ -134,42 +128,24 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testDefaultDynamicMessageKey() {
-		final LocaleMessageKey key = new LocaleMessageKey() {
-			private static final long serialVersionUID = 1L;
+		final LocaleMessageKey key = () -> "UNKNOWN KEY";
 
-			@Override
-			public String name() {
-				return "UNKNOWN KEY";
-			}
-		};
 		final LocaleMessageText helloTxt = LocaleMessageText.ofDefaultMsg("bonjour par défaut", key);
 		assertEquals("bonjour par défaut", helloTxt.getDisplay());
 	}
 
 	@Test
 	public void testUnknownDynamicMessageKey() {
-		final LocaleMessageKey key = new LocaleMessageKey() {
-			private static final long serialVersionUID = 1L;
+		final LocaleMessageKey key = () -> "UNKNOWN KEY";
 
-			@Override
-			public String name() {
-				return "UNKNOWN KEY";
-			}
-		};
 		final LocaleMessageText helloTxt = LocaleMessageText.of(key);
 		assertEquals("<<fr:UNKNOWN KEY>>", helloTxt.getDisplay());
 	}
 
 	@Test
 	public void testMessageTextParams() {
-		final LocaleMessageKey key = new LocaleMessageKey() {
-			private static final long serialVersionUID = 1L;
+		final LocaleMessageKey key = () -> "UNKNOWN KEY";
 
-			@Override
-			public String name() {
-				return "UNKNOWN KEY";
-			}
-		};
 		final Serializable param = null;
 		LocaleMessageText helloTxt = LocaleMessageText.of(key);
 		assertEquals("<<fr:UNKNOWN KEY>>", helloTxt.getDisplay());
