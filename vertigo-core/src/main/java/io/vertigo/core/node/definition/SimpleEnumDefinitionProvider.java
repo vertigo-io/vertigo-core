@@ -29,6 +29,8 @@ public interface SimpleEnumDefinitionProvider<D extends Definition> extends Defi
 
 	static interface EnumDefinition<D, T extends Enum<T>> {
 
+		String getDefinitionName();
+
 		D buildDefinition(DefinitionSpace definitionSpace);
 
 		D get();
