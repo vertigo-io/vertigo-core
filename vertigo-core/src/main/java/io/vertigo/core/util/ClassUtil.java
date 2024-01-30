@@ -111,11 +111,12 @@ public final class ClassUtil {
 		}
 	}
 
-	/**
-	 * Récupère le constructeur sans paramètres.
-	 * @param clazz Classe sur laquelle on recherche le constructeur
-	 * @return Constructeur recherché
-	 */
+ 	/**
+ 	 * Retrieves the no-arg constructor for the given class.
+ 	 * 
+ 	 * @param clazz The class to find the constructor for
+ 	 * @return The no-arg constructor for the class
+ 	 */
 	private static <J> Constructor<J> findConstructor(final Class<J> clazz) {
 		return findConstructor(clazz, EMPTY_CLAZZ_ARRAY);
 	}
@@ -462,7 +463,7 @@ public final class ClassUtil {
 					.isTrue(Boolean.class.equals(method.getReturnType()) || boolean.class.equals(method.getReturnType()), "une méthode is concerne un boolean : {0}", method);
 			property = method.getName().substring("is".length());
 		} else {
-			throw new IllegalArgumentException("Type de Méthode " + method + " non gérée en tant que propriété");
+			throw new IllegalArgumentException("Method " + method + " must start with 'get' or 'is' to be considered as a property");
 		}
 		//On abaisse la première lettre
 		return StringUtil.first2LowerCase(property);
