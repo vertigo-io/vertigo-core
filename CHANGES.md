@@ -1,11 +1,23 @@
 Version history
 ===============
 
-Running 4.1.0
+Running 4.2.0
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-410-to-420)
+  
+more to come :)
+
+Release 4.1.0 -2023/11/09
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-400-to-410)
-
-more to come :)
+* [Core] Prefixed daemon threads with `v-daemon-`
+* [Core] Add param DaemonManager `threadPoolSize` to change thread pool size (default 2)
+* [Core] Add compression support for AnalyticsTcpSocketManager
+* [Core] Extend activeFlags to support `and` `&&` and `!` for not 
+* [Core] Better error message for bad activeFlags
+* [Core] Updated libs
+  - log4j 2.20.0 -> 2.21.1
+  - snakeyaml 2.0 -> 2.2
 
 Release 4.0.0 -2023/08/17
 ----------------------
