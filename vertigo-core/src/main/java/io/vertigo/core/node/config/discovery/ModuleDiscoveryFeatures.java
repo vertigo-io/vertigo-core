@@ -22,12 +22,12 @@ import io.vertigo.core.node.config.Features;
 /**
  * An abstract Feature with no configuration for discovering and registering components in a package tree.
  * Usage :
- *  - Extends this class
- *  - Provide a module name
- *  - Provide the package prefix to scan for components
- *  - Register this feature in your app's configuration (YAML or Java)
- * @author mlaroche
+ * - Extends this class
+ * - Provide a module name
+ * - Provide the package prefix to scan for components
+ * - Register this feature in your app's configuration (YAML or Java)
  *
+ * @author mlaroche
  */
 public abstract class ModuleDiscoveryFeatures<F> extends Features<F> {
 
@@ -35,7 +35,9 @@ public abstract class ModuleDiscoveryFeatures<F> extends Features<F> {
 		super(name);
 	}
 
-	protected abstract String getPackageRoot();
+	protected String getPackageRoot() {
+		return this.getClass().getPackage().getName();
+	}
 
 	/** {@inheritDoc} */
 	@Override
