@@ -20,6 +20,7 @@ package io.vertigo.core.locale;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Node;
@@ -29,15 +30,16 @@ import io.vertigo.core.util.StringUtil;
  * Texte pouvant être externalisé dans un fichier de ressources,
  * en fonction du paramétrage de l'application.
  * Si le libelle n'est pas trouvé, l'affichage est
+ *
  * @author npiedeloup, pchretien
  */
 public final class LocaleMessageText implements Serializable {
 	private static final long serialVersionUID = 4723023230514051954L;
-	/**Clé du libellé dans le dictionnaire. */
+	/** Clé du libellé dans le dictionnaire. */
 	private final LocaleMessageKey key;
-	/**Libellé non formatté. */
+	/** Libellé non formatté. */
 	private final String defaultMsg;
-	/**paramètres permettant de formatter le libellé. */
+	/** paramètres permettant de formatter le libellé. */
 	private final Serializable[] params;
 
 	/**
@@ -60,6 +62,7 @@ public final class LocaleMessageText implements Serializable {
 
 	/**
 	 * static Builder of a messageText by its key.
+	 *
 	 * @param key Clé de la ressource
 	 * @return the messageText
 	 */
@@ -71,6 +74,7 @@ public final class LocaleMessageText implements Serializable {
 
 	/**
 	 * static Builder of a messageText by its default message.
+	 *
 	 * @param msg Message par défaut (non formatté) de la ressource
 	 * @return the messageText
 	 */
@@ -82,6 +86,7 @@ public final class LocaleMessageText implements Serializable {
 
 	/**
 	 * static Builder of a messageText by its default message.
+	 *
 	 * @param defaultMsg Message par défaut (non formatté) de la ressource
 	 * @return the messageText
 	 */
@@ -101,25 +106,20 @@ public final class LocaleMessageText implements Serializable {
 	}
 
 	/**
-	 * Formatte un message avec des paramètres.
-	 * Ne lance aucune exception !!
-	 * @return Message formatté.
+	 * Format message with parameters.
+	 * No exception throwed !!
+	 *
+	 * @return Formatted message, if exists.
 	 */
-	public String getDisplay() {
-		/*
-		 * Cette méthode doit toujours remonter un message.
-		 * Si LocaleManager n'est pas enregistré ou génére une exception
-		 * alors on se contente de retourner la clé du message.
-		 */
+	public Optional<String> getDisplayOpt() {
 		Locale locale = null;
 		String msg = null;
 		if (key != null) {
 			//On ne recherche le dictionnaire (géré par localeManager) que si il y a une clé.
-			final LocaleManager localeManager;
 			try {
 				//Il est nécessaire que LocaleManager soit enregistré.
 				//Si pas d'utilisateur on prend la première langue déclarée.
-				localeManager = Node.getNode().getComponentSpace().resolve(LocaleManager.class);
+				final var localeManager = getLocaleManager();
 				locale = localeManager.getCurrentLocale();
 				msg = localeManager.getMessage(key, locale);
 			} catch (final Exception e) {
@@ -133,10 +133,27 @@ public final class LocaleMessageText implements Serializable {
 		}
 		if (msg != null) {
 			//On passe toujours dans le StringUtil.format pour unifier.
-			return StringUtil.format(msg, getParams());
+			return Optional.of(StringUtil.format(msg, getParams()));
 		}
-		//On a rien trouvé on renvoit ce que l'on peut. (locale peut être null)
-		return getPanicMessage(locale);
+
+		return Optional.empty();
+	}
+
+	/**
+	 * Format message with parameters.
+	 * If nothing found, return a "panic message" displaying what is missing.
+	 * No exception throwed !!
+	 *
+	 * @return Formatted message.
+	 */
+	public String getDisplay() {
+		/*
+		 * Cette méthode doit toujours remonter un message.
+		 * Si LocaleManager n'est pas enregistré ou génère une exception
+		 * alors on se contente de retourner la clé du message.
+		 */
+		final var locale = getLocaleManager().getCurrentLocale(); // (locale can be null)
+		return getDisplayOpt().orElse(getPanicMessage(locale));
 	}
 
 	private String getPanicMessage(final Locale locale) {
@@ -153,5 +170,9 @@ public final class LocaleMessageText implements Serializable {
 	@Override
 	public String toString() {
 		return getPanicMessage(null);
+	}
+
+	private LocaleManager getLocaleManager() {
+		return Node.getNode().getComponentSpace().resolve(LocaleManager.class);
 	}
 }
