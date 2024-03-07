@@ -50,11 +50,11 @@ public final class EnvParamUtil {
 	public static Optional<Param> getParam(final String paramName, final String paramValue,
 			final Optional<ParamManager> paramManagerOpt) {
 		Assertion.check()
-		.isNotBlank(paramName)
-		.isNotNull(paramManagerOpt);
+				.isNotBlank(paramName)
+				.isNotNull(paramManagerOpt);
 		// -----
 		if (paramValue != null && paramValue.startsWith("${") && paramValue.endsWith("}")) {
-			final int defaultValueIdx = paramValue.indexOf("!");
+			final int defaultValueIdx = paramValue.indexOf('!');
 			final String property = paramValue.substring("${".length(),
 					defaultValueIdx > 0 ? defaultValueIdx : paramValue.length() - "}".length());
 			final Optional<String> defaultValueOpt = defaultValueIdx > 0
@@ -84,8 +84,8 @@ public final class EnvParamUtil {
 	 */
 	private static Optional<Param> getOptionalSysEnvParam(final String paramName, final String property) {
 		Assertion.check()
-		.isNotBlank(paramName)
-		.isNotBlank(property);
+				.isNotBlank(paramName)
+				.isNotBlank(property);
 		// -----
 		String paramValue = System.getProperty(property);
 		if (paramValue == null) {
