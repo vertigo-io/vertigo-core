@@ -152,11 +152,16 @@ public final class LocaleMessageText implements Serializable {
 		 * Si LocaleManager n'est pas enregistré ou génère une exception
 		 * alors on se contente de retourner la clé du message.
 		 */
-		final var locale = getLocaleManager().getCurrentLocale(); // (locale can be null)
-		return getDisplayOpt().orElse(getPanicMessage(locale));
+		return getDisplayOpt().orElseGet(() -> getPanicMessage());
 	}
 
-	private String getPanicMessage(final Locale locale) {
+	private String getPanicMessage() {
+		Locale locale = null;
+		try {
+			locale = getLocaleManager().getCurrentLocale();
+		} catch (final Exception e) {
+			// nothing
+		}
 		return new StringBuilder()
 				.append("<<")
 				.append(locale != null ? locale.getLanguage() : "xx")
@@ -169,7 +174,7 @@ public final class LocaleMessageText implements Serializable {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return getPanicMessage(null);
+		return getPanicMessage();
 	}
 
 	private LocaleManager getLocaleManager() {
