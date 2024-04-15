@@ -24,83 +24,85 @@ import java.util.function.Supplier;
 import io.vertigo.core.node.component.Manager;
 
 /**
- * Toute application gérée par kapser est multilingue ou plus précisémment multidictionnaires.
+ * The localization manager for applications managed by Vertigo, 
+ * supporting multilingual or more specifically, multidictionary management.
  *
- * Il est possible de gérer des ressources externalisées dans des dictionnaires.
+ * External resources are managed in dictionaries, where each resource is identified by a unique key:
+ * @see MessageKey. For a given component, the list of keys is ideally implemented as an enumeration.
+ * Each key is associated with a resource file, also referred to as a dictionary.
  *
- * Toute ressource est identifiée par une clé :  @see MessageKey
- * Pour un composant donné, la liste des clés est implémentée idéalement sous la forme d'une enum.
- * Un fichier de ressource, appelé dictionnaire est associée à la liste des clés.
+ * If a label is not found in a specific language, a "panic" message is returned indicating the requested language,
+ * and a warning is logged.
  *
- * Si le libellé n'est pas trouvé dans une langue, on renvoie un message "panic", en précisant la langue demandée
- * de plus on loggue un warning.
+ * Example panic message:
+ * MessageText(null,messageKey.TOTO) in 'fr_FR' : <<fr:TOTO>>
+ * MessageText(null,messageKey.TOTO) in 'en' : <<en:TOTO>>
  *
- * Exemple message panic :
- * MessageText(null,messageKey.TOTO) en 'fr_FR' : <<fr:TOTO>>
- * MessageText(null,messageKey.TOTO) en 'en' : <<en:TOTO>>
+ * Labels can be parameterized.
  *
- * Un libellé peut être paramétré.
- *
- * @see LocaleMessageText permet de créer des libellés connecté au dictionnaire.
- *
+ * @see LocaleMessageText to create labels connected to the dictionary.
  *
  * @author pchretien
  */
 public interface LocaleManager extends Manager {
+
 	/**
-	 * Register a strategy to choose a locale.
-	 * @param localeSupplier Supply a locale in a context
+	 * Registers a strategy to choose a locale.
+	 * 
+	 * @param localeSupplier Supplies a locale in a given context.
 	 */
 	void registerLocaleSupplier(Supplier<Locale> localeSupplier);
 
 	/**
-	 * Register a strategy to choose a zone.
-	 * @param zoneSupplier Supply a zone in a context
+	 * Registers a strategy to choose a time zone.
+	 * 
+	 * @param zoneSupplier Supplies a time zone in a given context.
 	 */
 	void registerZoneSupplier(Supplier<ZoneId> zoneSupplier);
 
 	/**
-	 * Ajout d'un dictionnaire de ressources.
-	 * Toutes les ressources identifiées par une clé doivent être présente dans le fichier properties.
-	 * Cette méthode est non synchronisée etdoit être appelée lors du démarrage de l'application.
-	 * @param baseName Nom et chemin du fichier properties
-	 * @param enums Enumération (enum) de contrôle des ressources géréees
+	 * Adds a resource dictionary.
+	 * All resources identified by a key must be present in the properties file.
+	 * This method is not synchronized and should be called at application startup.
+	 * 
+	 * @param baseName Name and path of the properties file.
+	 * @param enums Enumeration (enum) controlling the managed resources.
 	 */
 	void add(String baseName, LocaleMessageKey[] enums);
 
 	/**
-	 * Surcharge d'un dictionnaire de ressources.
-	 * Cette méthode est non synchronisée et doit être appelée lors du démarrage de l'application.
-	 * Il est possible de ne surcharger qu'une propriété.
-	 * Il est possible de ne renseigner qu'un des dictionnaire (et donc de ne pas renseigner tous les bundles).
-	 * @param baseName Nom et chemin du fichier properties
-	 * @param enums Enumération (enum) de contrôle des ressources géréees
+	 * Overrides a resource dictionary.
+	 * This method is not synchronized and should be called at application startup.
+	 * It is possible to override only one property or a specific dictionary.
+	 * 
+	 * @param baseName Name and path of the properties file.
+	 * @param enums Enumeration (enum) controlling the managed resources.
 	 */
 	void override(String baseName, LocaleMessageKey[] enums);
 
 	/**
-	 * Retourne le libellé non formatté d'un message identifié par sa clé.
-	 * Retourne null si le message n'est pas trouvé
-	 *
-	 * @param messageKey clé du message .
-	 * @param locale Locale
-	 * @return Message non formatté dans la langue de la locale.
-	  */
+	 * Retrieves the unformatted label of a message identified by its key.
+	 * Returns null if the message is not found.
+	 * 
+	 * @param messageKey Message key.
+	 * @param locale Locale.
+	 * @return Unformatted message in the language of the locale.
+	 */
 	String getMessage(LocaleMessageKey messageKey, Locale locale);
 
 	/**
-	 * Retourne la locale courante.
-	 * C'est à dire correspondant à l'utilisateur courant si il y en a un,
-	 * sinon correspond à la locale de l'application.
-	 * @return Locale courante
+	 * Retrieves the current locale, corresponding to the current user if available,
+	 * otherwise corresponds to the application's locale.
+	 * 
+	 * @return Current locale.
 	 */
 	Locale getCurrentLocale();
 
 	/**
-	 * Retourne la time zone courante.
-	 * C'est à dire correspondant à l'utilisateur courant si il y en a un,
-	 * sinon correspond à la time zone de l'application.
-	 * @return Zone courante
+	 * Retrieves the current time zone, corresponding to the current user if available,
+	 * otherwise corresponds to the application's time zone.
+	 * 
+	 * @return Current time zone.
 	 */
 	ZoneId getCurrentZoneId();
 }

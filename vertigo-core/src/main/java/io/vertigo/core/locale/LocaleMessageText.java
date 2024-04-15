@@ -177,7 +177,7 @@ public final class LocaleMessageText implements Serializable {
 		return getPanicMessage();
 	}
 
-	private LocaleManager getLocaleManager() {
+	private static LocaleManager getLocaleManager() {
 		return Node.getNode().getComponentSpace().resolve(LocaleManager.class);
 	}
 }
