@@ -20,13 +20,19 @@ package io.vertigo.core.locale;
 import java.io.Serializable;
 
 /**
-* Clé d'un message externalisée.
-*
-* @author  pchretien, npiedeloup
-*/
+ * Key for an externalized message.
+ * 
+ * This interface represents a key used to identify an externalized message.
+ * It is typically used to look up messages in a resource bundle.
+ * 
+ * @author pchretien, npiedeloup
+ */
 public interface LocaleMessageKey extends Serializable {
+
 	/**
-	 * @return nom de la clé.
+	 * Retrieves the name of the key.
+	 * 
+	 * @return The name of the key.
 	 */
 	String name();
 }
