@@ -20,10 +20,11 @@ package io.vertigo.core.param;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Node;
 
 /**
- * Utility class for retrieving parameters from the environment or system. Can
- * be used everywhere the ParamManager has not been loaded yet.
+ * Utility class for retrieving parameters from the environment or system.
+ * Can be used everywhere the ParamManager has not been loaded yet.
  *
  * @author: npiedeloup
  */
@@ -33,35 +34,37 @@ public final class EnvParamUtil {
 	 * Private constructor to prevent instantiation of the utility class.
 	 */
 	private EnvParamUtil() {
-		// Empty for utility class
+		//Empty for utility class
 	}
 
 	/**
-	 * Retrieves a parameter based on the specified name, value, and an optional
-	 * ParamManager.
+	 * Retrieves a parameter based on the specified name, value, and an optional ParamManager.
 	 *
 	 * @param paramName       The name of the parameter
 	 * @param paramValue      The value of the parameter
 	 * @param paramManagerOpt An optional ParamManager
 	 * @return An Optional containing the retrieved Param, if available
-	 * @throws IllegalArgumentException If the parameter is not found in either the
-	 *                                  ParamManager or the system and environment
+	 * @throws IllegalArgumentException If the parameter is not found in either the	ParamManager or the system and environment
 	 */
-	public static Optional<Param> getParam(final String paramName, final String paramValue,
-			final Optional<ParamManager> paramManagerOpt) {
+	public static Optional<Param> getParam(final String paramName, final String paramValue, final Optional<ParamManager> paramManagerOpt) {
 		Assertion.check()
 				.isNotBlank(paramName)
 				.isNotNull(paramManagerOpt);
 		// -----
 		if (paramValue != null && paramValue.startsWith("${") && paramValue.endsWith("}")) {
 			final int defaultValueIdx = paramValue.indexOf('!');
-			final String property = paramValue.substring("${".length(),
-					defaultValueIdx > 0 ? defaultValueIdx : paramValue.length() - "}".length());
+			final String property = paramValue.substring("${".length(), defaultValueIdx > 0 ? defaultValueIdx : paramValue.length() - "}".length());
 			final Optional<String> defaultValueOpt = defaultValueIdx > 0
 					? Optional.of(paramValue.substring(defaultValueIdx + 1, paramValue.length() - "}".length()))
 					: Optional.empty();
-			if (paramManagerOpt.isPresent()) {
-				return paramManagerOpt.get().getOptionalParam(property)
+
+			Optional<ParamManager> usedParamManagerOpt = paramManagerOpt;
+			if (!paramManagerOpt.isPresent() && Node.getNode().getComponentSpace().contains("paramManager")) {
+				usedParamManagerOpt = Optional.of(Node.getNode().getComponentSpace().resolve(ParamManager.class));
+			}
+
+			if (usedParamManagerOpt.isPresent()) {
+				return usedParamManagerOpt.get().getOptionalParam(property)
 						.or(() -> defaultValueOpt.map(defaultValue -> Param.of(paramName, defaultValue)));
 			} else {
 				return getOptionalSysEnvParam(paramName, property)
@@ -72,8 +75,7 @@ public final class EnvParamUtil {
 	}
 
 	/**
-	 * Retrieves an optional system or environment parameter based on the specified
-	 * parameter name.
+	 * Retrieves an optional system or environment parameter based on the specified parameter name.
 	 *
 	 * @param paramName The name of the parameter
 	 * @param property  The property associated with the parameter
