@@ -127,7 +127,11 @@ public final class TraceSpanBuilder implements Builder<TraceSpan> {
 				.isNotNull(name, "metadata name is required")
 				.isNotNull(value, "metadata value is required");
 		//---------------------------------------------------------------------
-		metadatas.put(name, value);
+		if (value.isBlank()) {
+			metadatas.remove(name);
+		} else {
+			metadatas.put(name, value);
+		}
 		return this;
 	}
 
@@ -142,7 +146,11 @@ public final class TraceSpanBuilder implements Builder<TraceSpan> {
 				.isNotNull(name, "tag name is required")
 				.isNotNull(value, "tag value is required");
 		//---
-		tags.put(name, value);
+		if (value.isBlank()) {
+			tags.remove(name);
+		} else {
+			tags.put(name, value);
+		}
 		return this;
 	}
 
