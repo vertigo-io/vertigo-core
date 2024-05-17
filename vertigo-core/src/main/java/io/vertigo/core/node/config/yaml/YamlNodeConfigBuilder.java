@@ -202,7 +202,8 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 							.forEach(feature -> {
 								Assertion.check()
 										.isFalse(feature.containsKey(FLAGS), "can't read flags as intended in feature {0} (module's flags: {1})", featuresClassName, yamlModuleConfig.__flags__)
-										.isTrue(feature.size() == 1, "a feature is designed by it's class");
+										.isTrue(feature.size() > 0, "missing feature")
+										.isTrue(feature.size() == 1, "a feature '{0}' should be designed by it's class only (may add indents)", feature.keySet().iterator().next());
 								final Map.Entry<String, Map<String, Object>> featureEntry = feature.entrySet().iterator().next();
 								final String featureClassName = featureEntry.getKey();
 								final Method methodForFeature = featureMethods.get(featureClassName);
@@ -220,7 +221,8 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 							.forEach(featureConfig -> {
 								Assertion.check()
 										.isFalse(featureConfig.containsKey(FLAGS), "can't read flags as intended in featureConfig {0} (module's flags: {1})", featuresClassName, yamlModuleConfig.__flags__)
-										.isTrue(featureConfig.size() == 1, "a feature is designed by it's class");
+										.isTrue(featureConfig.size() > 0, "missing featureConfig")
+										.isTrue(featureConfig.size() == 1, "a featureConfig '{0}' should be designed by it's name only (may add indents)", featureConfig.keySet().iterator().next());
 								final Map.Entry<String, Map<String, Object>> featureEntry = featureConfig.entrySet().iterator().next();
 								final String featureClassName = featureEntry.getKey();
 								final Method methodForFeature = featureMethods.get(featureClassName);
