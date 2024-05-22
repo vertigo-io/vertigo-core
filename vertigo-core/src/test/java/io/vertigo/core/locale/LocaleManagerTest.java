@@ -76,6 +76,8 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 
 		final LocaleMessageText helloTxt = LocaleMessageText.of(CityGuide.HELLO);
 		assertEquals("salut", helloTxt.getDisplay());
+
+		assertEquals("yah2", localeManager.getMessage(CityGuide.HELLO, Locale.ENGLISH));
 	}
 
 	@Test
