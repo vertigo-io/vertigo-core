@@ -87,6 +87,8 @@ public final class ParamEnvUtil {
 		if (paramValue == null) {
 			paramValue = System.getenv().get(property);
 		}
-		return paramValue != null ? Optional.of(Param.of(paramName, paramValue)) : Optional.empty();
+		return paramValue != null
+				? Optional.of(Param.of(paramName, paramValue))
+				: Optional.empty();
 	}
 }

@@ -58,7 +58,7 @@ public final class HealthUtil {
 	 * @param aopPlugin Aop plugin use for unwrap
 	 * @return List of HealthCheckDefinition
 	 */
-	public static List<HealthCheckDefinition> createHealthCheckDefinitions(final String componentId, final CoreComponent component, final AspectPlugin aopPlugin) {
+	public static List<HealthCheckDefinition> createHealthCheckDefinitions(final String componentId, final CoreComponent component, final AspectPlugin aspectPlugin) {
 		Assertion.check().isNotNull(component);
 
 		//-- we construct a map of feature by componentId
@@ -71,7 +71,7 @@ public final class HealthUtil {
 						.forEach(componentConfig -> featureByComponentId.put(componentConfig.getId(), moduleConfig.name())));
 		//-----
 		//1. search all methods
-		return Stream.of(aopPlugin.unwrap(component).getClass().getMethods())
+		return Stream.of(aspectPlugin.unwrap(component).getClass().getMethods())
 				.filter(method -> method.isAnnotationPresent(HealthChecked.class))
 				.map(method -> {
 					final HealthChecked healthChecked = method.getAnnotation(HealthChecked.class);
@@ -127,17 +127,9 @@ public final class HealthUtil {
 		int nbRed = 0;
 		for (final HealthCheck healthCheck : healthChecks) {
 			switch (healthCheck.healthMeasure().status()) {
-				case GREEN:
-					nbGreen++;
-					break;
-				case YELLOW:
-					nbYellow++;
-					break;
-				case RED:
-					nbRed++;
-					break;
-				default:
-					break;
+				case GREEN -> nbGreen++;
+				case YELLOW -> nbYellow++;
+				case RED -> nbRed++;
 			}
 		}
 		return generateStatus(nbGreen, nbYellow, nbRed);
