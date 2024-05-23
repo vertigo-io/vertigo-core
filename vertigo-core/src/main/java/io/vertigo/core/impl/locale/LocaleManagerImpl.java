@@ -43,6 +43,7 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleMessageKey;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.util.StringUtil;
 
 /**
  * @author pchretien
@@ -82,12 +83,12 @@ public final class LocaleManagerImpl implements LocaleManager {
 	 * Les exceptions sont toujours externalisées.
 	 * Les libellés de champs ne le sont pas.
 	 * La première Locale est celle utilisée si il n'y a aucun utilisateur déclaré (cas des batchs).
-	 *
 	 * On précise la liste des locales sous la forme d'une chaine de caractères
 	 * exemples :
 	 * Locale.french : 'fr'
 	 * Locale.FRANCE + Locale.us : 'fr_FR,us'
 	 * Une locale est définie par une langue{_Pays{_Variante}}
+	 *
 	 * @param locales Liste des locales gérées par l'application.
 	 * @param defaultZoneId ZoneId par défaut utilisée par l'application.
 	 */
@@ -206,8 +207,9 @@ public final class LocaleManagerImpl implements LocaleManager {
 
 		//1- Toutes les clés du fichier properties sont dans l'enum des resources
 		for (final String key : Collections.list(resourceBundle.getKeys())) {
-			if (!resourcesKeys.contains(key)) {
-				throw new IllegalStateException("Une clé du fichier properties est inconnue : " + key);
+			if (!StringUtil.isBlank(key) && !resourcesKeys.contains(key)) {
+				throw new IllegalStateException(
+						"Une clé du fichier properties (bundle '" + resourceBundle.getBaseBundleName() + "', locale '" + resourceBundle.getLocale() + "') est inconnue : '" + key + "'");
 			}
 		}
 
@@ -280,7 +282,8 @@ public final class LocaleManagerImpl implements LocaleManager {
 
 	/**
 	 * Evènement remonté lorsqu'une ressource externalisée n'est pas trouvée.
-	 * @param resource  Nom de la ressource externalisée non trouvée
+	 *
+	 * @param resource Nom de la ressource externalisée non trouvée
 	 * @param isMultiLocales Si appli multilingue
 	 */
 	private static void logResourceNotFound(final String resource, final boolean isMultiLocales) {
