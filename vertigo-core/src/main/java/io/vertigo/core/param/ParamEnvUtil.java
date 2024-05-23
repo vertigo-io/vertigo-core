@@ -28,12 +28,12 @@ import io.vertigo.core.node.Node;
  *
  * @author: npiedeloup
  */
-public final class EnvParamUtil {
+public final class ParamEnvUtil {
 
 	/**
 	 * Private constructor to prevent instantiation of the utility class.
 	 */
-	private EnvParamUtil() {
+	private ParamEnvUtil() {
 		//Empty for utility class
 	}
 

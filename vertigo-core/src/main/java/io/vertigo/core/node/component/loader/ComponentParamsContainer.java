@@ -25,7 +25,7 @@ import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Container;
-import io.vertigo.core.param.EnvParamUtil;
+import io.vertigo.core.param.ParamEnvUtil;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamManager;
 
@@ -86,7 +86,7 @@ final class ComponentParamsContainer implements Container {
 				.isNotNull(paramName);
 		//-----
 		final String paramValue = params.get(paramName);
-		return EnvParamUtil.getParam(paramName, paramValue, paramManagerOpt);
+		return ParamEnvUtil.getParam(paramName, paramValue, paramManagerOpt);
 	}
 
 	/*
