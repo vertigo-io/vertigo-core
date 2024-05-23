@@ -63,13 +63,10 @@ public final class ParamEnvUtil {
 				usedParamManagerOpt = Optional.of(Node.getNode().getComponentSpace().resolve(ParamManager.class));
 			}
 
-			if (usedParamManagerOpt.isPresent()) {
-				return usedParamManagerOpt.get().getOptionalParam(property)
-						.or(() -> defaultValueOpt.map(defaultValue -> Param.of(paramName, defaultValue)));
-			} else {
-				return getOptionalSysEnvParam(paramName, property)
-						.or(() -> defaultValueOpt.map(defaultValue -> Param.of(paramName, defaultValue)));
-			}
+			return (usedParamManagerOpt.isPresent()
+					? usedParamManagerOpt.get().getOptionalParam(property)
+					: getOptionalSysEnvParam(paramName, property))
+							.or(() -> defaultValueOpt.map(defaultValue -> Param.of(paramName, defaultValue)));
 		}
 		return Optional.of(Param.of(paramName, paramValue));
 	}
