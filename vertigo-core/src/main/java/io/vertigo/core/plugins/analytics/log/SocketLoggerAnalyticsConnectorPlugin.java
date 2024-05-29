@@ -165,10 +165,22 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	/** {@inheritDoc} */
 	@Override
 	public void add(final TraceSpan span) {
-		Assertion.check().isNotNull(span);
+		Assertion.check()
+				.isNotNull(span);
 		//---
 		if (!sendQueueFull()) {
 			sendQueue.add(span);
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void add(final Metric metric) {
+		Assertion.check()
+				.isNotNull(metric);
+		//---
+		if (!sendQueueFull()) {
+			sendQueue.add(metric);
 		}
 	}
 
@@ -190,17 +202,6 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 			logErrorEvery10sTime = System.currentTimeMillis();
 		}
 		return isFull;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void add(final Metric metric) {
-		Assertion.check()
-				.isNotNull(metric);
-		//---
-		if (!sendQueueFull()) {
-			sendQueue.add(metric);
-		}
 	}
 
 	/** {@inheritDoc} */
@@ -323,12 +324,12 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 			while (!sendQueue.isEmpty()) {
 				final Object head = sendQueue.peek();
 				if (head != null) {
-					if (head instanceof TraceSpan) {
-						spanBatch.add((TraceSpan) head);
-					} else if (head instanceof Metric) {
-						metricBatch.add((Metric) head);
-					} else if (head instanceof HealthCheck) {
-						healthCheckBatch.add((HealthCheck) head);
+					if (head instanceof TraceSpan traceSpan) {
+						spanBatch.add(traceSpan);
+					} else if (head instanceof Metric metric) {
+						metricBatch.add(metric);
+					} else if (head instanceof HealthCheck healthCheck) {
+						healthCheckBatch.add(healthCheck);
 					}
 					sendQueue.remove(head);
 					logSendCount.addAndGet(1);

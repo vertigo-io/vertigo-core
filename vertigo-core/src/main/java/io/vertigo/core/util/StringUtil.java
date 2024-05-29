@@ -46,10 +46,9 @@ public final class StringUtil {
 	 * @see java.lang.Character isWhitespace(char)
 	 */
 	public static boolean isBlank(final String strValue) {
-		if (strValue == null) {
-			return true;
-		}
-		return strValue.isBlank();
+		return strValue == null
+				? true
+				: strValue.isBlank();
 	}
 
 	/**
