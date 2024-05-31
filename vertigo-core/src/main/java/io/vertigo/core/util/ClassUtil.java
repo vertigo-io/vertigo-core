@@ -99,7 +99,7 @@ public final class ClassUtil {
 		Assertion.check()
 				.isNotNull(constructor)
 				.isNotNull(args);
-		//-----
+		//---
 		try {
 			return constructor.newInstance(args);
 		} catch (final InvocationTargetException e) {
@@ -111,12 +111,12 @@ public final class ClassUtil {
 		}
 	}
 
- 	/**
- 	 * Retrieves the no-arg constructor for the given class.
- 	 * 
- 	 * @param clazz The class to find the constructor for
- 	 * @return The no-arg constructor for the class
- 	 */
+	/**
+	 * Retrieves the no-arg constructor for the given class.
+	 * 
+	 * @param clazz The class to find the constructor for
+	 * @return The no-arg constructor for the class
+	 */
 	private static <J> Constructor<J> findConstructor(final Class<J> clazz) {
 		return findConstructor(clazz, EMPTY_CLAZZ_ARRAY);
 	}
@@ -132,7 +132,7 @@ public final class ClassUtil {
 		Assertion.check()
 				.isNotNull(clazz)
 				.isNotNull(parameterTypes);
-		//-----
+		//---
 		try {
 			return clazz.getConstructor(parameterTypes);
 		} catch (final NoSuchMethodException e) {
@@ -153,7 +153,7 @@ public final class ClassUtil {
 	public static Class<?> classForName(final String javaClassName) {
 		Assertion.check()
 				.isNotBlank(javaClassName);
-		//-----
+		//---
 		try {
 			return Class.forName(javaClassName);
 		} catch (final ClassNotFoundException e) {
@@ -173,7 +173,7 @@ public final class ClassUtil {
 		Assertion.check()
 				.isNotNull(javaClassName)
 				.isNotNull(type);
-		//-----
+		//---
 		try {
 			return Class.forName(javaClassName).asSubclass(type);
 		} catch (final ClassNotFoundException e) {
@@ -197,7 +197,7 @@ public final class ClassUtil {
 		Assertion.check()
 				.isNotNull(instance)
 				.isNotNull(method);
-		//-----
+		//---
 		try {
 			return method.invoke(instance, args);
 		} catch (final IllegalAccessException e) {
@@ -218,7 +218,7 @@ public final class ClassUtil {
 		Assertion.check()
 				.isNotNull(instance)
 				.isNotNull(field);
-		//-----
+		//---
 		try {
 			field.setAccessible(true);
 			field.set(instance, value);
@@ -238,7 +238,7 @@ public final class ClassUtil {
 		Assertion.check()
 				.isNotNull(instance)
 				.isNotNull(field);
-		//-----
+		//---
 		try {
 			field.setAccessible(true);
 			return field.get(instance);
@@ -259,7 +259,7 @@ public final class ClassUtil {
 				.isNotNull(clazz)
 				.isNotNull(methodName)
 				.isNotNull(parameterTypes);
-		//-----
+		//---
 		try {
 			return clazz.getMethod(methodName, parameterTypes);
 		} catch (final NoSuchMethodException e) {
@@ -277,7 +277,7 @@ public final class ClassUtil {
 		Assertion.check()
 				.isNotNull(clazz)
 				.isNotNull(annotation);
-		//-----
+		//---
 		return ClassUtil.getAllFields(clazz)
 				.stream()
 				.filter(field -> field.isAnnotationPresent(annotation))
@@ -294,7 +294,7 @@ public final class ClassUtil {
 		Assertion.check()
 				.isNotNull(clazz)
 				.isNotNull(annotation);
-		//-----
+		//---
 		return ClassUtil.getAllMethods(clazz)
 				.stream()
 				.filter(method -> method.isAnnotationPresent(annotation))
@@ -309,7 +309,7 @@ public final class ClassUtil {
 	public static Collection<Field> getAllFields(final Class<?> clazz) {
 		Assertion.check()
 				.isNotNull(clazz);
-		//-----
+		//---
 		final List<Field> fields = new ArrayList<>();
 		final Field[] declaredFields = clazz.getDeclaredFields();
 		fields.addAll(Arrays.asList(declaredFields));
@@ -328,7 +328,7 @@ public final class ClassUtil {
 	public static Collection<Method> getAllMethods(final Class<?> clazz) {
 		Assertion.check()
 				.isNotNull(clazz);
-		//-----
+		//---
 		final List<Method> methods = new ArrayList<>();
 		final Method[] declaredMethods = clazz.getDeclaredMethods();
 		methods.addAll(Arrays.asList(declaredMethods));
@@ -347,7 +347,7 @@ public final class ClassUtil {
 	public static Set<Class<?>> getAllInterfaces(final Class<?> clazz) {
 		Assertion.check()
 				.isNotNull(clazz);
-		//-----
+		//---
 		Class<?> root = clazz;
 		final Set<Class<?>> allInterfaces = new HashSet<>();
 		while (root != null) {
@@ -375,7 +375,7 @@ public final class ClassUtil {
 	public static Class<?> getGeneric(final Constructor<?> constructor, final int i) {
 		Assertion.check()
 				.isNotNull(constructor);
-		//-----
+		//---
 		return getGeneric(
 				constructor.getGenericParameterTypes()[i],
 				() -> new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur le constructeur " + constructor));
@@ -394,7 +394,7 @@ public final class ClassUtil {
 	public static Class<?> getGeneric(final Method method, final int i) {
 		Assertion.check()
 				.isNotNull(method);
-		//-----
+		//---
 		return getGeneric(
 				method.getGenericParameterTypes()[i],
 				() -> new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur la methode " + method.getDeclaringClass() + "." + method.getName()));
@@ -412,7 +412,7 @@ public final class ClassUtil {
 	public static Class<?> getGeneric(final Field field) {
 		Assertion.check()
 				.isNotNull(field);
-		//-----
+		//---
 		return getGeneric(field.getGenericType(),
 				() -> new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur le champ " + field.getName()));
 	}
@@ -424,7 +424,7 @@ public final class ClassUtil {
 	 * @param exceptionSupplier
 	 * @return first Generic of this class
 	 */
-	public static Class<?> getGeneric(
+	private static Class<?> getGeneric(
 			final Type type,
 			final Supplier<RuntimeException> exceptionSupplier) {
 		Assertion.check()
@@ -444,28 +444,5 @@ public final class ClassUtil {
 
 		}
 		throw exceptionSupplier.get();
-	}
-
-	/**
-	 * Détermine le nom de la propriété associée à un getteur.
-	 * @param method Méthode du getteur
-	 * @return Nom de la propriété associée
-	 */
-	public static String getPropertyName(final Method method) {
-		Assertion.check()
-				.isNotNull(method);
-		//-----
-		final String property;
-		if (method.getName().startsWith("get")) {
-			property = method.getName().substring("get".length());
-		} else if (method.getName().startsWith("is")) {
-			Assertion.check()
-					.isTrue(Boolean.class.equals(method.getReturnType()) || boolean.class.equals(method.getReturnType()), "une méthode is concerne un boolean : {0}", method);
-			property = method.getName().substring("is".length());
-		} else {
-			throw new IllegalArgumentException("Method " + method + " must start with 'get' or 'is' to be considered as a property");
-		}
-		//On abaisse la première lettre
-		return StringUtil.first2LowerCase(property);
 	}
 }
