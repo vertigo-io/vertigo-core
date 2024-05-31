@@ -17,16 +17,18 @@
  */
 package io.vertigo.core.util;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -64,18 +66,10 @@ public final class FileUtil {
 		Assertion.check().isNotNull(url);
 		//---
 		try {
-			try (final BufferedReader reader = new BufferedReader(
-					new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
-				final StringBuilder buff = new StringBuilder();
-				String line = reader.readLine();
-				while (line != null) {
-					buff.append(line);
-					line = reader.readLine();
-					buff.append("\r\n");
-				}
-				return buff.toString();
-			}
-		} catch (final IOException e) {
+			Path path = Paths.get(url.toURI());
+			List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+			return String.join("\r\n", lines);
+		} catch (final IOException | URISyntaxException e) {
 			throw WrappedException.wrap(e, "Error when reading file : '{0}'", url);
 		}
 	}
@@ -87,13 +81,7 @@ public final class FileUtil {
 	 * @throws IOException Erreur d'entrée/sortie
 	 */
 	public static void copy(final InputStream in, final OutputStream out) throws IOException {
-		final int bufferSize = 10 * 1024;
-		final byte[] bytes = new byte[bufferSize];
-		int read = in.read(bytes);
-		while (read != -1) {
-			out.write(bytes, 0, read);
-			read = in.read(bytes);
-		}
+		in.transferTo(out);
 	}
 
 	/**
@@ -103,9 +91,7 @@ public final class FileUtil {
 	 * @throws IOException Erreur d'entrée/sortie
 	 */
 	public static void copy(final InputStream in, final File file) throws IOException {
-		try (final OutputStream out = new BufferedOutputStream(Files.newOutputStream(file.toPath()))) {
-			FileUtil.copy(in, out);
-		}
+		Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
 	}
 
 	/**
