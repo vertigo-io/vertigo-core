@@ -109,8 +109,7 @@ public final class TraceSpanBuilder implements Builder<TraceSpan> {
 	 * @return this builder
 	 */
 	public TraceSpanBuilder withMeasure(final String name, final double value) {
-		Assertion.check()
-				.isNotNull(name, "measure name is required");
+		Assertion.check().isNotNull(name, "measure name is required");
 		//---
 		measures.put(name, value);
 		return this;

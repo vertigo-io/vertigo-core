@@ -38,8 +38,8 @@ import org.yaml.snakeyaml.constructor.Constructor;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
-import io.vertigo.core.lang.Selector;
-import io.vertigo.core.lang.Selector.MethodConditions;
+import io.vertigo.core.lang.ClassSelector;
+import io.vertigo.core.lang.ClassSelector.MethodConditions;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.component.ComponentInitializer;
 import io.vertigo.core.node.component.Plugin;
@@ -189,7 +189,7 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 			// more complexe module with flags and flipped features
 			if (isEnabledByFlag(yamlModuleConfig.__flags__)) {
 				final Features moduleConfigByFeatures = ClassUtil.newInstance(featuresClassName, Features.class);
-				final Map<String, Method> featureMethods = Selector
+				final Map<String, Method> featureMethods = ClassSelector
 						.from(moduleConfigByFeatures.getClass())
 						.filterMethods(MethodConditions.annotatedWith(Feature.class))
 						.findMethods()

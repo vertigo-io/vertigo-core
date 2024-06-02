@@ -52,7 +52,7 @@ import javassist.Modifier;
  *
  * @author mlaroche
  */
-public final class Selector {
+public final class ClassSelector {
 	private static final Predicate ALWAYS_TRUE = o -> true;
 	private final Set<Class> classes;
 
@@ -60,7 +60,7 @@ public final class Selector {
 	private Predicate<Class> classPredicates = ALWAYS_TRUE;
 	private Predicate<Field> fieldPredicates = ALWAYS_TRUE;
 
-	private Selector(final Set<Class> classes) {
+	private ClassSelector(final Set<Class> classes) {
 		Assertion.check().isNotNull(classes);
 		//---
 		this.classes = classes;
@@ -72,10 +72,10 @@ public final class Selector {
 	 * @param classes a supplier of classes
 	 * @return the selector
 	 */
-	public static Selector from(final Collection<Class> classes) {
+	public static ClassSelector from(final Collection<Class> classes) {
 		Assertion.check().isNotNull(classes);
 		//---
-		return new Selector(new HashSet(classes));
+		return new ClassSelector(new HashSet(classes));
 	}
 
 	/**
@@ -84,7 +84,7 @@ public final class Selector {
 	 * @param clazz the class to add
 	 * @return the selector
 	 */
-	public static Selector from(final Class clazz) {
+	public static ClassSelector from(final Class clazz) {
 		Assertion.check().isNotNull(clazz);
 		//---
 		return from(Set.of(clazz));
@@ -96,7 +96,7 @@ public final class Selector {
 	 * @param packageName the root package
 	 * @return the selector
 	 */
-	public static Selector from(final String packageName) {
+	public static ClassSelector from(final String packageName) {
 		Assertion.check().isNotBlank(packageName);
 		// ---
 		final Scanner allScanner = new TypeElementsScanner().includeAnnotations(false).includeFields(false).includeMethods(false);
@@ -117,7 +117,7 @@ public final class Selector {
 	 * @param fieldPredicate the predicate
 	 * @return the selector
 	 */
-	public Selector filterFields(final Predicate<Field> fieldPredicate) {
+	public ClassSelector filterFields(final Predicate<Field> fieldPredicate) {
 		Assertion.check().isNotNull(fieldPredicate);
 		// ---
 		fieldPredicates = fieldPredicates.and(fieldPredicate);
@@ -129,7 +129,7 @@ public final class Selector {
 	 * @param methodPredicate the predicate
 	 * @return the selector
 	 */
-	public Selector filterMethods(final Predicate<Method> methodPredicate) {
+	public ClassSelector filterMethods(final Predicate<Method> methodPredicate) {
 		Assertion.check().isNotNull(methodPredicate);
 		// ---
 		methodPredicates = methodPredicates.and(methodPredicate);
@@ -141,7 +141,7 @@ public final class Selector {
 	 * @param classPredicate the predicate
 	 * @return the selector
 	 */
-	public Selector filterClasses(final Predicate<Class> classPredicate) {
+	public ClassSelector filterClasses(final Predicate<Class> classPredicate) {
 		Assertion.check().isNotNull(classPredicate);
 		// ---
 		classPredicates = classPredicates.and(classPredicate);

@@ -25,11 +25,11 @@ import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.lang.Selector;
+import io.vertigo.core.lang.ClassSelector;
 import io.vertigo.core.lang.Tuple;
-import io.vertigo.core.lang.Selector.ClassConditions;
-import io.vertigo.core.lang.Selector.FieldConditions;
-import io.vertigo.core.lang.Selector.MethodConditions;
+import io.vertigo.core.lang.ClassSelector.ClassConditions;
+import io.vertigo.core.lang.ClassSelector.FieldConditions;
+import io.vertigo.core.lang.ClassSelector.MethodConditions;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.core.util.data.ARandomAnnotation;
 import io.vertigo.core.util.data.SA;
@@ -42,7 +42,7 @@ import io.vertigo.core.util.data.SC;
  * Junit test of the Selector Class.
  * @author mlaroche
  */
-public final class SelectorTest {
+public final class ClassSelectorTest {
 
 	private static final String TEST_CLASSES_PACKAGE = "io.vertigo.core.util.data";
 
@@ -51,7 +51,7 @@ public final class SelectorTest {
 	//-----
 	@Test
 	public void testFromOneClass() {
-		Assertions.assertEquals(1, Selector
+		Assertions.assertEquals(1, ClassSelector
 				.from(SA.class)
 				.findClasses().size());
 	}
@@ -59,14 +59,14 @@ public final class SelectorTest {
 	@Test
 	public void testFromClasses() {
 		final Set<Class> classes = Set.of(SA.class, SB.class);
-		Assertions.assertEquals(2, Selector
+		Assertions.assertEquals(2, ClassSelector
 				.from(classes)
 				.findClasses().size());
 	}
 
 	@Test
 	public void testFromPackages() {
-		final Collection<Class> result = Selector
+		final Collection<Class> result = ClassSelector
 				.from(TEST_CLASSES_PACKAGE)
 				.findClasses();
 		// ---
@@ -78,7 +78,7 @@ public final class SelectorTest {
 	//-----
 	@Test
 	public void testFilterByClassAnnotation() {
-		final Collection<Class> result = Selector
+		final Collection<Class> result = ClassSelector
 				.from(TEST_CLASSES_PACKAGE)
 				.filterClasses(ClassConditions.annotatedWith(ARandomAnnotation.class))
 				.findClasses();
@@ -89,7 +89,7 @@ public final class SelectorTest {
 	@Test
 	public void testFilterAbstract() {
 		final Set<Class> classes = Set.of(SAbstractD.class, SA.class, SB.class, SC.class);
-		Assertions.assertEquals(1, Selector
+		Assertions.assertEquals(1, ClassSelector
 				.from(classes)
 				.filterClasses(ClassConditions.isAbstract())
 				.findClasses().size());
@@ -97,7 +97,7 @@ public final class SelectorTest {
 
 	@Test
 	public void testFilterBySubtype() {
-		final Collection<Class> result = Selector
+		final Collection<Class> result = ClassSelector
 				.from(TEST_CLASSES_PACKAGE)
 				.filterClasses(ClassConditions.subTypeOf(Component.class))
 				.findClasses();
@@ -107,7 +107,7 @@ public final class SelectorTest {
 
 	@Test
 	public void testFilterByMethodAnnotation() {
-		final Collection<Tuple<Class, Method>> result = Selector
+		final Collection<Tuple<Class, Method>> result = ClassSelector
 				.from(TEST_CLASSES_PACKAGE)
 				.filterMethods(MethodConditions.annotatedWith(SAnnotationA.class))
 				.findMethods();
@@ -117,7 +117,7 @@ public final class SelectorTest {
 
 	@Test
 	public void testFilterByInterface() {
-		final Collection<Class> result = Selector
+		final Collection<Class> result = ClassSelector
 				.from(TEST_CLASSES_PACKAGE)
 				.filterClasses(ClassConditions.interfaces())
 				.findClasses();
@@ -127,7 +127,7 @@ public final class SelectorTest {
 
 	@Test
 	public void testFindFields() {
-		final Collection<Tuple<Class, Field>> result = Selector
+		final Collection<Tuple<Class, Field>> result = ClassSelector
 				.from(SC.class)
 				.findFields();
 		// ---
@@ -136,7 +136,7 @@ public final class SelectorTest {
 
 	@Test
 	public void testFindFieldsAnnotation() {
-		final Collection<Tuple<Class, Field>> result = Selector
+		final Collection<Tuple<Class, Field>> result = ClassSelector
 				.from(SC.class)
 				.filterFields(FieldConditions.annotatedWith(SAnnotationA.class))
 				.findFields();
@@ -149,7 +149,7 @@ public final class SelectorTest {
 	//-----
 	@Test
 	public void testOr() {
-		final Collection<Class> result = Selector
+		final Collection<Class> result = ClassSelector
 				.from(TEST_CLASSES_PACKAGE)
 				.filterClasses(ClassConditions.annotatedWith(ARandomAnnotation.class)
 						.or(ClassConditions.subTypeOf(SB.class)))
@@ -160,7 +160,7 @@ public final class SelectorTest {
 
 	@Test
 	public void testAnd() {
-		final Collection<Class> result = Selector
+		final Collection<Class> result = ClassSelector
 				.from(TEST_CLASSES_PACKAGE)
 				.filterClasses(ClassConditions.annotatedWith(ARandomAnnotation.class))
 				.filterClasses(ClassConditions.subTypeOf(Component.class))
@@ -171,7 +171,7 @@ public final class SelectorTest {
 
 	@Test
 	public void testNot() {
-		final Collection<Class> result = Selector
+		final Collection<Class> result = ClassSelector
 				.from(TEST_CLASSES_PACKAGE)
 				.filterClasses(ClassConditions.interfaces().negate())
 				.findClasses();
