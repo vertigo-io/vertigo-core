@@ -37,15 +37,11 @@ public final class AggregatorAmplifierMethod implements AmplifierMethod {
 		final Stream<Integer> stream = Arrays.stream(args)
 				.map(arg -> Integer.class.cast(arg));
 
-		switch (aggregatorAnnotation.operation()) {
-			case max:
-				return stream.max(Integer::compare).orElse(null);
-			case min:
-				return stream.min(Integer::compare).orElse(null);
-			case count:
-				return stream.count();
-			default:
-				throw new IllegalStateException();
-		}
+		return switch (aggregatorAnnotation.operation()) {
+			case max -> stream.max(Integer::compare).orElse(null);
+			case min -> stream.min(Integer::compare).orElse(null);
+			case count -> stream.count();
+			default -> throw new IllegalStateException();
+		};
 	}
 }
