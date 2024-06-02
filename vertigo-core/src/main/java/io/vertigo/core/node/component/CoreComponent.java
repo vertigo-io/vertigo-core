@@ -64,6 +64,5 @@ package io.vertigo.core.node.component;
  *  
  * @author pchretien
  */
-public interface CoreComponent {
-	//
+public sealed interface CoreComponent permits Component, Plugin, Connector, Amplifier {
 }

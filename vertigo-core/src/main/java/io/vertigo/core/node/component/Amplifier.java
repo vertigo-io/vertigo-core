@@ -31,6 +31,6 @@ package io.vertigo.core.node.component;
  * The amplifier tanslates the particular request (defined in a anotation) in a java code.      
  * @author pchretien
  */
-public interface Amplifier extends CoreComponent {
+public non-sealed interface Amplifier extends CoreComponent {
 	//
 }

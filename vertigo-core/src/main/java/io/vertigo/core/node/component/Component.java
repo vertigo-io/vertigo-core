@@ -26,6 +26,6 @@ package io.vertigo.core.node.component;
  * 
  * @author pchretien
  */
-public interface Component extends CoreComponent {
+public non-sealed interface Component extends CoreComponent {
 	// 
 }
