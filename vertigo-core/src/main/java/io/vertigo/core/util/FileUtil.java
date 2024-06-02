@@ -20,7 +20,6 @@ package io.vertigo.core.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -66,22 +65,12 @@ public final class FileUtil {
 		Assertion.check().isNotNull(url);
 		//---
 		try {
-			Path path = Paths.get(url.toURI());
-			List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+			final Path path = Paths.get(url.toURI());
+			final List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
 			return String.join("\r\n", lines);
 		} catch (final IOException | URISyntaxException e) {
 			throw WrappedException.wrap(e, "Error when reading file : '{0}'", url);
 		}
-	}
-
-	/**
-	 * Copie le contenu d'un flux d'entrée vers un flux de sortie.
-	 * @param in flux d'entrée
-	 * @param out flux de sortie
-	 * @throws IOException Erreur d'entrée/sortie
-	 */
-	public static void copy(final InputStream in, final OutputStream out) throws IOException {
-		in.transferTo(out);
 	}
 
 	/**
