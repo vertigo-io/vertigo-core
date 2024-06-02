@@ -151,14 +151,10 @@ final class DateQueryParserUtil {
 	}
 
 	private static int buildSign(final String dateExpression, final char operator) {
-		final int sign;
-		if ('+' == operator) {
-			sign = 1;
-		} else if ('-' == operator) {
-			sign = -1;
-		} else {
-			throw new VSystemException("a valid operator (+ or -) is expected :'{0}' on {1}", operator, dateExpression);
-		}
-		return sign;
+		return switch (operator) {
+			case '+' -> 1;
+			case '-' -> -1;
+			default -> throw new VSystemException("a valid operator (+ or -) is expected :'{0}' on {1}", operator, dateExpression);
+		};
 	}
 }
