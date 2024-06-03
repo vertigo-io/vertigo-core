@@ -245,11 +245,10 @@ public final class LocaleManagerImpl implements LocaleManager {
 	/** {@inheritDoc} */
 	@Override
 	public ZoneId getCurrentZoneId() {
-		if (zoneSupplier != null && zoneSupplier.get() != null) {
-			return zoneSupplier.get();
-		}
-		//If there is no user, we can pick the default zone.
-		return defaultZoneId;
+		return (zoneSupplier != null && zoneSupplier.get() != null)
+				? zoneSupplier.get()
+				//If there is no user, we can pick the default zone.
+				: defaultZoneId;
 	}
 
 	/** {@inheritDoc} */

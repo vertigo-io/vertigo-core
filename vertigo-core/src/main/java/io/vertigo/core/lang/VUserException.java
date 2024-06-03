@@ -51,7 +51,7 @@ public class VUserException extends RuntimeException {
 	 * @param params  list of params (optional)
 	 */
 	public VUserException(final String defaultMsg, final Serializable... params) {
-		this((LocaleMessageText.of(defaultMsg, params)));
+		this(LocaleMessageText.of(defaultMsg, params));
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class VUserException extends RuntimeException {
 	 * @param params  list of params (optional)
 	 */
 	public VUserException(final LocaleMessageKey key, final Serializable... params) {
-		this((LocaleMessageText.of(key, params)));
+		this(LocaleMessageText.of(key, params));
 	}
 
 	/**
