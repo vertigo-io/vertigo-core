@@ -28,15 +28,15 @@ import java.io.InputStream;
  */
 public interface DataStream {
 	default byte[] getBytes() {
-		try (final InputStream inputStream = createInputStream()) {
-			try (final ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
-				int nRead;
-				final byte[] data = new byte[16384];
-				while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
-					buffer.write(data, 0, nRead);
-				}
-				return buffer.toByteArray();
+		try (
+				final InputStream inputStream = createInputStream();
+				final ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
+			int nRead;
+			final byte[] data = new byte[16384];
+			while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+				buffer.write(data, 0, nRead);
 			}
+			return buffer.toByteArray();
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}

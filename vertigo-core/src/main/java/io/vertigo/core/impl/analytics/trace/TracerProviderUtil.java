@@ -51,7 +51,7 @@ public final class TracerProviderUtil {
 	}
 
 	public static <O> O traceWithReturn(final String category, final String name, final Function<Tracer, O> function, final Consumer<TraceSpan> onCloseConsumer) {
-		try (TracerImpl tracer = createTracer(category, name, onCloseConsumer)) {
+		try (final TracerImpl tracer = createTracer(category, name, onCloseConsumer)) {
 			try {
 				final O result = function.apply(tracer);
 				tracer.markAsSucceeded();
