@@ -30,7 +30,7 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
 
 /**
- * Méthodes utilitaires pour manipuler les propriétés (getter/setter) des JavaBeans (ie tous les types d'objets).
+ * Utility methods for manipulating JavaBean properties (getter/setter) for all types of objects.
  */
 public final class BeanUtil {
 	private static final int BEAN_INFOS_MAX_SIZE = 250;
@@ -40,16 +40,18 @@ public final class BeanUtil {
 	 * Constructor.
 	 */
 	private BeanUtil() {
-		//constructor is private
+		// Private constructor to prevent instantiation
 	}
 
 	/**
-	 * Retourne la valeur d'une propriété d'un bean
-	 * (ex : "name" -> object.getName() ou "country.name" -> object.getCountry().getName()).
-	 * @return java.lang.Object
-	 * @param object java.lang.Object
-	 * @param propertyName java.lang.String
-	 */
+	* Returns the value of a bean property (e.g., "name" -> object.getName()).
+	* Dot notation is not allowed (e.g., "country.name").
+	*
+	* @param object the object containing the property
+	* @param propertyName the name of the property
+	* @return the value of the property
+	* @throws VSystemException if the getter method is not found
+	*/
 	public static Object getValue(final Object object, final String propertyName) {
 		Assertion.check()
 				.isNotNull(object)
@@ -59,17 +61,19 @@ public final class BeanUtil {
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method readMethod = pd.getReadMethod();
 		if (readMethod == null) {
-			throw new VSystemException("no getter found for property '{0}' on class '{1}'", propertyName, object.getClass().getName());
+			throw new VSystemException("No getter found for property '{0}' on class '{1}'", propertyName, object.getClass().getName());
 		}
 		return ClassUtil.invoke(object, readMethod);
 	}
 
 	/**
-	 * Définit la valeur d'une propriété d'un bean
-	 * (ex : "name" -> object.setName(value) ou "country.name" -> object.getCountry().setName(value)).
-	 * @param object java.lang.Object
-	 * @param propertyName java.lang.String
-	 * @param value java.lang.Object
+	 * Sets the value of a bean property (e.g., "name" -> object.setName(value)).
+	 * Dot notation is not allowed (e.g., "country.name").
+	 *
+	 * @param object the object containing the property
+	 * @param propertyName the name of the property
+	 * @param value the new value of the property
+	 * @throws VSystemException if the setter method is not found
 	 */
 	public static void setValue(final Object object, final String propertyName, final Object value) {
 		Assertion.check()
@@ -80,17 +84,19 @@ public final class BeanUtil {
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method writeMethod = pd.getWriteMethod();
 		if (writeMethod == null) {
-			throw new VSystemException("no setter found for property '{0}' on class '{1}'", propertyName, object.getClass().getName());
+			throw new VSystemException("No setter found for property '{0}' on class '{1}'", propertyName, object.getClass().getName());
 		}
 		ClassUtil.invoke(object, writeMethod, value);
 	}
 
 	/**
-	 * Retourne le beanInfo d'une classe à partir du cache.
-	 * @return java.beans.BeanInfo
-	 * @param beanClass java.lang.Class
-	 * @throws java.beans.IntrospectionException   Erreur dans l'introspection
-	 */
+	* Returns the BeanInfo of a class from the cache.
+	* If not present in the cache, it introspects the class and caches the result.
+	*
+	* @param beanClass the class to introspect
+	* @return the BeanInfo of the class
+	* @throws IntrospectionException if an error occurs during introspection
+	*/
 	private static BeanInfo getBeanInfo(final Class<?> beanClass) throws IntrospectionException {
 		BeanInfo beanInfo = BEAN_INFOS.get(beanClass);
 		if (beanInfo == null) {
@@ -106,15 +112,14 @@ public final class BeanUtil {
 	}
 
 	/**
-	 * Retourne le PropertyDescriptor d'une propriété.
-	 * @return java.beans.PropertyDescriptor
-	 * @param propertyName java.lang.String
-	 * @param beanClass java.lang.Class
+	 * Returns the PropertyDescriptor of a property.
+	 *
+	 * @param propertyName the name of the property
+	 * @param beanClass the class containing the property
+	 * @return the PropertyDescriptor of the property
+	 * @throws VSystemException if no property descriptor is found
 	 */
 	public static PropertyDescriptor getPropertyDescriptor(final String propertyName, final Class<?> beanClass) {
-		// on pourrait faire new PropertyDescriptor(propertyName, beanClass)
-		// mais si jamais il a été défini des BeanInfo pour certaines classes,
-		//autant les utiliser.
 		final PropertyDescriptor[] descriptors = getPropertyDescriptors(beanClass);
 		for (final PropertyDescriptor propertyDescriptor : descriptors) {
 			if (propertyName.equals(propertyDescriptor.getName())) {
@@ -124,11 +129,18 @@ public final class BeanUtil {
 		throw new VSystemException("No method found for property '{0}' on class '{1}'", propertyName, beanClass.getName());
 	}
 
+	/**
+	* Returns an array of PropertyDescriptors for a given class.
+	*
+	* @param beanClass the class to introspect
+	* @return an array of PropertyDescriptors
+	* @throws WrappedException if an error occurs during introspection
+	*/
 	private static PropertyDescriptor[] getPropertyDescriptors(final Class<?> beanClass) {
 		try {
 			return getBeanInfo(beanClass).getPropertyDescriptors();
 		} catch (final IntrospectionException e) {
-			throw WrappedException.wrap(e, "Erreur d'introspection des propriétés sur la classe {0}", beanClass);
+			throw WrappedException.wrap(e, "Error introspecting properties on class {0}", beanClass);
 		}
 	}
 }
