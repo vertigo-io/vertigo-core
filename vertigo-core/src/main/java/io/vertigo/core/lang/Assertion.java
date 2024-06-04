@@ -179,6 +179,7 @@ public final class Assertion {
 	 */
 	public Assertion isNotBlank(final String str, final String msg, final Object... params) {
 		isNotNull(str, msg, params);
+		//---
 		if (StringUtil.isBlank(str)) {
 			throw new IllegalArgumentException(StringUtil.format(msg, params));
 		}

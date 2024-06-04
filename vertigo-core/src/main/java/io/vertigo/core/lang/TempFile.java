@@ -27,9 +27,7 @@ import java.nio.file.Paths;
  * Fichier temporaire supprimé automatiquement après utilisation.
  * @author npiedeloup
  */
-public final class TempFile extends File {
-
-	private static final long serialVersionUID = 1947509935178818002L;
+public final class TempFile {
 	/**
 	 * Vertigo Temp directory path.
 	 */
@@ -45,26 +43,28 @@ public final class TempFile extends File {
 	}
 
 	/**
-	 * Crée un fichier temporaire.
-	 * @param prefix Prefix du nom de fichier
-	 * @param suffix Suffix du nom de fichier
-	 * @param subDirectory Sous-répertoire des fichiers temporaires (null = répertoire temporaire de vertigo = ${java.io.tmpdir}/vertigo/tempFiles)
-	 * @throws IOException Exception IO
-	 */
-	public TempFile(final String prefix, final String suffix, final String subDirectory) throws IOException {
-		super(Files.createTempFile(Files.createDirectories(VERTIGO_TMP_DIR_PATH.resolve(subDirectory)), prefix, suffix).toAbsolutePath().toString());
-		deleteOnExit();
+		 * Crée un fichier temporaire.
+		 * @param prefix Prefix du nom de fichier
+		 * @param suffix Suffix du nom de fichier
+		 * @param subDirectory Sous-répertoire des fichiers temporaires (null = répertoire temporaire de vertigo = ${java.io.tmpdir}/vertigo/tempFiles)
+		 * @throws IOException Exception IO
+		 */
+	public static File of(final String prefix, final String suffix, final String subDirectory) throws IOException {
+		final File file = new File(Files.createTempFile(Files.createDirectories(VERTIGO_TMP_DIR_PATH.resolve(subDirectory)), prefix, suffix).toAbsolutePath().toString());
+		file.deleteOnExit();
+		return file;
 	}
 
 	/**
-	 * Crée un fichier temporaire.
-	 * @param prefix Prefix du nom de fichier
-	 * @param suffix Suffix du nom de fichier
-	 * @throws IOException Exception IO
-	 */
-	public TempFile(final String prefix, final String suffix) throws IOException {
-		super(Files.createTempFile(Files.createDirectories(VERTIGO_TMP_DIR_PATH), prefix, suffix).toAbsolutePath().toString());
-		deleteOnExit();
+		 * Crée un fichier temporaire.
+		 * @param prefix Prefix du nom de fichier
+		 * @param suffix Suffix du nom de fichier
+		 * @throws IOException Exception IO
+		 */
+	public static File of(final String prefix, final String suffix) throws IOException {
+		final File file = new File(Files.createTempFile(Files.createDirectories(VERTIGO_TMP_DIR_PATH), prefix, suffix).toAbsolutePath().toString());
+		file.deleteOnExit();
+		return file;
 	}
 
 	/**
