@@ -50,7 +50,7 @@ public final class UTCDateUtil {
 	 * @param date Date to format
 	 * @return Utc date string
 	 */
-	public static String format(final Date date) {
+	public static String formatISO8601(final Date date) {
 		//Use INPUT_DATE_FORMATS[0] => ISO8601 format
 		return createDateFormat(INPUT_DATE_FORMATS[0], isTruncatedDate(date)).format(date);
 	}
@@ -60,7 +60,7 @@ public final class UTCDateUtil {
 	 * @param instant instant to format
 	 * @return Utc string
 	 */
-	public static String formatInstant(final Instant instant) {
+	public static String formatInstantISO8601(final Instant instant) {
 		//Use INPUT_DATE_FORMATS[0] => ISO8601 format
 		return DateTimeFormatter.ofPattern(INPUT_DATE_FORMATS[0]).withZone(ZoneId.of("UTC")).format(instant);
 	}
