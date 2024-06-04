@@ -52,10 +52,10 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * Création d'une nouvelle instance non typée via un nom de classe (constructeur vide).
-	 * Veuillez privilégier les méthodes retournat une instance typé dés que le type est connu.
-	 * @param javaClassName Nom de la classe
-	 * @return Nouvelle instance
+	 * Creates a new untyped instance via class name (empty constructor).
+	 * Please favor methods returning a typed instance as soon as the type is known.
+	 * @param javaClassName Class name
+	 * @return New instance
 	 */
 	public static Object newInstance(final String javaClassName) {
 		final Class<?> javaClass = classForName(javaClassName);
@@ -63,12 +63,12 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * Création d'une nouvelle instance typée via un nom de classe (constructeur vide).
+	 * Creates a new typed instance via class name (empty constructor).
 	 *
-	 * @param <J> Type de l'instance retournée
-	 * @param javaClassName Nom de la classe
-	 * @param  type Type retourné
-	 * @return Nouvelle instance
+	 * @param <J> Type of the returned instance
+	 * @param javaClassName Class name
+	 * @param type Returned type
+	 * @return New instance
 	 */
 	public static <J> J newInstance(final String javaClassName, final Class<J> type) {
 		final Class<? extends J> javaClass = classForName(javaClassName, type);
@@ -76,11 +76,11 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * Création d'une nouvelle instance typée via une classe (constructeur vide).
+	 * Creates a new typed instance via a class (empty constructor).
 	 *
-	 * @param <J> Type de l'instance retournée
-	 * @param clazz Classe
-	 * @return Nouvelle instance
+	 * @param <J> Type of the returned instance
+	 * @param clazz Class
+	 * @return New instance
 	 */
 	public static <J> J newInstance(final Class<J> clazz) {
 		final Constructor<? extends J> constructor = findConstructor(clazz);
@@ -88,12 +88,12 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * Création d'une nouvelle instance typée via un constructeur et ses arguments.
+	 * Creates a new typed instance via a constructor and its arguments.
 	 *
-	 * @param <J> Type de l'instance retournée
-	 * @param constructor Constructeur
-	 * @param args Arguments de la construction
-	 * @return Nouvelle instance
+	 * @param <J> Type of the returned instance
+	 * @param constructor Constructor
+	 * @param args Construction arguments
+	 * @return New instance
 	 */
 	public static <J> J newInstance(final Constructor<J> constructor, final Object[] args) {
 		Assertion.check()
@@ -107,7 +107,7 @@ public final class ClassUtil {
 		} catch (final java.lang.IllegalAccessException e) {
 			throw WrappedException.wrap(e, "The constructor on class {0} is not accessible", constructor.getDeclaringClass());
 		} catch (final Exception e) {
-			throw WrappedException.wrap(e, "Unable to instanciate the class {0}", constructor.getDeclaringClass());
+			throw WrappedException.wrap(e, "Unable to instantiate the class {0}", constructor.getDeclaringClass());
 		}
 	}
 
@@ -122,11 +122,11 @@ public final class ClassUtil {
 	}
 
 	/**
-	* Récupère le constructeur correspondant à la signature indiquée.
+	* Retrieves the constructor corresponding to the given signature.
 	* @param <J> Class type
-	* @param clazz Classe sur laquelle on recherche le constructeur
-	* @param parameterTypes Signature du constructeur recherché
-	* @return Constructeur recherché
+	* @param clazz Class to search for the constructor
+	* @param parameterTypes Signature of the searched constructor
+	* @return Searched constructor
 	*/
 	public static <J> Constructor<J> findConstructor(final Class<J> clazz, final Class<?>[] parameterTypes) {
 		Assertion.check()
@@ -137,18 +137,18 @@ public final class ClassUtil {
 			return clazz.getConstructor(parameterTypes);
 		} catch (final NoSuchMethodException e) {
 			if (parameterTypes.length == 0) {
-				//Dans le cas des constructeur vide (sans paramètre), on lance un message plus simple.
-				throw WrappedException.wrap(e, "Aucun constructeur vide trouvé sur {0}", clazz.getSimpleName());
+				// For empty constructors (no parameters), we throw a simpler message.
+				throw WrappedException.wrap(e, "No empty constructor found on {0}", clazz.getSimpleName());
 			}
-			throw WrappedException.wrap(e, "Aucun constructeur trouvé sur {0} avec la signature {1}", clazz.getSimpleName(), Arrays.toString(parameterTypes));
+			throw WrappedException.wrap(e, "No constructor found on {0} with signature {1}", clazz.getSimpleName(), Arrays.toString(parameterTypes));
 		}
 	}
 
 	/**
-	 * Récupération d'une classe non typée à partir de son nom.
+	 * Retrieves an untyped class from its name.
 	 *
-	 * @param javaClassName Nom de la classe
-	 * @return Classe java
+	 * @param javaClassName Class name
+	 * @return Java class
 	 */
 	public static Class<?> classForName(final String javaClassName) {
 		Assertion.check()
@@ -157,17 +157,17 @@ public final class ClassUtil {
 		try {
 			return Class.forName(javaClassName);
 		} catch (final ClassNotFoundException e) {
-			throw WrappedException.wrap(e, "Impossible de trouver la classe : {0}", javaClassName);
+			throw WrappedException.wrap(e, "Unable to find the class : {0}", javaClassName);
 		}
 	}
 
 	/**
-	 * Récupération d'une classe typée à partir de son nom.
+	 * Retrieves a typed class from its name.
 	 *
-	 * @param <J> Type de l'instance retournée
-	 * @param javaClassName Nom de la classe
+	 * @param <J> Type of the returned instance
+	 * @param javaClassName Class name
 	 * @param type Type.
-	 * @return Classe java
+	 * @return Java class
 	 */
 	public static <J> Class<? extends J> classForName(final String javaClassName, final Class<J> type) {
 		Assertion.check()
@@ -177,11 +177,11 @@ public final class ClassUtil {
 		try {
 			return Class.forName(javaClassName).asSubclass(type);
 		} catch (final ClassNotFoundException e) {
-			throw WrappedException.wrap(e, "Impossible de trouver la classe : '{0}'", javaClassName);
+			throw WrappedException.wrap(e, "Unable to find the class : '{0}'", javaClassName);
 		} catch (final NoClassDefFoundError e) {
-			throw WrappedException.wrap(e, "Impossible de charger une des classes dépendante de : '{0}'", javaClassName);
+			throw WrappedException.wrap(e, "Unable to load one of the dependent classes of : '{0}'", javaClassName);
 		} catch (final ClassCastException e) {
-			throw WrappedException.wrap(e, "La classe {0} doit être une sous-class de : {1}", javaClassName, type.getSimpleName());
+			throw WrappedException.wrap(e, "Class {0} must be a subclass of : {1}", javaClassName, type.getSimpleName());
 		}
 	}
 
@@ -189,7 +189,7 @@ public final class ClassUtil {
 	 * Dynamic invocation of a method on a specific instance.
 	 *
 	 * @param instance Object
-	 * @param method method which is invocated
+	 * @param method method which is invoked
 	 * @param args Args
 	 * @return value provided as the result by the method
 	 */
@@ -201,18 +201,18 @@ public final class ClassUtil {
 		try {
 			return method.invoke(instance, args);
 		} catch (final IllegalAccessException e) {
-			throw WrappedException.wrap(e, "accès impossible à la méthode : {0} de {1}", method.getName(), method.getDeclaringClass().getName());
+			throw WrappedException.wrap(e, "Impossible access to method : {0} of {1}", method.getName(), method.getDeclaringClass().getName());
 		} catch (final InvocationTargetException e) {
-			throw WrappedException.wrap(e, "Erreur lors de l'appel de la méthode : {0} de {1}", method.getName(), method.getDeclaringClass().getName());
+			throw WrappedException.wrap(e, "Error while invoking method : {0} of {1}", method.getName(), method.getDeclaringClass().getName());
 		}
 	}
 
 	/**
-	 * Affectation dynamique de la valeur d'un champ (méme privé).
+	 * Dynamic assignment of a field's value (even private).
 	 *
-	 * @param instance Objet sur lequel est invoqué la méthode
-	 * @param field Champ concerné
-	 * @param value Nouvelle valeur
+	 * @param instance Object on which the method is invoked
+	 * @param field Field concerned
+	 * @param value New value
 	 */
 	public static void set(final Object instance, final Field field, final Object value) {
 		Assertion.check()
@@ -223,16 +223,16 @@ public final class ClassUtil {
 			field.setAccessible(true);
 			field.set(instance, value);
 		} catch (final IllegalAccessException e) {
-			throw WrappedException.wrap(e, "accès impossible au champ : {0} de {1}", field.getName(), field.getDeclaringClass().getName());
+			throw WrappedException.wrap(e, "Impossible access to field : {0} of {1}", field.getName(), field.getDeclaringClass().getName());
 		}
 	}
 
 	/**
-	 * Récupération dynamique de la valeur d'un champ.
+	 * Dynamic retrieval of a field's value.
 	 *
-	 * @param instance Objet sur lequel est invoqué la méthode
-	 * @param field Champ concerné
-	 * @return Valeur
+	 * @param instance Object on which the method is invoked
+	 * @param field Concerned field
+	 * @return Value
 	 */
 	public static Object get(final Object instance, final Field field) {
 		Assertion.check()
@@ -243,16 +243,16 @@ public final class ClassUtil {
 			field.setAccessible(true);
 			return field.get(instance);
 		} catch (final IllegalAccessException e) {
-			throw WrappedException.wrap(e, "accès impossible au champ : {0} de {1}", field.getName(), field.getDeclaringClass().getName());
+			throw WrappedException.wrap(e, "Access to field '{0}' of '{1}' is not possible", field.getName(), field.getDeclaringClass().getName());
 		}
 	}
 
 	/**
-	 * Récupère la méthode correspondant au nom et à la signature indiquée parmi les méthodes passées.
-	 * @param clazz Classe sur laquelle on recherche les méthodes
-	 * @param methodName Nom de la méthode recherchée
-	 * @param parameterTypes Signature de la méthode recherchée
-	 * @return Méthode recherchée
+	 * Retrieves the method corresponding to the name and signature among the passed methods.
+	 * @param clazz Class on which we are searching for methods
+	 * @param methodName Name of the searched method
+	 * @param parameterTypes Signature of the searched method
+	 * @return Searched method
 	 */
 	public static Method findMethod(final Class<?> clazz, final String methodName, final Class<?>... parameterTypes) {
 		Assertion.check()
@@ -263,15 +263,15 @@ public final class ClassUtil {
 		try {
 			return clazz.getMethod(methodName, parameterTypes);
 		} catch (final NoSuchMethodException e) {
-			throw WrappedException.wrap(e, "Méthode {0} non trouvée sur {1}", methodName, clazz.getName());
+			throw WrappedException.wrap(e, "Method '{0}' not found on '{1}'", methodName, clazz.getName());
 		}
 	}
 
 	/**
-	 * Retourne tous les champs déclarés (incluant les champs parents) et annotés pour une classe donnée.
+	 * Returns all declared fields (including parent fields) annotated for a given class.
 	 * @param clazz Class
-	 * @param annotation Annotation attendue
-	 * @return Tous les champs déclarés (incluant les champs parents)
+	 * @param annotation Expected annotation
+	 * @return All declared fields (including parent fields)
 	 */
 	public static Collection<Field> getAllFields(final Class<?> clazz, final Class<? extends Annotation> annotation) {
 		Assertion.check()
@@ -285,10 +285,10 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * Retourne toutes les méthodes déclarées et annotées par la dite annotation.
+	 * Returns all declared methods annotated by the given annotation.
 	 * @param clazz Class
-	 * @param annotation Annotation attendue
-	 * @return Tous les champs déclarés (incluant les champs parents)
+	 * @param annotation Expected annotation
+	 * @return All declared fields (including parent fields)
 	 */
 	public static Collection<Method> getAllMethods(final Class<?> clazz, final Class<? extends Annotation> annotation) {
 		Assertion.check()
@@ -302,9 +302,9 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * Retourne tous les champs déclarés (incluant les champs parents) pour une classe donnée.
+	 * Returns all declared fields (including parent fields) for a given class.
 	 * @param clazz Class
-	 * @return Tous les champs déclarés (incluant les champs parents)
+	 * @return All declared fields (including parent fields)
 	 */
 	public static Collection<Field> getAllFields(final Class<?> clazz) {
 		Assertion.check()
@@ -321,9 +321,9 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * Retourne toutes les méthodes déclarées pour une classe donnée (incluant les méthodes des parents).
+	 * Returns all declared methods for a given class (including parent methods).
 	 * @param clazz Class
-	 * @return Toutes les méthodes déclarées (incluant les méthodes des parents)
+	 * @return All declared methods (including parent methods)
 	 */
 	public static Collection<Method> getAllMethods(final Class<?> clazz) {
 		Assertion.check()
@@ -340,9 +340,9 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * Retourne toutes les interfaces (incluant celles des parents) pour une classe donnée.
+	 * Returns all interfaces (including those of the parents) for a given class.
 	 * @param clazz Class
-	 * @return Toutes les interfaces implémentées
+	 * @return All implemented interfaces
 	 */
 	public static Set<Class<?>> getAllInterfaces(final Class<?> clazz) {
 		Assertion.check()
@@ -363,14 +363,14 @@ public final class ClassUtil {
 	}
 
 	/**
-	 * Récupération du type générique d'un champ paramétré.
-	 * Il convient qu'il y ait UN et un seul générique déclaré.
-	 * exemple  :
-	 * List<Voiture> => Voiture
-	 * Option<Voiture> => Voiture
-	 * @param constructor constructeur
-	 * @param i Index du paramètre dans le composant
-	 * @return Classe du type générique
+	 * Retrieves the generic type of a parameterized field.
+	 * It is expected that there is ONE and only ONE declared generic.
+	 * Example:
+	 * List<Car> => Car
+	 * Option<Car> => Car
+	 * @param constructor Constructor
+	 * @param i Index of the parameter in the component
+	 * @return Class of the generic type
 	 */
 	public static Class<?> getGeneric(final Constructor<?> constructor, final int i) {
 		Assertion.check()
@@ -378,18 +378,18 @@ public final class ClassUtil {
 		//---
 		return getGeneric(
 				constructor.getGenericParameterTypes()[i],
-				() -> new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur le constructeur " + constructor));
+				() -> new UnsupportedOperationException("Generic type detection could not be performed on constructor " + constructor));
 	}
 
 	/**
-	 * Récupération du type générique d'un champ paramétré.
-	 * Il convient qu'il y ait UN et un seul générique déclaré.
-	 * exemple  :
-	 * List<Voiture> => Voiture
-	 * Option<Voiture> => Voiture
-	 * @param method method
-	 * @param i Index du paramètre dans le composant
-	 * @return Classe du type générique
+	 * Retrieves the generic type of a parameterized method.
+	 * It is expected that there is ONE and only ONE declared generic.
+	 * Example:
+	 * List<Car> => Car
+	 * Option<Car> => Car
+	 * @param method Method
+	 * @param i Index of the parameter in the component
+	 * @return Class of the generic type
 	 */
 	public static Class<?> getGeneric(final Method method, final int i) {
 		Assertion.check()
@@ -397,32 +397,32 @@ public final class ClassUtil {
 		//---
 		return getGeneric(
 				method.getGenericParameterTypes()[i],
-				() -> new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur la methode " + method.getDeclaringClass() + "." + method.getName()));
+				() -> new UnsupportedOperationException("Generic type detection could not be performed on method " + method.getDeclaringClass() + "." + method.getName()));
 	}
 
 	/**
-	 * Récupération du type générique d'un champ paramétré.
-	 * Il convient qu'il y ait UN et un seul générique déclaré.
-	 * exemple  :
-	 * List<Voiture> => Voiture
-	 * Option<Voiture> => Voiture
-	 * @param field Champ
-	 * @return Classe du type générique
+	 * Retrieves the generic type of a parameterized field.
+	 * It is expected that there is ONE and only ONE declared generic.
+	 * Example:
+	 * List<Car> => Car
+	 * Option<Car> => Car
+	 * @param field Field
+	 * @return Class of the generic type
 	 */
 	public static Class<?> getGeneric(final Field field) {
 		Assertion.check()
 				.isNotNull(field);
 		//---
 		return getGeneric(field.getGenericType(),
-				() -> new UnsupportedOperationException("La détection du générique n'a pas pu être effectuée sur le champ " + field.getName()));
+				() -> new UnsupportedOperationException("Generic type detection could not be performed on field " + field.getName()));
 	}
 
 	/**
 	 * Finds the generic type.
-	 * Ex : List<Car> ==> Car
-	 * @param type the
-	 * @param exceptionSupplier
-	 * @return first Generic of this class
+	 * Ex: List<Car> ==> Car
+	 * @param type Type
+	 * @param exceptionSupplier Supplier for the exception
+	 * @return The first generic of this class
 	 */
 	private static Class<?> getGeneric(
 			final Type type,
@@ -433,15 +433,14 @@ public final class ClassUtil {
 		//---
 		if (type instanceof final ParameterizedType parameterizedType) {
 			Assertion.check()
-					.isTrue(parameterizedType.getActualTypeArguments().length == 1, "Il doit y avoir 1 et 1 seul générique déclaré");
+					.isTrue(parameterizedType.getActualTypeArguments().length == 1, "There must be exactly one declared generic");
 			final Type optionType = parameterizedType.getActualTypeArguments()[0];
 			if (optionType instanceof Class) {
 				return (Class<?>) optionType;
 			} else if (optionType instanceof ParameterizedType) {
-				//Cas ou le type paramétré est lui même paramétré
+				// Case where the parameterized type is itself parameterized
 				return (Class<?>) ((ParameterizedType) optionType).getRawType();
 			}
-
 		}
 		throw exceptionSupplier.get();
 	}
