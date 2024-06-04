@@ -64,7 +64,7 @@ public final class TempFile {
 	}
 
 	private static File of(final String prefix, final String suffix, final Path path) throws IOException {
-		final File file = new File(Files.createTempFile(path, prefix, suffix).toAbsolutePath().toString());
+		final File file = Files.createTempFile(path, prefix, suffix).toFile();
 		file.deleteOnExit();
 		return file;
 	}
