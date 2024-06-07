@@ -192,7 +192,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 			Assertion.check().isNotNull(value);
 			final String oldValue = getDictionary(locale).put(key, value);
 			if (!override) {
-				Assertion.check().isNull(oldValue, "Valeur deja renseignée pour{0}", key);
+				Assertion.check().isNull(oldValue, "Valeur deja renseignée pour {0}", key);
 			}
 		}
 	}
