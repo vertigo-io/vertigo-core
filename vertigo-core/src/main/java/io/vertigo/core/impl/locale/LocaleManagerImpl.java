@@ -46,51 +46,53 @@ import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.StringUtil;
 
 /**
+ * This class manages locales and provides localization services.
+ *
  * @author pchretien
  */
 public final class LocaleManagerImpl implements LocaleManager {
 	private static final Logger LOG = LogManager.getLogger(LocaleManagerImpl.class);
 
 	/**
-	 * Set des clés non trouvées pour ne pas les reloguer.
-	 * On synchronise car il s'agit d'une ressource partagée modifiées par tous les threads.
+	 * Set of keys not found to avoid logging them again.
+	 * It is synchronized because it is a shared resource modified by all threads.
 	 */
 	private final Set<String> notFoundKeys = Collections.synchronizedSet(new HashSet<String>());
 
-	//Bundle pour la locale par défaut.
+	//Bundle for the default locale.
 	private final Map<Locale, Map<String, String>> dictionaries = new HashMap<>();
 
-	/** liste des locales gérées. */
+	/** list of managed locales. */
 	private final List<Locale> locales;
 
-	/** Zone par défaut. */
+	/** Default zone. */
 	private final ZoneId defaultZoneId;
 
 	/**
-	 * Stratégie de choix de la langue.
-	 * Si pas de stratégie ou pas de langue trouvée alors langue par défaut = première langue déclarée.
+	 * Locale selection strategy.
+	 * If no strategy or no locale found then default locale = first declared locale.
 	 */
 	private Supplier<Locale> localeSupplier;
 
 	/**
-	 * Stratégie de choix de la zone.
-	 * Si pas de stratégie ou pas de zone trouvée alors zone par défaut.
+	 * Zone selection strategy.
+	 * If no strategy or no zone found then default zone.
 	 */
 	private Supplier<ZoneId> zoneSupplier;
 
 	/**
 	 * Constructor.
-	 * Les exceptions sont toujours externalisées.
-	 * Les libellés de champs ne le sont pas.
-	 * La première Locale est celle utilisée si il n'y a aucun utilisateur déclaré (cas des batchs).
-	 * On précise la liste des locales sous la forme d'une chaine de caractères
-	 * exemples :
+	 * Exceptions are always thrown.
+	 * Field labels are not localized.
+	 * The first Locale is used if no user is declared (batch cases).
+	 * You must specify the list of locales as a string
+	 * examples :
 	 * Locale.french : 'fr'
 	 * Locale.FRANCE + Locale.us : 'fr_FR,us'
-	 * Une locale est définie par une langue{_Pays{_Variante}}
+	 * A locale is defined by a language{_Country{_Variant}}
 	 *
-	 * @param locales Liste des locales gérées par l'application.
-	 * @param defaultZoneId ZoneId par défaut utilisée par l'application.
+	 * @param locales List of locales managed by the application.
+	 * @param defaultZoneId Default ZoneId used by the application.
 	 */
 	@Inject
 	public LocaleManagerImpl(@ParamValue("locales") final String locales, @ParamValue("defaultZoneId") final Optional<String> defaultZoneId) {
@@ -103,7 +105,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 		//-----
 		Assertion.check()
 				.isNotNull(this.locales)
-				.isFalse(this.locales.isEmpty(), "Il faut au moins déclarer une locale");
+				.isFalse(this.locales.isEmpty(), "At least one locale must be declared");
 		//-----
 		for (final Locale locale : this.locales) {
 			dictionaries.put(locale, new HashMap<>());
@@ -120,7 +122,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 		return Stream.of(locales.split(","))
 				.map(locale -> {
 					final String[] loc = locale.trim().split("_");
-					Assertion.check().isTrue(loc.length > 0, "Locale specifiée vide");
+					Assertion.check().isTrue(loc.length > 0, "Empty locale specified");
 					final String country = loc.length > 1 ? loc[1] : "";
 					final String variant = loc.length > 2 ? loc[2] : "";
 					return new Locale(loc[0], country, variant);
@@ -163,25 +165,25 @@ public final class LocaleManagerImpl implements LocaleManager {
 
 	private void add(final String baseName, final LocaleMessageKey[] enums, final boolean override) {
 		for (final Locale locale : locales) {
-			//Pour chaque locale gérée on charge le dictionnaire correspondant
+			//For each managed locale, we load the corresponding dictionary
 			final ResourceBundle resourceBundle;
 			try {
 				resourceBundle = ResourceBundle.getBundle(baseName, locale);
 			} catch (final MissingResourceException e) {
 				if (override) {
-					//Si on est en mode override on autorise des chargements partiels de dictionnaire
+					//If we are in override mode, we allow partial loading of dictionaries
 					continue;
 				}
-				throw WrappedException.wrap(e, "le dictionnaire pour la locale '{0}' n'est pas renseigné", locale);
+				throw WrappedException.wrap(e, "The dictionary for the locale '{0}' is not set", locale);
 			}
-			//On a trouvé un dictionnaire
+			//We found a dictionary
 			check(resourceBundle, enums, override);
 			load(locale, resourceBundle, override);
 		}
 	}
 
 	private Map<String, String> getDictionary(final Locale locale) {
-		Assertion.check().isTrue(dictionaries.containsKey(locale), "La locale {0} n'est pas gérée", locale);
+		Assertion.check().isTrue(dictionaries.containsKey(locale), "The locale {0} is not managed", locale);
 		//---
 		return dictionaries.get(locale);
 	}
@@ -192,33 +194,33 @@ public final class LocaleManagerImpl implements LocaleManager {
 			Assertion.check().isNotNull(value);
 			final String oldValue = getDictionary(locale).put(key, value);
 			if (!override) {
-				Assertion.check().isNull(oldValue, "Valeur deja renseignée pour {0}", key);
+				Assertion.check().isNull(oldValue, "Value already set for {0}", key);
 			}
 		}
 	}
 
 	private void check(final ResourceBundle resourceBundle, final LocaleMessageKey[] enums, final boolean override) {
 		//============================================
-		//==On vérifie que les listes sont complètes==
+		//==We check that the lists are complete==
 		//============================================
 		final List<String> resourcesKeys = Arrays.stream(enums)
 				.map(LocaleMessageKey::name)
 				.toList();
 
-		//1- Toutes les clés du fichier properties sont dans l'enum des resources
+		//1- All keys from the properties file are in the enum of resources
 		for (final String key : Collections.list(resourceBundle.getKeys())) {
 			if (!StringUtil.isBlank(key) && !resourcesKeys.contains(key)) {
 				throw new IllegalStateException(
-						"Une clé du fichier properties (bundle '" + resourceBundle.getBaseBundleName() + "', locale '" + resourceBundle.getLocale() + "') est inconnue : '" + key + "'");
+						"A key from the properties file (bundle '" + resourceBundle.getBaseBundleName() + "', locale '" + resourceBundle.getLocale() + "') is unknown : '" + key + "'");
 			}
 		}
 
-		//2- Toutes les clés de l'enum sont dans le fichier properties
+		//2- All keys from the enum are in the properties file
 		if (!override) {
 			for (final String resourceKey : resourcesKeys) {
 				if (!resourceBundle.containsKey(resourceKey)) {
 					onResourceNotFound(resourceKey);
-					throw new IllegalStateException("Une ressource n'est pas déclarée dans le fichier properties : " + resourceKey);
+					throw new IllegalStateException("A resource is not declared in the properties file : " + resourceKey);
 				}
 			}
 		}
@@ -233,9 +235,9 @@ public final class LocaleManagerImpl implements LocaleManager {
 				.isNotNull(locale);
 		//-----
 		final String msg = getDictionary(locale).get(messageKey.name());
-		//Cas anormal :  où la ressource n'est pas présente.
+		//Abnormal case: where the resource is not present.
 		if (msg == null) {
-			//Cas anormal :  où la ressource n'est pas présente.
+			//Abnormal case: where the resource is not present.
 			onResourceNotFound(messageKey.name());
 			return null;
 		}
@@ -270,26 +272,26 @@ public final class LocaleManagerImpl implements LocaleManager {
 
 	private void onResourceNotFound(final String key) {
 		if (!notFoundKeys.contains(key)) {
-			//	Si la ressource n'est pas présente alors
-			//  - on loggue le fait que la ressource n'a pas été trouvée
-			//  - on stocke la clé pour éviter de reloguer
-			//et on continue les traitements
+			//	If the resource is not present then
+			//  - we log that the resource was not found
+			//  - we store the key to avoid relogging
+			//and we continue the processing
 			logResourceNotFound(key, locales.size() > 1);
 			notFoundKeys.add(key);
 		}
 	}
 
 	/**
-	 * Evènement remonté lorsqu'une ressource externalisée n'est pas trouvée.
+	 * Event raised when an externalized resource is not found.
 	 *
-	 * @param resource Nom de la ressource externalisée non trouvée
-	 * @param isMultiLocales Si appli multilingue
+	 * @param resource Name of the externalized resource not found
+	 * @param isMultiLocales If multilingual application
 	 */
 	private static void logResourceNotFound(final String resource, final boolean isMultiLocales) {
 		if (isMultiLocales) {
-			LOG.warn("Resource {} non trouvée", resource);
+			LOG.warn("Resource {} not found", resource);
 		} else {
-			LOG.info("Resource {} non trouvée", resource);
+			LOG.info("Resource {} not found", resource);
 		}
 	}
 }

@@ -18,11 +18,10 @@
 package io.vertigo.core.analytics.metric;
 
 import java.time.Instant;
-
 import io.vertigo.core.lang.Assertion;
 
 /**
- * Metric.
+ * A Metric represents a measurement or observation at a specific point in time.
  *
  * @author mlaroche, pchretien
  */
@@ -31,16 +30,35 @@ public record Metric(
 		String name,
 		String module, // may be null for now
 		String feature,
-		Double value, //migth be null
+		Double value, // might be null
 		Status status) {
 
+	/**
+	 * The status of a metric can be either SUCCESS or ERROR.
+	 */
 	public enum Status {
-		/** Exécution OK*/
+		/**
+		 * The status is a success.
+		 * example : a mail successfully sent
+		 */
 		SUCCESS,
-		/** Erreur lors de l'exécution*/
+		/**
+		 * The status is an error.
+		 * example : a mail failed to be sent
+		 */
 		ERROR
 	}
 
+	/**
+	 * Constructor for Metric.
+	 *
+	 * @param measureInstant The instant at which the metric was measured.
+	 * @param name The name of the metric.
+	 * @param module The module associated with the metric. May be null.
+	 * @param feature The feature associated with the metric.
+	 * @param value The value of the metric. May be null.
+	 * @param status The status of the metric.
+	 */
 	public Metric {
 		Assertion.check()
 				.isNotNull(measureInstant)
@@ -50,8 +68,9 @@ public record Metric(
 	}
 
 	/**
-	 * Static method factory for ReportMetricBuilder
-	 * @return ReportMetricBuilder
+	 * Static method factory for creating a MetricBuilder.
+	 *
+	 * @return A new MetricBuilder instance.
 	 */
 	public static MetricBuilder builder() {
 		return new MetricBuilder();

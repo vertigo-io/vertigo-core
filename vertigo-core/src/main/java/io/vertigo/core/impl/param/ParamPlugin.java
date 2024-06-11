@@ -23,16 +23,16 @@ import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.param.Param;
 
 /**
- * Interface d'un plugin de gestion de configuration applicative.
- * Toutes les configuration sont gérées sous forme de String.
+ * Interface for an application configuration management plugin.
+ * All configurations are managed as Strings.
  * @author prahmoune
  */
 public interface ParamPlugin extends Plugin {
-	/**
-	 * Retourne un paramètre de configuration.
-	 * Retourne none si le paramètre n'est pas géré.
-	 * @param paramName Param's name
-	 * @return Value of the param
-	 */
+    /**
+     * Returns a configuration parameter.
+     * Returns none if the parameter is not managed.
+     * @param paramName Name of the parameter
+     * @return Value of the parameter
+     */
 	Optional<Param> getParam(String paramName);
 }
