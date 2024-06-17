@@ -47,15 +47,10 @@
 		<repository>
 			<id>ossrh</id>
 			<name>OSSRH Releases</name>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<url>https://oss.sonatype.org.nope/service/local/staging/deploy/maven2/</url>
 		</repository>
 		<!-- snapshotRepository> <id>ossrh</id> <name>OSSRH Snapshot</name> <url>https://oss.sonatype.org/content/repositories/snapshots/</url> 
 			</snapshotRepository -->
-		<snapshotRepository>
-			<id>klee-nexus</id>
-			<name>KleeGoup nexus Snapshots</name>
-			<url>http://kleegroup-nexus:8080/nexus/content/repositories/snapshots/</url>
-		</snapshotRepository>
 	</distributionManagement>
 
 	<properties>
@@ -196,26 +191,6 @@
 	</build>
 	<profiles>
 		<profile>
-			<id>release-snapshot</id>
-			<build>
-				<plugins>
-					<plugin><!--Config pour déployer les sources -->
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<version>3.3.0</version>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
 			<id>release</id>
 			<activation>
 				<property>
@@ -310,7 +285,29 @@
 					<name>KleeGoup nexus Releases Candidate</name>
 					<url>http://kleegroup-nexus:8080/nexus/content/repositories/releases/</url>
 				</repository>
+				<snapshotRepository>
+					<id>klee-nexus</id>
+					<name>KleeGoup nexus Snapshots</name>
+					<url>http://kleegroup-nexus:8080/nexus/content/repositories/snapshots/</url>
+				</snapshotRepository>
 			</distributionManagement>
+			<build>
+				<plugins>
+					<plugin><!--Config pour déployer les sources -->
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>3.3.0</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 </project>
