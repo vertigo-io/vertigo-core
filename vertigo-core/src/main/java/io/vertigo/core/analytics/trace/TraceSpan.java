@@ -28,26 +28,26 @@ import io.vertigo.core.lang.Assertion;
  * A trace is composed of spans
  * A trace is trIggered by an app
  *
- *	A span contains
- *	 - when : start, end, duration
- *	 - what : name, category
- *	 - data : measures, tags
- *   - a list of child spans
+ * A span contains
+ * - when : start, end, duration
+ * - what : name, category
+ * - data : measures, tags
+ * - a list of child spans
  *
- * 	[when]
+ * [when]
  * - start timestamp
- * - end   timestamp
+ * - end timestamp
  *
- *	[what]
+ * [what]
  * - category (examples : sql, tasks)
  * - name (examples : /create/movies)
  *
- * 	[data]
+ * [data]
  * - measures
  * - tags
  * - metadatas
  *
- *  [span hierarchy]
+ * [span hierarchy]
  * - list of child spans (0..*)
  *
  * @author pchretien, npiedeloup
@@ -57,7 +57,7 @@ public final class TraceSpan {
 	/**
 	 * REGEX used to define rules on category, measures and tags.
 	 */
-	private static final Pattern CATEGORY_REGEX = Pattern.compile("[a-z]+");
+	private static final Pattern CATEGORY_REGEX = Pattern.compile("[a-z][a-z0-9]*");
 	private static final Pattern MEASURE_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
 	private static final Pattern TAG_REGEX = Pattern.compile("[a-zA-Z][a-zA-Z0-9_-]+");
 
@@ -76,8 +76,9 @@ public final class TraceSpan {
 
 	/**
 	 * Constructor.
+	 *
 	 * @param category the category
-	 * @param name  the name
+	 * @param name the name
 	 * @param start the start instant
 	 * @param end the end instant
 	 * @param measures the measures
@@ -151,6 +152,7 @@ public final class TraceSpan {
 
 	/**
 	 * [what]
+	 *
 	 * @return the name
 	 */
 	public String getName() {
@@ -173,6 +175,7 @@ public final class TraceSpan {
 
 	/**
 	 * [when]
+	 *
 	 * @return the span start timestamp in Millis
 	 */
 	public long getStart() {
@@ -181,6 +184,7 @@ public final class TraceSpan {
 
 	/**
 	 * [when]
+	 *
 	 * @return the span end timestamp in Millis
 	 */
 	public long getEnd() {
