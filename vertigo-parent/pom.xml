@@ -32,7 +32,12 @@
 		<developer>
 			<id>mlaroche</id>
 			<name>Matthieu Laroche</name>
-			<email>matthieu dot laroche at kleegroup dot com</email>
+			<email>matthieu dot laroche at ovomnia dot io</email>
+		</developer>
+		<developer>
+			<id>skerdudou</id>
+			<name>Steven Kerdudou</name>
+			<email>steven dot kerdudou at kleegroup dot com</email>
 		</developer>
 	</developers>
 
@@ -64,13 +69,13 @@
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.10.0</version>
+			<version>5.10.3</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.10.0</version>
+			<version>5.10.3</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
