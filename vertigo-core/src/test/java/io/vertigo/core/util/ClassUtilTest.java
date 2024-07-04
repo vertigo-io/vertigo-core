@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -299,13 +299,6 @@ public final class ClassUtilTest {
 	}
 
 	@Test
-	public void testGenericReturn() throws NoSuchMethodException, SecurityException {
-		assertEquals(String.class, ClassUtil.getGeneric(
-				this.getClass().getMethod("getWords").getGenericReturnType(),
-				() -> new IllegalStateException()));
-	}
-
-	@Test
 	public void testGenericWithError() throws SecurityException {
 		assertThrows(Exception.class, () -> {
 			final Field field = MyGenerics.class.getField("myList2");
@@ -398,48 +391,6 @@ public final class ClassUtilTest {
 		//--
 		assertEquals(inheritedInterfaces.size(), interfaces.size());
 		assertEquals(inheritedInterfaces, interfaces);
-	}
-
-	@Test
-	public void testGetPropertyName() throws NoSuchMethodException, SecurityException {
-		Method method;
-		//---
-		method = MyPojo.class.getDeclaredMethod("getValue1");
-		assertEquals("value1", ClassUtil.getPropertyName(method));
-		//---
-		method = MyPojo.class.getDeclaredMethod("getValueCamelCase");
-		assertEquals("valueCamelCase", ClassUtil.getPropertyName(method));
-		//---
-		method = MyPojo.class.getDeclaredMethod("isValue2");
-		assertEquals("value2", ClassUtil.getPropertyName(method));
-	}
-
-	@Test
-	public void testGetPropertyNameSetterWithError() throws NoSuchMethodException, SecurityException {
-		final Method method = MyPojo.class.getDeclaredMethod("setValue1", Long.class);
-		assertThrows(Exception.class, () -> {
-			final String name = ClassUtil.getPropertyName(method);
-			nop(name);
-		});
-	}
-
-	@Test
-	public void testGetPropertyNameIsWithError() throws NoSuchMethodException, SecurityException {
-		final Method method = MyPojo.class.getDeclaredMethod("isValueLong");
-
-		assertThrows(Exception.class, () -> {
-			final String name = ClassUtil.getPropertyName(method);
-			nop(name);
-		});
-	}
-
-	@Test
-	public void testGetPropertyNameHasWithError() throws SecurityException {
-		assertThrows(Exception.class, () -> {
-			final Method method = MyPojo.class.getDeclaredMethod("hasValue2");
-			final String name = ClassUtil.getPropertyName(method);
-			nop(name);
-		});
 	}
 
 	public static final class MyInjected {

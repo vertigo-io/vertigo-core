@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,46 +22,47 @@ import java.util.Optional;
 import io.vertigo.core.node.component.Manager;
 
 /**
- * Interface du gestionnaire de la configuration applicative.
+ * Manager interface for application configuration.
  *
- * Une configuration possède une liste de paramètres.
- * Un paramètre est
- *  - identifié par un nom.
- *  - camelCase.camelCase et ne contient que des lettres et chiffres; les séparateurs sont des points.
+ * The configuration consists of a list of parameters, each identified by a name.
+ * Parameter names are camelCase and contain only letters and digits, with dots as separators.
  *
- * Les paramètres sont de trois types :
- * -boolean
- * -String
- * -int
+ * The parameters can be of three types:
+ * - boolean
+ * - String
+ * - int
  *
- *
- * Exemple en json :
+ * Example in JSON:
  *
  * {
- *  server.host : "wiki",
- *  server.port : "5455",
- *  maxUsers  :"10",
+ *  "server.host" : "wiki",
+ *  "server.port" : "5455",
+ *  "maxUsers"  :"10"
  * }
  *
+ * Example usage:
  *
- * getStringValue("server.host") => wiki
- * getStringValue("host") => erreur.
+ * getStringValue("server.host") // Returns "wiki"
+ * getStringValue("host") // Throws an error
  *
- * @author pchretien, npiedeloup, prahmoune
+ * @author: pchretien, npiedeloup, prahmoune
+ *
+ * @see Param
  */
 public interface ParamManager extends Manager {
 	/**
-	 * Returns the value for a param, defined by its name.
-	 * @param paramName Name of the param
-	 * @return the value of the param
-	 */
+     * Returns the value for a parameter identified by its name.
+     *
+     * @param paramName the name of the parameter
+     * @return the value of the parameter
+     */
 	Param getParam(String paramName);
 
 	/**
-	 * Returns the optional value for a param which may be present / or not, defined by its name.
-	 *
-	 * @param paramName
-	 * @return the optional value of the param
-	 */
+     * Returns the optional value for a parameter, which may be present or not, identified by its name.
+     *
+     * @param paramName the name of the parameter
+     * @return the optional value of the parameter
+     */
 	Optional<Param> getOptionalParam(String paramName);
 }

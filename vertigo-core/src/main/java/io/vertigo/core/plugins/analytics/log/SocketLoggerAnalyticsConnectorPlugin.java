@@ -19,6 +19,7 @@ package io.vertigo.core.plugins.analytics.log;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -54,6 +55,7 @@ import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.NamedThreadFactory;
 import io.vertigo.core.lang.json.CoreJsonAdapters;
 import io.vertigo.core.node.Node;
 import io.vertigo.core.node.component.Activeable;
@@ -62,7 +64,6 @@ import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.plugins.analytics.log.log4j.AnalyticsSocketAppender;
 import io.vertigo.core.plugins.analytics.log.log4j.AnalyticsSocketAppender.Builder;
-import io.vertigo.core.util.NamedThreadFactory;
 
 /**
  * Processes connector which use the log4j SocketAppender.
@@ -76,8 +77,10 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 	private static final int DEFAULT_CONNECT_TIMEOUT = 250;// 250ms for connection to log4j server
 	private static final int DEFAULT_SOCKET_TIMEOUT = 5000;// 5s for socket to log4j server
 	private static final int DEFAULT_DISCONNECT_TIMEOUT = 5000;// 5s for disconnection to log4j server
-	private static final int DEFAULT_SERVER_PORT = 4563;// DefaultPort of SocketAppender 4650 for log4j and 4562 for log4j2 and 4563 for log4j2json
+	private static final int DEFAULT_SERVER_PORT = 4563;// DefaultPort of SocketAppender 4650 for log4j and 4562 for log4j2 and 4563 for log4j2json-gz
+	private static final int LEGACY_SERVER_PORT = 4562;// LegacyPort 4562 for log4j2
 	private static final int SEND_QUEUE_MAX_SIZE = 10_000;// 10k elements
+	private static final int JSON_TEMPLATE_MAX_STRING_LENGTH_PER_EVENT = 500 * 1024;// max 500Ko per event (* batchSize for true limit)
 
 	private Logger socketProcessLogger;
 	private Logger socketHealthLogger;
@@ -124,7 +127,8 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 			@ParamValue("batchSize") final Optional<Integer> batchSizeOpt,
 			@ParamValue("jsonLayout") final Optional<Boolean> jsonLayoutOpt,
 			@ParamValue("jsonLayoutParam") final Optional<String> jsonLayoutParamOpt,
-			@ParamValue("compressOutputStream") final Optional<Boolean> compressOutputStreamOpt) {
+			@ParamValue("compressOutputStream") final Optional<Boolean> compressOutputStreamOpt,
+			@ParamValue("compressOutputStreamParam") final Optional<String> compressOutputStreamParamOpt) {
 		Assertion.check()
 				.isNotNull(hostNameOpt)
 				.isNotNull(portOpt)
@@ -134,9 +138,12 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 				.isNotNull(envNameParamOpt)
 				.isNotNull(jsonLayoutParamOpt)
 				.isNotNull(jsonLayoutOpt)
+				.isNotNull(compressOutputStreamOpt)
+				.isNotNull(compressOutputStreamParamOpt)
 				.when(hostNameParamOpt.isPresent(), () -> Assertion.check().isTrue(hostNameOpt.isEmpty(), "hostName and hostNameParam are exclusive"))
 				.when(portParamOpt.isPresent(), () -> Assertion.check().isTrue(portOpt.isEmpty(), "port and portParam are exclusive"))
-				.when(jsonLayoutParamOpt.isPresent(), () -> Assertion.check().isTrue(jsonLayoutOpt.isEmpty(), "jsonLayout and jsonLayoutParam are exclusive"));
+				.when(jsonLayoutParamOpt.isPresent(), () -> Assertion.check().isTrue(jsonLayoutOpt.isEmpty(), "jsonLayout and jsonLayoutParam are exclusive"))
+				.when(compressOutputStreamParamOpt.isPresent(), () -> Assertion.check().isTrue(compressOutputStreamOpt.isEmpty(), "compressOutputStream and compressOutputStreamParam are exclusive"));
 
 		// ---
 		appName = Node.getNode().getNodeConfig().appName() + envNameParamOpt.map(paramManager::getParam).map(Param::getValueAsString).map(env -> '-' + env.toLowerCase()).orElse("");
@@ -149,18 +156,31 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		bufferSize = bufferSizeOpt.orElse(50);
 		batchSize = batchSizeOpt.orElse(5);
 		jsonLayout = jsonLayoutOpt.orElseGet(() -> jsonLayoutParamOpt.map(paramManager::getParam).map(Param::getValueAsBoolean).orElse(true));
-		compressOutputStream = compressOutputStreamOpt.orElse(true);
+		compressOutputStream = compressOutputStreamOpt.orElseGet(() -> compressOutputStreamParamOpt.map(paramManager::getParam).map(Param::getValueAsBoolean).orElse(true));
 		Assertion.check()
-				.when(!jsonLayout, () -> Assertion.check().isTrue(port != DEFAULT_SERVER_PORT, "default port " + DEFAULT_SERVER_PORT + " doesn't support serialized logs, change port (may use 4562)"));
+				.when(!jsonLayout, () -> Assertion.check().isTrue(port != DEFAULT_SERVER_PORT && port != DEFAULT_SERVER_PORT + 26000, "default port " + DEFAULT_SERVER_PORT + " (or " + (DEFAULT_SERVER_PORT + 26000) + ") doesn't support serialized logs, change port (may use " + DEFAULT_SERVER_PORT + ")"))
+				.when(port == LEGACY_SERVER_PORT || port == LEGACY_SERVER_PORT + 26000, () -> Assertion.check().isTrue(!jsonLayout && !compressOutputStream, "legacy port " + LEGACY_SERVER_PORT + " (or " + (LEGACY_SERVER_PORT + 26000) + ") doesn't support json nor compressed logs, change port (may use " + DEFAULT_SERVER_PORT + ")"));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void add(final TraceSpan span) {
-		Assertion.check().isNotNull(span);
+		Assertion.check()
+				.isNotNull(span);
 		//---
 		if (!sendQueueFull()) {
 			sendQueue.add(span);
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void add(final Metric metric) {
+		Assertion.check()
+				.isNotNull(metric);
+		//---
+		if (!sendQueueFull()) {
+			sendQueue.add(metric);
 		}
 	}
 
@@ -182,17 +202,6 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 			logErrorEvery10sTime = System.currentTimeMillis();
 		}
 		return isFull;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void add(final Metric metric) {
-		Assertion.check()
-				.isNotNull(metric);
-		//---
-		if (!sendQueueFull()) {
-			sendQueue.add(metric);
-		}
 	}
 
 	/** {@inheritDoc} */
@@ -221,7 +230,9 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 				.setName("socketAnalytics");
 		if (jsonLayout) {
 			appenderBuilder.setLayout(JsonTemplateLayout.newBuilder()
-					.setConfiguration(new DefaultConfiguration()).build());
+					.setConfiguration(new DefaultConfiguration())
+					.setCharset(StandardCharsets.UTF_8)
+					.setMaxStringLength(JSON_TEMPLATE_MAX_STRING_LENGTH_PER_EVENT * batchSize).build());
 		} else {
 			appenderBuilder.setLayout(SerializedLayout.createLayout());
 		}
@@ -249,14 +260,22 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		}
 
 		//we create appender (like a resource it must be close on stop)
-		appender = appenderBuilder.build();
-		appender.start();
-		final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-		final Configuration config = ctx.getConfiguration();
-		config.addAppender(appender);
+		try {
+			appender = appenderBuilder.build();
+			appender.start();
+			final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+			final Configuration config = ctx.getConfiguration();
+			config.addAppender(appender);
 
-		final PoolerTimerTask timerTask = new PoolerTimerTask(this);
-		scheduler.scheduleWithFixedDelay(timerTask, 1, 1, TimeUnit.SECONDS);
+			final PoolerTimerTask timerTask = new PoolerTimerTask(this);
+			scheduler.scheduleWithFixedDelay(timerTask, 1, 1, TimeUnit.SECONDS);
+		} catch (final IllegalStateException e) { //can't connect AnalyticsManager
+			if (devConfig) {
+				LOGGER.info("Unable to connect to analytics server", e);
+			} else {
+				throw e;
+			}
+		}
 	}
 
 	@Override
@@ -305,12 +324,12 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 			while (!sendQueue.isEmpty()) {
 				final Object head = sendQueue.peek();
 				if (head != null) {
-					if (head instanceof TraceSpan) {
-						spanBatch.add((TraceSpan) head);
-					} else if (head instanceof Metric) {
-						metricBatch.add((Metric) head);
-					} else if (head instanceof HealthCheck) {
-						healthCheckBatch.add((HealthCheck) head);
+					if (head instanceof TraceSpan traceSpan) {
+						spanBatch.add(traceSpan);
+					} else if (head instanceof Metric metric) {
+						metricBatch.add(metric);
+					} else if (head instanceof HealthCheck healthCheck) {
+						healthCheckBatch.add(healthCheck);
 					}
 					sendQueue.remove(head);
 					logSendCount.addAndGet(1);
@@ -380,6 +399,9 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 			}
 			final String jsonEvent = GSON.toJson(log);
 			logger.info(jsonEvent);
+			LOGGER.trace(jsonEvent);
+		} else if (!list.isEmpty()) {
+			LOGGER.warn("Inactive logger " + logger.getName());
 		}
 	}
 

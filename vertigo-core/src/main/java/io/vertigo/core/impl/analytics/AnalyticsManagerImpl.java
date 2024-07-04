@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,14 +72,14 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		// here all
 		// we need to unwrap the component to scan the real class and not the enhanced version
-		final AspectPlugin aopPlugin = Node.getNode().getNodeConfig().bootConfig().aspectPlugin();
+		final AspectPlugin aspectPlugin = Node.getNode().getNodeConfig().bootConfig().aspectPlugin();
 		return Node.getNode().getComponentSpace().keySet()
 				.stream()
 				.flatMap(id -> Stream.concat(
 						//health
-						HealthUtil.createHealthCheckDefinitions(id, Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream(),
+						HealthUtil.createHealthCheckDefinitions(id, Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aspectPlugin).stream(),
 						//metrics
-						MetricUtil.createMetricDefinitions(id, Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream()))
+						MetricUtil.createMetricDefinitions(id, Node.getNode().getComponentSpace().resolve(id, CoreComponent.class), aspectPlugin).stream()))
 				.toList();
 	}
 

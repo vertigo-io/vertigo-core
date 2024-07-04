@@ -7,7 +7,7 @@ Running 4.2.0
   
 more to come :)
 
-Release 4.1.0 -2023/11/09
+Release 4.1.0 - 2023/11/09
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-400-to-410)
 * [Core] Prefixed daemon threads with `v-daemon-`

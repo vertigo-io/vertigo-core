@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public class VUserException extends RuntimeException {
 	 * @param params  list of params (optional)
 	 */
 	public VUserException(final String defaultMsg, final Serializable... params) {
-		this((LocaleMessageText.of(defaultMsg, params)));
+		this(LocaleMessageText.of(defaultMsg, params));
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class VUserException extends RuntimeException {
 	 * @param params  list of params (optional)
 	 */
 	public VUserException(final LocaleMessageKey key, final Serializable... params) {
-		this((LocaleMessageText.of(key, params)));
+		this(LocaleMessageText.of(key, params));
 	}
 
 	/**

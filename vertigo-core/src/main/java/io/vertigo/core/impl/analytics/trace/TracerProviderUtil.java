@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,9 @@ import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.analytics.trace.Tracer;
 import io.vertigo.core.lang.Assertion;
 
+/**
+ * Utility class for providing Tracer instances.
+ */
 public final class TracerProviderUtil {
 
 	private TracerProviderUtil() {
@@ -33,11 +36,19 @@ public final class TracerProviderUtil {
 	}
 
 	/**
-	 * Processus binde sur le thread courant. Le processus , recoit les notifications des sondes placees dans le code de
-	 * l'application pendant le traitement d'une requete (thread).
+	 * Process bound to the current thread. The process receives notifications from probes placed in the application code
+	 * during the processing of a request (thread).
 	 */
 	private static final ThreadLocal<Stack<TracerImpl>> THREAD_LOCAL_PROCESS = new ThreadLocal<>();
 
+	/**
+	 * Traces the execution of a block of code.
+	 *
+	 * @param category the category of the trace
+	 * @param name the name of the trace
+	 * @param consumer the block of code to trace
+	 * @param onCloseConsumer the action to perform when the trace is closed
+	 */
 	public static void trace(final String category, final String name, final Consumer<Tracer> consumer, final Consumer<TraceSpan> onCloseConsumer) {
 		try (TracerImpl tracer = createTracer(category, name, onCloseConsumer)) {
 			try {
@@ -50,8 +61,17 @@ public final class TracerProviderUtil {
 		}
 	}
 
+	/**
+	 * Traces the execution of a block of code and returns a result.
+	 *
+	 * @param category the category of the trace
+	 * @param name the name of the trace
+	 * @param function the block of code to trace
+	 * @param onCloseConsumer the action to perform when the trace is closed
+	 * @return the result of the function
+	 */
 	public static <O> O traceWithReturn(final String category, final String name, final Function<Tracer, O> function, final Consumer<TraceSpan> onCloseConsumer) {
-		try (TracerImpl tracer = createTracer(category, name, onCloseConsumer)) {
+		try (final TracerImpl tracer = createTracer(category, name, onCloseConsumer)) {
 			try {
 				final O result = function.apply(tracer);
 				tracer.markAsSucceeded();
@@ -63,6 +83,11 @@ public final class TracerProviderUtil {
 		}
 	}
 
+	/**
+	 * Returns the current Tracer instance, if one exists.
+	 *
+	 * @return an Optional containing the current Tracer, or an empty Optional if none exists
+	 */
 	public static Optional<Tracer> getCurrentTracer() {
 		// When collect feature is enabled
 		return doGetCurrentTracer().map(Function.identity()); // convert impl to api

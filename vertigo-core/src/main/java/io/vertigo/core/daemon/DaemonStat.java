@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,54 +18,69 @@
 package io.vertigo.core.daemon;
 
 /**
- * Some execution stats about registered daemons.
+ * Represents execution statistics about registered daemons.
  *
- * @author pchretien
+ * This interface provides detailed statistics about the execution of registered daemons.
+ * 
+ * @author: pchretien
  */
 public interface DaemonStat {
-
 	/**
-	 * Daemon execution status.
-	 */
+     * Enumeration representing the status of daemon execution.
+     */
 	enum Status {
-		/** Waiting for next execution. */
+		  /** Waiting for the next execution. */
 		pending,
-		/** Running. */
+		 /** Currently running. */
 		running
 	}
 
-	/**
-	 * @return the daemon name
-	 */
+	 /**
+     * Gets the name of the daemon.
+     *
+     * @return the name of the daemon.
+     */
 	String getDaemonName();
 
-	/**
-	 * @return the demon period
-	 */
+	 /**
+     * Gets the period (in seconds) at which the daemon is configured to run.
+     *
+     * @return the period (in seconds) at which the daemon is configured to run.
+     */
 	int getDaemonPeriodInSecond();
 
-	/**
-	 * @return the number of executions since the daemon started
-	 */
+	 /**
+     * Gets the total number of executions since the daemon started.
+     *
+     * @return the total number of executions since the daemon started.
+     */
 	long getCount();
 
-	/**
-	 * @return the number of successes since the daemon started
-	 */
+    /**
+     * Gets the number of successful executions since the daemon started.
+     *
+     * @return the number of successful executions since the daemon started.
+     */
 	long getSuccesses();
 
 	/**
-	 * @return the number of failures since the daemon started
-	 */
+     * Gets the number of failures since the daemon started.
+     *
+     * @return the number of failures since the daemon started.
+     */
 	long getFailures();
 
-	/**
-	 * @return the current status
-	 */
+	 /**
+     * Gets the current status of the daemon execution.
+     *
+     * @return the current status of the daemon execution.
+     */
 	Status getStatus();
 
 	/**
-	 * @return if last exec was a success
-	 */
+     * Checks if the last execution of the daemon was successful.
+     *
+     * @return {@code true} if the last execution was successful, {@code false} otherwise.
+     */
 	boolean isLastExecSuccess();
 }

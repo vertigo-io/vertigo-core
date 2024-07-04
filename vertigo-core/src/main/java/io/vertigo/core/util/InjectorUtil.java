@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,11 @@ public final class InjectorUtil {
 				.isNotNull(clazz)
 				.isFalse(clazz.isAssignableFrom(Activeable.class), " {0} is an Activeable component and must be registred in the NodeConfig for creation at the application startup", clazz);
 		//---
-		return ComponentSpaceLoader.createInstance(clazz, Node.getNode().getComponentSpace(), Optional.empty(), Collections.emptyMap());
+		return ComponentSpaceLoader.createInstance(
+				clazz,
+				Node.getNode().getComponentSpace(),
+				Optional.empty(),
+				Collections.emptyMap());
 	}
 
 	/**
@@ -54,7 +58,11 @@ public final class InjectorUtil {
 		Assertion.check()
 				.isNotNull(instance);
 		//---
-		ComponentSpaceLoader.injectMembers(instance, Node.getNode().getComponentSpace(), Optional.empty(), Collections.emptyMap());
+		ComponentSpaceLoader.injectMembers(
+				instance,
+				Node.getNode().getComponentSpace(),
+				Optional.empty(),
+				Collections.emptyMap());
 	}
 
 }

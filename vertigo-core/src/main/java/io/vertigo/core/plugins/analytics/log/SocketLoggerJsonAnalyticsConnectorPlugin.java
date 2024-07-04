@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -153,10 +153,11 @@ public final class SocketLoggerJsonAnalyticsConnectorPlugin implements Analytics
 		try {
 			final var trutsStoreConfig = trustStoreUrl.isPresent() ? TrustStoreConfiguration.createKeyStoreConfiguration(trustStoreUrl.get(), trustStorePassword.get().toCharArray(), null, null, "PKCS12", KeyManagerFactory
 					.getDefaultAlgorithm()) : null;
-
+			final var jsonLayout = JsonLayout.createDefaultLayout();
+			jsonLayout.getConfiguration().getProperties().put("log4j.layout.jsonTemplate.maxStringLength", "50000");
 			appender = SocketAppender.newBuilder()
 					.setName("socketAnalytics")
-					.setLayout(JsonLayout.createDefaultLayout())
+					.setLayout(jsonLayout)
 					.setHost(hostName)
 					.setPort(port)
 					.setConnectTimeoutMillis(DEFAULT_CONNECT_TIMEOUT)

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,22 @@
  */
 package io.vertigo.core.util;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
@@ -60,52 +65,62 @@ public final class FileUtil {
 		//rien
 	}
 
-	public static String read(final URL url) {
+	public static <R extends Object> R doOnFile(final URL url, final Function<Path, R> fileProcessor) {
 		Assertion.check().isNotNull(url);
+		Assertion.check().isNotNull(fileProcessor);
 		//---
 		try {
-			try (final BufferedReader reader = new BufferedReader(
-					new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
-				final StringBuilder buff = new StringBuilder();
-				String line = reader.readLine();
-				while (line != null) {
-					buff.append(line);
-					line = reader.readLine();
-					buff.append("\r\n");
+			final var uri = url.toURI();
+			if ("jar".equalsIgnoreCase(uri.getScheme())) {
+				try (final FileSystem fs = FileSystems.newFileSystem(uri, Map.of())) { // need to "open" the jar for Paths.get to work
+					return fileProcessor.apply(Paths.get(uri));
 				}
-				return buff.toString();
 			}
-		} catch (final IOException e) {
+			return fileProcessor.apply(Paths.get(uri));
+		} catch (final IOException | URISyntaxException e) {
 			throw WrappedException.wrap(e, "Error when reading file : '{0}'", url);
 		}
 	}
 
-	/**
-	 * Copie le contenu d'un flux d'entrée vers un flux de sortie.
-	 * @param in flux d'entrée
-	 * @param out flux de sortie
-	 * @throws IOException Erreur d'entrée/sortie
-	 */
-	public static void copy(final InputStream in, final OutputStream out) throws IOException {
-		final int bufferSize = 10 * 1024;
-		final byte[] bytes = new byte[bufferSize];
-		int read = in.read(bytes);
-		while (read != -1) {
-			out.write(bytes, 0, read);
-			read = in.read(bytes);
-		}
+	public static String read(final URL url) {
+		Assertion.check().isNotNull(url);
+		//---
+		return doOnFile(url, path -> {
+			try {
+				return doRead(path);
+			} catch (final IOException e) {
+				throw WrappedException.wrap(e, "Error when reading file : '{0}'", url);
+			}
+		});
+
+	}
+
+	private static String doRead(final Path path) throws IOException {
+		final List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+		return String.join("\r\n", lines);
+	}
+
+	public static long getFileSize(final URL url) {
+		Assertion.check().isNotNull(url);
+		//---
+		return doOnFile(url, path -> {
+			try {
+				return Files.size(path);
+			} catch (final IOException e) {
+				throw WrappedException.wrap(e, "Error when reading file : '{0}'", url);
+			}
+		});
 	}
 
 	/**
 	 * Copie le contenu d'un flux d'entrée vers un fichier de sortie.
+	 *
 	 * @param in flux d'entrée
 	 * @param file fichier de sortie
 	 * @throws IOException Erreur d'entrée/sortie
 	 */
 	public static void copy(final InputStream in, final File file) throws IOException {
-		try (final OutputStream out = new BufferedOutputStream(Files.newOutputStream(file.toPath()))) {
-			FileUtil.copy(in, out);
-		}
+		Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
 	}
 
 	/**
@@ -113,6 +128,7 @@ public final class FileUtil {
 	 * <p>
 	 * This method returns the textual part of the filename after the last dot.
 	 * There must be no directory separator after the dot.
+	 *
 	 * <pre>
 	 * foo.txt      --> "txt"
 	 * a/b/c.jpg    --> "jpg"
@@ -121,8 +137,8 @@ public final class FileUtil {
 	 * </pre>
 	 * <p>
 	 * The output will be the same irrespective of the machine that the code is running on.
-	 * @param fileName Nom du fichier
 	 *
+	 * @param fileName Nom du fichier
 	 * @return the extension of the file or an empty string if none exists.
 	 * (author Apache Commons IO 1.1)
 	 */
@@ -150,6 +166,7 @@ public final class FileUtil {
 
 	/**
 	 * Replace "user.home" "user.dir" and "java.io.tmpdir" by system value.
+	 *
 	 * @param path PAth to translate
 	 * @return translated path
 	 */
@@ -162,6 +179,7 @@ public final class FileUtil {
 
 	/**
 	 * Check a filePath send by a user.
+	 *
 	 * @param userPath Path to check
 	 */
 	public static void checkUserPath(final String userPath) {
@@ -172,6 +190,7 @@ public final class FileUtil {
 
 	/**
 	 * Check a filename send by a user.
+	 *
 	 * @param userFileName FileName to check
 	 */
 	public static void checkUserFileName(final String userFileName) {

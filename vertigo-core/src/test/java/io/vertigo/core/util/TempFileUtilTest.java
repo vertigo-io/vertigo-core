@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,20 +37,20 @@ public final class TempFileUtilTest {
 
 	@Test
 	public void testCreateTempFile() throws IOException {
-		final File temp = new TempFile(FILE_PREFIX, ".tmp");
+		final File temp = TempFile.of(FILE_PREFIX, ".tmp");
 		Assertions.assertTrue(temp.exists(), "TempFile must exists");
 	}
 
 	@Test
 	public void testCreateTempFileSubDir() throws IOException {
-		final File temp = new TempFile(FILE_PREFIX, ".tmp", "tempDirJunit");
+		final File temp = TempFile.of(FILE_PREFIX, ".tmp", "tempDirJunit");
 		Assertions.assertTrue(temp.exists(), "TempFile must exists");
 	}
 
 	@Test
 	public void testRemoveTempFile() throws IOException {
 		//we create only one file, for create dir
-		final File temp = new TempFile(FILE_PREFIX, ".tmp");
+		final File temp = TempFile.of(FILE_PREFIX, ".tmp");
 
 		//we check, old files has been removed (no more than this 1 file)
 		long count;

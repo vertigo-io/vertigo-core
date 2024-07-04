@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,6 +63,8 @@ public final class XmlUtil {
 	 * @throws SAXNotSupportedException
 	 */
 	public static void secureXmlXXEByOwasp(final SchemaFactory schemaFactory) throws SAXNotRecognizedException, SAXNotSupportedException {
+		Assertion.check().isNotNull(schemaFactory);
+		//---
 		schemaFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 		schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
 		schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
@@ -77,6 +79,8 @@ public final class XmlUtil {
 	 * @throws SAXNotSupportedException
 	 */
 	public static void secureXmlXXEByOwasp(final SAXParserFactory factory) throws SAXNotRecognizedException, SAXNotSupportedException, ParserConfigurationException {
+		Assertion.check().isNotNull(factory);
+		//---
 		factory.setFeature(FEATURE_DISABLE_DTD, true);
 		factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 		factory.setFeature(FEATURE_LOAD_EXTERNAL_DTD, false);
@@ -90,6 +94,8 @@ public final class XmlUtil {
 	 * @throws TransformerConfigurationException
 	 */
 	public static void secureXmlXXEByOwasp(final TransformerFactory tf) throws TransformerConfigurationException {
+		Assertion.check().isNotNull(tf);
+		//---
 		tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 		tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
 		tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
@@ -101,12 +107,14 @@ public final class XmlUtil {
 	 * @param domFactory DocumentBuilderFactory
 	 * @throws ParserConfigurationException
 	 */
-	public static void secureXmlXXEByOwasp(final DocumentBuilderFactory domFactory) throws ParserConfigurationException {
-		domFactory.setFeature(FEATURE_DISABLE_DTD, true);
-		domFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-		domFactory.setFeature(FEATURE_LOAD_EXTERNAL_DTD, false);
-		domFactory.setXIncludeAware(false);
-		domFactory.setExpandEntityReferences(false);
+	public static void secureXmlXXEByOwasp(final DocumentBuilderFactory documentBuilderFactory) throws ParserConfigurationException {
+		Assertion.check().isNotNull(documentBuilderFactory);
+		//---
+		documentBuilderFactory.setFeature(FEATURE_DISABLE_DTD, true);
+		documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+		documentBuilderFactory.setFeature(FEATURE_LOAD_EXTERNAL_DTD, false);
+		documentBuilderFactory.setXIncludeAware(false);
+		documentBuilderFactory.setExpandEntityReferences(false);
 	}
 
 	/**

@@ -20,36 +20,45 @@ package io.vertigo.core.node.definition;
 import java.util.Set;
 
 /**
- * Espace de définitions (non threadSafe).
- * @author mlaroche
+ * DefinitionSpace represents a space for managing and resolving definitions.
+ * It is not thread-safe.
+ * Definitions within this space can be checked, resolved, and retrieved based on their names and types.
  *
+ * @author mlaroche
  */
 public interface DefinitionSpace {
 
 	/**
-	 * Returns true if this container contains the specified definition
-	 * @param name the name of the expected definition
-	 * @return true if the definition is already registered.
+	 * Checks if this container contains a definition with the specified name.
+	 *
+	 * @param name the name of the definition to check
+	 * @return true if the definition is already registered, false otherwise
 	 */
 	boolean contains(String name);
 
 	/**
-	 * Resolve a definition from its name and class.
-	 * @param name the name of the expected definition
-	 * @param clazz Type of the definition
-	 * @return the definition
+	 * Resolves a definition from its name and class type.
+	 *
+	 * @param <D>   Type of the definition
+	 * @param name  the name of the definition to resolve
+	 * @param clazz the class type of the definition
+	 * @return the resolved definition
 	 */
 	<D extends Definition> D resolve(String name, Class<D> clazz);
 
 	/**
-	 * @return Liste de tous les types de définition gérés.
+	 * Gets a list of all types of definitions managed within this space.
+	 *
+	 * @return a set of classes representing the types of definitions
 	 */
 	Set<Class<? extends Definition>> getAllTypes();
 
 	/**
-	 * @return Ordered Set of all objects for a type defined by its class
-	 * @param clazz Class of the definition
-	 * @param <C> Type of the definition
+	 * Gets an ordered set of all objects for a specified definition type.
+	 *
+	 * @param <C>   Type of the definition
+	 * @param clazz the class type of the definition
+	 * @return an ordered set of all objects for the specified definition type
 	 */
 	<C extends Definition> Set<C> getAll(Class<C> clazz);
 }

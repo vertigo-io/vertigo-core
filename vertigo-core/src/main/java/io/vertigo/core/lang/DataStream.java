@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,15 +28,16 @@ import java.io.InputStream;
  */
 public interface DataStream {
 	default byte[] getBytes() {
-		try (final InputStream inputStream = createInputStream()) {
-			try (final ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
-				int nRead;
-				final byte[] data = new byte[16384];
-				while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
-					buffer.write(data, 0, nRead);
-				}
-				return buffer.toByteArray();
+		try (
+				final InputStream inputStream = createInputStream();
+				final ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
+			int nRead;
+			final byte[] data = new byte[16384];
+			while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+				buffer.write(data, 0, nRead);
 			}
+			buffer.flush();
+			return buffer.toByteArray();
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}

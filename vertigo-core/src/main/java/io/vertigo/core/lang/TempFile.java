@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,7 @@ import java.nio.file.Paths;
  * Fichier temporaire supprimé automatiquement après utilisation.
  * @author npiedeloup
  */
-public final class TempFile extends File {
-
-	private static final long serialVersionUID = 1947509935178818002L;
+public final class TempFile {
 	/**
 	 * Vertigo Temp directory path.
 	 */
@@ -51,9 +49,8 @@ public final class TempFile extends File {
 	 * @param subDirectory Sous-répertoire des fichiers temporaires (null = répertoire temporaire de vertigo = ${java.io.tmpdir}/vertigo/tempFiles)
 	 * @throws IOException Exception IO
 	 */
-	public TempFile(final String prefix, final String suffix, final String subDirectory) throws IOException {
-		super(Files.createTempFile(Files.createDirectories(VERTIGO_TMP_DIR_PATH.resolve(subDirectory)), prefix, suffix).toAbsolutePath().toString());
-		deleteOnExit();
+	public static File of(final String prefix, final String suffix, final String subDirectory) throws IOException {
+		return of(prefix, suffix, Files.createDirectories(VERTIGO_TMP_DIR_PATH.resolve(subDirectory)));
 	}
 
 	/**
@@ -62,9 +59,14 @@ public final class TempFile extends File {
 	 * @param suffix Suffix du nom de fichier
 	 * @throws IOException Exception IO
 	 */
-	public TempFile(final String prefix, final String suffix) throws IOException {
-		super(Files.createTempFile(Files.createDirectories(VERTIGO_TMP_DIR_PATH), prefix, suffix).toAbsolutePath().toString());
-		deleteOnExit();
+	public static File of(final String prefix, final String suffix) throws IOException {
+		return of(prefix, suffix, Files.createDirectories(VERTIGO_TMP_DIR_PATH));
+	}
+
+	private static File of(final String prefix, final String suffix, final Path path) throws IOException {
+		final File file = Files.createTempFile(path, prefix, suffix).toFile();
+		file.deleteOnExit();
+		return file;
 	}
 
 	/**

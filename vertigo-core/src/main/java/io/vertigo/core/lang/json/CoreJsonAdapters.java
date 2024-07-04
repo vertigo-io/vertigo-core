@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -93,7 +93,7 @@ public class CoreJsonAdapters {
 		@Override
 		public JsonElement serialize(final Date date, final Type type, final JsonSerializationContext jsonSerializationContext) {
 			//Use INPUT_DATE_FORMATS[0] => ISO8601 format
-			return new JsonPrimitive(UTCDateUtil.format(date));
+			return new JsonPrimitive(UTCDateUtil.formatISO8601(date));
 		}
 
 		/** {@inheritDoc} */
@@ -138,7 +138,7 @@ public class CoreJsonAdapters {
 		/** {@inheritDoc} */
 		@Override
 		public JsonElement serialize(final Instant date, final Type typeOfSrc, final JsonSerializationContext context) {
-			return new JsonPrimitive(UTCDateUtil.formatInstant(date)); // "yyyy-mm-ddTHH:MI:SSZ"
+			return new JsonPrimitive(UTCDateUtil.formatInstantISO8601(date)); // "yyyy-mm-ddTHH:MI:SSZ"
 		}
 
 		/** {@inheritDoc} */
@@ -259,10 +259,9 @@ public class CoreJsonAdapters {
 		/** {@inheritDoc} */
 		@Override
 		public JsonElement serialize(final Optional src, final Type typeOfSrc, final JsonSerializationContext context) {
-			if (src.isPresent()) {
-				return context.serialize(src.get());
-			}
-			return null; //rien
+			return src.isPresent()
+					? context.serialize(src.get())
+					: null; //rien
 		}
 	}
 

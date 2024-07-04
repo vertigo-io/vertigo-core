@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,14 @@ import io.vertigo.core.node.definition.AbstractDefinition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 
 /**
- * Daemon's info.
+ * Represents the definition of a daemon.
  *
- * @author mlaroche, pchretien, npiedeloup
+ * This class provides information and configuration for a specific daemon.
+ *
+ * @author: mlaroche, pchretien, npiedeloup
+ *
+ * @see io.vertigo.core.daemon.Daemon
+ * @see io.vertigo.core.node.definition.AbstractDefinition
  */
 @DefinitionPrefix(DaemonDefinition.PREFIX)
 public final class DaemonDefinition extends AbstractDefinition<DaemonDefinition> {
@@ -37,12 +42,12 @@ public final class DaemonDefinition extends AbstractDefinition<DaemonDefinition>
 	private final Supplier<Daemon> daemonSupplier;
 
 	/**
-	 * Constructor.
-	 *
-	 * @param name the daemon name
-	 * @param daemonSupplier the daemon supplier.
-	 * @param periodInSeconds daemon execution period.
-	 */
+     * Constructs a DaemonDefinition with the specified name, daemon supplier, and execution period.
+     *
+     * @param name the name of the daemon
+     * @param daemonSupplier the supplier providing instances of the daemon
+     * @param periodInSeconds the execution period of the daemon in seconds
+     */
 	public DaemonDefinition(final String name, final Supplier<Daemon> daemonSupplier, final int periodInSeconds) {
 		super(name);
 		//---
@@ -55,14 +60,19 @@ public final class DaemonDefinition extends AbstractDefinition<DaemonDefinition>
 	}
 
 	/**
-	 * the period value in seconds.
-	 *
-	 * @return PeriodInSeconds.
-	 */
+     * Gets the execution period of the daemon in seconds.
+     *
+     * @return the execution period in seconds
+     */
 	public int getPeriodInSeconds() {
 		return periodInSeconds;
 	}
-
+	
+	/**
+     * Gets the supplier providing instances of the daemon.
+     *
+     * @return the daemon supplier
+     */
 	public Supplier<Daemon> getDaemonSupplier() {
 		return daemonSupplier;
 	}

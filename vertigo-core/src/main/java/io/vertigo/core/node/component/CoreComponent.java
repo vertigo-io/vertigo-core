@@ -65,5 +65,4 @@ package io.vertigo.core.node.component;
  * @author pchretien
  */
 public interface CoreComponent {
-	//
 }

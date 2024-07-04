@@ -13,22 +13,28 @@
 	<name>vertigo-core</name>
 	<description>Vertigo is a simple java starter</description>
 	<url>http://vertigo.io</url>
-
-	<dependencies>
-		<dependency>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
 		    <groupId>org.apache.logging.log4j</groupId>
 		    <artifactId>log4j-api</artifactId>
-		    <version>2.21.1</version> <!-- To avoid conflict of version, we must exclude log4j-api version when necessary -->
+		    <version>2.23.1</version> <!-- To avoid conflict of version, we must exclude log4j-api version when necessary -->
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.logging.log4j</groupId>
 		    <artifactId>log4j-core</artifactId>
-		    <version>2.21.1</version> <!-- To avoid conflict of version, we must exclude log4j-core version when necessary -->
+		    <version>2.23.1</version> <!-- To avoid conflict of version, we must exclude log4j-core version when necessary -->
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-slf4j2-impl</artifactId>
+		    <version>2.23.1</version> <!-- To avoid conflict of version, we must exclude log4j-core version when necessary -->
 		</dependency>
 		<dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-layout-template-json</artifactId>
-            <version>2.21.1</version><!-- To avoid conflict of version, we must exclude log4j-core version when necessary -->
+            <version>2.23.1</version><!-- To avoid conflict of version, we must exclude log4j-core version when necessary -->
         </dependency>
 
 		<dependency>
@@ -44,7 +50,7 @@
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.10.1</version>
+			<version>2.11.0</version>
 		</dependency> <!-- json config -->
 		<dependency>
 			<groupId>org.yaml</groupId>
@@ -54,10 +60,49 @@
 		<dependency>
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
-			<version>3.29.2-GA</version>
+			<version>3.30.2-GA</version>
 		</dependency>
+		</dependencies>
+	</dependencyManagement>
 
+	<dependencies>
+		<!-- components-->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+		</dependency>
+		<!-- discovery -->
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+		</dependency> 
+		<!-- Amplifier & aspects -->
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+		</dependency>
+		<!-- yaml config-->
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+		</dependency>
+		<!-- logging -->
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-api</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-core</artifactId>
+		</dependency>
+		<dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-layout-template-json</artifactId>
+        </dependency>
+		<!-- json -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency> 
 	</dependencies>
-	
-
 </project>

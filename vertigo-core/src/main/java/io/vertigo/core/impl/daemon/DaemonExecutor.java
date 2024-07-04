@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@ import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.daemon.DaemonStat;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.NamedThreadFactory;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
-import io.vertigo.core.util.NamedThreadFactory;
 
 /**
  * This class executes the daemons that have been previously registered.

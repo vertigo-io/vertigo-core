@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,8 +109,7 @@ public final class TraceSpanBuilder implements Builder<TraceSpan> {
 	 * @return this builder
 	 */
 	public TraceSpanBuilder withMeasure(final String name, final double value) {
-		Assertion.check()
-				.isNotNull(name, "measure name is required");
+		Assertion.check().isNotNull(name, "measure name is required");
 		//---
 		measures.put(name, value);
 		return this;
@@ -127,7 +126,11 @@ public final class TraceSpanBuilder implements Builder<TraceSpan> {
 				.isNotNull(name, "metadata name is required")
 				.isNotNull(value, "metadata value is required");
 		//---------------------------------------------------------------------
-		metadatas.put(name, value);
+		if (value.isBlank()) {
+			metadatas.remove(name);
+		} else {
+			metadatas.put(name, value);
+		}
 		return this;
 	}
 
@@ -142,7 +145,11 @@ public final class TraceSpanBuilder implements Builder<TraceSpan> {
 				.isNotNull(name, "tag name is required")
 				.isNotNull(value, "tag value is required");
 		//---
-		tags.put(name, value);
+		if (value.isBlank()) {
+			tags.remove(name);
+		} else {
+			tags.put(name, value);
+		}
 		return this;
 	}
 

@@ -25,6 +25,7 @@ import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Container;
+import io.vertigo.core.param.ParamEnvUtil;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.param.ParamManager;
 
@@ -85,12 +86,7 @@ final class ComponentParamsContainer implements Container {
 				.isNotNull(paramName);
 		//-----
 		final String paramValue = params.get(paramName);
-		if (paramValue != null && paramValue.startsWith("${") && paramValue.endsWith("}")) {
-			final String property = paramValue.substring("${".length(), paramValue.length() - "}".length());
-			return paramManagerOpt.orElseThrow(() -> new IllegalArgumentException("config is not allowed here"))
-					.getOptionalParam(property);
-		}
-		return Optional.of(Param.of(paramName, paramValue));
+		return ParamEnvUtil.getParam(paramName, paramValue, paramManagerOpt);
 	}
 
 	/*
