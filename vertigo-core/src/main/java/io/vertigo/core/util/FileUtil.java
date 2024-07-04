@@ -32,6 +32,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
@@ -64,25 +65,51 @@ public final class FileUtil {
 		//rien
 	}
 
-	public static String read(final URL url) {
+	public static <R extends Object> R doOnFile(final URL url, final Function<Path, R> fileProcessor) {
 		Assertion.check().isNotNull(url);
+		Assertion.check().isNotNull(fileProcessor);
 		//---
 		try {
 			final var uri = url.toURI();
 			if ("jar".equalsIgnoreCase(uri.getScheme())) {
-				try (final FileSystem fs = FileSystems.newFileSystem(url.toURI(), Map.of())) { // need to "open" the jar for Paths.get to work
-					return doRead(Paths.get(uri));
+				try (final FileSystem fs = FileSystems.newFileSystem(uri, Map.of())) { // need to "open" the jar for Paths.get to work
+					return fileProcessor.apply(Paths.get(uri));
 				}
 			}
-			return doRead(Paths.get(uri));
+			return fileProcessor.apply(Paths.get(uri));
 		} catch (final IOException | URISyntaxException e) {
 			throw WrappedException.wrap(e, "Error when reading file : '{0}'", url);
 		}
 	}
 
+	public static String read(final URL url) {
+		Assertion.check().isNotNull(url);
+		//---
+		return doOnFile(url, path -> {
+			try {
+				return doRead(path);
+			} catch (final IOException e) {
+				throw WrappedException.wrap(e, "Error when reading file : '{0}'", url);
+			}
+		});
+
+	}
+
 	private static String doRead(final Path path) throws IOException {
 		final List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
 		return String.join("\r\n", lines);
+	}
+
+	public static long getFileSize(final URL url) {
+		Assertion.check().isNotNull(url);
+		//---
+		return doOnFile(url, path -> {
+			try {
+				return Files.size(path);
+			} catch (final IOException e) {
+				throw WrappedException.wrap(e, "Error when reading file : '{0}'", url);
+			}
+		});
 	}
 
 	/**
