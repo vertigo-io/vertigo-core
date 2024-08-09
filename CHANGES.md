@@ -1,11 +1,44 @@
 Version history
 ===============
 
-Running 4.2.0
+Running 4.3.0
 ----------------------
-[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-410-to-420)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-420-to-430)
   
 more to come :)
+
+
+Running 4.2.0 - 2024/07/04
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-410-to-420)
+
+* [Core] Pom declare dependcyManagment to help dependencies versions config
+* [Core] Udpate some javadoc
+* [Core] Start node even if unknown host when analytics not set (ie default host unknown)
+* [Core] Add envParamUtil to get system and env param everyWhere is usefull
+* [Core] Move io.vertigo.core.util.NamedThreadFactory to io.vertigo.core.lang.NamedThreadFactory
+* [Core] Add getDisplayOpt to LocaleMessageText
+* [Core] Add default value for getPackageRoot in ModuleDiscoveryFeatures (from Feature's package)
+* [Core] Add a DefinitionProvider from an Enum class (need a `buildDefinition` method)
+* [Core] Default param to Optional.empty instead of IllegalArgumentException
+* [Core] EnvParamUtil resolve ParamManager by node.resolve to get it when it's started
+* [Core] Fix LocaleMessageText.getDisplay when no LocaleManger (in tests)
+* [Core] Better error message in yaml config for missing feature
+* [Core] Improved error message when unexpected key in i18n properties file
+* [Core] Remove some useless methods `ClassUtil.getPropertyName`, `FileUtil.copy(is,os)`
+* [Core] Rename in UTCDateUtil formatXxx methods to formatXxxISO8601 
+* [Core] Fix FileUtil.read when url is in a jar (classpath resources : need to "open" the jar for Paths.get to work)
+* [Core] FileUtil : add getFileSize
+* [Analytics] Fix json message max length (may trunc message)
+* [Analytics] Add compress param, warn if port mismatch or inactive logger
+* [Analytics] Protect Traces against null metadatas or tags
+* [Analytics] Accept number in trace category (for 's3')
+* [Core] Update libs 
+  - junit 5.10.0 -> 5.10.3
+  - log4j 2.21.1 -> 2.23.1
+  - gson 2.10.1 -> 2.11.0
+  - javassist 3.29.2 -> 3.30.2
+  - log4j-slf4j2-impl -> 2.23.1
 
 Release 4.1.0 - 2023/11/09
 ----------------------
@@ -19,7 +52,7 @@ Release 4.1.0 - 2023/11/09
   - log4j 2.20.0 -> 2.21.1
   - snakeyaml 2.0 -> 2.2
 
-Release 4.0.0 -2023/08/17
+Release 4.0.0 - 2023/08/17
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-360-to-400)
 * **[Core] Update to JDK17**
