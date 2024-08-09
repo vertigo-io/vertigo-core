@@ -12,7 +12,7 @@ Running 4.2.0 - 2024/07/04
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-410-to-420)
 
-* **[Core] Pom declare dependcyManagment to help dependencies versions config**
+* **[Core] Pom declare dependencyManagment to help dependencies versions config**
 * **[Core] Move io.vertigo.core.util.NamedThreadFactory to io.vertigo.core.lang.NamedThreadFactory**
 * **[Core] Rename some model classes :**
   - DtObject to DataObject
