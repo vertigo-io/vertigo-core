@@ -13,9 +13,15 @@ Running 4.2.0 - 2024/07/04
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-410-to-420)
 
 * **[Core] Pom declare dependcyManagment to help dependencies versions config**
+* **[Core] Move io.vertigo.core.util.NamedThreadFactory to io.vertigo.core.lang.NamedThreadFactory**
+* **[Core] Rename some model classes :**
+  - DtObject to DataObject
+  - DtField to DataField
+  - DtFieldName to DataFieldName
+  - DtDefinition to DataDefinition
+  - DtObjectUtil to DataModelUtil
 * [Core] Start node even if unknown host when analytics not set (ie default host unknown)
 * [Core] Add envParamUtil to get system and env param everyWhere is usefull
-* **[Core] Move io.vertigo.core.util.NamedThreadFactory to io.vertigo.core.lang.NamedThreadFactory**
 * [Core] Add getDisplayOpt to LocaleMessageText
 * [Core] Add default value for getPackageRoot in ModuleDiscoveryFeatures (from Feature's package)
 * [Core] Add a DefinitionProvider from an Enum class (need a `buildDefinition` method)
