@@ -20,6 +20,8 @@ Running 4.2.0 - 2024/07/04
   - DtFieldName to DataFieldName
   - DtDefinition to DataDefinition
   - DtObjectUtil to DataModelUtil
+* **[Core] Rename `io.vertigo.datamodel.structure.*` to `io.vertigo.datamodel.data.*`**
+* **[Core] Rename MessageKey to LocaleMessageKey**
 * [Core] Start node even if unknown host when analytics not set (ie default host unknown)
 * [Core] Add envParamUtil to get system and env param everyWhere is usefull
 * [Core] Add getDisplayOpt to LocaleMessageText
