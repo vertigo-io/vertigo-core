@@ -22,6 +22,7 @@ import java.util.Optional;
 import io.vertigo.core.impl.param.ParamPlugin;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.Param;
+import io.vertigo.core.util.StringUtil;
 
 /**
  * Plugin de gestion de configuration des variables d'environnement.
@@ -35,6 +36,6 @@ public final class EnvParamPlugin implements ParamPlugin {
 		Assertion.check().isNotBlank(paramName);
 		//-----
 		final String paramValue = System.getenv().get(paramName);
-		return paramValue != null ? Optional.of(Param.of(paramName, paramValue)) : Optional.empty();
+		return StringUtil.isBlank(paramValue) ? Optional.empty() : Optional.of(Param.of(paramName, paramValue));
 	}
 }
