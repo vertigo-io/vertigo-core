@@ -29,11 +29,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
@@ -198,6 +200,16 @@ public final class FileUtil {
 				&& userFileName.indexOf('/') == -1 //Linux path_separator
 				&& userFileName.indexOf((char) 0) == -1, //char 0
 				USER_CHECK_ERROR_MSG);
+	}
+
+	public static String sanitizeFileName(final String fileName) {
+		final String[] exclusions = {
+				"\\", "/", ":", "*", "?", "\"", "<", ">", "|", "{{", "}}"
+		};
+		final var regex = Arrays.stream(exclusions)
+				.map(s -> s.replaceAll(".", "\\\\$0")) // escape each characters
+				.collect(Collectors.joining("|"));
+		return fileName.replaceAll(regex, "_");
 	}
 
 }
