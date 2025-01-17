@@ -177,29 +177,25 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 	 * The buffer size.
 	 * @return A TcpSocketManager.
 	 */
-	public static AnalyticsTcpSocketManager getSocketManager(final String host, int port, final int connectTimeoutMillis,
-			int reconnectDelayMillis, final boolean immediateFail, final boolean compress, final Layout<? extends Serializable> layout,
+	public static AnalyticsTcpSocketManager getSocketManager(final String host, final int port, final int connectTimeoutMillis,
+			final int reconnectDelayMillis, final boolean immediateFail, final boolean compress, final Layout<? extends Serializable> layout,
 			final int bufferSize, final SocketOptions socketOptions) {
 		if (Strings.isEmpty(host)) {
 			throw new IllegalArgumentException("A host name is required");
 		}
-		if (port <= 0) {
-			port = DEFAULT_PORT;
-		}
-		if (reconnectDelayMillis == 0) {
-			reconnectDelayMillis = DEFAULT_RECONNECTION_DELAY_MILLIS;
-		}
-		return (AnalyticsTcpSocketManager) getManager("TCP:" + host + ':' + port, new FactoryData(host, port,
-				connectTimeoutMillis, reconnectDelayMillis, immediateFail, compress, layout, bufferSize, socketOptions),
+		final var usedPort = port >= 0 ? port : DEFAULT_PORT;
+		final var usedReconnectDelayMillis = reconnectDelayMillis == 0 ? DEFAULT_RECONNECTION_DELAY_MILLIS : reconnectDelayMillis;
+		return (AnalyticsTcpSocketManager) getManager("TCP:" + host + ':' + port, new FactoryData(host, usedPort,
+				connectTimeoutMillis, usedReconnectDelayMillis, immediateFail, compress, layout, bufferSize, socketOptions),
 				FACTORY);
 	}
 
 	@SuppressWarnings("sync-override") // synchronization on "this" is done within the method
 	@Override
 	protected void write(final byte[] originBytes, final int originOffset, final int originLength, final boolean immediateFlush) {
-		byte[] bytes = originBytes;
-		int offset = originOffset;
-		int length = originLength;
+		var bytes = originBytes;
+		var offset = originOffset;
+		var length = originLength;
 		if (compress) {
 			try {
 				bytes = gzip(originBytes, originOffset, originLength);
@@ -229,7 +225,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 			try {
 				writeAndFlush(bytes, offset, length, immediateFlush);
 			} catch (final IOException causeEx) {
-				final String config = inetAddress + ":" + port;
+				final var config = inetAddress + ":" + port;
 				if (retry && reconnector == null) {
 					reconnector = createReconnector();
 					try {
@@ -275,7 +271,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 	private void writeAndFlush(final byte[] bytes, final int offset, final int length, final boolean immediateFlush)
 			throws IOException {
 		@SuppressWarnings("resource") // outputStream is managed by this class
-		final OutputStream outputStream = getOutputStream();
+		final var outputStream = getOutputStream();
 		outputStream.write(bytes, offset, length);
 		if (immediateFlush) {
 			outputStream.flush();
@@ -290,28 +286,27 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 		return sb.toString();
 	}*/
 
-	public static byte[] gzip(byte[] val, final int offset, final int length) throws IOException {
-		try (ByteArrayOutputStream bos = new ByteArrayOutputStream(val.length)) {
-			try (GZIPOutputStream gos = new GZIPOutputStream(bos)) {
+	public static byte[] gzip(final byte[] val, final int offset, final int length) throws IOException {
+		try (var bos = new ByteArrayOutputStream(val.length)) {
+			try (var gos = new GZIPOutputStream(bos)) {
 				gos.write(val, offset, length);
 				gos.finish();
 				gos.flush();
 				bos.flush();
-				val = bos.toByteArray();
+				return bos.toByteArray();
 			}
 		}
-		return val;
 	}
 
 	@Override
 	protected synchronized boolean closeOutputStream() {
-		final boolean closed = super.closeOutputStream();
+		final var closed = super.closeOutputStream();
 		if (reconnector != null) {
 			reconnector.shutdown();
 			reconnector.interrupt();
 			reconnector = null;
 		}
-		final Socket oldSocket = socket;
+		final var oldSocket = socket;
 		socket = null;
 		if (oldSocket != null) {
 			try {
@@ -392,7 +387,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 		}
 
 		void reconnect() throws IOException {
-			final List<InetSocketAddress> socketAddresses = TcpSocketManagerFactory.resolver.resolveHost(host, port);
+			final var socketAddresses = TcpSocketManagerFactory.resolver.resolveHost(host, port);
 			if (socketAddresses.size() == 1) {
 				LOGGER.debug("Reconnecting " + socketAddresses.get(0));
 				connect(socketAddresses.get(0));
@@ -412,11 +407,11 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 		}
 
 		private void connect(final InetSocketAddress socketAddress) throws IOException {
-			final Socket sock = createSocket(socketAddress);
+			final var sock = createSocket(socketAddress);
 			@SuppressWarnings("resource") // newOS is managed by the enclosing Manager.
-			final OutputStream newOS = sock.getOutputStream();
+			final var newOS = sock.getOutputStream();
 			writeHeader(newOS);
-			final InetAddress prev = socket != null ? socket.getInetAddress() : null;
+			final var prev = socket != null ? socket.getInetAddress() : null;
 			synchronized (owner) {
 				Closer.closeSilently(getOutputStream());
 				setOutputStream(newOS);
@@ -428,7 +423,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 					byteBuffer.clear();
 				}
 			}
-			final String type = prev != null && prev.getHostAddress().equals(socketAddress.getAddress().getHostAddress()) ? "reestablished" : "established";
+			final var type = prev != null && prev.getHostAddress().equals(socketAddress.getAddress().getHostAddress()) ? "reestablished" : "established";
 			LOGGER.debug("Connection to {}:{} {}: {}", host, port, type, socket);
 		}
 
@@ -439,7 +434,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 	}
 
 	private Reconnector createReconnector() {
-		final Reconnector recon = new Reconnector(this);
+		final var recon = new Reconnector(this);
 		recon.setDaemon(true);
 		recon.setPriority(Thread.MIN_PRIORITY);
 		return recon;
@@ -452,7 +447,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 	protected static Socket createSocket(final InetSocketAddress socketAddress, final SocketOptions socketOptions,
 			final int connectTimeoutMillis) throws IOException {
 		LOGGER.debug("Creating socket {}", socketAddress.toString());
-		final Socket newSocket = new Socket();
+		final var newSocket = new Socket();
 		if (socketOptions != null) {
 			// Not sure which options must be applied before or after the connect() call.
 			socketOptions.apply(newSocket);
@@ -551,7 +546,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 		}
 
 		Socket createSocket(final T data) throws IOException {
-			final List<InetSocketAddress> socketAddresses = resolver.resolveHost(data.host, data.port);
+			final var socketAddresses = resolver.resolveHost(data.host, data.port);
 			IOException ioe = null;
 			for (final InetSocketAddress socketAddress : socketAddresses) {
 				try {
@@ -564,7 +559,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 		}
 
 		protected String errorMessage(final T data, final List<InetSocketAddress> socketAddresses) {
-			final StringBuilder sb = new StringBuilder("Unable to create socket for ");
+			final var sb = new StringBuilder("Unable to create socket for ");
 			sb.append(data.host).append(" at port ").append(data.port);
 			if (socketAddresses.size() == 1) {
 				if (!socketAddresses.get(0).getAddress().getHostAddress().equals(data.host)) {
@@ -573,7 +568,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 				}
 			} else {
 				sb.append(" using ip addresses and ports ");
-				for (int i = 0; i < socketAddresses.size(); ++i) {
+				for (var i = 0; i < socketAddresses.size(); ++i) {
 					if (i > 0) {
 						sb.append(", ");
 						sb.append(socketAddresses.get(i).getAddress().getHostAddress());
@@ -598,7 +593,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 	public static class HostResolver {
 
 		public List<InetSocketAddress> resolveHost(final String host, final int port) throws UnknownHostException {
-			final InetAddress[] addresses = InetAddress.getAllByName(host);
+			final var addresses = InetAddress.getAllByName(host);
 			final List<InetSocketAddress> socketAddresses = new ArrayList<>(addresses.length);
 			for (final InetAddress address : addresses) {
 				socketAddresses.add(new InetSocketAddress(address, port));
