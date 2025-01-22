@@ -44,6 +44,7 @@ import io.vertigo.core.lang.WrappedException;
  * @author pchretien
  */
 public final class XmlUtil {
+
 	private static final String FEATURE_DISABLE_DTD = "http://apache.org/xml/features/disallow-doctype-decl";
 	private static final String INTERNAL_XML_SCHEMA_FACTORY = "com.sun.org.apache.xerces.internal.jaxp.validation.XMLSchemaFactory";
 	private static final String FEATURE_LOAD_EXTERNAL_DTD = "http://apache.org/xml/features/nonvalidating/load-external-dtd";
@@ -90,6 +91,7 @@ public final class XmlUtil {
 	/**
 	 * Secure XML parser with OWASP recommendations.
 	 * @see https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html#java
+	 *      If error, you may use an other XML lib, check: https://stackoverflow.com/questions/45152707/transformerfactory-and-xalan-dependency-conflict/64364531#64364531
 	 * @param tf TransformerFactory
 	 * @throws TransformerConfigurationException
 	 */
