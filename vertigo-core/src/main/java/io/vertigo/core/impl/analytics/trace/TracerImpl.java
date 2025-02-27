@@ -31,6 +31,7 @@ import io.vertigo.core.lang.Assertion;
 
 /**
  * A tracer collects information during the execution of a process.
+ *
  * @author npiedeloup
  */
 final class TracerImpl implements Tracer, AutoCloseable {
@@ -38,14 +39,13 @@ final class TracerImpl implements Tracer, AutoCloseable {
 
 	private int logStackTraceCounter = 0;
 
-	private Boolean succeeded; //default no info
-	private Throwable causeException; //default no info
 	private final Consumer<TraceSpan> consumer;
 	private final Supplier<Optional<TracerImpl>> parentOptSupplier;
 	private final TraceSpanBuilder spanBuilder;
 
 	/**
 	 * Constructor.
+	 *
 	 * @param parentOpt Optional Parent of this tracer
 	 * @param category the category where the process is stored
 	 * @param name the name that identified the process
@@ -103,14 +103,7 @@ final class TracerImpl implements Tracer, AutoCloseable {
 	/** {@inheritDoc} */
 	@Override
 	public void close() {
-		if (succeeded != null) {
-			setMeasure("success", succeeded ? 100 : 0);
-		}
-		if (causeException != null) {
-			setTag("exception", causeException.getClass().getName());
-		}
 		final TraceSpan span = spanBuilder.build();
-		logSpan(span);
 
 		final Optional<TracerImpl> parentOpt = parentOptSupplier.get();
 		if (parentOpt.isPresent()) {
@@ -131,49 +124,23 @@ final class TracerImpl implements Tracer, AutoCloseable {
 		}
 	}
 
-	private void logSpan(final TraceSpan span) {
-		if (logger.isInfoEnabled()) {
-			final boolean hasMeasures = !span.getMeasures().isEmpty();
-			final boolean hasMetadatas = !span.getMetadatas().isEmpty();
-			final boolean hasTags = !span.getTags().isEmpty();
-			final String info = new StringBuilder()
-					.append("Finish ")
-					.append(span.getName())
-					.append(succeeded != null ? succeeded ? " successfully" : " with error" : "with internal error")
-					.append(" in ( ")
-					.append(span.getDurationMillis())
-					.append(" ms)")
-					.append(hasMeasures ? " measures:" + span.getMeasures() : "")
-					.append(hasMetadatas ? " metadatas:" + span.getMetadatas() : "")
-					.append(hasTags ? " tags:" + span.getTags() : "")
-					.toString();
-			logger.info(info);
-		}
-
-	}
-
 	/**
 	 * Marks this tracer as succeeded.
+	 *
 	 * @return this tracer
 	 */
 	Tracer markAsSucceeded() {
-		//the last mark wins
-		//so we prefer to reset causeException
-		causeException = null;
-		succeeded = true;
+		spanBuilder.markAsSucceeded();
 		return this;
 	}
 
 	/**
 	 * Marks this tracer as Failed.
+	 *
 	 * @return this tracer
 	 */
 	Tracer markAsFailed(final Throwable t) {
-		//We don't check the nullability of e
-		//the last mark wins
-		//so we prefer to put the flag 'succeeded' to false
-		succeeded = false;
-		causeException = t;
+		spanBuilder.markAsFailed(t);
 		return this;
 	}
 }
