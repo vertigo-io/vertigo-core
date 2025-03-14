@@ -65,7 +65,7 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 
 	private static final String FLAGS = "__flags__";
 
-	private static final Object[] EMPTY_ARRAY = new Object[0];
+	private static final Object[] EMPTY_ARRAY = {};
 
 	private final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder();
 	private final BootConfigBuilder bootConfigBuilder = BootConfig.builder();
@@ -181,74 +181,72 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 			// we have no params so no flag
 			// just a simple module
 			nodeConfigBuilder.addModule(ClassUtil.newInstance(featuresClassName, Features.class).build());
-		} else {
-			// more complexe module with flags and flipped features
-			if (isEnabledByFlag(yamlModuleConfig.__flags__)) {
-				final Features<?> moduleConfigByFeatures = ClassUtil.newInstance(featuresClassName, Features.class);
-				final Map<String, Method> featureMethods = ClassSelector
-						.from(moduleConfigByFeatures.getClass())
-						.filterMethods(MethodConditions.annotatedWith(Feature.class))
-						.findMethods()
-						.stream()
-						.map(Tuple::val2)
-						.collect(Collectors.toMap(method -> method.getAnnotation(Feature.class).value(), Function.identity()));
+		} else // more complexe module with flags and flipped features
+		if (isEnabledByFlag(yamlModuleConfig.__flags__)) {
+			final Features<?> moduleConfigByFeatures = ClassUtil.newInstance(featuresClassName, Features.class);
+			final Map<String, Method> featureMethods = ClassSelector
+					.from(moduleConfigByFeatures.getClass())
+					.filterMethods(MethodConditions.annotatedWith(Feature.class))
+					.findMethods()
+					.stream()
+					.map(Tuple::val2)
+					.collect(Collectors.toMap(method -> method.getAnnotation(Feature.class).value(), Function.identity()));
 
-				if (yamlModuleConfig.features != null) {
-					yamlModuleConfig.features
-							.forEach(feature -> {
-								Assertion.check()
-										.isFalse(feature.containsKey(FLAGS), "can't read flags as intended in feature {0} (module's flags: {1})", featuresClassName, yamlModuleConfig.__flags__)
-										.isTrue(feature.size() > 0, "missing feature")
-										.isTrue(feature.size() == 1, "a feature '{0}' should be designed by it's class only (may add indents)", feature.keySet().iterator().next());
-								final Map.Entry<String, Map<String, Object>> featureEntry = feature.entrySet().iterator().next();
-								final String featureClassName = featureEntry.getKey();
-								final Method methodForFeature = featureMethods.get(featureClassName);
-								Assertion.check()
-										.isNotNull(methodForFeature, "Unable to find method for feature '{0}' in feature class '{1}'", featureClassName, featuresClassName);
-								final Map<String, Object> paramsMap = featureEntry.getValue();
-								if (isEnabledByFlag(getFlagsOfMapParams(paramsMap))) {
-									ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findMethodParameters(paramsMap, methodForFeature));
-								}
-							});
-				}
-
-				if (yamlModuleConfig.featuresConfig != null) {
-					yamlModuleConfig.featuresConfig
-							.forEach(featureConfig -> {
-								Assertion.check()
-										.isFalse(featureConfig.containsKey(FLAGS), "can't read flags as intended in featureConfig {0} (module's flags: {1})", featuresClassName,
-												yamlModuleConfig.__flags__)
-										.isTrue(featureConfig.size() > 0, "missing featureConfig")
-										.isTrue(featureConfig.size() == 1, "a featureConfig '{0}' should be designed by it's name only (may add indents)", featureConfig.keySet().iterator().next());
-								final Map.Entry<String, Map<String, Object>> featureEntry = featureConfig.entrySet().iterator().next();
-								final String featureClassName = featureEntry.getKey();
-								final Method methodForFeature = featureMethods.get(featureClassName);
-								Assertion.check()
-										.isNotNull(methodForFeature, "Unable to find method for feature '{0}' in feature class '{1}'", featureClassName, featuresClassName);
-								final Map<String, Object> paramsMap = featureEntry.getValue();
-								if (isEnabledByFlag(getFlagsOfMapParams(paramsMap))) {
-									ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findMethodParameters(paramsMap, methodForFeature));
-								}
-							});
-				}
-
-				yamlModuleConfig.plugins.forEach(
-						plugin -> {
+			if (yamlModuleConfig.features != null) {
+				yamlModuleConfig.features
+						.forEach(feature -> {
 							Assertion.check()
-									.isTrue(plugin.size() == 1, "a plugin is defined by it's class");
-							// ---
-							final Map.Entry<String, Map<String, Object>> pluginEntry = plugin.entrySet().iterator().next();
-							final String pluginClassName = pluginEntry.getKey();
-							final Map<String, Object> paramsMap = pluginEntry.getValue();
+									.isFalse(feature.containsKey(FLAGS), "can't read flags as intended in feature {0} (module's flags: {1})", featuresClassName, yamlModuleConfig.__flags__)
+									.isTrue(feature.size() > 0, "missing feature")
+									.isTrue(feature.size() == 1, "a feature '{0}' should be designed by it's class only (may add indents)", feature.keySet().iterator().next());
+							final Map.Entry<String, Map<String, Object>> featureEntry = feature.entrySet().iterator().next();
+							final String featureClassName = featureEntry.getKey();
+							final Method methodForFeature = featureMethods.get(featureClassName);
+							Assertion.check()
+									.isNotNull(methodForFeature, "Unable to find method for feature '{0}' in feature class '{1}'", featureClassName, featuresClassName);
+							final Map<String, Object> paramsMap = featureEntry.getValue();
 							if (isEnabledByFlag(getFlagsOfMapParams(paramsMap))) {
-								moduleConfigByFeatures
-										.addPlugin(
-												ClassUtil.classForName(pluginClassName, Plugin.class),
-												getParams(plugin.get(pluginClassName)));
+								ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findMethodParameters(paramsMap, methodForFeature));
 							}
 						});
-				nodeConfigBuilder.addModule(moduleConfigByFeatures.build());
 			}
+
+			if (yamlModuleConfig.featuresConfig != null) {
+				yamlModuleConfig.featuresConfig
+						.forEach(featureConfig -> {
+							Assertion.check()
+									.isFalse(featureConfig.containsKey(FLAGS), "can't read flags as intended in featureConfig {0} (module's flags: {1})", featuresClassName,
+											yamlModuleConfig.__flags__)
+									.isTrue(featureConfig.size() > 0, "missing featureConfig")
+									.isTrue(featureConfig.size() == 1, "a featureConfig '{0}' should be designed by it's name only (may add indents)", featureConfig.keySet().iterator().next());
+							final Map.Entry<String, Map<String, Object>> featureEntry = featureConfig.entrySet().iterator().next();
+							final String featureClassName = featureEntry.getKey();
+							final Method methodForFeature = featureMethods.get(featureClassName);
+							Assertion.check()
+									.isNotNull(methodForFeature, "Unable to find method for feature '{0}' in feature class '{1}'", featureClassName, featuresClassName);
+							final Map<String, Object> paramsMap = featureEntry.getValue();
+							if (isEnabledByFlag(getFlagsOfMapParams(paramsMap))) {
+								ClassUtil.invoke(moduleConfigByFeatures, methodForFeature, findMethodParameters(paramsMap, methodForFeature));
+							}
+						});
+			}
+
+			yamlModuleConfig.plugins.forEach(
+					plugin -> {
+						Assertion.check()
+								.isTrue(plugin.size() == 1, "a plugin is defined by it's class");
+						// ---
+						final Map.Entry<String, Map<String, Object>> pluginEntry = plugin.entrySet().iterator().next();
+						final String pluginClassName = pluginEntry.getKey();
+						final Map<String, Object> paramsMap = pluginEntry.getValue();
+						if (isEnabledByFlag(getFlagsOfMapParams(paramsMap))) {
+							moduleConfigByFeatures
+									.addPlugin(
+											ClassUtil.classForName(pluginClassName, Plugin.class),
+											getParams(plugin.get(pluginClassName)));
+						}
+					});
+			nodeConfigBuilder.addModule(moduleConfigByFeatures.build());
 		}
 	}
 
@@ -327,6 +325,7 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 	public NodeConfig build() {
 		return nodeConfigBuilder
 				.withBoot(bootConfigBuilder.build())
+				.withActiveFlags(activeFlags)
 				.build();
 	}
 
