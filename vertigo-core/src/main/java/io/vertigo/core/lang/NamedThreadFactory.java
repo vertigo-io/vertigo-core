@@ -17,9 +17,15 @@
  */
 package io.vertigo.core.lang;
 
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * A default {@link ThreadFactory} implementation that accepts the name prefix of the created
+ * threads as a constructor argument. Otherwise, this factory yields the same semantics as the
+ * thread factory returned by {@link Executors#defaultThreadFactory()}.
+ */
 public class NamedThreadFactory implements ThreadFactory {
 
 	private static AtomicInteger threadNumber = new AtomicInteger(1);
@@ -28,7 +34,7 @@ public class NamedThreadFactory implements ThreadFactory {
 
 	/**
 	 * Constructor accepting the prefix of the threads that will be created by this {@link ThreadFactory}.
-	 *  @param namePrefix   Prefix for names of threads
+	 * @param namePrefix Prefix for names of threads
 	 */
 	public NamedThreadFactory(final String namePrefix) {
 		group = Thread.currentThread().getThreadGroup();
@@ -51,5 +57,4 @@ public class NamedThreadFactory implements ThreadFactory {
 		}
 		return t;
 	}
-
 }
