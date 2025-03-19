@@ -54,6 +54,7 @@ import org.apache.logging.log4j.util.Strings;
  * - buffer data while waiting for reconnexion (instead of loosing logs)
  */
 public class AnalyticsTcpSocketManager extends AbstractSocketManager {
+
 	/**
 	 * The default reconnection delay (30000 milliseconds or 30 seconds).
 	 */
@@ -85,29 +86,29 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 	 * Constructs.
 	 *
 	 * @param name
-	 * The unique name of this connection.
+	 *        The unique name of this connection.
 	 * @param os
-	 * The OutputStream.
+	 *        The OutputStream.
 	 * @param socket
-	 * The Socket.
+	 *        The Socket.
 	 * @param inetAddress
-	 * The Internet address of the host.
+	 *        The Internet address of the host.
 	 * @param host
-	 * The name of the host.
+	 *        The name of the host.
 	 * @param port
-	 * The port number on the host.
+	 *        The port number on the host.
 	 * @param connectTimeoutMillis
-	 * the connect timeout in milliseconds.
+	 *        the connect timeout in milliseconds.
 	 * @param reconnectionDelayMillis
-	 * Reconnection interval.
+	 *        Reconnection interval.
 	 * @param immediateFail
-	 * True if the write should fail if no socket is immediately available.
+	 *        True if the write should fail if no socket is immediately available.
 	 * @param layout
-	 * The Layout.
+	 *        The Layout.
 	 * @param bufferSize
-	 * The buffer size.
+	 *        The buffer size.
 	 * @deprecated Use
-	 * {@link TcpSocketManager#TcpSocketManager(String, OutputStream, Socket, InetAddress, String, int, int, int, boolean, Layout, int, SocketOptions)}.
+	 *             {@link TcpSocketManager#TcpSocketManager(String, OutputStream, Socket, InetAddress, String, int, int, int, boolean, Layout, int, SocketOptions)}.
 	 */
 	@Deprecated
 	public AnalyticsTcpSocketManager(final String name, final OutputStream os, final Socket socket,
@@ -122,27 +123,27 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 	 * Constructs.
 	 *
 	 * @param name
-	 * The unique name of this connection.
+	 *        The unique name of this connection.
 	 * @param os
-	 * The OutputStream.
+	 *        The OutputStream.
 	 * @param socket
-	 * The Socket.
+	 *        The Socket.
 	 * @param inetAddress
-	 * The Internet address of the host.
+	 *        The Internet address of the host.
 	 * @param host
-	 * The name of the host.
+	 *        The name of the host.
 	 * @param port
-	 * The port number on the host.
+	 *        The port number on the host.
 	 * @param connectTimeoutMillis
-	 * the connect timeout in milliseconds.
+	 *        the connect timeout in milliseconds.
 	 * @param reconnectionDelayMillis
-	 * Reconnection interval.
+	 *        Reconnection interval.
 	 * @param immediateFail
-	 * True if the write should fail if no socket is immediately available.
+	 *        True if the write should fail if no socket is immediately available.
 	 * @param layout
-	 * The Layout.
+	 *        The Layout.
 	 * @param bufferSize
-	 * The buffer size.
+	 *        The buffer size.
 	 */
 	public AnalyticsTcpSocketManager(final String name, final OutputStream os, final Socket socket,
 			final InetAddress inetAddress, final String host, final int port, final int connectTimeoutMillis,
@@ -166,15 +167,15 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 	 * Obtains a TcpSocketManager.
 	 *
 	 * @param host
-	 * The host to connect to.
+	 *        The host to connect to.
 	 * @param port
-	 * The port on the host.
+	 *        The port on the host.
 	 * @param connectTimeoutMillis
-	 * the connect timeout in milliseconds
+	 *        the connect timeout in milliseconds
 	 * @param reconnectDelayMillis
-	 * The interval to pause between retries.
+	 *        The interval to pause between retries.
 	 * @param bufferSize
-	 * The buffer size.
+	 *        The buffer size.
 	 * @return A TcpSocketManager.
 	 */
 	public static AnalyticsTcpSocketManager getSocketManager(final String host, final int port, final int connectTimeoutMillis,
@@ -388,7 +389,9 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 
 		void reconnect() throws IOException {
 			final var socketAddresses = TcpSocketManagerFactory.resolver.resolveHost(host, port);
-			if (socketAddresses.size() == 1) {
+			if (socketAddresses.size() == 0) {
+				throw new ConnectException("Unable to connect to " + host + ":" + port);
+			} else if (socketAddresses.size() == 1) {
 				LOGGER.debug("Reconnecting " + socketAddresses.get(0));
 				connect(socketAddresses.get(0));
 			} else {
@@ -407,6 +410,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 		}
 
 		private void connect(final InetSocketAddress socketAddress) throws IOException {
+			@SuppressWarnings("resource") // sock is managed by the enclosing Manager.
 			final var sock = createSocket(socketAddress);
 			@SuppressWarnings("resource") // newOS is managed by the enclosing Manager.
 			final var newOS = sock.getOutputStream();
@@ -447,6 +451,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 	protected static Socket createSocket(final InetSocketAddress socketAddress, final SocketOptions socketOptions,
 			final int connectTimeoutMillis) throws IOException {
 		LOGGER.debug("Creating socket {}", socketAddress.toString());
+		@SuppressWarnings("resource") // newSocket is managed by the enclosing Manager.
 		final var newSocket = new Socket();
 		if (socketOptions != null) {
 			// Not sure which options must be applied before or after the connect() call.
@@ -464,6 +469,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 	 * Data for the factory.
 	 */
 	static class FactoryData {
+
 		protected final String host;
 		protected final int port;
 		protected final int connectTimeoutMillis;
@@ -500,9 +506,9 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 	 * Factory to create a TcpSocketManager.
 	 *
 	 * @param <M>
-	 * The manager type.
+	 *        The manager type.
 	 * @param <T>
-	 * The factory data type.
+	 *        The factory data type.
 	 */
 	protected static class TcpSocketManagerFactory<M extends AnalyticsTcpSocketManager, T extends FactoryData>
 			implements ManagerFactory<M, T> {

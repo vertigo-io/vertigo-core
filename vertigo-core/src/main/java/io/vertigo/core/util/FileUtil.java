@@ -60,6 +60,18 @@ public final class FileUtil {
 	private static final Pattern PATTERN_USER_DIR = Pattern.compile(KEY_USER_DIR);
 	private static final Pattern PATTERN_JAVA_IO_TMPDIR = Pattern.compile(KEY_JAVA_IO_TMPDIR);
 
+	private static final Pattern FILENAME_EXCLUSIONS_PATTERN;
+
+	static {
+		final String[] exclusions = {
+				// think to escape each character
+				"\\\\", "\\/", "\\:", "\\*", "\\?", "\\\"", "\\<", "\\>", "\\|", "\\{", "\\}"
+		};
+		final String regex = Arrays.stream(exclusions)
+				.collect(Collectors.joining("|"));
+		FILENAME_EXCLUSIONS_PATTERN = Pattern.compile(regex);
+	}
+
 	/**
 	 * Constructeur privé pour classe utilitaire
 	 */
@@ -142,7 +154,7 @@ public final class FileUtil {
 	 *
 	 * @param fileName Nom du fichier
 	 * @return the extension of the file or an empty string if none exists.
-	 * (author Apache Commons IO 1.1)
+	 *         (author Apache Commons IO 1.1)
 	 */
 	public static String getFileExtension(final String fileName) {
 		final String extension;
@@ -203,13 +215,7 @@ public final class FileUtil {
 	}
 
 	public static String sanitizeFileName(final String fileName) {
-		final String[] exclusions = {
-				"\\", "/", ":", "*", "?", "\"", "<", ">", "|", "{{", "}}"
-		};
-		final var regex = Arrays.stream(exclusions)
-				.map(s -> s.replaceAll(".", "\\\\$0")) // escape each characters
-				.collect(Collectors.joining("|"));
-		return fileName.replaceAll(regex, "_");
+		return FILENAME_EXCLUSIONS_PATTERN.matcher(fileName).replaceAll("_");
 	}
 
 }
