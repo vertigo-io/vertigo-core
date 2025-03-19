@@ -21,7 +21,7 @@ jobs:
             ports:
               - 8086:8086
         analytics:
-            image: vertigoio/vertigo-analytics-server:0.12.0
+            image: vertigoio/vertigo-analytics-server:0.14.0
             env:
               INFLUXDB_URL: http://influxdb:8086
               INFLUXDB_TOKEN: rytuvFE1f5JR4CPD1cOfr-74W2rL7tu1by-6DnO6zbTxMQy6foj7qtBMYSkFGT15Y1vjJCr5OP01Uci_ZdIlIA==
@@ -57,4 +57,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn clean source:jar org.jacoco:jacoco-maven-plugin:prepare-agent deploy org.jacoco:jacoco-maven-plugin:report org.sonarsource.scanner.maven:sonar-maven-plugin:5.0.0.4389:sonar -Dsonar.projectKey=vertigo-io_vertigo-core -Dsonar.organization=vertigo-io -Dsonar.host.url=https://sonarcloud.io -Dsonar.branch.name="develop"  -P Github
+        run: mvn clean source:jar org.jacoco:jacoco-maven-plugin:prepare-agent deploy org.jacoco:jacoco-maven-plugin:report org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=vertigo-io_vertigo-core -Dsonar.organization=vertigo-io -Dsonar.host.url=https://sonarcloud.io -Dsonar.branch.name="develop"  -P Github
