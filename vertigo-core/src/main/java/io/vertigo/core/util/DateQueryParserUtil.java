@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ package io.vertigo.core.util;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -75,43 +77,46 @@ final class DateQueryParserUtil {
 
 	/**
 	 * Retourne la date correspondant à l'expression passée en parametre.
-	 * La syntaxe est de type now((+/-)eeeUNIT) ou une date au format dd/MM/yy
+	 * La syntaxe est de type now((+/-)eeeUNIT) ou une date heure GMT au format dd/MM/yy hh:mm:ss
 	 *
 	 * @param dateExpression Expression
-	 * @param datePattern Pattern used to define a date (dd/MM/YYYY)
+	 * @param datePattern Pattern used to define a date (dd/MM/YYYY hh:mm:ss)
 	 * @return date
 	 */
 	static Instant parseAsInstant(final String dateExpression, final String datePattern) {
 		Assertion.check()
 				.isNotBlank(dateExpression)
-				.isNotBlank(datePattern, "you must define a valid datePattern such as dd/MM/yyyy or MM/dd/yy")
+				.isNotBlank(datePattern, "you must define a valid datePattern such as dd/MM/yyyy hh:mm or MM/dd/yy hh:mm:ss")
 				.isTrue(dateExpression.startsWith(NOW), "Instant evaluation is always relative to now");
 		//---
 		if (NOW.equals(dateExpression)) {
 			//today is gonna be the day
 			return Instant.now();
 		}
-		final int index = NOW.length();
-		final char operator = dateExpression.charAt(index);
-		//---
-		//operand = 21d
-		final String operand = dateExpression.substring(index + 1);
-		//NOW+21DAY or NOW-12MONTH
-		final Matcher matcher = PATTERN_INSTANT.matcher(operand);
-		Assertion.check()
-				.isTrue(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", PATTERN_INSTANT.toString());
-		//---
-		final String calendarUnit = matcher.group(2);
-		//We check that we have found a real unit Calendar and not 'NOW+15DAL'
-		if (!CALENDAR_UNITS_INSTANT.containsKey(calendarUnit)) {
-			throw new VSystemException("unit '" + calendarUnit + "' is not allowed. You must use a unit among : " + CALENDAR_UNITS_INSTANT.keySet());
+		if (dateExpression.startsWith(NOW)) {
+			final int index = NOW.length();
+			final char operator = dateExpression.charAt(index);
+			//---
+			//operand = 21d
+			final String operand = dateExpression.substring(index + 1);
+			//NOW+21DAY or NOW-12MONTH
+			final Matcher matcher = PATTERN_INSTANT.matcher(operand);
+			Assertion.check()
+					.isTrue(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", PATTERN_INSTANT.toString());
+			//---
+			final String calendarUnit = matcher.group(2);
+			//We check that we have found a real unit Calendar and not 'NOW+15DAL'
+			if (!CALENDAR_UNITS_INSTANT.containsKey(calendarUnit)) {
+				throw new VSystemException("unit '" + calendarUnit + "' is not allowed. You must use a unit among : " + CALENDAR_UNITS_INSTANT.keySet());
+			}
+			//---
+			final Calendar calendar = new GregorianCalendar();
+			final int sign = buildSign(dateExpression, operator);
+			final int unitCount = sign * Integer.parseInt(matcher.group(1));
+			calendar.add(CALENDAR_UNITS_INSTANT.get(calendarUnit), unitCount);
+			return calendar.toInstant();
 		}
-		//---
-		final Calendar calendar = new GregorianCalendar();
-		final int sign = buildSign(dateExpression, operator);
-		final int unitCount = sign * Integer.parseInt(matcher.group(1));
-		calendar.add(CALENDAR_UNITS_INSTANT.get(calendarUnit), unitCount);
-		return calendar.toInstant();
+		return LocalDateTime.parse(dateExpression, DateTimeFormatter.ofPattern(datePattern)).toInstant(ZoneOffset.UTC);
 	}
 
 	static LocalDate parseAsLocalDate(final String dateExpression, final String datePattern) {

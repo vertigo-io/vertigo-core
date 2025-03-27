@@ -15,7 +15,7 @@
 
 	<!-- Pour les tests on ne loggue que FATAL. -->
 	<Loggers>
-		<Root level="info">
+		<Root level="fatal">
 			<AppenderRef ref="Console" />
 		</Root>
 	</Loggers>

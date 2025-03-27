@@ -18,6 +18,7 @@
 package io.vertigo.core.node.config.discovery;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -34,8 +35,8 @@ import io.vertigo.core.node.config.discovery.data.DiscoveryD;
 import io.vertigo.core.node.config.discovery.data.TrueAmplifierMethod;
 
 /**
-* @author pchretien
-*/
+ * @author pchretien
+ */
 public final class DiscoveryTest extends AbstractTestCaseJU5 {
 
 	@Override
@@ -61,6 +62,14 @@ public final class DiscoveryTest extends AbstractTestCaseJU5 {
 		//---
 		final DiscoveryD discoveryD = componentSpace.resolve(DiscoveryD.class);
 		assertTrue(discoveryD.isTrue());
+	}
+
+	@Test
+	public void testNodeConfigFlags() {
+		final var nodeConfig = Node.getNode().getNodeConfig();
+		assertFalse(nodeConfig.hasFlag("main"));
+		assertFalse(nodeConfig.hasFlag("secondary"));
+		assertEquals(0, nodeConfig.activeFlags().size());
 	}
 
 }

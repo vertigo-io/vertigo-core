@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import io.vertigo.core.util.StringUtil;
  */
 public final class MetricUtil {
 
-	private static final String pluginCounterChar = "#";// char used in plugins for counting them plugin#1, plugin#2
+	private static final String PLUGIN_COUNTER_CHAR = "#";// char used in plugins for counting them plugin#1, plugin#2
 
 	private MetricUtil() {
 		//private
@@ -67,7 +67,7 @@ public final class MetricUtil {
 					//-----
 					//2. For each method register a listener
 					// we remove # because it doesn't comply with definition naming rule
-					final String metricDefinitionName = MetricDefinition.PREFIX + StringUtil.first2UpperCase(componentId.replace(pluginCounterChar, "")) + "$" + method.getName();
+					final String metricDefinitionName = MetricDefinition.PREFIX + StringUtil.first2UpperCase(componentId.replace(PLUGIN_COUNTER_CHAR, "")) + "$" + method.getName();
 					return new MetricDefinition(
 							metricDefinitionName,
 							() -> (List<Metric>) ClassUtil.invoke(component, method));

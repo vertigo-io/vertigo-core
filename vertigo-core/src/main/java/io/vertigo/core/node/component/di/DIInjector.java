@@ -39,13 +39,14 @@ import io.vertigo.core.util.ClassUtil;
  * @author pchretien
  */
 public final class DIInjector {
+
 	private DIInjector() {
 		//constructor is protected, Injector contains only static methods
 	}
 
 	/**
 	 * Injection de dépendances.
-	 * Création d'une instance  à partir d'un conteneur de composants déjà intsanciés.
+	 * Création d'une instance à partir d'un conteneur de composants déjà intsanciés.
 	 *
 	 * @param <T> Type de l'instance
 	 * @param clazz Classe de l'instance
@@ -134,8 +135,9 @@ public final class DIInjector {
 		//-----
 		final Object value = container.resolve(dependency.getName(), dependency.getType());
 		Assertion.check()
-				.isNotNull(value);
+				.isNotNull(value, "No component found for {0} of type {1}", dependency.getName(), dependency.getType());
 		//-----
 		return value;
 	}
+
 }

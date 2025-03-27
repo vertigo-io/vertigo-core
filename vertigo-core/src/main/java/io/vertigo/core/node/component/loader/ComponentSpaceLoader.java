@@ -35,29 +35,31 @@ import io.vertigo.core.node.component.amplifier.AmplifierMethod;
 import io.vertigo.core.node.component.aspect.Aspect;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.component.di.DIReactor;
+import io.vertigo.core.node.config.AmplifierMethodConfig;
 import io.vertigo.core.node.config.AspectConfig;
 import io.vertigo.core.node.config.CoreComponentConfig;
 import io.vertigo.core.node.config.ModuleConfig;
-import io.vertigo.core.node.config.AmplifierMethodConfig;
 import io.vertigo.core.param.ParamManager;
 
 /**
  * The componentLoader class defines the way to load the components defined in the config into componentSpace.
+ *
  * @author pchretien
  */
 public final class ComponentSpaceLoader {
 	private final AspectPlugin aopPlugin;
-	/** Aspects.*/
+	/** Aspects. */
 	private final List<Aspect> aspects = new ArrayList<>();
 
-	/** Proxies.*/
+	/** Proxies. */
 	private final List<AmplifierMethod> proxyMethods = new ArrayList<>();
 	private final ComponentSpaceWritable componentSpaceWritable;
 
 	/**
-	* Constructor.
-	* @param aopPlugin the plugin which is reponsible for the aop strategy
-	*/
+	 * Constructor.
+	 *
+	 * @param aopPlugin the plugin which is reponsible for the aop strategy
+	 */
 	private ComponentSpaceLoader(final ComponentSpaceWritable componentSpaceWritable, final AspectPlugin aopPlugin) {
 		Assertion.check()
 				.isNotNull(componentSpaceWritable)
@@ -81,6 +83,7 @@ public final class ComponentSpaceLoader {
 
 	/**
 	 * Add all the components defined in the moduleConfigs into the componentSpace.
+	 *
 	 * @param moduleConfigs the config of the module to add.
 	 */
 	public ComponentSpaceLoader loadAllComponentsAndAspects(final List<ModuleConfig> moduleConfigs) {
@@ -100,6 +103,7 @@ public final class ComponentSpaceLoader {
 
 	/**
 	 * registers all the components defined by their configs.
+	 *
 	 * @param paramManagerOpt the optional manager of params
 	 * @param moduleName the name of the module
 	 * @param componentConfigs the configs of the components
@@ -165,7 +169,7 @@ public final class ComponentSpaceLoader {
 				.toList();
 
 		if (!unusedPluginIds.isEmpty()) {
-			throw new VSystemException("plugins '{0}' in module'{1}' are not used by injection", unusedPluginIds, moduleName);
+			throw new VSystemException("plugins '{0}' in module '{1}' are not used by injection", unusedPluginIds, moduleName);
 		}
 	}
 
@@ -273,6 +277,7 @@ public final class ComponentSpaceLoader {
 
 	/**
 	 * Creates a component that use the injector but adds params support.
+	 *
 	 * @param clazz the clazz of the object to create
 	 * @param container the container of the known components
 	 * @param paramManagerOpt the optional ParamManager needed to use global params resolution

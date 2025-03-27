@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2024, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,11 +29,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
@@ -57,6 +59,18 @@ public final class FileUtil {
 	private static final Pattern PATTERN_USER_HOME = Pattern.compile(KEY_USER_HOME);
 	private static final Pattern PATTERN_USER_DIR = Pattern.compile(KEY_USER_DIR);
 	private static final Pattern PATTERN_JAVA_IO_TMPDIR = Pattern.compile(KEY_JAVA_IO_TMPDIR);
+
+	private static final Pattern FILENAME_EXCLUSIONS_PATTERN;
+
+	static {
+		final String[] exclusions = {
+				// think to escape each character
+				"\\\\", "\\/", "\\:", "\\*", "\\?", "\\\"", "\\<", "\\>", "\\|", "\\{", "\\}"
+		};
+		final String regex = Arrays.stream(exclusions)
+				.collect(Collectors.joining("|"));
+		FILENAME_EXCLUSIONS_PATTERN = Pattern.compile(regex);
+	}
 
 	/**
 	 * Constructeur privé pour classe utilitaire
@@ -140,7 +154,7 @@ public final class FileUtil {
 	 *
 	 * @param fileName Nom du fichier
 	 * @return the extension of the file or an empty string if none exists.
-	 * (author Apache Commons IO 1.1)
+	 *         (author Apache Commons IO 1.1)
 	 */
 	public static String getFileExtension(final String fileName) {
 		final String extension;
@@ -198,6 +212,10 @@ public final class FileUtil {
 				&& userFileName.indexOf('/') == -1 //Linux path_separator
 				&& userFileName.indexOf((char) 0) == -1, //char 0
 				USER_CHECK_ERROR_MSG);
+	}
+
+	public static String sanitizeFileName(final String fileName) {
+		return FILENAME_EXCLUSIONS_PATTERN.matcher(fileName).replaceAll("_");
 	}
 
 }

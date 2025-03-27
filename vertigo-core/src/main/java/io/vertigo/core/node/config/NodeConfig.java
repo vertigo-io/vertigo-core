@@ -20,6 +20,7 @@ package io.vertigo.core.node.config;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
 
@@ -28,23 +29,24 @@ import io.vertigo.core.lang.Assertion;
  * The node is built from this config.
  *
  * NodeConfig must be created using the NodeConfigBuilder.
- * 
+ *
  * An node is composed of multiple nodes.
-* AppName is the common name that define the application as a whole. (ex: Facebook, Pharos...)
-
+ * AppName is the common name that define the application as a whole. (ex: Facebook, Pharos...)
+ *
  * @author pchretien
- * 
+ *
  * @param appName the logical name of the app
  * @param nodeId the random uuid of a node
-
+ *
  * @param componentInitializerConfigs List of the configs of the initializers
-
+ * 
  */
 public record NodeConfig(
 		String appName,
 		String nodeId,
 		Optional<String> endPointOpt,
 		//---
+		Set<String> activeFlags,
 		BootConfig bootConfig,
 		List<ModuleConfig> moduleConfigs,
 		List<ComponentInitializerConfig> componentInitializerConfigs) {
@@ -58,12 +60,17 @@ public record NodeConfig(
 				.isNotBlank(appName)
 				.isNotBlank(nodeId)
 				.isNotNull(endPointOpt)
+				.isNotNull(activeFlags)
 				.isNotNull(bootConfig)
 				.isNotNull(moduleConfigs)
 				.isNotNull(componentInitializerConfigs);
 		//---
 		moduleConfigs = List.copyOf(moduleConfigs);
 		componentInitializerConfigs = List.copyOf(componentInitializerConfigs);
+	}
+
+	public boolean hasFlag(final String flag) {
+		return activeFlags.contains(flag);
 	}
 
 	/**

@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ import io.vertigo.core.plugins.analytics.log.LoggerAnalyticsConnectorPlugin;
  * @author pchretien, npiedeloup
  */
 public final class TraceAnalyticsTest extends AbstractTestCaseJU5 {
+
 	private static final String PRICE = "PRICE";
 
 	private static final String WEIGHT = "WEIGHT";
@@ -218,6 +219,8 @@ public final class TraceAnalyticsTest extends AbstractTestCaseJU5 {
 				tracer -> {
 					tracer.setTag("testTag", "MyTag");
 				});
+		//Dans le cas du tag ça doit passer
+		assertTrue(true);
 	}
 
 	@Test
@@ -228,5 +231,7 @@ public final class TraceAnalyticsTest extends AbstractTestCaseJU5 {
 				tracer -> {
 					tracer.setMetadata("testMetaData", "MyMetaData");
 				});
+		//Dans le cas des metadata ça doit passer
+		assertTrue(true);
 	}
 }

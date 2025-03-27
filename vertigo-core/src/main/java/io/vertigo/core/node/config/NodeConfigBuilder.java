@@ -17,7 +17,9 @@
  */
 package io.vertigo.core.node.config;
 
+import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import io.vertigo.core.lang.Assertion;
@@ -36,6 +38,7 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	private String myNodeId;
 	private String myEndPoint;
 	//---
+	private Set<String> myActiveFlags;
 	private final ListBuilder<ModuleConfig> myModuleConfigsBuilder = new ListBuilder<>();
 	private BootConfig myBootConfig;
 	private final ListBuilder<ComponentInitializerConfig> myComponentInitializerConfigsBuilder = new ListBuilder<>();
@@ -51,12 +54,26 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	 * There is exactly one BootConfig per NodeConfig.
 	 * @return this builder
 	 */
-	public NodeConfigBuilder withBoot(BootConfig bootConfig) {
+	public NodeConfigBuilder withBoot(final BootConfig bootConfig) {
 		Assertion.check()
 				.isNull(myBootConfig, "boot is already set")
 				.isNotNull(bootConfig);
 		//---
-		this.myBootConfig = bootConfig;
+		myBootConfig = bootConfig;
+		return this;
+	}
+
+	/**
+	 * Keep track of activeFlags use for NodeConfig creation.
+	 * @param activeFlags flags active for this node
+	 * @return this builder
+	 */
+	public NodeConfigBuilder withActiveFlags(final Set<String> activeFlags) {
+		Assertion.check()
+				.isNull(myActiveFlags, "activeFlags is already set")
+				.isNotNull(activeFlags);
+		//---
+		myActiveFlags = activeFlags;
 		return this;
 	}
 
@@ -142,11 +159,15 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 		if (myBootConfig == null) {
 			myBootConfig = BootConfig.builder().build();
 		}
+		if (myActiveFlags == null) {
+			myActiveFlags = Collections.emptySet();
+		}
 		//---
 		return new NodeConfig(
 				myAppName,
 				myNodeId,
 				Optional.ofNullable(myEndPoint),
+				Collections.unmodifiableSet(myActiveFlags),
 				myBootConfig,
 				myModuleConfigsBuilder.unmodifiable().build(),
 				myComponentInitializerConfigsBuilder.unmodifiable().build());

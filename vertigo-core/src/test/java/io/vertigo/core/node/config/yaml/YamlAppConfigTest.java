@@ -18,6 +18,7 @@
 package io.vertigo.core.node.config.yaml;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -70,6 +71,10 @@ public final class YamlAppConfigTest {
 				.build();
 
 		testBioManager(nodeConfig);
+
+		assertFalse(nodeConfig.hasFlag("main"));
+		assertFalse(nodeConfig.hasFlag("secondary"));
+		assertEquals(0, nodeConfig.activeFlags().size());
 	}
 
 	@Test
@@ -84,6 +89,10 @@ public final class YamlAppConfigTest {
 		assertEquals("bio", nodeConfig.appName());
 		assertEquals("myFirstNodeId", nodeConfig.nodeId());
 		assertEquals("http://localhost/", nodeConfig.endPointOpt().get());
+
+		assertFalse(nodeConfig.hasFlag("main"));
+		assertFalse(nodeConfig.hasFlag("secondary"));
+		assertEquals(0, nodeConfig.activeFlags().size());
 	}
 
 	@Test
@@ -95,6 +104,10 @@ public final class YamlAppConfigTest {
 				.build();
 
 		testBioManager(nodeConfig);
+
+		assertTrue(nodeConfig.hasFlag("main"));
+		assertFalse(nodeConfig.hasFlag("secondary"));
+		assertEquals(1, nodeConfig.activeFlags().size());
 	}
 
 	@Test
@@ -108,6 +121,10 @@ public final class YamlAppConfigTest {
 		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
 			assertNotNull(node);
 			assertTrue(node.getComponentSpace().contains("bioManager"));
+			assertFalse(node.getNodeConfig().hasFlag("main"));
+			assertTrue(node.getNodeConfig().hasFlag("secondary"));
+			assertEquals(1, node.getNodeConfig().activeFlags().size());
+
 			final BioManager bioManager = node.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
 			assertEquals(336, res);
@@ -144,6 +161,10 @@ public final class YamlAppConfigTest {
 		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
 			assertNotNull(node);
 			assertTrue(node.getComponentSpace().contains("bioManager"));
+			assertTrue(node.getNodeConfig().hasFlag("andFlag"));
+			assertTrue(node.getNodeConfig().hasFlag("customStart"));
+			assertFalse(node.getNodeConfig().hasFlag("main"));
+			assertEquals(2, node.getNodeConfig().activeFlags().size());
 			final BioManager bioManager = node.getComponentSpace().resolve(BioManager.class);
 			final int res = bioManager.add(1, 2, 3);
 			assertEquals(366, res);
