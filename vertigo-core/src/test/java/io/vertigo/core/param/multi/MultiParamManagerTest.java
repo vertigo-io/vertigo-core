@@ -51,7 +51,8 @@ public final class MultiParamManagerTest extends AbstractParamManagerTest {
 								Param.of("url", "io/vertigo/core/param/multi/app-config2.properties"))
 						.addPlugin(XmlParamPlugin.class,
 								Param.of("url", "io/vertigo/core/param/multi/app-config2.xml"))
-						.addPlugin(ManifestParamPlugin.class)
+						.addPlugin(ManifestParamPlugin.class,
+								Param.of("url", "META-INF/MANIFEST_test.MF"))
 						.build())
 				.build();
 	}

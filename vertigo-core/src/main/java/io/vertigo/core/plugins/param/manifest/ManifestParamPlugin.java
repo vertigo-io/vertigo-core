@@ -34,6 +34,7 @@ import io.vertigo.core.impl.param.ParamPlugin;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.param.Param;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.util.FileUtil;
 
@@ -52,16 +53,17 @@ public final class ManifestParamPlugin implements ParamPlugin {
 	/**
 	 * Constructor.
 	 *
-	 * @param  resourceManager Selector
-	 * @throws IOException     erreur de lecture du fichier
+	 * @param resourceManager Selector
+	 * @throws IOException erreur de lecture du fichier
 	 */
 	@Inject
-	public ManifestParamPlugin(final ResourceManager resourceManager) throws IOException {
+	public ManifestParamPlugin(final ResourceManager resourceManager,
+			@ParamValue("url") final Optional<String> manifestLocationOpt) throws IOException {
 		Assertion.check()
 				.isNotNull(resourceManager);
 		//-----
 		try {
-			final URL configURL = resourceManager.resolve(FileUtil.translatePath("META-INF/MANIFEST.MF"));
+			final URL configURL = resourceManager.resolve(FileUtil.translatePath(manifestLocationOpt.orElse("META-INF/MANIFEST.MF")));
 			manifestOpt = Optional.of(loadManifest(configURL));
 		} catch (final VSystemException e) {
 			LOG.trace("Aucun MANIFEST.MF présent", e);
