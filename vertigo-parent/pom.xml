@@ -255,7 +255,7 @@
 					<plugin>
 						<groupId>org.owasp</groupId>
 						<artifactId>dependency-check-maven</artifactId>
-						<version>8.3.1</version>
+						<version>12.1.0</version>
 						<executions>
 							<execution>
 								<goals>
@@ -266,7 +266,10 @@
 						<configuration>
 							<!-- update will be done in a dedicated task -->
 							<autoUpdate>true</autoUpdate>
-							<format>ALL</format>
+							<formats>
+								<format>HTML</format>
+								<format>JSON</format>
+							</formats>
 						</configuration>
 					</plugin>
 				</plugins>
