@@ -1,14 +1,33 @@
 Version history
 ===============
 
-Running 4.3.0
+Running 5.0.0
 ----------------------
-[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-420-to-430)
-  
 more to come :)
 
 
-Running 4.2.0 - 2024/07/04
+Release 4.3.0 - 2025/03/28
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-420-to-430)
+
+- [Core] Add better message if missing injected parameter
+- [Core] Resolved parameter (env or system prop) is now empty if blank
+- [Core] Keep used activeFlags into NodeConfig
+- [Core] Refactor XML XSS protection
+- [Core] Prepare DateQuery parser parseAsInstant to support absolute instant (UTC)
+- [Core] Fix test Manifest ParamManager
+- [yaml] No need to add {} to plugins without parameters
+- [Analytics] Move log/success/error to TraceSpanBuilder
+- [Core] Add FileUtil sanitizeFileName function
+- [Core] ManifestParamPlugin Add optional parameter to choose manifest location
+- [Core] Update libs
+    - log4j-api 2.23.1 -> 2.24.3
+    - gson 2.11.0 -> 2.12.1
+    - snakeyaml 2.2 -> 2.4
+    - junit-jupiter-engine 5.10.3 -> 5.12.1
+
+
+Release 4.2.0 - 2024/07/04
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-410-to-420)
 
