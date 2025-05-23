@@ -49,9 +49,16 @@ import com.google.gson.stream.JsonWriter;
 import io.vertigo.core.node.definition.DefinitionId;
 
 /**
- * Provides the Vertigo json serialization strategy for basic java types and types of vertigo-core
- * @author mlaroche
+ * Core JSON serialization adapters for Vertigo framework.
+ * Provides type adapters for:
+ * - Date/Time types (Date, LocalDate, ZonedDateTime, Instant)
+ * - Collections (List, Map, Set)
+ * - Core types (DefinitionId, Optional, Class)
+ * - Custom exclusion strategies
+ * 
+ * Configures default serialization behavior and null handling.
  *
+ * @author mlaroche
  */
 public class CoreJsonAdapters {
 
@@ -87,6 +94,10 @@ public class CoreJsonAdapters {
 
 	}
 
+	/**
+	 * UTC-aware adapter for Date serialization.
+	 * Handles conversion between Date objects and ISO8601 strings.
+	 */
 	private static class UTCDateAdapter implements JsonSerializer<Date>, JsonDeserializer<Date> {
 
 		/** {@inheritDoc} */
@@ -103,6 +114,10 @@ public class CoreJsonAdapters {
 		}
 	}
 
+	/**
+	 * Adapter for LocalDate serialization.
+	 * Uses ISO local date format (yyyy-MM-dd).
+	 */
 	private static class LocalDateAdapter implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
 
 		/** {@inheritDoc} */
@@ -118,6 +133,10 @@ public class CoreJsonAdapters {
 		}
 	}
 
+	/**
+	 * Adapter for ZonedDateTime serialization.
+	 * Converts to/from UTC ISO instant format.
+	 */
 	private static class ZonedDateTimeAdapter implements JsonSerializer<ZonedDateTime>, JsonDeserializer<ZonedDateTime> {
 
 		/** {@inheritDoc} */
@@ -133,6 +152,10 @@ public class CoreJsonAdapters {
 		}
 	}
 
+	/**
+	 * Adapter for Instant serialization.
+	 * Uses UTC ISO8601 format.
+	 */
 	private static class InstantAdapter implements JsonSerializer<Instant>, JsonDeserializer<Instant> {
 
 		/** {@inheritDoc} */
@@ -148,6 +171,9 @@ public class CoreJsonAdapters {
 		}
 	}
 
+	/**
+	 * Converts empty strings to null during deserialization.
+	 */
 	private static class EmptyStringAsNull implements JsonDeserializer<String> {
 
 		/** {@inheritDoc} */
@@ -161,6 +187,10 @@ public class CoreJsonAdapters {
 		}
 	}
 
+	/**
+	 * Handles empty Map serialization.
+	 * Ensures consistent representation of empty maps.
+	 */
 	private static class EmptyMapAdapter extends TypeAdapter<Map> {
 		@Override
 		public void write(final JsonWriter out, final Map value) throws IOException {
@@ -175,6 +205,10 @@ public class CoreJsonAdapters {
 		}
 	}
 
+	/**
+	 * Handles empty Set serialization.
+	 * Ensures consistent representation of empty sets.
+	 */
 	private static class EmptySetAdapter extends TypeAdapter<Set> {
 		@Override
 		public void write(final JsonWriter out, final Set value) throws IOException {
@@ -189,6 +223,10 @@ public class CoreJsonAdapters {
 		}
 	}
 
+	/**
+	 * Handles empty List serialization.
+	 * Ensures consistent representation of empty lists.
+	 */
 	private static class EmptyListAdapter extends TypeAdapter<List> {
 		@Override
 		public void write(final JsonWriter out, final List value) throws IOException {
@@ -203,6 +241,9 @@ public class CoreJsonAdapters {
 		}
 	}
 
+	/**
+	 * Serializes DefinitionId using definition name.
+	 */
 	private static final class DefinitionIdJsonSerializer implements JsonSerializer<DefinitionId> {
 		/** {@inheritDoc} */
 		@Override
@@ -211,6 +252,9 @@ public class CoreJsonAdapters {
 		}
 	}
 
+	/**
+	 * Custom Map serializer that converts empty maps to null.
+	 */
 	private static final class MapJsonSerializer implements JsonSerializer<Map> {
 		/** {@inheritDoc} */
 		@Override
@@ -222,6 +266,9 @@ public class CoreJsonAdapters {
 		}
 	}
 
+	/**
+	 * Custom List serializer that converts empty lists to null.
+	 */
 	private static final class ListJsonSerializer implements JsonSerializer<List> {
 
 		/** {@inheritDoc} */
@@ -234,6 +281,10 @@ public class CoreJsonAdapters {
 		}
 	}
 
+	/**
+	 * Implements JsonExclude annotation processing.
+	 * Skips fields marked with @JsonExclude.
+	 */
 	private static final class JsonExclusionStrategy implements ExclusionStrategy {
 		/** {@inheritDoc} */
 		@Override
@@ -247,6 +298,9 @@ public class CoreJsonAdapters {
 		}
 	}
 
+	/**
+	 * Serializes Class objects using class name.
+	 */
 	private static final class ClassJsonSerializer implements JsonSerializer<Class> {
 		/** {@inheritDoc} */
 		@Override
