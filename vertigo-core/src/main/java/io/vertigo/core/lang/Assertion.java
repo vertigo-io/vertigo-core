@@ -23,30 +23,23 @@ import java.util.function.Supplier;
 import io.vertigo.core.util.StringUtil;
 
 /**
- * Assertions help us to build better code, with more robustness.
+ * Design by Contract implementation through assertions.
+ * Provides a fluent API for runtime validation of program invariants.
+ * 
+ * Features:
+ * - Null checks (isNotNull, isNull)
+ * - String validation (isNotBlank)
+ * - Boolean conditions (isTrue, isFalse)
+ * - Conditional assertions (when)
+ * - Formatted error messages with parameters
+ * 
+ * Based on B.Meyer's Design by Contract principles from Eiffel language.
+ * Throws specific exceptions when assertions fail.
  *
- * Assertions have been introduced by  B.Meyer in a language called Eiffel.
- *
- * An assertion allows you to design by contract.
- * Each time an assertion fails, an specific exception is thrown.
- *
- * The following assertions help you to test if
- * - an object is noT null => isNotNull
- * - a string is not blank (and not null) =>isNotBlank
- * - an expression is true or false =>isTrue or isFalse
- *
- * You can have a condition before running an assertion => when
- * That's usefull when you want to test a pattern of an object that can be null.
- *
- * This assertion should be written in a fluent style to group all the assertions
- * into a single block of code.
- *
- * Assertion can define a message and args.
- * "hello {0}, an error occured on '{1}'", "foo", "bar"
- *  returns
- *  hello foo, an error occured on 'bar'
- *
- * You can use the simple quote ' inside the message.
+ * Usage example:
+ * Assertion.check()
+ *         .isNotNull(object, "Object {0} required", objectName)
+ *         .isTrue(value > 0, "Positive value required");
  *
  * @author pchretien, fconstantin
  */

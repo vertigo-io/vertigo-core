@@ -26,6 +26,9 @@ import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.lang.Assertion;
 
 /**
+ * Scheduled task wrapper for daemon execution.
+ * Handles lifecycle events and cleanup between runs.
+ *
  * @author mlaroche, pchretien, npiedeloup
  */
 final class DaemonTimerTask implements Runnable {
@@ -34,6 +37,12 @@ final class DaemonTimerTask implements Runnable {
 	private final Daemon daemon;
 	private final DaemonListener daemonListener;
 
+	/**
+	 * Creates a new timer task for daemon execution.
+	 *
+	 * @param daemonListener Execution event listener
+	 * @param daemon Daemon to execute
+	 */
 	DaemonTimerTask(final DaemonListener daemonListener, final Daemon daemon) {
 		Assertion.check()
 				.isNotNull(daemonListener)
@@ -59,6 +68,10 @@ final class DaemonTimerTask implements Runnable {
 		}
 	}
 
+	/**
+	 * Cleans up thread-local variables after execution.
+	 * Prevents memory leaks in long-running daemon threads.
+	 */
 	private static void clearAllThreadLocals() {
 		try {
 			final Field threadLocals = Thread.class.getDeclaredField("threadLocals");

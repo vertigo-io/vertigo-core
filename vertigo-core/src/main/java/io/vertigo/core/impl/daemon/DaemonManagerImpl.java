@@ -45,7 +45,8 @@ import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
 
 /**
- * Manager of all the daemons.
+ * Implementation of the daemon management system.
+ * Handles daemon registration, scheduling, execution and monitoring.
  *
  * @author mlaroche, pchretien, npiedeloup
  */
@@ -55,9 +56,10 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	private final AnalyticsManager analyticsManager;
 
 	/**
-	 * Construct an instance of DaemonManagerImpl.
-	 * @param analyticsManager AnalyticsManager
-	 * @param threadPoolSize thread pool size (optional, default 2)
+	 * Creates a new daemon manager.
+	 *
+	 * @param analyticsManager For monitoring daemon execution
+	 * @param threadPoolSize Optional thread pool size (default 2)
 	 */
 	@Inject
 	public DaemonManagerImpl(final AnalyticsManager analyticsManager,
@@ -80,6 +82,13 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 				.toList();
 	}
 
+	/**
+	 * Creates daemon definitions from annotated component methods.
+	 *
+	 * @param component Component to scan for daemon methods
+	 * @param aopPlugin For unwrapping enhanced components
+	 * @return List of daemon definitions
+	 */
 	private List<DaemonDefinition> createDaemonDefinitions(final CoreComponent component, final AspectPlugin aopPlugin) {
 		return Stream.of(aopPlugin.unwrap(component).getClass().getMethods())
 				.filter(method -> method.isAnnotationPresent(DaemonScheduled.class))
@@ -106,7 +115,6 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 									daemonSchedule.periodInSeconds());
 						})
 				.toList();
-
 	}
 
 	/** {@inheritDoc} */
@@ -128,12 +136,10 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	}
 
 	/**
-	 * Démarre un démon.
-	 * Celui-ci aura été préalablement enregistré.
-	 * Il sera lancé puis réexécuté périodiquement.
-	 * L'instance du démon est créée par injection de dépendances.
+	 * Starts a registered daemon.
+	 * Daemon will be executed periodically based on its configuration.
 	 *
-	 * @param daemonDefinition Le démon à lancer.
+	 * @param daemonDefinition Daemon to start
 	 */
 	private void startDaemon(final DaemonDefinition daemonDefinition) {
 		Assertion.check().isNotNull(daemonDefinition);
@@ -142,13 +148,20 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	}
 
 	/**
-	 * Démarre l'ensemble des démons préalablement enregistré dans le spaceDefinition.
+	 * Starts all registered daemons.
+	 * Called during system initialization.
 	 */
 	private void startAllDaemons() {
 		Node.getNode().getDefinitionSpace().getAll(DaemonDefinition.class).stream()
 				.forEach(this::startDaemon);
 	}
 
+	/**
+	 * Health check for daemon executions.
+	 * Reports status based on success/failure of last executions.
+	 *
+	 * @return Health status of daemon executions
+	 */
 	@HealthChecked(name = "lastExecs", feature = "daemons")
 	public HealthMeasure checkDaemonsExecs() {
 		final List<DaemonStat> daemonStats = getStats();
@@ -170,7 +183,5 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 		return healthMeasure
 				.withRedStatus("All daemons failed")
 				.build();
-
 	}
-
 }

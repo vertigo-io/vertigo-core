@@ -22,9 +22,10 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 /**
- * Basic types.
- * This class defines ALL the basic types, used by Vertigo.
- * This set is limited to only a few types.
+ * Core type system for Vertigo platform.
+ * Defines a finite set of fundamental data types used across the framework.
+ * Provides type checking, conversion and validation capabilities.
+ * Can be extended through BasicTypeAdapter for custom type support.
  *
  * You can extend this set with the basicTypeAdapter.
  *

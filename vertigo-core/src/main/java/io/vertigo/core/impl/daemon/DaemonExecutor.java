@@ -32,7 +32,8 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
 
 /**
- * This class executes the daemons that have been previously registered.
+ * Manages execution of registered daemons using a thread pool.
+ * Handles scheduling, monitoring and lifecycle of daemon processes.
  *
  * @author mlaroche, pchretien, npiedeloup
  */
@@ -43,8 +44,8 @@ final class DaemonExecutor implements Activeable {
 	private final List<DaemonListener> daemonListeners = new ArrayList<>();
 
 	/**
-	 * Constructor.
-	 * @param threadPoolSize thread pool size
+	 * Creates executor with specified thread pool size.
+	 * @param threadPoolSize Maximum concurrent daemons
 	 */
 	public DaemonExecutor(final int threadPoolSize) {
 		scheduler = Executors.newScheduledThreadPool(threadPoolSize, new NamedThreadFactory("v-daemon-"));
@@ -55,13 +56,11 @@ final class DaemonExecutor implements Activeable {
 	}
 
 	/**
-	* Registers a new daemon.
-	* It will be executed after the delay (in milliseconds)
-	* and will be periodically executed after the period (in milliseconds)
-	*
-	* @param daemonDefinition the daemon definition
-	* @param daemon Daemon to schedule.
-	*/
+	 * Schedules periodic execution of a daemon.
+	 * Daemon will run at fixed intervals defined in its definition.
+	 *
+	 * @param daemonDefinition Configuration for the daemon
+	 */
 	void scheduleDaemon(final DaemonDefinition daemonDefinition) {
 		Assertion.check()
 				.isNotNull(daemonDefinition)
@@ -72,12 +71,11 @@ final class DaemonExecutor implements Activeable {
 		final DaemonTimerTask timerTask = new DaemonTimerTask(daemonListener, daemon);
 		daemonListeners.add(daemonListener);
 		scheduler.scheduleWithFixedDelay(timerTask, daemonDefinition.getPeriodInSeconds(), daemonDefinition.getPeriodInSeconds(), TimeUnit.SECONDS);
-
-		//look at https://stackoverflow.com/questions/20279736/java-scheduleexecutorservice-timeout-task
 	}
 
 	/**
-	 * @return Daemons stats
+	 * Gets execution statistics for all daemons.
+	 * @return List of daemon statistics
 	 */
 	List<DaemonStat> getStats() {
 		return daemonListeners
