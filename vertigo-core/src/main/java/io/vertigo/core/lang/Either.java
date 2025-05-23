@@ -20,14 +20,14 @@ package io.vertigo.core.lang;
 import java.util.Optional;
 
 /**
- * Immutable object representing an Either, containing a left or a right element.
- *
- * An Either is an immutable object that represents a choice between two types of elements: left or right.
+ * Immutable object representing an Either type.
+ * Implements the Either monad pattern to handle two possible types of values.
+ * Useful for representing success/failure scenarios or optional transformations.
+ * Only one of the two possible types can be present at a time.
  *
  * @author pchretien
- *
- * @param <L> the type of the left element
- * @param <R> the type of the right element
+ * @param <L> Type of left element
+ * @param <R> Type of right element
  */
 public record Either<L, R> (Optional<L> left, Optional<R> right) {
 	public Either {
@@ -37,25 +37,25 @@ public record Either<L, R> (Optional<L> left, Optional<R> right) {
 	}
 
 	/**
-     * Creates an Either with a right element.
-     *
-     * @param <L>   the type of the left element
-     * @param <R>   the type of the right element
-     * @param right the right element
-     * @return the created Either object with the right element
-     */
+	 * Creates an Either with a right element.
+	 *
+	 * @param <L> Type of left element
+	 * @param <R> Type of right element
+	 * @param right Right element
+	 * @return New Either with right element
+	 */
 	public static <L, R> Either<L, R> right(final R right) {
 		return new Either<>(Optional.empty(), Optional.of(right));
 	}
 
 	/**
-     * Creates an Either with a left element.
-     *
-     * @param <L>  the type of the left element
-     * @param <R>  the type of the right element
-     * @param left the left element
-     * @return the created Either object with the left element
-     */
+	 * Creates an Either with a left element.
+	 *
+	 * @param <L> Type of left element
+	 * @param <R> Type of right element
+	 * @param left Left element
+	 * @return New Either with left element
+	 */
 	public static <L, R> Either<L, R> left(final L left) {
 		return new Either<>(Optional.of(left), Optional.empty());
 	}

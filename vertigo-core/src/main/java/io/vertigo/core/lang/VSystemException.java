@@ -20,7 +20,9 @@ package io.vertigo.core.lang;
 import io.vertigo.core.util.StringUtil;
 
 /**
- * This class defines a Vertigo system exception.
+ * Runtime exception for Vertigo system errors.
+ * Provides formatted message support and simplified exception chaining.
+ * Used to wrap technical errors that occur during system operations.
  *
  * @author fconstantin, pchretien, npiedeloup
  */

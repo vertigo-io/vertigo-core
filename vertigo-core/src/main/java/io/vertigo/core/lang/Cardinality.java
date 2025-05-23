@@ -17,36 +17,57 @@
  */
 package io.vertigo.core.lang;
 
-/** Cardinalities. */
+/**
+ * Represents relationship cardinalities in data models.
+ * Provides symbolic notation (?, 1, *) and validation methods.
+ * Used for defining associations between entities.
+ */
 public enum Cardinality {
 	/** 
-	 * card   : 0  or 1
-	 * symbol : ?
+	 * Optional relationship (0 or 1).
+	 * Symbol: ?
 	 */
 	OPTIONAL_OR_NULLABLE,
 	/** 
-	 * card   : 1 
-	 * symbol : 1
+	 * Mandatory single relationship (exactly 1).
+	 * Symbol: 1
 	 */
 	ONE,
 	/**
-	 * card   :  0..n 
-	 * symbol : *
+	 * Multiple relationship (0 to many).
+	 * Symbol: *
 	 */
 	MANY;
 
+	/**
+	 * Checks if cardinality is optional.
+	 * @return true if optional (0 or 1)
+	 */
 	public boolean isOptionalOrNullable() {
 		return OPTIONAL_OR_NULLABLE == this;
 	}
 
+	/**
+	 * Checks if cardinality is exactly one.
+	 * @return true if exactly one
+	 */
 	public boolean hasOne() {
 		return ONE == this;
 	}
 
+	/**
+	 * Checks if cardinality allows multiple values.
+	 * @return true if multiple values allowed
+	 */
 	public boolean hasMany() {
 		return MANY == this;
 	}
 
+	/**
+	 * Creates cardinality from symbol.
+	 * @param sCardinality Symbol (?, 1, *)
+	 * @return Matching cardinality
+	 */
 	public static Cardinality fromSymbol(final String sCardinality) {
 		Assertion.check().isNotBlank(sCardinality);
 		//---
@@ -58,6 +79,10 @@ public enum Cardinality {
 		};
 	}
 
+	/**
+	 * Converts cardinality to symbol.
+	 * @return Symbol (?, 1, *)
+	 */
 	public String toSymbol() {
 		return switch (this) {
 			case OPTIONAL_OR_NULLABLE -> "?";

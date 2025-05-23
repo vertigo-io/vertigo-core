@@ -24,9 +24,8 @@ import io.vertigo.core.locale.LocaleMessageText;
 
 /**
  * Root Class for all user exceptions.
- * User Exceptions are built with a (localized) message
- *
- * A cause can be added by setting 'initCause' method
+ * User Exceptions are built with a (localized) message.
+ * A cause can be added by setting 'initCause' method.
  *
  * @author fconstantin, pchretien
  */
@@ -36,19 +35,19 @@ public class VUserException extends RuntimeException {
 
 	/**
 	 * Constructor.
-	 * @param messageText Message de l'exception
+	 * @param messageText Exception message
 	 */
 	public VUserException(final LocaleMessageText messageText) {
-		//Attention il convient d'utiliser une méthode qui ne remonte d'exception.
+		// Use a method that doesn't throw exceptions
 		super(messageText.getDisplay());
-		// On rerentre sur l'API des Exception en passant le message.
+		// Re-enter the Exception API by passing the message
 		this.messageText = messageText;
 	}
 
 	/**
 	 * Constructor.
-	 * @param defaultMsg the default msg (required)
-	 * @param params  list of params (optional)
+	 * @param defaultMsg The default msg (required)
+	 * @param params List of params (optional)
 	 */
 	public VUserException(final String defaultMsg, final Serializable... params) {
 		this(LocaleMessageText.of(defaultMsg, params));
@@ -56,16 +55,16 @@ public class VUserException extends RuntimeException {
 
 	/**
 	 * Constructor.
-	 * @param key  the msg key (required)
-	 * @param params  list of params (optional)
+	 * @param key The msg key (required)
+	 * @param params List of params (optional)
 	 */
 	public VUserException(final LocaleMessageKey key, final Serializable... params) {
 		this(LocaleMessageText.of(key, params));
 	}
 
 	/**
-	 * Gestion des messages d'erreur externalisés.
-	 * @return messageText.
+	 * Returns the externalized error message.
+	 * @return The localized message text
 	 */
 	public final LocaleMessageText getMessageText() {
 		return messageText;

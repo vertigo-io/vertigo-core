@@ -21,13 +21,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The MapBuilder class allows to build a map.
- * The map can be immutable using unmodifiable().
- * Several put() methods exist to cover the frequent cases.
+ * Fluent builder for Map construction.
+ * Provides type-safe map creation with various put operations and validation:
+ * - Required values (put)
+ * - Optional values (putNullable)
+ * - Duplicate key check (putCheckKeyNotExists)
+ * - Bulk insertion (putAll)
+ * Can create immutable maps using unmodifiable().
  *
  * @author pchretien
- * @param <K> the type of keys
- * @param <V> the type of mapped values
+ * @param <K> Type of keys
+ * @param <V> Type of mapped values
  */
 public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	private final Map<K, V> myMap = new HashMap<>();

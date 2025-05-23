@@ -24,12 +24,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Fichier temporaire supprimé automatiquement après utilisation.
+ * Temporary file management utility.
+ * Provides a safe way to create and handle temporary files with automatic cleanup.
+ * Files are created in a dedicated Vertigo temporary directory and are automatically
+ * deleted when the JVM exits.
+ *
  * @author npiedeloup
  */
 public final class TempFile {
 	/**
-	 * Vertigo Temp directory path.
+	 * Vertigo temporary directory path.
 	 */
 	public static final Path VERTIGO_TMP_DIR_PATH;
 	static {
@@ -43,21 +47,23 @@ public final class TempFile {
 	}
 
 	/**
-	 * Crée un fichier temporaire.
-	 * @param prefix Prefix du nom de fichier
-	 * @param suffix Suffix du nom de fichier
-	 * @param subDirectory Sous-répertoire des fichiers temporaires (null = répertoire temporaire de vertigo = ${java.io.tmpdir}/vertigo/tempFiles)
-	 * @throws IOException Exception IO
+	 * Creates a temporary file.
+	 *
+	 * @param prefix Filename prefix
+	 * @param suffix Filename suffix
+	 * @param subDirectory Temporary files subdirectory (null = vertigo temp directory = ${java.io.tmpdir}/vertigo/tempFiles)
+	 * @throws IOException IO Exception
 	 */
 	public static File of(final String prefix, final String suffix, final String subDirectory) throws IOException {
 		return of(prefix, suffix, Files.createDirectories(VERTIGO_TMP_DIR_PATH.resolve(subDirectory)));
 	}
 
 	/**
-	 * Crée un fichier temporaire.
-	 * @param prefix Prefix du nom de fichier
-	 * @param suffix Suffix du nom de fichier
-	 * @throws IOException Exception IO
+	 * Creates a temporary file.
+	 *
+	 * @param prefix Filename prefix
+	 * @param suffix Filename suffix
+	 * @throws IOException IO Exception
 	 */
 	public static File of(final String prefix, final String suffix) throws IOException {
 		return of(prefix, suffix, Files.createDirectories(VERTIGO_TMP_DIR_PATH));
@@ -70,7 +76,8 @@ public final class TempFile {
 	}
 
 	/**
-	 * We can't use finalize anymore, because we keep a nio.Path reference, so this TempFile ref will be GC anyway we use it in a VFile.
-	 * Purge is done by a fileManager's deamon.
+	 * We can't use finalize anymore as we keep a nio.Path reference.
+	 * TempFile reference will be GC regardless of VFile usage.
+	 * Purge is handled by fileManager daemon.
 	 */
 }
