@@ -22,9 +22,14 @@ import java.lang.reflect.InvocationTargetException;
 import io.vertigo.core.util.StringUtil;
 
 /**
- * Runtime exception wrapper for checked exceptions.
- * Provides utility methods to wrap any exception into unchecked exceptions.
- * Preserves stack trace and original exception information.
+ * Exception wrapper for converting checked exceptions to unchecked.
+ * Features:
+ * - Preserves original stack trace
+ * - Handles InvocationTargetException unwrapping
+ * - Supports custom error messages
+ * - Maintains existing RuntimeExceptions
+ * 
+ * Used to simplify exception handling while preserving error context.
  *
  * @author npiedeloup
  */

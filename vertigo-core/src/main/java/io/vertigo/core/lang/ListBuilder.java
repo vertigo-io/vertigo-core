@@ -23,10 +23,16 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * The ListBuilder class allows to build a list.
- * @author pchretien
+ * Fluent builder for List construction.
+ * Features:
+ * - Type-safe list creation
+ * - Required value validation
+ * - Collection bulk insertion
+ * - Optional sorting
+ * - Immutability support
  *
- * @param <X> the type of elements in the list
+ * @author pchretien
+ * @param <X> Element type in the list
  */
 public final class ListBuilder<X> implements Builder<List<X>> {
 	private final List<X> list = new ArrayList<>();
@@ -34,10 +40,12 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 	private Comparator<? super X> myComparator;
 
 	/**
-	 * Adds a value in the list.
-	 * The value CAN NOT be null.
-	 * @param value Value not null
-	 * @return this builder
+	 * Adds a required element to the list.
+	 * Element must be non-null.
+	 *
+	 * @param value Element to add
+	 * @return Current builder for chaining
+	 * @throws NullPointerException if value is null
 	 */
 	public ListBuilder<X> add(final X value) {
 		Assertion.check()
@@ -48,10 +56,12 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 	}
 
 	/**
-	 * Adds a collection of values in the list.
-	 * These values CAN NOT be null.
-	 * @param values Values not null
-	 * @return this builder
+	 * Adds all elements from a collection.
+	 * All elements must be non-null.
+	 *
+	 * @param values Collection to add from
+	 * @return Current builder for chaining
+	 * @throws NullPointerException if collection or any element is null
 	 */
 	public ListBuilder<X> addAll(final Collection<? extends X> values) {
 		Assertion.check()
@@ -62,8 +72,10 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 	}
 
 	/**
-	 * Makes this list as unmodifiable.
-	 * @return this builder
+	 * Makes the resulting list unmodifiable.
+	 * Creates defensive copy on build.
+	 *
+	 * @return Current builder for chaining
 	 */
 	public ListBuilder<X> unmodifiable() {
 		this.unmodifiable = true;
@@ -71,9 +83,12 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 	}
 
 	/**
-	 * Sorts the list with the provided comparator.
-	 * @param comparator the comparator to use
-	 * @return this builder
+	 * Sets list sorting comparator.
+	 * Applied during build.
+	 *
+	 * @param comparator Comparator to sort elements
+	 * @return Current builder for chaining
+	 * @throws IllegalStateException if comparator already set
 	 */
 	public ListBuilder<X> sort(final Comparator<? super X> comparator) {
 		Assertion.check()
@@ -84,6 +99,12 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 		return this;
 	}
 
+	/**
+	 * Creates the final list.
+	 * Applies sorting if configured and returns unmodifiable copy if requested.
+	 *
+	 * @return Built list instance
+	 */
 	@Override
 	public List<X> build() {
 		if (myComparator != null) {

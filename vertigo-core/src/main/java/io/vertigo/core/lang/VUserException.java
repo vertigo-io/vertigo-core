@@ -23,9 +23,14 @@ import io.vertigo.core.locale.LocaleMessageKey;
 import io.vertigo.core.locale.LocaleMessageText;
 
 /**
- * Root Class for all user exceptions.
- * User Exceptions are built with a (localized) message.
- * A cause can be added by setting 'initCause' method.
+ * Base exception for user-facing errors in Vertigo.
+ * Features:
+ * - Localized message support
+ * - Parameter substitution
+ * - Message key resolution
+ * - Default message fallback
+ * 
+ * Used for errors that should be displayed to end users.
  *
  * @author fconstantin, pchretien
  */

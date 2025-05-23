@@ -20,9 +20,13 @@ package io.vertigo.core.lang;
 import io.vertigo.core.util.StringUtil;
 
 /**
- * Runtime exception for Vertigo system errors.
- * Provides formatted message support and simplified exception chaining.
- * Used to wrap technical errors that occur during system operations.
+ * Runtime exception for system-level errors in Vertigo.
+ * Features:
+ * - Message formatting with parameters
+ * - Exception chaining with cause preservation
+ * - No stack trace manipulation
+ * 
+ * Used for technical errors that should trigger immediate system attention.
  *
  * @author fconstantin, pchretien, npiedeloup
  */

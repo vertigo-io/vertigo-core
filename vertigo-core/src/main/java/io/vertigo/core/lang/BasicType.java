@@ -23,32 +23,34 @@ import java.util.Optional;
 
 /**
  * Core type system for Vertigo platform.
- * Defines a finite set of fundamental data types used across the framework.
- * Provides type checking, conversion and validation capabilities.
- * Can be extended through BasicTypeAdapter for custom type support.
+ * Defines fundamental data types with built-in:
+ * - Primitive and wrapper types (Integer, Double, Boolean)
+ * - Common objects (String, BigDecimal)
+ * - Date/Time types (LocalDate, Instant)
+ * - Stream handling (DataStream)
+ * 
+ * Supports type categorization and validation.
  *
- * You can extend this set with the basicTypeAdapter.
- *
- * @author  pchretien
+ * @author pchretien
  */
 public enum BasicType {
-	/** Integer. */
+	/** Integer type for whole numbers. */
 	Integer(Integer.class),
-	/** Double. */
+	/** Double type for decimal numbers. */
 	Double(Double.class),
-	/** Boolean. */
+	/** Boolean type for true/false values. */
 	Boolean(Boolean.class),
-	/** String. */
+	/** String type for text data. */
 	String(String.class),
-	/** LocalDate. */
+	/** LocalDate type for date without time. */
 	LocalDate(LocalDate.class),
-	/** Instant. */
+	/** Instant type for timestamp with timezone. */
 	Instant(Instant.class),
-	/** BigDecimal. */
+	/** BigDecimal type for precise decimal calculations. */
 	BigDecimal(java.math.BigDecimal.class),
-	/** Long. */
+	/** Long type for large whole numbers. */
 	Long(Long.class),
-	/** DataStream. */
+	/** DataStream type for binary data handling. */
 	DataStream(DataStream.class);
 
 	/**
@@ -57,8 +59,8 @@ public enum BasicType {
 	private final Class<?> javaClass;
 
 	/**
-	 * Constructor.
-	 * @param javaClass the java class
+	 * Creates a basic type with its Java class.
+	 * @param javaClass Corresponding Java class
 	 */
 	BasicType(final Class<?> javaClass) {
 		Assertion.check().isNotNull(javaClass);
@@ -67,7 +69,8 @@ public enum BasicType {
 	}
 
 	/**
-	 * @return if the dataType talks about a date
+	 * Checks if type represents date/time data.
+	 * @return true for LocalDate and Instant types
 	 */
 	public boolean isAboutDate() {
 		return this == BasicType.LocalDate
@@ -75,7 +78,8 @@ public enum BasicType {
 	}
 
 	/**
-	 * @return if the basic type is a number
+	 * Checks if type represents numeric data.
+	 * @return true for Integer, Double, BigDecimal and Long types
 	 */
 	public boolean isNumber() {
 		return this == BasicType.Double
@@ -85,16 +89,19 @@ public enum BasicType {
 	}
 
 	/**
-	 * @return the native java class wrapped by this dataType
+	 * Gets the Java class for this type.
+	 * @return Corresponding Java class
 	 */
 	public Class getJavaClass() {
 		return javaClass;
 	}
 
 	/**
-	 * Finds the basic type bound to a class.
-	 * @param type a candidate type
-	 * @return Optional Basic Type of this Class
+	 * Finds BasicType for a Java class.
+	 * Handles both primitive and wrapper types.
+	 *
+	 * @param type Java class to check
+	 * @return Optional containing matching BasicType if found
 	 */
 	public static Optional<BasicType> of(final Class type) {
 		Assertion.check().isNotNull(type);
