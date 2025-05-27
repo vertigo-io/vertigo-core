@@ -20,19 +20,19 @@ package io.vertigo.core.locale;
 import java.io.Serializable;
 
 /**
- * Identifier for localized messages in resource bundles.
- * Objectives:
- * - Provide type-safe message keys
- * - Enable compile-time validation
- * - Support enum-based message catalogs
- *
+ * Key for an externalized message.
+ * 
+ * This interface represents a key used to identify an externalized message.
+ * It is typically used to look up messages in a resource bundle.
+ * 
  * @author pchretien, npiedeloup
  */
 public interface LocaleMessageKey extends Serializable {
 
 	/**
-	 * Gets the key identifier.
-	 * @return Key name used for message lookup
+	 * Retrieves the name of the key.
+	 * 
+	 * @return The name of the key.
 	 */
 	String name();
 }

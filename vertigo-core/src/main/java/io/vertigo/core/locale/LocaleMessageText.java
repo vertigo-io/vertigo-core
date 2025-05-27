@@ -27,13 +27,9 @@ import io.vertigo.core.node.Node;
 import io.vertigo.core.util.StringUtil;
 
 /**
- * Localized text with parameter substitution support.
- * Objectives:
- * - Load messages from resource bundles
- * - Support parameter substitution
- * - Provide fallback to default messages
- * - Handle missing translations gracefully
- * - Enable serialization for distributed systems
+ * A Text that can be externalized in a resource file,
+ * based on the application's configuration settings.
+ * If the label is not found, the display is
  *
  * @author npiedeloup, pchretien
  */
@@ -47,12 +43,12 @@ public final class LocaleMessageText implements Serializable {
 	private final Serializable[] params;
 
 	/**
-	 * Creates a message text with key and/or default text.
-	 * At least one must be non-null.
+	 * Constructor.
+	 * The key and/or default message must be non-null.
 	 *
-	 * @param defaultMsg Default message if key not found
-	 * @param key Message key for lookup
-	 * @param params Substitution parameters
+	 * @param defaultMsg Default message (unformatted) of the resource
+	 * @param key Key of the resource
+	 * @param params Parameters of the resource
 	 */
 	private LocaleMessageText(final String defaultMsg, final LocaleMessageKey key, final Serializable... params) {
 		Assertion.check()
@@ -65,11 +61,10 @@ public final class LocaleMessageText implements Serializable {
 	}
 
 	/**
-	 * Creates message text from key.
+	 * Static Builder of a messageText by its key.
 	 *
-	 * @param key Required message key
-	 * @param params Optional parameters
-	 * @return New message text
+	 * @param key Key of the resource
+	 * @return the messageText
 	 */
 	public static LocaleMessageText of(final LocaleMessageKey key, final Serializable... params) {
 		Assertion.check().isNotNull(key, "the message key is required");
@@ -78,11 +73,10 @@ public final class LocaleMessageText implements Serializable {
 	}
 
 	/**
-	 * Creates message text from default message.
+	 * Static Builder of a messageText by its default message.
 	 *
-	 * @param msg Required default message
-	 * @param params Optional parameters
-	 * @return New message text
+	 * @param msg Default message (unformatted) of the resource
+	 * @return the messageText
 	 */
 	public static LocaleMessageText of(final String msg, final Serializable... params) {
 		Assertion.check().isNotBlank(msg, "the message is required");
@@ -91,12 +85,10 @@ public final class LocaleMessageText implements Serializable {
 	}
 
 	/**
-	 * Creates message text with both key and default message.
+	 * Static Builder of a messageText by its default message.
 	 *
-	 * @param defaultMsg Required default message
-	 * @param key Required message key
-	 * @param params Optional parameters
-	 * @return New message text
+	 * @param defaultMsg Default message (unformatted) of the resource
+	 * @return the messageText
 	 */
 	public static LocaleMessageText ofDefaultMsg(final String defaultMsg, final LocaleMessageKey key, final Serializable... params) {
 		Assertion.check()
@@ -107,18 +99,17 @@ public final class LocaleMessageText implements Serializable {
 	}
 
 	/**
-	 * Gets message parameters.
-	 * @return Parameter array
+	 * @return parameters of the message
 	 */
 	private Object[] getParams() {
 		return params;
 	}
 
 	/**
-	 * Gets formatted message if available.
-	 * Returns empty if no message found.
+	 * Format message with parameters.
+	 * No exception thrown!!
 	 *
-	 * @return Optional containing formatted message
+	 * @return Formatted message, if exists.
 	 */
 	public Optional<String> getDisplayOpt() {
 		Locale locale = null;
@@ -150,10 +141,11 @@ public final class LocaleMessageText implements Serializable {
 	}
 
 	/**
-	 * Gets formatted message or fallback text.
-	 * Never returns null - uses panic message if needed.
+	 * Format message with parameters.
+	 * If nothing is found, return a "panic message" displaying what is missing.
+	 * No exception thrown!!
 	 *
-	 * @return Formatted message or fallback
+	 * @return Formatted message.
 	 */
 	public String getDisplay() {
 		/*
