@@ -24,85 +24,77 @@ import java.util.function.Supplier;
 import io.vertigo.core.node.component.Manager;
 
 /**
- * The localization manager for applications managed by Vertigo, 
- * supporting multilingual or more specifically, multidictionary management.
- *
- * External resources are managed in dictionaries, where each resource is identified by a unique key:
- * @see MessageKey. For a given component, the list of keys is ideally implemented as an enumeration.
- * Each key is associated with a resource file, also referred to as a dictionary.
- *
- * If a label is not found in a specific language, a "panic" message is returned indicating the requested language,
- * and a warning is logged.
- *
- * Example panic message:
- * MessageText(null,messageKey.TOTO) in 'fr_FR' : <<fr:TOTO>>
- * MessageText(null,messageKey.TOTO) in 'en' : <<en:TOTO>>
- *
- * Labels can be parameterized.
- *
- * @see LocaleMessageText to create labels connected to the dictionary.
+ * Manages localization and internationalization in Vertigo applications.
+ * Objectives:
+ * - Handle multiple languages and dictionaries
+ * - Support dynamic locale selection
+ * - Manage timezone preferences
+ * - Enable resource overriding
+ * - Provide fallback for missing translations
+ * 
+ * Resources are stored in property files and accessed by enum keys.
+ * Missing translations return a formatted panic message: <<lang:KEY>>
  *
  * @author pchretien
  */
 public interface LocaleManager extends Manager {
 
 	/**
-	 * Registers a strategy to choose a locale.
+	 * Sets locale selection strategy.
 	 * 
-	 * @param localeSupplier Supplies a locale in a given context.
+	 * @param localeSupplier Strategy for locale selection
 	 */
 	void registerLocaleSupplier(Supplier<Locale> localeSupplier);
 
 	/**
-	 * Registers a strategy to choose a time zone.
+	 * Sets timezone selection strategy.
 	 * 
-	 * @param zoneSupplier Supplies a time zone in a given context.
+	 * @param zoneSupplier Strategy for timezone selection
 	 */
 	void registerZoneSupplier(Supplier<ZoneId> zoneSupplier);
 
 	/**
-	 * Adds a resource dictionary.
-	 * All resources identified by a key must be present in the properties file.
-	 * This method is not synchronized and should be called at application startup.
+	 * Adds base resource dictionary.
+	 * All keys must exist in properties file.
+	 * Call at startup only - not thread safe.
 	 * 
-	 * @param baseName Name and path of the properties file.
-	 * @param enums Enumeration (enum) controlling the managed resources.
+	 * @param baseName Properties file path
+	 * @param enums Message key enums
 	 */
 	void add(String baseName, LocaleMessageKey[] enums);
 
 	/**
-	 * Overrides a resource dictionary.
-	 * This method is not synchronized and should be called at application startup.
-	 * It is possible to override only one property or a specific dictionary.
+	 * Overrides existing dictionary entries.
+	 * Call at startup only - not thread safe.
 	 * 
-	 * @param baseName Name and path of the properties file.
-	 * @param enums Enumeration (enum) controlling the managed resources.
+	 * @param baseName Properties file path
+	 * @param enums Message key enums
 	 */
 	void override(String baseName, LocaleMessageKey[] enums);
 
 	/**
-	 * Retrieves the unformatted label of a message identified by its key.
-	 * Returns null if the message is not found.
+	 * Gets raw message for key and locale.
+	 * Returns null if not found.
 	 * 
-	 * @param messageKey Message key.
-	 * @param locale Locale.
-	 * @return Unformatted message in the language of the locale.
+	 * @param messageKey Message identifier
+	 * @param locale Target locale
+	 * @return Raw message or null
 	 */
 	String getMessage(LocaleMessageKey messageKey, Locale locale);
 
 	/**
-	 * Retrieves the current locale, corresponding to the current user if available,
-	 * otherwise corresponds to the application's locale.
+	 * Gets current locale from context.
+	 * Falls back to application default.
 	 * 
-	 * @return Current locale.
+	 * @return Active locale
 	 */
 	Locale getCurrentLocale();
 
 	/**
-	 * Retrieves the current time zone, corresponding to the current user if available,
-	 * otherwise corresponds to the application's time zone.
+	 * Gets current timezone from context.
+	 * Falls back to application default.
 	 * 
-	 * @return Current time zone.
+	 * @return Active timezone
 	 */
 	ZoneId getCurrentZoneId();
 }

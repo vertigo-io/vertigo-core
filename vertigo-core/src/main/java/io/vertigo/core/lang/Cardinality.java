@@ -18,55 +18,65 @@
 package io.vertigo.core.lang;
 
 /**
- * Represents relationship cardinalities in data models.
- * Provides symbolic notation (?, 1, *) and validation methods.
- * Used for defining associations between entities.
+ * Defines relationship multiplicities in data models.
+ * Supports three cardinality types:
+ * - Optional (0..1) - Symbol: ?
+ * - Mandatory (1) - Symbol: 1
+ * - Multiple (0..*) - Symbol: *
+ * 
+ * Used for defining and validating entity associations.
  */
 public enum Cardinality {
 	/** 
-	 * Optional relationship (0 or 1).
+	 * Optional relationship allowing zero or one instance.
+	 * Used for nullable references.
 	 * Symbol: ?
 	 */
 	OPTIONAL_OR_NULLABLE,
 	/** 
-	 * Mandatory single relationship (exactly 1).
+	 * Mandatory relationship requiring exactly one instance.
+	 * Used for required references.
 	 * Symbol: 1
 	 */
 	ONE,
 	/**
-	 * Multiple relationship (0 to many).
+	 * Multiple relationship allowing zero or more instances.
+	 * Used for collections and lists.
 	 * Symbol: *
 	 */
 	MANY;
 
 	/**
-	 * Checks if cardinality is optional.
-	 * @return true if optional (0 or 1)
+	 * Checks if relationship is optional.
+	 * @return true for OPTIONAL_OR_NULLABLE cardinality
 	 */
 	public boolean isOptionalOrNullable() {
 		return OPTIONAL_OR_NULLABLE == this;
 	}
 
 	/**
-	 * Checks if cardinality is exactly one.
-	 * @return true if exactly one
+	 * Checks if relationship requires exactly one instance.
+	 * @return true for ONE cardinality
 	 */
 	public boolean hasOne() {
 		return ONE == this;
 	}
 
 	/**
-	 * Checks if cardinality allows multiple values.
-	 * @return true if multiple values allowed
+	 * Checks if relationship allows multiple instances.
+	 * @return true for MANY cardinality
 	 */
 	public boolean hasMany() {
 		return MANY == this;
 	}
 
 	/**
-	 * Creates cardinality from symbol.
-	 * @param sCardinality Symbol (?, 1, *)
-	 * @return Matching cardinality
+	 * Parses cardinality from standard notation symbol.
+	 * Supported symbols: ?, 1, *
+	 *
+	 * @param sCardinality Symbol to parse
+	 * @return Corresponding cardinality value
+	 * @throws VSystemException if symbol is invalid
 	 */
 	public static Cardinality fromSymbol(final String sCardinality) {
 		Assertion.check().isNotBlank(sCardinality);
@@ -80,8 +90,8 @@ public enum Cardinality {
 	}
 
 	/**
-	 * Converts cardinality to symbol.
-	 * @return Symbol (?, 1, *)
+	 * Converts cardinality to standard notation symbol.
+	 * @return Symbol (?, 1, or *)
 	 */
 	public String toSymbol() {
 		return switch (this) {

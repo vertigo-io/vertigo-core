@@ -24,16 +24,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Temporary file management utility.
- * Provides a safe way to create and handle temporary files with automatic cleanup.
- * Files are created in a dedicated Vertigo temporary directory and are automatically
- * deleted when the JVM exits.
+ * Temporary file management with automatic cleanup.
+ * Features:
+ * - Safe temporary file creation
+ * - Dedicated Vertigo temp directory
+ * - Automatic deletion on JVM exit
+ * - Subdirectory support
+ * - Path-based file handling
+ * 
+ * Files are created in ${java.io.tmpdir}/vertigo/tempFiles
  *
  * @author npiedeloup
  */
 public final class TempFile {
 	/**
-	 * Vertigo temporary directory path.
+	 * Root directory for Vertigo temporary files.
+	 * Created at startup in ${java.io.tmpdir}/vertigo/tempFiles.
 	 */
 	public static final Path VERTIGO_TMP_DIR_PATH;
 	static {
@@ -47,23 +53,25 @@ public final class TempFile {
 	}
 
 	/**
-	 * Creates a temporary file.
+	 * Creates a temporary file in a subdirectory.
 	 *
-	 * @param prefix Filename prefix
-	 * @param suffix Filename suffix
-	 * @param subDirectory Temporary files subdirectory (null = vertigo temp directory = ${java.io.tmpdir}/vertigo/tempFiles)
-	 * @throws IOException IO Exception
+	 * @param prefix Filename prefix, used to generate unique name
+	 * @param suffix Filename extension with dot (e.g. ".tmp")
+	 * @param subDirectory Path under temp directory (created if needed)
+	 * @return Created temporary file
+	 * @throws IOException if file creation fails
 	 */
 	public static File of(final String prefix, final String suffix, final String subDirectory) throws IOException {
 		return of(prefix, suffix, Files.createDirectories(VERTIGO_TMP_DIR_PATH.resolve(subDirectory)));
 	}
 
 	/**
-	 * Creates a temporary file.
+	 * Creates a temporary file in root temp directory.
 	 *
-	 * @param prefix Filename prefix
-	 * @param suffix Filename suffix
-	 * @throws IOException IO Exception
+	 * @param prefix Filename prefix, used to generate unique name
+	 * @param suffix Filename extension with dot (e.g. ".tmp")
+	 * @return Created temporary file
+	 * @throws IOException if file creation fails
 	 */
 	public static File of(final String prefix, final String suffix) throws IOException {
 		return of(prefix, suffix, Files.createDirectories(VERTIGO_TMP_DIR_PATH));
@@ -76,8 +84,8 @@ public final class TempFile {
 	}
 
 	/**
-	 * We can't use finalize anymore as we keep a nio.Path reference.
-	 * TempFile reference will be GC regardless of VFile usage.
-	 * Purge is handled by fileManager daemon.
+	 * Note: Automatic cleanup is now handled by fileManager daemon.
+	 * We can't use finalize due to nio.Path reference retention.
+	 * TempFile references are garbage collected independently of VFile usage.
 	 */
 }
