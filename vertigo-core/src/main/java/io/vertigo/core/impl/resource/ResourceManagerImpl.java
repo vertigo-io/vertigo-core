@@ -24,7 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -76,8 +76,7 @@ public final class ResourceManagerImpl implements ResourceManager {
 	public URL resolve(final String resource) {
 		return resourceResolverPlugins.stream()
 				.map(resourceResolverPlugin -> resourceResolverPlugin.resolve(resource))
-				.filter(Optional::isPresent)
-				.map(Optional::get)
+				.filter(Objects::nonNull)
 				/* We take the first url found.*/
 				.findFirst()
 				/* If we have not found any resolver for this resource we throw an exception*/

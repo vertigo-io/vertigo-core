@@ -18,19 +18,25 @@
 package io.vertigo.core.impl.resource;
 
 import java.net.URL;
-import java.util.Optional;
 
 import io.vertigo.core.node.component.Plugin;
 
 /**
- * Résout une ressource en fournissant son URL.
+ * Resolves a resource by providing its URL.
+ * This interface defines a plugin contract for resolving resources represented as strings into their corresponding URL objects.
+ * Implementations of this interface are expected to handle the conversion of a resource string into a valid URL, if possible.
+ *
  * @author prahmoune
  */
 public interface ResourceResolverPlugin extends Plugin {
 	/**
-	 * Retourne une URL à partir de sa représentation 'chaîne de caractères'
-	 * @param resource Url de la ressource(chaîne de caractères)
-	 * @return URL associée à la ressource
+	 * Resolves a resource string into its corresponding URL.
+	 * This method takes a string representation of a resource (e.g., a file path, URI, or other identifier) and attempts to convert it into a URL object.
+	 * If the resource cannot be resolved (e.g., due to an invalid format or inaccessible resource), an empty Optional is returned.
+	 *
+	 * @param resource the string representation of the resource to resolve
+	 * @return The resolved URL if successful, or null if the resource cannot be resolved
+	 * @throws NullPointerException if the provided resource string is null
 	 */
-	Optional<URL> resolve(String resource);
+	URL resolve(String resource);
 }
