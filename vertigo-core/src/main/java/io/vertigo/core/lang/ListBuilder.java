@@ -49,8 +49,8 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 	 */
 	public ListBuilder<X> add(final X value) {
 		Assertion.check()
-				.isNotNull(value);
-		//-----
+				.isNotNull(value, "Value cannot be null");
+		//---
 		list.add(value);
 		return this;
 	}
@@ -65,8 +65,8 @@ public final class ListBuilder<X> implements Builder<List<X>> {
 	 */
 	public ListBuilder<X> addAll(final Collection<? extends X> values) {
 		Assertion.check()
-				.isNotNull(values);
-		//-----
+				.isNotNull(values, "Collection cannot be null");
+		//---
 		values.forEach(this::add);
 		return this;
 	}

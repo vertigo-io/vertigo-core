@@ -34,23 +34,23 @@ import java.util.Optional;
  * @author pchretien
  */
 public enum BasicType {
-	/** Integer type for whole numbers. */
+	/** Integer type. */
 	Integer(Integer.class),
-	/** Double type for decimal numbers. */
+	/** Double type. */
 	Double(Double.class),
-	/** Boolean type for true/false values. */
+	/** Boolean type. */
 	Boolean(Boolean.class),
-	/** String type for text data. */
+	/** String type. */
 	String(String.class),
-	/** LocalDate type for date without time. */
+	/** LocalDate type. */
 	LocalDate(LocalDate.class),
-	/** Instant type for timestamp with timezone. */
+	/** Instant type. */
 	Instant(Instant.class),
-	/** BigDecimal type for precise decimal calculations. */
+	/** BigDecimal type. */
 	BigDecimal(java.math.BigDecimal.class),
-	/** Long type for large whole numbers. */
+	/** Long type. */
 	Long(Long.class),
-	/** DataStream type for binary data handling. */
+	/** DataStream type. */
 	DataStream(DataStream.class);
 
 	/**
@@ -106,7 +106,7 @@ public enum BasicType {
 	public static Optional<BasicType> of(final Class type) {
 		Assertion.check().isNotNull(type);
 		//---
-		BasicType basicType;
+		final BasicType basicType;
 		if (Integer.class.equals(type) || int.class.equals(type)) {
 			basicType = BasicType.Integer;
 		} else if (Double.class.equals(type) || double.class.equals(type)) {

@@ -66,7 +66,7 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	 */
 	public MapBuilder<K, V> putAll(final Map<K, V> map) {
 		Assertion.check()
-				.isNotNull(map);
+				.isNotNull(map, "map cannot be null");
 		//-----
 		map.forEach(this::put);
 		return this;
@@ -82,8 +82,8 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	 */
 	public MapBuilder<K, V> put(final K key, final V value) {
 		Assertion.check()
-				.isNotNull(key)
-				.isNotNull(value);
+				.isNotNull(key, "key cannot be null")
+				.isNotNull(value, "value cannot be null");
 		//-----
 		myMap.put(key, value);
 		return this;
@@ -99,7 +99,7 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	 */
 	public MapBuilder<K, V> putNullable(final K key, final V value) {
 		Assertion.check()
-				.isNotNull(key);
+				.isNotNull(key, "key cannot be null");
 		//-----
 		if (value != null) {
 			myMap.put(key, value);
