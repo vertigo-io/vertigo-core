@@ -49,8 +49,12 @@ public class NamedThreadFactory implements ThreadFactory {
 	public Thread newThread(final Runnable runnable) {
 		//Copy Executors default factory code
 		final Thread t = new Thread(group, runnable, namePrefix + threadNumber.getAndIncrement());
-		t.setDaemon(false);
-		t.setPriority(Thread.NORM_PRIORITY);
+		if (t.isDaemon()) {
+			t.setDaemon(false);
+		}
+		if (t.getPriority() != Thread.NORM_PRIORITY) {
+			t.setPriority(Thread.NORM_PRIORITY);
+		}
 		return t;
 	}
 }
