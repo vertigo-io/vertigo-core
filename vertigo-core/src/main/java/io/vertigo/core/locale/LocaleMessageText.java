@@ -112,7 +112,6 @@ public final class LocaleMessageText implements Serializable {
 	 * @return Formatted message, if exists.
 	 */
 	public Optional<String> getDisplayOpt() {
-		Locale locale = null;
 		String msg = null;
 		if (key != null) {
 			// Only search the dictionary (managed by localeManager) if there is a key.
@@ -120,7 +119,7 @@ public final class LocaleMessageText implements Serializable {
 				// It is necessary that LocaleManager is registered.
 				// If no user is present, the first declared language is taken.
 				final var localeManager = getLocaleManager();
-				locale = localeManager.getCurrentLocale();
+				final Locale locale = localeManager.getCurrentLocale();
 				msg = localeManager.getMessage(key, locale);
 			} catch (final Exception e) {
 				// If LocaleManager is not registered or generates an exception

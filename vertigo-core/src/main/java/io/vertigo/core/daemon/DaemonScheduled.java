@@ -23,30 +23,31 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for scheduling daemons.
- * @author mlaroche
+ * Configures periodic execution of daemon methods.
+ * Allows scheduling methods to run as background tasks
+ * with specified intervals and monitoring options.
  *
+ * @author mlaroche
  */
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DaemonScheduled {
 
 	/**
-	 * The name of the daemon being scheduled.
-	 * @return name of daemon
+	 * Unique identifier for the scheduled daemon.
+	 * @return Daemon name
 	 */
 	String name();
 
 	/**
-	 * The daemon execution period in seconds
-	 * @return daemon execution period
+	 * Time between daemon executions.
+	 * @return Interval in seconds
 	 */
 	int periodInSeconds();
 
 	/**
-	 * If the deaemon from this method is monitored by an analytics tracer.
-	 * @return daemon execution monitored by a tracer
+	 * Enables analytics monitoring for the daemon.
+	 * @return Whether to collect execution metrics
 	 */
 	boolean analytics() default true;
-
 }

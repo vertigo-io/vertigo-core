@@ -23,14 +23,15 @@ package io.vertigo.core.analytics.health;
 import io.vertigo.core.lang.Assertion;
 
 /**
- *  Measure.
- *  example :
- * Ping to a Database produces a specific Measure
+ * Represents the result of a health check measurement.
+ * Contains status and optional explanatory message.
+ * 
+ * Example: Database ping response with status and latency info
  *
  * @author jmforhan
  *
- * @param status the status returned by the test
- * @param message a nullable message that explains the status (should be required whenever the status is not GREEN)
+ * @param status Health check result status
+ * @param message Optional explanation (required for non-GREEN status)
  */
 public record HealthMeasure(
 		HealthStatus status,

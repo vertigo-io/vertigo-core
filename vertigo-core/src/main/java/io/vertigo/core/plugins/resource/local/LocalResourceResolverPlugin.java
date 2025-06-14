@@ -20,7 +20,6 @@ package io.vertigo.core.plugins.resource.local;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Optional;
 
 import io.vertigo.core.impl.resource.ResourceResolverPlugin;
 import io.vertigo.core.lang.Assertion;
@@ -34,17 +33,16 @@ public final class LocalResourceResolverPlugin implements ResourceResolverPlugin
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<URL> resolve(final String resource) {
+	public URL resolve(final String resource) {
 		Assertion.check().isNotNull(resource);
 		//-----
 		final File file = new File(resource);
-		if (file.exists() && file.canRead()) {
-			try {
-				return Optional.of(file.toURI().toURL());
-			} catch (final MalformedURLException e) {
-				return Optional.empty();
-			}
+		try {
+			return file.exists() && file.canRead()
+					? file.toURI().toURL()
+					: null;
+		} catch (MalformedURLException e) {
+			return null;
 		}
-		return Optional.empty();
 	}
 }

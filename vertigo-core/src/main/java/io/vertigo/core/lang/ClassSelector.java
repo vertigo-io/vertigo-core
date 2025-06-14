@@ -38,17 +38,19 @@ import io.vertigo.core.util.StringUtil;
 import javassist.Modifier;
 
 /**
- * Selector of classes and methods.
+ * Utility class for selecting and filtering classes through reflection.
+ * Provides a fluent API for:
+ * - 1. Defining class scope by packages or explicit classes
+ * - 2. Filtering classes, methods and fields by predicates
+ * - 3. Finding matching elements with type safety
+ * - Supporting annotation-based filtering
+ * - Enabling component scanning and introspection
  *
- * 1. Define  a scope/set of classes
- *  - by addind them
- *  - by their packages
- *
- * 2. filter
- *  - classes
- *  - methods
- *
- * 3 - find your classes or methods.
+ * Usage example:
+ * ClassSelector.from("com.example")
+ *   .filterClasses(ClassConditions.annotatedWith(MyAnnotation.class))
+ *   .filterMethods(MethodConditions.annotatedWith(MyMethodAnnotation.class))
+ *   .findMethods();
  *
  * @author mlaroche
  */
@@ -220,7 +222,7 @@ public final class ClassSelector {
 	}
 
 	/**
-	 * Conditions for selecting a method.
+	 * Utility class for method selection predicates.
 	 */
 	public static final class MethodConditions {
 		private MethodConditions() {
@@ -228,9 +230,9 @@ public final class ClassSelector {
 		}
 
 		/**
-		 * Builds a predicate to check if the method is Annotated.
-		 * @param annotationClass the annotation
-		 * @return the predicate
+		 * Creates predicate for methods with specific annotation.
+		 * @param annotationClass Target annotation
+		 * @return Predicate for method selection
 		 */
 		public static Predicate<Method> annotatedWith(final Class<? extends Annotation> annotationClass) {
 			Assertion.check().isNotNull(annotationClass);
@@ -240,7 +242,7 @@ public final class ClassSelector {
 	}
 
 	/**
-	 * Conditions for selecting a method.
+	 * Utility class for field selection predicates.
 	 */
 	public static final class FieldConditions {
 		private FieldConditions() {
@@ -248,9 +250,9 @@ public final class ClassSelector {
 		}
 
 		/**
-		 * Builds a predicate to check if the field is Annotated.
-		 * @param annotationClass the annotation
-		 * @return the predicate
+		 * Creates predicate for fields with specific annotation.
+		 * @param annotationClass Target annotation
+		 * @return Predicate for field selection
 		 */
 		public static Predicate<Field> annotatedWith(final Class<? extends Annotation> annotationClass) {
 			Assertion.check().isNotNull(annotationClass);
@@ -260,7 +262,7 @@ public final class ClassSelector {
 	}
 
 	/**
-	 * Conditions for selecting a class.
+	 * Utility class for class selection predicates.
 	 */
 	public static final class ClassConditions {
 		private ClassConditions() {
@@ -268,9 +270,9 @@ public final class ClassSelector {
 		}
 
 		/**
-		 * Builds a predicate to check if the class is annotated.
-		 * @param annotationClass the annotation
-		 * @return the predicate
+		 * Creates predicate for classes with specific annotation.
+		 * @param annotationClass Target annotation
+		 * @return Predicate for class selection
 		 */
 		public static Predicate<Class> annotatedWith(final Class<? extends Annotation> annotationClass) {
 			Assertion.check().isNotNull(annotationClass);
@@ -279,9 +281,9 @@ public final class ClassSelector {
 		}
 
 		/**
-		 * Builds a predicate to check if the class is a subtype of the given class.
-		 * @param clazz the annotation
-		 * @return the predicate
+		 * Creates predicate for classes extending or implementing a type.
+		 * @param clazz Base type to check
+		 * @return Predicate for class selection
 		 */
 		public static Predicate<Class> subTypeOf(final Class clazz) {
 			Assertion.check().isNotNull(clazz);
@@ -290,17 +292,16 @@ public final class ClassSelector {
 		}
 
 		/**
-		 * Builds a predicate to check if the class is an abstract class. (we consider here that interface class are not abstract classes)
-		 * To filter interface clazz use the interfaces() ClassCondition
-		 * @return the predicate
+		 * Creates predicate for abstract classes (excluding interfaces).
+		 * @return Predicate for class selection
 		 */
 		public static Predicate<Class> isAbstract() {
 			return clazz -> !clazz.isInterface() && Modifier.isAbstract(clazz.getModifiers());
 		}
 
 		/**
-		 * Builds a predicate to check if the class is an interface.
-		 * @return the predicate
+		 * Creates predicate for interface types.
+		 * @return Predicate for class selection
 		 */
 		public static Predicate<Class> interfaces() {
 			return Class::isInterface;

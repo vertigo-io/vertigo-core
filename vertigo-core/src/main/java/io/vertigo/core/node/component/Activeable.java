@@ -18,19 +18,25 @@
 package io.vertigo.core.node.component;
 
 /**
- * The Activeable class allows you to provide a behavior to a component.
- * The methods start() and stop() are called after the creation and before the destruction of the managed components.
- *
+ * Defines a contract for components that support activation and deactivation lifecycle behavior.
+ * Implementations of this interface manage the lifecycle of components by providing start and stop operations.
+ * - The start() method is invoked after the component is created and fully initialized (e.g., after dependency injection for components built via configuration).
+ * - The stop()  method is invoked before the component is destroyed.
+ *  
  * @author pchretien
  */
 public interface Activeable {
 	/**
-	 * Called after the component has been created and filled by injection (for the components built by configuration).
+	 * Initializes and activates the component.
+	 * This method is called after the component has been created and fully initialized, typically after dependency injection for components built via configuration.
+	 * Implementations should perform any necessary setup or resource allocation to prepare the component for use.
 	 */
 	void start();
 
 	/**
-	 * Called before the component is stopped.
+	 * Deactivates and prepares the component for destruction.
+	 * This method is called before the component is stopped or destroyed.
+	 * Implementations should release resources, terminate processes, or perform cleanup to ensure a graceful shutdown.
 	 */
 	void stop();
 }

@@ -24,26 +24,40 @@ import java.util.Map;
 import io.vertigo.core.node.component.aspect.Aspect;
 
 /**
- * Create proxy-reference from component's instance.
- * Proxy reference implements aspects (AOP).
+ * An interface for creating and managing proxy references for components with Aspect-Oriented Programming (AOP) support.
  *
+ * This plugin enables the creation of proxy references that implement aspects, allowing for the injection of cross-cutting
+ * concerns (e.g., logging, security, transaction management) into a component's lifecycle. 
+ * It extends the Plugin interface to integrate with the plugin ecosystem.
+ * 
  * @author pchretien
  */
 public interface AspectPlugin extends Plugin {
 
 	/**
-	 * Create a proxy-reference.
+	 * Creates a proxy reference for a component instance, applying the specified aspects at defined join points.
 	 *
-	 * @param instance Component's instance
-	 * @param joinPoints List of joinPoints
-	 * @return  Proxy-Reference
+	 * The proxy wraps the provided component instance, intercepting method calls as defined by the join points and their
+	 * associated aspects. This enables the implementation of cross-cutting concerns such as logging, security, or
+	 * performance monitoring.
+	 *
+	 * @param <C> the type of the component, which must extend CoreComponent
+	 * @param instance  the component instance to be wrapped by the proxy
+	 * @param joinPoints a map associating methods to lists of Aspect objects defining the interception logic
+	 * @return a proxy reference implementing the same interface as the provided component instance	 
 	 */
 	<C extends CoreComponent> C wrap(final C instance, Map<Method, List<Aspect>> joinPoints);
 
 	/**
-	 * Unwrap the proxy
-	 * @param component the component to unwrap
-	 * @return the underlying object
+	 * Retrieves the original component instance from a proxy reference.
+	 *
+	 * This method unwraps the proxy to return the underlying component instance, 
+	 * removing any aspect-related interception logic. 
+	 * If the provided component is not a proxy, the original instance is returned unchanged.
+	 *
+	 * @param <C>      the type of the component, which must extend CoreComponent
+	 * @param component the proxy or component instance to unwrap
+	 * @return the underlying component instance
 	 */
 	<C extends CoreComponent> C unwrap(final C component);
 }

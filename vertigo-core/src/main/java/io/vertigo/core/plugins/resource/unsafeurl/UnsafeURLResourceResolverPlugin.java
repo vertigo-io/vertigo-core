@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Optional;
 
 import io.vertigo.core.impl.resource.ResourceResolverPlugin;
 import io.vertigo.core.lang.Assertion;
@@ -35,14 +34,14 @@ public final class UnsafeURLResourceResolverPlugin implements ResourceResolverPl
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<URL> resolve(final String resource) {
+	public URL resolve(final String resource) {
 		Assertion.check().isNotNull(resource);
 		//-----
 		try {
-			final URL url = new URL(resource);
-			return isUrlAvailable(url) ? Optional.of(url) : Optional.empty();
-		} catch (final MalformedURLException e) {
-			return Optional.empty();
+			URL url = new URL(resource);
+			return isUrlAvailable(url) ? url : null;
+		} catch (MalformedURLException e) {
+			return null;
 		}
 	}
 

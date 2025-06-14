@@ -18,44 +18,44 @@
 package io.vertigo.core.lang;
 
 /**
- * This class adapts a non compliant java type to a compliant SQL java type.
- *
- *  Primitive	<=========> Java
- *  PrimitiveDataType <=Adapter=> JavaDataType)
- *
- * By default only a few types are allowed
- * 	- Integer, Long, Double, BigDecimal
- * 	- Boolean
- * 	- String
- *  - LocalDate, Instant
- *  - DataStream
- *
- *  If you want to store another value type like 'mail' you have to define a specific adapter.
- *  This Adapter MUST handle null value.
+ * Type adapter for converting between basic and custom Java types.
+ * Enables storage and handling of custom types by mapping them to supported basic types:
+ * - Numbers (Integer, Long, Double, BigDecimal)
+ * - Boolean values
+ * - Text (String)
+ * - Dates (LocalDate, Instant)
+ * - Binary data (DataStream)
+ * 
+ * Example: EmailAddress (custom) <-> String (basic)
+ * 
+ * Adapters must handle null values correctly.
  *
  * @author pchretien
- * @param <J> JavaType (ex : Mail, Point)
- * @param <B> BasicType (ex : String, Integer)
+ * @param <J> Custom Java type (e.g. EmailAddress, GeoPoint)
+ * @param <B> Basic type for storage (e.g. String, Integer)
  */
 public interface BasicTypeAdapter<J, B> {
 	/**
-	 * String -> Mail
-	 * @param primitiveValue the stored value
-	 * @param javaType ex : Mail, Point...
-	 * @return the value transformed in POJO
+	 * Converts from basic type to custom Java type.
+	 * 
+	 * @param basicValue Value in basic type format
+	 * @param javaType Target Java class
+	 * @return Converted value in custom type
 	 */
 	J toJava(B basicValue, Class<J> javaType);
 
 	/**
-	 * Mail -> String
-	 * @param javaValue the pojo nullable value
-	 * @return the value transformed in a basicType ex : String, Integer....
+	 * Converts from custom Java type to basic type.
+	 * 
+	 * @param javaValue Custom type value (may be null)
+	 * @return Value converted to basic type
 	 */
 	B toBasic(J javaValue);
 
 	/**
-	 * ex : String, Integer....
-	 * @return the BasicType
+	 * Gets the basic type used for storage.
+	 * 
+	 * @return Basic type for this adapter
 	 */
 	BasicType getBasicType();
 

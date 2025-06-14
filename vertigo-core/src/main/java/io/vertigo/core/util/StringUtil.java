@@ -280,17 +280,10 @@ public final class StringUtil {
 				.isNotNull(newStr);
 		//-----
 		int index = str.indexOf(oldStr);
-		if (index == -1) {
-			return;
+		while (index != -1) {
+			str.replace(index, index + oldStr.length(), newStr);
+			index = str.indexOf(oldStr, index + newStr.length());
 		}
-
-		final int oldStrLength = oldStr.length();
-		final int newStrLength = newStr.length();
-		StringBuilder result = str;
-		do {
-			result = result.replace(index, index + oldStrLength, newStr);
-			index = str.indexOf(oldStr, index + newStrLength);
-		} while (index != -1);
 	}
 
 	/**

@@ -23,30 +23,23 @@ import java.util.function.Supplier;
 import io.vertigo.core.util.StringUtil;
 
 /**
- * Assertions help us to build better code, with more robustness.
+ * Design by Contract implementation through assertions.
+ * Provides a fluent API for runtime validation of program invariants.
+ * 
+ * Features:
+ * - Null checks (isNotNull, isNull)
+ * - String validation (isNotBlank)
+ * - Boolean conditions (isTrue, isFalse)
+ * - Conditional assertions (when)
+ * - Formatted error messages with parameters
+ * 
+ * Based on B.Meyer's Design by Contract principles from Eiffel language.
+ * Throws specific exceptions when assertions fail.
  *
- * Assertions have been introduced by  B.Meyer in a language called Eiffel.
- *
- * An assertion allows you to design by contract.
- * Each time an assertion fails, an specific exception is thrown.
- *
- * The following assertions help you to test if
- * - an object is noT null => isNotNull
- * - a string is not blank (and not null) =>isNotBlank
- * - an expression is true or false =>isTrue or isFalse
- *
- * You can have a condition before running an assertion => when
- * That's usefull when you want to test a pattern of an object that can be null.
- *
- * This assertion should be written in a fluent style to group all the assertions
- * into a single block of code.
- *
- * Assertion can define a message and args.
- * "hello {0}, an error occured on '{1}'", "foo", "bar"
- *  returns
- *  hello foo, an error occured on 'bar'
- *
- * You can use the simple quote ' inside the message.
+ * Usage example:
+ * Assertion.check()
+ *         .isNotNull(object, "Object {0} required", objectName)
+ *         .isTrue(value > 0, "Positive value required");
  *
  * @author pchretien, fconstantin
  */
@@ -57,16 +50,23 @@ public final class Assertion {
 		super();
 	}
 
+	/**
+	 * Creates a new assertion chain.
+	 * Starting point for fluent assertion API.
+	 *
+	 * @return Assertion instance for chaining
+	 */
 	public static Assertion check() {
 		return INSTANCE;
 	}
 
 	/**
-	 * Evaluates an assertion when a condition is fulfilled.
+	 * Evaluates an assertion when a condition is met.
+	 * Allows conditional validation without breaking the chain.
 	 *
-	 * @param condition the condition to check the assertion
-	 * @param assertionSupplier the assertion to check when the condition is fulfilled
-	 * @return the current assertion
+	 * @param condition Condition to evaluate
+	 * @param assertionSupplier Assertion to execute if condition is true
+	 * @return Current assertion for chaining
 	 */
 	public Assertion when(final boolean condition, final Supplier<Assertion> assertionSupplier) {
 		if (condition) {
@@ -76,11 +76,12 @@ public final class Assertion {
 	}
 
 	/**
-	 * Checks if an object is not null.
-	 * Throws the famous NullPointerException if not.
+	 * Validates that an object is not null.
+	 * Standard null check without custom message.
 	 *
-	 * @param o the object
-	 * @return the current assertion
+	 * @param o Object to check
+	 * @return Current assertion for chaining
+	 * @throws NullPointerException if object is null
 	 */
 	public Assertion isNotNull(final Object o) {
 		Objects.requireNonNull(o);
@@ -88,13 +89,14 @@ public final class Assertion {
 	}
 
 	/**
-	 * Checks if an object is not null.
-	 * Throws the famous NullPointerException with a pretty message if not.
+	 * Validates that an object is not null with custom message.
+	 * Supports message formatting with parameters.
 	 *
-	 * @param o the object
-	 * @param msg the message
-	 * @param params the params of the message
-	 * @return the current assertion
+	 * @param o Object to check
+	 * @param msg Error message template
+	 * @param params Message parameters
+	 * @return Current assertion for chaining
+	 * @throws NullPointerException if object is null
 	 */
 	public Assertion isNotNull(final Object o, final String msg, final Object... params) {
 		//Attention si o est un Boolean : il peut s'agir du resultat d'un test (boolean) qui a été autoboxé en Boolean
@@ -103,23 +105,26 @@ public final class Assertion {
 	}
 
 	/**
-	 * Checks if an object is null.
-	 * Throws an IllegalStateException if not
-	 * @param o the object
-	 * @return the current assertion
+	 * Validates that an object is null.
+	 * Uses default error message.
+	 *
+	 * @param o Object to check
+	 * @return Current assertion for chaining
+	 * @throws IllegalArgumentException if object is not null
 	 */
 	public Assertion isNull(final Object o) {
 		return isNull(o, "this object must be null");
 	}
 
 	/**
-	 * Checks if an object is null.
-	 * Throws an illegalStateException with a pretty message if not.
+	 * Validates that an object is null with custom message.
+	 * Supports message formatting with parameters.
 	 *
-	 * @param o the object
-	 * @param msg the message
-	 * @param params the params of the message
-	 * @return the current assertion
+	 * @param o Object to check
+	 * @param msg Error message template
+	 * @param params Message parameters
+	 * @return Current assertion for chaining
+	 * @throws IllegalArgumentException if object is not null
 	 */
 	public Assertion isNull(final Object o, final String msg, final Object... params) {
 		if (o != null) {
@@ -129,13 +134,14 @@ public final class Assertion {
 	}
 
 	/**
-	 * Checks if a boolean expression is True
-	 * Throws an IllegalStateException with a pretty message if not.
+	 * Validates that a condition is true.
+	 * Supports message formatting with parameters.
 	 *
-	 * @param test the boolean expression
-	 * @param msg the message
-	 * @param params the params of the message
-	 * @return the current assertion
+	 * @param test Condition to evaluate
+	 * @param msg Error message template
+	 * @param params Message parameters
+	 * @return Current assertion for chaining
+	 * @throws IllegalStateException if condition is false
 	 */
 	public Assertion isTrue(final boolean test, final String msg, final Object... params) {
 		if (!test) {
@@ -145,37 +151,40 @@ public final class Assertion {
 	}
 
 	/**
-	 * Checks if a boolean expression is False
-	 * Throws an IllegalStateException with a pretty message if not.
+	 * Validates that a condition is false.
+	 * Supports message formatting with parameters.
 	 *
-	 * @param test the boolean expression
-	 * @param msg the message
-	 * @param params the params of the message
-	 * @return the current assertion
+	 * @param test Condition to evaluate
+	 * @param msg Error message template
+	 * @param params Message parameters
+	 * @return Current assertion for chaining
+	 * @throws IllegalStateException if condition is true
 	 */
 	public Assertion isFalse(final boolean test, final String msg, final Object... params) {
 		return isTrue(!test, msg, params);
 	}
 
 	/**
-	 * Checks if a string is not blank (and not empty).
-	 * Throws an IllegalArgumentException if not.
+	 * Validates that a string is not blank.
+	 * Uses default error message.
 	 *
-	 * @param str the string
-	 * @return the current assertion
+	 * @param str String to check
+	 * @return Current assertion for chaining
+	 * @throws IllegalArgumentException if string is blank
 	 */
 	public Assertion isNotBlank(final String str) {
 		return isNotBlank(str, "String must not be empty");
 	}
 
 	/**
-	 * Checks if a string is not blank (and not empty).
-	 * Throws an IllegalArgumentException with a pretty message if not.
+	 * Validates that a string is not blank with custom message.
+	 * Supports message formatting with parameters.
 	 *
-	 * @param str the string
-	 * @param msg the message
-	 * @param params the params of the message
-	 * @return the current assertion
+	 * @param str String to check
+	 * @param msg Error message template
+	 * @param params Message parameters
+	 * @return Current assertion for chaining
+	 * @throws IllegalArgumentException if string is blank
 	 */
 	public Assertion isNotBlank(final String str, final String msg, final Object... params) {
 		isNotNull(str, msg, params);
@@ -187,11 +196,12 @@ public final class Assertion {
 	}
 
 	/**
-	 * Checks if an assertion supplied is valid.
-	 * Throws the Exception thrown by the assertion if not.
+	 * Validates a supplied assertion.
+	 * Allows composition of multiple assertions.
 	 *
-	 * @param assertionSupplier the assertion supplied
-	 * @return the current assertion
+	 * @param assertionSupplier Assertion to validate
+	 * @return Current assertion for chaining
+	 * @throws Exception from supplied assertion if validation fails
 	 */
 	public Assertion isValid(final Supplier<Assertion> assertionSupplier) {
 		assertionSupplier.get();

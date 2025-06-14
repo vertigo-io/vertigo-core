@@ -373,7 +373,9 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 		public void run() {
 			while (!shutdown) {
 				try {
-					sleep(reconnectionDelayMillis);
+					if (retry) {
+						sleep(reconnectionDelayMillis);
+					}
 					reconnect();
 				} catch (final InterruptedException ie) {
 					LOGGER.debug("Reconnection interrupted.");

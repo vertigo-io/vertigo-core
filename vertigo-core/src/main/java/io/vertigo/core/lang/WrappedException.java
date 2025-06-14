@@ -22,8 +22,14 @@ import java.lang.reflect.InvocationTargetException;
 import io.vertigo.core.util.StringUtil;
 
 /**
- * Encapsulates checked Exception inside a RuntimeException.
- * Inspired by gnu.mapping.WrappedException.
+ * Exception wrapper for converting checked exceptions to unchecked.
+ * Features:
+ * - Preserves original stack trace
+ * - Handles InvocationTargetException unwrapping
+ * - Supports custom error messages
+ * - Maintains existing RuntimeExceptions
+ * 
+ * Used to simplify exception handling while preserving error context.
  *
  * @author npiedeloup
  */
@@ -32,33 +38,32 @@ public final class WrappedException extends RuntimeException {
 
 	/**
 	 * Constructor.
-	 * @param message the context message
-	 * @param cause the cause exception
+	 * @param message Context message
+	 * @param cause Original exception
 	 */
 	private WrappedException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
 
 	/**
-	 * Coerces argument to a RuntimeException.
-	 * Re-throws as a non-checked exception.
-	 * This method never returns, in spite of the return type.
-	 * This allows the call to be written as: throw WrappedExcepton.rethrow(th) so javac and the verifier can know the code doesn't return.
-	 * @param th Cause exception
-	 * @return RuntimeException runtime
+	 * Wraps any exception into a RuntimeException.
+	 * Preserves original exception if already unchecked.
+	 *
+	 * @param th Original exception
+	 * @return RuntimeException wrapper
 	 */
 	public static RuntimeException wrap(final Throwable th) {
 		return wrap(th, th.getMessage());
 	}
 
 	/**
-	 * Coerces argument to a RuntimeException.
-	 * Re-throw as a non-checked exception. This method never returns, in spite of the return type.
-	 * This allows the call to be written as: throw WrappedExcepton.rethrow(th) so javac and the verifier can know the code doesn't return.
-	 * @param th Cause exception
-	 * @param msg Context message
-	 * @param params Context message params
-	 * @return RuntimeException runtime
+	 * Wraps any exception into a RuntimeException with custom message.
+	 * Preserves original exception if already unchecked.
+	 *
+	 * @param th Original exception
+	 * @param msg Custom message
+	 * @param params Message parameters
+	 * @return RuntimeException wrapper
 	 */
 	public static RuntimeException wrap(final Throwable th, final String msg, final Object... params) {
 		final Throwable t = (th instanceof InvocationTargetException ite)
@@ -80,8 +85,8 @@ public final class WrappedException extends RuntimeException {
 	}
 
 	/**
-	 * Gets the orginal exception.
-	 * @return the orginal exception that has been wrapped
+	 * Retrieves the original wrapped exception.
+	 * @return Original exception
 	 */
 	public Throwable unwrap() {
 		return getCause();

@@ -18,16 +18,19 @@
 package io.vertigo.core.lang;
 
 /**
- * The Builder interface allows you to build an object step by step using a fluent style.
- *
- * It's better to build an immutable object to be able to share your object without using synchronized.
+ * Builder interface for step by step object construction.
+ * Implements the Builder pattern to create complex objects progressively.
+ * Particularly useful for creating immutable objects with many optional parameters.
+ * Provides a fluent API for better readability and maintainability.
  *
  * @author pchretien
- * @param <T> type of the object to build
+ * @param <T> Type of object to build
  */
 public interface Builder<T> {
 	/**
-	 * @return the built object
+	 * Builds and returns the final object.
+	 * 
+	 * @return Built object
 	 */
 	T build();
 }

@@ -23,8 +23,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation is required to exclude some properties of json (un)marshalling.
- * Json Exclusion
+ * Marks fields or types to be excluded from JSON serialization and deserialization.
+ * Used to control which properties are processed during JSON operations.
+ * Can be applied to:
+ * - Fields: Skip specific properties
+ * - Types: Exclude entire classes
+ *
  * @author pchretien
  */
 @Target({ ElementType.FIELD, ElementType.TYPE })

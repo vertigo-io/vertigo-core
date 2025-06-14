@@ -24,6 +24,11 @@ import io.vertigo.core.daemon.DaemonStat;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 
+/**
+ * Tracks execution status and statistics for a daemon.
+ * Provides thread-safe monitoring of success/failure counts
+ * and current execution state.
+ */
 final class DaemonListener {
 	private static final Logger LOG = LogManager.getLogger(DaemonListener.class);
 
@@ -34,6 +39,12 @@ final class DaemonListener {
 	private final DaemonDefinition daemonDefinition;
 	private final boolean verbose;
 
+	/**
+	 * Creates a new listener for the specified daemon.
+	 * 
+	 * @param daemonDefinition Daemon configuration
+	 * @param verbose Whether to log detailed execution info
+	 */
 	DaemonListener(final DaemonDefinition daemonDefinition, final boolean verbose) {
 		Assertion.check().isNotNull(daemonDefinition);
 		//---
@@ -41,14 +52,21 @@ final class DaemonListener {
 		this.verbose = verbose;
 	}
 
-	//Les synchronized sont placés de façon à garantir l'intégrité des données
-	//On effectue une copie/snapshot des stats de façon à ne pas perturber la suite du fonctionnement.
-
+	/**
+	 * Gets current execution statistics.
+	 * Creates an immutable snapshot of current state.
+	 * 
+	 * @return Current daemon statistics
+	 */
 	synchronized DaemonStat getStat() {
 		//On copie les données
 		return new DaemonStatImpl(daemonDefinition, successes, failures, status, lastExecSucceed);
 	}
 
+	/**
+	 * Records daemon execution start.
+	 * Updates status and logs if verbose enabled.
+	 */
 	synchronized void onStart() {
 		status = DaemonStat.Status.running;
 		if (verbose) {
@@ -56,6 +74,12 @@ final class DaemonListener {
 		}
 	}
 
+	/**
+	 * Records daemon execution failure.
+	 * Updates counters, status and logs error.
+	 * 
+	 * @param e Exception that caused the failure
+	 */
 	synchronized void onFailure(final Exception e) {
 		status = DaemonStat.Status.pending;
 		failures++;
@@ -63,6 +87,10 @@ final class DaemonListener {
 		LOG.error("Daemon :  an error has occured during the execution of the daemon: " + daemonDefinition.id(), e);
 	}
 
+	/**
+	 * Records successful daemon execution.
+	 * Updates counters, status and logs if verbose enabled.
+	 */
 	synchronized void onSuccess() {
 		status = DaemonStat.Status.pending;
 		successes++;

@@ -31,6 +31,14 @@ import java.util.TimeZone;
 
 import com.google.gson.JsonParseException;
 
+/**
+ * Utility class for handling UTC date conversions in JSON processing.
+ * Supports multiple date formats:
+ * - ISO8601 (primary)
+ * - RFC 822/1123
+ * - RFC 850/1036
+ * Handles both Date and Instant types with timezone awareness.
+ */
 public final class UTCDateUtil {
 
 	private static final String[] INPUT_DATE_FORMATS = new String[] {
@@ -46,9 +54,11 @@ public final class UTCDateUtil {
 	}
 
 	/**
-	 * Format date to utc date string.
+	 * Formats date to ISO8601 UTC string.
+	 * Preserves date truncation information.
+	 * 
 	 * @param date Date to format
-	 * @return Utc date string
+	 * @return UTC date string in ISO8601 format
 	 */
 	public static String formatISO8601(final Date date) {
 		//Use INPUT_DATE_FORMATS[0] => ISO8601 format
@@ -56,9 +66,10 @@ public final class UTCDateUtil {
 	}
 
 	/**
-	 * Format instant to utc string.
-	 * @param instant instant to format
-	 * @return Utc string
+	 * Formats Instant to ISO8601 UTC string.
+	 * 
+	 * @param instant Instant to format
+	 * @return UTC string in ISO8601 format
 	 */
 	public static String formatInstantISO8601(final Instant instant) {
 		//Use INPUT_DATE_FORMATS[0] => ISO8601 format
@@ -66,9 +77,12 @@ public final class UTCDateUtil {
 	}
 
 	/**
-	 * Parse Utc date string to date
-	 * @param inputDate Utc date string
-	 * @return date
+	 * Parses UTC date string to Date.
+	 * Attempts multiple format patterns in order.
+	 * 
+	 * @param inputDate UTC date string
+	 * @return Parsed Date object
+	 * @throws JsonParseException if date format is not supported
 	 */
 	public static Date parse(final String inputDate) {
 		final boolean isTruncatedDate = isTruncatedDate(inputDate);
@@ -83,9 +97,12 @@ public final class UTCDateUtil {
 	}
 
 	/**
-	 * Parse Date string to Instant
-	 * @param inputDate date string
-	 * @return Instant
+	 * Parses date string to Instant.
+	 * Attempts multiple format patterns in order.
+	 * 
+	 * @param inputDate Date string to parse
+	 * @return Parsed Instant object
+	 * @throws JsonParseException if date format is not supported
 	 */
 	public static Instant parseInstant(final String inputDate) {
 		for (final String format : INPUT_DATE_FORMATS) {

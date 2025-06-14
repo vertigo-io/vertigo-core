@@ -22,11 +22,29 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Type primitif de Flux.
+ * Core interface for handling data streams with automatic resource management.
+ * Provides a unified approach for:
+ * - Converting between stream and byte array representations
+ * - Managing stream resources safely
+ * - Supporting both reading and buffering operations
+ * - Ensuring proper cleanup of system resources
+ *
+ * Implementations should ensure proper resource cleanup through try-with-resources.
  *
  * @author  pchretien
  */
 public interface DataStream {
+	/**
+	 * Returns the stream content as a byte array.
+	 * Automatically manages resource lifecycle:
+	 * - Creates input stream
+	 * - Buffers content efficiently
+	 * - Ensures proper cleanup
+	 * Uses a 16KB buffer for optimal performance.
+	 *
+	 * @return Content as byte array
+	 * @throws WrappedException if an I/O error occurs during reading
+	 */
 	default byte[] getBytes() {
 		try (
 				final InputStream inputStream = createInputStream();
@@ -44,8 +62,12 @@ public interface DataStream {
 	}
 
 	/**
-	 * @return Stream
-	 * @throws IOException Erreur d'entrée/sortie
+	 * Creates a new input stream for reading the data content.
+	 * Each call returns a fresh stream instance that must be closed after use.
+	 * Callers should use try-with-resources to ensure proper cleanup.
+	 *
+	 * @return New input stream instance for reading data
+	 * @throws IOException If stream creation fails
 	 */
 	InputStream createInputStream() throws IOException;
 }

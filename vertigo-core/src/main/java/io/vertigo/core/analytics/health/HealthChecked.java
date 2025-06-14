@@ -23,8 +23,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation must be added on each method of a component.
- * This method is automatically registered in the analytics manager as a health measure supplier .
+ * Marks component methods that provide health measurements.
+ * Annotated methods are automatically registered as health check suppliers
+ * in the analytics manager.
  *
  * @author mlaroche
  */
@@ -33,14 +34,14 @@ import java.lang.annotation.Target;
 public @interface HealthChecked {
 
 	/**
-	 * The name of the health check.
-	 * @return name of the health check
+	 * Unique identifier for the health check.
+	 * @return Health check name
 	 */
 	String name();
 
 	/**
-	 * The feature of the health check.
-	 * @return feature of the health check
+	 * Semantic grouping for related health checks.
+	 * @return Feature category
 	 */
 	String feature();
 }

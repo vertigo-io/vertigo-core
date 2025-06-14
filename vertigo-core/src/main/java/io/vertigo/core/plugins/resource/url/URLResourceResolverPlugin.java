@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Optional;
 
 import io.vertigo.core.impl.resource.ResourceResolverPlugin;
 import io.vertigo.core.lang.Assertion;
@@ -35,22 +34,21 @@ public final class URLResourceResolverPlugin implements ResourceResolverPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<URL> resolve(final String resource) {
+	public URL resolve(final String resource) {
 		Assertion.check().isNotNull(resource);
 
-		if (!resource.contains("://")
-				|| resource.startsWith("file://")
-				|| resource.startsWith("classpath://")
-				|| resource.startsWith("jar://")) {
-			try {
-				final URL url = new URL(resource);
-				return isUrlAvailable(url) ? Optional.of(url) : Optional.empty();
-			} catch (final MalformedURLException e) {
-				return Optional.empty();
-			}
-		} else {
-			//Only protocol file, jar, classpath are supported. You may use UnsafeURLResourceResolverPlugin.
-			return Optional.empty();
+		if (resource.contains("://") &&
+				!resource.startsWith("file://") &&
+				!resource.startsWith("classpath://") &&
+				!resource.startsWith("jar://")) {
+			return null; // Only file, jar, classpath protocols are supported
+		}
+
+		try {
+			final URL url = new URL(resource);
+			return isUrlAvailable(url) ? url : null;
+		} catch (final MalformedURLException e) {
+			return null;
 		}
 	}
 

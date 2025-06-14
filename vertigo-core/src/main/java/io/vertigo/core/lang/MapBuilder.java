@@ -21,25 +21,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The MapBuilder class allows to build a map.
- * The map can be immutable using unmodifiable().
- * Several put() methods exist to cover the frequent cases.
+ * Fluent builder for Map construction.
+ * Provides type-safe map creation with various put operations and validation:
+ * - Required values (put)
+ * - Optional values (putNullable)
+ * - Duplicate key check (putCheckKeyNotExists)
+ * - Bulk insertion (putAll)
+ * Can create immutable maps using unmodifiable().
  *
  * @author pchretien
- * @param <K> the type of keys
- * @param <V> the type of mapped values
+ * @param <K> Type of keys
+ * @param <V> Type of mapped values
  */
 public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	private final Map<K, V> myMap = new HashMap<>();
 	private boolean unmodifiable;
 
 	/**
-	 * Adds key-value.
-	 * If the same value exists then an exception is thrown.
+	 * Adds a key-value pair with duplicate key check.
+	 * Ensures no existing value for the key.
 	 *
-	 * @param key Key
-	 * @param value Value not null
-	 * @return this builder
+	 * @param key Key to add
+	 * @param value Non-null value to associate
+	 * @return Current builder for chaining
+	 * @throws IllegalArgumentException if key already exists
 	 */
 	public MapBuilder<K, V> putCheckKeyNotExists(final K key, final V value) {
 		Assertion.check()
@@ -53,44 +58,48 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	}
 
 	/**
-	 * Adds a map of key-value.
-	 * Values are required.
-	 * @param map Map
-	 * @return this builder
+	 * Adds all entries from another map.
+	 * All values must be non-null.
+	 *
+	 * @param map Source map to copy from
+	 * @return Current builder for chaining
 	 */
 	public MapBuilder<K, V> putAll(final Map<K, V> map) {
 		Assertion.check()
-				.isNotNull(map);
+				.isNotNull(map, "map cannot be null");
 		//-----
 		map.forEach(this::put);
 		return this;
 	}
 
 	/**
-	 * Adds key-value.
-	 * The value is required.
-	 * @param key Key
-	 * @param value Value not null
-	 * @return this builder
+	 * Adds a required key-value pair.
+	 * Both key and value must be non-null.
+	 *
+	 * @param key Key to add
+	 * @param value Non-null value to associate
+	 * @return Current builder for chaining
 	 */
 	public MapBuilder<K, V> put(final K key, final V value) {
 		Assertion.check()
-				.isNotNull(key)
-				.isNotNull(value);
+				.isNotNull(key, "key cannot be null")
+				.isNotNull(value, "value cannot be null");
 		//-----
 		myMap.put(key, value);
 		return this;
 	}
 
 	/**
-	 * Adds nullable key-value.
-	 * @param key Key
-	 * @param value Value nullable
-	 * @return this builder
+	 * Adds an optional key-value pair.
+	 * Only adds if value is non-null.
+	 *
+	 * @param key Key to add
+	 * @param value Value to associate (may be null)
+	 * @return Current builder for chaining
 	 */
 	public MapBuilder<K, V> putNullable(final K key, final V value) {
 		Assertion.check()
-				.isNotNull(key);
+				.isNotNull(key, "key cannot be null");
 		//-----
 		if (value != null) {
 			myMap.put(key, value);
@@ -99,15 +108,22 @@ public final class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	}
 
 	/**
-	 * Makes this map as unmodifiable.
-	 * @return this builder
+	 * Makes the resulting map unmodifiable.
+	 * Creates defensive copy on build.
+	 *
+	 * @return Current builder for chaining
 	 */
 	public MapBuilder<K, V> unmodifiable() {
 		unmodifiable = true;
 		return this;
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * Creates the final map.
+	 * Returns unmodifiable copy if requested.
+	 *
+	 * @return Built map instance
+	 */
 	@Override
 	public Map<K, V> build() {
 		return unmodifiable ? Map.copyOf(myMap) : myMap;

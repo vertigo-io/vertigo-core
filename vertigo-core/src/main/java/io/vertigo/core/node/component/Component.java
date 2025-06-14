@@ -18,13 +18,17 @@
 package io.vertigo.core.node.component;
 
 /**
- * A component is the common core-component.
+ * Defines the common interface for components in the system.
+ *
+ * Represents a modular building block in a module, integrating with 
+ * - plugins, 
+ * - connectors, 
+ * - amplifiers.
  * 
- * It's defined in a module 
- * It can used plugins, connectors and amplifiers.
- * It can be used by all the core-components.
- * 
+ * Components can be utilized by other core components to build complex systems, ensuring flexibility and interoperability.
+ *
  * @author pchretien
+ * @see CoreComponent
  */
 public interface Component extends CoreComponent {
 	// 

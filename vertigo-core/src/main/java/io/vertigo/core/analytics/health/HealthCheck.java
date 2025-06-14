@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- *
- */
 package io.vertigo.core.analytics.health;
 
 import java.time.Instant;
@@ -25,19 +22,20 @@ import java.time.Instant;
 import io.vertigo.core.lang.Assertion;
 
 /**
- * Health check.
- *  example :
- *  dataStorePlugin.ping : Ping a Database produces a specific health check with the actual measure of it
- *  {plugin/component}.{test} :
+ * Represents a single health check measurement in the system.
+ * Provides structured information about component health status.
+ * Format: {plugin/component}.{test}
+ * 
+ * Example: dataStorePlugin.ping - Database connectivity check
  *
  * @author mlaroche
  * 
- * @param name the health check name
- * @param checker who  created the measure
- * @param module the module (either technical or functional) the healthcheck is relative to (ex: commons, administration...)
- * @param feature the feature (a semantic one) to link healthchecks that concern the same subject (ex: database, billing...)
- * @param checkInstant when the check was performed
- * @param healthMeasure the measure
+ * @param name Health check identifier
+ * @param checker Component that performed the check
+ * @param module Technical or functional module (e.g., commons, administration)
+ * @param feature Semantic grouping of related checks (e.g., database, billing)
+ * @param checkInstant Timestamp of check execution
+ * @param healthMeasure Actual health measurement result
  */
 public record HealthCheck(
 		String name,
