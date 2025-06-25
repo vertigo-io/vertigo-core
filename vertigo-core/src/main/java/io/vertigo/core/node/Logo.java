@@ -25,6 +25,7 @@ import java.io.PrintStream;
  * @author pchretien
  */
 final class Logo {
+
 	private Logo() {
 		//constructor is protected
 	}
@@ -48,7 +49,7 @@ final class Logo {
 				    \\~%~~/  __/ |  | |_| | (_| | (_) |   | | (_) |
 				     \\%%/ \\___|_|   \\__|_|\\__, |\\___/ (@)|_|\\___/
 				      \\/                   __/ |
-				          v4.3.0 - 2025   |___/
+				          v4.3.1 - 2025   |___/
 				""");
 	}
 }
