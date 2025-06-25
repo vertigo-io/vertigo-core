@@ -24,7 +24,7 @@ import java.util.Set;
  * It is not thread-safe.
  * Definitions within this space can be checked, resolved, and retrieved based on their names and types.
  *
- * @author mlaroche
+ * @author mlaroche, pchretien
  */
 public interface DefinitionSpace {
 
