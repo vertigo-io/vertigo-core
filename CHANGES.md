@@ -1,10 +1,18 @@
 Version history
 ===============
 
-
 Running 5.0.0
 ----------------------
 more to come :)
+
+
+Release 4.3.2 - 2025/07/09
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-431-to-432)
+
+- Add a new standard eclipse formater for dev team
+- [Analytics] Always return getCurrentTracer, even if in log mode (no connector)
+- [Analytics] Add thread context to SmartLogger to permit filter from original logs
 
 Release 4.3.1 - 2025/06/13
 ----------------------
