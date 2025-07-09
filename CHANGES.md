@@ -14,6 +14,7 @@ Release 4.3.2 - 2025/07/09
 - [Analytics] Always return getCurrentTracer, even if in log mode (no connector)
 - [Analytics] Add thread context to SmartLogger to permit filter from original logs
 
+
 Release 4.3.1 - 2025/06/13
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-430-to-431)
@@ -22,6 +23,7 @@ Release 4.3.1 - 2025/06/13
 - [Core] Update libs
     - gson 2.12.1 -> 2.13.1
     - junit-jupiter-engine 5.12.1 -> 5.13.1
+
 
 Release 4.3.0 - 2025/03/28
 ----------------------
