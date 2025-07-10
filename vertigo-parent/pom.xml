@@ -213,7 +213,7 @@
 				  </executions>
 		          <configuration>
 		             <publishingServerId>central</publishingServerId>
-		             <autoPublish>true</autoPublish>
+		             <autoPublish>false</autoPublish>
 		          </configuration>
 		        </plugin>
 		</plugins>

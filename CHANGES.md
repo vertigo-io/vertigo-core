@@ -6,7 +6,7 @@ Running 5.0.0
 more to come :)
 
 
-Release 4.3.2 - 2025/07/09
+Release 4.3.2 - 2025/07/10
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-431-to-432)
 
