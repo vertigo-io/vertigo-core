@@ -4,7 +4,7 @@
 
 	<groupId>io.vertigo</groupId>
 	<artifactId>vertigo-parent</artifactId>
-	<version>4.3.2</version>
+	<version>4.3.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>vertigo-parent</name>
 	<description>Vertigo is a simple java project starter</description>
@@ -45,7 +45,7 @@
 		<connection>scm:git:https://github.com/vertigo-io/vertigo-core.git</connection>
 		<developerConnection>scm:git:https://github.com/vertigo-io/vertigo-core.git</developerConnection>
 		<url>scm:git:https://github.com/vertigo-io/vertigo-core.git</url>
-		<tag>vertigo-4.3.2</tag>
+		<tag>vertigo-4.3.3-SNAPSHOT</tag>
 	</scm>
 
 
@@ -53,7 +53,7 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<vertigo.version>4.3.2</vertigo.version>
+		<vertigo.version>4.3.3-SNAPSHOT</vertigo.version>
 	</properties>
 
 	<dependencies>
@@ -214,6 +214,7 @@
 		          <configuration>
 		             <publishingServerId>central</publishingServerId>
 		             <autoPublish>false</autoPublish>
+		             <waitForCompletion>false</waitForCompletion>
 		          </configuration>
 		        </plugin>
 		</plugins>
