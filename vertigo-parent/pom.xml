@@ -48,15 +48,6 @@
 		<tag>vertigo-4.3.2</tag>
 	</scm>
 
-	<distributionManagement>
-		<repository>
-			<id>ossrh</id>
-			<name>OSSRH Releases</name>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
-		<!-- snapshotRepository> <id>ossrh</id> <name>OSSRH Snapshot</name> <url>https://oss.sonatype.org/content/repositories/snapshots/</url> 
-			</snapshotRepository -->
-	</distributionManagement>
 
 	<properties>
 		<maven.compiler.source>17</maven.compiler.source>
@@ -189,8 +180,42 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
-				<version>3.1.1</version>
+				<version>3.1.1</version> <!-- obligatoire pour permettre <skip> -->
+				<configuration>
+					<skip>true</skip>
+				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+		          <groupId>org.sonatype.central</groupId>
+		          <artifactId>central-publishing-maven-plugin</artifactId>
+		          <version>0.8.0</version>
+		          <extensions>true</extensions>
+		          <executions>
+				    <execution>
+				      <id>central-publish</id>
+				      <phase>deploy</phase>
+				      <goals><goal>publish</goal></goals>
+				    </execution>
+				  </executions>
+		          <configuration>
+		             <publishingServerId>central</publishingServerId>
+		             <autoPublish>true</autoPublish>
+		          </configuration>
+		        </plugin>
 		</plugins>
 
 	</build>
