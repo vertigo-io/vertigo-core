@@ -20,6 +20,7 @@ package io.vertigo.core.lang;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,7 +36,6 @@ import org.reflections.util.FilterBuilder;
 
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
-import javassist.Modifier;
 
 /**
  * Utility class for selecting and filtering classes through reflection.
