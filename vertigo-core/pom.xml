@@ -21,51 +21,51 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-api</artifactId>
-		    <version>${log4j.version}</version> <!-- To avoid conflict of version, we must exclude log4j-api version when necessary -->
-		</dependency>
-		<dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-core</artifactId>
-		    <version>${log4j.version}</version> <!-- To avoid conflict of version, we must exclude log4j-core version when necessary -->
-		</dependency>
-		<dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-slf4j2-impl</artifactId>
-		    <version>${log4j.version}</version> <!-- To avoid conflict of version, we must exclude log4j-core version when necessary -->
-		</dependency>
-		<dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-layout-template-json</artifactId>
-            <version>${log4j.version}</version><!-- To avoid conflict of version, we must exclude log4j-core version when necessary -->
-        </dependency>
+			    <groupId>org.apache.logging.log4j</groupId>
+			    <artifactId>log4j-api</artifactId>
+			    <version>${log4j.version}</version> <!-- To avoid conflict of version, we must exclude log4j-api version when necessary -->
+			</dependency>
+			<dependency>
+			    <groupId>org.apache.logging.log4j</groupId>
+			    <artifactId>log4j-core</artifactId>
+		    	<version>${log4j.version}</version> <!-- To avoid conflict of version, we must exclude log4j-core version when necessary -->
+			</dependency>
+			<dependency>
+		    	<groupId>org.apache.logging.log4j</groupId>
+		    	<artifactId>log4j-slf4j2-impl</artifactId>
+		    	<version>${log4j.version}</version> <!-- To avoid conflict of version, we must exclude log4j-core version when necessary -->
+			</dependency>
+			<dependency>
+            	<groupId>org.apache.logging.log4j</groupId>
+            	<artifactId>log4j-layout-template-json</artifactId>
+            	<version>${log4j.version}</version><!-- To avoid conflict of version, we must exclude log4j-core version when necessary -->
+        	</dependency>
 
-		<dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
-			<version>1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.reflections</groupId>
-			<artifactId>reflections</artifactId>
-			<version>0.10.2</version>
-		</dependency> <!-- discovery -->
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.13.1</version>
-		</dependency> <!-- json config -->
-		<dependency>
-			<groupId>org.yaml</groupId>
-			<artifactId>snakeyaml</artifactId>
-			<version>2.4</version>  <!-- yaml config -->
-		</dependency>
-		<dependency>
-			<groupId>org.javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<version>3.30.2-GA</version>
-		</dependency>
+			<dependency>
+				<groupId>javax.inject</groupId>
+				<artifactId>javax.inject</artifactId>
+				<version>1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.reflections</groupId>
+				<artifactId>reflections</artifactId>
+				<version>0.10.2</version>
+			</dependency> <!-- discovery -->
+			<dependency>
+				<groupId>com.google.code.gson</groupId>
+				<artifactId>gson</artifactId>
+				<version>2.13.1</version>
+			</dependency> <!-- json config -->
+			<dependency>
+				<groupId>org.yaml</groupId>
+				<artifactId>snakeyaml</artifactId>
+				<version>2.4</version>  <!-- yaml config -->
+			</dependency>
+			<dependency>
+				<groupId>org.javassist</groupId>
+				<artifactId>javassist</artifactId>
+				<version>3.30.2-GA</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
