@@ -49,10 +49,10 @@ public final class JavassistAspectPlugin implements AspectPlugin {
 		Assertion.check()
 				.isNotNull(instance)
 				.isNotNull(joinPoints);
-		//check : witgh cglib all methods have to bo non-final
+		//check : all methods have to be non-final to be overriden by the proxy
 		for (final Method method : joinPoints.keySet()) {
 			Assertion.check()
-					.isFalse(Modifier.isFinal(method.getModifiers()), "due to cglib method '" + method.getName() + "' on '" + instance.getClass().getName() + "' can not be markedf as final");
+					.isFalse(Modifier.isFinal(method.getModifiers()), "method '" + method.getName() + "' on '" + instance.getClass().getName() + "' can not be marked as final");
 		}
 		//-----
 		final Class<? extends CoreComponent> implClass = instance.getClass();
@@ -71,13 +71,8 @@ public final class JavassistAspectPlugin implements AspectPlugin {
 				| NoSuchMethodException | SecurityException e) {
 			throw WrappedException.wrap(e);
 		}
-		((Proxy) proxyInstance).setHandler(createCallBack(instance, joinPoints));
-
+		((Proxy) proxyInstance).setHandler(new JavassistInvocationHandler(instance, joinPoints));
 		return proxyInstance;
-	}
-
-	private static JavassistInvocationHandler createCallBack(final Object instance, final Map<Method, List<Aspect>> joinPoints) {
-		return new JavassistInvocationHandler(instance, joinPoints);
 	}
 
 	@Override
