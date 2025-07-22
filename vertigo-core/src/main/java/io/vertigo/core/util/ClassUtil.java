@@ -435,11 +435,11 @@ public final class ClassUtil {
 			Assertion.check()
 					.isTrue(parameterizedType.getActualTypeArguments().length == 1, "There must be exactly one declared generic");
 			final Type optionType = parameterizedType.getActualTypeArguments()[0];
-			if (optionType instanceof Class) {
-				return (Class<?>) optionType;
-			} else if (optionType instanceof ParameterizedType) {
+			if (optionType instanceof Class c) {
+				return c;
+			} else if (optionType instanceof ParameterizedType p) {
 				// Case where the parameterized type is itself parameterized
-				return (Class<?>) ((ParameterizedType) optionType).getRawType();
+				return (Class<?>) p.getRawType();
 			}
 		}
 		throw exceptionSupplier.get();
