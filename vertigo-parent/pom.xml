@@ -55,8 +55,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<vertigo.version>4.3.3-SNAPSHOT</vertigo.version>
 		
-		<!-- Activer GPG pour les releases par défaut -->
-		<gpg.skip>false</gpg.skip>
+		<!-- Désactiver GPG pour les compiles par défaut (à activer pour les releases) -->
+		<gpg.skip>true</gpg.skip>
 	</properties>
 
 	<dependencies>
