@@ -39,7 +39,6 @@ import io.vertigo.core.lang.Assertion;
  * @param nodeId the random uuid of a node
  *
  * @param componentInitializerConfigs List of the configs of the initializers
- * 
  */
 public record NodeConfig(
 		String appName,
@@ -75,6 +74,7 @@ public record NodeConfig(
 
 	/**
 	 * Static method factory for NodeConfigBuilder
+	 *
 	 * @return NodeConfigBuilder
 	 */
 	public static NodeConfigBuilder builder() {
@@ -86,6 +86,7 @@ public record NodeConfig(
 	//=========================================================================
 	/**
 	 * Allows to print a short description of the config.
+	 *
 	 * @param out Out
 	 */
 	public void print(final PrintStream out) {
@@ -100,6 +101,7 @@ public record NodeConfig(
 
 	/**
 	 * Affiche dans la console le logo.
+	 *
 	 * @param out Flux de sortie des informations
 	 */
 	private void doPrint(final PrintStream out) {
@@ -119,13 +121,17 @@ public record NodeConfig(
 	}
 
 	private static void printComponents(final PrintStream out, final String moduleName, final List<CoreComponentConfig> componentConfigs) {
-		boolean first = true;
-		for (final CoreComponentConfig componentConfig : componentConfigs) {
-			final String componentClassName = componentConfig.getApiClass()
-					.orElseGet(componentConfig::getImplClass)
-					.getSimpleName();
-			printComponent(out, first ? moduleName : null, componentClassName, null);
-			first = false;
+		if (componentConfigs.isEmpty()) {
+			printComponent(out, moduleName, null, null);
+		} else {
+			boolean first = true;
+			for (final CoreComponentConfig componentConfig : componentConfigs) {
+				final String componentClassName = componentConfig.getApiClass()
+						.orElseGet(componentConfig::getImplClass)
+						.getSimpleName();
+				printComponent(out, first ? moduleName : null, componentClassName, null);
+				first = false;
+			}
 		}
 	}
 
