@@ -15,7 +15,7 @@
 	<url>http://vertigo.io</url>
 	
 	<properties>
-		<log4j.version>2.25.0</log4j.version>
+		<log4j.version>2.25.2</log4j.version>
 	</properties>
 
 	<dependencyManagement>
