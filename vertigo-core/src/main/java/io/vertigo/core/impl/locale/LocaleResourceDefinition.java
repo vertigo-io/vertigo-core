@@ -32,11 +32,6 @@ public final class LocaleResourceDefinition extends AbstractDefinition<LocaleRes
 	private final String baseName;
 	private final LocaleMessageKey[] keys;
 
-	private static String buildName(final Class<?> resourceClass) {
-		return PREFIX + resourceClass.getSimpleName()
-				+ "$h" + Integer.toHexString(resourceClass.hashCode());
-	}
-
 	/**
 	 * Constructor for enum-based resource. baseName is deduced from class canonical name.
 	 */
@@ -58,6 +53,11 @@ public final class LocaleResourceDefinition extends AbstractDefinition<LocaleRes
 				.isNotNull(keys);
 		this.baseName = baseName;
 		this.keys = keys;
+	}
+
+	private static String buildName(final Class<?> resourceClass) {
+		return PREFIX + resourceClass.getSimpleName()
+				+ "$h" + Integer.toHexString(resourceClass.hashCode());
 	}
 
 	public String getBaseName() {
