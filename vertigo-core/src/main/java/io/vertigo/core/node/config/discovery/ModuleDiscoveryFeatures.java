@@ -53,7 +53,9 @@ public abstract class ModuleDiscoveryFeatures<F> extends Features<F> {
 		// i18n
 		getModuleConfigBuilder()
 				.addDefinitionProvider(LocaleDefinitionProvider.class,
-						Param.of("package", getPackageRoot() + getI18nPackage()));
+						Param.of("package", getPackageRoot() + getI18nPackage()))
+				.addDefinitionProvider(LocaleDefinitionProvider.class,
+						Param.of("package", getPackageRoot() + ".domain")); // for model generated message keys
 	}
 
 }
