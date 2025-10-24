@@ -42,6 +42,8 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleMessageKey;
+import io.vertigo.core.node.Node;
+import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.StringUtil;
 
@@ -50,7 +52,7 @@ import io.vertigo.core.util.StringUtil;
  *
  * @author pchretien
  */
-public final class LocaleManagerImpl implements LocaleManager {
+public final class LocaleManagerImpl implements LocaleManager, Activeable {
 	private static final Logger LOG = LogManager.getLogger(LocaleManagerImpl.class);
 
 	/**
@@ -168,7 +170,7 @@ public final class LocaleManagerImpl implements LocaleManager {
 			//For each managed locale, we load the corresponding dictionary
 			final ResourceBundle resourceBundle;
 			try {
-				resourceBundle = ResourceBundle.getBundle(baseName, locale);
+				resourceBundle = ResourceBundle.getBundle(baseName, locale, Thread.currentThread().getContextClassLoader());
 			} catch (final MissingResourceException e) {
 				if (override) {
 					//If we are in override mode, we allow partial loading of dictionaries
@@ -293,5 +295,19 @@ public final class LocaleManagerImpl implements LocaleManager {
 		} else {
 			LOG.info("Resource {} not found", resource);
 		}
+	}
+
+	/**
+	 * Register all LocaleResourceDefinitions from the DefinitionSpace.
+	 */
+	@Override
+	public void start() {
+		Node.getNode().getDefinitionSpace().getAll(LocaleResourceDefinition.class)
+				.forEach(resourceDef -> add(resourceDef.getBaseName(), resourceDef.getKeys()));
+	}
+
+	@Override
+	public void stop() {
+		// nothing
 	}
 }

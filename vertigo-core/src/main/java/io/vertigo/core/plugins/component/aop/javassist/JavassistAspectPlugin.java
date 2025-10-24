@@ -35,13 +35,10 @@ import javassist.util.proxy.ProxyFactory;
 
 /**
  * This class implements the aspects using the javassist library.
+ *
  * @author pchretien
  */
 public final class JavassistAspectPlugin implements AspectPlugin {
-
-	private static void setProxyOnlyPublicMethods() {
-		ProxyFactory.onlyPublicMethods = Boolean.TRUE;
-	}
 
 	/** {@inheritDoc} */
 	@Override
@@ -59,7 +56,6 @@ public final class JavassistAspectPlugin implements AspectPlugin {
 		final Class[] intfs = ClassUtil.getAllInterfaces(implClass).toArray(new Class[0]);
 
 		final ProxyFactory f = new ProxyFactory();
-		setProxyOnlyPublicMethods();
 		f.setInterfaces(intfs);
 		f.setSuperclass(implClass);
 

@@ -17,7 +17,9 @@
  */
 package io.vertigo.core.node.config.discovery;
 
+import io.vertigo.core.impl.locale.LocaleDefinitionProvider;
 import io.vertigo.core.node.config.Features;
+import io.vertigo.core.param.Param;
 
 /**
  * An abstract Feature with no configuration for discovering and registering components in a package tree.
@@ -39,11 +41,21 @@ public abstract class ModuleDiscoveryFeatures<F> extends Features<F> {
 		return this.getClass().getPackage().getName();
 	}
 
+	protected String getI18nPackage() {
+		return ".i18n";
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
 		//DAO + PAO + Services + WebServices
 		ComponentDiscovery.registerComponents(getPackageRoot(), getModuleConfigBuilder());
+		// i18n
+		getModuleConfigBuilder()
+				.addDefinitionProvider(LocaleDefinitionProvider.class,
+						Param.of("package", getPackageRoot() + getI18nPackage()))
+				.addDefinitionProvider(LocaleDefinitionProvider.class,
+						Param.of("package", getPackageRoot() + ".domain")); // for model generated message keys
 	}
 
 }

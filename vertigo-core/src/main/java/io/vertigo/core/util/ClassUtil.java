@@ -54,6 +54,7 @@ public final class ClassUtil {
 	/**
 	 * Creates a new untyped instance via class name (empty constructor).
 	 * Please favor methods returning a typed instance as soon as the type is known.
+	 *
 	 * @param javaClassName Class name
 	 * @return New instance
 	 */
@@ -113,7 +114,7 @@ public final class ClassUtil {
 
 	/**
 	 * Retrieves the no-arg constructor for the given class.
-	 * 
+	 *
 	 * @param clazz The class to find the constructor for
 	 * @return The no-arg constructor for the class
 	 */
@@ -122,12 +123,13 @@ public final class ClassUtil {
 	}
 
 	/**
-	* Retrieves the constructor corresponding to the given signature.
-	* @param <J> Class type
-	* @param clazz Class to search for the constructor
-	* @param parameterTypes Signature of the searched constructor
-	* @return Searched constructor
-	*/
+	 * Retrieves the constructor corresponding to the given signature.
+	 *
+	 * @param <J> Class type
+	 * @param clazz Class to search for the constructor
+	 * @param parameterTypes Signature of the searched constructor
+	 * @return Searched constructor
+	 */
 	public static <J> Constructor<J> findConstructor(final Class<J> clazz, final Class<?>[] parameterTypes) {
 		Assertion.check()
 				.isNotNull(clazz)
@@ -155,7 +157,8 @@ public final class ClassUtil {
 				.isNotBlank(javaClassName);
 		//---
 		try {
-			return Class.forName(javaClassName);
+			final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			return Class.forName(javaClassName, true, classLoader);
 		} catch (final ClassNotFoundException e) {
 			throw WrappedException.wrap(e, "Unable to find the class : {0}", javaClassName);
 		}
@@ -175,7 +178,8 @@ public final class ClassUtil {
 				.isNotNull(type);
 		//---
 		try {
-			return Class.forName(javaClassName).asSubclass(type);
+			final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			return Class.forName(javaClassName, true, classLoader).asSubclass(type);
 		} catch (final ClassNotFoundException e) {
 			throw WrappedException.wrap(e, "Unable to find the class : '{0}'", javaClassName);
 		} catch (final NoClassDefFoundError e) {
@@ -249,6 +253,7 @@ public final class ClassUtil {
 
 	/**
 	 * Retrieves the method corresponding to the name and signature among the passed methods.
+	 *
 	 * @param clazz Class on which we are searching for methods
 	 * @param methodName Name of the searched method
 	 * @param parameterTypes Signature of the searched method
@@ -269,6 +274,7 @@ public final class ClassUtil {
 
 	/**
 	 * Returns all declared fields (including parent fields) annotated for a given class.
+	 *
 	 * @param clazz Class
 	 * @param annotation Expected annotation
 	 * @return All declared fields (including parent fields)
@@ -286,6 +292,7 @@ public final class ClassUtil {
 
 	/**
 	 * Returns all declared methods annotated by the given annotation.
+	 *
 	 * @param clazz Class
 	 * @param annotation Expected annotation
 	 * @return All declared fields (including parent fields)
@@ -303,6 +310,7 @@ public final class ClassUtil {
 
 	/**
 	 * Returns all declared fields (including parent fields) for a given class.
+	 *
 	 * @param clazz Class
 	 * @return All declared fields (including parent fields)
 	 */
@@ -322,6 +330,7 @@ public final class ClassUtil {
 
 	/**
 	 * Returns all declared methods for a given class (including parent methods).
+	 *
 	 * @param clazz Class
 	 * @return All declared methods (including parent methods)
 	 */
@@ -341,6 +350,7 @@ public final class ClassUtil {
 
 	/**
 	 * Returns all interfaces (including those of the parents) for a given class.
+	 *
 	 * @param clazz Class
 	 * @return All implemented interfaces
 	 */
@@ -368,6 +378,7 @@ public final class ClassUtil {
 	 * Example:
 	 * List<Car> => Car
 	 * Option<Car> => Car
+	 *
 	 * @param constructor Constructor
 	 * @param i Index of the parameter in the component
 	 * @return Class of the generic type
@@ -387,6 +398,7 @@ public final class ClassUtil {
 	 * Example:
 	 * List<Car> => Car
 	 * Option<Car> => Car
+	 *
 	 * @param method Method
 	 * @param i Index of the parameter in the component
 	 * @return Class of the generic type
@@ -406,6 +418,7 @@ public final class ClassUtil {
 	 * Example:
 	 * List<Car> => Car
 	 * Option<Car> => Car
+	 *
 	 * @param field Field
 	 * @return Class of the generic type
 	 */
@@ -420,6 +433,7 @@ public final class ClassUtil {
 	/**
 	 * Finds the generic type.
 	 * Ex: List<Car> ==> Car
+	 *
 	 * @param type Type
 	 * @param exceptionSupplier Supplier for the exception
 	 * @return The first generic of this class
@@ -435,9 +449,9 @@ public final class ClassUtil {
 			Assertion.check()
 					.isTrue(parameterizedType.getActualTypeArguments().length == 1, "There must be exactly one declared generic");
 			final Type optionType = parameterizedType.getActualTypeArguments()[0];
-			if (optionType instanceof Class c) {
+			if (optionType instanceof final Class c) {
 				return c;
-			} else if (optionType instanceof ParameterizedType p) {
+			} else if (optionType instanceof final ParameterizedType p) {
 				// Case where the parameterized type is itself parameterized
 				return (Class<?>) p.getRawType();
 			}
