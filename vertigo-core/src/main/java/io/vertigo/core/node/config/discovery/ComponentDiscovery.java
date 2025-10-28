@@ -1,7 +1,7 @@
 /**
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2023, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,24 +17,22 @@
  */
 package io.vertigo.core.node.config.discovery;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.ClassSelector;
 import io.vertigo.core.lang.ClassSelector.ClassConditions;
+import io.vertigo.core.node.component.Amplifier;
 import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.Plugin;
-import io.vertigo.core.node.component.amplifier.AmplifierMethodAnnotation;
 import io.vertigo.core.node.config.ModuleConfigBuilder;
 
 /**
  * Tool for registering components in an node based on discovery in a package tree.
+ *
  * @author mlaroche
  *
  */
@@ -48,6 +46,7 @@ final class ComponentDiscovery {
 	 * Register all components of a kind discovered in a package tree.
 	 * If component has API we must find one and only one Impl.
 	 * If component hasn't API we don't care.
+	 *
 	 * @param componentType the kind of components to discover
 	 * @param packagePrefix the package we to look
 	 * @param moduleConfigBuilder the module where components will be added.
@@ -80,18 +79,15 @@ final class ComponentDiscovery {
 				.filterClasses(ClassConditions.subTypeOf(Plugin.class).negate())
 				.findClasses();
 
-		final Predicate<Method> amplifierMethodPredicate = method -> Stream.of(method.getAnnotations())
-				.anyMatch(annotation -> ClassConditions.annotatedWith(AmplifierMethodAnnotation.class).test(annotation.annotationType()));
-
 		final Collection<Class> proxyClasses = ClassSelector
 				.from(allApiClasses)
+				.filterClasses(ClassConditions.subTypeOf(Amplifier.class))
 				.filterClasses(clazz -> clazz.getDeclaredMethods().length != 0)// to be a proxy you need to have at least one method
-				.filterMethods(amplifierMethodPredicate)
 				.findClasses();
 
 		final Collection<Class> apiClasses = ClassSelector
 				.from(allApiClasses)
-				.filterMethods(amplifierMethodPredicate.negate())
+				.filterClasses(ClassConditions.subTypeOf(Amplifier.class).negate())
 				.findClasses();
 
 		//Impl
