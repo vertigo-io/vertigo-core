@@ -5,6 +5,11 @@ Running 5.0.0
 ----------------------
 more to come :)
 
+Release 4.3.3 - TBD
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-432-to-433)
+
+- Fix Amplifier auto discovery
 
 Release 4.3.2 - 2025/07/10
 ----------------------
