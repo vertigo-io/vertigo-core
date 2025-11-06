@@ -56,6 +56,7 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 
 	/**
 	 * Constructor.
+	 *
 	 * @param processConnectorPlugins list of connectors to trace processes
 	 */
 	@Inject
@@ -106,10 +107,6 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 	/** {@inheritDoc} */
 	@Override
 	public Optional<Tracer> getCurrentTracer() {
-		if (!enabled) {
-			return Optional.empty();
-		}
-		// When collect feature is enabled
 		return TracerProviderUtil.getCurrentTracer();
 	}
 

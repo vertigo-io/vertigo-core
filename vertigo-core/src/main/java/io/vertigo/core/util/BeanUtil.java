@@ -122,7 +122,7 @@ public final class BeanUtil {
 	public static PropertyDescriptor getPropertyDescriptor(final String propertyName, final Class<?> beanClass) {
 		final PropertyDescriptor[] descriptors = getPropertyDescriptors(beanClass);
 		for (final PropertyDescriptor propertyDescriptor : descriptors) {
-			if (propertyName.equals(propertyDescriptor.getName())) {
+			if (propertyName.equals(StringUtil.first2LowerCase(propertyDescriptor.getName()))) {
 				return propertyDescriptor;
 			}
 		}

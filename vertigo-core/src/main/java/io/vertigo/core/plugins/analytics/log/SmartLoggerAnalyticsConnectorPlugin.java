@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 
 import com.google.gson.JsonObject;
 
@@ -35,6 +36,7 @@ import io.vertigo.core.param.ParamValue;
 
 /**
  * This connector analyses the process and calculates duration and count.
+ *
  * @author mlaroche,pchretien
  */
 public final class SmartLoggerAnalyticsConnectorPlugin implements AnalyticsConnectorPlugin {
@@ -44,6 +46,7 @@ public final class SmartLoggerAnalyticsConnectorPlugin implements AnalyticsConne
 
 	/**
 	 * Constructor.
+	 *
 	 * @param aggregatedByOpt optional param for aggrating subprocesses results with specific category
 	 * @param durationThresholdOpt optional param for setting the error level to log in error
 	 */
@@ -80,10 +83,15 @@ public final class SmartLoggerAnalyticsConnectorPlugin implements AnalyticsConne
 		}
 
 		final Logger logger = LogManager.getLogger(span.getCategory());
-		if (span.getDurationMillis() > durationThreshold) {
-			logger.error(jsonObject.toString());
-		} else if (logger.isInfoEnabled()) {
-			logger.info(jsonObject.toString());
+		ThreadContext.put("source", "smartLogger"); // to filter logs from original logs
+		try {
+			if (span.getDurationMillis() > durationThreshold) {
+				logger.error(jsonObject.toString());
+			} else if (logger.isInfoEnabled()) {
+				logger.info(jsonObject.toString());
+			}
+		} finally {
+			ThreadContext.remove("source");
 		}
 	}
 
