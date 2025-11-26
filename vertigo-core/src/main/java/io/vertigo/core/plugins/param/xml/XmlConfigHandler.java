@@ -54,7 +54,7 @@ final class XmlConfigHandler extends DefaultHandler {
 				Assertion.check().isFalse(paramName.endsWith("."), "a path must not be ended with a point");
 				final String paramValue = attrs.getValue("value").trim();
 				final Param param = Param.of(currentPath + "." + paramName, paramValue);
-				params.put(param.getName(), param);
+				params.put(param.name(), param);
 				break;
 			default:
 		}
