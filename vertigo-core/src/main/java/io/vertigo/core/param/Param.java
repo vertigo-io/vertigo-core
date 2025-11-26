@@ -32,31 +32,21 @@ import io.vertigo.core.lang.VSystemException;
  *
  * @author: pchretien
  */
-public final class Param {
+public record Param(
+		String name,
+		String value) {
 	private static final String TRUE = "true";
 	private static final String FALSE = "false";
 
 	/** Regular expression for paramName. */
 	private static final Pattern REGEX_PARAM_NAME = Pattern
 			.compile("([a-zA-Z][a-zA-Z0-9]*+)([\\._-][a-zA-Z][a-zA-Z0-9]*+){0,200}");
-	private final String name;
-	private final String value;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param name the name of the parameter
-	 * @param value the value of the parameter
-	 */
-	private Param(final String name, final String value) {
+	public Param {
 		Assertion.check()
 				.isNotBlank(name)
 				.isTrue(REGEX_PARAM_NAME.matcher(name).matches(), "param '{0}' must match pattern {1}", name, REGEX_PARAM_NAME)
 				.isNotNull(value);
-		// ---
-		this.name = name;
-		this.value = value;
-
 	}
 
 	/**
@@ -79,24 +69,6 @@ public final class Param {
 	 */
 	public static Param of(final String name, final String value) {
 		return new Param(name, value);
-	}
-
-	/**
-	 * Gets the value of the parameter.
-	 *
-	 * @return the value of the parameter
-	 */
-	public String getValue() {
-		return value;
-	}
-
-	/**
-	 * Gets the name of the parameter.
-	 *
-	 * @return the name of the parameter
-	 */
-	public String getName() {
-		return name;
 	}
 
 	/**

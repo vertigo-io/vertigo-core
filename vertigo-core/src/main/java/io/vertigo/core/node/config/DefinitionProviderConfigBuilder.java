@@ -102,7 +102,7 @@ public final class DefinitionProviderConfigBuilder implements Builder<Definition
 				myClass,
 				myParams
 						.stream()
-						.collect(Collectors.toMap(Param::getName, Param::getValue)),
+						.collect(Collectors.toMap(Param::name, Param::value)),
 				myDefinitionResourceConfigs);
 	}
 

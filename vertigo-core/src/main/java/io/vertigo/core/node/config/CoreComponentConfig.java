@@ -143,7 +143,7 @@ public final class CoreComponentConfig {
 
 		this.params = params
 				.stream()
-				.collect(Collectors.toMap(Param::getName, Param::getValue));
+				.collect(Collectors.toMap(Param::name, Param::value));
 	}
 
 	/**

@@ -65,8 +65,8 @@ public final class DIReactor {
 	 */
 	public DIReactor addComponent(final String id, final Class<?> implClass, final Set<String> params) {
 		final DIComponentInfo diComponentInfo = new DIComponentInfo(id, implClass, params);
-		check(diComponentInfo.getId());
-		allComponentInfos.add(diComponentInfo.getId());
+		check(diComponentInfo.id());
+		allComponentInfos.add(diComponentInfo.id());
 		diComponentInfos.add(diComponentInfo);
 		return this;
 	}
@@ -93,7 +93,7 @@ public final class DIReactor {
 		//1.On vérifie si tous les composants définis par leurs ids existent
 		final StringBuilder missing = new StringBuilder();
 		for (final DIComponentInfo componentInfo : diComponentInfos) {
-			for (final DIDependency dependency : componentInfo.getDependencies()) {
+			for (final DIDependency dependency : componentInfo.dependencies()) {
 				//Si une référence est requise
 				//et qu'elle est absente, c'est qu'elle est manquante !
 				if (dependency.isRequired() && !allComponentInfos.contains(dependency.getName())) {
@@ -121,7 +121,7 @@ public final class DIReactor {
 					//Le composant est résolu
 					// - On l'ajoute sa clé à la liste des clés de composants résolus
 					// - On le supprime de la liste des composants à résoudre
-					sorted.add(componentInfo.getId());
+					sorted.add(componentInfo.id());
 					iterator.remove();
 				}
 			}
@@ -141,7 +141,7 @@ public final class DIReactor {
 		//Un composant est résolu si
 		// les dépendances obligatoires sont déjà résolues
 		// les dépendantes facultatives
-		for (final DIDependency dependency : componentInfo.getDependencies()) {
+		for (final DIDependency dependency : componentInfo.dependencies()) {
 			if (!isSolved(dependency, parentComponentInfos, allComponentInfos, sorted)) {
 				return false;
 			}

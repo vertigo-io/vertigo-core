@@ -34,10 +34,10 @@ import io.vertigo.core.util.ClassUtil;
  * Les dépendances à des objets fournis par les params ne sont pas exposées. (ele ne servent pas dans la résolution).
  * @author prahmoune, pchretien
  */
-final class DIComponentInfo {
-	private final String id;
-	private final Class<?> implClass;
-	private final Collection<DIDependency> dependencies;
+record DIComponentInfo(
+		String id,
+		Class<?> implClass,
+		Collection<DIDependency> dependencies) {
 
 	/**
 	 * Constructor.
@@ -46,28 +46,11 @@ final class DIComponentInfo {
 	 * @param params parameters
 	 */
 	DIComponentInfo(final String id, final Class<?> implClass, final Set<String> params) {
+		this(id, implClass, buildDependencies(implClass, params));
 		Assertion.check()
 				.isNotBlank(id)
 				.isNotNull(implClass)
 				.isNotNull(params);
-		//---
-		this.id = id;
-		this.implClass = implClass;
-		dependencies = buildDependencies(implClass, params);
-	}
-
-	/**
-	 * @return id
-	 */
-	String getId() {
-		return id;
-	}
-
-	/**
-	 * @return dependencies
-	 */
-	Collection<DIDependency> getDependencies() {
-		return dependencies;
 	}
 
 	/** {@inheritDoc} */
