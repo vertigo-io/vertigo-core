@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.analytics.metric.MetricBuilder;

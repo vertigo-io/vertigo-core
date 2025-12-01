@@ -17,7 +17,7 @@
  */
 package io.vertigo.core.node.component.di.data;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 /**
  * This class has an object annotated with @Inject

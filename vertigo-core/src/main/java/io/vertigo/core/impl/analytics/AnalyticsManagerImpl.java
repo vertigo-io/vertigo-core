@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.health.HealthCheck;

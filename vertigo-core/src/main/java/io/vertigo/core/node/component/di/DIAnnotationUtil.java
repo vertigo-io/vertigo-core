@@ -19,7 +19,7 @@ package io.vertigo.core.node.component.di;
 
 import java.lang.reflect.Constructor;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;

@@ -20,7 +20,7 @@ package io.vertigo.core.impl.param;
 import java.util.List;
 import java.util.Optional;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.Param;

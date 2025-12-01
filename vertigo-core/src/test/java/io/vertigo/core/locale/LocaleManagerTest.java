@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.io.Serializable;
 import java.util.Locale;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

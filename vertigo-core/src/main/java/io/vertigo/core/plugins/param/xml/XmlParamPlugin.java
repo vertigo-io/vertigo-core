@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;

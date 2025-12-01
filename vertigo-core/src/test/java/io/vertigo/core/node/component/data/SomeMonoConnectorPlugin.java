@@ -17,7 +17,7 @@
  */
 package io.vertigo.core.node.component.data;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class SomeMonoConnectorPlugin implements SomePlugin {
 

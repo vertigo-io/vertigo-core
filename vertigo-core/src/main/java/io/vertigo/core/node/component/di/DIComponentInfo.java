@@ -22,7 +22,7 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Set;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.ListBuilder;

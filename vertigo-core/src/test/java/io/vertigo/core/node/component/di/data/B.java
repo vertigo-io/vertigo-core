@@ -17,7 +17,7 @@
  */
 package io.vertigo.core.node.component.di.data;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public final class B {
 	@Inject

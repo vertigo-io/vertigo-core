@@ -19,7 +19,7 @@ package io.vertigo.core.impl.locale;
 
 import java.util.List;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.core.lang.ClassSelector;
 import io.vertigo.core.lang.ClassSelector.ClassConditions;

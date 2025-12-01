@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.Properties;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.core.impl.param.ParamPlugin;
 import io.vertigo.core.lang.Assertion;

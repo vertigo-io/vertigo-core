@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import javax.net.ssl.KeyManagerFactory;
 
 import org.apache.logging.log4j.Level;

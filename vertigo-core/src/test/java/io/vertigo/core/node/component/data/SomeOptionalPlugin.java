@@ -19,7 +19,7 @@ package io.vertigo.core.node.component.data;
 
 import java.util.Optional;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class SomeOptionalPlugin implements SomePlugin {
 

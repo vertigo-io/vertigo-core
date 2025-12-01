@@ -17,7 +17,7 @@
  */
 package io.vertigo.core.analytics.trace.data;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.trace.Trace;
