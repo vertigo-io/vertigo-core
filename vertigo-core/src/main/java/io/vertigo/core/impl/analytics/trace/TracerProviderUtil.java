@@ -17,6 +17,8 @@
  */
 package io.vertigo.core.impl.analytics.trace;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
 import java.util.function.Consumer;
@@ -40,6 +42,11 @@ public final class TracerProviderUtil {
 	 * during the processing of a request (thread).
 	 */
 	private static final ThreadLocal<Stack<TracerImpl>> THREAD_LOCAL_PROCESS = new ThreadLocal<>();
+
+	/**
+	 * Analytics Process Tags Context bound to the current thread.
+	 */
+	private static final ThreadLocal<Map<String, String>> THREAD_LOCAL_PROCESS_CONTEXT = new ThreadLocal<>();
 
 	/**
 	 * Traces the execution of a block of code.
@@ -93,6 +100,21 @@ public final class TracerProviderUtil {
 		return doGetCurrentTracer().map(Function.identity()); // convert impl to api
 	}
 
+	public static void addContextTag(final String key, final String value) {
+		Assertion.check()
+				.isNotBlank(key)
+				.isNotBlank(value);
+		//---
+		if (THREAD_LOCAL_PROCESS_CONTEXT.get() == null) {
+			THREAD_LOCAL_PROCESS_CONTEXT.set(new HashMap<>());
+		}
+		THREAD_LOCAL_PROCESS_CONTEXT.get().put(key, value);
+	}
+
+	public static void clearContextTags() {
+		THREAD_LOCAL_PROCESS_CONTEXT.remove();
+	}
+
 	private static Optional<TracerImpl> doGetCurrentTracer() {
 		if (THREAD_LOCAL_PROCESS.get() == null || THREAD_LOCAL_PROCESS.get().isEmpty()) {
 			return Optional.empty();
@@ -122,6 +144,12 @@ public final class TracerProviderUtil {
 	private static TracerImpl createTracer(final String category, final String name, final Consumer<TraceSpan> onCloseConsumer) {
 		final TracerImpl analyticsTracer = new TracerImpl(category, name, onCloseConsumer, TracerProviderUtil::removeCurrentAndGetParentTracer);
 		push(analyticsTracer);
+
+		// Add context tags to the new tracer
+		if (THREAD_LOCAL_PROCESS_CONTEXT.get() != null) {
+			THREAD_LOCAL_PROCESS_CONTEXT.get().forEach(analyticsTracer::setTag);
+		}
+
 		return analyticsTracer;
 	}
 
