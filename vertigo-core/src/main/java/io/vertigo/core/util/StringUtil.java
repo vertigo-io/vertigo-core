@@ -144,7 +144,7 @@ public final class StringUtil {
 				upper = true;
 			} else {
 				if (digit != null) {
-					Assertion.check().isTrue(digit.equals(Character.isDigit(c)), "Chaine à modifier invalide : {0} (lettres et chiffres doivent toujours être séparés par _)", str);
+					Assertion.check().isTrue(digit || !Character.isDigit(c), "Chaine à modifier invalide : {0} (lettres suivi de chiffres doivent toujours être séparés par _)", str);
 				}
 				digit = Character.isDigit(c);
 
