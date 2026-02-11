@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class NamedThreadFactory implements ThreadFactory {
 
-	private static AtomicInteger threadNumber = new AtomicInteger(1);
+	private static final AtomicInteger threadNumber = new AtomicInteger(1);
 	private final ThreadGroup group;
 	private final String namePrefix;
 
