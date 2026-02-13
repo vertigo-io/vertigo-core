@@ -391,24 +391,22 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 
 		void reconnect() throws IOException {
 			final var socketAddresses = TcpSocketManagerFactory.resolver.resolveHost(host, port);
-			if (socketAddresses.size() == 0) {
+			if (socketAddresses.isEmpty()) {
 				throw new ConnectException("Unable to connect to " + host + ":" + port);
-			} else if (socketAddresses.size() == 1) {
-				LOGGER.debug("Reconnecting " + socketAddresses.get(0));
-				connect(socketAddresses.get(0));
-			} else {
-				IOException ioe = null;
-				for (final InetSocketAddress socketAddress : socketAddresses) {
-					try {
-						LOGGER.debug("Reconnecting " + socketAddress);
-						connect(socketAddress);
-						return;
-					} catch (final IOException ex) {
-						ioe = ex;
-					}
-				}
-				throw ioe;
 			}
+			IOException ioe = null;
+			for (final InetSocketAddress socketAddress : socketAddresses) {
+				try {
+					LOGGER.debug("Reconnecting to {}", socketAddress);
+					connect(socketAddress);
+					return;
+				} catch (final IOException ex) {
+					ioe = ex;
+				}
+			}
+			throw ioe == null
+					? new ConnectException("Failed to connect to " + host + ":" + port)
+					: ioe;
 		}
 
 		private void connect(final InetSocketAddress socketAddress) throws IOException {
