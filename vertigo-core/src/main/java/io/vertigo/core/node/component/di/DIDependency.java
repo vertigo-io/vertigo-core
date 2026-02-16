@@ -41,7 +41,7 @@ import io.vertigo.core.util.ClassUtil;
  */
 final class DIDependency {
 	private final String targetId;
-	private final boolean isOptionnal;
+	private final boolean isOptional;
 	private final boolean isList;
 	private final Class<?> type;
 
@@ -55,9 +55,9 @@ final class DIDependency {
 		final String named = getNamedValue(field.getAnnotations());
 		final Class<?> rootType = field.getType();
 
-		isOptionnal = caseOptional(rootType);
+		isOptional = caseOptional(rootType);
 		isList = caseList(rootType);
-		type = (isOptionnal || isList) ? ClassUtil.getGeneric(field) : rootType;
+		type = (isOptional || isList) ? ClassUtil.getGeneric(field) : rootType;
 		Assertion.check().isNotNull(type);
 		targetId = named != null ? named : DIAnnotationUtil.buildId(type);
 	}
@@ -73,9 +73,9 @@ final class DIDependency {
 		final String named = getNamedValue(constructor.getParameterAnnotations()[i]);
 		final Class<?> rootType = constructor.getParameterTypes()[i];
 
-		isOptionnal = caseOptional(rootType);
+		isOptional = caseOptional(rootType);
 		isList = caseList(rootType);
-		type = (isOptionnal || isList) ? ClassUtil.getGeneric(constructor, i) : rootType;
+		type = (isOptional || isList) ? ClassUtil.getGeneric(constructor, i) : rootType;
 		targetId = named != null ? named : DIAnnotationUtil.buildId(type);
 	}
 
@@ -87,17 +87,17 @@ final class DIDependency {
 	}
 
 	/**
-	 * @return if optionnal
+	 * @return if optional
 	 */
-	boolean isOptionnal() {
-		return isOptionnal;
+	boolean isOptional() {
+		return isOptional;
 	}
 
 	/**
 	 * @return if required (not null)
 	 */
 	boolean isRequired() {
-		return !(isList || isOptionnal);
+		return !(isList || isOptional);
 	}
 
 	/**
@@ -119,7 +119,7 @@ final class DIDependency {
 	public String toString() {
 		if (isList) {
 			return targetId + '*';
-		} else if (isOptionnal) {
+		} else if (isOptional) {
 			return targetId + '?';
 		}
 		return targetId;
