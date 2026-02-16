@@ -53,13 +53,13 @@ public final class JavassistAspectPlugin implements AspectPlugin {
 		}
 		//-----
 		final Class<? extends CoreComponent> implClass = instance.getClass();
-		final Class[] intfs = ClassUtil.getAllInterfaces(implClass).toArray(new Class[0]);
+		final Class<?>[] intfs = ClassUtil.getAllInterfaces(implClass).toArray(new Class<?>[0]);
 
 		final ProxyFactory f = new ProxyFactory();
 		f.setInterfaces(intfs);
 		f.setSuperclass(implClass);
 
-		final Class c = f.createClass();
+		final Class<?> c = f.createClass();
 		C proxyInstance;
 		try {
 			proxyInstance = (C) c.getDeclaredConstructor().newInstance();

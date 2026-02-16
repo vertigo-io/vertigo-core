@@ -228,7 +228,7 @@ public final class ComponentSpaceLoader {
 		proxyMethods.add(proxyMethod);
 	}
 
-	private <C extends CoreComponent> C injectAspects(final C instance, final Class implClass) {
+	private <C extends CoreComponent> C injectAspects(final C instance, final Class<? extends CoreComponent> implClass) {
 		//2. AOP , a new instance is created when aspects are injected in the previous instance
 		final Map<Method, List<Aspect>> joinPoints = ComponentAspectUtil.createAspectsByMethod(implClass, aspects);
 		if (!joinPoints.isEmpty()) {
