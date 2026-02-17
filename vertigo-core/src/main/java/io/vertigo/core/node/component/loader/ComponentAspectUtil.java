@@ -31,12 +31,12 @@ import io.vertigo.core.node.component.aspect.Aspect;
 import io.vertigo.core.node.component.aspect.AspectAnnotation;
 
 /**
- * Classe permettant d'injecter les intercepteurs sur les points d'exécutions définis dans les aspects.
- * La liste des intercepteurs est construite en amont.
+ * Utility class for injecting interceptors on execution join points defined by aspects.
+ * The list of interceptors is built beforehand.
  *
- * Les points d'interceptions sont définis par des annotations placées au niveau
- *  - des classes
- *  - des méthodes.
+ * Join points are defined by annotations placed on:
+ *  - classes,
+ *  - methods.
  *
  * @author pchretien
  */
@@ -47,9 +47,9 @@ final class ComponentAspectUtil {
 
 	/**
 	 * create all "join points" for a component.
-	 * Join points are identifed by a method
+	 * Join points are identified by a method
 	 *
-	 * @return Map des aspects par méthode
+	 * @return Map of aspects by method
 	 */
 	static Map<Method, List<Aspect>> createAspectsByMethod(
 			final Class<?> implClass,

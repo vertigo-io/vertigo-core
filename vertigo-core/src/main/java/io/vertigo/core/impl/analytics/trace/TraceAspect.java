@@ -27,7 +27,7 @@ import io.vertigo.core.node.component.aspect.AspectMethodInvocation;
 import io.vertigo.core.util.StringUtil;
 
 /**
- * * Intercepteur de performance des composant.
+ * Component performance interceptor.
  *
  * @author jmforhan
  */

@@ -76,8 +76,8 @@ final class DateQueryParserUtil {
 	}
 
 	/**
-	 * Retourne la date correspondant à l'expression passée en parametre.
-	 * La syntaxe est de type now((+/-)eeeUNIT) ou une date heure GMT au format dd/MM/yy hh:mm:ss
+	 * Returns the date corresponding to the given expression.
+	 * The syntax is of the form now((+/-)eeeUNIT) or a GMT date/time in the format dd/MM/yy hh:mm:ss
 	 *
 	 * @param dateExpression Expression
 	 * @param datePattern Pattern used to define a date (dd/MM/YYYY hh:mm:ss)
@@ -102,7 +102,7 @@ final class DateQueryParserUtil {
 			//NOW+21DAY or NOW-12MONTH
 			final Matcher matcher = PATTERN_INSTANT.matcher(operand);
 			Assertion.check()
-					.isTrue(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", PATTERN_INSTANT.toString());
+					.isTrue(matcher.matches(), "The second operand does not match the pattern {0}", PATTERN_INSTANT.toString());
 			//---
 			final String calendarUnit = matcher.group(2);
 			//We check that we have found a real unit Calendar and not 'NOW+15DAL'
@@ -138,7 +138,7 @@ final class DateQueryParserUtil {
 			//NOW+21DAY or NOW-12MONTH
 			final Matcher matcher = PATTERN_LOCAL_DATE.matcher(operand);
 			Assertion.check()
-					.isTrue(matcher.matches(), "Le second operande ne respecte pas le pattern {0}", PATTERN_LOCAL_DATE.toString());
+					.isTrue(matcher.matches(), "The second operand does not match the pattern {0}", PATTERN_LOCAL_DATE.toString());
 			//---
 			final String calendarUnit = matcher.group(2);
 			//We check that we have found a real unit Calendar and not 'NOW+15DAL'

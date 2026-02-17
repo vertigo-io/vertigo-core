@@ -33,7 +33,7 @@ import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.util.FileUtil;
 
 /**
- * Plugin de gestion de configuration de fichiers properties.
+ * Plugin for managing configuration from properties files.
  *
  * @author skerdudou
  */
@@ -44,8 +44,8 @@ public final class PropertiesParamPlugin implements ParamPlugin {
 	 * Constructor.
 	 *
 	 * @param resourceManager Selector
-	 * @param url Url du fichier XML de configuration
-	 * @throws IOException erreur de lecture du fichier
+	 * @param url URL of the configuration file
+	 * @throws IOException file reading error
 	 */
 	@Inject
 	public PropertiesParamPlugin(final ResourceManager resourceManager, @ParamValue("url") final String url) throws IOException {

@@ -73,10 +73,10 @@ public final class FileUtil {
 	}
 
 	/**
-	 * Constructeur privé pour classe utilitaire
+	 * Private constructor for utility class
 	 */
 	private FileUtil() {
-		//rien
+		//nothing
 	}
 
 	public static <R extends Object> R doOnFile(final URL url, final Function<Path, R> fileProcessor) {
@@ -127,18 +127,18 @@ public final class FileUtil {
 	}
 
 	/**
-	 * Copie le contenu d'un flux d'entrée vers un fichier de sortie.
+	 * Copies the content of an input stream to an output file.
 	 *
-	 * @param in flux d'entrée
-	 * @param file fichier de sortie
-	 * @throws IOException Erreur d'entrée/sortie
+	 * @param in input stream
+	 * @param file output file
+	 * @throws IOException I/O error
 	 */
 	public static void copy(final InputStream in, final File file) throws IOException {
 		Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
 	}
 
 	/**
-	 * Donne l'extension du fichier.
+	 * Returns the file extension.
 	 * <p>
 	 * This method returns the textual part of the filename after the last dot.
 	 * There must be no directory separator after the dot.
@@ -152,7 +152,7 @@ public final class FileUtil {
 	 * <p>
 	 * The output will be the same irrespective of the machine that the code is running on.
 	 *
-	 * @param fileName Nom du fichier
+	 * @param fileName File name
 	 * @return the extension of the file or an empty string if none exists.
 	 *         (author Apache Commons IO 1.1)
 	 */
@@ -171,7 +171,7 @@ public final class FileUtil {
 		final int index = lastSeparator > extensionPos ? -1 : extensionPos;
 		if (index == -1) {
 			extension = "";
-			// null dans la version cvs précédente
+			// null in the previous cvs version
 		} else {
 			extension = fileName.substring(index + 1).toLowerCase(Locale.ENGLISH);
 		}

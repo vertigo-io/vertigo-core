@@ -301,7 +301,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 				.isNotNull(appender, "SocketLogger is not started, cannot create logger and send analytics data. Wait until node is started.");
 		// If it doesn't exist we create it with the right appender
 
-		final LoggerContext context = (LoggerContext) LogManager.getContext(false); //on ne close pas : car ca stop le context
+		final LoggerContext context = (LoggerContext) LogManager.getContext(false); //do not close: it would stop the context
 		final Configuration config = context.getConfiguration();
 		final LoggerConfig loggerConfig = LoggerConfig.createLogger(false, Level.INFO, loggerName, "true", new AppenderRef[] {}, null, config, null);
 

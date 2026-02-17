@@ -23,8 +23,8 @@ import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.node.component.Plugin;
 
 /**
- * Connecteur des process.
- * Les messages sont composes des Processus et envoyes ; un consommateur les traitera.
+ * Process connector.
+ * Messages are composed of processes and sent; a consumer will handle them.
  *
  * @author pchretien, npiedeloup
  * @version $Id: NetPlugin.java,v 1.1 2012/03/22 18:20:57 pchretien Exp $

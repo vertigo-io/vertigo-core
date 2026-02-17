@@ -101,7 +101,7 @@ public final class ResourceManagerImpl implements ResourceManager {
 		final List<RuntimeException> processIOExceptions = new ArrayList<>();
 		try (Stream<Path> fileStream = Files.list(documentRootFile)) {
 			fileStream.forEach(subFile -> {
-				if (Files.isDirectory(subFile) && Files.isReadable(subFile)) { //canRead pour les pbs de droits
+				if (Files.isDirectory(subFile) && Files.isReadable(subFile)) { //canRead for permission issues
 					doDeleteOldFiles(subFile, maxTime);
 				} else {
 					boolean shouldDelete = false;

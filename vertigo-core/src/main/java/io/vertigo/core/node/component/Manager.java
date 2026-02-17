@@ -18,7 +18,7 @@
 package io.vertigo.core.node.component;
 
 /**
- * The manager class must be consireded as a simple marker to identify all the technical components.
+ * The manager class must be considered as a simple marker to identify all the technical components.
  *
  * @author pchretien
  */

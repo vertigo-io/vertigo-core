@@ -33,7 +33,7 @@ import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
 
 /**
- * Implémentation de ReportingManager.
+ * Implementation of ReportingManager.
  *
  * @author pchretien
  */

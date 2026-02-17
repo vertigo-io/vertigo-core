@@ -49,7 +49,7 @@ import io.vertigo.core.resource.ResourceManager;
  * @author npiedeloup, pchretien
  */
 public final class BootConfigBuilder implements Builder<BootConfig> {
-	private Optional<LogConfig> myLogConfigOpt = Optional.empty(); //par défaut
+	private Optional<LogConfig> myLogConfigOpt = Optional.empty(); //by default
 	private boolean myVerbose;
 	private AspectPlugin myAopPlugin = new JavassistAspectPlugin(); //By default
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
@@ -95,7 +95,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	}
 
 	/**
-	 * Ajout de paramètres
+	 * Adds parameters
 	 * @param logConfig Config of logs
 	 * @return this builder
 	 */

@@ -18,7 +18,7 @@
 package io.vertigo.core.node.component.di;
 
 /**
- * Thrown if an exception occures during a method concerning dependency injection.
+ * Thrown if an exception occurs during a method concerning dependency injection.
  *
  * @author pchretien
  */

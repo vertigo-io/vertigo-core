@@ -25,7 +25,7 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.util.StringUtil;
 
 /**
- * Plugin de gestion de configuration des propriétés system.
+ * Plugin for managing configuration from system properties.
  *
  * @author mlaroche
  */

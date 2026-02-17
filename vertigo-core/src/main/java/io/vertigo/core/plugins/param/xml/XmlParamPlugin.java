@@ -42,7 +42,7 @@ import io.vertigo.core.util.StringUtil;
 import io.vertigo.core.util.XmlUtil;
 
 /**
- * Parser XML du paramétrage de la config.
+ * XML parser for configuration parameters.
  * @author  pchretien
  */
 public final class XmlParamPlugin implements ParamPlugin {
@@ -51,7 +51,7 @@ public final class XmlParamPlugin implements ParamPlugin {
 	/**
 	 * Constructor.
 	 * @param resourceManager Selector
-	 * @param url Url du fichier XML de configuration
+	 * @param url URL of the XML configuration file
 	 */
 	@Inject
 	public XmlParamPlugin(final ResourceManager resourceManager, @ParamValue("url") final String url) {
@@ -72,7 +72,7 @@ public final class XmlParamPlugin implements ParamPlugin {
 	}
 
 	/**
-	 * Charge une configuration, et complète celle existante.
+	 * Loads a configuration, and complements the existing one.
 	 */
 	private static Map<String, Param> readXML(final URL configURL) {
 		Assertion.check().isNotNull(configURL);
@@ -80,11 +80,11 @@ public final class XmlParamPlugin implements ParamPlugin {
 		try {
 			return doReadXML(configURL);
 		} catch (final ParserConfigurationException pce) {
-			throw WrappedException.wrap(pce, StringUtil.format("Erreur de configuration du parseur (fichier {0}), lors de l'appel à newSAXParser()", configURL.getPath()));
+			throw WrappedException.wrap(pce, StringUtil.format("Parser configuration error (file {0}), when calling newSAXParser()", configURL.getPath()));
 		} catch (final SAXException se) {
-			throw WrappedException.wrap(se, StringUtil.format("Erreur de parsing (fichier {0}), lors de l'appel à parse()", configURL.getPath()));
+			throw WrappedException.wrap(se, StringUtil.format("Parsing error (file {0}), when calling parse()", configURL.getPath()));
 		} catch (final IOException ioe) {
-			throw WrappedException.wrap(ioe, StringUtil.format("Erreur d'entrée/sortie (fichier {0}), lors de l'appel à parse()", configURL.getPath()));
+			throw WrappedException.wrap(ioe, StringUtil.format("I/O error (file {0}), when calling parse()", configURL.getPath()));
 		}
 	}
 

@@ -102,9 +102,9 @@ public final class BeanUtil {
 		if (beanInfo == null) {
 			if (BEAN_INFOS.size() > BEAN_INFOS_MAX_SIZE) {
 				BEAN_INFOS.clear();
-				// pour éviter une fuite mémoire potentielle, par ex sur classes proxy
+				// to avoid a potential memory leak, e.g. on proxy classes
 			}
-			// On veut tout le BeanInfo sauf Object (pas la propriété de getClass())
+			// We want all BeanInfo except Object (not the getClass() property)
 			beanInfo = Introspector.getBeanInfo(beanClass, Object.class);
 			BEAN_INFOS.put(beanClass, beanInfo);
 		}

@@ -25,7 +25,7 @@ import io.vertigo.core.impl.resource.ResourceResolverPlugin;
 import io.vertigo.core.lang.Assertion;
 
 /**
- * Résolution des URL liées à l'emplacement local.
+ * Resolution of URLs related to the local file system.
  *
  * @author prahmoune
  */

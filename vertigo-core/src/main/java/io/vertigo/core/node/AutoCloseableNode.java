@@ -71,7 +71,7 @@ public final class AutoCloseableNode implements Node, AutoCloseable {
 	private final DefinitionSpaceWritable definitionSpaceWritable = new DefinitionSpaceWritable();
 	private final ComponentSpaceWritable componentSpaceWritable = new ComponentSpaceWritable();
 
-	//à remplacer par event ??
+	//to be replaced by event ??
 	private final List<Runnable> preActivateFunctions = new ArrayList<>();
 
 	/**
@@ -91,7 +91,7 @@ public final class AutoCloseableNode implements Node, AutoCloseable {
 			//-- 0. Start logger
 			nodeConfig.bootConfig().logConfigOpt().ifPresent(AutoCloseableNode::initLog);
 
-			//Dans le cas de boot il n,'y a ni initializer, ni aspects, ni definitions
+			//During boot there are no initializers, aspects, or definitions
 			//Creates and register all components (and aspects and Proxies).
 			//all components can be parameterized
 			ComponentSpaceLoader.startLoading(componentSpaceWritable, nodeConfig.bootConfig().aspectPlugin())
@@ -132,7 +132,7 @@ public final class AutoCloseableNode implements Node, AutoCloseable {
 			state = State.ACTIVE;
 		} catch (final Exception e) {
 			close();
-			throw new IllegalStateException("an error occured when starting", e);
+			throw new IllegalStateException("an error occurred when starting", e);
 		}
 	}
 
@@ -158,7 +158,7 @@ public final class AutoCloseableNode implements Node, AutoCloseable {
 	/** {@inheritDoc} */
 	@Override
 	public void close() {
-		//En cas d'erreur on essaie de fermer proprement les composants démarrés.
+		//On error, try to cleanly close the started components.
 		Assertion.check()
 				.isTrue(state == State.ACTIVE || state == State.STARTING, "App with a state '{0}' can not be be closed", state);
 		state = State.STOPPING;
@@ -166,9 +166,9 @@ public final class AutoCloseableNode implements Node, AutoCloseable {
 		try {
 			appStop();
 		} catch (final Exception e) {
-			LOGGER.error("an error occured when stopping", e);
-			//Quel que soit l'état, on part en échec de l'arrét.
-			throw WrappedException.wrap(e, "an error occured when stopping");
+			LOGGER.error("an error occurred when stopping", e);
+			//Regardless of the state, we fail on stop.
+			throw WrappedException.wrap(e, "an error occurred when stopping");
 		} finally {
 			state = State.CLOSED;
 			resetCurrentApp();
@@ -217,15 +217,15 @@ public final class AutoCloseableNode implements Node, AutoCloseable {
 		final URL url = Node.class.getResource(log4jFileName);
 		if (url != null) {
 			Configurator.initialize("definedLog4jContext", Thread.currentThread().getContextClassLoader(), log4jFileName);
-			LogManager.getRootLogger().info("Log4J configuration chargée (resource) : {}", url.getFile());
+			LogManager.getRootLogger().info("Log4J configuration loaded (resource): {}", url.getFile());
 		} else {
 			Assertion.check()
-					.isTrue(new File(log4jFileName).exists(), "Fichier de configuration log4j : {0} est introuvable", log4jFileName);
-			// Avec configureAndWatch (utilise un anonymous thread)
-			// on peut modifier à chaud le fichier de conf log4j
-			// mais en cas de hot-deploy, le thread reste présent ce qui peut-entrainer des problèmes.
+					.isTrue(new File(log4jFileName).exists(), "Log4j configuration file: {0} not found", log4jFileName);
+			// With configureAndWatch (uses an anonymous thread)
+			// the log4j config file can be modified at runtime
+			// but in case of hot-deploy, the thread remains which can cause issues.
 			Configurator.initialize("definedLog4jContext", null, log4jFileName);
-			LogManager.getRootLogger().info("Log4J configuration chargée (fichier) : {}", log4jFileName);
+			LogManager.getRootLogger().info("Log4J configuration loaded (file): {}", log4jFileName);
 		}
 	}
 

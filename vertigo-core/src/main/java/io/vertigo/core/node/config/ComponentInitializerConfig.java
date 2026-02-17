@@ -24,7 +24,7 @@ import io.vertigo.core.node.component.ComponentInitializer;
  * Configuration of an initializer.
  * @author pchretien
  *
- * @param componentInitializerClass Class de l'initialiseur du composant
+ * @param componentInitializerClass Component initializer class
  */
 public record ComponentInitializerConfig(Class<? extends ComponentInitializer> componentInitializerClass) {
 

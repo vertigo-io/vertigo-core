@@ -45,34 +45,34 @@ public final class DIInjector {
 	}
 
 	/**
-	 * Injection de dépendances.
-	 * Création d'une instance à partir d'un conteneur de composants déjà intsanciés.
+	 * Dependency injection.
+	 * Creates a new instance from a container of already instantiated components.
 	 *
-	 * @param <T> Type de l'instance
-	 * @param clazz Classe de l'instance
-	 * @param container Fournisseur de composants
-	 * @return Instance de composants créée.
+	 * @param <T> Type of the instance
+	 * @param clazz Class of the instance
+	 * @param container Component provider
+	 * @return Created component instance
 	 */
 	public static <T> T newInstance(final Class<T> clazz, final Container container) {
 		Assertion.check()
 				.isNotNull(clazz)
 				.isNotNull(container);
 		//-----
-		//On encapsule la création par un bloc try/ctach afin de préciser le type de composant qui n'a pas pu être créé.
+		//We wrap the creation in a try/catch block to provide the component type that could not be created.
 		try {
 			final T instance = createInstance(clazz, container);
 			injectMembers(instance, container);
 			return instance;
 		} catch (final Exception e) {
-			//Contextualisation de l'exception et des assertions.
+			//Contextualize the exception and assertions.
 			throw new DIException("Error when creating new component : '" + clazz.getName() + "'", e);
 		}
 	}
 
 	private static <T> T createInstance(final Class<T> clazz, final Container container) {
-		//On a un et un seul constructeur public injectable.
+		//There is exactly one public injectable constructor.
 		final Constructor<T> constructor = DIAnnotationUtil.findInjectableConstructor(clazz);
-		//On recherche les paramètres
+		//Find the parameters
 		final Object[] constructorParameters = findConstructorParameters(container, constructor);
 		return ClassUtil.newInstance(constructor, constructorParameters);
 	}
@@ -93,7 +93,7 @@ public final class DIInjector {
 			final DIDependency dependency = new DIDependency(field);
 			final Object injected = getInjected(container, dependency);
 
-			//On vérifie que si il s'agit d'un champ non primitif alors ce champs n'avait pas été initialisé
+			//Check that if the field is non-primitive, it has not already been initialized
 			Assertion.check()
 					.when(!field.getType().isPrimitive(), () -> Assertion.check()
 							.isTrue(null == ClassUtil.get(instance, field), "field '{0}' is already initialized", field));
@@ -113,21 +113,21 @@ public final class DIInjector {
 	private static Object getInjected(final Container container, final DIDependency dependency) {
 		if (dependency.isOptional()) {
 			if (container.contains(dependency.getName())) {
-				//On récupère la valeur et on la transforme en option.
+				//Retrieve the value and wrap it in an Optional.
 				//ex : <param name="opt-port" value="a value that can be null or not">
 				return Optional.ofNullable(container.resolve(dependency.getName(), dependency.getType()));
 			}
 			//
 			return Optional.empty();
 		} else if (dependency.isList()) {
-			//on récupère la liste des objets du type concerné
+			//Retrieve the list of objects of the required type
 			final List<Object> list = new ArrayList<>();
 
-			//on tri les clés pour garantir l'ordre de déclaration
+			//Sort the keys to guarantee declaration order
 			final List<String> sortedKeys = new ArrayList<>(container.keySet());
 			Collections.sort(sortedKeys);
 			for (final String id : sortedKeys) {
-				//On prend tous les objets ayant l'identifiant requis
+				//Take all objects matching the required identifier
 				final boolean match = id.equals(dependency.getName()) || id.startsWith(dependency.getName() + '#');
 				if (match) {
 					final Object injected = container.resolve(id, Object.class);

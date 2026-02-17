@@ -40,7 +40,7 @@ import io.vertigo.core.node.definition.DefinitionSpace;
  *
  * o--->[starting]--->[active]--->[stopping]--->[closed]
  *
- * If an error occured during the starting process then all the started components are stopped and the node is closed
+ * If an error occurred during the starting process then all the started components are stopped and the node is closed
  *
  * @author pchretien
  */

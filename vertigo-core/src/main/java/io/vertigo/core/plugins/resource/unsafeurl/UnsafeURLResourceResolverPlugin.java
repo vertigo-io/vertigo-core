@@ -26,7 +26,7 @@ import io.vertigo.core.impl.resource.ResourceResolverPlugin;
 import io.vertigo.core.lang.Assertion;
 
 /**
- * Résolution des URL par le standard java.net.URL.
+ * URL resolution using the standard java.net.URL.
  *
  * @author npiedeloup
  */

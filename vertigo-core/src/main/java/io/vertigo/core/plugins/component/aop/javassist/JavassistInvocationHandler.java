@@ -52,7 +52,7 @@ final class JavassistInvocationHandler implements MethodHandler {
 	@Override
 	public Object invoke(final Object proxy, final Method thisMethod, final Method proceed, final Object[] args) {
 		if (!joinPoints.containsKey(thisMethod)) {
-			//Si pas d'intercepteur sur la méthode.
+			//If no interceptor on the method.
 			return ClassUtil.invoke(instance, thisMethod, args);
 		}
 		return new MyMethodInvocation(instance, thisMethod, joinPoints.get(thisMethod)).proceed(args);

@@ -34,18 +34,18 @@ import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.util.StringUtil;
 
 /**
- * Centralisation des accès aux composants et aux plugins.
+ * Centralized access to components and plugins.
  *
- * Les composants et leur initializers sont instanciés par injection
- *  - des paramètres déclarés sur le scope composant.
- *  - des autres composants
+ * Components and their initializers are instantiated by injection of:
+ *  - parameters declared at the component scope,
+ *  - other components.
  *
- * Les plugins sont instanciés par injection
- *  - des paramètres déclarés sur le scope plugin.
- *  - des autres composants
+ * Plugins are instantiated by injection of:
+ *  - parameters declared at the plugin scope,
+ *  - other components.
  *
- * Donc un plugin ne peut pas être injecté dans un plugin, il ne peut être injecté que dans LE composant pour lequel il est prévu.
- * En revanche les composants (à ne pas réaliser de dépendances cycliques) peuvent être injecter dans les composants, les plugins et les initializers.
+ * A plugin cannot be injected into another plugin; it can only be injected into THE component it is intended for.
+ * Components (avoiding cyclic dependencies) can be injected into components, plugins and initializers.
  *
  * @author pchretien
  */
@@ -86,7 +86,7 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	 */
 	void registerComponent(final String componentId, final CoreComponent component) {
 		Assertion.check()
-				.isFalse(locked.get(), "Registration is now closed. A component can be registerd only during the boot phase")
+				.isFalse(locked.get(), "Registration is now closed. A component can be registered only during the boot phase")
 				.isNotBlank(componentId)
 				.isNotNull(component);
 		//-----
@@ -108,7 +108,7 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	@Override
 	public <C> C resolve(final String id, final Class<C> componentClass) {
 		final String normalizedId = StringUtil.first2LowerCase(id);
-		Assertion.check().isTrue(contains(normalizedId), "Aucun composant enregistré pour id = {0} parmi {1}", normalizedId, keySet());
+		Assertion.check().isTrue(contains(normalizedId), "No component registered for id = {0} among {1}", normalizedId, keySet());
 		//-----
 		return componentClass.cast(components.get(normalizedId));
 	}
@@ -143,9 +143,9 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	}
 
 	private void stopComponents() {
-		/* Fermeture de tous les gestionnaires.*/
-		//On fait les fermetures dans l'ordre inverse des enregistrements.
-		//On se limite aux composants qui ont été démarrés.
+		/* Stop all managers.*/
+		//Stop in reverse order of registration.
+		//Only stop components that were actually started.
 		final List<CoreComponent> reversedComponents = new ArrayList<>(startedComponents);
 		java.util.Collections.reverse(reversedComponents);
 

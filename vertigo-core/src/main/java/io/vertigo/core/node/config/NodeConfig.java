@@ -82,7 +82,7 @@ public record NodeConfig(
 	}
 
 	//=========================================================================
-	//======================Gestion des affichages=============================
+	//======================Display management================================
 	//=========================================================================
 	/**
 	 * Allows to print a short description of the config.
@@ -100,9 +100,9 @@ public record NodeConfig(
 	}
 
 	/**
-	 * Affiche dans la console le logo.
+	 * Prints the configuration to the console.
 	 *
-	 * @param out Flux de sortie des informations
+	 * @param out Output stream for information
 	 */
 	private void doPrint(final PrintStream out) {
 		doPrintLine(out);

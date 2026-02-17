@@ -32,7 +32,7 @@ import io.vertigo.core.node.definition.DefinitionSpace;
 /**
  * The space to access and register all the definitions.
  * The registration is only accessible during the boot phase.
- * Consequently, the registration is not threadSafe. (The boot phase occuring on a single thread)
+ * Consequently, the registration is not threadSafe. (The boot phase occurring on a single thread)
  *
  * @author pchretien
  */
@@ -52,7 +52,7 @@ public final class DefinitionSpaceWritable implements DefinitionSpace {
 	 */
 	public void registerDefinition(final Definition definition) {
 		Assertion.check()
-				.isFalse(locked.get(), "Registration is now closed. A definition can be registerd only during the boot phase")
+				.isFalse(locked.get(), "Registration is now closed. A definition can be registered only during the boot phase")
 				.isNotNull(definition, "A definition can't be null.")
 				.isFalse(definitions.containsKey(definition.getName()), "this definition '{0}' is already registered", definition.getName());
 		//---
@@ -90,7 +90,7 @@ public final class DefinitionSpaceWritable implements DefinitionSpace {
 	/** {@inheritDoc} */
 	@Override
 	public <C extends Definition> Set<C> getAll(final Class<C> clazz) {
-		Assertion.check().isNotNull(clazz); // Le type des objets recherchés ne peut pas être null
+		Assertion.check().isNotNull(clazz); // The type of the searched objects cannot be null
 		//-----
 		return definitions.values()
 				.stream()

@@ -350,9 +350,9 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 	}
 
 	/**
-	 * Retourne l'URL correspondant au nom du fichier dans le classPath.
+	 * Returns the URL for the given file name from the classpath.
 	 *
-	 * @param fileName Nom du fichier
+	 * @param fileName File name
 	 * @param relativeRootClassOpt Class used to access files in a relative way.
 	 * @return URL non null
 	 */
@@ -362,11 +362,11 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 		try {
 			return new URL(fileName);
 		} catch (final MalformedURLException e) {
-			//Si fileName non trouvé, on recherche dans le classPath
+			//If fileName not found, search in the classpath
 			final URL url = relativeRootClassOpt
 					.map(relativeRootClass -> relativeRootClass.getResource(fileName))
 					.orElseGet(() -> Thread.currentThread().getContextClassLoader().getResource(fileName));
-			Assertion.check().isNotNull(url, "Impossible de récupérer le fichier [" + fileName + "]");
+			Assertion.check().isNotNull(url, "Unable to retrieve the file [" + fileName + "]");
 			return url;
 		}
 	}

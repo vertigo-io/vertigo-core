@@ -23,8 +23,8 @@ import io.vertigo.core.impl.resource.ResourceResolverPlugin;
 import io.vertigo.core.lang.Assertion;
 
 /**
- * Résolution des URL liées au classPath.
- * Cette résolution est en absolue.
+ * Resolution of URLs related to the classpath.
+ * This resolution is absolute.
  *
  * @author prahmoune
  */
@@ -36,7 +36,7 @@ public final class ClassPathResourceResolverPlugin implements ResourceResolverPl
 		Assertion.check().isNotNull(resource);
 		//-----
 		try {
-			//le getClassLoader permet de se mettre en absolue (getClass().getRessource serait relatif)
+			//getClassLoader allows absolute resolution (getClass().getResource would be relative)
 			return getClassLoader().getResource(resource);
 		} catch (final RuntimeException e) { //if Resource name is invalid it should throw exception
 			return null;
@@ -44,7 +44,7 @@ public final class ClassPathResourceResolverPlugin implements ResourceResolverPl
 	}
 
 	private static ClassLoader getClassLoader() {
-		//On récupère le classLoader courant (celui qui a créé le thread).
+		//Get the current classLoader (the one that created the thread).
 		return Thread.currentThread().getContextClassLoader();
 	}
 }

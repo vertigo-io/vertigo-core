@@ -21,11 +21,11 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 /**
- * The DateUtil provides usefull methods concerning dates.
+ * The DateUtil provides useful methods concerning dates.
  *
- * On distingue deux types de date
- *  - les dates précises au jour
- *  - les dates précises au jour, min, sec (ms)
+ * Two types of dates are distinguished:
+ *  - dates precise to the day
+ *  - dates precise to the day, min, sec (ms)
  *
  * @author npiedeloup, pchretien
  */
@@ -35,7 +35,7 @@ public final class DateUtil {
 	}
 
 	/**
-	 * Retourne la date correspondant à l'expression passée en parametre.
+	 * Returns the date corresponding to the given expression.
 	 * Implements parsing of a date expression.
 	 * y=year, M=month, w=week
 	 * d=day, h=hour, m=minute, s= second
@@ -57,7 +57,7 @@ public final class DateUtil {
 	}
 
 	/**
-	 * Retourne la date correspondant à l'expression passée en parametre.
+	 * Returns the date corresponding to the given expression.
 	 * Implements parsing of a date expression.
 	 * y=year, M=month, w=week
 	 * d=day, h=hour, m=minute, s= second

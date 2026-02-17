@@ -128,12 +128,12 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	}
 
 	/**
-	 * Démarre un démon.
-	 * Celui-ci aura été préalablement enregistré.
-	 * Il sera lancé puis réexécuté périodiquement.
-	 * L'instance du démon est créée par injection de dépendances.
+	 * Starts a daemon.
+	 * It must have been previously registered.
+	 * It will be launched and then re-executed periodically.
+	 * The daemon instance is created by dependency injection.
 	 *
-	 * @param daemonDefinition Le démon à lancer.
+	 * @param daemonDefinition The daemon to start.
 	 */
 	private void startDaemon(final DaemonDefinition daemonDefinition) {
 		Assertion.check().isNotNull(daemonDefinition);
@@ -142,7 +142,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	}
 
 	/**
-	 * Démarre l'ensemble des démons préalablement enregistré dans le spaceDefinition.
+	 * Starts all daemons previously registered in the definition space.
 	 */
 	private void startAllDaemons() {
 		Node.getNode().getDefinitionSpace().getAll(DaemonDefinition.class).stream()

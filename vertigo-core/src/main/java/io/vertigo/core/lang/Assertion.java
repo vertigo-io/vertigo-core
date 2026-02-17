@@ -99,7 +99,7 @@ public final class Assertion {
 	 * @throws NullPointerException if object is null
 	 */
 	public Assertion isNotNull(final Object o, final String msg, final Object... params) {
-		//Attention si o est un Boolean : il peut s'agir du resultat d'un test (boolean) qui a été autoboxé en Boolean
+		//Warning: if o is a Boolean, it may be the result of a test (boolean) that was autoboxed to Boolean
 		Objects.requireNonNull(o, () -> StringUtil.format(msg, params));
 		return this;
 	}

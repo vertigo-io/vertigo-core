@@ -58,7 +58,7 @@ public final class ComponentSpaceLoader {
 	/**
 	 * Constructor.
 	 *
-	 * @param aopPlugin the plugin which is reponsible for the aop strategy
+	 * @param aopPlugin the plugin which is responsible for the aop strategy
 	 */
 	private ComponentSpaceLoader(final ComponentSpaceWritable componentSpaceWritable, final AspectPlugin aopPlugin) {
 		Assertion.check()
@@ -124,11 +124,11 @@ public final class ComponentSpaceLoader {
 
 		//---- No proxy----
 		final DIReactor reactor = new DIReactor();
-		//0; On ajoute la liste des ids qui sont déjà résolus.
+		//0. Add the list of ids that are already resolved.
 		for (final String id : componentSpaceWritable.keySet()) {
 			reactor.addParent(id);
 		}
-		//Map des composants définis par leur id
+		//Map of components indexed by their id
 		final Map<String, CoreComponentConfig> componentConfigById = componentConfigs
 				.stream()
 				.filter(componentConfig -> !componentConfig.isAmplifier())
@@ -139,21 +139,21 @@ public final class ComponentSpaceLoader {
 				.filter(componentConfig -> !componentConfig.isAmplifier())
 				.forEach(componentConfig -> reactor.addComponent(componentConfig.getId(), componentConfig.getImplClass(), componentConfig.getParams().keySet()));
 
-		//Comment trouver des plugins orphenlins ?
+		//How to find orphan plugins?
 
 		final List<String> ids = reactor.proceed();
-		//On a récupéré la liste ordonnée des ids.
-		//On positionne un proxy pour compter les plugins non utilisés
+		//We have the ordered list of ids.
+		//Set up a proxy to count unused plugins
 		final ComponentUnusedKeysContainer componentProxyContainer = new ComponentUnusedKeysContainer(componentSpaceWritable);
 
 		for (final String id : ids) {
 			final CoreComponentConfig componentConfig = componentConfigById.get(id);
 			if (componentConfig != null) {
-				//Si il s'agit d'un composant (y compris plugin)
+				//If it is a component (including plugin)
 
-				// 2.a On crée le composant avec AOP et autres options (elastic)
+				// 2.a Create the component with AOP and other options
 				final CoreComponent component = createComponentWithOptions(paramManagerOpt, componentProxyContainer, componentConfig);
-				// 2.b. On enregistre le composant
+				// 2.b. Register the component
 				componentSpaceWritable.registerComponent(componentConfig.getId(), component);
 			}
 		}
@@ -189,7 +189,7 @@ public final class ComponentSpaceLoader {
 	}
 
 	private static Aspect createAspect(final Container container, final AspectConfig aspectConfig) {
-		// création de l'instance du composant
+		// Create the component instance
 		final Aspect aspect = DIInjector.newInstance(aspectConfig.aspectClass(), container);
 		//---
 		Assertion.check()
@@ -198,7 +198,7 @@ public final class ComponentSpaceLoader {
 	}
 
 	private static AmplifierMethod createAmplifierMethod(final Container container, final AmplifierMethodConfig proxyMethodConfig) {
-		// création de l'instance du composant
+		// Create the component instance
 		final AmplifierMethod amplifierMethod = DIInjector.newInstance(proxyMethodConfig.amplifierMethodClass(), container);
 		//---
 		Assertion.check()

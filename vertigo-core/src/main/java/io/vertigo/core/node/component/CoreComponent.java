@@ -60,7 +60,7 @@ package io.vertigo.core.node.component;
  *  A "manager" is a special marker used to identify technical components created in vertigo.
  *  Each module can define its own type of component. 
  *  For example "webServices" may be the root of all webServices..
- *  This approach is very usefull to define a semantic structure of all the components.
+ *  This approach is very useful to define a semantic structure of all the components.
  *  
  * @author pchretien
  */

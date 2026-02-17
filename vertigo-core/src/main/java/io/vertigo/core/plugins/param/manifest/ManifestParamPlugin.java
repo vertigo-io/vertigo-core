@@ -39,7 +39,7 @@ import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.util.FileUtil;
 
 /**
- * Plugin de gestion de configuration du manifest local.
+ * Plugin for managing configuration from the local manifest.
  *
  * @author pforhan; skerdudou
  */
@@ -54,7 +54,7 @@ public final class ManifestParamPlugin implements ParamPlugin {
 	 * Constructor.
 	 *
 	 * @param resourceManager Selector
-	 * @throws IOException erreur de lecture du fichier
+	 * @throws IOException file reading error
 	 */
 	@Inject
 	public ManifestParamPlugin(final ResourceManager resourceManager,
@@ -66,7 +66,7 @@ public final class ManifestParamPlugin implements ParamPlugin {
 			final URL configURL = resourceManager.resolve(FileUtil.translatePath(manifestLocationOpt.orElse("META-INF/MANIFEST.MF")));
 			manifestOpt = Optional.of(loadManifest(configURL));
 		} catch (final VSystemException e) {
-			LOG.trace("Aucun MANIFEST.MF présent", e);
+			LOG.trace("No MANIFEST.MF present", e);
 			manifestOpt = Optional.empty();
 		}
 	}

@@ -77,9 +77,9 @@ final class ComponentParamsContainer implements Container {
 	}
 
 	/**
-	 * Récupération d'un paramètre typé par son nom.
-	 * @param paramName Nom du paramètre
-	 * @return Valeur sous forme texte du paramètre
+	 * Retrieves a typed parameter by its name.
+	 * @param paramName Name of the parameter
+	 * @return The parameter value
 	 */
 	private Optional<Param> getParam(final String paramName) {
 		Assertion.check()

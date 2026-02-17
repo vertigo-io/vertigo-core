@@ -20,7 +20,7 @@ package io.vertigo.core.node.component;
 /**
  * A plugin is a particular component.
  * A plugin is not referenced in the ComponentSpace.
- * A plugin is usefull to encapsulate a specific set of operations.
+ * A plugin is useful to encapsulate a specific set of operations.
  * A plugin is often used as a strategy pattern to make an operation interchangeable without changing the component.
  *
  * All plugins MUST BE thread safe.

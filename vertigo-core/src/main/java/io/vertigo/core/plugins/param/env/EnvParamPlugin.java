@@ -25,7 +25,7 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.util.StringUtil;
 
 /**
- * Plugin de gestion de configuration des variables d'environnement.
+ * Plugin for managing configuration from environment variables.
  *
  * @author pchretien
  */

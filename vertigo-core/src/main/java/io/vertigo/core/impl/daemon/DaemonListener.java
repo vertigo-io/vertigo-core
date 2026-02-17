@@ -59,7 +59,7 @@ final class DaemonListener {
 	 * @return Current daemon statistics
 	 */
 	synchronized DaemonStat getStat() {
-		//On copie les données
+		//Copy the data
 		return new DaemonStatImpl(daemonDefinition, successes, failures, status, lastExecSucceed);
 	}
 
@@ -84,7 +84,7 @@ final class DaemonListener {
 		status = DaemonStat.Status.pending;
 		failures++;
 		lastExecSucceed = false;
-		LOG.error("Daemon :  an error has occured during the execution of the daemon: " + daemonDefinition.id(), e);
+		LOG.error("Daemon :  an error has occurred during the execution of the daemon: " + daemonDefinition.id(), e);
 	}
 
 	/**

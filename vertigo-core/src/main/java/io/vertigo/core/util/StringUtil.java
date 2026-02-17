@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 import io.vertigo.core.lang.Assertion;
 
 /**
- * The StringUtil class provides usefull methods to manipulate strings.
+ * The StringUtil class provides useful methods to manipulate strings.
  *
  * @author  pchretien
  */
@@ -39,10 +39,10 @@ public final class StringUtil {
 	}
 
 	/**
-	 * Implémentation du test de la chaine vide.
-	 * ie null ou blank (espace, \t \n \r \p ...)
+	 * Tests if a string is blank.
+	 * ie null or blank (space, \t \n \r \p ...)
 	 * @param strValue String
-	 * @return Si la chaine ne contient que des caractères blank
+	 * @return true if the string contains only blank characters
 	 * @see java.lang.Character isWhitespace(char)
 	 */
 	public static boolean isBlank(final String strValue) {
@@ -52,9 +52,9 @@ public final class StringUtil {
 	}
 
 	/**
-	 * On abaisse la premiere lettre.
-	 * @param strValue String non null
-	 * @return Chaine avec la premiere lettre en minuscule
+	 * Lowercases the first letter.
+	 * @param strValue non null String
+	 * @return String with the first letter in lowercase
 	 */
 	public static String first2LowerCase(final String strValue) {
 		Assertion.check().isNotNull(strValue);
@@ -74,10 +74,10 @@ public final class StringUtil {
 	}
 
 	/**
-	 * Capitalisation de la première lettre.
+	 * Uppercases the first letter.
 	 *
-	 * @param strValue String non null
-	 * @return Chaine avec la premiere lettre en majuscule
+	 * @param strValue non null String
+	 * @return String with the first letter in uppercase
 	 */
 	public static String first2UpperCase(final String strValue) {
 		Assertion.check().isNotNull(strValue);
@@ -98,7 +98,7 @@ public final class StringUtil {
 
 	/**
 	 * XXX_YYY_ZZZ -> xxxYyyZzz.
-	 * @param str la chaine de caratéres sur laquelle s'appliquent les transformation
+	 * @param str the string to transform
 	 * @return camelCase
 	 */
 	public static String constToLowerCamelCase(final String str) {
@@ -107,7 +107,7 @@ public final class StringUtil {
 
 	/**
 	 * XXX_YYY_ZZZ -> XxxYyyZzz.
-	 * @param str la chaine de caratéres sur laquelle s'appliquent les transformation
+	 * @param str the string to transform
 	 * @return CamelCase
 	 */
 	public static String constToUpperCamelCase(final String str) {
@@ -116,16 +116,16 @@ public final class StringUtil {
 
 	/**
 	 * XXX_YYY_ZZZ -> XxxYyyZzz ou xxxYyyZzz.
-	 * @param str la chaine de caratéres sur laquelle s'appliquent les transformation
-	 * @param first2UpperCase définit si la première lettre est en majuscules
-	 * @return Renvoie une chaine de caratére correspondant à str en minuscule et sans underscores,
-	 * à l'exception des premières lettres aprés les underscores dans str
+	 * @param str the string to transform
+	 * @param first2UpperCase whether the first letter should be uppercased
+	 * @return a string corresponding to str in lowercase without underscores,
+	 * except for the first letters after underscores in str
 	 */
 	private static String constToCamelCase(final String str, final boolean first2UpperCase) {
 		Assertion.check()
 				.isNotNull(str)
-				.isTrue(str.length() > 0, "Chaine à modifier invalide (ne doit pas être vide)")
-				.isFalse(str.contains("__"), "Chaine à modifier invalide : {0} (__ interdit)", str);
+				.isTrue(str.length() > 0, "Invalid string to transform (must not be empty)")
+				.isFalse(str.contains("__"), "Invalid string to transform : {0} (__ is forbidden)", str);
 		//-----
 		final StringBuilder result = new StringBuilder();
 		boolean upper = first2UpperCase;
@@ -144,7 +144,7 @@ public final class StringUtil {
 				upper = true;
 			} else {
 				if (digit != null) {
-					Assertion.check().isTrue(digit.equals(Character.isDigit(c)), "Chaine à modifier invalide : {0} (lettres et chiffres doivent toujours être séparés par _)", str);
+					Assertion.check().isTrue(digit.equals(Character.isDigit(c)), "Invalid string to transform : {0} (letters and digits must always be separated by _)", str);
 				}
 				digit = Character.isDigit(c);
 
@@ -160,30 +160,30 @@ public final class StringUtil {
 	}
 
 	/**
-	 * Les chiffres sont assimilés à des lettres en majuscules
-	 * XxxYyyZzz ou xxxYyyZzz -> XXX_YYY_ZZZ
-	 * XxxYZzz ou xxxYZzz -> XXX_Y_ZZZ
+	 * Digits are treated as uppercase letters.
+	 * XxxYyyZzz or xxxYyyZzz -> XXX_YYY_ZZZ
+	 * XxxYZzz or xxxYZzz -> XXX_Y_ZZZ
 	 * Xxx123 -->XXX_123
-	 * XxxYzw123 --> (interdit)
+	 * XxxYzw123 --> (forbidden)
 	 * Xxx123Y --> XXX_123_Y.
 	 * Xxx123y --> XXX_123Y.
-	 * @param str la chaine de caratéres sur laquelle s'appliquent les transformation
-	 * @return Passage en constante d'une chaîne de caractères (Fonction inverse de caseTransform)
+	 * @param str the string to transform
+	 * @return Constant case string (inverse of caseTransform)
 	 */
 	public static String camelToConstCase(final String str) {
 		return camelToConstCase(str, false);
 	}
 
 	/**
-	 * Les chiffres sont assimilés à des lettres en majuscules
-	 * XxxYyyZzz ou xxxYyyZzz -> xxx_yyy_zzz
-	 * XxxYZzz ou xxxYZzz -> xxx_y_zzz
+	 * Digits are treated as uppercase letters.
+	 * XxxYyyZzz or xxxYyyZzz -> xxx_yyy_zzz
+	 * XxxYZzz or xxxYZzz -> xxx_y_zzz
 	 * Xxx123 -->xxx_123
-	 * XxxYzw123 --> (interdit)
+	 * XxxYzw123 --> (forbidden)
 	 * Xxx123Y --> xxx_123_y.
 	 * Xxx123y --> xxx_123y.
-	 * @param str la chaine de caratéres sur laquelle s'appliquent les transformation
-	 * @return Passage en constante d'une chaîne de caractères (Fonction inverse de caseTransform)
+	 * @param str the string to transform
+	 * @return Snake case string (inverse of caseTransform)
 	 */
 	public static String camelToSnakeCase(final String str) {
 		return camelToConstCase(str, true);
@@ -192,7 +192,7 @@ public final class StringUtil {
 	private static String camelToConstCase(final String str, final boolean lowerCase) {
 		Assertion.check()
 				.isNotNull(str)
-				.isTrue(str.length() > 0, "Chaine à modifier invalide");
+				.isTrue(str.length() > 0, "Invalid string to transform");
 		//-----
 		final StringBuilder result = new StringBuilder();
 		final int length = str.length();
@@ -219,8 +219,8 @@ public final class StringUtil {
 	}
 
 	/**
-	 * Teste si une chaine est en camelCase avec la première lettre en majuscule.
-	 * @param testString chaine a tester
+	 * Tests if a string is in UpperCamelCase.
+	 * @param testString string to test
 	 * @return boolean
 	 */
 	public static boolean isUpperCamelCase(final String testString) {
@@ -228,8 +228,8 @@ public final class StringUtil {
 	}
 
 	/**
-	 * Teste si une chaine est en camelCase avec la première lettre en minuscule.
-	 * @param testString chaine a tester
+	 * Tests if a string is in lowerCamelCase.
+	 * @param testString string to test
 	 * @return boolean
 	 */
 	public static boolean isLowerCamelCase(final String testString) {
@@ -237,9 +237,9 @@ public final class StringUtil {
 	}
 
 	/**
-	 * Teste si un caractère est une simple lettre (minuscule ou majuscule, sans accent)
-	 * ou un chiffre.
-	 * @param c caractère
+	 * Tests if a character is a simple letter (lowercase or uppercase, no accent)
+	 * or a digit.
+	 * @param c character
 	 * @return boolean
 	 */
 	public static boolean isSimpleLetterOrDigit(final char c) {
@@ -247,14 +247,14 @@ public final class StringUtil {
 	}
 
 	/**
-	 * Remplacement au sein d'une chaine d'un motif par un autre.
-	 * Le remplacement avance, il n'est pas récursif !!.
-	 * Attention : pour des char le String.replace(char old, char new) est plus performant.
+	 * Replaces all occurrences of a pattern within a string with another.
+	 * Replacement is forward-only, not recursive.
+	 * Note: for char replacement, String.replace(char old, char new) is more efficient.
 	 *
 	 * @param str String
-	 * @param oldStr Chaine à remplacer
-	 * @param newStr Chaine de remplacement
-	 * @return Chaine remplacée
+	 * @param oldStr String to replace
+	 * @param newStr Replacement string
+	 * @return Replaced string
 	 */
 	public static String replace(final String str, final String oldStr, final String newStr) {
 		Assertion.check().isNotNull(str);
@@ -265,18 +265,18 @@ public final class StringUtil {
 	}
 
 	/**
-	 * Remplacement au sein d'une chaine d'un motif par un autre.
-	 * Le remplacement avance, il n'est pas récursif !!.
-	 * Le StringBuilder est modifié !! c'est pourquoi il n'y a pas de return.
+	 * Replaces all occurrences of a pattern within a StringBuilder with another.
+	 * Replacement is forward-only, not recursive.
+	 * The StringBuilder is modified in place, hence no return value.
 	 * @param str StringBuilder
-	 * @param oldStr Chaine à remplacer
-	 * @param newStr Chaine de remplacement
+	 * @param oldStr String to replace
+	 * @param newStr Replacement string
 	 */
 	public static void replace(final StringBuilder str, final String oldStr, final String newStr) {
 		Assertion.check()
 				.isNotNull(str)
 				.isNotNull(oldStr)
-				.isTrue(oldStr.length() > 0, "La chaine a remplacer ne doit pas être vide")
+				.isTrue(oldStr.length() > 0, "The string to replace must not be empty")
 				.isNotNull(newStr);
 		//-----
 		int index = str.indexOf(oldStr);
@@ -287,11 +287,11 @@ public final class StringUtil {
 	}
 
 	/**
-	 * Fusionne une chaine compatible avec les paramètres.
-	 * Les caractères { }  sont interdits ou doivent être echappés avec \\.
-	 * @param msg Chaine au format MessageFormat
-	 * @param params paramètres du message
-	 * @return Chaine fusionnée
+	 * Merges a string with parameters using MessageFormat.
+	 * Characters { } are forbidden unless escaped with \\.
+	 * @param msg String in MessageFormat format
+	 * @param params message parameters
+	 * @return Merged string
 	 */
 	public static String format(final String msg, final Object... params) {
 		Assertion.check().isNotNull(msg);
@@ -299,9 +299,9 @@ public final class StringUtil {
 		if (params == null || params.length == 0) {
 			return msg;
 		}
-		//Gestion des doubles quotes
-		//On simple quotes les doubles quotes déjà posées.
-		//Puis on double toutes les simples quotes ainsi il ne reste plus de simple quote non doublée.
+		//Handle double quotes
+		//Single-quote existing double quotes.
+		//Then double all single quotes so no unmatched single quote remains.
 		final StringBuilder newMsg = new StringBuilder(msg);
 		replace(newMsg, "''", "'");
 		replace(newMsg, "'", "''");

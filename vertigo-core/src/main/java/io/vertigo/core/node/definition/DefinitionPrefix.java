@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE })
 public @interface DefinitionPrefix {
 	/**
-	 * Préfix de la définition du champ.
+	 * Prefix for the definition.
 	 */
 	String value();
 }

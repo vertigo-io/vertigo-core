@@ -20,7 +20,7 @@ package io.vertigo.core.node.component;
 import io.vertigo.core.util.StringUtil;
 
 /**
- * Centralisation des accès aux composants et aux plugins.
+ * Centralized access to components and plugins.
  * @author pchretien
  */
 public interface ComponentSpace extends Container {

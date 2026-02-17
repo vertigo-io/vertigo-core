@@ -83,7 +83,7 @@ public final class DefinitionId<D extends Definition> implements Serializable {
 	}
 
 	/**
-	 * @return Objet référencé
+	 * @return Referenced object
 	 */
 	public synchronized D get() {
 		if (definition == null) {

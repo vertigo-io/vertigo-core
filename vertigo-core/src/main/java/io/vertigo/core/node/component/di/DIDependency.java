@@ -29,13 +29,13 @@ import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
 
 /**
- * Un composant possède une liste de dépendances.
- * Une dépendance est donc une relation entre une définition de composant et une autre définition de composant, identifiée par son id.
- * une dépendance peut porter sur
- * - une Classe quelconque,
- * - une option
- * - une Liste
- * Seul le premier type de relation revët un caractère obligatoire.
+ * A component has a list of dependencies.
+ * A dependency is a relation between a component definition and another component definition, identified by its id.
+ * A dependency can be of type:
+ * - a simple class (required),
+ * - an Optional,
+ * - a List.
+ * Only the first type is mandatory.
  *
  * @author pchretien
  */
