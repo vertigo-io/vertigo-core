@@ -29,26 +29,26 @@ import io.vertigo.core.util.StringUtil;
  */
 public final class DIAnnotationUtil {
 	private DIAnnotationUtil() {
-		//Classe utilitaire, constructeur est privé.
+		//Utility class, constructor is private.
 	}
 
 	/**
-	 * Récupération du constructeur.
-	 * Il doit y avoir 1 et un seul constructeur public
-	 * Ce constructeur doit être vide ou marqué avec l'annotation @Inject.
-	 * @param clazz Class de l'objet
-	 * @return Constructeur de l'objet
+	 * Finds the injectable constructor.
+	 * There must be exactly one public constructor.
+	 * This constructor must be either empty or annotated with @Inject.
+	 * @param clazz Class of the object
+	 * @return Constructor of the object
 	 */
 	static <T> Constructor<T> findInjectableConstructor(final Class<T> clazz) {
 		Assertion.check().isNotNull(clazz);
 		//-----
 		final Constructor<T>[] constructors = (Constructor<T>[]) clazz.getConstructors();
 		Assertion.check()
-				.isNotNull(constructors, "Aucun constructeur public identifiable")
-				.isTrue(constructors.length == 1, "Un seul constructeur public doit être déclaré sur {0}", clazz.getName())
-				.isTrue(isInjectable(constructors[0]), "Le constructeur public de {0} doit être marqué avec l'annotation @Inject ou bien être vide", clazz.getName());
+				.isNotNull(constructors, "No identifiable public constructor")
+				.isTrue(constructors.length == 1, "Exactly one public constructor must be declared on {0}", clazz.getName())
+				.isTrue(isInjectable(constructors[0]), "The public constructor of {0} must be annotated with @Inject or be empty", clazz.getName());
 		//-----
-		//On a un et un seul constructeur.
+		//There is exactly one constructor.
 		return constructors[0];
 	}
 
@@ -62,15 +62,15 @@ public final class DIAnnotationUtil {
 	}
 
 	/**
-	 * Construction d'un ID pour un composant défini par une implémentation.
-	 * @param clazz Classe d'implémentation du composant
-	 * @return Identifiant du composant
+	 * Builds an ID for a component defined by its implementation class.
+	 * @param clazz Implementation class of the component
+	 * @return Component identifier
 	 */
 	public static String buildId(final Class<?> clazz) {
 		Assertion.check().isNotNull(clazz);
 		//-----
-		//On construit l'identifiant du composant.
-		//Par convention on prend le nom de la classe.
+		//Build the component identifier.
+		//By convention, we use the class simple name.
 		return StringUtil.first2LowerCase(clazz.getSimpleName());
 	}
 

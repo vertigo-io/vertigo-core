@@ -29,9 +29,9 @@ import io.vertigo.core.lang.ListBuilder;
 import io.vertigo.core.util.ClassUtil;
 
 /**
- * Modèle d'un composant.
- * Un composant est défini par ses dépendances externes.
- * Les dépendances à des objets fournis par les params ne sont pas exposées. (ele ne servent pas dans la résolution).
+ * Model of a component.
+ * A component is defined by its external dependencies.
+ * Dependencies on objects provided by params are not exposed (they are not needed for resolution).
  * @author prahmoune, pchretien
  */
 record DIComponentInfo(
@@ -56,7 +56,7 @@ record DIComponentInfo(
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		//Utilisé pour afficher les messages d'erreurs lors du calcul des DI
+		//Used to display error messages during DI resolution
 		return id + "<" + implClass.getSimpleName() + ">";
 	}
 
@@ -65,7 +65,7 @@ record DIComponentInfo(
 	 */
 	private static Collection<DIDependency> buildDependencies(final Class<?> implClass, final Set<String> params) {
 		final ListBuilder<DIDependency> dependenciesBuilder = new ListBuilder<>();
-		//Les paramètres sont supposés connus et ne sont donc pas concernés par l'analyse de dépendances
+		//Parameters are assumed to be known and are therefore not part of the dependency analysis
 		populateConstructorDepedencies(dependenciesBuilder, implClass, params);
 		populateFieldDepencies(dependenciesBuilder, implClass, params);
 		return dependenciesBuilder.unmodifiable().build();
@@ -76,7 +76,7 @@ record DIComponentInfo(
 	 */
 	private static void populateConstructorDepedencies(final ListBuilder<DIDependency> dependenciesBuilder, final Class<?> implClass, final Set<String> params) {
 		final Constructor<?> constructor = DIAnnotationUtil.findInjectableConstructor(implClass);
-		//On construit la liste de ses dépendances.
+		//Build the list of its dependencies.
 		for (int i = 0; i < constructor.getParameterTypes().length; i++) {
 			final DIDependency dependency = new DIDependency(constructor, i);
 			if (!params.contains(dependency.getName())) {
@@ -91,7 +91,7 @@ record DIComponentInfo(
 	private static void populateFieldDepencies(final ListBuilder<DIDependency> dependenciesBuilder, final Class<?> implClass, final Set<String> params) {
 		final Collection<Field> fields = ClassUtil.getAllFields(implClass, Inject.class);
 		for (final Field field : fields) {
-			//On utilise le build sur les champs avec les options autorisées.
+			//Build dependency from field with allowed options.
 			final DIDependency dependency = new DIDependency(field);
 			if (!params.contains(dependency.getName())) {
 				dependenciesBuilder.add(dependency);

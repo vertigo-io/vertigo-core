@@ -33,7 +33,7 @@ import java.util.Set;
  * @author pchretien
  */
 public final class DIReactor {
-	//Map des composants et de leurs parents
+	//Map of components and their parents
 	private final Set<String> allComponentInfos = new HashSet<>();
 	private final List<DIComponentInfo> diComponentInfos = new ArrayList<>();
 	private final Set<String> parentComponentInfos = new HashSet<>();
@@ -86,16 +86,16 @@ public final class DIReactor {
 
 	/**
 	 * Process the 'digital' reaction in a way to obtain an ordered list of components, taking account of their dependencies.
-	 * @return Ordered list of comoponent's Ids.
+	 * @return Ordered list of component's Ids.
 	 */
 	public List<String> proceed() {
 		//-----
-		//1.On vérifie si tous les composants définis par leurs ids existent
+		//1. Check that all components defined by their ids exist
 		final StringBuilder missing = new StringBuilder();
 		for (final DIComponentInfo componentInfo : diComponentInfos) {
 			for (final DIDependency dependency : componentInfo.dependencies()) {
-				//Si une référence est requise
-				//et qu'elle est absente, c'est qu'elle est manquante !
+				//If a reference is required
+				//and it is absent, then it is missing!
 				if (dependency.isRequired() && !allComponentInfos.contains(dependency.getName())) {
 					missing.append(dependency).append(" (referenced by ").append(componentInfo).append("), ");
 				}
@@ -105,42 +105,42 @@ public final class DIReactor {
 			throw new DIException("Components or params not found :" + missing.toString() + "\n\tLoaded components/params : " + diComponentInfos);
 		}
 		//-----
-		//2.On résout les dépendances
+		//2. Resolve dependencies
 		final List<DIComponentInfo> unsorted = new ArrayList<>(diComponentInfos);
-		//Niveaux de dépendances des composants
+		//Dependency levels of components
 		final List<String> sorted = new ArrayList<>();
 
-		//. Par défaut on considére comme triés tous les parents
-		//On va trier les nouveaux composants.
+		//By default, all parents are considered already sorted.
+		//We will sort the new components.
 		while (!unsorted.isEmpty()) {
 			final int countSorted = sorted.size();
 			for (final Iterator<DIComponentInfo> iterator = unsorted.iterator(); iterator.hasNext();) {
 				final DIComponentInfo componentInfo = iterator.next();
 				final boolean solved = isSolved(componentInfo, parentComponentInfos, allComponentInfos, sorted);
 				if (solved) {
-					//Le composant est résolu
-					// - On l'ajoute sa clé à la liste des clés de composants résolus
-					// - On le supprime de la liste des composants à résoudre
+					//The component is resolved
+					// - Add its key to the list of resolved component keys
+					// - Remove it from the list of components to resolve
 					sorted.add(componentInfo.id());
 					iterator.remove();
 				}
 			}
-			// Si lors d'une itération on ne fait rien c'est qu'il y a une dépendance cyclique
+			// If no progress was made during an iteration, there is a cyclic dependency
 			if (countSorted == sorted.size()) {
-				// On a une dépendance cyclique !
+				// Cyclic dependency detected!
 				throw new DIException("Dependencies can't be solved on components (maybe a cyclic dependency) :" + unsorted);
 			}
 		}
 		//-----
-		//3 On expose un liste de ids et non les composantInfos
+		//3. Expose a list of ids, not the componentInfos
 		return Collections.unmodifiableList(sorted);
 
 	}
 
 	private static boolean isSolved(final DIComponentInfo componentInfo, final Set<String> parentComponentInfos, final Set<String> allComponentInfos, final List<String> sorted) {
-		//Un composant est résolu si
-		// les dépendances obligatoires sont déjà résolues
-		// les dépendantes facultatives
+		//A component is resolved when
+		// all required dependencies are already resolved
+		// and all optional dependencies are resolved (if present)
 		for (final DIDependency dependency : componentInfo.dependencies()) {
 			if (!isSolved(dependency, parentComponentInfos, allComponentInfos, sorted)) {
 				return false;
@@ -150,24 +150,24 @@ public final class DIReactor {
 	}
 
 	private static boolean isSolved(final DIDependency dependency, final Set<String> parentComponentInfos, final Set<String> allComponentInfos, final List<String> sorted) {
-		//Une dépendace est résolue si tous les ids concernés sont résolus.
-		//Si la dépendance est déjà résolue et bien c'est bon on pass à la dépendances suivante
+		//A dependency is resolved when all related ids are resolved.
+		//If the dependency is already resolved, move on to the next one.
 
 		if (dependency.isRequired()) {
 			return parentComponentInfos.contains(dependency.getName()) || sorted.contains(dependency.getName());
 		} else if (dependency.isOptional()) {
-			//Si l'objet fait partie de la liste alors il doit être résolu.
+			//If the object is in the list, then it must be resolved.
 			if (allComponentInfos.contains(dependency.getName())) {
 				return sorted.contains(dependency.getName()) || parentComponentInfos.contains(dependency.getName());
 			}
-			//Sinon comme il est optionnel c'est ok.
+			//Otherwise, since it is optional, it's ok.
 			return true;
 		} else if (dependency.isList()) {
-			//Si l'objet fait partie de la liste alors il doit être résolu.
+			//If the object is in the list, then it must be resolved.
 			for (final String id : allComponentInfos) {
 				final boolean match = id.equals(dependency.getName()) || id.startsWith(dependency.getName() + '#');
 				if (match && !sorted.contains(id) && !parentComponentInfos.contains(id)) {
-					//L'objet id fait partie de la liste
+					//The object id is part of the list
 					return false;
 				}
 			}
