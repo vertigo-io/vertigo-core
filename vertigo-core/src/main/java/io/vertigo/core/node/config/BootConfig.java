@@ -30,37 +30,22 @@ import io.vertigo.core.node.component.AspectPlugin;
  * That's to say : how to boot the modules of Vertigo.
  * @author pchretien
  */
-public final class BootConfig {
-	private final Optional<LogConfig> logConfigOpt;
-	private final boolean isVerbose;
-	@JsonExclude
-	private final AspectPlugin aspectPlugin;
+public record BootConfig(
+		Optional<LogConfig> logConfigOpt,
+		List<ComponentConfig> componentConfigs,
+		List<PluginConfig> pluginConfigs,
+		@JsonExclude AspectPlugin aspectPlugin,
+		boolean isVerbose) {
 
-	private final List<ComponentConfig> componentConfigs;
-	private final List<PluginConfig> pluginConfigs;
-
-	/**
-	 * Constructor.
-	 * @param aspectPlugin AopPlugin
-	 * @param isVerbose if logs are enabled during startup
-	 */
-	BootConfig(
-			final Optional<LogConfig> logConfigOpt,
-			final List<ComponentConfig> componentConfigs,
-			final List<PluginConfig> pluginConfigs,
-			final AspectPlugin aspectPlugin,
-			final boolean isVerbose) {
+	public BootConfig {
 		Assertion.check()
 				.isNotNull(logConfigOpt)
 				.isNotNull(componentConfigs)
 				.isNotNull(pluginConfigs)
 				.isNotNull(aspectPlugin);
 		//-----
-		this.logConfigOpt = logConfigOpt;
-		this.componentConfigs = componentConfigs;
-		this.pluginConfigs = pluginConfigs;
-		this.isVerbose = isVerbose;
-		this.aspectPlugin = aspectPlugin;
+		componentConfigs = List.copyOf(componentConfigs);
+		pluginConfigs = List.copyOf(pluginConfigs);
 	}
 
 	/**
@@ -72,13 +57,6 @@ public final class BootConfig {
 	}
 
 	/**
-	 * @return the logconfig
-	 */
-	public Optional<LogConfig> logConfigOpt() {
-		return logConfigOpt;
-	}
-
-	/**
 	 * @return the list of component-configs
 	 */
 	public List<CoreComponentConfig> coreComponentConfigs() {
@@ -86,19 +64,5 @@ public final class BootConfig {
 				.addAll(ConfigUtil.buildComponentConfigs(componentConfigs))
 				.addAll(ConfigUtil.buildPluginsComponentConfigs(pluginConfigs))
 				.build();
-	}
-
-	/**
-	 * @return if the startup is isVerbose
-	 */
-	public boolean isVerbose() {
-		return isVerbose;
-	}
-
-	/**
-	 * @return AopEngine
-	 */
-	public AspectPlugin aspectPlugin() {
-		return aspectPlugin;
 	}
 }
