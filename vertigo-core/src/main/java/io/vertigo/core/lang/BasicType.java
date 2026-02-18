@@ -19,6 +19,7 @@ package io.vertigo.core.lang;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -89,10 +90,29 @@ public enum BasicType {
 	}
 
 	/**
+	 * Static map for O(1) lookup of Java class to BasicType.
+	 * Includes both wrapper and primitive types.
+	 */
+	private static final Map<Class<?>, BasicType> CLASS_TO_TYPE = Map.ofEntries(
+			Map.entry(Integer.class, BasicType.Integer),
+			Map.entry(int.class, BasicType.Integer),
+			Map.entry(Double.class, BasicType.Double),
+			Map.entry(double.class, BasicType.Double),
+			Map.entry(Boolean.class, BasicType.Boolean),
+			Map.entry(boolean.class, BasicType.Boolean),
+			Map.entry(String.class, BasicType.String),
+			Map.entry(LocalDate.class, BasicType.LocalDate),
+			Map.entry(Instant.class, BasicType.Instant),
+			Map.entry(java.math.BigDecimal.class, BasicType.BigDecimal),
+			Map.entry(Long.class, BasicType.Long),
+			Map.entry(long.class, BasicType.Long),
+			Map.entry(DataStream.class, BasicType.DataStream));
+
+	/**
 	 * Gets the Java class for this type.
 	 * @return Corresponding Java class
 	 */
-	public Class getJavaClass() {
+	public Class<?> getJavaClass() {
 		return javaClass;
 	}
 
@@ -103,32 +123,9 @@ public enum BasicType {
 	 * @param type Java class to check
 	 * @return Optional containing matching BasicType if found
 	 */
-	public static Optional<BasicType> of(final Class type) {
+	public static Optional<BasicType> of(final Class<?> type) {
 		Assertion.check().isNotNull(type);
 		//---
-		final BasicType basicType;
-		if (Integer.class.equals(type) || int.class.equals(type)) {
-			basicType = BasicType.Integer;
-		} else if (Double.class.equals(type) || double.class.equals(type)) {
-			basicType = BasicType.Double;
-		} else if (Boolean.class.equals(type) || boolean.class.equals(type)) {
-			basicType = BasicType.Boolean;
-		} else if (String.class.equals(type)) {
-			basicType = BasicType.String;
-		} else if (LocalDate.class.equals(type)) {
-			basicType = BasicType.LocalDate;
-		} else if (Instant.class.equals(type)) {
-			basicType = BasicType.Instant;
-		} else if (java.math.BigDecimal.class.equals(type)) {
-			basicType = BasicType.BigDecimal;
-		} else if (Long.class.equals(type) || long.class.equals(type)) {
-			basicType = BasicType.Long;
-		} else if (DataStream.class.equals(type)) {
-			basicType = BasicType.DataStream;
-		} else {
-			//not a basicType
-			basicType = null;
-		}
-		return Optional.ofNullable(basicType);
+		return Optional.ofNullable(CLASS_TO_TYPE.get(type));
 	}
 }
