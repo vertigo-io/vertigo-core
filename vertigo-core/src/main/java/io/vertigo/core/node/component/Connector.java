@@ -29,7 +29,7 @@ package io.vertigo.core.node.component;
  *
  * @author mlaroche
  */
-public interface Connector<C> extends CoreComponent {
+public non-sealed interface Connector<C> extends CoreComponent {
 
 	String DEFAULT_CONNECTOR_NAME = "main";
 

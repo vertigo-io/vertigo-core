@@ -30,6 +30,6 @@ package io.vertigo.core.node.component;
  *
  * @author pchretien
  */
-public interface Plugin extends CoreComponent {
+public non-sealed interface Plugin extends CoreComponent {
 	//
 }
