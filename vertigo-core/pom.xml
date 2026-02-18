@@ -46,11 +46,7 @@
 				<artifactId>jakarta.inject-api</artifactId>
 				<version>2.0.1</version>
 			</dependency>
-				<groupId>org.reflections</groupId>
-				<artifactId>reflections</artifactId>
-				<version>0.10.2</version>
-			</dependency> <!-- discovery -->
-			<dependency>
+<dependency>
 				<groupId>com.google.code.gson</groupId>
 				<artifactId>gson</artifactId>
 				<version>2.13.1</version>
@@ -74,11 +70,6 @@
 			<groupId>jakarta.inject</groupId>
 			<artifactId>jakarta.inject-api</artifactId>
 		</dependency>
-		<!-- discovery -->
-		<dependency>
-			<groupId>org.reflections</groupId>
-			<artifactId>reflections</artifactId>
-		</dependency> 
 		<!-- Amplifier & aspects -->
 		<dependency>
 			<groupId>net.bytebuddy</groupId>
