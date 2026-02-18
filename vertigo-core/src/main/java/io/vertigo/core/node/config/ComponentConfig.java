@@ -31,7 +31,7 @@ import io.vertigo.core.param.Param;
  * A component is defined by
  *  - an id.
  *  - proxy or pure component -no proxy-
- *  - a implemenation class (empty if proxy, required if not proxy)
+ *  - an implementation class (empty if proxy, required if not proxy)
  *  - an optional api class. (required if proxy)
  *  - a map of params
  *

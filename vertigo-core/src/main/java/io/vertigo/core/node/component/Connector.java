@@ -34,7 +34,7 @@ public non-sealed interface Connector<C> extends CoreComponent {
 	String DEFAULT_CONNECTOR_NAME = "main";
 
 	/**
-	 * A connector might need to define it's name to be findable by plugin and to differentiate multiple instance of the same connector.
+	 * A connector might need to define its name to be findable by plugin and to differentiate multiple instance of the same connector.
 	 * For example, I know that my plugin needs a connection to the "secondary" database.
 	 * "main" is the default but connector can have a different strategy, for example via a @ParamValue parameter in it's constructor
 	 * @return the name of the connector

@@ -37,7 +37,7 @@ import io.vertigo.core.param.Param;
  * A component is defined by
  *  - an id.
  *  - proxy or pure component -no proxy-
- *  - a implemenation class (empty if proxy, required if not proxy)
+ *  - an implementation class (empty if proxy, required if not proxy)
  *  - an optional api class. (required if proxy)
  *  - a map of params
  *
@@ -151,7 +151,7 @@ public final class CoreComponentConfig {
 	 */
 	public Class<? extends CoreComponent> getImplClass() {
 		return implClassOpt
-				.orElseThrow(() -> new NoSuchElementException("No impl class deined for this type of component :" + type));
+				.orElseThrow(() -> new NoSuchElementException("No impl class defined for this type of component:" + type));
 	}
 
 	/**

@@ -284,7 +284,7 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 		try {
 			scheduler.awaitTermination(10, TimeUnit.SECONDS);
 		} catch (final InterruptedException e) {
-			//we are already stoping
+			//we are already stopping
 			// Restore interrupted state...
 			Thread.currentThread().interrupt();
 		}

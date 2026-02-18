@@ -23,7 +23,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**Each définition has a prefix
+/**Each definition has a prefix
  * @author pchretien
  */
 @Retention(RetentionPolicy.RUNTIME)

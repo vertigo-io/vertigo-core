@@ -181,7 +181,7 @@ public final class FileUtil {
 	/**
 	 * Replace "user.home" "user.dir" and "java.io.tmpdir" by system value.
 	 *
-	 * @param path PAth to translate
+	 * @param path Path to translate
 	 * @return translated path
 	 */
 	public static String translatePath(final String path) {

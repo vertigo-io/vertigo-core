@@ -28,7 +28,7 @@ import io.vertigo.core.param.Param;
  *
  * A plugin is defined by
  *  - an api (an interface that extends Plugin ) 
- *  - an implemenation class of the api
+ *  - an implementation class of the api
  *  - a map of params
  *
  * Several plugins may have the same type.

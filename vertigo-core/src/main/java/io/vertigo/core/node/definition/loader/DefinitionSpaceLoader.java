@@ -91,7 +91,7 @@ public final class DefinitionSpaceLoader {
 				.map(key -> componentSpace.resolve(key, CoreComponent.class))
 				.filter(component -> DefinitionProvider.class.isAssignableFrom(component.getClass()))
 				.flatMap(component -> ((DefinitionProvider) component).get(definitionSpaceWritable).stream())
-				.map(defitionSupplier -> defitionSupplier.get(definitionSpaceWritable));
+				.map(definitionSupplier -> definitionSupplier.get(definitionSpaceWritable));
 
 		definition.forEach(definitionSpaceWritable::registerDefinition);
 		return this;

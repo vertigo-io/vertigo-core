@@ -18,7 +18,7 @@
 package io.vertigo.core.node.component;
 
 /**
- * A core-component is one of tbe key concept of vertigo.
+ * A core-component is one of the key concepts of vertigo.
  * 
  * A core-component 
  * - is thread safe
@@ -26,7 +26,7 @@ package io.vertigo.core.node.component;
  * - a state
  * - offers services (technical or business)
  * 
- * There is 4 types of core-component
+ * There are 4 types of core-component
  *  - Component
  *  - Plugin 
  *  - Connector 

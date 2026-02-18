@@ -151,7 +151,7 @@ public final class SocketLoggerJsonAnalyticsConnectorPlugin implements Analytics
 
 		//we create appender (like a resource it must be close on stop)
 		try {
-			final var trutsStoreConfig = trustStoreUrl.isPresent() ? TrustStoreConfiguration.createKeyStoreConfiguration(trustStoreUrl.get(), trustStorePassword.get().toCharArray(), null, null, "PKCS12", KeyManagerFactory
+			final var trustStoreConfig = trustStoreUrl.isPresent() ? TrustStoreConfiguration.createKeyStoreConfiguration(trustStoreUrl.get(), trustStorePassword.get().toCharArray(), null, null, "PKCS12", KeyManagerFactory
 					.getDefaultAlgorithm()) : null;
 			final var jsonLayout = JsonLayout.createDefaultLayout();
 			jsonLayout.getConfiguration().getProperties().put("log4j.layout.jsonTemplate.maxStringLength", "50000");
@@ -167,7 +167,7 @@ public final class SocketLoggerJsonAnalyticsConnectorPlugin implements Analytics
 							SslConfiguration.createSSLConfiguration(
 									"TLSv1.2",
 									null,
-									trutsStoreConfig))
+									trustStoreConfig))
 					.build();
 
 			appender.start();

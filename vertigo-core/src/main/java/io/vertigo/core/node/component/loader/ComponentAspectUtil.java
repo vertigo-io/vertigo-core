@@ -82,7 +82,7 @@ final class ComponentAspectUtil {
 				methodBasedInterceptors.addAll(classBasedInterceptors);
 			}
 			if (!methodBasedInterceptors.isEmpty()) {
-				//there is at least on aspect on this method
+				//there is at least one aspect on this method
 				joinPoints.put(method, methodBasedInterceptors);
 			}
 		}

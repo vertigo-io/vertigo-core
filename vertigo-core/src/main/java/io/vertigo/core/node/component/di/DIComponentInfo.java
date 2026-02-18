@@ -66,15 +66,15 @@ record DIComponentInfo(
 	private static Collection<DIDependency> buildDependencies(final Class<?> implClass, final Set<String> params) {
 		final ListBuilder<DIDependency> dependenciesBuilder = new ListBuilder<>();
 		//Parameters are assumed to be known and are therefore not part of the dependency analysis
-		populateConstructorDepedencies(dependenciesBuilder, implClass, params);
-		populateFieldDepencies(dependenciesBuilder, implClass, params);
+		populateConstructorDependencies(dependenciesBuilder, implClass, params);
+		populateFieldDependencies(dependenciesBuilder, implClass, params);
 		return dependenciesBuilder.unmodifiable().build();
 	}
 
 	/**
 	 * Dependencies on constructor.
 	 */
-	private static void populateConstructorDepedencies(final ListBuilder<DIDependency> dependenciesBuilder, final Class<?> implClass, final Set<String> params) {
+	private static void populateConstructorDependencies(final ListBuilder<DIDependency> dependenciesBuilder, final Class<?> implClass, final Set<String> params) {
 		final Constructor<?> constructor = DIAnnotationUtil.findInjectableConstructor(implClass);
 		//Build the list of its dependencies.
 		for (int i = 0; i < constructor.getParameterTypes().length; i++) {
@@ -88,7 +88,7 @@ record DIComponentInfo(
 	/**
 	 * Dependencies on each field
 	 */
-	private static void populateFieldDepencies(final ListBuilder<DIDependency> dependenciesBuilder, final Class<?> implClass, final Set<String> params) {
+	private static void populateFieldDependencies(final ListBuilder<DIDependency> dependenciesBuilder, final Class<?> implClass, final Set<String> params) {
 		final Collection<Field> fields = ClassUtil.getAllFields(implClass, Inject.class);
 		for (final Field field : fields) {
 			//Build dependency from field with allowed options.

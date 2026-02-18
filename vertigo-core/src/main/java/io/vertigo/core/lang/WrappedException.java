@@ -70,7 +70,7 @@ public final class WrappedException extends RuntimeException {
 				? ite.getTargetException()
 				: th;
 
-		//WrapException are use to wrap unkowned exception the message can be null.
+		//WrapExceptions are used to wrap unknown exceptions; the message can be null.
 		//But we check a dev's exception have got a message, so in this api (with just th) we send "no message provided" if message is null
 		final String message = StringUtil.isBlank(msg) ? "no message provided" : StringUtil.format(msg, params);
 		if (t instanceof RuntimeException rte) {

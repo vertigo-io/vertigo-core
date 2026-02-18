@@ -244,7 +244,6 @@ public final class ComponentSpaceLoader {
 		return (C) createInstance(componentConfig.getImplClass(), container, paramManagerOpt, componentConfig.getParams());
 	}
 
-	//ici
 	private CoreComponent createComponentWithOptions(
 			final Optional<ParamManager> paramManagerOpt,
 			final ComponentUnusedKeysContainer componentContainer,

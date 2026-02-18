@@ -19,7 +19,7 @@ package io.vertigo.core.node.component;
 
 /**
  * Initializer of components.
- * @author npiedeloup, ,pchretien
+ * @author npiedeloup, pchretien
  */
 public interface ComponentInitializer {
 	/**

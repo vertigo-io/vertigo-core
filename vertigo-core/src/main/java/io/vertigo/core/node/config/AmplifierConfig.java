@@ -32,7 +32,7 @@ import io.vertigo.core.param.Param;
  *
  * @author pchretien
  * 
- * @param apiClass the api class of the amlifier 
+ * @param apiClass the api class of the amplifier
  * @param params the params
  */
 public record AmplifierConfig(

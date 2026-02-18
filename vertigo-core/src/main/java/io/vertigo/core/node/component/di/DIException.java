@@ -27,7 +27,7 @@ final class DIException extends RuntimeException {
 
 	/**
 	 * Constructor.
-	 * @param msg messagae
+	 * @param msg message
 	 */
 	DIException(final String msg) {
 		super(msg);

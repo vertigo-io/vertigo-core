@@ -34,7 +34,7 @@ import io.vertigo.core.util.ClassUtil;
 /**
  * Injector.
  * Create new instances.
- * Warning : Activeable méthods are not managed by Injector.
+ * Warning: Activeable methods are not managed by Injector.
  *
  * @author pchretien
  */
