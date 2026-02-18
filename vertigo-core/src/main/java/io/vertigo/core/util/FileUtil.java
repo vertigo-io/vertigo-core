@@ -197,7 +197,7 @@ public final class FileUtil {
 	 * @param userPath Path to check
 	 */
 	public static void checkUserPath(final String userPath) {
-		Assertion.check().isFalse(userPath.contains("..")
+		Assertion.check().isTrue(!userPath.contains("..")
 				&& userPath.indexOf((char) 0) == -1, //char 0
 				USER_CHECK_ERROR_MSG);
 	}
