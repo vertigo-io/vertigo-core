@@ -279,14 +279,6 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 		}
 	}
 
-	/*private static String byteArrayToHex(final byte[] a) {
-		final StringBuilder sb = new StringBuilder(a.length * 3);
-		for (final byte b : a) {
-			sb.append(String.format("%02x ", b));
-		}
-		return sb.toString();
-	}*/
-
 	public static byte[] gzip(final byte[] val, final int offset, final int length) throws IOException {
 		try (var bos = new ByteArrayOutputStream(val.length)) {
 			try (var gos = new GZIPOutputStream(bos)) {
@@ -468,38 +460,16 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 	/**
 	 * Data for the factory.
 	 */
-	static class FactoryData {
-
-		protected final String host;
-		protected final int port;
-		protected final int connectTimeoutMillis;
-		protected final int reconnectDelayMillis;
-		protected final boolean immediateFail;
-		protected final boolean compress;
-		protected final Layout<? extends Serializable> layout;
-		protected final int bufferSize;
-		protected final SocketOptions socketOptions;
-
-		public FactoryData(final String host, final int port, final int connectTimeoutMillis,
-				final int reconnectDelayMillis, final boolean immediateFail, final boolean compress,
-				final Layout<? extends Serializable> layout, final int bufferSize, final SocketOptions socketOptions) {
-			this.host = host;
-			this.port = port;
-			this.connectTimeoutMillis = connectTimeoutMillis;
-			this.reconnectDelayMillis = reconnectDelayMillis;
-			this.immediateFail = immediateFail;
-			this.compress = compress;
-			this.layout = layout;
-			this.bufferSize = bufferSize;
-			this.socketOptions = socketOptions;
-		}
-
-		@Override
-		public String toString() {
-			return "FactoryData [host=" + host + ", port=" + port + ", connectTimeoutMillis=" + connectTimeoutMillis
-					+ ", reconnectDelayMillis=" + reconnectDelayMillis + ", immediateFail=" + immediateFail + ", compress=" + compress
-					+ ", layout=" + layout + ", bufferSize=" + bufferSize + ", socketOptions=" + socketOptions + "]";
-		}
+	record FactoryData(
+			String host,
+			int port,
+			int connectTimeoutMillis,
+			int reconnectDelayMillis,
+			boolean immediateFail,
+			boolean compress,
+			Layout<? extends Serializable> layout,
+			int bufferSize,
+			SocketOptions socketOptions) {
 	}
 
 	/**
@@ -521,9 +491,9 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 			InetAddress inetAddress;
 			OutputStream os;
 			try {
-				inetAddress = InetAddress.getByName(data.host);
+				inetAddress = InetAddress.getByName(data.host());
 			} catch (final UnknownHostException ex) {
-				LOGGER.error("Could not find address of {}: {}", data.host, ex, ex);
+				LOGGER.error("Could not find address of {}: {}", data.host(), ex, ex);
 				return null;
 			}
 			Socket socket = null;
@@ -537,7 +507,7 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 				LOGGER.error("TcpSocketManager ({}) caught exception and will continue:", name, ex);
 				os = NullOutputStream.getInstance();
 			}
-			if (data.reconnectDelayMillis == 0) {
+			if (data.reconnectDelayMillis() == 0) {
 				Closer.closeSilently(socket);
 				return null;
 			}
@@ -546,17 +516,17 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 
 		@SuppressWarnings("unchecked")
 		M createManager(final String name, final OutputStream os, final Socket socket, final InetAddress inetAddress, final T data) {
-			return (M) new AnalyticsTcpSocketManager(name, os, socket, inetAddress, data.host, data.port,
-					data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.compress, data.layout,
-					data.bufferSize, data.socketOptions);
+			return (M) new AnalyticsTcpSocketManager(name, os, socket, inetAddress, data.host(), data.port(),
+					data.connectTimeoutMillis(), data.reconnectDelayMillis(), data.immediateFail(), data.compress(), data.layout(),
+					data.bufferSize(), data.socketOptions());
 		}
 
 		Socket createSocket(final T data) throws IOException {
-			final var socketAddresses = resolver.resolveHost(data.host, data.port);
+			final var socketAddresses = resolver.resolveHost(data.host(), data.port());
 			IOException ioe = null;
 			for (final InetSocketAddress socketAddress : socketAddresses) {
 				try {
-					return AnalyticsTcpSocketManager.createSocket(socketAddress, data.socketOptions, data.connectTimeoutMillis);
+					return AnalyticsTcpSocketManager.createSocket(socketAddress, data.socketOptions(), data.connectTimeoutMillis());
 				} catch (final IOException ex) {
 					ioe = ex;
 				}
@@ -566,9 +536,9 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 
 		protected String errorMessage(final T data, final List<InetSocketAddress> socketAddresses) {
 			final var sb = new StringBuilder("Unable to create socket for ");
-			sb.append(data.host).append(" at port ").append(data.port);
+			sb.append(data.host()).append(" at port ").append(data.port());
 			if (socketAddresses.size() == 1) {
-				if (!socketAddresses.get(0).getAddress().getHostAddress().equals(data.host)) {
+				if (!socketAddresses.get(0).getAddress().getHostAddress().equals(data.host())) {
 					sb.append(" using ip address ").append(socketAddresses.get(0).getAddress().getHostAddress());
 					sb.append(" and port ").append(socketAddresses.get(0).getPort());
 				}
