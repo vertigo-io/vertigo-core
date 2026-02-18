@@ -19,7 +19,6 @@ package io.vertigo.core.impl.daemon;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -28,7 +27,6 @@ import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.health.HealthChecked;
 import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.analytics.health.HealthMeasureBuilder;
-import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.daemon.DaemonManager;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.daemon.DaemonStat;
@@ -52,10 +50,10 @@ import io.vertigo.core.util.ClassUtil;
 public final class DaemonManagerImpl implements DaemonManager, Activeable, SimpleDefinitionProvider {
 
 	private final DaemonExecutor daemonExecutor;
-	private final AnalyticsManager analyticsManager;
 
 	/**
 	 * Construct an instance of DaemonManagerImpl.
+	 *
 	 * @param analyticsManager AnalyticsManager
 	 * @param threadPoolSize thread pool size (optional, default 2)
 	 */
@@ -64,8 +62,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 			@ParamValue("threadPoolSize") final Optional<Integer> threadPoolSize) {
 		Assertion.check().isNotNull(analyticsManager);
 		//---
-		this.analyticsManager = analyticsManager;
-		daemonExecutor = new DaemonExecutor(threadPoolSize.orElse(2));
+		daemonExecutor = new DaemonExecutor(analyticsManager, threadPoolSize.orElse(2));
 		//--
 		Node.getNode().registerPreActivateFunction(this::startAllDaemons);
 	}
@@ -80,7 +77,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 				.toList();
 	}
 
-	private List<DaemonDefinition> createDaemonDefinitions(final CoreComponent component, final AspectPlugin aopPlugin) {
+	private static List<DaemonDefinition> createDaemonDefinitions(final CoreComponent component, final AspectPlugin aopPlugin) {
 		return Stream.of(aopPlugin.unwrap(component).getClass().getMethods())
 				.filter(method -> method.isAnnotationPresent(DaemonScheduled.class))
 				.map(
@@ -89,21 +86,11 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 									"Method {0} on component {1} cannot have any parameter to be used as a daemon", method.getName(), component.getClass().getName());
 							//---
 							final DaemonScheduled daemonSchedule = method.getAnnotation(DaemonScheduled.class);
-							final Supplier<Daemon> daemonSupplier;
-							if (daemonSchedule.analytics()) {
-								// if analytics is enabled (by default) we trace the execution with a tracer
-								daemonSupplier = () -> () -> analyticsManager.trace(
-										"daemon",
-										daemonSchedule.name(),
-										tracer -> ClassUtil.invoke(component, method));
-							} else {
-								// otherwise we just execute it
-								daemonSupplier = () -> () -> ClassUtil.invoke(component, method);
-							}
 							return new DaemonDefinition(
 									daemonSchedule.name(),
-									daemonSupplier,
-									daemonSchedule.periodInSeconds());
+									() -> () -> ClassUtil.invoke(component, method),
+									daemonSchedule.periodInSeconds(),
+									daemonSchedule.analytics());
 						})
 				.toList();
 
