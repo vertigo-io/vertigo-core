@@ -17,25 +17,24 @@
  */
 package io.vertigo.core.lang;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.JarURLConnection;
+import java.net.URL;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.stream.Stream;
 
-import org.reflections.Reflections;
-import org.reflections.scanners.Scanner;
-import org.reflections.scanners.TypeElementsScanner;
-import org.reflections.util.ConfigurationBuilder;
-import org.reflections.util.FilterBuilder;
-
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.core.util.StringUtil;
 
 /**
  * Utility class for selecting and filtering classes through reflection.
@@ -101,17 +100,57 @@ public final class ClassSelector {
 	public static ClassSelector from(final String packageName) {
 		Assertion.check().isNotBlank(packageName);
 		// ---
-		final Scanner allScanner = new TypeElementsScanner().includeAnnotations(false).includeFields(false).includeMethods(false);
-		final Set<Class> classes = new Reflections(new ConfigurationBuilder()
-				.forPackage(packageName)
-				.filterInputsBy(new FilterBuilder().includePackage(packageName))
-				.setScanners(allScanner))
-						.getAll(allScanner)
-						.stream()
-						.filter((key) -> !StringUtil.isBlank(key))
-						.map(ClassUtil::classForName)
-						.collect(Collectors.toSet());
+		final String packagePath = packageName.replace('.', '/');
+		final Set<Class> classes = new HashSet<>();
+		try {
+			final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			final Enumeration<URL> resources = classLoader.getResources(packagePath);
+			while (resources.hasMoreElements()) {
+				final URL resource = resources.nextElement();
+				if ("file".equals(resource.getProtocol())) {
+					scanDirectory(new File(resource.toURI()), packageName, classes);
+				} else if ("jar".equals(resource.getProtocol())) {
+					scanJar(resource, packagePath, classes);
+				}
+			}
+		} catch (final Exception e) {
+			throw WrappedException.wrap(e);
+		}
 		return from(classes);
+	}
+
+	private static void scanDirectory(final File directory, final String packageName, final Set<Class> classes) {
+		if (!directory.exists()) {
+			return;
+		}
+		final File[] files = directory.listFiles();
+		if (files == null) {
+			return;
+		}
+		for (final File file : files) {
+			if (file.isDirectory()) {
+				scanDirectory(file, packageName + "." + file.getName(), classes);
+			} else if (file.getName().endsWith(".class") && !file.getName().equals("package-info.class") && !file.getName().equals("module-info.class")) {
+				final String className = packageName + "." + file.getName().substring(0, file.getName().length() - 6);
+				classes.add(ClassUtil.classForName(className));
+			}
+		}
+	}
+
+	private static void scanJar(final URL resource, final String packagePath, final Set<Class> classes) throws IOException {
+		final JarURLConnection jarConnection = (JarURLConnection) resource.openConnection();
+		try (final JarFile jar = jarConnection.getJarFile()) {
+			final Enumeration<JarEntry> entries = jar.entries();
+			while (entries.hasMoreElements()) {
+				final JarEntry entry = entries.nextElement();
+				final String name = entry.getName();
+				if (name.startsWith(packagePath + "/") && name.endsWith(".class")
+						&& !name.endsWith("package-info.class") && !name.endsWith("module-info.class")) {
+					final String className = name.substring(0, name.length() - 6).replace('/', '.');
+					classes.add(ClassUtil.classForName(className));
+				}
+			}
+		}
 	}
 
 	/**
