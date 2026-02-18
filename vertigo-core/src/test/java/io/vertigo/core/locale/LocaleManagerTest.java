@@ -18,12 +18,14 @@
 package io.vertigo.core.locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.Serializable;
+import java.time.ZoneId;
 import java.util.Locale;
-
-import jakarta.inject.Inject;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -32,6 +34,7 @@ import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.locale.data.CityGuide;
 import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.NodeConfig;
+import jakarta.inject.Inject;
 
 /**
  * @author pchretien
@@ -166,5 +169,146 @@ public final class LocaleManagerTest extends AbstractTestCaseJU5 {
 
 		//		helloTxt = new MessageText("default", null, null);
 		//		assertEquals("default", helloTxt.getDisplay());
+	}
+
+	// --- Zone tests ---
+
+	@Test
+	public void testDefaultZoneId() {
+		//Par defaut, le zoneId doit etre celui du systeme
+		assertEquals(ZoneId.systemDefault(), localeManager.getCurrentZoneId());
+	}
+
+	@Test
+	public void testRegisterZoneSupplier() {
+		final ZoneId tokyo = ZoneId.of("Asia/Tokyo");
+		localeManager.registerZoneSupplier(() -> tokyo);
+		assertEquals(tokyo, localeManager.getCurrentZoneId());
+	}
+
+	@Test
+	public void testZoneSupplierWithSpecificZone() {
+		//On verifie que le supplier avec un ZoneId specifique fonctionne correctement
+		final ZoneId newYork = ZoneId.of("America/New_York");
+		localeManager.registerZoneSupplier(() -> newYork);
+		assertEquals(newYork, localeManager.getCurrentZoneId());
+	}
+
+	@Test
+	public void testZoneSupplierOverridesDefault() {
+		//Le supplier doit avoir priorite sur le zoneId par defaut
+		final ZoneId london = ZoneId.of("Europe/London");
+		localeManager.registerZoneSupplier(() -> london);
+		assertEquals(london, localeManager.getCurrentZoneId());
+	}
+
+	@Test
+	public void testZoneSupplierReturningNull() {
+		//Si le supplier retourne null, on doit retomber sur le zone par defaut
+		localeManager.registerZoneSupplier(() -> null);
+		assertEquals(ZoneId.systemDefault(), localeManager.getCurrentZoneId());
+	}
+
+	// --- Double registration tests ---
+
+	@Test
+	public void testDoubleRegisterLocaleSupplier() {
+		localeManager.registerLocaleSupplier(() -> Locale.GERMANY);
+		Assertions.assertThrows(IllegalArgumentException.class,
+				//On ne peut pas enregistrer deux fois un locale supplier
+				() -> localeManager.registerLocaleSupplier(() -> Locale.ENGLISH));
+	}
+
+	@Test
+	public void testDoubleRegisterZoneSupplier() {
+		localeManager.registerZoneSupplier(() -> ZoneId.of("UTC"));
+		Assertions.assertThrows(IllegalArgumentException.class,
+				//On ne peut pas enregistrer deux fois un zone supplier
+				() -> localeManager.registerZoneSupplier(() -> ZoneId.of("Europe/Paris")));
+	}
+
+	// --- LocaleMessageText.getDisplayOpt() tests ---
+
+	@Test
+	public void testGetDisplayOptPresent() {
+		final LocaleMessageText helloTxt = LocaleMessageText.of(CityGuide.HELLO);
+		final Optional<String> displayOpt = helloTxt.getDisplayOpt();
+		assertTrue(displayOpt.isPresent());
+		assertEquals("bonjour", displayOpt.get());
+	}
+
+	@Test
+	public void testGetDisplayOptWithDefaultMsg() {
+		final LocaleMessageKey unknownKey = () -> "UNKNOWN KEY";
+		final LocaleMessageText txt = LocaleMessageText.ofDefaultMsg("message par defaut", unknownKey);
+		final Optional<String> displayOpt = txt.getDisplayOpt();
+		assertTrue(displayOpt.isPresent());
+		assertEquals("message par defaut", displayOpt.get());
+	}
+
+	@Test
+	public void testGetDisplayOptAbsent() {
+		final LocaleMessageKey unknownKey = () -> "UNKNOWN KEY";
+		final LocaleMessageText txt = LocaleMessageText.of(unknownKey);
+		//Pas de cle en dictionnaire, pas de message par defaut => Optional vide
+		assertFalse(txt.getDisplayOpt().isPresent());
+	}
+
+	// --- ofDefaultMsg with existing key tests ---
+
+	@Test
+	public void testOfDefaultMsgWithExistingKey() {
+		//Quand la cle existe, le message du dictionnaire est prioritaire sur le default
+		final LocaleMessageText txt = LocaleMessageText.ofDefaultMsg("fallback", CityGuide.HELLO);
+		assertEquals("bonjour", txt.getDisplay());
+	}
+
+	// --- All messages for all locales ---
+
+	@Test
+	public void testAllMessages() {
+		assertEquals("bonjour", localeManager.getMessage(CityGuide.HELLO, Locale.FRANCE));
+		assertEquals("au revoir", localeManager.getMessage(CityGuide.GOOD_BYE, Locale.FRANCE));
+		assertEquals("ville", localeManager.getMessage(CityGuide.CITY, Locale.FRANCE));
+
+		assertEquals("hello", localeManager.getMessage(CityGuide.HELLO, Locale.ENGLISH));
+		assertEquals("good bye", localeManager.getMessage(CityGuide.GOOD_BYE, Locale.ENGLISH));
+		assertEquals("city", localeManager.getMessage(CityGuide.CITY, Locale.ENGLISH));
+
+		assertEquals("guten tag", localeManager.getMessage(CityGuide.HELLO, Locale.GERMANY));
+		assertEquals("auf wiedersehen", localeManager.getMessage(CityGuide.GOOD_BYE, Locale.GERMANY));
+		assertEquals("stadt ", localeManager.getMessage(CityGuide.CITY, Locale.GERMANY)); //trailing space in properties file
+	}
+
+	// --- Override preserves non-overridden keys ---
+
+	@Test
+	public void testOverrideKeepsNonOverriddenKeys() {
+		//Le override ne surcharge que HELLO, les autres cles doivent rester intactes
+		localeManager.override("io.vertigo.core.locale.data.popular-guide", CityGuide.values());
+
+		//HELLO est surcharge
+		assertEquals("salut", localeManager.getMessage(CityGuide.HELLO, Locale.FRANCE));
+		//GOOD_BYE et CITY ne sont pas dans popular-guide => valeurs d'origine preservees
+		assertEquals("au revoir", localeManager.getMessage(CityGuide.GOOD_BYE, Locale.FRANCE));
+		assertEquals("ville", localeManager.getMessage(CityGuide.CITY, Locale.FRANCE));
+	}
+
+	// --- getMessage returns null for unknown key ---
+
+	@Test
+	public void testGetMessageReturnsNullForUnknownKey() {
+		final LocaleMessageKey unknownKey = () -> "NONEXISTENT";
+		assertNull(localeManager.getMessage(unknownKey, Locale.FRANCE));
+	}
+
+	// --- LocaleMessageText.toString ---
+
+	@Test
+	public void testLocaleMessageTextToString() {
+		final LocaleMessageText helloTxt = LocaleMessageText.of(CityGuide.HELLO);
+		//toString retourne le panic message (format <<locale:key>>)
+		final String str = helloTxt.toString();
+		assertTrue(str.contains("HELLO") || str.contains("bonjour"), "toString should contain the key or value");
 	}
 }
