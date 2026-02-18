@@ -15,8 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.core.plugins.component.aop.javassist;
+package io.vertigo.core.plugins.component.aop.bytebuddy;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -25,17 +26,18 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.aspect.Aspect;
 import io.vertigo.core.node.component.aspect.AspectMethodInvocation;
 import io.vertigo.core.util.ClassUtil;
-import javassist.util.proxy.MethodHandler;
 
 /**
+ * Invocation handler for ByteBuddy-based AOP proxies.
+ * Delegates method calls to the original instance, applying aspects when defined.
+ *
  * @author pchretien
  */
-final class JavassistInvocationHandler implements MethodHandler {
+final class ByteBuddyInvocationHandler implements InvocationHandler {
 	private final Object instance;
-
 	private final Map<Method, List<Aspect>> joinPoints;
 
-	JavassistInvocationHandler(final Object instance, final Map<Method, List<Aspect>> joinPoints) {
+	ByteBuddyInvocationHandler(final Object instance, final Map<Method, List<Aspect>> joinPoints) {
 		Assertion.check()
 				.isNotNull(instance)
 				.isNotNull(joinPoints);
@@ -48,14 +50,12 @@ final class JavassistInvocationHandler implements MethodHandler {
 		return instance;
 	}
 
-	/** {@inheritDoc} */
 	@Override
-	public Object invoke(final Object proxy, final Method thisMethod, final Method proceed, final Object[] args) {
-		if (!joinPoints.containsKey(thisMethod)) {
-			//If no interceptor on the method.
-			return ClassUtil.invoke(instance, thisMethod, args);
+	public Object invoke(final Object proxy, final Method method, final Object[] args) {
+		if (!joinPoints.containsKey(method)) {
+			return ClassUtil.invoke(instance, method, args);
 		}
-		return new MyMethodInvocation(instance, thisMethod, joinPoints.get(thisMethod)).proceed(args);
+		return new MyMethodInvocation(instance, method, joinPoints.get(method)).proceed(args);
 	}
 
 	private static final class MyMethodInvocation implements AspectMethodInvocation {
@@ -75,7 +75,6 @@ final class JavassistInvocationHandler implements MethodHandler {
 			this.aspects = aspects;
 		}
 
-		/** {@inheritDoc} */
 		@Override
 		public Object proceed(final Object[] args) {
 			if (index < aspects.size()) {
@@ -84,7 +83,6 @@ final class JavassistInvocationHandler implements MethodHandler {
 			return ClassUtil.invoke(instance, method, args);
 		}
 
-		/** {@inheritDoc} */
 		@Override
 		public Method getMethod() {
 			return method;

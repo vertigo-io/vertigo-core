@@ -61,9 +61,9 @@
 				<version>2.4</version>  <!-- yaml config -->
 			</dependency>
 			<dependency>
-				<groupId>org.javassist</groupId>
-				<artifactId>javassist</artifactId>
-				<version>3.30.2-GA</version>
+				<groupId>net.bytebuddy</groupId>
+				<artifactId>byte-buddy</artifactId>
+				<version>1.17.5</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -81,8 +81,8 @@
 		</dependency> 
 		<!-- Amplifier & aspects -->
 		<dependency>
-			<groupId>org.javassist</groupId>
-			<artifactId>javassist</artifactId>
+			<groupId>net.bytebuddy</groupId>
+			<artifactId>byte-buddy</artifactId>
 		</dependency>
 		<!-- yaml config-->
 		<dependency>
