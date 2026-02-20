@@ -14,3 +14,4 @@ createSymLink.bat
 .metadata/*
 .factorypath
 .vscode/
+/.claude
