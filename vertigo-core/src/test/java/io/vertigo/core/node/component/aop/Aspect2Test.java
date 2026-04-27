@@ -43,7 +43,7 @@ public final class Aspect2Test {
 	public final void testLoadComponentsWithoutDeclaredAspects() {
 		Assertions.assertThrows(IllegalStateException.class,
 				() -> {
-					try (final AutoCloseableNode node = new AutoCloseableNode(buildNodeConfig())) {
+					try (final AutoCloseableNode _ = new AutoCloseableNode(buildNodeConfig())) {
 						//nop
 					}
 				});

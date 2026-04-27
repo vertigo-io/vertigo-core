@@ -86,7 +86,7 @@ public final class FileUtil {
 		try {
 			final var uri = url.toURI();
 			if ("jar".equalsIgnoreCase(uri.getScheme())) {
-				try (final FileSystem fs = FileSystems.newFileSystem(uri, Map.of())) { // need to "open" the jar for Paths.get to work
+				try (final FileSystem _ = FileSystems.newFileSystem(uri, Map.of())) { // need to "open" the jar for Paths.get to work
 					return fileProcessor.apply(Paths.get(uri));
 				}
 			}

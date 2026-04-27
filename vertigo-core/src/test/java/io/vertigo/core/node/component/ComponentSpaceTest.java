@@ -86,7 +86,7 @@ public final class ComponentSpaceTest {
 
 		Assertions.assertThrows(RuntimeException.class,
 				() -> {
-					try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+					try (AutoCloseableNode _ = new AutoCloseableNode(nodeConfig)) {
 						//
 					}
 				});
@@ -124,7 +124,7 @@ public final class ComponentSpaceTest {
 						.build())
 				.build();
 
-		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+		try (AutoCloseableNode _ = new AutoCloseableNode(nodeConfig)) {
 			final SomeManager manager = Node.getNode().getComponentSpace().resolve(SomeManager.class);
 			Assertions.assertEquals("main", manager.getSomeNames());
 		}
@@ -141,7 +141,7 @@ public final class ComponentSpaceTest {
 						.build())
 				.build();
 
-		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+		try (AutoCloseableNode _ = new AutoCloseableNode(nodeConfig)) {
 			final SomeManager manager = Node.getNode().getComponentSpace().resolve(SomeManager.class);
 			Assertions.assertEquals("first,second", manager.getSomeNames());
 		}
@@ -160,7 +160,7 @@ public final class ComponentSpaceTest {
 						.build())
 				.build();
 
-		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+		try (AutoCloseableNode _ = new AutoCloseableNode(nodeConfig)) {
 			final SomeManager manager = Node.getNode().getComponentSpace().resolve(SomeManager.class);
 			Assertions.assertEquals("first,second", manager.getSomeNames());
 		}
@@ -178,7 +178,7 @@ public final class ComponentSpaceTest {
 						.build())
 				.build();
 
-		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+		try (AutoCloseableNode _ = new AutoCloseableNode(nodeConfig)) {
 			final SomeManager manager = Node.getNode().getComponentSpace().resolve(SomeManager.class);
 			Assertions.assertEquals("first", manager.getSomeNames());
 		}
@@ -193,7 +193,7 @@ public final class ComponentSpaceTest {
 						.build())
 				.build();
 
-		try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+		try (AutoCloseableNode _ = new AutoCloseableNode(nodeConfig)) {
 			final SomeManager manager = Node.getNode().getComponentSpace().resolve(SomeManager.class);
 			Assertions.assertEquals("none", manager.getSomeNames());
 		}

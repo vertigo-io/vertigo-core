@@ -51,7 +51,7 @@ public final class InvalidConfigTest {
 				.build();
 
 		Assertions.assertThrows(RuntimeException.class, () -> {
-			try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			try (AutoCloseableNode _ = new AutoCloseableNode(nodeConfig)) {
 				// ne devrait pas arriver ici
 			}
 		});
@@ -69,7 +69,7 @@ public final class InvalidConfigTest {
 				.build();
 
 		Assertions.assertThrows(RuntimeException.class, () -> {
-			try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			try (AutoCloseableNode _ = new AutoCloseableNode(nodeConfig)) {
 				// ne devrait pas arriver ici
 			}
 		});
@@ -87,7 +87,7 @@ public final class InvalidConfigTest {
 				.build();
 
 		Assertions.assertThrows(RuntimeException.class, () -> {
-			try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			try (AutoCloseableNode _ = new AutoCloseableNode(nodeConfig)) {
 				// ne devrait pas arriver ici
 			}
 		});
@@ -104,7 +104,7 @@ public final class InvalidConfigTest {
 				.build();
 
 		Assertions.assertThrows(RuntimeException.class, () -> {
-			try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			try (AutoCloseableNode _ = new AutoCloseableNode(nodeConfig)) {
 				// ne devrait pas arriver ici
 			}
 		});
@@ -125,7 +125,7 @@ public final class InvalidConfigTest {
 				.build();
 
 		Assertions.assertThrows(RuntimeException.class, () -> {
-			try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			try (AutoCloseableNode _ = new AutoCloseableNode(nodeConfig)) {
 				// ne devrait pas arriver ici
 			}
 		});
@@ -181,7 +181,7 @@ public final class InvalidConfigTest {
 				.build();
 
 		Assertions.assertThrows(RuntimeException.class, () -> {
-			try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			try (AutoCloseableNode _ = new AutoCloseableNode(nodeConfig)) {
 				// ne devrait pas arriver ici
 			}
 		});
@@ -205,7 +205,7 @@ public final class InvalidConfigTest {
 				.build();
 
 		Assertions.assertThrows(RuntimeException.class, () -> {
-			try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			try (AutoCloseableNode _ = new AutoCloseableNode(nodeConfig)) {
 				// ne devrait pas arriver ici
 			}
 		});
@@ -227,7 +227,7 @@ public final class InvalidConfigTest {
 				.build();
 
 		Assertions.assertThrows(RuntimeException.class, () -> {
-			try (AutoCloseableNode node = new AutoCloseableNode(nodeConfig)) {
+			try (AutoCloseableNode _ = new AutoCloseableNode(nodeConfig)) {
 				// ne devrait pas arriver ici
 			}
 		});
