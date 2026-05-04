@@ -3,13 +3,22 @@ Version history
 
 Running 5.0.0
 ----------------------
+
+- **Upgrade to JDK25**
+
 more to come :)
 
-Release 4.3.3 - TBD
+Release 4.4.0 - TBD
 ----------------------
-[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-432-to-433)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-432-to-440)
 
-- Fix Amplifier auto discovery
+- [Core] Fix Amplifier auto discovery
+- [Core] Sort injected components list by declaring order (like paramPlugins, formely it's by key name) : plugin order is now stable
+- [Core] Add thread-local context tags to tracer creation
+- [Core] Fix bijective camelCase <-> CONST_CASE : Allow digits followed by letters in StringUtil
+- [Core] Fix : FileUtil:checkUserPath : invalid \0 character detection
+- [Daemon] Handle analytics (previsouly, only annoted methods)
+- [Core] Lighter exception message : Use original exception message when wrapping : reduce exceptions stack
 
 Release 4.3.2 - 2025/07/10
 ----------------------
