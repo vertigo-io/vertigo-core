@@ -1,0 +1,72 @@
+scope:
+  path: io.vertigo.core.**
+  description: "Architecture de vertigo-core — premier niveau de découpage"
+  excludes:
+    - java.**
+    - javax.**
+    - jakarta.**
+    - org.apache.logging.**
+
+libs:
+  gson: com.google.gson.**
+  snakeyaml: org.yaml.snakeyaml.**
+  bytebuddy: net.bytebuddy.**
+  org-xml: org.xml.**
+  
+
+modules:
+  lang:
+    path: io.vertigo.core.lang.**
+    description: "Types fondamentaux, assertions, exceptions"
+    deps: [util, locale, node, gson]
+    # NB: gson vient de lang/json/CoreJsonAdapters
+    #     la dépendance sur node vient uniquement de lang/json/CoreJsonAdapters (DefinitionId)
+    #     -> à isoler dans un module dédié à terme
+
+  util:
+    path: io.vertigo.core.util.**
+    description: "Utilitaires (réflexion, chaînes, dates, XML)"
+    deps: [lang, node, org-xml]
+    # NB: InjectorUtil dépend de node.Node — à terme util ne devrait pas dépendre de node
+
+  locale:
+    path: io.vertigo.core.locale.**
+    description: "Internationalisation (i18n)"
+    deps: [lang, util, node]
+
+  resource:
+    path: io.vertigo.core.resource.**
+    description: "Gestion des ressources"
+    deps: [node]
+
+  param:
+    path: io.vertigo.core.param.**
+    description: "Gestion des paramètres de configuration"
+    deps: [lang, node]
+
+  analytics:
+    path: io.vertigo.core.analytics.**
+    description: "Monitoring : traces, métriques, santé"
+    deps: [lang, node]
+
+  daemon:
+    path: io.vertigo.core.daemon.**
+    description: "Tâches planifiées en arrière-plan"
+    deps: [lang, node]
+
+  node:
+    path: io.vertigo.core.node.**
+    description: "Moteur du framework : composants, configuration, définitions"
+    deps: [analytics, daemon, lang, locale, param, resource, util, snakeyaml, impl, plugins]
+    # Règle clé : node (API) ne doit pas dépendre de impl
+    # Les violations actuelles dans BootConfigBuilder et ModuleDiscoveryFeatures seront signalées
+
+  impl:
+    path: io.vertigo.core.impl.**
+    description: "Implémentations internes — NON exposées comme API"
+    deps: [analytics, daemon, lang, locale, node, param, resource, util]
+
+  plugins:
+    path: io.vertigo.core.plugins.**
+    description: "Plugins — NON exposés comme API"
+    deps: [analytics, daemon, impl, lang, node, param, resource, util, gson, bytebuddy, org-xml]
