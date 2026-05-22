@@ -14,7 +14,9 @@ public class ArchYamlConfigLoader {
 	private static final ObjectMapper YAML = new ObjectMapper(new YAMLFactory());
 
 	public static ArchConfig parseYaml(final File file) {
-		Assertion.check().isNotNull(file);
+		Assertion.check()
+				.isNotNull(file, "file is required")
+				.isTrue(file.exists(), "YAML file not found: {0}", file.getAbsolutePath());
 		//---
 		try (InputStream in = new FileInputStream(file)) {
 			return YAML.readValue(in, ArchConfig.class);

@@ -11,6 +11,7 @@ import java.util.Map;
 import com.tngtech.archunit.lang.ArchRule;
 
 import io.vertigo.arch.config.ArchConfig;
+import io.vertigo.arch.config.ArchScope;
 import io.vertigo.arch.config.ArchYamlConfigLoader;
 import io.vertigo.core.lang.Assertion;
 
@@ -57,19 +58,18 @@ public final class ArchModuleLoader {
 		//---
 		final List<ArchRule> all = new ArrayList<>();
 		for (final File file : files) {
-			all.addAll(loadOne(file));
+			final ArchConfig archConfig = ArchYamlConfigLoader.parseYaml(file);
+			all.addAll(loadOne(archConfig));
 		}
 		return all;
 	}
 
 	// ─── Per-file loading ─────────────────────────────────────────────────────
 
-	private static List<ArchRule> loadOne(final File file) {
+	private static List<ArchRule> loadOne(final ArchConfig archConfig) {
 		Assertion.check()
-				.isNotNull(file, "file is required")
-				.isTrue(file.exists(), "YAML file not found: {0}", file.getAbsolutePath());
+				.isNotNull(archConfig);
 		//---
-		final ArchConfig archConfig = ArchYamlConfigLoader.parseYaml(file);
 		// ── base libs from scope.excludes ─────────────────────────────────────
 		final List<ArchLib> baseLibList = new ArrayList<>();
 		for (final String path : archConfig.scope().excludes()) {

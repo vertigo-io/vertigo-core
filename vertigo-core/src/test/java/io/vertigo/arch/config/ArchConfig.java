@@ -7,7 +7,7 @@ import io.vertigo.core.lang.Assertion;
 public record ArchConfig(
 		ArchScope scope,
 		Map<String, String> libs,
-		Map<String, ModuleDef> modules) {
+		Map<String, ArchModuleDef> modules) {
 
 	public ArchConfig {
 		Assertion.check()
