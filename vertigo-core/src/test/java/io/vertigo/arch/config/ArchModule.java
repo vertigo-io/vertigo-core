@@ -4,12 +4,12 @@ import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
 
-public record ArchModuleDef(
+public record ArchModule(
 		String path,
 		String description,
 		List<String> deps) {
 
-	public ArchModuleDef {
+	public ArchModule {
 		Assertion.check().isNotBlank(path, "module.path is required");
 	}
 
