@@ -101,15 +101,9 @@
 
 		<!-- architecture tests -->
 		<dependency>
-			<groupId>com.tngtech.archunit</groupId>
-			<artifactId>archunit-junit5</artifactId>
-			<version>1.4.2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.dataformat</groupId>
-			<artifactId>jackson-dataformat-yaml</artifactId>
-			<version>2.18.3</version>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-arch</artifactId>
+			<version>${vertigo.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

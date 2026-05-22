@@ -24,7 +24,8 @@
 	
 	<modules>
 		<module>vertigo-parent</module>
-		<module>vertigo-core</module>		
+		<module>vertigo-arch</module>
+		<module>vertigo-core</module>
 	</modules>
 
 	<scm>

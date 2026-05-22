@@ -7,7 +7,7 @@ import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 
-import io.vertigo.arch.ArchModuleLoader;
+import io.vertigo.arch.ArchChecker;
 
 @AnalyzeClasses(
 		packages = "io.vertigo.core",
@@ -17,6 +17,6 @@ class CoreArchitectureTest {
 
 	@ArchTest
 	void module_dependency_rules_yaml(JavaClasses classes) {
-		ArchModuleLoader.check(classes, new File(YAML_DIR, "core-modules.yaml"));
+		ArchChecker.check(classes, new File(YAML_DIR, "core-modules.yaml"));
 	}
 }

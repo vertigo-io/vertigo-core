@@ -8,53 +8,32 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
 
 import io.vertigo.arch.config.ArchConfig;
 import io.vertigo.arch.config.ArchYamlConfigLoader;
-import io.vertigo.core.lang.Assertion;
 
 /**
- * Checks module dependency rules loaded from YAML files against a set of Java classes.
+ * Checks module dependency rules defined in YAML files against compiled classes.
  *
- * <h3>YAML format</h3>
+ * Typical usage from a JUnit 5 {@code @ArchTest} method:
+ * {@code ArchChecker.check(classes, new File("src/test/java/com/acme/acme-modules.yaml"));}
  *
- * <pre>
- * scope:
- *   path: io.vertigo.core.**
- *   description: "..."
- *   excludes: [java.**, jakarta.**]
- *
- * libs:
- *   jackson: com.fasterxml.jackson.**
- *
- * modules:
- *   reader:
- *     path: io.vertigo.core.reader.**
- *     deps: [schema, jackson]
- * </pre>
- *
- * <h3>Rules checked per file</h3>
- * <ul>
- * <li>No intersection: module package paths must not overlap.</li>
- * <li>Coverage: every class in scope must belong to exactly one module.</li>
- * <li>Isolation: each module may only depend on its declared deps + scope excludes.</li>
- * <li>No orphan deps: every declared dep must be effectively used.</li>
- * </ul>
+ * Four rules are evaluated per YAML file: no module intersection, full coverage of the scope,
+ * isolation of each module, and no orphan declared dependencies.
  */
-public final class ArchModuleLoader {
+public final class ArchChecker {
 
-	private ArchModuleLoader() {
+	private ArchChecker() {
 	}
 
-	/** Loads configs from YAML files and checks all rules against the given classes. */
+	/** Runs all checks for each YAML file against the given classes. */
 	public static void check(final JavaClasses classes, final File... files) {
-		Assertion.check()
-				.isNotNull(classes, "classes are required")
-				.isNotNull(files, "files are required");
-		//---
+		Objects.requireNonNull(classes, "classes are required");
+		Objects.requireNonNull(files, "files are required");
 		for (final File file : files) {
 			checkOne(ArchYamlConfigLoader.parseYaml(file), classes);
 		}
@@ -79,10 +58,10 @@ public final class ArchModuleLoader {
 			for (int j = i + 1; j < entries.size(); j++) {
 				final String p1 = entries.get(i).getValue();
 				final String p2 = entries.get(j).getValue();
-				Assertion.check().isFalse(
-						p1.equals(p2) || p1.startsWith(p2 + ".") || p2.startsWith(p1 + "."),
-						"Modules ''{0}'' and ''{1}'' have overlapping package paths",
-						entries.get(i).getKey(), entries.get(j).getKey());
+				if (p1.equals(p2) || p1.startsWith(p2 + ".") || p2.startsWith(p1 + ".")) {
+					throw new AssertionError("Modules '" + entries.get(i).getKey()
+							+ "' and '" + entries.get(j).getKey() + "' have overlapping package paths");
+				}
 			}
 		}
 	}
@@ -91,7 +70,7 @@ public final class ArchModuleLoader {
 	private static void checkCoverage(final ArchConfig config, final JavaClasses classes) {
 		final String scopePattern = archPattern(config.scope().path());
 		final String[] excludePatterns = config.scope().excludes().stream()
-				.map(ArchModuleLoader::archPattern)
+				.map(ArchChecker::archPattern)
 				.toArray(String[]::new);
 		final String[] modulePatterns = config.modules().values().stream()
 				.map(def -> archPattern(def.path()))
@@ -109,15 +88,15 @@ public final class ArchModuleLoader {
 	private static void checkIsolation(final ArchConfig config, final JavaClasses classes) {
 		final Map<String, String> allPatterns = buildPatternIndex(config);
 		final String[] basePatterns = config.scope().excludes().stream()
-				.map(ArchModuleLoader::archPattern)
+				.map(ArchChecker::archPattern)
 				.toArray(String[]::new);
 
 		config.modules().forEach((name, def) -> {
 			for (final String dep : def.deps()) {
-				Assertion.check().isTrue(
-						allPatterns.containsKey(dep),
-						"Unknown dep ''{0}'' in module ''{1}'' — known: {2}",
-						dep, name, allPatterns.keySet());
+				if (!allPatterns.containsKey(dep)) {
+					throw new IllegalArgumentException("Unknown dep '" + dep + "' in module '"
+							+ name + "' — known: " + allPatterns.keySet());
+				}
 			}
 
 			final List<String> allowed = new ArrayList<>();
@@ -154,9 +133,10 @@ public final class ArchModuleLoader {
 						.anyMatch(c -> c.getDirectDependenciesFromSelf().stream()
 								.anyMatch(d -> matchesPrefix(d.getTargetClass().getPackageName(), depPrefix)));
 
-				Assertion.check().isTrue(used,
-						"Module ''{0}'' declares dep ''{1}'' but never uses it (orphan dependency)",
-						name, dep);
+				if (!used) {
+					throw new AssertionError("Module '" + name + "' declares dep '" + dep
+							+ "' but never uses it (orphan dependency)");
+				}
 			}
 		});
 	}
@@ -181,12 +161,12 @@ public final class ArchModuleLoader {
 		return archUnitPattern;
 	}
 
-	/** Returns true if packageName equals prefix or is a sub-package of prefix. */
+	/** Returns true if packageName equals prefix or is a sub-package of it. */
 	private static boolean matchesPrefix(final String packageName, final String prefix) {
 		return packageName.equals(prefix) || packageName.startsWith(prefix + ".");
 	}
 
-	/** "io.vertigo.vivid.schema.**" → "io.vertigo.vivid.schema.." (ArchUnit pattern). */
+	/** "io.vertigo.core.lang.**" → "io.vertigo.core.lang.." (ArchUnit pattern). */
 	static String archPattern(final String path) {
 		if (path.endsWith(".**")) {
 			return path.substring(0, path.length() - 3) + "..";
