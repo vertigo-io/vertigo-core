@@ -1,0 +1,17 @@
+scope:
+  path: io.vertigo.arch.test.**
+  description: Test fixture — 4 modules with explicit cross-module dependencies
+  excludes: [java.**]
+modules:
+  alpha:
+    path: io.vertigo.arch.test.alpha.**
+    description: Entry point — depends on beta and gamma
+    deps: [beta, gamma]
+  beta:
+    path: io.vertigo.arch.test.beta.**
+    description: Intermediate layer — depends on delta
+    deps: [delta]
+  gamma:
+    path: io.vertigo.arch.test.gamma.**
+  delta:
+    path: io.vertigo.arch.test.delta.**
