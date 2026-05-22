@@ -1,5 +1,7 @@
 package io.vertigo.arch;
 
+import io.vertigo.core.lang.Assertion;
+
 /**
  * An external library or pseudo-package group identified by a single ArchUnit package selector.
  *
@@ -9,6 +11,12 @@ package io.vertigo.arch;
  * }</pre>
  */
 record ArchLib(String name, String packagePattern) implements ArchDep {
+
+	ArchLib {
+		Assertion.check()
+				.isNotBlank(name, "name is required")
+				.isNotBlank(packagePattern, "packagePattern is required");
+	}
 
 	@Override
 	public String[] packagePatterns() {

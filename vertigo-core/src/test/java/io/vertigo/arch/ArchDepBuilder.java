@@ -8,6 +8,8 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.EvaluationResult;
 
+import io.vertigo.core.lang.Assertion;
+
 /**
  * Fluent builder for module dependency rules.
  * Implements {@link ArchRule} so it can be used directly in {@code @ArchTest} fields.
@@ -22,16 +24,22 @@ final class ArchDepBuilder implements ArchRule {
 	private final List<ArchLib> libs;
 
 	ArchDepBuilder(final ArchModule module, final ArchLib... baseLibs) {
+		Assertion.check().isNotNull(module, "module is required");
+		//---
 		this.module = module;
 		this.libs = new ArrayList<>(Arrays.asList(baseLibs));
 	}
 
 	ArchDepBuilder modules(final ArchModule... deps) {
+		Assertion.check().isNotNull(deps, "deps are required");
+		//---
 		modules.addAll(Arrays.asList(deps));
 		return this;
 	}
 
 	ArchDepBuilder libs(final ArchLib... deps) {
+		Assertion.check().isNotNull(deps, "deps are required");
+		//---
 		libs.addAll(Arrays.asList(deps));
 		return this;
 	}

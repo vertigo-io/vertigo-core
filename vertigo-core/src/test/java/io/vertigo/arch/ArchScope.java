@@ -13,6 +13,8 @@ import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.lang.ArchRule;
 
+import io.vertigo.core.lang.Assertion;
+
 /**
  * Fluent DSL for declaring a package scope and its module decomposition.
  *
@@ -51,6 +53,8 @@ public final class ArchScope {
 	}
 
 	private ArchScope(final String path) {
+		Assertion.check().isNotBlank(path, "path is required");
+		//---
 		this.path = path;
 	}
 
@@ -67,18 +71,26 @@ public final class ArchScope {
 
 	/** Packages excluded from the scope — also become implicit base libs. */
 	public ArchScope exclude(final String... paths) {
+		Assertion.check().isNotNull(paths, "paths are required");
+		//---
 		excludes.addAll(Arrays.asList(paths));
 		return this;
 	}
 
 	/** Named external library that modules can declare as a dep. */
 	public ArchScope lib(final String name, final String path) {
+		Assertion.check()
+				.isNotBlank(name, "lib name is required")
+				.isNotBlank(path, "lib path is required");
+		//---
 		libDefs.put(name, path);
 		return this;
 	}
 
 	/** Starts a module declaration — must be completed with {@link ArchModuleBuilder#deps} or {@link ArchModuleBuilder#noDeps}. */
 	public ArchModuleBuilder module(final String name) {
+		Assertion.check().isNotBlank(name, "module name is required");
+		//---
 		return new ArchModuleBuilder(name);
 	}
 
@@ -92,18 +104,26 @@ public final class ArchScope {
 		}
 
 		public ArchModuleBuilder path(final String path) {
+			Assertion.check().isNotBlank(path, "module path is required");
+			//---
 			this.modulePath = path;
 			return this;
 		}
 
 		/** Declares deps and returns to the scope for the next declaration. */
 		public ArchScope deps(final String... deps) {
+			Assertion.check()
+					.isNotNull(deps, "deps are required")
+					.isNotBlank(modulePath, "path must be set before deps()");
+			//---
 			moduleEntries.add(new ModEntry(name, modulePath, Arrays.asList(deps)));
 			return ArchScope.this;
 		}
 
 		/** Declares no deps and returns to the scope for the next declaration. */
 		public ArchScope noDeps() {
+			Assertion.check().isNotBlank(modulePath, "path must be set before noDeps()");
+			//---
 			moduleEntries.add(new ModEntry(name, modulePath, List.of()));
 			return ArchScope.this;
 		}
@@ -133,6 +153,8 @@ public final class ArchScope {
 	// ─── Build ────────────────────────────────────────────────────────────────
 
 	private Built build() {
+		Assertion.check().isFalse(moduleEntries.isEmpty(), "at least one module must be declared");
+		//---
 		// base libs from excludes
 		final List<ArchLib> baseLibList = excludes.stream()
 				.map(p -> new ArchLib(shortName(p), archPattern(p)))

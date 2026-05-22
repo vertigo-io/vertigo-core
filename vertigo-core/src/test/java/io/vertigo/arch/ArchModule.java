@@ -8,6 +8,8 @@ import java.util.stream.Stream;
 
 import com.tngtech.archunit.lang.ArchRule;
 
+import io.vertigo.core.lang.Assertion;
+
 /**
  * A named module identified by a package selector.
  *
@@ -28,6 +30,8 @@ final class ArchModule implements ArchDep {
 
 	/** Registers libs that every module may depend on (e.g. java, vertigo-core). */
 	static void setBaseLibs(final ArchLib... libs) {
+		Assertion.check().isNotNull(libs, "libs are required");
+		//---
 		baseLibs = libs;
 	}
 
@@ -35,6 +39,10 @@ final class ArchModule implements ArchDep {
 	private final String packagePattern;
 
 	private ArchModule(final String name, final String packagePattern) {
+		Assertion.check()
+				.isNotBlank(name, "name is required")
+				.isNotBlank(packagePattern, "packagePattern is required");
+		//---
 		this.name = name;
 		this.packagePattern = packagePattern;
 	}
