@@ -10,7 +10,7 @@ import java.util.Objects;
 public record ArchConfig(
 		ArchScope scope,
 		Map<String, String> libs,
-		Map<String, ArchModuleDef> modules) {
+		Map<String, ArchModule> modules) {
 
 	public ArchConfig {
 		Objects.requireNonNull(scope, "scope is required");
