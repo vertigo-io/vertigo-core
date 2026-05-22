@@ -39,6 +39,13 @@ public final class ArchChecker {
 		}
 	}
 
+	/** Runs all checks for the given {@link ArchConfig} against the given classes. */
+	public static void check(final JavaClasses classes, final ArchConfig config) {
+		Objects.requireNonNull(classes, "classes are required");
+		Objects.requireNonNull(config, "config is required");
+		checkOne(config, classes);
+	}
+
 	// ─── Per-config checks ────────────────────────────────────────────────────
 
 	private static void checkOne(final ArchConfig config, final JavaClasses classes) {
@@ -50,20 +57,44 @@ public final class ArchChecker {
 
 	/** Vérifie qu'aucun chemin de module n'englobe un autre (pas d'intersection possible). */
 	private static void checkNoIntersection(final ArchConfig config) {
-		final List<Map.Entry<String, String>> entries = config.modules().entrySet().stream()
-				.map(e -> Map.entry(e.getKey(), packagePrefix(archPattern(e.getValue().path()))))
+		record ModuleEntry(String name, String prefix, boolean recursive) {}
+
+		final List<ModuleEntry> entries = config.modules().entrySet().stream()
+				.map(e -> {
+					final String path = e.getValue().path();
+					final boolean recursive = path.endsWith(".**");
+					final String prefix = recursive ? path.substring(0, path.length() - 3) : path;
+					return new ModuleEntry(e.getKey(), prefix, recursive);
+				})
 				.toList();
 
 		for (int i = 0; i < entries.size(); i++) {
 			for (int j = i + 1; j < entries.size(); j++) {
-				final String p1 = entries.get(i).getValue();
-				final String p2 = entries.get(j).getValue();
-				if (p1.equals(p2) || p1.startsWith(p2 + ".") || p2.startsWith(p1 + ".")) {
-					throw new AssertionError("Modules '" + entries.get(i).getKey()
-							+ "' and '" + entries.get(j).getKey() + "' have overlapping package paths");
+				final ModuleEntry a = entries.get(i);
+				final ModuleEntry b = entries.get(j);
+				if (pathsOverlap(a.prefix(), a.recursive(), b.prefix(), b.recursive())) {
+					throw new AssertionError("Modules '" + a.name()
+							+ "' and '" + b.name() + "' have overlapping package paths");
 				}
 			}
 		}
+	}
+
+	/**
+	 * Two patterns overlap if a class could match both.
+	 * An exact path (no .**) matches only classes directly in that package, not subpackages.
+	 */
+	private static boolean pathsOverlap(final String p1, final boolean r1, final String p2, final boolean r2) {
+		if (r1 && r2) {
+			return p1.equals(p2) || p1.startsWith(p2 + ".") || p2.startsWith(p1 + ".");
+		}
+		if (!r1 && !r2) {
+			return p1.equals(p2);
+		}
+		// one exact, one recursive: the exact package must fall inside the recursive scope
+		final String exact = r1 ? p2 : p1;
+		final String recPrefix = r1 ? p1 : p2;
+		return exact.equals(recPrefix) || exact.startsWith(recPrefix + ".");
 	}
 
 	/** Vérifie que chaque classe du scope appartient à un module déclaré. */

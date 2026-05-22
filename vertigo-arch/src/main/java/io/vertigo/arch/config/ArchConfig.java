@@ -20,4 +20,9 @@ public record ArchConfig(
 			throw new IllegalArgumentException("at least one module must be declared");
 		}
 	}
+
+	/** Starts a fluent builder scoped to the given package pattern (e.g. {@code "io.vertigo.acme.**"}). */
+	public static ArchConfigBuilder builder(final String path) {
+		return new ArchConfigBuilder(path);
+	}
 }
