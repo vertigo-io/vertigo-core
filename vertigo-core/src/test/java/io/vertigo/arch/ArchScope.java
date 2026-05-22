@@ -175,15 +175,14 @@ public final class ArchScope {
 		for (final ModEntry entry : moduleEntries) {
 			final ArchDepBuilder db = modules.get(entry.name()).dependsOn();
 			for (final String dep : entry.deps()) {
+				Assertion.check().isTrue(
+						modules.containsKey(dep) || libs.containsKey(dep),
+						"Unknown dep ''{0}'' in module ''{1}'' — known modules: {2}, libs: {3}",
+						dep, entry.name(), modules.keySet(), libs.keySet());
 				if (modules.containsKey(dep)) {
 					db.modules(modules.get(dep));
-				} else if (libs.containsKey(dep)) {
-					db.libs(libs.get(dep));
 				} else {
-					throw new IllegalStateException(
-							"Unknown dep '" + dep + "' in module '" + entry.name() + "'"
-									+ " — known modules: " + modules.keySet()
-									+ ", libs: " + libs.keySet());
+					db.libs(libs.get(dep));
 				}
 			}
 			rules.add(db);
@@ -214,11 +213,10 @@ public final class ArchScope {
 
 			for (final String dep : entry.deps()) {
 				final String[] toPatterns = resolvePatterns(dep, built);
-				if (!isActuallyUsed(classes, fromPatterns, toPatterns)) {
-					throw new AssertionError(
-							"Module '" + entry.name() + "' declares dependency on '"
-									+ dep + "' but never uses it — remove the orphan declaration");
-				}
+				Assertion.check().isTrue(
+						isActuallyUsed(classes, fromPatterns, toPatterns),
+						"Module ''{0}'' declares dependency on ''{1}'' but never uses it — remove the orphan declaration",
+						entry.name(), dep);
 			}
 		}
 	}
@@ -242,13 +240,13 @@ public final class ArchScope {
 	}
 
 	private static String[] resolvePatterns(final String dep, final Built built) {
+		Assertion.check().isTrue(
+				built.modules().containsKey(dep) || built.libs().containsKey(dep),
+				"Unknown dep: {0}", dep);
 		if (built.modules().containsKey(dep)) {
 			return built.modules().get(dep).packagePatterns();
 		}
-		if (built.libs().containsKey(dep)) {
-			return built.libs().get(dep).packagePatterns();
-		}
-		throw new IllegalStateException("Unknown dep: " + dep);
+		return built.libs().get(dep).packagePatterns();
 	}
 
 	// ─── Pattern matching ─────────────────────────────────────────────────────
