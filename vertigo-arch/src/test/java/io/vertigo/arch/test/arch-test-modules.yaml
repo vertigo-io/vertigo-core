@@ -2,6 +2,11 @@ scope:
   path: io.vertigo.arch.test.**
   description: Test fixture — 4 modules with explicit cross-module dependencies
   excludes: [java.**]
+
+directives:
+  no-cycle: true
+  no-direct-impl-dep: true
+
 modules:
   alpha:
     path: io.vertigo.arch.test.alpha.**

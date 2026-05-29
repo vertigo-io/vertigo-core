@@ -31,6 +31,10 @@ public final class ArchConfigBuilder {
 	private final Map<String, String> libs = new LinkedHashMap<>();
 	private final Map<String, ArchModule> modules = new LinkedHashMap<>();
 
+	// directives
+	private boolean noCycle;
+	private boolean noDirectImplDep;
+
 	// pending module being assembled
 	private String pendingModuleName;
 	private String pendingModulePath;
@@ -101,6 +105,19 @@ public final class ArchConfigBuilder {
 		return this;
 	}
 
+	/** Enables a directive by name ({@code "no-cycle"} or {@code "no-direct-impl-dep"}). */
+	public ArchConfigBuilder directive(final String name) {
+		Objects.requireNonNull(name, "directive name is required");
+		//---
+		switch (name) {
+			case "no-cycle" -> noCycle = true;
+			case "no-direct-impl-dep" -> noDirectImplDep = true;
+			default -> throw new IllegalArgumentException("Unknown directive: '" + name
+					+ "' — supported: no-cycle, no-direct-impl-dep");
+		}
+		return this;
+	}
+
 	/** Builds the {@link ArchConfig}. */
 	public ArchConfig build() {
 		flushPendingModule();
@@ -108,7 +125,8 @@ public final class ArchConfigBuilder {
 				excludes.isEmpty() ? null : List.copyOf(excludes));
 		return new ArchConfig(scope,
 				libs.isEmpty() ? null : Map.copyOf(libs),
-				Map.copyOf(modules));
+				Map.copyOf(modules),
+				new ArchDirectives(noCycle, noDirectImplDep));
 	}
 
 	/** Builds the config and runs all architecture checks against the given classes. */

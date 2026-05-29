@@ -28,4 +28,17 @@ class ArchCheckerTest {
 				.module("delta")
 				.check(classes);
 	}
+
+	@ArchTest
+	void module_dependency_rules_with_directives(final JavaClasses classes) {
+		ArchConfig.builder("io.vertigo.arch.test.**")
+				.exclude("java.**")
+				.module("alpha").deps("beta", "gamma")
+				.module("beta").deps("delta")
+				.module("gamma")
+				.module("delta")
+				.directive("no-cycle")
+				.directive("no-direct-impl-dep")
+				.check(classes);
+	}
 }

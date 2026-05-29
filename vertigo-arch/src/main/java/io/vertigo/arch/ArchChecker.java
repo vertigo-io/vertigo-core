@@ -1,19 +1,25 @@
 package io.vertigo.arch;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
 import java.io.File;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.StreamSupport;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
 
 import io.vertigo.arch.config.ArchConfig;
+import io.vertigo.arch.config.ArchModule;
 import io.vertigo.arch.config.ArchYamlConfigLoader;
 
 /**
@@ -53,6 +59,12 @@ public final class ArchChecker {
 		checkCoverage(config, classes);
 		checkIsolation(config, classes);
 		checkNoOrphanDeps(config, classes);
+		if (config.directives().noCycle()) {
+			checkNoCycle(config);
+		}
+		if (config.directives().noDirectImplDep()) {
+			checkNoDirectImplDep(config, classes);
+		}
 	}
 
 	/** Vérifie qu'aucun chemin de module n'englobe un autre (pas d'intersection possible). */
@@ -170,6 +182,73 @@ public final class ArchChecker {
 				}
 			}
 		});
+	}
+
+	// ─── Directive checks ────────────────────────────────────────────────────
+
+	/**
+	 * Checks that the declared module dependency graph has no cycles (is a DAG).
+	 * Only module-to-module edges are considered; lib deps are ignored.
+	 */
+	private static void checkNoCycle(final ArchConfig config) {
+		final Set<String> moduleNames = config.modules().keySet();
+		final Set<String> visited = new HashSet<>();
+		final Deque<String> path = new ArrayDeque<>();
+
+		for (final String start : moduleNames) {
+			if (!visited.contains(start)) {
+				visitForCycle(start, config.modules(), moduleNames, visited, path);
+			}
+		}
+	}
+
+	private static void visitForCycle(
+			final String current,
+			final Map<String, ArchModule> modules,
+			final Set<String> moduleNames,
+			final Set<String> visited,
+			final Deque<String> path) {
+		path.addLast(current);
+
+		final ArchModule def = modules.get(current);
+		if (def != null) {
+			for (final String dep : def.deps()) {
+				if (!moduleNames.contains(dep)) {
+					continue; // lib dep — skip
+				}
+				if (path.contains(dep)) {
+					final List<String> cycle = new ArrayList<>(path);
+					cycle.add(dep);
+					throw new AssertionError("Cycle detected in module dependencies: "
+							+ String.join(" → ", cycle));
+				}
+				if (!visited.contains(dep)) {
+					visitForCycle(dep, modules, moduleNames, visited, path);
+				}
+			}
+		}
+
+		path.removeLast();
+		visited.add(current);
+	}
+
+	/**
+	 * Checks that no class outside an {@code impl} sub-package depends on a class
+	 * inside an {@code impl} sub-package within the declared scope.
+	 */
+	private static void checkNoDirectImplDep(final ArchConfig config, final JavaClasses classes) {
+		final String scopePattern = archPattern(config.scope().path());
+		final String[] excludePatterns = config.scope().excludes().stream()
+				.map(ArchChecker::archPattern)
+				.toArray(String[]::new);
+
+		noClasses()
+				.that().resideInAPackage(scopePattern)
+				.and().resideOutsideOfPackages(excludePatterns)
+				.and().resideOutsideOfPackage("..impl..")
+				.should().dependOnClassesThat().resideInAPackage("..impl..")
+				.as("No class outside impl may depend on impl classes within [" + config.scope().path() + "]")
+				.check(classes);
 	}
 
 	// ─── Helpers ─────────────────────────────────────────────────────────────

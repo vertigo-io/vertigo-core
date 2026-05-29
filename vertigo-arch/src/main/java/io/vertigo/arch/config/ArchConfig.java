@@ -10,7 +10,8 @@ import java.util.Objects;
 public record ArchConfig(
 		ArchScope scope,
 		Map<String, String> libs,
-		Map<String, ArchModule> modules) {
+		Map<String, ArchModule> modules,
+		ArchDirectives directives) {
 
 	public ArchConfig {
 		Objects.requireNonNull(scope, "scope is required");
@@ -18,6 +19,9 @@ public record ArchConfig(
 		//---
 		if (modules.isEmpty()) {
 			throw new IllegalArgumentException("at least one module must be declared");
+		}
+		if (directives == null) {
+			directives = ArchDirectives.none();
 		}
 	}
 
