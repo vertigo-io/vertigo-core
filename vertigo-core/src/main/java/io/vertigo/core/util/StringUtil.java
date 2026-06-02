@@ -46,9 +46,7 @@ public final class StringUtil {
 	 * @see java.lang.Character isWhitespace(char)
 	 */
 	public static boolean isBlank(final String strValue) {
-		return strValue == null
-				? true
-				: strValue.isBlank();
+		return strValue == null || strValue.isBlank();
 	}
 
 	/**
@@ -59,18 +57,10 @@ public final class StringUtil {
 	public static String first2LowerCase(final String strValue) {
 		Assertion.check().isNotNull(strValue);
 		//-----
-		if (strValue.isEmpty()) {
+		if (strValue.isEmpty() || !Character.isUpperCase(strValue.codePointAt(0))) {
 			return strValue;
 		}
-
-		final char firstChar = strValue.charAt(0);
-		if (Character.isUpperCase(firstChar)) {
-			//This method can be called many times. 
-			//Concat is an heavy operation
-			//so we prefer test before executing operation			
-			return Character.toLowerCase(firstChar) + strValue.substring(1);
-		}
-		return strValue;
+		return Character.toLowerCase(strValue.charAt(0)) + strValue.substring(1);
 	}
 
 	/**
@@ -82,18 +72,10 @@ public final class StringUtil {
 	public static String first2UpperCase(final String strValue) {
 		Assertion.check().isNotNull(strValue);
 		//-----
-		if (strValue.isEmpty()) {
+		if (strValue.isEmpty() || !Character.isLowerCase(strValue.codePointAt(0))) {
 			return strValue;
 		}
-
-		final char firstChar = strValue.charAt(0);
-		if (Character.isLowerCase(firstChar)) {
-			//This method can be called many times. 
-			//Concat is an heavy operation
-			//so we prefer test before executing operation			
-			return Character.toUpperCase(firstChar) + strValue.substring(1);
-		}
-		return strValue;
+		return Character.toUpperCase(strValue.charAt(0)) + strValue.substring(1);
 	}
 
 	/**
@@ -257,11 +239,12 @@ public final class StringUtil {
 	 * @return Replaced string
 	 */
 	public static String replace(final String str, final String oldStr, final String newStr) {
-		Assertion.check().isNotNull(str);
+		Assertion.check()
+				.isNotNull(str)
+				.isNotNull(oldStr)
+				.isNotNull(newStr);
 		//-----
-		final StringBuilder result = new StringBuilder(str);
-		replace(result, oldStr, newStr);
-		return result.toString();
+		return str.replace(oldStr, newStr);
 	}
 
 	/**
