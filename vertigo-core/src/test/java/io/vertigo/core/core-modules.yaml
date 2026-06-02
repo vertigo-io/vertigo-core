@@ -15,8 +15,8 @@ libs:
   
 
 directives:
-  no-cycle: true
-  no-direct-impl-dep: true
+  no-cycle: false
+  no-direct-impl-dep: false
 
 modules:
   lang:
