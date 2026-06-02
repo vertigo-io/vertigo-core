@@ -41,7 +41,6 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.SocketOptions;
-import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.NullOutputStream;
@@ -54,7 +53,6 @@ import org.apache.logging.log4j.util.Strings;
  * - buffer data while waiting for reconnexion (instead of loosing logs)
  */
 public class AnalyticsTcpSocketManager extends AbstractSocketManager {
-
 	/**
 	 * The default reconnection delay (30000 milliseconds or 30 seconds).
 	 */
@@ -65,85 +63,29 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 	private static final int DEFAULT_PORT = 4560;
 
 	private static final TcpSocketManagerFactory<AnalyticsTcpSocketManager, FactoryData> FACTORY = new TcpSocketManagerFactory<>();
-
 	private final int reconnectionDelayMillis;
-
 	private Reconnector reconnector;
-
 	private Socket socket;
-
 	private final SocketOptions socketOptions;
-
 	private final boolean retry;
-
 	private final boolean immediateFail;
-
 	private final boolean compress;
-
 	private final int connectTimeoutMillis;
 
 	/**
 	 * Constructs.
 	 *
-	 * @param name
-	 *        The unique name of this connection.
-	 * @param os
-	 *        The OutputStream.
-	 * @param socket
-	 *        The Socket.
-	 * @param inetAddress
-	 *        The Internet address of the host.
-	 * @param host
-	 *        The name of the host.
-	 * @param port
-	 *        The port number on the host.
-	 * @param connectTimeoutMillis
-	 *        the connect timeout in milliseconds.
-	 * @param reconnectionDelayMillis
-	 *        Reconnection interval.
-	 * @param immediateFail
-	 *        True if the write should fail if no socket is immediately available.
-	 * @param layout
-	 *        The Layout.
-	 * @param bufferSize
-	 *        The buffer size.
-	 * @deprecated Use
-	 *             {@link TcpSocketManager#TcpSocketManager(String, OutputStream, Socket, InetAddress, String, int, int, int, boolean, Layout, int, SocketOptions)}.
-	 */
-	@Deprecated
-	public AnalyticsTcpSocketManager(final String name, final OutputStream os, final Socket socket,
-			final InetAddress inetAddress, final String host, final int port, final int connectTimeoutMillis,
-			final int reconnectionDelayMillis, final boolean immediateFail, final boolean compress, final Layout<? extends Serializable> layout,
-			final int bufferSize) {
-		this(name, os, socket, inetAddress, host, port, connectTimeoutMillis, reconnectionDelayMillis, immediateFail, compress,
-				layout, bufferSize, null);
-	}
-
-	/**
-	 * Constructs.
-	 *
-	 * @param name
-	 *        The unique name of this connection.
-	 * @param os
-	 *        The OutputStream.
-	 * @param socket
-	 *        The Socket.
-	 * @param inetAddress
-	 *        The Internet address of the host.
-	 * @param host
-	 *        The name of the host.
-	 * @param port
-	 *        The port number on the host.
-	 * @param connectTimeoutMillis
-	 *        the connect timeout in milliseconds.
-	 * @param reconnectionDelayMillis
-	 *        Reconnection interval.
-	 * @param immediateFail
-	 *        True if the write should fail if no socket is immediately available.
-	 * @param layout
-	 *        The Layout.
-	 * @param bufferSize
-	 *        The buffer size.
+	 * @param name The unique name of this connection.
+	 * @param os The OutputStream.
+	 * @param socket The Socket.
+	 * @param inetAddress The Internet address of the host.
+	 * @param host The name of the host.
+	 * @param port The port number on the host.
+	 * @param connectTimeoutMillis the connect timeout in milliseconds.
+	 * @param reconnectionDelayMillis Reconnection interval.
+	 * @param immediateFail True if the write should fail if no socket is immediately available.
+	 * @param layout The Layout.
+	 * @param bufferSize The buffer size.
 	 */
 	public AnalyticsTcpSocketManager(final String name, final OutputStream os, final Socket socket,
 			final InetAddress inetAddress, final String host, final int port, final int connectTimeoutMillis,
