@@ -106,5 +106,12 @@
 			<version>${vertigo.version}</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- SLF4J bridge to Log4j2 for test scope (suppresses "No SLF4J providers" warning) -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j2-impl</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>

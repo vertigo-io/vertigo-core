@@ -37,6 +37,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -398,8 +399,12 @@ public final class SocketLoggerAnalyticsConnectorPlugin implements AnalyticsConn
 				log.add("events", GSON.toJsonTree(list));
 			}
 			final String jsonEvent = GSON.toJson(log);
-			logger.info(jsonEvent);
-			LOGGER.trace(jsonEvent);
+			try {
+				logger.info(jsonEvent);
+				LOGGER.trace(jsonEvent);
+			} catch (final AppenderLoggingException e) {
+				LOGGER.warn("Analytics send failed ({}): {}", logger.getName(), e.getMessage());
+			}
 		} else if (!list.isEmpty()) {
 			LOGGER.warn("Inactive logger " + logger.getName());
 		}

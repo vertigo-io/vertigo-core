@@ -242,6 +242,7 @@ public final class StringUtil {
 		Assertion.check()
 				.isNotNull(str)
 				.isNotNull(oldStr)
+				.isTrue(oldStr.length() > 0, "The string to replace must not be empty")
 				.isNotNull(newStr);
 		//-----
 		return str.replace(oldStr, newStr);
