@@ -120,6 +120,8 @@
 					<testFailureIgnore>true</testFailureIgnore>
 					<junitArtifactName>junit:junit</junitArtifactName>
 					<encoding>${project.build.sourceEncoding}</encoding>
+					<!-- Prevent Windows manifest-JAR classloader from losing anonymous/inner test classes -->
+					<useSystemClassLoader>false</useSystemClassLoader>
 				</configuration>
 			</plugin>
 			<plugin>

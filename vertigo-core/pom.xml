@@ -21,7 +21,7 @@
         <jakarta.inject.version>2.0.1</jakarta.inject.version>
         <gson.version>2.13.1</gson.version>
         <snakeyaml.version>2.4</snakeyaml.version>
-        <byte-buddy.version>1.17.5</byte-buddy.version>
+        <byte-buddy.version>1.18.8</byte-buddy.version>
     </properties>
     
 	<dependencyManagement>
