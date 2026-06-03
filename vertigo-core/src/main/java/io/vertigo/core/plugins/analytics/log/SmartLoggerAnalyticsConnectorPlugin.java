@@ -66,6 +66,8 @@ public final class SmartLoggerAnalyticsConnectorPlugin implements AnalyticsConne
 	/** {@inheritDoc} */
 	@Override
 	public void add(final TraceSpan span) {
+		Assertion.check().isNotNull(span);
+		//---
 		final JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("name", span.getName());
 		jsonObject.addProperty("durationMillis", span.getDurationMillis());
@@ -119,12 +121,14 @@ public final class SmartLoggerAnalyticsConnectorPlugin implements AnalyticsConne
 
 	@Override
 	public void add(final Metric metric) {
+		Assertion.check().isNotNull(metric);
 		//nothing
 
 	}
 
 	@Override
 	public void add(final HealthCheck healthCheck) {
+		Assertion.check().isNotNull(healthCheck);
 		//nothing
 
 	}

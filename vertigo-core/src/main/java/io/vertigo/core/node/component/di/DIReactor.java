@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import io.vertigo.core.lang.Assertion;
+
 /**
  * Reactor.
  * - adds components in any order with their id, their class
@@ -52,6 +54,10 @@ public final class DIReactor {
 	 * @return this reactor
 	 */
 	public DIReactor addComponent(final String id, final Class<?> implClass) {
+		Assertion.check()
+				.isNotBlank(id)
+				.isNotNull(implClass);
+		//---
 		return addComponent(id, implClass, Collections.emptySet());
 	}
 
@@ -64,6 +70,11 @@ public final class DIReactor {
 	 * @return this reactor
 	 */
 	public DIReactor addComponent(final String id, final Class<?> implClass, final Set<String> params) {
+		Assertion.check()
+				.isNotBlank(id)
+				.isNotNull(implClass)
+				.isNotNull(params);
+		//---
 		final DIComponentInfo diComponentInfo = new DIComponentInfo(id, implClass, params);
 		check(diComponentInfo.id());
 		allComponentInfos.add(diComponentInfo.id());
@@ -78,6 +89,8 @@ public final class DIReactor {
 	 * @return this reactor
 	 */
 	public DIReactor addParent(final String id) {
+		Assertion.check().isNotBlank(id);
+		//---
 		check(id);
 		allComponentInfos.add(id);
 		parentComponentInfos.add(id);

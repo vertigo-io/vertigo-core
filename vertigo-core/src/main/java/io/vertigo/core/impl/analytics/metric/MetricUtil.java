@@ -49,7 +49,10 @@ public final class MetricUtil {
 	 * Registers all methods annotated with @Metrics
 	 */
 	public static List<MetricDefinition> createMetricDefinitions(final String componentId, final CoreComponent component, final AspectPlugin aopPlugin) {
-		Assertion.check().isNotNull(component);
+		Assertion.check()
+				.isNotBlank(componentId)
+				.isNotNull(component)
+				.isNotNull(aopPlugin);
 
 		//-- we construct a map of feature by componentId
 		final Map<String, String> featureByComponentId = new HashMap<>();

@@ -31,6 +31,8 @@ import java.util.TimeZone;
 
 import com.google.gson.JsonParseException;
 
+import io.vertigo.core.lang.Assertion;
+
 /**
  * Utility class for handling UTC date conversions in JSON processing.
  * Supports multiple date formats:
@@ -61,6 +63,8 @@ public final class UTCDateUtil {
 	 * @return UTC date string in ISO8601 format
 	 */
 	public static String formatISO8601(final Date date) {
+		Assertion.check().isNotNull(date);
+		//---
 		//Use INPUT_DATE_FORMATS[0] => ISO8601 format
 		return createDateFormat(INPUT_DATE_FORMATS[0], isTruncatedDate(date)).format(date);
 	}
@@ -72,6 +76,8 @@ public final class UTCDateUtil {
 	 * @return UTC string in ISO8601 format
 	 */
 	public static String formatInstantISO8601(final Instant instant) {
+		Assertion.check().isNotNull(instant);
+		//---
 		//Use INPUT_DATE_FORMATS[0] => ISO8601 format
 		return DateTimeFormatter.ofPattern(INPUT_DATE_FORMATS[0]).withZone(ZoneId.of("UTC")).format(instant);
 	}
@@ -85,6 +91,8 @@ public final class UTCDateUtil {
 	 * @throws JsonParseException if date format is not supported
 	 */
 	public static Date parse(final String inputDate) {
+		Assertion.check().isNotBlank(inputDate);
+		//---
 		final boolean isTruncatedDate = isTruncatedDate(inputDate);
 		for (final String format : INPUT_DATE_FORMATS) {
 			try {
@@ -105,6 +113,8 @@ public final class UTCDateUtil {
 	 * @throws JsonParseException if date format is not supported
 	 */
 	public static Instant parseInstant(final String inputDate) {
+		Assertion.check().isNotBlank(inputDate);
+		//---
 		for (final String format : INPUT_DATE_FORMATS) {
 			try {
 				return Instant.from(DateTimeFormatter.ofPattern(format).withZone(ZoneId.of("UTC")).parse(inputDate));

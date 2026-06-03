@@ -156,12 +156,20 @@ public final class LocaleManagerImpl implements LocaleManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public void add(final String baseName, final LocaleMessageKey[] enums) {
+		Assertion.check()
+				.isNotBlank(baseName)
+				.isNotNull(enums);
+		//---
 		add(baseName, enums, false);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void override(final String baseName, final LocaleMessageKey[] enums) {
+		Assertion.check()
+				.isNotBlank(baseName)
+				.isNotNull(enums);
+		//---
 		add(baseName, enums, true);
 	}
 

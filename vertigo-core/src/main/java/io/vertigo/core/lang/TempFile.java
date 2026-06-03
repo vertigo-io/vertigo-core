@@ -62,6 +62,11 @@ public final class TempFile {
 	 * @throws IOException if file creation fails
 	 */
 	public static File of(final String prefix, final String suffix, final String subDirectory) throws IOException {
+		Assertion.check()
+				.isNotBlank(prefix)
+				.isNotNull(suffix)
+				.isNotBlank(subDirectory);
+		//---
 		return of(prefix, suffix, Files.createDirectories(VERTIGO_TMP_DIR_PATH.resolve(subDirectory)));
 	}
 
@@ -74,6 +79,10 @@ public final class TempFile {
 	 * @throws IOException if file creation fails
 	 */
 	public static File of(final String prefix, final String suffix) throws IOException {
+		Assertion.check()
+				.isNotBlank(prefix)
+				.isNotNull(suffix);
+		//---
 		return of(prefix, suffix, Files.createDirectories(VERTIGO_TMP_DIR_PATH));
 	}
 

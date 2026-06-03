@@ -71,7 +71,8 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		// here all
+		Assertion.check().isNotNull(definitionSpace);
+		//---
 		// we need to unwrap the component to scan the real class and not the enhanced version
 		final AspectPlugin aspectPlugin = Node.getNode().getNodeConfig().bootConfig().aspectPlugin();
 		return Node.getNode().getComponentSpace().keySet()
@@ -89,18 +90,30 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 	/** {@inheritDoc} */
 	@Override
 	public void trace(final String category, final String name, final Consumer<Tracer> consumer) {
+		Assertion.check()
+				.isNotBlank(category)
+				.isNotBlank(name)
+				.isNotNull(consumer);
+		//---
 		TracerProviderUtil.trace(category, name, consumer, this::onClose);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <O> O traceWithReturn(final String category, final String name, final Function<Tracer, O> function) {
+		Assertion.check()
+				.isNotBlank(category)
+				.isNotBlank(name)
+				.isNotNull(function);
+		//---
 		return TracerProviderUtil.traceWithReturn(category, name, function, this::onClose);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void addSpan(final TraceSpan process) {
+		Assertion.check().isNotNull(process);
+		//---
 		onClose(process);
 	}
 
@@ -138,6 +151,8 @@ public final class AnalyticsManagerImpl implements AnalyticsManager, SimpleDefin
 
 	@Override
 	public HealthStatus aggregate(final List<HealthCheck> healthChecks) {
+		Assertion.check().isNotNull(healthChecks);
+		//---
 		return HealthUtil.aggregate(healthChecks);
 	}
 

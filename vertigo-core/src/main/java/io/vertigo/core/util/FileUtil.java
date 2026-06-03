@@ -80,8 +80,9 @@ public final class FileUtil {
 	}
 
 	public static <R extends Object> R doOnFile(final URL url, final Function<Path, R> fileProcessor) {
-		Assertion.check().isNotNull(url);
-		Assertion.check().isNotNull(fileProcessor);
+		Assertion.check()
+				.isNotNull(url)
+				.isNotNull(fileProcessor);
 		//---
 		try {
 			final var uri = url.toURI();
@@ -134,6 +135,10 @@ public final class FileUtil {
 	 * @throws IOException I/O error
 	 */
 	public static void copy(final InputStream in, final File file) throws IOException {
+		Assertion.check()
+				.isNotNull(in)
+				.isNotNull(file);
+		//---
 		Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
 	}
 
@@ -157,6 +162,8 @@ public final class FileUtil {
 	 *         (author Apache Commons IO 1.1)
 	 */
 	public static String getFileExtension(final String fileName) {
+		Assertion.check().isNotBlank(fileName);
+		//---
 		final String extension;
 		// The extension separator character.
 		final char extensionSeparator = '.';
@@ -185,6 +192,8 @@ public final class FileUtil {
 	 * @return translated path
 	 */
 	public static String translatePath(final String path) {
+		Assertion.check().isNotNull(path);
+		//---
 		String translatedPath = PATTERN_USER_HOME.matcher(path).replaceAll(USER_HOME_PATH);
 		translatedPath = PATTERN_USER_DIR.matcher(translatedPath).replaceAll(USER_DIR_PATH);
 		translatedPath = PATTERN_JAVA_IO_TMPDIR.matcher(translatedPath).replaceAll(JAVA_IO_TMPDIR_PATH);
@@ -197,8 +206,9 @@ public final class FileUtil {
 	 * @param userPath Path to check
 	 */
 	public static void checkUserPath(final String userPath) {
-		Assertion.check().isFalse(userPath.contains("..") || userPath.indexOf((char) 0) != -1,
-				USER_CHECK_ERROR_MSG);
+		Assertion.check()
+				.isNotNull(userPath)
+				.isFalse(userPath.contains("..") || userPath.indexOf((char) 0) != -1, USER_CHECK_ERROR_MSG);
 	}
 
 	/**
@@ -207,13 +217,17 @@ public final class FileUtil {
 	 * @param userFileName FileName to check
 	 */
 	public static void checkUserFileName(final String userFileName) {
-		Assertion.check().isTrue(userFileName.indexOf('\\') == -1 //Windows path_separator
-				&& userFileName.indexOf('/') == -1 //Linux path_separator
-				&& userFileName.indexOf((char) 0) == -1, //char 0
-				USER_CHECK_ERROR_MSG);
+		Assertion.check()
+				.isNotNull(userFileName)
+				.isTrue(userFileName.indexOf('\\') == -1 //Windows path_separator
+						&& userFileName.indexOf('/') == -1 //Linux path_separator
+						&& userFileName.indexOf((char) 0) == -1, //char 0
+						USER_CHECK_ERROR_MSG);
 	}
 
 	public static String sanitizeFileName(final String fileName) {
+		Assertion.check().isNotBlank(fileName);
+		//---
 		return FILENAME_EXCLUSIONS_PATTERN.matcher(fileName).replaceAll("_");
 	}
 

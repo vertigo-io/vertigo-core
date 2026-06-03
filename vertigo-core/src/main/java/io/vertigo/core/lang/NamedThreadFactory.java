@@ -37,6 +37,8 @@ public class NamedThreadFactory implements ThreadFactory {
 	 * @param namePrefix Prefix for names of threads
 	 */
 	public NamedThreadFactory(final String namePrefix) {
+		Assertion.check().isNotBlank(namePrefix);
+		//---
 		group = Thread.currentThread().getThreadGroup();
 		this.namePrefix = namePrefix;
 	}

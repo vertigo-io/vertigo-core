@@ -120,6 +120,8 @@ public final class SocketLoggerJsonAnalyticsConnectorPlugin implements Analytics
 	/** {@inheritDoc} */
 	@Override
 	public void add(final Metric metric) {
+		Assertion.check().isNotNull(metric);
+		//---
 		if (socketMetricLogger == null) {
 			socketMetricLogger = createLogger("vertigo-analytics-metric");
 		}
@@ -130,6 +132,8 @@ public final class SocketLoggerJsonAnalyticsConnectorPlugin implements Analytics
 	/** {@inheritDoc} */
 	@Override
 	public void add(final HealthCheck healthCheck) {
+		Assertion.check().isNotNull(healthCheck);
+		//---
 		if (socketHealthLogger == null) {
 			socketHealthLogger = createLogger("vertigo-analytics-health");
 		}

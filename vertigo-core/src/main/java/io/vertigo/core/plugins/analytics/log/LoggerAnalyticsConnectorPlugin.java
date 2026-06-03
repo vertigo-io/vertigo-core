@@ -28,6 +28,7 @@ import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.analytics.trace.TraceSpan;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.json.CoreJsonAdapters;
 
 /**
@@ -44,6 +45,8 @@ public final class LoggerAnalyticsConnectorPlugin implements AnalyticsConnectorP
 	/** {@inheritDoc} */
 	@Override
 	public void add(final TraceSpan span) {
+		Assertion.check().isNotNull(span);
+		//---
 		final Logger logger = LogManager.getLogger(span.getCategory());
 		if (logger.isInfoEnabled()) {
 			final String json = GSON.toJson(Collections.singletonList(span));
@@ -53,6 +56,8 @@ public final class LoggerAnalyticsConnectorPlugin implements AnalyticsConnectorP
 
 	@Override
 	public void add(final Metric metric) {
+		Assertion.check().isNotNull(metric);
+		//---
 		if (LOGGER_METRIC.isInfoEnabled()) {
 			final String json = GSON.toJson(Collections.singletonList(metric));
 			LOGGER_METRIC.info(json);
@@ -62,6 +67,8 @@ public final class LoggerAnalyticsConnectorPlugin implements AnalyticsConnectorP
 
 	@Override
 	public void add(final HealthCheck healthCheck) {
+		Assertion.check().isNotNull(healthCheck);
+		//---
 		if (LOGGER_HEALTH.isInfoEnabled()) {
 			final String json = GSON.toJson(Collections.singletonList(healthCheck));
 			LOGGER_HEALTH.info(json);

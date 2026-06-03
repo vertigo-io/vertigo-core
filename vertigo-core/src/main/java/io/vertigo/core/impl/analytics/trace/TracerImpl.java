@@ -75,6 +75,8 @@ final class TracerImpl implements Tracer, AutoCloseable {
 	/** {@inheritDoc} */
 	@Override
 	public Tracer incMeasure(final String name, final double value) {
+		Assertion.check().isNotBlank(name);
+		//---
 		spanBuilder.incMeasure(name, value);
 		return this;
 	}
@@ -82,6 +84,8 @@ final class TracerImpl implements Tracer, AutoCloseable {
 	/** {@inheritDoc} */
 	@Override
 	public Tracer setMeasure(final String name, final double value) {
+		Assertion.check().isNotBlank(name);
+		//---
 		spanBuilder.withMeasure(name, value);
 		return this;
 	}
@@ -89,6 +93,10 @@ final class TracerImpl implements Tracer, AutoCloseable {
 	/** {@inheritDoc} */
 	@Override
 	public Tracer setMetadata(final String name, final String value) {
+		Assertion.check()
+				.isNotBlank(name)
+				.isNotNull(value);
+		//---
 		spanBuilder.withMetadata(name, value);
 		return this;
 	}
@@ -96,6 +104,10 @@ final class TracerImpl implements Tracer, AutoCloseable {
 	/** {@inheritDoc} */
 	@Override
 	public Tracer setTag(final String name, final String value) {
+		Assertion.check()
+				.isNotBlank(name)
+				.isNotNull(value);
+		//---
 		spanBuilder.withTag(name, value);
 		return this;
 	}

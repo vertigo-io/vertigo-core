@@ -20,6 +20,8 @@ package io.vertigo.core.util;
 import java.time.Instant;
 import java.time.LocalDate;
 
+import io.vertigo.core.lang.Assertion;
+
 /**
  * The DateUtil provides useful methods concerning dates.
  *
@@ -53,6 +55,10 @@ public final class DateUtil {
 	 * @return date
 	 */
 	public static LocalDate parseToLocalDate(final String dateExpression, final String datePattern) {
+		Assertion.check()
+				.isNotBlank(dateExpression)
+				.isNotBlank(datePattern);
+		//---
 		return DateQueryParserUtil.parseAsLocalDate(dateExpression, datePattern);
 	}
 
@@ -75,6 +81,10 @@ public final class DateUtil {
 	 * @return Instant
 	 */
 	public static Instant parseToInstant(final String dateExpression, final String datePattern) {
+		Assertion.check()
+				.isNotBlank(dateExpression)
+				.isNotBlank(datePattern);
+		//---
 		return DateQueryParserUtil.parseAsInstant(dateExpression, datePattern);
 	}
 }

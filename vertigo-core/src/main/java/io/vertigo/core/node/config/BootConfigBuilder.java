@@ -69,6 +69,8 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 * @return this builder
 	 */
 	public BootConfigBuilder withLocales(final String locales) {
+		Assertion.check().isNotBlank(locales);
+		//---
 		addComponent(
 				LocaleManager.class,
 				LocaleManagerImpl.class,
@@ -86,6 +88,10 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 * @return this builder
 	 */
 	public BootConfigBuilder withLocalesAndDefaultZoneId(final String locales, final String defaultZoneId) {
+		Assertion.check()
+				.isNotBlank(locales)
+				.isNotBlank(defaultZoneId);
+		//---
 		addComponent(
 				LocaleManager.class,
 				LocaleManagerImpl.class,
@@ -149,6 +155,10 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 * @return these features
 	 */
 	public BootConfigBuilder addAnalyticsConnectorPlugin(final Class<? extends AnalyticsConnectorPlugin> analyticsConnectorPluginClass, final Param... params) {
+		Assertion.check()
+				.isNotNull(analyticsConnectorPluginClass)
+				.isNotNull(params);
+		//---
 		return addPlugin(analyticsConnectorPluginClass, params);
 	}
 
@@ -172,6 +182,10 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 * @return this builder
 	 */
 	public BootConfigBuilder addPlugin(final Class<? extends Plugin> pluginImplClass, final Param... params) {
+		Assertion.check()
+				.isNotNull(pluginImplClass)
+				.isNotNull(params);
+		//---
 		return addPlugin(new PluginConfig(ConfigUtil.getPluginApi(pluginImplClass), pluginImplClass, Arrays.asList(params)));
 	}
 

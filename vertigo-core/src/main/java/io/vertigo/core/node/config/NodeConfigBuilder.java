@@ -128,6 +128,8 @@ public final class NodeConfigBuilder implements Builder<NodeConfig> {
 	 * @return this builder
 	 */
 	public NodeConfigBuilder addInitializer(final Class<? extends ComponentInitializer> componentInitializerClass) {
+		Assertion.check().isNotNull(componentInitializerClass);
+		//---
 		myComponentInitializerConfigsBuilder.add(new ComponentInitializerConfig(componentInitializerClass));
 		return this;
 	}

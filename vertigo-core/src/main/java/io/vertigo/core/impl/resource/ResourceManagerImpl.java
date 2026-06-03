@@ -74,6 +74,8 @@ public final class ResourceManagerImpl implements ResourceManager {
 	/** {@inheritDoc} */
 	@Override
 	public URL resolve(final String resource) {
+		Assertion.check().isNotBlank(resource);
+		//---
 		return resourceResolverPlugins.stream()
 				.map(resourceResolverPlugin -> resourceResolverPlugin.resolve(resource))
 				.filter(Objects::nonNull)

@@ -120,6 +120,10 @@ public final class BeanUtil {
 	 * @throws VSystemException if no property descriptor is found
 	 */
 	public static PropertyDescriptor getPropertyDescriptor(final String propertyName, final Class<?> beanClass) {
+		Assertion.check()
+				.isNotBlank(propertyName)
+				.isNotNull(beanClass);
+		//---
 		final PropertyDescriptor[] descriptors = getPropertyDescriptors(beanClass);
 		for (final PropertyDescriptor propertyDescriptor : descriptors) {
 			if (propertyName.equals(StringUtil.first2LowerCase(propertyDescriptor.getName()))) {

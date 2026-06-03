@@ -128,6 +128,10 @@ public final class TraceSpan {
 	 * @return the span builder
 	 */
 	public static TraceSpanBuilder builder(final String category, final String name) {
+		Assertion.check()
+				.isNotBlank(category)
+				.isNotBlank(name);
+		//---
 		return new TraceSpanBuilder(category, name);
 	}
 
@@ -141,6 +145,12 @@ public final class TraceSpan {
 	 * @return the span builder
 	 */
 	public static TraceSpanBuilder builder(final String category, final String name, final Instant start, final Instant end) {
+		Assertion.check()
+				.isNotBlank(category)
+				.isNotBlank(name)
+				.isNotNull(start)
+				.isNotNull(end);
+		//---
 		return new TraceSpanBuilder(category, name, start, end);
 	}
 

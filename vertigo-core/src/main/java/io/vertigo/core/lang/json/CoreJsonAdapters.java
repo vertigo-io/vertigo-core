@@ -46,6 +46,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionId;
 
 /**
@@ -67,7 +68,8 @@ public class CoreJsonAdapters {
 			.create();
 
 	public static GsonBuilder addCoreGsonConfig(final GsonBuilder gsonBuilder, final boolean serializeNulls) {
-
+		Assertion.check().isNotNull(gsonBuilder);
+		//---
 		gsonBuilder
 				//.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 				.registerTypeAdapter(Date.class, new UTCDateAdapter())

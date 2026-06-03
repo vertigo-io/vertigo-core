@@ -50,6 +50,12 @@ public final class TracerProviderUtil {
 	 * @param onCloseConsumer the action to perform when the trace is closed
 	 */
 	public static void trace(final String category, final String name, final Consumer<Tracer> consumer, final Consumer<TraceSpan> onCloseConsumer) {
+		Assertion.check()
+				.isNotBlank(category)
+				.isNotBlank(name)
+				.isNotNull(consumer)
+				.isNotNull(onCloseConsumer);
+		//---
 		try (TracerImpl tracer = createTracer(category, name, onCloseConsumer)) {
 			try {
 				consumer.accept(tracer);
@@ -71,6 +77,12 @@ public final class TracerProviderUtil {
 	 * @return the result of the function
 	 */
 	public static <O> O traceWithReturn(final String category, final String name, final Function<Tracer, O> function, final Consumer<TraceSpan> onCloseConsumer) {
+		Assertion.check()
+				.isNotBlank(category)
+				.isNotBlank(name)
+				.isNotNull(function)
+				.isNotNull(onCloseConsumer);
+		//---
 		try (final TracerImpl tracer = createTracer(category, name, onCloseConsumer)) {
 			try {
 				final O result = function.apply(tracer);

@@ -21,6 +21,7 @@ import java.util.List;
 
 import jakarta.inject.Inject;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.ClassSelector;
 import io.vertigo.core.lang.ClassSelector.ClassConditions;
 import io.vertigo.core.locale.LocaleMessageKey;
@@ -35,11 +36,15 @@ public final class LocaleDefinitionProvider implements SimpleDefinitionProvider 
 	@Inject
 	public LocaleDefinitionProvider(
 			@ParamValue("package") final String packageName) {
+		Assertion.check().isNotBlank(packageName);
+		//---
 		this.packageName = packageName;
 	}
 
 	@Override
 	public List<LocaleResourceDefinition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		Assertion.check().isNotNull(definitionSpace);
+		//---
 		return ClassSelector
 				.from(packageName)
 				.filterClasses(ClassConditions.subTypeOf(LocaleMessageKey.class))

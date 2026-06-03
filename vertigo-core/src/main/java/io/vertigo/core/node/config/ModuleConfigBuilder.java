@@ -71,6 +71,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return this builder
 	 */
 	public ModuleConfigBuilder addAspect(final Class<? extends Aspect> implClass) {
+		Assertion.check().isNotNull(implClass);
+		//---
 		myAspectConfigs.add(new AspectConfig(implClass));
 		return this;
 	}
@@ -81,6 +83,8 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return this builder
 	 */
 	public ModuleConfigBuilder addAmplifierMethod(final Class<? extends AmplifierMethod> proxyMethodClass) {
+		Assertion.check().isNotNull(proxyMethodClass);
+		//---
 		myAmplifierMethodConfigs.add(new AmplifierMethodConfig(proxyMethodClass));
 		return this;
 	}
@@ -188,10 +192,19 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	}
 
 	public ModuleConfigBuilder addPlugin(final Class<? extends Plugin> pluginImplClass, final List<Param> params) {
+		Assertion.check()
+				.isNotNull(pluginImplClass)
+				.isNotNull(params);
+		//---
 		return addPlugin(ConfigUtil.getPluginApi(pluginImplClass), pluginImplClass, params);
 	}
 
 	public ModuleConfigBuilder addPlugin(final Class<? extends Plugin> pluginApiClass, final Class<? extends Plugin> pluginImplClass, final List<Param> params) {
+		Assertion.check()
+				.isNotNull(pluginApiClass)
+				.isNotNull(pluginImplClass)
+				.isNotNull(params);
+		//---
 		myPluginConfigs.add(new PluginConfig(pluginApiClass, pluginImplClass, params));
 		return this;
 	}
@@ -209,6 +222,10 @@ public final class ModuleConfigBuilder implements Builder<ModuleConfig> {
 	 * @return this builder
 	 */
 	public ModuleConfigBuilder addConnector(final Class<? extends Connector> connectorImplClass, final Param... params) {
+		Assertion.check()
+				.isNotNull(connectorImplClass)
+				.isNotNull(params);
+		//---
 		myConnectorConfigs.add(
 				new ConnectorConfig(
 						ConfigUtil.getConnectorApiOpt(connectorImplClass),

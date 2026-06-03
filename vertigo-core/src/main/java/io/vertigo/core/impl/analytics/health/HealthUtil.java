@@ -59,7 +59,10 @@ public final class HealthUtil {
 	 * @return List of HealthCheckDefinition
 	 */
 	public static List<HealthCheckDefinition> createHealthCheckDefinitions(final String componentId, final CoreComponent component, final AspectPlugin aspectPlugin) {
-		Assertion.check().isNotNull(component);
+		Assertion.check()
+				.isNotBlank(componentId)
+				.isNotNull(component)
+				.isNotNull(aspectPlugin);
 
 		//-- we construct a map of feature by componentId
 		final Map<String, String> featureByComponentId = new HashMap<>();

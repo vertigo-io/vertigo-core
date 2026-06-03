@@ -27,7 +27,7 @@ package io.vertigo.core.lang;
  * @param <B> Type of second object
  */
 public record Tuple<A, B> (A val1, B val2) {
-	
+
 	/**
 	 * Creates a Tuple with two objects.
 	 *
@@ -38,6 +38,10 @@ public record Tuple<A, B> (A val1, B val2) {
 	 * @return New Tuple
 	 */
 	public static <A, B> Tuple<A, B> of(final A val1, final B val2) {
+		Assertion.check()
+				.isNotNull(val1)
+				.isNotNull(val2);
+		//---
 		return new Tuple<>(val1, val2);
 	}
 }

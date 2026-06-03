@@ -17,6 +17,7 @@
  */
 package io.vertigo.core.node.config;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.core.param.Param;
@@ -39,6 +40,10 @@ public abstract class Features<F> implements Builder<ModuleConfig> {
 	}
 
 	public final F addPlugin(final Class<? extends Plugin> pluginImplClass, final Param... params) {
+		Assertion.check()
+				.isNotNull(pluginImplClass)
+				.isNotNull(params);
+		//---
 		moduleConfigBuilder.addPlugin(pluginImplClass, params);
 		return (F) this;
 	}
