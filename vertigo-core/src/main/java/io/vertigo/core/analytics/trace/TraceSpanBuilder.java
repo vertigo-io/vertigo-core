@@ -103,7 +103,7 @@ public final class TraceSpanBuilder implements Builder<TraceSpan> {
 	 * @return this builder
 	 */
 	public TraceSpanBuilder incMeasure(final String name, final double value) {
-		Assertion.check().isNotNull(name, "Measure name is required");
+		Assertion.check().isNotBlank(name, "Measure name is required");
 		//---
 		final Double lastmValue = measures.get(name);
 		measures.put(name, lastmValue == null ? value : value + lastmValue);
@@ -118,7 +118,7 @@ public final class TraceSpanBuilder implements Builder<TraceSpan> {
 	 * @return this builder
 	 */
 	public TraceSpanBuilder withMeasure(final String name, final double value) {
-		Assertion.check().isNotNull(name, "measure name is required");
+		Assertion.check().isNotBlank(name, "measure name is required");
 		//---
 		measures.put(name, value);
 		return this;
@@ -133,7 +133,7 @@ public final class TraceSpanBuilder implements Builder<TraceSpan> {
 	 */
 	public TraceSpanBuilder withMetadata(final String name, final String value) {
 		Assertion.check()
-				.isNotNull(name, "metadata name is required")
+				.isNotBlank(name, "metadata name is required")
 				.isNotNull(value, "metadata value is required");
 		//---------------------------------------------------------------------
 		if (value.isBlank()) {
@@ -153,7 +153,7 @@ public final class TraceSpanBuilder implements Builder<TraceSpan> {
 	 */
 	public TraceSpanBuilder withTag(final String name, final String value) {
 		Assertion.check()
-				.isNotNull(name, "tag name is required")
+				.isNotBlank(name, "tag name is required")
 				.isNotNull(value, "tag value is required");
 		//---
 		if (value.isBlank()) {

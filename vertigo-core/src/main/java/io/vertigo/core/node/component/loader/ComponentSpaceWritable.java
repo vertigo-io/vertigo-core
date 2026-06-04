@@ -107,6 +107,10 @@ public final class ComponentSpaceWritable implements ComponentSpace, Activeable 
 	/** {@inheritDoc} */
 	@Override
 	public <C> C resolve(final String id, final Class<C> componentClass) {
+		Assertion.check()
+				.isNotBlank(id)
+				.isNotNull(componentClass);
+		//-----
 		final String normalizedId = StringUtil.first2LowerCase(id);
 		Assertion.check().isTrue(contains(normalizedId), "No component registered for id = {0} among {1}", normalizedId, keySet());
 		//-----

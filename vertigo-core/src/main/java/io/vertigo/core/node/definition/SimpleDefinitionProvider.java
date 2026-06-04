@@ -19,6 +19,8 @@ package io.vertigo.core.node.definition;
 
 import java.util.List;
 
+import io.vertigo.core.lang.Assertion;
+
 /**
  * Provides a list of definitions through an iterable.
  * @author pchretien
@@ -33,6 +35,8 @@ public interface SimpleDefinitionProvider extends DefinitionProvider {
 	 */
 	@Override
 	default List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
+		Assertion.check().isNotNull(definitionSpace);
+		//---
 		return provideDefinitions(definitionSpace)
 				.stream()
 				.map(definition -> (DefinitionSupplier) (dS) -> definition)

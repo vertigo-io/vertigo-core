@@ -77,10 +77,12 @@ final class DaemonListener {
 	/**
 	 * Records daemon execution failure.
 	 * Updates counters, status and logs error.
-	 * 
+	 *
 	 * @param e Exception that caused the failure
 	 */
 	synchronized void onFailure(final Exception e) {
+		Assertion.check().isNotNull(e);
+		//---
 		status = DaemonStat.Status.pending;
 		failures++;
 		lastExecSucceed = false;

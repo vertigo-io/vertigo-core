@@ -69,6 +69,8 @@ public record NodeConfig(
 	}
 
 	public boolean hasFlag(final String flag) {
+		Assertion.check().isNotBlank(flag);
+		//---
 		return activeFlags.contains(flag);
 	}
 

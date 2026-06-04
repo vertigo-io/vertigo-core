@@ -17,10 +17,14 @@
  */
 package io.vertigo.core.node.definition;
 
+import io.vertigo.core.lang.Assertion;
+
 public abstract class AbstractDefinition<D extends Definition> implements Definition {
 	private final DefinitionId<D> definitionId;
 
 	protected AbstractDefinition(final String name) {
+		Assertion.check().isNotBlank(name);
+		//---
 		this.definitionId = new DefinitionId(name, this);
 	}
 

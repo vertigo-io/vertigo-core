@@ -62,6 +62,8 @@ public final class DefinitionSpaceWritable implements DefinitionSpace {
 	/** {@inheritDoc} */
 	@Override
 	public boolean contains(final String name) {
+		Assertion.check().isNotBlank(name);
+		//---
 		return definitions.containsKey(name);
 	}
 

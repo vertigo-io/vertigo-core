@@ -20,6 +20,8 @@ package io.vertigo.core.node.definition;
 import java.util.Arrays;
 import java.util.List;
 
+import io.vertigo.core.lang.Assertion;
+
 /**
  * Provides a list of definitions through an enum.
  *
@@ -35,6 +37,8 @@ public interface SimpleEnumDefinitionProvider<D extends Definition> extends Defi
 	 */
 	@Override
 	default List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
+		Assertion.check().isNotNull(definitionSpace);
+		//---
 		final var enumValues = getEnumClass().getEnumConstants();
 
 		return Arrays.stream(enumValues)

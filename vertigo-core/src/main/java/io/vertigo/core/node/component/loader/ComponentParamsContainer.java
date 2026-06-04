@@ -54,7 +54,7 @@ final class ComponentParamsContainer implements Container {
 	@Override
 	public boolean contains(final String id) {
 		Assertion.check()
-				.isNotNull(id);
+				.isNotBlank(id);
 		//-----
 		return params.containsKey(id);
 	}
@@ -63,7 +63,8 @@ final class ComponentParamsContainer implements Container {
 	@Override
 	public <O> O resolve(final String id, final Class<O> clazz) {
 		Assertion.check()
-				.isNotNull(id)
+				.isNotBlank(id)
+				.isNotNull(clazz)
 				.isTrue(params.containsKey(id), "param '{0}' of type '{1}' has not be registered.", id, clazz.getSimpleName());
 		//-----
 		unusedKeys.remove(id);
