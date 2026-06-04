@@ -16,25 +16,25 @@
 	
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
+		<dependency>
 		    <groupId>org.apache.logging.log4j</groupId>
 		    <artifactId>log4j-api</artifactId>
-		    <version>2.24.3</version> <!-- To avoid conflict of version, we must exclude log4j-api version when necessary -->
+		    <version>2.26.0</version> <!-- To avoid conflict of version, we must exclude log4j-api version when necessary -->
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.logging.log4j</groupId>
 		    <artifactId>log4j-core</artifactId>
-		    <version>2.24.3</version> <!-- To avoid conflict of version, we must exclude log4j-core version when necessary -->
+		    <version>2.26.0</version> <!-- To avoid conflict of version, we must exclude log4j-core version when necessary -->
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.logging.log4j</groupId>
 		    <artifactId>log4j-slf4j2-impl</artifactId>
-		    <version>2.24.3</version> <!-- To avoid conflict of version, we must exclude log4j-core version when necessary -->
+		    <version>2.26.0</version> <!-- To avoid conflict of version, we must exclude log4j-slf4j2-impl version when necessary -->
 		</dependency>
 		<dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-layout-template-json</artifactId>
-            <version>2.24.3</version><!-- To avoid conflict of version, we must exclude log4j-core version when necessary -->
+            <version>2.26.0</version><!-- To avoid conflict of version, we must exclude log4j-core version when necessary -->
         </dependency>
 
 		<dependency>
@@ -50,17 +50,17 @@
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.13.1</version>
-		</dependency> <!-- json config -->
+			<version>2.13.1</version> <!-- json config --> <!-- 2.14.0 breaks TestUi.testPostSimpleErrorForm -->
+		</dependency>
 		<dependency>
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
-			<version>2.4</version>  <!-- yaml config -->
+			<version>2.6</version>  <!-- yaml config -->
 		</dependency>
 		<dependency>
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
-			<version>3.30.2-GA</version>
+			<version>3.31.0-GA</version>
 		</dependency>
 		</dependencies>
 	</dependencyManagement>
