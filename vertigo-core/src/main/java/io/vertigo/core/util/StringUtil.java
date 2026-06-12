@@ -25,7 +25,7 @@ import io.vertigo.core.lang.Assertion;
 /**
  * The StringUtil class provides usefull methods to manipulate strings.
  *
- * @author  pchretien
+ * @author pchretien
  */
 public final class StringUtil {
 	private static final Pattern UPPER_CAMEL_CASE_PATTERN = Pattern.compile("[A-Z][a-zA-Z0-9]*");
@@ -41,6 +41,7 @@ public final class StringUtil {
 	/**
 	 * Implémentation du test de la chaine vide.
 	 * ie null ou blank (espace, \t \n \r \p ...)
+	 *
 	 * @param strValue String
 	 * @return Si la chaine ne contient que des caractères blank
 	 * @see java.lang.Character isWhitespace(char)
@@ -53,6 +54,7 @@ public final class StringUtil {
 
 	/**
 	 * On abaisse la premiere lettre.
+	 *
 	 * @param strValue String non null
 	 * @return Chaine avec la premiere lettre en minuscule
 	 */
@@ -65,9 +67,9 @@ public final class StringUtil {
 
 		final char firstChar = strValue.charAt(0);
 		if (Character.isUpperCase(firstChar)) {
-			//This method can be called many times. 
+			//This method can be called many times.
 			//Concat is an heavy operation
-			//so we prefer test before executing operation			
+			//so we prefer test before executing operation
 			return Character.toLowerCase(firstChar) + strValue.substring(1);
 		}
 		return strValue;
@@ -88,9 +90,9 @@ public final class StringUtil {
 
 		final char firstChar = strValue.charAt(0);
 		if (Character.isLowerCase(firstChar)) {
-			//This method can be called many times. 
+			//This method can be called many times.
 			//Concat is an heavy operation
-			//so we prefer test before executing operation			
+			//so we prefer test before executing operation
 			return Character.toUpperCase(firstChar) + strValue.substring(1);
 		}
 		return strValue;
@@ -98,6 +100,7 @@ public final class StringUtil {
 
 	/**
 	 * XXX_YYY_ZZZ -> xxxYyyZzz.
+	 *
 	 * @param str la chaine de caratéres sur laquelle s'appliquent les transformation
 	 * @return camelCase
 	 */
@@ -107,6 +110,7 @@ public final class StringUtil {
 
 	/**
 	 * XXX_YYY_ZZZ -> XxxYyyZzz.
+	 *
 	 * @param str la chaine de caratéres sur laquelle s'appliquent les transformation
 	 * @return CamelCase
 	 */
@@ -116,10 +120,11 @@ public final class StringUtil {
 
 	/**
 	 * XXX_YYY_ZZZ -> XxxYyyZzz ou xxxYyyZzz.
+	 *
 	 * @param str la chaine de caratéres sur laquelle s'appliquent les transformation
 	 * @param first2UpperCase définit si la première lettre est en majuscules
 	 * @return Renvoie une chaine de caratére correspondant à str en minuscule et sans underscores,
-	 * à l'exception des premières lettres aprés les underscores dans str
+	 *         à l'exception des premières lettres aprés les underscores dans str
 	 */
 	private static String constToCamelCase(final String str, final boolean first2UpperCase) {
 		Assertion.check()
@@ -167,6 +172,7 @@ public final class StringUtil {
 	 * XxxYzw123 --> (interdit)
 	 * Xxx123Y --> XXX_123_Y.
 	 * Xxx123y --> XXX_123Y.
+	 *
 	 * @param str la chaine de caratéres sur laquelle s'appliquent les transformation
 	 * @return Passage en constante d'une chaîne de caractères (Fonction inverse de caseTransform)
 	 */
@@ -182,6 +188,7 @@ public final class StringUtil {
 	 * XxxYzw123 --> (interdit)
 	 * Xxx123Y --> xxx_123_y.
 	 * Xxx123y --> xxx_123y.
+	 *
 	 * @param str la chaine de caratéres sur laquelle s'appliquent les transformation
 	 * @return Passage en constante d'une chaîne de caractères (Fonction inverse de caseTransform)
 	 */
@@ -220,6 +227,7 @@ public final class StringUtil {
 
 	/**
 	 * Teste si une chaine est en camelCase avec la première lettre en majuscule.
+	 *
 	 * @param testString chaine a tester
 	 * @return boolean
 	 */
@@ -229,6 +237,7 @@ public final class StringUtil {
 
 	/**
 	 * Teste si une chaine est en camelCase avec la première lettre en minuscule.
+	 *
 	 * @param testString chaine a tester
 	 * @return boolean
 	 */
@@ -239,6 +248,7 @@ public final class StringUtil {
 	/**
 	 * Teste si un caractère est une simple lettre (minuscule ou majuscule, sans accent)
 	 * ou un chiffre.
+	 *
 	 * @param c caractère
 	 * @return boolean
 	 */
@@ -268,6 +278,7 @@ public final class StringUtil {
 	 * Remplacement au sein d'une chaine d'un motif par un autre.
 	 * Le remplacement avance, il n'est pas récursif !!.
 	 * Le StringBuilder est modifié !! c'est pourquoi il n'y a pas de return.
+	 *
 	 * @param str StringBuilder
 	 * @param oldStr Chaine à remplacer
 	 * @param newStr Chaine de remplacement
@@ -288,7 +299,8 @@ public final class StringUtil {
 
 	/**
 	 * Fusionne une chaine compatible avec les paramètres.
-	 * Les caractères { }  sont interdits ou doivent être echappés avec \\.
+	 * Les caractères { } sont interdits ou doivent être echappés avec \\.
+	 *
 	 * @param msg Chaine au format MessageFormat
 	 * @param params paramètres du message
 	 * @return Chaine fusionnée
@@ -299,14 +311,28 @@ public final class StringUtil {
 		if (params == null || params.length == 0) {
 			return msg;
 		}
+		//Placeholders lisibles pour les accolades échappées.
+		//Utiliser '{' + '}' (quotes MessageFormat) plante quand elles sont adjacentes :
+		//ex: \{\} → '{' + '}' → le ' final de '{' ferme le quote, le ' initial de '}'
+		//re-ouvre un quote → MessageFormat rend {'  au lieu de {}
+		//On utilise donc des tokens textuels sans quote, restaurés après MessageFormat.
+		final String PL_LB = "<VBRACEOPEN/>";
+		final String PL_RB = "<VBRACECLOSE/>";
+		final StringBuilder newMsg = new StringBuilder(msg);
 		//Gestion des doubles quotes
 		//On simple quotes les doubles quotes déjà posées.
 		//Puis on double toutes les simples quotes ainsi il ne reste plus de simple quote non doublée.
-		final StringBuilder newMsg = new StringBuilder(msg);
 		replace(newMsg, "''", "'");
 		replace(newMsg, "'", "''");
-		replace(newMsg, "\\{", "'{'");
-		replace(newMsg, "\\}", "'}'");
-		return MessageFormat.format(newMsg.toString(), params);
+		replace(newMsg, "{{", PL_LB + PL_LB);
+		replace(newMsg, "}}", PL_RB + PL_RB);
+		replace(newMsg, "\\{", PL_LB);
+		replace(newMsg, "\\}", PL_RB);
+		final String result = MessageFormat.format(newMsg.toString(), params);
+		newMsg.setLength(0);
+		newMsg.append(result);
+		replace(newMsg, PL_LB, "{");
+		replace(newMsg, PL_RB, "}");
+		return newMsg.toString();
 	}
 }

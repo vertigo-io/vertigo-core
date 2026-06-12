@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test de l'utilitaitre de manipulation des strings.
- * 
+ *
  * @author pchretien
  */
 public final class StringUtilTest {
@@ -202,6 +202,9 @@ public final class StringUtilTest {
 		assertEquals("bonjour 'le' monde", StringUtil.format("bonjour ''{0}'' monde", "le"));
 		assertEquals("bonjour 'le' monde", StringUtil.format("bonjour '{0}' monde", "le"));
 		assertEquals("bonjour 'le' monde", StringUtil.format("bonjour ''{0}' monde", "le"));
+		assertEquals("bonjour {0} monde", StringUtil.format("bonjour \\{0\\} monde", "le"));
+		assertEquals("bonjour {} monde", StringUtil.format("bonjour \\{\\} monde", "le"));
+		assertEquals("bonjour {{test}} monde", StringUtil.format("bonjour {{test}} monde", "le"));
 	}
 
 	@Test
