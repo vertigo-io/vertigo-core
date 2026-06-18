@@ -326,20 +326,6 @@
 							</execution>
 						</executions>
 					</plugin>
-					<plugin>
-						<groupId>org.sonarsource.scanner.maven</groupId>
-						<artifactId>sonar-maven-plugin</artifactId>
-						<version>4.0.0.4121</version>
-						<inherited>false</inherited>
-						<executions>
-							<execution>
-								<phase>verify</phase>
-								<goals>
-									<goal>sonar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
 				</plugins>
 			</build>
 		</profile>
