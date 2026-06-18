@@ -295,7 +295,7 @@
 						</executions>
 						<configuration>
 							<!-- update will be done in a dedicated task -->
-							<autoUpdate>true</autoUpdate>
+							<autoUpdate>false</autoUpdate>
 							<formats>
 								<format>HTML</format>
 								<format>JSON</format>
