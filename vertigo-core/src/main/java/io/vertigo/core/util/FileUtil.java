@@ -208,7 +208,9 @@ public final class FileUtil {
 	public static void checkUserPath(final String userPath) {
 		Assertion.check()
 				.isNotNull(userPath)
-				.isFalse(userPath.contains("..") || userPath.indexOf((char) 0) != -1, USER_CHECK_ERROR_MSG);
+				.isTrue(!userPath.contains("..")
+						&& userPath.indexOf((char) 0) == -1, //char 0
+						USER_CHECK_ERROR_MSG);
 	}
 
 	/**

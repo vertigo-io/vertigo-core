@@ -3,21 +3,39 @@ Version history
 
 Running 5.0.0
 ----------------------
+
+- **Upgrade to JDK25**
+
 more to come :)
 
-Release 4.3.3 - TBD
+Running 4.4.0 - 2026-06-XX
 ----------------------
-[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-432-to-433)
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-432-to-440)
 
-- Fix Amplifier auto discovery
+- [Core] Fix Amplifier autodiscovery
+- [Core] Sort injected components list by declaring order (like paramPlugins, formerly it's by key name) : plugin order is now stable
+- [Core] Add thread-local context tags to tracer creation
+- [Core] Fix bijective camelCase <-> CONST_CASE : allow digits followed by letters in StringUtil
+- [Core] Fix StringUtil.format : handle escaped braces
+- [Core] Fix FileUtil.checkUserPath : invalid \0 character detection
+- [Core] Lighter exception message : use original exception message when wrapping (reduce exceptions stack size)
+- [Core] Update Gson to 2.14.0 : add SerializableParameterizedType
+- [Daemon] Support analytics tracing for declarative daemons (previously only annotation-based)
+- [Core] Fix Params name validation regex vulnerability (ReDoS)
+- Update libs
+  - gson 2.13.1 -> 2.14.0
+  - log4j 2.24.3 -> 2.26.0
+  - snakeyaml 2.4 -> 2.6
+  - javassist 3.30.2-GA -> 3.31.0-GA
 
 Release 4.3.2 - 2025/07/10
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-431-to-432)
 
-- Add a new standard eclipse formater for dev team
+- Add a new standard eclipse formatter for dev team
 - [Analytics] Always return getCurrentTracer, even if in log mode (no connector)
 - [Analytics] Add thread context to SmartLogger to permit filter from original logs
+- [Core] Fix fieldName with capital on second letter (e.g. aBcd → getABcd())
 
 
 Release 4.3.1 - 2025/06/13

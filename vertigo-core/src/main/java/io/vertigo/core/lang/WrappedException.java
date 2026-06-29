@@ -38,6 +38,7 @@ public final class WrappedException extends RuntimeException {
 
 	/**
 	 * Constructor.
+	 * 
 	 * @param message Context message
 	 * @param cause Original exception
 	 */
@@ -53,7 +54,7 @@ public final class WrappedException extends RuntimeException {
 	 * @return RuntimeException wrapper
 	 */
 	public static RuntimeException wrap(final Throwable th) {
-		return wrap(th, th.getMessage());
+		return wrap(th, null);
 	}
 
 	/**
@@ -66,19 +67,25 @@ public final class WrappedException extends RuntimeException {
 	 * @return RuntimeException wrapper
 	 */
 	public static RuntimeException wrap(final Throwable th, final String msg, final Object... params) {
-		final Throwable t = (th instanceof InvocationTargetException ite)
+		final Throwable t = th instanceof final InvocationTargetException ite
 				? ite.getTargetException()
 				: th;
 
 		//WrapExceptions are used to wrap unknown exceptions; the message can be null.
 		//But we check a dev's exception have got a message, so in this api (with just th) we send "no message provided" if message is null
-		final String message = StringUtil.isBlank(msg) ? "no message provided" : StringUtil.format(msg, params);
-		if (t instanceof RuntimeException rte) {
-			rte.addSuppressed(new VSystemException(message));
+		var hasCustomMessage = !StringUtil.isBlank(msg);
+		final String message = hasCustomMessage ? StringUtil.format(msg, params) : t.getMessage();
+
+		if (t instanceof final RuntimeException rte) {
+			if (hasCustomMessage) {
+				rte.addSuppressed(new VSystemException(message));
+			}
 			throw rte;
 		}
-		if (t instanceof Error error) {
-			error.addSuppressed(new VSystemException(message));
+		if (t instanceof final Error error) {
+			if (hasCustomMessage) {
+				error.addSuppressed(new VSystemException(message));
+			}
 			throw error;
 		}
 		throw new WrappedException(message, t);
@@ -86,6 +93,7 @@ public final class WrappedException extends RuntimeException {
 
 	/**
 	 * Retrieves the original wrapped exception.
+	 * 
 	 * @return Original exception
 	 */
 	public Throwable unwrap() {
