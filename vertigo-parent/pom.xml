@@ -312,16 +312,55 @@
 									<goal>prepare-agent</goal>
 								</goals>
 							</execution>
+						<execution>
+							<id>report</id>
+							<phase>test</phase>
+							<goals>
+								<goal>report</goal>
+							</goals>
+							<configuration>
+								<formats>
+									<format>XML</format>
+								</formats>
+							</configuration>
+						</execution>
+						<execution>
+							<id>report-aggregate</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>report-aggregate</goal>
+							</goals>
+						</execution>
+					</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>sonarAggregate</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>0.8.14</version>
+						<inherited>false</inherited>
+						<executions>
 							<execution>
-								<id>report</id>
-								<phase>test</phase>
+								<id>merge-all-exec</id>
 								<goals>
-									<goal>report</goal>
+									<goal>merge</goal>
 								</goals>
 								<configuration>
-									<formats>
-										<format>XML</format>
-									</formats>
+									<fileSets>
+										<fileSet>
+											<directory>${jacoco.aggregate.dir}</directory>
+											<includes>
+												<include>**/*.exec</include>
+											</includes>
+										</fileSet>
+									</fileSets>
+									<destFile>${project.build.directory}/jacoco-merged.exec</destFile>
 								</configuration>
 							</execution>
 						</executions>
