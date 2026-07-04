@@ -363,6 +363,24 @@
 									<destFile>${project.build.directory}/jacoco-merged.exec</destFile>
 								</configuration>
 							</execution>
+							<execution>
+								<id>report-aggregate</id>
+								<goals>
+									<goal>report-aggregate</goal>
+								</goals>
+								<configuration>
+									<dataFile>${project.build.directory}/jacoco-merged.exec</dataFile>
+									<outputDirectory>${jacoco.report.out.dir}</outputDirectory>
+									<fileSets>
+										<fileSet>
+											<directory>${jacoco.classes.dir}</directory>
+											<includes>
+												<include>**/target/classes/**/*.class</include>
+											</includes>
+										</fileSet>
+									</fileSets>
+								</configuration>
+							</execution>
 						</executions>
 					</plugin>
 				</plugins>
