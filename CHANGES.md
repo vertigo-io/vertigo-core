@@ -24,9 +24,9 @@ Running 4.4.0 - 2026-06-XX
 - [Core] Fix Params name validation regex vulnerability (ReDoS)
 - Update libs
   - gson 2.13.1 -> 2.14.0
-  - log4j 2.24.3 -> 2.26.0
+  - log4j 2.24.3 -> 2.26.1
   - snakeyaml 2.4 -> 2.6
-  - javassist 3.30.2-GA -> 3.31.0-GA
+  - javassist 3.30.2-GA -> 3.32.0-GA
 
 Release 4.3.2 - 2025/07/10
 ----------------------
