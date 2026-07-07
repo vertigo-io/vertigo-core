@@ -38,19 +38,21 @@ public final class Param {
 
 	/** Regular expression for paramName. */
 	private static final Pattern REGEX_PARAM_NAME = Pattern
-			.compile("([a-zA-Z][a-zA-Z0-9]*)([\\._-][a-zA-Z][a-zA-Z0-9]*){0,200}");
+			.compile("([a-zA-Z][a-zA-Z0-9]*+)([\\._-][a-zA-Z][a-zA-Z0-9]*+){0,200}");
 	private final String name;
 	private final String value;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param name  the name of the parameter
+	 * @param name the name of the parameter
 	 * @param value the value of the parameter
 	 */
 	private Param(final String name, final String value) {
-		Assertion.check().isNotBlank(name).isTrue(REGEX_PARAM_NAME.matcher(name).matches(),
-				"param '{0}' must match pattern {1}", name, REGEX_PARAM_NAME).isNotBlank(name).isNotNull(value);
+		Assertion.check()
+				.isNotBlank(name)
+				.isTrue(REGEX_PARAM_NAME.matcher(name).matches(), "param '{0}' must match pattern {1}", name, REGEX_PARAM_NAME)
+				.isNotNull(value);
 		// ---
 		this.name = name;
 		this.value = value;
@@ -60,7 +62,7 @@ public final class Param {
 	/**
 	 * Creates a new Integer parameter.
 	 *
-	 * @param name  the name of the parameter
+	 * @param name the name of the parameter
 	 * @param value the value of the parameter
 	 * @return a new parameter
 	 */
@@ -71,7 +73,7 @@ public final class Param {
 	/**
 	 * Creates a new parameter.
 	 *
-	 * @param name  the name of the parameter
+	 * @param name the name of the parameter
 	 * @param value the value of the parameter
 	 * @return a new parameter
 	 */
@@ -146,7 +148,10 @@ public final class Param {
 	}
 
 	private static Object parse(final String paramName, final Class<?> paramType, final String paramValue) {
-		Assertion.check().isNotNull(paramName).isNotNull(paramType).isNotNull(paramValue);
+		Assertion.check()
+				.isNotNull(paramName)
+				.isNotNull(paramType)
+				.isNotNull(paramValue);
 		// -----
 		try {
 			if (String.class.equals(paramType)) {
@@ -161,8 +166,8 @@ public final class Param {
 				throw new IllegalArgumentException("type '" + paramType + "' unsupported");
 			}
 		} catch (final Exception e) {
-			throw new VSystemException(e, "Param :{0} with value :{1} can't be cast into '{2}'", paramName, paramValue,
-					paramType);
+			throw new VSystemException(e, "Param :{0} with value :{1} can't be cast into '{2}'",
+					paramName, paramValue, paramType);
 		}
 	}
 

@@ -40,18 +40,19 @@ public final class ParamEnvUtil {
 	/**
 	 * Retrieves a parameter based on the specified name, value, and an optional ParamManager.
 	 *
-	 * @param paramName       The name of the parameter
-	 * @param paramValue      The value of the parameter
+	 * @param paramName The name of the parameter
+	 * @param paramValue The value of the parameter
 	 * @param paramManagerOpt An optional ParamManager
 	 * @return An Optional containing the retrieved Param, if available
-	 * @throws IllegalArgumentException If the parameter is not found in either the	ParamManager or the system and environment
+	 * @throws IllegalArgumentException If the parameter is not found in either the ParamManager or the system and environment
 	 */
 	public static Optional<Param> getParam(final String paramName, final String paramValue, final Optional<ParamManager> paramManagerOpt) {
 		Assertion.check()
 				.isNotBlank(paramName)
+				.isNotNull(paramValue)
 				.isNotNull(paramManagerOpt);
 		// -----
-		if (paramValue != null && paramValue.startsWith("${") && paramValue.endsWith("}")) {
+		if (paramValue.startsWith("${") && paramValue.endsWith("}")) {
 			final int defaultValueIdx = paramValue.indexOf('!');
 			final String property = paramValue.substring("${".length(), defaultValueIdx > 0 ? defaultValueIdx : paramValue.length() - "}".length());
 			final Optional<String> defaultValueOpt = defaultValueIdx > 0
@@ -75,7 +76,7 @@ public final class ParamEnvUtil {
 	 * Retrieves an optional system or environment parameter based on the specified parameter name.
 	 *
 	 * @param paramName The name of the parameter
-	 * @param property  The property associated with the parameter
+	 * @param property The property associated with the parameter
 	 * @return An Optional containing the retrieved Param, if available
 	 */
 	private static Optional<Param> getOptionalSysEnvParam(final String paramName, final String property) {

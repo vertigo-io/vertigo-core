@@ -23,6 +23,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.daemon.DaemonStat;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
@@ -39,19 +40,31 @@ import io.vertigo.core.node.component.Activeable;
  */
 final class DaemonExecutor implements Activeable {
 	private static final int STOP_TIMEOUT = 30; //30s
+	private final AnalyticsManager analyticsManager;
 	private boolean isActive;
 	private final ScheduledExecutorService scheduler;
 	private final List<DaemonListener> daemonListeners = new ArrayList<>();
 
 	/**
 	 * Creates executor with specified thread pool size.
+	 *
+	 * @param analyticsManager
 	 * @param threadPoolSize Maximum concurrent daemons
 	 */
-	public DaemonExecutor(final int threadPoolSize) {
+	public DaemonExecutor(final AnalyticsManager analyticsManager, final int threadPoolSize) {
+		this.analyticsManager = analyticsManager;
 		scheduler = Executors.newScheduledThreadPool(threadPoolSize, new NamedThreadFactory("v-daemon-"));
 	}
 
-	private static Daemon createDaemon(final DaemonDefinition daemonDefinition) {
+	private Daemon createDaemon(final DaemonDefinition daemonDefinition) {
+		if (daemonDefinition.isAnalytics()) {
+			// if analytics is enabled (by default) we trace the execution with a tracer
+			return () -> analyticsManager.trace(
+					"daemon",
+					daemonDefinition.getName(),
+					tracer -> daemonDefinition.getDaemonSupplier().get().run());
+		}
+		// otherwise we just execute it
 		return daemonDefinition.getDaemonSupplier().get();
 	}
 
@@ -75,6 +88,7 @@ final class DaemonExecutor implements Activeable {
 
 	/**
 	 * Gets execution statistics for all daemons.
+	 *
 	 * @return List of daemon statistics
 	 */
 	List<DaemonStat> getStats() {

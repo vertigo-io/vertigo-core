@@ -78,8 +78,9 @@ public final class DIInjector {
 	}
 
 	/**
-	 * Inject members/properties into an instance in a contex defined by a container.
-	 * @param instance Object in which the members/propertis will be injected
+	 * Inject members/properties into an instance in a context defined by a container.
+	 *
+	 * @param instance Object in which the members/properties will be injected
 	 * @param container container of all the components that can be injected in the instance
 	 */
 	public static void injectMembers(final Object instance, final Container container) {
@@ -121,7 +122,11 @@ public final class DIInjector {
 		} else if (dependency.isList()) {
 			//on récupère la liste des objets du type concerné
 			final List<Object> list = new ArrayList<>();
-			for (final String id : container.keySet()) {
+
+			//on tri les clés pour garantir l'ordre de déclaration
+			final List<String> sortedKeys = new ArrayList<>(container.keySet());
+			Collections.sort(sortedKeys);
+			for (final String id : sortedKeys) {
 				//On prend tous les objets ayant l'identifiant requis
 				final boolean match = id.equals(dependency.getName()) || id.startsWith(dependency.getName() + '#');
 				if (match) {

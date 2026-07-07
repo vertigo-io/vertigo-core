@@ -45,37 +45,31 @@
 		<connection>scm:git:https://github.com/vertigo-io/vertigo-core.git</connection>
 		<developerConnection>scm:git:https://github.com/vertigo-io/vertigo-core.git</developerConnection>
 		<url>scm:git:https://github.com/vertigo-io/vertigo-core.git</url>
-		<tag>vertigo-4.2.0</tag>
+		<tag>vertigo-4.4.0-SNAPSHOT</tag>
 	</scm>
 
-	<distributionManagement>
-		<repository>
-			<id>ossrh</id>
-			<name>OSSRH Releases</name>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
-		<!-- snapshotRepository> <id>ossrh</id> <name>OSSRH Snapshot</name> <url>https://oss.sonatype.org/content/repositories/snapshots/</url> 
-			</snapshotRepository -->
-	</distributionManagement>
 
 	<properties>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<vertigo.version>4.4.0-SNAPSHOT</vertigo.version>
+		
+		<!-- Désactiver GPG pour les compiles par défaut (à activer pour les releases) -->
+		<gpg.skip>true</gpg.skip>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.13.1</version>
+			<version>5.14.4</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.13.1</version>
+			<version>5.14.4</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -113,7 +107,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.11.0</version>
+					<version>3.15.0</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -126,20 +120,18 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.1.2</version>
+				<version>3.5.6</version>
 				<configuration>
-					<testFailureIgnore>true</testFailureIgnore>
+						<testFailureIgnore>true</testFailureIgnore>
 					<junitArtifactName>junit:junit</junitArtifactName>
 					<encoding>${project.build.sourceEncoding}</encoding>
-					<inputEncoding>${project.build.sourceEncoding}</inputEncoding>
-					<outputEncoding>${project.build.sourceEncoding}</outputEncoding>
 				</configuration>
 			</plugin>
 			<plugin>
 				<!-- We need a test jar too -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.3.0</version>
+				<version>3.5.0</version>
 				<configuration>
 					<forceCreation>true</forceCreation>
 					<skipIfEmpty>true</skipIfEmpty>
@@ -148,7 +140,7 @@
 			<plugin><!-- license:format -->
 				<groupId>com.mycila</groupId>
 				<artifactId>license-maven-plugin</artifactId>
-				<version>4.2</version>
+				<version>5.0.0</version>
 				<configuration>
 					<header>license.txt</header>
 					<includes>
@@ -161,7 +153,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>3.0.1</version>
+				<version>3.3.1</version>
 				<configuration>
 					<releaseProfiles>release</releaseProfiles>
 				</configuration>
@@ -169,19 +161,19 @@
 					<dependency>
 						<groupId>org.apache.maven.scm</groupId>
 						<artifactId>maven-scm-provider-gitexe</artifactId>
-						<version>2.0.1</version>
+						<version>2.2.1</version>
 					</dependency>
 					<dependency>
 						<groupId>org.apache.maven.scm</groupId>
 						<artifactId>maven-scm-api</artifactId>
-						<version>2.0.1</version>
+						<version>2.2.1</version>
 					</dependency>
 				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.5.0</version>
+				<version>3.12.0</version>
 				<configuration>
 					<doclint>none</doclint>
 				</configuration>
@@ -189,8 +181,46 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
-				<version>3.1.1</version>
+				<version>3.1.4</version> <!-- obligatoire pour permettre <skip> -->
+				<configuration>
+					<skip>true</skip>
+				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>3.2.8</version>
+				<configuration>
+					<skip>${gpg.skip}</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+		          <groupId>org.sonatype.central</groupId>
+		          <artifactId>central-publishing-maven-plugin</artifactId>
+		          <version>0.10.0</version>
+		          <extensions>true</extensions>
+		          <executions>
+				    <execution>
+				      <id>central-publish</id>
+				      <phase>deploy</phase>
+				      <goals><goal>publish</goal></goals>
+				    </execution>
+				  </executions>
+		          <configuration>
+		             <publishingServerId>central</publishingServerId>
+		             <autoPublish>false</autoPublish>
+		             <waitForCompletion>false</waitForCompletion>
+		          </configuration>
+		        </plugin>
 		</plugins>
 
 	</build>
@@ -208,7 +238,7 @@
 					<plugin><!--Config pour déployer les sources et la javadoc :http://stackoverflow.com/questions/4725668/how-to-deploy-snapshot-with-sources-and-javadoc -->
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
-						<version>3.3.0</version>
+						<version>3.4.0</version>
 						<executions>
 							<execution>
 								<id>attach-sources</id>
@@ -221,7 +251,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>3.5.0</version>
+						<version>3.12.0</version>
 						<executions>
 							<execution>
 								<id>attach-javadocs</id>
@@ -234,7 +264,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>3.1.0</version>
+						<version>3.2.8</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -249,13 +279,13 @@
 			</build>
 		</profile>
 		<profile>
-			<id>jenkins</id>
+			<id>vertigoCI</id>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.owasp</groupId>
 						<artifactId>dependency-check-maven</artifactId>
-						<version>12.1.0</version>
+						<version>12.2.2</version>
 						<executions>
 							<execution>
 								<goals>
@@ -265,7 +295,7 @@
 						</executions>
 						<configuration>
 							<!-- update will be done in a dedicated task -->
-							<autoUpdate>true</autoUpdate>
+							<autoUpdate>false</autoUpdate>
 							<formats>
 								<format>HTML</format>
 								<format>JSON</format>
@@ -275,23 +305,80 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.8.12</version>
+						<version>0.8.14</version>
 						<executions>
 							<execution>
 								<goals>
 									<goal>prepare-agent</goal>
 								</goals>
 							</execution>
+						<execution>
+							<id>report</id>
+							<phase>test</phase>
+							<goals>
+								<goal>report</goal>
+							</goals>
+							<configuration>
+								<formats>
+									<format>XML</format>
+								</formats>
+							</configuration>
+						</execution>
+						<execution>
+							<id>report-aggregate</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>report-aggregate</goal>
+							</goals>
+						</execution>
+					</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>sonarAggregate</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>0.8.14</version>
+						<inherited>false</inherited>
+						<executions>
 							<execution>
-								<id>report</id>
-								<phase>test</phase>
+								<id>merge-all-exec</id>
 								<goals>
-									<goal>report</goal>
+									<goal>merge</goal>
 								</goals>
 								<configuration>
-									<formats>
-										<format>XML</format>
-									</formats>
+									<fileSets>
+										<fileSet>
+											<directory>${jacoco.aggregate.dir}</directory>
+											<includes>
+												<include>**/*.exec</include>
+											</includes>
+										</fileSet>
+									</fileSets>
+									<destFile>${project.build.directory}/jacoco-merged.exec</destFile>
+								</configuration>
+							</execution>
+							<execution>
+								<id>report-aggregate</id>
+								<goals>
+									<goal>report-aggregate</goal>
+								</goals>
+								<configuration>
+									<dataFile>${project.build.directory}/jacoco-merged.exec</dataFile>
+									<outputDirectory>${jacoco.report.out.dir}</outputDirectory>
+									<fileSets>
+										<fileSet>
+											<directory>${jacoco.classes.dir}</directory>
+											<includes>
+												<include>**/target/classes/**/*.class</include>
+											</includes>
+										</fileSet>
+									</fileSets>
 								</configuration>
 							</execution>
 						</executions>
@@ -311,6 +398,9 @@
 		</profile>
 		<profile>
 			<id>KleeRepo</id>
+			<properties>
+				<gpg.skip>true</gpg.skip>
+			</properties>
 			<distributionManagement>
 				<repository>
 					<id>klee-nexus</id>
@@ -328,7 +418,7 @@
 					<plugin><!--Config pour déployer les sources -->
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
-						<version>3.3.0</version>
+						<version>3.4.0</version>
 						<executions>
 							<execution>
 								<id>attach-sources</id>
