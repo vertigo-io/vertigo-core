@@ -26,9 +26,9 @@ import java.util.Optional;
  * Core type system for Vertigo platform.
  * Defines fundamental data types with built-in:
  * - Primitive and wrapper types (Integer, Double, Boolean)
- * - Common objects (String, BigDecimal)
+ * - Common objects (String, BigDecimal, UUID)
  * - Date/Time types (LocalDate, Instant)
- * - Stream handling (DataStream)
+ * - Binary values (Bytes)
  * 
  * Supports type categorization and validation.
  *
@@ -51,8 +51,10 @@ public enum BasicType {
 	BigDecimal(java.math.BigDecimal.class),
 	/** Long type. */
 	Long(Long.class),
-	/** DataStream type. */
-	DataStream(DataStream.class);
+	/** UUID type. */
+	UUID(java.util.UUID.class),
+	/** Bytes type : in-memory binary value. */
+	Bytes(byte[].class);
 
 	/**
 	 * The java class wrapped by this basic type.
@@ -106,7 +108,8 @@ public enum BasicType {
 			Map.entry(java.math.BigDecimal.class, BasicType.BigDecimal),
 			Map.entry(Long.class, BasicType.Long),
 			Map.entry(long.class, BasicType.Long),
-			Map.entry(DataStream.class, BasicType.DataStream));
+			Map.entry(java.util.UUID.class, BasicType.UUID),
+			Map.entry(byte[].class, BasicType.Bytes));
 
 	/**
 	 * Gets the Java class for this type.
