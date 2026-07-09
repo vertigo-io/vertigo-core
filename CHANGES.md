@@ -8,9 +8,14 @@ Running 5.0.0
 
 more to come :)
 
-Running 4.5.0-SNAPSHOT - 2026-07-XX
+Running 4.5.0-SNAPSHOT - 2026-12-XX
 ----------------------
-[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-440-to-450)
+more to come :)
+
+
+Release 4.4.0 - 2026/07/09
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-432-to-440)
 
 - [Core] Fix Amplifier autodiscovery
 - [Core] Sort injected components list by declaring order (like paramPlugins, formerly it's by key name) : plugin order is now stable
