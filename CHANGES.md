@@ -3,8 +3,13 @@ Version history
 
 Running 5.0.0
 ----------------------
+[Migration help](https://github.com/vertigo-io/vertigo-core/wiki/Vertigo-Migration-Guide#from-44x-to-500)
 
 - **Upgrade to JDK25**
+- **[Core] Switch dependency injection annotations from `javax.inject` to `jakarta.inject`** : all `@Inject` imports must be updated
+- [Core] New module `vertigo-arch` : architecture rules checker (used by tests, directives : no cycle, no direct impl dependency)
+- [Core] Tests now use JUnit 6 (`junit-jupiter` aggregator)
+- [Core] Javadoc translated to English
 
 more to come :)
 
