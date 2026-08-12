@@ -52,10 +52,12 @@ final class ByteBuddyInvocationHandler implements InvocationHandler {
 
 	@Override
 	public Object invoke(final Object proxy, final Method method, final Object[] args) {
+		//InvocationHandler contract : args is null for no-arg methods, aspects expect an empty array
+		final Object[] actualArgs = args != null ? args : new Object[0];
 		if (!joinPoints.containsKey(method)) {
-			return ClassUtil.invoke(instance, method, args);
+			return ClassUtil.invoke(instance, method, actualArgs);
 		}
-		return new MyMethodInvocation(instance, method, joinPoints.get(method)).proceed(args);
+		return new MyMethodInvocation(instance, method, joinPoints.get(method)).proceed(actualArgs);
 	}
 
 	private static final class MyMethodInvocation implements AspectMethodInvocation {

@@ -56,6 +56,12 @@ public final class ByteBuddyAspectPlugin implements AspectPlugin {
 		}
 		//-----
 		final Class<? extends CoreComponent> implClass = instance.getClass();
+		//check : the proxy subclass mirrors the component's constructors and is instantiated through its no-arg constructor
+		try {
+			implClass.getDeclaredConstructor();
+		} catch (final NoSuchMethodException e) {
+			throw new IllegalStateException("class '" + implClass.getName() + "' must declare a no-arg constructor to support aspects (use field injection instead of constructor injection)", e);
+		}
 		final ByteBuddyInvocationHandler handler = new ByteBuddyInvocationHandler(instance, joinPoints);
 
 		try {
