@@ -39,6 +39,9 @@ public final class BeanUtilTest {
 
 	}
 
+	public record EBook(String author) {
+	}
+
 	@Test
 	public void testgetAuthor() {
 		final Book book = new Book();
@@ -66,5 +69,25 @@ public final class BeanUtilTest {
 		final Book book = new Book();
 		Assertions.assertThrows(Exception.class,
 				() -> BeanUtil.setValue(book, "creator", "Mishima"));
+	}
+
+	@Test
+	public void testgetAuthorOnRecord() {
+		final EBook ebook = new EBook("Murakami");
+		assertEquals("Murakami", BeanUtil.getValue(ebook, "author"));
+	}
+
+	@Test
+	public void testFailgetAuthorOnRecord() {
+		final EBook ebook = new EBook("Murakami");
+		Assertions.assertThrows(Exception.class,
+				() -> BeanUtil.getValue(ebook, "creator"));
+	}
+
+	@Test
+	public void testFailsetAuthorOnRecord() {
+		final EBook ebook = new EBook("Murakami");
+		Assertions.assertThrows(Exception.class,
+				() -> BeanUtil.setValue(ebook, "author", "Mishima"));
 	}
 }

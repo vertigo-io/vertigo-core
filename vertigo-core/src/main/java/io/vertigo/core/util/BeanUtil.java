@@ -58,6 +58,14 @@ public final class BeanUtil {
 				.isNotNull(propertyName)
 				.isTrue(propertyName.indexOf('.') == -1, "the dot notation is forbidden");
 		//-----
+		if (object.getClass().isRecord()) {
+			//record accessors don't follow the JavaBean convention (no 'get' prefix), java.beans.Introspector can't see them
+			try {
+				return ClassUtil.invoke(object, object.getClass().getMethod(propertyName));
+			} catch (final NoSuchMethodException e) {
+				throw new VSystemException(e, "No accessor found for property '{0}' on record '{1}'", propertyName, object.getClass().getName());
+			}
+		}
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method readMethod = pd.getReadMethod();
 		if (readMethod == null) {
@@ -79,7 +87,8 @@ public final class BeanUtil {
 		Assertion.check()
 				.isNotNull(object)
 				.isNotNull(propertyName)
-				.isTrue(propertyName.indexOf('.') == -1, "the dot notation is forbidden");
+				.isTrue(propertyName.indexOf('.') == -1, "the dot notation is forbidden")
+				.isFalse(object.getClass().isRecord(), "Can't set property '{0}' on record '{1}' : records are immutable", propertyName, object.getClass().getName());
 		//-----
 		final PropertyDescriptor pd = getPropertyDescriptor(propertyName, object.getClass());
 		final Method writeMethod = pd.getWriteMethod();
