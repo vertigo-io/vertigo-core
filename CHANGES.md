@@ -10,6 +10,7 @@ Running 5.0.0
 - [Core] New module `vertigo-arch` : architecture rules checker (used by tests, directives : no cycle, no direct impl dependency)
 - [Core] Tests now use JUnit 6 (`junit-jupiter` aggregator)
 - [Core] Javadoc translated to English
+- [Core] AOP : aspected components can now use constructor injection (proxy instantiation via Objenesis)
 
 more to come :)
 

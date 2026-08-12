@@ -37,6 +37,7 @@ import io.vertigo.core.node.component.aop.data.components.C;
 import io.vertigo.core.node.component.aop.data.components.Computer;
 import io.vertigo.core.node.component.aop.data.components.ComputerImpl;
 import io.vertigo.core.node.component.aop.data.components.F;
+import io.vertigo.core.node.component.aop.data.components.G;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 
@@ -58,6 +59,7 @@ public final class AspectTest extends AbstractTestCaseJU5 {
 						.addComponent(B.class, BImpl.class)
 						.addComponent(C.class)
 						.addComponent(F.class)
+						.addComponent(G.class)
 						.build())
 				.build();
 	}
@@ -83,6 +85,15 @@ public final class AspectTest extends AbstractTestCaseJU5 {
 		assertEquals(12, f.getValue2(10));
 		assertEquals(22, f.getValue3(10));
 
+	}
+
+	@Test
+	public void testOneMoreOnConstructorInjectedComponent() {
+		final G g = getApp().getComponentSpace().resolve(G.class);
+		//On vérifie que l'aspect s'applique sur un composant injecté par constructeur
+		assertEquals(11, g.getValue(10));
+		//On vérifie que la dépendance injectée par constructeur est bien portée par le proxy
+		assertEquals(6, g.sumByComputer(2, 3));
 	}
 
 	@Test

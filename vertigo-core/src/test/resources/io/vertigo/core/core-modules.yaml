@@ -11,6 +11,7 @@ libs:
   gson: com.google.gson.**
   snakeyaml: org.yaml.snakeyaml.**
   bytebuddy: net.bytebuddy.**
+  objenesis: org.objenesis.**
   org-xml: org.xml.**
   
 
@@ -73,4 +74,4 @@ modules:
   plugins:
     path: io.vertigo.core.plugins.**
     description: "Plugins — NON exposés comme API"
-    deps: [analytics, daemon, impl, lang, node, param, resource, util, gson, bytebuddy, org-xml]
+    deps: [analytics, daemon, impl, lang, node, param, resource, util, gson, bytebuddy, objenesis, org-xml]
