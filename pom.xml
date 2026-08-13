@@ -30,7 +30,7 @@
 		<connection>scm:git:https://github.com/vertigo-io/vertigo-core.git</connection>
 		<developerConnection>scm:git:https://github.com/vertigo-io/vertigo-core.git</developerConnection>
 		<url>scm:git:https://github.com/vertigo-io/vertigo-core.git</url>
-		<tag>vertigo-3.5.0</tag>
+		<tag>vertigo-4.4.1-SNAPSHOT</tag>
 	</scm>
 	
 </project>
