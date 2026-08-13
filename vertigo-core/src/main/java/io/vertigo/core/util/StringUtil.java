@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import io.vertigo.core.lang.Assertion;
 /**
  * The StringUtil class provides useful methods to manipulate strings.
  *
- * @author  pchretien
+ * @author pchretien
  */
 public final class StringUtil {
 	private static final Pattern UPPER_CAMEL_CASE_PATTERN = Pattern.compile("[A-Z][a-zA-Z0-9]*");
@@ -41,6 +41,7 @@ public final class StringUtil {
 	/**
 	 * Tests if a string is blank.
 	 * ie null or blank (space, \t \n \r \p ...)
+	 *
 	 * @param strValue String
 	 * @return true if the string contains only blank characters
 	 * @see java.lang.Character isWhitespace(char)
@@ -51,6 +52,7 @@ public final class StringUtil {
 
 	/**
 	 * Lowercases the first letter.
+	 *
 	 * @param strValue non null String
 	 * @return String with the first letter in lowercase
 	 */
@@ -80,6 +82,7 @@ public final class StringUtil {
 
 	/**
 	 * XXX_YYY_ZZZ -> xxxYyyZzz.
+	 *
 	 * @param str the string to transform
 	 * @return camelCase
 	 */
@@ -89,6 +92,7 @@ public final class StringUtil {
 
 	/**
 	 * XXX_YYY_ZZZ -> XxxYyyZzz.
+	 *
 	 * @param str the string to transform
 	 * @return CamelCase
 	 */
@@ -98,10 +102,11 @@ public final class StringUtil {
 
 	/**
 	 * XXX_YYY_ZZZ -> XxxYyyZzz ou xxxYyyZzz.
+	 *
 	 * @param str the string to transform
 	 * @param first2UpperCase whether the first letter should be uppercased
 	 * @return a string corresponding to str in lowercase without underscores,
-	 * except for the first letters after underscores in str
+	 *         except for the first letters after underscores in str
 	 */
 	private static String constToCamelCase(final String str, final boolean first2UpperCase) {
 		Assertion.check()
@@ -126,7 +131,7 @@ public final class StringUtil {
 				upper = true;
 			} else {
 				if (digit != null) {
-					Assertion.check().isTrue(digit.equals(Character.isDigit(c)), "Invalid string to transform : {0} (letters and digits must always be separated by _)", str);
+					Assertion.check().isTrue(digit || !Character.isDigit(c), "Invalid string to transform : {0} (letters followed by digits must always be separated by _)", str);
 				}
 				digit = Character.isDigit(c);
 
@@ -149,6 +154,7 @@ public final class StringUtil {
 	 * XxxYzw123 --> (forbidden)
 	 * Xxx123Y --> XXX_123_Y.
 	 * Xxx123y --> XXX_123Y.
+	 *
 	 * @param str the string to transform
 	 * @return Constant case string (inverse of caseTransform)
 	 */
@@ -164,6 +170,7 @@ public final class StringUtil {
 	 * XxxYzw123 --> (forbidden)
 	 * Xxx123Y --> xxx_123_y.
 	 * Xxx123y --> xxx_123y.
+	 *
 	 * @param str the string to transform
 	 * @return Snake case string (inverse of caseTransform)
 	 */
@@ -202,6 +209,7 @@ public final class StringUtil {
 
 	/**
 	 * Tests if a string is in UpperCamelCase.
+	 *
 	 * @param testString string to test
 	 * @return boolean
 	 */
@@ -211,6 +219,7 @@ public final class StringUtil {
 
 	/**
 	 * Tests if a string is in lowerCamelCase.
+	 *
 	 * @param testString string to test
 	 * @return boolean
 	 */
@@ -221,6 +230,7 @@ public final class StringUtil {
 	/**
 	 * Tests if a character is a simple letter (lowercase or uppercase, no accent)
 	 * or a digit.
+	 *
 	 * @param c character
 	 * @return boolean
 	 */
@@ -252,6 +262,7 @@ public final class StringUtil {
 	 * Replaces all occurrences of a pattern within a StringBuilder with another.
 	 * Replacement is forward-only, not recursive.
 	 * The StringBuilder is modified in place, hence no return value.
+	 *
 	 * @param str StringBuilder
 	 * @param oldStr String to replace
 	 * @param newStr Replacement string
@@ -273,6 +284,7 @@ public final class StringUtil {
 	/**
 	 * Merges a string with parameters using MessageFormat.
 	 * Characters { } are forbidden unless escaped with \\.
+	 *
 	 * @param msg String in MessageFormat format
 	 * @param params message parameters
 	 * @return Merged string
@@ -283,14 +295,34 @@ public final class StringUtil {
 		if (params == null || params.length == 0) {
 			return msg;
 		}
-		//Handle double quotes
-		//Single-quote existing double quotes.
-		//Then double all single quotes so no unmatched single quote remains.
+
+		//Readable placeholders for escaped braces.
+		//Using '{' + '}' (MessageFormat quoting) breaks when braces are adjacent:
+		//e.g. \{\} → '{' + '}' → the closing quote of '{' ends the sequence,
+		//and the opening quote of '}' starts a new one → MessageFormat outputs {' instead of {}.
+		//We therefore use textual tokens without quotes, restored after MessageFormat processing.
+		final String PL_LB = "<VBRACEOPEN/>";
+		final String PL_RB = "<VBRACECLOSE/>";
 		final StringBuilder newMsg = new StringBuilder(msg);
+
+		//Handle quotes
 		replace(newMsg, "''", "'");
 		replace(newMsg, "'", "''");
-		replace(newMsg, "\\{", "'{'");
-		replace(newMsg, "\\}", "'}'");
-		return MessageFormat.format(newMsg.toString(), params);
+
+		replace(newMsg, "{{", PL_LB + PL_LB);
+		replace(newMsg, "}}", PL_RB + PL_RB);
+		replace(newMsg, "\\{", PL_LB);
+		replace(newMsg, "\\}", PL_RB);
+
+		final String result = MessageFormat.format(newMsg.toString(), params);
+
+		newMsg.setLength(0);
+		newMsg.append(result);
+
+		replace(newMsg, PL_LB, "{");
+		replace(newMsg, PL_RB, "}");
+
+		return newMsg.toString();
 	}
+
 }

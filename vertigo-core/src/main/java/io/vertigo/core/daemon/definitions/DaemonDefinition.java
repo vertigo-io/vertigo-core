@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,15 +40,16 @@ public final class DaemonDefinition extends AbstractDefinition<DaemonDefinition>
 
 	private final int periodInSeconds;
 	private final Supplier<Daemon> daemonSupplier;
+	private final boolean analytics;
 
 	/**
-     * Constructs a DaemonDefinition with the specified name, daemon supplier, and execution period.
-     *
-     * @param name the name of the daemon
-     * @param daemonSupplier the supplier providing instances of the daemon
-     * @param periodInSeconds the execution period of the daemon in seconds
-     */
-	public DaemonDefinition(final String name, final Supplier<Daemon> daemonSupplier, final int periodInSeconds) {
+	 * Constructs a DaemonDefinition with the specified name, daemon supplier, and execution period.
+	 *
+	 * @param name the name of the daemon
+	 * @param daemonSupplier the supplier providing instances of the daemon
+	 * @param periodInSeconds the execution period of the daemon in seconds
+	 */
+	public DaemonDefinition(final String name, final Supplier<Daemon> daemonSupplier, final int periodInSeconds, final boolean analytics) {
 		super(name);
 		//---
 		Assertion.check()
@@ -57,23 +58,37 @@ public final class DaemonDefinition extends AbstractDefinition<DaemonDefinition>
 		//---
 		this.daemonSupplier = daemonSupplier;
 		this.periodInSeconds = periodInSeconds;
+		this.analytics = analytics;
+	}
+
+	public DaemonDefinition(final String name, final Supplier<Daemon> daemonSupplier, final int periodInSeconds) {
+		this(name, daemonSupplier, periodInSeconds, true);
 	}
 
 	/**
-     * Gets the execution period of the daemon in seconds.
-     *
-     * @return the execution period in seconds
-     */
+	 * Gets the execution period of the daemon in seconds.
+	 *
+	 * @return the execution period in seconds
+	 */
 	public int getPeriodInSeconds() {
 		return periodInSeconds;
 	}
-	
+
 	/**
-     * Gets the supplier providing instances of the daemon.
-     *
-     * @return the daemon supplier
-     */
+	 * Gets the supplier providing instances of the daemon.
+	 *
+	 * @return the daemon supplier
+	 */
 	public Supplier<Daemon> getDaemonSupplier() {
 		return daemonSupplier;
+	}
+
+	/**
+	 * Indicates whether analytics is enabled for this daemon.
+	 *
+	 * @return true if analytics is enabled, false otherwise
+	 */
+	public boolean isAnalytics() {
+		return analytics;
 	}
 }

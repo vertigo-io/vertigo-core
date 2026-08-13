@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ package io.vertigo.core.lang;
  * @param <A> Type of first object
  * @param <B> Type of second object
  */
-public record Tuple<A, B> (A val1, B val2) {
+public record Tuple<A, B>(A val1, B val2) {
 
 	/**
 	 * Creates a Tuple with two objects.
@@ -38,10 +38,6 @@ public record Tuple<A, B> (A val1, B val2) {
 	 * @return New Tuple
 	 */
 	public static <A, B> Tuple<A, B> of(final A val1, final B val2) {
-		Assertion.check()
-				.isNotNull(val1)
-				.isNotNull(val2);
-		//---
 		return new Tuple<>(val1, val2);
 	}
 }

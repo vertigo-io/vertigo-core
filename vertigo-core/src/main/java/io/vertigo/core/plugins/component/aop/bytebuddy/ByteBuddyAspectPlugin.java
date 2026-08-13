@@ -23,6 +23,8 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 
+import org.objenesis.ObjenesisHelper;
+
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.AspectPlugin;
@@ -30,6 +32,7 @@ import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.component.aspect.Aspect;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
+import net.bytebuddy.dynamic.scaffold.subclass.ConstructorStrategy;
 import net.bytebuddy.implementation.InvocationHandlerAdapter;
 import net.bytebuddy.matcher.ElementMatchers;
 
@@ -59,8 +62,10 @@ public final class ByteBuddyAspectPlugin implements AspectPlugin {
 		final ByteBuddyInvocationHandler handler = new ByteBuddyInvocationHandler(instance, joinPoints);
 
 		try {
+			//the proxy delegates all its methods to the handler (which holds the real, already injected, component)
+			//so the subclass is generated without any constructor and instantiated through Objenesis : no constructor of the component class is executed for the proxy
 			final Class<? extends CoreComponent> proxyClass = new ByteBuddy()
-					.subclass(implClass)
+					.subclass(implClass, ConstructorStrategy.Default.NO_CONSTRUCTORS)
 					.defineField(HANDLER_FIELD_NAME, InvocationHandler.class, Modifier.PUBLIC)
 					.method(ElementMatchers.any())
 					.intercept(InvocationHandlerAdapter.toField(HANDLER_FIELD_NAME))
@@ -68,7 +73,7 @@ public final class ByteBuddyAspectPlugin implements AspectPlugin {
 					.load(implClass.getClassLoader(), ClassLoadingStrategy.Default.INJECTION)
 					.getLoaded();
 
-			final C proxyInstance = (C) proxyClass.getDeclaredConstructor().newInstance();
+			final C proxyInstance = (C) ObjenesisHelper.newInstance(proxyClass);
 			proxyClass.getField(HANDLER_FIELD_NAME).set(proxyInstance, handler);
 			return proxyInstance;
 		} catch (final Exception e) {

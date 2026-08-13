@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ final class DaemonListener {
 	private boolean lastExecSucceed;
 	private long failures;
 	private DaemonStat.Status status = DaemonStat.Status.pending;
+	private long startMillis;
 	private final DaemonDefinition daemonDefinition;
 	private final boolean verbose;
 
@@ -69,6 +70,7 @@ final class DaemonListener {
 	 */
 	synchronized void onStart() {
 		status = DaemonStat.Status.running;
+		startMillis = System.currentTimeMillis();
 		if (verbose) {
 			LOG.info("Start daemon: {}", daemonDefinition.getName());
 		}
@@ -86,6 +88,7 @@ final class DaemonListener {
 		status = DaemonStat.Status.pending;
 		failures++;
 		lastExecSucceed = false;
+		checkAndWarnExecutionTime();
 		LOG.error("Daemon :  an error has occurred during the execution of the daemon: " + daemonDefinition.id(), e);
 	}
 
@@ -97,8 +100,21 @@ final class DaemonListener {
 		status = DaemonStat.Status.pending;
 		successes++;
 		lastExecSucceed = true;
+		checkAndWarnExecutionTime();
 		if (verbose) {
 			LOG.info("Execution succeeded on daemon: {}", daemonDefinition.id());
+		}
+	}
+
+	/**
+	 * Warns if daemon execution exceeded its configured period.
+	 */
+	private void checkAndWarnExecutionTime() {
+		final long duration = System.currentTimeMillis() - startMillis;
+		final long periodMs = daemonDefinition.getPeriodInSeconds() * 1000L;
+		if (duration > periodMs) {
+			LOG.warn("Daemon [{}] took {}ms (> period {}ms), risking daemon thread starvation",
+					daemonDefinition.getName(), duration, periodMs);
 		}
 	}
 }

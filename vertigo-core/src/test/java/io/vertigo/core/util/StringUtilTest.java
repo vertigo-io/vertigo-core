@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test de l'utilitaitre de manipulation des strings.
+ *
  * @author pchretien
  */
 public final class StringUtilTest {
@@ -86,11 +87,14 @@ public final class StringUtilTest {
 		assertEquals("xxxYyy12", StringUtil.constToLowerCamelCase("XXX_YYY_12"));
 
 		assertEquals("xxxYyy12Ppp", StringUtil.constToLowerCamelCase("XXX_YYY_12_PPP"));
+		assertEquals("xxxYyy12ppp", StringUtil.constToLowerCamelCase("XXX_YYY_12PPP"));
 		assertEquals("xxxYyy1", StringUtil.constToLowerCamelCase("XXX_YYY_1"));
 		assertEquals("xxxYyy12_3", StringUtil.constToLowerCamelCase("XXX_YYY_12_3"));
 		assertEquals("TAdresseAdr", StringUtil.constToUpperCamelCase("T_ADRESSE_ADR"));
 		assertEquals("x2Yyy", StringUtil.constToLowerCamelCase("X_2_YYY"));
 		assertEquals("X2Yyy", StringUtil.constToUpperCamelCase("X_2_YYY"));
+		assertEquals("x2yyy", StringUtil.constToLowerCamelCase("X_2YYY"));
+		assertEquals("X2yyy", StringUtil.constToUpperCamelCase("X_2YYY"));
 		assertEquals("TAdresseAdr10", StringUtil.constToUpperCamelCase("T_ADRESSE_ADR_10"));
 		assertEquals("TAdresseAdr10", StringUtil.constToUpperCamelCase("T_ADRESSE_ADR_10_"));
 	}
@@ -99,12 +103,6 @@ public final class StringUtilTest {
 	public void testCaseTransformWithErrors() {
 		Assertions.assertThrows(IllegalStateException.class,
 				() -> StringUtil.constToLowerCamelCase("XXX_YYY12_PPP"));
-	}
-
-	@Test
-	public void testCaseTransformWithErrors2() {
-		Assertions.assertThrows(IllegalStateException.class,
-				() -> StringUtil.constToLowerCamelCase("XXX_YYY_12PPP"));
 	}
 
 	@Test
@@ -133,7 +131,8 @@ public final class StringUtilTest {
 
 	@Test
 	public void testCaseTransformBijection() {
-		final String[] values = { XXX_YYY_ZZZ, "XXX_YYY_12", "XXX_YYY_12_PPP", "XXX_YYY_1", "XXX_YYY_12_3", "RESTE_A_PAYER", "T_ADRESSE_ADR", "XXX_2_Y", "X_2_YYY", "XXX_Z_Y", "X_Z_YYY", "2_YYY", "12_YYY", };
+		final String[] values = { XXX_YYY_ZZZ, "XXX_YYY_12", "XXX_YYY_12_PPP", "XXX_YYY_12PPP", "XXX_YYY_1", "XXX_YYY_12_3", "RESTE_A_PAYER", "T_ADRESSE_ADR", "XXX_2_Y", "X_2_YYY", "XXX_Z_Y",
+				"X_Z_YYY", "2_YYY", "12_YYY", };
 
 		for (final String value : values) {
 			assertEquals(value, StringUtil.camelToConstCase(StringUtil.constToLowerCamelCase(value)));
@@ -203,6 +202,9 @@ public final class StringUtilTest {
 		assertEquals("bonjour 'le' monde", StringUtil.format("bonjour ''{0}'' monde", "le"));
 		assertEquals("bonjour 'le' monde", StringUtil.format("bonjour '{0}' monde", "le"));
 		assertEquals("bonjour 'le' monde", StringUtil.format("bonjour ''{0}' monde", "le"));
+		assertEquals("bonjour {0} monde", StringUtil.format("bonjour \\{0\\} monde", "le"));
+		assertEquals("bonjour {} monde", StringUtil.format("bonjour \\{\\} monde", "le"));
+		assertEquals("bonjour {{test}} monde", StringUtil.format("bonjour {{test}} monde", "le"));
 	}
 
 	@Test
