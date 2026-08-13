@@ -57,7 +57,7 @@ jobs:
       - name: Build and deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: mvn clean source:jar org.jacoco:jacoco-maven-plugin:prepare-agent deploy org.jacoco:jacoco-maven-plugin:report -P Github
+        run: mvn -U clean source:jar org.jacoco:jacoco-maven-plugin:prepare-agent deploy org.jacoco:jacoco-maven-plugin:report -P Github
         # Commande complète avec analyse Sonar, à restaurer une fois SONAR_TOKEN renouvelé :
         #  env:
         #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
