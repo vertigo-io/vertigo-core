@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,15 @@
 package io.vertigo.core.impl.daemon;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.daemon.Daemon;
@@ -39,10 +44,11 @@ import io.vertigo.core.node.component.Activeable;
  * @author mlaroche, pchretien, npiedeloup
  */
 final class DaemonExecutor implements Activeable {
+	private static final Logger LOG = LogManager.getLogger(DaemonExecutor.class);
 	private static final int STOP_TIMEOUT = 30; //30s
 	private final AnalyticsManager analyticsManager;
 	private boolean isActive;
-	private final ScheduledExecutorService scheduler;
+	private final ScheduledThreadPoolExecutor scheduler;
 	private final List<DaemonListener> daemonListeners = new ArrayList<>();
 
 	/**
@@ -53,7 +59,7 @@ final class DaemonExecutor implements Activeable {
 	 */
 	public DaemonExecutor(final AnalyticsManager analyticsManager, final int threadPoolSize) {
 		this.analyticsManager = analyticsManager;
-		scheduler = Executors.newScheduledThreadPool(threadPoolSize, new NamedThreadFactory("v-daemon-"));
+		scheduler = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(threadPoolSize, new NamedThreadFactory("v-daemon-"));
 	}
 
 	private Daemon createDaemon(final DaemonDefinition daemonDefinition) {
@@ -98,10 +104,24 @@ final class DaemonExecutor implements Activeable {
 				.toList();
 	}
 
+	/**
+	 * Gets current pool utilization metrics.
+	 *
+	 * @return Map with keys: poolSize, activeThreads, queuedTasks
+	 */
+	Map<String, Integer> getPoolStats() {
+		final Map<String, Integer> stats = new HashMap<>();
+		stats.put("poolSize", scheduler.getCorePoolSize());
+		stats.put("activeThreads", scheduler.getActiveCount());
+		stats.put("queuedTasks", scheduler.getQueue().size());
+		return stats;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
 		isActive = true;
+		LOG.info("Daemon pool started with {} threads", scheduler.getCorePoolSize());
 	}
 
 	/** {@inheritDoc} */

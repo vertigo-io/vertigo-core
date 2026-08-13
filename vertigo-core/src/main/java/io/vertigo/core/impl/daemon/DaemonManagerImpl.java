@@ -1,7 +1,7 @@
 /*
  * vertigo - application development platform
  *
- * Copyright (C) 2013-2025, Vertigo.io, team@vertigo.io
+ * Copyright (C) 2013-2026, Vertigo.io, team@vertigo.io
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,14 @@
 package io.vertigo.core.impl.daemon;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import jakarta.inject.Inject;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.health.HealthChecked;
@@ -48,6 +52,8 @@ import io.vertigo.core.util.ClassUtil;
  * @author mlaroche, pchretien, npiedeloup
  */
 public final class DaemonManagerImpl implements DaemonManager, Activeable, SimpleDefinitionProvider {
+
+	private static final Logger LOG = LogManager.getLogger(DaemonManagerImpl.class);
 
 	private final DaemonExecutor daemonExecutor;
 
@@ -160,6 +166,28 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 				.withRedStatus("All daemons failed")
 				.build();
 
+	}
+
+	@HealthChecked(name = "poolUtilization", feature = "daemons")
+	public HealthMeasure checkDaemonPoolUtilization() {
+		final Map<String, Integer> poolStats = daemonExecutor.getPoolStats();
+		final int activeThreads = poolStats.get("activeThreads");
+		final int queuedTasks = poolStats.get("queuedTasks");
+		final int poolSize = poolStats.get("poolSize");
+		//---
+		if (queuedTasks > 0) {
+			LOG.warn("Daemon pool saturated - active: {}, queued: {}, poolSize: {}. "
+					+ "Consider increasing threadPoolSize in boot.params or optimizing long-running daemons.",
+					activeThreads, queuedTasks, poolSize);
+		}
+		//---
+		final HealthMeasureBuilder healthMeasure = HealthMeasure.builder();
+		if (queuedTasks == 0) {
+			return healthMeasure.withGreenStatus().build();
+		} else if (queuedTasks < poolSize) {
+			return healthMeasure.withYellowStatus("Daemon pool has queued tasks: " + queuedTasks).build();
+		}
+		return healthMeasure.withRedStatus("Daemon pool critically saturated: " + queuedTasks + " queued").build();
 	}
 
 }
