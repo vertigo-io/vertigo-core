@@ -40,7 +40,7 @@ Release 4.3.2 - 2025/07/10
 - Add a new standard eclipse formatter for dev team
 - [Analytics] Always return getCurrentTracer, even if in log mode (no connector)
 - [Analytics] Add thread context to SmartLogger to permit filter from original logs
-- [Core] Fix fieldName with capital on second letter (e.g. aBcd ï¿½ï¿½ï¿½ getABcd())
+- [Core] Fix fieldName with capital on second letter (e.g. aBcd ÔåÆ getABcd())
 
 
 Release 4.3.1 - 2025/06/13
@@ -574,7 +574,7 @@ __In Bold__ : Potential compatibility problems
 * [persona] deprecated module (use accoount for new projects)
 *   [tempo] _remove module_ (use vertigo-mail and vertigo-orchestra extensions)
 
-*   [all] Updated dependencies versions  ï¿½Çª
+*   [all] Updated dependencies versions  ÔÇª
  org.codehaus.janino janino 2.7.8 -> 3.0.7
  net.sf.ehcache ehcache 2.10.3 -> 2.10.4
  org.slf4j slf4j-api 1.7.22 -> 1.7.25
