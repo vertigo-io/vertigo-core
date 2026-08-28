@@ -8,7 +8,7 @@ Running 5.0.0
 
 more to come :)
 
-Running 4.4.1-SNAPSHOT - 2026-12-XX
+Running 4.4.1 - 2026-12-XX
 ----------------------
 - [Core] Add daemon pool metrics and health check : warn when a daemon execution is longer than its period, expose thread-pool stats and green/yellow/red health
 
