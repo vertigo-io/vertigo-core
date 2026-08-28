@@ -8,6 +8,11 @@ Running 5.0.0
 
 more to come :)
 
+Running 4.4.1-SNAPSHOT - 2026-12-XX
+----------------------
+- [Core] Add daemon pool metrics and health check : warn when a daemon execution is longer than its period, expose thread-pool stats and green/yellow/red health
+
+
 Release 4.4.0 - 2026/07/09
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-432-to-440)
@@ -35,7 +40,7 @@ Release 4.3.2 - 2025/07/10
 - Add a new standard eclipse formatter for dev team
 - [Analytics] Always return getCurrentTracer, even if in log mode (no connector)
 - [Analytics] Add thread context to SmartLogger to permit filter from original logs
-- [Core] Fix fieldName with capital on second letter (e.g. aBcd â†’ getABcd())
+- [Core] Fix fieldName with capital on second letter (e.g. aBcd ÔåÆ getABcd())
 
 
 Release 4.3.1 - 2025/06/13
@@ -569,7 +574,7 @@ __In Bold__ : Potential compatibility problems
 * [persona] deprecated module (use accoount for new projects)
 *   [tempo] _remove module_ (use vertigo-mail and vertigo-orchestra extensions)
 
-*   [all] Updated dependencies versions  â€¦
+*   [all] Updated dependencies versions  ÔÇª
  org.codehaus.janino janino 2.7.8 -> 3.0.7
  net.sf.ehcache ehcache 2.10.3 -> 2.10.4
  org.slf4j slf4j-api 1.7.22 -> 1.7.25
@@ -608,7 +613,7 @@ __Warning : You must use 0.9.4a version of Studio module !!__
 * [Core] Component discovery in features
 * [Core] Changed boot config managment (features, added plugins, ...) redundancy__
 * [Core] Fixed #80 : We check file exists and canRead before accept this plugin
-* [Core] Updated cglib Â» cglib-nodep from 3.2.2 to 3.2.4
+* [Core] Updated cglib -+ cglib-nodep from 3.2.2 to 3.2.4
 * [Core] Added notepad++ coloration config
 * [Core] Changed tests Junit4 Assert to JUnit5 Assertions
 * [Core] Simple ParamManager API
@@ -1289,5 +1294,6 @@ The most notable changes in Vertigo 0.2.0 over previous releases are:
 Release 0.1.0 - 2014/01/14
 --------------------------
   * First release
+
 
 
