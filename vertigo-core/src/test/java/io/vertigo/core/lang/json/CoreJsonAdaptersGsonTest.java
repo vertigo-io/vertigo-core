@@ -252,7 +252,7 @@ final class CoreJsonAdaptersGsonTest {
 	 */
 	@Test
 	void printGsonVersion() {
-		final Gson gson = new Gson();
+		final Gson _ = new Gson();
 		// Gson doesn't expose version publicly; infer from behavior
 		System.out.println("[Diagnostic] Gson java.time support: " + IS_GSON_WITH_BUILTIN_JAVA_TIME
 				+ " (true = 2.14.0+, false = 2.13.1 or earlier)");
