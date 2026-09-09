@@ -246,16 +246,4 @@ final class CoreJsonAdaptersGsonTest {
 					"Gson 2.13.1 cannot serialize ZonedDateTime without custom adapter (proves adapters are essential)");
 		}
 	}
-
-	/**
-	 * Print Gson version for diagnostic output.
-	 */
-	@Test
-	void printGsonVersion() {
-		final Gson gson = new Gson();
-		// Gson doesn't expose version publicly; infer from behavior
-		System.out.println("[Diagnostic] Gson java.time support: " + IS_GSON_WITH_BUILTIN_JAVA_TIME
-				+ " (true = 2.14.0+, false = 2.13.1 or earlier)");
-	}
-
 }
