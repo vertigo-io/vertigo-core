@@ -10,6 +10,8 @@ more to come :)
 
 Running 4.5.0-SNAPSHOT - 2026-12-XX
 ----------------------
+- [Core] XmlUtil : hardening XXE : add removeDoctype (strip a leading DOCTYPE declaration), secureXmlXXEByOwaspAllowDoctype (OWASP fallback for documents imposing a DTD, residual risk documented) and parseXmlSecure (strict parse after DOCTYPE removal)
+
 more to come :)
 
 
