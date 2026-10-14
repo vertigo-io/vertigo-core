@@ -111,4 +111,13 @@ public interface DaemonStat {
 	default long getLastLatenessMillis() {
 		return 0L;
 	}
+
+	/**
+	 * Gets the number of consecutive failed executions since the last success.
+	 *
+	 * @return the number of consecutive failures, or 0 if the last execution succeeded (or the daemon never ran)
+	 */
+	default long getConsecutiveFailures() {
+		return 0L;
+	}
 }

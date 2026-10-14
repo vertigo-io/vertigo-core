@@ -20,6 +20,7 @@ package io.vertigo.core.impl.daemon;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
@@ -61,9 +62,13 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	private static final long STUCK_DEAD_AFTER_MIN_MILLIS = 120_000L;
 	/** Maximum duration allowed beyond the period before a daemon is declared dead (2h, covers clock changes). */
 	private static final long STUCK_DEAD_AFTER_MAX_MILLIS = 2 * 3_600_000L;
+	/** Interval between two starved-daemon WARN logs (rate limit). */
+	private static final long STARVED_WARN_INTERVAL_MILLIS = 5 * 60_000L;
 
 	private final DaemonExecutor daemonExecutor;
 	private final Optional<Integer> daemonDeadAfterInSecond;
+	private volatile boolean active;
+	private final AtomicLong starvedLastWarnAt = new AtomicLong(0L);
 
 	/**
 	 * Construct an instance of DaemonManagerImpl.
@@ -144,12 +149,16 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
+		active = true;
 		daemonExecutor.start();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void stop() {
+		// clear active before shutting the pool: a shut-down pool while the manager is active is a failure (RED),
+		// a shut-down pool during a graceful stop is expected
+		active = false;
 		daemonExecutor.stop();
 	}
 
@@ -199,13 +208,22 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 
 	}
 
-	// No pool-saturation health check on purpose: a previous "poolUtilization" check (RED/YELLOW based on
-	// ScheduledThreadPoolExecutor queue size) gave permanent false positives because the queue holds every
-	// scheduled task, not only waiting ones. If pool saturation monitoring is ever needed, it belongs to a
-	// metric or JMX, not to a liveness probe (k8s kills the pod on RED).
+	// Liveness design rule: daemonsAlive is RED only when restarting the process is the only remedy that can help
+	// (a stuck or dead daemon, a shut-down pool). Load and saturation (a daemon waiting for a free thread) are NOT
+	// liveness signals - a restart cannot fix a saturated pool (k8s would crashloop the pod): they are reported
+	// through getPoolStat()/DaemonStat (overdue, lateness, last-end, consecutive failures) and WARN logs, never
+	// through a health status.
+	// (A previous "poolUtilization" check based on the ScheduledThreadPoolExecutor queue size gave permanent false
+	// positives - the queue holds every scheduled execution, not only waiting ones - and was removed.)
 
 	@HealthChecked(name = "daemonsAlive", feature = "daemons")
 	public HealthMeasure checkDaemonsAlive() {
+		if (active && daemonExecutor.isShutdown()) {
+			return HealthMeasure.builder()
+					.withRedStatus("Daemon pool is shut down, no daemon can run anymore")
+					.build();
+		}
+		//---
 		final long nowMillis = System.currentTimeMillis();
 		final long deadAfterMillis = daemonDeadAfterInSecond
 				.map(seconds -> seconds * 1000L)
@@ -227,7 +245,30 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 						.build();
 			}
 		}
+		//---
+		warnIfStarved();
 		return HealthMeasure.builder().withGreenStatus().build();
+	}
+
+	/**
+	 * Logs (rate-limited) when a daemon is starved: its next execution is overdue beyond max(period, 60s).
+	 * Load is never a health status, only a signal for operators and services.
+	 */
+	private void warnIfStarved() {
+		final DaemonExecutor.StarvedDaemon starved = daemonExecutor.getWorstStarvedDaemon();
+		if (starved == null) {
+			return;
+		}
+		//---
+		final long nowMillis = System.currentTimeMillis();
+		final long lastWarnAt = starvedLastWarnAt.get();
+		if (nowMillis - lastWarnAt < STARVED_WARN_INTERVAL_MILLIS || !starvedLastWarnAt.compareAndSet(lastWarnAt, nowMillis)) {
+			return;
+		}
+		//---
+		final DaemonPoolStat poolStat = daemonExecutor.getPoolStat();
+		LOG.warn("Daemon [{}] is starved: next execution overdue by {}s (pool: {} active / {} threads, {} overdue)",
+				starved.name(), starved.overdueMillis() / 1000, poolStat.activeThreads(), poolStat.corePoolSize(), poolStat.overdueTasks());
 	}
 
 }

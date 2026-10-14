@@ -40,6 +40,7 @@ final class DaemonListener {
 	private final long registeredMillis;
 	private long lastEndMillis;
 	private long lastLatenessMillis;
+	private long consecutiveFailures;
 	private final DaemonDefinition daemonDefinition;
 	private final boolean verbose;
 
@@ -89,6 +90,15 @@ final class DaemonListener {
 	}
 
 	/**
+	 * Gets the configured period in millis.
+	 *
+	 * @return the period in millis
+	 */
+	long getPeriodMillis() {
+		return daemonDefinition.getPeriodInSeconds() * 1000L;
+	}
+
+	/**
 	 * Gets current execution statistics.
 	 * Creates an immutable snapshot of current state.
 	 * 
@@ -97,7 +107,7 @@ final class DaemonListener {
 	synchronized DaemonStat getStat() {
 		//On copie les données
 		return new DaemonStatImpl(daemonDefinition, successes, failures, status, lastExecSucceed,
-				status == DaemonStat.Status.running ? startMillis : 0, lastEndMillis, lastLatenessMillis);
+				status == DaemonStat.Status.running ? startMillis : 0, lastEndMillis, lastLatenessMillis, consecutiveFailures);
 	}
 
 	/**
@@ -130,6 +140,7 @@ final class DaemonListener {
 		status = DaemonStat.Status.pending;
 		lastEndMillis = System.currentTimeMillis();
 		failures++;
+		consecutiveFailures++;
 		lastExecSucceed = false;
 		checkAndWarnExecutionTime();
 		LOG.error("Daemon :  an error has occured during the execution of the daemon: " + daemonDefinition.id(), e);
@@ -143,6 +154,7 @@ final class DaemonListener {
 		status = DaemonStat.Status.pending;
 		lastEndMillis = System.currentTimeMillis();
 		successes++;
+		consecutiveFailures = 0L;
 		lastExecSucceed = true;
 		checkAndWarnExecutionTime();
 		if (verbose) {

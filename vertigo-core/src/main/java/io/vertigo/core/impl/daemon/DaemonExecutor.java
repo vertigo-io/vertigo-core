@@ -45,6 +45,8 @@ import io.vertigo.core.node.component.Activeable;
 final class DaemonExecutor implements Activeable {
 	private static final Logger LOG = LogManager.getLogger(DaemonExecutor.class);
 	private static final int STOP_TIMEOUT = 30; //30s
+	/** Minimum duration (60s) a next execution may be overdue before the daemon is declared starved. */
+	private static final long STARVED_FLOOR_MILLIS = 60_000L;
 	private final AnalyticsManager analyticsManager;
 	private boolean isActive;
 	private final ScheduledThreadPoolExecutor scheduler;
@@ -120,6 +122,44 @@ final class DaemonExecutor implements Activeable {
 		}
 		//---
 		return new DaemonPoolStat(scheduler.getCorePoolSize(), scheduler.getActiveCount(), overdueTasks, maxOverdueMillis);
+	}
+
+	/**
+	 * A daemon whose next execution is overdue.
+	 *
+	 * @param name daemon name
+	 * @param overdueMillis how long the next execution has been waiting for a free thread
+	 */
+	record StarvedDaemon(String name, long overdueMillis) {
+	}
+
+	/**
+	 * Gets the most starved daemon, or null if none.
+	 * A daemon is starved when its next execution is overdue beyond max(its period, 60s).
+	 *
+	 * @return the most starved daemon, or null
+	 */
+	StarvedDaemon getWorstStarvedDaemon() {
+		String worstName = null;
+		long worstOverdueMillis = 0L;
+		for (final DaemonListener daemonListener : daemonListeners) {
+			final long overdueMillis = daemonListener.getOverdueMillis();
+			final long thresholdMillis = Math.max(daemonListener.getPeriodMillis(), STARVED_FLOOR_MILLIS);
+			if (overdueMillis > thresholdMillis && overdueMillis > worstOverdueMillis) {
+				worstOverdueMillis = overdueMillis;
+				worstName = daemonListener.getDaemonName();
+			}
+		}
+		return worstName != null ? new StarvedDaemon(worstName, worstOverdueMillis) : null;
+	}
+
+	/**
+	 * Checks whether the underlying scheduler has been shut down.
+	 *
+	 * @return true if the scheduler is shut down
+	 */
+	boolean isShutdown() {
+		return scheduler.isShutdown();
 	}
 
 	/** {@inheritDoc} */
