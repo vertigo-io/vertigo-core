@@ -32,6 +32,7 @@ import io.vertigo.core.analytics.health.HealthChecked;
 import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.analytics.health.HealthMeasureBuilder;
 import io.vertigo.core.daemon.DaemonManager;
+import io.vertigo.core.daemon.DaemonPoolStat;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.daemon.DaemonStat;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
@@ -132,6 +133,12 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	@Override
 	public List<DaemonStat> getStats() {
 		return daemonExecutor.getStats();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public DaemonPoolStat getPoolStat() {
+		return daemonExecutor.getPoolStat();
 	}
 
 	/** {@inheritDoc} */

@@ -43,4 +43,11 @@ public interface DaemonManager extends Manager {
      * @return a list of DaemonStat objects representing the execution statistics of managed daemons.
      */
 	List<DaemonStat> getStats();
+
+	/**
+	 * Provides a snapshot of the daemon thread pool state.
+	 *
+	 * @return the pool statistics
+	 */
+	DaemonPoolStat getPoolStat();
 }

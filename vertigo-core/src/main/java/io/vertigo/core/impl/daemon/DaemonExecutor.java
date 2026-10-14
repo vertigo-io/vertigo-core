@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.daemon.Daemon;
+import io.vertigo.core.daemon.DaemonPoolStat;
 import io.vertigo.core.daemon.DaemonStat;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
@@ -100,6 +101,25 @@ final class DaemonExecutor implements Activeable {
 				.stream()
 				.map(DaemonListener::getStat)
 				.toList();
+	}
+
+	/**
+	 * Gets a snapshot of the daemon thread pool state.
+	 *
+	 * @return the pool statistics
+	 */
+	DaemonPoolStat getPoolStat() {
+		int overdueTasks = 0;
+		long maxOverdueMillis = 0L;
+		for (final DaemonListener daemonListener : daemonListeners) {
+			final long overdueMillis = daemonListener.getOverdueMillis();
+			if (overdueMillis > 0) {
+				overdueTasks++;
+				maxOverdueMillis = Math.max(maxOverdueMillis, overdueMillis);
+			}
+		}
+		//---
+		return new DaemonPoolStat(scheduler.getCorePoolSize(), scheduler.getActiveCount(), overdueTasks, maxOverdueMillis);
 	}
 
 	/** {@inheritDoc} */

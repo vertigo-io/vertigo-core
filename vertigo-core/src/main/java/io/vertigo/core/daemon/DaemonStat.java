@@ -92,4 +92,23 @@ public interface DaemonStat {
 	default long getStartMillis() {
 		return 0L;
 	}
+
+	/**
+	 * Gets the end time of the last completed execution (success or failure).
+	 *
+	 * @return the end time in epoch millis, or 0 if the daemon never completed an execution
+	 */
+	default long getLastEndMillis() {
+		return 0L;
+	}
+
+	/**
+	 * Gets the lateness of the last start: how long the last execution waited for a free thread
+	 * before starting (actual start minus expected start).
+	 *
+	 * @return the lateness in millis, or 0 if the last start was on time (or the daemon never started)
+	 */
+	default long getLastLatenessMillis() {
+		return 0L;
+	}
 }

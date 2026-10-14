@@ -37,20 +37,46 @@ final class DaemonListener {
 	private long failures;
 	private DaemonStat.Status status = DaemonStat.Status.pending;
 	private long startMillis;
+	private final long registeredMillis;
+	private long lastEndMillis;
+	private long lastLatenessMillis;
 	private final DaemonDefinition daemonDefinition;
 	private final boolean verbose;
 
 	/**
 	 * Creates a new listener for the specified daemon.
-	 * 
+	 *
 	 * @param daemonDefinition Daemon configuration
 	 * @param verbose Whether to log detailed execution info
 	 */
 	DaemonListener(final DaemonDefinition daemonDefinition, final boolean verbose) {
 		Assertion.check().isNotNull(daemonDefinition);
 		//---
+		this.registeredMillis = System.currentTimeMillis();
 		this.daemonDefinition = daemonDefinition;
 		this.verbose = verbose;
+	}
+
+	/**
+	 * Expected start of the next execution: with a fixed delay, each execution is due one period
+	 * after the end of the previous execution (or after registration for the first execution).
+	 *
+	 * @return the due time in epoch millis
+	 */
+	private long getDueMillis() {
+		final long lastExecutionEnd = lastEndMillis > 0 ? lastEndMillis : registeredMillis;
+		return lastExecutionEnd + daemonDefinition.getPeriodInSeconds() * 1000L;
+	}
+
+	/**
+	 * Gets how long the next execution is overdue: how long a due execution has been waiting for a free thread.
+	 *
+	 * @return the overdue duration in millis, or 0 if the daemon is not overdue
+	 */
+	synchronized long getOverdueMillis() {
+		final long nowMillis = System.currentTimeMillis();
+		final long dueMillis = getDueMillis();
+		return status == DaemonStat.Status.pending && nowMillis >= dueMillis ? nowMillis - dueMillis : 0L;
 	}
 
 	/**
@@ -71,7 +97,7 @@ final class DaemonListener {
 	synchronized DaemonStat getStat() {
 		//On copie les données
 		return new DaemonStatImpl(daemonDefinition, successes, failures, status, lastExecSucceed,
-				status == DaemonStat.Status.running ? startMillis : 0);
+				status == DaemonStat.Status.running ? startMillis : 0, lastEndMillis, lastLatenessMillis);
 	}
 
 	/**
@@ -79,8 +105,16 @@ final class DaemonListener {
 	 * Updates status and logs if verbose enabled.
 	 */
 	synchronized void onStart() {
+		final long nowMillis = System.currentTimeMillis();
+		final long periodMillis = daemonDefinition.getPeriodInSeconds() * 1000L;
+		lastLatenessMillis = Math.max(0L, nowMillis - getDueMillis());
+		if (lastLatenessMillis > periodMillis) {
+			LOG.warn("Daemon [{}] started {}ms late (> period {}ms), pool may be saturated",
+					daemonDefinition.getName(), lastLatenessMillis, periodMillis);
+		}
+		//---
 		status = DaemonStat.Status.running;
-		startMillis = System.currentTimeMillis();
+		startMillis = nowMillis;
 		if (verbose) {
 			LOG.info("Start daemon: {}", daemonDefinition.getName());
 		}
@@ -94,6 +128,7 @@ final class DaemonListener {
 	 */
 	synchronized void onFailure(final Exception e) {
 		status = DaemonStat.Status.pending;
+		lastEndMillis = System.currentTimeMillis();
 		failures++;
 		lastExecSucceed = false;
 		checkAndWarnExecutionTime();
@@ -106,6 +141,7 @@ final class DaemonListener {
 	 */
 	synchronized void onSuccess() {
 		status = DaemonStat.Status.pending;
+		lastEndMillis = System.currentTimeMillis();
 		successes++;
 		lastExecSucceed = true;
 		checkAndWarnExecutionTime();

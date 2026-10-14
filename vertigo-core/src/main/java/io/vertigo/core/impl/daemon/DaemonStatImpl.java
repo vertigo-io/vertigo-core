@@ -35,6 +35,8 @@ final class DaemonStatImpl implements DaemonStat {
 	private final long failures;
 	private final boolean lastExecSuccess;
 	private final long startMillis;
+	private final long lastEndMillis;
+	private final long lastLatenessMillis;
 
 	/**
 	 * Creates a new statistics snapshot.
@@ -45,6 +47,8 @@ final class DaemonStatImpl implements DaemonStat {
 	 * @param status Current execution status
 	 * @param lastExecSuccess Whether last execution succeeded
 	 * @param startMillis Start time of current execution in epoch millis, 0 if not running
+	 * @param lastEndMillis End time of the last completed execution in epoch millis, 0 if never completed
+	 * @param lastLatenessMillis Lateness of the last start in millis, 0 if on time or never started
 	 */
 	DaemonStatImpl(
 			final DaemonDefinition daemonDefinition,
@@ -52,7 +56,9 @@ final class DaemonStatImpl implements DaemonStat {
 			final long failures,
 			final DaemonStat.Status status,
 			final boolean lastExecSuccess,
-			final long startMillis) {
+			final long startMillis,
+			final long lastEndMillis,
+			final long lastLatenessMillis) {
 		Assertion.check()
 				.isNotNull(daemonDefinition)
 				.isNotNull(status);
@@ -63,6 +69,8 @@ final class DaemonStatImpl implements DaemonStat {
 		this.status = status;
 		this.lastExecSuccess = lastExecSuccess;
 		this.startMillis = startMillis;
+		this.lastEndMillis = lastEndMillis;
+		this.lastLatenessMillis = lastLatenessMillis;
 	}
 
 	/** {@inheritDoc} */
@@ -111,5 +119,17 @@ final class DaemonStatImpl implements DaemonStat {
 	@Override
 	public long getStartMillis() {
 		return startMillis;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public long getLastEndMillis() {
+		return lastEndMillis;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public long getLastLatenessMillis() {
+		return lastLatenessMillis;
 	}
 }
