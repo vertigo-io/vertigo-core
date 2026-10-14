@@ -76,6 +76,7 @@ public final class YamlAppConfigTest {
 				.findFirst()
 				.orElseThrow();
 		assertEquals("3", daemonManagerConfig.getParams().get("threadPoolSize"));
+		assertEquals("42", daemonManagerConfig.getParams().get("daemonDeadAfterInSecond"));
 
 		testBioManager(nodeConfig);
 	}

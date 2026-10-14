@@ -18,9 +18,7 @@
 package io.vertigo.core.impl.daemon;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -102,19 +100,6 @@ final class DaemonExecutor implements Activeable {
 				.stream()
 				.map(DaemonListener::getStat)
 				.toList();
-	}
-
-	/**
-	 * Gets current pool utilization metrics.
-	 *
-	 * @return Map with keys: poolSize, activeThreads, queuedTasks
-	 */
-	Map<String, Integer> getPoolStats() {
-		final Map<String, Integer> stats = new HashMap<>();
-		stats.put("poolSize", scheduler.getCorePoolSize());
-		stats.put("activeThreads", scheduler.getActiveCount());
-		stats.put("queuedTasks", scheduler.getQueue().size());
-		return stats;
 	}
 
 	/** {@inheritDoc} */

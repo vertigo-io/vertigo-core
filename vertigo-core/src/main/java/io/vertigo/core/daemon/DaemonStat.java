@@ -83,4 +83,13 @@ public interface DaemonStat {
      * @return {@code true} if the last execution was successful, {@code false} otherwise.
      */
 	boolean isLastExecSuccess();
+
+	/**
+	 * Gets the start time of the current execution.
+	 *
+	 * @return the start time in epoch millis, or 0 if the daemon is not running
+	 */
+	default long getStartMillis() {
+		return 0L;
+	}
 }

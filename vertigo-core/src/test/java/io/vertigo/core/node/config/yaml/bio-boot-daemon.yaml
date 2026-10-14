@@ -2,6 +2,7 @@ boot:
   params: 
     locales: fr_FR
     threadPoolSize: 3
+    daemonDeadAfterInSecond: 42
   plugins:
     - io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin: {}
 modules:

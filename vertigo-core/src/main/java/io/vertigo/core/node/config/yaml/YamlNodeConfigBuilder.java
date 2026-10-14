@@ -164,6 +164,10 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 				if (threadPoolSize != null) {
 					bootConfigBuilder.withDaemonPoolSize(Integer.parseInt(String.valueOf(threadPoolSize)));
 				}
+				final Object daemonDeadAfterInSecond = yamlAppConfig.boot.params.get("daemonDeadAfterInSecond");
+				if (daemonDeadAfterInSecond != null) {
+					bootConfigBuilder.withDaemonDeadAfterInSecond(Integer.parseInt(String.valueOf(daemonDeadAfterInSecond)));
+				}
 			}
 			yamlAppConfig.boot.plugins.forEach(
 					plugin -> {

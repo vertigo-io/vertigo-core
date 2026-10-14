@@ -12,6 +12,7 @@ Running 4.5.0-SNAPSHOT - 2026-12-XX
 ----------------------
 - [Core] XmlUtil : hardening XXE : add removeDoctype (strip a leading DOCTYPE declaration), secureXmlXXEByOwaspAllowDoctype (OWASP fallback for documents imposing a DTD, residual risk documented) and parseXmlSecure (strict parse after DOCTYPE removal)
 - [Core] Fix DaemonManager threadPoolSize : the param is now actually configurable (BootConfigBuilder.withDaemonPoolSize or yaml boot.params.threadPoolSize, default 2)
+- [Core] Fix daemon health check : remove the poolUtilization check (it gave a permanent false RED on idle pools and could kill k8s pods) ; add a daemonsAlive check that turns RED when a daemon is stuck or died silently (an Error in a daemon used to cancel its next executions without any log) ; add daemonDeadAfterInSecond param (default 120s, min of the dead-detection threshold)
 
 more to come :)
 

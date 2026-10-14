@@ -34,6 +34,7 @@ final class DaemonStatImpl implements DaemonStat {
 	private final long sucesses;
 	private final long failures;
 	private final boolean lastExecSuccess;
+	private final long startMillis;
 
 	/**
 	 * Creates a new statistics snapshot.
@@ -43,13 +44,15 @@ final class DaemonStatImpl implements DaemonStat {
 	 * @param failures Number of failed executions
 	 * @param status Current execution status
 	 * @param lastExecSuccess Whether last execution succeeded
+	 * @param startMillis Start time of current execution in epoch millis, 0 if not running
 	 */
 	DaemonStatImpl(
 			final DaemonDefinition daemonDefinition,
 			final long successes,
 			final long failures,
 			final DaemonStat.Status status,
-			final boolean lastExecSuccess) {
+			final boolean lastExecSuccess,
+			final long startMillis) {
 		Assertion.check()
 				.isNotNull(daemonDefinition)
 				.isNotNull(status);
@@ -59,6 +62,7 @@ final class DaemonStatImpl implements DaemonStat {
 		sucesses = successes;
 		this.status = status;
 		this.lastExecSuccess = lastExecSuccess;
+		this.startMillis = startMillis;
 	}
 
 	/** {@inheritDoc} */
@@ -101,5 +105,11 @@ final class DaemonStatImpl implements DaemonStat {
 	@Override
 	public Status getStatus() {
 		return status;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public long getStartMillis() {
+		return startMillis;
 	}
 }

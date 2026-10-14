@@ -55,6 +55,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
 	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
 	private Optional<Integer> myDaemonThreadPoolSizeOpt = Optional.empty();
+	private Optional<Integer> myDaemonDeadAfterInSecondOpt = Optional.empty();
 
 	/**
 	 * @param nodeConfigBuilder Parent NodeConfig builder
@@ -154,6 +155,16 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 		return this;
 	}
 
+	/**
+	 * Sets the minimum duration in seconds a running daemon may take before being declared dead.
+	 *
+	 * @param daemonDeadAfterInSecond the minimum duration in seconds (default 120)
+	 * @return this builder
+	 */
+	public BootConfigBuilder withDaemonDeadAfterInSecond(final int daemonDeadAfterInSecond) {
+		myDaemonDeadAfterInSecondOpt = Optional.of(daemonDeadAfterInSecond);
+		return this;
+	}
 
 
 	/**
@@ -209,6 +220,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	public BootConfig build() {
 		final List<Param> daemonManagerParams = new ArrayList<>();
 		myDaemonThreadPoolSizeOpt.ifPresent(value -> daemonManagerParams.add(Param.of("threadPoolSize", value)));
+		myDaemonDeadAfterInSecondOpt.ifPresent(value -> daemonManagerParams.add(Param.of("daemonDeadAfterInSecond", value)));
 		//---
 		addComponent(ResourceManager.class, ResourceManagerImpl.class)
 				.addComponent(ParamManager.class, ParamManagerImpl.class)

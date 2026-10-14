@@ -54,6 +54,15 @@ final class DaemonListener {
 	}
 
 	/**
+	 * Gets the name of the daemon.
+	 *
+	 * @return the daemon name
+	 */
+	String getDaemonName() {
+		return daemonDefinition.getName();
+	}
+
+	/**
 	 * Gets current execution statistics.
 	 * Creates an immutable snapshot of current state.
 	 * 
@@ -61,7 +70,8 @@ final class DaemonListener {
 	 */
 	synchronized DaemonStat getStat() {
 		//On copie les données
-		return new DaemonStatImpl(daemonDefinition, successes, failures, status, lastExecSucceed);
+		return new DaemonStatImpl(daemonDefinition, successes, failures, status, lastExecSucceed,
+				status == DaemonStat.Status.running ? startMillis : 0);
 	}
 
 	/**

@@ -63,6 +63,11 @@ final class DaemonTimerTask implements Runnable {
 			daemonListener.onSuccess();
 		} catch (final Exception e) {
 			daemonListener.onFailure(e);
+		} catch (final Error e) {
+			// logged for visibility only, then rethrown: the periodic schedule is cancelled by the JDK and the VM must be able to stop
+			LOG.error("Daemon [{}] crashed with {}: the periodic schedule is cancelled, no future execution will occur",
+					daemonListener.getDaemonName(), e.getClass().getSimpleName());
+			throw e;
 		} finally {
 			clearAllThreadLocals();
 		}
