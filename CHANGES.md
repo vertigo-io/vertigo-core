@@ -11,6 +11,7 @@ more to come :)
 Running 4.5.0-SNAPSHOT - 2026-12-XX
 ----------------------
 - [Core] XmlUtil : hardening XXE : add removeDoctype (strip a leading DOCTYPE declaration), secureXmlXXEByOwaspAllowDoctype (OWASP fallback for documents imposing a DTD, residual risk documented) and parseXmlSecure (strict parse after DOCTYPE removal)
+- [Core] Fix DaemonManager threadPoolSize : the param is now actually configurable (BootConfigBuilder.withDaemonPoolSize or yaml boot.params.threadPoolSize, default 2)
 
 more to come :)
 

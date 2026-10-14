@@ -26,8 +26,10 @@ import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.core.daemon.DaemonManager;
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.data.BioManager;
+import io.vertigo.core.node.config.CoreComponentConfig;
 import io.vertigo.core.node.config.NodeConfig;
 
 public final class YamlAppConfigTest {
@@ -59,6 +61,21 @@ public final class YamlAppConfigTest {
 		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(params)
 				.withFiles(getClass(), "bio-boot-params-default.yaml")
 				.build();
+
+		testBioManager(nodeConfig);
+	}
+
+	@Test
+	public void testBootDaemonParams() {
+		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(new Properties())
+				.withFiles(getClass(), "bio-boot-daemon.yaml")
+				.build();
+
+		final CoreComponentConfig daemonManagerConfig = nodeConfig.bootConfig().coreComponentConfigs().stream()
+				.filter(componentConfig -> componentConfig.getApiClass().map(DaemonManager.class::equals).orElse(false))
+				.findFirst()
+				.orElseThrow();
+		assertEquals("3", daemonManagerConfig.getParams().get("threadPoolSize"));
 
 		testBioManager(nodeConfig);
 	}

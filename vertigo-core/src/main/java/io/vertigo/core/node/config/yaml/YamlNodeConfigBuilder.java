@@ -159,6 +159,11 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 								.withLocalesAndDefaultZoneId(locales, defaultZoneId);
 					}
 				}
+				// String.valueOf: SnakeYaml keeps native YAML types in the map (threadPoolSize: 3 is an Integer, not a String)
+				final Object threadPoolSize = yamlAppConfig.boot.params.get("threadPoolSize");
+				if (threadPoolSize != null) {
+					bootConfigBuilder.withDaemonPoolSize(Integer.parseInt(String.valueOf(threadPoolSize)));
+				}
 			}
 			yamlAppConfig.boot.plugins.forEach(
 					plugin -> {

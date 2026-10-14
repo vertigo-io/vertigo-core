@@ -54,6 +54,7 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	private AspectPlugin myAopPlugin = new JavassistAspectPlugin(); //By default
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
 	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
+	private Optional<Integer> myDaemonThreadPoolSizeOpt = Optional.empty();
 
 	/**
 	 * @param nodeConfigBuilder Parent NodeConfig builder
@@ -143,6 +144,19 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	}
 
 	/**
+	 * Sets the number of threads of the daemon pool.
+	 *
+	 * @param threadPoolSize the number of threads (default 2)
+	 * @return this builder
+	 */
+	public BootConfigBuilder withDaemonPoolSize(final int threadPoolSize) {
+		myDaemonThreadPoolSizeOpt = Optional.of(threadPoolSize);
+		return this;
+	}
+
+
+
+	/**
 	 * Adds a AnalyticsConnectorPlugin
 	 * @param analyticsConnectorPluginClass the plugin to use
 	 * @param params the params
@@ -193,9 +207,12 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	 */
 	@Override
 	public BootConfig build() {
+		final List<Param> daemonManagerParams = new ArrayList<>();
+		myDaemonThreadPoolSizeOpt.ifPresent(value -> daemonManagerParams.add(Param.of("threadPoolSize", value)));
+		//---
 		addComponent(ResourceManager.class, ResourceManagerImpl.class)
 				.addComponent(ParamManager.class, ParamManagerImpl.class)
-				.addComponent(DaemonManager.class, DaemonManagerImpl.class)
+				.addComponent(DaemonManager.class, DaemonManagerImpl.class, daemonManagerParams.toArray(new Param[0]))
 				.addComponent(AnalyticsManager.class, AnalyticsManagerImpl.class);
 
 		return new BootConfig(
