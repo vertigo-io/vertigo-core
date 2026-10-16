@@ -41,6 +41,7 @@ final class DaemonListener {
 	private long lastEndMillis;
 	private long lastLatenessMillis;
 	private long consecutiveFailures;
+	private boolean dead;
 	private final DaemonDefinition daemonDefinition;
 	private final boolean verbose;
 
@@ -128,6 +129,22 @@ final class DaemonListener {
 		if (verbose) {
 			LOG.info("Start daemon: {}", daemonDefinition.getName());
 		}
+	}
+
+	/**
+	 * Records that the daemon's periodic schedule was cancelled by a fatal Error: no future execution will occur.
+	 */
+	synchronized void onDead() {
+		dead = true;
+	}
+
+	/**
+	 * Checks whether the daemon is dead: its periodic schedule was cancelled by a fatal Error.
+	 *
+	 * @return true if the daemon will never run again
+	 */
+	synchronized boolean isDead() {
+		return dead;
 	}
 
 	/**

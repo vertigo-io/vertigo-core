@@ -51,7 +51,7 @@ public final class DaemonErrorDeathTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void errorDeathIsDetectedByDaemonsAlive() throws InterruptedException {
-		Thread.sleep(7500); // error at t+1s, threshold max(period x 4, 2s) = 4s => detected at t+5s
+		Thread.sleep(3000); // error at t+1s, dead detection (schedule done) is immediate
 
 		// the Error escapes catch(Exception): WrappedException.wrap unwraps the InvocationTargetException
 		// and rethrows the raw Error, so the periodic schedule is silently cancelled by the JDK :
@@ -63,10 +63,12 @@ public final class DaemonErrorDeathTest extends AbstractTestCaseJU5 {
 		Assertions.assertEquals(0, daemonStat.getFailures());
 		Assertions.assertEquals(DaemonStat.Status.running, daemonStat.getStatus());
 
-		// the daemonsAlive check must detect the dead daemon
+		// the daemonsAlive check must detect the dead daemon immediately (schedule done),
+		// not wait the stuck threshold with a misleading "stuck" message
 		final HealthCheck daemonsAlive = findHealthCheck("daemonsAlive");
 		Assertions.assertEquals(HealthStatus.RED, daemonsAlive.healthMeasure().status());
 		Assertions.assertTrue(daemonsAlive.healthMeasure().message().contains(FakeErrorComponent.ERROR_DAEMON_NAME));
+		Assertions.assertTrue(daemonsAlive.healthMeasure().message().contains("dead"));
 	}
 
 	private HealthCheck findHealthCheck(final String name) {

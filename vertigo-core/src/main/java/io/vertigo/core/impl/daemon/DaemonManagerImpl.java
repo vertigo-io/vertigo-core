@@ -60,7 +60,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	private static final int STUCK_PERIOD_MULTIPLIER = 4;
 	/** Minimum duration (120s) a running daemon may take before being declared dead. */
 	private static final long STUCK_DEAD_AFTER_MIN_MILLIS = 120_000L;
-	/** Maximum duration allowed beyond the period before a daemon is declared dead (2h, covers clock changes). */
+	/** Cap of the dead-detection threshold beyond the period (2h, bounds the detection delay for large periods). */
 	private static final long STUCK_DEAD_AFTER_MAX_MILLIS = 2 * 3_600_000L;
 	/** Interval between two starved-daemon WARN logs (rate limit). */
 	private static final long STARVED_WARN_INTERVAL_MILLIS = 5 * 60_000L;
@@ -90,11 +90,12 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	}
 
 	/**
-	 * Dead-detection threshold for a daemon: min(max(4 x period, deadAfter), period + 2h).
+	 * Dead-detection threshold for a daemon: max(deadAfter, min(4 x period, period + 2h)).
 	 * deadAfter is the MINIMUM duration a running daemon may take before being declared dead (default 120s):
 	 * it protects frequent daemons (e.g. 1s period) from being declared dead on a short freeze.
-	 * For large periods the cap period + 2h applies instead (e.g. a daily daemon is declared dead after 26h,
-	 * which covers the 25h long day of a summer-to-winter clock change).
+	 * As a floor, an explicitly configured deadAfter is always respected, even beyond the cap.
+	 * The cap period + 2h bounds the detection delay for large periods (a daily daemon is declared dead
+	 * after 26h, not after 4 x 24h) and allows a run to legitimately take a bit more than one period.
 	 *
 	 * @param periodInSeconds daemon configured period
 	 * @param deadAfterMillis minimum duration before a running daemon is declared dead, in millis
@@ -102,7 +103,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	 */
 	static long stuckThresholdMillis(final int periodInSeconds, final long deadAfterMillis) {
 		final long periodMillis = periodInSeconds * 1000L;
-		return Math.min(Math.max(periodMillis * STUCK_PERIOD_MULTIPLIER, deadAfterMillis), periodMillis + STUCK_DEAD_AFTER_MAX_MILLIS);
+		return Math.max(deadAfterMillis, Math.min(periodMillis * STUCK_PERIOD_MULTIPLIER, periodMillis + STUCK_DEAD_AFTER_MAX_MILLIS));
 	}
 
 	@Override
@@ -184,6 +185,10 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 				.forEach(this::startDaemon);
 	}
 
+	// "All daemons failed" is intentionally RED (not capped at YELLOW): a total daemon failure is treated as a
+	// systemic problem for which a pod restart is warranted. Accepted risk: a shared dependency down then
+	// crashloops the pods. A daemon failing on its own (e.g. a dead external service) stays YELLOW.
+
 	@HealthChecked(name = "lastExecs", feature = "daemons")
 	public HealthMeasure checkDaemonsExecs() {
 		final List<DaemonStat> daemonStats = getStats();
@@ -209,19 +214,37 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	}
 
 	// Liveness design rule: daemonsAlive is RED only when restarting the process is the only remedy that can help
-	// (a stuck or dead daemon, a shut-down pool). Load and saturation (a daemon waiting for a free thread) are NOT
-	// liveness signals - a restart cannot fix a saturated pool (k8s would crashloop the pod): they are reported
-	// through getPoolStat()/DaemonStat (overdue, lateness, last-end, consecutive failures) and WARN logs, never
-	// through a health status.
+	// (a daemon whose periodic schedule was cancelled by a fatal Error, a stuck daemon, a shut-down pool).
+	// Load and saturation (a daemon waiting for a free thread) are NOT liveness signals - a restart cannot fix a
+	// saturated pool (k8s would crashloop the pod): they are reported through getPoolStat()/DaemonStat (overdue,
+	// lateness, last-end, consecutive failures) and WARN logs, never through a health status.
+	// Known limits: durations are wall-clock (no nanoTime), so a forward clock step (NTP, VM restore) can give a
+	// transient false RED and a backward step delays detection - accepted. A daemon calling external services
+	// must set timeouts below the stuck threshold, or a hung call looks like a stuck daemon. A daemon run is
+	// expected to take less than its period (a longer run is WARNed on each execution); 4 x period is the margin.
 	// (A previous "poolUtilization" check based on the ScheduledThreadPoolExecutor queue size gave permanent false
 	// positives - the queue holds every scheduled execution, not only waiting ones - and was removed.)
 
 	@HealthChecked(name = "daemonsAlive", feature = "daemons")
 	public HealthMeasure checkDaemonsAlive() {
-		if (active && daemonExecutor.isShutdown()) {
+		// defensive guard (the executor is package-private and only stopped by the manager's own stop()):
+		// read isShutdown() before active - stop() clears active (volatile) before shutting the pool, so a check
+		// that sees the pool shut down is guaranteed to read active == false on a graceful stop
+		if (daemonExecutor.isShutdown() && active) {
 			return HealthMeasure.builder()
 					.withRedStatus("Daemon pool is shut down, no daemon can run anymore")
 					.build();
+		}
+		//---
+		if (active) {
+			final List<String> deadDaemonNames = daemonExecutor.getDeadDaemonNames();
+			if (!deadDaemonNames.isEmpty()) {
+				LOG.error("Daemon(s) {} are dead: their periodic schedule was cancelled by a fatal Error, no future execution will occur", deadDaemonNames);
+				return HealthMeasure.builder()
+						.withRedStatus("Daemon(s) " + String.join(", ", deadDaemonNames)
+								+ " are dead: their periodic schedule was cancelled by a fatal Error, no future execution will occur")
+						.build();
+			}
 		}
 		//---
 		final long nowMillis = System.currentTimeMillis();

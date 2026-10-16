@@ -94,6 +94,19 @@ final class DaemonExecutor implements Activeable {
 	}
 
 	/**
+	 * Gets the names of the dead daemons: their periodic schedule was cancelled by a fatal Error,
+	 * so no future execution will ever occur.
+	 *
+	 * @return the names of the dead daemons (empty if none)
+	 */
+	List<String> getDeadDaemonNames() {
+		return daemonListeners.stream()
+				.filter(DaemonListener::isDead)
+				.map(DaemonListener::getDaemonName)
+				.toList();
+	}
+
+	/**
 	 * Gets execution statistics for all daemons.
 	 *
 	 * @return List of daemon statistics

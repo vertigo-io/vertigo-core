@@ -53,4 +53,16 @@ public final class DaemonStuckThresholdTest {
 		assertEquals(4_000, DaemonManagerImpl.stuckThresholdMillis(1, 2_000));
 	}
 
+	@Test
+	public void explicitDeadAfterAboveCapIsRespected() {
+		// an explicitly configured deadAfter is a floor: the period + 2h cap must not trim it
+		assertEquals(14_400_000, DaemonManagerImpl.stuckThresholdMillis(3600, 14_400_000));
+	}
+
+	@Test
+	public void largePeriodDoesNotOverflow() {
+		// 7 days period: threshold = min(28 days, 7 days + 2h) = 7 days + 2h, computed in long
+		assertEquals(612_000_000, DaemonManagerImpl.stuckThresholdMillis(604_800, 120_000));
+	}
+
 }
