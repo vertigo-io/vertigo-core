@@ -46,7 +46,7 @@ public final class DaemonRunningNotStarvedTest extends AbstractTestCaseJU5 {
 	}
 
 	@Test
-	public void runningDaemonIsNotOverdue() throws InterruptedException {
+	public void testRunningDaemonIsNotWaiting() throws InterruptedException {
 		Thread.sleep(2500); // first exec starts at t+1s and runs for 3s: it is running at t+2.5s
 
 		final DaemonStat daemonStat = daemonManager.getStats().stream()
@@ -55,12 +55,11 @@ public final class DaemonRunningNotStarvedTest extends AbstractTestCaseJU5 {
 				.orElseThrow();
 		Assertions.assertEquals(DaemonStat.Status.running, daemonStat.getStatus());
 
-		// a running daemon owns its thread: it is not overdue, even though its run already exceeds its 1s period
-		final DaemonPoolStat poolStat = daemonManager.getPoolStat();
-		Assertions.assertEquals(0, poolStat.overdueTasks());
-		Assertions.assertEquals(0L, poolStat.maxOverdueMillis());
+		// a running daemon owns its thread: it is not waiting for a free thread, even though its run already exceeds its 1s period
+		final HealthCheck poolUtilization = findHealthCheck("poolUtilization");
+		Assertions.assertEquals(HealthStatus.GREEN, poolUtilization.healthMeasure().status());
 
-		// and it is not dead/stuck: no RED
+		// and it does not run too long yet (limit 120s)
 		final HealthCheck daemonsAlive = findHealthCheck("daemonsAlive");
 		Assertions.assertEquals(HealthStatus.GREEN, daemonsAlive.healthMeasure().status());
 	}

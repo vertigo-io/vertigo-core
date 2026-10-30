@@ -31,19 +31,49 @@ import io.vertigo.core.lang.Assertion;
  */
 final class DaemonListener {
 	private static final Logger LOG = LogManager.getLogger(DaemonListener.class);
+	/** Number of consecutive successes needed by a daemon in failure to be back to normal. */
+	private static final int SUCCESSES_TO_RECOVER = 2;
 
 	private long successes;
 	private boolean lastExecSucceed;
 	private long failures;
 	private DaemonStat.Status status = DaemonStat.Status.pending;
 	private long startMillis;
-	private final long registeredMillis;
-	private long lastEndMillis;
+	private long dueMillis;
 	private long lastLatenessMillis;
-	private long consecutiveFailures;
 	private boolean dead;
+	private boolean inFailure;
+	private int successesSinceFailure;
+	private Window window = new Window();
 	private final DaemonDefinition daemonDefinition;
 	private final boolean verbose;
+
+	/**
+	 * Executions over a window : since the last read.
+	 * Not thread-safe : a window is updated under the lock of its listener, or confined to its reader.
+	 */
+	static final class Window {
+		long executions;
+		long failures;
+		long totalDurationMillis;
+		long totalLatenessMillis;
+
+		void add(final long durationMillis, final long latenessMillis, final boolean success) {
+			executions++;
+			if (!success) {
+				failures++;
+			}
+			totalDurationMillis += durationMillis;
+			totalLatenessMillis += latenessMillis;
+		}
+
+		void addAll(final Window other) {
+			executions += other.executions;
+			failures += other.failures;
+			totalDurationMillis += other.totalDurationMillis;
+			totalLatenessMillis += other.totalLatenessMillis;
+		}
+	}
 
 	/**
 	 * Creates a new listener for the specified daemon.
@@ -54,61 +84,41 @@ final class DaemonListener {
 	DaemonListener(final DaemonDefinition daemonDefinition, final boolean verbose) {
 		Assertion.check().isNotNull(daemonDefinition);
 		//---
-		this.registeredMillis = System.currentTimeMillis();
 		this.daemonDefinition = daemonDefinition;
 		this.verbose = verbose;
-	}
-
-	/**
-	 * Expected start of the next execution: with a fixed delay, each execution is due one period
-	 * after the end of the previous execution (or after registration for the first execution).
-	 *
-	 * @return the due time in epoch millis
-	 */
-	private long getDueMillis() {
-		final long lastExecutionEnd = lastEndMillis > 0 ? lastEndMillis : registeredMillis;
-		return lastExecutionEnd + daemonDefinition.getPeriodInSeconds() * 1000L;
-	}
-
-	/**
-	 * Gets how long the next execution is overdue: how long a due execution has been waiting for a free thread.
-	 *
-	 * @return the overdue duration in millis, or 0 if the daemon is not overdue
-	 */
-	synchronized long getOverdueMillis() {
-		final long nowMillis = System.currentTimeMillis();
-		final long dueMillis = getDueMillis();
-		return status == DaemonStat.Status.pending && nowMillis >= dueMillis ? nowMillis - dueMillis : 0L;
-	}
-
-	/**
-	 * Gets the name of the daemon.
-	 *
-	 * @return the daemon name
-	 */
-	String getDaemonName() {
-		return daemonDefinition.getName();
-	}
-
-	/**
-	 * Gets the configured period in millis.
-	 *
-	 * @return the period in millis
-	 */
-	long getPeriodMillis() {
-		return daemonDefinition.getPeriodInSeconds() * 1000L;
+		// with a fixed delay, the first execution is due one period after the registration
+		dueMillis = System.currentTimeMillis() + getPeriodMillis();
 	}
 
 	/**
 	 * Gets current execution statistics.
 	 * Creates an immutable snapshot of current state.
-	 * 
+	 *
 	 * @return Current daemon statistics
 	 */
-	synchronized DaemonStat getStat() {
+	synchronized DaemonStatImpl getStat() {
 		//On copie les données
-		return new DaemonStatImpl(daemonDefinition, successes, failures, status, lastExecSucceed,
-				status == DaemonStat.Status.running ? startMillis : 0, lastEndMillis, lastLatenessMillis, consecutiveFailures);
+		return new DaemonStatImpl(daemonDefinition, successes, failures, status, lastExecSucceed, startMillis, dueMillis, dead, inFailure);
+	}
+
+	/**
+	 * Gets the executions since the last call, and starts a new window.
+	 *
+	 * @return the window
+	 */
+	synchronized Window takeWindow() {
+		final Window takenWindow = window;
+		window = new Window();
+		return takenWindow;
+	}
+
+	/**
+	 * Gets the lateness of the last start : how long it waited for a free thread.
+	 *
+	 * @return the lateness in millis
+	 */
+	synchronized long getLastLatenessMillis() {
+		return lastLatenessMillis;
 	}
 
 	/**
@@ -116,16 +126,9 @@ final class DaemonListener {
 	 * Updates status and logs if verbose enabled.
 	 */
 	synchronized void onStart() {
-		final long nowMillis = System.currentTimeMillis();
-		final long periodMillis = daemonDefinition.getPeriodInSeconds() * 1000L;
-		lastLatenessMillis = Math.max(0L, nowMillis - getDueMillis());
-		if (lastLatenessMillis > periodMillis) {
-			LOG.warn("Daemon [{}] started {}ms late (> period {}ms), pool may be saturated",
-					daemonDefinition.getName(), lastLatenessMillis, periodMillis);
-		}
-		//---
 		status = DaemonStat.Status.running;
-		startMillis = nowMillis;
+		startMillis = System.currentTimeMillis();
+		lastLatenessMillis = Math.max(0L, startMillis - dueMillis);
 		if (verbose) {
 			LOG.info("Start daemon: {}", daemonDefinition.getName());
 		}
@@ -133,18 +136,13 @@ final class DaemonListener {
 
 	/**
 	 * Records that the daemon's periodic schedule was cancelled by a fatal Error: no future execution will occur.
-	 */
-	synchronized void onDead() {
-		dead = true;
-	}
-
-	/**
-	 * Checks whether the daemon is dead: its periodic schedule was cancelled by a fatal Error.
 	 *
-	 * @return true if the daemon will never run again
+	 * @param e Error that killed the daemon
 	 */
-	synchronized boolean isDead() {
-		return dead;
+	synchronized void onDead(final Error e) {
+		dead = true;
+		LOG.error("Daemon [{}] crashed with {}: the periodic schedule is cancelled, no future execution will occur",
+				daemonDefinition.getName(), e.getClass().getSimpleName(), e);
 	}
 
 	/**
@@ -154,12 +152,11 @@ final class DaemonListener {
 	 * @param e Exception that caused the failure
 	 */
 	synchronized void onFailure(final Exception e) {
-		status = DaemonStat.Status.pending;
-		lastEndMillis = System.currentTimeMillis();
 		failures++;
-		consecutiveFailures++;
 		lastExecSucceed = false;
-		checkAndWarnExecutionTime();
+		inFailure = true;
+		successesSinceFailure = 0;
+		onEnd(false);
 		LOG.error("Daemon :  an error has occured during the execution of the daemon: " + daemonDefinition.id(), e);
 	}
 
@@ -168,23 +165,36 @@ final class DaemonListener {
 	 * Updates counters, status and logs if verbose enabled.
 	 */
 	synchronized void onSuccess() {
-		status = DaemonStat.Status.pending;
-		lastEndMillis = System.currentTimeMillis();
 		successes++;
-		consecutiveFailures = 0L;
 		lastExecSucceed = true;
-		checkAndWarnExecutionTime();
+		// hysteresis : a daemon in failure is back to normal after two consecutive successes
+		if (inFailure && ++successesSinceFailure >= SUCCESSES_TO_RECOVER) {
+			inFailure = false;
+		}
+		onEnd(true);
 		if (verbose) {
 			LOG.info("Execution succeeded on daemon: {}", daemonDefinition.id());
 		}
 	}
 
+	private void onEnd(final boolean success) {
+		status = DaemonStat.Status.pending;
+		final long endMillis = System.currentTimeMillis();
+		// with a fixed delay, the next execution is due one period after the end of this one
+		dueMillis = endMillis + getPeriodMillis();
+		window.add(endMillis - startMillis, lastLatenessMillis, success);
+		checkAndWarnExecutionTime(endMillis - startMillis);
+	}
+
+	private long getPeriodMillis() {
+		return daemonDefinition.getPeriodInSeconds() * 1000L;
+	}
+
 	/**
 	 * Warns if daemon execution exceeded its configured period.
 	 */
-	private void checkAndWarnExecutionTime() {
-		final long duration = System.currentTimeMillis() - startMillis;
-		final long periodMs = daemonDefinition.getPeriodInSeconds() * 1000L;
+	private void checkAndWarnExecutionTime(final long duration) {
+		final long periodMs = getPeriodMillis();
 		if (duration > periodMs) {
 			LOG.warn("Daemon [{}] took {}ms (> period {}ms), risking daemon thread starvation",
 					daemonDefinition.getName(), duration, periodMs);

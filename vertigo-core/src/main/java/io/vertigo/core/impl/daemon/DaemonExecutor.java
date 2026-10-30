@@ -27,9 +27,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.analytics.AnalyticsManager;
+import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.daemon.Daemon;
-import io.vertigo.core.daemon.DaemonPoolStat;
-import io.vertigo.core.daemon.DaemonStat;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.NamedThreadFactory;
@@ -45,8 +44,6 @@ import io.vertigo.core.node.component.Activeable;
 final class DaemonExecutor implements Activeable {
 	private static final Logger LOG = LogManager.getLogger(DaemonExecutor.class);
 	private static final int STOP_TIMEOUT = 30; //30s
-	/** Minimum duration (60s) a next execution may be overdue before the daemon is declared starved. */
-	private static final long STARVED_FLOOR_MILLIS = 60_000L;
 	private final AnalyticsManager analyticsManager;
 	private boolean isActive;
 	private final ScheduledThreadPoolExecutor scheduler;
@@ -59,20 +56,21 @@ final class DaemonExecutor implements Activeable {
 	 * @param threadPoolSize Maximum concurrent daemons
 	 */
 	public DaemonExecutor(final AnalyticsManager analyticsManager, final int threadPoolSize) {
+		Assertion.check().isNotNull(analyticsManager);
+		//---
 		this.analyticsManager = analyticsManager;
 		scheduler = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(threadPoolSize, new NamedThreadFactory("v-daemon-"));
 	}
 
-	private Daemon createDaemon(final DaemonDefinition daemonDefinition) {
-		if (daemonDefinition.isAnalytics()) {
-			// if analytics is enabled (by default) we trace the execution with a tracer
-			return () -> analyticsManager.trace(
-					"daemon",
-					daemonDefinition.getName(),
-					tracer -> daemonDefinition.getDaemonSupplier().get().run());
-		}
-		// otherwise we just execute it
-		return daemonDefinition.getDaemonSupplier().get();
+	private Daemon createTracedDaemon(final DaemonDefinition daemonDefinition, final DaemonListener daemonListener) {
+		// the lateness (time spent waiting for a free thread) is measured at start, before the trace
+		return () -> analyticsManager.trace(
+				"daemon",
+				daemonDefinition.getName(),
+				tracer -> {
+					tracer.setMeasure("lateness", daemonListener.getLastLatenessMillis());
+					daemonDefinition.getDaemonSupplier().get().run();
+				});
 	}
 
 	/**
@@ -86,24 +84,50 @@ final class DaemonExecutor implements Activeable {
 				.isNotNull(daemonDefinition)
 				.isTrue(isActive, "Manager must be active to schedule a daemon");
 		// -----
-		final Daemon daemon = createDaemon(daemonDefinition);
-		final DaemonListener daemonListener = new DaemonListener(daemonDefinition, daemon.verbose());
+		final DaemonListener daemonListener;
+		final Daemon daemon;
+		if (daemonDefinition.isAnalytics()) {
+			// if analytics is enabled (by default) we trace the execution with a tracer
+			daemonListener = new DaemonListener(daemonDefinition, false);
+			daemon = createTracedDaemon(daemonDefinition, daemonListener);
+		} else {
+			// otherwise we just execute it
+			daemon = daemonDefinition.getDaemonSupplier().get();
+			daemonListener = new DaemonListener(daemonDefinition, daemon.verbose());
+		}
 		final DaemonTimerTask timerTask = new DaemonTimerTask(daemonListener, daemon);
 		daemonListeners.add(daemonListener);
 		scheduler.scheduleWithFixedDelay(timerTask, daemonDefinition.getPeriodInSeconds(), daemonDefinition.getPeriodInSeconds(), TimeUnit.SECONDS);
 	}
 
 	/**
-	 * Gets the names of the dead daemons: their periodic schedule was cancelled by a fatal Error,
-	 * so no future execution will ever occur.
+	 * Gets the metrics of the daemon pool : its size, and the executions since the last call (a new window starts).
 	 *
-	 * @return the names of the dead daemons (empty if none)
+	 * @return the daemon pool metrics
 	 */
-	List<String> getDeadDaemonNames() {
-		return daemonListeners.stream()
-				.filter(DaemonListener::isDead)
-				.map(DaemonListener::getDaemonName)
-				.toList();
+	List<Metric> getPoolMetrics() {
+		final DaemonListener.Window window = new DaemonListener.Window();
+		daemonListeners.forEach(daemonListener -> window.addAll(daemonListener.takeWindow()));
+		//---
+		final List<Metric> metrics = new ArrayList<>();
+		metrics.add(createMetric("daemonPoolSize", scheduler.getCorePoolSize()));
+		metrics.add(createMetric("daemonExecutions", window.executions));
+		metrics.add(createMetric("daemonFailures", window.failures));
+		if (window.executions > 0) {
+			// averages in millis, omitted when there was no execution in the window
+			metrics.add(createMetric("daemonAvgDuration", (double) window.totalDurationMillis / window.executions));
+			metrics.add(createMetric("daemonAvgLateness", (double) window.totalLatenessMillis / window.executions));
+		}
+		return metrics;
+	}
+
+	private static Metric createMetric(final String name, final double value) {
+		return Metric.builder()
+				.withSuccess()
+				.withName(name)
+				.withFeature("daemons")
+				.withValue(value)
+				.build();
 	}
 
 	/**
@@ -111,59 +135,11 @@ final class DaemonExecutor implements Activeable {
 	 *
 	 * @return List of daemon statistics
 	 */
-	List<DaemonStat> getStats() {
+	List<DaemonStatImpl> getStats() {
 		return daemonListeners
 				.stream()
 				.map(DaemonListener::getStat)
 				.toList();
-	}
-
-	/**
-	 * Gets a snapshot of the daemon thread pool state.
-	 *
-	 * @return the pool statistics
-	 */
-	DaemonPoolStat getPoolStat() {
-		int overdueTasks = 0;
-		long maxOverdueMillis = 0L;
-		for (final DaemonListener daemonListener : daemonListeners) {
-			final long overdueMillis = daemonListener.getOverdueMillis();
-			if (overdueMillis > 0) {
-				overdueTasks++;
-				maxOverdueMillis = Math.max(maxOverdueMillis, overdueMillis);
-			}
-		}
-		//---
-		return new DaemonPoolStat(scheduler.getCorePoolSize(), scheduler.getActiveCount(), overdueTasks, maxOverdueMillis);
-	}
-
-	/**
-	 * A daemon whose next execution is overdue.
-	 *
-	 * @param name daemon name
-	 * @param overdueMillis how long the next execution has been waiting for a free thread
-	 */
-	record StarvedDaemon(String name, long overdueMillis) {
-	}
-
-	/**
-	 * Gets the most starved daemon, or null if none.
-	 * A daemon is starved when its next execution is overdue beyond max(its period, 60s).
-	 *
-	 * @return the most starved daemon, or null
-	 */
-	StarvedDaemon getWorstStarvedDaemon() {
-		String worstName = null;
-		long worstOverdueMillis = 0L;
-		for (final DaemonListener daemonListener : daemonListeners) {
-			final long overdueMillis = daemonListener.getOverdueMillis();
-			final long thresholdMillis = Math.max(daemonListener.getPeriodMillis(), STARVED_FLOOR_MILLIS);
-			if (overdueMillis > thresholdMillis && overdueMillis > worstOverdueMillis) {
-				worstOverdueMillis = overdueMillis;
-				worstName = daemonListener.getDaemonName();
-			}
-		}
-		return worstName != null ? new StarvedDaemon(worstName, worstOverdueMillis) : null;
 	}
 
 	/**

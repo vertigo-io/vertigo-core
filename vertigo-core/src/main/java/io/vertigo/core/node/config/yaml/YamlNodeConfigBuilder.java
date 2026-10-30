@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
@@ -159,15 +160,12 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 								.withLocalesAndDefaultZoneId(locales, defaultZoneId);
 					}
 				}
-				// String.valueOf: SnakeYaml keeps native YAML types in the map (threadPoolSize: 3 is an Integer, not a String)
-				final Object threadPoolSize = yamlAppConfig.boot.params.get("threadPoolSize");
-				if (threadPoolSize != null) {
-					bootConfigBuilder.withDaemonPoolSize(Integer.parseInt(String.valueOf(threadPoolSize)));
-				}
-				final Object daemonDeadAfterInSecond = yamlAppConfig.boot.params.get("daemonDeadAfterInSecond");
-				if (daemonDeadAfterInSecond != null) {
-					bootConfigBuilder.withDaemonDeadAfterInSecond(Integer.parseInt(String.valueOf(daemonDeadAfterInSecond)));
-				}
+				getIntBootParam(yamlAppConfig.boot.params, "threadPoolSize")
+						.ifPresent(bootConfigBuilder::withDaemonPoolSize);
+				getIntBootParam(yamlAppConfig.boot.params, "daemonMinDurationInSeconds")
+						.ifPresent(bootConfigBuilder::withDaemonMinDurationInSeconds);
+				getIntBootParam(yamlAppConfig.boot.params, "daemonMaxDurationInSeconds")
+						.ifPresent(bootConfigBuilder::withDaemonMaxDurationInSeconds);
 			}
 			yamlAppConfig.boot.plugins.forEach(
 					plugin -> {
@@ -182,6 +180,27 @@ public final class YamlNodeConfigBuilder implements Builder<NodeConfig> {
 											getParams(pluginEntry.getValue(), this::evalParamValue));
 						}
 					});
+		}
+	}
+
+	/**
+	 * Reads an integer boot param, resolving ${boot.xxx} references.
+	 * The map is read as Map<String, ?> because SnakeYaml keeps native YAML types (threadPoolSize: 3 is an Integer, not a String).
+	 *
+	 * @param bootParams the boot params
+	 * @param paramName the param name
+	 * @return the param value if declared
+	 */
+	private Optional<Integer> getIntBootParam(final Map<String, ?> bootParams, final String paramName) {
+		final Object paramValue = bootParams.get(paramName);
+		if (paramValue == null) {
+			return Optional.empty();
+		}
+		final String evaluatedValue = evalParamValue(String.valueOf(paramValue));
+		try {
+			return Optional.of(Integer.parseInt(evaluatedValue));
+		} catch (final NumberFormatException e) {
+			throw new IllegalArgumentException("boot param '" + paramName + "' must be an integer (" + paramValue + " = '" + evaluatedValue + "')", e);
 		}
 	}
 

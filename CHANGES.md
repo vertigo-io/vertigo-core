@@ -10,12 +10,14 @@ more to come :)
 
 Running 4.5.0-SNAPSHOT - 2026-12-XX
 ----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-441-to-450)
+
 - [Core] XmlUtil : hardening XXE : add removeDoctype (strip a leading DOCTYPE declaration), secureXmlXXEByOwaspAllowDoctype (OWASP fallback for documents imposing a DTD, residual risk documented) and parseXmlSecure (strict parse after DOCTYPE removal)
 - [Core] Fix DaemonManager threadPoolSize : the param is now actually configurable (BootConfigBuilder.withDaemonPoolSize or yaml boot.params.threadPoolSize, default 2)
-- [Core] Fix daemon health check : remove the poolUtilization check (it gave a permanent false RED on idle pools and could kill k8s pods) ; add a daemonsAlive check that turns RED when a daemon is stuck or died silently (an Error in a daemon used to cancel its next executions without any log) ; add daemonDeadAfterInSecond param (default 120s, min of the dead-detection threshold)
-- [Core] Add daemon pool stats : DaemonManager.getPoolStat() (corePoolSize, activeThreads, overdueTasks, maxOverdueMillis - daemons whose next execution is due but waiting for a free thread) and DaemonStat.getLastEndMillis()/getLastLatenessMillis(), to let services build their own daemon health checks ; WARN log when a daemon starts late
-- [Core] Daemon health check : daemonsAlive now RED when the daemon pool is shut down while the node is active ; WARN log (rate-limited) when a daemon is starved (next execution overdue beyond max(period, 60s)) - load is reported, never a health verdict ; add DaemonStat.getConsecutiveFailures() for service-level checks
-- [Core] Harden daemon liveness: daemonsAlive now RED immediately when a daemon's periodic schedule was cancelled by a fatal Error (accurate "dead" message, instead of waiting the stuck threshold with a misleading "stuck" message) and the Error stacktrace is logged ; daemonDeadAfterInSecond is now a true floor (the period+2h detection cap no longer trims an explicit value)
+- **[Core] Rework daemon health checks (the 4.4.1 poolUtilization check was permanently RED) : daemonsAlive is RED when a daemon is dead (killed by a fatal Error) and YELLOW when it runs too long ; poolUtilization is YELLOW when a daemon waits too long for a free thread and RED after twice the daemon max duration ; lastExecs is never RED anymore (YELLOW from a failure until two consecutive successes)**
+- [Core] Add daemon params daemonMinDurationInSeconds (default 120) and daemonMaxDurationInSeconds (default 7200) : a daemon has a problem beyond min(max(4 x period, min), max) ; a daemon should never run more than the max duration (use an Orchestra job instead)
+- [Core] Add daemon pool metrics (pool size, executions, failures, average duration and lateness since the last read) and a lateness measure in daemon traces
+- [Core] Log the Error that kills a daemon (it used to cancel its next executions silently)
 
 more to come :)
 

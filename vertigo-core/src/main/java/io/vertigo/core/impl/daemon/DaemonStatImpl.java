@@ -35,9 +35,9 @@ final class DaemonStatImpl implements DaemonStat {
 	private final long failures;
 	private final boolean lastExecSuccess;
 	private final long startMillis;
-	private final long lastEndMillis;
-	private final long lastLatenessMillis;
-	private final long consecutiveFailures;
+	private final long dueMillis;
+	private final boolean dead;
+	private final boolean inFailure;
 
 	/**
 	 * Creates a new statistics snapshot.
@@ -47,10 +47,10 @@ final class DaemonStatImpl implements DaemonStat {
 	 * @param failures Number of failed executions
 	 * @param status Current execution status
 	 * @param lastExecSuccess Whether last execution succeeded
-	 * @param startMillis Start time of current execution in epoch millis, 0 if not running
-	 * @param lastEndMillis End time of the last completed execution in epoch millis, 0 if never completed
-	 * @param lastLatenessMillis Lateness of the last start in millis, 0 if on time or never started
-	 * @param consecutiveFailures Number of consecutive failed executions since the last success
+	 * @param startMillis Start of the current execution (meaningful when running)
+	 * @param dueMillis Expected start of the next execution : one period after the end of the last execution (or after the registration)
+	 * @param dead Whether the periodic schedule was cancelled by a fatal Error (the daemon will never run again)
+	 * @param inFailure Whether the daemon is in failure : from a failure until two consecutive successes
 	 */
 	DaemonStatImpl(
 			final DaemonDefinition daemonDefinition,
@@ -59,9 +59,9 @@ final class DaemonStatImpl implements DaemonStat {
 			final DaemonStat.Status status,
 			final boolean lastExecSuccess,
 			final long startMillis,
-			final long lastEndMillis,
-			final long lastLatenessMillis,
-			final long consecutiveFailures) {
+			final long dueMillis,
+			final boolean dead,
+			final boolean inFailure) {
 		Assertion.check()
 				.isNotNull(daemonDefinition)
 				.isNotNull(status);
@@ -72,9 +72,9 @@ final class DaemonStatImpl implements DaemonStat {
 		this.status = status;
 		this.lastExecSuccess = lastExecSuccess;
 		this.startMillis = startMillis;
-		this.lastEndMillis = lastEndMillis;
-		this.lastLatenessMillis = lastLatenessMillis;
-		this.consecutiveFailures = consecutiveFailures;
+		this.dueMillis = dueMillis;
+		this.dead = dead;
+		this.inFailure = inFailure;
 	}
 
 	/** {@inheritDoc} */
@@ -119,27 +119,31 @@ final class DaemonStatImpl implements DaemonStat {
 		return status;
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public long getStartMillis() {
+	/**
+	 * @return Start of the current execution in epoch millis (meaningful when running)
+	 */
+	long getStartMillis() {
 		return startMillis;
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public long getLastEndMillis() {
-		return lastEndMillis;
+	/**
+	 * @return Expected start of the next execution in epoch millis
+	 */
+	long getDueMillis() {
+		return dueMillis;
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public long getLastLatenessMillis() {
-		return lastLatenessMillis;
+	/**
+	 * @return Whether the periodic schedule was cancelled by a fatal Error
+	 */
+	boolean isDead() {
+		return dead;
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public long getConsecutiveFailures() {
-		return consecutiveFailures;
+	/**
+	 * @return Whether the daemon is in failure (from a failure until two consecutive successes)
+	 */
+	boolean isInFailure() {
+		return inFailure;
 	}
 }

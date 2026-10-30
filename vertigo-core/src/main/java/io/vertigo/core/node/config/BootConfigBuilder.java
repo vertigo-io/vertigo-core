@@ -55,7 +55,8 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	private final List<ComponentConfig> myComponentConfigs = new ArrayList<>();
 	private final List<PluginConfig> myPluginConfigs = new ArrayList<>();
 	private Optional<Integer> myDaemonThreadPoolSizeOpt = Optional.empty();
-	private Optional<Integer> myDaemonDeadAfterInSecondOpt = Optional.empty();
+	private Optional<Integer> myDaemonMinDurationInSecondsOpt = Optional.empty();
+	private Optional<Integer> myDaemonMaxDurationInSecondsOpt = Optional.empty();
 
 	/**
 	 * @param nodeConfigBuilder Parent NodeConfig builder
@@ -156,16 +157,30 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	}
 
 	/**
-	 * Sets the minimum duration in seconds a running daemon may take before being declared dead.
+	 * Sets the minimum duration before judging that a daemon has a problem (running too long, or waiting too long for a free thread).
+	 * It protects frequent daemons from normal jitter : a 1s daemon is only reported after this duration.
+	 * The problem threshold of a daemon is min(max(4 x period, minDuration), maxDuration).
 	 *
-	 * @param daemonDeadAfterInSecond the minimum duration in seconds (default 120)
+	 * @param daemonMinDurationInSeconds the minimum duration in seconds (default 120)
 	 * @return this builder
 	 */
-	public BootConfigBuilder withDaemonDeadAfterInSecond(final int daemonDeadAfterInSecond) {
-		myDaemonDeadAfterInSecondOpt = Optional.of(daemonDeadAfterInSecond);
+	public BootConfigBuilder withDaemonMinDurationInSeconds(final int daemonMinDurationInSeconds) {
+		myDaemonMinDurationInSecondsOpt = Optional.of(daemonMinDurationInSeconds);
 		return this;
 	}
 
+	/**
+	 * Sets the maximum duration a daemon may run : beyond, it should be an Orchestra job.
+	 * It caps the problem threshold of long-period daemons, and a daemon waiting twice this duration for a free thread
+	 * means the daemon engine is broken (health RED).
+	 *
+	 * @param daemonMaxDurationInSeconds the maximum duration in seconds (default 7200)
+	 * @return this builder
+	 */
+	public BootConfigBuilder withDaemonMaxDurationInSeconds(final int daemonMaxDurationInSeconds) {
+		myDaemonMaxDurationInSecondsOpt = Optional.of(daemonMaxDurationInSeconds);
+		return this;
+	}
 
 	/**
 	 * Adds a AnalyticsConnectorPlugin
@@ -220,7 +235,8 @@ public final class BootConfigBuilder implements Builder<BootConfig> {
 	public BootConfig build() {
 		final List<Param> daemonManagerParams = new ArrayList<>();
 		myDaemonThreadPoolSizeOpt.ifPresent(value -> daemonManagerParams.add(Param.of("threadPoolSize", value)));
-		myDaemonDeadAfterInSecondOpt.ifPresent(value -> daemonManagerParams.add(Param.of("daemonDeadAfterInSecond", value)));
+		myDaemonMinDurationInSecondsOpt.ifPresent(value -> daemonManagerParams.add(Param.of("daemonMinDurationInSeconds", value)));
+		myDaemonMaxDurationInSecondsOpt.ifPresent(value -> daemonManagerParams.add(Param.of("daemonMaxDurationInSeconds", value)));
 		//---
 		addComponent(ResourceManager.class, ResourceManagerImpl.class)
 				.addComponent(ParamManager.class, ParamManagerImpl.class)

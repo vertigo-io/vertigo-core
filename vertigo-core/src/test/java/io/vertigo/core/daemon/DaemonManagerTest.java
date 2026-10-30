@@ -85,7 +85,8 @@ public final class DaemonManagerTest extends AbstractTestCaseJU5 {
 				.findFirst()
 				.get();
 
-		assertTrue(daemonsExecHealthCheck.healthMeasure().status() == HealthStatus.GREEN);
+		// hysteresis : after a failure, a daemon stays in failure until two consecutive successes (only one so far)
+		assertTrue(daemonsExecHealthCheck.healthMeasure().status() == HealthStatus.YELLOW);
 
 	}
 

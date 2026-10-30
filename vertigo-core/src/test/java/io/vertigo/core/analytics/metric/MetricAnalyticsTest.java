@@ -53,7 +53,10 @@ public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testAnalyze() {
-		final List<Metric> metrics = analyticsManager.getMetrics();
+		final List<Metric> metrics = analyticsManager.getMetrics()
+				.stream()
+				.filter(metric -> !"daemons".equals(metric.feature())) // the DaemonManager core component publishes its pool metrics
+				.toList();
 		//---
 		Assertions.assertEquals(4, metrics.size()); //1 from DummyMetricsProvider + 3 from SystemMetricsProvider
 	}

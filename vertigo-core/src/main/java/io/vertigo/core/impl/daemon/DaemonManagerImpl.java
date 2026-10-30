@@ -18,22 +18,17 @@
 package io.vertigo.core.impl.daemon;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.health.HealthChecked;
 import io.vertigo.core.analytics.health.HealthMeasure;
-import io.vertigo.core.analytics.health.HealthMeasureBuilder;
+import io.vertigo.core.analytics.metric.Metric;
+import io.vertigo.core.analytics.metric.Metrics;
 import io.vertigo.core.daemon.DaemonManager;
-import io.vertigo.core.daemon.DaemonPoolStat;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.daemon.DaemonStat;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
@@ -55,55 +50,46 @@ import io.vertigo.core.util.ClassUtil;
  */
 public final class DaemonManagerImpl implements DaemonManager, Activeable, SimpleDefinitionProvider {
 
-	private static final Logger LOG = LogManager.getLogger(DaemonManagerImpl.class);
-	/** Multiplier of the daemon period in the dead-detection threshold (min 4 x period). */
-	private static final int STUCK_PERIOD_MULTIPLIER = 4;
-	/** Minimum duration (120s) a running daemon may take before being declared dead. */
-	private static final long STUCK_DEAD_AFTER_MIN_MILLIS = 120_000L;
-	/** Cap of the dead-detection threshold beyond the period (2h, bounds the detection delay for large periods). */
-	private static final long STUCK_DEAD_AFTER_MAX_MILLIS = 2 * 3_600_000L;
-	/** Interval between two starved-daemon WARN logs (rate limit). */
-	private static final long STARVED_WARN_INTERVAL_MILLIS = 5 * 60_000L;
+	private static final int DEFAULT_THREAD_POOL_SIZE = 2;
+	private static final int DEFAULT_MIN_DURATION_IN_SECONDS = 120;
+	private static final int DEFAULT_MAX_DURATION_IN_SECONDS = 2 * 3600;
+	/** A daemon has a problem beyond 4 x its period (bounded by min and max durations). */
+	private static final int PERIOD_MULTIPLIER = 4;
 
 	private final DaemonExecutor daemonExecutor;
-	private final Optional<Integer> daemonDeadAfterInSecond;
+	private final long minDurationMillis;
+	private final long maxDurationMillis;
 	private volatile boolean active;
-	private final AtomicLong starvedLastWarnAt = new AtomicLong(0L);
 
 	/**
 	 * Construct an instance of DaemonManagerImpl.
 	 *
 	 * @param analyticsManager AnalyticsManager
-	 * @param threadPoolSize thread pool size (optional, default 2)
-	 * @param daemonDeadAfterInSecond minimum duration in seconds a running daemon may take before being declared dead (optional, default 120s)
+	 * @param threadPoolSizeOpt thread pool size (default 2)
+	 * @param daemonMinDurationInSecondsOpt minimum duration before judging that a daemon has a problem, in seconds (default 120)
+	 * @param daemonMaxDurationInSecondsOpt maximum duration a daemon may run, in seconds (default 7200)
 	 */
 	@Inject
 	public DaemonManagerImpl(final AnalyticsManager analyticsManager,
-			@ParamValue("threadPoolSize") final Optional<Integer> threadPoolSize,
-			@ParamValue("daemonDeadAfterInSecond") final Optional<Integer> daemonDeadAfterInSecond) {
-		Assertion.check().isNotNull(analyticsManager);
+			@ParamValue("threadPoolSize") final Optional<Integer> threadPoolSizeOpt,
+			@ParamValue("daemonMinDurationInSeconds") final Optional<Integer> daemonMinDurationInSecondsOpt,
+			@ParamValue("daemonMaxDurationInSeconds") final Optional<Integer> daemonMaxDurationInSecondsOpt) {
+		final int threadPoolSize = threadPoolSizeOpt.orElse(DEFAULT_THREAD_POOL_SIZE);
+		final int minDurationInSeconds = daemonMinDurationInSecondsOpt.orElse(DEFAULT_MIN_DURATION_IN_SECONDS);
+		final int maxDurationInSeconds = daemonMaxDurationInSecondsOpt.orElse(DEFAULT_MAX_DURATION_IN_SECONDS);
+		// values passed as String : MessageFormat would add locale-dependent thousands separators to numbers
+		Assertion.check()
+				.isNotNull(analyticsManager)
+				.isTrue(threadPoolSize >= 1, "threadPoolSize ({0}) must be at least 1", String.valueOf(threadPoolSize))
+				.isTrue(minDurationInSeconds >= 1, "daemonMinDurationInSeconds ({0}) must be at least 1", String.valueOf(minDurationInSeconds))
+				.isTrue(minDurationInSeconds <= maxDurationInSeconds, "daemonMinDurationInSeconds ({0}) must not exceed daemonMaxDurationInSeconds ({1}) (default min {2}, default max {3})",
+						String.valueOf(minDurationInSeconds), String.valueOf(maxDurationInSeconds), String.valueOf(DEFAULT_MIN_DURATION_IN_SECONDS), String.valueOf(DEFAULT_MAX_DURATION_IN_SECONDS));
 		//---
-		daemonExecutor = new DaemonExecutor(analyticsManager, threadPoolSize.orElse(2));
-		this.daemonDeadAfterInSecond = daemonDeadAfterInSecond;
+		minDurationMillis = minDurationInSeconds * 1000L;
+		maxDurationMillis = maxDurationInSeconds * 1000L;
+		daemonExecutor = new DaemonExecutor(analyticsManager, threadPoolSize);
 		//--
 		Node.getNode().registerPreActivateFunction(this::startAllDaemons);
-	}
-
-	/**
-	 * Dead-detection threshold for a daemon: max(deadAfter, min(4 x period, period + 2h)).
-	 * deadAfter is the MINIMUM duration a running daemon may take before being declared dead (default 120s):
-	 * it protects frequent daemons (e.g. 1s period) from being declared dead on a short freeze.
-	 * As a floor, an explicitly configured deadAfter is always respected, even beyond the cap.
-	 * The cap period + 2h bounds the detection delay for large periods (a daily daemon is declared dead
-	 * after 26h, not after 4 x 24h) and allows a run to legitimately take a bit more than one period.
-	 *
-	 * @param periodInSeconds daemon configured period
-	 * @param deadAfterMillis minimum duration before a running daemon is declared dead, in millis
-	 * @return dead-detection threshold in millis
-	 */
-	static long stuckThresholdMillis(final int periodInSeconds, final long deadAfterMillis) {
-		final long periodMillis = periodInSeconds * 1000L;
-		return Math.max(deadAfterMillis, Math.min(periodMillis * STUCK_PERIOD_MULTIPLIER, periodMillis + STUCK_DEAD_AFTER_MAX_MILLIS));
 	}
 
 	@Override
@@ -138,13 +124,19 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 	/** {@inheritDoc} */
 	@Override
 	public List<DaemonStat> getStats() {
-		return daemonExecutor.getStats();
+		return List.copyOf(daemonExecutor.getStats());
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public DaemonPoolStat getPoolStat() {
-		return daemonExecutor.getPoolStat();
+	/**
+	 * Gets the metrics of the daemon pool : its size, and the executions over a window since the previous call (the reader resets the window).
+	 * Counts are sums, durations are averages in millis (omitted when no execution in the window).
+	 * Called hourly by the analytics daemon : any other caller of AnalyticsManager.getMetrics() consumes the window.
+	 *
+	 * @return the daemon pool metrics
+	 */
+	@Metrics
+	public List<Metric> getDaemonPoolMetrics() {
+		return daemonExecutor.getPoolMetrics();
 	}
 
 	/** {@inheritDoc} */
@@ -185,113 +177,117 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 				.forEach(this::startDaemon);
 	}
 
-	// "All daemons failed" is intentionally RED (not capped at YELLOW): a total daemon failure is treated as a
-	// systemic problem for which a pod restart is warranted. Accepted risk: a shared dependency down then
-	// crashloops the pods. A daemon failing on its own (e.g. a dead external service) stays YELLOW.
+	// Health design rule: these checks judge the daemon ENGINE (pool, scheduling pace), never the business meaning of a daemon.
+	// Contract: a daemon run lasts less than its period, and never more than daemonMaxDurationInSeconds (2h by default):
+	// beyond, it should be an Orchestra job. limit(period) = min(max(4 x period, daemonMinDurationInSeconds), daemonMaxDurationInSeconds).
+	// RED only when the engine itself is broken (a dead daemon, a shut-down pool, a daemon waiting 2 x max for a free thread):
+	// the RED status reaches the readiness probe. A daemon running too long or a failing daemon is only YELLOW.
+	// Daemons are never interrupted. Checks never log: statuses are pushed to the analytics connectors.
 
-	@HealthChecked(name = "lastExecs", feature = "daemons")
-	public HealthMeasure checkDaemonsExecs() {
-		final List<DaemonStat> daemonStats = getStats();
-		final long failureCount = daemonStats.stream()
-				.filter(daemonStat -> daemonStat.getCount() > 0) // to have a real indicator we use only daemon that have been executed at least once
-				.filter(daemonStat -> !daemonStat.isLastExecSuccess())
-				.count();
-		//---
-		final HealthMeasureBuilder healthMeasure = HealthMeasure.builder();
-		if (failureCount == 0) {
-			return healthMeasure
-					.withGreenStatus()
-					.build();
-		} else if (failureCount < daemonStats.size()) {
-			return healthMeasure
-					.withYellowStatus("At least one daemon failed")
-					.build();
-		}
-		return healthMeasure
-				.withRedStatus("All daemons failed")
-				.build();
-
-	}
-
-	// Liveness design rule: daemonsAlive is RED only when restarting the process is the only remedy that can help
-	// (a daemon whose periodic schedule was cancelled by a fatal Error, a stuck daemon, a shut-down pool).
-	// Load and saturation (a daemon waiting for a free thread) are NOT liveness signals - a restart cannot fix a
-	// saturated pool (k8s would crashloop the pod): they are reported through getPoolStat()/DaemonStat (overdue,
-	// lateness, last-end, consecutive failures) and WARN logs, never through a health status.
-	// Known limits: durations are wall-clock (no nanoTime), so a forward clock step (NTP, VM restore) can give a
-	// transient false RED and a backward step delays detection - accepted. A daemon calling external services
-	// must set timeouts below the stuck threshold, or a hung call looks like a stuck daemon. A daemon run is
-	// expected to take less than its period (a longer run is WARNed on each execution); 4 x period is the margin.
-	// (A previous "poolUtilization" check based on the ScheduledThreadPoolExecutor queue size gave permanent false
-	// positives - the queue holds every scheduled execution, not only waiting ones - and was removed.)
-
+	/**
+	 * Checks the state of each daemon : RED if a daemon is dead (its schedule was cancelled by a fatal Error),
+	 * YELLOW if a daemon has been running for more than its limit.
+	 *
+	 * @return the health measure
+	 */
 	@HealthChecked(name = "daemonsAlive", feature = "daemons")
 	public HealthMeasure checkDaemonsAlive() {
-		// defensive guard (the executor is package-private and only stopped by the manager's own stop()):
-		// read isShutdown() before active - stop() clears active (volatile) before shutting the pool, so a check
-		// that sees the pool shut down is guaranteed to read active == false on a graceful stop
-		if (daemonExecutor.isShutdown() && active) {
+		return checkDaemonsAlive(daemonExecutor.getStats(), System.currentTimeMillis(), minDurationMillis, maxDurationMillis);
+	}
+
+	/**
+	 * Checks the pace of the daemon engine : YELLOW if a daemon has been waiting for a free thread for more than its limit,
+	 * RED if it has been waiting for more than twice the max duration, or if the pool is shut down while the manager is active.
+	 *
+	 * @return the health measure
+	 */
+	@HealthChecked(name = "poolUtilization", feature = "daemons")
+	public HealthMeasure checkDaemonPoolUtilization() {
+		// read isShutdown() before active: stop() clears active (volatile) before shutting the pool,
+		// so a check that sees the pool shut down is guaranteed to read active == false on a graceful stop
+		final boolean shutdownWhileActive = daemonExecutor.isShutdown() && active;
+		return checkDaemonPoolUtilization(daemonExecutor.getStats(), System.currentTimeMillis(), minDurationMillis, maxDurationMillis, shutdownWhileActive);
+	}
+
+	/**
+	 * Checks the daemons in failure (from a failure until two consecutive successes) : YELLOW, never RED.
+	 *
+	 * @return the health measure
+	 */
+	@HealthChecked(name = "lastExecs", feature = "daemons")
+	public HealthMeasure checkDaemonsExecs() {
+		final List<String> inFailureDaemonNames = daemonExecutor.getStats().stream()
+				.filter(DaemonStatImpl::isInFailure)
+				.map(DaemonStat::getDaemonName)
+				.toList();
+		if (!inFailureDaemonNames.isEmpty()) {
+			return HealthMeasure.builder()
+					.withYellowStatus("Daemon(s) " + String.join(", ", inFailureDaemonNames) + " in failure")
+					.build();
+		}
+		return HealthMeasure.builder().withGreenStatus().build();
+	}
+
+	/**
+	 * Problem threshold of a daemon : min(max(4 x period, minDuration), maxDuration).
+	 *
+	 * @param periodInSeconds daemon period
+	 * @param minDurationMillis minimum duration before judging that a daemon has a problem
+	 * @param maxDurationMillis maximum duration a daemon may run
+	 * @return the threshold in millis
+	 */
+	static long limitMillis(final int periodInSeconds, final long minDurationMillis, final long maxDurationMillis) {
+		return Math.min(Math.max(periodInSeconds * 1000L * PERIOD_MULTIPLIER, minDurationMillis), maxDurationMillis);
+	}
+
+	static HealthMeasure checkDaemonsAlive(final List<DaemonStatImpl> daemonStats, final long nowMillis, final long minDurationMillis, final long maxDurationMillis) {
+		final List<String> deadDaemonNames = daemonStats.stream()
+				.filter(DaemonStatImpl::isDead)
+				.map(DaemonStat::getDaemonName)
+				.toList();
+		if (!deadDaemonNames.isEmpty()) {
+			return HealthMeasure.builder()
+					.withRedStatus("Daemon(s) " + String.join(", ", deadDaemonNames) + " are dead : their periodic schedule was cancelled by a fatal Error")
+					.build();
+		}
+		//---
+		for (final DaemonStatImpl daemonStat : daemonStats) {
+			final long runningMillis = daemonStat.getStatus() == DaemonStat.Status.running ? nowMillis - daemonStat.getStartMillis() : 0L;
+			final long limitMillis = limitMillis(daemonStat.getDaemonPeriodInSecond(), minDurationMillis, maxDurationMillis);
+			if (runningMillis > limitMillis) {
+				return HealthMeasure.builder()
+						.withYellowStatus("Daemon " + daemonStat.getDaemonName() + " running for " + runningMillis / 1000 + "s (limit " + limitMillis / 1000 + "s)")
+						.build();
+			}
+		}
+		return HealthMeasure.builder().withGreenStatus().build();
+	}
+
+	static HealthMeasure checkDaemonPoolUtilization(final List<DaemonStatImpl> daemonStats, final long nowMillis, final long minDurationMillis, final long maxDurationMillis,
+			final boolean shutdownWhileActive) {
+		if (shutdownWhileActive) {
 			return HealthMeasure.builder()
 					.withRedStatus("Daemon pool is shut down, no daemon can run anymore")
 					.build();
 		}
 		//---
-		if (active) {
-			final List<String> deadDaemonNames = daemonExecutor.getDeadDaemonNames();
-			if (!deadDaemonNames.isEmpty()) {
-				LOG.error("Daemon(s) {} are dead: their periodic schedule was cancelled by a fatal Error, no future execution will occur", deadDaemonNames);
+		HealthMeasure healthMeasure = HealthMeasure.builder().withGreenStatus().build();
+		for (final DaemonStatImpl daemonStat : daemonStats) {
+			// a running (or dead) daemon owns its thread : it is not waiting
+			final long waitingMillis = daemonStat.getStatus() == DaemonStat.Status.pending && !daemonStat.isDead() ? nowMillis - daemonStat.getDueMillis() : 0L;
+			final long limitMillis = limitMillis(daemonStat.getDaemonPeriodInSecond(), minDurationMillis, maxDurationMillis);
+			if (waitingMillis > 2 * maxDurationMillis) {
 				return HealthMeasure.builder()
-						.withRedStatus("Daemon(s) " + String.join(", ", deadDaemonNames)
-								+ " are dead: their periodic schedule was cancelled by a fatal Error, no future execution will occur")
+						.withRedStatus("Daemon " + daemonStat.getDaemonName() + " waiting for a free thread for " + waitingMillis / 1000 + "s (max " + 2 * maxDurationMillis / 1000
+								+ "s) : the daemon engine is broken")
+						.build();
+			} else if (waitingMillis > limitMillis) {
+				healthMeasure = HealthMeasure.builder()
+						.withYellowStatus("Daemon " + daemonStat.getDaemonName() + " waiting for a free thread for " + waitingMillis / 1000 + "s (limit " + limitMillis / 1000 + "s)")
 						.build();
 			}
 		}
-		//---
-		final long nowMillis = System.currentTimeMillis();
-		final long deadAfterMillis = daemonDeadAfterInSecond
-				.map(seconds -> seconds * 1000L)
-				.orElse(STUCK_DEAD_AFTER_MIN_MILLIS);
-		//---
-		for (final DaemonStat daemonStat : daemonExecutor.getStats()) {
-			if (daemonStat.getStatus() != DaemonStat.Status.running || daemonStat.getStartMillis() == 0) {
-				continue;
-			}
-			//---
-			final long runningMillis = nowMillis - daemonStat.getStartMillis();
-			if (runningMillis > stuckThresholdMillis(daemonStat.getDaemonPeriodInSecond(), deadAfterMillis)) {
-				final long runningSeconds = runningMillis / 1000;
-				LOG.error("Daemon [{}] is stuck: running for {}s (period {}s), no longer executing",
-						daemonStat.getDaemonName(), runningSeconds, daemonStat.getDaemonPeriodInSecond());
-				return HealthMeasure.builder()
-						.withRedStatus("Daemon " + daemonStat.getDaemonName() + " is stuck: running for " + runningSeconds
-								+ "s (period " + daemonStat.getDaemonPeriodInSecond() + "s), no longer executing")
-						.build();
-			}
-		}
-		//---
-		warnIfStarved();
-		return HealthMeasure.builder().withGreenStatus().build();
-	}
-
-	/**
-	 * Logs (rate-limited) when a daemon is starved: its next execution is overdue beyond max(period, 60s).
-	 * Load is never a health status, only a signal for operators and services.
-	 */
-	private void warnIfStarved() {
-		final DaemonExecutor.StarvedDaemon starved = daemonExecutor.getWorstStarvedDaemon();
-		if (starved == null) {
-			return;
-		}
-		//---
-		final long nowMillis = System.currentTimeMillis();
-		final long lastWarnAt = starvedLastWarnAt.get();
-		if (nowMillis - lastWarnAt < STARVED_WARN_INTERVAL_MILLIS || !starvedLastWarnAt.compareAndSet(lastWarnAt, nowMillis)) {
-			return;
-		}
-		//---
-		final DaemonPoolStat poolStat = daemonExecutor.getPoolStat();
-		LOG.warn("Daemon [{}] is starved: next execution overdue by {}s (pool: {} active / {} threads, {} overdue)",
-				starved.name(), starved.overdueMillis() / 1000, poolStat.activeThreads(), poolStat.corePoolSize(), poolStat.overdueTasks());
+		return healthMeasure;
 	}
 
 }

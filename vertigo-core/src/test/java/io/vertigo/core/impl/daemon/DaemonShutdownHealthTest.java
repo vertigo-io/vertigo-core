@@ -55,24 +55,24 @@ public final class DaemonShutdownHealthTest extends AbstractTestCaseJU5 {
 	}
 
 	@Test
-	public void shutdownPoolWhileActiveMakesHealthRed() throws Exception {
+	public void testShutdownPoolWhileActiveMakesHealthRed() throws Exception {
 		// simulate an external shutdown of the pool, bypassing the manager's own stop
 		final Field executorField = DaemonManagerImpl.class.getDeclaredField("daemonExecutor");
 		executorField.setAccessible(true);
 		final DaemonExecutor executor = (DaemonExecutor) executorField.get(daemonManager);
 		executor.stop();
 		//---
-		final HealthCheck daemonsAlive = findHealthCheck("daemonsAlive");
-		Assertions.assertEquals(HealthStatus.RED, daemonsAlive.healthMeasure().status());
-		Assertions.assertTrue(daemonsAlive.healthMeasure().message().contains("shut down"));
+		final HealthCheck poolUtilization = findHealthCheck("poolUtilization");
+		Assertions.assertEquals(HealthStatus.RED, poolUtilization.healthMeasure().status());
+		Assertions.assertTrue(poolUtilization.healthMeasure().message().contains("shut down"));
 	}
 
 	@Test
-	public void gracefulStopDoesNotMakeHealthRed() {
+	public void testGracefulStopDoesNotMakeHealthRed() {
 		((Activeable) daemonManager).stop();
 		//---
-		final HealthCheck daemonsAlive = findHealthCheck("daemonsAlive");
-		Assertions.assertEquals(HealthStatus.GREEN, daemonsAlive.healthMeasure().status());
+		final HealthCheck poolUtilization = findHealthCheck("poolUtilization");
+		Assertions.assertEquals(HealthStatus.GREEN, poolUtilization.healthMeasure().status());
 	}
 
 	private HealthCheck findHealthCheck(final String name) {

@@ -26,7 +26,6 @@ import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.analytics.health.HealthStatus;
-import io.vertigo.core.node.config.BootConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 
@@ -40,9 +39,6 @@ public final class DaemonErrorDeathTest extends AbstractTestCaseJU5 {
 	@Override
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
-				.withBoot(BootConfig.builder()
-						.withDaemonDeadAfterInSecond(2)
-						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addComponent(FakeErrorComponent.class)
 						.build())
@@ -50,7 +46,7 @@ public final class DaemonErrorDeathTest extends AbstractTestCaseJU5 {
 	}
 
 	@Test
-	public void errorDeathIsDetectedByDaemonsAlive() throws InterruptedException {
+	public void testErrorDeathIsDetectedByDaemonsAlive() throws InterruptedException {
 		Thread.sleep(3000); // error at t+1s, dead detection (schedule done) is immediate
 
 		// the Error escapes catch(Exception): WrappedException.wrap unwraps the InvocationTargetException

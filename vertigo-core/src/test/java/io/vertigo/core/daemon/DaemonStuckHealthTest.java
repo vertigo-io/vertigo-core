@@ -41,7 +41,7 @@ public final class DaemonStuckHealthTest extends AbstractTestCaseJU5 {
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.withBoot(BootConfig.builder()
-						.withDaemonDeadAfterInSecond(2)
+						.withDaemonMinDurationInSeconds(2)
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addComponent(FakeStuckComponent.class)
@@ -55,11 +55,11 @@ public final class DaemonStuckHealthTest extends AbstractTestCaseJU5 {
 	}
 
 	@Test
-	public void stuckDaemonMakesHealthRed() throws InterruptedException {
-		Thread.sleep(7500); // first exec at t+1s, threshold max(period x 4, 2s) = 4s => stuck at t+5s
+	public void testStuckDaemonMakesAliveYellow() throws InterruptedException {
+		Thread.sleep(7500); // first exec at t+1s, limit min(max(period x 4, 2s), 7200s) = 4s => running too long at t+5s
 
 		final HealthCheck daemonsAlive = findHealthCheck("daemonsAlive");
-		Assertions.assertEquals(HealthStatus.RED, daemonsAlive.healthMeasure().status());
+		Assertions.assertEquals(HealthStatus.YELLOW, daemonsAlive.healthMeasure().status());
 		Assertions.assertTrue(daemonsAlive.healthMeasure().message().contains(FakeStuckComponent.STUCK_DAEMON_NAME));
 	}
 

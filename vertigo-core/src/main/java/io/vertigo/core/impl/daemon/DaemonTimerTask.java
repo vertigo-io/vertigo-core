@@ -64,12 +64,9 @@ final class DaemonTimerTask implements Runnable {
 		} catch (final Exception e) {
 			daemonListener.onFailure(e);
 		} catch (final Error e) {
-			// mark the listener dead before being rethrown: the pool swallows the Error (it never reaches any
-			// UncaughtExceptionHandler), so without this the schedule death would be silent.
-			// The rethrow cancels the periodic schedule by the JDK and lets the VM be able to stop.
-			daemonListener.onDead();
-			LOG.error("Daemon [{}] crashed with {}: the periodic schedule is cancelled, no future execution will occur",
-					daemonListener.getDaemonName(), e.getClass().getSimpleName(), e);
+			// the pool swallows the Error (it never reaches any UncaughtExceptionHandler) : log it and mark the daemon dead.
+			// The rethrow cancels the periodic schedule by the JDK
+			daemonListener.onDead(e);
 			throw e;
 		} finally {
 			clearAllThreadLocals();

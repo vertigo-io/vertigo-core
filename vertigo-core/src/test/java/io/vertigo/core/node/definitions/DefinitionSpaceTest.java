@@ -57,7 +57,8 @@ public final class DefinitionSpaceTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testRegister() throws IOException, ClassNotFoundException {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		assertEquals(3L, definitionSpace.getAllTypes().size(), "definitionSpace must contain three elements ");
+		// SampleDefinition + core definitions (DaemonDefinition, HealthCheckDefinition, MetricDefinition of the daemon pool metrics)
+		assertEquals(4L, definitionSpace.getAllTypes().size(), "definitionSpace must contain four types : " + definitionSpace.getAllTypes());
 		assertEquals(1L, definitionSpace.getAll(SampleDefinition.class).size(), "definitionSpace[SampleDefinition.class] must contain one element ");
 
 		final SampleDefinition sampleDefinition = definitionSpace.resolve("SampleTheDefinition", SampleDefinition.class);
