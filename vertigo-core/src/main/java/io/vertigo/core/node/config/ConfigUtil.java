@@ -23,6 +23,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Connector;
@@ -31,8 +35,28 @@ import io.vertigo.core.node.component.di.DIAnnotationUtil;
 import io.vertigo.core.util.ClassUtil;
 
 final class ConfigUtil {
+	private static final Logger LOG = LogManager.getLogger(ConfigUtil.class);
+	/** Beyond this suffix, injected lists no longer follow the declaration order (see buildIndexedId). */
+	private static final int MAX_ORDERED_INDEX = 9;
+	/** Ids already reported : component configs are rebuilt many times at startup (HealthUtil, MetricUtil) */
+	private static final Set<String> WARNED_IDS = ConcurrentHashMap.newKeySet();
+
 	private ConfigUtil() {
 		//
+	}
+
+	/*
+	 * Duplicated types get the suffix '#index', with one counter shared by all the types of the list.
+	 * DIInjector injects a list sorted alphabetically by id : beyond #9, '#10' sorts before '#2',
+	 * so the injected order no longer follows the declaration order (ex : ParamPlugins, the first one that finds a param wins).
+	 * Latent defect, not fixed yet : the warning tells whether a real configuration reaches it.
+	 */
+	private static String buildIndexedId(final String type, final int index) {
+		if (index > MAX_ORDERED_INDEX && WARNED_IDS.add(type + '#' + index)) {
+			LOG.warn("Component id '{}#{}' : beyond #{} the injected lists of this type may not follow the declaration order (ids are sorted alphabetically, '#10' before '#2')",
+					type, index, MAX_ORDERED_INDEX);
+		}
+		return type + '#' + index;
 	}
 
 	static List<CoreComponentConfig> buildPluginsComponentConfigs(final List<PluginConfig> pluginConfigs) {
@@ -50,7 +74,7 @@ final class ConfigUtil {
 			if (added) {
 				id = pluginType;
 			} else {
-				id = pluginType + '#' + index;
+				id = buildIndexedId(pluginType, index);
 				index++;
 			}
 
@@ -78,7 +102,7 @@ final class ConfigUtil {
 			if (added) {
 				id = connectorType;
 			} else {
-				id = connectorType + '#' + index;
+				id = buildIndexedId(connectorType, index);
 				index++;
 			}
 

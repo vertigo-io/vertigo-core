@@ -124,6 +124,7 @@ public final class DIInjector {
 			final List<Object> list = new ArrayList<>();
 
 			//on tri les clés pour garantir l'ordre de déclaration
+			//attention : tri alphabétique, '#10' passe avant '#2' : l'ordre n'est garanti que jusqu'à #9 (voir ConfigUtil.buildIndexedId)
 			final List<String> sortedKeys = new ArrayList<>(container.keySet());
 			Collections.sort(sortedKeys);
 			for (final String id : sortedKeys) {
