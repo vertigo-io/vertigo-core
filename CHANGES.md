@@ -12,12 +12,13 @@ Running 4.5.0-SNAPSHOT - 2026-12-XX
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-441-to-450)
 
-- [Core] XmlUtil : hardening XXE : add removeDoctype (strip a leading DOCTYPE declaration), secureXmlXXEByOwaspAllowDoctype (OWASP fallback for documents imposing a DTD, residual risk documented) and parseXmlSecure (strict parse after DOCTYPE removal)
-- [Core] Fix DaemonManager threadPoolSize : the param is now actually configurable (BootConfigBuilder.withDaemonPoolSize or yaml boot.params.threadPoolSize, default 2)
-- **[Core] Rework daemon health checks (the 4.4.1 poolUtilization check counted the scheduled daemons, not the waiting ones : RED on every application with the defaults) : daemonsAlive is RED when a daemon is dead (killed by a fatal Error) and YELLOW when it runs too long ; poolUtilization is YELLOW when a daemon waits too long for a free thread and RED after twice the daemon max duration ; lastExecs is never RED anymore (YELLOW from a failure until two consecutive successes)**
-- [Core] Add daemon params daemonMinDurationInSeconds (default 120) and daemonMaxDurationInSeconds (default 7200) : a daemon has a problem beyond min(max(4 x period, min), max) ; a daemon should never run more than the max duration (use an Orchestra job instead)
+- **[Core] Rework daemon health checks (the 4.4.1 poolUtilization check counted the scheduled daemons, not the waiting ones : RED on every application with the defaults) : daemonsAlive (new) is RED when a daemon is dead (killed by a fatal Error) and YELLOW when it runs too long ; poolUtilization is YELLOW when a daemon waits too long for a free thread and RED after twice the daemon max duration or when the daemon pool is shut down ; lastExecs is never RED anymore (YELLOW from a failure until two consecutive successes) ; health checks no longer log (the 4.4.1 `Daemon pool saturated` warning is removed)**
+- [Core] Add daemon params daemonMinDurationInSeconds (default 120) and daemonMaxDurationInSeconds (default 7200), set with yaml boot.params or BootConfigBuilder.withDaemonMinDurationInSeconds / withDaemonMaxDurationInSeconds : a daemon has a problem beyond min(max(4 x period, min), max) ; a daemon should never run more than the max duration (use an Orchestra job instead)
+- [Core] Fix DaemonManager threadPoolSize : the param is now actually configurable (BootConfigBuilder.withDaemonPoolSize or yaml boot.params.threadPoolSize, default 2) ; invalid daemon params (threadPoolSize < 1, min > max, non-integer value) now fail the startup
 - [Core] Add daemon pool metrics (pool size, executions, failures, average duration and lateness since the last read) and a lateness measure in daemon traces
 - [Core] Log the Error that kills a daemon (it used to cancel its next executions silently)
+- [Core] XmlUtil : XXE hardening for documents carrying a DOCTYPE : add parseXmlSecure (removes a leading DOCTYPE then parses with the strict OWASP settings ; an InputStream is read as UTF-8), removeDoctype, and secureXmlXXEByOwaspAllowDoctype (fallback for documents that need their DTD, weaker : residual SSRF/DoS risk documented)
+- [Core] Warn at startup when a duplicated plugin or connector id goes beyond #9 : ids are sorted alphabetically ('#10' before '#2'), so the injected list may no longer follow the declaration order
 
 more to come :)
 
