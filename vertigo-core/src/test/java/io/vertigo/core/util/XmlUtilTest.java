@@ -155,8 +155,7 @@ public final class XmlUtilTest {
 	public void parseXmlSecureXxeEntityContentNotLeaked(@TempDir final Path tempDir) throws Exception {
 		final File secret = tempDir.resolve("secret.txt").toFile();
 		Files.writeString(secret.toPath(), XXE_SECRET_MARKER);
-		final String payload = "<!DOCTYPE r [<!ENTITY xxe SYSTEM \"file://" + secret.toURI().toASCIIString() + "\">]><r>&xxe;</r>";
-		final Document doc = tryParseXmlSecure(payload);
+		final Document doc = tryParseXmlSecure(xxePayload(secret));
 		if (doc != null) {
 			assertFalse(domToString(doc).contains(XXE_SECRET_MARKER));
 		}
@@ -214,10 +213,19 @@ public final class XmlUtilTest {
 	public void allowDoctypeDoesNotExpandExternalGeneralEntity(@TempDir final Path tempDir) throws Exception {
 		final File secret = tempDir.resolve("secret.txt").toFile();
 		Files.writeString(secret.toPath(), XXE_SECRET_MARKER);
-		final String xml = "<!DOCTYPE r [<!ENTITY xxe SYSTEM \"file://" + secret.toURI().toASCIIString() + "\">]><r>&xxe;</r>";
-		final Document doc = parseWithAllowDoctype(xml);
-		//expandEntityReferences=false : l'EntityReference reste dans le DOM, non expansée
+		final Document doc = parseWithAllowDoctype(xxePayload(secret));
+		//external general entities are not loaded : the EntityReference stays in the DOM, without the secret
 		assertFalse(domToString(doc).contains(XXE_SECRET_MARKER));
+	}
+
+	@Test
+	public void unsecuredParserLeaksExternalGeneralEntity(@TempDir final Path tempDir) throws Exception {
+		//control test : proves the XXE payload of these tests does read the secret when the factory is not secured
+		final File secret = tempDir.resolve("secret.txt").toFile();
+		Files.writeString(secret.toPath(), XXE_SECRET_MARKER);
+		final DocumentBuilder unsecuredBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder(); //NOSONAR deliberately unsecured
+		final Document doc = unsecuredBuilder.parse(new InputSource(new StringReader(xxePayload(secret))));
+		assertTrue(domToString(doc).contains(XXE_SECRET_MARKER));
 	}
 
 	@Test
@@ -315,9 +323,12 @@ public final class XmlUtilTest {
 	private static Document parseWithAllowDoctype(final String xml) throws SAXException, IOException, ParserConfigurationException {
 		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		XmlUtil.secureXmlXXEByOwaspAllowDoctype(factory);
-		final DocumentBuilder builder = factory.newDocumentBuilder();
-		builder.setEntityResolver((publicId, systemId) -> new InputSource(new StringReader("")));
-		return builder.parse(new InputSource(new StringReader(xml)));
+		//no EntityResolver : the factory settings alone must block the external entities
+		return factory.newDocumentBuilder().parse(new InputSource(new StringReader(xml)));
+	}
+
+	private static String xxePayload(final File secret) {
+		return "<!DOCTYPE r [<!ENTITY xxe SYSTEM \"" + secret.toURI().toASCIIString() + "\">]><r>&xxe;</r>";
 	}
 
 	private static String billionLaughs() {
