@@ -107,7 +107,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.15.0</version>
+					<version>3.16.0</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -120,7 +120,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.5.6</version>
+				<version>3.6.1</version>
 				<configuration>
 						<testFailureIgnore>true</testFailureIgnore>
 					<junitArtifactName>junit:junit</junitArtifactName>
@@ -131,7 +131,7 @@
 				<!-- We need a test jar too -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.5.0</version>
+				<version>3.5.1</version>
 				<configuration>
 					<forceCreation>true</forceCreation>
 					<skipIfEmpty>true</skipIfEmpty>
@@ -140,7 +140,7 @@
 			<plugin><!-- license:format -->
 				<groupId>com.mycila</groupId>
 				<artifactId>license-maven-plugin</artifactId>
-				<version>5.0.0</version>
+				<version>5.1.2</version>
 				<configuration>
 					<header>license.txt</header>
 					<includes>
@@ -181,7 +181,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
-				<version>3.1.4</version> <!-- obligatoire pour permettre <skip> -->
+				<version>3.2.0</version> <!-- obligatoire pour permettre <skip> -->
 				<configuration>
 					<skip>true</skip>
 				</configuration>
@@ -206,7 +206,7 @@
 			<plugin>
 		          <groupId>org.sonatype.central</groupId>
 		          <artifactId>central-publishing-maven-plugin</artifactId>
-		          <version>0.10.0</version>
+		          <version>0.12.0</version>
 		          <extensions>true</extensions>
 		          <executions>
 				    <execution>
@@ -305,7 +305,7 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.8.14</version>
+						<version>0.8.16</version>
 						<executions>
 							<execution>
 								<goals>
@@ -343,7 +343,7 @@
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.8.14</version>
+						<version>0.8.16</version>
 						<inherited>false</inherited>
 						<executions>
 							<execution>
