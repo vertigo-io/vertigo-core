@@ -407,7 +407,9 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 						ioe = ex;
 					}
 				}
-				throw ioe;
+				if (ioe != null) {
+					throw ioe;
+				}
 			}
 		}
 
