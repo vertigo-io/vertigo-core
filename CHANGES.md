@@ -19,6 +19,7 @@ Running 4.5.0-SNAPSHOT - 2026-12-XX
 - [Core] Log the Error that kills a daemon (it used to cancel its next executions silently)
 - [Core] XmlUtil : XXE hardening for documents carrying a DOCTYPE : add parseXmlSecure (removes a leading DOCTYPE then parses with the strict OWASP settings ; an InputStream is read as UTF-8), removeDoctype, and secureXmlXXEByOwaspAllowDoctype (fallback for documents that need their DTD, weaker : residual SSRF/DoS risk documented)
 - [Core] Warn at startup when a duplicated plugin or connector id goes beyond #9 : ids are sorted alphabetically ('#10' before '#2'), so the injected list may no longer follow the declaration order
+- [Core] Analytics socket connector (`AnalyticsTcpSocketManager`) : the reconnection thread stops when it is interrupted (the interruption was swallowed and the thread kept trying to reconnect)
 - Update libs
   - gson 2.14.0 -> 2.15.0
   - snakeyaml 2.6 -> 2.7
