@@ -252,7 +252,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 		}
 		//---
 		for (final DaemonStatImpl daemonStat : daemonStats) {
-			final long runningMillis = daemonStat.getStatus() == DaemonStat.Status.running ? nowMillis - daemonStat.getStartMillis() : 0L;
+			final long runningMillis = (daemonStat.getStatus() == DaemonStat.Status.running) ? nowMillis - daemonStat.getStartMillis() : 0L;
 			final long limitMillis = limitMillis(daemonStat.getDaemonPeriodInSecond(), minDurationMillis, maxDurationMillis);
 			if (runningMillis > limitMillis) {
 				return HealthMeasure.builder()
@@ -274,7 +274,7 @@ public final class DaemonManagerImpl implements DaemonManager, Activeable, Simpl
 		HealthMeasure healthMeasure = HealthMeasure.builder().withGreenStatus().build();
 		for (final DaemonStatImpl daemonStat : daemonStats) {
 			// a running (or dead) daemon owns its thread : it is not waiting
-			final long waitingMillis = daemonStat.getStatus() == DaemonStat.Status.pending && !daemonStat.isDead() ? nowMillis - daemonStat.getDueMillis() : 0L;
+			final long waitingMillis = (daemonStat.getStatus() == DaemonStat.Status.pending && !daemonStat.isDead()) ? nowMillis - daemonStat.getDueMillis() : 0L;
 			final long limitMillis = limitMillis(daemonStat.getDaemonPeriodInSecond(), minDurationMillis, maxDurationMillis);
 			if (waitingMillis > 2 * maxDurationMillis) {
 				return HealthMeasure.builder()

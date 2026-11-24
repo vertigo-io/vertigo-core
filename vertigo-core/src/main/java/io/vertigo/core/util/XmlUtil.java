@@ -191,7 +191,7 @@ public final class XmlUtil {
 			return -1;
 		}
 		final int end = xml.indexOf(quote, from + 1);
-		return end < 0 ? -1 : end + 1;
+		return (end < 0) ? -1 : end + 1;
 	}
 
 	private static int endInternalSubset(final String xml, final int from) {

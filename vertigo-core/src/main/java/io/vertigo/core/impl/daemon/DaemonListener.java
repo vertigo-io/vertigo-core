@@ -168,8 +168,11 @@ final class DaemonListener {
 		successes++;
 		lastExecSucceed = true;
 		// hysteresis : a daemon in failure is back to normal after two consecutive successes
-		if (inFailure && ++successesSinceFailure >= SUCCESSES_TO_RECOVER) {
-			inFailure = false;
+		if (inFailure) {
+			successesSinceFailure++;
+			if (successesSinceFailure >= SUCCESSES_TO_RECOVER) {
+				inFailure = false;
+			}
 		}
 		onEnd(true);
 		if (verbose) {
