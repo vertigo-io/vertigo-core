@@ -8,7 +8,7 @@ Running 5.0.0
 
 more to come :)
 
-Running 4.5.0 - 2026-12-XX
+Release 4.5.0 - 2026/11/24
 ----------------------
 [Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-441-to-450)
 
