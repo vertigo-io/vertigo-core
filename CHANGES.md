@@ -30,8 +30,6 @@ Release 4.5.0 - 2026/11/24
   - snakeyaml 2.6 -> 2.7
   - javassist 3.32.0-GA -> 3.33.0-GA
 
-more to come :)
-
 
 Release 4.4.1 - 2026/08/28
 ----------------------
