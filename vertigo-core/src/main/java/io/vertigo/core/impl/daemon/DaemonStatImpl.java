@@ -34,6 +34,10 @@ final class DaemonStatImpl implements DaemonStat {
 	private final long sucesses;
 	private final long failures;
 	private final boolean lastExecSuccess;
+	private final long startMillis;
+	private final long dueMillis;
+	private final boolean dead;
+	private final boolean inFailure;
 
 	/**
 	 * Creates a new statistics snapshot.
@@ -43,13 +47,21 @@ final class DaemonStatImpl implements DaemonStat {
 	 * @param failures Number of failed executions
 	 * @param status Current execution status
 	 * @param lastExecSuccess Whether last execution succeeded
+	 * @param startMillis Start of the current execution (meaningful when running)
+	 * @param dueMillis Expected start of the next execution : one period after the end of the last execution (or after the registration)
+	 * @param dead Whether the periodic schedule was cancelled by a fatal Error (the daemon will never run again)
+	 * @param inFailure Whether the daemon is in failure : from a failure until two consecutive successes
 	 */
 	DaemonStatImpl(
 			final DaemonDefinition daemonDefinition,
 			final long successes,
 			final long failures,
 			final DaemonStat.Status status,
-			final boolean lastExecSuccess) {
+			final boolean lastExecSuccess,
+			final long startMillis,
+			final long dueMillis,
+			final boolean dead,
+			final boolean inFailure) {
 		Assertion.check()
 				.isNotNull(daemonDefinition)
 				.isNotNull(status);
@@ -59,6 +71,10 @@ final class DaemonStatImpl implements DaemonStat {
 		sucesses = successes;
 		this.status = status;
 		this.lastExecSuccess = lastExecSuccess;
+		this.startMillis = startMillis;
+		this.dueMillis = dueMillis;
+		this.dead = dead;
+		this.inFailure = inFailure;
 	}
 
 	/** {@inheritDoc} */
@@ -101,5 +117,33 @@ final class DaemonStatImpl implements DaemonStat {
 	@Override
 	public Status getStatus() {
 		return status;
+	}
+
+	/**
+	 * @return Start of the current execution in epoch millis (meaningful when running)
+	 */
+	long getStartMillis() {
+		return startMillis;
+	}
+
+	/**
+	 * @return Expected start of the next execution in epoch millis
+	 */
+	long getDueMillis() {
+		return dueMillis;
+	}
+
+	/**
+	 * @return Whether the periodic schedule was cancelled by a fatal Error
+	 */
+	boolean isDead() {
+		return dead;
+	}
+
+	/**
+	 * @return Whether the daemon is in failure (from a failure until two consecutive successes)
+	 */
+	boolean isInFailure() {
+		return inFailure;
 	}
 }

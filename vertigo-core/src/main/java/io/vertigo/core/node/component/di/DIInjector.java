@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +40,8 @@ import io.vertigo.core.util.ClassUtil;
  * @author pchretien
  */
 public final class DIInjector {
+	/** Declaration order of the ids of a type : same prefix and numeric suffix (id, id#1... see ConfigUtil), so the shortest first then alphabetical ('#9' before '#10') */
+	private static final Comparator<String> DECLARATION_ORDER = Comparator.comparingInt(String::length).thenComparing(Comparator.naturalOrder());
 
 	private DIInjector() {
 		//constructor is protected, Injector contains only static methods
@@ -120,20 +123,20 @@ public final class DIInjector {
 			//
 			return Optional.empty();
 		} else if (dependency.isList()) {
-			//on récupère la liste des objets du type concerné
-			final List<Object> list = new ArrayList<>();
-
-			//on tri les clés pour garantir l'ordre de déclaration
-			final List<String> sortedKeys = new ArrayList<>(container.keySet());
-			Collections.sort(sortedKeys);
-			for (final String id : sortedKeys) {
-				//On prend tous les objets ayant l'identifiant requis
-				final boolean match = id.equals(dependency.getName()) || id.startsWith(dependency.getName() + '#');
-				if (match) {
-					final Object injected = container.resolve(id, Object.class);
-					Assertion.check().isTrue(dependency.getType().isAssignableFrom(injected.getClass()), "type of {0} is incorrect ; expected : {1}", id, dependency.getType().getName());
-					list.add(injected);
+			//on récupère les identifiants des objets du type concerné : id, id#1, id#2...
+			final String indexedPrefix = dependency.getName() + '#';
+			final List<String> ids = new ArrayList<>();
+			for (final String id : container.keySet()) {
+				if (id.equals(dependency.getName()) || id.startsWith(indexedPrefix)) {
+					ids.add(id);
 				}
+			}
+			ids.sort(DECLARATION_ORDER);
+			final List<Object> list = new ArrayList<>(ids.size());
+			for (final String id : ids) {
+				final Object injected = container.resolve(id, Object.class);
+				Assertion.check().isTrue(dependency.getType().isAssignableFrom(injected.getClass()), "type of {0} is incorrect ; expected : {1}", id, dependency.getType().getName());
+				list.add(injected);
 			}
 			return Collections.unmodifiableList(list);
 		}

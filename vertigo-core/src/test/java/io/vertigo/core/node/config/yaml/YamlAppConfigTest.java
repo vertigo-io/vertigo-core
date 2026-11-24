@@ -20,14 +20,17 @@ package io.vertigo.core.node.config.yaml;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.core.daemon.DaemonManager;
 import io.vertigo.core.node.AutoCloseableNode;
 import io.vertigo.core.node.component.data.BioManager;
+import io.vertigo.core.node.config.CoreComponentConfig;
 import io.vertigo.core.node.config.NodeConfig;
 
 public final class YamlAppConfigTest {
@@ -61,6 +64,48 @@ public final class YamlAppConfigTest {
 				.build();
 
 		testBioManager(nodeConfig);
+	}
+
+	@Test
+	public void testBootDaemonParams() {
+		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(new Properties())
+				.withFiles(getClass(), "bio-boot-daemon.yaml")
+				.build();
+
+		final CoreComponentConfig daemonManagerConfig = nodeConfig.bootConfig().coreComponentConfigs().stream()
+				.filter(componentConfig -> componentConfig.getApiClass().map(DaemonManager.class::equals).orElse(false))
+				.findFirst()
+				.orElseThrow();
+		assertEquals("3", daemonManagerConfig.getParams().get("threadPoolSize"));
+		assertEquals("42", daemonManagerConfig.getParams().get("daemonMinDurationInSeconds"));
+		assertEquals("3600", daemonManagerConfig.getParams().get("daemonMaxDurationInSeconds"));
+
+		testBioManager(nodeConfig);
+	}
+
+	@Test
+	public void testBootDaemonParamsFromBootProperties() {
+		final Properties properties = new Properties();
+		properties.setProperty("boot.daemonPoolSize", "5");
+		final NodeConfig nodeConfig = new YamlNodeConfigBuilder(properties)
+				.withFiles(getClass(), "bio-boot-daemon-params.yaml")
+				.build();
+
+		final CoreComponentConfig daemonManagerConfig = nodeConfig.bootConfig().coreComponentConfigs().stream()
+				.filter(componentConfig -> componentConfig.getApiClass().map(DaemonManager.class::equals).orElse(false))
+				.findFirst()
+				.orElseThrow();
+		assertEquals("5", daemonManagerConfig.getParams().get("threadPoolSize"));
+	}
+
+	@Test
+	public void testBootDaemonParamNotNumericNamesTheParam() {
+		final Properties properties = new Properties();
+		properties.setProperty("boot.daemonPoolSize", "abc");
+		final Exception exception = assertThrows(Exception.class, () -> new YamlNodeConfigBuilder(properties)
+				.withFiles(getClass(), "bio-boot-daemon-params.yaml")
+				.build());
+		assertTrue(exception.getMessage().contains("threadPoolSize"), exception.getMessage());
 	}
 
 	@Test

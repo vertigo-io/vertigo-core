@@ -18,9 +18,7 @@
 package io.vertigo.core.impl.daemon;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -29,8 +27,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.analytics.AnalyticsManager;
+import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.daemon.Daemon;
-import io.vertigo.core.daemon.DaemonStat;
 import io.vertigo.core.daemon.definitions.DaemonDefinition;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.NamedThreadFactory;
@@ -58,20 +56,21 @@ final class DaemonExecutor implements Activeable {
 	 * @param threadPoolSize Maximum concurrent daemons
 	 */
 	public DaemonExecutor(final AnalyticsManager analyticsManager, final int threadPoolSize) {
+		Assertion.check().isNotNull(analyticsManager);
+		//---
 		this.analyticsManager = analyticsManager;
 		scheduler = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(threadPoolSize, new NamedThreadFactory("v-daemon-"));
 	}
 
-	private Daemon createDaemon(final DaemonDefinition daemonDefinition) {
-		if (daemonDefinition.isAnalytics()) {
-			// if analytics is enabled (by default) we trace the execution with a tracer
-			return () -> analyticsManager.trace(
-					"daemon",
-					daemonDefinition.getName(),
-					tracer -> daemonDefinition.getDaemonSupplier().get().run());
-		}
-		// otherwise we just execute it
-		return daemonDefinition.getDaemonSupplier().get();
+	private Daemon createTracedDaemon(final DaemonDefinition daemonDefinition, final DaemonListener daemonListener) {
+		// the lateness (time spent waiting for a free thread) is measured at start, before the trace
+		return () -> analyticsManager.trace(
+				"daemon",
+				daemonDefinition.getName(),
+				tracer -> {
+					tracer.setMeasure("lateness", daemonListener.getLastLatenessMillis());
+					daemonDefinition.getDaemonSupplier().get().run();
+				});
 	}
 
 	/**
@@ -85,11 +84,50 @@ final class DaemonExecutor implements Activeable {
 				.isNotNull(daemonDefinition)
 				.isTrue(isActive, "Manager must be active to schedule a daemon");
 		// -----
-		final Daemon daemon = createDaemon(daemonDefinition);
-		final DaemonListener daemonListener = new DaemonListener(daemonDefinition, daemon.verbose());
+		final DaemonListener daemonListener;
+		final Daemon daemon;
+		if (daemonDefinition.isAnalytics()) {
+			// if analytics is enabled (by default) we trace the execution with a tracer
+			daemonListener = new DaemonListener(daemonDefinition, false);
+			daemon = createTracedDaemon(daemonDefinition, daemonListener);
+		} else {
+			// otherwise we just execute it
+			daemon = daemonDefinition.getDaemonSupplier().get();
+			daemonListener = new DaemonListener(daemonDefinition, daemon.verbose());
+		}
 		final DaemonTimerTask timerTask = new DaemonTimerTask(daemonListener, daemon);
 		daemonListeners.add(daemonListener);
 		scheduler.scheduleWithFixedDelay(timerTask, daemonDefinition.getPeriodInSeconds(), daemonDefinition.getPeriodInSeconds(), TimeUnit.SECONDS);
+	}
+
+	/**
+	 * Gets the metrics of the daemon pool : its size, and the executions since the last call (a new window starts).
+	 *
+	 * @return the daemon pool metrics
+	 */
+	List<Metric> getPoolMetrics() {
+		final DaemonListener.Window window = new DaemonListener.Window();
+		daemonListeners.forEach(daemonListener -> window.addAll(daemonListener.takeWindow()));
+		//---
+		final List<Metric> metrics = new ArrayList<>();
+		metrics.add(createMetric("daemonPoolSize", scheduler.getCorePoolSize()));
+		metrics.add(createMetric("daemonExecutions", window.executions));
+		metrics.add(createMetric("daemonFailures", window.failures));
+		if (window.executions > 0) {
+			// averages in millis, omitted when there was no execution in the window
+			metrics.add(createMetric("daemonAvgDuration", (double) window.totalDurationMillis / window.executions));
+			metrics.add(createMetric("daemonAvgLateness", (double) window.totalLatenessMillis / window.executions));
+		}
+		return metrics;
+	}
+
+	private static Metric createMetric(final String name, final double value) {
+		return Metric.builder()
+				.withSuccess()
+				.withName(name)
+				.withFeature("daemons")
+				.withValue(value)
+				.build();
 	}
 
 	/**
@@ -97,7 +135,7 @@ final class DaemonExecutor implements Activeable {
 	 *
 	 * @return List of daemon statistics
 	 */
-	List<DaemonStat> getStats() {
+	List<DaemonStatImpl> getStats() {
 		return daemonListeners
 				.stream()
 				.map(DaemonListener::getStat)
@@ -105,16 +143,12 @@ final class DaemonExecutor implements Activeable {
 	}
 
 	/**
-	 * Gets current pool utilization metrics.
+	 * Checks whether the underlying scheduler has been shut down.
 	 *
-	 * @return Map with keys: poolSize, activeThreads, queuedTasks
+	 * @return true if the scheduler is shut down
 	 */
-	Map<String, Integer> getPoolStats() {
-		final Map<String, Integer> stats = new HashMap<>();
-		stats.put("poolSize", scheduler.getCorePoolSize());
-		stats.put("activeThreads", scheduler.getActiveCount());
-		stats.put("queuedTasks", scheduler.getQueue().size());
-		return stats;
+	boolean isShutdown() {
+		return scheduler.isShutdown();
 	}
 
 	/** {@inheritDoc} */

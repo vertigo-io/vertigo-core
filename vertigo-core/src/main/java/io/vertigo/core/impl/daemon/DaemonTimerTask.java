@@ -63,6 +63,11 @@ final class DaemonTimerTask implements Runnable {
 			daemonListener.onSuccess();
 		} catch (final Exception e) {
 			daemonListener.onFailure(e);
+		} catch (final Error e) {
+			// the pool swallows the Error (it never reaches any UncaughtExceptionHandler) : log it and mark the daemon dead.
+			// The rethrow cancels the periodic schedule by the JDK
+			daemonListener.onDead(e);
+			throw e;
 		} finally {
 			clearAllThreadLocals();
 		}

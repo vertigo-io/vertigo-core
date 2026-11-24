@@ -8,6 +8,26 @@ Running 5.0.0
 
 more to come :)
 
+Running 4.5.0-SNAPSHOT - 2026-12-XX
+----------------------
+[Migration help](https://github.com/vertigo-io/vertigo/wiki/Vertigo-Migration-Guide#from-441-to-450)
+
+- **[Core] Rework daemon health checks (the 4.4.1 poolUtilization check counted the scheduled daemons, not the waiting ones : RED on every application with the defaults) : daemonsAlive (new) is RED when a daemon is dead (killed by a fatal Error) and YELLOW when it runs too long ; poolUtilization is YELLOW when a daemon waits too long for a free thread and RED after twice the daemon max duration or when the daemon pool is shut down ; lastExecs is never RED anymore (YELLOW from a failure until two consecutive successes) ; health checks no longer log (the 4.4.1 `Daemon pool saturated` warning is removed)**
+- [Core] Add daemon params daemonMinDurationInSeconds (default 120) and daemonMaxDurationInSeconds (default 7200), set with yaml boot.params or BootConfigBuilder.withDaemonMinDurationInSeconds / withDaemonMaxDurationInSeconds : a daemon has a problem beyond min(max(4 x period, min), max) ; a daemon should never run more than the max duration (use an Orchestra job instead)
+- [Core] Fix DaemonManager threadPoolSize : the param is now actually configurable (BootConfigBuilder.withDaemonPoolSize or yaml boot.params.threadPoolSize, default 2) ; invalid daemon params (threadPoolSize < 1, min > max, non-integer value) now fail the startup
+- [Core] Add daemon pool metrics (pool size, executions, failures, average duration and lateness since the last read) and a lateness measure in daemon traces
+- [Core] Log the Error that kills a daemon (it used to cancel its next executions silently)
+- [Core] XmlUtil : XXE hardening for documents carrying a DOCTYPE : add parseXmlSecure (removes a leading DOCTYPE then parses with the strict OWASP settings ; an InputStream is read as UTF-8), removeDoctype, and secureXmlXXEByOwaspAllowDoctype (fallback for documents that need their DTD, weaker : residual SSRF/DoS risk documented)
+- [Core] Fix the order of an injected list of plugins or connectors once their ids reach #10 in a module (ex : the vertigo-studio generators) : it follows the declaration order ('#10' was injected before '#2')
+- [Core] Analytics socket connector (`AnalyticsTcpSocketManager`) : the reconnection thread stops when it is interrupted (the interruption was swallowed and the thread kept trying to reconnect)
+- Update libs
+  - gson 2.14.0 -> 2.15.0
+  - snakeyaml 2.6 -> 2.7
+  - javassist 3.32.0-GA -> 3.33.0-GA
+
+more to come :)
+
+
 Release 4.4.1 - 2026/08/28
 ----------------------
 - [Core] Add daemon pool metrics and health check : warn when a daemon execution is longer than its period, expose thread-pool stats and green/yellow/red health

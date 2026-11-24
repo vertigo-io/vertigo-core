@@ -361,7 +361,8 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 			try {
 				latch.await();
 			} catch (final InterruptedException ex) {
-				// Ignore the exception.
+				// the writer stops waiting for the reconnection : keep the interrupt status for the caller
+				Thread.currentThread().interrupt();
 			}
 		}
 
@@ -379,6 +380,14 @@ public class AnalyticsTcpSocketManager extends AbstractSocketManager {
 					reconnect();
 				} catch (final InterruptedException ie) {
 					LOGGER.debug("Reconnection interrupted.");
+					// interrupted by shutdown or by the JVM stop : stop reconnecting, keep the interrupt status
+					Thread.currentThread().interrupt();
+					synchronized (owner) {
+						if (reconnector == this) {
+							reconnector = null; //a next write may start a new reconnector
+						}
+					}
+					return;
 				} catch (final ConnectException ex) {
 					LOGGER.debug("{}:{} refused connection", host, port);
 				} catch (final IOException ioe) {

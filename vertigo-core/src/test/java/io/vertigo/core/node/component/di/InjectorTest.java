@@ -22,8 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -179,6 +181,21 @@ public final class InjectorTest {
 		assertFalse(e.getB().isPresent());
 		assertEquals(2, e.getPPlugins().size());
 		assertEquals(3, e.getP2Plugins().size());
+	}
+
+	@Test
+	public void testListInDeclarationOrder() {
+		//beyond #9 too : #10 after #9 (and not after #1)
+		final MyContainer container = new MyContainer();
+		container.put("p3", new P3());
+		final List<P> declared = new ArrayList<>();
+		for (int i = 0; i <= 11; i++) {
+			final P p = new P();
+			declared.add(p);
+			container.put(i == 0 ? "p" : "p#" + i, p);
+		}
+		final E e = DIInjector.newInstance(E.class, container);
+		assertEquals(declared, e.getPPlugins());
 	}
 
 	@Test

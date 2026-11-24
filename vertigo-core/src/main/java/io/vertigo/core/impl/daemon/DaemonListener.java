@@ -31,18 +31,53 @@ import io.vertigo.core.lang.Assertion;
  */
 final class DaemonListener {
 	private static final Logger LOG = LogManager.getLogger(DaemonListener.class);
+	/** Number of consecutive successes needed by a daemon in failure to be back to normal. */
+	private static final int SUCCESSES_TO_RECOVER = 2;
 
 	private long successes;
 	private boolean lastExecSucceed;
 	private long failures;
 	private DaemonStat.Status status = DaemonStat.Status.pending;
 	private long startMillis;
+	private long dueMillis;
+	private long lastLatenessMillis;
+	private boolean dead;
+	private boolean inFailure;
+	private int successesSinceFailure;
+	private Window window = new Window();
 	private final DaemonDefinition daemonDefinition;
 	private final boolean verbose;
 
 	/**
+	 * Executions over a window : since the last read.
+	 * Not thread-safe : a window is updated under the lock of its listener, or confined to its reader.
+	 */
+	static final class Window {
+		long executions;
+		long failures;
+		long totalDurationMillis;
+		long totalLatenessMillis;
+
+		void add(final long durationMillis, final long latenessMillis, final boolean success) {
+			executions++;
+			if (!success) {
+				failures++;
+			}
+			totalDurationMillis += durationMillis;
+			totalLatenessMillis += latenessMillis;
+		}
+
+		void addAll(final Window other) {
+			executions += other.executions;
+			failures += other.failures;
+			totalDurationMillis += other.totalDurationMillis;
+			totalLatenessMillis += other.totalLatenessMillis;
+		}
+	}
+
+	/**
 	 * Creates a new listener for the specified daemon.
-	 * 
+	 *
 	 * @param daemonDefinition Daemon configuration
 	 * @param verbose Whether to log detailed execution info
 	 */
@@ -51,17 +86,39 @@ final class DaemonListener {
 		//---
 		this.daemonDefinition = daemonDefinition;
 		this.verbose = verbose;
+		// with a fixed delay, the first execution is due one period after the registration
+		dueMillis = System.currentTimeMillis() + getPeriodMillis();
 	}
 
 	/**
 	 * Gets current execution statistics.
 	 * Creates an immutable snapshot of current state.
-	 * 
+	 *
 	 * @return Current daemon statistics
 	 */
-	synchronized DaemonStat getStat() {
+	synchronized DaemonStatImpl getStat() {
 		//On copie les données
-		return new DaemonStatImpl(daemonDefinition, successes, failures, status, lastExecSucceed);
+		return new DaemonStatImpl(daemonDefinition, successes, failures, status, lastExecSucceed, startMillis, dueMillis, dead, inFailure);
+	}
+
+	/**
+	 * Gets the executions since the last call, and starts a new window.
+	 *
+	 * @return the window
+	 */
+	synchronized Window takeWindow() {
+		final Window takenWindow = window;
+		window = new Window();
+		return takenWindow;
+	}
+
+	/**
+	 * Gets the lateness of the last start : how long it waited for a free thread.
+	 *
+	 * @return the lateness in millis
+	 */
+	synchronized long getLastLatenessMillis() {
+		return lastLatenessMillis;
 	}
 
 	/**
@@ -71,9 +128,21 @@ final class DaemonListener {
 	synchronized void onStart() {
 		status = DaemonStat.Status.running;
 		startMillis = System.currentTimeMillis();
+		lastLatenessMillis = Math.max(0L, startMillis - dueMillis);
 		if (verbose) {
 			LOG.info("Start daemon: {}", daemonDefinition.getName());
 		}
+	}
+
+	/**
+	 * Records that the daemon's periodic schedule was cancelled by a fatal Error: no future execution will occur.
+	 *
+	 * @param e Error that killed the daemon
+	 */
+	synchronized void onDead(final Error e) {
+		dead = true;
+		LOG.error("Daemon [{}] crashed with {}: the periodic schedule is cancelled, no future execution will occur",
+				daemonDefinition.getName(), e.getClass().getSimpleName(), e);
 	}
 
 	/**
@@ -83,10 +152,11 @@ final class DaemonListener {
 	 * @param e Exception that caused the failure
 	 */
 	synchronized void onFailure(final Exception e) {
-		status = DaemonStat.Status.pending;
 		failures++;
 		lastExecSucceed = false;
-		checkAndWarnExecutionTime();
+		inFailure = true;
+		successesSinceFailure = 0;
+		onEnd(false);
 		LOG.error("Daemon :  an error has occured during the execution of the daemon: " + daemonDefinition.id(), e);
 	}
 
@@ -95,21 +165,39 @@ final class DaemonListener {
 	 * Updates counters, status and logs if verbose enabled.
 	 */
 	synchronized void onSuccess() {
-		status = DaemonStat.Status.pending;
 		successes++;
 		lastExecSucceed = true;
-		checkAndWarnExecutionTime();
+		// hysteresis : a daemon in failure is back to normal after two consecutive successes
+		if (inFailure) {
+			successesSinceFailure++;
+			if (successesSinceFailure >= SUCCESSES_TO_RECOVER) {
+				inFailure = false;
+			}
+		}
+		onEnd(true);
 		if (verbose) {
 			LOG.info("Execution succeeded on daemon: {}", daemonDefinition.id());
 		}
 	}
 
+	private void onEnd(final boolean success) {
+		status = DaemonStat.Status.pending;
+		final long endMillis = System.currentTimeMillis();
+		// with a fixed delay, the next execution is due one period after the end of this one
+		dueMillis = endMillis + getPeriodMillis();
+		window.add(endMillis - startMillis, lastLatenessMillis, success);
+		checkAndWarnExecutionTime(endMillis - startMillis);
+	}
+
+	private long getPeriodMillis() {
+		return daemonDefinition.getPeriodInSeconds() * 1000L;
+	}
+
 	/**
 	 * Warns if daemon execution exceeded its configured period.
 	 */
-	private void checkAndWarnExecutionTime() {
-		final long duration = System.currentTimeMillis() - startMillis;
-		final long periodMs = daemonDefinition.getPeriodInSeconds() * 1000L;
+	private void checkAndWarnExecutionTime(final long duration) {
+		final long periodMs = getPeriodMillis();
 		if (duration > periodMs) {
 			LOG.warn("Daemon [{}] took {}ms (> period {}ms), risking daemon thread starvation",
 					daemonDefinition.getName(), duration, periodMs);
